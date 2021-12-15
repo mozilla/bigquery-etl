@@ -21,10 +21,13 @@ def generate_group():
             spec = importlib.util.spec_from_file_location(
                 path.name, (path / "__init__.py").absolute()
             )
+            # import and execute the module so that we can access
+            # methods that are defined in the module
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
 
-            # find the `generate` click command in the module
+            # find the `generate` click command in the module by
+            # iterating through all the members of the module
             members = getmembers(module)
             generate_cmd = [cmd[1] for cmd in members if cmd[0] == GENERATE_COMMAND]
             if len(generate_cmd) > 0:

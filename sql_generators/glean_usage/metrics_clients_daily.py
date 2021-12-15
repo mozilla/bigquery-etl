@@ -5,7 +5,7 @@ from pathlib import Path
 
 import yaml
 
-from common import GleanTable
+from sql_generators.glean_usage.common import GleanTable
 
 TARGET_TABLE_ID = "metrics_clients_daily_v1"
 PREFIX = "metrics_clients_daily"

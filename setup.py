@@ -16,14 +16,16 @@ setup(
     author_email="fx-data-dev@mozilla.org",
     description="Tooling for building derived datasets in BigQuery",
     url="https://github.com/mozilla/bigquery-etl",
-    packages=find_namespace_packages(include=["bigquery_etl.*", "bigquery_etl"]),
+    packages=find_namespace_packages(include=["bigquery_etl.*", "bigquery_etl", "sql_generators", "sql_generators.*"]),
     package_data={
         "bigquery_etl": [
             "query_scheduling/templates/*.j2",
-            "glean_usage/templates/*",
             "alchemer/*.json",
             "stripe/*.json",
             "stripe/*.yaml",
+        ],
+        "sql_generators": [
+            "*/templates/*"
         ]
     },
     include_package_data=True,

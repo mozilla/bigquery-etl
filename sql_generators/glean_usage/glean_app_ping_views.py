@@ -7,7 +7,7 @@ import os
 
 from mozilla_schema_generator.glean_ping import GleanPing
 
-from common import GleanTable
+from sql_generators.glean_usage.common import GleanTable
 from bigquery_etl.util.common import get_table_dir, write_sql
 
 VIEW_QUERY_TEMPLATE = """\

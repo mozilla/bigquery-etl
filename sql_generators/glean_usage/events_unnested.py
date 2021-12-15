@@ -1,6 +1,6 @@
 """Generate unnested events queries for Glean apps."""
 
-from common import GleanTable
+from sql_generators.glean_usage.common import GleanTable
 
 TARGET_TABLE_ID = "events_unnested_v1"
 PREFIX = "events_unnested"

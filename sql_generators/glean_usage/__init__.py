@@ -7,19 +7,17 @@ from pathlib import Path
 from pathos.multiprocessing import ProcessingPool
 
 from bigquery_etl.cli.utils import is_valid_project, table_matches_patterns
-
-file_dir = os.path.dirname(__file__)
-sys.path.append(file_dir)
-
-import baseline_clients_daily  # noqa: E402
-import baseline_clients_first_seen  # noqa: E402
-import baseline_clients_last_seen  # noqa: E402
-import clients_last_seen_joined  # noqa: E402
-import events_unnested  # noqa: E402
-import glean_app_ping_views  # noqa: E402
-import metrics_clients_daily  # noqa: E402
-import metrics_clients_last_seen  # noqa: E402
-from common import get_app_info, list_baseline_tables  # noqa: E402
+from sql_generators.glean_usage import (
+    baseline_clients_daily,
+    baseline_clients_first_seen,
+    baseline_clients_last_seen,
+    clients_last_seen_joined,
+    events_unnested,
+    glean_app_ping_views,
+    metrics_clients_daily,
+    metrics_clients_last_seen,
+)
+from sql_generators.glean_usage.common import get_app_info, list_baseline_tables
 
 # list of methods for generating queries
 GLEAN_TABLES = [

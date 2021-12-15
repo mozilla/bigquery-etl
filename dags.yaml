@@ -242,16 +242,6 @@ bqetl_experiments_daily:
     retries: 2
     retry_delay: 30m
 
-bqetl_asn_aggregates:
-  schedule_interval: 0 2 * * *
-  description: The DAG schedules ASN aggregates queries.
-  default_args:
-    owner: ascholtz@mozilla.com
-    start_date: "2020-04-05"
-    email: ["ascholtz@mozilla.com", "tdsmith@mozilla.com"]
-    retries: 2
-    retry_delay: 30m
-
 # DAG for exporting query data marked as public to GCS
 # queries should not be explicitly assigned to this DAG (done automatically)
 bqetl_public_data_json:

@@ -57,7 +57,7 @@ def query():
 
 @query.command(
     help="""Create a new query with name
-    <dataset>.<query_name>, for example: telemetry_derived.asn_aggregates.
+    <dataset>.<query_name>, for example: telemetry_derived.active_profiles.
     Use the `--project_id` option to change the project the query is added to;
     default is `moz-fx-data-shared-prod`. Views are automatically generated
     in the publicly facing dataset.

@@ -1418,6 +1418,24 @@ fields:
       mode: NULLABLE
       name: last_interaction_duration
       type: STRING
+    - description: <string>, If the app was invoked in background task mode via `--backgroundtask
+        <task name>`, the string "task name".
+      mode: NULLABLE
+      name: background_task_name
+      type: STRING
+    - description: <boolean>, True if the app was invoked in headless mode via `--headless
+        ...` or `--backgroundtask ...`, false otherwise.
+      mode: NULLABLE
+      name: headless_mode
+      type: STRING
+    - description: '<string>, If running in a Windows package context, the package
+        family name, per https://docs.microsoft.com/en-us/windows/win32/api/appmodel/nf-appmodel-getcurrentpackagefamilyname.
+
+        The package family name is only included when it is likely to have been produced
+        by Mozilla: it starts "Mozilla." or "MozillaCorporation.".'
+      mode: NULLABLE
+      name: windows_package_family_name
+      type: STRING
     mode: NULLABLE
     name: metadata
     type: RECORD

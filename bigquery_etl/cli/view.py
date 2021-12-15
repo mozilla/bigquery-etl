@@ -31,7 +31,7 @@ def view():
 
 @view.command(
     help="""Create a new view with name
-    <dataset>.<view_name>, for example: telemetry_derived.asn_aggregates.
+    <dataset>.<view_name>, for example: telemetry_derived.active_profiles.
     Use the `--project_id` option to change the project the view is added to;
     default is `moz-fx-data-shared-prod`.
 

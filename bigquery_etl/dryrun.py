@@ -202,7 +202,6 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry_derived/glam_client_probe_counts_extract_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/scalar_percentiles_v1/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_scalar_probe_counts_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/asn_aggregates_v1/query.sql",
     # Dataset sql/glam-fenix-dev:glam_etl was not found
     *glob.glob("sql/glam-fenix-dev/glam_etl/**/*.sql", recursive=True),
     # Query templates

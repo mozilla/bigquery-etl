@@ -2,6 +2,14 @@
 
 This document records interesting code that we've deleted for the sake of discoverability for the future.
 
+## 2021-12 ASN aggregates
+
+- [Removal PR](https://github.com/mozilla/bigquery-etl/pull/2580)
+- [Bug](https://mozilla-hub.atlassian.net/browse/DSRE-197)
+
+This dataset was no longer being actively used, and removing it allows us to
+limit airflow's access to `payload_bytes_raw`.
+
 ## 2021-09 Remove document sampling queries
 
 - [Removal PR](https://github.com/mozilla/bigquery-etl/pull/2389)

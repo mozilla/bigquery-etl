@@ -1,5 +1,5 @@
 """Generating and run baseline_clients_daily queries for Glean apps."""
-from common import GleanTable
+from sql_generators.glean_usage.common import GleanTable
 
 BASELINE_DAILY_TABLE_ID = "baseline_clients_daily_v1"
 PREFIX = "daily"

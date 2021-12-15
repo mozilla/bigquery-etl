@@ -1,6 +1,6 @@
 """Generate and run baseline_clients_last_seen queries for Glean apps."""
 
-from common import GleanTable
+from sql_generators.glean_usage.common import GleanTable
 
 TARGET_TABLE_ID = "baseline_clients_last_seen_v1"
 PREFIX = "last_seen"

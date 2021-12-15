@@ -1,6 +1,6 @@
 """Generate and run clients_last_seen_joined queries for Glean apps."""
 
-from common import GleanTable
+from sql_generators.glean_usage.common import GleanTable
 
 TARGET_TABLE_ID = "clients_last_seen_joined_v1"
 PREFIX = "clients_last_seen_joined"

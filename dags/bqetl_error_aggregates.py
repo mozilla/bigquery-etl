@@ -28,11 +28,14 @@ default_args = {
     "retries": 1,
 }
 
+tags = ["impact/tier_1"]
+
 with DAG(
     "bqetl_error_aggregates",
     default_args=default_args,
     schedule_interval=datetime.timedelta(seconds=10800),
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     telemetry_derived__error_aggregates__v1 = bigquery_etl_query(

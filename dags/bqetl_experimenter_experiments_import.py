@@ -35,11 +35,14 @@ default_args = {
     "retries": 0,
 }
 
+tags = ["impact/tier_1"]
+
 with DAG(
     "bqetl_experimenter_experiments_import",
     default_args=default_args,
     schedule_interval="*/10 * * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     monitoring__experimenter_experiments__v1 = gke_command(

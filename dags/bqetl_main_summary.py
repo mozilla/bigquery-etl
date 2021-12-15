@@ -38,11 +38,14 @@ default_args = {
     "retries": 2,
 }
 
+tags = ["impact/tier_1"]
+
 with DAG(
     "bqetl_main_summary",
     default_args=default_args,
     schedule_interval="0 2 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     client_probe_processes__v1 = bigquery_etl_query(

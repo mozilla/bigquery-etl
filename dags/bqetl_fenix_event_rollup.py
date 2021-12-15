@@ -28,11 +28,14 @@ default_args = {
     "retries": 2,
 }
 
+tags = ["impact/tier_1"]
+
 with DAG(
     "bqetl_fenix_event_rollup",
     default_args=default_args,
     schedule_interval="0 2 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     fenix_derived__event_types__v1 = bigquery_etl_query(

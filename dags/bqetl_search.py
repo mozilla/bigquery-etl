@@ -32,11 +32,14 @@ default_args = {
     "retries": 2,
 }
 
+tags = ["impact/tier_1"]
+
 with DAG(
     "bqetl_search",
     default_args=default_args,
     schedule_interval="0 3 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     search_derived__search_aggregates__v8 = bigquery_etl_query(

@@ -31,8 +31,14 @@ default_args = {
     "retries": 1,
 }
 
+tags = ["impact/tier_1"]
+
 with DAG(
-    "bqetl_core", default_args=default_args, schedule_interval="0 2 * * *", doc_md=docs
+    "bqetl_core",
+    default_args=default_args,
+    schedule_interval="0 2 * * *",
+    doc_md=docs,
+    tags=tags,
 ) as dag:
 
     telemetry_derived__core_clients_daily__v1 = bigquery_etl_query(

@@ -42,11 +42,14 @@ default_args = {
     "retries": 1,
 }
 
+tags = ["impact/tier_1"]
+
 with DAG(
     "bqetl_fxa_events",
     default_args=default_args,
     schedule_interval="30 1 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     firefox_accounts_derived__exact_mau28__v1 = bigquery_etl_query(

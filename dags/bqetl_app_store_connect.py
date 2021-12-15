@@ -44,11 +44,14 @@ default_args = {
     "retries": 2,
 }
 
+tags = ["impact/tier_1"]
+
 with DAG(
     "bqetl_app_store_connect",
     default_args=default_args,
     schedule_interval="0 20 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     apple_app_store__report_subscriber_detailed__v13 = gke_command(

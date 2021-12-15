@@ -28,11 +28,14 @@ default_args = {
     "retries": 1,
 }
 
+tags = ["impact/tier_1"]
+
 with DAG(
     "bqetl_nondesktop",
     default_args=default_args,
     schedule_interval="0 3 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     firefox_nondesktop_exact_mau28_by_client_count_dimensions = bigquery_etl_query(

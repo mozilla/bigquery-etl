@@ -36,11 +36,14 @@ default_args = {
     "retries": 2,
 }
 
+tags = ["impact/tier_1"]
+
 with DAG(
     "bqetl_unified",
     default_args=default_args,
     schedule_interval="0 3 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     telemetry_derived__unified_metrics__v1 = bigquery_etl_query(

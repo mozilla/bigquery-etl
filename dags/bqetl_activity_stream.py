@@ -34,7 +34,7 @@ default_args = {
     "retries": 1,
 }
 
-tags = ["impact/tier_1"]
+tags = ["impact/tier_2"]
 
 with DAG(
     "bqetl_activity_stream",

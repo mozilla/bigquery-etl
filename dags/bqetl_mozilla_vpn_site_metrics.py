@@ -37,7 +37,7 @@ default_args = {
     "retries": 2,
 }
 
-tags = ["impact/tier_1"]
+tags = ["impact/tier_2"]
 
 with DAG(
     "bqetl_mozilla_vpn_site_metrics",

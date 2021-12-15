@@ -35,7 +35,7 @@ default_args = {
     "retries": 0,
 }
 
-tags = ["impact/tier_1"]
+tags = ["impact/tier_2"]
 
 with DAG(
     "bqetl_experimenter_experiments_import",

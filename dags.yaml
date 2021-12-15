@@ -25,7 +25,7 @@ bqetl_ssl_ratios:
     retries: 2
     retry_delay: 30m
   tags:
-    - impact/tier_1
+    - impact/tier_3
 
 bqetl_amo_stats:
   schedule_interval: 0 3 * * *
@@ -157,7 +157,7 @@ bqetl_mozilla_vpn_site_metrics:
     retries: 2
     retry_delay: 30m
   tags:
-    - impact/tier_1
+    - impact/tier_2
 
 bqetl_gud:
   schedule_interval: 0 3 * * *
@@ -184,7 +184,7 @@ bqetl_messaging_system:
     retries: 1
     retry_delay: 5m
   tags:
-    - impact/tier_1
+    - impact/tier_3
 
 bqetl_activity_stream:
   schedule_interval: 0 2 * * *
@@ -199,7 +199,7 @@ bqetl_activity_stream:
     retries: 1
     retry_delay: 5m
   tags:
-    - impact/tier_1
+    - impact/tier_2
 
 bqetl_search:
   schedule_interval: 0 3 * * *
@@ -228,7 +228,7 @@ bqetl_addons:
     retries: 2
     retry_delay: 30m
   tags:
-    - impact/tier_1
+    - impact/tier_2
 
 bqetl_devtools:
   schedule_interval: 0 3 * * *
@@ -241,7 +241,7 @@ bqetl_devtools:
     retries: 2
     retry_delay: 30m
   tags:
-    - impact/tier_1
+    - impact/tier_3
 
 bqetl_main_summary:
   schedule_interval: 0 2 * * *
@@ -288,7 +288,7 @@ bqetl_asn_aggregates:
     retries: 2
     retry_delay: 30m
   tags:
-    - impact/tier_1
+    - impact/tier_3
 
 # DAG for exporting query data marked as public to GCS
 # queries should not be explicitly assigned to this DAG (done automatically)
@@ -306,7 +306,7 @@ bqetl_public_data_json:
     retries: 2
     retry_delay: 30m
   tags:
-    - impact/tier_1
+    - impact/tier_3
 
 bqetl_internet_outages:
   schedule_interval: 0 3 * * *
@@ -320,7 +320,7 @@ bqetl_internet_outages:
     retries: 2
     retry_delay: 30m
   tags:
-    - impact/tier_1
+    - impact/tier_3
 
 bqetl_deletion_request_volume:
   schedule_interval: 0 1 * * *
@@ -331,7 +331,7 @@ bqetl_deletion_request_volume:
     retries: 2
     retry_delay: 30m
   tags:
-    - impact/tier_1
+    - impact/tier_3
 
 bqetl_fenix_event_rollup:
   schedule_interval: 0 2 * * *
@@ -436,7 +436,7 @@ bqetl_search_dashboard:
     start_date: "2020-12-14"
   schedule_interval: 0 4 * * *
   tags:
-    - impact/tier_1
+    - impact/tier_2
 
 bqetl_desktop_platform:
   schedule_interval: 0 3 * * *
@@ -452,7 +452,7 @@ bqetl_desktop_platform:
     retries: 2
     retry_delay: 30m
   tags:
-    - impact/tier_1
+    - impact/tier_3
 
 bqetl_internal_tooling:
   description: |
@@ -472,7 +472,7 @@ bqetl_internal_tooling:
     start_date: "2020-06-01"
   schedule_interval: 0 4 * * *
   tags:
-    - impact/tier_1
+    - impact/tier_3
 
 bqetl_release_criteria:
   schedule_interval: daily
@@ -506,7 +506,7 @@ bqetl_pocket:
     https://bugzilla.mozilla.org/show_bug.cgi?id=1695336).
   schedule_interval: 0 12 * * *
   tags:
-    - impact/tier_1
+    - impact/tier_2
 
 bqetl_desktop_funnel:
   description: |
@@ -564,7 +564,7 @@ bqetl_releases:
     https://wiki.mozilla.org/Release_Management/Product_details
   schedule_interval: 0 4 * * *
   tags:
-    - impact/tier_1
+    - impact/tier_2
 
 bqetl_ctxsvc_derived:
   default_args:
@@ -582,7 +582,7 @@ bqetl_ctxsvc_derived:
   description: Contextual services derived tables
   schedule_interval: 0 3 * * *
   tags:
-    - impact/tier_1
+    - impact/tier_2
 
 bqetl_search_terms_daily:
   default_args:
@@ -602,7 +602,7 @@ bqetl_search_terms_daily:
     Derived tables on top of search terms data.
   schedule_interval: 0 3 * * *
   tags:
-    - impact/tier_1
+    - impact/tier_3
 
 bqetl_app_store_connect:
   schedule_interval: 0 20 * * *
@@ -626,7 +626,7 @@ bqetl_app_store_connect:
     retries: 2
     retry_delay: 30m
   tags:
-    - impact/tier_1
+    - impact/tier_3
 
 bqetl_experimenter_experiments_import:
   schedule_interval: "*/10 * * * *"
@@ -642,7 +642,7 @@ bqetl_experimenter_experiments_import:
     email:
       - ascholtz@mozilla.com
   tags:
-    - impact/tier_1
+    - impact/tier_2
 
 bqetl_feature_usage:
   schedule_interval: 0 5 * * *
@@ -678,7 +678,7 @@ bqetl_urlbar:
     retries: 2
     retry_delay: 30m
   tags:
-    - impact/tier_1
+    - impact/tier_2
 
 bqetl_unified:
   schedule_interval: 0 3 * * *

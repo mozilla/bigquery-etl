@@ -683,3 +683,21 @@ bqetl_unified:
     retry_delay: 30m
   tags:
     - impact/tier_1
+
+bqetl_regrets_reporter_summary:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - kignasiak@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: kignasiak@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2021-12-12'
+  description: Measure usage of the regrets reporter addon
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_1

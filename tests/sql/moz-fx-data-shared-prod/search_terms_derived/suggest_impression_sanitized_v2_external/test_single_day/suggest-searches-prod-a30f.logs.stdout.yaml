@@ -3,7 +3,7 @@
     type: web.suggest.request
     fields:
       rid: rid1
-      query: "shoes for "
+      query: " Shoes for "
       country: US
       region: none
       dma: none

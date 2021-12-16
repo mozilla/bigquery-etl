@@ -42976,6 +42976,21 @@ fields:
           mode: REPEATED
           name: media_video_hardware_decoding_support
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'Record whether hardware decoding is supported for the specific
+              video codec, this only records video in HD (1280*720) or higher resultion.
+              The key is the type of video codec, eg. video/vp9.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: BOOLEAN
+          mode: REPEATED
+          name: media_video_hd_hardware_decoding_support
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD
@@ -47147,6 +47162,21 @@ fields:
             type: INTEGER
           mode: REPEATED
           name: os_environment_launched_to_handle
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'Record whether hardware decoding is supported for the specific
+              video codec, this only records video in HD (1280*720) or higher resultion.
+              The key is the type of video codec, eg. video/vp9.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: BOOLEAN
+          mode: REPEATED
+          name: media_video_hd_hardware_decoding_support
           type: RECORD
         mode: NULLABLE
         name: keyed_scalars

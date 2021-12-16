@@ -3598,7 +3598,7 @@
 <h2 id="add_monthly_searches"><a href="#add_monthly_searches">add_monthly_searches</a></h2>
 <p><strong>Add Monthly Searches</strong></p>
 <p><code>udf.add_monthly_searches</code></p>
-<p>Adds together two engine searches structs. Each engine searches struct has a MAP[engine -&gt; search_counts_struct]. We want to add add together the prev and curr&#39;s values for a certain engine.  This allows us to be flexible with the number of engines we&#39;re using.</p>
+<p>Adds together two engine searches structs. Each engine searches struct has a MAP[engine -&gt; search_counts_struct]. We want to add add together the prev and curr's values for a certain engine.  This allows us to be flexible with the number of engines we're using.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/add_monthly_searches">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/add_monthly_searches/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="add_searches_by_index"><a href="#add_searches_by_index">add_searches_by_index</a></h2>
@@ -3610,7 +3610,7 @@
 <h2 id="aggregate_active_addons"><a href="#aggregate_active_addons">aggregate_active_addons</a></h2>
 <p><strong>Aggregate Active Addons</strong></p>
 <p><code>udf.aggregate_active_addons</code></p>
-<p>This function selects most frequently occuring value for each addon_id, using the latest value in the input among ties. The type for active_addons is ARRAY&lt;STRUCT&lt;addon_id STRING, ...&gt;&gt;, i.e. the output of <code>SELECT ARRAY_CONCAT_AGG(active_addons) FROM telemetry.main_summary_v4</code>, and is left unspecified to allow changes to the fields of the STRUCT.</p>
+<p>This function selects most frequently occuring value for each addon_id, using the latest value in the input among ties. The type for active_addons is ARRAY<STRUCT\<addon_id STRING, ...>>, i.e. the output of <code>SELECT ARRAY_CONCAT_AGG(active_addons) FROM telemetry.main_summary_v4</code>, and is left unspecified to allow changes to the fields of the STRUCT.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/aggregate_active_addons">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/aggregate_active_addons/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="aggregate_map_first"><a href="#aggregate_map_first">aggregate_map_first</a></h2>
@@ -3726,9 +3726,9 @@ This is primarily useful to generate a compact encoding of dates on which a feat
             IGNORE NULLS)
 )</code>
 The resulting value can be cast to an INT64 representing the most recent 64 days via:
-<code>sql CAST(CONCAT(&amp;#39;0x&amp;#39;, TO_HEX(RIGHT(bits &amp;gt;&amp;gt; i, 4))) AS INT64)</code>
+<code>sql CAST(CONCAT('0x', TO_HEX(RIGHT(bits &gt;&gt; i, 4))) AS INT64)</code>
 Or representing the most recent 28 days (compatible with bits28 functions) via:
-<code>sql CAST(CONCAT(&amp;#39;0x&amp;#39;, TO_HEX(RIGHT(bits &amp;gt;&amp;gt; i, 4))) AS INT64) &amp;lt;&amp;lt; 36 &amp;gt;&amp;gt; 36</code></p>
+<code>sql CAST(CONCAT('0x', TO_HEX(RIGHT(bits &gt;&gt; i, 4))) AS INT64) &lt;&lt; 36 &gt;&gt; 36</code></p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/bits_from_offsets">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/bits_from_offsets/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="bits_to_active_n_weeks_ago"><a href="#bits_to_active_n_weeks_ago">bits_to_active_n_weeks_ago</a></h2>
@@ -3746,13 +3746,13 @@ Or representing the most recent 28 days (compatible with bits28 functions) via:
 <h2 id="bits_to_days_since_first_seen"><a href="#bits_to_days_since_first_seen">bits_to_days_since_first_seen</a></h2>
 <p><strong>Bits To Days Since First Seen</strong></p>
 <p><code>udf.bits_to_days_since_first_seen</code></p>
-<p>Given a BYTES, return the number of days since the client was first seen.  If no bits are set, returns NULL, indicating we don&#39;t know. Otherwise the result is 0-indexed, meaning that for \x01, it will return 0.  Results showed this being between 5-10x faster than the simpler alternative: CREATE OR REPLACE FUNCTION udf.bits_to_days_since_first_seen(b BYTES) AS ((     SELECT MAX(n)     FROM UNNEST(GENERATE_ARRAY( 0, 8 * BYTE_LENGTH(b))) AS n     WHERE BIT_COUNT(SUBSTR(b &gt;&gt; n, -1) &amp; b&#39;\x01&#39;) &gt; 0)); See also: bits_to_days_since_seen.sql</p>
+<p>Given a BYTES, return the number of days since the client was first seen.  If no bits are set, returns NULL, indicating we don't know. Otherwise the result is 0-indexed, meaning that for \x01, it will return 0.  Results showed this being between 5-10x faster than the simpler alternative: CREATE OR REPLACE FUNCTION udf.bits_to_days_since_first_seen(b BYTES) AS ((     SELECT MAX(n)     FROM UNNEST(GENERATE_ARRAY( 0, 8 * BYTE_LENGTH(b))) AS n     WHERE BIT_COUNT(SUBSTR(b &gt;&gt; n, -1) &amp; b'\x01') &gt; 0)); See also: bits_to_days_since_seen.sql</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/bits_to_days_since_first_seen">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/bits_to_days_since_first_seen/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="bits_to_days_since_seen"><a href="#bits_to_days_since_seen">bits_to_days_since_seen</a></h2>
 <p><strong>Bits To Days Since Seen</strong></p>
 <p><code>udf.bits_to_days_since_seen</code></p>
-<p>Given a BYTES, return the number of days since the client was last seen.  If no bits are set, returns NULL, indicating we don&#39;t know. Otherwise the results are 0-indexed, meaning \x01 will return 0.  Tests showed this being 5-10x faster than the simpler alternative: CREATE OR REPLACE FUNCTION   udf.bits_to_days_since_seen(b BYTES) AS ((     SELECT MIN(n)     FROM UNNEST(GENERATE_ARRAY(0, 364)) AS n     WHERE BIT_COUNT(SUBSTR(b &gt;&gt; n, -1) &amp; b&#39;\x01&#39;) &gt; 0)); See also: bits_to_days_since_first_seen.sql</p>
+<p>Given a BYTES, return the number of days since the client was last seen.  If no bits are set, returns NULL, indicating we don't know. Otherwise the results are 0-indexed, meaning \x01 will return 0.  Tests showed this being 5-10x faster than the simpler alternative: CREATE OR REPLACE FUNCTION   udf.bits_to_days_since_seen(b BYTES) AS ((     SELECT MIN(n)     FROM UNNEST(GENERATE_ARRAY(0, 364)) AS n     WHERE BIT_COUNT(SUBSTR(b &gt;&gt; n, -1) &amp; b'\x01') &gt; 0)); See also: bits_to_days_since_first_seen.sql</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/bits_to_days_since_seen">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/bits_to_days_since_seen/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="bool_to_365_bits"><a href="#bool_to_365_bits">bool_to_365_bits</a></h2>
@@ -3764,7 +3764,7 @@ Or representing the most recent 28 days (compatible with bits28 functions) via:
 <h2 id="boolean_histogram_to_boolean"><a href="#boolean_histogram_to_boolean">boolean_histogram_to_boolean</a></h2>
 <p><strong>Boolean Histogram To Boolean</strong></p>
 <p><code>udf.boolean_histogram_to_boolean</code></p>
-<p>Given histogram h, return TRUE if it has a value in the &#34;true&#34; bucket, or FALSE if it has a value in the &#34;false&#34; bucket, or NULL otherwise. https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L309-L317</p>
+<p>Given histogram h, return TRUE if it has a value in the "true" bucket, or FALSE if it has a value in the "false" bucket, or NULL otherwise. https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L309-L317</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/boolean_histogram_to_boolean">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/boolean_histogram_to_boolean/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="coalesce_adjacent_days_28_bits"><a href="#coalesce_adjacent_days_28_bits">coalesce_adjacent_days_28_bits</a></h2>
@@ -3776,13 +3776,13 @@ Or representing the most recent 28 days (compatible with bits28 functions) via:
 <h2 id="coalesce_adjacent_days_365_bits"><a href="#coalesce_adjacent_days_365_bits">coalesce_adjacent_days_365_bits</a></h2>
 <p><strong>Coalesce Adjacent Days 365 Bits</strong></p>
 <p><code>udf.coalesce_adjacent_days_365_bits</code></p>
-<p>Coalesce previous data&#39;s PCD with the new data&#39;s PCD. We generally want to believe only the first reasonable profile creation date that we receive from a client. Given bytes representing usage from the previous day and the current day, this function shifts the first argument by one day and returns either that value if non-zero and non-null, the current day value if non-zero and non-null, or else 0.</p>
+<p>Coalesce previous data's PCD with the new data's PCD. We generally want to believe only the first reasonable profile creation date that we receive from a client. Given bytes representing usage from the previous day and the current day, this function shifts the first argument by one day and returns either that value if non-zero and non-null, the current day value if non-zero and non-null, or else 0.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/coalesce_adjacent_days_365_bits">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/coalesce_adjacent_days_365_bits/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="combine_adjacent_days_28_bits"><a href="#combine_adjacent_days_28_bits">combine_adjacent_days_28_bits</a></h2>
 <p><strong>Combine Adjacent Days 28 Bits</strong></p>
 <p><code>udf.combine_adjacent_days_28_bits</code></p>
-<p>Combines two bit patterns. The first pattern represents activity over a 28-day period ending &#34;yesterday&#34;. The second pattern represents activity as observed today (usually just 0 or 1). We shift the bits in the first pattern by one to set the new baseline as &#34;today&#34;, then perform a bitwise OR of the two patterns.</p>
+<p>Combines two bit patterns. The first pattern represents activity over a 28-day period ending "yesterday". The second pattern represents activity as observed today (usually just 0 or 1). We shift the bits in the first pattern by one to set the new baseline as "today", then perform a bitwise OR of the two patterns.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/combine_adjacent_days_28_bits">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/combine_adjacent_days_28_bits/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="combine_adjacent_days_365_bits"><a href="#combine_adjacent_days_365_bits">combine_adjacent_days_365_bits</a></h2>
@@ -3793,13 +3793,13 @@ Or representing the most recent 28 days (compatible with bits28 functions) via:
 <h2 id="combine_days_seen_maps"><a href="#combine_days_seen_maps">combine_days_seen_maps</a></h2>
 <p><strong>Combine Days Seen Maps</strong></p>
 <p><code>udf.combine_days_seen_maps</code></p>
-<p>The &#34;clients_last_seen&#34; class of tables represent various types of client activity within a 28-day window as bit patterns. This function takes in two arrays of structs (aka maps) where each entry gives the bit pattern for days in which we saw a ping for a given user in a given key. We combine the bit patterns for the previous day and the current day, returning a single map. See <code>udf.combine_experiment_days</code> for a more specific example of this approach.</p>
+<p>The "clients_last_seen" class of tables represent various types of client activity within a 28-day window as bit patterns. This function takes in two arrays of structs (aka maps) where each entry gives the bit pattern for days in which we saw a ping for a given user in a given key. We combine the bit patterns for the previous day and the current day, returning a single map. See <code>udf.combine_experiment_days</code> for a more specific example of this approach.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/combine_days_seen_maps">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/combine_days_seen_maps/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="combine_experiment_days"><a href="#combine_experiment_days">combine_experiment_days</a></h2>
 <p><strong>Combine Experiment Days</strong></p>
 <p><code>udf.combine_experiment_days</code></p>
-<p>The &#34;clients_last_seen&#34; class of tables represent various types of client activity within a 28-day window as bit patterns.  This function takes in two arrays of structs where each entry gives the bit pattern for days in which we saw a ping for a given user in a given experiment. We combine the bit patterns for the previous day and the current day, returning a single array of experiment structs.</p>
+<p>The "clients_last_seen" class of tables represent various types of client activity within a 28-day window as bit patterns.  This function takes in two arrays of structs where each entry gives the bit pattern for days in which we saw a ping for a given user in a given experiment. We combine the bit patterns for the previous day and the current day, returning a single array of experiment structs.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/combine_experiment_days">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/combine_experiment_days/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="country_code_to_flag"><a href="#country_code_to_flag">country_code_to_flag</a></h2>
@@ -3908,7 +3908,7 @@ by build date.</p>
 <h2 id="geo_struct"><a href="#geo_struct">geo_struct</a></h2>
 <p><strong>Geo Struct</strong></p>
 <p><code>udf.geo_struct</code></p>
-<p>Convert geoip lookup fields to a struct, replacing &#39;??&#39; with NULL.  Returns NULL if if required field country would be NULL. Replaces &#39;??&#39; with NULL because &#39;??&#39; is a placeholder that may be used if there was an issue during geoip lookup in hindsight.</p>
+<p>Convert geoip lookup fields to a struct, replacing '??' with NULL.  Returns NULL if if required field country would be NULL. Replaces '??' with NULL because '??' is a placeholder that may be used if there was an issue during geoip lookup in hindsight.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/geo_struct">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/geo_struct/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="get_key"><a href="#get_key">get_key</a></h2>
@@ -3934,7 +3934,7 @@ by build date.</p>
 <h2 id="gzip_length_footer"><a href="#gzip_length_footer">gzip_length_footer</a></h2>
 <p><strong>Gzip Length Footer</strong></p>
 <p><code>udf.gzip_length_footer</code></p>
-<p>Given a gzip compressed byte string, extract the uncompressed size from the footer.  WARNING: THIS FUNCTION IS NOT RELIABLE FOR ARBITRARY GZIP STREAMS. It should, however, be safe to use for checking the decompressed size of payload in payload_bytes_decoded (and NOT payload_bytes_raw) because that payload is produced by the decoder and limited to conditions where the footer is accurate. From https://stackoverflow.com/a/9213826 First, the only information about the uncompressed length is four bytes at the end of the gzip file (stored in little-endian order). By necessity, that is the length modulo 232. So if the uncompressed length is 4 GB or more, you won&#39;t know what the length is. You can only be certain that the uncompressed length is less than 4 GB if the compressed length is less than something like 232 / 1032 + 18, or around 4 MB. (1032 is the maximum compression factor of deflate.) Second, and this is worse, a gzip file may actually be a concatenation of multiple gzip streams. Other than decoding, there is no way to find where each gzip stream ends in order to look at the four-byte uncompressed length of that piece. (Which may be wrong anyway due to the first reason.) Third, gzip files will sometimes have junk after the end of the gzip stream (usually zeros). Then the last four bytes are not the length.</p>
+<p>Given a gzip compressed byte string, extract the uncompressed size from the footer.  WARNING: THIS FUNCTION IS NOT RELIABLE FOR ARBITRARY GZIP STREAMS. It should, however, be safe to use for checking the decompressed size of payload in payload_bytes_decoded (and NOT payload_bytes_raw) because that payload is produced by the decoder and limited to conditions where the footer is accurate. From https://stackoverflow.com/a/9213826 First, the only information about the uncompressed length is four bytes at the end of the gzip file (stored in little-endian order). By necessity, that is the length modulo 232. So if the uncompressed length is 4 GB or more, you won't know what the length is. You can only be certain that the uncompressed length is less than 4 GB if the compressed length is less than something like 232 / 1032 + 18, or around 4 MB. (1032 is the maximum compression factor of deflate.) Second, and this is worse, a gzip file may actually be a concatenation of multiple gzip streams. Other than decoding, there is no way to find where each gzip stream ends in order to look at the four-byte uncompressed length of that piece. (Which may be wrong anyway due to the first reason.) Third, gzip files will sometimes have junk after the end of the gzip stream (usually zeros). Then the last four bytes are not the length.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/gzip_length_footer">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/gzip_length_footer/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="histogram_max_key_with_nonzero_value"><a href="#histogram_max_key_with_nonzero_value">histogram_max_key_with_nonzero_value</a></h2>
@@ -4002,19 +4002,19 @@ by build date.</p>
 <h2 id="keyed_histogram_get_sum"><a href="#keyed_histogram_get_sum">keyed_histogram_get_sum</a></h2>
 <p><strong>Keyed Histogram Get Sum</strong></p>
 <p><code>udf.keyed_histogram_get_sum</code></p>
-<p>Take a keyed histogram of type STRUCT&lt;key STRING, value STRING&gt;, extract the histogram of the given key, and return the sum value</p>
+<p>Take a keyed histogram of type STRUCT<key STRING, value STRING>, extract the histogram of the given key, and return the sum value</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/keyed_histogram_get_sum">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/keyed_histogram_get_sum/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="kv_array_append_to_json_string"><a href="#kv_array_append_to_json_string">kv_array_append_to_json_string</a></h2>
 <p><strong>Kv Array Append To Json String</strong></p>
 <p><code>udf.kv_array_append_to_json_string</code></p>
-<p>Returns a JSON string which has the <code>pair</code> appended to the provided <code>input</code> JSON string. NULL is also valid for <code>input</code>. Examples:    udf.kv_array_append_to_json_string(&#39;{&#34;foo&#34;:&#34;bar&#34;}&#39;, [STRUCT(&#34;baz&#34; AS key, &#34;boo&#34; AS value)])    &#39;{&#34;foo&#34;:&#34;bar&#34;,&#34;baz&#34;:&#34;boo&#34;}&#39; udf.kv_array_append_to_json_string(&#39;{}&#39;, [STRUCT(&#34;baz&#34; AS key, &#34;boo&#34; AS value)])    &#39;{&#34;baz&#34;: &#34;boo&#34;}&#39;</p>
+<p>Returns a JSON string which has the <code>pair</code> appended to the provided <code>input</code> JSON string. NULL is also valid for <code>input</code>. Examples:    udf.kv_array_append_to_json_string('{"foo":"bar"}', [STRUCT("baz" AS key, "boo" AS value)])    '{"foo":"bar","baz":"boo"}' udf.kv_array_append_to_json_string('{}', [STRUCT("baz" AS key, "boo" AS value)])    '{"baz": "boo"}'</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/kv_array_append_to_json_string">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/kv_array_append_to_json_string/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="kv_array_to_json_string"><a href="#kv_array_to_json_string">kv_array_to_json_string</a></h2>
 <p><strong>Kv Array To Json String</strong></p>
 <p><code>udf.kv_array_to_json_string</code></p>
-<p>Returns a JSON string representing the input key-value array. Value type must be able to be represented as a string - this function will cast to a string. At Mozilla, the schema for a map is STRUCT&lt;key_value ARRAY&lt;STRUCT&lt;key ANY TYPE, value ANY TYPE&gt;&gt;&gt;. To use this with that representation, it should be as <code>udf.kv_array_to_json_string(struct.key_value)</code>.</p>
+<p>Returns a JSON string representing the input key-value array. Value type must be able to be represented as a string - this function will cast to a string. At Mozilla, the schema for a map is STRUCT<key_value ARRAY\<STRUCT\<key ANY TYPE, value ANY TYPE>>>. To use this with that representation, it should be as <code>udf.kv_array_to_json_string(struct.key_value)</code>.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/kv_array_to_json_string">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/kv_array_to_json_string/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="main_summary_scalars"><a href="#main_summary_scalars">main_summary_scalars</a></h2>
@@ -4036,7 +4036,7 @@ by build date.</p>
 <h2 id="map_revenue_country"><a href="#map_revenue_country">map_revenue_country</a></h2>
 <p><strong>Map Revenue Country</strong></p>
 <p><code>udf.map_revenue_country</code></p>
-<p>Only for use by the LTV Revenue join.  Maps country codes to the codes we have in the revenue dataset. Buckets small Bing countries into &#34;other&#34;.</p>
+<p>Only for use by the LTV Revenue join.  Maps country codes to the codes we have in the revenue dataset. Buckets small Bing countries into "other".</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/map_revenue_country">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/map_revenue_country/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="map_sum"><a href="#map_sum">map_sum</a></h2>
@@ -4053,7 +4053,7 @@ by build date.</p>
 <h2 id="mod_uint128"><a href="#mod_uint128">mod_uint128</a></h2>
 <p><strong>Mod Uint128</strong></p>
 <p><code>udf.mod_uint128</code></p>
-<p>This function returns &#34;dividend mod divisor&#34; where the dividend and the result is encoded in bytes, and divisor is an integer.</p>
+<p>This function returns "dividend mod divisor" where the dividend and the result is encoded in bytes, and divisor is an integer.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/mod_uint128">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/mod_uint128/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="mode_last"><a href="#mode_last">mode_last</a></h2>
@@ -4069,7 +4069,7 @@ by build date.</p>
 <h2 id="new_monthly_engine_searches_struct"><a href="#new_monthly_engine_searches_struct">new_monthly_engine_searches_struct</a></h2>
 <p><strong>New Monthly Engine Searches Struct</strong></p>
 <p><code>udf.new_monthly_engine_searches_struct</code></p>
-<p>This struct represents the past year&#39;s worth of searches. Each month has its own entry, hence 12.</p>
+<p>This struct represents the past year's worth of searches. Each month has its own entry, hence 12.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/new_monthly_engine_searches_struct">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/new_monthly_engine_searches_struct/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="normalize_fenix_metrics"><a href="#normalize_fenix_metrics">normalize_fenix_metrics</a></h2>
@@ -4177,13 +4177,13 @@ by build date.</p>
 <h2 id="safe_crc32_uuid"><a href="#safe_crc32_uuid">safe_crc32_uuid</a></h2>
 <p><strong>Safe CRC-32 Uuid</strong></p>
 <p><code>udf.safe_crc32_uuid</code></p>
-<p>Calculate the CRC-32 hash of a 36-byte UUID, or NULL if the value isn&#39;t 36 bytes.  This implementation is limited to an exact length because recursion does not work. Based on https://stackoverflow.com/a/18639999/1260237 See https://en.wikipedia.org/wiki/Cyclic_redundancy_check</p>
+<p>Calculate the CRC-32 hash of a 36-byte UUID, or NULL if the value isn't 36 bytes.  This implementation is limited to an exact length because recursion does not work. Based on https://stackoverflow.com/a/18639999/1260237 See https://en.wikipedia.org/wiki/Cyclic_redundancy_check</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/safe_crc32_uuid">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/safe_crc32_uuid/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="safe_sample_id"><a href="#safe_sample_id">safe_sample_id</a></h2>
 <p><strong>Safe Sample Id</strong></p>
 <p><code>udf.safe_sample_id</code></p>
-<p>Stably hash a client_id to an integer between 0 and 99, or NULL if client_id isn&#39;t 36 bytes</p>
+<p>Stably hash a client_id to an integer between 0 and 99, or NULL if client_id isn't 36 bytes</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/safe_sample_id">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/safe_sample_id/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="search_counts_map_sum"><a href="#search_counts_map_sum">search_counts_map_sum</a></h2>

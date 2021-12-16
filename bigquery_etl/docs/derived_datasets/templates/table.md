@@ -7,7 +7,7 @@
 
 `{{ qualified_table_name }}`
 
-{{ metadata.description | e }}
+{{ metadata.description or "" | e }}
 
 {% if metadata.labels -%}
 {% if metadata.labels.schedule -%}

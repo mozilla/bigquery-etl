@@ -36,7 +36,7 @@ default_args = {
     "retries": 1,
 }
 
-tags = ["impact/tier_1"]
+tags = ["impact/tier_3"]
 
 with DAG(
     "bqetl_vrbrowser",

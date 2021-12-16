@@ -1,4 +1,5 @@
 """bigquery-etl CLI generate command."""
+from bigquery_etl.cli.utils import is_valid_dir
 import click
 from pathlib import Path
 import importlib.util
@@ -46,3 +47,11 @@ def generate_group():
 
 # expose click command group
 generate = generate_group()
+
+
+@generate.command(help="Run all query generators", name="all")
+@click.pass_context
+def generate_all(ctx):
+    """Run all SQL generators"""
+    for _, cmd in generate.commands.items():
+        ctx.invoke(cmd)

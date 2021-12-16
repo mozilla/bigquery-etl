@@ -2028,6 +2028,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/airflow_tags/" class="md-nav__link">
+        Airflow Tags
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -2221,9 +2235,10 @@ GROUP BY
 <h2 id="creating-a-dag">Creating a DAG</h2>
 <p>BigQuery-ETL has some facilities in it to automatically add your query to <a href="https://github.com/mozilla/telemetry-airflow">telemetry-airflow</a> (our instance of Airflow).</p>
 <p>Before scheduling your query, you'll need to find an <a href="https://airflow.apache.org/docs/apache-airflow/stable/concepts.html#dags">Airflow DAG</a> to run it off of. In some cases, one may already exist that makes sense to use for your dataset -- look in <code>dags.yaml</code> at the root or run <code>./bqetl dag info</code>. In this particular case, there's no DAG that really makes sense -- so we'll create a new one:</p>
-<pre><code class="language-bash">./bqetl dag create bqetl_internal_tooling --schedule-interval &quot;0 4 * * *&quot; --owner wlachance@mozilla.com --description &quot;This DAG schedules queries for populating queries related to Mozilla's internal developer tooling (e.g. mozregression).&quot; --start-date 2020-06-01
+<pre><code class="language-bash">./bqetl dag create bqetl_internal_tooling --schedule-interval &quot;0 4 * * *&quot; --owner wlachance@mozilla.com --description &quot;This DAG schedules queries for populating queries related to Mozilla's internal developer tooling (e.g. mozregression).&quot; --start-date 2020-06-01 --tag impact/tier_3
 </code></pre>
 <p>Most of the options above should be self-explanatory. We use a schedule interval of "0 4 * * *" (4am UTC daily) instead of "daily" (12am UTC daily) to make sure this isn't competing for slots with desktop and mobile product ETL.</p>
+<p>The <code>--tag impact/tier3</code> parameter specifies that this DAG is considered "tier 3". For a list of valid tags and their descriptions see <a href="../../reference/airflow_tags/">Airflow Tags</a>.</p>
 <h2 id="scheduling-your-query">Scheduling your query</h2>
 <p>Once again, you access this functionality via the <code>bqetl</code> tool:</p>
 <pre><code class="language-bash">./bqetl query schedule org_mozilla_mozregression_derived.mozregression_aggregates_v1 --dag bqetl_internal_tooling --task-name mozregression_aggregates__v1

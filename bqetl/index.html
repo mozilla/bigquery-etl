@@ -2238,6 +2238,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/airflow_tags/" class="md-nav__link">
+        Airflow Tags
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -2835,6 +2849,7 @@ Options:
 --schedule_interval: Schedule interval of the new DAG. Schedule intervals can be either in CRON format or one of: once, hourly, daily, weekly, monthly, yearly or a timedelta []d[]h[]m
 --owner: Email address of the DAG owner
 --description: Description for DAG
+--tag: Tag to use for the DAG
 --start_date: First date for which scheduled queries should be executed
 --email: Email addresses that Airflow will send alerts to
 --retries: Number of retries Airflow will attempt in case of failures
@@ -2845,6 +2860,7 @@ Options:
 --schedule-interval=&quot;0 2 * * *&quot; \
 --owner=example@mozilla.com \
 --description=&quot;Tables derived from `core` pings sent by mobile applications.&quot; \
+--tag=impact/tier_1 \
 --start-date=2019-07-25
 
 
@@ -2852,6 +2868,7 @@ Options:
 ./bqetl dag create bqetl_ssl_ratios --schedule-interval=&quot;0 2 * * *&quot; \
 --owner=example@mozilla.com \
 --description=&quot;The DAG schedules SSL ratios queries.&quot; \
+--tag=impact/tier_1 \
 --start-date=2019-07-20 \
 --email=example2@mozilla.com \
 --email=example3@mozilla.com \

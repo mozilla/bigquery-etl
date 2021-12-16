@@ -1,10 +1,13 @@
 ## [{{ table_name }}](#{{ table_name }})
 
-{{ metadata.description | e }}
-
 {% if metadata.friendly_name -%}
-* Friendly name: {{metadata.friendly_name}}
+**{{ metadata.friendly_name }}**
+
 {% endif -%}
+
+`{{ qualified_table_name }}`
+
+{{ metadata.description | e }}
 
 {% if metadata.labels -%}
 {% if metadata.labels.schedule -%}
@@ -21,11 +24,8 @@
 {%- endfor %}
 {% endif %}
 
-{% if readme_content -%}
+{{ readme_content or "" }}
 
-{{ readme_content }}
-
-{% endif %}
 {% if referenced_tables -%}
 <table>
 <caption>Referenced Tables</caption>

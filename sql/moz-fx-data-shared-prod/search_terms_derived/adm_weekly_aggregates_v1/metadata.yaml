@@ -19,5 +19,4 @@ bigquery:
     type: day
 scheduling:
   dag_name: bqetl_search_terms_daily
-  referenced_tables: [['moz-fx-data-shared-prod', 'contextual_services_stable',
-                       'quicksuggest_impression_v1']]
+  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']

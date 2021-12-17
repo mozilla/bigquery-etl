@@ -31,11 +31,14 @@ default_args = {
     "retries": 2,
 }
 
+tags = ["impact/tier_3"]
+
 with DAG(
     "bqetl_ssl_ratios",
     default_args=default_args,
     schedule_interval="0 2 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     telemetry_derived__ssl_ratios__v1 = bigquery_etl_query(

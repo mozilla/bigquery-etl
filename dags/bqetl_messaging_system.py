@@ -33,11 +33,14 @@ default_args = {
     "retries": 1,
 }
 
+tags = ["impact/tier_3"]
+
 with DAG(
     "bqetl_messaging_system",
     default_args=default_args,
     schedule_interval="0 2 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     messaging_system_derived__cfr_exact_mau28_by_dimensions__v1 = bigquery_etl_query(

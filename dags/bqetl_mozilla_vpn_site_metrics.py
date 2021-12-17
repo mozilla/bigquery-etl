@@ -37,11 +37,14 @@ default_args = {
     "retries": 2,
 }
 
+tags = ["impact/tier_2"]
+
 with DAG(
     "bqetl_mozilla_vpn_site_metrics",
     default_args=default_args,
     schedule_interval="0 15 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     mozilla_vpn_derived__funnel_ga_to_subscriptions__v1 = bigquery_etl_query(

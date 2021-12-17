@@ -50,6 +50,7 @@ class TestDag:
                         "owner": "test@example.org",
                         "start_date": "2020-01-01",
                     },
+                    "tags": ["impact/tier_3"],
                 }
             }
 
@@ -64,6 +65,7 @@ class TestDag:
                     "--owner=test@example.org",
                     "--description=test",
                     "--start_date=2020-01-01",
+                    "--tag=impact/tier_3",
                 ],
             )
             assert result.exit_code == 1
@@ -77,6 +79,7 @@ class TestDag:
                         "owner": "test@example.org",
                         "start_date": "2020-01-01",
                     },
+                    "tags": ["impact/tier_3"],
                 }
             }
 
@@ -91,6 +94,7 @@ class TestDag:
                     "--owner=test@example.org",
                     "--description=test",
                     "--start_date=2020-01-01",
+                    "--tag=impact/tier_3",
                 ],
             )
             assert result.exit_code == 0

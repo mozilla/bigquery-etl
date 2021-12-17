@@ -36,11 +36,14 @@ default_args = {
     "retries": 1,
 }
 
+tags = ["impact/tier_3"]
+
 with DAG(
     "bqetl_vrbrowser",
     default_args=default_args,
     schedule_interval="0 2 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     org_mozilla_vrbrowser_derived__baseline_daily__v1 = bigquery_etl_query(

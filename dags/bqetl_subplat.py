@@ -35,11 +35,14 @@ default_args = {
     "retries": 2,
 }
 
+tags = ["impact/tier_1"]
+
 with DAG(
     "bqetl_subplat",
     default_args=default_args,
     schedule_interval="45 1 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     mozilla_vpn_derived__active_subscriptions__v1 = bigquery_etl_query(

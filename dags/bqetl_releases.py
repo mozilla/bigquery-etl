@@ -35,11 +35,14 @@ default_args = {
     "retries": 2,
 }
 
+tags = ["impact/tier_2"]
+
 with DAG(
     "bqetl_releases",
     default_args=default_args,
     schedule_interval="0 4 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     org_mozilla_fenix_derived__releases__v1 = gke_command(

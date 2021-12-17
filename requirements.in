@@ -5,7 +5,7 @@ click==8.0.3
 gcsfs==2021.11.1
 gcloud==0.18.3
 gitpython==3.1.24
-google-api-core==1.31.3  # transitive dep that needs dependabot updates
+google-api-core==1.31.5  # transitive dep that needs dependabot updates
 google-cloud-bigquery==2.31.0
 google-cloud-storage==1.43.0
 googleapis-common-protos==1.54.0  # transitive dep that needs dependabot updates

@@ -212,9 +212,9 @@ gitpython==3.1.24 \
     # via
     #   -r requirements.in
     #   mozilla-schema-generator
-google-api-core[grpc]==1.31.3 \
-    --hash=sha256:4b7ad965865aef22afa4aded3318b8fa09b20bcc7e8dbb639a3753cf60af08ea \
-    --hash=sha256:f52c708ab9fd958862dea9ac94d9db1a065608073fe583c3b9c18537b177f59a
+google-api-core[grpc]==1.31.5 \
+    --hash=sha256:6815207a8b422e9da42c200681603f304b25f98c98b675a9db9fdc3717e44280 \
+    --hash=sha256:85d2074f2c8f9c07e614d7f978767d71ceb7d40647814ef4236d3a0ef671ee75
     # via
     #   -r requirements.in
     #   google-cloud-bigquery

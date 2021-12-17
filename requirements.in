@@ -33,5 +33,5 @@ smart_open==5.2.1
 sqlparse==0.4.2
 stripe==2.63.0
 typing==3.7.4.3
-ujson==4.3.0
+ujson==5.0.0
 yamllint==1.26.3

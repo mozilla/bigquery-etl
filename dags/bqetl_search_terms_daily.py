@@ -59,6 +59,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
         dag=dag,
     )
 
@@ -112,6 +113,14 @@ with DAG(
         dag=dag,
     )
 
+    search_terms_derived__adm_weekly_aggregates__v1.set_upstream(
+        search_terms_derived__suggest_impression_sanitized__v2
+    )
+
+    search_terms_derived__aggregated_search_terms_daily__v1.set_upstream(
+        search_terms_derived__suggest_impression_sanitized__v2
+    )
+
     wait_for_copy_deduplicate_all = ExternalTaskCompletedSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -120,14 +129,6 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    search_terms_derived__adm_weekly_aggregates__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    search_terms_derived__aggregated_search_terms_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
     )
 
     search_terms_derived__suggest_impression_sanitized__v1.set_upstream(

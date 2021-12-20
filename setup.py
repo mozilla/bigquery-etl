@@ -35,7 +35,6 @@ setup(
         "google-cloud-bigquery",
         "google-cloud-storage",
         "Jinja2",
-        "pyjnius",
         "pathos",
         "pyarrow",
         "pytest-black",

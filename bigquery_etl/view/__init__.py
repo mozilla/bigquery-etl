@@ -31,6 +31,19 @@ SKIP_VALIDATION = {
     "sql/moz-fx-data-test-project/test/simple_view/view.sql",
     # Access Denied
     "sql/moz-fx-data-shared-prod/telemetry/experiment_enrollment_cumulative_population_estimate/view.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/mlhackweek_search/events/view.sql",
+    "sql/moz-fx-data-shared-prod/regrets_reporter_ucs/deletion_request/view.sql",
+    "sql/moz-fx-data-shared-prod/mlhackweek_search/custom/view.sql",
+    "sql/moz-fx-data-shared-prod/regrets_reporter_ucs/regret_details/view.sql",
+    "sql/moz-fx-data-shared-prod/regrets_reporter_ucs/video_data/view.sql",
+    "sql/moz-fx-data-shared-prod/mlhackweek_search/deletion_request/view.sql",
+    "sql/moz-fx-data-shared-prod/mlhackweek_search/baseline/view.sql",
+    "sql/moz-fx-data-shared-prod/telemetry/regrets_reporter_update/view.sql",
+    "sql/moz-fx-data-shared-prod/regrets_reporter_ucs/video_index/view.sql",
+    "sql/moz-fx-data-shared-prod/telemetry/xfocsp_error_report/view.sql",
+    "sql/moz-fx-data-shared-prod/mlhackweek_search/metrics/view.sql",
+    "sql/moz-fx-data-shared-prod/regrets_reporter_ucs/main_events/view.sql",
+    "sql/moz-fx-data-shared-prod/mlhackweek_search/action/view.sql",
 }
 
 # skip publishing these views

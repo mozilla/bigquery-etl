@@ -743,6 +743,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../../mozdata/glean_dictionary/" class="md-nav__link">
+        glean-dictionary
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../mozdata/internet_outages/" class="md-nav__link">
         Internet Outages
       </a>
@@ -1646,6 +1660,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#active_in_range-udf" class="md-nav__link">
+    active_in_range (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#range-udf" class="md-nav__link">
     range (UDF)
   </a>
@@ -1683,13 +1704,6 @@
         <li class="md-nav__item">
   <a href="#retention-udf" class="md-nav__link">
     retention (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#active_in_range-udf" class="md-nav__link">
-    active_in_range (UDF)
   </a>
   
 </li>
@@ -2049,6 +2063,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#active_in_range-udf" class="md-nav__link">
+    active_in_range (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#range-udf" class="md-nav__link">
     range (UDF)
   </a>
@@ -2090,13 +2111,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#active_in_range-udf" class="md-nav__link">
-    active_in_range (UDF)
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -2124,6 +2138,15 @@ metrics based on these usage histories, such as various retention definitions.</
 type of the field is a BigQuery INT64, but logically the integer
 represents an array of bits, with each 1 indicating a day where the given clients
 was active and each 0 indicating a day where the client was inactive.</p>
+<h2 id="active_in_range-udf">active_in_range (UDF)</h2>
+<p>Return a boolean indicating if any bits are set in the specified range
+of a bit pattern. The <code>start_offset</code> must be zero or a negative number
+indicating an offset from the rightmost bit in the pattern. n_bits is
+the number of bits to consider, counting right from the bit at
+<code>start_offset</code>.</p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/active_in_range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/active_in_range/metadata.yaml">Edit</a></p>
 <h2 id="range-udf">range (UDF)</h2>
 <p>Return an INT64 representing a range of bits from a source bit pattern.</p>
 <p>The start_offset must be zero or a negative number indicating an offset from
@@ -2182,15 +2205,6 @@ the individual bits.</p>
 <p>Return a nested struct providing booleans indicating whether a given client
 was active various time periods based on the passed bit pattern.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/retention">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/retention/metadata.yaml">Edit</a></p>
-<h2 id="active_in_range-udf">active_in_range (UDF)</h2>
-<p>Return a boolean indicating if any bits are set in the specified range
-of a bit pattern. The <code>start_offset</code> must be zero or a negative number
-indicating an offset from the rightmost bit in the pattern. n_bits is
-the number of bits to consider, counting right from the bit at
-<code>start_offset</code>.</p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/active_in_range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/active_in_range/metadata.yaml">Edit</a></p>
 
               
             </article>

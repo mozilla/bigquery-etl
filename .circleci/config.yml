@@ -303,9 +303,12 @@ jobs:
             mkdir -p /tmp/workspace/generated-sql
             cp -r sql/ /tmp/workspace/generated-sql/sql
             # Don't depend on dry run for PRs
-            PATH="venv/bin:$PATH" ./script/generate_sql \
-              --sql-dir /tmp/workspace/generated-sql/sql/ \
+            PATH="venv/bin:$PATH" script/bqetl generate all \
+              --output-dir /tmp/workspace/generated-sql/sql/ \
               --target-project moz-fx-data-shared-prod
+            PATH="venv/bin:$PATH" script/bqetl dependency record \
+              --skip-existing
+              "/tmp/workspace/generated-sql/sql/"
       - persist_to_workspace:
           root: /tmp/workspace
           paths:

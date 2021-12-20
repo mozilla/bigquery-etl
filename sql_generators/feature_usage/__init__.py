@@ -61,7 +61,8 @@ def generate_metadata(project, dataset, destination_table, write_dir):
 
 @click.command("generate")
 @click.option(
-    "--project",
+    "--target-project",
+    "--target_project",
     help="Which project the queries should be written to.",
     default="moz-fx-data-shared-prod",
 )
@@ -84,9 +85,10 @@ def generate_metadata(project, dataset, destination_table, write_dir):
     type=click.Path(file_okay=False),
 )
 @click.pass_context
-def generate(ctx, project, dataset, destination_table, output_dir):
+def generate(ctx, target_project, dataset, destination_table, output_dir):
     """Generate the feature usage table."""
-    generate_query(project, dataset, destination_table, output_dir)
-    generate_view(project, dataset, destination_table, output_dir)
-    generate_metadata(project, dataset, destination_table, output_dir)
-    ctx.invoke(update, name=f"{dataset}.{destination_table}", project_id=project)
+    output_dir = Path(output_dir)
+    generate_query(target_project, dataset, destination_table, output_dir)
+    generate_view(target_project, dataset, destination_table, output_dir)
+    generate_metadata(target_project, dataset, destination_table, output_dir)
+    ctx.invoke(update, name=f"{dataset}.{destination_table}", project_id=target_project)

@@ -37,7 +37,20 @@ def union_statements(statements: List[str]):
 
 
 @click.command()
-def generate():
+@click.option(
+    "--output-dir",
+    "--output_dir",
+    help="Output directory generated SQL is written to",
+    type=click.Path(file_okay=False),
+    default="sql",
+)
+@click.option(
+    "--target-project",
+    "--target_project",
+    help="GCP project ID",
+    default="moz-fx-data-shared-prod",
+)
+def generate(output_dir, target_project):
     """Generate mobile search clients daily query and print to stdout."""
     base_dir = Path(__file__).parent
 

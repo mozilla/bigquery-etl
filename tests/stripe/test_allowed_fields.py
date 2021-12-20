@@ -50,7 +50,7 @@ def test_format_row():
         "id": "cus_1",
         "metadata": [{"key": "fxa_uid", "value": sha256(b"raw_user_id").hexdigest()}],
     }
-    assert filtered_schema.format_row(customer) == expect
+    assert filtered_schema.format_row(customer, strict=True) == expect
 
     filtered_schema = FilteredSchema(stripe.Dispute)
     dispute = {
@@ -62,7 +62,7 @@ def test_format_row():
             },
         ],
     }
-    assert filtered_schema.format_row(dispute) == dispute
+    assert filtered_schema.format_row(dispute, strict=True) == dispute
 
     filtered_schema = FilteredSchema(stripe.Invoice)
     invoice = {
@@ -77,7 +77,7 @@ def test_format_row():
             {"name": "fxa_uid", "value": sha256(b"raw_user_id").hexdigest()}
         ],
     }
-    assert filtered_schema.format_row(invoice) == expect
+    assert filtered_schema.format_row(invoice, strict=True) == expect
 
 
 @pytest.mark.parametrize(
@@ -106,5 +106,29 @@ def test_format_row():
 def test_invalid_rows(row, message):
     filtered_schema = FilteredSchema(stripe.Dispute)
     with pytest.raises(click.ClickException) as e:
-        filtered_schema.format_row(row)
+        filtered_schema.format_row(row, strict=True)
     assert e.value.message == message
+
+
+def test_nonstrict_mode():
+    filtered_schema = FilteredSchema(stripe.Dispute)
+    row = {
+        "unexpected": "field",
+        "amount": "123",
+        "balance_transactions": [
+            {"exchange_rate": "1.23", "fee": 123},
+            {
+                "exchange_rate": 1.5,
+            },
+        ],
+    }
+    expected = {
+        "amount": "123",
+        "balance_transactions": [
+            {"exchange_rate": "1.23", "fee": 123},
+            {
+                "exchange_rate": 1.5,
+            },
+        ],
+    }
+    assert filtered_schema.format_row(row, strict=False) == expected

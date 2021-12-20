@@ -536,6 +536,25 @@ with DAG(
         retry_delay=datetime.timedelta(seconds=300),
     )
 
+    stripe_external__events_schema_check__v1 = gke_command(
+        task_id="stripe_external__events_schema_check__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/stripe_external/events_schema_check_v1/query.py",
+        ]
+        + [
+            "--date={{ ds }}",
+            "--api-key={{ var.value.stripe_api_key }}",
+            "--format-resources",
+            "--strict-schema",
+            "--quiet",
+        ],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        retry_delay=datetime.timedelta(seconds=300),
+    )
+
     stripe_external__invoices__v1 = bigquery_etl_query(
         task_id="stripe_external__invoices__v1",
         destination_table="invoices_v1",

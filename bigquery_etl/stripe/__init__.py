@@ -1,5 +1,6 @@
 """Import Stripe data into BigQuery."""
 
+import os
 import sys
 import warnings
 from datetime import datetime, timedelta, timezone
@@ -129,6 +130,16 @@ def schema(resource: Type[ListableAPIResource]):
     help="Format resources before writing to stdout, or after reading from stdin",
 )
 @click.option(
+    "--strict-schema",
+    is_flag=True,
+    help="Throw an exception if an unexpected field is present in a resource",
+)
+@click.option(
+    "--quiet",
+    is_flag=True,
+    help="Write output to os.devnull instead of sys.stdout",
+)
+@click.option(
     "--resource",
     default="Event",
     type=StripeResourceType(),
@@ -140,6 +151,8 @@ def stripe_import(
     before_date: Optional[datetime],
     table: Optional[str],
     format_resources: bool,
+    strict_schema: bool,
+    quiet: bool,
     resource: Type[ListableAPIResource],
 ):
     """Import Stripe data into BigQuery."""
@@ -148,12 +161,18 @@ def stripe_import(
         sys.exit(1)
     if table and date:
         table = f"{table}${date:%Y%m%d}"
-    with (TemporaryFile(mode="w+b") if table else sys.stdout.buffer) as file_obj:
+    if table:
+        handle = TemporaryFile(mode="w+b")
+    elif quiet:
+        handle = open(os.devnull, "w+b")
+    else:
+        handle = sys.stdout.buffer
+    with handle as file_obj:
         filtered_schema = FilteredSchema(resource)
         has_rows = False
         for row in _get_rows(api_key, date, before_date, resource):
             if format_resources or (table and api_key):
-                row = filtered_schema.format_row(row)
+                row = filtered_schema.format_row(row, strict=strict_schema)
             file_obj.write(ujson.dumps(row).encode("UTF-8"))
             file_obj.write(b"\n")
             has_rows = True

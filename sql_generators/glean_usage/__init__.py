@@ -39,8 +39,8 @@ SKIP_APPS = ["mlhackweek_search", "regrets_reporter"]
 
 @click.command()
 @click.option(
-    "--project-id",
-    "--project_id",
+    "--target-project",
+    "--target_project",
     help="GCP project ID",
     default="moz-fx-data-shared-prod",
     callback=is_valid_project,
@@ -74,7 +74,7 @@ SKIP_APPS = ["mlhackweek_search", "regrets_reporter"]
     "--app-name",
     help="Generate per-app_id queries+views and per-app dataset metadata and union views.",
 )
-def generate(project_id, output_dir, parallelism, exclude, only, app_name):
+def generate(target_project, output_dir, parallelism, exclude, only, app_name):
     """Generate per-appId queries, views along, per-app dataset metadata and union views."""
     table_filter = partial(table_matches_patterns, "*", False)
 
@@ -84,7 +84,7 @@ def generate(project_id, output_dir, parallelism, exclude, only, app_name):
         table_filter = partial(table_matches_patterns, exclude, True)
 
     baseline_tables = list_baseline_tables(
-        project_id=project_id,
+        project_id=target_project,
         only_tables=[only] if only else None,
         table_filter=table_filter,
     )
@@ -96,7 +96,7 @@ def generate(project_id, output_dir, parallelism, exclude, only, app_name):
         not in [f"{skipped_app}_stable" for skipped_app in SKIP_APPS]
     ]
 
-    output_dir = Path(output_dir) / project_id
+    output_dir = Path(output_dir) / target_project
 
     # per app specific datasets
     app_info = get_app_info()
@@ -113,7 +113,7 @@ def generate(project_id, output_dir, parallelism, exclude, only, app_name):
         (
             partial(
                 table.generate_per_app_id,
-                project_id,
+                target_project,
                 output_dir=output_dir,
             ),
             baseline_table,
@@ -126,7 +126,7 @@ def generate(project_id, output_dir, parallelism, exclude, only, app_name):
     # and app_info
     generate_per_app = [
         (
-            partial(table.generate_per_app, project_id, output_dir=output_dir),
+            partial(table.generate_per_app, target_project, output_dir=output_dir),
             info,
         )
         for info in app_info

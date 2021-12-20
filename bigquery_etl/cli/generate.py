@@ -1,5 +1,5 @@
 """bigquery-etl CLI generate command."""
-from bigquery_etl.cli.utils import is_valid_dir
+from bigquery_etl.cli.utils import is_valid_project
 import click
 from pathlib import Path
 import importlib.util
@@ -37,6 +37,9 @@ def generate_group():
                     # rename command to name of query generator
                     cmd = generate_cmd[0]
                     cmd.name = path.name
+                    cmd.context_settings = dict(
+                        ignore_unknown_options=True, allow_extra_args=True
+                    )
                     commands.append(cmd)
 
     # add commands for generating queries to `generate` click group
@@ -50,8 +53,23 @@ generate = generate_group()
 
 
 @generate.command(help="Run all query generators", name="all")
+@click.option(
+    "--output-dir",
+    "--output_dir",
+    help="Output directory generated SQL is written to",
+    type=click.Path(file_okay=False),
+    default="sql",
+)
+@click.option(
+    "--target-project",
+    "--target_project",
+    help="GCP project ID",
+    default="moz-fx-data-shared-prod",
+    callback=is_valid_project,
+)
 @click.pass_context
-def generate_all(ctx):
+def generate_all(ctx, output_dir, target_project):
     """Run all SQL generators"""
     for _, cmd in generate.commands.items():
-        ctx.invoke(cmd)
+        if cmd.name != "all":
+            ctx.forward(cmd)

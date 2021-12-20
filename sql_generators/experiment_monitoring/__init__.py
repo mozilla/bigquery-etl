@@ -66,7 +66,8 @@ def generate_queries(project, path, write_dir):
 
 @click.command("generate")
 @click.option(
-    "--project",
+    "--target-project",
+    "--target_project",
     help="Which project the queries should be written to.",
     default="moz-fx-data-shared-prod",
 )
@@ -78,11 +79,13 @@ def generate_queries(project, path, write_dir):
     type=click.Path(file_okay=False),
 )
 @click.option(
-    "--write-dir",
+    "--output-dir",
+    "--output_dir",
     help="The location to write to. Defaults to sql/.",
     default=Path("sql"),
     type=click.Path(file_okay=False),
 )
-def generate(project, path, write_dir):
+def generate(target_project, path, output_dir):
     """Generate the experiment monitoring views."""
-    generate_queries(project, path, write_dir)
+    output_dir = Path(output_dir)
+    generate_queries(target_project, path, output_dir)

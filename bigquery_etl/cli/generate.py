@@ -4,7 +4,6 @@ import click
 from pathlib import Path
 import importlib.util
 from inspect import getmembers
-import sys
 
 
 SQL_GENERATORS_DIR = "sql_generators"
@@ -37,9 +36,6 @@ def generate_group():
                     # rename command to name of query generator
                     cmd = generate_cmd[0]
                     cmd.name = path.name
-                    cmd.context_settings = dict(
-                        ignore_unknown_options=True, allow_extra_args=True
-                    )
                     commands.append(cmd)
 
     # add commands for generating queries to `generate` click group
@@ -69,7 +65,7 @@ generate = generate_group()
 )
 @click.pass_context
 def generate_all(ctx, output_dir, target_project):
-    """Run all SQL generators"""
-    for _, cmd in generate.commands.items():
+    """Run all SQL generators."""
+    for _, cmd in reversed(generate.commands.items()):
         if cmd.name != "all":
             ctx.forward(cmd)

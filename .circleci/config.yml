@@ -61,7 +61,7 @@ jobs:
           name: Move generated-sql into place
           command: |
             rm -rf sql/
-            cp -r /tmp/workspace/generated-sql/sql sql        
+            cp -r /tmp/workspace/generated-sql/sql sql
       - run:
           name: Verify that SQL is correctly formatted
           command: |
@@ -188,6 +188,26 @@ jobs:
           paths:
             - ~/.m2
           key: *mvn_cache_key
+  generate-dags:
+    docker: *docker
+    steps:
+      - checkout
+      - *restore_venv_cache
+      - *build
+      - *restore_mvn_cache
+      - *java_deps
+      - *attach_generated_sql
+      - *copy_generated_sql
+      - run:
+          name: Generate DAGs
+          command: PATH="venv/bin:$PATH" script/generate_airflow_dags
+      # this task is overwriting the content produced by generate-sql;
+      # the behaviour here is additive, generated DAGs are just added to
+      # the generated-sql output
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - generated-sql
   validate-dags:
     # based on
     # https://github.com/mozilla/telemetry-airflow/blob/main/.circleci/config.yml
@@ -217,6 +237,8 @@ jobs:
           command: |
             git clone https://github.com/mozilla/telemetry-airflow.git
             cp -a dags/. telemetry-airflow/dags/
+      - *attach_generated_sql
+      - *copy_generated_sql
       - run:
           command: |
             cd telemetry-airflow
@@ -230,6 +252,7 @@ jobs:
             cd telemetry-airflow
             bash bin/test-parse
   verify-dags-up-to-date:
+    # todo: remove this step once we rely on generate-dags completely
     docker: *docker
     steps:
       - checkout
@@ -308,7 +331,7 @@ jobs:
               --output-dir /tmp/workspace/generated-sql/sql/ \
               --target-project moz-fx-data-shared-prod
             PATH="venv/bin:$PATH" script/bqetl dependency record \
-              --skip-existing
+              --skip-existing \
               "/tmp/workspace/generated-sql/sql/"
       - persist_to_workspace:
           root: /tmp/workspace
@@ -336,7 +359,7 @@ jobs:
             git commit -m "Auto-push due to change on main branch [ci skip]" \
               && git push \
               || echo "Skipping push since it looks like there were no changes"
-  
+
   deploy:
     executor: docker/docker
     steps:
@@ -392,8 +415,8 @@ jobs:
             mkdir -p /tmp/workspace/private-generated-sql
             cp -r sql/ /tmp/workspace/private-generated-sql/sql
             # Don't depend on dry run for PRs
-            PATH="venv/bin:$PATH" ./script/generate_sql \
-              --sql-dir /tmp/workspace/private-generated-sql/sql/ \
+            PATH="venv/bin:$PATH" script/bqetl generate all \
+              --output-dir /tmp/workspace/private-generated-sql/sql/ \
               --target-project moz-fx-data-shared-prod
       - persist_to_workspace:
           root: /tmp/workspace
@@ -543,7 +566,9 @@ workflows:
           requires:
             - generate-sql
       - integration
-      - validate-dags
+      - validate-dags:
+          requires:
+            - generate-dags
       - verify-dags-up-to-date
       - validate-docs:
           requires:
@@ -564,6 +589,9 @@ workflows:
           filters:
             branches:
               ignore: main
+      - generate-dags:
+          requires:
+            - generate-sql
       - docs:
           requires:
             - generate-sql
@@ -607,3 +635,4 @@ workflows:
             - private-generate-sql
             # can't run in parallel because CIRCLE_BUILD_NUM is same
             - build
+            - generate-sql

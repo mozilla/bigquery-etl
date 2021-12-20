@@ -1,6 +1,8 @@
 friendly_name: Client Probe Processes
 description: |-
   Processes that legacy telemetry probes are observed to be in.
+
+  Used by the Glean Dictionary's search service to index legacy Firefox data.
 owners:
 - wlachance@mozilla.com
 labels:

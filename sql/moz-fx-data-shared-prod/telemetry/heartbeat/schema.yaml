@@ -1224,6 +1224,11 @@ fields:
       mode: NULLABLE
       name: has_win_package_id
       type: BOOLEAN
+    - description: Windows package family name. This is only sent for Mozilla produced
+        MSIX packages.
+      mode: NULLABLE
+      name: win_package_family_name
+      type: STRING
     mode: NULLABLE
     name: system
     type: RECORD

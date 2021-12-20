@@ -1047,6 +1047,16 @@ fields:
       mode: NULLABLE
       name: firefox_home_page_history_highlights_view
       type: INTEGER
+    - description: 'Counts the number of times a user changes the
+
+        wallpaper by double-tapping on the Firefox logo
+
+        on the Firefox Homepage
+
+        '
+      mode: NULLABLE
+      name: firefox_home_page_cycle_wallpaper_button
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

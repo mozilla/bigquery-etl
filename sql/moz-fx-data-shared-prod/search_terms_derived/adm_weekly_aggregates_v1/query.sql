@@ -1,16 +1,17 @@
 SELECT
+  DATE_SUB(@submission_date, INTERVAL 6 DAY) AS start_date,
   @submission_date AS submission_date,
-  LOWER(search_query) AS query,
+  sanitized_query AS query,
   block_id,
   COUNT(*) AS impressions,
   COUNTIF(is_clicked) AS clicks,
 FROM
-  search_terms.suggest_impression_sanitized
+  search_terms_derived.suggest_impression_sanitized_v2
 WHERE
   DATE(submission_timestamp)
   BETWEEN DATE_SUB(@submission_date, INTERVAL 6 DAY)
   AND @submission_date
-  AND LENGTH(search_query) > 0
+  AND LENGTH(sanitized_query) > 0
   AND normalized_channel = 'release'
 GROUP BY
   query,

@@ -1000,6 +1000,11 @@ fields:
       mode: NULLABLE
       name: has_win_package_id
       type: BOOLEAN
+    - description: Windows package family name. This is only sent for Mozilla produced
+        MSIX packages.
+      mode: NULLABLE
+      name: win_package_family_name
+      type: STRING
     mode: NULLABLE
     name: system
     type: RECORD
@@ -19635,6 +19640,14 @@ fields:
     - description: Whether a page used the CSS property scrollbar-gutter
       mode: NULLABLE
       name: use_counter2_css_property_scrollbar_gutter_page
+      type: STRING
+    - description: Whether a document used the CSS property hyphenate-character
+      mode: NULLABLE
+      name: use_counter2_css_property_hyphenate_character_document
+      type: STRING
+    - description: Whether a page used the CSS property hyphenate-character
+      mode: NULLABLE
+      name: use_counter2_css_property_hyphenate_character_page
       type: STRING
     mode: NULLABLE
     name: histograms
@@ -40531,6 +40544,14 @@ fields:
         - description: Whether a page used the CSS property scrollbar-gutter
           mode: NULLABLE
           name: use_counter2_css_property_scrollbar_gutter_page
+          type: STRING
+        - description: Whether a document used the CSS property hyphenate-character
+          mode: NULLABLE
+          name: use_counter2_css_property_hyphenate_character_document
+          type: STRING
+        - description: Whether a page used the CSS property hyphenate-character
+          mode: NULLABLE
+          name: use_counter2_css_property_hyphenate_character_page
           type: STRING
         mode: NULLABLE
         name: histograms

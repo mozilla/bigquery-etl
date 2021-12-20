@@ -212,9 +212,9 @@ gitpython==3.1.24 \
     # via
     #   -r requirements.in
     #   mozilla-schema-generator
-google-api-core[grpc]==1.31.3 \
-    --hash=sha256:4b7ad965865aef22afa4aded3318b8fa09b20bcc7e8dbb639a3753cf60af08ea \
-    --hash=sha256:f52c708ab9fd958862dea9ac94d9db1a065608073fe583c3b9c18537b177f59a
+google-api-core[grpc]==1.31.5 \
+    --hash=sha256:6815207a8b422e9da42c200681603f304b25f98c98b675a9db9fdc3717e44280 \
+    --hash=sha256:85d2074f2c8f9c07e614d7f978767d71ceb7d40647814ef4236d3a0ef671ee75
     # via
     #   -r requirements.in
     #   google-cloud-bigquery
@@ -459,9 +459,9 @@ mkdocs-awesome-pages-plugin==2.6.1 \
     --hash=sha256:43994aedadca881088e5d6bb420140a73ce517ca3e070972715f93b086c9c497 \
     --hash=sha256:8f2f803a3d4a2cd2e290644b1b8c54cf2ae942db9ce91021c2ba858a991a3a8a
     # via -r requirements.in
-mkdocs-material==8.1.1 \
-    --hash=sha256:bbc74a1864c67b5736760b1ec996cbd0453a68524a85cf53cf834027bdb60cd7 \
-    --hash=sha256:da06a34ba042ba5a23e1b04a4ad1353900cf0f30a9da80c9030432483f2ebb68
+mkdocs-material==8.1.2 \
+    --hash=sha256:2fe84abc86daa3cb5b5e7e0438c20c6e2a99c1f4a7527c783b0f8b1fb4fb840a \
+    --hash=sha256:83b73d62b11cbc97c3b05de44f2fad3b96edf3fe2cf977851972e2c25348893b
     # via -r requirements.in
 mkdocs-material-extensions==1.0.3 \
     --hash=sha256:a82b70e533ce060b2a5d9eb2bc2e1be201cf61f901f93704b4acf6e3d5983a44 \

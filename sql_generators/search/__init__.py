@@ -9,10 +9,10 @@ python -m bigquery_etl.search.mobile_search_clients_daily \
 > sql/moz-fx-data-shared-prod/\
 search_derived/mobile_search_clients_daily_v1/query.sql
 """
-import click
 from pathlib import Path
 from typing import List
 
+import click
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.format_sql.formatter import reformat

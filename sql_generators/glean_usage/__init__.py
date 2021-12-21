@@ -1,9 +1,8 @@
 """GLEAN Usage."""
-
-"""bigquery-etl CLI glean_usage command."""
-import click
 from functools import partial
 from pathlib import Path
+
+import click
 from pathos.multiprocessing import ProcessingPool
 
 from bigquery_etl.cli.utils import is_valid_project, table_matches_patterns

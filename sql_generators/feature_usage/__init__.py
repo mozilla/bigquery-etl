@@ -1,15 +1,15 @@
 """Feature usage table generation."""
-import click
 import os
 import shutil
-import yaml
-
-from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 
+import click
+import yaml
+from jinja2 import Environment, FileSystemLoader
+
 from bigquery_etl.cli.query import update
-from bigquery_etl.util.common import write_sql
 from bigquery_etl.format_sql.formatter import reformat
+from bigquery_etl.util.common import write_sql
 
 FILE_PATH = Path(os.path.dirname(__file__))
 BASE_DIR = Path(FILE_PATH).parent.parent

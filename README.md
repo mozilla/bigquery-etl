@@ -46,7 +46,7 @@ cd bigquery-etl
 venv/bin/pre-commit install
 ```
 
-4. Optionally, download java dependencies
+4. Download java dependencies
 ```bash
 mvn dependency:copy-dependencies
 venv/bin/pip-sync requirements.txt java-requirements.txt

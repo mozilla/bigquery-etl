@@ -13,7 +13,7 @@ import json
 import logging
 import tarfile
 import urllib.request
-from argparse import ArgumentParser
+import click
 from dataclasses import dataclass
 from functools import partial
 from io import BytesIO
@@ -28,7 +28,6 @@ from bigquery_etl.dryrun import DryRun
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.metadata.parse_metadata import DatasetMetadata
 from bigquery_etl.schema import Schema
-from bigquery_etl.util import standard_args
 
 MPS_URI = "https://github.com/mozilla-services/mozilla-pipeline-schemas"
 
@@ -68,18 +67,6 @@ description: |-
 VIEW_CREATE_REGEX = re.compile(
     r"CREATE OR REPLACE VIEW\n\s*[^\s]+\s*\nAS", re.IGNORECASE
 )
-
-parser = ArgumentParser(description=__doc__)
-parser.add_argument(
-    "--sql-dir", default="sql/", help="The path where generated SQL files are stored."
-)
-parser.add_argument(
-    "--target-project",
-    default="moz-fx-data-shared-prod",
-    help="The project where the stable tables live.",
-)
-standard_args.add_log_level(parser)
-standard_args.add_parallelism(parser)
 
 
 @dataclass
@@ -321,7 +308,35 @@ def prod_schemas_uri():
     return f"{MPS_URI}/archive/{commit_hash}.tar.gz"
 
 
-def main():
+@click.command("generate")
+@click.option(
+    "--target_project",
+    "--target-project",
+    help="Which project the views should be written to.",
+    default="moz-fx-data-shared-prod",
+)
+@click.option(
+    "--output-dir",
+    "--output_dir",
+    help="The location to write to. Defaults to sql/.",
+    default=Path("sql"),
+    type=click.Path(file_okay=False),
+)
+@click.option(
+    "--log-level",
+    "--log_level",
+    help="Log level.",
+    default=logging.getLevelName(logging.INFO),
+    type=str.upper,
+)
+@click.option(
+    "--parallelism",
+    "-P",
+    help="Maximum number of tasks to execute concurrently",
+    default=20,
+    type=int,
+)
+def generate(target_project, output_dir, log_level, parallelism):
     """
     Generate view definitions.
 
@@ -332,37 +347,28 @@ def main():
     There is a performance bottleneck here due to the need to dry-run each
     view to ensure the source table actually exists.
     """
-    args = parser.parse_args()
-
     # set log level
-    try:
-        logging.basicConfig(level=args.log_level, format="%(levelname)s %(message)s")
-    except ValueError as e:
-        parser.error(f"argument --log-level: {e}")
+    logging.basicConfig(level=log_level, format="%(levelname)s %(message)s")
 
     schemas = get_stable_table_schemas()
     one_schema_per_dataset = [
         last for k, (*_, last) in groupby(schemas, lambda t: t.bq_dataset_family)
     ]
 
-    with Pool(args.parallelism) as pool:
+    with Pool(parallelism) as pool:
         pool.map(
             partial(
                 write_view_if_not_exists,
-                args.target_project,
-                Path(args.sql_dir),
+                target_project,
+                Path(output_dir),
             ),
             schemas,
         )
         pool.map(
             partial(
                 write_dataset_metadata_if_not_exists,
-                args.target_project,
-                Path(args.sql_dir),
+                target_project,
+                Path(output_dir),
             ),
             one_schema_per_dataset,
         )
-
-
-if __name__ == "__main__":
-    main()

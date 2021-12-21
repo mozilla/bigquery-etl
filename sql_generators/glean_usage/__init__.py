@@ -2,8 +2,6 @@
 
 """bigquery-etl CLI glean_usage command."""
 import click
-import os
-import sys
 from functools import partial
 from pathlib import Path
 from pathos.multiprocessing import ProcessingPool

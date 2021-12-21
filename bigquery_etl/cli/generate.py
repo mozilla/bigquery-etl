@@ -3,7 +3,6 @@ import click
 from pathlib import Path
 import importlib.util
 from inspect import getmembers
-import sys
 
 
 SQL_GENERATORS_DIR = "sql_generators"

@@ -1,15 +1,15 @@
 """Generate query directories."""
-import click
 import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
 
+import click
 import yaml
 from jinja2 import Environment, FileSystemLoader
 
-from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.cli.utils import is_valid_project
+from bigquery_etl.format_sql.formatter import reformat
 
 TEMPLATED_FILES = {
     "init.sql",

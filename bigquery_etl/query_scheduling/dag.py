@@ -181,7 +181,9 @@ class Dag:
         converter = cattr.Converter()
         try:
             name = list(d.keys())[0]
-            d[name]["tags"] = list(set([*d[name].get("tags", []), "repo/bigquery-etl"]))
+            d[name]["tags"] = sorted(
+                list(set([*d[name].get("tags", []), "repo/bigquery-etl"]))
+            )
 
             if name == PUBLIC_DATA_JSON_DAG:
                 return converter.structure({"name": name, **d[name]}, PublicDataJsonDag)

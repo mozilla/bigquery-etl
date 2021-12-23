@@ -19649,6 +19649,42 @@ fields:
       mode: NULLABLE
       name: use_counter2_css_property_hyphenate_character_page
       type: STRING
+    - description: AVIF AV1LayeredImageIndexingProperty (a1lx)
+      mode: NULLABLE
+      name: avif_a1lx
+      type: STRING
+    - description: AVIF OperatingPointSelectorProperty (a1op)
+      mode: NULLABLE
+      name: avif_a1op
+      type: STRING
+    - description: AVIF CleanApertureBox (clap)
+      mode: NULLABLE
+      name: avif_clap
+      type: STRING
+    - description: AVIF AVIF grid-based image
+      mode: NULLABLE
+      name: avif_grid
+      type: STRING
+    - description: AVIF ItemProtectionBox (ipro)
+      mode: NULLABLE
+      name: avif_ipro
+      type: STRING
+    - description: AVIF LayerSelectorProperty (lsel)
+      mode: NULLABLE
+      name: avif_lsel
+      type: STRING
+    - description: AVIF major brand
+      mode: NULLABLE
+      name: avif_major_brand
+      type: STRING
+    - description: AVIF pixel aspect ratio
+      mode: NULLABLE
+      name: avif_pasp
+      type: STRING
+    - description: AVIF image sequence
+      mode: NULLABLE
+      name: avif_sequence
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -40552,6 +40588,42 @@ fields:
         - description: Whether a page used the CSS property hyphenate-character
           mode: NULLABLE
           name: use_counter2_css_property_hyphenate_character_page
+          type: STRING
+        - description: AVIF AV1LayeredImageIndexingProperty (a1lx)
+          mode: NULLABLE
+          name: avif_a1lx
+          type: STRING
+        - description: AVIF OperatingPointSelectorProperty (a1op)
+          mode: NULLABLE
+          name: avif_a1op
+          type: STRING
+        - description: AVIF CleanApertureBox (clap)
+          mode: NULLABLE
+          name: avif_clap
+          type: STRING
+        - description: AVIF AVIF grid-based image
+          mode: NULLABLE
+          name: avif_grid
+          type: STRING
+        - description: AVIF ItemProtectionBox (ipro)
+          mode: NULLABLE
+          name: avif_ipro
+          type: STRING
+        - description: AVIF LayerSelectorProperty (lsel)
+          mode: NULLABLE
+          name: avif_lsel
+          type: STRING
+        - description: AVIF major brand
+          mode: NULLABLE
+          name: avif_major_brand
+          type: STRING
+        - description: AVIF pixel aspect ratio
+          mode: NULLABLE
+          name: avif_pasp
+          type: STRING
+        - description: AVIF image sequence
+          mode: NULLABLE
+          name: avif_sequence
           type: STRING
         mode: NULLABLE
         name: histograms

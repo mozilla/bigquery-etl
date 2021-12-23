@@ -1446,6 +1446,123 @@ fields:
       mode: REPEATED
       name: avif_pixi
       type: RECORD
+    - description: 'AV1LayeredImageIndexingProperty (a1lx).
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_a1lx
+      type: RECORD
+    - description: 'AVIF OperatingPointSelectorProperty (a1op).
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_a1op
+      type: RECORD
+    - description: 'AVIF CleanApertureBox (clap).
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_clap
+      type: RECORD
+    - description: 'AVIF AVIF grid-based image.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_grid
+      type: RECORD
+    - description: 'AVIF ItemProtectionBox (ipro).
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_ipro
+      type: RECORD
+    - description: 'AVIF LayerSelectorProperty (lsel).
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_lsel
+      type: RECORD
+    - description: 'AVIF major brand.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_major_brand
+      type: RECORD
+    - description: 'AVIF pixel aspect ratio.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_pasp
+      type: RECORD
+    - description: 'AVIF image sequence.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_sequence
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD
@@ -6426,6 +6543,25 @@ fields:
       type: STRING
     mode: REPEATED
     name: text
+    type: RECORD
+  - fields:
+    - description: 'If the search engine is pre-loaded with Fenix this value will
+        be the base
+
+        URL we use to build the search query for the search engine. For example:
+
+        https://mysearchengine.com/?query=%s. If it''s a custom search engine
+
+        (defined: https://github.com/mozilla-mobile/fenix/issues/1607) the value
+
+        will be "custom"
+
+        '
+      mode: NULLABLE
+      name: search_default_engine_search_url
+      type: STRING
+    mode: NULLABLE
+    name: url2
     type: RECORD
   mode: NULLABLE
   name: metrics

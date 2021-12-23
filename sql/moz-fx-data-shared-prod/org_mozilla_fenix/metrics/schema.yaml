@@ -6427,6 +6427,25 @@ fields:
     mode: REPEATED
     name: text
     type: RECORD
+  - fields:
+    - description: 'If the search engine is pre-loaded with Fenix this value will
+        be the base
+
+        URL we use to build the search query for the search engine. For example:
+
+        https://mysearchengine.com/?query=%s. If it''s a custom search engine
+
+        (defined: https://github.com/mozilla-mobile/fenix/issues/1607) the value
+
+        will be "custom"
+
+        '
+      mode: NULLABLE
+      name: search_default_engine_search_url
+      type: STRING
+    mode: NULLABLE
+    name: url2
+    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

@@ -37,7 +37,7 @@ default_args = {
     "retries": 2,
 }
 
-tags = ["impact/tier_2"]
+tags = ["impact/tier_2", "repo/bigquery-etl"]
 
 with DAG(
     "bqetl_urlbar",

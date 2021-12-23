@@ -44,7 +44,7 @@ default_args = {
     "retries": 2,
 }
 
-tags = ["impact/tier_3"]
+tags = ["impact/tier_3", "repo/bigquery-etl"]
 
 with DAG(
     "bqetl_app_store_connect",

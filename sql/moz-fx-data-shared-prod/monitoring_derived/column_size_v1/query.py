@@ -3,6 +3,7 @@
 """Determine column sizes by performing dry runs."""
 
 from argparse import ArgumentParser
+from fnmatch import fnmatchcase
 from functools import partial
 from multiprocessing.pool import ThreadPool
 
@@ -11,24 +12,21 @@ from google.cloud import bigquery
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True)  # expect string with format yyyy-mm-dd
 parser.add_argument("--project", default="moz-fx-data-shared-prod")
-parser.add_argument(
-    "--tables", nargs="*", default=["telemetry_stable.main_v4"]
-)
+parser.add_argument("--dataset", default="*_stable")
 parser.add_argument("--destination_dataset", default="monitoring_derived")
 parser.add_argument("--destination_table", default="column_size_v1")
 
 
-def get_columns(client, project, dataset, table):
-    """Returns list of all columns in the table."""
+def get_columns(client, project, dataset):
+    """Return list of all columns in each table of a dataset."""
     sql = (
-        f"SELECT field_path AS column_name "
+        f"SELECT table_name, field_path AS column_name "
         f"FROM `{project}.{dataset}.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS` "
-        f"WHERE table_name='{table}'"
     )
 
     try:
         result = client.query(sql).result()
-        return [(dataset, table, row.column_name) for row in result]
+        return [(dataset, row.table_name, row.column_name) for row in result]
     except Exception as e:
         print(f"Error querying dataset {dataset}: {e}")
 
@@ -36,16 +34,14 @@ def get_columns(client, project, dataset, table):
 
 
 def get_column_size_json(client, date, column):
-    """Returns the size of a specific date parition of the specified table."""
+    """Return the size of a specific date partition of the specified table."""
     print(column)
     try:
         job_config = bigquery.QueryJobConfig(dry_run=True, use_query_cache=False)
-        dataset_id = column[0]
-        table_id = column[1]
-        column = column[2]
+        dataset_id, table_id, column_name = column
 
         sql = f"""
-            SELECT {column} FROM {dataset_id}.{table_id}
+            SELECT {column_name} FROM {dataset_id}.{table_id}
             WHERE DATE(submission_timestamp) = '{date}'
         """
 
@@ -57,7 +53,7 @@ def get_column_size_json(client, date, column):
             "submission_date": date,
             "dataset_id": dataset_id,
             "table_id": table_id,
-            "column_name": column,
+            "column_name": column_name,
             "byte_size": size,
         }
     except Exception as e:
@@ -68,8 +64,7 @@ def get_column_size_json(client, date, column):
 def save_column_sizes(
     client, column_sizes, date, destination_dataset, destination_table
 ):
-    """Writes column sizes for tables for a specific day to BigQuery."""
-
+    """Write column sizes for tables for a specific day to BigQuery."""
     job_config = bigquery.LoadJobConfig()
     job_config.schema = (
         bigquery.SchemaField("submission_date", "DATE"),
@@ -89,16 +84,21 @@ def save_column_sizes(
 
 
 def main():
+    """Entrypoint for the column size job."""
     args = parser.parse_args()
     client = bigquery.Client(args.project)
+
+    datasets = [
+        dataset.dataset_id
+        for dataset in list(client.list_datasets())
+        if fnmatchcase(dataset.dataset_id, args.dataset)
+    ]
 
     with ThreadPool(20) as p:
         table_columns = [
             column
-            for t in args.tables
-            for column in get_columns(
-                client, args.project, t.split(".")[0], t.split(".")[1]
-            )
+            for dataset in datasets
+            for column in get_columns(client, args.project, dataset)
         ]
 
         column_sizes = p.map(

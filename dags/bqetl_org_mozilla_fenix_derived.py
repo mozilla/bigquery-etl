@@ -28,11 +28,14 @@ default_args = {
     "retries": 2,
 }
 
+tags = ["impact/tier_1", "repo/bigquery-etl"]
+
 with DAG(
     "bqetl_org_mozilla_fenix_derived",
     default_args=default_args,
     schedule_interval="0 2 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     org_mozilla_fenix_derived__geckoview_version__v1 = bigquery_etl_query(

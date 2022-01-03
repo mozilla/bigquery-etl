@@ -32,11 +32,14 @@ default_args = {
     "retries": 2,
 }
 
+tags = ["impact/tier_3", "repo/bigquery-etl"]
+
 with DAG(
     "bqetl_devtools",
     default_args=default_args,
     schedule_interval="0 3 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     telemetry_derived__devtools_accessiblility_panel_usage__v1 = bigquery_etl_query(

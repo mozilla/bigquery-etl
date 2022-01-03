@@ -1,14 +1,17 @@
 """Generate documentation for derived datasets."""
-
+import logging
 from pathlib import Path
 
-import yaml
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.dependency import extract_table_references
+from bigquery_etl.metadata.parse_metadata import DatasetMetadata, Metadata
+
+logging.basicConfig(format="%(levelname)s (%(filename)s:%(lineno)d) - %(message)s")
 
 VIEW_FILE = "view.sql"
 METADATA_FILE = "metadata.yaml"
+DATASET_METADATA_FILE = "dataset_metadata.yaml"
 README_FILE = "README.md"
 NON_USER_FACING_DATASET_SUFFIXES = (
     "_derived",
@@ -19,20 +22,23 @@ NON_USER_FACING_DATASET_SUFFIXES = (
 SOURCE_URL = "https://github.com/mozilla/bigquery-etl/blob/generated-sql"
 
 
-def _get_metadata(table_path):
-    metadata = {}
-    metadata_file = table_path / METADATA_FILE
-    if metadata_file.exists():
-        with open(metadata_file) as stream:
-            try:
-                metadata = yaml.safe_load(stream)
-            except yaml.YAMLError as error:
-                print(error)
-    return metadata
+def _get_metadata(path, metadata_filename=METADATA_FILE):
+    metadata_path = path / metadata_filename
+    try:
+        if metadata_filename == METADATA_FILE:
+            metadata = Metadata.from_file(metadata_path)
+            return metadata
+        elif metadata_filename == DATASET_METADATA_FILE:
+            metadata = DatasetMetadata.from_file(metadata_path)
+            return metadata
+        else:
+            raise Exception(f"Invalid metadata filename provided - {metadata_filename}")
+    except FileNotFoundError:
+        logging.warning(f"Metadata not found at {str(metadata_path)}")
 
 
-def _get_readme_content(table_path):
-    readme_file = table_path / README_FILE
+def _get_readme_content(path):
+    readme_file = path / README_FILE
     if readme_file.exists():
         return readme_file.read_text()
 
@@ -84,6 +90,7 @@ def _iter_table_markdown(table_paths, template):
             metadata=metadata,
             readme_content=readme_content,
             table_name=table_path.name,
+            qualified_table_name=f"{table_path.parent.name}.{table_path.name}",
             source_urls=source_urls,
             referenced_tables=referenced_tables,
             project_url=f"{SOURCE_URL}/sql",
@@ -115,12 +122,28 @@ def generate_derived_dataset_docs(out_dir, project_dir):
 
         file_loader = FileSystemLoader("bigquery_etl/docs/derived_datasets/templates")
         env = Environment(loader=file_loader)
-        template = env.get_template("table.md")
+        table_template = env.get_template("table.md")
+        dataset_header_template = env.get_template("dataset_header.md")
+
+        dataset_metadata = _get_metadata(
+            dataset_path, metadata_filename=DATASET_METADATA_FILE
+        )
+        dataset_readme_content = _get_readme_content(dataset_path)
 
         with open(output_path / f"{dataset_path.name}.md", "w") as dataset_doc:
-            # Manually set title to prevent Mkdocs from removing
+            # In the template, we manually set title to prevent Mkdocs from removing
             # underscores and capitalizing file names
             # https://github.com/mkdocs/mkdocs/issues/1915#issuecomment-561311801
-            dataset_doc.write(f"---\ntitle: {dataset_path.name}\n---\n\n")
+            dataset_header = dataset_header_template.render(
+                title=dataset_metadata.friendly_name
+                if dataset_metadata
+                else dataset_path.name,
+                description=dataset_metadata.description if dataset_metadata else None,
+                readme_content=dataset_readme_content,
+                source_url=f"{SOURCE_URL}/{str(dataset_path)}",
+            )
 
-            dataset_doc.write("".join(_iter_table_markdown(table_paths, template)))
+            dataset_doc.write(dataset_header)
+            dataset_doc.write(
+                "".join(_iter_table_markdown(table_paths, table_template))
+            )

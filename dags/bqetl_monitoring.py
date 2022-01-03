@@ -33,11 +33,14 @@ default_args = {
     "retries": 2,
 }
 
+tags = ["impact/tier_1", "repo/bigquery-etl"]
+
 with DAG(
     "bqetl_monitoring",
     default_args=default_args,
     schedule_interval="0 2 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     monitoring_derived__average_ping_sizes__v1 = gke_command(

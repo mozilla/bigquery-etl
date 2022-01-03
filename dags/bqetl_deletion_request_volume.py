@@ -28,11 +28,14 @@ default_args = {
     "retries": 2,
 }
 
+tags = ["impact/tier_3", "repo/bigquery-etl"]
+
 with DAG(
     "bqetl_deletion_request_volume",
     default_args=default_args,
     schedule_interval="0 1 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     monitoring_derived__deletion_request_volume__v1 = bigquery_etl_query(

@@ -31,11 +31,14 @@ default_args = {
     "retries": 2,
 }
 
+tags = ["impact/tier_1", "repo/bigquery-etl"]
+
 with DAG(
     "bqetl_firefox_ios",
     default_args=default_args,
     schedule_interval="0 4 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     org_mozilla_ios_firefox__unified_metrics__v1 = gke_command(

@@ -3,7 +3,7 @@
 import re
 from hashlib import sha256
 from pathlib import Path
-from typing import Any, Tuple, Type, List
+from typing import Any, List, Tuple, Type
 
 import click
 import stripe
@@ -85,9 +85,9 @@ class FilteredSchema:
             return {key: FilteredSchema.expand(value) for key, value in obj.items()}
         return obj
 
-    def format_row(self, row: Any) -> Any:
+    def format_row(self, row: Any, strict: bool) -> Any:
         """Format stripe object for BigQuery, and validate against original schema."""
-        return self._format_helper(row, self.allowed, self.root, (self.type,))
+        return self._format_helper(row, self.allowed, self.root, (self.type,), strict)
 
     def _hash_kv_userid(self, arr: List[dict], key_name: str) -> List[dict]:
         """Hash a userid key if it exists in a key-value list."""
@@ -107,6 +107,7 @@ class FilteredSchema:
         allowed: dict,
         field: bigquery.SchemaField,
         path: Tuple[str, ...],
+        strict: bool,
         is_list_item: bool = False,
     ) -> Any:
         if path[-1] == "metadata":
@@ -131,6 +132,7 @@ class FilteredSchema:
                     allowed=allowed,
                     field=field,
                     path=(*path[:-1], f"{path[-1]}[{i}]"),
+                    strict=strict,
                     is_list_item=True,
                 )
                 for i, e in enumerate(obj)
@@ -156,15 +158,19 @@ class FilteredSchema:
                     # https://stripe.com/docs/api/payment_intents/object#payment_intent_object-next_action-use_stripe_sdk
                     continue
                 if key not in fields_by_name:
-                    # enforce schema
-                    raise click.ClickException(
-                        f"{'.'.join(path)} contained unexpected field: {key}"
-                    )
+                    if strict:
+                        # enforce schema
+                        raise click.ClickException(
+                            f"{'.'.join(path)} contained unexpected field: {key}"
+                        )
+                    # skip unexpected field
+                    continue
                 formatted = self._format_helper(
                     obj=value,
                     allowed=allowed.get(key) or {},
                     field=fields_by_name[key],
                     path=(*path, key),
+                    strict=strict,
                 )
                 # apply allow list after formatting to enforce schema
                 if formatted not in (None, [], {}) and key in allowed:

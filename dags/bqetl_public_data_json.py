@@ -37,11 +37,14 @@ default_args = {
     "retries": 2,
 }
 
+tags = ["impact/tier_3", "repo/bigquery-etl"]
+
 with DAG(
     "bqetl_public_data_json",
     default_args=default_args,
     schedule_interval="0 5 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
     docker_image = "gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest"
 

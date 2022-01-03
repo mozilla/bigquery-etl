@@ -17,7 +17,9 @@ WITH impressions AS (
     -- but we reapply truncation to be explicit about granularity.
     TIMESTAMP_TRUNC(submission_timestamp, SECOND) AS submission_timestamp,
     request_id,
-    search_query AS telemetry_query,
+    -- Firefox allows casing and whitespace differences when matching to the
+    -- list of suggestions in RemoteSettings.
+    LTRIM(LOWER(search_query)) AS telemetry_query,
     advertiser,
     block_id,
     context_id,
@@ -43,7 +45,7 @@ merino_logs AS (
   SELECT
     TIMESTAMP_TRUNC(timestamp, SECOND) AS merino_timestamp,
     jsonPayload.fields.rid AS request_id,
-    jsonPayload.fields.query,
+    LTRIM(LOWER(jsonPayload.fields.query)) AS query,
     -- Merino currently injects 'none' for missing geo fields.
     NULLIF(jsonPayload.fields.country, 'none') AS merino_country,
     NULLIF(jsonPayload.fields.region, 'none') AS merino_region,

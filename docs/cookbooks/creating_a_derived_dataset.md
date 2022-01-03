@@ -106,10 +106,12 @@ BigQuery-ETL has some facilities in it to automatically add your query to [telem
 Before scheduling your query, you'll need to find an [Airflow DAG](https://airflow.apache.org/docs/apache-airflow/stable/concepts.html#dags) to run it off of. In some cases, one may already exist that makes sense to use for your dataset -- look in `dags.yaml` at the root or run `./bqetl dag info`. In this particular case, there's no DAG that really makes sense -- so we'll create a new one:
 
 ```bash
-./bqetl dag create bqetl_internal_tooling --schedule-interval "0 4 * * *" --owner wlachance@mozilla.com --description "This DAG schedules queries for populating queries related to Mozilla's internal developer tooling (e.g. mozregression)." --start-date 2020-06-01
+./bqetl dag create bqetl_internal_tooling --schedule-interval "0 4 * * *" --owner wlachance@mozilla.com --description "This DAG schedules queries for populating queries related to Mozilla's internal developer tooling (e.g. mozregression)." --start-date 2020-06-01 --tag impact/tier_3
 ```
 
 Most of the options above should be self-explanatory. We use a schedule interval of "0 4 \* \* \*" (4am UTC daily) instead of "daily" (12am UTC daily) to make sure this isn't competing for slots with desktop and mobile product ETL.
+
+The `--tag impact/tier3` parameter specifies that this DAG is considered "tier 3". For a list of valid tags and their descriptions see [Airflow Tags](../reference/airflow_tags.md).
 
 ## Scheduling your query
 

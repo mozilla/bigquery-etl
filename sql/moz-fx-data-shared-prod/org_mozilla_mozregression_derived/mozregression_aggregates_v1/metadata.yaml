@@ -1,4 +1,7 @@
-description: Aggregated metrics of mozregression usage
+description: |
+  Aggregated metrics of mozregression usage
+
+  Used by the mozregression public usage dashboard: https://observablehq.com/@wlach/mozregression-public-usage-dashboard
 friendly_name: mozregression aggregates
 labels:
   incremental: true

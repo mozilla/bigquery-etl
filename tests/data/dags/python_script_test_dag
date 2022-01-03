@@ -28,8 +28,14 @@ default_args = {
     "retries": 2,
 }
 
+tags = ["repo/bigquery-etl"]
+
 with DAG(
-    "bqetl_test_dag", default_args=default_args, schedule_interval="@daily", doc_md=docs
+    "bqetl_test_dag",
+    default_args=default_args,
+    schedule_interval="@daily",
+    doc_md=docs,
+    tags=tags,
 ) as dag:
 
     test__python_script_query__v1 = gke_command(

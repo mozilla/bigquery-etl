@@ -2,16 +2,18 @@
 bqetl_error_aggregates:
   schedule_interval: 3h
   default_args:
-    owner: wlachance@mozilla.com
+    owner: wkahngreene@mozilla.com
     email:
       [
         "telemetry-alerts@mozilla.com",
-        "wlachance@mozilla.com",
+        "wkahngreene@mozilla.com",
       ]
     start_date: "2019-11-01"
     retries: 1
     retry_delay: 20m
     depends_on_past: false
+  tags:
+    - impact/tier_1
 
 bqetl_ssl_ratios:
   schedule_interval: 0 2 * * *
@@ -22,6 +24,8 @@ bqetl_ssl_ratios:
     email: ["telemetry-alerts@mozilla.com", "chutten@mozilla.com"]
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_3
 
 bqetl_amo_stats:
   schedule_interval: 0 3 * * *
@@ -38,6 +42,8 @@ bqetl_amo_stats:
     email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_1
 
 bqetl_vrbrowser:
   schedule_interval: 0 2 * * *
@@ -54,6 +60,8 @@ bqetl_vrbrowser:
       ]
     retries: 1
     retry_delay: 5m
+  tags:
+    - impact/tier_3
 
 bqetl_core:
   schedule_interval: 0 2 * * *
@@ -66,15 +74,23 @@ bqetl_core:
     email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
     retries: 1
     retry_delay: 5m
+  tags:
+    - impact/tier_1
 
 bqetl_nondesktop:
   schedule_interval: 0 3 * * *
   default_args:
-    owner: jklukas@mozilla.com
+    owner: mgorlick@mozilla.com
     start_date: "2019-07-25"
-    email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
+    email: [
+      "telemetry-alerts@mozilla.com",
+      "jklukas@mozilla.com",
+      "mgorlick@mozilla.com"
+    ]
     retries: 1
     retry_delay: 5m
+  tags:
+    - impact/tier_1
 
 bqetl_mobile_search:
   schedule_interval: 0 2 * * *
@@ -87,6 +103,8 @@ bqetl_mobile_search:
       - "akomar@mozilla.com"
     retries: 1
     retry_delay: 5m
+  tags:
+    - impact/tier_1
 
 bqetl_fxa_events:
   schedule_interval: 30 1 * * *
@@ -108,6 +126,8 @@ bqetl_fxa_events:
     email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
     retries: 1
     retry_delay: 10m
+  tags:
+    - impact/tier_1
 
 bqetl_subplat:
   schedule_interval: 45 1 * * *
@@ -122,6 +142,8 @@ bqetl_subplat:
     email: ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"]
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_1
 
 bqetl_mozilla_vpn_site_metrics:
   schedule_interval: 0 15 * * *
@@ -138,6 +160,8 @@ bqetl_mozilla_vpn_site_metrics:
     email: ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"]
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_2
 
 bqetl_gud:
   schedule_interval: 0 3 * * *
@@ -149,6 +173,8 @@ bqetl_gud:
     email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
     retries: 1
     retry_delay: 5m
+  tags:
+    - impact/tier_1
 
 bqetl_messaging_system:
   schedule_interval: 0 2 * * *
@@ -161,6 +187,8 @@ bqetl_messaging_system:
     email: ["telemetry-alerts@mozilla.com", "najiang@mozilla.com"]
     retries: 1
     retry_delay: 5m
+  tags:
+    - impact/tier_3
 
 bqetl_activity_stream:
   schedule_interval: 0 2 * * *
@@ -174,6 +202,8 @@ bqetl_activity_stream:
     email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
     retries: 1
     retry_delay: 5m
+  tags:
+    - impact/tier_2
 
 bqetl_search:
   schedule_interval: 0 3 * * *
@@ -186,6 +216,8 @@ bqetl_search:
       - "akomar@mozilla.com"
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_1
 
 bqetl_addons:
   schedule_interval: 0 4 * * *
@@ -199,6 +231,8 @@ bqetl_addons:
     email: ["telemetry-alerts@mozilla.com"]
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_2
 
 bqetl_devtools:
   schedule_interval: 0 3 * * *
@@ -210,6 +244,8 @@ bqetl_devtools:
     email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_3
 
 bqetl_main_summary:
   schedule_interval: 0 2 * * *
@@ -228,6 +264,8 @@ bqetl_main_summary:
       ]
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_1
 
 bqetl_experiments_daily:
   schedule_interval: 0 3 * * *
@@ -241,6 +279,8 @@ bqetl_experiments_daily:
     email: ["telemetry-alerts@mozilla.com", "ascholtz@mozilla.com"]
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_1
 
 # DAG for exporting query data marked as public to GCS
 # queries should not be explicitly assigned to this DAG (done automatically)
@@ -257,6 +297,8 @@ bqetl_public_data_json:
     email: ["telemetry-alerts@mozilla.com", "ascholtz@mozilla.com"]
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_3
 
 bqetl_internet_outages:
   schedule_interval: 0 3 * * *
@@ -269,6 +311,8 @@ bqetl_internet_outages:
     email: ["aplacitelli@mozilla.com"]
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_3
 
 bqetl_deletion_request_volume:
   schedule_interval: 0 1 * * *
@@ -278,6 +322,8 @@ bqetl_deletion_request_volume:
     email: ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"]
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_3
 
 bqetl_fenix_event_rollup:
   schedule_interval: 0 2 * * *
@@ -287,6 +333,8 @@ bqetl_fenix_event_rollup:
     email: ["wlachance@mozilla.com"]
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_1
 
 bqetl_org_mozilla_fenix_derived:
   schedule_interval: 0 2 * * *
@@ -301,6 +349,8 @@ bqetl_org_mozilla_fenix_derived:
     retries: 2
     retry_delay: 30m
     start_date: "2020-10-18"
+  tags:
+    - impact/tier_1
 
 bqetl_google_analytics_derived:
   schedule_interval: 0 23 * * *
@@ -317,6 +367,8 @@ bqetl_google_analytics_derived:
     start_date: "2020-10-31"
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_1
 
 bqetl_monitoring:
   schedule_interval: 0 2 * * *
@@ -329,6 +381,8 @@ bqetl_monitoring:
     start_date: "2018-10-30"
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_1
 
 bqetl_event_rollup:
   schedule_interval: 0 3 * * *
@@ -338,6 +392,8 @@ bqetl_event_rollup:
     email: ["wlachance@mozilla.com"]
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_1
 
 bqetl_iprospect:
   schedule_interval: 0 4 * * *
@@ -355,6 +411,8 @@ bqetl_iprospect:
     start_date: "2021-04-19"
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_1
 
 bqetl_search_dashboard:
   default_args:
@@ -369,6 +427,8 @@ bqetl_search_dashboard:
     retry_delay: 30m
     start_date: "2020-12-14"
   schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_2
 
 bqetl_desktop_platform:
   schedule_interval: 0 3 * * *
@@ -383,6 +443,8 @@ bqetl_desktop_platform:
       ]
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_3
 
 bqetl_internal_tooling:
   description: |
@@ -401,6 +463,8 @@ bqetl_internal_tooling:
     retry_delay: 30m
     start_date: "2020-06-01"
   schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_3
 
 bqetl_release_criteria:
   schedule_interval: daily
@@ -412,6 +476,8 @@ bqetl_release_criteria:
       - dthorn@mozilla.com
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_1
 
 bqetl_pocket:
   default_args:
@@ -431,6 +497,8 @@ bqetl_pocket:
     Originally created for [Bug 1695336](
     https://bugzilla.mozilla.org/show_bug.cgi?id=1695336).
   schedule_interval: 0 12 * * *
+  tags:
+    - impact/tier_2
 
 bqetl_desktop_funnel:
   description: |
@@ -447,6 +515,8 @@ bqetl_desktop_funnel:
       ]
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_1
 
 bqetl_firefox_ios:
   default_args:
@@ -463,6 +533,8 @@ bqetl_firefox_ios:
     start_date: "2021-03-18"
   description: Schedule daily ios firefox ETL
   schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_1
 
 bqetl_releases:
   default_args:
@@ -483,6 +555,8 @@ bqetl_releases:
     For more context, see
     https://wiki.mozilla.org/Release_Management/Product_details
   schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_2
 
 bqetl_ctxsvc_derived:
   default_args:
@@ -499,6 +573,8 @@ bqetl_ctxsvc_derived:
     start_date: '2021-05-01'
   description: Contextual services derived tables
   schedule_interval: 0 3 * * *
+  tags:
+    - impact/tier_2
 
 bqetl_search_terms_daily:
   default_args:
@@ -517,6 +593,8 @@ bqetl_search_terms_daily:
   description: |
     Derived tables on top of search terms data.
   schedule_interval: 0 3 * * *
+  tags:
+    - impact/tier_3
 
 bqetl_app_store_connect:
   schedule_interval: 0 20 * * *
@@ -539,6 +617,8 @@ bqetl_app_store_connect:
     start_date: "2021-01-15"
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_3
 
 bqetl_experimenter_experiments_import:
   schedule_interval: "*/10 * * * *"
@@ -553,6 +633,8 @@ bqetl_experimenter_experiments_import:
     retries: 0
     email:
       - ascholtz@mozilla.com
+  tags:
+    - impact/tier_2
 
 bqetl_feature_usage:
   schedule_interval: 0 5 * * *
@@ -570,6 +652,8 @@ bqetl_feature_usage:
       - "loines@mozilla.com"
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_1
 
 bqetl_urlbar:
   schedule_interval: 0 3 * * *
@@ -585,6 +669,8 @@ bqetl_urlbar:
       - "tbrooks@mozilla.com"
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_2
 
 bqetl_unified:
   schedule_interval: 0 3 * * *
@@ -599,3 +685,23 @@ bqetl_unified:
       - "loines@mozilla.com"
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_1
+
+bqetl_regrets_reporter_summary:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - kignasiak@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: kignasiak@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2021-12-12'
+  description: Measure usage of the regrets reporter addon
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_1

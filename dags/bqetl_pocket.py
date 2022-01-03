@@ -35,11 +35,14 @@ default_args = {
     "retries": 2,
 }
 
+tags = ["impact/tier_2", "repo/bigquery-etl"]
+
 with DAG(
     "bqetl_pocket",
     default_args=default_args,
     schedule_interval="0 12 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     pocket_derived__rolling_monthly_active_user_counts__v1 = bigquery_etl_query(

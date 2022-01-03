@@ -28,11 +28,14 @@ default_args = {
     "retries": 2,
 }
 
+tags = ["impact/tier_1", "repo/bigquery-etl"]
+
 with DAG(
     "bqetl_release_criteria",
     default_args=default_args,
     schedule_interval="@daily",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     release_criteria__dashboard_health__v1 = bigquery_etl_query(

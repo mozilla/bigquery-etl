@@ -35,11 +35,14 @@ default_args = {
     "retries": 2,
 }
 
+tags = ["impact/tier_1", "repo/bigquery-etl"]
+
 with DAG(
     "bqetl_google_analytics_derived",
     default_args=default_args,
     schedule_interval="0 23 * * *",
     doc_md=docs,
+    tags=tags,
 ) as dag:
 
     ga_derived__blogs_daily_summary__v1 = bigquery_etl_query(

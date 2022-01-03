@@ -106,6 +106,7 @@ def info(name, dags_config, with_tasks):
     --schedule-interval="0 2 * * *" \\
     --owner=example@mozilla.com \\
     --description="Tables derived from `core` pings sent by mobile applications." \\
+    --tag=impact/tier_1 \\
     --start-date=2019-07-25
 
     \b
@@ -113,6 +114,7 @@ def info(name, dags_config, with_tasks):
     ./bqetl dag create bqetl_ssl_ratios --schedule-interval="0 2 * * *" \\
     --owner=example@mozilla.com \\
     --description="The DAG schedules SSL ratios queries." \\
+    --tag=impact/tier_1 \\
     --start-date=2019-07-20 \\
     --email=example2@mozilla.com \\
     --email=example3@mozilla.com \\
@@ -141,6 +143,12 @@ def info(name, dags_config, with_tasks):
     "--description",
     help=("Description for DAG"),
     required=True,
+)
+@click.option(
+    "--tag",
+    help=("Tag to use for the DAG"),
+    required=True,
+    multiple=True,
 )
 @click.option(
     "--start_date",
@@ -173,6 +181,7 @@ def create(
     schedule_interval,
     owner,
     description,
+    tag,
     start_date,
     email,
     retries,
@@ -192,6 +201,7 @@ def create(
                     "retries": retries,
                     "retry_delay": retry_delay,
                 },
+                "tags": tag,
             }
         }
     )

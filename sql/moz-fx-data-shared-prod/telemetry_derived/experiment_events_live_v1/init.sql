@@ -1,4 +1,4 @@
--- Generated via ./bqetl experiment_monitoring generate
+-- Generated via ./bqetl generate experiment_monitoring
 CREATE MATERIALIZED VIEW
 IF
   NOT EXISTS telemetry_derived.experiment_events_live_v1

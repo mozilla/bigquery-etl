@@ -1,4 +1,4 @@
--- Generated via ./bqetl glean_usage generate
+-- Generated via ./bqetl generate glean_usage
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.reference_browser.baseline_clients_first_seen`
 AS

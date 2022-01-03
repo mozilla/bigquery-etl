@@ -2,11 +2,11 @@
 bqetl_error_aggregates:
   schedule_interval: 3h
   default_args:
-    owner: wlachance@mozilla.com
+    owner: wkahngreene@mozilla.com
     email:
       [
         "telemetry-alerts@mozilla.com",
-        "wlachance@mozilla.com",
+        "wkahngreene@mozilla.com",
       ]
     start_date: "2019-11-01"
     retries: 1
@@ -80,9 +80,13 @@ bqetl_core:
 bqetl_nondesktop:
   schedule_interval: 0 3 * * *
   default_args:
-    owner: jklukas@mozilla.com
+    owner: mgorlick@mozilla.com
     start_date: "2019-07-25"
-    email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
+    email: [
+      "telemetry-alerts@mozilla.com",
+      "jklukas@mozilla.com",
+      "mgorlick@mozilla.com"
+    ]
     retries: 1
     retry_delay: 5m
   tags:

@@ -1660,13 +1660,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#days_since_seen-udf" class="md-nav__link">
-    days_since_seen (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#from_string-udf" class="md-nav__link">
     from_string (UDF)
   </a>
@@ -1674,8 +1667,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#retention-udf" class="md-nav__link">
-    retention (UDF)
+  <a href="#days_since_seen-udf" class="md-nav__link">
+    days_since_seen (UDF)
   </a>
   
 </li>
@@ -1683,6 +1676,13 @@
         <li class="md-nav__item">
   <a href="#to_string-udf" class="md-nav__link">
     to_string (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#retention-udf" class="md-nav__link">
+    retention (UDF)
   </a>
   
 </li>
@@ -2063,13 +2063,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#days_since_seen-udf" class="md-nav__link">
-    days_since_seen (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#from_string-udf" class="md-nav__link">
     from_string (UDF)
   </a>
@@ -2077,8 +2070,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#retention-udf" class="md-nav__link">
-    retention (UDF)
+  <a href="#days_since_seen-udf" class="md-nav__link">
+    days_since_seen (UDF)
   </a>
   
 </li>
@@ -2086,6 +2079,13 @@
         <li class="md-nav__item">
   <a href="#to_string-udf" class="md-nav__link">
     to_string (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#retention-udf" class="md-nav__link">
+    retention (UDF)
   </a>
   
 </li>
@@ -2138,6 +2138,12 @@ metrics based on these usage histories, such as various retention definitions.</
 type of the field is a BigQuery INT64, but logically the integer
 represents an array of bits, with each 1 indicating a day where the given clients
 was active and each 0 indicating a day where the client was inactive.</p>
+<h2 id="from_string-udf">from_string (UDF)</h2>
+<p>Convert a string representing individual bits into an INT64.</p>
+<p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/from_string">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/from_string/metadata.yaml">Edit</a></p>
 <h2 id="days_since_seen-udf">days_since_seen (UDF)</h2>
 <p>Return the position of the rightmost set bit in an INT64 bit pattern.</p>
 <p>To determine this position, we take a bitwise AND of the bit pattern and
@@ -2150,16 +2156,6 @@ logarithm; see <a href="https://stackoverflow.com/a/42747608/1260237">https://st
 -- &gt;&gt; 1
 </code></pre>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/days_since_seen">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/days_since_seen/metadata.yaml">Edit</a></p>
-<h2 id="from_string-udf">from_string (UDF)</h2>
-<p>Convert a string representing individual bits into an INT64.</p>
-<p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/from_string">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/from_string/metadata.yaml">Edit</a></p>
-<h2 id="retention-udf">retention (UDF)</h2>
-<p>Return a nested struct providing booleans indicating whether a given client
-was active various time periods based on the passed bit pattern.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/retention">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/retention/metadata.yaml">Edit</a></p>
 <h2 id="to_string-udf">to_string (UDF)</h2>
 <p>Convert an INT64 field into a 28-character string representing
 the individual bits.</p>
@@ -2173,6 +2169,10 @@ the individual bits.</p>
 --      '0000000000000000000000000011']
 </code></pre>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/to_string">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/to_string/metadata.yaml">Edit</a></p>
+<h2 id="retention-udf">retention (UDF)</h2>
+<p>Return a nested struct providing booleans indicating whether a given client
+was active various time periods based on the passed bit pattern.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/retention">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/retention/metadata.yaml">Edit</a></p>
 <h2 id="active_in_range-udf">active_in_range (UDF)</h2>
 <p>Return a boolean indicating if any bits are set in the specified range
 of a bit pattern. The <code>start_offset</code> must be zero or a negative number

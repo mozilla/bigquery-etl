@@ -19685,6 +19685,14 @@ fields:
       mode: NULLABLE
       name: avif_sequence
       type: STRING
+    - description: Whether a document used the CSS property print-color-adjust
+      mode: NULLABLE
+      name: use_counter2_css_property_print_color_adjust_document
+      type: STRING
+    - description: Whether a page used the CSS property print-color-adjust
+      mode: NULLABLE
+      name: use_counter2_css_property_print_color_adjust_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -22827,6 +22835,19 @@ fields:
         type: STRING
       mode: REPEATED
       name: service_worker_running
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: Records the latencies (ms) of search suggestions fetches per
+          search engine. Keys in this histogram are search engine IDs for built-in
+          search engines and 'other' for non-built-in search engines.
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: search_suggestions_latency_ms
       type: RECORD
     mode: NULLABLE
     name: keyed_histograms
@@ -40624,6 +40645,14 @@ fields:
         - description: AVIF image sequence
           mode: NULLABLE
           name: avif_sequence
+          type: STRING
+        - description: Whether a document used the CSS property print-color-adjust
+          mode: NULLABLE
+          name: use_counter2_css_property_print_color_adjust_document
+          type: STRING
+        - description: Whether a page used the CSS property print-color-adjust
+          mode: NULLABLE
+          name: use_counter2_css_property_print_color_adjust_page
           type: STRING
         mode: NULLABLE
         name: histograms

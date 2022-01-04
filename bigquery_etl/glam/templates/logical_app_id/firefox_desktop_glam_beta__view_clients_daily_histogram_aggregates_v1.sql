@@ -8,6 +8,7 @@ WITH extracted AS (
     `{{ project }}`.glam_etl.firefox_desktop__view_clients_daily_histogram_aggregates_v1
   WHERE
     channel = 'beta'
+    AND SAFE_CAST(app_build_id AS DATE) IS NOT NULL
 )
 SELECT
   * EXCEPT (app_build_id, channel),

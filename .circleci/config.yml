@@ -550,9 +550,15 @@ workflows:
       - generate-diff:
           requires:
             - generate-sql
+          filters:
+            branches:
+              ignore: main
       - post-diff:
           requires:
             - generate-diff
+          filters:
+            branches:
+              ignore: main
       - docs:
           requires:
             - generate-sql

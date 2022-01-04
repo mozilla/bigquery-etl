@@ -6,11 +6,13 @@ from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.dependency import extract_table_references
 from bigquery_etl.metadata.parse_metadata import DatasetMetadata, Metadata
+from bigquery_etl.schema import Schema
 
 logging.basicConfig(format="%(levelname)s (%(filename)s:%(lineno)d) - %(message)s")
 
 VIEW_FILE = "view.sql"
 METADATA_FILE = "metadata.yaml"
+SCHEMA_FILE = "schema.yaml"
 DATASET_METADATA_FILE = "dataset_metadata.yaml"
 README_FILE = "README.md"
 NON_USER_FACING_DATASET_SUFFIXES = (
@@ -68,6 +70,15 @@ def _get_referenced_tables_from_view(table_path):
     return referenced_tables
 
 
+def _get_schema(table_path):
+    schema_path = table_path / SCHEMA_FILE
+    try:
+        schema = Schema.from_schema_file(schema_path)
+        return schema.schema.get("fields")
+    except Exception as e:
+        logging.warning(f"Unable to open schema: {e}")
+
+
 def _iter_table_markdown(table_paths, template):
     for table_path in table_paths:
         source_urls = {"Source Directory": f"{SOURCE_URL}/{str(table_path)}"}
@@ -85,10 +96,12 @@ def _iter_table_markdown(table_paths, template):
             ] = f"{SOURCE_URL}/{str(table_path / METADATA_FILE)}"
 
         readme_content = _get_readme_content(table_path)
+        schema = _get_schema(table_path)
 
         output = template.render(
             metadata=metadata,
             readme_content=readme_content,
+            schema=schema,
             table_name=table_path.name,
             qualified_table_name=f"{table_path.parent.name}.{table_path.name}",
             source_urls=source_urls,

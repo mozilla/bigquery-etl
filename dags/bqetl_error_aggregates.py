@@ -43,11 +43,10 @@ with DAG(
         destination_table="error_aggregates_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="wlachance@mozilla.com",
+        owner="wkahngreene@mozilla.com",
         email=[
             "telemetry-alerts@mozilla.com",
             "wkahngreene@mozilla.com",
-            "wlachance@mozilla.com",
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,

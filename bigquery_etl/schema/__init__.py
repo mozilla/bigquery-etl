@@ -193,9 +193,6 @@ class Schema:
                         if update:
                             # add field attributes if not exists in schema
                             nodes[node_name][node_attr_key] = node_attr_value
-                            print(
-                                f"Attribute {node_attr_key} added to {prefix}.{field_path}"
-                            )
                         else:
                             if node_attr_key == "description":
                                 print(

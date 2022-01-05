@@ -160,6 +160,9 @@ To provision a new BigQuery dataset for holding tables, you'll need to
 create a `dataset_metadata.yaml` which will cause the dataset to be
 automatically deployed a few hours after merging. Changes to existing
 datasets may trigger manual operator approval (such as changing access policies).
+For more on access controls, see
+[Data Access Workgroups](https://mana.mozilla.org/wiki/display/DOPS/Data+Access+Workgroups)
+in Mana.
 
 The `bqetl query create` command will automatically generate a skeleton
 `dataset_metadata.yaml` file if the query name contains a dataset that
@@ -183,9 +186,9 @@ dataset_base_acl: derived
 # and in mozdata; this should be false for all `_derived` datasets
 user_facing: false
 
-# Most datasets can have mozilla-confidential access like below,
-# but some datasets will be defined with more restricted access
-# or with additional access for services.
+# Most datasets can have mozilla-confidential access like below, but some
+# datasets will be defined with more restricted access or with additional
+# access for services; see "Data Access Workgroups" link above.
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

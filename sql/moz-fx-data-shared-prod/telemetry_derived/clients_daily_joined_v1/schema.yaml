@@ -320,6 +320,9 @@ fields:
   mode: REPEATED
   name: experiments
   type: RECORD
+- mode: NULLABLE
+  name: firefoxsuggest_optin
+  type: STRING
 - description: null
   mode: NULLABLE
   name: first_paint_mean

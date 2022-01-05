@@ -10,7 +10,6 @@ checking them into the sql/ tree of the default branch of the repository.
 """
 
 import logging
-import re
 from functools import partial
 from itertools import groupby
 from pathlib import Path
@@ -18,7 +17,6 @@ from pathlib import Path
 import click
 from pathos.multiprocessing import ProcessingPool
 
-from bigquery_etl.schema import Schema
 from bigquery_etl.schema.stable_table_schema import SchemaFile, get_stable_table_schemas
 
 VIEW_QUERY_TEMPLATE = """\
@@ -48,10 +46,6 @@ description: |-
 
   Clustering fields: `normalized_channel`, `sample_id`
 """
-
-VIEW_CREATE_REGEX = re.compile(
-    r"CREATE OR REPLACE VIEW\n\s*[^\s]+\s*\nAS", re.IGNORECASE
-)
 
 
 def write_dataset_metadata_if_not_exists(
@@ -109,7 +103,13 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
     """If a view.sql does not already exist, write one to the target directory."""
     # add imports here to run in multiple processes via pathos
     from bigquery_etl.format_sql.formatter import reformat
+    from bigquery_etl.schema import Schema
     from sql_generators.stable_views import VIEW_METADATA_TEMPLATE, VIEW_QUERY_TEMPLATE
+    import re
+
+    VIEW_CREATE_REGEX = re.compile(
+        r"CREATE OR REPLACE VIEW\n\s*[^\s]+\s*\nAS", re.IGNORECASE
+    )
 
     target_dir = (
         sql_dir
@@ -157,7 +157,8 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
             target=full_source_id,
             replacements=replacements_str,
             full_view_id=full_view_id,
-        )
+        ),
+        trailing_newline=True
     )
     print(f"Creating {target_file}")
     target_dir.mkdir(parents=True, exist_ok=True)

@@ -321,7 +321,7 @@ fields:
   name: experiments
   type: RECORD
 - mode: NULLABLE
-  name: firefoxsuggest_optin
+  name: firefoxsuggest_opt_in_dialog_choice
   type: STRING
 - description: null
   mode: NULLABLE

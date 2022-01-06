@@ -282,17 +282,12 @@ booleans_and_scalars AS (
     bucketed_scalars
 ),
 valid_booleans_scalars AS (
-  SELECT
-    *
-  FROM
-    bucketed_scalars
-),
-FROM
-  booleans_and_scalars
-INNER JOIN
-  build_ids
-USING
-  (app_build_id, channel)
+  SELECT *
+  FROM booleans_and_scalars
+  INNER JOIN
+    build_ids
+  USING
+    (app_build_id, channel)
 ),
 clients_scalar_bucket_counts AS (
   SELECT

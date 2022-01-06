@@ -26,6 +26,28 @@
 
 {{ readme_content or "" }}
 
+{% if schema -%}
+
+<table>
+<caption>Schema</caption>
+	<tr>
+		<th>Column</th>
+		<th>Description</th>
+		<th>Type</th>
+		<th>Nullable</th>
+ 	</tr>
+{% for field in schema -%}
+ 	<tr>
+        <td>{{ field.name }}</td>
+        <td>{{ field.description or "" }}</td>
+        <td>{{ field.type | capitalize }}</td>
+        <td>{{ 'Yes' if field.mode == 'NULLABLE' else 'No' }}</td>
+    </tr>
+{%- endfor %}
+</table>
+
+{% endif %}
+
 {% if referenced_tables -%}
 <table>
 <caption>Referenced Tables</caption>

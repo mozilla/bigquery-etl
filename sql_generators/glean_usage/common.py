@@ -9,10 +9,8 @@ import requests
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 
 from bigquery_etl.dryrun import DryRun
-from bigquery_etl.util import standard_args  # noqa E402
-from bigquery_etl.util.bigquery_id import sql_table_id  # noqa E402
+from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 from bigquery_etl.util.common import render, write_sql
-from bigquery_etl.view import generate_stable_views
 
 APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
 PATH = Path(os.path.dirname(__file__))
@@ -54,7 +52,7 @@ def list_baseline_tables(project_id, only_tables, table_filter):
     """Return names of all matching baseline tables in shared-prod."""
     prod_baseline_tables = [
         s.stable_table
-        for s in generate_stable_views.get_stable_table_schemas()
+        for s in get_stable_table_schemas()
         if s.schema_id == "moz://mozilla.org/schemas/glean/ping/1"
         and s.bq_table == "baseline_v1"
     ]

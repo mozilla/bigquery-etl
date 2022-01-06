@@ -35,7 +35,7 @@ done
 set -x
 
 # Fill in any missing view definitions in the target project folder
-python -m bigquery_etl.view.generate_stable_views \
+./script/bqetl generate stable_views \
     --target-project "${TARGET_PROJECT}" \
     --sql-dir "${SQL_DIR}" \
     --parallelism=20

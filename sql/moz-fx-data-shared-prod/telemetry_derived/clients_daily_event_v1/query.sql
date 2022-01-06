@@ -16,7 +16,7 @@ SELECT
   ORDER BY
     session_start_time DESC )[
 OFFSET
-  (0)] AS firefoxsuggest_optin,
+  (0)] AS firefoxsuggest_opt_in_dialog_choice,
 FROM
   telemetry.events
 WHERE

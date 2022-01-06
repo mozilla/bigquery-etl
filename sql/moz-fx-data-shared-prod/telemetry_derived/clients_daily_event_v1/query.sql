@@ -22,6 +22,6 @@ FROM
 WHERE
   submission_date = @submission_date
 GROUP BY
-  1,
-  2,
-  3
+  submission_date,
+  sample_id,
+  client_id

@@ -18,5 +18,4 @@ scheduling:
 references:
   query.sql:
   - fxa_attribution_v1
-  - moz-fx-fxa-prod-0712.fxa_prod_logs.stdout_20*
-  - mozdata.firefox_accounts.fxa_content_auth_events
+  - mozdata.firefox_accounts.fxa_content_auth_stdout_events

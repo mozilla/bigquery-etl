@@ -19693,6 +19693,22 @@ fields:
       mode: NULLABLE
       name: use_counter2_css_property_print_color_adjust_page
       type: STRING
+    - description: Whether a document used IDBDatabaseCreateMutableFile
+      mode: NULLABLE
+      name: use_counter2_deprecated_idb_database_create_mutable_file_document
+      type: STRING
+    - description: Whether a page used IDBDatabaseCreateMutableFile
+      mode: NULLABLE
+      name: use_counter2_deprecated_idb_database_create_mutable_file_page
+      type: STRING
+    - description: Whether a document used IDBMutableFileOpen
+      mode: NULLABLE
+      name: use_counter2_deprecated_idb_mutable_file_open_document
+      type: STRING
+    - description: Whether a page used IDBMutableFileOpen
+      mode: NULLABLE
+      name: use_counter2_deprecated_idb_mutable_file_open_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -40653,6 +40669,22 @@ fields:
         - description: Whether a page used the CSS property print-color-adjust
           mode: NULLABLE
           name: use_counter2_css_property_print_color_adjust_page
+          type: STRING
+        - description: Whether a document used IDBDatabaseCreateMutableFile
+          mode: NULLABLE
+          name: use_counter2_deprecated_idb_database_create_mutable_file_document
+          type: STRING
+        - description: Whether a page used IDBDatabaseCreateMutableFile
+          mode: NULLABLE
+          name: use_counter2_deprecated_idb_database_create_mutable_file_page
+          type: STRING
+        - description: Whether a document used IDBMutableFileOpen
+          mode: NULLABLE
+          name: use_counter2_deprecated_idb_mutable_file_open_document
+          type: STRING
+        - description: Whether a page used IDBMutableFileOpen
+          mode: NULLABLE
+          name: use_counter2_deprecated_idb_mutable_file_open_page
           type: STRING
         mode: NULLABLE
         name: histograms

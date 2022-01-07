@@ -41,7 +41,7 @@ set -x
     --parallelism=20
 
 # Fill in definitions for generated Glean ETL
-./script/bqetl generate glean_usage --project-id "${TARGET_PROJECT}" --output-dir "${SQL_DIR}"
+./script/bqetl generate glean_usage --target-project "${TARGET_PROJECT}" --output-dir "${SQL_DIR}"
 
 # Record dependencies in yaml files
 ./script/bqetl dependency record --skip-existing "${SQL_DIR}"

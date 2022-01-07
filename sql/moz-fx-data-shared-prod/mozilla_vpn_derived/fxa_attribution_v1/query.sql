@@ -86,7 +86,10 @@ flows AS (
     AND (
       service = "guardian-vpn"
       -- service is missing for these event types
-      OR (service IS NULL AND (event_type = "fxa_rp_button - view" OR event_type LIKE "fxa_pay_%"))
+      OR (
+        (service IS NULL OR service = "undefined_oauth")
+        AND (event_type = "fxa_rp_button - view" OR event_type LIKE "fxa_pay_%")
+      )
     )
     AND flow_id IS NOT NULL
   GROUP BY

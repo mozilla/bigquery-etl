@@ -6,4 +6,3 @@ SELECT
   *
 FROM
   `moz-fx-data-shared-prod.org_mozilla_ios_lockbox.baseline`
-

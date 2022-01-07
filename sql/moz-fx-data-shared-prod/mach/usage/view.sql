@@ -6,4 +6,3 @@ SELECT
   *
 FROM
   `moz-fx-data-shared-prod.mozilla_mach.usage`
-

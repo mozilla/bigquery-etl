@@ -6,4 +6,3 @@ SELECT
   *
 FROM
   `moz-fx-data-shared-prod.mozillavpn.deletion_request`
-

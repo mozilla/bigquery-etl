@@ -6,16 +6,7 @@ fields:
   name: submission_date
   type: DATE
 - mode: NULLABLE
-  name: is_headless
-  type: BOOLEAN
-- mode: NULLABLE
-  name: video_encrypted_play_time_ms
-  type: INTEGER
-- mode: NULLABLE
   name: activity_segments_v1
-  type: STRING
-- mode: NULLABLE
-  name: app_version
   type: STRING
 - mode: NULLABLE
   name: is_allweek_regular_v1
@@ -76,6 +67,9 @@ fields:
   type: STRING
 - mode: NULLABLE
   name: normalized_os_version
+  type: STRING
+- mode: NULLABLE
+  name: app_version
   type: STRING
 - mode: NULLABLE
   name: attributed
@@ -153,10 +147,25 @@ fields:
   name: search_with_ads_count_all
   type: INTEGER
 - mode: NULLABLE
+  name: newtabpage_disabled
+  type: BOOLEAN
+- mode: NULLABLE
+  name: num_topsites_new_tab_impressions_sponsored
+  type: INTEGER
+- mode: NULLABLE
+  name: num_new_tab_topsites_clicks_sponsored
+  type: INTEGER
+- mode: NULLABLE
   name: subsample_id
   type: INTEGER
 - mode: NULLABLE
+  name: is_headless
+  type: BOOLEAN
+- mode: NULLABLE
   name: video_play_time_ms
+  type: INTEGER
+- mode: NULLABLE
+  name: video_encrypted_play_time_ms
   type: INTEGER
 - mode: NULLABLE
   name: pdf_viewer_time_to_view_ms_content
@@ -345,21 +354,6 @@ fields:
   name: newtab_prefs_opened
   type: INTEGER
 - mode: NULLABLE
-  name: num_addblockers
-  type: INTEGER
-- mode: NULLABLE
-  name: has_notes_extension
-  type: BOOLEAN
-- mode: NULLABLE
-  name: has_facebook_container_extension
-  type: BOOLEAN
-- mode: NULLABLE
-  name: has_multiaccount_container_extension
-  type: BOOLEAN
-- mode: NULLABLE
-  name: has_private_relay_extension
-  type: BOOLEAN
-- mode: NULLABLE
   name: activitystream_reported_3rdparty_abouthome
   type: BOOLEAN
 - mode: NULLABLE
@@ -378,6 +372,18 @@ fields:
   name: activitystream_pocket_clicks
   type: INTEGER
 - mode: NULLABLE
+  name: activitystream_sponsored_pocket_clicks
+  type: INTEGER
+- mode: NULLABLE
+  name: activitystream_sponsored_topsite_clicks
+  type: INTEGER
+- mode: NULLABLE
+  name: activitystream_organic_pocket_clicks
+  type: INTEGER
+- mode: NULLABLE
+  name: activitystream_organic_topsite_clicks
+  type: INTEGER
+- mode: NULLABLE
   name: activitystream_reported_newtab_search_off
   type: BOOLEAN
 - mode: NULLABLE
@@ -388,6 +394,9 @@ fields:
   type: BOOLEAN
 - mode: NULLABLE
   name: activitystream_reported_highlights_off
+  type: BOOLEAN
+- mode: NULLABLE
+  name: activitystream_reported_sponsored_topstories_off
   type: BOOLEAN
 - mode: NULLABLE
   name: activitystream_reported_sponsored_topsites_off
@@ -402,48 +411,17 @@ fields:
   name: activitystream_sessions_both
   type: INTEGER
 - mode: NULLABLE
-  name: newtabpage_disabled
+  name: num_addblockers
+  type: INTEGER
+- mode: NULLABLE
+  name: has_notes_extension
   type: BOOLEAN
-  description: |-
-    Whether the newtabpage is disabled or not.
-    Based on the browser.newtabpage.enabled pref
 - mode: NULLABLE
-  name: num_topsites_new_tab_impressions_sponsored
-  type: INTEGER
-  description: |-
-    Total number of sponsored topsite impressions on the new tab page.
-- mode: NULLABLE
-  name: num_new_tab_topsites_clicks_sponsored
-  type: INTEGER
-  description: |-
-    Total number of sponsored topsite clicks on the new tab page.
-- mode: NULLABLE
-  name: activitystream_sponsored_pocket_clicks
-  type: INTEGER
-  description: |-
-    Total number of sponsored pocket clicks
-    reported from activity stream events.
-- mode: NULLABLE
-  name: activitystream_sponsored_topsite_clicks
-  type: INTEGER
-  description: |-
-    Total number of sponsored topsite clicks
-    reported from activity stream events.
-- mode: NULLABLE
-  name: activitystream_organic_pocket_clicks
-  type: INTEGER
-  description: |-
-    Total number of organic topsite clicks
-    reported from activity stream events.
-- mode: NULLABLE
-  name: activitystream_organic_topsite_clicks
-  type: INTEGER
-  description: |-
-    Total number of organic topsite clicks
-    reported from activity stream events.
-- mode: NULLABLE
-  name: activitystream_reported_sponsored_topstories_off
+  name: has_facebook_container_extension
   type: BOOLEAN
-  description: |-
-    Whether or not sponsored topstories is off. Based on the
-    browser.newtabpage.activity-stream.showSponsored pref
+- mode: NULLABLE
+  name: has_multiaccount_container_extension
+  type: BOOLEAN
+- mode: NULLABLE
+  name: has_private_relay_extension
+  type: BOOLEAN

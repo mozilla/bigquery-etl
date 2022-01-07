@@ -2,7 +2,7 @@
 
 from functools import partial
 from itertools import groupby
-from multiprocessing import set_start_method, get_context
+from multiprocessing import get_context, set_start_method
 from operator import attrgetter
 from pathlib import Path
 
@@ -118,6 +118,7 @@ class DagCollection:
         except Exception:
             pass
         to_airflow_dag = partial(self.dag_to_airflow, output_dir)
+
         if dag_to_generate is None:
             with get_context("spawn").Pool(8) as p:
                 p.map(to_airflow_dag, self.dags)

@@ -53,6 +53,7 @@ jobs:
     steps:
       - checkout
       - *restore_venv_cache
+      - *build
       - run:
           name: Verify that SQL is correctly formatted
           command: |
@@ -446,6 +447,55 @@ jobs:
           condition: *deploy-condition
           steps:
             - gcp-gcr/push-image: *private-image
+  generate-diff:
+    docker: *docker
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp/workspace
+      - *restore_venv_cache
+      - *build
+      - *restore_mvn_cache
+      - *java_deps
+      - run:
+          name: Generate SQL content diff
+          command: |
+            # compare a branch against the main branch,
+            # or skip if we're already on the main branch
+            if [[ "$CIRCLE_BRANCH" == "main" ]]; then
+              circleci-agent step halt
+            fi
+            git clone --single-branch --branch main \
+              git@github.com:mozilla/bigquery-etl \
+              bigquery-etl-main
+
+            cd bigquery-etl-main
+            pip install -r requirements.txt
+            pip install -r java-requirements.txt
+            mvn dependency:copy-dependencies
+            ./script/generate_sql \
+              --target-project moz-fx-data-shared-prod
+
+            cd ..
+            diff -bur --no-dereference \
+              bigquery-etl-main/sql/ /tmp/workspace/generated-sql/sql/ \
+              > /tmp/workspace/generated-sql/sql.diff || true
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - generated-sql
+  post-diff:
+    docker:
+      - image: circleci/node:8.10.0
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp/workspace
+      - run: npm i circle-github-bot
+      - run: .circleci/post-diff.js
+      - store_artifacts:
+          path: /tmp/integration
+          destination: /app/integration
   manual-trigger-required-for-fork:
     docker: *docker
     steps:
@@ -497,6 +547,18 @@ workflows:
       - validate-docs
       - validate-views
       - generate-sql
+      - generate-diff:
+          requires:
+            - generate-sql
+          filters:
+            branches:
+              ignore: main
+      - post-diff:
+          requires:
+            - generate-diff
+          filters:
+            branches:
+              ignore: main
       - docs:
           requires:
             - generate-sql

@@ -181,12 +181,15 @@ class Dag:
         converter = cattr.Converter()
         try:
             name = list(d.keys())[0]
+            d[name]["tags"] = sorted(
+                list(set([*d[name].get("tags", []), "repo/bigquery-etl"]))
+            )
 
             if name == PUBLIC_DATA_JSON_DAG:
                 return converter.structure({"name": name, **d[name]}, PublicDataJsonDag)
             else:
                 return converter.structure({"name": name, **d[name]}, cls)
-        except TypeError as e:
+        except (TypeError, AttributeError) as e:
             raise DagParseException(f"Invalid DAG configuration format in {d}: {e}")
 
     def _jinja_env(self):

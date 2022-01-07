@@ -510,6 +510,7 @@ class TestDagCollection:
                 "bqetl_test_dag": {
                     "schedule_interval": "daily",
                     "default_args": default_args,
+                    "tags": ["repo/bigquery-etl"],
                 }
             }
         ).with_tasks(tasks)

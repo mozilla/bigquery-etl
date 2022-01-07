@@ -28,7 +28,7 @@ default_args = {
     "retries": 2,
 }
 
-tags = []
+tags = ["repo/bigquery-etl"]
 
 with DAG(
     "bqetl_test_dag",

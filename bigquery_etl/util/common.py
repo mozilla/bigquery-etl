@@ -7,7 +7,7 @@ import logging
 from typing import List
 from pathlib import Path
 
-from jinja2 import Environment, PackageLoader
+from jinja2 import Environment, FileSystemLoader
 from bigquery_etl.format_sql.formatter import reformat
 
 # Search for all camelCase situations in reverse with arbitrary lookaheads.
@@ -21,6 +21,7 @@ REV_WORD_BOUND_PAT = re.compile(
     re.VERBOSE,
 )
 SQL_DIR = "sql/"
+FILE_PATH = Path(os.path.dirname(__file__))
 
 
 def snake_case(line: str) -> str:
@@ -50,9 +51,8 @@ def random_str(length: int = 12) -> str:
 
 def render(sql_filename, format=True, template_folder="glean_usage", **kwargs) -> str:
     """Render a given template query using Jinja."""
-    env = Environment(
-        loader=PackageLoader("bigquery_etl", f"{template_folder}/templates")
-    )
+    file_loader = FileSystemLoader(f"{template_folder}/templates")
+    env = Environment(loader=file_loader)
     main_sql = env.get_template(sql_filename)
     rendered = main_sql.render(**kwargs)
     if format:

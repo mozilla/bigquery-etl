@@ -43,7 +43,7 @@ default_args = {
     "retries": 2,
 }
 
-tags = ["impact/tier_1"]
+tags = ["impact/tier_1", "repo/bigquery-etl"]
 
 with DAG(
     "bqetl_search_terms_daily",

@@ -12,15 +12,15 @@ Built from bigquery-etl repo, [`dags/bqetl_error_aggregates.py`](https://github.
 
 #### Owner
 
-wlachance@mozilla.com
+wkahngreene@mozilla.com
 """
 
 
 default_args = {
-    "owner": "wlachance@mozilla.com",
+    "owner": "wkahngreene@mozilla.com",
     "start_date": datetime.datetime(2019, 11, 1, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "wlachance@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "wkahngreene@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1200),
     "email_on_failure": True,
@@ -28,7 +28,7 @@ default_args = {
     "retries": 1,
 }
 
-tags = ["impact/tier_1"]
+tags = ["impact/tier_1", "repo/bigquery-etl"]
 
 with DAG(
     "bqetl_error_aggregates",
@@ -43,8 +43,8 @@ with DAG(
         destination_table="error_aggregates_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="wlachance@mozilla.com",
-        email=["telemetry-alerts@mozilla.com", "wlachance@mozilla.com"],
+        owner="wkahngreene@mozilla.com",
+        email=["telemetry-alerts@mozilla.com", "wkahngreene@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,

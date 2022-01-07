@@ -1660,20 +1660,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#range-udf" class="md-nav__link">
-    range (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#to_dates-udf" class="md-nav__link">
-    to_dates (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#from_string-udf" class="md-nav__link">
     from_string (UDF)
   </a>
@@ -1704,6 +1690,20 @@
         <li class="md-nav__item">
   <a href="#active_in_range-udf" class="md-nav__link">
     active_in_range (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#to_dates-udf" class="md-nav__link">
+    to_dates (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#range-udf" class="md-nav__link">
+    range (UDF)
   </a>
   
 </li>
@@ -2063,20 +2063,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#range-udf" class="md-nav__link">
-    range (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#to_dates-udf" class="md-nav__link">
-    to_dates (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#from_string-udf" class="md-nav__link">
     from_string (UDF)
   </a>
@@ -2111,6 +2097,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#to_dates-udf" class="md-nav__link">
+    to_dates (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#range-udf" class="md-nav__link">
+    range (UDF)
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2138,29 +2138,6 @@ metrics based on these usage histories, such as various retention definitions.</
 type of the field is a BigQuery INT64, but logically the integer
 represents an array of bits, with each 1 indicating a day where the given clients
 was active and each 0 indicating a day where the client was inactive.</p>
-<h2 id="range-udf">range (UDF)</h2>
-<p>Return an INT64 representing a range of bits from a source bit pattern.</p>
-<p>The start_offset must be zero or a negative number indicating an offset from
-the rightmost bit in the pattern.</p>
-<p>n_bits is the number of bits to consider, counting right from the bit at
-start_offset.</p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<pre><code class="language-sql">SELECT
-  -- Signature is bits28.range(offset_to_day_0, start_bit, number_of_bits)
-  mozfun.bits28.range(days_seen_bits, -13 + 0, 7) AS week_0_bits,
-  mozfun.bits28.range(days_seen_bits, -13 + 7, 7) AS week_1_bits
-FROM
-  telemetry.clients_last_seen
-WHERE
-  submission_date &gt; '2020-01-01'
-</code></pre>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/range/metadata.yaml">Edit</a></p>
-<h2 id="to_dates-udf">to_dates (UDF)</h2>
-<p>Convert a bit pattern into an array of the dates is represents.</p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/to_dates">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/to_dates/metadata.yaml">Edit</a></p>
 <h2 id="from_string-udf">from_string (UDF)</h2>
 <p>Convert a string representing individual bits into an INT64.</p>
 <p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>
@@ -2205,6 +2182,29 @@ the number of bits to consider, counting right from the bit at
 <p>See detailed docs for the bits28 suite of functions:
 <a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/active_in_range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/active_in_range/metadata.yaml">Edit</a></p>
+<h2 id="to_dates-udf">to_dates (UDF)</h2>
+<p>Convert a bit pattern into an array of the dates is represents.</p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/to_dates">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/to_dates/metadata.yaml">Edit</a></p>
+<h2 id="range-udf">range (UDF)</h2>
+<p>Return an INT64 representing a range of bits from a source bit pattern.</p>
+<p>The start_offset must be zero or a negative number indicating an offset from
+the rightmost bit in the pattern.</p>
+<p>n_bits is the number of bits to consider, counting right from the bit at
+start_offset.</p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<pre><code class="language-sql">SELECT
+  -- Signature is bits28.range(offset_to_day_0, start_bit, number_of_bits)
+  mozfun.bits28.range(days_seen_bits, -13 + 0, 7) AS week_0_bits,
+  mozfun.bits28.range(days_seen_bits, -13 + 7, 7) AS week_1_bits
+FROM
+  telemetry.clients_last_seen
+WHERE
+  submission_date &gt; '2020-01-01'
+</code></pre>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/range/metadata.yaml">Edit</a></p>
 
               
             </article>

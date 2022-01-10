@@ -151,6 +151,14 @@ SKIP = {
         "sql/moz-fx-data-shared-prod/regrets_reporter_derived/regrets_reporter_summary_v1/*.sql",  # noqa E501
         recursive=True,
     ),
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/mlhackweek_search/**/*.sql", recursive=True
+    ),
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/regrets_reporter_ucs/**/*.sql", recursive=True
+    ),
+    "sql/moz-fx-data-shared-prod/telemetry/xfocsp_error_report/view.sql",
+    "sql/moz-fx-data-shared-prod/telemetry/regrets_reporter_update/view.sql",
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501

@@ -20,7 +20,7 @@ WITH base_t AS (
       IF(LOGICAL_OR(e.name = "regret_action"), 1, 0) * 2
     ) + (IF(LOGICAL_OR(e.name = "video_played"), 1, 0) * 4) AS activities,
   FROM
-    `moz-fx-data-shared-prod.regrets_reporter_ucs_live.main_events_v1`,
+    `moz-fx-data-shared-prod.regrets_reporter_ucs_stable.main_events_v1`,
     UNNEST(events) e
   WHERE
     submission_timestamp >= "2021-12-02"
@@ -96,7 +96,7 @@ new_user_base_t AS (
       IF(LOGICAL_OR(e.name = "regret_action"), 1, 0) * 2
     ) + (IF(LOGICAL_OR(e.name = "video_played"), 1, 0) * 4) AS activities,
   FROM
-    `moz-fx-data-shared-prod.regrets_reporter_ucs_live.main_events_v1`,
+    `moz-fx-data-shared-prod.regrets_reporter_ucs_stable.main_events_v1`,
     UNNEST(events) e
   WHERE
     submission_timestamp >= "2021-12-02"

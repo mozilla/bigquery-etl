@@ -43764,6 +43764,12 @@ fields:
           mode: NULLABLE
           name: pdf_viewer_is_attachment
           type: INTEGER
+        - description: 'Total CPU time used by all processes in ms.
+
+            '
+          mode: NULLABLE
+          name: power_total_cpu_time_ms
+          type: INTEGER
         mode: NULLABLE
         name: scalars
         type: RECORD
@@ -44469,6 +44475,18 @@ fields:
             '
           mode: NULLABLE
           name: apz_scrollwheel_overshoot
+          type: INTEGER
+        - description: 'Total CPU time used by all processes in ms.
+
+            '
+          mode: NULLABLE
+          name: power_total_cpu_time_ms
+          type: INTEGER
+        - description: 'Total GPU time used by all processes in ms.
+
+            '
+          mode: NULLABLE
+          name: power_total_gpu_time_ms
           type: INTEGER
         mode: NULLABLE
         name: scalars
@@ -50125,6 +50143,18 @@ fields:
           mode: NULLABLE
           name: content_process_max_precise
           type: INTEGER
+        - description: 'Total CPU time used by all processes in ms.
+
+            '
+          mode: NULLABLE
+          name: power_total_cpu_time_ms
+          type: INTEGER
+        - description: 'Total GPU time used by all processes in ms.
+
+            '
+          mode: NULLABLE
+          name: power_total_gpu_time_ms
+          type: INTEGER
         mode: NULLABLE
         name: scalars
         type: RECORD
@@ -51345,6 +51375,12 @@ fields:
             '
           mode: NULLABLE
           name: networking_http_transactions_captive_portal
+          type: INTEGER
+        - description: 'Total CPU time used by all processes in ms.
+
+            '
+          mode: NULLABLE
+          name: power_total_cpu_time_ms
           type: INTEGER
         mode: NULLABLE
         name: scalars

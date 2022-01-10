@@ -451,7 +451,11 @@ jobs:
     steps:
       - checkout
       - *attach_generated_sql
-      - *copy_generated_sql
+      - run:
+          name: Move generated-sql into place
+          command: |
+            rm -rf sql/
+            cp -r /tmp/workspace/private-generated-sql/sql sql
       - when:
           condition: *deploy-condition
           steps:

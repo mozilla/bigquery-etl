@@ -14,6 +14,13 @@ Built from bigquery-etl repo, [`dags/bqetl_search_terms_daily.py`](https://githu
 
 Derived tables on top of search terms data.
 
+Note that the task for populating `suggest_impression_sanitized_v2` is
+particularly important because the source unsanitized dataset has only
+a 2-day retention period, so errors fairly quickly become unrecoverable
+and can impact reporting to partners. If this task errors out, it could
+indicate trouble with an upstream task that runs in a restricted project
+outside of Airflow. Contact `jklukas` and/or `jbuck`.
+
 #### Owner
 
 jklukas@mozilla.com
@@ -36,7 +43,7 @@ default_args = {
     "retries": 2,
 }
 
-tags = ["impact/tier_3", "repo/bigquery-etl"]
+tags = ["impact/tier_1", "repo/bigquery-etl"]
 
 with DAG(
     "bqetl_search_terms_daily",

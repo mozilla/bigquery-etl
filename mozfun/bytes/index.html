@@ -13,7 +13,7 @@
       
       
       <link rel="icon" href="../../favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.5">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ee0f47ba.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#bit_pos_to_byte_pos-udf" class="md-skip">
+        <a href="#extract_bits-udf" class="md-skip">
           Skip to content
         </a>
       
@@ -1670,15 +1670,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bit_pos_to_byte_pos-udf" class="md-nav__link">
-    bit_pos_to_byte_pos (UDF)
+  <a href="#extract_bits-udf" class="md-nav__link">
+    extract_bits (UDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#extract_bits-udf" class="md-nav__link">
-    extract_bits (UDF)
+  <a href="#bit_pos_to_byte_pos-udf" class="md-nav__link">
+    bit_pos_to_byte_pos (UDF)
   </a>
   
 </li>
@@ -2022,15 +2022,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bit_pos_to_byte_pos-udf" class="md-nav__link">
-    bit_pos_to_byte_pos (UDF)
+  <a href="#extract_bits-udf" class="md-nav__link">
+    extract_bits (UDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#extract_bits-udf" class="md-nav__link">
-    extract_bits (UDF)
+  <a href="#bit_pos_to_byte_pos-udf" class="md-nav__link">
+    bit_pos_to_byte_pos (UDF)
   </a>
   
 </li>
@@ -2050,10 +2050,6 @@
 
   <h1>Bytes</h1>
 
-<h2 id="bit_pos_to_byte_pos-udf">bit_pos_to_byte_pos (UDF)</h2>
-<p>Given a bit position, get the byte that bit appears in.
-1-indexed (to match substr), and accepts negative values.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bytes/bit_pos_to_byte_pos">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bytes/bit_pos_to_byte_pos/metadata.yaml">Edit</a></p>
 <h2 id="extract_bits-udf">extract_bits (UDF)</h2>
 <p>Extract bits from a byte array. Roughly matches substr
 with three arguments:
@@ -2069,6 +2065,10 @@ the byte array will have trailing 0s for any non-relevant fields.</p>
 bytes.extract_bits(b'\x0F\xF0', 5, 8) = b'\xFF'
 bytes.extract_bits(b'\x0C\xC0', -12, 8) = b'\xCC'</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bytes/extract_bits">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bytes/extract_bits/metadata.yaml">Edit</a></p>
+<h2 id="bit_pos_to_byte_pos-udf">bit_pos_to_byte_pos (UDF)</h2>
+<p>Given a bit position, get the byte that bit appears in.
+1-indexed (to match substr), and accepts negative values.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bytes/bit_pos_to_byte_pos">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bytes/bit_pos_to_byte_pos/metadata.yaml">Edit</a></p>
 
               
             </article>
@@ -2134,10 +2134,10 @@ bytes.extract_bits(b'\x0C\xC0', -12, 8) = b'\xCC'</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.b6ff8c07.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
+      <script src="../../assets/javascripts/bundle.5e13d264.min.js"></script>
       
     
   </body>

@@ -96,6 +96,13 @@ class TaskRef:
         return None
 
 
+@attr.s(auto_attribs=True, frozen=True)
+class FivetranTask:
+    """Representation of a Fivetran data import task."""
+
+    task_id: str = attr.ib()
+
+
 # Know tasks in telemetry-airflow, like stable table tasks
 # https://github.com/mozilla/telemetry-airflow/blob/main/dags/copy_deduplicate.py
 EXTERNAL_TASKS = {
@@ -156,6 +163,7 @@ class Task:
     # indicate whether data should be published as JSON
     public_json: bool = attr.ib(False)
     depends_on: List[TaskRef] = attr.ib([])
+    depends_on_fivetran: List[FivetranTask] = attr.ib([])
     arguments: List[str] = attr.ib([])
     parameters: List[str] = attr.ib([])
     multipart: bool = attr.ib(False)

@@ -418,6 +418,9 @@ jobs:
             PATH="venv/bin:$PATH" script/bqetl generate all \
               --output-dir /tmp/workspace/private-generated-sql/sql/ \
               --target-project moz-fx-data-shared-prod
+            PATH="venv/bin:$PATH" script/bqetl dependency record \
+              --skip-existing \
+              "/tmp/workspace/private-generated-sql/sql/"
       - persist_to_workspace:
           root: /tmp/workspace
           paths:

@@ -1792,6 +1792,123 @@ fields:
       mode: REPEATED
       name: avif_pixi
       type: RECORD
+    - description: 'AV1LayeredImageIndexingProperty (a1lx).
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_a1lx
+      type: RECORD
+    - description: 'AVIF OperatingPointSelectorProperty (a1op).
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_a1op
+      type: RECORD
+    - description: 'AVIF CleanApertureBox (clap).
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_clap
+      type: RECORD
+    - description: 'AVIF AVIF grid-based image.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_grid
+      type: RECORD
+    - description: 'AVIF ItemProtectionBox (ipro).
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_ipro
+      type: RECORD
+    - description: 'AVIF LayerSelectorProperty (lsel).
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_lsel
+      type: RECORD
+    - description: 'AVIF major brand.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_major_brand
+      type: RECORD
+    - description: 'AVIF pixel aspect ratio.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_pasp
+      type: RECORD
+    - description: 'AVIF image sequence.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_sequence
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

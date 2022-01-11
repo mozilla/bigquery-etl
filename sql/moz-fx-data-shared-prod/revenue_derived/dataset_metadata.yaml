@@ -1,6 +1,6 @@
 friendly_name: Revenue Derived
 description: |-
-  Derived tables related to Mozilla revenue work
+  Derived tables related to Mozilla revenue data
 dataset_base_acl: derived_restricted
 user_facing: false
 labels: {}

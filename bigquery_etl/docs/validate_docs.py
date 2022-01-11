@@ -37,7 +37,8 @@ def validate(project_dirs):
 
             for root, dirs, files in os.walk(project_dir):
                 if os.path.basename(root) == EXAMPLE_DIR:
-                    for file in files:
+                    sql_files = (f for f in files if os.path.splitext(f)[1] == ".sql")
+                    for file in sql_files:
                         dry_run_sql = sub_local_routines(
                             (Path(root) / file).read_text(),
                             project_dir,

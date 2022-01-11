@@ -9,10 +9,10 @@ python -m bigquery_etl.search.mobile_search_clients_daily \
 > sql/moz-fx-data-shared-prod/\
 search_derived/mobile_search_clients_daily_v1/query.sql
 """
-import click
 from pathlib import Path
 from typing import List
 
+import click
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.format_sql.formatter import reformat
@@ -37,7 +37,20 @@ def union_statements(statements: List[str]):
 
 
 @click.command()
-def generate():
+@click.option(
+    "--output-dir",
+    "--output_dir",
+    help="Output directory generated SQL is written to",
+    type=click.Path(file_okay=False),
+    default="sql",
+)
+@click.option(
+    "--target-project",
+    "--target_project",
+    help="GCP project ID",
+    default="moz-fx-data-shared-prod",
+)
+def generate(output_dir, target_project):
     """Generate mobile search clients daily query and print to stdout."""
     base_dir = Path(__file__).parent
 

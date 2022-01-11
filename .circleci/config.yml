@@ -53,7 +53,15 @@ jobs:
     steps:
       - checkout
       - *restore_venv_cache
-      - *build
+      - &attach_generated_sql
+        attach_workspace:
+          at: /tmp/workspace
+      - &copy_generated_sql
+        run:
+          name: Move generated-sql into place
+          command: |
+            rm -rf sql/
+            cp -r /tmp/workspace/generated-sql/sql sql
       - run:
           name: Verify that SQL is correctly formatted
           command: |
@@ -82,6 +90,8 @@ jobs:
       - checkout
       - *restore_venv_cache
       - *build
+      - *attach_generated_sql
+      - *copy_generated_sql
       - run:
           name: Run SQL tests
           command: |
@@ -97,6 +107,8 @@ jobs:
       - checkout
       - *restore_venv_cache
       - *build
+      - *attach_generated_sql
+      - *copy_generated_sql
       - run:
           name: Dry run queries
           # yamllint disable rule:line-length
@@ -123,6 +135,8 @@ jobs:
       - checkout
       - *restore_venv_cache
       - *build
+      - *attach_generated_sql
+      - *copy_generated_sql
       - run:
           name: Verify that metadata files are valid
           command: PATH="venv/bin:$PATH" script/validate_metadata
@@ -174,11 +188,31 @@ jobs:
           paths:
             - ~/.m2
           key: *mvn_cache_key
+  generate-dags:
+    docker: *docker
+    steps:
+      - checkout
+      - *restore_venv_cache
+      - *build
+      - *restore_mvn_cache
+      - *java_deps
+      - *attach_generated_sql
+      - *copy_generated_sql
+      - run:
+          name: Generate DAGs
+          command: PATH="venv/bin:$PATH" script/generate_airflow_dags
+      # this task is overwriting the content produced by generate-sql;
+      # the behaviour here is additive, generated DAGs are just added to
+      # the generated-sql output
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - generated-sql
   validate-dags:
     # based on
     # https://github.com/mozilla/telemetry-airflow/blob/main/.circleci/config.yml
     machine:
-      image: ubuntu-1604:201903-01
+      image: ubuntu-2004:202111-01
       docker_layer_caching: true
     steps:
       - checkout
@@ -203,6 +237,8 @@ jobs:
           command: |
             git clone https://github.com/mozilla/telemetry-airflow.git
             cp -a dags/. telemetry-airflow/dags/
+      - *attach_generated_sql
+      - *copy_generated_sql
       - run:
           command: |
             cd telemetry-airflow
@@ -216,6 +252,7 @@ jobs:
             cd telemetry-airflow
             bash bin/test-parse
   verify-dags-up-to-date:
+    # todo: remove this step once we rely on generate-dags completely
     docker: *docker
     steps:
       - checkout
@@ -231,28 +268,14 @@ jobs:
           command: |
             git diff --exit-code
             diff <(git ls-files dags/*.py) <(ls dags/*.py)
-  verify-queries-up-to-date:
-    docker: *docker
-    steps:
-      - checkout
-      - *restore_venv_cache
-      - *build
-      # Additional query generation commands may be added here in the future.
-      - run:
-          name: Generate events_daily Queries
-          command: PATH="venv/bin:$PATH" script/bqetl events_daily generate
-      - run:
-          name: Generate example glean usage queries
-          command: PATH="venv/bin:$PATH" script/update_example_glean_usage
-      - run:
-          name: Verify that queries were correctly generated and are up-to-date
-          command: git diff --exit-code
   validate-docs:
     docker: *docker
     steps:
       - checkout
       - *restore_venv_cache
       - *build
+      - *attach_generated_sql
+      - *copy_generated_sql
       - run:
           name: Validate doc examples
           command: PATH="venv/bin:$PATH" script/validate_docs
@@ -264,6 +287,8 @@ jobs:
       - *build
       - *restore_mvn_cache
       - *java_deps
+      - *attach_generated_sql
+      - *copy_generated_sql
       - run:
           name: Validate views
           command: PATH="venv/bin:$PATH" script/bqetl view validate
@@ -276,8 +301,7 @@ jobs:
       - *build
       - *restore_mvn_cache
       - *java_deps
-      - attach_workspace:
-          at: /tmp/workspace
+      - *attach_generated_sql
       - add_ssh_keys:
           fingerprints: "ab:b5:f7:55:92:0a:72:c4:63:0e:57:be:cd:66:32:53"
       - run:
@@ -303,9 +327,12 @@ jobs:
             mkdir -p /tmp/workspace/generated-sql
             cp -r sql/ /tmp/workspace/generated-sql/sql
             # Don't depend on dry run for PRs
-            PATH="venv/bin:$PATH" ./script/generate_sql \
-              --sql-dir /tmp/workspace/generated-sql/sql/ \
+            PATH="venv/bin:$PATH" script/bqetl generate all \
+              --output-dir /tmp/workspace/generated-sql/sql/ \
               --target-project moz-fx-data-shared-prod
+            PATH="venv/bin:$PATH" script/bqetl dependency record \
+              --skip-existing \
+              "/tmp/workspace/generated-sql/sql/"
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -313,8 +340,7 @@ jobs:
   push-generated-sql:
     docker: *docker
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
+      - *attach_generated_sql
       - add_ssh_keys:
           fingerprints: "ab:b5:f7:55:92:0a:72:c4:63:0e:57:be:cd:66:32:53"
       - run:
@@ -333,19 +359,15 @@ jobs:
             git commit -m "Auto-push due to change on main branch [ci skip]" \
               && git push \
               || echo "Skipping push since it looks like there were no changes"
+
   deploy:
     executor: docker/docker
     steps:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: Move generated-sql into place
-          command: |
-            rm -rf sql/
-            cp -r /tmp/workspace/generated-sql/sql sql
+      - *attach_generated_sql
+      - *copy_generated_sql
       - when:
           condition: &deploy-condition
             or:
@@ -393,8 +415,8 @@ jobs:
             mkdir -p /tmp/workspace/private-generated-sql
             cp -r sql/ /tmp/workspace/private-generated-sql/sql
             # Don't depend on dry run for PRs
-            PATH="venv/bin:$PATH" ./script/generate_sql \
-              --sql-dir /tmp/workspace/private-generated-sql/sql/ \
+            PATH="venv/bin:$PATH" script/bqetl generate all \
+              --output-dir /tmp/workspace/private-generated-sql/sql/ \
               --target-project moz-fx-data-shared-prod
       - persist_to_workspace:
           root: /tmp/workspace
@@ -403,8 +425,7 @@ jobs:
   push-private-generated-sql:
     docker: *docker
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
+      - *attach_generated_sql
       - add_ssh_keys:
           fingerprints: "cf:d6:25:9a:ee:26:66:39:c8:cc:48:f6:bb:3e:34:68"
       - run:
@@ -429,8 +450,7 @@ jobs:
     executor: gcp-gcr/default
     steps:
       - checkout
-      - attach_workspace:
-          at: /tmp/workspace
+      - *attach_generated_sql
       - run:
           name: Move generated-sql into place
           command: |
@@ -535,17 +555,31 @@ workflows:
       - manual-trigger-required-for-fork
       - build:
           context: data-eng-circleci-tests
-      - verify-format-sql
+      - verify-format-sql:
+          requires:
+            - generate-sql
       - verify-requirements
       - test-sql:
           context: data-eng-circleci-tests
-      - dry-run-sql
-      - validate-metadata
+          requires:
+            - generate-sql
+      - dry-run-sql:
+          requires:
+            - generate-sql
+      - validate-metadata:
+          requires:
+            - generate-sql
       - integration
-      - validate-dags
+      - validate-dags:
+          requires:
+            - generate-dags
       - verify-dags-up-to-date
-      - validate-docs
-      - validate-views
+      - validate-docs:
+          requires:
+            - generate-sql
+      - validate-views:
+          requires:
+            - generate-sql
       - generate-sql
       - generate-diff:
           requires:
@@ -559,6 +593,9 @@ workflows:
           filters:
             branches:
               ignore: main
+      - generate-dags:
+          requires:
+            - generate-sql
       - docs:
           requires:
             - generate-sql
@@ -602,3 +639,4 @@ workflows:
             - private-generate-sql
             # can't run in parallel because CIRCLE_BUILD_NUM is same
             - build
+            - generate-sql

@@ -9,7 +9,7 @@ from typing import Dict, Iterator, List, Tuple
 import click
 import yaml
 
-from bigquery_etl.view.generate_stable_views import get_stable_table_schemas
+from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 
 stable_views = None
 

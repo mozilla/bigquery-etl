@@ -14,6 +14,8 @@ from google.cloud import bigquery, storage
 
 from bigquery_etl.util.common import render, write_sql
 
+PATH = Path(os.path.dirname(__file__))
+
 QUERY_FILENAME = "{}_query{}.sql"
 INIT_FILENAME = "{}_init.sql"
 VIEW_FILENAME = "{}_view.sql"
@@ -56,7 +58,7 @@ def _write_sql(
         output_filename,
         render(
             template_filename,
-            template_folder="operational_monitoring",
+            template_folder=PATH,
             **kwargs,
             init=init,
         ),

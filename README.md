@@ -15,7 +15,7 @@ For more information, see [https://mozilla.github.io/bigquery-etl/](https://mozi
 
 > Apple Silicon (M1) user suggestion
 >
-> Enable [Rosetta mode](https://support.apple.com/en-ca/HT211861) for your terminal _**BEFORE**_ installing below tools using your terminal. It'll save you a lot of headaches.
+> Enable [Rosetta mode](https://support.apple.com/en-ca/HT211861) for your terminal _**BEFORE**_ installing below tools using your terminal. It'll save you a lot of headaches. For tips on maintaining parallel stacks of python and homebrew running with and without Rosetta, see blog posts from [Thinknum](https://medium.com/thinknum/how-to-install-python-under-rosetta-2-f98c0865e012) and [Sixty North](http://sixty-north.com/blog/pyenv-apple-silicon.html).
 
 ### Pre-requisites
 - **Homebrew** (not required, but useful for Mac) - Follow the instructions [here](https://brew.sh/) to install homebrew on your Mac.

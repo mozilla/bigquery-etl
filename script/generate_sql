@@ -35,13 +35,13 @@ done
 set -x
 
 # Fill in any missing view definitions in the target project folder
-python -m bigquery_etl.view.generate_stable_views \
+./script/bqetl generate stable_views \
     --target-project "${TARGET_PROJECT}" \
     --sql-dir "${SQL_DIR}" \
     --parallelism=20
 
 # Fill in definitions for generated Glean ETL
-./script/bqetl generate glean_usage --project-id "${TARGET_PROJECT}" --output-dir "${SQL_DIR}"
+./script/bqetl generate glean_usage --target-project "${TARGET_PROJECT}" --output-dir "${SQL_DIR}"
 
 # Record dependencies in yaml files
 ./script/bqetl dependency record --skip-existing "${SQL_DIR}"

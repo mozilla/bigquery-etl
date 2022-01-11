@@ -1,18 +1,4 @@
-WITH fxa_stdout_events AS (
-  SELECT
-    PARSE_DATE('%y%m%d', _TABLE_SUFFIX) AS partition_date,
-    `timestamp`,
-    jsonPayload.fields.event_properties,
-    jsonPayload.fields.event_type,
-    TO_HEX(SHA256(jsonPayload.fields.user_id)) AS user_id,
-    jsonPayload.fields.user_properties,
-  FROM
-    `moz-fx-fxa-prod-0712.fxa_prod_logs.stdout_20*`
-  WHERE
-    jsonPayload.type = 'amplitudeEvent'
-    AND jsonPayload.fields.event_type IS NOT NULL
-),
-fxa_content_auth_stdout_events AS (
+WITH fxa_content_auth_stdout_events AS (
   SELECT
     DATE(`timestamp`) AS partition_date,
     `timestamp`,
@@ -28,24 +14,7 @@ fxa_content_auth_stdout_events AS (
     utm_source,
     utm_term,
   FROM
-    mozdata.firefox_accounts.fxa_content_auth_events
-  UNION ALL
-  SELECT
-    partition_date,
-    `timestamp`,
-    JSON_VALUE(event_properties, '$.service') AS service,
-    event_type,
-    JSON_VALUE(user_properties, '$.flow_id') AS flow_id,
-    user_id,
-    JSON_VALUE(user_properties, '$.entrypoint_experiment') AS entrypoint_experiment,
-    JSON_VALUE(user_properties, '$.entrypoint_variation') AS entrypoint_variation,
-    JSON_VALUE(user_properties, '$.utm_campaign') AS utm_campaign,
-    JSON_VALUE(user_properties, '$.utm_content') AS utm_content,
-    JSON_VALUE(user_properties, '$.utm_medium') AS utm_medium,
-    JSON_VALUE(user_properties, '$.utm_source') AS utm_source,
-    JSON_VALUE(user_properties, '$.utm_term') AS utm_term,
-  FROM
-    fxa_stdout_events
+    mozdata.firefox_accounts.fxa_content_auth_stdout_events
 ),
 flows AS (
   SELECT
@@ -86,7 +55,10 @@ flows AS (
     AND (
       service = "guardian-vpn"
       -- service is missing for these event types
-      OR (service IS NULL AND (event_type = "fxa_rp_button - view" OR event_type LIKE "fxa_pay_%"))
+      OR (
+        (service IS NULL OR service = "undefined_oauth")
+        AND (event_type = "fxa_rp_button - view" OR event_type LIKE "fxa_pay_%")
+      )
     )
     AND flow_id IS NOT NULL
   GROUP BY

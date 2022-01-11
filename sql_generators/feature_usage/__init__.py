@@ -1,15 +1,15 @@
 """Feature usage table generation."""
-import click
 import os
 import shutil
-import yaml
-
-from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 
-from bigquery_etl.cli.query import update
-from bigquery_etl.util.common import write_sql
+import click
+import yaml
+from jinja2 import Environment, FileSystemLoader
+
 from bigquery_etl.format_sql.formatter import reformat
+from bigquery_etl.schema import SCHEMA_FILE, Schema
+from bigquery_etl.util.common import write_sql
 
 FILE_PATH = Path(os.path.dirname(__file__))
 BASE_DIR = Path(FILE_PATH).parent.parent
@@ -59,9 +59,23 @@ def generate_metadata(project, dataset, destination_table, write_dir):
     )
 
 
+def generate_schema(project, dataset, destination_table, write_dir):
+    """Generate the table schema."""
+    # get schema
+    table_schema = Schema.for_table(project, dataset, destination_table)
+    query_schema = Schema.from_query_file(
+        write_dir / project / dataset / destination_table / "query.sql",
+        use_cloud_function=True,
+    )
+    query_schema.merge(table_schema)
+    schema_path = write_dir / project / dataset / destination_table / SCHEMA_FILE
+    query_schema.to_yaml_file(schema_path)
+
+
 @click.command("generate")
 @click.option(
-    "--project",
+    "--target-project",
+    "--target_project",
     help="Which project the queries should be written to.",
     default="moz-fx-data-shared-prod",
 )
@@ -84,9 +98,10 @@ def generate_metadata(project, dataset, destination_table, write_dir):
     type=click.Path(file_okay=False),
 )
 @click.pass_context
-def generate(ctx, project, dataset, destination_table, output_dir):
+def generate(ctx, target_project, dataset, destination_table, output_dir):
     """Generate the feature usage table."""
-    generate_query(project, dataset, destination_table, output_dir)
-    generate_view(project, dataset, destination_table, output_dir)
-    generate_metadata(project, dataset, destination_table, output_dir)
-    ctx.invoke(update, name=f"{dataset}.{destination_table}", project_id=project)
+    output_dir = Path(output_dir)
+    generate_query(target_project, dataset, destination_table, output_dir)
+    generate_view(target_project, dataset, destination_table, output_dir)
+    generate_metadata(target_project, dataset, destination_table, output_dir)
+    generate_schema(target_project, dataset, destination_table, output_dir)

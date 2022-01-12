@@ -5,6 +5,11 @@ orbs:
   gcp-gcr: circleci/gcp-gcr@0.13.0
   docker: circleci/docker@1.5
 
+executors:
+  ubuntu-machine-executor:
+    machine:
+      image: ubuntu-2004:202111-02
+
 jobs:
   build:
     docker: &docker
@@ -361,11 +366,9 @@ jobs:
               || echo "Skipping push since it looks like there were no changes"
 
   deploy:
-    executor: docker/docker
+    executor: ubuntu-machine-executor
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
       - *attach_generated_sql
       - *copy_generated_sql
       - when:
@@ -418,6 +421,9 @@ jobs:
             PATH="venv/bin:$PATH" script/bqetl generate all \
               --output-dir /tmp/workspace/private-generated-sql/sql/ \
               --target-project moz-fx-data-shared-prod
+            PATH="venv/bin:$PATH" script/bqetl dependency record \
+              --skip-existing \
+              "/tmp/workspace/private-generated-sql/sql/"
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -447,11 +453,15 @@ jobs:
               || echo "Skipping push since it looks like there were no changes"
           # yamllint enable rule:line-length
   deploy-to-private-gcr:
-    executor: gcp-gcr/default
+    executor: ubuntu-machine-executor
     steps:
       - checkout
       - *attach_generated_sql
-      - *copy_generated_sql
+      - run:
+          name: Move generated-sql into place
+          command: |
+            rm -rf sql/
+            cp -r /tmp/workspace/private-generated-sql/sql sql
       - when:
           condition: *deploy-condition
           steps:

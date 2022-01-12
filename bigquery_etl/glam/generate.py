@@ -147,7 +147,7 @@ def main():
                 },
                 "minimum_client_count": {
                     "type": "integer",
-                    "minimum": 1,
+                    "minimum": 0,
                     "description": "The minimum client count for each build id.",
                 },
             },

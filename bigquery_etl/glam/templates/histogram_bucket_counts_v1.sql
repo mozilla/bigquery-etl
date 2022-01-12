@@ -10,6 +10,17 @@ WITH
         attribute_combinations
     )
 }},
+build_ids AS (
+  SELECT
+    app_build_id,
+    channel,
+  FROM
+    all_combos
+  GROUP BY
+    1,
+    2
+  HAVING
+      COUNT(DISTINCT client_id) > {{ minimum_client_count }}),
 normalized_histograms AS (
   SELECT
     {{ attributes }},
@@ -34,6 +45,8 @@ unnested AS (
     normalized_histograms,
     UNNEST(histogram_aggregates) AS histogram_aggregates,
     UNNEST(aggregates) AS aggregates
+  INNER JOIN build_ids
+  USING (app_build_id,channel)
 ),
 -- Find information that can be used to construct the bucket range. Most of the
 -- distributions follow a bucketing rule of 8*log2(n). This doesn't apply to the

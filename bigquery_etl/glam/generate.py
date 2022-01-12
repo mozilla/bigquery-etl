@@ -147,7 +147,7 @@ def main():
                 },
                 "minimum_client_count": {
                     "type": "integer",
-                    "minimum": 1,
+                    "minimum": 0,
                     "description": "The minimum client count for each build id.",
                 },
             },
@@ -185,22 +185,22 @@ def main():
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
-            "total_users": 10,
-            "minimum_client_count": 10,
+            "total_users": 1,
+            "minimum_client_count": 0,
         },
         "firefox_desktop_glam_beta": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
-            "total_users": 10,
-            "minimum_client_count": 10,
+            "total_users": 1,
+            "minimum_client_count": 0,
         },
         "firefox_desktop_glam_release": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
-            "total_users": 10,
-            "minimum_client_count": 10,
+            "total_users": 1,
+            "minimum_client_count": 0,
         },
     }
     validate(instance=config, schema=config_schema)

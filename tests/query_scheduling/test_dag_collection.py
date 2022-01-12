@@ -237,6 +237,10 @@ class TestDagCollection:
                 "depends_on_past": True,
                 "param": "test_param",
                 "arguments": ["--append_table"],
+                "depends_on_fivetran": [
+                    {"task_id": "fivetran_import_1"},
+                    {"task_id": "fivetran_import_2"},
+                ],
             },
         )
 

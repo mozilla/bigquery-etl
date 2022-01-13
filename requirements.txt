@@ -193,16 +193,16 @@ flake8==3.9.1 \
     --hash=sha256:1aa8990be1e689d96c745c5682b687ea49f2e05a443aff1f8251092b0014e378 \
     --hash=sha256:3b9f848952dddccf635be78098ca75010f073bfe14d2c6bda867154bea728d2a
     # via pytest-flake8
-fsspec==2021.11.1 \
-    --hash=sha256:03683e606651d5e4bd9180525d57477bd5430e5dc68d2e459835dc14cecc3dd4 \
-    --hash=sha256:bcb136caa37e1470dd8314a7d3917cb9b25dd9da44c10d36df556ab4ef038185
+fsspec==2022.01.0 \
+    --hash=sha256:0bdd519bbf4d8c9a1d893a50b5ebacc89acd0e1fe0045d2f7b0e0c1af5990edc \
+    --hash=sha256:256e2be44e62430c9ca8dac2e480384b00a3c52aef4e2b0b7204163fdc861d37
     # via gcsfs
 gcloud==0.18.3 \
     --hash=sha256:0af2dec59fce20561752f86e42d981c6a255e306a6c5e5d1fa3d358a8857e4fb
     # via -r requirements.in
-gcsfs==2021.11.1 \
-    --hash=sha256:7cbc3cc9525c0f32680606428f3980e09d794e6e260711f701405ae365e3e824 \
-    --hash=sha256:cc03c5ab7190cf4dddb67be0016f3cb2148743935061da5ef142ea86149814dd
+gcsfs==2022.1.0 \
+    --hash=sha256:3483410373e77ad1dea5735e43e5d23e1dfcadafd066121e6cc96e3fcc76bb28 \
+    --hash=sha256:5312e05f2468ddd766aafac17580e1d3d79de6f0d12fd76d0fa1426d8bfb24a1
     # via -r requirements.in
 ghp-import==2.0.2 \
     --hash=sha256:5f8962b30b20652cdffa9c5a9812f7de6bcb56ec475acac579807719bf242c46 \

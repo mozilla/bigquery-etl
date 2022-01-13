@@ -1,93 +1,59 @@
 Operational Monitoring
 ===
 
-Operational Monitoring is a general term that refers to monitoring the health of software.
-
-For the purpose of this project, there will be a couple of specific monitoring use cases that are supported:
-1. Monitoring build over build. This is typically for Nightly where one build may contain changes that a previous build doesn't and we want to see if those changes affected certain metrics.
-2. Monitoring by submission date over time. This is helpful for a rollout in Release for example, where we want to make sure there are no performance or stability regressions over time as a new build rolls out.
-
-Although the ETL for both cases shares a common set of templates, the data is a stored/represented slightly differently.
-* For case 1, submission date is used as the partition but previous submission dates are only there for backup. The most recent submission date is the only one of interest as it will include all relevant builds to be graphed.
-* For case 2, submission date is also used as the partition, but they are not backups. The previous submission dates will include dates that need to be graphed.
-
-#### Project Definition Files
-A project is defined using in a JSON file in combination with 2 other JSON files. Examples of each file can be found below:
-
-##### dimensions.json
-```
-{
-  "cores_count": {
-    "source": ["mozdata.telemetry.main_nightly"],
-    "sql": "environment.system.cpu.cores"
-  },
-  "os": {
-    "source": ["mozdata.telemetry.main_nightly", "mozdata.telemetry.crash"],
-    "sql": "normalized_os"
-  }
-  ...
-}
-```
-
-##### probes.json
-```
-{
-  "CONTENT_SHUTDOWN_CRASHES": {
-    "source": "mozdata.telemetry.crash",
-    "category": "stability",
-    "type": "scalar",
-    "sql": "IF(REGEXP_CONTAINS(payload.process_type, 'content') AND REGEXP_CONTAINS(payload.metadata.ipc_channel_error, 'ShutDownKill'), 1, 0)"
-  },
-  "CONTENT_PROCESS_COUNT": {
-    "source": "mozdata.telemetry.main_nightly",
-    "category": "performance",
-    "type": "histogram",
-    "sql": "payload.histograms.content_process_count"
-  },
- ...
-}
-```
-
-##### <project_name>.json
-
-```
-{
-  "name": "Fission Release Rollout",
-  "slug": "bug-1732206-rollout-fission-release-rollout-release-94-95",
-  "channel": "release",
-  "boolean_pref": "environment.settings.fission_enabled",
-  "xaxis": "submission_date",
-  "start_date": "2021-11-09",
-  "analysis": [{
-  	"source": "mozdata.telemetry.main_1pct",
-  	"dimensions": ["cores_count", "os"],
-  	"probes": [
-  		"CONTENT_PROCESS_COUNT",
-    ]
-	}, {
-    "source": "mozdata.telemetry.crash",
-    "dimensions": ["cores_count", "os"],
-    "probes": [
-      "CONTENT_SHUTDOWN_CRASHES",
-    ]
-  }]
-}
-```
-
-Below is the description of each field in the project definition and its allowable values:
-* `name`: Name that will be used as the generated Looker dashboard title
-* `slug`: The slug associated with the rollout that is being monitored
-* `channel`: `release`, `beta`, or `nightly`. The channel the rollout is running in
-* `boolean_pref`: A sql snippet that results in a boolean representing whether a user is included in the rollout or not (note: if this is not included, the slug is used to check instead)
-* `xaxis`: `submission_date` or `build_id`. specifies the type of monitoring desired as described above.
-* `start_date`: `yyyy-mm-dd`, specifies the oldest submission date or build id to be processed (where build id is cast to date). If not set, defaults to the previous 30 days.
-* `analysis`: An array of objects with the fields `source`, `dimensions`, and `probes` where each object represents data that will be pulled out from a different sourc.
-    * `source`: The BigQuery table name to be queried
-    * `dimensions`: The dimensions of interest, referenced from `dimensions.json`
-    * `probes`: The probes of interest, referenced from `probes.json`
+This document will focus on the implementation of Operational Monitoring. To understand how to use Operational Monitoring, see the [documentation at dtmo](https://docs.telemetry.mozilla.org/cookbooks/operational_monitoring.html).
 
 
+## Overview
+
+![](./assets/overview.png)
+
+The diagram above shows the relationship between different parts of the Operational Monitoring system. At a high level, data flows through the system in the following way:
+
+1. Users create project definition files as described on [dtmo](https://docs.telemetry.mozilla.org/cookbooks/operational_monitoring.html)
+2. Two daily jobs run in Airflow to process the config files: one to generate + run the ETL and one to generate LookML for views/explores/dashboards
+3. Updated LookML dashboards and explores are available once per day and loading them runs aggregates on the fly by referencing relevant BigQuery tables.
+
+Below we will dive deeper into what's happening under the hood.
+
+## ETL Generator
+
+The ETL generator takes the project definition files as input and uses [Jinja](https://jinja.palletsprojects.com/en/3.0.x/) templates to generate different SQL queries to process the relevant data. At a high level, it works by doing the following steps for each project file:
+
+1) Check if the project file was updated since the last time its SQL queries were generated - if so, regenerate.
+2) For each data source in the `analysis` list in the project definition:
+
+    a. For each data type (e.g. scalars, histograms), generate a different query
+
+The aggregations done in this ETL are at the client-level. The queries are grouped by the branch, x-axis value (build id or submission date), and dimensions listed in the project config.
+Normalization is done so that clients with many submissions would only count once.
+* For histograms, this is done by summing up values for each bucket then dividing each bucket by the total number of submissions. For more detail, see [`histogram_normalized_sum()`](https://github.com/mozilla/bigquery-etl/blob/main/sql/mozfun/glam/histogram_normalized_sum/udf.sql)
+* For scalars, this is done by computing an aggregate function for each client (e.g. sum, avg, etc)
+
+Although the ETL uses a single set of SQL templates, in order to support both build IDs and submission dates on the x-axis, the data is stored/represented in slightly different ways for each case.
+* For build IDs on the x-axis, submission date is used as the partition but previous submission dates are only there for backup. The most recent submission date is the only one of interest as it will include all relevant builds to be graphed.
+* For submission dates on the x-axis, submission date is also used as the partition, but they are not backups. The previous submission dates will include dates that need to be graphed.
+
+## ETL Runner
+
+The [Operational Monitoring DAG](https://workflow.telemetry.mozilla.org/tree?dag_id=operational_monitoring) runs once per day in Airflow.
+
+A separate table is generated for each operational monitoring project + data type. For example, a given project will have 1 table for scalars that might consist of scalars pulled in from a variety of different tables in BigQuery.
 
 
+## LookML Generator
+
+Specific LookML is generated for Operational Monitoring. The code for this lives in the [lookml-generator](https://github.com/mozilla/lookml-generator) repo and runs daily as part of the [probe_scraper DAG](https://workflow.telemetry.mozilla.org/tree?dag_id=probe_scraper). Each run performs the following steps:
+
+1) A view is generated for each table that is outputted from the ETL runner. The view contains the dimensions (e.g. metric, branch, build_id) and a measure that computes percentiles
+2) Explores are generated for each view, these include Looker [aggregate tables](https://docs.looker.com/reference/explore-params/aggregate_table) for each graph shown in the default view of a dashboard
+3) Dashboards are generated for each project
 
 
+## Output
+
+Below is an example of a dashboard generated by Operational Monitoring for the [Fission Release Rollout](https://mozilla.cloud.looker.com/dashboards/operational_monitoring::fission_release_rollout?Percentile=50&Cores%20Count=2&Os=Windows)
+
+![](./assets/example.png)
+
+Note that the dropdowns shown, aside from `Percentile` are generated based on the project definition. There is one dropdown for each dimension specified and it is populated by querying unique values for that dimension. The default value for each dropdown is the most common value found in the table.

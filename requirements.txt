@@ -249,9 +249,9 @@ google-cloud-core==1.6.0 \
     # via
     #   google-cloud-bigquery
     #   google-cloud-storage
-google-cloud-storage==1.44.0 \
-    --hash=sha256:29edbfeedd157d853049302bf5d104055c6f0cb7ef283537da3ce3f730073001 \
-    --hash=sha256:cd4a223e9c18d771721a85c98a9c01b97d257edddff833ba63b7b1f0b9b4d6e9
+google-cloud-storage==2.0.0 \
+    --hash=sha256:a57a15aead0f9dfbd4381f1bfdbe8bf89818a4bd75bab846cafcefb2db846c47 \
+    --hash=sha256:ec4be60bb223a3a960f0d01697d849b86d91cad815a84915a32ed3635e93a5e7
     # via
     #   -r requirements.in
     #   gcsfs
@@ -975,7 +975,6 @@ six==1.15.0 \
     #   google-api-core
     #   google-auth
     #   google-cloud-core
-    #   google-cloud-storage
     #   google-resumable-media
     #   grpcio
     #   oauth2client

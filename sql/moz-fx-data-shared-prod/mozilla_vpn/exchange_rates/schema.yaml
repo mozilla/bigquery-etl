@@ -1,0 +1,16 @@
+fields:
+- mode: NULLABLE
+  name: date
+  type: DATE
+- mode: NULLABLE
+  name: base_currency
+  type: STRING
+- mode: NULLABLE
+  name: quote_currency
+  type: STRING
+- mode: NULLABLE
+  name: price_type
+  type: STRING
+- mode: NULLABLE
+  name: price
+  type: NUMERIC

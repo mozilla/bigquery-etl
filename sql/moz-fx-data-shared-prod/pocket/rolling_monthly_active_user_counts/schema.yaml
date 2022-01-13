@@ -1,0 +1,7 @@
+fields:
+- mode: NULLABLE
+  name: measured_at
+  type: DATE
+- mode: NULLABLE
+  name: user_count
+  type: INTEGER

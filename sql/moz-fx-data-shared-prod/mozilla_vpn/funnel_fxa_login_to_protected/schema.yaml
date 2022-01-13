@@ -1,0 +1,25 @@
+fields:
+- mode: NULLABLE
+  name: id
+  type: STRING
+- mode: NULLABLE
+  name: fxa_uid
+  type: STRING
+- mode: NULLABLE
+  name: start_date
+  type: DATE
+- mode: NULLABLE
+  name: completed_login
+  type: BOOLEAN
+- mode: NULLABLE
+  name: registered_user
+  type: BOOLEAN
+- mode: NULLABLE
+  name: paid_for_subscription
+  type: BOOLEAN
+- mode: NULLABLE
+  name: registered_device
+  type: BOOLEAN
+- mode: NULLABLE
+  name: protected
+  type: BOOLEAN

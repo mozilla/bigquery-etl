@@ -1,0 +1,50 @@
+fields:
+- mode: NULLABLE
+  name: id
+  type: STRING
+- mode: NULLABLE
+  name: event_timestamp
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: active
+  type: BOOLEAN
+- mode: REPEATED
+  name: attributes
+  type: STRING
+- mode: NULLABLE
+  name: caption
+  type: STRING
+- mode: NULLABLE
+  name: created
+  type: TIMESTAMP
+- mode: REPEATED
+  name: deactive_on
+  type: STRING
+- mode: NULLABLE
+  name: description
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: STRING
+  mode: REPEATED
+  name: metadata
+  type: RECORD
+- mode: NULLABLE
+  name: name
+  type: STRING
+- mode: NULLABLE
+  name: statement_descriptor
+  type: STRING
+- mode: NULLABLE
+  name: tax_code
+  type: STRING
+- mode: NULLABLE
+  name: type
+  type: STRING
+- mode: NULLABLE
+  name: updated
+  type: TIMESTAMP

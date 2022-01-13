@@ -1,0 +1,10 @@
+fields:
+- mode: NULLABLE
+  name: submission_minute
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: n
+  type: INTEGER
+- mode: NULLABLE
+  name: n_merino
+  type: INTEGER

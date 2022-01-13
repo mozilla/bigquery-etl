@@ -71,6 +71,10 @@ fields:
     mode: NULLABLE
     name: telemetry_sdk_build
     type: STRING
+  - description: The date & time the application was built
+    mode: NULLABLE
+    name: build_date
+    type: STRING
   mode: NULLABLE
   name: client_info
   type: RECORD

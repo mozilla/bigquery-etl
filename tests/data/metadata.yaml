@@ -13,3 +13,6 @@ labels:
   number_value: 1234234
   number_string: 1234abcde
   123-432: valid
+references:
+  query.sql:
+    - project.dataset_derived.table_v1

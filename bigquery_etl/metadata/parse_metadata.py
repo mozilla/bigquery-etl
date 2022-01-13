@@ -131,6 +131,7 @@ class Metadata:
     bigquery: Optional[BigQueryMetadata] = attr.ib(None)
     schema: Optional[SchemaMetadata] = attr.ib(None)
     workgroup_access: Optional[List[WorkgroupAccessMetadata]] = attr.ib(None)
+    references: Dict = attr.ib({})
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -203,6 +204,7 @@ class Metadata:
         bigquery = None
         schema = None
         workgroup_access = None
+        references = {}
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -247,6 +249,9 @@ class Metadata:
                         metadata["workgroup_access"], List[WorkgroupAccessMetadata]
                     )
 
+                if "references" in metadata:
+                    references = metadata["references"]
+
                 return cls(
                     friendly_name,
                     description,
@@ -256,6 +261,7 @@ class Metadata:
                     bigquery,
                     schema,
                     workgroup_access,
+                    references,
                 )
             except yaml.YAMLError as e:
                 raise e

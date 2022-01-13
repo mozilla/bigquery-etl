@@ -45,3 +45,8 @@ set -x
 
 # Record dependencies in yaml files
 ./script/bqetl dependency record --skip-existing "${SQL_DIR}"
+
+# Create the derived view schemas for the specified project
+./script/bqetl generate derived_view_schemas \
+    --target-project "${TARGET_PROJECT}" \
+    --sql-dir "${SQL_DIR}" \

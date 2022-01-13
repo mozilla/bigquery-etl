@@ -2165,38 +2165,287 @@ ETL and analysis:</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static">Source Directory</a></p>
 <h2 id="country_codes_v1"><a href="#country_codes_v1">country_codes_v1</a></h2>
 <p><code>static.country_codes_v1</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>name</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>code</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/country_codes_v1">Source Directory</a> </p>
 <hr />
 <h2 id="country_names_v1"><a href="#country_names_v1">country_names_v1</a></h2>
 <p><code>static.country_names_v1</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>name</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>code</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/country_names_v1">Source Directory</a> </p>
 <hr />
 <h2 id="fxa_amplitude_export_users_daily"><a href="#fxa_amplitude_export_users_daily">fxa_amplitude_export_users_daily</a></h2>
 <p><code>static.fxa_amplitude_export_users_daily</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>submission_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>generated_time</td>
+        <td></td>
+        <td>Datetime</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>user_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>country</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>seen_in_tier1_country</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_daily/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="fxa_amplitude_export_users_last_seen"><a href="#fxa_amplitude_export_users_last_seen">fxa_amplitude_export_users_last_seen</a></h2>
 <p><code>static.fxa_amplitude_export_users_last_seen</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>submission_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>date_last_seen</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>date_last_seen_in_tier1_country</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>user_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>country</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_last_seen">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_last_seen/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="iana_tls_cipher_suites"><a href="#iana_tls_cipher_suites">iana_tls_cipher_suites</a></h2>
 <p><code>static.iana_tls_cipher_suites</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>value</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>description</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>dtls_ok</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>recommended</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>reference</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/iana_tls_cipher_suites">Source Directory</a> </p>
 <hr />
 <h2 id="normal_distribution"><a href="#normal_distribution">normal_distribution</a></h2>
 <p><code>static.normal_distribution</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>score</td>
+        <td></td>
+        <td>Numeric</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>value</td>
+        <td></td>
+        <td>Numeric</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/normal_distribution">Source Directory</a> </p>
 <hr />
 <h2 id="normalized_os_name"><a href="#normalized_os_name">normalized_os_name</a></h2>
 <p><code>static.normalized_os_name</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>os_name</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_name</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/normalized_os_name">Source Directory</a> </p>
 <hr />
 <h2 id="normalized_os_version"><a href="#normalized_os_version">normalized_os_version</a></h2>
 <p><code>static.normalized_os_version</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>os_name</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>os_version_regexp</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_name</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>release_date</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/normalized_os_version">Source Directory</a> </p>
 <hr />
 <h2 id="third_party_standardized_country_names"><a href="#third_party_standardized_country_names">third_party_standardized_country_names</a></h2>
 <p><code>static.third_party_standardized_country_names</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>raw_country</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>standardized_country</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/third_party_standardized_country_names">Source Directory</a> </p>
 <hr />
 

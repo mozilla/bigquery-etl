@@ -12,7 +12,7 @@ SET datasets = (
 );
 
 CREATE TEMP TABLE
-  columns(dataset STRING, table STRING, total_columns INT64);
+  columns(dataset STRING, table_name STRING, total_columns INT64);
 
 LOOP
   SET i = i + 1;
@@ -40,6 +40,13 @@ LOOP
       table_name  
     ''';
 END LOOP;
+
+-- Delete existing records for day.
+-- Prevents having duplicates when re-running query.
+DELETE FROM
+  monitoring_derived.stable_table_column_counts_v1
+WHERE
+  submission_date = DATE(@submission_date);
 
 -- Insert into target table
 INSERT INTO

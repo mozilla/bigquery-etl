@@ -471,6 +471,33 @@ event:
       tax_code:
       type:
       updated:
+    promotion_code:
+      active:
+      code:
+      coupon:
+        amount_off:
+        currency:
+        duration:
+        duration_in_months:
+        id:
+        metadata:
+          key:
+          value:
+        name:
+        percent_off:
+      created:
+      customer:
+      expires_at:
+      id:
+      max_redemptions:
+      metadata:
+        key:
+        value:
+      restrictions:
+        first_time_transaction:
+        minimum_amount:
+        minimum_amount_currency:
+      times_redeemed:
     setup_intent:
       cancellation_reason:
       created:

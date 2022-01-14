@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Load Pocket MAU data from GCS."""
+"""Load Pocket sponsored content metadata from GCS."""
 import uuid
 from argparse import ArgumentParser
 from datetime import datetime, timedelta

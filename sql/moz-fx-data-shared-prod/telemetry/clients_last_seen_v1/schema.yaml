@@ -1,98 +1,175 @@
 fields:
 - mode: NULLABLE
-  name: submission_date_s3
+  name: is_regular_user_v3
+  type: BOOLEAN
+- mode: NULLABLE
+  name: is_new_or_resurrected_v3
+  type: BOOLEAN
+- mode: NULLABLE
+  name: is_weekday_regular_v1
+  type: BOOLEAN
+- mode: NULLABLE
+  name: is_allweek_regular_v1
+  type: BOOLEAN
+- mode: NULLABLE
+  name: is_core_active_v1
+  type: BOOLEAN
+- mode: NULLABLE
+  name: activity_segments_v1
+  type: STRING
+- mode: NULLABLE
+  name: new_profile_7_day_activated_v1
+  type: BOOLEAN
+- mode: NULLABLE
+  name: new_profile_14_day_activated_v1
+  type: BOOLEAN
+- mode: NULLABLE
+  name: new_profile_21_day_activated_v1
+  type: BOOLEAN
+- mode: NULLABLE
+  name: first_run_date
   type: DATE
-- description: null
-  mode: NULLABLE
+- mode: NULLABLE
+  name: days_since_first_seen
+  type: INTEGER
+- mode: NULLABLE
+  name: days_since_second_seen
+  type: INTEGER
+- mode: NULLABLE
+  name: days_since_seen
+  type: INTEGER
+- mode: NULLABLE
+  name: days_since_visited_1_uri
+  type: INTEGER
+- mode: NULLABLE
+  name: days_since_visited_5_uri
+  type: INTEGER
+- mode: NULLABLE
+  name: days_since_visited_10_uri
+  type: INTEGER
+- mode: NULLABLE
+  name: days_since_had_8_active_ticks
+  type: INTEGER
+- mode: NULLABLE
+  name: days_since_opened_dev_tools
+  type: INTEGER
+- mode: NULLABLE
+  name: days_since_created_profile
+  type: INTEGER
+- mode: NULLABLE
+  name: days_since_interacted
+  type: INTEGER
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+- mode: NULLABLE
+  name: second_seen_date
+  type: DATE
+- mode: NULLABLE
+  name: days_seen_bits
+  type: INTEGER
+- mode: NULLABLE
+  name: days_visited_1_uri_bits
+  type: INTEGER
+- mode: NULLABLE
+  name: days_visited_5_uri_bits
+  type: INTEGER
+- mode: NULLABLE
+  name: days_visited_10_uri_bits
+  type: INTEGER
+- mode: NULLABLE
+  name: days_had_8_active_ticks_bits
+  type: INTEGER
+- mode: NULLABLE
+  name: days_opened_dev_tools_bits
+  type: INTEGER
+- mode: NULLABLE
+  name: days_interacted_bits
+  type: INTEGER
+- mode: NULLABLE
+  name: days_created_profile_bits
+  type: INTEGER
+- fields:
+  - mode: NULLABLE
+    name: experiment
+    type: STRING
+  - mode: NULLABLE
+    name: branch
+    type: STRING
+  - mode: NULLABLE
+    name: bits
+    type: INTEGER
+  - mode: NULLABLE
+    name: days_since_seen
+    type: INTEGER
+  mode: REPEATED
+  name: days_seen_in_experiment
+  type: RECORD
+- mode: NULLABLE
   name: submission_date
   type: DATE
 - mode: NULLABLE
-  name: sample_id
-  type: INTEGER
-- description: null
-  mode: NULLABLE
   name: client_id
   type: STRING
-- description: null
-  mode: NULLABLE
+- mode: NULLABLE
   name: aborts_content_sum
   type: INTEGER
-- description: null
-  mode: NULLABLE
+- mode: NULLABLE
   name: aborts_gmplugin_sum
   type: INTEGER
-- description: null
-  mode: NULLABLE
+- mode: NULLABLE
   name: aborts_plugin_sum
   type: INTEGER
-- description: null
-  mode: NULLABLE
+- mode: NULLABLE
   name: active_addons_count_mean
   type: FLOAT
-- description: null
-  fields:
-  - description: null
-    mode: NULLABLE
+- fields:
+  - mode: NULLABLE
     name: addon_id
     type: STRING
-  - description: null
-    mode: NULLABLE
+  - mode: NULLABLE
     name: blocklisted
     type: BOOLEAN
-  - description: null
-    mode: NULLABLE
+  - mode: NULLABLE
     name: name
     type: STRING
-  - description: null
-    mode: NULLABLE
+  - mode: NULLABLE
     name: user_disabled
     type: BOOLEAN
-  - description: null
-    mode: NULLABLE
+  - mode: NULLABLE
     name: app_disabled
     type: BOOLEAN
-  - description: null
-    mode: NULLABLE
+  - mode: NULLABLE
     name: version
     type: STRING
-  - description: null
-    mode: NULLABLE
+  - mode: NULLABLE
     name: scope
     type: INTEGER
-  - description: null
-    mode: NULLABLE
+  - mode: NULLABLE
     name: type
     type: STRING
-  - description: null
-    mode: NULLABLE
+  - mode: NULLABLE
     name: foreign_install
     type: BOOLEAN
-  - description: null
-    mode: NULLABLE
+  - mode: NULLABLE
     name: has_binary_components
     type: BOOLEAN
-  - description: null
-    mode: NULLABLE
+  - mode: NULLABLE
     name: install_day
     type: INTEGER
-  - description: null
-    mode: NULLABLE
+  - mode: NULLABLE
     name: update_day
     type: INTEGER
-  - description: null
-    mode: NULLABLE
+  - mode: NULLABLE
     name: signed_state
     type: INTEGER
-  - description: null
-    mode: NULLABLE
+  - mode: NULLABLE
     name: is_system
     type: BOOLEAN
-  - description: null
-    mode: NULLABLE
+  - mode: NULLABLE
     name: is_web_extension
     type: BOOLEAN
-  - description: null
-    mode: NULLABLE
+  - mode: NULLABLE
     name: multiprocess_compatible
     type: BOOLEAN
   mode: REPEATED
@@ -461,6 +538,9 @@ fields:
   name: push_api_notify_sum
   type: INTEGER
 - mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+- mode: NULLABLE
   name: sandbox_effective_content_process_level
   type: INTEGER
 - mode: NULLABLE
@@ -813,16 +893,16 @@ fields:
   name: scalar_parent_os_environment_launched_via_desktop
   type: BOOLEAN
 - mode: NULLABLE
-  name: scalar_parent_os_environment_launched_via_start_menu
-  type: BOOLEAN
-- mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_taskbar
   type: BOOLEAN
 - mode: NULLABLE
-  name: scalar_parent_os_environment_launched_via_other_shortcut
+  name: scalar_parent_os_environment_launched_via_other
   type: BOOLEAN
 - mode: NULLABLE
-  name: scalar_parent_os_environment_launched_via_other
+  name: scalar_parent_os_environment_launched_via_start_menu
+  type: BOOLEAN
+- mode: NULLABLE
+  name: scalar_parent_os_environment_launched_via_other_shortcut
   type: BOOLEAN
 - mode: NULLABLE
   name: search_count_webextension
@@ -1406,21 +1486,6 @@ fields:
   name: user_pref_browser_urlbar_suggest_quicksuggest_sponsored
   type: STRING
 - mode: NULLABLE
-  name: n_logged_event
-  type: INTEGER
-- mode: NULLABLE
-  name: n_created_pictureinpicture
-  type: INTEGER
-- mode: NULLABLE
-  name: n_viewed_protection_report
-  type: INTEGER
-- mode: NULLABLE
-  name: first_seen_date
-  type: DATE
-- mode: NULLABLE
-  name: second_seen_date
-  type: DATE
-- mode: NULLABLE
   name: user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice
   type: STRING
 - mode: NULLABLE
@@ -1534,3 +1599,6 @@ fields:
   mode: REPEATED
   name: a11y_theme
   type: RECORD
+- mode: NULLABLE
+  name: _sample_id_string
+  type: STRING

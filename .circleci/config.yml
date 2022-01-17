@@ -613,7 +613,7 @@ workflows:
               only: main
       - push-generated-sql:
           requires:
-            - generate-sql
+            - validate-dags
           filters:
             branches:
               only:

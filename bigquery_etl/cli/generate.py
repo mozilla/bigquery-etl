@@ -73,6 +73,7 @@ generate = generate_group()
 @click.pass_context
 def generate_all(ctx, output_dir, target_project, ignore):
     """Run all SQL generators."""
+    click.echo(f"Generating SQL content in {output_dir}.")
     for _, cmd in reversed(generate.commands.items()):
         if cmd.name != "all" and cmd.name not in ignore:
             ctx.invoke(cmd, output_dir=output_dir, target_project=target_project)

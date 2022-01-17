@@ -21,5 +21,7 @@ SELECT
   assert.equals(16, norm.truncate_version("16.1.1", "major")),
   assert.equals(10, norm.truncate_version("10", "minor")),
   assert.equals(5.1, norm.truncate_version("5.1.5-ubuntu-foobar", "minor")),
+  assert.equals(100, norm.truncate_version("100.01.1", "major")),
+  assert.equals(100.04, norm.truncate_version("100.04.1", "minor")),
   assert.equals(CAST(NULL AS NUMERIC), norm.truncate_version("5.1.5-ubuntu-foobar", "patch")),
   assert.equals(CAST(NULL AS NUMERIC), norm.truncate_version("foo-bar", "minor"))

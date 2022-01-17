@@ -5,11 +5,11 @@ description: |-
   For more information see
   https://bugzilla.mozilla.org/show_bug.cgi?id=1720218
 owners:
-- loines@mozilla.com
-- shong@mozilla.com
-- cdowhygelund@mozilla.com
-- ascholtz@mozilla.com
-- anicholson@mozilla.com
+  - loines@mozilla.com
+  - shong@mozilla.com
+  - cdowhygelund@mozilla.com
+  - ascholtz@mozilla.com
+  - anicholson@mozilla.com
 labels:
   incremental: true
   application: firefox

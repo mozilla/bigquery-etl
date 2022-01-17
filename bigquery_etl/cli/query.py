@@ -22,6 +22,7 @@ from ..cli.utils import (
     project_id_option,
     respect_dryrun_skip_option,
     sql_dir_option,
+    tmp_dir_option,
     use_cloud_function_option,
 )
 from ..dependency import get_dependency_graph
@@ -44,6 +45,7 @@ from ..schema import SCHEMA_FILE, Schema
 from ..util import extract_from_query_path
 from ..util.common import random_str
 from .dryrun import dryrun
+from .generate import generate_all
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
 VERSION_RE = re.compile(r"_v[0-9]+")
@@ -356,12 +358,22 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
     help="Include timestamps when destination tables were last updated",
     is_flag=True,
 )
-def info(name, sql_dir, project_id, cost, last_updated):
+@tmp_dir_option
+@click.pass_context
+def info(ctx, name, sql_dir, project_id, cost, last_updated, tmp_dir):
     """Return information about all or specific queries."""
     if name is None:
         name = "*.*"
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    if query_files == []:
+        # run SQL generators if no matching query has been found
+        ctx.invoke(
+            generate_all,
+            output_dir=tmp_dir,
+            ignore=["derived_view_schemas", "stable_views"],
+        )
+        query_files = paths_matching_name_pattern(name, tmp_dir, project_id)
 
     for query_file in query_files:
         query_file_path = Path(query_file)
@@ -545,6 +557,7 @@ def _backfill_query(
     default=False,
     help="Disable writing results to a partition. Overwrites entire destination table.",
 )
+@tmp_dir_option
 @click.pass_context
 def backfill(
     ctx,
@@ -558,6 +571,7 @@ def backfill(
     max_rows,
     parallelism,
     no_partition,
+    tmp_dir,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -567,7 +581,16 @@ def backfill(
         )
         sys.exit(1)
 
-    query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    query_files = paths_matching_name_pattern(name, sql_dir, project_id, tmp_dir)
+    if query_files == []:
+        # run SQL generators if no matching query has been found
+        ctx.invoke(
+            generate_all,
+            output_dir=tmp_dir,
+            ignore=["derived_view_schemas", "stable_views"],
+        )
+        query_files = paths_matching_name_pattern(name, tmp_dir, project_id)
+
     dates = [start_date + timedelta(i) for i in range((end_date - start_date).days + 1)]
 
     for query_file in query_files:
@@ -1052,9 +1075,17 @@ def _update_query_schema(
 )
 @use_cloud_function_option
 @respect_dryrun_skip_option(default=True)
+@tmp_dir_option
 @click.pass_context
 def deploy(
-    ctx, name, sql_dir, project_id, force, use_cloud_function, respect_dryrun_skip
+    ctx,
+    name,
+    sql_dir,
+    project_id,
+    force,
+    use_cloud_function,
+    respect_dryrun_skip,
+    tmp_dir,
 ):
     """CLI command for deploying destination table schemas."""
     if not is_authenticated():
@@ -1066,6 +1097,14 @@ def deploy(
     client = bigquery.Client()
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    if query_files == []:
+        # run SQL generators if no matching query has been found
+        ctx.invoke(
+            generate_all,
+            output_dir=tmp_dir,
+            ignore=["derived_view_schemas", "stable_views"],
+        )
+        query_files = paths_matching_name_pattern(name, tmp_dir, project_id)
 
     for query_file in query_files:
         if respect_dryrun_skip and str(query_file) in SKIP:
@@ -1169,9 +1208,21 @@ def _validate_schema_from_path(
 )
 @use_cloud_function_option
 @respect_dryrun_skip_option(default=True)
-def validate_schema(name, sql_dir, project_id, use_cloud_function, respect_dryrun_skip):
+@tmp_dir_option
+@click.pass_context
+def validate_schema(
+    ctx, name, sql_dir, project_id, use_cloud_function, respect_dryrun_skip, tmp_dir
+):
     """Validate the defined query schema against the query and destination table."""
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    if query_files == []:
+        # run SQL generators if no matching query has been found
+        ctx.invoke(
+            generate_all,
+            output_dir=tmp_dir,
+            ignore=["derived_view_schemas", "stable_views"],
+        )
+        query_files = paths_matching_name_pattern(name, tmp_dir, project_id)
 
     _validate_schema = partial(
         _validate_schema_from_path,

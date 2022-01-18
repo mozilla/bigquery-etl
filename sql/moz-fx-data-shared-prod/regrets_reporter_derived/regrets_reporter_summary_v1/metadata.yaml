@@ -5,7 +5,10 @@ description: |
 owners:
 - kignasiak@mozilla.com
 labels:
-  incremental: true
+  # has to be full load, otherwise the query logic does not work
+  # see Github issue for more info:
+  # https://github.com/mozilla/bigquery-etl/issues/2634
+  incremental: false
   public_bigquery: false
   public_json: false
 scheduling:

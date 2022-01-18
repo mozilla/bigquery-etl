@@ -1,3 +1,13 @@
+CREATE OR REPLACE TABLE
+  `moz-fx-data-shared-prod`.regrets_reporter_derived.regrets_reporter_summary_v1
+PARTITION BY
+  date
+CLUSTER BY
+  country,
+  browser
+OPTIONS
+  (require_partition_filter = TRUE)
+AS
 WITH base_t AS (
   SELECT
     metrics.string.metadata_installation_id AS installation_id,
@@ -13,7 +23,7 @@ WITH base_t AS (
     `moz-fx-data-shared-prod.regrets_reporter_ucs_stable.main_events_v1`,
     UNNEST(events) e
   WHERE
-    DATE(submission_timestamp) = DATE(@submission_date)
+    DATE(submission_timestamp) >= DATE("2021-12-02")
   GROUP BY
     metrics.string.metadata_installation_id,
     DATE(submission_timestamp)
@@ -89,7 +99,7 @@ new_user_base_t AS (
     `moz-fx-data-shared-prod.regrets_reporter_ucs_stable.main_events_v1`,
     UNNEST(events) e
   WHERE
-    DATE(submission_timestamp) = DATE(@submission_date)
+    DATE(submission_timestamp) >= DATE("2021-12-02")
   GROUP BY
     installation_id
 ),

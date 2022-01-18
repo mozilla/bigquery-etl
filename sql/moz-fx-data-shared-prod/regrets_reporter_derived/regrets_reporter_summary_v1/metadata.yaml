@@ -14,12 +14,13 @@ labels:
 scheduling:
   dag_name: bqetl_regrets_reporter_summary
   task_name: regrets_reporter_summary__v1
+  schedule: daily
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]
+  referenced_tables: [['moz-fx-data-shared-prod',
+                       'regrets_reporter_ucs_stable',
+                       'main_events_v1']]
 bigquery:
-  time_partitioning:
-    field: date
-    type: day
-    require_partition_filter: true
-    expiration_days: null
   clustering:
     fields:
     - country

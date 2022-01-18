@@ -1,13 +1,3 @@
-CREATE OR REPLACE TABLE
-  `moz-fx-data-shared-prod`.regrets_reporter_derived.regrets_reporter_summary_v1
-PARTITION BY
-  date
-CLUSTER BY
-  country,
-  browser
-OPTIONS
-  (require_partition_filter = TRUE)
-AS
 WITH base_t AS (
   SELECT
     metrics.string.metadata_installation_id AS installation_id,

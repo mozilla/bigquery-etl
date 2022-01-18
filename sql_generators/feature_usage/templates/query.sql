@@ -29,7 +29,7 @@ WITH
 ),
 {% endfor %}
 all_features AS (
-    SELECT 
+    SELECT
         *
     FROM
     {% for source in sources %}
@@ -49,7 +49,7 @@ SELECT
         {% for measure in source.measures %}
             {% if measure.name != "client_id" and measure.name != "submission_date" %}
                 {% if measure.min_version %}
-                    IF ('{{ measure.min_version }}' < app_version, COALESCE({{ measure.name }}, CAST(0 AS {{ measure.type }})), NULL) AS {{ measure.name }},
+                    IF ({{ measure.min_version }} < mozfun.norm.truncate_version(app_version, 'minor'), COALESCE({{ measure.name }}, CAST(0 AS {{ measure.type }})), NULL) AS {{ measure.name }},
                 {% else %}
                     {{ measure.name }},
                 {% endif %}

@@ -1061,6 +1061,38 @@ fields:
       mode: NULLABLE
       name: firefox_home_page_cycle_wallpaper_button
       type: INTEGER
+    - description: 'This counts the number of times a user navigates back in tab
+
+        history by swiping from the left edge of the device to the right.
+
+        '
+      mode: NULLABLE
+      name: tabs_navigate_tab_back_swipe
+      type: INTEGER
+    - description: 'This counts the number of times a user taps the back
+
+        button on a tab''s toolbar.
+
+        '
+      mode: NULLABLE
+      name: tabs_navigate_tab_history_back
+      type: INTEGER
+    - description: 'This counts the number of times a user taps the forward
+
+        button on a tab''s toolbar.
+
+        '
+      mode: NULLABLE
+      name: tabs_navigate_tab_history_forward
+      type: INTEGER
+    - description: 'This counts the number of times a user taps the reload
+
+        button in the URL bar.
+
+        '
+      mode: NULLABLE
+      name: tabs_reload_from_url_bar
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

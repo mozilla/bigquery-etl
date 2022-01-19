@@ -779,6 +779,24 @@ fields:
     mode: NULLABLE
     name: quantity
     type: RECORD
+  - fields:
+    - description: 'The outcome after the app detected that it was running from DMG
+        and should offer to install and relaunch itself.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: BOOLEAN
+      mode: REPEATED
+      name: startup_run_from_dmg_install_outcome
+      type: RECORD
+    mode: NULLABLE
+    name: labeled_boolean
+    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

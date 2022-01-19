@@ -646,6 +646,31 @@ fields:
       mode: REPEATED
       name: shortcuts_shortcut_removed_counter
       type: RECORD
+    - description: 'The labels for this counter are `<search-engine-name>.<source>`.
+
+
+        If the search engine is bundled with Focus `search-engine-name` will be
+
+        the name of the search engine. If it''s a custom search engine (defined:
+
+        https://github.com/mozilla-mobile/fenix/issues/1607) the value will be
+
+        `custom`.
+
+
+        `source` will be: `action`, `suggestion`
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: browser_search_search_count
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

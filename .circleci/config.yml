@@ -252,7 +252,10 @@ jobs:
             # now take ownership of the folder
             sudo chown -R 10001:10001 .
       - run:
-          name: Test if dag scripts can be parsed
+          name: |
+            Test if dag scripts can be parsed by Airflow
+            and tags have set correctly
+          # Valid tags defined in `telemetry-airflow/bin/test-dag-tags.py`
           command: |
             cd telemetry-airflow
             bash bin/test-parse

@@ -1,3 +1,5 @@
+-- The IF NOT EXISTS below is to make this dry-runnable; actually recreating
+-- this table will require that you modify this to CREATE OR REPLACE.
 CREATE TABLE IF NOT EXISTS
   `moz-fx-data-shared-prod.monitoring_derived.suggest_impression_rate_v1`
 PARTITION BY

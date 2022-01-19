@@ -315,6 +315,7 @@ event:
       next_payment_attempt:
       number:
       paid:
+      paid_out_of_band:
       payment_intent:
       period_end:
       period_start:

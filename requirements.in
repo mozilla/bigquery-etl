@@ -6,7 +6,7 @@ gcsfs==2022.1.0
 gcloud==0.18.3
 gitpython==3.1.26
 google-api-core==1.31.5  # transitive dep that needs dependabot updates
-google-cloud-bigquery==2.31.0
+google-cloud-bigquery==2.32.0
 google-cloud-storage==2.0.0
 googleapis-common-protos==1.54.0  # transitive dep that needs dependabot updates
 importlib-resources>=1.4.0  # jsonschema dep for python<3.9
@@ -14,7 +14,7 @@ Jinja2==3.0.3
 jsonschema==4.4.0
 markdown-include==0.6.0
 mkdocs==1.2.3
-mkdocs-material==8.1.6
+mkdocs-material==8.1.7
 mkdocs-awesome-pages-plugin==2.6.1
 mozilla-schema-generator==0.5.1
 pandas==1.3.5

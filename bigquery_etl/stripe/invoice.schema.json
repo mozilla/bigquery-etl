@@ -938,6 +938,10 @@
     "type": "BOOLEAN"
   },
   {
+    "name": "paid_out_of_band",
+    "type": "BOOLEAN"
+  },
+  {
     "name": "payment_intent",
     "type": "STRING"
   },

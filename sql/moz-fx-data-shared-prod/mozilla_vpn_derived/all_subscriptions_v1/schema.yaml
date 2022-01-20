@@ -113,6 +113,9 @@ fields:
 - name: billing_grace_period
   type: INTERVAL
   mode: NULLABLE
+- name: promotion_codes
+  type: STRING
+  mode: REPEATED
 - name: normalized_acquisition_channel
   type: STRING
   mode: NULLABLE

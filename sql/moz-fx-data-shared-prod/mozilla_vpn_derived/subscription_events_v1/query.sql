@@ -1,3 +1,10 @@
+WITH json_arrays AS (
+  SELECT
+    *,
+    TO_JSON_STRING(promotion_codes) AS json_promotion_codes
+  FROM
+    all_subscriptions_v1
+)
 SELECT
   event_date,
   event_type,
@@ -28,9 +35,10 @@ SELECT
   normalized_medium,
   normalized_source,
   website_channel_group,
+  JSON_VALUE_ARRAY(json_promotion_codes) AS promotion_codes,
   COUNT(*) AS `count`,
 FROM
-  all_subscriptions_v1
+  json_arrays
 CROSS JOIN
   UNNEST(
     ARRAY_CONCAT(
@@ -105,4 +113,5 @@ GROUP BY
   normalized_content,
   normalized_medium,
   normalized_source,
-  website_channel_group
+  website_channel_group,
+  json_promotion_codes

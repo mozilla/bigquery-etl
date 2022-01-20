@@ -83,7 +83,8 @@ subscriptions AS (
   WHERE
     DATE(subscription_start_date) >= '2020-07-01'
     AND product_name = "Mozilla VPN"
-    AND provider IN ("Stripe", "Paypal")
+    -- only count subscriptions that can have UTMs matching GA, which currently maps to non-IAP providers
+    AND provider NOT IN ("Apple Store", "Google Play")
   GROUP BY
     `date`,
     normalized_medium,

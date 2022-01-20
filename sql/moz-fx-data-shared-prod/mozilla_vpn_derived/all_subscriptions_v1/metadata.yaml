@@ -18,6 +18,7 @@ references:
   - moz-fx-data-shared-prod.mozilla_vpn_derived.fxa_attribution_v1
   - moz-fx-data-shared-prod.stripe_external.charges_v1
   - moz-fx-data-shared-prod.stripe_external.invoices_v1
+  - moz-fx-data-shared-prod.stripe_external.promotion_codes_v1
   - moz-fx-fxa-prod-0712.firestore_export.iap_google_raw_changelog
   - mozdata.mozilla_vpn.subscriptions
   - mozdata.mozilla_vpn.users

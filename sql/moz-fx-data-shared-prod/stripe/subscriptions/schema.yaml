@@ -14,6 +14,13 @@ fields:
 - mode: NULLABLE
   name: customer
   type: STRING
+- fields:
+  - mode: NULLABLE
+    name: promotion_code
+    type: STRING
+  mode: NULLABLE
+  name: discount
+  type: RECORD
 - mode: NULLABLE
   name: ended_at
   type: TIMESTAMP

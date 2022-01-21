@@ -1,3 +1,10 @@
+WITH json_arrays AS (
+  SELECT
+    *,
+    TO_JSON_STRING(promotion_codes) AS json_promotion_codes
+  FROM
+    all_subscriptions_v1
+)
 SELECT
   active_date,
   plan_id,
@@ -26,9 +33,10 @@ SELECT
   normalized_medium,
   normalized_source,
   website_channel_group,
+  JSON_VALUE_ARRAY(json_promotion_codes) AS promotion_codes,
   COUNT(*) AS `count`,
 FROM
-  all_subscriptions_v1
+  json_arrays
 CROSS JOIN
   UNNEST(GENERATE_DATE_ARRAY(DATE(subscription_start_date), DATE(end_date) - 1)) AS active_date
 WHERE
@@ -61,4 +69,5 @@ GROUP BY
   normalized_content,
   normalized_medium,
   normalized_source,
-  website_channel_group
+  website_channel_group,
+  json_promotion_codes

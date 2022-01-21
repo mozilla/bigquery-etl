@@ -86,6 +86,9 @@ fields:
 - name: website_channel_group
   type: STRING
   mode: NULLABLE
+- name: promotion_codes
+  type: STRING
+  mode: REPEATED
 - name: count
   type: INTEGER
   mode: NULLABLE

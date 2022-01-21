@@ -1,0 +1,12 @@
+build-job-search-alert:
+  docker:
+    - image: docker:stable-git
+  steps:
+    - checkout
+    - compare-branch:
+        pattern: ^jobs/search-alert/
+    - setup_remote_docker:
+        version: 19.03.13
+    - run:
+        name: Build Docker image
+        command: docker build -t app:build jobs/search-alert/

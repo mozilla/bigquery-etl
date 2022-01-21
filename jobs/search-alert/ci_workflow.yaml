@@ -1,0 +1,13 @@
+job-search-alert:
+  jobs:
+    - build-job-search-alert
+    - gcp-gcr/build-and-push-image:
+        context: data-eng-airflow-gcr
+        docker-context: jobs/search-alert/
+        path: jobs/search-alert/
+        image: search-alert_docker_etl
+        requires:
+          - build-job-search-alert
+        filters:
+          branches:
+            only: main

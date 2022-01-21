@@ -190,6 +190,19 @@ jobs:
           command: docker run app:build flake8
 
 
+  build-job-search-alert:
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - compare-branch:
+          pattern: ^jobs/search-alert/
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Build Docker image
+          command: docker build -t app:build jobs/search-alert/
+
 workflows:
   docker-etl:
     jobs:
@@ -314,3 +327,17 @@ workflows:
             branches:
               only: main
 
+
+  job-search-alert:
+    jobs:
+      - build-job-search-alert
+      - gcp-gcr/build-and-push-image:
+          context: data-eng-airflow-gcr
+          docker-context: jobs/search-alert/
+          path: jobs/search-alert/
+          image: search-alert_docker_etl
+          requires:
+            - build-job-search-alert
+          filters:
+            branches:
+              only: main

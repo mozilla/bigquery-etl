@@ -103,6 +103,20 @@ with DAG(
         dag=dag,
     )
 
+    monitoring_derived__stable_table_column_counts__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__stable_table_column_counts__v1",
+        destination_table=None,
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        sql_file_path="sql/moz-fx-data-shared-prod/monitoring_derived/stable_table_column_counts_v1/script.sql",
+        dag=dag,
+    )
+
     monitoring_derived__stable_table_sizes__v1 = gke_command(
         task_id="monitoring_derived__stable_table_sizes__v1",
         command=[
@@ -204,6 +218,13 @@ with DAG(
     )
 
     monitoring_derived__column_size__v1.set_upstream(
+        wait_for_copy_deduplicate_main_ping
+    )
+
+    monitoring_derived__stable_table_column_counts__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+    monitoring_derived__stable_table_column_counts__v1.set_upstream(
         wait_for_copy_deduplicate_main_ping
     )
 

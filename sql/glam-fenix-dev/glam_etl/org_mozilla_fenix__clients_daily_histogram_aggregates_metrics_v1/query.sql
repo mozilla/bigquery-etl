@@ -40,6 +40,16 @@ histograms AS (
         metrics.timing_distribution.engine_tab_kill_foreground_age.values
       ),
       (
+        "fog_ipc_buffer_sizes",
+        "memory_distribution",
+        metrics.memory_distribution.fog_ipc_buffer_sizes.values
+      ),
+      (
+        "fog_ipc_flush_durations",
+        "timing_distribution",
+        metrics.timing_distribution.fog_ipc_flush_durations.values
+      ),
+      (
         "geckoview_content_process_lifetime",
         "timing_distribution",
         metrics.timing_distribution.geckoview_content_process_lifetime.values

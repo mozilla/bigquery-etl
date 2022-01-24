@@ -145,6 +145,11 @@ def main():
                     "minimum": 1,
                     "description": "The number of users to filter the data on.",
                 },
+                "minimum_client_count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "The minimum client count for each build id.",
+                },
             },
             "required": [
                 "build_date_udf",
@@ -159,37 +164,43 @@ def main():
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
-            "total_users": 800,
+            "total_users": 10,
+            "minimum_client_count": 800,
         },
         "org_mozilla_fenix_glam_beta": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
-            "total_users": 2000,
+            "total_users": 10,
+            "minimum_client_count": 2000,
         },
         "org_mozilla_fenix_glam_release": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
-            "total_users": 90000,
+            "total_users": 10,
+            "minimum_client_count": 90000,
         },
         "firefox_desktop_glam_nightly": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
-            "total_users": 10,
+            "total_users": 1,
+            "minimum_client_count": 0,
         },
         "firefox_desktop_glam_beta": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
-            "total_users": 10,
+            "total_users": 1,
+            "minimum_client_count": 0,
         },
         "firefox_desktop_glam_release": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
-            "total_users": 10,
+            "total_users": 1,
+            "minimum_client_count": 0,
         },
     }
     validate(instance=config, schema=config_schema)
@@ -242,13 +253,15 @@ def main():
         table(
             "scalar_bucket_counts_v1",
             **models.scalar_bucket_counts(
-                source_table=f"glam_etl.{args.prefix}__clients_scalar_aggregates_v1"
+                source_table=f"glam_etl.{args.prefix}__clients_scalar_aggregates_v1",
+                **config[args.prefix],
             ),
         ),
         table(
             "histogram_bucket_counts_v1",
             **models.histogram_bucket_counts(
-                source_table=f"glam_etl.{args.prefix}__clients_histogram_aggregates_v1"
+                source_table=f"glam_etl.{args.prefix}__clients_histogram_aggregates_v1",
+                **config[args.prefix],
             ),
         ),
         table(

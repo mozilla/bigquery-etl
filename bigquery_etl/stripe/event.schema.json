@@ -3371,6 +3371,10 @@
             "type": "BOOLEAN"
           },
           {
+            "name": "paid_out_of_band",
+            "type": "BOOLEAN"
+          },
+          {
             "name": "payment_intent",
             "type": "STRING"
           },
@@ -6886,6 +6890,173 @@
           {
             "name": "url",
             "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "promotion_code",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "active",
+            "type": "BOOLEAN"
+          },
+          {
+            "name": "code",
+            "type": "STRING"
+          },
+          {
+            "name": "coupon",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "amount_off",
+                "type": "INTEGER"
+              },
+              {
+                "name": "applies_to",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "products",
+                    "type": "STRING",
+                    "mode": "REPEATED"
+                  }
+                ]
+              },
+              {
+                "name": "created",
+                "type": "TIMESTAMP"
+              },
+              {
+                "name": "currency",
+                "type": "STRING"
+              },
+              {
+                "name": "duration",
+                "type": "STRING"
+              },
+              {
+                "name": "duration_in_months",
+                "type": "INTEGER"
+              },
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "livemode",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "max_redemptions",
+                "type": "INTEGER"
+              },
+              {
+                "name": "metadata",
+                "type": "RECORD",
+                "mode": "REPEATED",
+                "fields": [
+                  {
+                    "name": "key",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "value",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
+                "name": "name",
+                "type": "STRING"
+              },
+              {
+                "name": "object",
+                "type": "STRING"
+              },
+              {
+                "name": "percent_off",
+                "type": "NUMERIC"
+              },
+              {
+                "name": "redeem_by",
+                "type": "TIMESTAMP"
+              },
+              {
+                "name": "times_redeemed",
+                "type": "INTEGER"
+              },
+              {
+                "name": "valid",
+                "type": "BOOLEAN"
+              }
+            ]
+          },
+          {
+            "name": "created",
+            "type": "TIMESTAMP"
+          },
+          {
+            "name": "customer",
+            "type": "STRING"
+          },
+          {
+            "name": "expires_at",
+            "type": "TIMESTAMP"
+          },
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "livemode",
+            "type": "BOOLEAN"
+          },
+          {
+            "name": "max_redemptions",
+            "type": "INTEGER"
+          },
+          {
+            "name": "metadata",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              {
+                "name": "key",
+                "type": "STRING"
+              },
+              {
+                "name": "value",
+                "type": "STRING"
+              }
+            ]
+          },
+          {
+            "name": "object",
+            "type": "STRING"
+          },
+          {
+            "name": "restrictions",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "first_time_transaction",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "minimum_amount",
+                "type": "INTEGER"
+              },
+              {
+                "name": "minimum_amount_currency",
+                "type": "STRING"
+              }
+            ]
+          },
+          {
+            "name": "times_redeemed",
+            "type": "INTEGER"
           }
         ]
       },

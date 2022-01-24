@@ -609,385 +609,505 @@ SELECT
   profile_creation_date,
   country,
   IF(
-    '88' < app_version,
+    88 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(scalar_parent_os_environment_is_taskbar_pinned, CAST(0 AS BOOL)),
     NULL
   ) AS scalar_parent_os_environment_is_taskbar_pinned,
   IF(
-    '88' < app_version,
+    88 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(scalar_parent_os_environment_launched_via_desktop, CAST(0 AS BOOL)),
     NULL
   ) AS scalar_parent_os_environment_launched_via_desktop,
   IF(
-    '88' < app_version,
+    88 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(scalar_parent_os_environment_launched_via_other, CAST(0 AS BOOL)),
     NULL
   ) AS scalar_parent_os_environment_launched_via_other,
   IF(
-    '88' < app_version,
+    88 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(scalar_parent_os_environment_launched_via_taskbar, CAST(0 AS BOOL)),
     NULL
   ) AS scalar_parent_os_environment_launched_via_taskbar,
   IF(
-    '88' < app_version,
+    88 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(scalar_parent_os_environment_launched_via_start_menu, CAST(0 AS BOOL)),
     NULL
   ) AS scalar_parent_os_environment_launched_via_start_menu,
   IF(
-    '88' < app_version,
+    88 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(scalar_parent_os_environment_launched_via_other_shortcut, CAST(0 AS BOOL)),
     NULL
   ) AS scalar_parent_os_environment_launched_via_other_shortcut,
-  IF('42' < app_version, COALESCE(os, CAST(0 AS STRING)), NULL) AS os,
   IF(
-    '42' < app_version,
+    42 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(os, CAST(0 AS STRING)),
+    NULL
+  ) AS os,
+  IF(
+    42 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(normalized_os_version, CAST(0 AS STRING)),
     NULL
   ) AS normalized_os_version,
-  IF('42' < app_version, COALESCE(app_version, CAST(0 AS STRING)), NULL) AS app_version,
-  attributed,
-  IF('44' < app_version, COALESCE(is_default_browser, CAST(0 AS BOOL)), NULL) AS is_default_browser,
   IF(
-    '46' < app_version,
+    42 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(app_version, CAST(0 AS STRING)),
+    NULL
+  ) AS app_version,
+  attributed,
+  IF(
+    44 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(is_default_browser, CAST(0 AS BOOL)),
+    NULL
+  ) AS is_default_browser,
+  IF(
+    46 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(sync_count_desktop_mean, CAST(0 AS FLOAT64)),
     NULL
   ) AS sync_count_desktop_mean,
   IF(
-    '46' < app_version,
+    46 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(sync_count_mobile_mean, CAST(0 AS FLOAT64)),
     NULL
   ) AS sync_count_mobile_mean,
-  IF('56' < app_version, COALESCE(active_hours_sum, CAST(0 AS FLOAT64)), NULL) AS active_hours_sum,
   IF(
-    '50' < app_version,
+    56 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(active_hours_sum, CAST(0 AS FLOAT64)),
+    NULL
+  ) AS active_hours_sum,
+  IF(
+    50 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(scalar_parent_browser_engagement_total_uri_count_sum, CAST(0 AS NUMERIC)),
     NULL
   ) AS scalar_parent_browser_engagement_total_uri_count_sum,
   IF(
-    '65' < app_version,
+    65 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(ad_clicks_count_all, CAST(0 AS INT64)),
     NULL
   ) AS ad_clicks_count_all,
   IF(
-    '50' < app_version,
+    50 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(scalar_parent_browser_engagement_tab_open_event_count_sum, CAST(0 AS INT64)),
     NULL
   ) AS scalar_parent_browser_engagement_tab_open_event_count_sum,
   IF(
-    '50' < app_version,
+    50 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(scalar_parent_browser_engagement_window_open_event_count_sum, CAST(0 AS INT64)),
     NULL
   ) AS scalar_parent_browser_engagement_window_open_event_count_sum,
   IF(
-    '50' < app_version,
+    50 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(scalar_parent_browser_engagement_unique_domains_count_max, CAST(0 AS INT64)),
     NULL
   ) AS scalar_parent_browser_engagement_unique_domains_count_max,
   IF(
-    '50' < app_version,
+    50 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(scalar_parent_browser_engagement_unique_domains_count_mean, CAST(0 AS INT64)),
     NULL
   ) AS scalar_parent_browser_engagement_unique_domains_count_mean,
   IF(
-    '50' < app_version,
+    50 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(scalar_parent_browser_engagement_max_concurrent_tab_count_max, CAST(0 AS INT64)),
     NULL
   ) AS scalar_parent_browser_engagement_max_concurrent_tab_count_max,
   IF(
-    '50' < app_version,
+    50 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(scalar_parent_browser_engagement_max_concurrent_window_count_max, CAST(0 AS INT64)),
     NULL
   ) AS scalar_parent_browser_engagement_max_concurrent_window_count_max,
   IF(
-    '86' < app_version,
+    86 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(search_count_abouthome, CAST(0 AS INT64)),
     NULL
   ) AS search_count_abouthome,
-  IF('43' < app_version, COALESCE(search_count_all, CAST(0 AS INT64)), NULL) AS search_count_all,
   IF(
-    '86' < app_version,
+    43 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(search_count_all, CAST(0 AS INT64)),
+    NULL
+  ) AS search_count_all,
+  IF(
+    86 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(search_count_contextmenu, CAST(0 AS INT64)),
     NULL
   ) AS search_count_contextmenu,
   IF(
-    '86' < app_version,
+    86 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(search_count_newtab, CAST(0 AS INT64)),
     NULL
   ) AS search_count_newtab,
   IF(
-    '86' < app_version,
+    86 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(search_count_organic, CAST(0 AS INT64)),
     NULL
   ) AS search_count_organic,
   IF(
-    '86' < app_version,
+    86 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(search_count_searchbar, CAST(0 AS INT64)),
     NULL
   ) AS search_count_searchbar,
   IF(
-    '86' < app_version,
+    86 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(search_count_system, CAST(0 AS INT64)),
     NULL
   ) AS search_count_system,
   IF(
-    '86' < app_version,
+    86 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(search_count_tagged_follow_on, CAST(0 AS INT64)),
     NULL
   ) AS search_count_tagged_follow_on,
   IF(
-    '86' < app_version,
+    86 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(search_count_tagged_sap, CAST(0 AS INT64)),
     NULL
   ) AS search_count_tagged_sap,
   IF(
-    '86' < app_version,
+    86 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(search_count_urlbar, CAST(0 AS INT64)),
     NULL
   ) AS search_count_urlbar,
   IF(
-    '94' < app_version,
+    94 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(search_count_urlbar_handoff, CAST(0 AS INT64)),
     NULL
   ) AS search_count_urlbar_handoff,
   IF(
-    '64' < app_version,
+    64 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(search_with_ads_count_all, CAST(0 AS INT64)),
     NULL
   ) AS search_with_ads_count_all,
   newtabpage_disabled,
   IF(
-    '87' < app_version,
+    87 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(num_topsites_new_tab_impressions_sponsored, CAST(0 AS INT64)),
     NULL
   ) AS num_topsites_new_tab_impressions_sponsored,
   IF(
-    '87' < app_version,
+    87 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(num_new_tab_topsites_clicks_sponsored, CAST(0 AS INT64)),
     NULL
   ) AS num_new_tab_topsites_clicks_sponsored,
   subsample_id,
-  IF('72' < app_version, COALESCE(is_headless, CAST(0 AS BOOL)), NULL) AS is_headless,
   IF(
-    '70' < app_version,
+    72 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(is_headless, CAST(0 AS BOOL)),
+    NULL
+  ) AS is_headless,
+  IF(
+    70 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(video_play_time_ms, CAST(0 AS INT64)),
     NULL
   ) AS video_play_time_ms,
   IF(
-    '82' < app_version,
+    82 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(video_encrypted_play_time_ms, CAST(0 AS INT64)),
     NULL
   ) AS video_encrypted_play_time_ms,
   IF(
-    '38' < app_version,
+    38 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(pdf_viewer_time_to_view_ms_content, CAST(0 AS INT64)),
     NULL
   ) AS pdf_viewer_time_to_view_ms_content,
   IF(
-    '69' < app_version,
+    69 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(pip_window_open_duration, CAST(0 AS INT64)),
     NULL
   ) AS pip_window_open_duration,
   IF(
-    '72' < app_version,
+    72 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(video_play_time_ms_count, CAST(0 AS INT64)),
     NULL
   ) AS video_play_time_ms_count,
   IF(
-    '70' < app_version,
+    70 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(video_encrypted_play_time_ms_count, CAST(0 AS INT64)),
     NULL
   ) AS video_encrypted_play_time_ms_count,
   IF(
-    '38' < app_version,
+    38 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(pdf_viewer_time_to_view_ms_content_count, CAST(0 AS INT64)),
     NULL
   ) AS pdf_viewer_time_to_view_ms_content_count,
   IF(
-    '69' < app_version,
+    69 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(pip_window_open_duration_count, CAST(0 AS INT64)),
     NULL
   ) AS pip_window_open_duration_count,
   IF(
-    '38' < app_version,
+    38 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(pdf_viewer_doc_size_kb, CAST(0 AS INT64)),
     NULL
   ) AS pdf_viewer_doc_size_kb,
   IF(
-    '38' < app_version,
+    38 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(pdf_viewer_doc_size_kb_content, CAST(0 AS INT64)),
     NULL
   ) AS pdf_viewer_doc_size_kb_content,
   IF(
-    '38' < app_version,
+    38 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(pdf_viewer_doc_size_kb_count, CAST(0 AS INT64)),
     NULL
   ) AS pdf_viewer_doc_size_kb_count,
   IF(
-    '38' < app_version,
+    38 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(pdf_viewer_doc_size_kb_content_count, CAST(0 AS INT64)),
     NULL
   ) AS pdf_viewer_doc_size_kb_content_count,
-  IF('44' < app_version, COALESCE(sync_signed_in, CAST(0 AS BOOL)), NULL) AS sync_signed_in,
-  IF('81' < app_version, COALESCE(ccards_saved, CAST(0 AS BOOL)), NULL) AS ccards_saved,
-  IF('64' < app_version, COALESCE(pbm_used, CAST(0 AS BOOL)), NULL) AS pbm_used,
   IF(
-    '81' < app_version,
+    44 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(sync_signed_in, CAST(0 AS BOOL)),
+    NULL
+  ) AS sync_signed_in,
+  IF(
+    81 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(ccards_saved, CAST(0 AS BOOL)),
+    NULL
+  ) AS ccards_saved,
+  IF(
+    64 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(pbm_used, CAST(0 AS BOOL)),
+    NULL
+  ) AS pbm_used,
+  IF(
+    81 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(unique_sidebars_accessed_count, CAST(0 AS INT64)),
     NULL
   ) AS unique_sidebars_accessed_count,
   IF(
-    '81' < app_version,
+    81 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(sidebars_accessed_total, CAST(0 AS INT64)),
     NULL
   ) AS sidebars_accessed_total,
   IF(
-    '84' < app_version,
+    84 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(unique_history_urlbar_indices_picked_count, CAST(0 AS INT64)),
     NULL
   ) AS unique_history_urlbar_indices_picked_count,
   IF(
-    '84' < app_version,
+    84 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(history_urlbar_picked_total, CAST(0 AS INT64)),
     NULL
   ) AS history_urlbar_picked_total,
   IF(
-    '84' < app_version,
+    84 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(unique_remotetab_indices_picked_count, CAST(0 AS INT64)),
     NULL
   ) AS unique_remotetab_indices_picked_count,
   IF(
-    '84' < app_version,
+    84 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(remotetab_picked_total, CAST(0 AS INT64)),
     NULL
   ) AS remotetab_picked_total,
-  IF('52' < app_version, COALESCE(uris_from_newtab, CAST(0 AS INT64)), NULL) AS uris_from_newtab,
   IF(
-    '52' < app_version,
+    52 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(uris_from_newtab, CAST(0 AS INT64)),
+    NULL
+  ) AS uris_from_newtab,
+  IF(
+    52 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(uris_from_searchbar, CAST(0 AS INT64)),
     NULL
   ) AS uris_from_searchbar,
-  IF('52' < app_version, COALESCE(uris_from_urlbar, CAST(0 AS INT64)), NULL) AS uris_from_urlbar,
   IF(
-    '78' < app_version,
+    52 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(uris_from_urlbar, CAST(0 AS INT64)),
+    NULL
+  ) AS uris_from_urlbar,
+  IF(
+    78 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(nav_history_urlbar, CAST(0 AS INT64)),
     NULL
   ) AS nav_history_urlbar,
   IF(
-    '78' < app_version,
+    78 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(nav_autocomplete_urlbar, CAST(0 AS INT64)),
     NULL
   ) AS nav_autocomplete_urlbar,
   IF(
-    '78' < app_version,
+    78 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(nav_visiturl_urlbar, CAST(0 AS INT64)),
     NULL
   ) AS nav_visiturl_urlbar,
   IF(
-    '78' < app_version,
+    78 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(nav_searchsuggestion_urlbar, CAST(0 AS INT64)),
     NULL
   ) AS nav_searchsuggestion_urlbar,
   IF(
-    '78' < app_version,
+    78 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(nav_topsite_urlbar, CAST(0 AS INT64)),
     NULL
   ) AS nav_topsite_urlbar,
   IF(
-    '38' < app_version,
+    38 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(num_passwords_saved, CAST(0 AS INT64)),
     NULL
   ) AS num_passwords_saved,
   IF(
-    '79' < app_version,
+    79 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(unique_preferences_accessed_count, CAST(0 AS INT64)),
     NULL
   ) AS unique_preferences_accessed_count,
   IF(
-    '79' < app_version,
+    79 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(preferences_accessed_total, CAST(0 AS INT64)),
     NULL
   ) AS preferences_accessed_total,
   IF(
-    '79' < app_version,
+    79 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(unique_bookmarks_bar_accessed_count, CAST(0 AS INT64)),
     NULL
   ) AS unique_bookmarks_bar_accessed_count,
   IF(
-    '79' < app_version,
+    79 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(bookmarks_bar_accessed_total, CAST(0 AS INT64)),
     NULL
   ) AS bookmarks_bar_accessed_total,
   IF(
-    '79' < app_version,
+    79 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(unique_keyboard_shortcut_count, CAST(0 AS INT64)),
     NULL
   ) AS unique_keyboard_shortcut_count,
   IF(
-    '79' < app_version,
+    79 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(keyboard_shortcut_total, CAST(0 AS INT64)),
     NULL
   ) AS keyboard_shortcut_total,
-  IF('70' < app_version, COALESCE(pip_count, CAST(0 AS INT64)), NULL) AS pip_count,
   IF(
-    '70' < app_version,
+    70 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(pip_count, CAST(0 AS INT64)),
+    NULL
+  ) AS pip_count,
+  IF(
+    70 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(viewed_protection_report_count, CAST(0 AS INT64)),
     NULL
   ) AS viewed_protection_report_count,
-  IF('70' < app_version, COALESCE(etp_toggle_off, CAST(0 AS INT64)), NULL) AS etp_toggle_off,
-  IF('70' < app_version, COALESCE(etp_toggle_on, CAST(0 AS INT64)), NULL) AS etp_toggle_on,
-  IF('70' < app_version, COALESCE(protections_popup, CAST(0 AS INT64)), NULL) AS protections_popup,
-  IF('81' < app_version, COALESCE(ccard_filled, CAST(0 AS INT64)), NULL) AS ccard_filled,
-  IF('81' < app_version, COALESCE(ccard_saved, CAST(0 AS INT64)), NULL) AS ccard_saved,
   IF(
-    '67' < app_version,
+    70 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(etp_toggle_off, CAST(0 AS INT64)),
+    NULL
+  ) AS etp_toggle_off,
+  IF(
+    70 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(etp_toggle_on, CAST(0 AS INT64)),
+    NULL
+  ) AS etp_toggle_on,
+  IF(
+    70 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(protections_popup, CAST(0 AS INT64)),
+    NULL
+  ) AS protections_popup,
+  IF(
+    81 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(ccard_filled, CAST(0 AS INT64)),
+    NULL
+  ) AS ccard_filled,
+  IF(
+    81 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(ccard_saved, CAST(0 AS INT64)),
+    NULL
+  ) AS ccard_saved,
+  IF(
+    67 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(installed_extension, CAST(0 AS INT64)),
     NULL
   ) AS installed_extension,
-  IF('67' < app_version, COALESCE(installed_theme, CAST(0 AS INT64)), NULL) AS installed_theme,
-  IF('67' < app_version, COALESCE(installed_l10n, CAST(0 AS INT64)), NULL) AS installed_l10n,
-  IF('78' < app_version, COALESCE(used_stored_pw, CAST(0 AS INT64)), NULL) AS used_stored_pw,
-  IF('78' < app_version, COALESCE(password_filled, CAST(0 AS INT64)), NULL) AS password_filled,
-  IF('80' < app_version, COALESCE(password_saved, CAST(0 AS INT64)), NULL) AS password_saved,
-  IF('68' < app_version, COALESCE(pwmgr_opened, CAST(0 AS INT64)), NULL) AS pwmgr_opened,
   IF(
-    '78' < app_version,
+    67 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(installed_theme, CAST(0 AS INT64)),
+    NULL
+  ) AS installed_theme,
+  IF(
+    67 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(installed_l10n, CAST(0 AS INT64)),
+    NULL
+  ) AS installed_l10n,
+  IF(
+    78 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(used_stored_pw, CAST(0 AS INT64)),
+    NULL
+  ) AS used_stored_pw,
+  IF(
+    78 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(password_filled, CAST(0 AS INT64)),
+    NULL
+  ) AS password_filled,
+  IF(
+    80 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(password_saved, CAST(0 AS INT64)),
+    NULL
+  ) AS password_saved,
+  IF(
+    68 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(pwmgr_opened, CAST(0 AS INT64)),
+    NULL
+  ) AS pwmgr_opened,
+  IF(
+    78 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(pwmgr_copy_or_show_info, CAST(0 AS INT64)),
     NULL
   ) AS pwmgr_copy_or_show_info,
   IF(
-    '71' < app_version,
+    71 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(pwmgr_interacted_breach, CAST(0 AS INT64)),
     NULL
   ) AS pwmgr_interacted_breach,
   IF(
-    '69' < app_version,
+    69 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(generated_password, CAST(0 AS INT64)),
     NULL
   ) AS generated_password,
-  IF('72' < app_version, COALESCE(fxa_connect, CAST(0 AS INT64)), NULL) AS fxa_connect,
-  IF('67' < app_version, COALESCE(normandy_enrolled, CAST(0 AS INT64)), NULL) AS normandy_enrolled,
-  IF('79' < app_version, COALESCE(downloads, CAST(0 AS INT64)), NULL) AS downloads,
-  IF('79' < app_version, COALESCE(pdf_downloads, CAST(0 AS INT64)), NULL) AS pdf_downloads,
-  IF('79' < app_version, COALESCE(image_downloads, CAST(0 AS INT64)), NULL) AS image_downloads,
-  IF('79' < app_version, COALESCE(media_downloads, CAST(0 AS INT64)), NULL) AS media_downloads,
   IF(
-    '79' < app_version,
+    72 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(fxa_connect, CAST(0 AS INT64)),
+    NULL
+  ) AS fxa_connect,
+  IF(
+    67 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(normandy_enrolled, CAST(0 AS INT64)),
+    NULL
+  ) AS normandy_enrolled,
+  IF(
+    79 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(downloads, CAST(0 AS INT64)),
+    NULL
+  ) AS downloads,
+  IF(
+    79 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(pdf_downloads, CAST(0 AS INT64)),
+    NULL
+  ) AS pdf_downloads,
+  IF(
+    79 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(image_downloads, CAST(0 AS INT64)),
+    NULL
+  ) AS image_downloads,
+  IF(
+    79 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(media_downloads, CAST(0 AS INT64)),
+    NULL
+  ) AS media_downloads,
+  IF(
+    79 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(msoffice_downloads, CAST(0 AS INT64)),
     NULL
   ) AS msoffice_downloads,
-  IF('60' < app_version, COALESCE(newtab_click, CAST(0 AS INT64)), NULL) AS newtab_click,
   IF(
-    '60' < app_version,
+    60 < mozfun.norm.truncate_version(app_version, 'minor'),
+    COALESCE(newtab_click, CAST(0 AS INT64)),
+    NULL
+  ) AS newtab_click,
+  IF(
+    60 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(bookmark_added_from_newtab, CAST(0 AS INT64)),
     NULL
   ) AS bookmark_added_from_newtab,
   IF(
-    '60' < app_version,
+    60 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(saved_to_pocket_from_newtab, CAST(0 AS INT64)),
     NULL
   ) AS saved_to_pocket_from_newtab,
   IF(
-    '60' < app_version,
+    60 < mozfun.norm.truncate_version(app_version, 'minor'),
     COALESCE(newtab_prefs_opened, CAST(0 AS INT64)),
     NULL
   ) AS newtab_prefs_opened,

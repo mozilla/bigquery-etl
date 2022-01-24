@@ -85,6 +85,8 @@ class TestParseMetadata(object):
         assert metadata.labels["number_string"] == "1234abcde"
         assert "123-432" in metadata.labels
         assert metadata.owners == ["test1@mozilla.com", "test2@example.com"]
+        assert "query.sql" in metadata.references
+        assert metadata.references["query.sql"] == ["project.dataset_derived.table_v1"]
 
     def test_non_existing_file(self):
         metadata_file = TEST_DIR / "nonexisting_dir" / "metadata.yaml"

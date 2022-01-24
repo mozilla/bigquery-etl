@@ -1,0 +1,16 @@
+friendly_name: Sponsored Content (Spoc) Tile IDs History
+description: |-
+  Historical log of daily exports of Pocket tile metadata for sponsored content.
+owners:
+  - jklukas@mozilla.com
+labels:
+  incremental: true
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: false
+scheduling:
+  dag_name: bqetl_pocket
+  arguments: ["--date", "{{ ds }}"]
+  referenced_tables: []

@@ -119,11 +119,8 @@ def main(project_id, submission_date, dry_run):
             FROM
             `mozdata.analysis.desktop_search_alert_historical_data`
             WHERE
-            DATE(submission_date) >= DATE_SUB((
-                SELECT
-                MAX(DATE(submission_date))
-                FROM
-                `mozdata.analysis.desktop_search_alert_historical_data`), INTERVAL 30 DAY) )
+            DATE(submission_date) >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
+            AND DATE(submission_date) < @submission_date )
         UNION ALL (
             SELECT
             DATE(submission_date) AS submission_date,
@@ -270,6 +267,7 @@ def main(project_id, submission_date, dry_run):
             `mozdata.analysis.desktop_search_alert_records`
         WHERE
             is_holiday IS FALSE
+            AND DATE(submission_date) <= @submission_date
         GROUP BY
             1,
             2 ),
@@ -283,6 +281,7 @@ def main(project_id, submission_date, dry_run):
             `mozdata.analysis.desktop_search_alert_records`
         WHERE
             is_holiday IS TRUE
+            AND DATE(submission_date) <= @submission_date
         GROUP BY
             1,
             2 ),
@@ -294,6 +293,8 @@ def main(project_id, submission_date, dry_run):
             MAX(latest_abnormality_in_days) AS latest_abnormality_date_int
         FROM
             `mozdata.analysis.desktop_search_alert_records`
+        WHERE
+            DATE(submission_date) <= @submission_date
         GROUP BY
             1,
             2 )

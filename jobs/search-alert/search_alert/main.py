@@ -52,7 +52,7 @@ def main(project_id, submission_date, dry_run):
         FROM
             `mozdata.search.search_aggregates`
         WHERE
-            submission_date >= @submission_date
+            submission_date = @submission_date
         GROUP BY
             1,
             2 ),
@@ -144,13 +144,13 @@ def main(project_id, submission_date, dry_run):
 
     client = bigquery.Client(project = project_id)
 
-    job_config = bigquery.QueryJobConfig(
+    query_job_config = bigquery.QueryJobConfig(
         query_parameters=[
             bigquery.ScalarQueryParameter("submission_date", "DATE", submission_date),
         ]
     )
 
-    query_job = client.query(query_statement, job_config=job_config)
+    query_job = client.query(query_statement, job_config=query_job_config)
     print("Running query:", query_job.job_id)
     search_data = (query_job.result().to_dataframe())
 
@@ -322,7 +322,7 @@ def main(project_id, submission_date, dry_run):
             all_update)
     """
 
-    query_job = client.query(query_statement, job_config=job_config)
+    query_job = client.query(query_statement, job_config=query_job_config)
     print("Running query:", query_job.job_id)
     latest_alert_data = (query_job.result().to_dataframe())
     

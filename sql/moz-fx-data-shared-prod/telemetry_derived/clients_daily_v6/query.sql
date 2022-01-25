@@ -266,6 +266,7 @@ clients_summary AS (
         udf.extract_histogram_sum(value) AS `count`
       FROM
         UNNEST(payload.keyed_histograms.search_counts),
+        -- Bug 1481671 - probe was briefly implemented with '.' rather than ':'
         UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
         UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+[.].'))]) AS pos
     ) AS search_counts,

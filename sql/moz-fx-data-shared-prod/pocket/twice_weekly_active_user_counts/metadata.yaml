@@ -1,0 +1,5 @@
+friendly_name: Twice Weekly Active User Counts
+description: |-
+  Rolling count of twice weekly active users (T-WAU) for Pocket.
+owners:
+  - jklukas@mozilla.com

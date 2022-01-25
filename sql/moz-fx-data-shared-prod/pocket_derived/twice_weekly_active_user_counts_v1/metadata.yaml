@@ -1,0 +1,11 @@
+friendly_name: Twice Weekly Active User Counts
+description: |-
+  Rolling count of twice weekly active users (T-WAU) for Pocket.
+owners:
+  - jklukas@mozilla.com
+labels:
+  incremental: false
+scheduling:
+  dag_name: bqetl_pocket
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]

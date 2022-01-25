@@ -1,0 +1,18 @@
+friendly_name: Twice Weekly Active User Counts History
+description: |-
+  Historical log of daily exports of T-WAU data, introduced for 2022 KPIs.
+  For each submission_date, we have rows representing the full history of T-WAU
+  up to that point.
+owners:
+  - jklukas@mozilla.com
+labels:
+  incremental: true
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: false
+scheduling:
+  dag_name: bqetl_pocket
+  arguments: ["--date", "{{ ds }}"]
+  referenced_tables: []

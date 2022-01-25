@@ -633,6 +633,19 @@ with DAG(
         dag=dag,
     )
 
+    stripe_external__promotion_codes__v1 = bigquery_etl_query(
+        task_id="stripe_external__promotion_codes__v1",
+        destination_table="promotion_codes_v1",
+        dataset_id="stripe_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["date:DATE:{{ds}}"],
+        dag=dag,
+    )
+
     stripe_external__setup_intents__v1 = bigquery_etl_query(
         task_id="stripe_external__setup_intents__v1",
         destination_table="setup_intents_v1",
@@ -695,6 +708,10 @@ with DAG(
 
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
         stripe_external__invoices__v1
+    )
+
+    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
+        stripe_external__promotion_codes__v1
     )
 
     mozilla_vpn_derived__devices__v1.set_upstream(mozilla_vpn_external__devices__v1)
@@ -811,6 +828,8 @@ with DAG(
     stripe_external__prices__v1.set_upstream(stripe_external__events__v1)
 
     stripe_external__products__v1.set_upstream(stripe_external__events__v1)
+
+    stripe_external__promotion_codes__v1.set_upstream(stripe_external__events__v1)
 
     stripe_external__setup_intents__v1.set_upstream(stripe_external__events__v1)
 

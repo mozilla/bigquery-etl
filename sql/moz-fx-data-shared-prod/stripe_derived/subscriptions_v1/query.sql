@@ -5,6 +5,7 @@ SELECT
   cancel_at_period_end,
   canceled_at,
   customer,
+  STRUCT(discount.promotion_code) AS discount,
   ended_at,
   event_timestamp,
   id,

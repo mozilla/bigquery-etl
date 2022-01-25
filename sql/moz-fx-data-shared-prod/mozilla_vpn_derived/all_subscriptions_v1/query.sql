@@ -21,6 +21,7 @@ WITH stripe_subscriptions AS (
     cancel_at_period_end,
     ended_at,
     COALESCE(ended_at, TIMESTAMP(CURRENT_DATE)) AS end_date,
+    discount.promotion_code AS promotion_code_id,
   FROM
     mozdata.stripe.subscriptions
   WHERE
@@ -64,6 +65,13 @@ stripe_invoice_lines AS (
     stripe_charges
   ON
     invoices_v1.charge = stripe_charges.charge_id
+),
+stripe_promotion_codes AS (
+  SELECT
+    id AS promotion_code_id,
+    code AS promotion_code,
+  FROM
+    `moz-fx-data-shared-prod`.stripe_external.promotion_codes_v1
 ),
 stripe_subscription_provider_country AS (
   SELECT
@@ -178,6 +186,7 @@ fxa_subscriptions AS (
     ) AS pricing_plan,
     -- Stripe default billing grace period is 1 day and Paypal is billed by Stripe
     INTERVAL 1 DAY AS billing_grace_period,
+    IF(promotion_code IS NULL, [], [promotion_code]) AS promotion_codes,
   FROM
     stripe_subscriptions
   JOIN -- exclude subscriptions to non-vpn products
@@ -204,6 +213,10 @@ fxa_subscriptions AS (
     attribution
   USING
     (fxa_uid)
+  LEFT JOIN
+    stripe_promotion_codes
+  USING
+    (promotion_code_id)
 ),
 apple_iap_subscriptions AS (
   SELECT
@@ -254,6 +267,7 @@ apple_iap_subscriptions AS (
     CONCAT(interval_count, "-", `interval`, "-", "apple") AS pricing_plan,
     -- Apple bills recurring subscriptions before they end
     INTERVAL 0 DAY AS billing_grace_period,
+    CAST(NULL AS ARRAY<STRING>) AS promotion_codes,
   FROM
     mozdata.mozilla_vpn.subscriptions
   CROSS JOIN
@@ -443,6 +457,7 @@ android_iap_subscriptions AS (
       end_time - event_timestamp,
       INTERVAL 0 DAY
     ) AS billing_grace_period,
+    CAST(NULL AS ARRAY<STRING>) AS promotion_codes,
   FROM
     android_iap_periods
   LEFT JOIN

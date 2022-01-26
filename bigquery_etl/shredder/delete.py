@@ -221,7 +221,7 @@ def delete_from_partition(
             {"DELETE" if use_dml else "SELECT * FROM"}
               `{sql_table_id(target)}`
             WHERE
-              {"" if use_dml else "NOT "}({field_condition})
+             ({field_condition}){"" if use_dml else " IS NOT TRUE"}
               AND {partition.condition}
             """
         )

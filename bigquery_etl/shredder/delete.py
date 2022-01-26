@@ -255,12 +255,16 @@ def get_partition(table, partition_expr, end_date, id_=None) -> Optional[Partiti
     """Return a Partition for id_ unless it is a date on or after end_date."""
     if id_ is None:
         if table.time_partitioning:
-            return Partition(f"{partition_expr} < '{end_date}'")
-        return Partition("TRUE")
+            return Partition(condition=f"{partition_expr} < '{end_date}'")
+        return Partition(condition="TRUE")
     if id_ == NULL_PARTITION_ID:
         if table.time_partitioning:
-            return Partition(f"{table.time_partitioning.field} IS NULL", id_, True)
-        return Partition(f"{partition_expr} IS NULL", id_, True)
+            return Partition(
+                condition=f"{table.time_partitioning.field} IS NULL",
+                id=id_,
+                is_special=True,
+            )
+        return Partition(condition=f"{partition_expr} IS NULL", id=id_, is_special=True)
     if table.time_partitioning:
         date = datetime.strptime(id_, "%Y%m%d").date()
         if date < end_date:
@@ -269,18 +273,18 @@ def get_partition(table, partition_expr, end_date, id_=None) -> Optional[Partiti
     if table.range_partitioning:
         if id_ == OUTSIDE_RANGE_PARTITION_ID:
             return Partition(
-                f"{partition_expr} < {table.range_partitioning.range_.start} "
+                condition=f"{partition_expr} < {table.range_partitioning.range_.start} "
                 f"OR {partition_expr} >= {table.range_partitioning.range_.end}",
-                id_,
-                True,
+                id=id_,
+                is_special=True,
             )
         if table.range_partitioning.range_.interval > 1:
             return Partition(
-                f"{partition_expr} BETWEEN {id_} "
+                condition=f"{partition_expr} BETWEEN {id_} "
                 f"AND {int(id_) + table.range_partitioning.range_.interval - 1}",
-                id_,
+                id=id_,
             )
-    return Partition(f"{partition_expr} = {id_}", id_)
+    return Partition(condition=f"{partition_expr} = {id_}", id=id_)
 
 
 def list_partitions(

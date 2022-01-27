@@ -205,7 +205,9 @@ jobs:
       - *copy_generated_sql
       - run:
           name: Generate DAGs
-          command: PATH="venv/bin:$PATH" script/generate_airflow_dags
+          command: |
+            PATH="venv/bin:$PATH" script/generate_airflow_dags
+            mv dags/ /tmp/workspace/generated-sql
       # this task is overwriting the content produced by generate-sql;
       # the behaviour here is additive, generated DAGs are just added to
       # the generated-sql output

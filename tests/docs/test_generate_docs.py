@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from bigquery_etl.docs.generate_docs import load_with_examples
+from bigquery_etl.docs.mozfun.generate_mozfun_docs import load_with_examples
 
 TEST_DIR = Path(__file__).parent.parent
 

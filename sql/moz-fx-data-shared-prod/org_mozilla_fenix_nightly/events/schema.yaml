@@ -281,6 +281,19 @@ fields:
       mode: REPEATED
       name: glean_error_invalid_overflow
       type: RECORD
+    - description: 'How many and which type of wallpapers were applied.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: wallpapers_new_wallpaper_applied
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

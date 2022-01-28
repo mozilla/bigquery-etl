@@ -539,6 +539,12 @@ fields:
       mode: NULLABLE
       name: recent_tabs_section_visible
       type: BOOLEAN
+    - description: 'Whether or not the user has discovered the wallpaper feature.
+
+        '
+      mode: NULLABLE
+      name: wallpapers_discovered_wallpaper_feature
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD
@@ -1795,6 +1801,19 @@ fields:
         type: INTEGER
       mode: REPEATED
       name: avif_pixi
+      type: RECORD
+    - description: 'How many and which type of wallpapers were applied.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: wallpapers_new_wallpaper_applied
       type: RECORD
     mode: NULLABLE
     name: labeled_counter

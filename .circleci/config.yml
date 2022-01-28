@@ -374,23 +374,20 @@ jobs:
     executor: ubuntu-machine-executor
     steps:
       - checkout
-      - *attach_generated_sql
-      - *copy_generated_sql
       - when:
           condition: &deploy-condition
             or:
               - equal: [main, << pipeline.git.branch >>]
               - << pipeline.git.tag >>
           steps:
+            - *attach_generated_sql
+            - *copy_generated_sql
             - docker/check:
                 docker-password: DOCKER_PASS
                 docker-username: DOCKER_USER
-      - docker/build: &public-image
-          image: ${CIRCLE_PROJECT_USERNAME+$CIRCLE_PROJECT_USERNAME/}${CIRCLE_PROJECT_REPONAME:-bigquery-etl}
-          tag: ${CIRCLE_TAG:-latest}
-      - when:
-          condition: *deploy-condition
-          steps:
+            - docker/build: &public-image
+                image: ${CIRCLE_PROJECT_USERNAME+$CIRCLE_PROJECT_USERNAME/}${CIRCLE_PROJECT_REPONAME:-bigquery-etl}
+                tag: ${CIRCLE_TAG:-latest}
             - docker/push: *public-image
   private-generate-sql:
     docker: *docker
@@ -461,22 +458,19 @@ jobs:
     executor: ubuntu-machine-executor
     steps:
       - checkout
-      - *attach_generated_sql
-      - run:
-          name: Move generated-sql into place
-          command: |
-            rm -rf sql/
-            cp -r /tmp/workspace/private-generated-sql/sql sql
       - when:
           condition: *deploy-condition
           steps:
+            - *attach_generated_sql
+            - run:
+                name: Move generated-sql into place
+                command: |
+                  rm -rf sql/
+                  cp -r /tmp/workspace/private-generated-sql/sql sql
             - gcp-gcr/gcr-auth
-      - gcp-gcr/build-image: &private-image
-          image: bigquery-etl
-          tag: ${CIRCLE_TAG:-latest}
-      - when:
-          condition: *deploy-condition
-          steps:
+            - gcp-gcr/build-image: &private-image
+                image: bigquery-etl
+                tag: ${CIRCLE_TAG:-latest}
             - gcp-gcr/push-image: *private-image
   generate-diff:
     docker: *docker
@@ -507,10 +501,15 @@ jobs:
             ./script/generate_sql \
               --target-project moz-fx-data-shared-prod
 
+            ./script/generate_airflow_dags
+
             cd ..
             diff -bur --no-dereference \
               bigquery-etl-main/sql/ /tmp/workspace/generated-sql/sql/ \
               > /tmp/workspace/generated-sql/sql.diff || true
+            diff -bur --no-dereference \
+              bigquery-etl-main/dags/ /tmp/workspace/generated-sql/dags/ \
+              >> /tmp/workspace/generated-sql/sql.diff || true
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -594,7 +593,7 @@ workflows:
       - generate-sql
       - generate-diff:
           requires:
-            - generate-sql
+            - generate-dags
           filters:
             branches:
               ignore: main

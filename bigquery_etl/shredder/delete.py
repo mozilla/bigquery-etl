@@ -59,11 +59,13 @@ parser.add_argument(
     help="Only use the first N partitions per table; requires --dry-run",
 )
 parser.add_argument(
-    "--read_only",
-    "--read-only",
-    action="store_true",
-    help="Use SELECT * FROM instead of DELETE with dry run queries to prevent errors "
-    "due to read-only permissions being insufficient to dry run DELETE dml",
+    "--no-use-dml",
+    "--no_use_dml",
+    action="store_false",
+    dest="use_dml",
+    help="Use SELECT * FROM instead of DELETE in queries to avoid concurrent DML limit "
+    "or errors due to read-only permissions being insufficient to dry run DML; unless "
+    "used with --dry-run, DML will still be used for special partitions like __NULL__",
 )
 standard_args.add_log_level(parser)
 standard_args.add_parallelism(parser)
@@ -180,16 +182,25 @@ def get_task_id(target, partition_id):
 
 def delete_from_partition(
     dry_run,
-    partition_condition,
+    partition,
     priority,
-    read_only,
-    sources,
     source_condition,
+    sources,
     target,
+    use_dml,
     **wait_for_job_kwargs,
 ):
     """Return callable to handle deletion requests for partitions of a target table."""
-    # noqa: D202
+    job_config = bigquery.QueryJobConfig(dry_run=dry_run, priority=priority)
+    # special partitions can't be set as a destination, so DML must be used except
+    # in dry runs because destination isn't required and DML may not be allowed
+    if partition.is_special and not dry_run:
+        use_dml = True
+    elif not use_dml and not partition.is_special:
+        job_config.destination = sql_table_id(target) + (
+            f"${partition.id}" if partition.id else ""
+        )
+        job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
 
     def create_job(client):
         field_condition = " OR ".join(
@@ -207,18 +218,16 @@ def delete_from_partition(
         )
         query = reformat(
             f"""
-            {"SELECT * FROM" if dry_run and read_only else "DELETE"}
+            {"DELETE" if use_dml else "SELECT * FROM"}
               `{sql_table_id(target)}`
             WHERE
-              ({field_condition})
-              AND {partition_condition}
+              ({field_condition}){"" if use_dml else " IS NOT TRUE"}
+              AND {partition.condition}
             """
         )
         run_tense = "Would run" if dry_run else "Running"
         logging.debug(f"{run_tense} query: {query}")
-        return client.query(
-            query, bigquery.QueryJobConfig(dry_run=dry_run, priority=priority)
-        )
+        return client.query(query, job_config=job_config)
 
     return partial(
         wait_for_job, create_job=create_job, dry_run=dry_run, **wait_for_job_kwargs
@@ -239,18 +248,23 @@ class Partition:
 
     condition: str
     id: Optional[str] = None
+    is_special: bool = False
 
 
 def get_partition(table, partition_expr, end_date, id_=None) -> Optional[Partition]:
     """Return a Partition for id_ unless it is a date on or after end_date."""
     if id_ is None:
         if table.time_partitioning:
-            return Partition(f"{partition_expr} < '{end_date}'")
-        return Partition("TRUE")
+            return Partition(condition=f"{partition_expr} < '{end_date}'")
+        return Partition(condition="TRUE")
     if id_ == NULL_PARTITION_ID:
         if table.time_partitioning:
-            return Partition(f"{table.time_partitioning.field} IS NULL", id_)
-        return Partition(f"{partition_expr} IS NULL", id_)
+            return Partition(
+                condition=f"{table.time_partitioning.field} IS NULL",
+                id=id_,
+                is_special=True,
+            )
+        return Partition(condition=f"{partition_expr} IS NULL", id=id_, is_special=True)
     if table.time_partitioning:
         date = datetime.strptime(id_, "%Y%m%d").date()
         if date < end_date:
@@ -259,17 +273,18 @@ def get_partition(table, partition_expr, end_date, id_=None) -> Optional[Partiti
     if table.range_partitioning:
         if id_ == OUTSIDE_RANGE_PARTITION_ID:
             return Partition(
-                f"{partition_expr} < {table.range_partitioning.range_.start} "
+                condition=f"{partition_expr} < {table.range_partitioning.range_.start} "
                 f"OR {partition_expr} >= {table.range_partitioning.range_.end}",
-                id_,
+                id=id_,
+                is_special=True,
             )
         if table.range_partitioning.range_.interval > 1:
             return Partition(
-                f"{partition_expr} BETWEEN {id_} "
+                condition=f"{partition_expr} BETWEEN {id_} "
                 f"AND {int(id_) + table.range_partitioning.range_.interval - 1}",
-                id_,
+                id=id_,
             )
-    return Partition(f"{partition_expr} = {id_}", id_)
+    return Partition(condition=f"{partition_expr} = {id_}", id=id_)
 
 
 def list_partitions(
@@ -352,7 +367,7 @@ def delete_from_table(
             partition_id=partition.id,
             func=delete_from_partition(
                 dry_run=dry_run,
-                partition_condition=partition.condition,
+                partition=partition,
                 target=target,
                 sources=sources,
                 task_id=get_task_id(target, partition.id),
@@ -445,7 +460,7 @@ def main():
             ],
             source_condition=source_condition,
             dry_run=args.dry_run,
-            read_only=args.read_only,
+            use_dml=args.use_dml,
             priority=args.priority,
             start_date=args.start_date,
             end_date=args.end_date,

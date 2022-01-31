@@ -113,6 +113,7 @@ with DAG(
             "CAD",
             "SGD",
             "NZD",
+            "MYR",
         ],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="dthorn@mozilla.com",

@@ -4,9 +4,7 @@ WITH new_flows AS (
     MIN(`timestamp`) AS flow_started,
     ARRAY_AGG(DISTINCT user_id IGNORE NULLS) AS fxa_uids,
     -- record service across whole flow because it may be missing from some events
-    ARRAY_AGG(
-      DISTINCT NULLIF(service, "undefined_oauth") IGNORE NULLS
-    ) AS services,
+    ARRAY_AGG(DISTINCT NULLIF(service, "undefined_oauth") IGNORE NULLS) AS services,
     ARRAY_AGG(
       IF(
         entrypoint_experiment IS NOT NULL

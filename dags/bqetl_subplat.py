@@ -150,6 +150,19 @@ with DAG(
         dag=dag,
     )
 
+    mozilla_vpn_derived__fxa_attribution__v2 = bigquery_etl_query(
+        task_id="mozilla_vpn_derived__fxa_attribution__v2",
+        destination_table="fxa_attribution_v2",
+        dataset_id="mozilla_vpn_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["date:DATE:{{ds}}"],
+        dag=dag,
+    )
+
     mozilla_vpn_derived__login_flows__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__login_flows__v1",
         destination_table="login_flows_v1",
@@ -780,6 +793,16 @@ with DAG(
     )
 
     mozilla_vpn_derived__fxa_attribution__v1.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_stdout_events__v1
+    )
+
+    mozilla_vpn_derived__fxa_attribution__v2.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_auth_events__v1
+    )
+    mozilla_vpn_derived__fxa_attribution__v2.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_content_events__v1
+    )
+    mozilla_vpn_derived__fxa_attribution__v2.set_upstream(
         wait_for_firefox_accounts_derived__fxa_stdout_events__v1
     )
 

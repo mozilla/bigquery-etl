@@ -365,6 +365,8 @@ jobs:
             cd generated-sql/
             rm -rf sql/
             cp -r /tmp/workspace/generated-sql/sql sql
+            rm -rf dags/
+            cp -r /tmp/workspace/generated-sql/dags dags
             git add .
             git commit -m "Auto-push due to change on main branch [ci skip]" \
               && git push \

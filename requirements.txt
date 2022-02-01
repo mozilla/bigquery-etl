@@ -830,9 +830,9 @@ pytest-isort==2.0.0 \
     --hash=sha256:821a8c5c9c4f3a3c52cfa9c541fbe89ac9e28728125125af53724c4c3f129117 \
     --hash=sha256:ab949c593213dad38ba75db32a0ce361fcddd11d4152be4a2c93b85104cc4376
     # via -r requirements.in
-pytest-mypy==0.8.1 \
-    --hash=sha256:1fa55723a4bf1d054fcba1c3bd694215a2a65cc95ab10164f5808afd893f3b11 \
-    --hash=sha256:6e68e8eb7ceeb7d1c83a1590912f784879f037b51adfb9c17b95c6b2fc57466b
+pytest-mypy==0.9.0 \
+    --hash=sha256:4f2a08d4ff34737eb6ad6402df1e424f43c9213181b32d675e4e3cafbda67bbd \
+    --hash=sha256:f8b5c6be405c8605959d1c79f20dcdeb2b3667fce8f264ff32bc854e5249f161
     # via -r requirements.in
 pytest-pydocstyle==2.2.0 \
     --hash=sha256:b4e7eee47252fbb7495f4a0126e547a25f5f114f3096c504e738db49a5034333

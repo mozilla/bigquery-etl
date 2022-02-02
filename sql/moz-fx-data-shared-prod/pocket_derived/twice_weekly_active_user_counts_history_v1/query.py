@@ -53,7 +53,8 @@ def main():
         f"""
         SELECT DATE("{args.date.isoformat()}") AS submission_date,
         active_at,
-        CAST(user_count AS INT64) AS user_count
+        CAST(user_count AS INT64) AS user_count,
+        yearly_cumulative_user_count,
         FROM {tmp_table}
         -- We make sure to drop partial data from the current day.
         WHERE active_at <= DATE("{args.date.isoformat()}")

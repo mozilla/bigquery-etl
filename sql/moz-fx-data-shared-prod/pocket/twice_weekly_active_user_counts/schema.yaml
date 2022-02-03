@@ -1,0 +1,13 @@
+fields:
+- description: Calendar week represented by this row
+  mode: NULLABLE
+  name: active_at
+  type: DATE
+- description: Number of Pocket twice weekly active users on this date
+  mode: NULLABLE
+  name: user_count
+  type: INTEGER
+- description: Cumulative TWAU for the year up to this active_at date
+  mode: NULLABLE
+  name: yearly_cumulative_user_count
+  type: INTEGER

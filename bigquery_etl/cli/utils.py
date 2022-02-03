@@ -104,13 +104,6 @@ sql_dir_option = click.option(
     callback=is_valid_dir,
 )
 
-tmp_dir_option = click.option(
-    "--tmp_dir",
-    "--tmp-dir",
-    help="Path to temporary directory generated SQL is written to.",
-    type=click.Path(file_okay=False),
-    default=Path("/tmp/sql"),
-)
 
 use_cloud_function_option = click.option(
     "--use_cloud_function",

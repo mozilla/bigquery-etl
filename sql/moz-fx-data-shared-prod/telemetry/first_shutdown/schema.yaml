@@ -50184,6 +50184,18 @@ fields:
           mode: NULLABLE
           name: browser_engagement_mirror_for_uri_count
           type: INTEGER
+        - description: 'When an update is available and app.update.auto is disabled,
+            a popup is opened prompting the user to download and install the update.
+            The pref app.update.suppressPrompts causes Firefox Nightly to wait up
+            to 7 days before showing the prompt, instead showing a badge and banner
+            in the meantime. It also prevents Nightly from showing update restart
+            prompts, instead showing a badge and banner immediately. This value is
+            set for the users who set this pref to true.
+
+            '
+          mode: NULLABLE
+          name: update_suppress_prompts
+          type: BOOLEAN
         mode: NULLABLE
         name: scalars
         type: RECORD

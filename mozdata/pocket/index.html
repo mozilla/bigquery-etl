@@ -2382,6 +2382,32 @@ measured each calendar week.</p>
 </li>
 </ul>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>active_at</td>
+        <td>Calendar week represented by this row</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>user_count</td>
+        <td>Number of Pocket twice weekly active users on this date</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>yearly_cumulative_user_count</td>
+        <td>Cumulative TWAU for the year up to this active_at date</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>

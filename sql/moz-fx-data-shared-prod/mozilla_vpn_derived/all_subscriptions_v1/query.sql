@@ -369,8 +369,12 @@ android_iap_periods AS (
         ("day", 1)
       END
     ).*,
-    auto_renewing,
-    payment_state,
+    (
+      auto_renewing
+      AND payment_state = 0
+      -- only the last set of active dates can be in the billing grace period
+      AND 1 = ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY active_dates_offset DESC)
+    ) AS in_billing_grace_period,
   FROM
     android_iap_aggregates
   LEFT JOIN
@@ -390,6 +394,8 @@ android_iap_periods AS (
           UNNEST(start_times) AS start_time
         GROUP BY
           end_time
+        ORDER BY
+          start_time
       )
     )
     WITH OFFSET AS active_dates_offset
@@ -418,8 +424,15 @@ android_iap_subscriptions AS (
     canceled_for_customer_at,
     CAST(NULL AS TIMESTAMP) AS cancel_at,
     CAST(NULL AS BOOL) AS cancel_at_period_end,
-    IF(end_time < TIMESTAMP(CURRENT_DATE), end_time, NULL) AS ended_at,
-    LEAST(end_time, TIMESTAMP(CURRENT_DATE)) AS end_date,
+    IF(
+      in_billing_grace_period,
+      -- android subscriptions in grace period have not ended
+      STRUCT(CAST(NULL AS TIMESTAMP) AS ended_at, TIMESTAMP(CURRENT_DATE) AS end_date),
+      STRUCT(
+        IF(end_time < TIMESTAMP(CURRENT_DATE), end_time, NULL) AS ended_at,
+        LEAST(end_time, TIMESTAMP(CURRENT_DATE)) AS end_date
+      )
+    ).*,
     fxa_uid,
     country,
     country_name,
@@ -449,14 +462,7 @@ android_iap_subscriptions AS (
       "-",
       (plan_amount / 100)
     ) AS pricing_plan,
-    IF(
-      -- in billing grace period
-      auto_renewing
-      AND payment_state = 0,
-      -- grace period lasts from event_timestamp to end_time
-      end_time - event_timestamp,
-      INTERVAL 0 DAY
-    ) AS billing_grace_period,
+    IF(in_billing_grace_period, INTERVAL 1 MONTH, INTERVAL 0 DAY) AS billing_grace_period,
     CAST(NULL AS ARRAY<STRING>) AS promotion_codes,
   FROM
     android_iap_periods

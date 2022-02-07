@@ -43178,6 +43178,19 @@ fields:
           mode: REPEATED
           name: media_video_hd_hardware_decoding_support
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'CPU time used by each process type in ms.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: power_cpu_time_per_process_type_ms
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD
@@ -44388,6 +44401,32 @@ fields:
             type: INTEGER
           mode: REPEATED
           name: telemetry_keyed_scalars_unknown_keys
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'CPU time used by each process type in ms.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: power_cpu_time_per_process_type_ms
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'GPU time used by each process type in ms.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: power_gpu_time_per_process_type_ms
           type: RECORD
         mode: NULLABLE
         name: keyed_scalars
@@ -47383,6 +47422,32 @@ fields:
           mode: REPEATED
           name: media_video_hd_hardware_decoding_support
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'CPU time used by each process type in ms.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: power_cpu_time_per_process_type_ms
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'GPU time used by each process type in ms.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: power_gpu_time_per_process_type_ms
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD
@@ -50331,6 +50396,19 @@ fields:
           mode: REPEATED
           name: telemetry_keyed_scalars_unknown_keys
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'CPU time used by each process type in ms.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: power_cpu_time_per_process_type_ms
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD
@@ -50493,6 +50571,19 @@ fields:
             type: INTEGER
           mode: REPEATED
           name: telemetry_keyed_scalars_unknown_keys
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'CPU time used by each process type in ms.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: power_cpu_time_per_process_type_ms
           type: RECORD
         mode: NULLABLE
         name: keyed_scalars
@@ -51338,6 +51429,19 @@ fields:
             type: INTEGER
           mode: REPEATED
           name: networking_trr_connection_cycle_count
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'CPU time used by each process type in ms.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: power_cpu_time_per_process_type_ms
           type: RECORD
         mode: NULLABLE
         name: keyed_scalars

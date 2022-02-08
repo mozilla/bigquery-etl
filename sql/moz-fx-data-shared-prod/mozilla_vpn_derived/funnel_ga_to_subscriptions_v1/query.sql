@@ -50,6 +50,7 @@ website AS (
     website_base
   WHERE
     `date` >= '2020-07-01'
+    AND IF(@date IS NULL, `date` < CURRENT_DATE, `date` = @date)
   GROUP BY
     `date`,
     normalized_medium,
@@ -82,6 +83,11 @@ subscriptions AS (
     all_subscriptions_v1
   WHERE
     DATE(subscription_start_date) >= '2020-07-01'
+    AND IF(
+      @date IS NULL,
+      DATE(subscription_start_date) < CURRENT_DATE,
+      DATE(subscription_start_date) = @date
+    )
     AND product_name = "Mozilla VPN"
     -- only count subscriptions that can have UTMs matching GA, which currently maps to non-IAP providers
     AND provider NOT IN ("Apple Store", "Google Play")

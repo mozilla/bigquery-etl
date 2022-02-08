@@ -21,6 +21,7 @@ from ..util import standard_args
 from ..util.bigquery_id import FULL_JOB_ID_RE, full_job_id, sql_table_id
 from ..util.client_queue import ClientQueue
 from ..util.exceptions import BigQueryInsertError
+from .bug1751979 import BUG_1751979_MAIN_V4_REPLACE_CLAUSE, BUG_1751979_MAIN_V4_UDFS
 from .config import (
     DELETE_TARGETS,
     DeleteSource,
@@ -246,9 +247,23 @@ def delete_from_partition(
             field_conditions = " AND ".join(
                 f"_source_{index} IS NULL" for index, _ in enumerate(sources)
             )
+
+            # These are temporary complications specific to the main_v4 table
+            # that we are adding to cost-effectively sanitize values of 13 fields;
+            # these changes can be reverted by mid-March 2022;
+            # see https://bugzilla.mozilla.org/show_bug.cgi?id=1751979
+            replace_clause, temporary_udfs = ("", "")
+            if (
+                sql_table_id(target)
+                == "moz-fx-data-shared-prod.telemetry_stable.main_v4"
+            ):
+                replace_clause = BUG_1751979_MAIN_V4_REPLACE_CLAUSE
+                temporary_udfs = BUG_1751979_MAIN_V4_UDFS
+
             query = reformat(
                 f"""
-                SELECT _target.* FROM
+                {temporary_udfs}
+                SELECT _target.* {replace_clause} FROM
                   `{sql_table_id(target)}` AS _target
                 {field_joins}
                 WHERE

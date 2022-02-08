@@ -978,7 +978,7 @@ six==1.15.0 \
     #   protobuf
     #   python-dateutil
     #   virtualenv
-smart_open==5.2.1 \
+smart-open==5.2.1 \
     --hash=sha256:71d14489da58b60ce12fc3ecb823facc59a8b23cd1b58edb97175640350d3a62 \
     --hash=sha256:75abf758717a92a8f53aa96953f0c245c8cedf8e1e4184903db3659b419d4c17
     # via -r requirements.in

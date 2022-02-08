@@ -28,7 +28,7 @@ pytest-isort==2.0.0
 pytest-mypy==0.9.1
 pytest-pydocstyle==2.2.0
 pytest-xdist==2.5.0
-pytest==6.2.5
+pytest==7.0.0
 PyYAML==6.0
 smart_open==5.2.1
 sqlparse==0.4.2

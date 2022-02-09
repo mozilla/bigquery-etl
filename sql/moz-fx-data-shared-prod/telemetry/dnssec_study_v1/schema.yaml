@@ -1228,6 +1228,30 @@ fields:
     - mode: REPEATED
       name: udp_a_web_ext
       type: STRING
+    - mode: REPEATED
+      name: tcp_acd
+      type: INTEGER
+    - mode: REPEATED
+      name: tcp_adocd
+      type: INTEGER
+    - mode: REPEATED
+      name: tcp_newfour
+      type: INTEGER
+    - mode: REPEATED
+      name: tcp_newthree
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_acd
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_adocd
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_newfour
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_newthree
+      type: INTEGER
     mode: NULLABLE
     name: dns_data
     type: RECORD
@@ -1297,6 +1321,30 @@ fields:
       type: FLOAT
     - mode: NULLABLE
       name: udp_smimea
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_acd
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_adocd
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_newfour
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_newthree
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_acd
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_adocd
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_newfour
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_newthree
       type: FLOAT
     mode: NULLABLE
     name: dns_attempts

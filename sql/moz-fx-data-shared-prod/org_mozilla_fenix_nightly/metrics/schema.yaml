@@ -545,6 +545,17 @@ fields:
       mode: NULLABLE
       name: wallpapers_discovered_wallpaper_feature
       type: BOOLEAN
+    - description: 'The value `true`, recorded when a Firefox Telemetry "main" ping
+        is about
+
+        to be assembled.
+
+        To be used to validate GIFFT.
+
+        '
+      mode: NULLABLE
+      name: gifft_validation_main_ping_assembling
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD

@@ -2,7 +2,7 @@
 
 """Constants for use in sanitizing main_v4 for bug 1751979."""
 
-BUG_1751979_MAIN_V4_UDFS = """
+BUG_1751979_MAIN_V4_UDFS = r"""
 CREATE TEMP FUNCTION sanitize_search_counts(input ANY TYPE) AS (
   (
     WITH base AS (
@@ -184,7 +184,7 @@ CREATE TEMP FUNCTION sanitize_scalar(input ANY TYPE) AS (
 );
 """
 
-BUG_1751979_MAIN_V4_REPLACE_CLAUSE = """
+BUG_1751979_MAIN_V4_REPLACE_CLAUSE = r"""
 REPLACE (
 (
   SELECT AS STRUCT
@@ -247,6 +247,5 @@ REPLACE (
           )
       ) AS processes
     )
-) AS payload
-)
+) AS payload)
 """

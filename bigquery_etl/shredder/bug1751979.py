@@ -9,8 +9,8 @@ CREATE TEMP FUNCTION sanitize_search_counts(input ANY TYPE) AS (
       SELECT
         key,
         value,
-        REGEXP_EXTRACT(key, "([^.]+\\.in-content[:.][^:]+:).*") AS prefix,
-        REGEXP_EXTRACT(key, "[^.]+\\.in-content[:.][^:]+:(.*)") AS code,
+        REGEXP_EXTRACT(key, "([^.]+[.]in-content[:.][^:]+:).*") AS prefix,
+        REGEXP_EXTRACT(key, "[^.]+[.]in-content[:.][^:]+:(.*)") AS code,
       FROM
         UNNEST(input)
     )
@@ -248,4 +248,5 @@ REPLACE (
       ) AS processes
     )
 ) AS payload
+)
 """

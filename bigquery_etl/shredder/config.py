@@ -77,9 +77,8 @@ PIONEER_ID = "pioneer_id"
 RALLY_ID = "metrics.uuid.rally_id"
 RALLY_ID_TOP_LEVEL = "rally_id"
 ID = "id"
-CFR_ID = f"COALESCE({CLIENT_ID}, {IMPRESSION_ID})"
 FXA_USER_ID = "jsonPayload.fields.user_id"
-# these must be in the same order as SYNC_SRCS
+# these must be in the same order as SYNC_SOURCES
 SYNC_IDS = ("SUBSTR(payload.device_id, 0, 32)", "payload.uid")
 CONTEXT_ID = "context_id"
 
@@ -89,12 +88,6 @@ DESKTOP_SRC = DeleteSource(
 IMPRESSION_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4",
     field="payload.scalars.parent.deletion_request_impression_id",
-)
-CFR_SRC = DeleteSource(
-    # inject sql via f"`{sql_table_id(source)}`" to select client_id and impression_id
-    table="telemetry_stable.deletion_request_v4`,"
-    f" UNNEST([{CLIENT_ID}, {IMPRESSION_SRC.field}]) AS `_",
-    field="_",
 )
 CONTEXTUAL_SERVICES_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4",
@@ -140,7 +133,6 @@ SOURCES = (
         DESKTOP_SRC,
         IMPRESSION_SRC,
         CONTEXTUAL_SERVICES_SRC,
-        CFR_SRC,
         FXA_HMAC_SRC,
         FXA_SRC,
     ]
@@ -154,7 +146,6 @@ LEGACY_MOBILE_IDS = tuple(CLIENT_ID for _ in LEGACY_MOBILE_SOURCES)
 client_id_target = partial(DeleteTarget, field=CLIENT_ID)
 glean_target = partial(DeleteTarget, field=GLEAN_CLIENT_ID)
 impression_id_target = partial(DeleteTarget, field=IMPRESSION_ID)
-cfr_id_target = partial(DeleteTarget, field=CFR_ID)
 fxa_user_id_target = partial(DeleteTarget, field=FXA_USER_ID)
 user_id_target = partial(DeleteTarget, field=USER_ID)
 context_id_target = partial(DeleteTarget, field=CONTEXT_ID)
@@ -218,9 +209,17 @@ DELETE_TARGETS = {
     client_id_target(table="telemetry_stable.update_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.voice_v4"): DESKTOP_SRC,
     # activity stream
-    cfr_id_target(table="messaging_system_stable.cfr_v1"): CFR_SRC,
-    cfr_id_target(table="messaging_system_derived.cfr_users_daily_v1"): CFR_SRC,
-    cfr_id_target(table="messaging_system_derived.cfr_users_last_seen_v1"): CFR_SRC,
+    DeleteTarget(
+        table="messaging_system_stable.cfr_v1", field=(CLIENT_ID, IMPRESSION_ID)
+    ): (DESKTOP_SRC, IMPRESSION_SRC),
+    DeleteTarget(
+        table="messaging_system_derived.cfr_users_daily_v1",
+        field=(CLIENT_ID, IMPRESSION_ID),
+    ): (DESKTOP_SRC, IMPRESSION_SRC),
+    DeleteTarget(
+        table="messaging_system_derived.cfr_users_last_seen_v1",
+        field=(CLIENT_ID, IMPRESSION_ID),
+    ): (DESKTOP_SRC, IMPRESSION_SRC),
     client_id_target(table="activity_stream_stable.events_v1"): DESKTOP_SRC,
     client_id_target(table="messaging_system_stable.onboarding_v1"): DESKTOP_SRC,
     client_id_target(table="messaging_system_stable.snippets_v1"): DESKTOP_SRC,

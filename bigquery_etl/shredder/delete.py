@@ -203,28 +203,59 @@ def delete_from_partition(
         job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
 
     def create_job(client):
-        field_condition = " OR ".join(
-            f"""
-             {field} IN (
-               SELECT
-                 {source.field}
-               FROM
-                 `{sql_table_id(source)}`
-               WHERE
-            """
-            + " AND ".join((source_condition, *source.conditions))
-            + ")"
-            for field, source in zip(target.fields, sources)
-        )
-        query = reformat(
-            f"""
-            {"DELETE" if use_dml else "SELECT * FROM"}
-              `{sql_table_id(target)}`
-            WHERE
-              ({field_condition}){"" if use_dml else " IS NOT TRUE"}
-              AND {partition.condition}
-            """
-        )
+        if use_dml:
+            field_condition = " OR ".join(
+                f"""
+                 {field} IN (
+                   SELECT
+                     {source.field}
+                   FROM
+                     `{sql_table_id(source)}`
+                   WHERE
+                """
+                + " AND ".join((source_condition, *source.conditions))
+                + ")"
+                for field, source in zip(target.fields, sources)
+            )
+            query = reformat(
+                f"""
+                DELETE
+                  `{sql_table_id(target)}`
+                WHERE
+                  ({field_condition})
+                  AND {partition.condition}
+                """
+            )
+        else:
+            field_joins = "".join(
+                f"""
+                 LEFT JOIN (
+                   SELECT DISTINCT
+                     {source.field} AS _source_{index}
+                   FROM
+                     `{sql_table_id(source)}`
+                   WHERE
+                """
+                + " AND ".join((source_condition, *source.conditions))
+                + f"""
+                )
+                ON {field} = _source_{index}
+                """
+                for index, (field, source) in enumerate(zip(target.fields, sources))
+            )
+            field_conditions = " AND ".join(
+                f"_source_{index} IS NULL" for index, _ in enumerate(sources)
+            )
+            query = reformat(
+                f"""
+                SELECT _target.* FROM
+                  `{sql_table_id(target)}` AS _target
+                {field_joins}
+                WHERE
+                  ({field_conditions})
+                  AND {partition.condition}
+                """
+            )
         run_tense = "Would run" if dry_run else "Running"
         logging.debug(f"{run_tense} query: {query}")
         return client.query(query, job_config=job_config)

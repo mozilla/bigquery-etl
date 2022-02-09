@@ -207,12 +207,12 @@ def delete_from_partition(
         if use_dml:
             field_condition = " OR ".join(
                 f"""
-                 {field} IN (
-                   SELECT
-                     {source.field}
-                   FROM
-                     `{sql_table_id(source)}`
-                   WHERE
+                {field} IN (
+                  SELECT
+                    {source.field}
+                  FROM
+                    `{sql_table_id(source)}`
+                  WHERE
                 """
                 + " AND ".join((source_condition, *source.conditions))
                 + ")"
@@ -230,17 +230,19 @@ def delete_from_partition(
         else:
             field_joins = "".join(
                 f"""
-                 LEFT JOIN (
-                   SELECT DISTINCT
-                     {source.field} AS _source_{index}
-                   FROM
-                     `{sql_table_id(source)}`
-                   WHERE
+                LEFT JOIN
+                  (
+                    SELECT
+                      {source.field} AS _source_{index}
+                    FROM
+                      `{sql_table_id(source)}`
+                    WHERE
                 """
                 + " AND ".join((source_condition, *source.conditions))
                 + f"""
-                )
-                ON {field} = _source_{index}
+                  )
+                ON
+                  {field} = _source_{index}
                 """
                 for index, (field, source) in enumerate(zip(target.fields, sources))
             )
@@ -263,7 +265,9 @@ def delete_from_partition(
             query = reformat(
                 f"""
                 {temporary_udfs}
-                SELECT _target.* {replace_clause} FROM
+                SELECT
+                  _target.* {replace_clause}
+                FROM
                   `{sql_table_id(target)}` AS _target
                 {field_joins}
                 WHERE

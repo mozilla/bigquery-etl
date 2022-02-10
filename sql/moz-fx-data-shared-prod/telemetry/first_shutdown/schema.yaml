@@ -50261,6 +50261,20 @@ fields:
           mode: NULLABLE
           name: update_suppress_prompts
           type: BOOLEAN
+        - description: 'The value `true` recorded when a "main" ping is about to be
+            assembled. To be used for validating GIFFT.
+
+            '
+          mode: NULLABLE
+          name: gifft_validation_main_ping_assembling
+          type: BOOLEAN
+        - description: 'The value `true` recorded when a "main" ping is about to be
+            assembled. To be used for validating GIFFT. Mirror for Glean''s `gifft.validation.main_ping_assembling`.
+
+            '
+          mode: NULLABLE
+          name: gifft_validation_mirror_for_main_ping_assembling
+          type: BOOLEAN
         mode: NULLABLE
         name: scalars
         type: RECORD

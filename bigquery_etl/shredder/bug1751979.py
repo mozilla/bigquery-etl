@@ -359,7 +359,7 @@ CREATE TEMP FUNCTION sanitize_search_counts_ms(
     FROM
       parsed,
       UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
-      UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+[.].'))]) AS pos
+      UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+?[.].'))]) AS pos
     GROUP BY
       engine,
       source

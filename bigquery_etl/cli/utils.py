@@ -110,6 +110,7 @@ sql_dir_option = click.option(
     callback=is_valid_dir,
 )
 
+
 use_cloud_function_option = click.option(
     "--use_cloud_function",
     "--use-cloud-function",

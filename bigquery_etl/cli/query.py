@@ -4,6 +4,7 @@ import copy
 import re
 import string
 import sys
+import tempfile
 from datetime import date, timedelta
 from functools import partial
 from multiprocessing.pool import Pool
@@ -44,15 +45,20 @@ from ..schema import SCHEMA_FILE, Schema
 from ..util import extract_from_query_path
 from ..util.common import random_str
 from .dryrun import dryrun
+from .generate import generate_all
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
 VERSION_RE = re.compile(r"_v[0-9]+")
 
 
 @click.group(help="Commands for managing queries.")
-def query():
+@click.pass_context
+def query(ctx):
     """Create the CLI group for the query command."""
-    pass
+    # create temporary directory generated content is written to
+    # the directory will be deleted automatically after the command exits
+    ctx.ensure_object(dict)
+    ctx.obj["TMP_DIR"] = ctx.with_resource(tempfile.TemporaryDirectory())
 
 
 @query.command(
@@ -356,12 +362,21 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
     help="Include timestamps when destination tables were last updated",
     is_flag=True,
 )
-def info(name, sql_dir, project_id, cost, last_updated):
+@click.pass_context
+def info(ctx, name, sql_dir, project_id, cost, last_updated):
     """Return information about all or specific queries."""
     if name is None:
         name = "*.*"
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    if query_files == []:
+        # run SQL generators if no matching query has been found
+        ctx.invoke(
+            generate_all,
+            output_dir=ctx.obj["TMP_DIR"],
+            ignore=["derived_view_schemas", "stable_views"],
+        )
+        query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
 
     for query_file in query_files:
         query_file_path = Path(query_file)
@@ -424,7 +439,6 @@ def info(name, sql_dir, project_id, cost, last_updated):
                         click.echo(
                             f"  Cost over the last 7 days: {round(row.cost, 2)} USD"
                         )
-
         click.echo("")
 
 
@@ -568,6 +582,15 @@ def backfill(
         sys.exit(1)
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    if query_files == []:
+        # run SQL generators if no matching query has been found
+        ctx.invoke(
+            generate_all,
+            output_dir=ctx.obj["TMP_DIR"],
+            ignore=["derived_view_schemas", "stable_views"],
+        )
+        query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
+
     dates = [start_date + timedelta(i) for i in range((end_date - start_date).days + 1)]
 
     for query_file in query_files:
@@ -1054,7 +1077,13 @@ def _update_query_schema(
 @respect_dryrun_skip_option(default=True)
 @click.pass_context
 def deploy(
-    ctx, name, sql_dir, project_id, force, use_cloud_function, respect_dryrun_skip
+    ctx,
+    name,
+    sql_dir,
+    project_id,
+    force,
+    use_cloud_function,
+    respect_dryrun_skip,
 ):
     """CLI command for deploying destination table schemas."""
     if not is_authenticated():
@@ -1066,6 +1095,14 @@ def deploy(
     client = bigquery.Client()
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    if query_files == []:
+        # run SQL generators if no matching query has been found
+        ctx.invoke(
+            generate_all,
+            output_dir=ctx.obj["TMP_DIR"],
+            ignore=["derived_view_schemas", "stable_views"],
+        )
+        query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
 
     for query_file in query_files:
         if respect_dryrun_skip and str(query_file) in SKIP:
@@ -1169,9 +1206,20 @@ def _validate_schema_from_path(
 )
 @use_cloud_function_option
 @respect_dryrun_skip_option(default=True)
-def validate_schema(name, sql_dir, project_id, use_cloud_function, respect_dryrun_skip):
+@click.pass_context
+def validate_schema(
+    ctx, name, sql_dir, project_id, use_cloud_function, respect_dryrun_skip
+):
     """Validate the defined query schema against the query and destination table."""
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    if query_files == []:
+        # run SQL generators if no matching query has been found
+        ctx.invoke(
+            generate_all,
+            output_dir=ctx.obj["TMP_DIR"],
+            ignore=["derived_view_schemas", "stable_views"],
+        )
+        query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
 
     _validate_schema = partial(
         _validate_schema_from_path,

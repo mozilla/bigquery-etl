@@ -21,6 +21,7 @@ from ..util import standard_args
 from ..util.bigquery_id import FULL_JOB_ID_RE, full_job_id, sql_table_id
 from ..util.client_queue import ClientQueue
 from ..util.exceptions import BigQueryInsertError
+from .bug1751979 import BUG_1751979_MAIN_V4_REPLACE_CLAUSE, BUG_1751979_MAIN_V4_UDFS
 from .config import (
     DELETE_TARGETS,
     DeleteSource,
@@ -203,28 +204,77 @@ def delete_from_partition(
         job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
 
     def create_job(client):
-        field_condition = " OR ".join(
-            f"""
-             {field} IN (
-               SELECT
-                 {source.field}
-               FROM
-                 `{sql_table_id(source)}`
-               WHERE
-            """
-            + " AND ".join((source_condition, *source.conditions))
-            + ")"
-            for field, source in zip(target.fields, sources)
-        )
-        query = reformat(
-            f"""
-            {"DELETE" if use_dml else "SELECT * FROM"}
-              `{sql_table_id(target)}`
-            WHERE
-              ({field_condition}){"" if use_dml else " IS NOT TRUE"}
-              AND {partition.condition}
-            """
-        )
+        if use_dml:
+            field_condition = " OR ".join(
+                f"""
+                {field} IN (
+                  SELECT
+                    {source.field}
+                  FROM
+                    `{sql_table_id(source)}`
+                  WHERE
+                """
+                + " AND ".join((source_condition, *source.conditions))
+                + ")"
+                for field, source in zip(target.fields, sources)
+            )
+            query = reformat(
+                f"""
+                DELETE
+                  `{sql_table_id(target)}`
+                WHERE
+                  ({field_condition})
+                  AND {partition.condition}
+                """
+            )
+        else:
+            field_joins = "".join(
+                f"""
+                LEFT JOIN
+                  (
+                    SELECT
+                      {source.field} AS _source_{index}
+                    FROM
+                      `{sql_table_id(source)}`
+                    WHERE
+                """
+                + " AND ".join((source_condition, *source.conditions))
+                + f"""
+                  )
+                ON
+                  {field} = _source_{index}
+                """
+                for index, (field, source) in enumerate(zip(target.fields, sources))
+            )
+            field_conditions = " AND ".join(
+                f"_source_{index} IS NULL" for index, _ in enumerate(sources)
+            )
+
+            # These are temporary complications specific to the main_v4 table
+            # that we are adding to cost-effectively sanitize values of 13 fields;
+            # these changes can be reverted by mid-March 2022;
+            # see https://bugzilla.mozilla.org/show_bug.cgi?id=1751979
+            replace_clause, temporary_udfs = ("", "")
+            if (
+                sql_table_id(target)
+                == "moz-fx-data-shared-prod.telemetry_stable.main_v4"
+            ):
+                replace_clause = BUG_1751979_MAIN_V4_REPLACE_CLAUSE
+                temporary_udfs = BUG_1751979_MAIN_V4_UDFS
+
+            query = reformat(
+                f"""
+                {temporary_udfs}
+                SELECT
+                  _target.* {replace_clause}
+                FROM
+                  `{sql_table_id(target)}` AS _target
+                {field_joins}
+                WHERE
+                  ({field_conditions})
+                  AND {partition.condition}
+                """
+            )
         run_tense = "Would run" if dry_run else "Running"
         logging.debug(f"{run_tense} query: {query}")
         return client.query(query, job_config=job_config)

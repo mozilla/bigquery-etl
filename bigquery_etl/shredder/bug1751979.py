@@ -346,7 +346,7 @@ CREATE TEMP FUNCTION sanitize_search_counts_ms(
         )
       FROM
         parsed
-    ),
+    )
     -- The SUBSTR and UNNEST logic here is copied from the prod main_summary query
     -- see https://github.com/mozilla/bigquery-etl/blob/222c4266/sql
     --     /moz-fx-data-shared-prod/telemetry_derived/main_summary_v4/part1.sql#L266-L273

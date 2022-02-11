@@ -267,8 +267,8 @@ CREATE TEMP FUNCTION sanitize_search_counts_ms(
     parsed AS (
       SELECT
         *,
-        REGEXP_EXTRACT(key, "([^.]+\\.in-content[:.][^:]+:).*") AS prefix,
-        REGEXP_EXTRACT(key, "[^.]+\\.in-content[:.][^:]+:(.*)") AS code,
+        REGEXP_EXTRACT(key, "([^.]+[.]in-content[:.][^:]+:).*") AS prefix,
+        REGEXP_EXTRACT(key, "[^.]+[.]in-content[:.][^:]+:(.*)") AS code,
       FROM
         base
     ),

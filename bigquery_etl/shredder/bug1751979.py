@@ -254,13 +254,13 @@ BUG_1751979_MAIN_SUMMARY_V4_UDFS = r"""
 CREATE TEMP FUNCTION sanitize_search_counts_ms(
   input ARRAY<STRUCT<engine STRING, source STRING, count INT64>>
 ) AS (
-  (
+  ARRAY(
     WITH base AS (
       SELECT
         -- This reverses the separation logic in main_summary where
         -- engine and source are parsed from the search_counts key
         CONCAT(engine, '.', source) AS key,
-        count
+        `count`
       FROM
         UNNEST(input)
     ),
@@ -346,18 +346,23 @@ CREATE TEMP FUNCTION sanitize_search_counts_ms(
         )
       FROM
         parsed
-    )
-      -- The SUBSTR and UNNEST logic here is copied from the prod main_summary query
-      -- see https://github.com/mozilla/bigquery-etl/blob/222c4266/sql
-      --     /moz-fx-data-shared-prod/telemetry_derived/main_summary_v4/part1.sql#L266-L273
-    SELECT
-      ARRAY_AGG(
-        STRUCT(SUBSTR(_key, 0, pos - 2) AS engine, SUBSTR(_key, pos) AS source, count)
-      )
+    ),
+    -- The SUBSTR and UNNEST logic here is copied from the prod main_summary query
+    -- see https://github.com/mozilla/bigquery-etl/blob/222c4266/sql
+    --     /moz-fx-data-shared-prod/telemetry_derived/main_summary_v4/part1.sql#L266-L273
+    SELECT AS STRUCT
+      SUBSTR(_key, 0, pos - 2) AS engine,
+      SUBSTR(_key, pos) AS source,
+      -- We sum by engine and source just in case we have several non-conforming codes that
+      -- all get the same scrubbed value; we want to avoid having duplicate keys.
+      SUM(`count`) AS `count`
     FROM
       parsed,
       UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
       UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+[.].'))]) AS pos
+    GROUP BY
+      engine,
+      source
   )
 );
 """

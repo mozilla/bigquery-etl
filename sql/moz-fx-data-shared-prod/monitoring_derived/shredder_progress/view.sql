@@ -8,13 +8,13 @@ WITH shredder AS (
     WHEN
       target = "moz-fx-data-shared-prod.telemetry_stable.main_v4"
     THEN
-      "on_demand"
+      "telemetry_main"
     WHEN
       target = "moz-fx-data-shared-prod.telemetry_derived.main_summary_v4"
     THEN
-      "flat_rate_main_summary"
+      "telemetry_main_summary"
     ELSE
-      "flat_rate"
+      "all"
     END
     AS airflow_task_id,
     target,

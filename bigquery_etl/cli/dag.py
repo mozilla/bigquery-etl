@@ -7,7 +7,7 @@ from pathlib import Path
 import click
 import yaml
 
-from ..cli.utils import is_valid_dir, is_valid_file
+from ..cli.utils import create_dir_if_not_exist, is_valid_file
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..query_scheduling.dag import Dag
 from ..query_scheduling.dag_collection import DagCollection
@@ -28,7 +28,7 @@ output_dir_option = click.option(
     help="Path directory with generated DAGs",
     type=click.Path(file_okay=False),
     default="dags/",
-    callback=is_valid_dir,
+    callback=create_dir_if_not_exist,
 )
 
 

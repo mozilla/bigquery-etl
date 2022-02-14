@@ -239,13 +239,18 @@ jobs:
               echo "Skipping job because .circleci/ and dags/ were not modified"
               circleci-agent step halt
             fi
+      - *attach_generated_sql
+      - &copy_generated_dags
+        run:
+          name: Move generated DAGs into place
+          command: |
+            rm -rf dags/
+            cp -r /tmp/workspace/generated-sql/dags dags
       - run:
           name: Pull telemetry-airflow
           command: |
             git clone https://github.com/mozilla/telemetry-airflow.git
             cp -a dags/. telemetry-airflow/dags/
-      - *attach_generated_sql
-      - *copy_generated_sql
       - run:
           command: |
             cd telemetry-airflow
@@ -261,23 +266,6 @@ jobs:
           command: |
             cd telemetry-airflow
             bash bin/test-parse
-  verify-dags-up-to-date:
-    # todo: remove this step once we rely on generate-dags completely
-    docker: *docker
-    steps:
-      - checkout
-      - *restore_venv_cache
-      - *build
-      - *restore_mvn_cache
-      - *java_deps
-      - run:
-          name: Generate DAGs
-          command: PATH="venv/bin:$PATH" script/generate_airflow_dags
-      - run:
-          name: Verify that DAGs were correctly generated and are up-to-date
-          command: |
-            git diff --exit-code
-            diff <(git ls-files dags/*.py) <(ls dags/*.py)
   validate-docs:
     docker: *docker
     steps:
@@ -585,7 +573,6 @@ workflows:
       - validate-dags:
           requires:
             - generate-dags
-      - verify-dags-up-to-date
       - validate-docs:
           requires:
             - generate-sql

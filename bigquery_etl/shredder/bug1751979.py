@@ -357,7 +357,7 @@ CREATE TEMP FUNCTION sanitize_search_counts_ms(
       -- all get the same scrubbed value; we want to avoid having duplicate keys.
       SUM(`count`) AS `count`
     FROM
-      parsed,
+      scrubbed,
       UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
       UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+?[.].'))]) AS pos
     GROUP BY

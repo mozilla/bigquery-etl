@@ -488,8 +488,11 @@ jobs:
             pip install -r requirements.txt
             pip install -r java-requirements.txt
             mvn dependency:copy-dependencies
-            ./script/generate_sql \
+            ./script/bqetl generate all \
               --target-project moz-fx-data-shared-prod
+            ./script/bqetl dependency record \
+              --skip-existing \
+              "sql/"
 
             ./script/generate_airflow_dags
 

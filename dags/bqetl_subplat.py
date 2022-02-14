@@ -81,6 +81,18 @@ with DAG(
         dag=dag,
     )
 
+    mozilla_vpn_derived__channel_group_proportions__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_derived__channel_group_proportions__v1",
+        destination_table="channel_group_proportions_v1",
+        dataset_id="mozilla_vpn_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     mozilla_vpn_derived__devices__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__devices__v1",
         destination_table="devices_v1",
@@ -133,6 +145,18 @@ with DAG(
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    mozilla_vpn_derived__funnel_product_page_to_subscribed__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_derived__funnel_product_page_to_subscribed__v1",
+        destination_table="funnel_product_page_to_subscribed_v1",
+        dataset_id="mozilla_vpn_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="date",
         depends_on_past=False,
         dag=dag,
     )
@@ -715,6 +739,10 @@ with DAG(
         stripe_external__promotion_codes__v1
     )
 
+    mozilla_vpn_derived__channel_group_proportions__v1.set_upstream(
+        mozilla_vpn_derived__subscription_events__v1
+    )
+
     mozilla_vpn_derived__devices__v1.set_upstream(mozilla_vpn_external__devices__v1)
 
     mozilla_vpn_derived__funnel_fxa_login_to_protected__v1.set_upstream(
@@ -749,7 +777,7 @@ with DAG(
         )
     )
 
-    mozilla_vpn_derived__fxa_attribution__v1.set_upstream(
+    mozilla_vpn_derived__funnel_product_page_to_subscribed__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_auth_events__v1
     )
     wait_for_firefox_accounts_derived__fxa_content_events__v1 = (
@@ -764,7 +792,7 @@ with DAG(
         )
     )
 
-    mozilla_vpn_derived__fxa_attribution__v1.set_upstream(
+    mozilla_vpn_derived__funnel_product_page_to_subscribed__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_content_events__v1
     )
     wait_for_firefox_accounts_derived__fxa_stdout_events__v1 = (
@@ -779,6 +807,20 @@ with DAG(
         )
     )
 
+    mozilla_vpn_derived__funnel_product_page_to_subscribed__v1.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_stdout_events__v1
+    )
+
+    mozilla_vpn_derived__funnel_product_page_to_subscribed__v1.set_upstream(
+        stripe_derived__plans__v1
+    )
+
+    mozilla_vpn_derived__fxa_attribution__v1.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_auth_events__v1
+    )
+    mozilla_vpn_derived__fxa_attribution__v1.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_content_events__v1
+    )
     mozilla_vpn_derived__fxa_attribution__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_stdout_events__v1
     )

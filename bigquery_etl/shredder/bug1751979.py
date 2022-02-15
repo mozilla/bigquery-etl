@@ -370,3 +370,128 @@ CREATE TEMP FUNCTION sanitize_search_counts_ms(
 BUG_1751979_MAIN_SUMMARY_V4_REPLACE_CLAUSE = r"""
   REPLACE (sanitize_search_counts_ms(search_counts) AS search_counts)
 """
+
+BUG_1751979_CLIENTS_DAILY_V6_REPLACE_CLAUSE = r"""
+REPLACE (
+  sanitize_search_counts_ms(search_counts) AS search_counts,
+  sanitize_scalar(search_content_urlbar_sum) AS search_content_urlbar_sum,
+  sanitize_scalar(search_content_urlbar_handoff_sum) AS search_content_urlbar_handoff_sum,
+  sanitize_scalar(
+    search_content_urlbar_searchmode_sum
+  ) AS search_content_urlbar_searchmode_sum,
+  sanitize_scalar(search_content_searchbar_sum) AS search_content_searchbar_sum,
+  sanitize_scalar(search_content_about_home_sum) AS search_content_about_home_sum,
+  sanitize_scalar(search_content_about_newtab_sum) AS search_content_about_newtab_sum,
+  sanitize_scalar(search_content_contextmenu_sum) AS search_content_contextmenu_sum,
+  sanitize_scalar(search_content_webextension_sum) AS search_content_webextension_sum,
+  sanitize_scalar(search_content_system_sum) AS search_content_system_sum,
+  sanitize_scalar(search_content_tabhistory_sum) AS search_content_tabhistory_sum,
+  sanitize_scalar(search_content_reload_sum) AS search_content_reload_sum,
+  sanitize_scalar(search_content_unknown_sum) AS search_content_unknown_sum
+)
+"""
+
+BUG_1751979_SEARCH_CLIENTS_DAILY_V8_UDFS = r"""
+CREATE TEMP FUNCTION sanitize_engine_source(
+  engine STRING, `source` STRING
+) AS ((
+    WITH base AS (
+      SELECT CONCAT(engine, '.', `source`) AS key
+    ),
+    parsed AS (
+      SELECT
+        *,
+        REGEXP_EXTRACT(key, "([^.]+[.]in-content[:.][^:]+:).*") AS prefix,
+        REGEXP_EXTRACT(key, "[^.]+[.]in-content[:.][^:]+:(.*)") AS code,
+      FROM
+        base
+    ),
+    scrubbed AS (
+      SELECT
+          IF(
+            prefix IS NULL
+            OR code IN (
+              "none",
+              "other",
+              "hz",
+              "h_",
+              "MOZ2",
+              "MOZ4",
+              "MOZ5",
+              "MOZA",
+              "MOZB",
+              "MOZD",
+              "MOZE",
+              "MOZI",
+              "MOZM",
+              "MOZO",
+              "MOZT",
+              "MOZW",
+              "MOZSL01",
+              "MOZSL02",
+              "MOZSL03",
+              "firefox-a",
+              "firefox-b",
+              "firefox-b-1",
+              "firefox-b-ab",
+              "firefox-b-1-ab",
+              "firefox-b-d",
+              "firefox-b-1-d",
+              "firefox-b-e",
+              "firefox-b-1-e",
+              "firefox-b-m",
+              "firefox-b-1-m",
+              "firefox-b-o",
+              "firefox-b-1-o",
+              "firefox-b-lm",
+              "firefox-b-1-lm",
+              "firefox-b-lg",
+              "firefox-b-huawei-h1611",
+              "firefox-b-is-oem1",
+              "firefox-b-oem1",
+              "firefox-b-oem2",
+              "firefox-b-tinno",
+              "firefox-b-pn-wt",
+              "firefox-b-pn-wt-us",
+              "ubuntu",
+              "ffab",
+              "ffcm",
+              "ffhp",
+              "ffip",
+              "ffit",
+              "ffnt",
+              "ffocus",
+              "ffos",
+              "ffsb",
+              "fpas",
+              "fpsa",
+              "ftas",
+              "ftsa",
+              "newext",
+              "monline_dg",
+              "monline_3_dg",
+              "monline_4_dg",
+              "monline_7_dg"
+            ),
+            key,
+            CONCAT(prefix, "other.scrubbed")
+          ) AS key
+      FROM
+        parsed
+    )
+    SELECT AS STRUCT
+      SUBSTR(_key, 0, pos - 2) AS engine,
+      SUBSTR(_key, pos) AS `source`,
+    FROM
+      scrubbed,
+      UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
+      UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+?[.].'))]) AS pos
+));
+"""
+
+BUG_1751979_SEARCH_CLIENTS_DAILY_V8_REPLACE_CLAUSE = r"""
+REPLACE (
+  sanitize_engine_source(engine, `source`).engine AS engine,
+  sanitize_engine_source(engine, `source`).source AS source
+)
+"""

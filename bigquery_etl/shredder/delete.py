@@ -22,10 +22,13 @@ from ..util.bigquery_id import FULL_JOB_ID_RE, full_job_id, sql_table_id
 from ..util.client_queue import ClientQueue
 from ..util.exceptions import BigQueryInsertError
 from .bug1751979 import (
+    BUG_1751979_CLIENTS_DAILY_V6_REPLACE_CLAUSE,
     BUG_1751979_MAIN_SUMMARY_V4_REPLACE_CLAUSE,
     BUG_1751979_MAIN_SUMMARY_V4_UDFS,
     BUG_1751979_MAIN_V4_REPLACE_CLAUSE,
     BUG_1751979_MAIN_V4_UDFS,
+    BUG_1751979_SEARCH_CLIENTS_DAILY_V8_REPLACE_CLAUSE,
+    BUG_1751979_SEARCH_CLIENTS_DAILY_V8_UDFS,
 )
 from .config import (
     DELETE_TARGETS,
@@ -274,6 +277,24 @@ def delete_from_partition(
             ):
                 replace_clause = BUG_1751979_MAIN_SUMMARY_V4_REPLACE_CLAUSE
                 temporary_udfs = BUG_1751979_MAIN_SUMMARY_V4_UDFS
+            # And corresponding changes for clients_daily-derived tables.
+            elif sql_table_id(target) in [
+                "moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6",
+                "moz-fx-data-shared-prod.telemetry_derived.clients_daily_joined_v1",
+                "moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v6",
+                "moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_joined_v1",
+            ]:
+                replace_clause = BUG_1751979_CLIENTS_DAILY_V6_REPLACE_CLAUSE
+                temporary_udfs = (
+                    BUG_1751979_MAIN_SUMMARY_V4_UDFS + BUG_1751979_MAIN_V4_UDFS
+                )
+            # And corresponding changes for search_clients_daily-derived tables.
+            elif (
+                sql_table_id(target)
+                == "moz-fx-data-shared-prod.telemetry_derived.search_clients_daily_v8"
+            ):
+                replace_clause = BUG_1751979_SEARCH_CLIENTS_DAILY_V8_REPLACE_CLAUSE
+                temporary_udfs = BUG_1751979_SEARCH_CLIENTS_DAILY_V8_UDFS
 
             query = reformat(
                 f"""

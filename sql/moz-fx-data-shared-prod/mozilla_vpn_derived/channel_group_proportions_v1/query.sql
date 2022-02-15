@@ -47,6 +47,6 @@ SELECT
     PARTITION BY
       subscription_start_date,
       channel_group
-  ) / total_new_subscriptions * 100 AS channel_group_percent_of_total_for_date,
+  ) / total_new_subscriptions_for_date * 100 AS channel_group_percent_of_total_for_date,
 FROM
   stage_2

@@ -40,8 +40,8 @@ fields:
   name: channel_group
   type: STRING
 - mode: NULLABLE
-  name: total_new_subscriptions
+  name: total_new_subscriptions_for_date
   type: INTEGER
 - mode: NULLABLE
-  name: channel_group_percent_of_total
+  name: channel_group_percent_of_total_for_date
   type: FLOAT

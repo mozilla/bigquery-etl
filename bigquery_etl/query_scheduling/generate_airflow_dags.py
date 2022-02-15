@@ -113,7 +113,6 @@ def main():
     """Generate Airflow DAGs."""
     args = parser.parse_args()
     dags_output_dir = Path(args.output_dir)
-    dags_output_dir.mkdir(parents=True, exist_ok=True)
 
     dags = get_dags(args.project_id, args.dags_config)
     dags.to_airflow_dags(dags_output_dir, args.dag_id)

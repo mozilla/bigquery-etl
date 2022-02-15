@@ -1779,6 +1779,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#glean_baseline_client_info-udf" class="md-nav__link">
+    glean_baseline_client_info (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#product_info-udf" class="md-nav__link">
     product_info (UDF)
   </a>
@@ -1809,13 +1816,6 @@
         <li class="md-nav__item">
   <a href="#glean_ping_info-udf" class="md-nav__link">
     glean_ping_info (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#glean_baseline_client_info-udf" class="md-nav__link">
-    glean_baseline_client_info (UDF)
   </a>
   
 </li>
@@ -2098,6 +2098,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#glean_baseline_client_info-udf" class="md-nav__link">
+    glean_baseline_client_info (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#product_info-udf" class="md-nav__link">
     product_info (UDF)
   </a>
@@ -2132,13 +2139,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#glean_baseline_client_info-udf" class="md-nav__link">
-    glean_baseline_client_info (UDF)
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -2169,6 +2169,9 @@ function, no matter what the arguments).</p>
 aggregate datasets or queries where there may be many different patch
 releases in the field.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/truncate_version">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/truncate_version/metadata.yaml">Edit</a></p>
+<h2 id="glean_baseline_client_info-udf">glean_baseline_client_info (UDF)</h2>
+<p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_baseline_client_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_baseline_client_info/metadata.yaml">Edit</a></p>
 <h2 id="product_info-udf">product_info (UDF)</h2>
 <p>Returns a normalized <code>app_name</code> and <code>canonical_app_name</code>
 for a product based on <code>legacy_app_name</code> and <code>normalized_os</code> values.
@@ -2484,9 +2487,6 @@ platforms, one of the two major mobile platforms, or "Other".</p>
 <h2 id="glean_ping_info-udf">glean_ping_info (UDF)</h2>
 <p>Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_ping_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_ping_info/metadata.yaml">Edit</a></p>
-<h2 id="glean_baseline_client_info-udf">glean_baseline_client_info (UDF)</h2>
-<p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_baseline_client_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_baseline_client_info/metadata.yaml">Edit</a></p>
 
               
             </article>

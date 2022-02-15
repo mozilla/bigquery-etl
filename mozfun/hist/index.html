@@ -1730,6 +1730,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#mean-udf" class="md-nav__link">
+    mean (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#string_to_json-udf" class="md-nav__link">
     string_to_json (UDF)
   </a>
@@ -1753,13 +1760,6 @@
         <li class="md-nav__item">
   <a href="#extract-udf" class="md-nav__link">
     extract (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mean-udf" class="md-nav__link">
-    mean (UDF)
   </a>
   
 </li>
@@ -2091,6 +2091,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#mean-udf" class="md-nav__link">
+    mean (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#string_to_json-udf" class="md-nav__link">
     string_to_json (UDF)
   </a>
@@ -2114,13 +2121,6 @@
         <li class="md-nav__item">
   <a href="#extract-udf" class="md-nav__link">
     extract (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mean-udf" class="md-nav__link">
-    mean (UDF)
   </a>
   
 </li>
@@ -2154,6 +2154,11 @@
 
 <h1 id="hist">hist</h1>
 <p>Functions for working with string encodings of histograms from desktop telemetry.</p>
+<h2 id="mean-udf">mean (UDF)</h2>
+<p>Given histogram h, return floor(mean) of the measurements in the bucket.
+That is, the histogram sum divided by the number of measurements taken.</p>
+<p><a href="https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307">https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/mean">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/mean/metadata.yaml">Edit</a></p>
 <h2 id="string_to_json-udf">string_to_json (UDF)</h2>
 <p>Convert a histogram string (in JSON or compact format) to a full histogram JSON blob.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/string_to_json">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/string_to_json/metadata.yaml">Edit</a></p>
@@ -2196,11 +2201,6 @@ formed, which gives us some flexibility.</p>
 -- 5
 </code></pre>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/extract">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/extract/metadata.yaml">Edit</a></p>
-<h2 id="mean-udf">mean (UDF)</h2>
-<p>Given histogram h, return floor(mean) of the measurements in the bucket.
-That is, the histogram sum divided by the number of measurements taken.</p>
-<p><a href="https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307">https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307</a></p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/mean">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/mean/metadata.yaml">Edit</a></p>
 <h2 id="threshold_count-udf">threshold_count (UDF)</h2>
 <p>Return the number of recorded observations greater than threshold for
 the histogram.  CAUTION: Does not count any buckets that have any values

@@ -140,7 +140,8 @@ mobile_with_searches AS (
     unioned.submission_date,
     unioned.uri_count,
     unioned.is_default_browser,
-    search.* EXCEPT (submission_date, client_id)
+    search.* EXCEPT (submission_date, client_id),
+    NULL AS active_hours_sum
   FROM
     unioned
   LEFT JOIN
@@ -175,7 +176,8 @@ desktop AS (
     ad_clicks_count_all AS ad_clicks,
     search_count_organic AS organic_search_count,
     search_count_all AS search_count,
-    search_with_ads_count_all AS search_with_ads
+    search_with_ads_count_all AS search_with_ads,
+    active_hours_sum
   FROM
     telemetry.clients_last_seen
   WHERE

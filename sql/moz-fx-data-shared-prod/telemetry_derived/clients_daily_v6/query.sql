@@ -268,7 +268,7 @@ clients_summary AS (
         UNNEST(payload.keyed_histograms.search_counts),
         -- Bug 1481671 - probe was briefly implemented with '.' rather than ':'
         UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
-        UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+[.].'))]) AS pos
+        UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+?[.].'))]) AS pos
     ) AS search_counts,
     udf_js.main_summary_active_addons(environment.addons.active_addons, NULL) AS active_addons,
     ARRAY_LENGTH(environment.addons.active_addons) AS active_addons_count,

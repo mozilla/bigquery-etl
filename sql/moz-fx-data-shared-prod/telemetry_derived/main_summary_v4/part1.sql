@@ -270,7 +270,7 @@ SELECT
     FROM
       UNNEST(payload.keyed_histograms.search_counts),
       UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
-      UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+[.].'))]) AS pos
+      UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+?[.].'))]) AS pos
   ) AS search_counts,
   -- Addon and configuration settings per Bug 1290181
   udf_js.main_summary_active_addons(

@@ -24,12 +24,6 @@ def is_valid_dir(ctx, param, value):
     return value
 
 
-def create_dir_if_not_exist(ctx, param, value):
-    """Create the provided directory if it doesn't exist."""
-    Path(value).mkdir(parents=True, exist_ok=True)
-    return value
-
-
 def is_valid_file(ctx, param, value):
     """Check if the parameter provided via click is an existing file."""
     if not os.path.isfile(value) or not os.path.exists(value):

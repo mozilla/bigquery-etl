@@ -1,0 +1,10 @@
+friendly_name: Funnel Product to Subscribed
+description: Funnel from Mozilla VPN Product page to completing payment
+owners:
+  - dthorn@mozilla.com
+labels:
+  application: mozilla_vpn
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  date_partition_parameter: date

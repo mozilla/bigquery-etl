@@ -35,9 +35,18 @@ done
 set -x
 
 # Fill in any missing view definitions in the target project folder
-./script/bqetl generate all \
+./script/bqetl generate stable_views \
     --target-project "${TARGET_PROJECT}" \
     --sql-dir "${SQL_DIR}" \
+    --parallelism=20
+
+# Fill in definitions for generated Glean ETL
+./script/bqetl generate glean_usage --target-project "${TARGET_PROJECT}" --output-dir "${SQL_DIR}"
 
 # Record dependencies in yaml files
 ./script/bqetl dependency record --skip-existing "${SQL_DIR}"
+
+# Create the derived view schemas for the specified project
+./script/bqetl generate derived_view_schemas \
+    --target-project "${TARGET_PROJECT}" \
+    --sql-dir "${SQL_DIR}" \

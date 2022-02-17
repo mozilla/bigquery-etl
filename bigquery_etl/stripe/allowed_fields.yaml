@@ -120,6 +120,10 @@ event:
       type:
       voided_at:
     customer:
+      address:
+        country:
+        postal_code:
+        state:
       created:
       id:
       metadata:

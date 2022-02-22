@@ -46,7 +46,9 @@ SELECT
   SUM(tagged_follow_on) AS tagged_follow_on,
   SUM(search_with_ads) AS search_with_ads,
   SUM(ad_click) AS ad_click,
-  SUM(organic) AS organic
+  SUM(organic) AS organic, 
+  SUM(ad_click_organic) AS ad_click_organic, 
+  SUM(search_with_ads_organic) AS search_with_ads_organic
 FROM
   `moz-fx-data-shared-prod.search.search_aggregates`
 WHERE

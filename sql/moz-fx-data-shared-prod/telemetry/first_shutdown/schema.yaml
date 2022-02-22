@@ -22854,7 +22854,7 @@ fields:
         name: key
         type: STRING
       - description: The sampled number of simultaneous running ServiceWorkers in
-          a session, sampled once each minute
+          a session, sampled once each 10 seconds (lazily on state change)
         mode: NULLABLE
         name: value
         type: STRING
@@ -40695,7 +40695,7 @@ fields:
           mode: NULLABLE
           name: use_counter2_deprecated_idb_mutable_file_open_page
           type: STRING
-        - description: Percentage of frames decoded frames dropped in an HTMLVideoElement
+        - description: Frames of of 10,000 decoded frames dropped in an HTMLVideoElement
           mode: NULLABLE
           name: video_dropped_frames_proportion_exponential
           type: STRING

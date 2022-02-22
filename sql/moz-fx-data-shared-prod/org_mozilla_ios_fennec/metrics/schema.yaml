@@ -827,7 +827,7 @@ fields:
       mode: NULLABLE
       name: firefox_home_page_recently_saved_reading_item
       type: INTEGER
-    - description: 'Counts the number of times user opens an inactive tab.
+    - description: 'Recorded when a user taps on an inactive tab
 
         '
       mode: NULLABLE
@@ -1092,6 +1092,24 @@ fields:
         '
       mode: NULLABLE
       name: tabs_reload_from_url_bar
+      type: INTEGER
+    - description: 'Recorded when a user is shown inactive tab view
+
+        '
+      mode: NULLABLE
+      name: inactive_tabs_tray_inactive_tab_shown
+      type: INTEGER
+    - description: 'Recorded when a user swipes to close an inactive tab
+
+        '
+      mode: NULLABLE
+      name: inactive_tabs_tray_inactive_tab_swipe_close
+      type: INTEGER
+    - description: 'Recorded when a user taps on close all inactive tabs button
+
+        '
+      mode: NULLABLE
+      name: inactive_tabs_tray_inactive_tabs_close_all_btn
       type: INTEGER
     mode: NULLABLE
     name: counter

@@ -6,7 +6,7 @@ gcsfs==2022.1.0
 gcloud==0.18.3
 gitpython==3.1.27
 google-api-core==1.31.5  # transitive dep that needs dependabot updates
-google-cloud-bigquery==2.32.0
+google-cloud-bigquery==2.34.0
 google-cloud-storage==2.1.0
 googleapis-common-protos==1.54.0  # transitive dep that needs dependabot updates
 importlib-resources>=1.4.0  # jsonschema dep for python<3.9

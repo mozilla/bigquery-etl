@@ -1,15 +1,28 @@
-WITH all_samples AS (
+WITH histogram_data AS (
   SELECT
     os,
     app_version,
     app_build_id,
     channel,
     metric,
+    process,
     key,
     h1.aggregates
   FROM
-    clients_histogram_aggregates_v1,
+    telemetry_derived.clients_histogram_aggregates_v1,
     UNNEST(histogram_aggregates) h1
+  WHERE
+    submission_date = @submission_date
+),
+scalars_data AS (
+  SELECT
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    scalar_aggregates
+  FROM
+    telemetry_derived.clients_scalar_aggregates_v1
   WHERE
     submission_date = @submission_date
 )
@@ -19,10 +32,11 @@ SELECT
   app_build_id,
   channel,
   metric,
-  all_samples.key,
+  process,
+  histogram_data.key,
   SUM(v1.value) AS total_sample
 FROM
-  all_samples,
+  histogram_data,
   UNNEST(aggregates) v1
 GROUP BY
   os,
@@ -30,155 +44,180 @@ GROUP BY
   app_build_id,
   channel,
   metric,
+  process,
   key
 UNION ALL
 SELECT
-  CAST(NULL AS STRING) AS os,
+  '*' AS os,
   app_version,
   app_build_id,
   channel,
   metric,
-  all_samples.key,
+  process,
+  histogram_data.key,
   SUM(v1.value) AS total_sample
 FROM
-  all_samples,
+  histogram_data,
   UNNEST(aggregates) v1
 GROUP BY
   app_version,
   app_build_id,
   channel,
   metric,
+  process,
   key
 UNION ALL
 SELECT
   os,
-  CAST(NULL AS INT64) AS app_version,
+  app_version,
+  '*' AS app_build_id,
+  channel,
+  metric,
+  process,
+  histogram_data.key,
+  SUM(v1.value) AS total_sample
+FROM
+  histogram_data,
+  UNNEST(aggregates) v1
+GROUP BY
+  os,
+  app_version,
+  channel,
+  metric,
+  process,
+  key
+UNION ALL
+SELECT
+  '*' AS os,
+  app_version,
+  '*' AS app_build_id,
+  channel,
+  metric,
+  process,
+  histogram_data.key,
+  SUM(v1.value) AS total_sample
+FROM
+  histogram_data,
+  UNNEST(aggregates) v1
+GROUP BY
+  app_version,
+  channel,
+  metric,
+  process,
+  key
+UNION ALL
+SELECT
+  os,
+  app_version,
   app_build_id,
   channel,
   metric,
-  all_samples.key,
-  SUM(v1.value) AS total_sample
+  process,
+  key,
+  CASE
+  WHEN
+    agg_type IN ('count', 'true', 'false')
+  THEN
+    SUM(value)
+  ELSE
+    NULL
+  END
+  AS total_sample
 FROM
-  all_samples,
-  UNNEST(aggregates) v1
+  scalars_data,
+  UNNEST(scalar_aggregates) s1
 GROUP BY
   os,
+  app_version,
   app_build_id,
   channel,
   metric,
-  key
+  process,
+  key,
+  agg_type
+UNION ALL
+SELECT
+  '*' AS os,
+  app_version,
+  app_build_id,
+  channel,
+  metric,
+  process,
+  key,
+  CASE
+  WHEN
+    agg_type IN ('count', 'true', 'false')
+  THEN
+    SUM(value)
+  ELSE
+    NULL
+  END
+  AS total_sample
+FROM
+  scalars_data,
+  UNNEST(scalar_aggregates) s1
+GROUP BY
+  app_version,
+  app_build_id,
+  channel,
+  metric,
+  process,
+  key,
+  agg_type
 UNION ALL
 SELECT
   os,
   app_version,
-  CAST(NULL AS STRING) AS app_build_id,
+  '*' AS app_build_id,
   channel,
   metric,
-  all_samples.key,
-  SUM(v1.value) AS total_sample
+  process,
+  key,
+  CASE
+  WHEN
+    agg_type IN ('count', 'true', 'false')
+  THEN
+    SUM(value)
+  ELSE
+    NULL
+  END
+  AS total_sample
 FROM
-  all_samples,
-  UNNEST(aggregates) v1
+  scalars_data,
+  UNNEST(scalar_aggregates)
 GROUP BY
   os,
   app_version,
   channel,
   metric,
-  key
+  process,
+  key,
+  agg_type
 UNION ALL
 SELECT
-  os,
-  CAST(NULL AS INT64) AS app_version,
-  CAST(NULL AS STRING) AS app_build_id,
-  channel,
-  metric,
-  all_samples.key,
-  SUM(v1.value) AS total_sample
-FROM
-  all_samples,
-  UNNEST(aggregates) v1
-GROUP BY
-  os,
-  channel,
-  metric,
-  key
-UNION ALL
-SELECT
-  CAST(NULL AS STRING) AS os,
+  '*' AS os,
   app_version,
-  CAST(NULL AS STRING) AS app_build_id,
+  '*' AS app_build_id,
   channel,
   metric,
-  all_samples.key,
-  SUM(v1.value) AS total_sample
+  process,
+  key,
+  CASE
+  WHEN
+    agg_type IN ('count', 'true', 'false')
+  THEN
+    SUM(value)
+  ELSE
+    NULL
+  END
+  AS total_sample
 FROM
-  all_samples,
-  UNNEST(aggregates) v1
+  scalars_data,
+  UNNEST(scalar_aggregates)
 GROUP BY
   app_version,
   channel,
   metric,
-  key
-UNION ALL
-SELECT
-  CAST(NULL AS STRING) AS os,
-  app_version,
-  CAST(NULL AS STRING) AS app_build_id,
-  CAST(NULL AS STRING) AS channel,
-  metric,
-  all_samples.key,
-  SUM(v1.value) AS total_sample
-FROM
-  all_samples,
-  UNNEST(aggregates) v1
-GROUP BY
-  app_version,
-  metric,
-  key
-UNION ALL
-SELECT
-  os,
-  CAST(NULL AS INT64) AS app_version,
-  CAST(NULL AS STRING) AS app_build_id,
-  CAST(NULL AS STRING) AS channel,
-  metric,
-  all_samples.key,
-  SUM(v1.value) AS total_sample
-FROM
-  all_samples,
-  UNNEST(aggregates) v1
-GROUP BY
-  os,
-  metric,
-  key
-UNION ALL
-SELECT
-  CAST(NULL AS STRING) AS os,
-  CAST(NULL AS INT64) AS app_version,
-  CAST(NULL AS STRING) AS app_build_id,
-  channel,
-  metric,
-  all_samples.key,
-  SUM(v1.value) AS total_sample
-FROM
-  all_samples,
-  UNNEST(aggregates) v1
-GROUP BY
-  channel,
-  metric,
-  key
-UNION ALL
-SELECT
-  CAST(NULL AS STRING) AS os,
-  CAST(NULL AS INT64) AS app_version,
-  CAST(NULL AS STRING) AS app_build_id,
-  CAST(NULL AS STRING) AS channel,
-  metric,
-  all_samples.key,
-  SUM(v1.value) AS total_sample
-FROM
-  all_samples,
-  UNNEST(aggregates) v1
-GROUP BY
-  metric,
-  key
+  process,
+  key,
+  agg_type

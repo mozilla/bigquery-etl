@@ -2,19 +2,51 @@
 CREATE OR REPLACE VIEW
   `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__view_sample_counts_v1`
 AS
-WITH all_clients AS (
+WITH histogram_data AS (
   SELECT
+    client_id,
     ping_type,
     os,
     app_version,
     app_build_id,
     channel,
-    key,
-    metric,
-    value
+    h1.metric,
+    h1.key,
+    h1.value
   FROM
-    `glam-fenix-dev`.glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1,
+    `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1`,
     UNNEST(histogram_aggregates) h1
+),
+all_clients AS (
+  SELECT
+    client_id,
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    s1.metric,
+    s1.key,
+    s1.value
+  FROM
+    `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1`,
+    UNNEST(scalar_aggregates) s1
+  WHERE
+    s1.agg_type IN ('count', 'false', 'true')
+  UNION ALL
+  SELECT
+    client_id,
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    v1.key,
+    v1.value
+  FROM
+    histogram_data,
+    UNNEST(value) v1
 ),
 -- Cross join with the attribute combinations to reduce the query complexity
 -- with respect to the number of operations. A table with n rows cross joined
@@ -55,17 +87,18 @@ SELECT
   app_version,
   app_build_id,
   channel,
-  all_combos.key,
+  key,
   metric,
-  SUM(v1.value) AS total_sample
+  process,
+  SUM(value) AS total_sample
 FROM
-  all_combos,
-  UNNEST(value) AS v1
+  all_combos
 GROUP BY
   ping_type,
   os,
   app_version,
   app_build_id,
   channel,
-  key,
-  metric
+  metric,
+  process,
+  key

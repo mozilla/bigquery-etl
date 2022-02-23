@@ -13,12 +13,8 @@ RETURNS STRING AS (
         AND utm_source = "www.mozilla.org-vpn-product-page"
         AND utm_campaign = "vpn-product-page"
       )
-      OR     
-      ( 
-        utm_medium = "organic"
-        AND utm_source = "google-play"
-      )
-   )
+      OR (utm_medium = "organic" AND utm_source = "google-play")
+    )
   THEN
     "Direct"
   WHEN

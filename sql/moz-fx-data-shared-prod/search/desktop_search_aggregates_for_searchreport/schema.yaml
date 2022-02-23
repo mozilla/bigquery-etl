@@ -38,3 +38,9 @@ fields:
 - mode: NULLABLE
   name: organic
   type: INTEGER
+- mode: NULLABLE
+  name: ad_click_organic
+  type: INTEGER
+- mode: NULLABLE
+  name: search_with_ads_organic
+  type: INTEGER

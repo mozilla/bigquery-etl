@@ -257,6 +257,24 @@ fields:
       mode: NULLABLE
       name: service_not_supported
       type: INTEGER
+    - description: 'Failed to download translation engine module.
+
+        '
+      mode: NULLABLE
+      name: errors_engine_download
+      type: INTEGER
+    - description: 'Failed to load translation engine wasm module in memory.
+
+        '
+      mode: NULLABLE
+      name: errors_engine_load
+      type: INTEGER
+    - description: 'Failed to load translation model in memory.
+
+        '
+      mode: NULLABLE
+      name: errors_model_load
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -407,6 +425,24 @@ fields:
       mode: NULLABLE
       name: performance_word_count_visible_in_viewport
       type: INTEGER
+    - description: 'Total number of characters in all translated fields.
+
+        '
+      mode: NULLABLE
+      name: forms_character_count
+      type: INTEGER
+    - description: 'Number of text fields translated.
+
+        '
+      mode: NULLABLE
+      name: forms_field_count
+      type: INTEGER
+    - description: 'Total number of words in all translated fields.
+
+        '
+      mode: NULLABLE
+      name: forms_word_count
+      type: INTEGER
     mode: NULLABLE
     name: quantity
     type: RECORD
@@ -533,8 +569,31 @@ fields:
       mode: NULLABLE
       name: performance_translation_engine_time
       type: RECORD
+    - description: 'Timing from the first event to the last event.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: NULLABLE
+      name: performance_total_usage_time
+      type: RECORD
     mode: NULLABLE
     name: timespan
+    type: RECORD
+  - fields:
+    - description: 'Translation of forms is enabled.
+
+        '
+      mode: NULLABLE
+      name: infobar_outbound_enabled
+      type: BOOLEAN
+    mode: NULLABLE
+    name: boolean
     type: RECORD
   mode: NULLABLE
   name: metrics

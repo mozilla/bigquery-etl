@@ -6,23 +6,23 @@ fields:
   name: app_version
   type: INTEGER
 - mode: NULLABLE
-  name: metric
-  type: STRING
-- mode: NULLABLE
-  name: key
-  type: STRING
-- mode: NULLABLE
   name: ping_type
   type: STRING
 - mode: NULLABLE
   name: app_build_id
   type: STRING
 - mode: NULLABLE
-  name: build_date
-  type: STRING
-- mode: NULLABLE
   name: os
   type: STRING
 - mode: NULLABLE
+  name: metric
+  type: STRING
+- mode: NULLABLE
+  name: key
+  type: STRING
+- mode: NULLABLE
+  name: client_agg_type
+  type: STRING
+- mode: NULLABLE
   name: total_sample
-  type: INTEGER
+  type: FLOAT

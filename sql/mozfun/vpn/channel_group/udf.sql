@@ -8,16 +8,15 @@ RETURNS STRING AS (
   CASE
   WHEN
     (
-      utm_medium = "referral"
-      AND utm_source = "www.mozilla.org-vpn-product-page"
-      AND utm_campaign = "vpn-product-page"
+      (
+        utm_medium = "referral"
+        AND utm_source = "www.mozilla.org-vpn-product-page"
+        AND utm_campaign = "vpn-product-page"
+      )
+      OR (utm_medium = "organic" AND utm_source = "google-play")
     )
   THEN
     "Direct"
-  WHEN
-    utm_medium IN ("organic", "organic-search")
-  THEN
-    "Organic"
   WHEN
     (
       utm_medium LIKE "firefox%"

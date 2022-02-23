@@ -5,12 +5,35 @@
 CREATE OR REPLACE VIEW
   `{{ project }}.{{ dataset }}.{{ prefix }}__view_sample_counts_v1`
 AS
-WITH all_clients AS (
-  SELECT
-    {{ attributes }}
-  FROM `{{ project }}`.{{ dataset }}.{{ prefix }}__clients_histogram_aggregates_v1,
-  UNNEST(histogram_aggregates) h1
 
+WITH histogram_data AS (
+  SELECT
+    client_id,
+    {{ attributes }}, 
+    h1.metric,
+    h1.key, 
+    h1.value
+  FROM
+    `{{ project }}.{{ dataset }}.{{ prefix }}__clients_histogram_aggregates_v1`, UNNEST(histogram_aggregates) h1
+    ),
+all_clients AS (SELECT
+    client_id,
+    {{ attributes }}, 
+    s1.metric,
+    s1.key,
+    s1.value
+  FROM
+    `{{ project }}.{{ dataset }}.{{ prefix }}__clients_scalar_aggregates_v1`, UNNEST(scalar_aggregates) s1
+    WHERE s1.agg_type in ('count', 'false', 'true')
+  UNION ALL
+  SELECT
+    client_id,
+    {{ attributes }}, 
+    metric,
+    v1.key,
+    v1.value
+  FROM
+    histogram_data, UNNEST(value) v1
 ),
 {{
     enumerate_table_combinations(
@@ -21,24 +44,13 @@ WITH all_clients AS (
     )
 }}
 SELECT
-  ping_type,
-  os,
-  app_version,
-  app_build_id,
-  channel,
-  all_combos.key,
-  metric,
-  SUM(v1.value) AS total_sample
+    {{ attributes }},
+    key, 
+    metric,
+    SUM(value) as total_sample
 FROM
-  all_combos,
-  UNNEST(value) AS v1
+    all_combos
 GROUP BY
-  ping_type,
-  os,
-  app_version,
-  app_build_id,
-  channel,
-  key,
-  metric
-
-
+    {{ attributes }}, 
+    metric, 
+    key

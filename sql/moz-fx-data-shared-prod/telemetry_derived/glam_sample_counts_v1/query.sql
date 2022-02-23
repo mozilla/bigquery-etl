@@ -5,6 +5,7 @@ WITH histogram_data AS (
     app_build_id,
     channel,
     metric,
+    process,
     key,
     h1.aggregates
   FROM
@@ -31,6 +32,7 @@ SELECT
   app_build_id,
   channel,
   metric,
+  process,
   histogram_data.key,
   SUM(v1.value) AS total_sample
 FROM
@@ -42,14 +44,16 @@ GROUP BY
   app_build_id,
   channel,
   metric,
+  process,
   key
 UNION ALL
 SELECT
-  CAST(NULL AS STRING) AS os,
+  '*' AS os,
   app_version,
   app_build_id,
   channel,
   metric,
+  process,
   histogram_data.key,
   SUM(v1.value) AS total_sample
 FROM
@@ -60,14 +64,16 @@ GROUP BY
   app_build_id,
   channel,
   metric,
+  process,
   key
 UNION ALL
 SELECT
   os,
   app_version,
-  CAST(NULL AS STRING) AS app_build_id,
+  '*' AS app_build_id,
   channel,
   metric,
+  process,
   histogram_data.key,
   SUM(v1.value) AS total_sample
 FROM
@@ -78,14 +84,16 @@ GROUP BY
   app_version,
   channel,
   metric,
+  process,
   key
 UNION ALL
 SELECT
-  CAST(NULL AS STRING) AS os,
+  '*' AS os,
   app_version,
-  CAST(NULL AS STRING) AS app_build_id,
+  '*' AS app_build_id,
   channel,
   metric,
+  process,
   histogram_data.key,
   SUM(v1.value) AS total_sample
 FROM
@@ -95,6 +103,7 @@ GROUP BY
   app_version,
   channel,
   metric,
+  process,
   key
 UNION ALL
 SELECT
@@ -102,11 +111,12 @@ SELECT
   app_version,
   app_build_id,
   channel,
-  s1.metric,
-  s1.key,
+  metric,
+  process,
+  key,
   CASE
   WHEN
-    s1.agg_type IN ('count', 'true', 'false')
+    agg_type IN ('count', 'true', 'false')
   THEN
     SUM(value)
   ELSE
@@ -115,26 +125,28 @@ SELECT
   AS total_sample
 FROM
   scalars_data,
-  UNNEST(scalar_aggregates) s1
+  UNNEST(scalar_aggregates)
 GROUP BY
   os,
   app_version,
   app_build_id,
   channel,
-  s1.metric,
-  s1.key,
-  s1.agg_type
+  metric,
+  process,
+  key,
+  agg_type
 UNION ALL
 SELECT
-  CAST(NULL AS STRING) AS os,
+  '*' AS os,
   app_version,
   app_build_id,
   channel,
-  s1.metric,
-  s1.key,
+  metric,
+  process,
+  key,
   CASE
   WHEN
-    s1.agg_type IN ('count', 'true', 'false')
+    agg_type IN ('count', 'true', 'false')
   THEN
     SUM(value)
   ELSE
@@ -148,20 +160,22 @@ GROUP BY
   app_version,
   app_build_id,
   channel,
-  s1.metric,
-  s1.key,
-  s1.agg_type
+  metric,
+  process,
+  key,
+  agg_type
 UNION ALL
 SELECT
   os,
   app_version,
-  CAST(NULL AS STRING) AS app_build_id,
+  '*' AS app_build_id,
   channel,
-  s1.metric,
-  s1.key,
+  metric,
+  process,
+  key,
   CASE
   WHEN
-    s1.agg_type IN ('count', 'true', 'false')
+    agg_type IN ('count', 'true', 'false')
   THEN
     SUM(value)
   ELSE
@@ -170,25 +184,27 @@ SELECT
   AS total_sample
 FROM
   scalars_data,
-  UNNEST(scalar_aggregates) s1
+  UNNEST(scalar_aggregates)
 GROUP BY
   os,
   app_version,
   channel,
-  s1.metric,
-  s1.key,
-  s1.agg_type
+  metric,
+  process,
+  key,
+  agg_type
 UNION ALL
 SELECT
-  CAST(NULL AS STRING) AS os,
+  '*' AS os,
   app_version,
-  CAST(NULL AS STRING) AS app_build_id,
+  '*' AS app_build_id,
   channel,
-  s1.metric,
-  s1.key,
+  metric,
+  process,
+  key,
   CASE
   WHEN
-    s1.agg_type IN ('count', 'true', 'false')
+    agg_type IN ('count', 'true', 'false')
   THEN
     SUM(value)
   ELSE
@@ -197,10 +213,11 @@ SELECT
   AS total_sample
 FROM
   scalars_data,
-  UNNEST(scalar_aggregates) s1
+  UNNEST(scalar_aggregates)
 GROUP BY
   app_version,
   channel,
-  s1.metric,
-  s1.key,
-  s1.agg_type
+  metric,
+  process,
+  key,
+  agg_type

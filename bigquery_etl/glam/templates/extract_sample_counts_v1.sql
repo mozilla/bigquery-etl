@@ -21,3 +21,13 @@ WHERE
   cp.app_version IS NOT NULL
   AND total_users > {{ total_users }}
   AND cp.client_agg_type not in ('sum','min','avg','max')
+GROUP BY
+  cp.channel,
+  cp.ping_type,
+  cp.app_version,
+  cp.app_build_id,
+  cp.os,
+  cp.metric,
+  cp.key,
+  client_agg_type,
+  total_sample

@@ -14,4 +14,4 @@ fields:
 - name: metric
   type: STRING
 - name: total_sample
-  type: INTEGER
+  type: FLOAT

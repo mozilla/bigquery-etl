@@ -480,7 +480,7 @@ CREATE TEMP FUNCTION sanitize_engine_source(
               -- Add a hash of code to avoid multiple rows ending up with the same
               -- (client_id, sanitized_engine, sanitized_source) value, violating
               -- the table's contract.
-              SUBSTR(TO_HEX(SHA256(code)), 1, 4))
+              LEFT(TO_HEX(SHA256(code)), 8))
           ) AS key
       FROM
         parsed

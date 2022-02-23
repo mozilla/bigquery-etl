@@ -1,0 +1,154 @@
+[
+  {
+    "name": "automatic_payout_effective_at",
+    "type": "TIMESTAMP"
+  },
+  {
+    "name": "automatic_payout_id",
+    "type": "STRING"
+  },
+  {
+    "name": "available_on",
+    "type": "TIMESTAMP"
+  },
+  {
+    "name": "balance_transaction_id",
+    "type": "STRING"
+  },
+  {
+    "name": "card_brand",
+    "type": "STRING"
+  },
+  {
+    "name": "card_country",
+    "type": "STRING"
+  },
+  {
+    "name": "card_funding",
+    "type": "STRING"
+  },
+  {
+    "name": "charge_created",
+    "type": "TIMESTAMP"
+  },
+  {
+    "name": "charge_id",
+    "type": "STRING"
+  },
+  {
+    "name": "connected_account_country",
+    "type": "STRING"
+  },
+  {
+    "name": "connected_account_id",
+    "type": "STRING"
+  },
+  {
+    "name": "connected_account_name",
+    "type": "STRING"
+  },
+  {
+    "name": "created",
+    "type": "TIMESTAMP"
+  },
+  {
+    "name": "currency",
+    "type": "STRING"
+  },
+  {
+    "name": "customer_description",
+    "type": "STRING"
+  },
+  {
+    "name": "customer_email",
+    "type": "STRING"
+  },
+  {
+    "name": "customer_facing_amount",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "customer_facing_currency",
+    "type": "STRING"
+  },
+  {
+    "name": "customer_id",
+    "type": "STRING"
+  },
+  {
+    "name": "customer_name",
+    "type": "STRING"
+  },
+  {
+    "name": "description",
+    "type": "STRING"
+  },
+  {
+    "name": "dispute_reason",
+    "type": "STRING"
+  },
+  {
+    "name": "fee",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "gross",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "invoice_id",
+    "type": "STRING"
+  },
+  {
+    "name": "net",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "payment_intent_id",
+    "type": "STRING"
+  },
+  {
+    "name": "payment_method_type",
+    "type": "STRING"
+  },
+  {
+    "name": "reporting_category",
+    "type": "STRING"
+  },
+  {
+    "name": "shipping_address_city",
+    "type": "STRING"
+  },
+  {
+    "name": "shipping_address_country",
+    "type": "STRING"
+  },
+  {
+    "name": "shipping_address_line1",
+    "type": "STRING"
+  },
+  {
+    "name": "shipping_address_line2",
+    "type": "STRING"
+  },
+  {
+    "name": "shipping_address_postal_code",
+    "type": "STRING"
+  },
+  {
+    "name": "shipping_address_state",
+    "type": "STRING"
+  },
+  {
+    "name": "source_id",
+    "type": "STRING"
+  },
+  {
+    "name": "statement_descriptor",
+    "type": "STRING"
+  },
+  {
+    "name": "subscription_id",
+    "type": "STRING"
+  }
+]

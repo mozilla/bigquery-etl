@@ -11,6 +11,15 @@ from bigquery_etl.stripe.allowed_fields import FilteredSchema
 def test_filter_schema():
     filtered_schema = FilteredSchema(stripe.Customer)
     assert filtered_schema.filtered == (
+        bigquery.SchemaField(
+            name="address",
+            field_type="RECORD",
+            fields=[
+                bigquery.SchemaField(name="country", field_type="STRING"),
+                bigquery.SchemaField(name="postal_code", field_type="STRING"),
+                bigquery.SchemaField(name="state", field_type="STRING"),
+            ],
+        ),
         bigquery.SchemaField(name="created", field_type="TIMESTAMP"),
         bigquery.SchemaField(name="id", field_type="STRING"),
         bigquery.SchemaField(

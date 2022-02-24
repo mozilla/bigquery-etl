@@ -10,7 +10,7 @@ python3.8 -m venv venv/
 ./venv/bin/pip install pip-tools -c requirements.in
 
 # install python dependencies with pip-sync (provided by pip-tools)
-./venv/bin/pip-sync --pip-args=--no-deps
+./venv/bin/pip-sync --pip-args=--no-deps requirements.txt java-requirements.txt
 
 # install java dependencies with maven
 mvn dependency:copy-dependencies

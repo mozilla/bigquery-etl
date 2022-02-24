@@ -947,6 +947,18 @@ fields:
       mode: NULLABLE
       name: power_total_gpu_time_ms
       type: INTEGER
+    - description: 'Impossibly large CPU time values that were discarded.
+
+        '
+      mode: NULLABLE
+      name: power_cpu_time_bogus_values
+      type: INTEGER
+    - description: 'Impossibly large GPU time values that were discarded.
+
+        '
+      mode: NULLABLE
+      name: power_gpu_time_bogus_values
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

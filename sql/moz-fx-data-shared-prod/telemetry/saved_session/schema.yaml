@@ -43778,6 +43778,12 @@ fields:
           mode: NULLABLE
           name: power_total_cpu_time_ms
           type: INTEGER
+        - description: 'Impossibly large CPU time values that were discarded.
+
+            '
+          mode: NULLABLE
+          name: power_cpu_time_bogus_values
+          type: INTEGER
         mode: NULLABLE
         name: scalars
         type: RECORD
@@ -44521,6 +44527,18 @@ fields:
             '
           mode: NULLABLE
           name: power_total_gpu_time_ms
+          type: INTEGER
+        - description: 'Impossibly large CPU time values that were discarded.
+
+            '
+          mode: NULLABLE
+          name: power_cpu_time_bogus_values
+          type: INTEGER
+        - description: 'Impossibly large GPU time values that were discarded.
+
+            '
+          mode: NULLABLE
+          name: power_gpu_time_bogus_values
           type: INTEGER
         mode: NULLABLE
         name: scalars
@@ -50266,6 +50284,18 @@ fields:
           mode: NULLABLE
           name: gifft_validation_mirror_for_main_ping_assembling
           type: BOOLEAN
+        - description: 'Impossibly large CPU time values that were discarded.
+
+            '
+          mode: NULLABLE
+          name: power_cpu_time_bogus_values
+          type: INTEGER
+        - description: 'Impossibly large GPU time values that were discarded.
+
+            '
+          mode: NULLABLE
+          name: power_gpu_time_bogus_values
+          type: INTEGER
         mode: NULLABLE
         name: scalars
         type: RECORD
@@ -51531,6 +51561,12 @@ fields:
             '
           mode: NULLABLE
           name: power_total_cpu_time_ms
+          type: INTEGER
+        - description: 'Impossibly large CPU time values that were discarded.
+
+            '
+          mode: NULLABLE
+          name: power_cpu_time_bogus_values
           type: INTEGER
         mode: NULLABLE
         name: scalars

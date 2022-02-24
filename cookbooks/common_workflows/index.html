@@ -2477,7 +2477,7 @@ python3 -m venv venv/
 source venv/bin/activate
 
 # If not installed:
-pip install pip-tools
+pip install pip-tools --constraint requirements.in
 
 # Add the dependency to requirements.in e.g. Jinja2.
 echo Jinja2==2.11.1 &gt;&gt; requirements.in

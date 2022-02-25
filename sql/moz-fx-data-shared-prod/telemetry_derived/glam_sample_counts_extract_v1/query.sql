@@ -49,6 +49,7 @@ sample_counts_ranked AS (
     process,
     key,
     metric,
+    client_agg_type,
     total_sample,
     ROW_NUMBER() OVER (
       PARTITION BY
@@ -57,7 +58,8 @@ sample_counts_ranked AS (
         app_build_id,
         os,
         key,
-        metric
+        metric,
+        client_agg_type
       ORDER BY
         total_sample DESC
     ) AS rnk
@@ -72,6 +74,7 @@ SELECT
   process,
   key,
   metric,
+  client_agg_type,
   total_sample
 FROM
   sample_counts_ranked

@@ -1,0 +1,18 @@
+---
+friendly_name: Stripe itemized payout reconciliation report
+description: >
+  Import itemized payout reconciliation report from the Stripe API.
+owners:
+  - dthorn@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  retry_delay: 30m
+  arguments:
+    - --date={{ ds }}
+    - --api-key={{ var.value.stripe_api_key }}
+    - --report-type=payout_reconciliation.itemized.5
+    - --table=moz-fx-data-shared-prod.stripe_external.itemized_payout_reconciliation_v5
+    - --time-partitioning-field=automatic_payout_effective_at

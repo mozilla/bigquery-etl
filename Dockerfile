@@ -13,9 +13,10 @@ WORKDIR /app
 FROM base AS python-deps
 RUN apt-get update -qqy && apt-get install -qqy gcc libc-dev
 COPY java-requirements.txt ./
-RUN pip install -r java-requirements.txt
+RUN pip install --no-deps -r java-requirements.txt
 COPY requirements.txt ./
-RUN pip install -r requirements.txt
+# use --no-deps to work around https://github.com/pypa/pip/issues/9644
+RUN pip install --no-deps -r requirements.txt
 
 # download java dependencies in separate stage because it requires maven
 FROM base AS java-deps

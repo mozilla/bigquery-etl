@@ -13,4 +13,5 @@ scheduling:
   arguments:
     - --date={{ ds }}
     - --api-key={{ var.value.stripe_api_key }}
+    - --resource=Event
     - --table=moz-fx-data-shared-prod.stripe_external.events_v1

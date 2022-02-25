@@ -32,6 +32,14 @@ def _valid_float(value: str):
         return True
 
 
+def get_rooted_schema(type_) -> bigquery.SchemaField:
+    """Load schema for given stripe type from json."""
+    path = Path(__file__).parent / f"{type_}.schema.json"
+    return bigquery.SchemaField.from_api_repr(
+        {"name": "root", "type": "RECORD", "fields": ujson.loads(path.read_text())}
+    )
+
+
 class FilteredSchema:
     """Apply ALLOWED_FIELDS to resources and their schema."""
 
@@ -44,10 +52,7 @@ class FilteredSchema:
         """Get filtered schema and allowed fields for a Stripe resource type."""
         self.type = _snake_case(resource)
         self.allowed = ALLOWED_FIELDS[self.type]
-        path = Path(__file__).parent / f"{self.type}.schema.json"
-        self.root = bigquery.SchemaField.from_api_repr(
-            {"name": "root", "type": "RECORD", "fields": ujson.loads(path.read_text())}
-        )
+        self.root = get_rooted_schema(self.type)
         self.filtered = self._filter_schema(self.root.fields, self.allowed)
 
     def _filter_schema(

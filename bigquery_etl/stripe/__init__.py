@@ -52,30 +52,21 @@ def _get_report_rows(
         yield from sys.stdin.buffer
     else:
         stripe.api_key = api_key
-        report_type_ = stripe.reporting.ReportType.retrieve(report_type)
         parameters: Dict[str, Any] = {"columns": columns}
         if after_date:
-            parameters["interval_start"] = (int(after_date.timestamp()),)
-            if parameters["interval_start"] < report_type_.data_available_start:
-                start_limit = datetime.utcfromtimestamp(
-                    report_type_.data_available_start
-                )
-                raise click.ClickException(
-                    f"Report data not available for {after_date:%F},"
-                    f" data is only available from {start_limit:%F}"
-                )
+            parameters["interval_start"] = int(after_date.timestamp())
         if before_date:
-            parameters["interval_end"] = (int(before_date.timestamp()),)
-            if parameters["interval_end"] > report_type_.data_available_end:
-                end_limit = datetime.utcfromtimestamp(report_type_.data_available_end)
-                raise click.ClickException(
-                    f"Report data not available up to {before_date:%F},"
-                    f" data is only available up to {end_limit:%F}"
-                )
-        run = stripe.reporting.ReportRun.create(
-            report_type=report_type,
-            parameters=parameters,
-        )
+            parameters["interval_end"] = int(before_date.timestamp())
+
+        try:
+            run = stripe.reporting.ReportRun.create(
+                report_type=report_type,
+                parameters=parameters,
+            )
+        except stripe.error.InvalidRequestError as e:
+            # Wrap exception to hide unnecessary traceback
+            raise click.ClickException(str(e))
+
         click.echo(f"Waiting on report {run.id!r}", file=sys.stderr)
         # wait up to ~10 minutes (100 intervals of 6 seconds) for report to finish
         for _ in range(100):
@@ -87,7 +78,9 @@ def _get_report_rows(
             raise click.ClickException(
                 f"Report {run.id!r} did not succeed, status was {run.status!r}"
             )
-        response = requests.get(run.result.url, auth=HTTPBasicAuth(api_key, ""))
+        response = requests.get(
+            run.result.url, auth=HTTPBasicAuth(api_key, ""), stream=True
+        )
         response.raise_for_status()
         yield from response.iter_lines()
 
@@ -212,7 +205,11 @@ def schema(resource: Type[ListableAPIResource]):
     "--time-partitioning-type",
     default=bigquery.TimePartitioningType.DAY,
     type=click.Choice(
-        [bigquery.TimePartitioningType.DAY, bigquery.TimePartitioningType.MONTH]
+        [
+            bigquery.TimePartitioningType.DAY,
+            bigquery.TimePartitioningType.MONTH,
+            bigquery.TimePartitioningType.YEAR,
+        ]
     ),
     help="BigQuery time partitioning type for --table",
 )
@@ -239,18 +236,21 @@ def stripe_import(
         date = date.replace(tzinfo=timezone.utc)
         if time_partitioning_type == bigquery.TimePartitioningType.DAY:
             after_date = date
-            before_date = date + relativedelta(days=1)
+            before_date = after_date + relativedelta(days=1)
             if table:
                 table = f"{table}${date:%Y%m%d}"
         elif time_partitioning_type == bigquery.TimePartitioningType.MONTH:
             after_date = date.replace(day=1)
-            before_date = date + relativedelta(months=1)
+            before_date = after_date + relativedelta(months=1)
             if table:
                 table = f"{table}${date:%Y%m}"
+        elif time_partitioning_type == bigquery.TimePartitioningType.YEAR:
+            after_date = date.replace(month=1, day=1)
+            before_date = after_date + relativedelta(years=1)
+            if table:
+                table = f"{table}${date:%Y}"
     if resource is stripe.Event and not date:
         raise click.ClickException("must specify --date for --resource=Event")
-    if report_type and not date:
-        raise click.ClickException("must specify --date for --report-type")
     if not report_type and not resource:
         raise click.ClickException("must specify --resource or --report-type")
     if report_type and resource:
@@ -280,6 +280,9 @@ def stripe_import(
             ):
                 file_obj.write(row)
                 file_obj.write(b"\n")
+                # stripe api enforces that data is available for the requested range, so
+                # allow headers row to count for has_rows, because it means the report
+                # is complete, and valid reports may be empty, e.g. when pulled daily
                 has_rows = True
         if not has_rows:
             raise click.ClickException("no rows returned")

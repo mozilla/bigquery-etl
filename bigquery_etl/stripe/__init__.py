@@ -150,7 +150,7 @@ def schema(resource: Type[ListableAPIResource]):
 )
 @click.option(
     "--date",
-    type=click.DateTime(formats=["%Y-%m-%d", "%Y-%m"]),
+    type=click.DateTime(formats=["%Y-%m-%d", "%Y-%m", "%Y"]),
     help="Creation date of resources to pull from stripe API; Added to --table "
     "to ensure only that date partition is replaced",
 )

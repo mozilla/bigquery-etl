@@ -19,7 +19,6 @@ WITH sample_counts_filtered AS (
     cp.ping_type,
     COALESCE(cp.app_build_id, "*") AS app_build_id,
     COALESCE(cp.os, "*") AS os,
-    cp.process,
     cp.metric,
     SUBSTR(REPLACE(cp.key, r"\x00", ""), 0, 200) AS key,
     client_agg_type,
@@ -33,8 +32,7 @@ INNER JOIN  `{{ dataset }}.{{ prefix }}__view_sample_counts_v1` sc
     AND sc.app_version = cp.app_version
     AND sc.metric = cp.metric
     AND sc.key = cp.key
-    AND sc.ping_type = cp.ping_type,
-    AND sc.process = cp.process
+    AND sc.ping_type = cp.ping_type
     AND total_sample IS NOT NULL
   WHERE
     cp.app_version IS NOT NULL
@@ -50,6 +48,7 @@ sample_counts_ranked AS (
     os,
     key,
     metric,
+    client_agg_type,
     total_sample,
     ROW_NUMBER() OVER (
       PARTITION BY
@@ -58,7 +57,8 @@ sample_counts_ranked AS (
         app_build_id,
         os,
         key,
-        metric
+        metric,
+        client_agg_type
       ORDER BY
         total_sample DESC
     ) AS rnk
@@ -73,6 +73,7 @@ SELECT
   os,
   key,
   metric,
+  client_agg_type,
   total_sample
 FROM
   sample_counts_ranked

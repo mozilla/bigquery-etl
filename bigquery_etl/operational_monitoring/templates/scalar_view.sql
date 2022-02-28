@@ -42,8 +42,9 @@ GROUP BY
   {% else %}
   build_id,
   {% endif %}
-  cores_count,
-  os,
+  {% for dimension in dimensions %}
+    {{ dimension.name }},
+  {% endfor %}
   branch,
   agg_type,
   probe

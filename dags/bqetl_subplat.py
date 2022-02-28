@@ -611,6 +611,8 @@ with DAG(
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         retry_delay=datetime.timedelta(seconds=1800),
+        retries=10,
+        email_on_retry=False,
     )
 
     stripe_external__payment_intents__v1 = bigquery_etl_query(

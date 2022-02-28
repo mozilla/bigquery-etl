@@ -571,6 +571,7 @@ with DAG(
         + [
             "--date={{ ds }}",
             "--api-key={{ var.value.stripe_api_key }}",
+            "--resource=Event",
             "--format-resources",
             "--strict-schema",
             "--quiet",

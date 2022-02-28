@@ -101,6 +101,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/stripe_external/promotion_codes_v1/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_external/setup_intents_v1/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_external/subscriptions_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/stripe/itemized_payout_reconciliation/view.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/all_subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/devices_v1/query.sql",

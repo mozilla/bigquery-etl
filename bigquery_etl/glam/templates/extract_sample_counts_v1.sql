@@ -1,20 +1,6 @@
 WITH sample_counts_filtered AS (
   SELECT
-    CASE
-    WHEN
-      cp.channel = "nightly"
-    THEN
-      1
-    WHEN
-      cp.channel = "beta"
-    THEN
-      2
-    WHEN
-      cp.channel = "release"
-    THEN
-      3
-    END
-    AS channel,
+    cp.channel,
     cp.app_version,
     cp.ping_type,
     COALESCE(cp.app_build_id, "*") AS app_build_id,
@@ -46,8 +32,8 @@ sample_counts_ranked AS (
     ping_type,
     app_build_id,
     os,
-    key,
     metric,
+    key,
     client_agg_type,
     total_sample,
     ROW_NUMBER() OVER (
@@ -56,8 +42,8 @@ sample_counts_ranked AS (
         app_version,
         app_build_id,
         os,
-        key,
         metric,
+        key,
         client_agg_type
       ORDER BY
         total_sample DESC
@@ -71,8 +57,8 @@ SELECT
   ping_type,
   app_build_id,
   os,
-  key,
   metric,
+  key,
   client_agg_type,
   total_sample
 FROM

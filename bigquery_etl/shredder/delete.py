@@ -281,7 +281,7 @@ def delete_from_partition(
             elif sql_table_id(target) in [
                 "moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6",
                 "moz-fx-data-shared-prod.telemetry_derived.clients_daily_joined_v1",
-                "moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v6",
+                "moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v1",
                 "moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_joined_v1",
             ]:
                 replace_clause = BUG_1751979_CLIENTS_DAILY_V6_REPLACE_CLAUSE
@@ -291,7 +291,7 @@ def delete_from_partition(
             # And corresponding changes for search_clients_daily-derived tables.
             elif (
                 sql_table_id(target)
-                == "moz-fx-data-shared-prod.telemetry_derived.search_clients_daily_v8"
+                == "moz-fx-data-shared-prod.search_derived.search_clients_daily_v8"
             ):
                 replace_clause = BUG_1751979_SEARCH_CLIENTS_DAILY_V8_REPLACE_CLAUSE
                 temporary_udfs = BUG_1751979_SEARCH_CLIENTS_DAILY_V8_UDFS

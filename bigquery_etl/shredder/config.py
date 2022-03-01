@@ -163,6 +163,7 @@ DELETE_TARGETS = {
         table="telemetry_derived.clients_daily_scalar_aggregates_v1"
     ): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.clients_daily_v6"): DESKTOP_SRC,
+    client_id_target(table="telemetry_derived.clients_daily_joined_v1"): DESKTOP_SRC,
     client_id_target(
         table="telemetry_derived.clients_daily_histogram_aggregates_v1"
     ): DESKTOP_SRC,
@@ -173,6 +174,9 @@ DELETE_TARGETS = {
         table="telemetry_derived.clients_histogram_aggregates_v1"
     ): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.clients_last_seen_v1"): DESKTOP_SRC,
+    client_id_target(
+        table="telemetry_derived.clients_last_seen_joined_v1"
+    ): DESKTOP_SRC,
     client_id_target(
         table="telemetry_derived.clients_scalar_aggregates_v1"
     ): DESKTOP_SRC,

@@ -301,7 +301,7 @@ bqetl_public_data_json:
     - impact/tier_3
 
 bqetl_internet_outages:
-  schedule_interval: 0 3 * * *
+  schedule_interval: 0 7 * * *
   description: |
     DAG for building the internet outages datasets.
     See [bug 1640204](https://bugzilla.mozilla.org/show_bug.cgi?id=1640204).

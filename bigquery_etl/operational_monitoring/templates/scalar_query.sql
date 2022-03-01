@@ -110,8 +110,9 @@ SELECT
     submission_date,
     client_id,
     build_id,
-    cores_count,
-    os,
+    {% for dimension in dimensions %}
+      {{ dimension.name }},
+    {% endfor %}
     branch,
     name,
     agg_type,

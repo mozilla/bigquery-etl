@@ -34,7 +34,7 @@ jobs:
           command: |
             python3.8 -m venv venv/
             venv/bin/pip install pip-tools --constraint requirements.in
-            venv/bin/pip-sync
+            venv/bin/pip-sync --pip-args=--no-deps
       - run:
           name: Yamllint Test
           command: PATH="venv/bin:$PATH" yamllint -c .yamllint.yaml .
@@ -176,7 +176,8 @@ jobs:
             apt update
             apt install -y maven default-jdk-headless
             mvn dependency:copy-dependencies
-            venv/bin/pip-sync requirements.txt java-requirements.txt
+            venv/bin/pip-sync --pip-args=--no-deps requirements.txt \
+              java-requirements.txt
       - run:
           name: PyTest Integration Test
           # Google's client libraries will check for
@@ -497,8 +498,8 @@ jobs:
               bigquery-etl-main
 
             cd bigquery-etl-main
-            pip install -r requirements.txt
-            pip install -r java-requirements.txt
+            pip install --no-deps -r requirements.txt
+            pip install --no-deps -r java-requirements.txt
             mvn dependency:copy-dependencies
             ./script/bqetl generate all \
               --target-project moz-fx-data-shared-prod

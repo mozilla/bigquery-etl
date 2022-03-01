@@ -17,5 +17,5 @@ scheduling:
     - --time-partitioning-field=automatic_payout_effective_at
   # report data isn't generally ready when the dag starts, so retry for a while
   retry_delay: 30m
-  retries: 10
+  retries: 47
   email_on_retry: false

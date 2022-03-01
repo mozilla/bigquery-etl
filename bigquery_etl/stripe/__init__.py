@@ -68,11 +68,12 @@ def _get_report_rows(
             raise click.ClickException(str(e))
 
         click.echo(f"Waiting on report {run.id!r}", file=sys.stderr)
-        # wait up to ~10 minutes (100 intervals of 6 seconds) for report to finish
-        for _ in range(100):
+        # wait up to 30 minutes for report to finish
+        timeout = datetime.utcnow() + relativedelta(minutes=30)
+        while datetime.utcnow() < timeout:
             if run.status != "pending":
                 break
-            sleep(6)
+            sleep(10)
             run.refresh()
         if run.status != "succeeded":
             raise click.ClickException(

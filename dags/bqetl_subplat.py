@@ -612,7 +612,7 @@ with DAG(
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         retry_delay=datetime.timedelta(seconds=1800),
-        retries=10,
+        retries=47,
         email_on_retry=False,
     )
 

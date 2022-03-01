@@ -45,24 +45,6 @@ bqetl_amo_stats:
   tags:
     - impact/tier_1
 
-bqetl_vrbrowser:
-  schedule_interval: 0 2 * * *
-  description: |
-    Custom ETL based on Glean pings from Mozilla VR Browser.
-  default_args:
-    owner: jklukas@mozilla.com
-    start_date: "2019-07-25"
-    email:
-      [
-        "telemetry-alerts@mozilla.com",
-        "jklukas@mozilla.com",
-        "ascholtz@mozilla.com",
-      ]
-    retries: 1
-    retry_delay: 5m
-  tags:
-    - impact/tier_3
-
 bqetl_core:
   schedule_interval: 0 2 * * *
   description:

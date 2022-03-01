@@ -355,23 +355,34 @@ jobs:
       - add_ssh_keys:
           fingerprints: "ab:b5:f7:55:92:0a:72:c4:63:0e:57:be:cd:66:32:53"
       - run:
-          name: Push to generated-sql branch
+          name: Push to generated-sql-test branch
           command: |
             ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
             git config --global user.name "CircleCI generate-sql job"
+            echo $?
             git config --global user.email "dataops+generated-sql@mozilla.com"
-            git clone --single-branch --branch generated-sql \
+            echo $?
+            git clone --single-branch --branch generated-sql-test \
               git@github.com:mozilla/bigquery-etl \
-              generated-sql
-            cd generated-sql/
+              generated-sql-test
+            echo $?
+            cd generated-sql-test/
             rm -rf sql/
             cp -r /tmp/workspace/generated-sql/sql sql
             rm -rf dags/
             cp -r /tmp/workspace/generated-sql/dags dags
             git add .
+            echo $?
             git commit -m "Auto-push due to change on main branch [ci skip]" \
               && git push \
               || echo "Skipping push since it looks like there were no changes"
+            echo $?
+            if [ -f ".git/index.lock" ]
+            then
+               echo "index.lock file found"
+            else
+               echo "index.lock file not found"
+            fi
 
   deploy:
     executor: ubuntu-machine-executor
@@ -621,10 +632,10 @@ workflows:
       - push-generated-sql:
           requires:
             - validate-dags
-          filters:
-            branches:
-              only:
-                - main
+#          filters:
+#            branches:
+#              only:
+#                - main
       - deploy:
           context: data-eng-bigquery-etl-dockerhub
           requires:

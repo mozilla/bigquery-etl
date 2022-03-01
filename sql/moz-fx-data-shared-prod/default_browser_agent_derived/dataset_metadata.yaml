@@ -1,0 +1,10 @@
+friendly_name: default-browser-agent Derived
+description: |-
+  Derived tables related to document namespace default-browser-agent, usually populated via queries defined in https://github.com/mozilla/bigquery-etl and managed by Airflow
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

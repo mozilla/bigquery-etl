@@ -1,0 +1,88 @@
+fields:
+- mode: NULLABLE
+  name: id
+  type: STRING
+- mode: NULLABLE
+  name: event_timestamp
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: active
+  type: BOOLEAN
+- mode: NULLABLE
+  name: aggregate_usage
+  type: STRING
+- mode: NULLABLE
+  name: amount
+  type: INTEGER
+- mode: NULLABLE
+  name: amount_decimal
+  type: STRING
+- mode: NULLABLE
+  name: billing_scheme
+  type: STRING
+- mode: NULLABLE
+  name: created
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: currency
+  type: STRING
+- mode: NULLABLE
+  name: interval
+  type: STRING
+- mode: NULLABLE
+  name: interval_count
+  type: INTEGER
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: STRING
+  mode: REPEATED
+  name: metadata
+  type: RECORD
+- mode: NULLABLE
+  name: nickname
+  type: STRING
+- mode: NULLABLE
+  name: product
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: flat_amount
+    type: INTEGER
+  - mode: NULLABLE
+    name: flat_amount_decimal
+    type: STRING
+  - mode: NULLABLE
+    name: unit_amount
+    type: INTEGER
+  - mode: NULLABLE
+    name: unit_amount_decimal
+    type: STRING
+  - mode: NULLABLE
+    name: up_to
+    type: INTEGER
+  mode: REPEATED
+  name: tiers
+  type: RECORD
+- mode: NULLABLE
+  name: tiers_mode
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: divide_by
+    type: INTEGER
+  - mode: NULLABLE
+    name: round
+    type: STRING
+  mode: NULLABLE
+  name: transform_usage
+  type: RECORD
+- mode: NULLABLE
+  name: trial_period_days
+  type: INTEGER
+- mode: NULLABLE
+  name: usage_type
+  type: STRING

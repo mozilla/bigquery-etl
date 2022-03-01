@@ -1,0 +1,10 @@
+friendly_name: Lockwise Ios Derived
+description: |-
+  Derived data for lockwise_ios_derived
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

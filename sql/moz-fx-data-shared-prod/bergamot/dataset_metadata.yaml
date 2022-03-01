@@ -1,0 +1,10 @@
+friendly_name: Bergamot
+description: |-
+  Views on data from bergamot
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

@@ -1,0 +1,9 @@
+fields:
+- description: Numeric ID for the tile
+  mode: NULLABLE
+  name: tile_id
+  type: INTEGER
+- description: Type of content (should always be 'spoc')
+  mode: NULLABLE
+  name: type
+  type: STRING

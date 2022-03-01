@@ -1,0 +1,10 @@
+friendly_name: coverage
+description: |-
+  User-facing views related to document namespace coverage; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/coverage
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

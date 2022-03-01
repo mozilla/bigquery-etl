@@ -1,0 +1,10 @@
+friendly_name: org-mozilla-focus-beta
+description: |-
+  User-facing views related to document namespace org-mozilla-focus-beta; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/org-mozilla-focus-beta
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

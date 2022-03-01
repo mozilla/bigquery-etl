@@ -1,0 +1,1359 @@
+fields:
+- description: A JSON string containing any payload properties not present in the
+    schema
+  mode: NULLABLE
+  name: additional_properties
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: architecture
+    type: STRING
+  - mode: NULLABLE
+    name: build_id
+    type: STRING
+  - mode: NULLABLE
+    name: channel
+    type: STRING
+  - mode: NULLABLE
+    name: display_version
+    type: STRING
+  - mode: NULLABLE
+    name: name
+    type: STRING
+  - mode: NULLABLE
+    name: platform_version
+    type: STRING
+  - mode: NULLABLE
+    name: vendor
+    type: STRING
+  - mode: NULLABLE
+    name: version
+    type: STRING
+  - mode: NULLABLE
+    name: xpcom_abi
+    type: STRING
+  mode: NULLABLE
+  name: application
+  type: RECORD
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+- mode: NULLABLE
+  name: creation_date
+  type: STRING
+- description: The document ID specified in the URI when the client sent this message
+  mode: NULLABLE
+  name: document_id
+  type: STRING
+- fields:
+  - fields:
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - fields:
+        - description: True if this add-on cannot be used in the application based
+            on version compatibility, dependencies, and blocklisting. This field is
+            only available after the 'sessionstore-windows-restored' topic is notified.
+          mode: NULLABLE
+          name: app_disabled
+          type: BOOLEAN
+        - description: Whether or not the add-on appears in the blocklist. This field
+            is only available after the 'sessionstore-windows-restored' topic is notified.
+          mode: NULLABLE
+          name: blocklisted
+          type: BOOLEAN
+        - mode: NULLABLE
+          name: description
+          type: STRING
+        - description: True or false depending on whether the add-on has binary components.
+            This is always false since Firefox 60. This field is only available after
+            the 'sessionstore-windows-restored' topic is notified.
+          mode: NULLABLE
+          name: has_binary_components
+          type: BOOLEAN
+        - description: The days since epoch that the add-on was first installed. This
+            field is only available after the 'sessionstore-windows-restored' topic
+            is notified.
+          mode: NULLABLE
+          name: install_day
+          type: INTEGER
+        - description: Whether or not the add-on is a system add-on. This field is
+            available at startup.
+          mode: NULLABLE
+          name: is_system
+          type: BOOLEAN
+        - description: The add-on name, limited to 100 characters. This field is only
+            available after the 'sessionstore-windows-restored' topic is notified.
+          mode: NULLABLE
+          name: name
+          type: STRING
+        - description: Indicates what scope the add-on is installed in, per profile,
+            user, system, or application. This field is available at startup.
+          mode: NULLABLE
+          name: scope
+          type: INTEGER
+        - description: The state of the signature of the add-on. This field is only
+            available after the 'sessionstore-windows-restored' topic is notified.
+          mode: NULLABLE
+          name: signed_state
+          type: INTEGER
+        - mode: NULLABLE
+          name: type
+          type: STRING
+        - description: The day the add-on was last updated. This field is optional,
+            but available at startup if present.
+          mode: NULLABLE
+          name: update_day
+          type: INTEGER
+        - description: Whether or not the add-on is a WebExtension add-on. This field
+            is available at startup.
+          mode: NULLABLE
+          name: is_web_extension
+          type: BOOLEAN
+        - description: Whether or not the add-on is a compatible with e10s. Since
+            Firefox 61, this is always true. This field is available at startup.
+          mode: NULLABLE
+          name: multiprocess_compatible
+          type: BOOLEAN
+        - mode: NULLABLE
+          name: foreign_install
+          type: INTEGER
+        - mode: NULLABLE
+          name: user_disabled
+          type: INTEGER
+        - mode: NULLABLE
+          name: version
+          type: STRING
+        mode: NULLABLE
+        name: value
+        type: RECORD
+      mode: REPEATED
+      name: active_addons
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: branch
+        type: STRING
+      - mode: NULLABLE
+        name: id
+        type: STRING
+      mode: NULLABLE
+      name: active_experiment
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - fields:
+        - mode: NULLABLE
+          name: user_disabled
+          type: BOOLEAN
+        - mode: NULLABLE
+          name: version
+          type: STRING
+        - description: Cast into an integer via mozilla-schema-generator. See bug
+            1611027.
+          mode: NULLABLE
+          name: apply_background_updates
+          type: INTEGER
+        mode: NULLABLE
+        name: value
+        type: RECORD
+      mode: REPEATED
+      name: active_gm_plugins
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: blocklisted
+        type: BOOLEAN
+      - mode: NULLABLE
+        name: clicktoplay
+        type: BOOLEAN
+      - mode: NULLABLE
+        name: description
+        type: STRING
+      - mode: NULLABLE
+        name: disabled
+        type: BOOLEAN
+      - mode: REPEATED
+        name: mime_types
+        type: STRING
+      - mode: NULLABLE
+        name: name
+        type: STRING
+      - mode: NULLABLE
+        name: update_day
+        type: INTEGER
+      - mode: NULLABLE
+        name: version
+        type: STRING
+      mode: REPEATED
+      name: active_plugins
+      type: RECORD
+    - description: The id of the active persona (theme).
+      mode: NULLABLE
+      name: persona
+      type: STRING
+    - fields:
+      - description: True if this theme cannot be used in the application based on
+          version compatibility, dependencies, and blocklisting.
+        mode: NULLABLE
+        name: app_disabled
+        type: BOOLEAN
+      - description: Whether or not the theme appears in the blocklist.
+        mode: NULLABLE
+        name: blocklisted
+        type: BOOLEAN
+      - mode: NULLABLE
+        name: description
+        type: STRING
+      - description: True or false depending on whether the theme has binary components.
+          This is always false since Firefox 60.
+        mode: NULLABLE
+        name: has_binary_components
+        type: BOOLEAN
+      - description: The id of the theme.
+        mode: NULLABLE
+        name: id
+        type: STRING
+      - description: The days since epoch that the theme was first installed.
+        mode: NULLABLE
+        name: install_day
+        type: INTEGER
+      - description: The theme name, limited to 100 characters.
+        mode: NULLABLE
+        name: name
+        type: STRING
+      - description: Indicates what scope the theme is installed in, per profile,
+          user, system, or application.
+        mode: NULLABLE
+        name: scope
+        type: INTEGER
+      - description: The day the theme was last updated.
+        mode: NULLABLE
+        name: update_day
+        type: INTEGER
+      - description: Whether or not the user disabled the theme.
+        mode: NULLABLE
+        name: user_disabled
+        type: BOOLEAN
+      - description: The version of the theme.
+        mode: NULLABLE
+        name: version
+        type: STRING
+      - mode: NULLABLE
+        name: foreign_install
+        type: INTEGER
+      mode: NULLABLE
+      name: theme
+      type: RECORD
+    mode: NULLABLE
+    name: addons
+    type: RECORD
+  - fields:
+    - description: The application UUID.
+      mode: NULLABLE
+      name: application_id
+      type: STRING
+    - description: The application name.
+      mode: NULLABLE
+      name: application_name
+      type: STRING
+    - description: The build architecture for the active build.
+      mode: NULLABLE
+      name: architecture
+      type: STRING
+    - description: 'For Mac universal builds, this is a string containing a list of
+        architectures delimited by ''-''. Architecture sets are always in the same
+        order: ppc > i386 > ppc64 > x86_64 > (future additions). This is only available
+        on Mac.'
+      mode: NULLABLE
+      name: architectures_in_binary
+      type: STRING
+    - description: The build ID/date of the application.
+      mode: NULLABLE
+      name: build_id
+      type: STRING
+    - description: The display version of the application.
+      mode: NULLABLE
+      name: display_version
+      type: STRING
+    - mode: NULLABLE
+      name: hotfix_version
+      type: STRING
+    - description: The version of the XULRunner platform.
+      mode: NULLABLE
+      name: platform_version
+      type: STRING
+    - description: True if the application was built with the support for the updater
+        component.
+      mode: NULLABLE
+      name: updater_available
+      type: BOOLEAN
+    - description: The application vendor.
+      mode: NULLABLE
+      name: vendor
+      type: STRING
+    - description: The version of the application.
+      mode: NULLABLE
+      name: version
+      type: STRING
+    - description: 'A string tag identifying the binary ABI of the current processor
+        and compiler vtable. This is taken from the TARGET_XPCOM_ABI configure variable.
+        It may not be available on all platforms, especially unusual processor or
+        compiler combinations. The result takes the form <processor>-<compilerABI>,
+        for example: x86-msvc, ppc-gcc3, ... . This value should almost always be
+        used in combination with  the ''OS''.'
+      mode: NULLABLE
+      name: xpcom_abi
+      type: STRING
+    mode: NULLABLE
+    name: build
+    type: RECORD
+  - fields:
+    - mode: NULLABLE
+      name: key
+      type: STRING
+    - fields:
+      - mode: NULLABLE
+        name: branch
+        type: STRING
+      - mode: NULLABLE
+        name: enrollment_id
+        type: STRING
+      - mode: NULLABLE
+        name: type
+        type: STRING
+      mode: NULLABLE
+      name: value
+      type: RECORD
+    mode: REPEATED
+    name: experiments
+    type: RECORD
+  - fields:
+    - description: The value of the `distribution.id` pref that identifies the Firefox
+        distribution.
+      mode: NULLABLE
+      name: distribution_id
+      type: STRING
+    - description: The value of the `distribution.version` pref.
+      mode: NULLABLE
+      name: distribution_version
+      type: STRING
+    - description: The value of the `app.distributor` pref.
+      mode: NULLABLE
+      name: distributor
+      type: STRING
+    - description: The value of the `app.distributor.channel` pref.
+      mode: NULLABLE
+      name: distributor_channel
+      type: STRING
+    - description: The value of the `mozilla.partner.id` pref.
+      mode: NULLABLE
+      name: partner_id
+      type: STRING
+    - mode: REPEATED
+      name: partner_names
+      type: STRING
+    mode: NULLABLE
+    name: partner
+    type: RECORD
+  - fields:
+    - description: The creation date of the user profile as the integer number of
+        days since UNIX epoch.
+      mode: NULLABLE
+      name: creation_date
+      type: FLOAT
+    - mode: NULLABLE
+      name: first_use_date
+      type: FLOAT
+    - mode: NULLABLE
+      name: is_stub_profile
+      type: BOOLEAN
+    - description: The date the user profile was reset, as the integer number of days
+        since UNIX epoch. This is optional.
+      mode: NULLABLE
+      name: reset_date
+      type: FLOAT
+    mode: NULLABLE
+    name: profile
+    type: RECORD
+  - fields:
+    - description: Whether application compatibility is respected for add-ons.
+      mode: NULLABLE
+      name: addon_compatibility_check_enabled
+      type: BOOLEAN
+    - fields:
+      - description: Identifier of the particular campaign that led to the download
+          of the product.
+        mode: NULLABLE
+        name: campaign
+        type: STRING
+      - description: Identifier to indicate the particular link within a campaign.
+        mode: NULLABLE
+        name: content
+        type: STRING
+      - description: funnel experiment parameters, see bug 1567339
+        mode: NULLABLE
+        name: experiment
+        type: STRING
+      - description: Category of the source, such as 'organic' for a search engine.
+        mode: NULLABLE
+        name: medium
+        type: STRING
+      - description: Referring partner domain, when install happens via a known partner.
+        mode: NULLABLE
+        name: source
+        type: STRING
+      - description: funnel experiment parameters, see bug 1567339
+        mode: NULLABLE
+        name: variation
+        type: STRING
+      - description: derived user agent, see bug 1595063
+        mode: NULLABLE
+        name: ua
+        type: STRING
+      - description: Unique token created at Firefox download time, see bug 1677497
+        mode: NULLABLE
+        name: dltoken
+        type: STRING
+      mode: NULLABLE
+      name: attribution
+      type: RECORD
+    - description: True if the blocklist is enabled.
+      mode: NULLABLE
+      name: blocklist_enabled
+      type: BOOLEAN
+    - description: Contains the string identifier or name of the default search engine
+        provider. Deprecated.
+      mode: NULLABLE
+      name: default_search_engine
+      type: STRING
+    - fields:
+      - description: "The anonymized path of the engine xml file, e.g. e.g. jar:[app]/omni.ja!browser/engine.xml\
+          \ (where \u2018browser\u2019 is the name of the chrome package, not a folder)\
+          \ [profile]/searchplugins/engine.xml [distribution]/searchplugins/common/engine.xml\
+          \ [other]/engine.xml [other]/addEngineWithDetails [other]/addEngineWithDetails:extensionID\
+          \ [http/https]example.com/engine-name.xml [http/https]example.com/engine-name.xml:extensionID"
+        mode: NULLABLE
+        name: load_path
+        type: STRING
+      - description: The name of the default search engine.
+        mode: NULLABLE
+        name: name
+        type: STRING
+      - description: 'The origin of the search engine: the value will be default for
+          engines that are built-in or from distribution partners, verified for user-installed
+          engines with valid verification hashes, unverified for non-default engines
+          without verification hash, and invalid for engines with broken verification
+          hashes.'
+        mode: NULLABLE
+        name: origin
+        type: STRING
+      - description: "The HTTP url we would use to search. For privacy, we don\u2019\
+          t record this for user-installed engines."
+        mode: NULLABLE
+        name: submission_url
+        type: STRING
+      mode: NULLABLE
+      name: default_search_engine_data
+      type: RECORD
+    - mode: NULLABLE
+      name: e10s_cohort
+      type: STRING
+    - description: True if the E10S is enabled.
+      mode: NULLABLE
+      name: e10s_enabled
+      type: BOOLEAN
+    - fields:
+      - mode: REPEATED
+        name: accept_languages
+        type: STRING
+      - mode: REPEATED
+        name: app_locales
+        type: STRING
+      - mode: REPEATED
+        name: available_locales
+        type: STRING
+      - mode: REPEATED
+        name: regional_prefs_locales
+        type: STRING
+      - mode: REPEATED
+        name: requested_locales
+        type: STRING
+      - mode: REPEATED
+        name: system_locales
+        type: STRING
+      mode: NULLABLE
+      name: intl
+      type: RECORD
+    - description: Identifier to indicate the particular link within a campaign.
+      mode: NULLABLE
+      name: is_default_browser
+      type: BOOLEAN
+    - mode: NULLABLE
+      name: launcher_process_state
+      type: INTEGER
+    - description: The best locale that the application should be localized to.
+      mode: NULLABLE
+      name: locale
+      type: STRING
+    - fields:
+      - description: The effective sandbox. The values are OS dependent.
+        mode: NULLABLE
+        name: effective_content_process_level
+        type: INTEGER
+      - description: The status of Win32k Lockdown for Content process.
+        mode: NULLABLE
+        name: content_win32k_lockdown_state
+        type: INTEGER
+      mode: NULLABLE
+      name: sandbox
+      type: RECORD
+    - mode: NULLABLE
+      name: search_cohort
+      type: STRING
+    - description: The state of the `toolkit.telemetry.enabled` pref.
+      mode: NULLABLE
+      name: telemetry_enabled
+      type: BOOLEAN
+    - fields:
+      - description: The state of the `app.update.auto` pref.
+        mode: NULLABLE
+        name: auto_download
+        type: BOOLEAN
+      - description: The update channel from the defaults only. Does not include the
+          partner bits.
+        mode: NULLABLE
+        name: channel
+        type: STRING
+      - description: The state of the `app.update.enabled` pref.
+        mode: NULLABLE
+        name: enabled
+        type: BOOLEAN
+      - description: Indicates whether updates may be installed when Firefox is not
+          running.
+        mode: NULLABLE
+        name: background
+        type: BOOLEAN
+      mode: NULLABLE
+      name: update
+      type: RECORD
+    - description: maximum number of processes that will be launched for regular web
+        content
+      mode: NULLABLE
+      name: e10s_multi_processes
+      type: INTEGER
+    - mode: NULLABLE
+      name: default_private_search_engine
+      type: STRING
+    - fields:
+      - mode: NULLABLE
+        name: load_path
+        type: STRING
+      - mode: NULLABLE
+        name: name
+        type: STRING
+      - mode: NULLABLE
+        name: origin
+        type: STRING
+      - mode: NULLABLE
+        name: submission_url
+        type: STRING
+      mode: NULLABLE
+      name: default_private_search_engine_data
+      type: RECORD
+    - mode: NULLABLE
+      name: is_in_optout_sample
+      type: BOOLEAN
+    - description: User preferences - limited to an allowlist defined in `toolkit/components/telemetry/app/TelemetryEnvironment.jsm`
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: user_prefs
+      type: RECORD
+    - description: whether fission is enabled this session, and subframes can load
+        in a different process
+      mode: NULLABLE
+      name: fission_enabled
+      type: BOOLEAN
+    mode: NULLABLE
+    name: settings
+    type: RECORD
+  - fields:
+    - description: The model IDs for Apple desktop devices. This is Mac only.
+      mode: NULLABLE
+      name: apple_model_id
+      type: STRING
+    - fields:
+      - description: The number of physical CPU cores. Desktop only, e.g. 4, or `null`
+          on failure.
+        mode: NULLABLE
+        name: cores
+        type: INTEGER
+      - description: The number of logical CPUs. Desktop only, e.g. 8, or `null` on
+          failure.
+        mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: REPEATED
+        name: extensions
+        type: STRING
+      - description: The CPU family, `null` on failure. Desktop only.
+        mode: NULLABLE
+        name: family
+        type: INTEGER
+      - description: The CPU L2 cache size in KB. `null` on failure. Desktop only.
+        mode: NULLABLE
+        name: l2cache_kb
+        type: FLOAT
+      - description: The CPU L3 cache size in KB. `null` on failure. Desktop only.
+        mode: NULLABLE
+        name: l3cache_kb
+        type: FLOAT
+      - description: The CPU model, `null` on failure. Desktop only.
+        mode: NULLABLE
+        name: model
+        type: INTEGER
+      - description: Only available on Firefox desktop. The CPU clock speed in MHz.
+        mode: NULLABLE
+        name: speed_m_hz
+        type: FLOAT
+      - description: The CPU stepping, `null` on failure. Desktop only.
+        mode: NULLABLE
+        name: stepping
+        type: INTEGER
+      - description: The CPU vendor, e.g. 'GenuineIntel', or `null` on failure. Desktop
+          only.
+        mode: NULLABLE
+        name: vendor
+        type: STRING
+      - description: Whether or not the system is Windows 10 or 11 in S Mode. S Mode
+          existed prior to us being able to query it, so this is unreliable on Windows
+          versions prior to 1810.
+        mode: NULLABLE
+        name: is_windows_s_mode
+        type: BOOLEAN
+      mode: NULLABLE
+      name: cpu
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: hardware
+        type: STRING
+      - mode: NULLABLE
+        name: is_tablet
+        type: BOOLEAN
+      - mode: NULLABLE
+        name: manufacturer
+        type: STRING
+      - mode: NULLABLE
+        name: model
+        type: STRING
+      mode: NULLABLE
+      name: device
+      type: RECORD
+    - fields:
+      - fields:
+        - mode: NULLABLE
+          name: description
+          type: STRING
+        - mode: NULLABLE
+          name: device_id
+          type: STRING
+        - mode: NULLABLE
+          name: driver
+          type: STRING
+        - mode: NULLABLE
+          name: driver_date
+          type: STRING
+        - mode: NULLABLE
+          name: driver_version
+          type: STRING
+        - mode: NULLABLE
+          name: gpu_active
+          type: BOOLEAN
+        - mode: NULLABLE
+          name: ram
+          type: INTEGER
+        - mode: NULLABLE
+          name: subsys_id
+          type: STRING
+        - mode: NULLABLE
+          name: vendor_id
+          type: STRING
+        - mode: NULLABLE
+          name: driver_vendor
+          type: STRING
+        mode: REPEATED
+        name: adapters
+        type: RECORD
+      - description: Whether or not Direct2D is enabled. This is Windows only.
+        mode: NULLABLE
+        name: d2d_enabled
+        type: BOOLEAN
+      - description: Whether or not DirectWrite is enabled. This is Windows only.
+        mode: NULLABLE
+        name: d_write_enabled
+        type: BOOLEAN
+      - fields:
+        - fields:
+          - mode: NULLABLE
+            name: status
+            type: STRING
+          - mode: NULLABLE
+            name: no_constant_buffer_offsetting
+            type: BOOLEAN
+          mode: NULLABLE
+          name: advanced_layers
+          type: RECORD
+        - description: The name of the compositor. This is one of 'd3d9', 'd3d11',
+            'opengl', 'basic', or 'none' ('none' indicates no compositors have been
+            created).
+          mode: NULLABLE
+          name: compositor
+          type: STRING
+        - fields:
+          - mode: NULLABLE
+            name: status
+            type: STRING
+          - mode: NULLABLE
+            name: version
+            type: STRING
+          mode: NULLABLE
+          name: d2d
+          type: RECORD
+        - fields:
+          - description: Indicates whether the d3d11 compositor was blocklisted due
+              to driver bugs. (This field was renamed to blocklisted in bug 1647225).
+            mode: NULLABLE
+            name: blacklisted
+            type: BOOLEAN
+          - mode: NULLABLE
+            name: status
+            type: STRING
+          - mode: NULLABLE
+            name: texture_sharing
+            type: BOOLEAN
+          - mode: NULLABLE
+            name: version
+            type: FLOAT
+          - mode: NULLABLE
+            name: warp
+            type: BOOLEAN
+          - description: Indicates whether the d3d11 compositor was blocklisted due
+              to driver bugs. (This field replaces blacklisted as of bug 1647225).
+            mode: NULLABLE
+            name: blocklisted
+            type: BOOLEAN
+          mode: NULLABLE
+          name: d3d11
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: status
+            type: STRING
+          mode: NULLABLE
+          name: gpu_process
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: status
+            type: STRING
+          mode: NULLABLE
+          name: webrender
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: status
+            type: STRING
+          mode: NULLABLE
+          name: wr_qualified
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: status
+            type: STRING
+          mode: NULLABLE
+          name: hw_compositing
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: status
+            type: STRING
+          mode: NULLABLE
+          name: opengl_compositing
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: status
+            type: STRING
+          mode: NULLABLE
+          name: wr_compositor
+          type: RECORD
+        - description: Indicates whether the software backend to WebRender is enabled.
+          fields:
+          - mode: NULLABLE
+            name: status
+            type: STRING
+          mode: NULLABLE
+          name: wr_software
+          type: RECORD
+        - description: Indicates whether the off-main-thread painting is enabled.
+          fields:
+          - mode: NULLABLE
+            name: status
+            type: STRING
+          mode: NULLABLE
+          name: omtp
+          type: RECORD
+        mode: NULLABLE
+        name: features
+        type: RECORD
+      - mode: NULLABLE
+        name: headless
+        type: BOOLEAN
+      - mode: NULLABLE
+        name: low_end_machine
+        type: BOOLEAN
+      - fields:
+        - mode: NULLABLE
+          name: pseudo_display
+          type: BOOLEAN
+        - mode: NULLABLE
+          name: refresh_rate
+          type: FLOAT
+        - mode: NULLABLE
+          name: scale
+          type: FLOAT
+        - mode: NULLABLE
+          name: screen_height
+          type: INTEGER
+        - mode: NULLABLE
+          name: screen_width
+          type: INTEGER
+        mode: REPEATED
+        name: monitors
+        type: RECORD
+      - description: The name of the content backend.
+        mode: NULLABLE
+        name: content_backend
+        type: STRING
+      - description: Whether or not Firefox desktop is embedded by Firefox Reality.
+          This is Windows only.
+        mode: NULLABLE
+        name: embedded_in_firefox_reality
+        type: BOOLEAN
+      mode: NULLABLE
+      name: gfx
+      type: RECORD
+    - fields:
+      - fields:
+        - description: The model of the hdd where the application binaries are located.
+            This is Windows only.
+          mode: NULLABLE
+          name: model
+          type: STRING
+        - description: The revision of the hdd where the application binaries are
+            located. This is Windows only.
+          mode: NULLABLE
+          name: revision
+          type: STRING
+        - mode: NULLABLE
+          name: type
+          type: STRING
+        mode: NULLABLE
+        name: binary
+        type: RECORD
+      - fields:
+        - description: The model of the hdd where the profile directory is located.
+            This is Windows only.
+          mode: NULLABLE
+          name: model
+          type: STRING
+        - description: The revision of the hdd where the profile directory is located.
+            This is Windows only.
+          mode: NULLABLE
+          name: revision
+          type: STRING
+        - mode: NULLABLE
+          name: type
+          type: STRING
+        mode: NULLABLE
+        name: profile
+        type: RECORD
+      - fields:
+        - description: The model of the hdd where the system files are located. This
+            is Windows only.
+          mode: NULLABLE
+          name: model
+          type: STRING
+        - description: The revision of the hdd where the system files are located.
+            This is Windows only.
+          mode: NULLABLE
+          name: revision
+          type: STRING
+        - mode: NULLABLE
+          name: type
+          type: STRING
+        mode: NULLABLE
+        name: system
+        type: RECORD
+      mode: NULLABLE
+      name: hdd
+      type: RECORD
+    - description: The availability of the WoW64 subsystem. This is Windows only.
+      mode: NULLABLE
+      name: is_wow64
+      type: BOOLEAN
+    - description: The machines amount of RAM.
+      mode: NULLABLE
+      name: memory_mb
+      type: FLOAT
+    - fields:
+      - description: The year Windows was installed. This is Windows only. `null`
+          on failure.
+        mode: NULLABLE
+        name: install_year
+        type: FLOAT
+      - description: The kernel version of Android. This is Android only. `null` on
+          failure.
+        mode: NULLABLE
+        name: kernel_version
+        type: STRING
+      - description: The locale of the OS, e.g. 'en'. This is `null` on failure.
+        mode: NULLABLE
+        name: locale
+        type: STRING
+      - description: The name of the OS, e.g. 'Windows_NT'. This is `null` on failure.
+        mode: NULLABLE
+        name: name
+        type: STRING
+      - description: The Windows service pack major version. This is Windows only.
+          `null` on failure.
+        mode: NULLABLE
+        name: service_pack_major
+        type: FLOAT
+      - description: The Windows service pack minor version. This is Windows only.
+          `null` on failure.
+        mode: NULLABLE
+        name: service_pack_minor
+        type: FLOAT
+      - description: The Windows build number. This is Windows only. `null` on failure.
+        mode: NULLABLE
+        name: windows_build_number
+        type: FLOAT
+      - description: The Windows UBR. This is Windows 10 only. `null` on failure.
+        mode: NULLABLE
+        name: windows_ubr
+        type: FLOAT
+      - description: The version of the OS, e.g. '6.1'. This is `null` on failure.
+        mode: NULLABLE
+        name: version
+        type: STRING
+      - description: Whether or not the OS-based prefetch application start-up optimization
+          is set. This is Windows-only. `null` on failure.
+        mode: NULLABLE
+        name: has_prefetch
+        type: BOOLEAN
+      - description: Whether or not the OS-based superfetch application start-up optimization
+          service is running and using the default settings. This is Windows-only.
+          `null` on failure.
+        mode: NULLABLE
+        name: has_superfetch
+        type: BOOLEAN
+      mode: NULLABLE
+      name: os
+      type: RECORD
+    - fields:
+      - description: The name of the registered antispyware software. Windows only.
+        mode: REPEATED
+        name: antispyware
+        type: STRING
+      - description: The name of the registered antivirus software. Windows only.
+        mode: REPEATED
+        name: antivirus
+        type: STRING
+      - description: The name of the registered firewall software. Windows only.
+        mode: REPEATED
+        name: firewall
+        type: STRING
+      mode: NULLABLE
+      name: sec
+      type: RECORD
+    - description: Total virtual memory size in MB. This is Windows only. `null` on
+        failure.
+      mode: NULLABLE
+      name: virtual_max_mb
+      type: FLOAT
+    - mode: NULLABLE
+      name: is_wow_arm64
+      type: BOOLEAN
+    - description: Is the process running with a package identity (e.g. from an MSIX
+        install)? See bug 1709892. This is Windows only.
+      mode: NULLABLE
+      name: has_win_package_id
+      type: BOOLEAN
+    - description: Windows package family name. This is only sent for Mozilla produced
+        MSIX packages.
+      mode: NULLABLE
+      name: win_package_family_name
+      type: STRING
+    mode: NULLABLE
+    name: system
+    type: RECORD
+  - fields:
+    - mode: NULLABLE
+      name: account_enabled
+      type: BOOLEAN
+    - mode: NULLABLE
+      name: sync_enabled
+      type: BOOLEAN
+    mode: NULLABLE
+    name: services
+    type: RECORD
+  mode: NULLABLE
+  name: environment
+  type: RECORD
+- mode: NULLABLE
+  name: id
+  type: STRING
+- fields:
+  - description: Results of a geographic lookup based on the client's IP address
+    fields:
+    - mode: NULLABLE
+      name: city
+      type: STRING
+    - description: An ISO 3166-1 alpha-2 country code
+      mode: NULLABLE
+      name: country
+      type: STRING
+    - description: The specific geo database version used for this lookup
+      mode: NULLABLE
+      name: db_version
+      type: STRING
+    - description: First major country subdivision, typically a state, province, or
+        county
+      mode: NULLABLE
+      name: subdivision1
+      type: STRING
+    - description: Second major country subdivision; not applicable for most countries
+      mode: NULLABLE
+      name: subdivision2
+      type: STRING
+    mode: NULLABLE
+    name: geo
+    type: RECORD
+  - description: Headers included in the client's HTTP request
+    fields:
+    - description: Date HTTP header
+      mode: NULLABLE
+      name: date
+      type: STRING
+    - description: DNT (Do Not Track) HTTP header
+      mode: NULLABLE
+      name: dnt
+      type: STRING
+    - description: X-Debug-Id HTTP header
+      mode: NULLABLE
+      name: x_debug_id
+      type: STRING
+    - description: X-PingSender-Version HTTP header
+      mode: NULLABLE
+      name: x_pingsender_version
+      type: STRING
+    - description: X-Source-Tags HTTP header
+      mode: NULLABLE
+      name: x_source_tags
+      type: STRING
+    - description: X-Telemetry-Agent HTTP header
+      mode: NULLABLE
+      name: x_telemetry_agent
+      type: STRING
+    - description: X-Foxsec-IP-Reputation header
+      mode: NULLABLE
+      name: x_foxsec_ip_reputation
+      type: STRING
+    - description: X-LB-Tags HTTP header
+      mode: NULLABLE
+      name: x_lb_tags
+      type: STRING
+    - mode: NULLABLE
+      name: parsed_date
+      type: TIMESTAMP
+    - mode: REPEATED
+      name: parsed_x_source_tags
+      type: STRING
+    - fields:
+      - mode: NULLABLE
+        name: tls_version
+        type: STRING
+      - mode: NULLABLE
+        name: tls_cipher_hex
+        type: STRING
+      mode: NULLABLE
+      name: parsed_x_lb_tags
+      type: RECORD
+    mode: NULLABLE
+    name: header
+    type: RECORD
+  - description: Components of the URI to which this ping was sent
+    fields:
+    - mode: NULLABLE
+      name: app_build_id
+      type: STRING
+    - mode: NULLABLE
+      name: app_name
+      type: STRING
+    - mode: NULLABLE
+      name: app_update_channel
+      type: STRING
+    - mode: NULLABLE
+      name: app_version
+      type: STRING
+    mode: NULLABLE
+    name: uri
+    type: RECORD
+  - description: Parsed components of the client's user agent string
+    fields:
+    - mode: NULLABLE
+      name: browser
+      type: STRING
+    - mode: NULLABLE
+      name: os
+      type: STRING
+    - mode: NULLABLE
+      name: version
+      type: STRING
+    mode: NULLABLE
+    name: user_agent
+    type: RECORD
+  - description: Results of ISP lookup based on the client's IP address
+    fields:
+    - description: The specific geo ISP database version used for this lookup
+      mode: NULLABLE
+      name: db_version
+      type: STRING
+    - description: The name of the ISP associated with the client's IP address
+      mode: NULLABLE
+      name: name
+      type: STRING
+    - description: The name of a specific business entity associated with the client's
+        IP address when available; otherwise the ISP name
+      mode: NULLABLE
+      name: organization
+      type: STRING
+    mode: NULLABLE
+    name: isp
+    type: RECORD
+  mode: NULLABLE
+  name: metadata
+  type: RECORD
+- description: Set to "Other" if this message contained an unrecognized app name
+  mode: NULLABLE
+  name: normalized_app_name
+  type: STRING
+- description: Set to "Other" if this message contained an unrecognized channel name
+  mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+- description: An ISO 3166-1 alpha-2 country code
+  mode: NULLABLE
+  name: normalized_country_code
+  type: STRING
+- description: Set to "Other" if this message contained an unrecognized OS name
+  mode: NULLABLE
+  name: normalized_os
+  type: STRING
+- mode: NULLABLE
+  name: normalized_os_version
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: lost_events_count
+    type: INTEGER
+  - mode: NULLABLE
+    name: process_start_timestamp
+    type: INTEGER
+  - mode: NULLABLE
+    name: reason
+    type: STRING
+  - mode: NULLABLE
+    name: session_id
+    type: STRING
+  - mode: NULLABLE
+    name: subsession_id
+    type: STRING
+  - fields:
+    - fields:
+      - mode: NULLABLE
+        name: f0_
+        type: INTEGER
+      - mode: NULLABLE
+        name: f1_
+        type: STRING
+      - mode: NULLABLE
+        name: f2_
+        type: STRING
+      - mode: NULLABLE
+        name: f3_
+        type: STRING
+      - mode: NULLABLE
+        name: f4_
+        type: STRING
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: STRING
+        mode: REPEATED
+        name: f5_
+        type: RECORD
+      mode: REPEATED
+      name: content
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: f0_
+        type: INTEGER
+      - mode: NULLABLE
+        name: f1_
+        type: STRING
+      - mode: NULLABLE
+        name: f2_
+        type: STRING
+      - mode: NULLABLE
+        name: f3_
+        type: STRING
+      - mode: NULLABLE
+        name: f4_
+        type: STRING
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: STRING
+        mode: REPEATED
+        name: f5_
+        type: RECORD
+      mode: REPEATED
+      name: dynamic
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: f0_
+        type: INTEGER
+      - mode: NULLABLE
+        name: f1_
+        type: STRING
+      - mode: NULLABLE
+        name: f2_
+        type: STRING
+      - mode: NULLABLE
+        name: f3_
+        type: STRING
+      - mode: NULLABLE
+        name: f4_
+        type: STRING
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: STRING
+        mode: REPEATED
+        name: f5_
+        type: RECORD
+      mode: REPEATED
+      name: extension
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: f0_
+        type: INTEGER
+      - mode: NULLABLE
+        name: f1_
+        type: STRING
+      - mode: NULLABLE
+        name: f2_
+        type: STRING
+      - mode: NULLABLE
+        name: f3_
+        type: STRING
+      - mode: NULLABLE
+        name: f4_
+        type: STRING
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: STRING
+        mode: REPEATED
+        name: f5_
+        type: RECORD
+      mode: REPEATED
+      name: gpu
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: f0_
+        type: INTEGER
+      - mode: NULLABLE
+        name: f1_
+        type: STRING
+      - mode: NULLABLE
+        name: f2_
+        type: STRING
+      - mode: NULLABLE
+        name: f3_
+        type: STRING
+      - mode: NULLABLE
+        name: f4_
+        type: STRING
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: STRING
+        mode: REPEATED
+        name: f5_
+        type: RECORD
+      mode: REPEATED
+      name: parent
+      type: RECORD
+    mode: NULLABLE
+    name: events
+    type: RECORD
+  mode: NULLABLE
+  name: payload
+  type: RECORD
+- description: Hashed version of client_id (if present) useful for partitioning; ranges
+    from 0 to 99
+  mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+- description: Time when the ingestion edge server accepted this message
+  mode: NULLABLE
+  name: submission_timestamp
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: type
+  type: STRING
+- mode: NULLABLE
+  name: version
+  type: FLOAT

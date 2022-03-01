@@ -1,0 +1,10 @@
+friendly_name: Lockwise Ios
+description: |-
+  Views on data from lockwise_ios
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

@@ -1,0 +1,10 @@
+friendly_name: org-mozilla-ios-focus
+description: |-
+  User-facing views related to document namespace org-mozilla-ios-focus; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/org-mozilla-ios-focus
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

@@ -1,0 +1,17 @@
+fields:
+- mode: NULLABLE
+  name: created
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: id
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: STRING
+  mode: REPEATED
+  name: metadata
+  type: RECORD

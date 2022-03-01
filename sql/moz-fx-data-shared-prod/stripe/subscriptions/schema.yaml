@@ -1,0 +1,57 @@
+fields:
+- mode: NULLABLE
+  name: created
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: cancel_at
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: cancel_at_period_end
+  type: BOOLEAN
+- mode: NULLABLE
+  name: canceled_at
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: customer
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: promotion_code
+    type: STRING
+  mode: NULLABLE
+  name: discount
+  type: RECORD
+- mode: NULLABLE
+  name: ended_at
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: event_timestamp
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: id
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: STRING
+  mode: REPEATED
+  name: metadata
+  type: RECORD
+- mode: NULLABLE
+  name: plan
+  type: STRING
+- mode: NULLABLE
+  name: product
+  type: STRING
+- mode: NULLABLE
+  name: start_date
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: status
+  type: STRING
+- mode: NULLABLE
+  name: trial_end
+  type: TIMESTAMP

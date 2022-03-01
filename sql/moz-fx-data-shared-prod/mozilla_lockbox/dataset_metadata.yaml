@@ -1,0 +1,10 @@
+friendly_name: mozilla-lockbox
+description: |-
+  User-facing views related to document namespace mozilla-lockbox; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/mozilla-lockbox
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

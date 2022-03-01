@@ -1,0 +1,10 @@
+friendly_name: mozphab
+description: |-
+  User-facing views related to document namespace mozphab; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/mozphab
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

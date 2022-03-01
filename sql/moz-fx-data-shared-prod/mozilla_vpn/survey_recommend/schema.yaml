@@ -1,0 +1,60 @@
+fields:
+- fields:
+  - mode: NULLABLE
+    name: answer_id
+    type: INTEGER
+  - mode: NULLABLE
+    name: answer
+    type: STRING
+  - mode: NULLABLE
+    name: original_answer
+    type: STRING
+  - mode: NULLABLE
+    name: question
+    type: STRING
+  - mode: NULLABLE
+    name: id
+    type: INTEGER
+  - mode: NULLABLE
+    name: section_id
+    type: INTEGER
+  - mode: NULLABLE
+    name: shown
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: type
+    type: STRING
+  - fields:
+    - mode: NULLABLE
+      name: id
+      type: INTEGER
+    - mode: NULLABLE
+      name: option
+      type: STRING
+    - mode: NULLABLE
+      name: answer
+      type: STRING
+    mode: REPEATED
+    name: options
+    type: RECORD
+  - mode: NULLABLE
+    name: subquestions
+    type: STRING
+  mode: REPEATED
+  name: survey_data
+  type: RECORD
+- mode: NULLABLE
+  name: response_time
+  type: INTEGER
+- mode: NULLABLE
+  name: session_id
+  type: STRING
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+- mode: NULLABLE
+  name: id
+  type: INTEGER
+- mode: NULLABLE
+  name: status
+  type: STRING

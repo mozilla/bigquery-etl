@@ -1,0 +1,10 @@
+friendly_name: glean-dictionary
+description: |-
+  User-facing views related to document namespace glean-dictionary; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/glean-dictionary
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

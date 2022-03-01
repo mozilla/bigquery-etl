@@ -1,0 +1,10 @@
+friendly_name: Klar Android
+description: |-
+  Views on data from klar_android
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

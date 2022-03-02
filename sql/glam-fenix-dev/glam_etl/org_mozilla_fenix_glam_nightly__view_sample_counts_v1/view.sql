@@ -12,6 +12,7 @@ WITH histogram_data AS (
     channel,
     h1.metric,
     h1.key,
+    h1.agg_type,
     h1.value
   FROM
     `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1`,
@@ -27,6 +28,7 @@ all_clients AS (
     channel,
     s1.metric,
     s1.key,
+    s1.agg_type,
     s1.value
   FROM
     `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1`,
@@ -43,6 +45,7 @@ all_clients AS (
     channel,
     metric,
     v1.key,
+    agg_type,
     v1.value
   FROM
     histogram_data,
@@ -87,8 +90,9 @@ SELECT
   app_version,
   app_build_id,
   channel,
-  key,
   metric,
+  key,
+  agg_type,
   SUM(value) AS total_sample
 FROM
   all_combos
@@ -99,4 +103,5 @@ GROUP BY
   app_build_id,
   channel,
   metric,
-  key
+  key,
+  agg_type

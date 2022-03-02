@@ -7,6 +7,7 @@ WITH histogram_data AS (
     metric,
     process,
     key,
+    h1.agg_type,
     h1.aggregates
   FROM
     telemetry_derived.clients_histogram_aggregates_v1,
@@ -34,6 +35,7 @@ SELECT
   metric,
   process,
   histogram_data.key,
+  agg_type,
   SUM(v1.value) AS total_sample
 FROM
   histogram_data,
@@ -45,7 +47,8 @@ GROUP BY
   channel,
   metric,
   process,
-  key
+  key,
+  agg_type
 UNION ALL
 SELECT
   '*' AS os,
@@ -55,6 +58,7 @@ SELECT
   metric,
   process,
   histogram_data.key,
+  agg_type,
   SUM(v1.value) AS total_sample
 FROM
   histogram_data,
@@ -65,7 +69,8 @@ GROUP BY
   channel,
   metric,
   process,
-  key
+  key,
+  agg_type
 UNION ALL
 SELECT
   os,
@@ -75,6 +80,7 @@ SELECT
   metric,
   process,
   histogram_data.key,
+  agg_type,
   SUM(v1.value) AS total_sample
 FROM
   histogram_data,
@@ -85,7 +91,8 @@ GROUP BY
   channel,
   metric,
   process,
-  key
+  key,
+  agg_type
 UNION ALL
 SELECT
   '*' AS os,
@@ -95,6 +102,7 @@ SELECT
   metric,
   process,
   histogram_data.key,
+  agg_type,
   SUM(v1.value) AS total_sample
 FROM
   histogram_data,
@@ -104,7 +112,8 @@ GROUP BY
   channel,
   metric,
   process,
-  key
+  key,
+  agg_type
 UNION ALL
 SELECT
   os,
@@ -114,6 +123,7 @@ SELECT
   metric,
   process,
   key,
+  agg_type,
   CASE
   WHEN
     agg_type IN ('count', 'true', 'false')
@@ -144,6 +154,7 @@ SELECT
   metric,
   process,
   key,
+  agg_type,
   CASE
   WHEN
     agg_type IN ('count', 'true', 'false')
@@ -173,6 +184,7 @@ SELECT
   metric,
   process,
   key,
+  agg_type,
   CASE
   WHEN
     agg_type IN ('count', 'true', 'false')
@@ -202,6 +214,7 @@ SELECT
   metric,
   process,
   key,
+  agg_type,
   CASE
   WHEN
     agg_type IN ('count', 'true', 'false')

@@ -24,44 +24,21 @@ INNER JOIN  `{{ dataset }}.{{ prefix }}__view_sample_counts_v1` sc
     cp.app_version IS NOT NULL
     AND cp.total_users > {{ total_users }}
     AND client_agg_type NOT IN ('sum', 'min', 'avg', 'max')
-),
-sample_counts_ranked AS (
-  SELECT
+)
+SELECT
     channel,
     app_version,
     ping_type,
     app_build_id,
     os,
     metric,
-    key,
-    client_agg_type,
-    total_sample,
-    ROW_NUMBER() OVER (
-      PARTITION BY
-        channel,
-        app_version,
-        app_build_id,
-        os,
-        metric,
-        key,
-        client_agg_type
-      ORDER BY
-        total_sample DESC
-    ) AS rnk
+    SUM(total_sample) as total_sample
   FROM
     sample_counts_filtered
-)
-SELECT
-  channel,
-  app_version,
-  ping_type,
-  app_build_id,
-  os,
-  metric,
-  key,
-  client_agg_type,
-  total_sample
-FROM
-  sample_counts_ranked
-WHERE
-  rnk = 1
+  GROUP BY 
+    channel,
+    app_version,
+    ping_type,
+    app_build_id,
+    os,
+    metric

@@ -108,7 +108,7 @@ flows AS (
     flow_id
   HAVING
     -- NOTE: flows near date boundaries may not meet this condition for all dates
-    "guardian-vpn" IN UNNEST(ARRAY_AGG(DISTINCT service))
+    LOGICAL_OR("guardian-vpn" = service)
 ),
 flow_counts AS (
   SELECT
@@ -206,7 +206,12 @@ SELECT
   pricing_plan,
   plan_name,
   rp_button_view AS vpn_site_hits,
-  mozfun.vpn.channel_group(utm_medium, utm_source, utm_campaign, utm_content) AS channel_group,
+  mozfun.vpn.channel_group(
+    utm_campaign => utm_campaign,
+    utm_content => utm_content,
+    utm_medium => utm_medium,
+    utm_source => utm_source
+  ) AS channel_group,
   pay_account_setup_view + existing_fxa_signedin_pay_setup_view AS total_acquisition_process_start,
   pay_setup_engage_with_uid + pay_setup_engage_without_uid AS total_payment_setup_engage,
   pay_setup_complete_without_uid + pay_setup_complete_with_uid AS total_payment_setup_complete,

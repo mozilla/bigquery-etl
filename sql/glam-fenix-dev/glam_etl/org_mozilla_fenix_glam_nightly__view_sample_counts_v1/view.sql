@@ -90,8 +90,9 @@ SELECT
   app_version,
   app_build_id,
   channel,
-  key,
   metric,
+  key,
+  agg_type,
   SUM(value) AS total_sample
 FROM
   all_combos

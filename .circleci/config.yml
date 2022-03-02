@@ -377,6 +377,8 @@ jobs:
               && git push \
               || echo "Skipping push since it looks like there were no changes"
             echo $?
+            pwd
+            ls -lh
             if [ -f ".git/index.lock" ]
             then
                echo "index.lock file found"

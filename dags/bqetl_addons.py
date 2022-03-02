@@ -39,7 +39,7 @@ tags = ["impact/tier_2", "repo/bigquery-etl"]
 with DAG(
     "bqetl_addons",
     default_args=default_args,
-    schedule_interval="0 4 * * *",
+    schedule_interval="1 4 * * *",
     doc_md=docs,
     tags=tags,
 ) as dag:

@@ -42,6 +42,7 @@ WITH _current AS (
     `{{ daily_table }}`
   WHERE
     submission_date = @submission_date
+    AND sample_id IS NOT NULL
 ),
   --
 _previous AS (
@@ -53,6 +54,7 @@ _previous AS (
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.
     AND udf.shift_28_bits_one_day(days_seen_bits) > 0
+    AND sample_id IS NOT NULL
 )
   --
 SELECT

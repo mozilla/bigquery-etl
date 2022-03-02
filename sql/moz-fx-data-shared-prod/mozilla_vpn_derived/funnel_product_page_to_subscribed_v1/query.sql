@@ -108,7 +108,7 @@ flows AS (
     flow_id
   HAVING
     -- NOTE: flows near date boundaries may not meet this condition for all dates
-    LOGICAL_OR("guardian-vpn" = service)
+    LOGICAL_OR(service = "guardian-vpn")
 ),
 flow_counts AS (
   SELECT

@@ -236,6 +236,10 @@ fields:
     mode: NULLABLE
     name: variation
     type: STRING
+  - description: Unique token created at Firefox download time, see bug 1757451
+    mode: NULLABLE
+    name: dltoken
+    type: STRING
   mode: NULLABLE
   name: attribution
   type: RECORD

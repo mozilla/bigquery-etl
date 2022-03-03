@@ -56,8 +56,23 @@ flows AS (
       service = "guardian-vpn"
       -- service is missing for these event types
       OR (
-        (service IS NULL OR service = "undefined_oauth")
-        AND (event_type = "fxa_rp_button - view" OR event_type LIKE "fxa_pay_%")
+        event_type = "fxa_rp_button - view"
+        AND (
+          (service IS NULL AND DATE(`timestamp`) <= "2021-12-08")
+          OR (
+            service = "undefined_oauth"
+            AND DATE(`timestamp`)
+            BETWEEN "2021-12-08"
+            AND "2022-01-06"
+          )
+        )
+      )
+      OR (
+        event_type LIKE "fxa_pay_%"
+        AND (
+          (service IS NULL AND DATE(`timestamp`) <= "2021-12-08")
+          OR (service = "undefined_oauth" AND DATE(`timestamp`) >= "2021-12-08")
+        )
       )
     )
     AND flow_id IS NOT NULL

@@ -102,13 +102,39 @@ flows AS (
   FROM
     mozdata.firefox_accounts.fxa_content_auth_stdout_events
   WHERE
-    IF(@date IS NULL, DATE(`timestamp`) < CURRENT_DATE, DATE(`timestamp`) = @date)
+    IF(
+      @date IS NULL,
+      DATE(`timestamp`) >= "2021-08-25"
+      AND DATE(`timestamp`) < CURRENT_DATE,
+      DATE(`timestamp`) = @date
+    )
   GROUP BY
     partition_date,
     flow_id
   HAVING
     -- NOTE: flows near date boundaries may not meet this condition for all dates
-    LOGICAL_OR(service = "guardian-vpn")
+    LOGICAL_OR(
+      service = "guardian-vpn"
+      OR (
+        event_type = "fxa_rp_button - view"
+        AND (
+          (service IS NULL AND DATE(`timestamp`) <= "2021-12-08")
+          OR (
+            service = "undefined_oauth"
+            AND DATE(`timestamp`)
+            BETWEEN "2021-12-08"
+            AND "2022-01-06"
+          )
+        )
+      )
+      OR (
+        event_type LIKE "fxa_pay_%"
+        AND (
+          (service IS NULL AND DATE(`timestamp`) <= "2021-12-08")
+          OR (service = "undefined_oauth" AND DATE(`timestamp`) >= "2021-12-08")
+        )
+      )
+    )
 ),
 flow_counts AS (
   SELECT

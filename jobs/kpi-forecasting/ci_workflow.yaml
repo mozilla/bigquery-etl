@@ -1,0 +1,12 @@
+job-kpi-forecasting:
+  jobs:
+    - build-job-kpi-forecasting
+    - gcp-gcr/build-and-push-image:
+        context: data-eng-airflow-gcr
+        path: jobs/example_job/
+        image: example_job_docker_etl
+        requires:
+          - build-job-example_job
+        filters:
+          branches:
+            only: main

@@ -1,0 +1,10 @@
+---
+target: mobile
+query_name: "mobile_dau.sql"
+forecast_parameters:
+  changepoint_prior_scale: 0.05
+  changepoint_range: 0.8
+  seasonality_prior_scale: 0.01
+columns:
+- submission_date
+- cdou

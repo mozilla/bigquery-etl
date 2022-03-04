@@ -1,0 +1,11 @@
+---
+target: desktop
+query_name: "source_for_gto_uri_and_active_ticks_forecast.sql"
+forecast_parameters:
+  changepoint_prior_scale: 0.05
+  changepoint_range: 0.8
+  seasonality_prior_scale: 0.01
+columns:
+- submission_date
+- uri_at_dau_cd
+- uri_dau_either_at

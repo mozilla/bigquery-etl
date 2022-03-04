@@ -290,6 +290,9 @@ event:
           unit_amount_decimal:
         proration:
         proration_details:
+          credited_items:
+            invoice:
+            invoice_line_items:
         quantity:
         subscription:
         subscription_item:

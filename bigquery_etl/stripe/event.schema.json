@@ -3221,7 +3221,24 @@
               },
               {
                 "name": "proration_details",
-                "type": "STRING"
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "credited_items",
+                    "type": "RECORD",
+                    "fields": [
+                      {
+                        "name": "invoice",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "invoice_line_items",
+                        "type": "STRING",
+                        "mode": "REPEATED"
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "name": "quantity",

@@ -15,7 +15,8 @@ def run_forecast(dataset: pd.DataFrame, config: dict) -> pd.DataFrame:
 
     target = config["target"]
 
-    fit_parameters = config["forecast_parameters"]
+    fit_parameters = config["forecast_parameters"].copy()  # you must force a copy here or it assigns a reference to
+    # the dictionary
     fit_parameters["holidays"] = holiday_df
     fit_parameters["growth"] = "flat"
 

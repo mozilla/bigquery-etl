@@ -12,3 +12,4 @@ plotly==4.9.0
 pyyaml==6.0
 holidays==0.13
 prophet==1.0.1
+pyarrow==7.0

@@ -4,41 +4,43 @@ import pandas as pd
 from google.cloud import bigquery, bigquery_storage_v1beta1, storage
 
 ROOT_DIR = Path(__file__).parent
-SQL_DIR = ROOT_DIR / "sql_queries"
+SQL_DIR = ROOT_DIR.parent / "sql_queries"
 
 
-def fetch_data(config_dict: dict):
-    target = config_dict["target"].lower()
+def fetch_data(config: dict):
+    target = config["target"].lower()
 
     valid_datasets = ["desktop", "mobile", "pocket"]
     assert (
         target in valid_datasets
     ), f"dataset must be one of desktop, mobile or pocket, you requested {target}"
 
-    query_name = SQL_DIR / config_dict["query_name"]
+    query_name = SQL_DIR / config["query_name"]
 
     with open(query_name, "r") as query_filestream:
         query = query_filestream.readlines()
     query = "".join(query)
 
-    # project = "moz-fx-data-shared-prod"
-    project = "moz-fx-data-bq-data-science"
+    project = "moz-fx-data-shared-prod"
+    # project = "moz-fx-data-bq-data-science"
     bq_client = bigquery.Client(project=project)
-    bq_storage_client = bigquery_storage_v1beta1.BigQueryStorageClient()
+    #bq_storage_client = bigquery_storage_v1beta1.BigQueryStorageClient()
 
     dataset = (
-        bq_client.query(query).result().to_dataframe(bqstorage_client=bq_storage_client)
+        bq_client.query(query).result().to_dataframe()#bqstorage_client=bq_storage_client)
     )
 
     if target == "desktop":
-        dataset = desktop_preprocessing(dataset, config_dict["columns"])
+        dataset = desktop_preprocessing(dataset, config["columns"])
         return dataset
+
+    dataset = dataset[dataset[config["columns"]]]
 
     renames = {"submission_date": "ds", "cdou": "y"}
 
     dataset.rename(columns=renames, inplace=True)
 
-    return dataset
+    return dataset, bq_client
 
 
 def desktop_preprocessing(dataset: pd.DataFrame, columns: list) -> pd.DataFrame:

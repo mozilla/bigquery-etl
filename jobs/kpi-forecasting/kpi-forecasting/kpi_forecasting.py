@@ -11,6 +11,7 @@ import yaml
 
 from Utils.ForecastDatasets import fetch_data
 from Utils.FitForecast import run_forecast
+from Utils.DBWriter import write_to_bigquery
 
 
 def get_args() -> argparse.Namespace:
@@ -23,12 +24,12 @@ def get_args() -> argparse.Namespace:
 
 def main() -> None:
     args = get_args()
-    with open(args.config, "r") as configstream:
-        config = yaml.safe_load(configstream)
+    with open(args.config, "r") as config_stream:
+        config = yaml.safe_load(config_stream)
 
-    dataset = fetch_data(config)
+    # dataset, bigquery_client = fetch_data(config)
 
-    print(dataset.head())
+    # print(dataset.head())
 
     import pandas as pd
     dataset = pd.read_csv("~/map-projects/kpi_accounting_21/Python/mobile_dau.csv", header=0)
@@ -37,10 +38,13 @@ def main() -> None:
     dataset.rename(columns=renames, inplace=True)
     dataset = dataset[["ds", "y"]]
 
-    predictions = run_forecast(dataset, config)
-    print(predictions.tail())
+    # print(config["forecast_parameters"])
 
-    # write_to_bigquery(predictions)
+    predictions = run_forecast(dataset, config)
+
+    # print(config["forecast_parameters"])
+
+    write_to_bigquery(predictions, config, None)# bigquery_client)
 
 
 if __name__ == "__main__":

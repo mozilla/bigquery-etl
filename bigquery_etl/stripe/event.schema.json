@@ -3220,6 +3220,10 @@
                 "type": "BOOLEAN"
               },
               {
+                "name": "proration_details",
+                "type": "STRING"
+              },
+              {
                 "name": "quantity",
                 "type": "INTEGER"
               },

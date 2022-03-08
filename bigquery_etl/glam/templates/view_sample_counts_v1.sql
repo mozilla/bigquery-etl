@@ -9,35 +9,56 @@ AS
 WITH histogram_data AS (
   SELECT
     client_id,
-    {{ attributes }}, 
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
     h1.metric,
     h1.key, 
     h1.value
   FROM
     `{{ project }}.{{ dataset }}.{{ prefix }}__clients_histogram_aggregates_v1`, UNNEST(histogram_aggregates) h1
-    ),
-all_clients AS (SELECT
+),
+scalars_histogram_data AS (
+  SELECT
     client_id,
-    {{ attributes }}, 
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
     s1.metric,
     s1.key,
     s1.value
   FROM
     `{{ project }}.{{ dataset }}.{{ prefix }}__clients_scalar_aggregates_v1`, UNNEST(scalar_aggregates) s1
-    WHERE s1.agg_type in ('count', 'false', 'true')
-  UNION ALL
+
+  UNION ALL 
+
   SELECT
     client_id,
-    {{ attributes }}, 
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
     metric,
     v1.key,
     v1.value
   FROM
-    histogram_data, UNNEST(value) v1
+    histogram_data,
+    UNNEST(value) v1
 ),
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 492749c63 (changes to extract probes counts to include total_sample column)
 {{
     enumerate_table_combinations(
-        "all_clients",
+        "scalars_histogram_data",
         "all_combos",
         cubed_attributes,
         attribute_combinations

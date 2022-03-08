@@ -15,7 +15,8 @@ WITH histogram_data AS (
     app_build_id,
     channel,
     h1.metric,
-    h1.key, 
+    h1.key,
+    h1.agg_type,
     h1.value
   FROM
     `{{ project }}.{{ dataset }}.{{ prefix }}__clients_histogram_aggregates_v1`, UNNEST(histogram_aggregates) h1
@@ -30,6 +31,7 @@ scalars_histogram_data AS (
     channel,
     s1.metric,
     s1.key,
+    agg_type,
     s1.value
   FROM
     `{{ project }}.{{ dataset }}.{{ prefix }}__clients_scalar_aggregates_v1`, UNNEST(scalar_aggregates) s1
@@ -45,17 +47,12 @@ scalars_histogram_data AS (
     channel,
     metric,
     v1.key,
+    agg_type,
     v1.value
   FROM
     histogram_data,
     UNNEST(value) v1
 ),
-<<<<<<< HEAD
-=======
-
-
-
->>>>>>> 492749c63 (changes to extract probes counts to include total_sample column)
 {{
     enumerate_table_combinations(
         "scalars_histogram_data",
@@ -68,10 +65,12 @@ SELECT
     {{ attributes }},
     key, 
     metric,
+    agg_type,
     SUM(value) as total_sample
 FROM
     all_combos
 GROUP BY
     {{ attributes }}, 
     metric, 
-    key
+    key,
+    agg_type

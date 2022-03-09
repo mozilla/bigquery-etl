@@ -8,4 +8,9 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_subplat
-  date_partition_parameter: date
+  # delay aggregates by 7 days, to ensure data is complete
+  date_partition_parameter: null
+  destination_table:
+    "subscription_events_v1${{macros.ds_add(ds, -7)|ds_nodash}}"
+  parameters:
+    - "date:DATE:{{macros.ds_add(ds, -7)}}"

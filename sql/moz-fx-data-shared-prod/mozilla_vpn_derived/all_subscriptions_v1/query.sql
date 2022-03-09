@@ -20,7 +20,6 @@ WITH stripe_subscriptions AS (
     cancel_at,
     cancel_at_period_end,
     ended_at,
-    COALESCE(ended_at, TIMESTAMP(CURRENT_DATE)) AS end_date,
     discount.promotion_code AS promotion_code_id,
   FROM
     mozdata.stripe.subscriptions
@@ -153,8 +152,7 @@ fxa_subscriptions AS (
     canceled_for_customer_at,
     cancel_at,
     cancel_at_period_end,
-    ended_at,
-    end_date,
+    IF(ended_at < TIMESTAMP(CURRENT_DATE), ended_at, NULL) AS ended_at,
     fxa_uid,
     country,
     country_name,
@@ -243,7 +241,6 @@ apple_iap_subscriptions AS (
     CAST(NULL AS TIMESTAMP) AS cancel_at,
     CAST(NULL AS BOOL) AS cancel_at_period_end,
     IF(end_time < TIMESTAMP(CURRENT_DATE), end_time, NULL) AS ended_at,
-    LEAST(end_time, TIMESTAMP(CURRENT_DATE)) AS end_date,
     fxa_uid,
     CAST(NULL AS STRING) AS country,
     CAST(NULL AS STRING) AS country_name,
@@ -427,12 +424,9 @@ android_iap_subscriptions AS (
     IF(
       in_billing_grace_period,
       -- android subscriptions in grace period have not ended
-      STRUCT(CAST(NULL AS TIMESTAMP) AS ended_at, TIMESTAMP(CURRENT_DATE) AS end_date),
-      STRUCT(
-        IF(end_time < TIMESTAMP(CURRENT_DATE), end_time, NULL) AS ended_at,
-        LEAST(end_time, TIMESTAMP(CURRENT_DATE)) AS end_date
-      )
-    ).*,
+      CAST(NULL AS TIMESTAMP),
+      IF(end_time < TIMESTAMP(CURRENT_DATE), end_time, CAST(NULL AS TIMESTAMP))
+    ) AS ended_at,
     fxa_uid,
     country,
     country_name,
@@ -494,6 +488,13 @@ vpn_subscriptions AS (
     *
   FROM
     android_iap_subscriptions
+),
+vpn_subscriptions_with_end_date AS (
+  SELECT
+    *,
+    COALESCE(ended_at, TIMESTAMP(CURRENT_DATE)) AS end_date,
+  FROM
+    vpn_subscriptions
 )
 SELECT
   *,
@@ -516,7 +517,7 @@ SELECT
     inclusive => FALSE
   ) AS current_months_since_subscription_start,
 FROM
-  vpn_subscriptions
+  vpn_subscriptions_with_end_date
 WHERE
   -- exclude subscriptions that never left the trial period
   DATE(subscription_start_date) < DATE(end_date)

@@ -47,13 +47,14 @@ with DAG(
 
     mozilla_vpn_derived__active_subscriptions__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__active_subscriptions__v1",
-        destination_table="active_subscriptions_v1",
+        destination_table="active_subscriptions_v1${{macros.ds_add(ds, -7)|ds_nodash}}",
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
         dag=dag,
     )
 
@@ -202,13 +203,14 @@ with DAG(
 
     mozilla_vpn_derived__subscription_events__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__subscription_events__v1",
-        destination_table="subscription_events_v1",
+        destination_table="subscription_events_v1${{macros.ds_add(ds, -7)|ds_nodash}}",
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
         dag=dag,
     )
 

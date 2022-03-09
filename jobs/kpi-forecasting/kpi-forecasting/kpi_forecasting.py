@@ -27,24 +27,13 @@ def main() -> None:
     with open(args.config, "r") as config_stream:
         config = yaml.safe_load(config_stream)
 
-    # dataset, bigquery_client = fetch_data(config)
-
-    # print(dataset.head())
-
-    import pandas as pd
-    dataset = pd.read_csv("~/map-projects/kpi_accounting_21/Python/mobile_dau.csv", header=0)
-    renames = {"submission_date": "ds", "cdou": "y"}
-
-    dataset.rename(columns=renames, inplace=True)
-    dataset = dataset[["ds", "y"]]
-
-    # print(config["forecast_parameters"])
+    dataset, _ = fetch_data(config)
 
     predictions = run_forecast(dataset, config)
 
-    # print(config["forecast_parameters"])
-
-    write_to_bigquery(predictions, config, None)# bigquery_client)
+    write_to_bigquery(
+        predictions, config, None
+    )  # None here is potentially a bigquery_client IFF your input and output datasets share the same project
 
 
 if __name__ == "__main__":

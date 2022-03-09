@@ -1,6 +1,8 @@
 ---
 target: desktop
-query_name: "source_for_gto_uri_and_active_ticks_forecast.sql"
+query_name: "desktop_dau.sql"
+dataset_project: "mozdata"
+forecast_variable: "QDOU"
 forecast_parameters:
   changepoint_prior_scale: 0.05
   changepoint_range: 0.8
@@ -9,3 +11,5 @@ columns:
 - submission_date
 - uri_at_dau_cd
 - uri_dau_either_at
+write_project: "moz-fx-data-bq-data-science"
+output_table: "pmcmanis.automation_experiment"

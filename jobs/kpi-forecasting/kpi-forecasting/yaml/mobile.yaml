@@ -1,6 +1,8 @@
 ---
 target: mobile
 query_name: "mobile_dau.sql"
+dataset_project: "mozdata"
+forecast_variable: "CDOU"
 forecast_parameters:
   changepoint_prior_scale: 0.05
   changepoint_range: 0.8
@@ -8,3 +10,5 @@ forecast_parameters:
 columns:
 - submission_date
 - cdou
+write_project: "moz-fx-data-bq-data-science"
+output_table: "pmcmanis.automation_experiment"

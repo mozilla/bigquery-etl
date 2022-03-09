@@ -15,7 +15,9 @@ def run_forecast(dataset: pd.DataFrame, config: dict) -> pd.DataFrame:
 
     target = config["target"]
 
-    fit_parameters = config["forecast_parameters"].copy()  # you must force a copy here or it assigns a reference to
+    fit_parameters = config[
+        "forecast_parameters"
+    ].copy()  # you must force a copy here or it assigns a reference to
     # the dictionary
     fit_parameters["holidays"] = holiday_df
     fit_parameters["growth"] = "flat"
@@ -26,8 +28,9 @@ def run_forecast(dataset: pd.DataFrame, config: dict) -> pd.DataFrame:
         model.add_regressor(name="regressor_00")
 
     elif target == "mobile":
+        step_change_date = datetime.strptime("2021-1-24", "%Y-%m-%d").date()
         dataset["regressor_00"] = dataset.apply(
-            lambda x: 0 if x["ds"] <= "2021-1-24" else 1, axis=1
+            lambda x: 0 if x["ds"] <= step_change_date else 1, axis=1
         )  # because of a step change in the data mobile data needs this thumb on the scale
 
         model.add_regressor(name="regressor_00")
@@ -47,8 +50,10 @@ def run_forecast(dataset: pd.DataFrame, config: dict) -> pd.DataFrame:
 
 
 def remaining_days(max_day) -> int:
-    parts = [int(part) for part in max_day.split("-")]
-    max_day = datetime(year=parts[0], month=parts[1], day=parts[2])
-    end_of_year = datetime(year=max_day.year, month=12, day=31)
+    if type(max_day) == str:
+        parts = [int(part) for part in max_day.split("-")]
+        max_day = datetime(year=parts[0], month=parts[1], day=parts[2])
+
+    end_of_year = datetime(year=max_day.year, month=12, day=31).date()
 
     return (end_of_year - max_day).days

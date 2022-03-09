@@ -1,3 +1,4 @@
+import datetime
 from pathlib import Path
 
 import pandas as pd
@@ -21,20 +22,16 @@ def fetch_data(config: dict):
         query = query_filestream.readlines()
     query = "".join(query)
 
-    project = "moz-fx-data-shared-prod"
-    # project = "moz-fx-data-bq-data-science"
+    project = config["dataset_project"]
     bq_client = bigquery.Client(project=project)
-    #bq_storage_client = bigquery_storage_v1beta1.BigQueryStorageClient()
 
-    dataset = (
-        bq_client.query(query).result().to_dataframe()#bqstorage_client=bq_storage_client)
-    )
+    dataset = bq_client.query(query).result().to_dataframe()
 
     if target == "desktop":
         dataset = desktop_preprocessing(dataset, config["columns"])
         return dataset
 
-    dataset = dataset[dataset[config["columns"]]]
+    dataset = dataset[config["columns"]]
 
     renames = {"submission_date": "ds", "cdou": "y"}
 
@@ -47,20 +44,24 @@ def desktop_preprocessing(dataset: pd.DataFrame, columns: list) -> pd.DataFrame:
     dataset = dataset[columns]
     dataset.sort_values(by=["submission_date"], inplace=True)
 
-    second_half_2021 = dataset[dataset["submission_date"] >= "2021-07-01"]
-    second_half_2021["cdou"] = second_half_2021["uri_dau_either_at"].cumsum()
-    dataset = dataset[dataset["submission_date"] < "2021-07-01"]
+    submission_date_type = dataset["submission_date"].dtype
+    if submission_date_type == str:
+        changepoint_date = "2020-12-18"
+    elif submission_date_type == datetime.datetime:
+        changepoint_date = datetime.datetime.strptime("2020-12-18", "%Y-%m-%d")
+    else:
+        changepoint_date = datetime.datetime.strptime("2020-12-18", "%Y-%m-%d").date()
 
     dataset["difference"] = dataset["uri_dau_either_at"] - dataset["uri_at_dau_cd"]
 
     dataset["concat"] = dataset.apply(
         lambda x: x["uri_at_dau_cd"]
-        if x["submission_date"] < "2020-12-18"
+        if x["submission_date"] < changepoint_date
         else x["uri_dau_either_at"],
         axis=1,
     )
     dataset["regressor_00"] = dataset.apply(
-        lambda x: 0 if x["submission_date"] < "2020-12-18" else 1, axis=1
+        lambda x: 0 if x["submission_date"] < changepoint_date else 1, axis=1
     )
 
     dataset = dataset[["submission_date", "concat", "regressor_00"]]

@@ -6,9 +6,15 @@ import pandas as pd
 from google.cloud import bigquery, client
 
 
-def write_to_bigquery(predictions: pd.DataFrame, config: dict, client: client) -> None:
-    project = "moz-fx-data-bq-data-science"
-    bq_client = bigquery.Client(project=project)
+def write_to_bigquery(
+    predictions: pd.DataFrame, config: dict, client: client = None
+) -> None:
+
+    project = config["write_project"]
+    if client is None:
+        bq_client = bigquery.Client(project=project)
+    else:
+        bq_client = client
 
     today = str(date.today())
     forecast_parameters = json.dumps(config["forecast_parameters"])
@@ -17,7 +23,7 @@ def write_to_bigquery(predictions: pd.DataFrame, config: dict, client: client) -
     predictions["forecast_date"] = today
     predictions["forecast_parameters"] = str(forecast_parameters)
 
-    output_table = "pmcmanis.automation_experiment"
+    output_table = config["output_table"]
 
     job_config = bigquery.LoadJobConfig(
         schema=[
@@ -62,8 +68,12 @@ def write_to_bigquery(predictions: pd.DataFrame, config: dict, client: client) -
         ]
     ]
 
+    predictions["metric"] = config["forecase_variable"]
+
     database_job = bq_client.load_table_from_dataframe(
         predictions, output_table, job_config=job_config
     )
 
-    database_job.result()
+    result = database_job.result()
+
+    return result

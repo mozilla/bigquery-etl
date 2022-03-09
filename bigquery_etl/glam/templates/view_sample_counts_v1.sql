@@ -53,6 +53,7 @@ scalars_histogram_data AS (
     histogram_data,
     UNNEST(value) v1
 ),
+
 {{
     enumerate_table_combinations(
         "scalars_histogram_data",
@@ -63,8 +64,8 @@ scalars_histogram_data AS (
 }}
 SELECT
     {{ attributes }},
-    key, 
-    metric,
+    metric, 
+    key,
     agg_type,
     SUM(value) as total_sample
 FROM

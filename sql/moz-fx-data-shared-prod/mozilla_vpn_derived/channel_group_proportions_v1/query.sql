@@ -33,7 +33,12 @@ WITH stage_1 AS (
 stage_2 AS (
   SELECT
     *,
-    mozfun.vpn.channel_group(utm_campaign, utm_content, utm_medium, utm_source) AS channel_group,
+    mozfun.vpn.channel_group(
+      utm_campaign => utm_campaign,
+      utm_content => utm_content,
+      utm_medium => utm_medium,
+      utm_source => utm_source
+    ) AS channel_group,
     SUM(new_subscriptions) OVER (
       PARTITION BY
         subscription_start_date

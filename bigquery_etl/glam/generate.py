@@ -291,7 +291,6 @@ def main():
         view("view_user_counts_v1", **models.user_counts()),
         view("view_sample_counts_v1", **models.sample_counts()),
         table("extract_user_counts_v1", **config[args.prefix]),
-        table("extract_sample_counts_v1", **config[args.prefix]),
         table("extract_probe_counts_v1", **config[args.prefix]),
     ]
 

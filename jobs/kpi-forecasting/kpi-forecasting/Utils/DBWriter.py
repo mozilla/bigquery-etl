@@ -16,6 +16,7 @@ def write_to_bigquery(
         bq_client = client
 
     today = str(date.today())
+    config["forecast_parameters"]["holidays"] = config["holidays"]
     forecast_parameters = json.dumps(config["forecast_parameters"])
 
     predictions["target"] = config["target"]
@@ -30,6 +31,12 @@ def write_to_bigquery(
             bigquery.SchemaField("forecast_parameters", "STRING"),
         ]
     )
+
+    holiday_columns = ['holidays', 'holidays_lower', 'holidays_upper']
+
+    for column in holiday_columns:
+        if column not in predictions.columns:
+            predictions[column] = 0.0
 
     predictions = predictions[
         [

@@ -40,6 +40,8 @@ For consistency, keys are lowercased
 * write_project: project that results will be written too, e.g. moz-fx-data-bq-data-science
 * output_table: table to write results to, if testing consider something like {your-name}.automation_experiment
 * forecast_variable: the variable you are actually forecasting, e.g. QDOU or DAU
+* holidays: boolean - include holidays (if set to False holidays will always show zero, but the columns will still exist)
+* stop_date: date to stop the forecast at
 
 ## Development
 

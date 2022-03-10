@@ -8,18 +8,19 @@ import holidays
 
 
 def run_forecast(dataset: pd.DataFrame, config: dict) -> pd.DataFrame:
-    holiday_df = pd.DataFrame.from_dict(
-        holidays.US(years=[2017, 2018, 2019, 2020, 2021]).items()
-    )  # type: pd.DataFrame
-    holiday_df.rename({0: "ds", 1: "holiday"}, inplace=True, axis=1)
-
     target = config["target"]
 
     fit_parameters = config[
         "forecast_parameters"
     ].copy()  # you must force a copy here or it assigns a reference to
     # the dictionary
-    fit_parameters["holidays"] = holiday_df
+
+    if config["holidays"]:
+        holiday_df = pd.DataFrame.from_dict(
+            holidays.US(years=[2017, 2018, 2019, 2020, 2021]).items()
+        )  # type: pd.DataFrame
+        holiday_df.rename({0: "ds", 1: "holiday"}, inplace=True, axis=1)
+        fit_parameters["holidays"] = holiday_df
     fit_parameters["growth"] = "flat"
 
     model = prophet.Prophet(**fit_parameters)
@@ -39,21 +40,25 @@ def run_forecast(dataset: pd.DataFrame, config: dict) -> pd.DataFrame:
 
     predictions = fit_model.predict()  # type: pd.DataFrame
 
-    periods = remaining_days(dataset["ds"].max())
+    periods = remaining_days(dataset["ds"].max(), config["stop_date"])
 
     future = fit_model.make_future_dataframe(periods=periods)  # type: pd.DataFrame
 
     future["regressor_00"] = 1
     future_values = fit_model.predict(future)
 
+    future_values = future_values[future_values["ds"] < datetime.today()]
+
     return future_values
 
 
-def remaining_days(max_day) -> int:
+def remaining_days(max_day, end_date) -> int:
     if type(max_day) == str:
         parts = [int(part) for part in max_day.split("-")]
-        max_day = datetime(year=parts[0], month=parts[1], day=parts[2])
+        max_day = datetime(year=parts[0], month=parts[1], day=parts[2]).date()
 
-    end_of_year = datetime(year=max_day.year, month=12, day=31).date()
+    if type(end_date) == str:
+        parts = [int(part) for part in end_date.split("-")]
+        end_date = datetime(year=parts[0], month=parts[1], day=parts[2]).date()
 
-    return (end_of_year - max_day).days
+    return (end_date - max_day).days

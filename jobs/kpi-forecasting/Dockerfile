@@ -1,4 +1,4 @@
-FROM python:3.8
+FROM python:3.7
 MAINTAINER REPLACE ME <replaceme@mozilla.com>
 
 # https://github.com/mozilla-services/Dockerflow/blob/master/docs/building-container.md
@@ -12,7 +12,13 @@ RUN groupadd --gid ${USER_ID} ${GROUP_ID} && \
 
 WORKDIR ${HOME}
 
+RUN apt install gcc
+RUN apt install g++
+
 RUN pip install --upgrade pip
+
+RUN pip install pystan==2.19.1.1
+RUN python3 -m pip install prophet --no-cache-dir
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt

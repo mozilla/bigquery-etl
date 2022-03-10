@@ -54,7 +54,6 @@ pathspec==0.8.1
 Pillow==9.0.1
 plotly==4.9.0
 pluggy==0.13.1
-prophet==1.0.1
 protobuf==3.19.4
 py==1.10.0
 pyarrow==7.0.0
@@ -67,7 +66,6 @@ pyflakes==2.2.0
 PyMeeus==0.5.11
 PyNaCl==1.5.0
 pyparsing==2.4.7
-pystan==2.19.1.1
 pytest==6.0.2
 pytest-black==0.3.11
 pytest-flake8==1.0.6

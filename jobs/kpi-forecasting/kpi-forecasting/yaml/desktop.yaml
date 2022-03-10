@@ -13,3 +13,5 @@ columns:
 - uri_dau_either_at
 write_project: "moz-fx-data-bq-data-science"
 output_table: "pmcmanis.automation_experiment"
+stop_date: "2023-12-31"
+holidays: True

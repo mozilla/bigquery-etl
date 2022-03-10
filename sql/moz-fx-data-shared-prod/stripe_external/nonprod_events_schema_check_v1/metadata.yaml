@@ -1,0 +1,19 @@
+---
+friendly_name: Non-Prod Stripe Events Schema Check
+description: >
+  Check for unexpected fields in non-prod events from the Stripe API.
+owners:
+  - dthorn@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  retry_delay: 5m
+  arguments:
+    - --date={{ ds }}
+    - --api-key={{ var.value.nonprod_stripe_api_key }}
+    - --resource=Event
+    - --format-resources
+    - --strict-schema
+    - --quiet

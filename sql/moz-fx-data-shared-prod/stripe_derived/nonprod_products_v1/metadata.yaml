@@ -1,5 +1,6 @@
-friendly_name: Stripe Customers
-description: Stripe Customers as of UTC midnight.
+---
+friendly_name: Non-Prod Stripe Products
+description: Non-Prod Stripe Products as of UTC midnight. See bug 1667889.
 owners:
   - dthorn@mozilla.com
 labels:

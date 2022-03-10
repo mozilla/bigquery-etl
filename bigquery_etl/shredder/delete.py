@@ -223,7 +223,7 @@ def delete_from_partition(
                   `{sql_table_id(target)}`
                 WHERE
                   ({field_condition})
-                  AND {partition.condition}
+                  AND ({partition.condition})
                 """
             )
         else:
@@ -249,6 +249,18 @@ def delete_from_partition(
                 f"_source_{index} IS NULL" for index, _ in enumerate(sources)
             )
 
+            if partition.id is None:
+                condition = f"""
+                (
+                  ({partition.condition}) IS NOT TRUE
+                  OR ({field_conditions})
+                )
+                """
+                if partition.required_partition_filter:
+                    condition += f" AND ({partition.required_partition_filter})"
+            else:
+                condition = f"({field_conditions}) AND ({partition.condition})"
+
             query = reformat(
                 f"""
                 SELECT
@@ -257,8 +269,7 @@ def delete_from_partition(
                   `{sql_table_id(target)}` AS _target
                 {field_joins}
                 WHERE
-                  ({field_conditions})
-                  AND {partition.condition}
+                  {condition}
                 """
             )
         run_tense = "Would run" if dry_run else "Running"
@@ -285,13 +296,24 @@ class Partition:
     condition: str
     id: Optional[str] = None
     is_special: bool = False
+    required_partition_filter: Optional[str] = None
 
 
 def get_partition(table, partition_expr, end_date, id_=None) -> Optional[Partition]:
     """Return a Partition for id_ unless it is a date on or after end_date."""
     if id_ is None:
         if table.time_partitioning:
-            return Partition(condition=f"{partition_expr} < '{end_date}'")
+            return Partition(
+                condition=f"{partition_expr} < '{end_date}'",
+                required_partition_filter=(
+                    # explicitly select all partitions
+                    f"{partition_expr} IS NULL"
+                    f" OR {partition_expr} < CURRENT_DATE"
+                    f" OR {partition_expr} >= CURRENT_DATE"
+                )
+                if table.require_partition_filter
+                else None,
+            )
         return Partition(condition="TRUE")
     if id_ == NULL_PARTITION_ID:
         if table.time_partitioning:

@@ -7,9 +7,8 @@ from google.cloud import bigquery, client
 
 
 def write_to_bigquery(
-    predictions: pd.DataFrame, config: dict, client: client = None
+        predictions: pd.DataFrame, config: dict, client: client = None
 ) -> None:
-
     project = config["write_project"]
     if client is None:
         bq_client = bigquery.Client(project=project)
@@ -68,7 +67,7 @@ def write_to_bigquery(
         ]
     ]
 
-    predictions["metric"] = config["forecase_variable"]
+    predictions = predictions.assign(metric=config["forecast_variable"])
 
     database_job = bq_client.load_table_from_dataframe(
         predictions, output_table, job_config=job_config

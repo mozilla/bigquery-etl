@@ -27,6 +27,10 @@ def fetch_data(config: dict):
 
     dataset = bq_client.query(query).result().to_dataframe()
 
+    dataset["submission_date"] = dataset["submission_date"].apply(
+        consistent_date_formatter
+    )
+
     if target == "desktop":
         dataset = desktop_preprocessing(dataset, config["columns"])
         return dataset
@@ -37,20 +41,14 @@ def fetch_data(config: dict):
 
     dataset.rename(columns=renames, inplace=True)
 
-    return dataset, bq_client
+    return dataset
 
 
 def desktop_preprocessing(dataset: pd.DataFrame, columns: list) -> pd.DataFrame:
     dataset = dataset[columns]
     dataset.sort_values(by=["submission_date"], inplace=True)
 
-    submission_date_type = dataset["submission_date"].dtype
-    if submission_date_type == str:
-        changepoint_date = "2020-12-18"
-    elif submission_date_type == datetime.datetime:
-        changepoint_date = datetime.datetime.strptime("2020-12-18", "%Y-%m-%d")
-    else:
-        changepoint_date = datetime.datetime.strptime("2020-12-18", "%Y-%m-%d").date()
+    changepoint_date = datetime.datetime.strptime("2020-12-18", "%Y-%m-%d").date()
 
     dataset["difference"] = dataset["uri_dau_either_at"] - dataset["uri_at_dau_cd"]
 
@@ -71,3 +69,13 @@ def desktop_preprocessing(dataset: pd.DataFrame, columns: list) -> pd.DataFrame:
     dataset.rename(columns=renames, inplace=True)
 
     return dataset
+
+
+def consistent_date_formatter(input_date):
+    input_data_type = type(input_date)
+    if input_data_type == str:
+        return datetime.datetime.strptime(input_date, "%Y-%m-%d")
+    elif input_data_type == datetime.datetime:
+        return input_date.date()
+    elif input_data_type == datetime.date:
+        return input_date

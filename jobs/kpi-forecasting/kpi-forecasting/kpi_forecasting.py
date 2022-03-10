@@ -27,13 +27,11 @@ def main() -> None:
     with open(args.config, "r") as config_stream:
         config = yaml.safe_load(config_stream)
 
-    dataset, _ = fetch_data(config)
+    dataset = fetch_data(config)
 
     predictions = run_forecast(dataset, config)
 
-    write_to_bigquery(
-        predictions, config, None
-    )  # None here is potentially a bigquery_client IFF your input and output datasets share the same project
+    write_to_bigquery(predictions, config)
 
 
 if __name__ == "__main__":

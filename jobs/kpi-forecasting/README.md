@@ -37,14 +37,8 @@ For consistency, keys are lowercased
 
 ## Development
 
-Run tests with:
+Run manually with:
 
-```sh
-pytest
 ```
-
-`flake8` and `black` are included for code linting and formatting:
-
-```sh
-pytest --black --flake8
+python kpi_forecasting.py -c yaml/{desired platform}.yaml 
 ```

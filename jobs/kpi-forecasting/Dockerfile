@@ -12,6 +12,11 @@ RUN groupadd --gid ${USER_ID} ${GROUP_ID} && \
 
 WORKDIR ${HOME}
 
+RUN pip install --upgrade pip
+
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
 COPY . .
 
 # Drop root and change ownership of the application folder to the user

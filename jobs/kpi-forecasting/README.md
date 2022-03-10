@@ -1,7 +1,7 @@
 # Desktop, Mobile and Pocket KPI Forecast Automation
 
 This job contains scripts for projecting year-end KPI values for Desktop 
-QCDOU, Mobile CDOU and Pocket () [ProtoDash](https://github.com/mozilla/protodash).
+QCDOU, Mobile CDOU and Pocket ().
 
 ## Usage
 
@@ -18,27 +18,32 @@ To run locally, install dependencies with:
 pip install -r requirements.txt
 ```
 
-Run the desktop/mobile scripts with: 
+Run the desktop/mobile/pocket scripts with: 
 
 ```sh   
-python3 -m mobile_mau.mobile_mau --project=test-project --bucket-name=test-bucket
+python kpi_forecasting.py -c yaml/desktop.yaml
 
-python3 -m desktop_mau.desktop_mau_dau --project=test-project --bucket-name=test-bucket
+python kpi_forecasting.py -c yaml/mobile.yaml
+
+(TODO) python kpi_forecasting.py -c yaml/pocket.yaml
 ```
 
 ### YAML Configs
 
 For consistency, keys are lowercased
 
-* target - platform you wish to run, current accepted values are 'desktop', 'mobile' and 'pocket'
-* query_name - the name of the .sql file in the sql_queries folder to use to pull data from
-* columns - will cut down query to only the columns included in this list. Rather than try to be so supremely flexible that it ends up making more work down the road to comply to an API spec, this repo is set up to handle the desktop, mobile and pocket scripts as they currently exist. If you wish to add a new forecast, model it after Mobile
-* forecast_parameters - model fit parameters, must conform to prophet API spec
+* target: platform you wish to run, current accepted values are 'desktop', 'mobile' and 'pocket'
+* query_name: the name of the .sql file in the sql_queries folder to use to pull data from
+* columns: will cut down query to only the columns included in this list. Rather than try to be so supremely flexible that it ends up making more work down the road to comply to an API spec, this repo is set up to handle the desktop, mobile and pocket scripts as they currently exist. If you wish to add a new forecast, model it after Mobile
+* forecast_parameters: model fit parameters, must conform to prophet API spec
+* dataset_project: the project to use for pulling data from, e.g. mozdata
+* write_project: project that results will be written too, e.g. moz-fx-data-bq-data-science
+* output_table: table to write results to, if testing consider something like {your-name}.automation_experiment
+* forecast_variable: the variable you are actually forecasting, e.g. QDOU or DAU
 
 ## Development
 
-Run manually with:
-
-```
-python kpi_forecasting.py -c yaml/{desired platform}.yaml 
-```
+./kpi_forecasting.py is the main control script
+/Utils contains the bulk of the python code
+/yaml contains configuration yaml files
+/sql_queries contains the queries to pull data from bigquery

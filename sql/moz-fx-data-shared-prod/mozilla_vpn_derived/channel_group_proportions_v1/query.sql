@@ -11,6 +11,7 @@ WITH stage_1 AS (
     entrypoint_variation,
     pricing_plan,
     provider,
+    promotion_codes,
     SUM(`count`) AS new_subscriptions,
   FROM
     `moz-fx-data-shared-prod`.mozilla_vpn_derived.subscription_events_v1
@@ -28,7 +29,8 @@ WITH stage_1 AS (
     entrypoint_experiment,
     entrypoint_variation,
     pricing_plan,
-    provider
+    provider,
+    promotion_codes
 ),
 stage_2 AS (
   SELECT

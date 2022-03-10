@@ -45,3 +45,7 @@ fields:
 - mode: NULLABLE
   name: channel_group_percent_of_total_for_date
   type: FLOAT
+- mode: REPEATED
+  name: promotion_codes
+  type: STRING
+  

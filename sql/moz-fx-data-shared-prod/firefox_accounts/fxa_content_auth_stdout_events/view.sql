@@ -122,6 +122,6 @@ SELECT
   REPLACE(JSON_EXTRACT(event_properties, '$.email_version'), "\"", "") AS email_version,
   REPLACE(JSON_EXTRACT(event_properties, '$.plan_id'), "\"", "") AS plan_id,
   REPLACE(JSON_EXTRACT(event_properties, '$.product_id'), "\"", "") AS product_id,
-  REPLACE(JSON_EXTRACT(event_properties, '$.promotionCode'), """, "") AS promotion_codes
+  REPLACE(JSON_EXTRACT(event_properties, '$.promotionCode'), """, "") AS promotion_code,
 FROM
   unioned

@@ -959,6 +959,20 @@ fields:
       mode: NULLABLE
       name: power_gpu_time_bogus_values
       type: INTEGER
+    - description: 'A counter that indicates how many times open button has been clicked
+
+        for a downloaded pdf.
+
+        '
+      mode: NULLABLE
+      name: downloads_downloaded_pdf_open_count
+      type: INTEGER
+    - description: 'A counter that indicates how many times a pdf has been downloaded.
+
+        '
+      mode: NULLABLE
+      name: downloads_pdf_download_count
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

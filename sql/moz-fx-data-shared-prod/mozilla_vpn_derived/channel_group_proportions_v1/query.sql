@@ -11,7 +11,7 @@ WITH stage_1 AS (
     entrypoint_variation,
     pricing_plan,
     provider,
-    promotion_codes,
+    TO_JSON_STRING(promotion_codes) AS json_promotion_codes,
     SUM(`count`) AS new_subscriptions,
   FROM
     `moz-fx-data-shared-prod`.mozilla_vpn_derived.subscription_events_v1
@@ -30,11 +30,12 @@ WITH stage_1 AS (
     entrypoint_variation,
     pricing_plan,
     provider,
-    promotion_codes
+    json_promotion_codes
 ),
 stage_2 AS (
   SELECT
-    *,
+    * EXCEPT (json_promotion_codes),
+    JSON_VALUE_ARRAY(json_promotion_codes) AS promotion_codes,
     mozfun.vpn.channel_group(
       utm_campaign => utm_campaign,
       utm_content => utm_content,

@@ -14,6 +14,7 @@ WORKDIR ${HOME}
 
 RUN apt install gcc
 RUN apt install g++
+RUN apt install gcloud
 
 RUN pip install --upgrade pip
 

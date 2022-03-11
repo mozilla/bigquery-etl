@@ -36,6 +36,9 @@ fields:
 - mode: NULLABLE
   name: new_subscriptions
   type: INTEGER
+- mode: REPEATED
+  name: promotion_codes
+  type: STRING
 - mode: NULLABLE
   name: channel_group
   type: STRING

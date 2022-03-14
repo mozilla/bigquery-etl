@@ -2,7 +2,7 @@ WITH decoded_counts AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     -- We sub '-' for '_' for historical continuity
-    REPLACE(metadata.document_type, '-', '_') AS doc_type,
+    CONCAT(REPLACE(metadata.document_type, '-', '_'), '_v', metadata.document_version) AS doc_type,
     COUNT(DISTINCT(document_id)) AS decoded,
   FROM
     `moz-fx-data-shared-prod.monitoring.payload_bytes_decoded_telemetry`

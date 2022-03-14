@@ -6,7 +6,7 @@ WITH valid_builds AS (
     FROM `{{gcp_project}}.{{dataset}}.{{slug}}_scalar`
     WHERE {% include 'where_clause.sql' %}
     GROUP BY 1
-    HAVING COUNT(DISTINCT client_id) >= {{user_count_threshold}}
+    -- HAVING COUNT(DISTINCT client_id) >= {{user_count_threshold}}
 ),
 
 filtered_scalars AS (

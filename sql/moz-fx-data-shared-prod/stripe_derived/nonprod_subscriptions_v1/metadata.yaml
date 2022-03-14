@@ -1,6 +1,6 @@
 ---
-friendly_name: Stripe Subscriptions
-description: Stripe Subscriptions as of UTC midnight. See bug 1667889.
+friendly_name: Non-Prod Stripe Subscriptions
+description: Non-Prod Stripe Subscriptions as of UTC midnight.
 owners:
   - dthorn@mozilla.com
 labels:

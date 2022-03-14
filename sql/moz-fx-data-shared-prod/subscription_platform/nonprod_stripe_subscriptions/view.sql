@@ -26,7 +26,7 @@ WITH stripe_subscriptions AS (
     COALESCE(ended_at, TIMESTAMP(CURRENT_DATE)) AS end_date,
     discount.promotion_code AS promotion_code_id,
   FROM
-    mozdata.stripe.nonprod_subscriptions
+    `moz-fx-data-shared-prod`.stripe_derived.nonprod_subscriptions_v1
   WHERE
     status NOT IN ("incomplete", "incomplete_expired")
 ),
@@ -35,7 +35,7 @@ stripe_customers AS (
     id AS customer_id,
     mozfun.map.get_key(metadata, "fxa_uid") AS fxa_uid,
   FROM
-    mozdata.stripe.nonprod_customers
+    `moz-fx-data-shared-prod`.stripe_derived.nonprod_customers_v1
 ),
 stripe_charges AS (
   SELECT
@@ -104,9 +104,9 @@ stripe_plans AS (
     plans.product AS product_id,
     products.name AS product_name,
   FROM
-    mozdata.stripe.nonprod_plans AS plans
+    `moz-fx-data-shared-prod`.stripe_derived.nonprod_plans_v1 AS plans
   LEFT JOIN
-    mozdata.stripe.nonprod_products AS products
+    `moz-fx-data-shared-prod`.stripe_derived.nonprod_products_v1 AS products
   ON
     plans.product = products.id
 )

@@ -1,6 +1,6 @@
 ---
 friendly_name: Non-Prod Stripe Products
-description: Non-Prod Stripe Products as of UTC midnight. See bug 1667889.
+description: Non-Prod Stripe Products as of UTC midnight.
 owners:
   - dthorn@mozilla.com
 labels:

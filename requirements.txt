@@ -827,8 +827,8 @@ pytest-mypy==0.9.1 \
     --hash=sha256:9ffa3bf405c12c5c6be9e92e22bebb6ab2c91b9c32f45b0f0c93af473269ab5c \
     --hash=sha256:a2505fcf61f1c0c51f950d4623ea8ca2daf6fb2101a5603554bad2e130202083
     # via -r requirements.in
-pytest-pydocstyle==2.2.0 \
-    --hash=sha256:b4e7eee47252fbb7495f4a0126e547a25f5f114f3096c504e738db49a5034333
+pytest-pydocstyle==2.3.0 \
+    --hash=sha256:1f2d937349cfeb4965c530a0c0f2442b48c03299558db435b65549719510d32b
     # via -r requirements.in
 pytest-xdist==2.5.0 \
     --hash=sha256:4580deca3ff04ddb2ac53eba39d76cb5dd5edeac050cb6fbc768b0dd712b4edf \

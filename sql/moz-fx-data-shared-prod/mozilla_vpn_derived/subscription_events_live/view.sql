@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.mozilla_vpn_derived.subscription_events`
+  `moz-fx-data-shared-prod.mozilla_vpn_derived.subscription_events_live`
 AS
 WITH json_arrays AS (
   SELECT

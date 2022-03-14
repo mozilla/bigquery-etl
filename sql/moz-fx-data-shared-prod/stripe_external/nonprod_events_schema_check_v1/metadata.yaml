@@ -17,3 +17,4 @@ scheduling:
     - --format-resources
     - --strict-schema
     - --quiet
+    - --allow-empty

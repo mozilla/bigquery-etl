@@ -12,7 +12,7 @@ Jinja2==3.0.3
 jsonschema==4.4.0
 markdown-include==0.6.0
 mkdocs==1.2.3
-mkdocs-material==8.2.3
+mkdocs-material==8.2.5
 mkdocs-awesome-pages-plugin==2.7.0
 mozilla-schema-generator==0.5.1
 pandas==1.4.1

@@ -10,6 +10,8 @@ import urllib.request
 from pathlib import Path
 from time import sleep
 
+from bigquery_etl.util import probe_filters
+
 sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import snake_case
@@ -444,13 +446,14 @@ def get_scalar_probes(scalar_type):
     # and those that exist in main summary
     with urllib.request.urlopen(PROBE_INFO_SERVICE) as url:
         data = json.loads(gzip.decompress(url.read()).decode())
+        excluded_probes = probe_filters.get_etl_excluded_probes_quickfix()
         scalar_probes = set(
             [
                 snake_case(x.replace("scalar/", ""))
                 for x in data.keys()
                 if x.startswith("scalar/")
             ]
-        )
+        ) - excluded_probes
 
         return {
             "scalars": filter_scalars_dict(main_summary_scalars, scalar_probes),

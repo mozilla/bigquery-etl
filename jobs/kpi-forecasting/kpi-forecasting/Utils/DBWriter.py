@@ -7,7 +7,7 @@ from google.cloud import bigquery, client
 
 
 def write_to_bigquery(
-        predictions: pd.DataFrame, config: dict, client: client = None
+    predictions: pd.DataFrame, config: dict, client: client = None
 ) -> None:
     project = config["write_project"]
     if client is None:
@@ -32,7 +32,7 @@ def write_to_bigquery(
         ]
     )
 
-    holiday_columns = ['holidays', 'holidays_lower', 'holidays_upper']
+    holiday_columns = ["holidays", "holidays_lower", "holidays_upper"]
 
     for column in holiday_columns:
         if column not in predictions.columns:

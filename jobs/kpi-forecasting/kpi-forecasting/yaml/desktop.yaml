@@ -1,6 +1,6 @@
 ---
 target: desktop
-query_name: "desktop_dau.sql"
+query_name: "desktop_qcdou.sql"
 dataset_project: "mozdata"
 forecast_variable: "QDOU"
 forecast_parameters:
@@ -9,8 +9,7 @@ forecast_parameters:
   seasonality_prior_scale: 0.01
 columns:
 - submission_date
-- uri_at_dau_cd
-- uri_dau_either_at
+- qcdou
 write_project: "moz-fx-data-bq-data-science"
 output_table: "pmcmanis.automation_experiment"
 stop_date: "2023-12-31"

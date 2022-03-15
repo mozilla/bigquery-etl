@@ -45,9 +45,6 @@ fields:
   name: ended_at
   type: TIMESTAMP
 - mode: NULLABLE
-  name: end_date
-  type: TIMESTAMP
-- mode: NULLABLE
   name: fxa_uid
   type: STRING
 - mode: NULLABLE
@@ -116,6 +113,9 @@ fields:
 - mode: REPEATED
   name: promotion_codes
   type: STRING
+- mode: NULLABLE
+  name: end_date
+  type: TIMESTAMP
 - mode: NULLABLE
   name: normalized_acquisition_channel
   type: STRING

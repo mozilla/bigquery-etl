@@ -85,13 +85,15 @@ with DAG(
 
     mozilla_vpn_derived__channel_group_proportions__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__channel_group_proportions__v1",
-        destination_table="channel_group_proportions_v1",
+        destination_table='channel_group_proportions_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
+        sql_file_path="sql/moz-fx-data-shared-prod/mozilla_vpn_derived/channel_group_proportions_v1/query.sql",
         dag=dag,
     )
 
@@ -943,6 +945,10 @@ with DAG(
 
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
         stripe_external__promotion_codes__v1
+    )
+
+    mozilla_vpn_derived__channel_group_proportions__v1.set_upstream(
+        mozilla_vpn_derived__all_subscriptions__v1
     )
 
     mozilla_vpn_derived__channel_group_proportions__v1.set_upstream(

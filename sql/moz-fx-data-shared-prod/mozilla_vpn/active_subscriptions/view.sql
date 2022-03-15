@@ -8,7 +8,7 @@ WITH max_agg_date AS (
     `moz-fx-data-shared-prod`.mozilla_vpn_derived.active_subscriptions_v1
 )
 SELECT
-  *
+  active_subscriptions_live.*
 FROM
   `moz-fx-data-shared-prod`.mozilla_vpn_derived.active_subscriptions_live
 CROSS JOIN

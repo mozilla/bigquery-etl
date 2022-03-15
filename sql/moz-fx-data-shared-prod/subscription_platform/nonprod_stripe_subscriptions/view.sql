@@ -23,7 +23,6 @@ WITH stripe_subscriptions AS (
     cancel_at,
     cancel_at_period_end,
     ended_at,
-    COALESCE(ended_at, TIMESTAMP(CURRENT_DATE)) AS end_date,
     discount.promotion_code AS promotion_code_id,
   FROM
     `moz-fx-data-shared-prod`.stripe_derived.nonprod_subscriptions_v1
@@ -125,30 +124,17 @@ SELECT
   cancel_at,
   cancel_at_period_end,
   ended_at,
-  end_date,
   fxa_uid,
   country,
-  user_registration_date,
-  entrypoint_experiment,
-  entrypoint_variation,
-  utm_campaign,
-  utm_content,
-  utm_medium,
-  utm_source,
-  utm_term,
   provider,
   plan_amount,
-  CONCAT(
-    plan_interval_count,
-    "-",
-    plan_interval,
-    "-",
-    plan_currency,
-    "-",
-    (plan_amount / 100)
-  ) AS pricing_plan,
-  -- Stripe default billing grace period is 1 day and Paypal is billed by Stripe
-  INTERVAL 1 DAY AS billing_grace_period,
+  billing_scheme,
+  plan_currency,
+  plan_interval,
+  plan_interval_count,
+  "Etc/UTC" AS plan_interval_timezone,
+  product_id,
+  product_name,
   IF(promotion_code IS NULL, [], [promotion_code]) AS promotion_codes,
 FROM
   stripe_subscriptions

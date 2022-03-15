@@ -214,6 +214,11 @@ def schema(resource: Type[ListableAPIResource]):
     ),
     help="BigQuery time partitioning type for --table",
 )
+@click.option(
+    "--allow-empty",
+    is_flag=True,
+    help="Allow empty imports to succeed; Used when importing non-prod events",
+)
 def stripe_import(
     api_key: Optional[str],
     date: Optional[datetime],
@@ -227,6 +232,7 @@ def stripe_import(
     report_type: Optional[str],
     time_partitioning_field: str,
     time_partitioning_type: str,
+    allow_empty: bool,
 ):
     """Import Stripe data into BigQuery."""
     if after_date:
@@ -285,7 +291,7 @@ def stripe_import(
                 # allow headers row to count for has_rows, because it means the report
                 # is complete, and valid reports may be empty, e.g. when pulled daily
                 has_rows = True
-        if not has_rows:
+        if not has_rows and not allow_empty:
             raise click.ClickException("no rows returned")
         elif table:
             if file_obj.writable():

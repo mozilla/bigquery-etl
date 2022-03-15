@@ -11,7 +11,12 @@ scheduling:
   # delay aggregates by 7 days, to ensure data is complete
   date_partition_parameter: null
   destination_table:
-    "active_subscriptions_v1${{macros.ds_add(ds, -7)|ds_nodash}}"
+    # TODO when airflow is updated to 2.2+ use ds_nodash filter:
+    # "active_subscriptions_v1${{macros.ds_add(ds, -7)|ds_nodash}}"
+    >-
+    active_subscriptions_v1${{
+    macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d")
+    }}
   parameters:
     - "date:DATE:{{macros.ds_add(ds, -7)}}"
 

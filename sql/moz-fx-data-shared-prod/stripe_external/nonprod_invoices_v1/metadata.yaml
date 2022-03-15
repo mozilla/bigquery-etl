@@ -1,5 +1,6 @@
-friendly_name: Stripe Customers
-description: Stripe Customers as of UTC midnight.
+---
+friendly_name: Non-Prod Stripe Invoices
+description: Non-Prod Stripe Invoices as of UTC midnight
 owners:
   - dthorn@mozilla.com
 labels:
@@ -10,3 +11,5 @@ scheduling:
   # destination is the whole table, not a single partition,
   # so don't use date_partition_parameter
   date_partition_parameter:
+  parameters:
+    - "date:DATE:{{ds}}"

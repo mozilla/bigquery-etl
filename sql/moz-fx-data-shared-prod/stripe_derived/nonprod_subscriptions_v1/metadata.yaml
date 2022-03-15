@@ -1,5 +1,6 @@
-friendly_name: Stripe Customers
-description: Stripe Customers as of UTC midnight.
+---
+friendly_name: Non-Prod Stripe Subscriptions
+description: Non-Prod Stripe Subscriptions as of UTC midnight.
 owners:
   - dthorn@mozilla.com
 labels:

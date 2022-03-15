@@ -55,6 +55,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
+        sql_file_path="sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscriptions_v1/query.sql",
         dag=dag,
     )
 
@@ -211,6 +212,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
+        sql_file_path="sql/moz-fx-data-shared-prod/mozilla_vpn_derived/subscription_events_v1/query.sql",
         dag=dag,
     )
 

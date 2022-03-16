@@ -1,0 +1,10 @@
+friendly_name: Non-Prod FxA flows by date
+description: >
+  Non-Prod FxA flow_id, first seen timestamp, and last seen user id by date
+owners:
+  - dthorn@mozilla.com
+labels:
+  application: cjms
+  schedule: hourly
+scheduling:
+  dag_name: bqetl_cjms_nonprod

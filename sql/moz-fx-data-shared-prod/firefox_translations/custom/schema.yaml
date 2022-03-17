@@ -443,6 +443,54 @@ fields:
       mode: NULLABLE
       name: forms_word_count
       type: INTEGER
+    - description: '90th percentile of quality estimation of translation for sentences
+
+        multiplied by 1000.
+
+        '
+      mode: NULLABLE
+      name: quality_sent_90th
+      type: INTEGER
+    - description: 'Average quality estimation of translation for sentences
+
+        multiplied by 1000.
+
+        '
+      mode: NULLABLE
+      name: quality_sent_avg
+      type: INTEGER
+    - description: 'Median quality estimation of translation for sentences
+
+        multiplied by 1000.
+
+        '
+      mode: NULLABLE
+      name: quality_sent_median
+      type: INTEGER
+    - description: '90th percentile of quality estimation of translation for words
+
+        multiplied by 1000.
+
+        '
+      mode: NULLABLE
+      name: quality_word_90th
+      type: INTEGER
+    - description: 'Average quality estimation of translation for words
+
+        multiplied by 1000.
+
+        '
+      mode: NULLABLE
+      name: quality_word_avg
+      type: INTEGER
+    - description: 'Median quality estimation of translation for words
+
+        multiplied by 1000.
+
+        '
+      mode: NULLABLE
+      name: quality_word_median
+      type: INTEGER
     mode: NULLABLE
     name: quantity
     type: RECORD
@@ -502,6 +550,18 @@ fields:
         '
       mode: NULLABLE
       name: performance_translation_quality
+      type: STRING
+    - description: 'Summary of quality estimation of translation.
+
+        All scores are in range [0,1].
+
+        <word_avg>,<word_median>,<word_90th>,<sent_avg>,<sent_median>,<sent_90th>
+
+        Example: "0.5,0.55,0.35,0.6,0.55,0.7"
+
+        '
+      mode: NULLABLE
+      name: quality_summary
       type: STRING
     mode: NULLABLE
     name: string
@@ -591,6 +651,12 @@ fields:
         '
       mode: NULLABLE
       name: infobar_outbound_enabled
+      type: BOOLEAN
+    - description: 'Indicates whether a supervised model was used for quality estimation.
+
+        '
+      mode: NULLABLE
+      name: quality_is_supervised
       type: BOOLEAN
     mode: NULLABLE
     name: boolean

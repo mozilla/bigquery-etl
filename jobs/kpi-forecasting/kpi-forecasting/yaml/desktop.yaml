@@ -2,7 +2,7 @@
 target: desktop
 query_name: "desktop_qcdou.sql"
 dataset_project: "mozdata"
-forecast_variable: "QDOU"
+forecast_variable: "QCDOU"
 forecast_parameters:
   changepoint_prior_scale: 0.05
   changepoint_range: 0.8
@@ -12,5 +12,7 @@ columns:
 - qcdou
 write_project: "moz-fx-data-bq-data-science"
 output_table: "pmcmanis.automation_experiment"
+confidences_table: "pmcmanis.automation_exp_confidences_1"
 stop_date: "2023-12-31"
 holidays: True
+confidences: "ds_month"

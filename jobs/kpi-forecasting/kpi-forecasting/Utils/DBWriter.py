@@ -6,7 +6,7 @@ import pandas as pd
 from google.cloud import bigquery, client
 
 
-def write_to_bigquery(
+def write_predictions_to_bigquery(
     predictions: pd.DataFrame, config: dict, client: client = None
 ) -> None:
     project = config["write_project"]
@@ -38,46 +38,88 @@ def write_to_bigquery(
         if column not in predictions.columns:
             predictions[column] = 0.0
 
-    predictions = predictions[
-        [
-            "ds",
-            "trend",
-            "yhat_lower",
-            "yhat_upper",
-            "trend_lower",
-            "trend_upper",
-            "additive_terms",
-            "additive_terms_lower",
-            "additive_terms_upper",
-            "extra_regressors_additive",
-            "extra_regressors_additive_lower",
-            "extra_regressors_additive_upper",
-            "holidays",
-            "holidays_lower",
-            "holidays_upper",
-            "regressor_00",
-            "regressor_00_lower",
-            "regressor_00_upper",
-            "weekly",
-            "weekly_lower",
-            "weekly_upper",
-            "yearly",
-            "yearly_lower",
-            "yearly_upper",
-            "multiplicative_terms",
-            "multiplicative_terms_lower",
-            "multiplicative_terms_upper",
-            "yhat",
-            "target",
-            "forecast_date",
-            "forecast_parameters",
-        ]
+    regressor_columns = [
+        "extra_regressors_additive",
+        "extra_regressors_additive_lower",
+        "extra_regressors_additive_upper",
+        "regressor_00",
+        "regressor_00_lower",
+        "regressor_00_upper",
     ]
+
+    for column in regressor_columns:
+        if column not in predictions.columns:
+            predictions[column] = 0.0
+
+    columns = [
+        "ds",
+        "trend",
+        "yhat_lower",
+        "yhat_upper",
+        "trend_lower",
+        "trend_upper",
+        "additive_terms",
+        "additive_terms_lower",
+        "additive_terms_upper",
+        "extra_regressors_additive",
+        "extra_regressors_additive_lower",
+        "extra_regressors_additive_upper",
+        "holidays",
+        "holidays_lower",
+        "holidays_upper",
+        "regressor_00",
+        "regressor_00_lower",
+        "regressor_00_upper",
+        "weekly",
+        "weekly_lower",
+        "weekly_upper",
+        "yearly",
+        "yearly_lower",
+        "yearly_upper",
+        "multiplicative_terms",
+        "multiplicative_terms_lower",
+        "multiplicative_terms_upper",
+        "yhat",
+        "target",
+        "forecast_date",
+        "forecast_parameters",
+    ]
+
+    predictions = predictions[columns]
 
     predictions = predictions.assign(metric=config["forecast_variable"])
 
     database_job = bq_client.load_table_from_dataframe(
         predictions, output_table, job_config=job_config
+    )
+
+    result = database_job.result()
+
+    return result
+
+
+def write_confidence_intervals_to_bigquery(
+    confidences: pd.DataFrame, config: dict, client: client = None
+) -> None:
+
+    project = config["write_project"]
+    if client is None:
+        bq_client = bigquery.Client(project=project)
+    else:
+        bq_client = client
+
+    confidences["target"] = config["target"]
+    write_table = config["confidences_table"]
+
+    job_config = bigquery.LoadJobConfig(
+        schema=[
+            bigquery.SchemaField("asofdate", "STRING"),
+            bigquery.SchemaField("date", "STRING"),
+        ]
+    )
+
+    database_job = bq_client.load_table_from_dataframe(
+        confidences, write_table, job_config=job_config
     )
 
     result = database_job.result()

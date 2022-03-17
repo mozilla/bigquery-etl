@@ -1,4 +1,5 @@
 from datetime import datetime
+import typing
 
 import pandas as pd
 
@@ -7,7 +8,9 @@ import prophet
 import holidays
 
 
-def run_forecast(dataset: pd.DataFrame, config: dict) -> pd.DataFrame:
+def run_forecast(
+    dataset: pd.DataFrame, config: dict
+) -> typing.Tuple[pd.DataFrame, pd.DataFrame]:
     target = config["target"]
 
     fit_parameters = config[
@@ -23,12 +26,9 @@ def run_forecast(dataset: pd.DataFrame, config: dict) -> pd.DataFrame:
         fit_parameters["holidays"] = holiday_df
     fit_parameters["growth"] = "flat"
 
-    model = prophet.Prophet(**fit_parameters)
+    model = prophet.Prophet(**fit_parameters, mcmc_samples=0)
 
-    if target == "desktop":
-        model.add_regressor(name="regressor_00")
-
-    elif target == "mobile":
+    if target == "mobile":
         step_change_date = datetime.strptime("2021-1-24", "%Y-%m-%d").date()
         dataset["regressor_00"] = dataset.apply(
             lambda x: 0 if x["ds"] <= step_change_date else 1, axis=1
@@ -44,12 +44,31 @@ def run_forecast(dataset: pd.DataFrame, config: dict) -> pd.DataFrame:
 
     future = fit_model.make_future_dataframe(periods=periods)  # type: pd.DataFrame
 
-    future["regressor_00"] = 1
+    if target == "mobile":
+        future["regressor_00"] = 1
+
     future_values = fit_model.predict(future)
 
-    future_values = future_values[future_values["ds"] < datetime.today()]
+    future_values = future_values[future_values["ds"] > datetime.today()]
 
-    return future_values
+    uncertainty_samples_raw = fit_model.predictive_samples(future)
+
+    uncertainty_samples = pd.DataFrame.from_records(uncertainty_samples_raw["yhat"])
+
+    uncertainty_samples["ds"] = future["ds"]
+
+    # if config["confidences"] is not None:
+    #     confidences = get_aggregated_posteriors(
+    #         observed_data=dataset,
+    #         posterior_samples=future_values,
+    #         aggregation_unit=config["confidences"],
+    #         final_sample_date=config["stop_date"],
+    #         actuals_end_date=dataset["ds"].max(),
+    #         target=config["target"],
+    #     )
+    # else:
+    #     confidences = None
+    return future_values, uncertainty_samples
 
 
 def remaining_days(max_day, end_date) -> int:

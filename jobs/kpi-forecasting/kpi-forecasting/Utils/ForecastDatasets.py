@@ -31,13 +31,16 @@ def fetch_data(config: dict):
         consistent_date_formatter
     )
 
-    if target == "desktop":
-        dataset = desktop_preprocessing(dataset, config["columns"])
-        return dataset
+    # The desktop query has been updated to no longer require this. In the past, a lot of hoop-jumping was required
+    # to work around a gap in the data, which has since been backfilled. In the emergency case that you have to fall
+    # back to using that query, you may uncomment this section.
+    # if target == "desktop":
+    #     dataset = desktop_preprocessing(dataset, config["columns"])
+    #     return dataset
 
     dataset = dataset[config["columns"]]
 
-    renames = {"submission_date": "ds", "cdou": "y"}
+    renames = {dataset.columns[0]: "ds", dataset.columns[1]: "y"}
 
     dataset.rename(columns=renames, inplace=True)
 

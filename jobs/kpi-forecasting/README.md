@@ -28,6 +28,21 @@ python kpi_forecasting.py -c yaml/mobile.yaml
 (TODO) python kpi_forecasting.py -c yaml/pocket.yaml
 ```
 
+### On SQL Queries And Preprocessing
+
+One of the challenges in automating multiple forecasts is that data formats may not always be consistent. This is a challenge precisely because Prophet demands that data conform to a very strict standard of two columns; 'ds' and 'y' as its primary inputs. Other columns can be added as regressors, but often these are trivial to implement in Python but challenging to implement in SQL, or vice versa, depending on their specifics. 
+
+Rather than try and force things to conform to an ultra-strict standard to solve a wide variety of forecasts, this repo focuses ONLY on KPIs, and is organized in such a way to make that easier to maintain.
+
+The idiomatic way to handle this is to use the "columns" key in the YAML to specify which columns to bring into the FitForecast section of this stack, and to write a specific handler for regressors in that section. Your query should return things in this column order:
+
+| date | variable to predict | regressor_00 | regressor_01 | etc |
+|------|---------------------|--------------|--------------|-----|
+
+Failure to conform to this order will result in failure as prophet model inputs are taken by POSITION, rather than by key. You will want to maintain this order in your YAML columns list as well.
+
+Is this generic? No. Nor does it try to be. However, because of the limited number of cases, it makes more sense to handle the cases this repo is trying to cover rather than hypothetical future ones.
+
 ### YAML Configs
 
 For consistency, keys are lowercased
@@ -39,9 +54,11 @@ For consistency, keys are lowercased
 * dataset_project: the project to use for pulling data from, e.g. mozdata
 * write_project: project that results will be written too, e.g. moz-fx-data-bq-data-science
 * output_table: table to write results to, if testing consider something like {your-name}.automation_experiment
+* confidences_table: table to write confidences too, if confidences is not None. if it is, will be ignored
 * forecast_variable: the variable you are actually forecasting, e.g. QDOU or DAU
 * holidays: boolean - include holidays (if set to False holidays will always show zero, but the columns will still exist)
 * stop_date: date to stop the forecast at
+* confidences: aggregation unit for confidence intervals, can be ds_month, ds_year or None
 
 ## Development
 

@@ -1,8 +1,8 @@
 -- this will be updated once the service parameter get passed for "fxa_rp_button - view"
-WITH pricing_plans AS (
+WITH stripe_plan AS (
   SELECT
     id AS plan_id,
-    product AS product_id,
+    product_id,
     mozfun.vpn.pricing_plan(
       provider => "Stripe",
       amount => amount,
@@ -12,7 +12,7 @@ WITH pricing_plans AS (
     ) AS pricing_plan,
     nickname AS plan_name,
   FROM
-    mozdata.stripe.plans
+    `moz-fx-data-bq-fivetran`.stripe.plan
 ),
 flows AS (
   SELECT
@@ -257,7 +257,7 @@ SELECT
 FROM
   flow_counts
 LEFT JOIN
-  pricing_plans
+  stripe_plan
 USING
   (plan_id)
 WINDOW

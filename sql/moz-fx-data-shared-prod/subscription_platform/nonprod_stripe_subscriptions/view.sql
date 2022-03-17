@@ -1,81 +1,98 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.subscription_platform.nonprod_stripe_subscriptions`
 AS
-WITH stripe_subscriptions AS (
+WITH subscription AS (
   SELECT
-    customer AS customer_id,
+    customer_id,
     id AS subscription_id,
-    plan AS plan_id,
     status,
-    event_timestamp,
-    MIN(COALESCE(trial_end, start_date)) OVER (
-      PARTITION BY
-        customer
-      ROWS BETWEEN
-        UNBOUNDED PRECEDING
-        AND UNBOUNDED FOLLOWING
-    ) AS customer_start_date,
+    _fivetran_synced,
+    -- TODO verify logic for subscription_start_date
     COALESCE(trial_end, start_date) AS subscription_start_date,
     created,
+    -- trial_start,
     trial_end,
+    -- current_period_end,
+    -- current_period_start,
     canceled_at,
-    mozfun.map.get_key(metadata, "cancelled_for_customer_at") AS canceled_for_customer_at,
+    JSON_VALUE(metadata, "$.cancelled_for_customer_at") AS canceled_for_customer_at,
     cancel_at,
     cancel_at_period_end,
-    ended_at,
-    discount.promotion_code AS promotion_code_id,
+    IF(ended_at <= _fivetran_synced, ended_at, NULL) AS ended_at,
   FROM
-    `moz-fx-data-shared-prod`.stripe_derived.nonprod_subscriptions_v1
+    `dev-fivetran`.stripe_nonprod.subscription_history
   WHERE
     status NOT IN ("incomplete", "incomplete_expired")
+    -- choose subscription from subscription history
+    AND _fivetran_active
 ),
-stripe_customers AS (
+subscription_item AS (
+  SELECT
+    id AS subscription_item_id,
+    subscription_id,
+    plan_id,
+  FROM
+    `dev-fivetran`.stripe_nonprod.subscription_item
+),
+customer AS (
   SELECT
     id AS customer_id,
-    mozfun.map.get_key(metadata, "fxa_uid") AS fxa_uid,
+    TO_HEX(SHA256(JSON_VALUE(metadata, "$.userid"))) AS fxa_uid,
   FROM
-    `moz-fx-data-shared-prod`.stripe_derived.nonprod_customers_v1
+    `dev-fivetran`.stripe_nonprod.customer
 ),
-stripe_charges AS (
+charge AS (
   SELECT
-    id AS charge_id,
-    payment_method_details.card.country,
+    charge.id AS charge_id,
+    card.country,
   FROM
-    `moz-fx-data-shared-prod`.stripe_external.nonprod_charges_v1
+    `dev-fivetran`.stripe_nonprod.charge
+  JOIN
+    `dev-fivetran`.stripe_nonprod.card
+  ON
+    charge.source_id = card.id
   WHERE
-    status = "succeeded"
+    charge.status = "succeeded"
 ),
-stripe_invoice_lines AS (
+invoice_provider_country AS (
   SELECT
-    lines.subscription AS subscription_id,
+    invoice_line_item.subscription_id,
     IF(
-      "paypalTransactionId" IN (SELECT key FROM UNNEST(invoices_v1.metadata)),
-      -- FxA copies paypal billing agreement location to customer_address
-      STRUCT("Paypal" AS provider, invoices_v1.customer_address.country),
-      ("Stripe", stripe_charges.country)
+      JSON_VALUE(invoice.metadata, "$.paypalTransactionId") IS NOT NULL,
+      -- FxA copies paypal billing agreement country to customer address
+      STRUCT("Paypal" AS provider, customer.address_country AS country),
+      ("Stripe", charge.country)
     ).*,
-    invoices_v1.event_timestamp,
+    invoice.finalized_at,
   FROM
-    `moz-fx-data-shared-prod`.stripe_external.nonprod_invoices_v1 AS invoices_v1
-  CROSS JOIN
-    UNNEST(lines) AS lines
+    `dev-fivetran`.stripe_nonprod.invoice
   LEFT JOIN
-    stripe_customers
+    `dev-fivetran`.stripe_nonprod.invoice_line_item
   ON
-    invoices_v1.customer = stripe_customers.customer_id
+    invoice.id = invoice_line_item.invoice_id
   LEFT JOIN
-    stripe_charges
+    `dev-fivetran`.stripe_nonprod.customer
   ON
-    invoices_v1.charge = stripe_charges.charge_id
+    invoice.customer_id = customer.id
+  LEFT JOIN
+    charge
+  USING
+    (charge_id)
 ),
-stripe_promotion_codes AS (
+subscription_promotion_codes AS (
   SELECT
-    id AS promotion_code_id,
-    code AS promotion_code,
+    subscription_discount.subscription_id,
+    ARRAY_AGG(DISTINCT promotion_code.code IGNORE NULLS) AS promotion_codes,
   FROM
-    `moz-fx-data-shared-prod`.stripe_external.nonprod_promotion_codes_v1
+    `dev-fivetran`.stripe_nonprod.promotion_code
+  JOIN
+    `dev-fivetran`.stripe_nonprod.subscription_discount
+  USING
+    (coupon_id, customer_id)
+  GROUP BY
+    subscription_id
 ),
-stripe_subscription_provider_country AS (
+subscription_provider_country AS (
   SELECT
     subscription_id,
     ARRAY_AGG(
@@ -83,39 +100,40 @@ stripe_subscription_provider_country AS (
       ORDER BY
         -- prefer rows with country
         IF(country IS NULL, 0, 1) DESC,
-        event_timestamp DESC
+        finalized_at DESC
       LIMIT
         1
     )[OFFSET(0)].*
   FROM
-    stripe_invoice_lines
+    invoice_provider_country
   GROUP BY
     subscription_id
 ),
-stripe_plans AS (
+plan AS (
   SELECT
-    plans.id AS plan_id,
-    plans.amount AS plan_amount,
-    plans.billing_scheme,
-    plans.currency AS plan_currency,
-    plans.interval AS plan_interval,
-    plans.interval_count AS plan_interval_count,
-    plans.product AS product_id,
-    products.name AS product_name,
+    plan.id AS plan_id,
+    plan.amount AS plan_amount,
+    plan.billing_scheme AS billing_scheme,
+    plan.currency AS plan_currency,
+    plan.interval AS plan_interval,
+    plan.interval_count AS plan_interval_count,
+    plan.product_id,
+    product.name AS product_name,
   FROM
-    `moz-fx-data-shared-prod`.stripe_derived.nonprod_plans_v1 AS plans
+    `dev-fivetran`.stripe_nonprod.plan
   LEFT JOIN
-    `moz-fx-data-shared-prod`.stripe_derived.nonprod_products_v1 AS products
+    `dev-fivetran`.stripe_nonprod.product
   ON
-    plans.product = products.id
+    plan.product_id = product.id
 )
 SELECT
   customer_id,
   subscription_id,
+  subscription_item_id,
   plan_id,
   status,
-  event_timestamp,
-  customer_start_date,
+  _fivetran_synced AS event_timestamp,
+  MIN(subscription_start_date) OVER (PARTITION BY customer_id) AS customer_start_date,
   subscription_start_date,
   created,
   trial_end,
@@ -135,22 +153,26 @@ SELECT
   "Etc/UTC" AS plan_interval_timezone,
   product_id,
   product_name,
-  IF(promotion_code IS NULL, [], [promotion_code]) AS promotion_codes,
+  promotion_codes,
 FROM
-  stripe_subscriptions
+  subscription
 LEFT JOIN
-  stripe_plans
-USING
-  (plan_id)
-LEFT JOIN
-  stripe_subscription_provider_country
+  subscription_item
 USING
   (subscription_id)
 LEFT JOIN
-  stripe_customers
+  plan
+USING
+  (plan_id)
+LEFT JOIN
+  subscription_provider_country
+USING
+  (subscription_id)
+LEFT JOIN
+  customer
 USING
   (customer_id)
 LEFT JOIN
-  stripe_promotion_codes
+  subscription_promotion_codes
 USING
-  (promotion_code_id)
+  (subscription_id)

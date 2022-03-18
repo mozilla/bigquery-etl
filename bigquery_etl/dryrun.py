@@ -52,7 +52,11 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v2/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v2/view.sql",
     *glob.glob(
-        "sql/moz-fx-data-shared-prod/monitoring*/*_rate_live*/*.sql",
+        "sql/moz-fx-data-shared-prod/monitoring*/suggest*_rate*_live*/*.sql",
+        recursive=True,
+    ),
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/monitoring*/topsites*_rate*_live*/*.sql",
         recursive=True,
     ),
     "sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql",

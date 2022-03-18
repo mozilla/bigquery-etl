@@ -124,6 +124,9 @@ SKIP = {
     *glob.glob(
         "sql/moz-fx-data-shared-prod/contextual_services/**/*.sql", recursive=True
     ),
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/**/topsites_impression/view.sql", recursive=True
+    ),
     "sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/query.sql",
     "sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/init.sql",
     "sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_summary/view.sql",

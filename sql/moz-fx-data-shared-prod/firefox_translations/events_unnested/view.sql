@@ -1,6 +1,6 @@
 -- Generated via ./bqetl generate glean_usage
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.mozilla_vpn.events_unnested`
+  `moz-fx-data-shared-prod.firefox_translations.events_unnested`
 AS
 SELECT
   e.* EXCEPT (events, metrics) REPLACE(
@@ -22,6 +22,6 @@ SELECT
   event.name AS event_name,
   event.extra AS event_extra,
 FROM
-  `moz-fx-data-shared-prod.mozillavpn.events` AS e
+  `moz-fx-data-shared-prod.firefox_translations.events` AS e
 CROSS JOIN
   UNNEST(e.events) AS event

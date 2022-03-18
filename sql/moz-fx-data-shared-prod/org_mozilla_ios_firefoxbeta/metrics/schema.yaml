@@ -1111,6 +1111,18 @@ fields:
       mode: NULLABLE
       name: inactive_tabs_tray_inactive_tabs_close_all_btn
       type: INTEGER
+    - description: 'Counts the number of times a user has selected a
+
+        search term group inside the history panel. Selecting
+
+        this item will navigate them to a view containing a list
+
+        of all Site items that appear in that group.
+
+        '
+      mode: NULLABLE
+      name: history_group_list
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -1732,6 +1744,23 @@ fields:
         type: INTEGER
       mode: REPEATED
       name: top_site_pressed_tile_origin
+      type: RECORD
+    - description: 'Counts the number of times a user selected an item from
+
+        the history panel. This labeled counter will tell apart
+
+        items that appear inside a group, and those that do not.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: history_selected_item
       type: RECORD
     mode: NULLABLE
     name: labeled_counter

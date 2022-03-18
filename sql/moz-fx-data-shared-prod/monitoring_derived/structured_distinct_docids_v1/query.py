@@ -14,7 +14,7 @@ WITH decoded AS (
     * EXCEPT (metadata),  -- Some tables have different field order in metadata
     metadata.header.x_source_tags,
     metadata.document_namespace,
-    metadata.document_type,
+    CONCAT(metadata.document_type, '_v', metadata.document_version) AS document_type,
   FROM
     `moz-fx-data-shared-prod.monitoring.payload_bytes_decoded_structured`
   UNION ALL
@@ -22,7 +22,7 @@ WITH decoded AS (
     * EXCEPT (metadata),
     metadata.header.x_source_tags,
     metadata.document_namespace,
-    metadata.document_type,
+    CONCAT(metadata.document_type, '_v', metadata.document_version) AS document_type,
   FROM
     `moz-fx-data-shared-prod.monitoring.payload_bytes_decoded_stub_installer`
 )

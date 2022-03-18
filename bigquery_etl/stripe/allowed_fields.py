@@ -33,11 +33,22 @@ def _valid_float(value: str):
 
 
 def get_rooted_schema(type_) -> bigquery.SchemaField:
-    """Load schema for given stripe type from json."""
+    """Load schema for given stripe type from json.
+
+    If the schema file does not exist, return the schema for data.{type_} from the event
+    schema.
+    """
     path = Path(__file__).parent / f"{type_}.schema.json"
-    return bigquery.SchemaField.from_api_repr(
+    schema_exists = path.exists()
+    if not schema_exists:
+        path = Path(__file__).parent / "event.schema.json"
+    root = bigquery.SchemaField.from_api_repr(
         {"name": "root", "type": "RECORD", "fields": ujson.loads(path.read_text())}
     )
+    if not schema_exists:
+        data = next(f for f in root.fields if f.name == "data")
+        root = next(f for f in data.fields if f.name == type_)
+    return root
 
 
 class FilteredSchema:

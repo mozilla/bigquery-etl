@@ -1037,6 +1037,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#events" class="md-nav__link">
+    events
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#events_daily" class="md-nav__link">
     events_daily
   </a>
@@ -2275,6 +2282,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#events" class="md-nav__link">
+    events
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#events_daily" class="md-nav__link">
     events_daily
   </a>
@@ -3247,6 +3261,110 @@ for the release channel of the Glean application "Mozilla VPN"
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/event_types">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/event_types/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/event_types/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="events"><a href="#events">events</a></h2>
+<p><strong>App-specific view for Glean ping "events"</strong></p>
+<p><code>mozilla_vpn.events</code></p>
+<p>This is a pointer to the main view to the stable ping table
+for the release channel of the Glean application "Mozilla VPN"
+(moz-fx-data-shared-prod.mozillavpn.events).</p>
+<p>It is used by Looker.</p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>additional_properties</td>
+        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td>The document ID specified in the URI when the client sent this message</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>events</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metrics</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td>Time when the ingestion edge server accepted this message</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozillavpn>mozillavpn</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozillavpn/events>events</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/events">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/events/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/events/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="events_daily"><a href="#events_daily">events_daily</a></h2>
 <p><code>mozilla_vpn.events_daily</code></p>

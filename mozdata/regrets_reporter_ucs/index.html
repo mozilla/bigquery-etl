@@ -1429,6 +1429,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#events" class="md-nav__link">
+    events
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#main_events" class="md-nav__link">
     main_events
   </a>
@@ -2079,6 +2086,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#events" class="md-nav__link">
+    events
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#main_events" class="md-nav__link">
     main_events
   </a>
@@ -2149,6 +2163,32 @@ and to contain only one row per distinct <code>document_id</code> within a given
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/deletion_request">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/deletion_request/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/deletion_request/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="events"><a href="#events">events</a></h2>
+<p><strong>Historical Pings for <code>regrets-reporter-ucs/events</code></strong></p>
+<p><code>regrets_reporter_ucs.events</code></p>
+<p>A historical view of pings sent for the
+<code>regrets-reporter-ucs/events</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs_stable>regrets_reporter_ucs_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs_stable/events_v1>events_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/events">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/events/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/events/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="main_events"><a href="#main_events">main_events</a></h2>
 <p><strong>Historical Pings for <code>regrets-reporter-ucs/main-events</code></strong></p>

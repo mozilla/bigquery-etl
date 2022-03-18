@@ -8,7 +8,7 @@ WITH max_agg_date AS (
     `moz-fx-data-shared-prod`.mozilla_vpn_derived.channel_group_proportions_v1
 )
 SELECT
-  mozilla_vpn_derived.channel_group_proportions_live.*
+  channel_group_proportions_live.*
 FROM
   `moz-fx-data-shared-prod`.mozilla_vpn_derived.channel_group_proportions_live
 CROSS JOIN

@@ -190,6 +190,7 @@ FROM
   with_event_count
 WHERE
   submission_date = @submission_date
+  -- Filter out events associated with suspiciously active clients.
   AND NOT (user_event_count > 50 AND event_type = 'click')
 GROUP BY
   submission_date,

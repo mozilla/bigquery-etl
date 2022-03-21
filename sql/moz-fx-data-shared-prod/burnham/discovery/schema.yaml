@@ -353,6 +353,12 @@ fields:
       mode: NULLABLE
       name: test_name
       type: STRING
+    - description: 'ID of the Airflow task that runs the client
+
+        '
+      mode: NULLABLE
+      name: test_airflow_task_id
+      type: STRING
     mode: NULLABLE
     name: string
     type: RECORD

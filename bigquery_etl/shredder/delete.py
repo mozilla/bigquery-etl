@@ -258,7 +258,7 @@ def delete_from_partition(
                 # always true partition condition to satisfy require_partition_filter
                 partition_condition = f"""
                 ({partition.condition}) IS NOT TRUE
-                OR ({partition.condition})"
+                OR ({partition.condition})
                 """
             else:
                 partition_condition = partition.condition
@@ -272,7 +272,7 @@ def delete_from_partition(
                 {field_joins}
                 WHERE
                   ({field_conditions})
-                  AND ({partition_condition})"
+                  AND ({partition_condition})
                 """
             )
         run_tense = "Would run" if dry_run else "Running"

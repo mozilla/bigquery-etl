@@ -9,6 +9,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_beta_live.topsites_impression_v1`
 WHERE
+  -- This clause exists only to satisfy the table requirement for a parition filter.
   DATE(submission_timestamp) >= '2010-01-01'
 GROUP BY
   submission_minute

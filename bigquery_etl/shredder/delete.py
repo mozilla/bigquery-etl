@@ -223,7 +223,7 @@ def delete_from_partition(
                   `{sql_table_id(target)}`
                 WHERE
                   ({field_condition})
-                  AND {partition.condition}
+                  AND ({partition.condition})
                 """
             )
         else:
@@ -249,6 +249,20 @@ def delete_from_partition(
                 f"_source_{index} IS NULL" for index, _ in enumerate(sources)
             )
 
+            if partition.id is None:
+                # only apply field conditions on partition.condition
+                field_conditions = f"""
+                ({partition.condition}) IS NOT TRUE
+                OR ({field_conditions})
+                """
+                # always true partition condition to satisfy require_partition_filter
+                partition_condition = f"""
+                ({partition.condition}) IS NOT TRUE
+                OR ({partition.condition})
+                """
+            else:
+                partition_condition = partition.condition
+
             query = reformat(
                 f"""
                 SELECT
@@ -258,7 +272,7 @@ def delete_from_partition(
                 {field_joins}
                 WHERE
                   ({field_conditions})
-                  AND {partition.condition}
+                  AND ({partition_condition})
                 """
             )
         run_tense = "Would run" if dry_run else "Running"

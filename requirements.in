@@ -1,12 +1,12 @@
 attrs==21.4.0
-authlib==0.15.5
+authlib==1.0.0
 cattrs==1.10.0
 click==8.0.4
 gcsfs==2022.2.0
 gcloud==0.18.3
 gitpython==3.1.27
 google-cloud-bigquery==2.34.2
-google-cloud-storage==2.1.0
+google-cloud-storage==2.2.1
 importlib-resources>=1.4.0  # jsonschema dep for python<3.9
 Jinja2==3.0.3
 jsonschema==4.4.0
@@ -21,7 +21,7 @@ pip-tools==6.5.1
 pre-commit==2.17.0
 pyarrow==7.0.0
 pytest-black==0.3.12
-pytest-flake8==1.1.0
+pytest-flake8==1.1.1
 pytest-isort==3.0.0
 pytest-mypy==0.9.1
 pytest-pydocstyle==2.3.0

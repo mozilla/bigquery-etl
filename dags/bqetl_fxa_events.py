@@ -207,6 +207,45 @@ with DAG(
         dag=dag,
     )
 
+    firefox_accounts_derived__nonprod_fxa_auth_events__v1 = bigquery_etl_query(
+        task_id="firefox_accounts_derived__nonprod_fxa_auth_events__v1",
+        destination_table="nonprod_fxa_auth_events_v1",
+        dataset_id="firefox_accounts_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+        dag=dag,
+    )
+
+    firefox_accounts_derived__nonprod_fxa_content_events__v1 = bigquery_etl_query(
+        task_id="firefox_accounts_derived__nonprod_fxa_content_events__v1",
+        destination_table="nonprod_fxa_content_events_v1",
+        dataset_id="firefox_accounts_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+        dag=dag,
+    )
+
+    firefox_accounts_derived__nonprod_fxa_stdout_events__v1 = bigquery_etl_query(
+        task_id="firefox_accounts_derived__nonprod_fxa_stdout_events__v1",
+        destination_table="nonprod_fxa_stdout_events_v1",
+        dataset_id="firefox_accounts_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+        dag=dag,
+    )
+
     firefox_accounts_derived__exact_mau28__v1.set_upstream(
         firefox_accounts_derived__fxa_users_last_seen__v1
     )

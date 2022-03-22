@@ -67,9 +67,9 @@ attrs==21.4.0 \
     #   jsonschema
     #   pytest
     #   pytest-mypy
-authlib==0.15.5 \
-    --hash=sha256:b83cf6360c8e92b0e9df0d1f32d675790bcc4e3c03977499b1eed24dcdef4252 \
-    --hash=sha256:ecf4a7a9f2508c0bb07e93a752dd3c495cfaffc20e864ef0ffc95e3f40d2abaf
+authlib==1.0.0 \
+    --hash=sha256:2b13b4ba6465bdc46b89b1a07b2707c85b3434502d5a5fe202f5bdef8ebd5ac9 \
+    --hash=sha256:e8d589a886b5bcde64ebf961157bf619d613666ef6703822c06254c5b108b3e6
     # via -r requirements.in
 black==21.4b2 \
     --hash=sha256:bff7067d8bc25eb21dcfdbc8c72f2baafd9ec6de4663241a52fb904b304d391f \

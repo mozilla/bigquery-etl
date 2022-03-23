@@ -81,14 +81,18 @@ invoice_provider_country AS (
 ),
 subscription_promotion_codes AS (
   SELECT
-    subscription_discount.subscription_id,
+    invoice_line_item.subscription_id,
     ARRAY_AGG(DISTINCT promotion_code.code IGNORE NULLS) AS promotion_codes,
   FROM
-    `moz-fx-data-bq-fivetran`.stripe.promotion_code
+    `moz-fx-data-bq-fivetran`.stripe.invoice_line_item
   JOIN
-    `moz-fx-data-bq-fivetran`.stripe.subscription_discount
+    `moz-fx-data-bq-fivetran`.stripe.invoice_discount
   USING
-    (coupon_id, customer_id)
+    (invoice_id)
+  JOIN
+    `moz-fx-data-bq-fivetran`.stripe.promotion_code
+  ON
+    invoice_discount.promotion_code = promotion_code.id
   GROUP BY
     subscription_id
 ),

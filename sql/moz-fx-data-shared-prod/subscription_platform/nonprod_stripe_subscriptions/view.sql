@@ -81,14 +81,18 @@ invoice_provider_country AS (
 ),
 subscription_promotion_codes AS (
   SELECT
-    subscription_discount.subscription_id,
+    invoice_line_item.subscription_id,
     ARRAY_AGG(DISTINCT promotion_code.code IGNORE NULLS) AS promotion_codes,
   FROM
-    `dev-fivetran`.stripe_nonprod.promotion_code
+    `dev-fivetran`.stripe_nonprod.invoice_line_item
   JOIN
-    `dev-fivetran`.stripe_nonprod.subscription_discount
+    `dev-fivetran`.stripe_nonprod.invoice_discount
   USING
-    (coupon_id, customer_id)
+    (invoice_id)
+  JOIN
+    `dev-fivetran`.stripe_nonprod.promotion_code
+  ON
+    invoice_discount.promotion_code = promotion_code.id
   GROUP BY
     subscription_id
 ),

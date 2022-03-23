@@ -31,11 +31,11 @@ from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
 from ..metadata.parse_metadata import (
     METADATA_FILE,
+    BigQueryMetadata,
+    ClusteringMetadata,
     DatasetMetadata,
     Metadata,
-    BigQueryMetadata,
     PartitionMetadata,
-    ClusteringMetadata,
     PartitionType,
 )
 from ..query_scheduling.dag_collection import DagCollection
@@ -469,18 +469,20 @@ def _backfill_query(
             f"with @submission_date={backfill_date}"
         )
 
-        arguments = [
-            "query",
-            f"--parameter=submission_date:DATE:{backfill_date}",
-            "--use_legacy_sql=false",
-            "--replace",
-            f"--max_rows={max_rows}",
-            f"--project_id={project_id}",
-        ] + args
-        if dry_run:
-            arguments += ["--dry_run"]
-
-        run(query_file_path, dataset, destination_table, arguments)
+        run(
+            query_file_path,
+            dataset_id=dataset,
+            destination_table=destination_table,
+            project_id=project_id,
+            replace=True,
+            max_rows=max_rows,
+            dry_run=dry_run,
+            parameters=[
+                bigquery.ScalarQueryParameter(
+                    "submission_date", "DATE", str(backfill_date)
+                )
+            ],
+        )
     else:
         click.echo(f"Skip {query_file_path} with @submission_date={backfill_date}")
 

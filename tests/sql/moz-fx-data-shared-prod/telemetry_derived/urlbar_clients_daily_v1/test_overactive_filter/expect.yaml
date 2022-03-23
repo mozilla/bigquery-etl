@@ -67,6 +67,9 @@
       position: []
     - type: "visiturl"
       position: []
+  experiments:
+    - key: "experiment_key"
+      value: "experiment_value"
 - <<: *base
   client_id: "client_2"
   count_picked_total: 21

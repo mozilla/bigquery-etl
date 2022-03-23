@@ -35,6 +35,9 @@
   scalar_parent_urlbar_picked_topsite_sum: []
   scalar_parent_urlbar_picked_unknown_sum: []
   scalar_parent_urlbar_picked_visiturl_sum: []
+  experiments:
+    - key: "experiment_key"
+      value: "experiment_value"
 - <<: *base
   client_id: "client_2"
   scalar_parent_urlbar_picked_autofill_sum:

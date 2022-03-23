@@ -36,7 +36,7 @@ charge_states AS (
   JOIN
     `moz-fx-data-bq-fivetran`.stripe.card
   ON
-    charge.source_id = card.id
+    charge.card_id = card.id
   JOIN
     postal_code_to_state
   ON

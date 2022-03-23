@@ -38,19 +38,20 @@ customer AS (
   SELECT
     id AS customer_id,
     TO_HEX(SHA256(JSON_VALUE(metadata, "$.userid"))) AS fxa_uid,
+    address_country,
   FROM
     `dev-fivetran`.stripe_nonprod.customer
 ),
 charge AS (
   SELECT
     charge.id AS charge_id,
-    card.country,
+    COALESCE(card.country, charge.billing_detail_address_country) AS country,
   FROM
     `dev-fivetran`.stripe_nonprod.charge
   JOIN
     `dev-fivetran`.stripe_nonprod.card
   ON
-    charge.source_id = card.id
+    charge.card_id = card.id
   WHERE
     charge.status = "succeeded"
 ),
@@ -71,9 +72,9 @@ invoice_provider_country AS (
   ON
     invoice.id = invoice_line_item.invoice_id
   LEFT JOIN
-    `dev-fivetran`.stripe_nonprod.customer
-  ON
-    invoice.customer_id = customer.id
+    customer
+  USING
+    (customer_id)
   LEFT JOIN
     charge
   USING

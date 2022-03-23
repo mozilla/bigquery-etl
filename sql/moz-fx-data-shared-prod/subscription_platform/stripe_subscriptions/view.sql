@@ -137,7 +137,6 @@ SELECT
   plan_id,
   status,
   _fivetran_synced AS event_timestamp,
-  MIN(subscription_start_date) OVER (PARTITION BY customer_id) AS customer_start_date,
   subscription_start_date,
   created,
   trial_end,

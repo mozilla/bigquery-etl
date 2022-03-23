@@ -34,7 +34,6 @@ stripe_subscriptions AS (
     plan_id,
     status,
     event_timestamp,
-    customer_start_date,
     subscription_start_date,
     created,
     trial_end,
@@ -100,15 +99,6 @@ apple_iap_subscriptions AS (
     CAST(NULL AS STRING) AS plan_id,
     CAST(NULL AS STRING) AS status,
     updated_at AS event_timestamp,
-    TIMESTAMP(
-      MIN(start_time) OVER (
-        PARTITION BY
-          user_id
-        ROWS BETWEEN
-          UNBOUNDED PRECEDING
-          AND UNBOUNDED FOLLOWING
-      )
-    ) AS customer_start_date,
     start_time AS subscription_start_date,
     created_at AS created,
     CAST(NULL AS TIMESTAMP) AS trial_end,
@@ -281,15 +271,6 @@ android_iap_subscriptions AS (
     plan_id,
     CAST(NULL AS STRING) AS status,
     event_timestamp,
-    TIMESTAMP(
-      MIN(start_time) OVER (
-        PARTITION BY
-          fxa_uid
-        ROWS BETWEEN
-          UNBOUNDED PRECEDING
-          AND UNBOUNDED FOLLOWING
-      )
-    ) AS customer_start_date,
     start_time AS subscription_start_date,
     created,
     CAST(NULL AS TIMESTAMP) AS trial_end,
@@ -368,6 +349,7 @@ vpn_subscriptions AS (
 vpn_subscriptions_with_end_date AS (
   SELECT
     *,
+    MIN(subscription_start_date) OVER (PARTITION BY customer_id) AS customer_start_date,
     COALESCE(ended_at, TIMESTAMP(CURRENT_DATE)) AS end_date,
   FROM
     vpn_subscriptions

@@ -2142,6 +2142,26 @@ fields:
     mode: NULLABLE
     name: timing_distribution
     type: RECORD
+  - fields:
+    - description: 'A snapshot of how many normal tabs a user has opened when he
+
+        closes the application.
+
+        '
+      mode: NULLABLE
+      name: tabs_normal_tabs_quantity
+      type: INTEGER
+    - description: 'A snapshot of how many private tabs a user has opened when he
+
+        closes the application.
+
+        '
+      mode: NULLABLE
+      name: tabs_private_tabs_quantity
+      type: INTEGER
+    mode: NULLABLE
+    name: quantity
+    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

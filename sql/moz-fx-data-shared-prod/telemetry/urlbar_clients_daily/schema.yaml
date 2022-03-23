@@ -87,3 +87,13 @@ fields:
 - mode: NULLABLE
   name: quicksuggest_data_collection_enabled
   type: STRING
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: STRING
+  mode: REPEATED
+  name: experiments
+  type: RECORD

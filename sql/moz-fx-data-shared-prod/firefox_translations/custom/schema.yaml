@@ -658,6 +658,12 @@ fields:
       mode: NULLABLE
       name: quality_is_supervised
       type: BOOLEAN
+    - description: 'Quality estimation is enabled.
+
+        '
+      mode: NULLABLE
+      name: infobar_qe_enabled
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD

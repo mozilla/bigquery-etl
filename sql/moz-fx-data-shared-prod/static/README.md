@@ -16,3 +16,6 @@ ETL and analysis:
 ./script/publish_static --project-id mozdata
 ./script/publish_static --project-id moz-fx-data-shared-prod
 ```
+
+Note the `country_names` `data.csv` is generated/updated using an SQL generator:
+`bqetl generate country_code_lookup`.

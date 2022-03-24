@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.subscription_platform.nonprod_stripe_subscriptions`
+  `relud1.test.nonprod_stripe_subscriptions`
 AS
 WITH subscription AS (
   SELECT
@@ -57,7 +57,7 @@ charge AS (
 ),
 invoice_provider_country AS (
   SELECT
-    invoice_line_item.subscription_id,
+    invoice.subscription_id,
     IF(
       JSON_VALUE(invoice.metadata, "$.paypalTransactionId") IS NOT NULL,
       -- FxA copies paypal billing agreement country to customer address
@@ -68,10 +68,6 @@ invoice_provider_country AS (
   FROM
     `dev-fivetran`.stripe_nonprod.invoice
   LEFT JOIN
-    `dev-fivetran`.stripe_nonprod.invoice_line_item
-  ON
-    invoice.id = invoice_line_item.invoice_id
-  LEFT JOIN
     customer
   USING
     (customer_id)
@@ -79,21 +75,25 @@ invoice_provider_country AS (
     charge
   USING
     (charge_id)
+  WHERE
+    invoice.status = "paid"
 ),
 subscription_promotion_codes AS (
   SELECT
-    invoice_line_item.subscription_id,
+    invoice.subscription_id,
     ARRAY_AGG(DISTINCT promotion_code.code IGNORE NULLS) AS promotion_codes,
   FROM
-    `dev-fivetran`.stripe_nonprod.invoice_line_item
+    `dev-fivetran`.stripe_nonprod.invoice
   JOIN
     `dev-fivetran`.stripe_nonprod.invoice_discount
-  USING
-    (invoice_id)
+  ON
+    invoice.id = invoice_discount.invoice_id
   JOIN
     `dev-fivetran`.stripe_nonprod.promotion_code
   ON
     invoice_discount.promotion_code = promotion_code.id
+  WHERE
+    invoice.status = "paid"
   GROUP BY
     subscription_id
 ),

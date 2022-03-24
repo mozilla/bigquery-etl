@@ -340,7 +340,11 @@ jobs:
             # Don't depend on dry run for PRs
             PATH="venv/bin:$PATH" script/bqetl generate all \
               --output-dir /tmp/workspace/generated-sql/sql/ \
-              --target-project moz-fx-data-shared-prod
+              --target-project moz-fx-data-shared-prod \
+              --ignore norm_country_code
+            PATH="venv/bin:$PATH" script/bqetl generate norm_country_code \
+              --output-dir /tmp/workspace/generated-sql/sql/ \
+              --target-project mozfun \
             PATH="venv/bin:$PATH" script/bqetl dependency record \
               --skip-existing \
               "/tmp/workspace/generated-sql/sql/"
@@ -502,7 +506,10 @@ jobs:
             pip install --no-deps -r java-requirements.txt
             mvn dependency:copy-dependencies
             ./script/bqetl generate all \
-              --target-project moz-fx-data-shared-prod
+              --target-project moz-fx-data-shared-prod \
+              --ignore norm_country_code
+            ./script/bqetl generate norm_country_code \
+              --target-project mozfun
             ./script/bqetl dependency record \
               --skip-existing \
               "sql/"

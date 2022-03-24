@@ -37,7 +37,10 @@ subscription_item AS (
 customer AS (
   SELECT
     id AS customer_id,
-    COALESCE(TO_HEX(SHA256(JSON_VALUE(customer.metadata, "$.userid"))), JSON_VALUE(pre_fivetran_customer.metadata, "$.fxa_uid")) AS fxa_uid,
+    COALESCE(
+      TO_HEX(SHA256(JSON_VALUE(customer.metadata, "$.userid"))),
+      JSON_VALUE(pre_fivetran_customer.metadata, "$.fxa_uid")
+    ) AS fxa_uid,
     COALESCE(customer.address_country, pre_fivetran_customer.address_country) AS address_country,
   FROM
     `moz-fx-data-bq-fivetran`.stripe.customer

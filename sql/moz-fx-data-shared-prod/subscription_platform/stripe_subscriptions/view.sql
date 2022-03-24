@@ -37,18 +37,15 @@ subscription_item AS (
 customer AS (
   SELECT
     id AS customer_id,
-    TO_HEX(SHA256(JSON_VALUE(metadata, "$.userid"))) AS fxa_uid,
-    address_country,
+    COALESCE(TO_HEX(SHA256(JSON_VALUE(customer.metadata, "$.userid"))), JSON_VALUE(pre_fivetran_customer.metadata, "$.fxa_uid")) AS fxa_uid,
+    COALESCE(customer.address_country, pre_fivetran_customer.address_country) AS address_country,
   FROM
     `moz-fx-data-bq-fivetran`.stripe.customer
-  UNION ALL
-  -- include customer records that were deleted before the initial fivetran stripe import
-  SELECT
-    id AS customer_id,
-    JSON_VALUE(metadata, "$.fxa_uid") AS fxa_uid,
-    address_country,
-  FROM
+  FULL JOIN
+    -- include customers that were deleted before the initial fivetran stripe import
     `moz-fx-data-shared-prod`.stripe_external.pre_fivetran_customer
+  USING
+    (id)
 ),
 charge AS (
   SELECT

@@ -29,9 +29,8 @@ elif [ "${1:0:1}" = - ]; then
 elif [ "$1" = "query" ]; then
     # For an invocation like:
     #     query [options] FILE
-    # we dispatch to a script that inspects metadata and emulates the following call:
-    #     bq query [options] < FILE 
-    exec script/run_query --query_file="${@: -1}" "${@:1:$#-1}"
+    # we dispatch to a script that inspects metadata and runs the query in FILE
+    exec script/run_query --query_file="${@: -1}" "${@:2:$#-2}"
 elif [ "$XCOM_PUSH" = "true" ]; then
     # KubernetesPodOperator will extract the contents of /airflow/xcom/return.json as an xcom
     # if the xcom_push parameter is true

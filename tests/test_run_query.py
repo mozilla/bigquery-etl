@@ -14,14 +14,13 @@ class TestRunQuery:
         query_file = query_file_path / "query.sql"
         query_file.write_text("SELECT 1")
 
-        with pytest.raises(ValueError):
-            run(query_file, dataset_id=None, destination_table=None)
+        with patch("google.cloud.bigquery.Client"):
 
-        with pytest.raises(ValueError):
-            run(query_file, dataset_id="test", destination_table=None)
+            with pytest.raises(ValueError):
+                run(query_file, dataset_id="test", destination_table=None)
 
-        with pytest.raises(ValueError):
-            run(query_file, dataset_id=None, destination_table="query_v1")
+            with pytest.raises(ValueError):
+                run(query_file, dataset_id=None, destination_table="query_v1")
 
     def test_public_query_uses_public_project(self, tmp_path):
         query_file_path = tmp_path / "sql" / "test" / "query_v1"

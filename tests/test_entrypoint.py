@@ -10,7 +10,8 @@ ENTRYPOINT_SCRIPT = Path(__file__).parent.parent / "script" / "entrypoint"
 
 class TestEntrypoint:
     @pytest.mark.integration
-    def test_run_query(self, tmp_path, project_id):
+    def test_run_query(self, tmp_path):
+        project_id = "bigquery-etl-integration-test"
         query_file_path = tmp_path / "sql" / "test" / "query_v1"
         os.makedirs(query_file_path)
 
@@ -27,14 +28,14 @@ class TestEntrypoint:
                 ],
                 stderr=subprocess.STDOUT,
             )
-            assert b"Current status: DONE" in result
+            assert b"Current status: DONE" in result  # TODO: Update success output
             assert b"No metadata.yaml found for {}" in result
         except subprocess.CalledProcessError as e:
             # running bq in CircleCI will fail since it's not installed
             # but the error output can be checked for whether bq was called
             assert b"No such file or directory: 'bq'" in e.output
             assert b"No metadata.yaml found for {}" in e.output
-            assert (
+            assert (  # TODO: Update failure output
                 b'subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)'
                 in e.output
             )

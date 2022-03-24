@@ -109,12 +109,6 @@ def run(
     write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
 ):
     """Run the specified query with the provided arguments."""
-    schema_update_options = schema_update_options or []
-    parameters = parameters or []
-    clustering_fields = clustering_fields or []
-
-    if schema_update_options is None:
-        schema_update_options = []
     query_path = Path(query_file)
     if not query_path.exists():
         raise FileNotFoundError(f"Path to query: {query_path} does not exist.")
@@ -134,17 +128,23 @@ def run(
     except FileNotFoundError:
         logging.warning(f"INFO: No metadata.yaml found for {query_file}")
 
-    can_qualify_destination_table = (
-        dataset_id is not None
-        and destination_table is not None
-        and re.match(DESTINATION_TABLE_RE, destination_table)
+    # If either (but not both) destination_table and dataset_id is empty,
+    # we can't qualify the destination.
+    # Note we can still run a query without a destination_table, the results
+    # will be written to a bigquery temporary table.
+    unable_to_qualify_destination_table = (
+        (destination_table is None and dataset_id is not None)
+        or (destination_table is not None and dataset_id is None)
+        or (
+            destination_table is not None
+            and not re.match(DESTINATION_TABLE_RE, destination_table)
+        )
     )
-
-    if not can_qualify_destination_table:
+    if unable_to_qualify_destination_table:
         raise ValueError(
             "ERROR: Unable to qualify destination table."
-            " --destination_table=<table without dataset ID> and"
-            " --dataset_id=<dataset> required"
+            " --destination_table=<table(matching format [a-zA-Z0-9_$]{0,1024})"
+            " without dataset ID> and --dataset_id=<dataset> required"
         )
 
     if use_public_table:
@@ -158,14 +158,17 @@ def run(
     if destination_project is None:
         logging.info(
             "No project provided, the BigQuery Client will determine the project "
-            "(from environment variables or a .bigqueryrc file."
+            "(from environment variables or a .bigqueryrc file)"
         )
 
-    qualified_table = "{}.{}.{}".format(
-        destination_project, dataset_id, destination_table
-    )
+    if dataset_id is None and destination_table is None:
+        qualified_table = None
+    else:
+        qualified_table = "{}.{}.{}".format(
+            destination_project, dataset_id, destination_table
+        )
 
-    client = bigquery.Client(destination_project)
+    client = bigquery.Client(project=destination_project)
 
     write_disposition = (
         bigquery.WriteDisposition.WRITE_TRUNCATE if replace else write_disposition
@@ -188,10 +191,13 @@ def run(
         logging.info(f"Would process {int(job.total_bytes_processed):,d} bytes")
     else:
         logging.info(f"Job with ID: {job.job_id} started at {job.started}")
-        logging.info(f"Job URL: {job.self_link}")
-        job.result(max_results=max_rows)
+        logging.info(f"Job Query Parameters: {job.query_parameters}")
+        result = job.result(max_results=max_rows)
         logging.info(
             f"Job ended at {job.ended}; processed {int(job.total_bytes_processed):,d} bytes"
+        )
+        logging.info(
+            f"Wrote {result.total_rows} rows to destination: {job.destination}"
         )
 
 

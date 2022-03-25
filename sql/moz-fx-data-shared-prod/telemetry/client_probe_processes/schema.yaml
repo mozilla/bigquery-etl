@@ -2,12 +2,6 @@ fields:
 - mode: NULLABLE
   name: metric
   type: STRING
-- mode: NULLABLE
-  name: os
-  type: STRING
-- mode: NULLABLE
-  name: channel
-  type: STRING
 - mode: REPEATED
   name: processes
   type: STRING

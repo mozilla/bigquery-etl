@@ -123,6 +123,22 @@ jobs:
           command: docker build -t app:build jobs/experiments-monitoring-data-export/
 
 
+  build-job-kpi-forecasting:
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - compare-branch:
+          pattern: ^jobs/kpi-forecasting/
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Build Docker image
+          command: docker build -t app:build jobs/kpi-forecasting/
+      - run:
+            name: Test Code
+            command: docker run app:build pytest --flake8 --black
+
   build-job-mozaggregator2bq:
     docker:
       - image: docker:stable-git
@@ -203,6 +219,7 @@ jobs:
           name: Build Docker image
           command: docker build -t app:build jobs/search-alert/
 
+
 workflows:
   docker-etl:
     jobs:
@@ -269,6 +286,20 @@ workflows:
           filters:
             branches:
               only: main
+
+  job-kpi-forecasting:
+    jobs:
+      - build-job-kpi-forecasting
+      - gcp-gcr/build-and-push-image:
+          context: data-eng-airflow-gcr
+          path: jobs/kpi-forecasting/
+          image: kpi-forecasting_docker_etl
+          requires:
+            - build-job-kpi-forecasting
+          filters:
+            branches:
+              only: main
+
 
   job-mozaggregator2bq:
     jobs:

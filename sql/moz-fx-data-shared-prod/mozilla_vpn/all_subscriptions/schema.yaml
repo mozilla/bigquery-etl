@@ -18,9 +18,6 @@ fields:
   name: event_timestamp
   type: TIMESTAMP
 - mode: NULLABLE
-  name: customer_start_date
-  type: TIMESTAMP
-- mode: NULLABLE
   name: subscription_start_date
   type: TIMESTAMP
 - mode: NULLABLE
@@ -113,6 +110,9 @@ fields:
 - mode: REPEATED
   name: promotion_codes
   type: STRING
+- mode: NULLABLE
+  name: customer_start_date
+  type: TIMESTAMP
 - mode: NULLABLE
   name: end_date
   type: TIMESTAMP

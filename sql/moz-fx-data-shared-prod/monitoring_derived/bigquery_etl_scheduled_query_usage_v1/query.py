@@ -10,6 +10,7 @@ from google.cloud import bigquery
 DEFAULT_PROJECTS = [
     "moz-fx-data-shared-prod",
     "moz-fx-data-experiments",
+    "mozdata"
 ]
 
 parser = ArgumentParser(description=__doc__)

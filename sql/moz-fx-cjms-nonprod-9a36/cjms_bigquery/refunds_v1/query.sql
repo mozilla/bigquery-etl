@@ -1,6 +1,3 @@
-CREATE OR REPLACE TABLE
-  `moz-fx-cjms-nonprod-9a36`.cjms_bigquery.refund_v1
-AS
 SELECT
   refund.id AS refund_id,
   invoice.subscription_id,

@@ -1,4 +1,4 @@
-WITH flows AS (
+WITH aic_flows AS (
   -- last fxa_uid for each flow_id
   SELECT
     flow_id,
@@ -8,6 +8,10 @@ WITH flows AS (
     ] AS fxa_uid,
   FROM
     `moz-fx-cjms-nonprod-9a36`.cjms_bigquery.flows_v1
+  JOIN
+    EXTERNAL_QUERY("moz-fx-cjms-nonprod-9a36.us.cjms-sql", "SELECT flow_id FROM aic")
+  USING
+    (flow_id)
   WHERE
     -- only use the last 10 days in stage
     submission_date >= CURRENT_DATE - 10
@@ -15,58 +19,50 @@ WITH flows AS (
     flow_id
 ),
 attributed_flows AS (
-  -- last flow_id in aic for each fxa_uid
+  -- last flow that started before subscription created
   SELECT
-    fxa_uid,
-    ARRAY_AGG(STRUCT(flow_id, flow_started) ORDER BY flow_started DESC LIMIT 1)[SAFE_OFFSET(0)].*,
+    nonprod_stripe_subscriptions.subscription_id,
+    nonprod_stripe_subscriptions.created AS subscription_created,
+    ARRAY_AGG(aic_flows.flow_id ORDER BY aic_flows.flow_started DESC LIMIT 1)[
+      SAFE_OFFSET(0)
+    ] AS flow_id,
   FROM
-    flows
-  JOIN
-    EXTERNAL_QUERY("moz-fx-cjms-nonprod-9a36.us.cjms-sql", "SELECT flow_id FROM aic")
-  USING
-    (flow_id)
-  GROUP BY
-    fxa_uid
-),
-attributed_subs AS (
-  -- last subscription_id created after the flow started for each fxa_uid
-  SELECT
-    attributed_flows.fxa_uid,
-    ARRAY_AGG(
-      nonprod_stripe_subscriptions.subscription_id
-      ORDER BY
-        nonprod_stripe_subscriptions.created DESC
-      LIMIT
-        1
-    )[SAFE_OFFSET(0)] AS subscription_id,
-  FROM
-    attributed_flows
+    aic_flows
   JOIN
     mozdata.subscription_platform.nonprod_stripe_subscriptions
   ON
-    attributed_flows.fxa_uid = nonprod_stripe_subscriptions.fxa_uid
-    AND attributed_flows.flow_started < nonprod_stripe_subscriptions.created
+    aic_flows.fxa_uid = nonprod_stripe_subscriptions.fxa_uid
+    AND aic_flows.flow_started < nonprod_stripe_subscriptions.created
   GROUP BY
-    fxa_uid
+    subscription_id,
+    subscription_created
+),
+attributed_subs AS (
+  -- last subscription for each flow, for 1:1 relationship between flow and subscription
+  SELECT
+    flow_id,
+    ARRAY_AGG(subscription_id ORDER BY subscription_created DESC LIMIT 1)[
+      SAFE_OFFSET(0)
+    ] AS subscription_id,
+  FROM
+    attributed_flows
+  GROUP BY
+    flow_id
 )
 SELECT
   CURRENT_TIMESTAMP AS report_timestamp,
-  created AS subscription_created,
-  subscription_id, -- transaction id
-  fxa_uid,
+  nonprod_stripe_subscriptions.created AS subscription_created,
+  attributed_subs.subscription_id, -- transaction id
+  nonprod_stripe_subscriptions.fxa_uid,
   1 AS quantity,
-  plan_id, -- sku
-  plan_currency,
-  plan_amount,
-  country,
-  flow_id,
+  nonprod_stripe_subscriptions.plan_id, -- sku
+  nonprod_stripe_subscriptions.plan_currency,
+  nonprod_stripe_subscriptions.plan_amount,
+  nonprod_stripe_subscriptions.country,
+  attributed_subs.flow_id,
 FROM
   attributed_subs
 JOIN
-  attributed_flows
-USING
-  (fxa_uid)
-JOIN
   mozdata.subscription_platform.nonprod_stripe_subscriptions
 USING
-  (fxa_uid, subscription_id)
+  (subscription_id)

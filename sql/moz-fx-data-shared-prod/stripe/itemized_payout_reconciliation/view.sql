@@ -1,7 +1,7 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.stripe.itemized_payout_reconciliation`
 AS
-WITH customer AS (
+WITH customers AS (
   SELECT
     id,
     address_country AS country,
@@ -16,7 +16,7 @@ postal_code_to_state AS (
     postal_code,
     IF(COUNT(DISTINCT state) > 1, NULL, ANY_VALUE(state)) AS state,
   FROM
-    customer
+    customers
   WHERE
     country IN ("US", "CA")
     AND postal_code IS NOT NULL
@@ -27,23 +27,23 @@ postal_code_to_state AS (
 ),
 charge_states AS (
   SELECT
-    charge.id AS charge_id,
-    card.country AS card_country,
-    NULLIF(UPPER(TRIM(charge.billing_detail_address_postal_code)), "") AS postal_code,
+    charges.id AS charge_id,
+    cards.country AS card_country,
+    NULLIF(UPPER(TRIM(charges.billing_detail_address_postal_code)), "") AS postal_code,
     postal_code_to_state.state,
   FROM
-    `moz-fx-data-bq-fivetran`.stripe.charge
+    `moz-fx-data-bq-fivetran`.stripe.charge AS charges
   JOIN
-    `moz-fx-data-bq-fivetran`.stripe.card
+    `moz-fx-data-bq-fivetran`.stripe.card AS cards
   ON
-    charge.card_id = card.id
+    charges.card_id = cards.id
   JOIN
     postal_code_to_state
   ON
-    card.country = postal_code_to_state.country
-    AND UPPER(TRIM(charge.billing_detail_address_postal_code)) = postal_code_to_state.postal_code
+    cards.country = postal_code_to_state.country
+    AND UPPER(TRIM(charges.billing_detail_address_postal_code)) = postal_code_to_state.postal_code
   WHERE
-    card.country IN ("US", "CA")
+    cards.country IN ("US", "CA")
 ),
 enriched AS (
   SELECT

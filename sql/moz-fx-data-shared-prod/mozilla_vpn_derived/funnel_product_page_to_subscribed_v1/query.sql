@@ -1,5 +1,5 @@
 -- this will be updated once the service parameter get passed for "fxa_rp_button - view"
-WITH stripe_plan AS (
+WITH stripe_plans AS (
   SELECT
     id AS plan_id,
     product_id,
@@ -257,7 +257,7 @@ SELECT
 FROM
   flow_counts
 LEFT JOIN
-  stripe_plan
+  stripe_plans
 USING
   (plan_id)
 WINDOW

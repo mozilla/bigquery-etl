@@ -1,13 +1,12 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.subscription_platform.stripe_subscriptions`
 AS
-WITH subscription AS (
+WITH subscriptions AS (
   SELECT
     customer_id,
     id AS subscription_id,
     status,
     _fivetran_synced,
-    -- TODO verify logic for subscription_start_date
     COALESCE(trial_end, start_date) AS subscription_start_date,
     created,
     -- trial_start,
@@ -18,7 +17,7 @@ WITH subscription AS (
     JSON_VALUE(metadata, "$.cancelled_for_customer_at") AS canceled_for_customer_at,
     cancel_at,
     cancel_at_period_end,
-    IF(ended_at <= _fivetran_synced, ended_at, NULL) AS ended_at,
+    ended_at,
   FROM
     `moz-fx-data-bq-fivetran`.stripe.subscription_history
   WHERE
@@ -26,7 +25,7 @@ WITH subscription AS (
     -- choose subscription from subscription history
     AND _fivetran_active
 ),
-subscription_item AS (
+subscription_items AS (
   SELECT
     id AS subscription_item_id,
     subscription_id,
@@ -34,78 +33,78 @@ subscription_item AS (
   FROM
     `moz-fx-data-bq-fivetran`.stripe.subscription_item
 ),
-customer AS (
+customers AS (
   SELECT
     id AS customer_id,
     COALESCE(
-      TO_HEX(SHA256(JSON_VALUE(customer.metadata, "$.userid"))),
-      JSON_VALUE(pre_fivetran_customer.metadata, "$.fxa_uid")
+      TO_HEX(SHA256(JSON_VALUE(customers.metadata, "$.userid"))),
+      JSON_VALUE(pre_fivetran_customers.metadata, "$.fxa_uid")
     ) AS fxa_uid,
-    COALESCE(customer.address_country, pre_fivetran_customer.address_country) AS address_country,
+    COALESCE(customers.address_country, pre_fivetran_customers.address_country) AS address_country,
   FROM
-    `moz-fx-data-bq-fivetran`.stripe.customer
+    `moz-fx-data-bq-fivetran`.stripe.customer AS customers
   FULL JOIN
     -- include customers that were deleted before the initial fivetran stripe import
-    `moz-fx-data-shared-prod`.stripe_external.pre_fivetran_customer
+    `moz-fx-data-shared-prod`.stripe_external.pre_fivetran_customers
   USING
     (id)
 ),
-charge AS (
+charges AS (
   SELECT
-    charge.id AS charge_id,
-    COALESCE(card.country, charge.billing_detail_address_country) AS country,
+    charges.id AS charge_id,
+    COALESCE(cards.country, charges.billing_detail_address_country) AS country,
   FROM
-    `moz-fx-data-bq-fivetran`.stripe.charge
+    `moz-fx-data-bq-fivetran`.stripe.charge AS charges
   JOIN
-    `moz-fx-data-bq-fivetran`.stripe.card
+    `moz-fx-data-bq-fivetran`.stripe.card AS cards
   ON
-    charge.card_id = card.id
+    charges.card_id = cards.id
   WHERE
-    charge.status = "succeeded"
+    charges.status = "succeeded"
 ),
-invoice_provider_country AS (
+invoices_provider_country AS (
   SELECT
-    invoice.subscription_id,
+    invoices.subscription_id,
     IF(
-      JSON_VALUE(invoice.metadata, "$.paypalTransactionId") IS NOT NULL,
+      JSON_VALUE(invoices.metadata, "$.paypalTransactionId") IS NOT NULL,
       -- FxA copies paypal billing agreement country to customer address
-      STRUCT("Paypal" AS provider, customer.address_country AS country),
-      ("Stripe", charge.country)
+      STRUCT("Paypal" AS provider, customers.address_country AS country),
+      ("Stripe", charges.country)
     ).*,
-    invoice.finalized_at,
+    invoices.created,
   FROM
-    `moz-fx-data-bq-fivetran`.stripe.invoice
+    `moz-fx-data-bq-fivetran`.stripe.invoice AS invoices
   LEFT JOIN
-    customer
+    customers
   USING
     (customer_id)
   LEFT JOIN
-    charge
+    charges
   USING
     (charge_id)
   WHERE
-    invoice.status = "paid"
+    invoices.status = "paid"
 ),
-subscription_promotion_codes AS (
+subscriptions_promotion_codes AS (
   SELECT
-    invoice.subscription_id,
-    ARRAY_AGG(DISTINCT promotion_code.code IGNORE NULLS) AS promotion_codes,
+    invoices.subscription_id,
+    ARRAY_AGG(DISTINCT promotion_codes.code IGNORE NULLS) AS promotion_codes,
   FROM
-    `moz-fx-data-bq-fivetran`.stripe.invoice
+    `moz-fx-data-bq-fivetran`.stripe.invoice AS invoices
   JOIN
-    `moz-fx-data-bq-fivetran`.stripe.invoice_discount
+    `moz-fx-data-bq-fivetran`.stripe.invoice_discount AS invoice_discounts
   ON
-    invoice.id = invoice_discount.invoice_id
+    invoices.id = invoice_discounts.invoice_id
   JOIN
-    `moz-fx-data-bq-fivetran`.stripe.promotion_code
+    `moz-fx-data-bq-fivetran`.stripe.promotion_code AS promotion_codes
   ON
-    invoice_discount.promotion_code = promotion_code.id
+    invoice_discounts.promotion_code = promotion_codes.id
   WHERE
-    invoice.status = "paid"
+    invoices.status = "paid"
   GROUP BY
     subscription_id
 ),
-subscription_provider_country AS (
+subscriptions_provider_country AS (
   SELECT
     subscription_id,
     ARRAY_AGG(
@@ -113,31 +112,31 @@ subscription_provider_country AS (
       ORDER BY
         -- prefer rows with country
         IF(country IS NULL, 0, 1) DESC,
-        finalized_at DESC
+        created DESC
       LIMIT
         1
     )[OFFSET(0)].*
   FROM
-    invoice_provider_country
+    invoices_provider_country
   GROUP BY
     subscription_id
 ),
-plan AS (
+plans AS (
   SELECT
-    plan.id AS plan_id,
-    plan.amount AS plan_amount,
-    plan.billing_scheme AS billing_scheme,
-    plan.currency AS plan_currency,
-    plan.interval AS plan_interval,
-    plan.interval_count AS plan_interval_count,
-    plan.product_id,
-    product.name AS product_name,
+    plans.id AS plan_id,
+    plans.amount AS plan_amount,
+    plans.billing_scheme AS billing_scheme,
+    plans.currency AS plan_currency,
+    plans.interval AS plan_interval,
+    plans.interval_count AS plan_interval_count,
+    plans.product_id,
+    products.name AS product_name,
   FROM
-    `moz-fx-data-bq-fivetran`.stripe.plan
+    `moz-fx-data-bq-fivetran`.stripe.plan AS plans
   LEFT JOIN
-    `moz-fx-data-bq-fivetran`.stripe.product
+    `moz-fx-data-bq-fivetran`.stripe.product AS products
   ON
-    plan.product_id = product.id
+    plans.product_id = products.id
 )
 SELECT
   customer_id,
@@ -167,24 +166,24 @@ SELECT
   product_name,
   promotion_codes,
 FROM
-  subscription
+  subscriptions
 LEFT JOIN
-  subscription_item
+  subscription_items
 USING
   (subscription_id)
 LEFT JOIN
-  plan
+  plans
 USING
   (plan_id)
 LEFT JOIN
-  subscription_provider_country
+  subscriptions_provider_country
 USING
   (subscription_id)
 LEFT JOIN
-  customer
+  customers
 USING
   (customer_id)
 LEFT JOIN
-  subscription_promotion_codes
+  subscriptions_promotion_codes
 USING
   (subscription_id)

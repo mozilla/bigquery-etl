@@ -1,13 +1,12 @@
 CREATE OR REPLACE VIEW
   `relud1.test.nonprod_stripe_subscriptions`
 AS
-WITH subscription AS (
+WITH subscriptions AS (
   SELECT
     customer_id,
     id AS subscription_id,
     status,
     _fivetran_synced,
-    -- TODO verify logic for subscription_start_date
     COALESCE(trial_end, start_date) AS subscription_start_date,
     created,
     -- trial_start,
@@ -18,7 +17,7 @@ WITH subscription AS (
     JSON_VALUE(metadata, "$.cancelled_for_customer_at") AS canceled_for_customer_at,
     cancel_at,
     cancel_at_period_end,
-    IF(ended_at <= _fivetran_synced, ended_at, NULL) AS ended_at,
+    ended_at,
   FROM
     `dev-fivetran`.stripe_nonprod.subscription_history
   WHERE
@@ -26,7 +25,7 @@ WITH subscription AS (
     -- choose subscription from subscription history
     AND _fivetran_active
 ),
-subscription_item AS (
+subscription_items AS (
   SELECT
     id AS subscription_item_id,
     subscription_id,
@@ -34,7 +33,7 @@ subscription_item AS (
   FROM
     `dev-fivetran`.stripe_nonprod.subscription_item
 ),
-customer AS (
+customers AS (
   SELECT
     id AS customer_id,
     TO_HEX(SHA256(JSON_VALUE(metadata, "$.userid"))) AS fxa_uid,
@@ -42,62 +41,62 @@ customer AS (
   FROM
     `dev-fivetran`.stripe_nonprod.customer
 ),
-charge AS (
+charges AS (
   SELECT
-    charge.id AS charge_id,
-    COALESCE(card.country, charge.billing_detail_address_country) AS country,
+    charges.id AS charge_id,
+    COALESCE(cards.country, charges.billing_detail_address_country) AS country,
   FROM
-    `dev-fivetran`.stripe_nonprod.charge
+    `dev-fivetran`.stripe_nonprod.charge AS charges
   JOIN
-    `dev-fivetran`.stripe_nonprod.card
+    `dev-fivetran`.stripe_nonprod.card AS cards
   ON
-    charge.card_id = card.id
+    charges.card_id = cards.id
   WHERE
-    charge.status = "succeeded"
+    charges.status = "succeeded"
 ),
-invoice_provider_country AS (
+invoices_provider_country AS (
   SELECT
-    invoice.subscription_id,
+    invoices.subscription_id,
     IF(
-      JSON_VALUE(invoice.metadata, "$.paypalTransactionId") IS NOT NULL,
+      JSON_VALUE(invoices.metadata, "$.paypalTransactionId") IS NOT NULL,
       -- FxA copies paypal billing agreement country to customer address
-      STRUCT("Paypal" AS provider, customer.address_country AS country),
-      ("Stripe", charge.country)
+      STRUCT("Paypal" AS provider, customers.address_country AS country),
+      ("Stripe", charges.country)
     ).*,
-    invoice.finalized_at,
+    invoices.created,
   FROM
-    `dev-fivetran`.stripe_nonprod.invoice
+    `dev-fivetran`.stripe_nonprod.invoice AS invoices
   LEFT JOIN
-    customer
+    customers
   USING
     (customer_id)
   LEFT JOIN
-    charge
+    charges
   USING
     (charge_id)
   WHERE
-    invoice.status = "paid"
+    invoices.status = "paid"
 ),
-subscription_promotion_codes AS (
+subscriptions_promotion_codes AS (
   SELECT
-    invoice.subscription_id,
-    ARRAY_AGG(DISTINCT promotion_code.code IGNORE NULLS) AS promotion_codes,
+    invoices.subscription_id,
+    ARRAY_AGG(DISTINCT promotion_codes.code IGNORE NULLS) AS promotion_codes,
   FROM
-    `dev-fivetran`.stripe_nonprod.invoice
+    `dev-fivetran`.stripe_nonprod.invoice AS invoices
   JOIN
-    `dev-fivetran`.stripe_nonprod.invoice_discount
+    `dev-fivetran`.stripe_nonprod.invoice_discount AS invoice_discounts
   ON
-    invoice.id = invoice_discount.invoice_id
+    invoices.id = invoice_discounts.invoice_id
   JOIN
-    `dev-fivetran`.stripe_nonprod.promotion_code
+    `dev-fivetran`.stripe_nonprod.promotion_code AS promotion_codes
   ON
-    invoice_discount.promotion_code = promotion_code.id
+    invoice_discounts.promotion_code = promotion_codes.id
   WHERE
-    invoice.status = "paid"
+    invoices.status = "paid"
   GROUP BY
     subscription_id
 ),
-subscription_provider_country AS (
+subscriptions_provider_country AS (
   SELECT
     subscription_id,
     ARRAY_AGG(
@@ -105,31 +104,31 @@ subscription_provider_country AS (
       ORDER BY
         -- prefer rows with country
         IF(country IS NULL, 0, 1) DESC,
-        finalized_at DESC
+        created DESC
       LIMIT
         1
     )[OFFSET(0)].*
   FROM
-    invoice_provider_country
+    invoices_provider_country
   GROUP BY
     subscription_id
 ),
-plan AS (
+plans AS (
   SELECT
-    plan.id AS plan_id,
-    plan.amount AS plan_amount,
-    plan.billing_scheme AS billing_scheme,
-    plan.currency AS plan_currency,
-    plan.interval AS plan_interval,
-    plan.interval_count AS plan_interval_count,
-    plan.product_id,
-    product.name AS product_name,
+    plans.id AS plan_id,
+    plans.amount AS plan_amount,
+    plans.billing_scheme AS billing_scheme,
+    plans.currency AS plan_currency,
+    plans.interval AS plan_interval,
+    plans.interval_count AS plan_interval_count,
+    plans.product_id,
+    products.name AS product_name,
   FROM
-    `dev-fivetran`.stripe_nonprod.plan
+    `dev-fivetran`.stripe_nonprod.plan AS plans
   LEFT JOIN
-    `dev-fivetran`.stripe_nonprod.product
+    `dev-fivetran`.stripe_nonprod.product AS products
   ON
-    plan.product_id = product.id
+    plans.product_id = products.id
 )
 SELECT
   customer_id,
@@ -138,7 +137,6 @@ SELECT
   plan_id,
   status,
   _fivetran_synced AS event_timestamp,
-  MIN(subscription_start_date) OVER (PARTITION BY customer_id) AS customer_start_date,
   subscription_start_date,
   created,
   trial_end,
@@ -160,24 +158,24 @@ SELECT
   product_name,
   promotion_codes,
 FROM
-  subscription
+  subscriptions
 LEFT JOIN
-  subscription_item
+  subscription_items
 USING
   (subscription_id)
 LEFT JOIN
-  plan
+  plans
 USING
   (plan_id)
 LEFT JOIN
-  subscription_provider_country
+  subscriptions_provider_country
 USING
   (subscription_id)
 LEFT JOIN
-  customer
+  customers
 USING
   (customer_id)
 LEFT JOIN
-  subscription_promotion_codes
+  subscriptions_promotion_codes
 USING
   (subscription_id)

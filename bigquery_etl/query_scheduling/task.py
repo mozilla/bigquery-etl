@@ -179,6 +179,7 @@ class Task:
     gke_project_id: Optional[str] = attr.ib(None)
     gke_location: Optional[str] = attr.ib(None)
     gke_cluster_name: Optional[str] = attr.ib(None)
+    query_project: Optional[str] = attr.ib(None)
 
     @owner.validator
     def validate_owner(self, attribute, value):

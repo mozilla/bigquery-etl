@@ -48,8 +48,8 @@ with DAG(
     cjms_bigquery__flows__v1 = bigquery_etl_query(
         task_id="cjms_bigquery__flows__v1",
         destination_table="flows_v1",
-        dataset_id="cjms_bigquery",
-        project_id="moz-fx-cjms-nonprod-9a36",
+        dataset_id="moz-fx-cjms-nonprod-9a36.cjms_bigquery",
+        project_id="moz-fx-data-shared-prod",
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
@@ -60,8 +60,8 @@ with DAG(
     cjms_bigquery__refunds__v1 = bigquery_etl_query(
         task_id="cjms_bigquery__refunds__v1",
         destination_table="refunds_v1",
-        dataset_id="cjms_bigquery",
-        project_id="moz-fx-cjms-nonprod-9a36",
+        dataset_id="moz-fx-cjms-nonprod-9a36.cjms_bigquery",
+        project_id="moz-fx-data-shared-prod",
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
@@ -72,8 +72,8 @@ with DAG(
     cjms_bigquery__subscriptions__v1 = bigquery_etl_query(
         task_id="cjms_bigquery__subscriptions__v1",
         destination_table="subscriptions_v1",
-        dataset_id="cjms_bigquery",
-        project_id="moz-fx-cjms-nonprod-9a36",
+        dataset_id="moz-fx-cjms-nonprod-9a36.cjms_bigquery",
+        project_id="moz-fx-data-shared-prod",
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,

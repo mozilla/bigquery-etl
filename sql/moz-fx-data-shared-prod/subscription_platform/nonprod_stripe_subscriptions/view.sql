@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `relud1.test.nonprod_stripe_subscriptions`
+  `moz-fx-data-shared-prod.subscription_plaftorm.nonprod_stripe_subscriptions`
 AS
 WITH subscriptions AS (
   SELECT

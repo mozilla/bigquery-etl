@@ -21,6 +21,7 @@ FROM
     `{{ dataset }}.{{ prefix }}__view_probe_counts_v1`
 WHERE
     total_users > {{ total_users }}
+    AND app_version NOT IN (2015815747, 2015819723, 2015828803, 2015829155, 3015815747)
 GROUP BY
     channel,
     app_version,

@@ -12,7 +12,7 @@ Jinja2==3.0.3
 jsonschema==4.4.0
 markdown-include==0.6.0
 mkdocs==1.2.3
-mkdocs-material==8.2.5
+mkdocs-material==8.2.6
 mkdocs-awesome-pages-plugin==2.7.0
 mozilla-schema-generator==0.5.1
 pandas==1.4.1
@@ -30,7 +30,7 @@ pytest==7.1.1
 PyYAML==6.0
 smart_open==5.2.1
 sqlparse==0.4.2
-stripe==2.67.0
+stripe==2.68.0
 typing==3.7.4.3
 ujson==5.1.0
 yamllint==1.26.3

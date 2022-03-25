@@ -20,7 +20,7 @@ default_args = {
     "retry_delay": timedelta(minutes=30),
 }
 
-tags = [Tag.ImpactTier.tier_3] # TODO: figure this out
+tags = [Tag.ImpactTier.tier_3]
 
 with DAG("etl_graph", default_args=default_args, schedule_interval="0 2 * * sat", doc_md=__doc__, tags=tags,) as dag:
     dataset_yamls = ["yaml/mobile.yaml", "yaml/desktop.yaml"]

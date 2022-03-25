@@ -9,7 +9,7 @@ description: >
 owners:
   - dthorn@mozilla.com
 labels:
-  application: stripe
+  application: mozilla_vpn
   schedule: daily
 scheduling:
   dag_name: bqetl_subplat

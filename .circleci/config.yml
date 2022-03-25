@@ -344,7 +344,7 @@ jobs:
               --ignore norm_country_code
             PATH="venv/bin:$PATH" script/bqetl generate norm_country_code \
               --output-dir /tmp/workspace/generated-sql/sql/ \
-              --target-project mozfun \
+              --target-project mozfun
             PATH="venv/bin:$PATH" script/bqetl dependency record \
               --skip-existing \
               "/tmp/workspace/generated-sql/sql/"
@@ -429,7 +429,8 @@ jobs:
             # Don't depend on dry run for PRs
             PATH="venv/bin:$PATH" script/bqetl generate all \
               --output-dir /tmp/workspace/private-generated-sql/sql/ \
-              --target-project moz-fx-data-shared-prod
+              --target-project moz-fx-data-shared-prod \
+              --ignore norm_country_udf
             PATH="venv/bin:$PATH" script/bqetl dependency record \
               --skip-existing \
               "/tmp/workspace/private-generated-sql/sql/"

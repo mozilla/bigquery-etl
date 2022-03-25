@@ -59,7 +59,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
                             {%+ else -%}None
                             {%+ endif -%},
             {%+ if task.query_project -%}
-            dataset_id='{{ task.project }}.{{ task.dataset }}',
+            dataset_id='{{ task.project }}:{{ task.dataset }}',
             project_id='{{ task.query_project }}',
             {%+ else -%}
             dataset_id='{{ task.dataset }}',

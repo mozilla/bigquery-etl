@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.subscription_plaftorm.nonprod_stripe_subscriptions`
+  `moz-fx-data-shared-prod.subscription_platform.nonprod_stripe_subscriptions`
 AS
 WITH subscriptions AS (
   SELECT

@@ -61,6 +61,9 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             {%+ if task.query_project -%}
             dataset_id='{{ task.project }}:{{ task.dataset }}',
             project_id='{{ task.query_project }}',
+            {%+ if not task.query_file_path -%}
+            sql_file_path="sql/{{task.project}}/{{task.dataset}}/{{task.destination_table}}/query.sql",
+            {%+ endif -%}
             {%+ else -%}
             dataset_id='{{ task.dataset }}',
             project_id='{{ task.project }}',

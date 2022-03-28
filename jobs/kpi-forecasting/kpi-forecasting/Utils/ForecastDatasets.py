@@ -2,7 +2,7 @@ import datetime
 from pathlib import Path
 
 import pandas as pd
-from google.cloud import bigquery, bigquery_storage_v1beta1, storage
+from google.cloud import bigquery
 
 ROOT_DIR = Path(__file__).parent
 SQL_DIR = ROOT_DIR.parent / "sql_queries"
@@ -31,8 +31,10 @@ def fetch_data(config: dict):
         consistent_date_formatter
     )
 
-    # The desktop query has been updated to no longer require this. In the past, a lot of hoop-jumping was required
-    # to work around a gap in the data, which has since been backfilled. In the emergency case that you have to fall
+    # The desktop query has been updated to no longer require this.
+    # In the past, a lot of hoop-jumping was required
+    # to work around a gap in the data, which has since been backfilled.
+    # In the emergency case that you have to fall
     # back to using that query, you may uncomment this section.
     # if target == "desktop":
     #     dataset = desktop_preprocessing(dataset, config["columns"])

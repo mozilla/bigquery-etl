@@ -32,7 +32,7 @@ def run_forecast(
         step_change_date = datetime.strptime("2021-1-24", "%Y-%m-%d").date()
         dataset["regressor_00"] = dataset.apply(
             lambda x: 0 if x["ds"] <= step_change_date else 1, axis=1
-        )  # because of a step change in the data mobile data needs this thumb on the scale
+        )  # because of a step change in the data mobile data needs this
 
         model.add_regressor(name="regressor_00")
 

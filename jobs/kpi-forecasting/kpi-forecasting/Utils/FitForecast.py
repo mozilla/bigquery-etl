@@ -42,9 +42,7 @@ def run_forecast(
 
     periods = remaining_days(dataset["ds"].max(), config["stop_date"])
 
-    future = fit_model.make_future_dataframe(
-        periods=periods
-    )  # type: pd.DataFrame
+    future = fit_model.make_future_dataframe(periods=periods)  # type: pd.DataFrame
 
     if target == "mobile":
         future["regressor_00"] = 1
@@ -55,9 +53,7 @@ def run_forecast(
 
     uncertainty_samples_raw = fit_model.predictive_samples(future)
 
-    uncertainty_samples = pd.DataFrame.from_records(
-        uncertainty_samples_raw["yhat"]
-    )
+    uncertainty_samples = pd.DataFrame.from_records(uncertainty_samples_raw["yhat"])
 
     uncertainty_samples["ds"] = future["ds"]
 

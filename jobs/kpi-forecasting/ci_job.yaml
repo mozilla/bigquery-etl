@@ -12,4 +12,4 @@ build-job-kpi-forecasting:
         command: docker build -t app:build jobs/kpi-forecasting/
     - run:
           name: Test Code
-          command: docker run app:build pytest --flake8 --black
+          command: docker run app:build pytest --black

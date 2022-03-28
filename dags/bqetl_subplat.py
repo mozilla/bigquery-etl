@@ -926,32 +926,6 @@ with DAG(
         mozilla_vpn_derived__users__v1
     )
 
-    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
-        stripe_derived__customers__v1
-    )
-
-    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(stripe_derived__plans__v1)
-
-    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
-        stripe_derived__products__v1
-    )
-
-    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
-        stripe_derived__subscriptions__v1
-    )
-
-    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
-        stripe_external__charges__v1
-    )
-
-    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
-        stripe_external__invoices__v1
-    )
-
-    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
-        stripe_external__promotion_codes__v1
-    )
-
     mozilla_vpn_derived__channel_group_proportions__v1.set_upstream(
         mozilla_vpn_derived__all_subscriptions__v1
     )
@@ -1026,10 +1000,6 @@ with DAG(
 
     mozilla_vpn_derived__funnel_product_page_to_subscribed__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_stdout_events__v1
-    )
-
-    mozilla_vpn_derived__funnel_product_page_to_subscribed__v1.set_upstream(
-        stripe_derived__plans__v1
     )
 
     mozilla_vpn_derived__fxa_attribution__v1.set_upstream(

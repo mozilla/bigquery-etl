@@ -1,1 +1,5 @@
-An official or common country name; a single country may appear with multiple names
+A mapping table from country aliases (including misspellings, alternate encodings, etc.) to ISO 3166 alpha-2 country
+codes. A single country name should only map to one country code (but country codes map to multiple names).
+
+Generated automatically by `sql_generators/country_code_lookup`; modify `aliases.yaml` to add a mapping to the
+appropriate country code.

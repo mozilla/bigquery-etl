@@ -1,0 +1,805 @@
+AF:
+    - "Afghanistan"
+    - "The Islamic Republic of Afghanistan"
+AX:
+    - "Åland"
+    - "Aland"
+    - "Åland Islands"
+    - "Aland Islands"
+AL:
+    - "Albania"
+    - "The Republic Albania"
+DZ:
+    - "Algeria"
+    - "The People's Democratic Republic of Algeria"
+AS:
+    - "American Samoa"
+    - "The Territory of American Samoa"
+AD:
+    - "Andorra"
+    - "The Principality of Andorra"
+AO:
+    - "Angola"
+    - "The Republic of Angola"
+AI:
+    - "Anguilla"
+AQ:
+    - "Antarctica"
+AG:
+    - "Antigua and Barbuda"
+AR:
+    - "Argentina"
+    - "The Argentine Republic"
+AM:
+    - "Armenia"
+    - "The Republic of Armenia"
+AW:
+    - "Aruba"
+AU:
+    - "Australia"
+    - "The Commonwealth of Australia"
+AT:
+    - "Austria"
+    - "The Republic of Austria"
+AZ:
+    - "Azerbaijan"
+    - "The Republic of Azerbaijan"
+BS:
+    - "Bahamas"
+    - "The Bahamas"
+    - "The Commonwealth of The Bahamas"
+BH:
+    - "Bahrain"
+    - "The Kingdom of Bahrain"
+BD:
+    - "Bangladesh"
+    - "The People's Republic of Bangladesh"
+BB:
+    - "Barbados"
+BY:
+    - "Belarus"
+    - "The Republic of Belarus"
+BE:
+    - "Belgium"
+    - "The Kingdom of Belgium"
+BZ:
+    - "Belize"
+BJ:
+    - "Benin"
+    - "The Republic of Benin"
+BM:
+    - "Bermuda"
+BT:
+    - "Bhutan"
+    - "The Kingdom of Bhutan"
+BO:
+    - "Bolivia"
+    - "Bolivia, Plurinational State of"
+    - "The Plurinational State of Bolivia"
+BQ:
+    - "Saba"
+    - "Bonaire"
+    - "Sint Eustatius"
+    - "Bonaire, Sint Eustatius, and Saba"
+    - "Bonaire, Sint Eustatius and Saba"
+BA:
+    - "Bosnia and Herzegovina"
+BW:
+    - "Botswana"
+    - "The Republic of Botswana"
+BV:
+    - "Bouvet Island"
+BR:
+    - "Brazil"
+    - "The Federative Republic of Brazil"
+IO:
+    - "British Indian Ocean Territory"
+    - "The British Indian Ocean Territory"
+BN:
+    - "Brunei"
+    - "Brunei Darussalam"
+    - "The Nation of Brunei, the Abode of Peace"
+BG:
+    - "Bulgaria"
+    - "The Republic of Bulgaria"
+BF:
+    - "Burkina Faso"
+BI:
+    - "Burundi"
+    - "The Republic of Burundi"
+CV:
+    - "Cape Verde"
+    - "Cabo Verde"
+    - "The Republic of Cabo Verde"
+KH:
+    - "Cambodia"
+    - "The Kingdom of Cambodia"
+CM:
+    - "Cameroon"
+    - "The Republic of Cameroon"
+CA:
+    - "Canada"
+KY:
+    - "Cayman Islands"
+    - "The Cayman Islands"
+CF:
+    - "Central African Republic"
+    - "The Central African Republic"
+TD:
+    - "Chad"
+    - "The Republic of Chad"
+CL:
+    - "Chile"
+    - "The Republic of Chile"
+CN:
+    - "China mainland"
+    - "China"
+    - "The People's Republic of China"
+CX:
+    - "Christmas Island"
+    - "The Territory of Christmas Island"
+CC:
+    - "Cocos [Keeling] Islands"
+    - "Cocos (Keeling) Islands"
+    - "The Territory of Cocos (Keeling) Islands"
+CO:
+    - "Colombia"
+    - "The Republic of Colombia"
+KM:
+    - "Comoros"
+    - "The Union of the Comoros"
+CD:
+    - "Congo (DRC)"
+    - "Congo, Democratic Republic of the"
+    - "Congo, the Democratic Republic of the"
+    - "Democratic Republic of the Congo"
+    - "The Democratic Republic of the Congo"
+CG:
+    - "Congo"
+    - "Congo, Republic of the"
+    - "Republic of the Congo"
+    - "The Republic of the Congo"
+CK:
+    - "Cook Islands"
+    - "The Cook Islands"
+CR:
+    - "Costa Rica"
+    - "The Republic of Costa Rica"
+CI:
+    - "Ivory Coast"
+    - "Côte d’Ivoire"
+    - "Côte d'Ivoire"
+    - "Cote d'Ivoire"
+    - "CÃ´te dâ€™Ivoire"
+    - "The Republic of Côte d'Ivoire"
+HR:
+    - "Croatia"
+    - "The Republic of Croatia"
+CU:
+    - "Cuba"
+    - "The Republic of Cuba"
+CW:
+    - "Curacao"
+    - "Curaçao"
+    - "CuraÃ§ao"
+    - "The Country of Curaçao"
+CY:
+    - "Cyprus"
+    - "The Republic of Cyprus"
+CZ:
+    - "Czech Republic"
+    - "Czechia"
+    - "The Czech Republic"
+DK:
+    - "Denmark"
+    - "The Kingdom of Denmark"
+DJ:
+    - "Djibouti"
+    - "The Republic of Djibouti"
+DM:
+    - "Dominica"
+    - "The Commonwealth of Dominica"
+DO:
+    - "Dominican Republic"
+    - "The Dominican Republic"
+EC:
+    - "Ecuador"
+    - "The Republic of Ecuador"
+EG:
+    - "Egypt"
+    - "The Arab Republic of Egypt"
+SV:
+    - "El Salvador"
+    - "The Republic of El Salvador"
+GQ:
+    - "Equatorial Guinea"
+    - "The Republic of Equatorial Guinea"
+ER:
+    - "Eritrea"
+    - "The State of Eritrea"
+EE:
+    - "Estonia"
+    - "The Republic of Estonia"
+SZ:
+    - "Eswatini"
+    - "The Kingdom of Eswatini"
+    - "Swaziland"
+ET:
+    - "Ethiopia"
+    - "The Federal Democratic Republic of Ethiopia"
+FK:
+    - "Falkland Islands"
+    - "Islas Malvinas"
+    - "Falkland Islands (Islas Malvinas)"
+    - "Falkland Islands (Malvinas)"
+    - "The Falkland Islands"
+FO:
+    - "Faroe Islands"
+    - "The Faroe Islands"
+FJ:
+    - "Fiji"
+    - "The Republic of Fiji"
+FI:
+    - "Finland"
+    - "The Republic of Finland"
+FR:
+    - "France"
+    - "The French Republic"
+GF:
+    - "French Guyana"
+    - "French Guiana"
+    - "Guyane"
+PF:
+    - "French Polynesia"
+TF:
+    - "French Southern Territories"
+    - "French Southern and Antarctic Lands"
+    - "The French Southern and Antarctic Lands"
+GA:
+    - "Gabon"
+    - "The Gabonese Republic"
+GM:
+    - "Gambia"
+    - "The Gambia"
+    - "The Republic of The Gambia"
+GE:
+    - "Georgia (country)"
+    - "Georgia"
+DE:
+    - "Germany"
+    - "The Federal Republic of Germany"
+GH:
+    - "Ghana"
+    - "The Republic of Ghana"
+GI:
+    - "Gibraltar"
+GR:
+    - "Greece"
+    - "The Hellenic Republic"
+GL:
+    - "Greenland"
+    - "Kalaallit Nunaat"
+GD:
+    - "Grenada"
+GP:
+    - "Guadeloupe"
+GU:
+    - "Guam"
+    - "The Territory of Guam"
+GT:
+    - "Guatemala"
+    - "The Republic of Guatemala"
+GG:
+    - "Bailiwick of Guernsey"
+    - "Guernsey"
+    - "The Bailiwick of Guernsey"
+GN:
+    - "Guinea"
+    - "The Republic of Guinea"
+GW:
+    - "Guinea-Bissau"
+    - "The Republic of Guinea-Bissau"
+GY:
+    - "Guyana"
+    - "The Co-operative Republic of Guyana"
+HT:
+    - "Haiti"
+    - "The Republic of Haiti"
+HM:
+    - "Heard Island and McDonald Islands"
+    - "The Territory of Heard Island and McDonald Islands"
+VA:
+    - "Vatican City"
+    - "Holy See"
+    - "The Holy See"
+    - "Holy See (Vatican City State)"
+HN:
+    - "Honduras"
+    - "The Republic of Honduras"
+HK:
+    - "Hong Kong SAR"
+    - "Hong Kong"
+    - "The Hong Kong Special Administrative Region of China"
+HU:
+    - "Hungary"
+IS:
+    - "Iceland"
+IN:
+    - "India"
+    - "The Republic of India"
+ID:
+    - "Indonesia"
+    - "The Republic of Indonesia"
+IR:
+    - "Iran"
+    - "Iran, Islamic Republic of"
+    - "Iran (Islamic Republic of)"
+    - "The Islamic Republic of Iran"
+IQ:
+    - "Iraq"
+    - "The Republic of Iraq"
+IE:
+    - "Ireland"
+    - "Republic of Ireland"
+IM:
+    - "Isle of Man"
+    - "The Isle of Man"
+IL:
+    - "Israel"
+    - "The State of Israel"
+IT:
+    - "Italy"
+    - "The Italian Republic"
+JM:
+    - "Jamaica"
+JP:
+    - "Japan"
+JE:
+    - "Jersey"
+    - "The Bailiwick of Jersey"
+JO:
+    - "Jordan"
+    - "Hashemite Kingdom of Jordan"
+    - "The Hashemite Kingdom of Jordan"
+KZ:
+    - "Kazakhstan"
+    - "The Republic of Kazakhstan"
+KE:
+    - "Kenya"
+    - "The Republic of Kenya"
+KI:
+    - "Kiribati"
+    - "The Republic of Kiribati"
+KP:
+    - "North Korea"
+    - "Korea, Democratic People's Republic of"
+    - "The Democratic People's Republic of Korea"
+KR:
+    - "Korea"
+    - "South Korea"
+    - "Korea, Republic of"
+    - "The Republic of Korea"
+KW:
+    - "Kuwait"
+    - "The State of Kuwait"
+KG:
+    - "Kyrgyzstan"
+    - "The Kyrgyz Republic"
+LA:
+    - "Laos"
+    - "Lao People's Democratic Republic"
+    - "The Lao People's Democratic Republic"
+LV:
+    - "Latvia"
+    - "The Republic of Latvia"
+LB:
+    - "Lebanon"
+    - "The Lebanese Republic"
+LS:
+    - "Lesotho"
+    - "The Kingdom of Lesotho"
+LR:
+    - "Liberia"
+    - "The Republic of Liberia"
+LY:
+    - "Libya"
+    - "The State of Libya"
+LI:
+    - "Liechtenstein"
+    - "The Principality of Liechtenstein"
+LT:
+    - "Lithuania"
+    - "Republic of Lithuania"
+    - "The Republic of Lithuania"
+LU:
+    - "Luxembourg"
+    - "The Grand Duchy of Luxembourg"
+MO:
+    - "Macau"
+    - "Macao"
+    - "Macao SAR"
+    - "The Macao Special Administrative Region of China"
+MK:
+    - "Macedonia"
+    - "North Macedonia"
+    - "Macedonia, the Former Yugoslav Republic of"
+    - "The Republic of North Macedonia"
+MG:
+    - "Madagascar"
+    - "The Republic of Madagascar"
+MW:
+    - "Malawi"
+    - "The Republic of Malawi"
+MY:
+    - "Malaysia"
+MV:
+    - "Maldives"
+    - "The Republic of Maldives"
+ML:
+    - "Mali"
+    - "The Republic of Mali"
+MT:
+    - "Malta"
+    - "The Republic of Malta"
+MH:
+    - "Marshall Islands"
+    - "The Republic of the Marshall Islands"
+MQ:
+    - "Martinique"
+MR:
+    - "Mauritania"
+    - "The Islamic Republic of Mauritania"
+MU:
+    - "Mauritius"
+    - "The Republic of Mauritius"
+YT:
+    - "Mayotte"
+    - "The Department of Mayotte"
+MX:
+    - "Mexico"
+    - "The United Mexican States"
+FM:
+    - "Micronesia"
+    - "Micronesia, Federated States of"
+    - "Federated States of Micronesia"
+    - "The Federated States of Micronesia"
+MD:
+    - "Moldova"
+    - "Republic of Moldova"
+    - "Moldova, Republic of"
+    - "The Republic of Moldova"
+MC:
+    - "Monaco"
+    - "The Principality of Monaco"
+MN:
+    - "Mongolia"
+ME:
+    - "Montenegro"
+MS:
+    - "Montserrat"
+MA:
+    - "Morocco"
+    - "The Kingdom of Morocco"
+MZ:
+    - "Mozambique"
+    - "The Republic of Mozambique"
+MM:
+    - "Myanmar"
+    - "The Republic of the Union of Myanmar"
+NA:
+    - "Namibia"
+    - "The Republic of Namibia"
+NR:
+    - "Nauru"
+    - "The Republic of Nauru"
+NP:
+    - "Nepal"
+    - "The Federal Democratic Republic of Nepal"
+NL:
+    - "Netherlands"
+    - "The Kingdom of the Netherlands"
+NC:
+    - "New Caledonia"
+NZ:
+    - "New Zealand"
+NI:
+    - "Nicaragua"
+    - "The Republic of Nicaragua"
+NE:
+    - "Niger"
+    - "The Republic of the Niger"
+NG:
+    - "Nigeria"
+    - "The Federal Republic of Nigeria"
+NU:
+    - "Niue"
+NF:
+    - "Norfolk Island"
+    - "The Territory of Norfolk Island"
+MP:
+    - "Northern Mariana Islands"
+    - "The Commonwealth of the Northern Mariana Islands"
+"NO":
+    - "Norway"
+    - "The Kingdom of Norway"
+OM:
+    - "Oman"
+    - "The Sultanate of Oman"
+PK:
+    - "Pakistan"
+    - "The Islamic Republic of Pakistan"
+PW:
+    - "Palau"
+    - "The Republic of Palau"
+PS:
+    - "Palestine"
+    - "Palestine, State of"
+    - "State of Palestine"
+    - "Palestinian Authority"
+    - "The State of Palestine"
+PA:
+    - "Panama"
+    - "The Republic of Panamá"
+PG:
+    - "Papua New Guinea"
+    - "The Independent State of Papua New Guinea"
+PY:
+    - "Paraguay"
+    - "The Republic of Paraguay"
+PE:
+    - "Peru"
+    - "The Republic of Perú"
+PH:
+    - "Philippines"
+    - "The Republic of the Philippines"
+PN:
+    - "Pitcairn Islands"
+    - "Pitcairn"
+    - "The Pitcairn, Henderson, Ducie and Oeno Islands"
+PL:
+    - "Poland"
+    - "The Republic of Poland"
+PT:
+    - "Portugal"
+    - "The Portuguese Republic"
+PR:
+    - "Puerto Rico"
+    - "The Commonwealth of Puerto Rico"
+QA:
+    - "Qatar"
+    - "The State of Qatar"
+RE:
+    - "Reunion"
+    - "Réunion"
+    - "RÃ©union"
+RO:
+    - "Romania"
+RU:
+    - "Russia"
+    - "Russian Federation"
+    - "The Russian Federation"
+RW:
+    - "Rwanda"
+    - "The Republic of Rwanda"
+BL:
+    - "Saint Barthélemy"
+    - "Saint BarthÃ©lemy"
+    - "The Collectivity of Saint-Barthélemy"
+SH:
+    - "Saint Helena"
+    - "St Helena, Ascension, Tristan da Cunha"
+    - "Saint Helena, Ascension and Tristan da Cunha"
+KN:
+    - "St Kitts and Nevis"
+    - "St. Kitts and Nevis"
+    - "Saint Kitts and Nevis"
+LC:
+    - "St. Lucia"
+    - "Saint Lucia"
+MF:
+    - "Saint Martin"
+    - "Saint Martin (French part)"
+    - "Collectivity of Saint Martin Saint Martin (French part)"
+    - "The Collectivity of Saint-Martin"
+PM:
+    - "Saint Pierre and Miquelon"
+    - "The Overseas Collectivity of Saint-Pierre and Miquelon"
+VC:
+    - "St. Vincent and the Grenadines"
+    - "Saint Vincent and the Grenadines"
+WS:
+    - "Samoa"
+    - "The Independent State of Samoa"
+SM:
+    - "San Marino"
+    - "The Republic of San Marino"
+ST:
+    - "São Tomé and Príncipe"
+    - "Sao Tome and Principe"
+    - "SÃ£o TomÃ© and PrÃ­ncipe"
+    - "The Democratic Republic of São Tomé and Príncipe"
+SA:
+    - "Saudi Arabia"
+    - "The Kingdom of Saudi Arabia"
+SN:
+    - "Senegal"
+    - "The Republic of Senegal"
+RS:
+    - "Serbia"
+    - "The Republic of Serbia"
+SC:
+    - "Seychelles"
+    - "The Republic of Seychelles"
+SL:
+    - "Sierra Leone"
+    - "The Republic of Sierra Leone"
+SG:
+    - "Singapore"
+    - "The Republic of Singapore"
+SX:
+    - "Sint Maarten"
+    - "Sint Maarten (Dutch part)"
+SK:
+    - "Slovakia"
+    - "The Slovak Republic"
+SI:
+    - "Slovenia"
+    - "The Republic of Slovenia"
+SB:
+    - "Solomon Islands"
+    - "The Solomon Islands"
+SO:
+    - "Somalia"
+    - "The Federal Republic of Somalia"
+ZA:
+    - "South Africa"
+    - "The Republic of South Africa"
+GS:
+    - "South Georgia and the South Sandwich Islands"
+SS:
+    - "South Sudan"
+    - "The Republic of South Sudan"
+ES:
+    - "Spain"
+    - "The Kingdom of Spain"
+LK:
+    - "Sri Lanka"
+    - "The Democratic Socialist Republic of Sri Lanka"
+SD:
+    - "Sudan"
+    - "The Republic of the Sudan"
+SR:
+    - "Suriname"
+    - "The Republic of Suriname"
+SJ:
+    - "Svalbard"
+    - "Jan Mayen Jan Mayen"
+    - "Svalbard and Jan Mayen"
+SE:
+    - "Sweden"
+    - "The Kingdom of Sweden"
+CH:
+    - "Switzerland"
+    - "The Swiss Confederation"
+SY:
+    - "Syria"
+    - "Syrian Arab Republic"
+    - "The Syrian Arab Republic"
+TW:
+    - "Taiwan"
+    - "Taiwan, Province of China"
+    - "Taiwan (Province of China)"
+    - "The Republic of China"
+TJ:
+    - "Tajikistan"
+    - "The Republic of Tajikistan"
+TZ:
+    - "Tanzania"
+    - "Tanzania, United Republic of"
+    - "The United Republic of Tanzania"
+TH:
+    - "Thailand"
+    - "The Kingdom of Thailand"
+TL:
+    - "East Timor"
+    - "Timor-Leste"
+    - "Democratic Republic of Timor-Leste"
+    - "The Democratic Republic of Timor-Leste"
+TG:
+    - "Togo"
+    - "The Togolese Republic"
+TK:
+    - "Tokelau"
+TO:
+    - "Tonga"
+    - "The Kingdom of Tonga"
+TT:
+    - "Trinidad and Tobago"
+    - "The Republic of Trinidad and Tobago"
+TN:
+    - "Tunisia"
+    - "The Republic of Tunisia"
+TR:
+    - "Turkey"
+    - "The Republic of Turkey"
+TM:
+    - "Turkmenistan"
+TC:
+    - "Turks and Caicos"
+    - "Turks and Caicos Islands"
+    - "The Turks and Caicos Islands"
+TV:
+    - "Tuvalu"
+UG:
+    - "Uganda"
+    - "The Republic of Uganda"
+UA:
+    - "Ukraine"
+AE:
+    - "United Arab Emirates"
+    - "The United Arab Emirates"
+GB:
+    - "United Kingdom"
+    - "UK"
+    - "The United Kingdom of Great Britain and Northern Ireland"
+UM:
+    - "United States Minor Outlying Islands"
+    - "The United States Minor Outlying Islands"
+    - "Baker Island, Howland Island, Jarvis Island, Johnston Atoll, Kingman Reef, Midway Atoll, Navassa Island, Palmyra Atoll, and Wake Island"
+US:
+    - "United States"
+    - "USA"
+    - "The United States of America"
+UY:
+    - "Uruguay"
+    - "The Oriental Republic of Uruguay"
+UZ:
+    - "Uzbekistan"
+    - "The Republic of Uzbekistan"
+VU:
+    - "Vanuatu"
+    - "The Republic of Vanuatu"
+VE:
+    - "Venezuela"
+    - "Venezuela, Bolivarian Republic of"
+    - "The Bolivarian Republic of Venezuela"
+VN:
+    - "Vietnam"
+    - "Viet Nam"
+    - "The Socialist Republic of Vietnam"
+VG:
+    - "British Virgin Islands"
+    - "Virgin Islands, British"
+    - "Virgin Islands (British)"
+    - "The Virgin Islands"
+VI:
+    - "United States Virgin Islands"
+    - "U.S. Virgin Islands"
+    - "Virgin Islands, U.S."
+    - "Virgin Islands (U.S.)"
+    - "The Virgin Islands of the United States"
+WF:
+    - "Wallis and Futuna"
+    - "The Territory of the Wallis and Futuna Islands"
+EH:
+    - "Western Sahara"
+    - "The Sahrawi Arab Democratic Republic"
+YE:
+    - "Yemen"
+    - "The Republic of Yemen"
+XK:
+    - "Kosovo"
+ZM:
+    - "Zambia"
+    - "The Republic of Zambia"
+ZW:
+    - "Zimbabwe"
+    - "The Republic of Zimbabwe"
+
+
+
+
+# L. America Other ?
+# n/a ?
+# UNKNOWN ?
+# ??

@@ -32,6 +32,7 @@ def write_predictions_to_bigquery(
         ]
     )
 
+    # schema compliance; Prophet does not export consistent dataframes
     holiday_columns = ["holidays", "holidays_lower", "holidays_upper"]
 
     for column in holiday_columns:

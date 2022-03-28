@@ -38,7 +38,7 @@ def run_forecast(
 
     fit_model = model.fit(dataset)
 
-    predictions = fit_model.predict()  # type: pd.DataFrame
+    _ = fit_model.predict()  # type: pd.DataFrame
 
     periods = remaining_days(dataset["ds"].max(), config["stop_date"])
 
@@ -57,17 +57,6 @@ def run_forecast(
 
     uncertainty_samples["ds"] = future["ds"]
 
-    # if config["confidences"] is not None:
-    #     confidences = get_aggregated_posteriors(
-    #         observed_data=dataset,
-    #         posterior_samples=future_values,
-    #         aggregation_unit=config["confidences"],
-    #         final_sample_date=config["stop_date"],
-    #         actuals_end_date=dataset["ds"].max(),
-    #         target=config["target"],
-    #     )
-    # else:
-    #     confidences = None
     return future_values, uncertainty_samples
 
 

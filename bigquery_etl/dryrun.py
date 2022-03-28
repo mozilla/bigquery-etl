@@ -92,6 +92,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized_v1/query.sql",
     *glob.glob("sql/moz-fx-data-shared-prod/stripe_derived/**/*.sql", recursive=True),
     *glob.glob("sql/moz-fx-data-shared-prod/stripe_external/**/*.sql", recursive=True),
+    *glob.glob("sql/moz-fx-cjms-nonprod-9a36/**/*.sql", recursive=True),
     "sql/moz-fx-data-shared-prod/subscription_platform/stripe_subscriptions/view.sql",
     "sql/moz-fx-data-shared-prod/subscription_platform/nonprod_stripe_subscriptions/view.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/stripe/itemized_payout_reconciliation/view.sql",

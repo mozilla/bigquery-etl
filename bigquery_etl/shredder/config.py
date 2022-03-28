@@ -510,7 +510,7 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
     def __get_client_id_field__(table, deletion_request_view=False, study_name=None):
         """Determine which column should be used as client id for a given table."""
         if table.dataset_id.startswith("rally_") or (
-            study_name and study_name.startswith("rally_")
+            study_name and study_name.startswith("rally-")
         ):
             # `rally_zero_one` is a special case where top-level rally_id is used
             # both in the ping tables and the deletion_requests view

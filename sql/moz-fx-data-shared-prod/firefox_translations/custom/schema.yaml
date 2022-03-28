@@ -563,6 +563,12 @@ fields:
       mode: NULLABLE
       name: quality_summary
       type: STRING
+    - description: 'Version of translation model
+
+        '
+      mode: NULLABLE
+      name: metadata_model_version
+      type: STRING
     mode: NULLABLE
     name: string
     type: RECORD

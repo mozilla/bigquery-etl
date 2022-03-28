@@ -1,5 +1,5 @@
 FROM python:3.7
-MAINTAINER REPLACE ME <replaceme@mozilla.com>
+MAINTAINER Perry McManis <pmcmanis@mozilla.com>
 
 # https://github.com/mozilla-services/Dockerflow/blob/master/docs/building-container.md
 ARG USER_ID="10001"
@@ -14,7 +14,6 @@ WORKDIR ${HOME}
 
 RUN apt install gcc
 RUN apt install g++
-RUN apt install gcloud
 
 RUN pip install --upgrade pip
 

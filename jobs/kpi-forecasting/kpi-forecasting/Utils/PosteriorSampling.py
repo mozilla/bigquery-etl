@@ -28,7 +28,8 @@ def get_confidence_intervals(
 
     samples_df_grouped = (
         uncertainty_samples[
-            uncertainty_samples["ds"] > np.datetime64(final_observed_sample_date)
+            uncertainty_samples["ds"]
+            > np.datetime64(final_observed_sample_date)
         ]
         .groupby("{}".format(aggregation_unit_of_time))
         .sum()
@@ -36,7 +37,9 @@ def get_confidence_intervals(
 
     print(samples_df_grouped.tail())
     # start the aggregated dataframe with the mean of the uncertainty samples
-    uncertainty_samples_aggregated = samples_df_grouped.mean(axis=1).reset_index()
+    uncertainty_samples_aggregated = samples_df_grouped.mean(
+        axis=1
+    ).reset_index()
 
     uncertainty_samples_aggregated.rename(columns={0: "value"}, inplace=True)
 
@@ -74,7 +77,9 @@ def get_confidence_intervals(
     # check if whether there are overlap in actual and forecast at the group level
     if (
         aggregation_unit_of_time == "ds_month"
-        and (pd.to_datetime(final_observed_sample_date) + relativedelta(days=1)).day
+        and (
+            pd.to_datetime(final_observed_sample_date) + relativedelta(days=1)
+        ).day
         != 1
     ) or (
         aggregation_unit_of_time == "ds_year"
@@ -107,11 +112,11 @@ def get_confidence_intervals(
     all_aggregated = all_aggregated.rename(
         columns={"{}".format(aggregation_unit_of_time): "date"}
     )
-    all_aggregated["date"] = pd.to_datetime(all_aggregated["date"]).dt.strftime(
-        "%Y-%m-%d"
-    )
-    all_aggregated["asofdate"] = pd.to_datetime(all_aggregated["asofdate"]).dt.strftime(
-        "%Y-%m-%d"
-    )
+    all_aggregated["date"] = pd.to_datetime(
+        all_aggregated["date"]
+    ).dt.strftime("%Y-%m-%d")
+    all_aggregated["asofdate"] = pd.to_datetime(
+        all_aggregated["asofdate"]
+    ).dt.strftime("%Y-%m-%d")
 
     return all_aggregated[aggregation_columns]

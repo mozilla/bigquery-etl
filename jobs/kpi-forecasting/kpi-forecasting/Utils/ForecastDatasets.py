@@ -49,13 +49,19 @@ def fetch_data(config: dict):
     return dataset
 
 
-def desktop_preprocessing(dataset: pd.DataFrame, columns: list) -> pd.DataFrame:
+def desktop_preprocessing(
+    dataset: pd.DataFrame, columns: list
+) -> pd.DataFrame:
     dataset = dataset[columns]
     dataset.sort_values(by=["submission_date"], inplace=True)
 
-    changepoint_date = datetime.datetime.strptime("2020-12-18", "%Y-%m-%d").date()
+    changepoint_date = datetime.datetime.strptime(
+        "2020-12-18", "%Y-%m-%d"
+    ).date()
 
-    dataset["difference"] = dataset["uri_dau_either_at"] - dataset["uri_at_dau_cd"]
+    dataset["difference"] = (
+        dataset["uri_dau_either_at"] - dataset["uri_at_dau_cd"]
+    )
 
     dataset["concat"] = dataset.apply(
         lambda x: x["uri_at_dau_cd"]

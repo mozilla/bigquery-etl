@@ -1,309 +1,548 @@
 name,code
-Afghanistan,AF
-Åland Islands,AX
-Albania,AL
-Algeria,DZ
-American Samoa,AS
-Andorra,AD
-Angola,AO
-Anguilla,AI
-Antarctica,AQ
-Antigua and Barbuda,AG
-Argentina,AR
-Armenia,AM
-Aruba,AW
-Australia,AU
-Austria,AT
-Azerbaijan,AZ
-Bahamas,BS
-Bahrain,BH
-Bangladesh,BD
-Barbados,BB
-Belarus,BY
-Belgium,BE
-Belize,BZ
-Benin,BJ
-Bermuda,BM
-Bhutan,BT
+"Andorra",AD
+"The Principality of Andorra",AD
+"United Arab Emirates",AE
+"The United Arab Emirates",AE
+"Afghanistan",AF
+"The Islamic Republic of Afghanistan",AF
+"Antigua and Barbuda",AG
+"Anguilla",AI
+"Albania",AL
+"The Republic Albania",AL
+"Armenia",AM
+"The Republic of Armenia",AM
+"Angola",AO
+"The Republic of Angola",AO
+"Antarctica",AQ
+"Argentina",AR
+"The Argentine Republic",AR
+"American Samoa",AS
+"The Territory of American Samoa",AS
+"Austria",AT
+"The Republic of Austria",AT
+"Australia",AU
+"The Commonwealth of Australia",AU
+"Aruba",AW
+"Åland",AX
+"Aland",AX
+"Åland Islands",AX
+"Aland Islands",AX
+"Azerbaijan",AZ
+"The Republic of Azerbaijan",AZ
+"Bosnia and Herzegovina",BA
+"Barbados",BB
+"Bangladesh",BD
+"The People's Republic of Bangladesh",BD
+"Belgium",BE
+"The Kingdom of Belgium",BE
+"Burkina Faso",BF
+"Bulgaria",BG
+"The Republic of Bulgaria",BG
+"Bahrain",BH
+"The Kingdom of Bahrain",BH
+"Burundi",BI
+"The Republic of Burundi",BI
+"Benin",BJ
+"The Republic of Benin",BJ
+"Saint Barthélemy",BL
+"Saint BarthÃ©lemy",BL
+"The Collectivity of Saint-Barthélemy",BL
+"Bermuda",BM
+"Brunei",BN
+"Brunei Darussalam",BN
+"The Nation of Brunei, the Abode of Peace",BN
+"Bolivia",BO
 "Bolivia, Plurinational State of",BO
-"Bonaire, Sint Eustatius and Saba",BQ
-Bosnia and Herzegovina,BA
-Botswana,BW
-Bouvet Island,BV
-Brazil,BR
-British Indian Ocean Territory,IO
-Brunei Darussalam,BN
-Bulgaria,BG
-Burkina Faso,BF
-Burundi,BI
-Cambodia,KH
-Cameroon,CM
-Canada,CA
-Cape Verde,CV
-Cayman Islands,KY
-Central African Republic,CF
-Chad,TD
-Chile,CL
-China,CN
-Christmas Island,CX
-Cocos (Keeling) Islands,CC
-Colombia,CO
-Comoros,KM
-Congo,CG
-"Congo, the Democratic Republic of the",CD
-Cook Islands,CK
-Costa Rica,CR
-Côte d'Ivoire,CI
-Croatia,HR
-Cuba,CU
-Curaçao,CW
-Cyprus,CY
-Czech Republic,CZ
-Denmark,DK
-Djibouti,DJ
-Dominica,DM
-Dominican Republic,DO
-Ecuador,EC
-Egypt,EG
-El Salvador,SV
-Equatorial Guinea,GQ
-Eritrea,ER
-Estonia,EE
-Ethiopia,ET
-Falkland Islands (Malvinas),FK
-Faroe Islands,FO
-Fiji,FJ
-Finland,FI
-France,FR
-French Guiana,GF
-French Polynesia,PF
-French Southern Territories,TF
-Gabon,GA
-Gambia,GM
-Georgia,GE
-Germany,DE
-Ghana,GH
-Gibraltar,GI
-Greece,GR
-Greenland,GL
-Grenada,GD
-Guadeloupe,GP
-Guam,GU
-Guatemala,GT
-Guernsey,GG
-Guinea,GN
-Guinea-Bissau,GW
-Guyana,GY
-Haiti,HT
-Heard Island and McDonald Islands,HM
-Holy See (Vatican City State),VA
-Honduras,HN
-Hong Kong,HK
-Hungary,HU
-Iceland,IS
-India,IN
-Indonesia,ID
-"Iran, Islamic Republic of",IR
-Iraq,IQ
-Ireland,IE
-Isle of Man,IM
-Israel,IL
-Italy,IT
-Jamaica,JM
-Japan,JP
-Jersey,JE
-Jordan,JO
-Kazakhstan,KZ
-Kenya,KE
-Kiribati,KI
-"Korea, Democratic People's Republic of",KP
-"Korea, Republic of",KR
-Kuwait,KW
-Kyrgyzstan,KG
-Lao People's Democratic Republic,LA
-Latvia,LV
-Lebanon,LB
-Lesotho,LS
-Liberia,LR
-Libya,LY
-Liechtenstein,LI
-Lithuania,LT
-Luxembourg,LU
-Macao,MO
-"Macedonia, the Former Yugoslav Republic of",MK
-Madagascar,MG
-Malawi,MW
-Malaysia,MY
-Maldives,MV
-Mali,ML
-Malta,MT
-Marshall Islands,MH
-Martinique,MQ
-Mauritania,MR
-Mauritius,MU
-Mayotte,YT
-Mexico,MX
-"Micronesia, Federated States of",FM
-"Moldova, Republic of",MD
-Monaco,MC
-Mongolia,MN
-Montenegro,ME
-Montserrat,MS
-Morocco,MA
-Mozambique,MZ
-Myanmar,MM
-Namibia,NA
-Nauru,NR
-Nepal,NP
-Netherlands,NL
-New Caledonia,NC
-New Zealand,NZ
-Nicaragua,NI
-Niger,NE
-Nigeria,NG
-Niue,NU
-Norfolk Island,NF
-Northern Mariana Islands,MP
-Norway,NO
-Oman,OM
-Pakistan,PK
-Palau,PW
-"Palestine, State of",PS
-Panama,PA
-Papua New Guinea,PG
-Paraguay,PY
-Peru,PE
-Philippines,PH
-Pitcairn,PN
-Poland,PL
-Portugal,PT
-Puerto Rico,PR
-Qatar,QA
-Réunion,RE
-Romania,RO
-Russian Federation,RU
-Rwanda,RW
-Saint Barthélemy,BL
-"Saint Helena, Ascension and Tristan da Cunha",SH
-Saint Kitts and Nevis,KN
-Saint Lucia,LC
-Saint Martin (French part),MF
-Saint Pierre and Miquelon,PM
-Saint Vincent and the Grenadines,VC
-Samoa,WS
-San Marino,SM
-Sao Tome and Principe,ST
-Saudi Arabia,SA
-Senegal,SN
-Serbia,RS
-Seychelles,SC
-Sierra Leone,SL
-Singapore,SG
-Sint Maarten (Dutch part),SX
-Slovakia,SK
-Slovenia,SI
-Solomon Islands,SB
-Somalia,SO
-South Africa,ZA
-South Georgia and the South Sandwich Islands,GS
-South Sudan,SS
-Spain,ES
-Sri Lanka,LK
-Sudan,SD
-Suriname,SR
-Svalbard and Jan Mayen,SJ
-Swaziland,SZ
-Sweden,SE
-Switzerland,CH
-Syrian Arab Republic,SY
-"Taiwan, Province of China",TW
-Tajikistan,TJ
-"Tanzania, United Republic of",TZ
-Thailand,TH
-Timor-Leste,TL
-Togo,TG
-Tokelau,TK
-Tonga,TO
-Trinidad and Tobago,TT
-Tunisia,TN
-Turkey,TR
-Turkmenistan,TM
-Turks and Caicos Islands,TC
-Tuvalu,TV
-Uganda,UG
-Ukraine,UA
-United Arab Emirates,AE
-United Kingdom,GB
-United States,US
-United States Minor Outlying Islands,UM
-Uruguay,UY
-Uzbekistan,UZ
-Vanuatu,VU
-"Venezuela, Bolivarian Republic of",VE
-Viet Nam,VN
-"Virgin Islands, British",VG
-"Virgin Islands, U.S.",VI
-Wallis and Futuna,WF
-Western Sahara,EH
-Yemen,YE
-Zambia,ZM
-Zimbabwe,ZW
-Kosovo,XK
-Russia,RU
-Czechia,CZ
-Taiwan,TW
-Iran,IR
-South Korea,KR
-Vietnam,VN
-Venezuela,VE
-Republic of Lithuania,LT
-Bolivia,CO
-Ivory Coast,CI
-Republic of Moldova,MD
-Tanzania,TZ
-Hashemite Kingdom of Jordan,JO
-Macedonia,MK
-Syria,SY
-Palestine,PS
-Brunei,BN
-Laos,LA
-Republic of the Congo,CG
-U.S. Virgin Islands,VI
-Cabo Verde,CV
-Eswatini,SZ
-Åland,AX
-Sint Maarten,SX
-Democratic Republic of Timor-Leste,TL
-St Kitts and Nevis,KN
+"The Plurinational State of Bolivia",BO
+"Saba",BQ
+"Bonaire",BQ
+"Sint Eustatius",BQ
 "Bonaire, Sint Eustatius, and Saba",BQ
-British Virgin Islands,VG
-Federated States of Micronesia,FM
-Saint Martin,MF
-São Tomé and Príncipe,ST
-Vatican City,VA
-Falkland Islands,FK
-North Korea,KP
-Cocos [Keeling] Islands,CC
-Saint Helena,SH
-Brunei,BN
-Bolivia,BO
+"Bonaire, Sint Eustatius and Saba",BQ
+"Brazil",BR
+"The Federative Republic of Brazil",BR
+"Bahamas",BS
+"The Bahamas",BS
+"The Commonwealth of The Bahamas",BS
+"Bhutan",BT
+"The Kingdom of Bhutan",BT
+"Bouvet Island",BV
+"Botswana",BW
+"The Republic of Botswana",BW
+"Belarus",BY
+"The Republic of Belarus",BY
+"Belize",BZ
+"Canada",CA
+"Cocos [Keeling] Islands",CC
+"Cocos (Keeling) Islands",CC
+"The Territory of Cocos (Keeling) Islands",CC
+"Congo (DRC)",CD
 "Congo, Democratic Republic of the",CD
+"Congo, the Democratic Republic of the",CD
+"Democratic Republic of the Congo",CD
+"The Democratic Republic of the Congo",CD
+"Central African Republic",CF
+"The Central African Republic",CF
+"Congo",CG
 "Congo, Republic of the",CG
-Cote d'Ivoire,CI
-China mainland,CN
-Micronesia,FM
-St. Kitts and Nevis,KN
-Laos,LA
-St. Lucia,LC
-Moldova,MD
-North Macedonia,MK
-Macau,MO
-Russia,RU
-São Tomé and Príncipe,ST
-Eswatini,SZ
-Taiwan,TW
-Tanzania,TZ
-St. Vincent and the Grenadines,VC
-Venezuela,VE
-British Virgin Islands,VG
-Vietnam,VN
+"Republic of the Congo",CG
+"The Republic of the Congo",CG
+"Switzerland",CH
+"The Swiss Confederation",CH
+"Ivory Coast",CI
+"Côte d’Ivoire",CI
+"Côte d'Ivoire",CI
+"Cote d'Ivoire",CI
+"CÃ´te dâ€™Ivoire",CI
+"The Republic of Côte d'Ivoire",CI
+"Cook Islands",CK
+"The Cook Islands",CK
+"Chile",CL
+"The Republic of Chile",CL
+"Cameroon",CM
+"The Republic of Cameroon",CM
+"China mainland",CN
+"China",CN
+"The People's Republic of China",CN
+"Colombia",CO
+"The Republic of Colombia",CO
+"Costa Rica",CR
+"The Republic of Costa Rica",CR
+"Cuba",CU
+"The Republic of Cuba",CU
+"Cape Verde",CV
+"Cabo Verde",CV
+"The Republic of Cabo Verde",CV
+"Curacao",CW
+"Curaçao",CW
+"CuraÃ§ao",CW
+"The Country of Curaçao",CW
+"Christmas Island",CX
+"The Territory of Christmas Island",CX
+"Cyprus",CY
+"The Republic of Cyprus",CY
+"Czech Republic",CZ
+"Czechia",CZ
+"The Czech Republic",CZ
+"Germany",DE
+"The Federal Republic of Germany",DE
+"Djibouti",DJ
+"The Republic of Djibouti",DJ
+"Denmark",DK
+"The Kingdom of Denmark",DK
+"Dominica",DM
+"The Commonwealth of Dominica",DM
+"Dominican Republic",DO
+"The Dominican Republic",DO
+"Algeria",DZ
+"The People's Democratic Republic of Algeria",DZ
+"Ecuador",EC
+"The Republic of Ecuador",EC
+"Estonia",EE
+"The Republic of Estonia",EE
+"Egypt",EG
+"The Arab Republic of Egypt",EG
+"Western Sahara",EH
+"The Sahrawi Arab Democratic Republic",EH
+"Eritrea",ER
+"The State of Eritrea",ER
+"Spain",ES
+"The Kingdom of Spain",ES
+"Ethiopia",ET
+"The Federal Democratic Republic of Ethiopia",ET
+"Finland",FI
+"The Republic of Finland",FI
+"Fiji",FJ
+"The Republic of Fiji",FJ
+"Falkland Islands",FK
+"Islas Malvinas",FK
+"Falkland Islands (Islas Malvinas)",FK
+"Falkland Islands (Malvinas)",FK
+"The Falkland Islands",FK
+"Micronesia",FM
+"Micronesia, Federated States of",FM
+"Federated States of Micronesia",FM
+"The Federated States of Micronesia",FM
+"Faroe Islands",FO
+"The Faroe Islands",FO
+"France",FR
+"The French Republic",FR
+"Gabon",GA
+"The Gabonese Republic",GA
+"United Kingdom",GB
+"UK",GB
+"The United Kingdom of Great Britain and Northern Ireland",GB
+"Grenada",GD
+"Georgia (country)",GE
+"Georgia",GE
+"French Guyana",GF
+"French Guiana",GF
+"Guyane",GF
+"Bailiwick of Guernsey",GG
+"Guernsey",GG
+"The Bailiwick of Guernsey",GG
+"Ghana",GH
+"The Republic of Ghana",GH
+"Gibraltar",GI
+"Greenland",GL
+"Kalaallit Nunaat",GL
+"Gambia",GM
+"The Gambia",GM
+"The Republic of The Gambia",GM
+"Guinea",GN
+"The Republic of Guinea",GN
+"Guadeloupe",GP
+"Equatorial Guinea",GQ
+"The Republic of Equatorial Guinea",GQ
+"Greece",GR
+"The Hellenic Republic",GR
+"South Georgia and the South Sandwich Islands",GS
+"Guatemala",GT
+"The Republic of Guatemala",GT
+"Guam",GU
+"The Territory of Guam",GU
+"Guinea-Bissau",GW
+"The Republic of Guinea-Bissau",GW
+"Guyana",GY
+"The Co-operative Republic of Guyana",GY
+"Hong Kong SAR",HK
+"Hong Kong",HK
+"The Hong Kong Special Administrative Region of China",HK
+"Heard Island and McDonald Islands",HM
+"The Territory of Heard Island and McDonald Islands",HM
+"Honduras",HN
+"The Republic of Honduras",HN
+"Croatia",HR
+"The Republic of Croatia",HR
+"Haiti",HT
+"The Republic of Haiti",HT
+"Hungary",HU
+"Indonesia",ID
+"The Republic of Indonesia",ID
+"Ireland",IE
+"Republic of Ireland",IE
+"Israel",IL
+"The State of Israel",IL
+"Isle of Man",IM
+"The Isle of Man",IM
+"India",IN
+"The Republic of India",IN
+"British Indian Ocean Territory",IO
+"The British Indian Ocean Territory",IO
+"Iraq",IQ
+"The Republic of Iraq",IQ
+"Iran",IR
+"Iran, Islamic Republic of",IR
+"Iran (Islamic Republic of)",IR
+"The Islamic Republic of Iran",IR
+"Iceland",IS
+"Italy",IT
+"The Italian Republic",IT
+"Jersey",JE
+"The Bailiwick of Jersey",JE
+"Jamaica",JM
+"Jordan",JO
+"Hashemite Kingdom of Jordan",JO
+"The Hashemite Kingdom of Jordan",JO
+"Japan",JP
+"Kenya",KE
+"The Republic of Kenya",KE
+"Kyrgyzstan",KG
+"The Kyrgyz Republic",KG
+"Cambodia",KH
+"The Kingdom of Cambodia",KH
+"Kiribati",KI
+"The Republic of Kiribati",KI
+"Comoros",KM
+"The Union of the Comoros",KM
+"St Kitts and Nevis",KN
+"St. Kitts and Nevis",KN
+"Saint Kitts and Nevis",KN
+"North Korea",KP
+"Korea, Democratic People's Republic of",KP
+"The Democratic People's Republic of Korea",KP
+"Korea",KR
+"South Korea",KR
+"Korea, Republic of",KR
+"The Republic of Korea",KR
+"Kuwait",KW
+"The State of Kuwait",KW
+"Cayman Islands",KY
+"The Cayman Islands",KY
+"Kazakhstan",KZ
+"The Republic of Kazakhstan",KZ
+"Laos",LA
+"Lao People's Democratic Republic",LA
+"The Lao People's Democratic Republic",LA
+"Lebanon",LB
+"The Lebanese Republic",LB
+"St. Lucia",LC
+"Saint Lucia",LC
+"Liechtenstein",LI
+"The Principality of Liechtenstein",LI
+"Sri Lanka",LK
+"The Democratic Socialist Republic of Sri Lanka",LK
+"Liberia",LR
+"The Republic of Liberia",LR
+"Lesotho",LS
+"The Kingdom of Lesotho",LS
+"Lithuania",LT
+"Republic of Lithuania",LT
+"The Republic of Lithuania",LT
+"Luxembourg",LU
+"The Grand Duchy of Luxembourg",LU
+"Latvia",LV
+"The Republic of Latvia",LV
+"Libya",LY
+"The State of Libya",LY
+"Morocco",MA
+"The Kingdom of Morocco",MA
+"Monaco",MC
+"The Principality of Monaco",MC
+"Moldova",MD
+"Republic of Moldova",MD
+"Moldova, Republic of",MD
+"The Republic of Moldova",MD
+"Montenegro",ME
+"Saint Martin",MF
+"Saint Martin (French part)",MF
+"Collectivity of Saint Martin Saint Martin (French part)",MF
+"The Collectivity of Saint-Martin",MF
+"Madagascar",MG
+"The Republic of Madagascar",MG
+"Marshall Islands",MH
+"The Republic of the Marshall Islands",MH
+"Macedonia",MK
+"North Macedonia",MK
+"Macedonia, the Former Yugoslav Republic of",MK
+"The Republic of North Macedonia",MK
+"Mali",ML
+"The Republic of Mali",ML
+"Myanmar",MM
+"The Republic of the Union of Myanmar",MM
+"Mongolia",MN
+"Macau",MO
+"Macao",MO
+"Macao SAR",MO
+"The Macao Special Administrative Region of China",MO
+"Northern Mariana Islands",MP
+"The Commonwealth of the Northern Mariana Islands",MP
+"Martinique",MQ
+"Mauritania",MR
+"The Islamic Republic of Mauritania",MR
+"Montserrat",MS
+"Malta",MT
+"The Republic of Malta",MT
+"Mauritius",MU
+"The Republic of Mauritius",MU
+"Maldives",MV
+"The Republic of Maldives",MV
+"Malawi",MW
+"The Republic of Malawi",MW
+"Mexico",MX
+"The United Mexican States",MX
+"Malaysia",MY
+"Mozambique",MZ
+"The Republic of Mozambique",MZ
+"Namibia",NA
+"The Republic of Namibia",NA
+"New Caledonia",NC
+"Niger",NE
+"The Republic of the Niger",NE
+"Norfolk Island",NF
+"The Territory of Norfolk Island",NF
+"Nigeria",NG
+"The Federal Republic of Nigeria",NG
+"Nicaragua",NI
+"The Republic of Nicaragua",NI
+"Netherlands",NL
+"The Kingdom of the Netherlands",NL
+"Norway",NO
+"The Kingdom of Norway",NO
+"Nepal",NP
+"The Federal Democratic Republic of Nepal",NP
+"Nauru",NR
+"The Republic of Nauru",NR
+"Niue",NU
+"New Zealand",NZ
+"Oman",OM
+"The Sultanate of Oman",OM
+"Panama",PA
+"The Republic of Panamá",PA
+"Peru",PE
+"The Republic of Perú",PE
+"French Polynesia",PF
+"Papua New Guinea",PG
+"The Independent State of Papua New Guinea",PG
+"Philippines",PH
+"The Republic of the Philippines",PH
+"Pakistan",PK
+"The Islamic Republic of Pakistan",PK
+"Poland",PL
+"The Republic of Poland",PL
+"Saint Pierre and Miquelon",PM
+"The Overseas Collectivity of Saint-Pierre and Miquelon",PM
+"Pitcairn Islands",PN
+"Pitcairn",PN
+"The Pitcairn, Henderson, Ducie and Oeno Islands",PN
+"Puerto Rico",PR
+"The Commonwealth of Puerto Rico",PR
+"Palestine",PS
+"Palestine, State of",PS
+"State of Palestine",PS
+"Palestinian Authority",PS
+"The State of Palestine",PS
+"Portugal",PT
+"The Portuguese Republic",PT
+"Palau",PW
+"The Republic of Palau",PW
+"Paraguay",PY
+"The Republic of Paraguay",PY
+"Qatar",QA
+"The State of Qatar",QA
+"Reunion",RE
+"Réunion",RE
+"RÃ©union",RE
+"Romania",RO
+"Serbia",RS
+"The Republic of Serbia",RS
+"Russia",RU
+"Russian Federation",RU
+"The Russian Federation",RU
+"Rwanda",RW
+"The Republic of Rwanda",RW
+"Saudi Arabia",SA
+"The Kingdom of Saudi Arabia",SA
+"Solomon Islands",SB
+"The Solomon Islands",SB
+"Seychelles",SC
+"The Republic of Seychelles",SC
+"Sudan",SD
+"The Republic of the Sudan",SD
+"Sweden",SE
+"The Kingdom of Sweden",SE
+"Singapore",SG
+"The Republic of Singapore",SG
+"Saint Helena",SH
+"St Helena, Ascension, Tristan da Cunha",SH
+"Saint Helena, Ascension and Tristan da Cunha",SH
+"Slovenia",SI
+"The Republic of Slovenia",SI
+"Svalbard",SJ
+"Jan Mayen Jan Mayen",SJ
+"Svalbard and Jan Mayen",SJ
+"Slovakia",SK
+"The Slovak Republic",SK
+"Sierra Leone",SL
+"The Republic of Sierra Leone",SL
+"San Marino",SM
+"The Republic of San Marino",SM
+"Senegal",SN
+"The Republic of Senegal",SN
+"Somalia",SO
+"The Federal Republic of Somalia",SO
+"Suriname",SR
+"The Republic of Suriname",SR
+"South Sudan",SS
+"The Republic of South Sudan",SS
+"São Tomé and Príncipe",ST
+"Sao Tome and Principe",ST
+"SÃ£o TomÃ© and PrÃ­ncipe",ST
+"The Democratic Republic of São Tomé and Príncipe",ST
+"El Salvador",SV
+"The Republic of El Salvador",SV
+"Sint Maarten",SX
+"Sint Maarten (Dutch part)",SX
+"Syria",SY
+"Syrian Arab Republic",SY
+"The Syrian Arab Republic",SY
+"Eswatini",SZ
+"The Kingdom of Eswatini",SZ
+"Swaziland",SZ
+"Turks and Caicos",TC
+"Turks and Caicos Islands",TC
+"The Turks and Caicos Islands",TC
+"Chad",TD
+"The Republic of Chad",TD
+"French Southern Territories",TF
+"French Southern and Antarctic Lands",TF
+"The French Southern and Antarctic Lands",TF
+"Togo",TG
+"The Togolese Republic",TG
+"Thailand",TH
+"The Kingdom of Thailand",TH
+"Tajikistan",TJ
+"The Republic of Tajikistan",TJ
+"Tokelau",TK
+"East Timor",TL
+"Timor-Leste",TL
+"Democratic Republic of Timor-Leste",TL
+"The Democratic Republic of Timor-Leste",TL
+"Turkmenistan",TM
+"Tunisia",TN
+"The Republic of Tunisia",TN
+"Tonga",TO
+"The Kingdom of Tonga",TO
+"Turkey",TR
+"The Republic of Turkey",TR
+"Trinidad and Tobago",TT
+"The Republic of Trinidad and Tobago",TT
+"Tuvalu",TV
+"Taiwan",TW
+"Taiwan, Province of China",TW
+"Taiwan (Province of China)",TW
+"The Republic of China",TW
+"Tanzania",TZ
+"Tanzania, United Republic of",TZ
+"The United Republic of Tanzania",TZ
+"Ukraine",UA
+"Uganda",UG
+"The Republic of Uganda",UG
+"United States Minor Outlying Islands",UM
+"The United States Minor Outlying Islands",UM
+"Baker Island, Howland Island, Jarvis Island, Johnston Atoll, Kingman Reef, Midway Atoll, Navassa Island, Palmyra Atoll, and Wake Island",UM
+"United States",US
+"USA",US
+"The United States of America",US
+"Uruguay",UY
+"The Oriental Republic of Uruguay",UY
+"Uzbekistan",UZ
+"The Republic of Uzbekistan",UZ
+"Vatican City",VA
+"Holy See",VA
+"The Holy See",VA
+"Holy See (Vatican City State)",VA
+"St. Vincent and the Grenadines",VC
+"Saint Vincent and the Grenadines",VC
+"Venezuela",VE
+"Venezuela, Bolivarian Republic of",VE
+"The Bolivarian Republic of Venezuela",VE
+"British Virgin Islands",VG
+"Virgin Islands, British",VG
+"Virgin Islands (British)",VG
+"The Virgin Islands",VG
+"United States Virgin Islands",VI
+"U.S. Virgin Islands",VI
+"Virgin Islands, U.S.",VI
+"Virgin Islands (U.S.)",VI
+"The Virgin Islands of the United States",VI
+"Vietnam",VN
+"Viet Nam",VN
+"The Socialist Republic of Vietnam",VN
+"Vanuatu",VU
+"The Republic of Vanuatu",VU
+"Wallis and Futuna",WF
+"The Territory of the Wallis and Futuna Islands",WF
+"Samoa",WS
+"The Independent State of Samoa",WS
+"Kosovo",XK
+"Yemen",YE
+"The Republic of Yemen",YE
+"Mayotte",YT
+"The Department of Mayotte",YT
+"South Africa",ZA
+"The Republic of South Africa",ZA
+"Zambia",ZM
+"The Republic of Zambia",ZM
+"Zimbabwe",ZW
+"The Republic of Zimbabwe",ZW

@@ -13,6 +13,9 @@ These should be published to all active projects used for production
 ETL and analysis:
 
 ```
+# Generate data.csv for country_names
+bqetl generate country_code_lookup
+
 ./script/publish_static --project-id mozdata
 ./script/publish_static --project-id moz-fx-data-shared-prod
 ```

@@ -5,3 +5,12 @@ fields:
 - mode: NULLABLE
   name: code
   type: STRING
+- mode: NULLABLE
+  name: region_name
+  type: STRING
+- mode: NULLABLE
+  name: subregion_name
+  type: STRING
+- mode: NULLABLE
+  name: intermediate_region_name
+  type: STRING

@@ -14,7 +14,7 @@ DEFAULT_PROJECTS_DIRS = ["sql/mozfun"]
 EXAMPLE_DIR = "examples"
 UDF_FILE = "udf.sql"
 UDF_CHAR = "[a-zA-z0-9_]"
-MOZFUN_UDF_RE = fr"mozfun.({UDF_CHAR}+\.{UDF_CHAR}+)"
+MOZFUN_UDF_RE = rf"mozfun.({UDF_CHAR}+\.{UDF_CHAR}+)"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(

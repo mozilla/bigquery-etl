@@ -1,4 +1,4 @@
-click==7.1.2
+click==8.0.4
 Jinja2==2.11.3
 pytest==6.0.2
 pytest-black==0.3.11

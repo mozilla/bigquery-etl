@@ -8,7 +8,7 @@ cachetools==4.2.4
 certifi==2021.10.8
 cffi==1.15.0
 charset-normalizer==2.0.12
-click==7.1.2
+click==8.0.4
 cmdstanpy==0.9.68
 convertdate==2.4.0
 cryptography==36.0.1

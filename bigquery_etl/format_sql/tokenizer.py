@@ -341,7 +341,7 @@ class AngleBracketKeyword(ReservedKeyword):
 class Identifier(Token):
     """Token that identifies a column, parameter, table, or other database object."""
 
-    pattern = re.compile(fr"@?[A-Za-z_][A-Za-z_0-9]*|`(?:{STRING_CONTENT})+?`")
+    pattern = re.compile(rf"@?[A-Za-z_][A-Za-z_0-9]*|`(?:{STRING_CONTENT})+?`")
 
 
 class Literal(Token):
@@ -349,7 +349,7 @@ class Literal(Token):
 
     pattern = re.compile(
         # String literal
-        fr"(?:r?b|b?r)?({QUOTE})(?:{STRING_CONTENT})*?\1"
+        rf"(?:r?b|b?r)?({QUOTE})(?:{STRING_CONTENT})*?\1"
         # Hexadecimal integer literal
         "|0[xX][0-9a-fA-F]+"
         # Decimal integer or float literal

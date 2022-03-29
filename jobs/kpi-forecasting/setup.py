@@ -8,7 +8,7 @@ setup(
     name="kpi-forecasting",
     version="0.1.0",
     author="Mozilla Corporation",
-    packages=find_packages(include=["fpi-forecasting"]),
+    packages=find_packages(include=["kpi-forecasting"]),
     long_description=readme,
     include_package_data=True,
     license="MPL 2.0",

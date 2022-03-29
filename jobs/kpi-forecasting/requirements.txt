@@ -88,3 +88,4 @@ typing-extensions==3.7.4.3
 ujson==5.1.0
 uritemplate==4.1.1
 urllib3==1.26.8
+importlib-metadata==4.11.3

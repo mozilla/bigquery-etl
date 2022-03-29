@@ -2666,10 +2666,10 @@ Commands:
 <p>Commands for managing queries.</p>
 <h4 id="create"><code>create</code></h4>
 <p>Create a new query with name
-<dataset>.<query_name>, for example: telemetry_derived.active_profiles.
-Use the <code>--project_id</code> option to change the project the query is added to;
-default is <code>moz-fx-data-shared-prod</code>. Views are automatically generated
-in the publicly facing dataset.</p>
+    <dataset>.<query_name>, for example: telemetry_derived.active_profiles.
+    Use the <code>--project_id</code> option to change the project the query is added to;
+    default is <code>moz-fx-data-shared-prod</code>. Views are automatically generated
+    in the publicly facing dataset.</p>
 <p><strong>Usage</strong></p>
 <pre><code class="language-bash">$ ./bqetl query create [OPTIONS] [name]
 
@@ -2682,12 +2682,12 @@ Options:
 </code></pre>
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash">./bqetl query create telemetry_derived.deviations_v1 \
-  --owner=example@mozilla.com
+      --owner=example@mozilla.com
 
 
-# The query version gets autocompleted to v1. Queries are created in the
-# _derived dataset and accompanying views in the public dataset.
-./bqetl query create telemetry.deviations --owner=example@mozilla.com
+    # The query version gets autocompleted to v1. Queries are created in the
+    # _derived dataset and accompanying views in the public dataset.
+    ./bqetl query create telemetry.deviations --owner=example@mozilla.com
 </code></pre>
 <h4 id="schedule"><code>schedule</code></h4>
 <p>Schedule an existing query</p>
@@ -2704,13 +2704,13 @@ Options:
 </code></pre>
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash">./bqetl query schedule telemetry_derived.deviations_v1 \
-  --dag=bqetl_deviations
+      --dag=bqetl_deviations
 
 
-# Set a specific name for the task
-./bqetl query schedule telemetry_derived.deviations_v1 \
-  --dag=bqetl_deviations \
-  --task-name=deviations
+    # Set a specific name for the task
+    ./bqetl query schedule telemetry_derived.deviations_v1 \
+      --dag=bqetl_deviations \
+      --task-name=deviations
 </code></pre>
 <h4 id="info"><code>info</code></h4>
 <p>Get information about all or specific queries.</p>
@@ -2726,12 +2726,12 @@ Options:
 </code></pre>
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash"># Get info for specific queries
-./bqetl query info telemetry_derived.*
+    ./bqetl query info telemetry_derived.*
 
 
-# Get cost and last update timestamp information
-./bqetl query info telemetry_derived.clients_daily_v6 \
-  --cost --last_updated
+    # Get cost and last update timestamp information
+    ./bqetl query info telemetry_derived.clients_daily_v6 \
+      --cost --last_updated
 </code></pre>
 <h4 id="backfill"><code>backfill</code></h4>
 <p>Run a backfill for a query. Additional parameters will get passed to bq.</p>
@@ -2752,22 +2752,22 @@ Options:
 </code></pre>
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash"># Backfill for specific date range
-# second comment line
-./bqetl query backfill telemetry_derived.ssl_ratios_v1 \
-  --start_date=2021-03-01 \
-  --end_date=2021-03-31
+    # second comment line
+    ./bqetl query backfill telemetry_derived.ssl_ratios_v1 \
+      --start_date=2021-03-01 \
+      --end_date=2021-03-31
 
 
-# Dryrun backfill for specific date range and exclude date
-./bqetl query backfill telemetry_derived.ssl_ratios_v1 \
-  --start_date=2021-03-01 \
-  --end_date=2021-03-31 \
-  --exclude=2021-03-03 \
-  --dry_run
+    # Dryrun backfill for specific date range and exclude date
+    ./bqetl query backfill telemetry_derived.ssl_ratios_v1 \
+      --start_date=2021-03-01 \
+      --end_date=2021-03-31 \
+      --exclude=2021-03-03 \
+      --dry_run
 </code></pre>
 <h4 id="validate"><code>validate</code></h4>
 <p>Validate a query.
-Checks formatting, scheduling information and dry runs the query.</p>
+    Checks formatting, scheduling information and dry runs the query.</p>
 <p><strong>Usage</strong></p>
 <pre><code class="language-bash">$ ./bqetl query validate [OPTIONS] [name]
 
@@ -2783,15 +2783,15 @@ Options:
 <pre><code class="language-bash">./bqetl query validate telemetry_derived.clients_daily_v6
 
 
-# Validate query not in shared-prod
-./bqetl query validate \
-  --use_cloud_function=false \
-  --project_id=moz-fx-data-marketing-prod \
-  ga_derived.blogs_goals_v1
+    # Validate query not in shared-prod
+    ./bqetl query validate \
+      --use_cloud_function=false \
+      --project_id=moz-fx-data-marketing-prod \
+      ga_derived.blogs_goals_v1
 </code></pre>
 <h4 id="initialize"><code>initialize</code></h4>
 <p>Create and initialize the destination table for the query.
-Only for queries that have an <code>init.sql</code> file.</p>
+    Only for queries that have an <code>init.sql</code> file.</p>
 <p><strong>Usage</strong></p>
 <pre><code class="language-bash">$ ./bqetl query initialize [OPTIONS] [name]
 
@@ -2808,7 +2808,7 @@ Options:
 <p>Commands for managing query schemas.</p>
 <h5 id="update"><code>update</code></h5>
 <p>Update the query schema based on the destination table schema and the query schema.
-If no schema.yaml file exists for a query, one will be created.</p>
+    If no schema.yaml file exists for a query, one will be created.</p>
 <p><strong>Usage</strong></p>
 <pre><code class="language-bash">$ ./bqetl query schema update [OPTIONS] [name]
 
@@ -2824,8 +2824,8 @@ Options:
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash">./bqetl query schema update telemetry_derived.clients_daily_v6
 
-# Update schema including downstream dependencies (requires GCP)
-./bqetl query schema update telemetry_derived.clients_daily_v6 --update-downstream
+    # Update schema including downstream dependencies (requires GCP)
+    ./bqetl query schema update telemetry_derived.clients_daily_v6 --update-downstream
 </code></pre>
 <h5 id="deploy"><code>deploy</code></h5>
 <p>Deploy the query schema.</p>
@@ -2872,18 +2872,18 @@ Options:
 </code></pre>
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash"># Get information about all available DAGs
-./bqetl dag info
+    ./bqetl dag info
 
-# Get information about a specific DAG
-./bqetl dag info bqetl_ssl_ratios
+    # Get information about a specific DAG
+    ./bqetl dag info bqetl_ssl_ratios
 
-# Get information about a specific DAG including scheduled tasks
-./bqetl dag info --with_tasks bqetl_ssl_ratios
+    # Get information about a specific DAG including scheduled tasks
+    ./bqetl dag info --with_tasks bqetl_ssl_ratios
 </code></pre>
 <h4 id="create_1"><code>create</code></h4>
 <p>Create a new DAG with name bqetl_<dag_name>, for example: bqetl_search
-When creating new DAGs, the DAG name must have a <code>bqetl_</code> prefix.
-Created DAGs are added to the <code>dags.yaml</code> file.</p>
+    When creating new DAGs, the DAG name must have a <code>bqetl_</code> prefix.
+    Created DAGs are added to the <code>dags.yaml</code> file.</p>
 <p><strong>Usage</strong></p>
 <pre><code class="language-bash">$ ./bqetl dag create [OPTIONS] [name]
 
@@ -2901,23 +2901,23 @@ Options:
 </code></pre>
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash">./bqetl dag create bqetl_core \
---schedule-interval=&quot;0 2 * * *&quot; \
---owner=example@mozilla.com \
---description=&quot;Tables derived from `core` pings sent by mobile applications.&quot; \
---tag=impact/tier_1 \
---start-date=2019-07-25
+    --schedule-interval=&quot;0 2 * * *&quot; \
+    --owner=example@mozilla.com \
+    --description=&quot;Tables derived from `core` pings sent by mobile applications.&quot; \
+    --tag=impact/tier_1 \
+    --start-date=2019-07-25
 
 
-# Create DAG and overwrite default settings
-./bqetl dag create bqetl_ssl_ratios --schedule-interval=&quot;0 2 * * *&quot; \
---owner=example@mozilla.com \
---description=&quot;The DAG schedules SSL ratios queries.&quot; \
---tag=impact/tier_1 \
---start-date=2019-07-20 \
---email=example2@mozilla.com \
---email=example3@mozilla.com \
---retries=2 \
---retry_delay=30m
+    # Create DAG and overwrite default settings
+    ./bqetl dag create bqetl_ssl_ratios --schedule-interval=&quot;0 2 * * *&quot; \
+    --owner=example@mozilla.com \
+    --description=&quot;The DAG schedules SSL ratios queries.&quot; \
+    --tag=impact/tier_1 \
+    --start-date=2019-07-20 \
+    --email=example2@mozilla.com \
+    --email=example3@mozilla.com \
+    --retries=2 \
+    --retry_delay=30m
 </code></pre>
 <h4 id="generate"><code>generate</code></h4>
 <p>Generate Airflow DAGs from DAG definitions. Requires Java.</p>
@@ -2931,15 +2931,15 @@ Options:
 </code></pre>
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash"># Generate all DAGs
-./bqetl dag generate
+    ./bqetl dag generate
 
-# Generate a specific DAG
-./bqetl dag generate bqetl_ssl_ratios
+    # Generate a specific DAG
+    ./bqetl dag generate bqetl_ssl_ratios
 </code></pre>
 <h4 id="remove"><code>remove</code></h4>
 <p>Remove a DAG.
-This will also remove the scheduling information from the queries that were scheduled
-as part of the DAG.</p>
+    This will also remove the scheduling information from the queries that were scheduled
+    as part of the DAG.</p>
 <p><strong>Usage</strong></p>
 <pre><code class="language-bash">$ ./bqetl dag remove [OPTIONS] [name]
 
@@ -2950,7 +2950,7 @@ Options:
 </code></pre>
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash"># Remove a specific DAG
-./bqetl dag remove bqetl_vrbrowser
+    ./bqetl dag remove bqetl_vrbrowser
 </code></pre>
 <h3 id="dependency"><code>dependency</code></h3>
 <p>Build and use query dependency graphs.</p>
@@ -2968,10 +2968,10 @@ Options:
 </code></pre>
 <h3 id="dryrun"><code>dryrun</code></h3>
 <p>Dry run SQL.
-    Uses the dryrun Cloud Function by default which only has access to shared-prod.
-    To dryrun queries accessing tables in another project use set
-    <code>--use-cloud-function=false</code> and ensure that the command line has access to a
-    GCP service account.</p>
+        Uses the dryrun Cloud Function by default which only has access to shared-prod.
+        To dryrun queries accessing tables in another project use set
+        <code>--use-cloud-function=false</code> and ensure that the command line has access to a
+        GCP service account.</p>
 <p><strong>Usage</strong></p>
 <pre><code class="language-bash">$ ./bqetl dryrun [OPTIONS] [paths]
 
@@ -2984,10 +2984,10 @@ Options:
 </code></pre>
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash">Examples:
-./bqetl dryrun sql/moz-fx-data-shared-prod/telemetry_derived/
+    ./bqetl dryrun sql/moz-fx-data-shared-prod/telemetry_derived/
 
-# Dry run SQL with tables that are not in shared prod
-./bqetl dryrun --use-cloud-function=false sql/moz-fx-data-marketing-prod/
+    # Dry run SQL with tables that are not in shared prod
+    ./bqetl dryrun --use-cloud-function=false sql/moz-fx-data-marketing-prod/
 </code></pre>
 <h3 id="format"><code>format</code></h3>
 <p>Format SQL files.</p>
@@ -2997,19 +2997,19 @@ Options:
 </code></pre>
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash"># Format a specific file
-./bqetl format sql/moz-fx-data-shared-prod/telemetry/core/view.sql
+    ./bqetl format sql/moz-fx-data-shared-prod/telemetry/core/view.sql
 
-# Format all SQL files in `sql/`
-./bqetl format sql
+    # Format all SQL files in `sql/`
+    ./bqetl format sql
 
-# Format standard in (will write to standard out)
-echo 'SELECT 1,2,3' | ./bqetl format
+    # Format standard in (will write to standard out)
+    echo 'SELECT 1,2,3' | ./bqetl format
 </code></pre>
 <h3 id="routine"><code>routine</code></h3>
 <p>Commands for managing routines for internal use.</p>
 <h4 id="create_2"><code>create</code></h4>
 <p>Create a new routine. Specify whether the routine is a UDF or
-stored procedure by adding a --udf or --stored_prodecure flag.</p>
+    stored procedure by adding a --udf or --stored_prodecure flag.</p>
 <p><strong>Usage</strong></p>
 <pre><code class="language-bash">$ ./bqetl routine create [OPTIONS] [name]
 
@@ -3022,15 +3022,15 @@ Options:
 </code></pre>
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash"># Create a UDF
-./bqetl routine create --udf udf.array_slice
+    ./bqetl routine create --udf udf.array_slice
 
 
-# Create a stored procedure
-./bqetl routine create --stored_procedure udf.events_daily
+    # Create a stored procedure
+    ./bqetl routine create --stored_procedure udf.events_daily
 
 
-# Create a UDF in a project other than shared-prod
-./bqetl routine create --udf udf.active_last_week --project=moz-fx-data-marketing-prod
+    # Create a UDF in a project other than shared-prod
+    ./bqetl routine create --udf udf.active_last_week --project=moz-fx-data-marketing-prod
 </code></pre>
 <h4 id="info_2"><code>info</code></h4>
 <p>Get routine information.</p>
@@ -3045,11 +3045,11 @@ Options:
 </code></pre>
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash"># Get information about all internal routines in a specific dataset
-./bqetl routine info udf.*
+    ./bqetl routine info udf.*
 
 
-# Get usage information of specific routine
-./bqetl routine info --usages udf.get_key
+    # Get usage information of specific routine
+    ./bqetl routine info --usages udf.get_key
 </code></pre>
 <h4 id="validate_2"><code>validate</code></h4>
 <p>Validate formatting of routines and run tests.</p>
@@ -3063,11 +3063,11 @@ Options:
 </code></pre>
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash"># Validate all routines
-./bqetl routine validate
+    ./bqetl routine validate
 
 
-# Validate selected routines
-./bqetl routine validate udf.*
+    # Validate selected routines
+    ./bqetl routine validate udf.*
 </code></pre>
 <h4 id="publish"><code>publish</code></h4>
 <p>Publish routines to BigQuery. Requires service account access.</p>
@@ -3083,11 +3083,11 @@ Options:
 </code></pre>
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash"># Publish all routines
-./bqetl routine publish
+    ./bqetl routine publish
 </code></pre>
 <h4 id="rename"><code>rename</code></h4>
 <p>Rename routine or routine dataset. Replaces all usages in queries with
-the new name.</p>
+    the new name.</p>
 <p><strong>Usage</strong></p>
 <pre><code class="language-bash">$ ./bqetl routine rename [OPTIONS] [name] [new_name]
 
@@ -3098,11 +3098,11 @@ Options:
 </code></pre>
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash"># Rename routine
-./bqetl routine rename udf.array_slice udf.list_slice
+    ./bqetl routine rename udf.array_slice udf.list_slice
 
 
-# Rename routine matching a specific pattern
-./bqetl routine rename udf.array_* udf.list_*
+    # Rename routine matching a specific pattern
+    ./bqetl routine rename udf.array_* udf.list_*
 </code></pre>
 <h3 id="mozfun"><code>mozfun</code></h3>
 <p>Commands for managing public mozfun routines.</p>

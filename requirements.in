@@ -1,7 +1,7 @@
 attrs==21.4.0
 authlib==1.0.0
 cattrs==1.10.0
-click==8.0.4
+click==8.1.0
 gcsfs==2022.2.0
 gcloud==0.18.3
 gitpython==3.1.27

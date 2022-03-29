@@ -11,7 +11,7 @@ WITH fxa_auth_events AS (
     jsonPayload.fields.os_name,
     jsonPayload.fields.os_version,
     jsonPayload.fields.event_type,
-    JSON_EXTRACT_SCALAR(jsonPayload.fields.event_properties, '$.service') AS service
+    JSON_VALUE(jsonPayload.fields.event_properties, '$.service') AS service
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_auth_events_v1`
 ),
@@ -29,7 +29,7 @@ fxa_auth_bounce_events AS (
     CAST(NULL AS STRING),
     CAST(NULL AS STRING),
     jsonPayload.fields.event_type,
-    JSON_EXTRACT_SCALAR(jsonPayload.fields.event_properties, '$.service') AS service
+    JSON_VALUE(jsonPayload.fields.event_properties, '$.service') AS service
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_auth_bounce_events_v1`
 ),
@@ -43,7 +43,7 @@ fxa_content_events AS (
     jsonPayload.fields.os_name,
     jsonPayload.fields.os_version,
     jsonPayload.fields.event_type,
-    JSON_EXTRACT_SCALAR(jsonPayload.fields.event_properties, '$.service') AS service
+    JSON_VALUE(jsonPayload.fields.event_properties, '$.service') AS service
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_content_events_v1`
 ),
@@ -57,7 +57,7 @@ fxa_oauth_events AS (
     CAST(NULL AS STRING) AS os_name,
     CAST(NULL AS STRING) AS os_version,
     jsonPayload.fields.event_type,
-    JSON_EXTRACT_SCALAR(jsonPayload.fields.event_properties, '$.service') AS service
+    JSON_VALUE(jsonPayload.fields.event_properties, '$.service') AS service
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_oauth_events_v1`
 )

@@ -10,5 +10,23 @@
     "description": "ISO 3166 alpha-2 country code",
     "type": "STRING",
     "mode": "REQUIRED"
+  },
+  {
+    "name": "region_name",
+    "description": "The UNSD region name.",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "subregion_name",
+    "description": "The UNSD sub-region name.",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "intermediate_region_name",
+    "description": "The UNSD intermediate region name.",
+    "type": "STRING",
+    "mode": "REQUIRED"
   }
 ]

@@ -1,0 +1,18 @@
+---
+target: mobile
+query_name: "mobile_dau.sql"
+dataset_project: "mozdata"
+forecast_variable: "CDOU"
+forecast_parameters:
+  changepoint_prior_scale: 0.05
+  changepoint_range: 0.8
+  seasonality_prior_scale: 0.01
+columns:
+- submission_date
+- cdou
+write_project: "moz-fx-data-bq-data-science"
+output_table: "pmcmanis.automation_experiment"
+confidences_table: "pmcmanis.automation_exp_confidences"
+stop_date: "2023-12-31"
+holidays: True
+confidences: "ds_month"

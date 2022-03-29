@@ -65,13 +65,32 @@ scalars_histogram_data AS (
 SELECT
     {{ attributes }},
     metric, 
-    key,
+    '' AS key,
     agg_type,
     SUM(value) as total_sample
 FROM
     all_combos
+WHERE agg_type = 'summed_histogram'
 GROUP BY
     {{ attributes }}, 
     metric, 
     key,
     agg_type
+
+UNION ALL
+
+SELECT
+    {{ attributes }},
+    metric,
+    key,
+    agg_type,
+    SUM(value) as total_sample
+FROM
+    all_combos
+WHERE agg_type <> 'summed_histogram'
+GROUP BY
+    {{ attributes }},
+    metric,
+    key,
+    agg_type
+

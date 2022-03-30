@@ -1,4 +1,3 @@
-# Generated via ./bqetl generate stable_views
 ---
 friendly_name: Historical Pings for `activity-stream/impression-stats`
 description: |-

@@ -556,6 +556,12 @@ fields:
       mode: NULLABLE
       name: gifft_validation_main_ping_assembling
       type: BOOLEAN
+    - description: 'An indication of whether Contile is enabled to be displayed
+
+        '
+      mode: NULLABLE
+      name: customize_home_contile
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD
@@ -972,6 +978,12 @@ fields:
         '
       mode: NULLABLE
       name: downloads_pdf_download_count
+      type: INTEGER
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+
+        '
+      mode: NULLABLE
+      name: power_total_thread_wakeups
       type: INTEGER
     mode: NULLABLE
     name: counter
@@ -1995,6 +2007,20 @@ fields:
         type: INTEGER
       mode: REPEATED
       name: power_gpu_time_per_process_type_ms
+      type: RECORD
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+        Broken down by process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_wakeups_per_process_type
       type: RECORD
     mode: NULLABLE
     name: labeled_counter

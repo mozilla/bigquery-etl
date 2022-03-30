@@ -411,6 +411,12 @@ fields:
       mode: NULLABLE
       name: power_gpu_time_bogus_values
       type: INTEGER
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+
+        '
+      mode: NULLABLE
+      name: power_total_thread_wakeups
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -543,6 +549,20 @@ fields:
         type: INTEGER
       mode: REPEATED
       name: power_gpu_time_per_process_type_ms
+      type: RECORD
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+        Broken down by process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_wakeups_per_process_type
       type: RECORD
     mode: NULLABLE
     name: labeled_counter

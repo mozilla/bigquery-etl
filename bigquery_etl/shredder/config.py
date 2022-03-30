@@ -516,7 +516,7 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
             # both in the ping tables and the deletion_requests view
             if (
                 table.dataset_id in ["rally_zero_one_stable", "rally_zero_one_derived"]
-                or study_name == "rally_zero_one"
+                or study_name == "rally-zero-one"
             ):
                 return RALLY_ID_TOP_LEVEL
             # deletion request views expose rally_id as a top-level field
@@ -574,6 +574,7 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
     for project in study_projects:
         analysis_dataset = bigquery.DatasetReference(project, "analysis")
         labels = client.get_dataset(analysis_dataset).labels
+        # study names in labels are not normalized (contain '-', not '_')
         study_name = labels.get("study_name")
         if study_name is None:
             logging.error(

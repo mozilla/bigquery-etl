@@ -51,7 +51,6 @@ glam_sample_counts AS (
     AND fsc1.metric = fsc2.metric
     AND fsc1.key = fsc2.key
     AND fsc1.ping_type = fsc2.ping_type
-WHERE fsc2.agg_type = 'count'
 ),
 -- get all the rcords from view_probe_counts and the matching from view_sample_counts
 ranked_data AS (SELECT

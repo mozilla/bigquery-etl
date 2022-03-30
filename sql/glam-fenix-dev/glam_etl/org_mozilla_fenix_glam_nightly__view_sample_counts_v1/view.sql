@@ -96,6 +96,8 @@ SELECT
   SUM(value) AS total_sample
 FROM
   all_combos
+WHERE
+  agg_type <> 'summed_histogram'
 GROUP BY
   ping_type,
   os,

@@ -7,7 +7,7 @@ from utils.gcp import bigquery_etl_query, gke_command
 
 {% set ns = namespace(uses_fivetran=False) -%}
 {% for task in tasks -%}
-{% if task.depends_on_fivetran != None and task.depends_on_fivetran|length > 1 and ns.uses_fivetran == False -%}
+{% if task.depends_on_fivetran != None and task.depends_on_fivetran|length > 0 and ns.uses_fivetran == False -%}
 {% set ns.uses_fivetran = True -%}
 from operators.backport.fivetran.operator import FivetranOperator
 from operators.backport.fivetran.sensor import FivetranSensor

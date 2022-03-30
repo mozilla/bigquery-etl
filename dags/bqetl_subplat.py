@@ -5,6 +5,9 @@ from operators.task_sensor import ExternalTaskCompletedSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
+from operators.backport.fivetran.operator import FivetranOperator
+from operators.backport.fivetran.sensor import FivetranSensor
+
 docs = """
 ### bqetl_subplat
 
@@ -925,6 +928,19 @@ with DAG(
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
         mozilla_vpn_derived__users__v1
     )
+    fivetran_stripe_sync_start = FivetranOperator(
+        connector_id="{{ var.value.fivetran_stripe_connector_id }}",
+        task_id="fivetran_stripe_task",
+    )
+
+    fivetran_stripe_sync_wait = FivetranSensor(
+        connector_id="{{ var.value.fivetran_stripe_connector_id }}",
+        task_id="fivetran_stripe_sensor",
+        poke_interval=5,
+    )
+
+    fivetran_stripe_sync_wait.set_upstream(fivetran_stripe_sync_start)
+    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(fivetran_stripe_sync_wait)
 
     mozilla_vpn_derived__channel_group_proportions__v1.set_upstream(
         mozilla_vpn_derived__all_subscriptions__v1

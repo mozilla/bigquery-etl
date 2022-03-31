@@ -510,13 +510,13 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
     def __get_client_id_field__(table, deletion_request_view=False, study_name=None):
         """Determine which column should be used as client id for a given table."""
         if table.dataset_id.startswith("rally_") or (
-            study_name and study_name.startswith("rally_")
+            study_name and study_name.startswith("rally-")
         ):
             # `rally_zero_one` is a special case where top-level rally_id is used
             # both in the ping tables and the deletion_requests view
             if (
                 table.dataset_id in ["rally_zero_one_stable", "rally_zero_one_derived"]
-                or study_name == "rally_zero_one"
+                or study_name == "rally-zero-one"
             ):
                 return RALLY_ID_TOP_LEVEL
             # deletion request views expose rally_id as a top-level field
@@ -574,6 +574,7 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
     for project in study_projects:
         analysis_dataset = bigquery.DatasetReference(project, "analysis")
         labels = client.get_dataset(analysis_dataset).labels
+        # study names in labels are not normalized (contain '-', not '_')
         study_name = labels.get("study_name")
         if study_name is None:
             logging.error(

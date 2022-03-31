@@ -43,7 +43,7 @@ def get_distribution_metrics(schema: Dict) -> Dict[str, List[str]]:
         "custom_distribution",
     }
     metrics: Dict[str, List[str]] = {metric_type: [] for metric_type in metric_type_set}
-    excluded_metrics = get_etl_excluded_probes_quickfix()
+    excluded_metrics = get_etl_excluded_probes_quickfix("fenix")
 
     # Iterate over every element in the schema under the metrics section and
     # collect a list of metric names.

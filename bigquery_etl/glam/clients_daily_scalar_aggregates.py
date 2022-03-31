@@ -100,7 +100,7 @@ def get_scalar_metrics(schema: Dict, scalar_type: str) -> Dict[str, List[str]]:
     scalars: Dict[str, List[str]] = {
         metric_type: [] for metric_type in metric_type_set[scalar_type]
     }
-    excluded_metrics = get_etl_excluded_probes_quickfix()
+    excluded_metrics = get_etl_excluded_probes_quickfix("fenix")
 
     # Iterate over every element in the schema under the metrics section and
     # collect a list of metric names.

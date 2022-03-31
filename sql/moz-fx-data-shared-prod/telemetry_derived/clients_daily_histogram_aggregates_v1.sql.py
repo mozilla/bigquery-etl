@@ -456,7 +456,7 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
 
     with urllib.request.urlopen(PROBE_INFO_SERVICE) as url:
         data = json.loads(gzip.decompress(url.read()).decode())
-        excluded_probes = probe_filters.get_etl_excluded_probes_quickfix()
+        excluded_probes = probe_filters.get_etl_excluded_probes_quickfix("desktop")
         histogram_probes = {
             x.replace("histogram/", "").replace(".", "_").lower()
             for x in data.keys()

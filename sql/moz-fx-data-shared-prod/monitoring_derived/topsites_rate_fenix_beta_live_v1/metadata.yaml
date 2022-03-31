@@ -1,0 +1,13 @@
+friendly_name: Topsites Live Click and Impression Rates for Fenix Beta
+description: |-
+  Used to visualize telemetry rates in Grafana as a cross check for
+  operational monitoring of the Contile service.
+owners:
+  - jklukas@mozilla.com
+labels:
+  materialized_view: true
+  authorized: true
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

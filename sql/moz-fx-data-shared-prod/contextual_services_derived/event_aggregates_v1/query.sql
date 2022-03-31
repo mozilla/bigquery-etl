@@ -97,7 +97,7 @@ WITH combined AS (
     'topsites' AS source,
     IF(events[SAFE_OFFSET(0)].name = 'contile_click', 'click', 'impression') AS event_type,
     -- The adMarketplace APIs accept form factors out of "desktop", "phone", or "tablet";
-    -- we are currently always using "phone" for Fenix, so stay consistent with that here.    
+    -- we are currently always using "phone" for Fenix, so stay consistent with that here.
     'phone' AS form_factor,
     normalized_country_code AS country,
     metadata.geo.subdivision1 AS subdivision1,

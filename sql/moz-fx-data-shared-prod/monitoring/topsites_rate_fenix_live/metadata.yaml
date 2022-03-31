@@ -1,0 +1,11 @@
+---
+friendly_name: Live topsites Ping Counts Per Minute for Fenix
+description: |-
+  A live view of impressions and clicks intended for operational monitoring
+  use cases.
+labels:
+  authorized: true
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

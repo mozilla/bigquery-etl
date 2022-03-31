@@ -66,4 +66,4 @@ def copy_ga_sessions(ga_ids, start_date, end_date, src_project, dst_project, ove
 
 
 if __name__ == "__main__":
-    copy_ga_sessions()
+    copy_ga_sessions()  # type: ignore

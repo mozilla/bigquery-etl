@@ -100,7 +100,7 @@ parser.add_argument(
 parser.add_argument(
     "--max-single-dml-bytes",
     "--max_single_dml_bytes",
-    default=10 * 2 ** 40,
+    default=10 * 2**40,
     type=int,
     help="Maximum number of bytes in a table that should be processed using a single "
     "DML query; tables above this limit will be processed using per-partition "

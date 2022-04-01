@@ -8,40 +8,56 @@ WITH all_subscriptions AS (
   FROM
     mozdata.mozilla_vpn.all_subscriptions
 ),
-previous_active_subscription_ids AS (
-  SELECT
-    active_date + 1 AS event_date,
-    subscription_id,
+max_active_date AS (
+  SELECT AS VALUE
+    MAX(active_date)
   FROM
     mozdata.mozilla_vpn.active_subscription_ids
 ),
-current_active_subscription_ids AS (
+new_events AS (
   SELECT
     active_date AS event_date,
     subscription_id,
+    "New" AS event_type,
   FROM
     mozdata.mozilla_vpn.active_subscription_ids
+  QUALIFY
+    LAG(active_date) OVER (PARTITION BY subscription_id ORDER BY active_date) IS DISTINCT FROM (
+      active_date - 1
+    )
+),
+cancelled_events AS (
+  SELECT
+    active_date AS event_date,
+    subscription_id,
+    "Cancelled" AS event_type,
+  FROM
+    mozdata.mozilla_vpn.active_subscription_ids
+  CROSS JOIN
+    max_active_date
+  WHERE
+    active_date < max_active_date
+  QUALIFY
+    LEAD(active_date) OVER (PARTITION BY subscription_id ORDER BY active_date) IS DISTINCT FROM (
+      active_date + 1
+    )
 ),
 events AS (
   SELECT
-    event_date,
-    subscription_id,
-    IF(previous_active_subscription_ids.subscription_id IS NULL, "New", "Cancelled") AS event_type,
+    *
   FROM
-    current_active_subscription_ids
-  FULL JOIN
-    previous_active_subscription_ids
-  USING
-    (event_date, subscription_id)
-  WHERE
-    previous_active_subscription_ids.subscription_id IS NULL
-    OR current_active_subscription_ids IS NULL
+    new_events
+  UNION ALL
+  SELECT
+    *
+  FROM
+    cancelled_events
 )
 SELECT
   events.event_date,
   events.event_type,
   CASE
-  -- "New" events
+  -- "New" event.subscription_ids
   WHEN
     events.event_type = "New"
     AND DATE(all_subscriptions.subscription_start_date) = DATE(
@@ -55,7 +71,7 @@ SELECT
     "Resurrected"
   -- "Cancelled" events
   WHEN
-    all_subscriptions.provider LIKE "Apple Store IAP"
+    all_subscriptions.provider = "Apple Store"
   THEN
     "Cancelled by IAP"
   WHEN
@@ -94,7 +110,7 @@ SELECT
   all_subscriptions.normalized_source,
   all_subscriptions.website_channel_group,
   JSON_VALUE_ARRAY(all_subscriptions.json_promotion_codes) AS promotion_codes,
-  SUM(IF(event_type = "New", 1, -1)) AS `count`,
+  COUNT(*) AS `count`,
 FROM
   all_subscriptions
 JOIN

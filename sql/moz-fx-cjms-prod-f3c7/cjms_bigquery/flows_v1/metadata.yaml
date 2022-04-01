@@ -1,0 +1,11 @@
+friendly_name: FxA flows by date
+description: >
+  FxA flow_id, first seen timestamp, and last seen user id by date
+owners:
+  - dthorn@mozilla.com
+labels:
+  application: cjms
+  schedule: hourly
+scheduling:
+  dag_name: bqetl_subplat
+  query_project: moz-fx-data-shared-prod

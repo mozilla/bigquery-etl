@@ -21,6 +21,8 @@ new_events AS (
     "New" AS event_type,
   FROM
     mozdata.mozilla_vpn.active_subscription_ids
+  WHERE
+    TRUE -- zetasql requires QUALIFY to be used in conjunction with WHERE, GROUP BY, or HAVING
   QUALIFY
     LAG(active_date) OVER (PARTITION BY subscription_id ORDER BY active_date) IS DISTINCT FROM (
       active_date - 1

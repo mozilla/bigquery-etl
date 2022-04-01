@@ -487,7 +487,7 @@ PIONEER_PROD = "moz-fx-data-pioneer-prod"
 def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
     """Return a dict like DELETE_TARGETS for Pioneer tables."""
 
-    def has_nested_rally_id(field):
+    def _has_nested_rally_id(field):
         """Check if any of the fields contains nested `metrics.uuid_rally_id`."""
         if field.name == "metrics" and field.field_type == "RECORD":
             uuid_field = next(filter(lambda f: f.name == "uuid", field.fields), None)
@@ -495,35 +495,43 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
                 return any(field.name == "rally_id" for field in uuid_field.fields)
         return False
 
-    def __get_tables_with_pioneer_id__(dataset):
+    def _get_tables_with_pioneer_id(dataset):
         tables_with_pioneer_id = []
         for table in client.list_tables(dataset):
             table_ref = client.get_table(table)
             if (
                 any(field.name == PIONEER_ID for field in table_ref.schema)
                 or any(field.name == RALLY_ID_TOP_LEVEL for field in table_ref.schema)
-                or any(has_nested_rally_id(field) for field in table_ref.schema)
+                or any(_has_nested_rally_id(field) for field in table_ref.schema)
             ) and table_ref.table_type != "VIEW":
                 tables_with_pioneer_id.append(table_ref)
         return tables_with_pioneer_id
 
-    def __get_client_id_field__(table, deletion_request_view=False, study_name=None):
+    def _get_client_id_field(table, deletion_request_view=False, study_name=None):
         """Determine which column should be used as client id for a given table."""
-        if table.dataset_id.startswith("rally_") or (
-            study_name and study_name.startswith("rally-")
-        ):
+        if table.dataset_id.startswith("rally_"):
             # `rally_zero_one` is a special case where top-level rally_id is used
             # both in the ping tables and the deletion_requests view
-            if (
-                table.dataset_id in ["rally_zero_one_stable", "rally_zero_one_derived"]
-                or study_name == "rally-zero-one"
-            ):
+            if table.dataset_id in ["rally_zero_one_stable", "rally_zero_one_derived"]:
                 return RALLY_ID_TOP_LEVEL
             # deletion request views expose rally_id as a top-level field
             if deletion_request_view:
                 return RALLY_ID_TOP_LEVEL
             else:
                 return RALLY_ID
+        elif (
+            table.dataset_id == "analysis"
+            and study_name
+            and study_name.startswith("rally-")
+        ):
+            # Rally analysis tables do not have schemas specified upfront,
+            # analysts might decide to use either nested or top-level rally_id.
+            if any(_has_nested_rally_id(field) for field in table.schema):
+                return RALLY_ID
+            elif any(field.name == RALLY_ID_TOP_LEVEL for field in table.schema):
+                return RALLY_ID_TOP_LEVEL
+            else:
+                logging.error(f"Failed to find client_id field for {table}")
         else:
             return PIONEER_ID
 
@@ -558,7 +566,7 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
     sources = {
         table.dataset_id.replace("_derived", "_stable"): DeleteSource(
             qualified_table_id(table),
-            __get_client_id_field__(table, deletion_request_view=True),
+            _get_client_id_field(table, deletion_request_view=True),
             project,
         )
         # dict comprehension will only keep the last value for a given key, so
@@ -588,7 +596,7 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
             # stable tables
             DeleteTarget(
                 table=qualified_table_id(table),
-                field=__get_client_id_field__(table),
+                field=_get_client_id_field(table),
                 project=PIONEER_PROD,
             ): sources[table.dataset_id]
             for table in stable_tables
@@ -599,20 +607,20 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
             # derived tables with pioneer_id
             DeleteTarget(
                 table=qualified_table_id(table),
-                field=__get_client_id_field__(table),
+                field=_get_client_id_field(table),
                 project=PIONEER_PROD,
             ): sources[table.dataset_id]
             for dataset in derived_datasets
-            for table in __get_tables_with_pioneer_id__(dataset)
+            for table in _get_tables_with_pioneer_id(dataset)
         },
         **{
             # tables with pioneer_id located in study analysis projects
             DeleteTarget(
                 table=qualified_table_id(table),
-                field=__get_client_id_field__(table, study_name=study),
+                field=_get_client_id_field(table, study_name=study),
                 project=table.project,
             ): sources[study.replace("-", "_") + "_stable"]
             for dataset, study in analysis_datasets.items()
-            for table in __get_tables_with_pioneer_id__(dataset)
+            for table in _get_tables_with_pioneer_id(dataset)
         },
     }

@@ -113,4 +113,4 @@ def main(submission_date, dst_table, project, tmp_project, dataset):
 
 
 if __name__ == "__main__":
-    main()  # type: ignore
+    main()

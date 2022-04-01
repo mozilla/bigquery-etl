@@ -6,6 +6,7 @@ from typing import Dict, List
 from jinja2 import Environment, PackageLoader
 
 from bigquery_etl.format_sql.formatter import reformat
+from bigquery_etl.util.probe_filters import get_etl_excluded_probes_quickfix
 
 from .utils import get_schema, ping_type_from_table
 
@@ -42,6 +43,7 @@ def get_distribution_metrics(schema: Dict) -> Dict[str, List[str]]:
         "custom_distribution",
     }
     metrics: Dict[str, List[str]] = {metric_type: [] for metric_type in metric_type_set}
+    excluded_metrics = get_etl_excluded_probes_quickfix("fenix")
 
     # Iterate over every element in the schema under the metrics section and
     # collect a list of metric names.
@@ -53,7 +55,8 @@ def get_distribution_metrics(schema: Dict) -> Dict[str, List[str]]:
             if metric_type not in metric_type_set:
                 continue
             for field in metric_field["fields"]:
-                metrics[metric_type].append(field["name"])
+                if field["name"] not in excluded_metrics:
+                    metrics[metric_type].append(field["name"])
     return metrics
 
 

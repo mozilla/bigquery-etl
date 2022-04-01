@@ -10,6 +10,7 @@ from pathlib import Path
 from time import sleep
 
 from google.cloud import bigquery
+from bigquery_etl.util import probe_filters
 
 sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
 from bigquery_etl.format_sql.formatter import reformat
@@ -455,6 +456,7 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
 
     with urllib.request.urlopen(PROBE_INFO_SERVICE) as url:
         data = json.loads(gzip.decompress(url.read()).decode())
+        excluded_probes = probe_filters.get_etl_excluded_probes_quickfix("desktop")
         histogram_probes = {
             x.replace("histogram/", "").replace(".", "_").lower()
             for x in data.keys()
@@ -465,7 +467,7 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
         relevant_probes = {
             histogram: {"processes": process}
             for histogram, process in main_summary_histograms.items()
-            if histogram in histogram_probes
+            if histogram in histogram_probes and histogram not in excluded_probes
         }
         for key in data.keys():
             if not key.startswith("histogram/"):

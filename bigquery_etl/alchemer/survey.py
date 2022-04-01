@@ -145,4 +145,4 @@ def main(date, survey_id, api_token, api_secret, destination_table):
 
 
 if __name__ == "__main__":
-    main()  # type: ignore
+    main()

@@ -5,6 +5,9 @@ from operators.task_sensor import ExternalTaskCompletedSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
+from operators.backport.fivetran.operator import FivetranOperator
+from operators.backport.fivetran.sensor import FivetranSensor
+
 docs = """
 ### bqetl_cjms_nonprod
 
@@ -84,4 +87,20 @@ with DAG(
         dag=dag,
     )
 
+    fivetran_stripe_nonprod_sync_start = FivetranOperator(
+        connector_id="{{ var.value.fivetran_stripe_nonprod_connector_id }}",
+        task_id="fivetran_stripe_nonprod_task",
+    )
+
+    fivetran_stripe_nonprod_sync_wait = FivetranSensor(
+        connector_id="{{ var.value.fivetran_stripe_nonprod_connector_id }}",
+        task_id="fivetran_stripe_nonprod_sensor",
+        poke_interval=5,
+    )
+
+    fivetran_stripe_nonprod_sync_wait.set_upstream(fivetran_stripe_nonprod_sync_start)
+
+    cjms_bigquery__refunds__v1.set_upstream(fivetran_stripe_nonprod_sync_wait)
+
     cjms_bigquery__subscriptions__v1.set_upstream(cjms_bigquery__flows__v1)
+    cjms_bigquery__subscriptions__v1.set_upstream(fivetran_stripe_nonprod_sync_wait)

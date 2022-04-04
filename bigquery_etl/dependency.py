@@ -34,6 +34,9 @@ def extract_table_references(sql: str) -> List[str]:
     try:
         Analyzer = jnius.autoclass("com.google.zetasql.Analyzer")
         AnalyzerOptions = jnius.autoclass("com.google.zetasql.AnalyzerOptions")
+        LanguageFeature = jnius.autoclass(
+            "com.google.zetasql.ZetaSQLOptions$LanguageFeature"
+        )
     except jnius.JavaException:
         # replace jnius.JavaException because it's not available outside this function
         raise ImportError(
@@ -42,7 +45,10 @@ def extract_table_references(sql: str) -> List[str]:
         )
     # enable support for CreateViewStatement and others
     options = AnalyzerOptions()
-    options.getLanguageOptions().setSupportsAllStatementKinds()
+    language_options = options.getLanguageOptions()
+    language_options.setSupportsAllStatementKinds()
+    language_options.enableMaximumLanguageFeatures()
+    language_options.enableLanguageFeature(LanguageFeature.FEATURE_V_1_3_QUALIFY)
     try:
         result = Analyzer.extractTableNamesFromStatement(sql, options)
     except jnius.JavaException:

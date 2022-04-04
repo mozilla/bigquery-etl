@@ -53,6 +53,7 @@ TOP_LEVEL_KEYWORDS = [
     "ORDER BY",
     "OUTER JOIN",
     "PARTITION BY",
+    "QUALIFY",
     "RANGE BETWEEN",
     "RANGE",
     "RIGHT JOIN",
@@ -145,6 +146,8 @@ RESERVED_KEYWORDS = [
     "INTERSECT",
     "INTERVAL",
     "INTO",
+    "IS DISTINCT FROM",
+    "IS NOT DISTINCT FROM",
     "IS",
     "JOIN",
     "LATERAL",
@@ -269,7 +272,17 @@ class ReservedKeyword(Token):
 class SpaceBeforeBracketKeyword(ReservedKeyword):
     """Keyword that should be separated by a space from a following opening bracket."""
 
-    pattern = _keyword_pattern(["IN", r"\* EXCEPT", r"\* REPLACE", "NOT", "OVER"])
+    pattern = _keyword_pattern(
+        [
+            "IN",
+            r"\* EXCEPT",
+            r"\* REPLACE",
+            "NOT",
+            "OVER",
+            "IS DISTINCT FROM",
+            "IS NOT DISTINCT FROM",
+        ]
+    )
 
 
 class BlockKeyword(ReservedKeyword):

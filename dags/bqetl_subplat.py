@@ -87,6 +87,20 @@ with DAG(
         dag=dag,
     )
 
+    mozilla_vpn_derived__active_subscription_ids__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_derived__active_subscription_ids__v1",
+        destination_table='active_subscription_ids_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="mozilla_vpn_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
+        sql_file_path="sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscription_ids_v1/query.sql",
+        dag=dag,
+    )
+
     mozilla_vpn_derived__active_subscriptions__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__active_subscriptions__v1",
         destination_table='active_subscriptions_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
@@ -970,6 +984,14 @@ with DAG(
     cjms_bigquery__subscriptions__v1.set_upstream(cjms_bigquery__flows__v1)
     cjms_bigquery__subscriptions__v1.set_upstream(fivetran_stripe_sync_wait)
 
+    mozilla_vpn_derived__active_subscription_ids__v1.set_upstream(
+        mozilla_vpn_derived__all_subscriptions__v1
+    )
+
+    mozilla_vpn_derived__active_subscriptions__v1.set_upstream(
+        mozilla_vpn_derived__active_subscription_ids__v1
+    )
+
     mozilla_vpn_derived__active_subscriptions__v1.set_upstream(
         mozilla_vpn_derived__all_subscriptions__v1
     )
@@ -986,6 +1008,10 @@ with DAG(
         mozilla_vpn_derived__users__v1
     )
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(fivetran_stripe_sync_wait)
+
+    mozilla_vpn_derived__channel_group_proportions__v1.set_upstream(
+        mozilla_vpn_derived__active_subscription_ids__v1
+    )
 
     mozilla_vpn_derived__channel_group_proportions__v1.set_upstream(
         mozilla_vpn_derived__all_subscriptions__v1
@@ -1078,6 +1104,10 @@ with DAG(
     )
     mozilla_vpn_derived__login_flows__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_content_events__v1
+    )
+
+    mozilla_vpn_derived__subscription_events__v1.set_upstream(
+        mozilla_vpn_derived__active_subscription_ids__v1
     )
 
     mozilla_vpn_derived__subscription_events__v1.set_upstream(

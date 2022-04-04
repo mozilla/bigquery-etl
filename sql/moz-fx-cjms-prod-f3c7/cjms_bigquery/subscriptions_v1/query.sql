@@ -13,8 +13,8 @@ WITH aic_flows AS (
   USING
     (flow_id)
   WHERE
-    -- only use the last 10 days in stage
-    submission_date >= CURRENT_DATE - 10
+    -- use the last 31 days in prod
+    submission_date >= CURRENT_DATE - 31
   GROUP BY
     flow_id
 ),

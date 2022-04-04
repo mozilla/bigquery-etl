@@ -61,7 +61,9 @@ flows AS (
         1
     )[SAFE_OFFSET(0)].*,
     ARRAY_AGG(plan_id IGNORE NULLS ORDER BY `timestamp` LIMIT 1)[SAFE_OFFSET(0)] AS plan_id,
-    ARRAY_AGG(promotion_code IGNORE NULLS ORDER BY `timestamp` LIMIT 1)[SAFE_OFFSET(0)] AS promotion_code,
+    ARRAY_AGG(promotion_code IGNORE NULLS ORDER BY `timestamp` LIMIT 1)[
+      SAFE_OFFSET(0)
+    ] AS promotion_code,
     LOGICAL_OR(event_type = "fxa_rp_button - view") AS rp_button_view,
     -- impression for the cta button
     LOGICAL_OR(event_type = "fxa_pay_account_setup - view") AS pay_account_setup_view,
@@ -100,20 +102,14 @@ flows AS (
       event_type = "fxa_pay_setup - 3ds_complete"
       AND user_id IS NOT NULL
     ) AS pay_setup_complete_with_uid,
-   LOGICAL_OR(
+    LOGICAL_OR(
       event_type = "fxa_pay_setup - 3ds_complete"
       AND user_id IS NOT NULL
     ) AS pay_setup_complete_with_uid,
-  --coupon activities 
-  LOGICAL_OR(
-      event_type = "fxa_subscribe_coupon - submit"
-    ) AS subscribe_coupon_submit,
-   LOGICAL_OR(
-      event_type = "fxa_subscribe_coupon - fail"
-    ) AS subscribe_coupon_fail,
-   LOGICAL_OR(
-      event_type = "fxa_subscribe_coupon - success"
-    ) AS subscribe_coupon_success,
+    -- coupon activities
+    LOGICAL_OR(event_type = "fxa_subscribe_coupon - submit") AS subscribe_coupon_submit,
+    LOGICAL_OR(event_type = "fxa_subscribe_coupon - fail") AS subscribe_coupon_fail,
+    LOGICAL_OR(event_type = "fxa_subscribe_coupon - success") AS subscribe_coupon_success,
   FROM
     mozdata.firefox_accounts.fxa_content_auth_stdout_events
   WHERE
@@ -183,16 +179,10 @@ flow_counts AS (
       AND pay_setup_engage_with_uid
       AND pay_account_setup_other
     ) AS existing_fxa_signedoff_pay_setup_complete,
-  --coupon activities
-  COUNTIF(
-      subscribe_coupon_submit
-    ) AS subscribe_coupon_submit,
-   COUNTIF(
-      subscribe_coupon_fail
-    ) AS subscribe_coupon_fail,
-   COUNTIF(
-      subscribe_coupon_success
-    ) AS subscribe_coupon_success,
+    -- coupon activities
+    COUNTIF(subscribe_coupon_submit) AS subscribe_coupon_submit,
+    COUNTIF(subscribe_coupon_fail) AS subscribe_coupon_fail,
+    COUNTIF(subscribe_coupon_success) AS subscribe_coupon_success,
   FROM
     flows
   GROUP BY

@@ -61,7 +61,7 @@ SELECT
   events.event_date,
   events.event_type,
   CASE
-  -- "New" event.subscription_ids
+  -- "New" events
   WHEN
     events.event_type = "New"
     AND DATE(all_subscriptions.subscription_start_date) = DATE(

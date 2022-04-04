@@ -30,7 +30,7 @@ new_events AS (
 ),
 cancelled_events AS (
   SELECT
-    active_date AS event_date,
+    active_date + 1 AS event_date,
     subscription_id,
     "Cancelled" AS event_type,
   FROM
@@ -38,11 +38,13 @@ cancelled_events AS (
   CROSS JOIN
     max_active_date
   WHERE
-    active_date < max_active_date
+    TRUE -- zetasql requires QUALIFY to be used in conjunction with WHERE, GROUP BY, or HAVING
   QUALIFY
     LEAD(active_date) OVER (PARTITION BY subscription_id ORDER BY active_date) IS DISTINCT FROM (
       active_date + 1
     )
+    AND active_date < max_active_date
+
 ),
 events AS (
   SELECT

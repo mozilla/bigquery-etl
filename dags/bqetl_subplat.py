@@ -48,6 +48,45 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    cjms_bigquery__flows__v1 = bigquery_etl_query(
+        task_id="cjms_bigquery__flows__v1",
+        destination_table="flows_v1",
+        dataset_id="moz-fx-cjms-prod-f3c7:cjms_bigquery",
+        project_id="moz-fx-data-shared-prod",
+        sql_file_path="sql/moz-fx-cjms-prod-f3c7/cjms_bigquery/flows_v1/query.sql",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    cjms_bigquery__refunds__v1 = bigquery_etl_query(
+        task_id="cjms_bigquery__refunds__v1",
+        destination_table="refunds_v1",
+        dataset_id="moz-fx-cjms-prod-f3c7:cjms_bigquery",
+        project_id="moz-fx-data-shared-prod",
+        sql_file_path="sql/moz-fx-cjms-prod-f3c7/cjms_bigquery/refunds_v1/query.sql",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    cjms_bigquery__subscriptions__v1 = bigquery_etl_query(
+        task_id="cjms_bigquery__subscriptions__v1",
+        destination_table="subscriptions_v1",
+        dataset_id="moz-fx-cjms-prod-f3c7:cjms_bigquery",
+        project_id="moz-fx-data-shared-prod",
+        sql_file_path="sql/moz-fx-cjms-prod-f3c7/cjms_bigquery/subscriptions_v1/query.sql",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        dag=dag,
+    )
+
     mozilla_vpn_derived__active_subscription_ids__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__active_subscription_ids__v1",
         destination_table='active_subscription_ids_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
@@ -927,6 +966,24 @@ with DAG(
         dag=dag,
     )
 
+    fivetran_stripe_sync_start = FivetranOperator(
+        connector_id="{{ var.value.fivetran_stripe_connector_id }}",
+        task_id="fivetran_stripe_task",
+    )
+
+    fivetran_stripe_sync_wait = FivetranSensor(
+        connector_id="{{ var.value.fivetran_stripe_connector_id }}",
+        task_id="fivetran_stripe_sensor",
+        poke_interval=5,
+    )
+
+    fivetran_stripe_sync_wait.set_upstream(fivetran_stripe_sync_start)
+
+    cjms_bigquery__refunds__v1.set_upstream(fivetran_stripe_sync_wait)
+
+    cjms_bigquery__subscriptions__v1.set_upstream(cjms_bigquery__flows__v1)
+    cjms_bigquery__subscriptions__v1.set_upstream(fivetran_stripe_sync_wait)
+
     mozilla_vpn_derived__active_subscription_ids__v1.set_upstream(
         mozilla_vpn_derived__all_subscriptions__v1
     )
@@ -950,18 +1007,6 @@ with DAG(
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
         mozilla_vpn_derived__users__v1
     )
-    fivetran_stripe_sync_start = FivetranOperator(
-        connector_id="{{ var.value.fivetran_stripe_connector_id }}",
-        task_id="fivetran_stripe_task",
-    )
-
-    fivetran_stripe_sync_wait = FivetranSensor(
-        connector_id="{{ var.value.fivetran_stripe_connector_id }}",
-        task_id="fivetran_stripe_sensor",
-        poke_interval=5,
-    )
-
-    fivetran_stripe_sync_wait.set_upstream(fivetran_stripe_sync_start)
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(fivetran_stripe_sync_wait)
 
     mozilla_vpn_derived__channel_group_proportions__v1.set_upstream(

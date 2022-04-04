@@ -7,32 +7,32 @@ WITH aic_flows AS (
       SAFE_OFFSET(0)
     ] AS fxa_uid,
   FROM
-    `moz-fx-cjms-nonprod-9a36`.cjms_bigquery.flows_v1
+    `moz-fx-cjms-prod-f3c7`.cjms_bigquery.flows_v1
   JOIN
-    EXTERNAL_QUERY("moz-fx-cjms-nonprod-9a36.us.cjms-sql", "SELECT flow_id FROM aic")
+    EXTERNAL_QUERY("moz-fx-cjms-prod-f3c7.us.cjms-sql", "SELECT flow_id FROM aic")
   USING
     (flow_id)
   WHERE
-    -- only use the last 10 days in stage
-    submission_date >= CURRENT_DATE - 10
+    -- use the last 31 days in prod
+    submission_date >= CURRENT_DATE - 31
   GROUP BY
     flow_id
 ),
 attributed_flows AS (
   -- last flow that started before subscription created
   SELECT
-    nonprod_stripe_subscriptions.subscription_id,
-    nonprod_stripe_subscriptions.created AS subscription_created,
+    stripe_subscriptions.subscription_id,
+    stripe_subscriptions.created AS subscription_created,
     ARRAY_AGG(aic_flows.flow_id ORDER BY aic_flows.flow_started DESC LIMIT 1)[
       SAFE_OFFSET(0)
     ] AS flow_id,
   FROM
     aic_flows
   JOIN
-    mozdata.subscription_platform.nonprod_stripe_subscriptions
+    mozdata.subscription_platform.stripe_subscriptions
   ON
-    aic_flows.fxa_uid = nonprod_stripe_subscriptions.fxa_uid
-    AND aic_flows.flow_started < nonprod_stripe_subscriptions.created
+    aic_flows.fxa_uid = stripe_subscriptions.fxa_uid
+    AND aic_flows.flow_started < stripe_subscriptions.created
   GROUP BY
     subscription_id,
     subscription_created
@@ -51,18 +51,18 @@ attributed_subs AS (
 )
 SELECT
   CURRENT_TIMESTAMP AS report_timestamp,
-  nonprod_stripe_subscriptions.created AS subscription_created,
+  stripe_subscriptions.created AS subscription_created,
   attributed_subs.subscription_id, -- transaction id
-  nonprod_stripe_subscriptions.fxa_uid,
+  stripe_subscriptions.fxa_uid,
   1 AS quantity,
-  nonprod_stripe_subscriptions.plan_id, -- sku
-  nonprod_stripe_subscriptions.plan_currency,
-  nonprod_stripe_subscriptions.plan_amount,
-  nonprod_stripe_subscriptions.country,
+  stripe_subscriptions.plan_id, -- sku
+  stripe_subscriptions.plan_currency,
+  stripe_subscriptions.plan_amount,
+  stripe_subscriptions.country,
   attributed_subs.flow_id,
 FROM
   attributed_subs
 JOIN
-  mozdata.subscription_platform.nonprod_stripe_subscriptions
+  mozdata.subscription_platform.stripe_subscriptions
 USING
   (subscription_id)

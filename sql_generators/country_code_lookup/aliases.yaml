@@ -221,6 +221,7 @@ EE:
     - "Estonia"
     - "The Republic of Estonia"
 SZ:
+    - "eSwatini"
     - "Eswatini"
     - "The Kingdom of Eswatini"
     - "Swaziland"
@@ -424,6 +425,9 @@ MK:
     - "North Macedonia"
     - "Macedonia, the Former Yugoslav Republic of"
     - "The Republic of North Macedonia"
+    - "Macedonia, FYRO"
+    - "FYR Macedonia"
+    - "FYROM"
 MG:
     - "Madagascar"
     - "The Republic of Madagascar"
@@ -798,3 +802,4 @@ ZW:
 ??:
     - "n/a"
     - "UNKNOWN"
+    - "None"

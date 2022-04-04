@@ -55,6 +55,9 @@ fields:
   name: plan_name
   type: STRING
 - mode: NULLABLE
+  name: promotion_code
+  type: STRING
+- mode: NULLABLE
   name: vpn_site_hits
   type: INTEGER
 - mode: NULLABLE
@@ -137,4 +140,13 @@ fields:
   type: INTEGER
 - mode: NULLABLE
   name: overall_existing_signedoff_fxa_payment_setup_view
+  type: INTEGER
+- mode: NULLABLE
+  name: subscribe_coupon_submit
+  type: INTEGER
+- mode: NULLABLE
+  name: subscribe_coupon_fail
+  type: INTEGER
+- mode: NULLABLE
+  name: subscribe_coupon_success
   type: INTEGER

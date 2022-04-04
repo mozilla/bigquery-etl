@@ -1,6 +1,7 @@
 name,code
 "n/a",??
 "UNKNOWN",??
+"None",??
 "Andorra",AD
 "The Principality of Andorra",AD
 "United Arab Emirates",AE
@@ -318,6 +319,9 @@ name,code
 "North Macedonia",MK
 "Macedonia, the Former Yugoslav Republic of",MK
 "The Republic of North Macedonia",MK
+"Macedonia, FYRO",MK
+"FYR Macedonia",MK
+"FYROM",MK
 "Mali",ML
 "The Republic of Mali",ML
 "Myanmar",MM
@@ -458,6 +462,7 @@ name,code
 "Syria",SY
 "Syrian Arab Republic",SY
 "The Syrian Arab Republic",SY
+"eSwatini",SZ
 "Eswatini",SZ
 "The Kingdom of Eswatini",SZ
 "Swaziland",SZ

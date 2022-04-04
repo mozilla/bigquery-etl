@@ -5,7 +5,7 @@ WITH fxa_content_auth_stdout_events_live AS (
     `timestamp`,
     TO_HEX(SHA256(jsonPayload.fields.user_id)) AS fxa_uid,
   FROM
-    `moz-fx-fxa-prod-0712.fxa_stage_logs.docker_fxa_auth_20*`
+    `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth_20*`
   WHERE
     jsonPayload.type = 'amplitudeEvent'
     AND jsonPayload.fields.event_type IS NOT NULL
@@ -17,7 +17,7 @@ WITH fxa_content_auth_stdout_events_live AS (
     `timestamp`,
     TO_HEX(SHA256(jsonPayload.fields.user_id)) AS fxa_uid,
   FROM
-    `moz-fx-fxa-prod-0712.fxa_stage_logs.docker_fxa_content_20*`
+    `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_content_20*`
   WHERE
     jsonPayload.type = 'amplitudeEvent'
     AND jsonPayload.fields.event_type IS NOT NULL
@@ -28,7 +28,7 @@ WITH fxa_content_auth_stdout_events_live AS (
     `timestamp`,
     TO_HEX(SHA256(jsonPayload.fields.user_id)) AS fxa_uid,
   FROM
-    `moz-fx-fxa-prod-0712.fxa_stage_logs.stdout_20*`
+    `moz-fx-fxa-prod-0712.fxa_prod_logs.stdout_20*`
   WHERE
     jsonPayload.type = 'amplitudeEvent'
     AND jsonPayload.fields.event_type IS NOT NULL

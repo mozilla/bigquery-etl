@@ -44,7 +44,6 @@ cancelled_events AS (
       active_date + 1
     )
     AND active_date < max_active_date
-
 ),
 events AS (
   SELECT

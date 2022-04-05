@@ -55,6 +55,22 @@ with DAG(
         dag=dag,
     )
 
+    internet_outages__global_outages_staging__v1 = bigquery_etl_query(
+        task_id="internet_outages__global_outages_staging__v1",
+        destination_table="global_outages_staging_v1",
+        dataset_id="internet_outages",
+        project_id="moz-fx-data-shared-prod",
+        owner="aplacitelli@mozilla.com",
+        email=["aplacitelli@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    internet_outages__global_outages__v1.set_upstream(
+        internet_outages__global_outages_staging__v1
+    )
+
     wait_for_copy_deduplicate_all = ExternalTaskCompletedSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -65,7 +81,9 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    internet_outages__global_outages__v1.set_upstream(wait_for_copy_deduplicate_all)
+    internet_outages__global_outages_staging__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
     wait_for_copy_deduplicate_main_ping = ExternalTaskCompletedSensor(
         task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",
@@ -76,7 +94,7 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    internet_outages__global_outages__v1.set_upstream(
+    internet_outages__global_outages_staging__v1.set_upstream(
         wait_for_copy_deduplicate_main_ping
     )
     wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskCompletedSensor(
@@ -89,6 +107,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    internet_outages__global_outages__v1.set_upstream(
+    internet_outages__global_outages_staging__v1.set_upstream(
         wait_for_telemetry_derived__clients_daily__v6
     )

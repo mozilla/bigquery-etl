@@ -2,7 +2,7 @@ attrs==21.4.0
 authlib==1.0.0
 cattrs==22.1.0
 click==8.1.2
-gcsfs==2022.2.0
+gcsfs==2022.3.0
 gcloud==0.18.3
 gitpython==3.1.27
 google-cloud-bigquery==2.34.2

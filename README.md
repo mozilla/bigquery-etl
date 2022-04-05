@@ -46,9 +46,9 @@ cd bigquery-etl
 venv/bin/pre-commit install
 ```
 
-4. Download java dependencies
+4. Build and install java dependencies
 ```bash
-mvn dependency:copy-dependencies
+mvn package
 # specify `<(echo mozilla-bigquery-etl)` to retain bqetl from `./bqetl bootstrap`
 venv/bin/pip-sync --pip-args=--no-deps requirements.txt java-requirements.txt <(echo mozilla-bigquery-etl)
 ```

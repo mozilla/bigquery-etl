@@ -31,9 +31,8 @@ def pytest_collection_modifyitems(config, items):
     skip_integration = pytest.mark.skip(reason="integration marker not selected")
     requires_java = pytest.mark.skipif(
         subprocess.call(["which", "javac"], stdout=subprocess.DEVNULL) != 0
-        or len(list(Path(__file__).parent.glob("target/dependency/*.jar"))) == 0,
-        reason="requires javac and target/dependency/*.jar from "
-        "`mvn dependency:copy-dependencies`",
+        or len(list(Path(__file__).parent.glob("target/*.jar"))) == 0,
+        reason="requires javac and target/*.jar from `mvn package`",
     )
 
     for item in items:

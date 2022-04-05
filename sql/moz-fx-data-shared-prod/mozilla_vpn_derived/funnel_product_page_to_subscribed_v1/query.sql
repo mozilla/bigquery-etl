@@ -102,10 +102,6 @@ flows AS (
       event_type = "fxa_pay_setup - 3ds_complete"
       AND user_id IS NOT NULL
     ) AS pay_setup_complete_with_uid,
-    LOGICAL_OR(
-      event_type = "fxa_pay_setup - 3ds_complete"
-      AND user_id IS NOT NULL
-    ) AS pay_setup_complete_with_uid,
     -- coupon activities
     LOGICAL_OR(event_type = "fxa_subscribe_coupon - submit") AS subscribe_coupon_submit,
     LOGICAL_OR(event_type = "fxa_subscribe_coupon - fail") AS subscribe_coupon_fail,

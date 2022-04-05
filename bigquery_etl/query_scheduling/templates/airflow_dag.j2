@@ -7,7 +7,7 @@ from utils.gcp import bigquery_etl_query, gke_command
 
 {% set ns = namespace(uses_fivetran=False) -%}
 {% for task in tasks -%}
-{% if task.depends_on_fivetran != None and task.depends_on_fivetran|length > 1 and ns.uses_fivetran == False -%}
+{% if task.depends_on_fivetran != None and task.depends_on_fivetran|length > 0 and ns.uses_fivetran == False -%}
 {% set ns.uses_fivetran = True -%}
 from operators.backport.fivetran.operator import FivetranOperator
 from operators.backport.fivetran.sensor import FivetranSensor
@@ -123,6 +123,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 {% endfor -%}
 
 {% set wait_for_seen = [] -%}
+{% set fivetran_seen = [] -%}
 {% for task in tasks | sort(attribute='task_name') %}
     {% for dependency in (task.dependencies + task.depends_on) | sort(attribute='task_id') -%}
     {% if dependency.dag_name == name and dependency not in task.depends_on -%}
@@ -151,6 +152,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 
     {% if task.depends_on_fivetran != None -%}
     {% for fivetran_task in task.depends_on_fivetran -%}
+    {% if fivetran_task not in fivetran_seen -%}
     {{ fivetran_task.task_id }}_sync_start = FivetranOperator(
         connector_id='{% raw %}{{ var.value.{% endraw %}{{ fivetran_task.task_id }}{% raw %}_connector_id }}{% endraw %}',
         task_id='{{ fivetran_task.task_id }}_task',
@@ -163,6 +165,8 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     )
 
     {{ fivetran_task.task_id }}_sync_wait.set_upstream({{ fivetran_task.task_id }}_sync_start)
+    {{ fivetran_seen.append(fivetran_task) or "" }}
+    {% endif -%}
     {{ task.task_name }}.set_upstream({{ fivetran_task.task_id }}_sync_wait)
 
     {% endfor -%}

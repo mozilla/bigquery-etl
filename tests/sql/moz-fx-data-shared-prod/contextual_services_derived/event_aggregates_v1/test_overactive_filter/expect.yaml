@@ -4,6 +4,7 @@
   source: suggest
   provider: merino
   event_type: impression
+  form_factor: desktop
   country: US
   subdivision1: AZ
   advertiser: ad1
@@ -28,3 +29,20 @@
   event_type: click
   event_count: 1
   user_count: 1
+- &base_mobile
+  submission_date: "2020-01-01"
+  source: topsites
+  provider: contile
+  event_type: click
+  form_factor: phone
+  country: US
+  subdivision1: NY
+  advertiser: ad3
+  release_channel: release
+  position: 1
+  event_count: 1
+  user_count: 1
+- <<: *base_mobile
+  release_channel: beta
+- <<: *base_mobile
+  release_channel: nightly

@@ -38,10 +38,10 @@ attributed_flows AS (
     subscription_created
 ),
 attributed_subs AS (
-  -- last subscription for each flow, for 1:1 relationship between flow and subscription
+  -- first subscription for each flow, for 1:1 relationship between flow and subscription
   SELECT
     flow_id,
-    ARRAY_AGG(subscription_id ORDER BY subscription_created DESC LIMIT 1)[
+    ARRAY_AGG(subscription_id ORDER BY subscription_created LIMIT 1)[
       SAFE_OFFSET(0)
     ] AS subscription_id,
   FROM

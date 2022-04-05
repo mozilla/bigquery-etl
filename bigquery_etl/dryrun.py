@@ -52,7 +52,11 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v2/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v2/view.sql",
     *glob.glob(
-        "sql/moz-fx-data-shared-prod/monitoring*/*_rate_live*/*.sql",
+        "sql/moz-fx-data-shared-prod/monitoring*/suggest*_rate*_live*/*.sql",
+        recursive=True,
+    ),
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/monitoring*/topsites*_rate*_live*/*.sql",
         recursive=True,
     ),
     "sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql",
@@ -88,11 +92,12 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized_v1/query.sql",
     *glob.glob("sql/moz-fx-data-shared-prod/stripe_derived/**/*.sql", recursive=True),
     *glob.glob("sql/moz-fx-data-shared-prod/stripe_external/**/*.sql", recursive=True),
-    *glob.glob("sql/moz-fx-cjms-nonprod-9a36/**/*.sql", recursive=True),
+    *glob.glob("sql/moz-fx-cjms-*/**/*.sql", recursive=True),
     "sql/moz-fx-data-shared-prod/subscription_platform/stripe_subscriptions/view.sql",
     "sql/moz-fx-data-shared-prod/subscription_platform/nonprod_stripe_subscriptions/view.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/stripe/itemized_payout_reconciliation/view.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscriptions_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscription_ids_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/all_subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/channel_group_proportions_v1/query.sql",  # noqa E501

@@ -9,3 +9,19 @@ labels:
 scheduling:
   dag_name: bqetl_cjms_nonprod
   query_project: moz-fx-data-shared-prod
+  # delay aggregates by 2 hours, to ensure data is complete
+  date_partition_parameter: null
+  destination_table:
+    >-
+    flows_v1${{
+    (execution_date - macros.timedelta(hours=2)).strftime("%Y%m%d")
+    }}
+  parameters:
+    - >-
+      submission_date:DATE:{{
+      (execution_date - macros.timedelta(hours=2)).strftime("%F")
+      }}
+  query_file_path:
+    # explicit query file path is necessary because the destination table
+    # includes a partition identifier that is not in the path
+    sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/flows_v1/query.sql

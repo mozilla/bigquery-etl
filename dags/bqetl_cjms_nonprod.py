@@ -17,9 +17,6 @@ Built from bigquery-etl repo, [`dags/bqetl_cjms_nonprod.py`](https://github.com/
 
 Hourly ETL for cjms nonprod.
 
-Scheduled to run after fivetran stripe_nonprod, which runs hourly at minute
-17 and takes less than 5 minutes.
-
 #### Owner
 
 dthorn@mozilla.com
@@ -43,21 +40,24 @@ tags = ["impact/tier_3", "repo/bigquery-etl"]
 with DAG(
     "bqetl_cjms_nonprod",
     default_args=default_args,
-    schedule_interval="22 * * * *",
+    schedule_interval="0 * * * *",
     doc_md=docs,
     tags=tags,
 ) as dag:
 
     cjms_bigquery__flows__v1 = bigquery_etl_query(
         task_id="cjms_bigquery__flows__v1",
-        destination_table="flows_v1",
+        destination_table='flows_v1${{ (execution_date - macros.timedelta(hours=2)).strftime("%Y%m%d") }}',
         dataset_id="moz-fx-cjms-nonprod-9a36:cjms_bigquery",
         project_id="moz-fx-data-shared-prod",
-        sql_file_path="sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/flows_v1/query.sql",
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=[
+            'submission_date:DATE:{{ (execution_date - macros.timedelta(hours=2)).strftime("%F") }}'
+        ],
+        sql_file_path="sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/flows_v1/query.sql",
         dag=dag,
     )
 

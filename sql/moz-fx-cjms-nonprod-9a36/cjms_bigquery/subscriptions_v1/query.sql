@@ -1,4 +1,17 @@
-WITH aic_flows AS (
+WITH flows_live AS (
+  SELECT
+    *
+  FROM
+    `moz-fx-cjms-nonprod-9a36`.cjms_bigquery.flows_v1
+  UNION ALL
+  SELECT
+    *
+  FROM
+    `moz-fx-cjms-nonprod-9a36`.cjms_bigquery.flows_live
+  WHERE
+    submission_date = CURRENT_DATE
+),
+aic_flows AS (
   -- last fxa_uid for each flow_id
   SELECT
     flow_id,
@@ -7,7 +20,7 @@ WITH aic_flows AS (
       SAFE_OFFSET(0)
     ] AS fxa_uid,
   FROM
-    `moz-fx-cjms-nonprod-9a36`.cjms_bigquery.flows_v1
+    flows_live
   JOIN
     EXTERNAL_QUERY("moz-fx-cjms-nonprod-9a36.us.cjms-sql", "SELECT flow_id FROM aic")
   USING

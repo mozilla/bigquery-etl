@@ -3,6 +3,8 @@ WITH flows_live AS (
     *
   FROM
     `moz-fx-cjms-nonprod-9a36`.cjms_bigquery.flows_v1
+  WHERE
+    submission_date < CURRENT_DATE
   UNION ALL
   SELECT
     *

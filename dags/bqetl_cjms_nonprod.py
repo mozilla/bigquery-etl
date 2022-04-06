@@ -55,7 +55,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=[
-            'submission_date:DATE:{{ (execution_date - macros.timedelta(hours=2)).strftime("%F") }}'
+            'submission_date:DATE:{{ (execution_date - macros.timedelta(hours=2)).strftime("%Y-%m-%d") }}'
         ],
         sql_file_path="sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/flows_v1/query.sql",
         dag=dag,

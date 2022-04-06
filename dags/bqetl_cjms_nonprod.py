@@ -17,8 +17,9 @@ Built from bigquery-etl repo, [`dags/bqetl_cjms_nonprod.py`](https://github.com/
 
 Hourly ETL for cjms nonprod.
 
-Scheduled to run after fivetran stripe_nonprod, which runs hourly at minute
-17 and takes less than 5 minutes.
+Copies data from a Firefox Accounts (FxA) project. Those source tables are
+populated via Cloud Logging (Stackdriver). Runs as late as possible to
+minimize the chance of missed logs on date boundaries.
 
 #### Owner
 
@@ -43,7 +44,7 @@ tags = ["impact/tier_3", "repo/bigquery-etl"]
 with DAG(
     "bqetl_cjms_nonprod",
     default_args=default_args,
-    schedule_interval="22 * * * *",
+    schedule_interval="59 * * * *",
     doc_md=docs,
     tags=tags,
 ) as dag:

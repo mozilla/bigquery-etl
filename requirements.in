@@ -1,5 +1,5 @@
 attrs==21.4.0
-authlib==1.0.0
+authlib==1.0.1
 cattrs==22.1.0
 click==8.1.2
 gcsfs==2022.3.0

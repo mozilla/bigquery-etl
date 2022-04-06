@@ -19,6 +19,10 @@ labels:
   - '1640204'
 scheduling:
   dag_name: bqetl_internet_outages
+  # destination is the whole table, not a single partition,
+  # so don't use date_partition_parameter
+  date_partition_parameter: null
+  parameters: ["date:DATE:{{ds}}"]
   # provide this value so that DAG generation does not have to dry run the
   # query to get it, and that would be slow because main_v4 is referenced
   referenced_tables:

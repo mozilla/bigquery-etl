@@ -888,7 +888,7 @@ fields:
     type: RECORD
   - fields:
     - description: 'The outcome after the app detected that it was running from DMG
-        and should offer to install and relaunch itself.
+        or an app translocated location and should offer to install and relaunch itself.
 
         '
       fields:

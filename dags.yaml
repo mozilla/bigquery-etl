@@ -696,12 +696,9 @@ bqetl_regrets_reporter_summary:
     - impact/tier_1
 
 bqetl_cjms_nonprod:
-  schedule_interval: 22 * * * *
+  schedule_interval: 0 * * * *
   description: |
     Hourly ETL for cjms nonprod.
-
-    Scheduled to run after fivetran stripe_nonprod, which runs hourly at minute
-    17 and takes less than 5 minutes.
   default_args:
     owner: dthorn@mozilla.com
     start_date: "2022-03-24"

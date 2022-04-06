@@ -136,6 +136,7 @@ mobile_with_searches AS (
     unioned.locale,
     unioned.first_seen_date,
     unioned.normalized_os,
+    unioned.normalized_os_version,
     unioned.durations,
     unioned.submission_date,
     unioned.uri_count,
@@ -166,6 +167,7 @@ desktop AS (
     locale,
     first_seen_date,
     os AS normalized_os,
+    normalized_os_version,
     subsession_hours_sum AS durations,
     submission_date,
     COALESCE(

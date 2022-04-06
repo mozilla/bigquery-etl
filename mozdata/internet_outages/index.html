@@ -67,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#global_outages_staging_v1" class="md-skip">
+        <a href="#global_outages_v1" class="md-skip">
           Skip to content
         </a>
       
@@ -804,13 +804,6 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#global_outages_staging_v1" class="md-nav__link">
-    global_outages_staging_v1
-  </a>
-  
-</li>
       
         <li class="md-nav__item">
   <a href="#global_outages_v1" class="md-nav__link">
@@ -2051,13 +2044,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#global_outages_staging_v1" class="md-nav__link">
-    global_outages_staging_v1
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#global_outages_v1" class="md-nav__link">
     global_outages_v1
   </a>
@@ -2084,119 +2070,6 @@
 shared with some trusted external partners.</p>
 <p>See https://docs.google.com/document/d/15HvdPS3UwGhAir6HyWHDLDRaxUFycx4jagJ_ZrHr9D8/edit</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/internet_outages">Source Directory</a></p>
-<h2 id="global_outages_staging_v1"><a href="#global_outages_staging_v1">global_outages_staging_v1</a></h2>
-<p><strong>Internet Outages Staging</strong></p>
-<p><code>internet_outages.global_outages_staging_v1</code></p>
-<p>Intermediate table to support the final clustered global_outages_v1 table.</p>
-<p>This intermediate table is not partitioned, since partitioning seems to be part
-of the performance regression that is causing the query to otherwise fail as
-too complex. It's somewhat brittle that this table is not partitioned; each
-invocation will completely replace the table contents, so concurrent runs will
-cause a race condition. This is somewhat mitigated by the fact that if there's
-a mismatch between the data in the table and the subsequent job that reads this
-table, an error will be thrown because the timestamp info falls outside of the
-allowed values for the destination partition.</p>
-<ul>
-<li>
-<p>Owners:</p>
-<ul>
-<li><a href="mailto:aplacitelli@mozilla.com">aplacitelli@mozilla.com</a></li>
-</ul>
-</li>
-</ul>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>country</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>city</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>datetime</td>
-        <td></td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>proportion_undefined</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>proportion_timeout</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>proportion_abort</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>proportion_unreachable</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>proportion_terminated</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>proportion_channel_open</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>avg_dns_success_time</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>missing_dns_success</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>avg_dns_failure_time</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>missing_dns_failure</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>count_dns_failure</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ssl_error_prop</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>avg_tls_handshake_time</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/internet_outages/global_outages_staging_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/internet_outages/global_outages_staging_v1/metadata.yaml">Metadata File</a> </p>
-<hr />
 <h2 id="global_outages_v1"><a href="#global_outages_v1">global_outages_v1</a></h2>
 <p><strong>Internet Outages</strong></p>
 <p><code>internet_outages.global_outages_v1</code></p>

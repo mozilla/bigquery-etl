@@ -2022,6 +2022,22 @@ fields:
       mode: REPEATED
       name: power_wakeups_per_process_type
       type: RECORD
+    - description: 'The result of Gecko fetching an update.xml from Balrog. This captures
+        3 different data points: success or failure of the request, if cert pinning
+        or content signatures were used to verify the result, and the reason for failure,
+        if the request failed.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: gmp_update_xml_fetch_result
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

@@ -569,6 +569,12 @@ fields:
       mode: NULLABLE
       name: metadata_model_version
       type: STRING
+    - description: 'Firefox distribution channel
+
+        '
+      mode: NULLABLE
+      name: metadata_channel
+      type: STRING
     mode: NULLABLE
     name: string
     type: RECORD

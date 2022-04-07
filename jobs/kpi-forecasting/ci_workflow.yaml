@@ -3,6 +3,7 @@ job-kpi-forecasting:
     - build-job-kpi-forecasting
     - gcp-gcr/build-and-push-image:
         context: data-eng-airflow-gcr
+        docker-context: jobs/kpi-forecasting/
         path: jobs/kpi-forecasting/
         image: kpi-forecasting_docker_etl
         requires:

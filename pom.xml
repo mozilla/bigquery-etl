@@ -4,14 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mozilla.telemetry</groupId>
     <artifactId>bigquery-etl</artifactId>
-    <packaging>jar</packaging>
     <version>0.1-SNAPSHOT</version>
-
     <properties>
-        <maven.compiler.release>11</maven.compiler.release>
         <zetasql.version>2021.09.1</zetasql.version>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.google.zetasql</groupId>
@@ -24,68 +20,4 @@
             <version>${zetasql.version}</version>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
-                <configuration>
-                    <showWarnings>true</showWarnings>
-                    <compilerArgument>-Xlint:all</compilerArgument>
-                    <compilerArgument>-Xdoclint:all</compilerArgument>
-                    <compilerArgument>-Werror</compilerArgument>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>enforce-java</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <requireJavaVersion>
-                                    <version>[11,)</version>
-                                </requireJavaVersion>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.3.0</version>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/dependency</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.2</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>dependency/</classpathPrefix>
-                            <mainClass>${exec.mainClass}</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

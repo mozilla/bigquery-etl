@@ -18,8 +18,8 @@ try:
 
     if not jnius_config.vm_running:
         # this has to run before jnius is imported the first time
-        target = Path(__file__).parent.parent / "target"
-        for path in target.glob("*.jar"):
+        root = Path(__file__).parent.parent / "target" / "dependency"
+        for path in root.glob("*.jar"):
             jnius_config.add_classpath(path.resolve().as_posix())
 except ImportError:
     # ignore so this module can be imported safely without java installed
@@ -32,21 +32,31 @@ def extract_table_references(sql: str) -> List[str]:
     import jnius  # noqa: E402
 
     try:
-        ZetaSqlHelper = jnius.autoclass("com.mozilla.telemetry.ZetaSqlHelper")
+        Analyzer = jnius.autoclass("com.google.zetasql.Analyzer")
+        AnalyzerOptions = jnius.autoclass("com.google.zetasql.AnalyzerOptions")
+        LanguageFeature = jnius.autoclass(
+            "com.google.zetasql.ZetaSQLOptions$LanguageFeature"
+        )
     except jnius.JavaException:
         # replace jnius.JavaException because it's not available outside this function
         raise ImportError(
-            "failed to import java class via jni, please build java dependencies "
-            "with: mvn package"
+            "failed to import java class via jni, please download java dependencies "
+            "with: mvn dependency:copy-dependencies"
         )
+    # enable support for CreateViewStatement and others
+    options = AnalyzerOptions()
+    language_options = options.getLanguageOptions()
+    language_options.setSupportsAllStatementKinds()
+    language_options.enableMaximumLanguageFeatures()
+    language_options.enableLanguageFeature(LanguageFeature.FEATURE_V_1_3_QUALIFY)
     try:
-        result = ZetaSqlHelper.extractTableNamesFromStatement(sql)
+        result = Analyzer.extractTableNamesFromStatement(sql, options)
     except jnius.JavaException:
         # Only use extractTableNamesFromScript when extractTableNamesFromStatement
         # fails, because for scripts zetasql incorrectly includes CTE references from
         # subquery expressions
         try:
-            result = ZetaSqlHelper.extractTableNamesFromScript(sql)
+            result = Analyzer.extractTableNamesFromScript(sql, options)
         except jnius.JavaException as e:
             # replace jnius.JavaException because it's not available outside this function
             raise ValueError(*e.args)

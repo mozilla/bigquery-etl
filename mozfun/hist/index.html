@@ -1731,6 +1731,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#string_to_json-udf" class="md-nav__link">
+    string_to_json (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#normalize-udf" class="md-nav__link">
     normalize (UDF)
   </a>
@@ -1745,8 +1752,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#string_to_json-udf" class="md-nav__link">
-    string_to_json (UDF)
+  <a href="#merge-udf" class="md-nav__link">
+    merge (UDF)
   </a>
   
 </li>
@@ -1754,13 +1761,6 @@
         <li class="md-nav__item">
   <a href="#percentiles-udf" class="md-nav__link">
     percentiles (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#merge-udf" class="md-nav__link">
-    merge (UDF)
   </a>
   
 </li>
@@ -2092,6 +2092,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#string_to_json-udf" class="md-nav__link">
+    string_to_json (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#normalize-udf" class="md-nav__link">
     normalize (UDF)
   </a>
@@ -2106,8 +2113,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#string_to_json-udf" class="md-nav__link">
-    string_to_json (UDF)
+  <a href="#merge-udf" class="md-nav__link">
+    merge (UDF)
   </a>
   
 </li>
@@ -2115,13 +2122,6 @@
         <li class="md-nav__item">
   <a href="#percentiles-udf" class="md-nav__link">
     percentiles (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#merge-udf" class="md-nav__link">
-    merge (UDF)
   </a>
   
 </li>
@@ -2156,6 +2156,9 @@
 
 <h1 id="hist">hist</h1>
 <p>Functions for working with string encodings of histograms from desktop telemetry.</p>
+<h2 id="string_to_json-udf">string_to_json (UDF)</h2>
+<p>Convert a histogram string (in JSON or compact format) to a full histogram JSON blob.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/string_to_json">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/string_to_json/metadata.yaml">Edit</a></p>
 <h2 id="normalize-udf">normalize (UDF)</h2>
 <p>Normalize a histogram. Set sum to 1, and normalize to 1 the histogram bucket counts.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/normalize">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/normalize/metadata.yaml">Edit</a></p>
@@ -2187,12 +2190,6 @@ formed, which gives us some flexibility.</p>
 -- 5
 </code></pre>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/extract">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/extract/metadata.yaml">Edit</a></p>
-<h2 id="string_to_json-udf">string_to_json (UDF)</h2>
-<p>Convert a histogram string (in JSON or compact format) to a full histogram JSON blob.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/string_to_json">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/string_to_json/metadata.yaml">Edit</a></p>
-<h2 id="percentiles-udf">percentiles (UDF)</h2>
-<p>Given histogram and list of percentiles,calculate what those percentiles are for the histogram. If the histogram is empty, returns NULL.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/percentiles">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/percentiles/metadata.yaml">Edit</a></p>
 <h2 id="merge-udf">merge (UDF)</h2>
 <p>Merge an array of histograms into a single histogram.</p>
 <ul>
@@ -2201,6 +2198,9 @@ formed, which gives us some flexibility.</p>
 <li>Other fields will take the mode_last</li>
 </ul>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/merge">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/merge/metadata.yaml">Edit</a></p>
+<h2 id="percentiles-udf">percentiles (UDF)</h2>
+<p>Given histogram and list of percentiles,calculate what those percentiles are for the histogram. If the histogram is empty, returns NULL.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/percentiles">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/percentiles/metadata.yaml">Edit</a></p>
 <h2 id="threshold_count-udf">threshold_count (UDF)</h2>
 <p>Return the number of recorded observations greater than threshold for
 the histogram.  CAUTION: Does not count any buckets that have any values

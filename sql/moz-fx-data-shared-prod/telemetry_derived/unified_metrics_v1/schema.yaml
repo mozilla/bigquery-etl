@@ -68,3 +68,6 @@ fields:
 - mode: NULLABLE
   name: active_hours_sum
   type: FLOAT
+- mode: NULLABLE
+  name: normalized_os_version
+  type: STRING

@@ -175,7 +175,7 @@ jobs:
           command: |
             apt update
             apt install -y maven default-jdk-headless
-            mvn package
+            mvn dependency:copy-dependencies
             venv/bin/pip-sync --pip-args=--no-deps requirements.txt \
               java-requirements.txt
       - run:
@@ -500,7 +500,7 @@ jobs:
             cd bigquery-etl-main
             pip install --no-deps -r requirements.txt
             pip install --no-deps -r java-requirements.txt
-            mvn package
+            mvn dependency:copy-dependencies
             ./script/bqetl generate all \
               --target-project moz-fx-data-shared-prod
             ./script/bqetl dependency record \

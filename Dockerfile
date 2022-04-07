@@ -23,8 +23,7 @@ FROM base AS java-deps
 # man directory is removed in upstream debian:buster-slim, but needed by jdk install
 RUN mkdir -p /usr/share/man/man1 && apt-get update -qqy && apt-get install -qqy maven
 COPY pom.xml ./
-COPY src src
-RUN mvn package
+RUN mvn dependency:copy-dependencies
 
 FROM base
 # add bash for entrypoint and jdk for jni access to zetasql
@@ -32,7 +31,6 @@ RUN mkdir -p /usr/share/man/man1 && apt-get update -qqy && apt-get install -qqy 
 COPY --from=google/cloud-sdk:alpine /google-cloud-sdk /google-cloud-sdk
 ENV PATH /google-cloud-sdk/bin:$PATH
 COPY --from=java-deps /app/target/dependency /app/target/dependency
-COPY --from=java-deps /app/target/*.jar /app/target/
 COPY --from=python-deps /usr/local /usr/local
 COPY .bigqueryrc /root/
 COPY . .

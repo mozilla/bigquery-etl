@@ -30,7 +30,7 @@ pytest==7.1.1
 PyYAML==6.0
 smart_open==5.2.1
 sqlparse==0.4.2
-stripe==2.70.0
+stripe==2.71.0
 typing==3.7.4.3
 ujson==5.2.0
 yamllint==1.26.3

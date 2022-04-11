@@ -146,7 +146,7 @@ flows AS (
       -- Even when service attribution for VPN FxA links was fixed on 2022-01-06 there was still a
       -- problem with service attribution for FxA payment events, which was fixed on 2022-03-09.
       OR (
-        event_type LIKE "fxa_pay_%"
+        event_type LIKE r"fxa\_pay\_%"
         AND service = "undefined_oauth"
         AND (partition_date BETWEEN "2021-12-08" AND "2022-03-09")
       )

@@ -103,5 +103,7 @@ SELECT
   JSON_VALUE(event_properties, "$.plan_id") AS plan_id,
   JSON_VALUE(event_properties, "$.product_id") AS product_id,
   JSON_VALUE(event_properties, "$.promotionCode") AS promotion_code,
+  JSON_VALUE(event_properties, "$.paymentProvider") AS payment_provider,
+  JSON_VALUE(event_properties, "$.selectedPlan") AS selected_plan,
 FROM
   unioned

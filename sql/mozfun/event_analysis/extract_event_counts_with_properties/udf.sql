@@ -31,12 +31,8 @@ WITH results AS (
   SELECT
     event_analysis.extract_event_counts_with_properties('a,a,b,') AS multi,
     event_analysis.extract_event_counts_with_properties('b,b,b,') AS single,
-    event_analysis.extract_event_counts_with_properties('aa,ba,ca,')
-  AS
-    with_event_props,
-    event_analysis.extract_event_counts_with_properties('aaaa,aab,')
-  AS
-    with_many_props,
+    event_analysis.extract_event_counts_with_properties('aa,ba,ca,') AS with_event_props,
+    event_analysis.extract_event_counts_with_properties('aaaa,aab,') AS with_many_props,
 )
 SELECT
   assert.struct_equals(

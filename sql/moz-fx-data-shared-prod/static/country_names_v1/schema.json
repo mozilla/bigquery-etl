@@ -1,7 +1,7 @@
 [
   {
     "name": "name",
-    "description": "An official or common country name; a single country may appear with multiple names",
+    "description": "An alias for a country's name (including misspellings and alternate encodings).",
     "type": "STRING",
     "mode": "REQUIRED"
   },

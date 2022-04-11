@@ -5,7 +5,8 @@ import pytest
 import yaml
 from click.testing import CliRunner
 
-from bigquery_etl.cli.dag import create, info, remove
+from bigquery_etl.cli.dag import create, generate, info, remove
+from bigquery_etl.query_scheduling.dag import InvalidDag
 
 TEST_DIR = Path(__file__).parent.parent
 
@@ -209,3 +210,29 @@ class TestDag:
             ) as f:
                 metadata = yaml.safe_load(f.read())
                 assert "scheduling" not in metadata
+
+    def test_dag_generate_without_any_tasks(self, runner):
+        with runner.isolated_filesystem():
+            dags_conf = {
+                "bqetl_test": {
+                    "schedule_interval": "daily",
+                    "default_args": {
+                        "owner": "test@example.org",
+                        "start_date": "2020-01-01",
+                    },
+                },
+            }
+
+            os.makedirs("sql/moz-fx-data-shared-prod")
+            os.mkdir("dags")
+
+            with open("dags.yaml", "w") as f:
+                f.write(yaml.dump(dags_conf))
+
+            result = runner.invoke(
+                generate,
+                ["bqetl_test"],
+            )
+
+            assert result.exit_code == 1
+            assert isinstance(result.exception, InvalidDag)

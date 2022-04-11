@@ -1,7 +1,7 @@
-WITH pricing_plans AS (
+WITH stripe_plans AS (
   SELECT
     id AS plan_id,
-    product AS product_id,
+    product_id,
     mozfun.vpn.pricing_plan(
       provider => "Stripe",
       amount => amount,
@@ -11,7 +11,7 @@ WITH pricing_plans AS (
     ) AS pricing_plan,
     nickname AS plan_name,
   FROM
-    mozdata.stripe.plans
+    `moz-fx-data-bq-fivetran`.stripe.plan
 ),
 events AS (
   SELECT
@@ -67,6 +67,9 @@ flows AS (
         1
     )[SAFE_OFFSET(0)].*,
     ARRAY_AGG(plan_id IGNORE NULLS ORDER BY `timestamp` LIMIT 1)[SAFE_OFFSET(0)] AS plan_id,
+    ARRAY_AGG(promotion_code IGNORE NULLS ORDER BY `timestamp` LIMIT 1)[
+      SAFE_OFFSET(0)
+    ] AS promotion_code,
     LOGICAL_OR(event_type = "fxa_rp_button - view") AS rp_button_view,
     -- impression for the cta button
     LOGICAL_OR(event_type = "fxa_pay_account_setup - view") AS pay_account_setup_view,
@@ -105,6 +108,10 @@ flows AS (
       event_type = "fxa_pay_setup - 3ds_complete"
       AND user_id IS NOT NULL
     ) AS pay_setup_complete_with_uid,
+    -- coupon activities
+    LOGICAL_OR(event_type = "fxa_subscribe_coupon - submit") AS subscribe_coupon_submit,
+    LOGICAL_OR(event_type = "fxa_subscribe_coupon - fail") AS subscribe_coupon_fail,
+    LOGICAL_OR(event_type = "fxa_subscribe_coupon - success") AS subscribe_coupon_success,
   FROM
     events
   WHERE
@@ -169,6 +176,7 @@ flow_counts AS (
     os_version,
     entrypoint,
     plan_id,
+    promotion_code,
     COUNTIF(rp_button_view) AS rp_button_view,
     -- vpn product site hits
     COUNTIF(pay_setup_view) AS pay_setup_view,
@@ -209,6 +217,10 @@ flow_counts AS (
       AND pay_setup_engage_with_uid
       AND pay_account_setup_other
     ) AS existing_fxa_signedoff_pay_setup_complete,
+    -- coupon activities
+    COUNTIF(subscribe_coupon_submit) AS subscribe_coupon_submit,
+    COUNTIF(subscribe_coupon_fail) AS subscribe_coupon_fail,
+    COUNTIF(subscribe_coupon_success) AS subscribe_coupon_success,
   FROM
     flows
   GROUP BY
@@ -226,7 +238,8 @@ flow_counts AS (
     os_name,
     os_version,
     entrypoint,
-    plan_id
+    plan_id,
+    promotion_code
 )
 SELECT
   partition_date,
@@ -247,6 +260,7 @@ SELECT
   product_id,
   pricing_plan,
   plan_name,
+  promotion_code,
   rp_button_view AS vpn_site_hits,
   mozfun.vpn.channel_group(
     utm_campaign => utm_campaign,
@@ -296,10 +310,14 @@ SELECT
   SUM(pay_setup_view_with_uid) OVER partition_date - SUM(
     existing_fxa_signedin_pay_setup_view
   ) OVER partition_date AS overall_existing_signedoff_fxa_payment_setup_view,
+  -- coupon activities
+  subscribe_coupon_submit AS subscribe_coupon_submit,
+  subscribe_coupon_fail AS subscribe_coupon_fail,
+  subscribe_coupon_success AS subscribe_coupon_success,
 FROM
   flow_counts
 LEFT JOIN
-  pricing_plans
+  stripe_plans
 USING
   (plan_id)
 WINDOW

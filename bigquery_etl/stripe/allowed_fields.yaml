@@ -129,6 +129,34 @@ event:
       metadata:
         key:
         value:
+    discount: &discount
+      checkout_session:
+      coupon:
+        amount_off:
+        applies_to:
+          products:
+        created:
+        currency:
+        duration:
+        duration_in_months:
+        id:
+        max_redemptions:
+        metadata:
+          key:
+          value:
+        name:
+        percent_off:
+        redeem_by:
+        times_redeemed:
+        valid:
+      customer:
+      end:
+      id:
+      invoice:
+      invoice_item:
+      promotion_code:
+      start:
+      subscription:
     dispute:
       amount:
       balance_transaction:
@@ -189,34 +217,8 @@ event:
         type:
         value:
       description:
-      discount:
-        checkout_session:
-        coupon:
-          amount_off:
-          applies_to:
-            products:
-          created:
-          currency:
-          duration:
-          duration_in_months:
-          id:
-          max_redemptions:
-          metadata:
-            key:
-            value:
-          name:
-          percent_off:
-          redeem_by:
-          times_redeemed:
-          valid:
-        customer:
-        end:
-        id:
-        invoice:
-        invoice_item:
-        promotion_code:
-        start:
-        subscription:
+      discount: *discount
+      discounts:
       due_date:
       ending_balance:
       id:
@@ -224,6 +226,7 @@ event:
         amount:
         currency:
         description:
+        discounts:
         discountable:
         id:
         invoice_item:
@@ -289,6 +292,10 @@ event:
           unit_amount:
           unit_amount_decimal:
         proration:
+        proration_details:
+          credited_items:
+            invoice:
+            invoice_line_items:
         quantity:
         subscription:
         subscription_item:
@@ -536,34 +543,7 @@ event:
       current_period_start:
       customer:
       days_until_due:
-      discount:
-        checkout_session:
-        coupon:
-          amount_off:
-          applies_to:
-            products:
-          created:
-          currency:
-          duration:
-          duration_in_months:
-          id:
-          max_redemptions:
-          metadata:
-            key:
-            value:
-          name:
-          percent_off:
-          redeem_by:
-          times_redeemed:
-          valid:
-        customer:
-        end:
-        id:
-        invoice:
-        invoice_item:
-        promotion_code:
-        start:
-        subscription:
+      discount: *discount
       ended_at:
       id:
       items:

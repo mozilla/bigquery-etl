@@ -9,39 +9,54 @@ AS
 WITH histogram_data AS (
   SELECT
     client_id,
-    {{ attributes }}, 
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
     h1.metric,
     h1.key,
     h1.agg_type,
     h1.value
   FROM
     `{{ project }}.{{ dataset }}.{{ prefix }}__clients_histogram_aggregates_v1`, UNNEST(histogram_aggregates) h1
-    ),
-all_clients AS (SELECT
+),
+scalars_histogram_data AS (
+  SELECT
     client_id,
-    {{ attributes }}, 
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
     s1.metric,
     s1.key,
-    s1.agg_type,
+    agg_type,
     s1.value
   FROM
     `{{ project }}.{{ dataset }}.{{ prefix }}__clients_scalar_aggregates_v1`, UNNEST(scalar_aggregates) s1
-    WHERE s1.agg_type in ('count', 'false', 'true')
-  UNION ALL
+
+  UNION ALL 
+
   SELECT
     client_id,
-    {{ attributes }}, 
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
     metric,
     v1.key,
     agg_type,
     v1.value
   FROM
-    histogram_data, UNNEST(value) v1
+    histogram_data,
+    UNNEST(value) v1
 ),
 
 {{
     enumerate_table_combinations(
-        "all_clients",
+        "scalars_histogram_data",
         "all_combos",
         cubed_attributes,
         attribute_combinations
@@ -50,13 +65,32 @@ all_clients AS (SELECT
 SELECT
     {{ attributes }},
     metric, 
-    key,
+    '' AS key,
     agg_type,
     SUM(value) as total_sample
 FROM
     all_combos
+WHERE agg_type = 'summed_histogram'
 GROUP BY
     {{ attributes }}, 
     metric, 
     key,
     agg_type
+
+UNION ALL
+
+SELECT
+    {{ attributes }},
+    metric,
+    key,
+    agg_type,
+    SUM(value) as total_sample
+FROM
+    all_combos
+WHERE agg_type <> 'summed_histogram'
+GROUP BY
+    {{ attributes }},
+    metric,
+    key,
+    agg_type
+

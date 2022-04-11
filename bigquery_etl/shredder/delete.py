@@ -21,15 +21,6 @@ from ..util import standard_args
 from ..util.bigquery_id import FULL_JOB_ID_RE, full_job_id, sql_table_id
 from ..util.client_queue import ClientQueue
 from ..util.exceptions import BigQueryInsertError
-from .bug1751979 import (
-    BUG_1751979_CLIENTS_DAILY_V6_REPLACE_CLAUSE,
-    BUG_1751979_MAIN_SUMMARY_V4_REPLACE_CLAUSE,
-    BUG_1751979_MAIN_SUMMARY_V4_UDFS,
-    BUG_1751979_MAIN_V4_REPLACE_CLAUSE,
-    BUG_1751979_MAIN_V4_UDFS,
-    BUG_1751979_SEARCH_CLIENTS_DAILY_V8_REPLACE_CLAUSE,
-    BUG_1751979_SEARCH_CLIENTS_DAILY_V8_UDFS,
-)
 from .config import (
     DELETE_TARGETS,
     DeleteSource,
@@ -109,7 +100,7 @@ parser.add_argument(
 parser.add_argument(
     "--max-single-dml-bytes",
     "--max_single_dml_bytes",
-    default=10 * 2 ** 40,
+    default=10 * 2**40,
     type=int,
     help="Maximum number of bytes in a table that should be processed using a single "
     "DML query; tables above this limit will be processed using per-partition "
@@ -232,7 +223,7 @@ def delete_from_partition(
                   `{sql_table_id(target)}`
                 WHERE
                   ({field_condition})
-                  AND {partition.condition}
+                  AND ({partition.condition})
                 """
             )
         else:
@@ -258,55 +249,30 @@ def delete_from_partition(
                 f"_source_{index} IS NULL" for index, _ in enumerate(sources)
             )
 
-            # These are temporary complications specific to the main_v4 table
-            # that we are adding to cost-effectively sanitize values of 13 fields;
-            # these changes can be reverted by mid-March 2022;
-            # see https://bugzilla.mozilla.org/show_bug.cgi?id=1751979
-            replace_clause, temporary_udfs = ("", "")
-            if (
-                sql_table_id(target)
-                == "moz-fx-data-shared-prod.telemetry_stable.main_v4"
-            ):
-                replace_clause = BUG_1751979_MAIN_V4_REPLACE_CLAUSE
-                temporary_udfs = BUG_1751979_MAIN_V4_UDFS
-            # And corresponding changes for main_summary_v4 which contains values
-            # from one of the affected fields.
-            elif (
-                sql_table_id(target)
-                == "moz-fx-data-shared-prod.telemetry_derived.main_summary_v4"
-            ):
-                replace_clause = BUG_1751979_MAIN_SUMMARY_V4_REPLACE_CLAUSE
-                temporary_udfs = BUG_1751979_MAIN_SUMMARY_V4_UDFS
-            # And corresponding changes for clients_daily-derived tables.
-            elif sql_table_id(target) in [
-                "moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6",
-                "moz-fx-data-shared-prod.telemetry_derived.clients_daily_joined_v1",
-                "moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v1",
-                "moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_joined_v1",
-            ]:
-                replace_clause = BUG_1751979_CLIENTS_DAILY_V6_REPLACE_CLAUSE
-                temporary_udfs = (
-                    BUG_1751979_MAIN_SUMMARY_V4_UDFS + BUG_1751979_MAIN_V4_UDFS
-                )
-            # And corresponding changes for search_clients_daily-derived tables.
-            elif (
-                sql_table_id(target)
-                == "moz-fx-data-shared-prod.search_derived.search_clients_daily_v8"
-            ):
-                replace_clause = BUG_1751979_SEARCH_CLIENTS_DAILY_V8_REPLACE_CLAUSE
-                temporary_udfs = BUG_1751979_SEARCH_CLIENTS_DAILY_V8_UDFS
+            if partition.id is None:
+                # only apply field conditions on partition.condition
+                field_conditions = f"""
+                ({partition.condition}) IS NOT TRUE
+                OR ({field_conditions})
+                """
+                # always true partition condition to satisfy require_partition_filter
+                partition_condition = f"""
+                ({partition.condition}) IS NOT TRUE
+                OR ({partition.condition})
+                """
+            else:
+                partition_condition = partition.condition
 
             query = reformat(
                 f"""
-                {temporary_udfs}
                 SELECT
-                  _target.* {replace_clause}
+                  _target.*
                 FROM
                   `{sql_table_id(target)}` AS _target
                 {field_joins}
                 WHERE
                   ({field_conditions})
-                  AND {partition.condition}
+                  AND ({partition_condition})
                 """
             )
         run_tense = "Would run" if dry_run else "Running"

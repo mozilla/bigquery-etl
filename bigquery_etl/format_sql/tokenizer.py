@@ -53,6 +53,7 @@ TOP_LEVEL_KEYWORDS = [
     "ORDER BY",
     "OUTER JOIN",
     "PARTITION BY",
+    "QUALIFY",
     "RANGE BETWEEN",
     "RANGE",
     "RIGHT JOIN",
@@ -145,6 +146,8 @@ RESERVED_KEYWORDS = [
     "INTERSECT",
     "INTERVAL",
     "INTO",
+    "IS DISTINCT FROM",
+    "IS NOT DISTINCT FROM",
     "IS",
     "JOIN",
     "LATERAL",
@@ -269,7 +272,17 @@ class ReservedKeyword(Token):
 class SpaceBeforeBracketKeyword(ReservedKeyword):
     """Keyword that should be separated by a space from a following opening bracket."""
 
-    pattern = _keyword_pattern(["IN", r"\* EXCEPT", r"\* REPLACE", "NOT", "OVER"])
+    pattern = _keyword_pattern(
+        [
+            "IN",
+            r"\* EXCEPT",
+            r"\* REPLACE",
+            "NOT",
+            "OVER",
+            "IS DISTINCT FROM",
+            "IS NOT DISTINCT FROM",
+        ]
+    )
 
 
 class BlockKeyword(ReservedKeyword):
@@ -316,7 +329,7 @@ class AliasSeparator(SpaceBeforeBracketKeyword):
     """
 
     pattern = re.compile(
-        r"AS(?=\s+(?!WITH|SELECT|STRUCT|ARRAY)[a-z_`(])", re.IGNORECASE
+        r"AS(?=\s+(?!(WITH|SELECT|STRUCT|ARRAY)\b)[a-z_`(])", re.IGNORECASE
     )
 
 
@@ -341,7 +354,7 @@ class AngleBracketKeyword(ReservedKeyword):
 class Identifier(Token):
     """Token that identifies a column, parameter, table, or other database object."""
 
-    pattern = re.compile(fr"@?[A-Za-z_][A-Za-z_0-9]*|`(?:{STRING_CONTENT})+?`")
+    pattern = re.compile(rf"@?[A-Za-z_][A-Za-z_0-9]*|`(?:{STRING_CONTENT})+?`")
 
 
 class Literal(Token):
@@ -349,7 +362,7 @@ class Literal(Token):
 
     pattern = re.compile(
         # String literal
-        fr"(?:r?b|b?r)?({QUOTE})(?:{STRING_CONTENT})*?\1"
+        rf"(?:r?b|b?r)?({QUOTE})(?:{STRING_CONTENT})*?\1"
         # Hexadecimal integer literal
         "|0[xX][0-9a-fA-F]+"
         # Decimal integer or float literal

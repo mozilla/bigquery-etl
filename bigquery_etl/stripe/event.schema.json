@@ -2133,6 +2133,141 @@
         ]
       },
       {
+        "name": "discount",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "checkout_session",
+            "type": "STRING"
+          },
+          {
+            "name": "coupon",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "amount_off",
+                "type": "INTEGER"
+              },
+              {
+                "name": "applies_to",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "products",
+                    "type": "STRING",
+                    "mode": "REPEATED"
+                  }
+                ]
+              },
+              {
+                "name": "created",
+                "type": "TIMESTAMP"
+              },
+              {
+                "name": "currency",
+                "type": "STRING"
+              },
+              {
+                "name": "duration",
+                "type": "STRING"
+              },
+              {
+                "name": "duration_in_months",
+                "type": "INTEGER"
+              },
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "livemode",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "max_redemptions",
+                "type": "INTEGER"
+              },
+              {
+                "name": "metadata",
+                "type": "RECORD",
+                "mode": "REPEATED",
+                "fields": [
+                  {
+                    "name": "key",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "value",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
+                "name": "name",
+                "type": "STRING"
+              },
+              {
+                "name": "object",
+                "type": "STRING"
+              },
+              {
+                "name": "percent_off",
+                "type": "NUMERIC"
+              },
+              {
+                "name": "redeem_by",
+                "type": "TIMESTAMP"
+              },
+              {
+                "name": "times_redeemed",
+                "type": "INTEGER"
+              },
+              {
+                "name": "valid",
+                "type": "BOOLEAN"
+              }
+            ]
+          },
+          {
+            "name": "customer",
+            "type": "STRING",
+            "description": "expandable"
+          },
+          {
+            "name": "end",
+            "type": "TIMESTAMP"
+          },
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "invoice",
+            "type": "STRING"
+          },
+          {
+            "name": "invoice_item",
+            "type": "STRING"
+          },
+          {
+            "name": "object",
+            "type": "STRING"
+          },
+          {
+            "name": "promotion_code",
+            "type": "STRING"
+          },
+          {
+            "name": "start",
+            "type": "TIMESTAMP"
+          },
+          {
+            "name": "subscription",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
         "name": "dispute",
         "type": "RECORD",
         "fields": [
@@ -2849,6 +2984,11 @@
             ]
           },
           {
+            "name": "discounts",
+            "type": "STRING",
+            "mode": "REPEATED"
+          },
+          {
             "name": "due_date",
             "type": "INTEGER"
           },
@@ -2886,8 +3026,28 @@
                 "type": "STRING"
               },
               {
+                "name": "discount_amounts",
+                "type": "RECORD",
+                "mode": "REPEATED",
+                "fields": [
+                  {
+                    "name": "amount",
+                    "type": "INTEGER"
+                  },
+                  {
+                    "name": "discount",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
                 "name": "discountable",
                 "type": "BOOLEAN"
+              },
+              {
+                "name": "discounts",
+                "type": "STRING",
+                "mode": "REPEATED"
               },
               {
                 "name": "id",
@@ -3218,6 +3378,27 @@
               {
                 "name": "proration",
                 "type": "BOOLEAN"
+              },
+              {
+                "name": "proration_details",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "credited_items",
+                    "type": "RECORD",
+                    "fields": [
+                      {
+                        "name": "invoice",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "invoice_line_items",
+                        "type": "STRING",
+                        "mode": "REPEATED"
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "name": "quantity",

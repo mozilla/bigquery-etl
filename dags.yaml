@@ -694,3 +694,16 @@ bqetl_regrets_reporter_summary:
   schedule_interval: 0 4 * * *
   tags:
     - impact/tier_1
+
+bqetl_cjms_nonprod:
+  schedule_interval: 0 * * * *
+  description: |
+    Hourly ETL for cjms nonprod.
+  default_args:
+    owner: dthorn@mozilla.com
+    start_date: "2022-03-24"
+    email: ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"]
+    retries: 2
+    retry_delay: 5m
+  tags:
+    - impact/tier_3

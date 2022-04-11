@@ -9643,7 +9643,8 @@ fields:
       mode: NULLABLE
       name: video_decoded_h264_sps_profile
       type: STRING
-    - description: Percentage of frames decoded frames dropped in an HTMLVideoElement
+    - description: Percentage of frames decoded frames dropped between starting and
+        stopping a video
       mode: NULLABLE
       name: video_dropped_frames_proportion
       type: STRING
@@ -19708,6 +19709,38 @@ fields:
     - description: Whether a page used IDBMutableFileOpen
       mode: NULLABLE
       name: use_counter2_deprecated_idb_mutable_file_open_page
+      type: STRING
+    - description: Whether a document used InstallTriggerDeprecated
+      mode: NULLABLE
+      name: use_counter2_deprecated_install_trigger_deprecated_document
+      type: STRING
+    - description: Whether a page used InstallTriggerDeprecated
+      mode: NULLABLE
+      name: use_counter2_deprecated_install_trigger_deprecated_page
+      type: STRING
+    - description: Whether a document used InstallTriggerInstallDeprecated
+      mode: NULLABLE
+      name: use_counter2_deprecated_install_trigger_install_deprecated_document
+      type: STRING
+    - description: Whether a page used InstallTriggerInstallDeprecated
+      mode: NULLABLE
+      name: use_counter2_deprecated_install_trigger_install_deprecated_page
+      type: STRING
+    - description: Whether a document uses an XSL Stylesheet
+      mode: NULLABLE
+      name: use_counter2_xslstylesheet_document
+      type: STRING
+    - description: Whether a page uses an XSL Stylesheet
+      mode: NULLABLE
+      name: use_counter2_xslstylesheet_page
+      type: STRING
+    - description: Whether a document called XSLTProcessor.constructor
+      mode: NULLABLE
+      name: use_counter2_xsltprocessor_constructor_document
+      type: STRING
+    - description: Whether a page called XSLTProcessor.constructor
+      mode: NULLABLE
+      name: use_counter2_xsltprocessor_constructor_page
       type: STRING
     mode: NULLABLE
     name: histograms
@@ -30636,7 +30669,8 @@ fields:
           mode: NULLABLE
           name: video_decoded_h264_sps_profile
           type: STRING
-        - description: Percentage of frames decoded frames dropped in an HTMLVideoElement
+        - description: Percentage of frames decoded frames dropped between starting
+            and stopping a video
           mode: NULLABLE
           name: video_dropped_frames_proportion
           type: STRING
@@ -40686,9 +40720,67 @@ fields:
           mode: NULLABLE
           name: use_counter2_deprecated_idb_mutable_file_open_page
           type: STRING
-        - description: Frames of of 10,000 decoded frames dropped in an HTMLVideoElement
+        - description: Ratio of dropped frames per total decoded frames scaled by
+            10,000 between starting and stopping a video
           mode: NULLABLE
           name: video_dropped_frames_proportion_exponential
+          type: STRING
+        - description: Labeling status of top-level page when overriding encoding
+            for HTML
+          mode: NULLABLE
+          name: encoding_override_situation_html
+          type: STRING
+        - description: Labeling status of top-level page when overriding encoding
+            for plain text
+          mode: NULLABLE
+          name: encoding_override_situation_text
+          type: STRING
+        - description: Whether a document used InstallTriggerDeprecated
+          mode: NULLABLE
+          name: use_counter2_deprecated_install_trigger_deprecated_document
+          type: STRING
+        - description: Whether a page used InstallTriggerDeprecated
+          mode: NULLABLE
+          name: use_counter2_deprecated_install_trigger_deprecated_page
+          type: STRING
+        - description: Whether a document used InstallTriggerInstallDeprecated
+          mode: NULLABLE
+          name: use_counter2_deprecated_install_trigger_install_deprecated_document
+          type: STRING
+        - description: Whether a page used InstallTriggerInstallDeprecated
+          mode: NULLABLE
+          name: use_counter2_deprecated_install_trigger_install_deprecated_page
+          type: STRING
+        - description: Whether a document uses an XSL Stylesheet
+          mode: NULLABLE
+          name: use_counter2_xslstylesheet_document
+          type: STRING
+        - description: Whether a page uses an XSL Stylesheet
+          mode: NULLABLE
+          name: use_counter2_xslstylesheet_page
+          type: STRING
+        - description: Whether a document called XSLTProcessor.constructor
+          mode: NULLABLE
+          name: use_counter2_xsltprocessor_constructor_document
+          type: STRING
+        - description: Whether a page called XSLTProcessor.constructor
+          mode: NULLABLE
+          name: use_counter2_xsltprocessor_constructor_page
+          type: STRING
+        - description: Ratio of compositor dropped frames per total decoded frames
+            scaled by 10,000 between starting and stopping a video
+          mode: NULLABLE
+          name: video_dropped_compositor_frames_proportion_exponential
+          type: STRING
+        - description: Ratio of decoder dropped frames per total decoded frames scaled
+            by 10,000 between starting and stopping a video
+          mode: NULLABLE
+          name: video_dropped_decoded_frames_proportion_exponential
+          type: STRING
+        - description: Ratio of sink dropped frames per total decoded frames scaled
+            by 10,000 between starting and stopping a video
+          mode: NULLABLE
+          name: video_dropped_sink_frames_proportion_exponential
           type: STRING
         mode: NULLABLE
         name: histograms
@@ -43191,6 +43283,20 @@ fields:
           mode: REPEATED
           name: power_cpu_time_per_process_type_ms
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'How many times threads woke up and could have woken up a
+              CPU core. Broken down by process type.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: power_wakeups_per_process_type
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD
@@ -43783,6 +43889,13 @@ fields:
             '
           mode: NULLABLE
           name: power_cpu_time_bogus_values
+          type: INTEGER
+        - description: 'How many times threads woke up and could have woken up a CPU
+            core.
+
+            '
+          mode: NULLABLE
+          name: power_total_thread_wakeups
           type: INTEGER
         mode: NULLABLE
         name: scalars
@@ -44434,6 +44547,20 @@ fields:
           mode: REPEATED
           name: power_gpu_time_per_process_type_ms
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'How many times threads woke up and could have woken up a
+              CPU core. Broken down by process type.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: power_wakeups_per_process_type
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD
@@ -44539,6 +44666,13 @@ fields:
             '
           mode: NULLABLE
           name: power_gpu_time_bogus_values
+          type: INTEGER
+        - description: 'How many times threads woke up and could have woken up a CPU
+            core.
+
+            '
+          mode: NULLABLE
+          name: power_total_thread_wakeups
           type: INTEGER
         mode: NULLABLE
         name: scalars
@@ -47466,6 +47600,114 @@ fields:
           mode: REPEATED
           name: power_gpu_time_per_process_type_ms
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'A keyed uint recording how many times the user has clicked
+              on non-sponsored Firefox Suggest best match (a.k.a. top pick) results
+              in the urlbar (not including the help button). The key is the 1-based
+              index of each result.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: contextual_services_quicksuggest_click_nonsponsored_bestmatch
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'A keyed uint recording how many times the user has clicked
+              on sponsored Firefox Suggest best match (a.k.a. top pick) results in
+              the urlbar (not including the help button). The key is the 1-based index
+              of each result.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: contextual_services_quicksuggest_click_sponsored_bestmatch
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'A keyed uint recording how many times the user has clicked
+              on the help button in non-sponsored Firefox Suggest best match (a.k.a.
+              top pick) results in the urlbar (not including the help button). The
+              key is the 1-based index of each result.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: contextual_services_quicksuggest_help_nonsponsored_bestmatch
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'A keyed uint recording how many times the user has clicked
+              on the help button in sponsored Firefox Suggest best match (a.k.a. top
+              pick) results in the urlbar (not including the help button). The key
+              is the 1-based index of each result.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: contextual_services_quicksuggest_help_sponsored_bestmatch
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'A keyed uint recording how many times the user has viewed
+              non-sponsored Firefox Suggest best match (a.k.a. top pick) results in
+              the urlbar. The key is the 1-based index of each result.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: contextual_services_quicksuggest_impression_nonsponsored_bestmatch
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'A keyed uint recording how many times the user has viewed
+              sponsored Firefox Suggest best match (a.k.a. top pick) results in the
+              urlbar. The key is the 1-based index of each result.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: contextual_services_quicksuggest_impression_sponsored_bestmatch
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'How many times threads woke up and could have woken up a
+              CPU core. Broken down by process type.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: power_wakeups_per_process_type
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD
@@ -50022,13 +50264,14 @@ fields:
           mode: NULLABLE
           name: dom_contentprocess_unsubmitted_ui_presented
           type: INTEGER
-        - description: Whether this app was pinned to taskbar on startup
+        - description: Whether the non-Private Browsing version of this app was pinned
+            to taskbar on startup
           mode: NULLABLE
           name: os_environment_is_taskbar_pinned
           type: BOOLEAN
         - description: 'Records how Firefox was started on Windows. Currently will
-            be one of "Desktop", "StartMenu" (including pins), "Taskbar", "OtherShortcut",
-            or "Other"
+            be one of "Desktop", "DesktopPrivate", "StartMenu" (including pins), "StartMenuPrivate",
+            "Taskbar", "TaskbarPrivate", "OtherShortcut", or "Other"
 
             '
           mode: NULLABLE
@@ -50296,6 +50539,46 @@ fields:
           mode: NULLABLE
           name: power_gpu_time_bogus_values
           type: INTEGER
+        - description: Whether the Private Browsing version of this app was pinned
+            to taskbar on startup
+          mode: NULLABLE
+          name: os_environment_is_taskbar_pinned_private
+          type: BOOLEAN
+        - description: 'How many times threads woke up and could have woken up a CPU
+            core.
+
+            '
+          mode: NULLABLE
+          name: power_total_thread_wakeups
+          type: INTEGER
+        - description: 'Recorded on every run of a Firefox install on macOS, with
+            a boolean value indicating whether Firefox is being run from an app translocated
+            location, or not. This is always false when `is_run_from_dmg` is true.
+
+            '
+          mode: NULLABLE
+          name: startup_is_run_from_app_translocated_location
+          type: BOOLEAN
+        - description: 'A uint recording the number of abandoned engagements in the
+            urlbar. An abandonment occurs when the user begins using the urlbar but
+            stops before completing the engagement. This can happen when the user
+            clicks outside the urlbar to focus a different part of the window. It
+            can also happen when the user switches to another window while the urlbar
+            is focused.
+
+            '
+          mode: NULLABLE
+          name: urlbar_abandonment
+          type: INTEGER
+        - description: 'A uint recording the number of engagements the user completes
+            in the urlbar.  An engagement occurs when the user navigates to a page
+            using the urlbar, for example by picking a result in the urlbar panel
+            or typing a search term or URL in the urlbar and pressing the enter key.
+
+            '
+          mode: NULLABLE
+          name: urlbar_engagement
+          type: INTEGER
         mode: NULLABLE
         name: scalars
         type: RECORD
@@ -50453,6 +50736,20 @@ fields:
           mode: REPEATED
           name: power_cpu_time_per_process_type_ms
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'How many times threads woke up and could have woken up a
+              CPU core. Broken down by process type.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: power_wakeups_per_process_type
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD
@@ -50500,6 +50797,19 @@ fields:
             '
           mode: NULLABLE
           name: telemetry_profile_directory_scans
+          type: INTEGER
+        - description: 'Total CPU time used by all processes in ms.
+
+            '
+          mode: NULLABLE
+          name: power_total_cpu_time_ms
+          type: INTEGER
+        - description: 'How many times threads woke up and could have woken up a CPU
+            core.
+
+            '
+          mode: NULLABLE
+          name: power_total_thread_wakeups
           type: INTEGER
         mode: NULLABLE
         name: scalars
@@ -50629,6 +50939,20 @@ fields:
           mode: REPEATED
           name: power_cpu_time_per_process_type_ms
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'How many times threads woke up and could have woken up a
+              CPU core. Broken down by process type.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: power_wakeups_per_process_type
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD
@@ -50676,6 +51000,19 @@ fields:
             '
           mode: NULLABLE
           name: telemetry_profile_directory_scans
+          type: INTEGER
+        - description: 'Total CPU time used by all processes in ms.
+
+            '
+          mode: NULLABLE
+          name: power_total_cpu_time_ms
+          type: INTEGER
+        - description: 'How many times threads woke up and could have woken up a CPU
+            core.
+
+            '
+          mode: NULLABLE
+          name: power_total_thread_wakeups
           type: INTEGER
         mode: NULLABLE
         name: scalars
@@ -51487,6 +51824,20 @@ fields:
           mode: REPEATED
           name: power_cpu_time_per_process_type_ms
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'How many times threads woke up and could have woken up a
+              CPU core. Broken down by process type.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: power_wakeups_per_process_type
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD
@@ -51567,6 +51918,13 @@ fields:
             '
           mode: NULLABLE
           name: power_cpu_time_bogus_values
+          type: INTEGER
+        - description: 'How many times threads woke up and could have woken up a CPU
+            core.
+
+            '
+          mode: NULLABLE
+          name: power_total_thread_wakeups
           type: INTEGER
         mode: NULLABLE
         name: scalars

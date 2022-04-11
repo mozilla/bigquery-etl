@@ -676,6 +676,12 @@ fields:
       mode: NULLABLE
       name: infobar_qe_enabled
       type: BOOLEAN
+    - description: '"Automatically translate as browse" is enabled.
+
+        '
+      mode: NULLABLE
+      name: infobar_auto_translate_enabled
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD

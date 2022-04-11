@@ -1,4 +1,3 @@
--- this will be updated once the service parameter get passed for "fxa_rp_button - view"
 WITH pricing_plans AS (
   SELECT
     id AS plan_id,
@@ -14,9 +13,16 @@ WITH pricing_plans AS (
   FROM
     mozdata.stripe.plans
 ),
+events AS (
+  SELECT
+    *,
+    DATE(`timestamp`) AS partition_date,
+  FROM
+    mozdata.firefox_accounts.fxa_content_auth_stdout_events
+),
 flows AS (
   SELECT
-    DATE(`timestamp`) AS partition_date,
+    partition_date,
     flow_id,
     ARRAY_AGG(country IGNORE NULLS ORDER BY `timestamp` LIMIT 1)[SAFE_OFFSET(0)] AS country,
     ARRAY_AGG(
@@ -100,14 +106,15 @@ flows AS (
       AND user_id IS NOT NULL
     ) AS pay_setup_complete_with_uid,
   FROM
-    mozdata.firefox_accounts.fxa_content_auth_stdout_events
+    events
   WHERE
     IF(
       @date IS NULL,
-      DATE(`timestamp`) >= "2021-08-25"
-      AND DATE(`timestamp`) < CURRENT_DATE,
-      DATE(`timestamp`) = @date
+      -- The fully FxA-based funnel for VPN was enabled on 2021-08-25.
+      (partition_date >= "2021-08-25" AND partition_date < CURRENT_DATE),
+      partition_date = @date
     )
+    AND flow_id IS NOT NULL
   GROUP BY
     partition_date,
     flow_id
@@ -115,24 +122,33 @@ flows AS (
     -- NOTE: flows near date boundaries may not meet this condition for all dates
     LOGICAL_OR(
       service = "guardian-vpn"
+      OR events.entrypoint = "www.mozilla.org-vpn-product-page"
+      OR events.utm_source = "www.mozilla.org-vpn-product-page"
       OR (
         event_type = "fxa_rp_button - view"
         AND (
-          (service IS NULL AND DATE(`timestamp`) <= "2021-12-08")
+          -- The www.mozilla.org navbar CTA button was changed to link to VPN for Firefox users
+          -- on 2021-09-02, then attribution was implemented for it on 2021-09-15.
+          (
+            service IS NULL
+            AND events.utm_source = "www.mozilla.org"
+            AND events.utm_campaign = "navigation"
+            AND (partition_date BETWEEN "2021-09-15" AND "2021-12-08")
+          )
+          -- Service attribution was implemented for VPN FxA links on www.mozilla.org on 2021-12-08,
+          -- but the service ended up as "undefined_oauth" until it was fixed on 2022-01-06.
           OR (
             service = "undefined_oauth"
-            AND DATE(`timestamp`)
-            BETWEEN "2021-12-08"
-            AND "2022-01-06"
+            AND (partition_date BETWEEN "2021-12-08" AND "2022-01-06")
           )
         )
       )
+      -- Even when service attribution for VPN FxA links was fixed on 2022-01-06 there was still a
+      -- problem with service attribution for FxA payment events, which was fixed on 2022-03-09.
       OR (
         event_type LIKE "fxa_pay_%"
-        AND (
-          (service IS NULL AND DATE(`timestamp`) <= "2021-12-08")
-          OR (service = "undefined_oauth" AND DATE(`timestamp`) >= "2021-12-08")
-        )
+        AND service = "undefined_oauth"
+        AND (partition_date BETWEEN "2021-12-08" AND "2022-03-09")
       )
     )
 ),

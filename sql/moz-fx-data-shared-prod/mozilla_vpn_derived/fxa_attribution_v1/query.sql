@@ -51,33 +51,41 @@ flows AS (
     fxa_content_auth_stdout_events
   WHERE
     IF(@date IS NULL, partition_date < CURRENT_DATE, partition_date = @date)
-    -- cannot filter service because
-    AND (
-      service = "guardian-vpn"
-      -- service is missing for these event types
-      OR (
-        event_type = "fxa_rp_button - view"
-        AND (
-          (service IS NULL AND DATE(`timestamp`) <= "2021-12-08")
-          OR (
-            service = "undefined_oauth"
-            AND DATE(`timestamp`)
-            BETWEEN "2021-12-08"
-            AND "2022-01-06"
-          )
-        )
-      )
-      OR (
-        event_type LIKE "fxa_pay_%"
-        AND (
-          (service IS NULL AND DATE(`timestamp`) <= "2021-12-08")
-          OR (service = "undefined_oauth" AND DATE(`timestamp`) >= "2021-12-08")
-        )
-      )
-    )
     AND flow_id IS NOT NULL
   GROUP BY
     flow_id
+  HAVING
+    LOGICAL_OR(
+      service = "guardian-vpn"
+      OR entrypoint = "www.mozilla.org-vpn-product-page"
+      OR utm_source = "www.mozilla.org-vpn-product-page"
+      OR (
+        event_type = "fxa_rp_button - view"
+        AND (
+          -- The www.mozilla.org navbar CTA button was changed to link to VPN for Firefox users
+          -- on 2021-09-02, then attribution was implemented for it on 2021-09-15.
+          (
+            service IS NULL
+            AND utm_source = "www.mozilla.org"
+            AND utm_campaign = "navigation"
+            AND (partition_date BETWEEN "2021-09-15" AND "2021-12-08")
+          )
+          -- Service attribution was implemented for VPN FxA links on www.mozilla.org on 2021-12-08,
+          -- but the service ended up as "undefined_oauth" until it was fixed on 2022-01-06.
+          OR (
+            service = "undefined_oauth"
+            AND (partition_date BETWEEN "2021-12-08" AND "2022-01-06")
+          )
+        )
+      )
+      -- Even when service attribution for VPN FxA links was fixed on 2022-01-06 there was still a
+      -- problem with service attribution for FxA payment events, which was fixed on 2022-03-09.
+      OR (
+        event_type LIKE "fxa_pay_%"
+        AND service = "undefined_oauth"
+        AND (partition_date BETWEEN "2021-12-08" AND "2022-03-09")
+      )
+    )
   UNION ALL
   SELECT
     *

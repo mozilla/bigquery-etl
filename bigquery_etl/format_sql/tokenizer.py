@@ -329,7 +329,7 @@ class AliasSeparator(SpaceBeforeBracketKeyword):
     """
 
     pattern = re.compile(
-        r"AS(?=\s+(?!WITH|SELECT|STRUCT|ARRAY)[a-z_`(])", re.IGNORECASE
+        r"AS(?=\s+(?!(WITH|SELECT|STRUCT|ARRAY)\b)[a-z_`(])", re.IGNORECASE
     )
 
 

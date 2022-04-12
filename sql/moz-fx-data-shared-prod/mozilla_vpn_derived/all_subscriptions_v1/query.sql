@@ -71,8 +71,9 @@ stripe_subscriptions AS (
       "-",
       (plan_amount / 100)
     ) AS pricing_plan,
-    -- Stripe billing grace period is 7 day and Paypal is billed by Stripe
-    INTERVAL 7 DAY AS billing_grace_period,
+    -- Stripe billing grace period is 7 days, and Paypal is billed by Stripe
+    -- Per DVPN 138 - Allow an additional 3 hours of processing time
+    MAKE_INTERVAL(day=>7, hour=>3) AS billing_grace_period,
     promotion_codes,
   FROM
     mozdata.subscription_platform.stripe_subscriptions

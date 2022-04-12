@@ -1,0 +1,8 @@
+---
+friendly_name: Normalize Browser Version Info
+description: |
+  Adds metadata related to the browser version in a struct.
+
+  This is a temporary solution that allows browser version analysis.
+  It should eventually be replaced with one or more browser version tables
+  that serves as a source of truth for version releases.

@@ -57,8 +57,8 @@ flows AS (
   HAVING
     LOGICAL_OR(
       service = "guardian-vpn"
-      OR entrypoint = "www.mozilla.org-vpn-product-page"
-      OR utm_source = "www.mozilla.org-vpn-product-page"
+      OR entrypoint LIKE "www.mozilla.org-vpn-%"
+      OR utm_source LIKE "www.mozilla.org-vpn-%"
       OR (
         event_type = "fxa_rp_button - view"
         AND (

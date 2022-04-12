@@ -129,8 +129,8 @@ flows AS (
     -- NOTE: flows near date boundaries may not meet this condition for all dates
     LOGICAL_OR(
       service = "guardian-vpn"
-      OR events.entrypoint = "www.mozilla.org-vpn-product-page"
-      OR events.utm_source = "www.mozilla.org-vpn-product-page"
+      OR events.entrypoint LIKE "www.mozilla.org-vpn-%"
+      OR events.utm_source LIKE "www.mozilla.org-vpn-%"
       OR (
         event_type = "fxa_rp_button - view"
         AND (

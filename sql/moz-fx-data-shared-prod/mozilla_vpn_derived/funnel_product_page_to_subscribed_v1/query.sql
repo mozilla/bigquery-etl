@@ -135,7 +135,8 @@ flows AS (
       OR events.entrypoint LIKE "www.mozilla.org-vpn-%"
       OR events.utm_source LIKE "www.mozilla.org-vpn-%"
       -- The www.mozilla.org navbar CTA button was changed to link to VPN for Firefox users
-      -- on 2021-09-02, then attribution was implemented for it on 2021-09-15.
+      -- on 2021-09-02, attribution was implemented for it on 2021-09-15, and service attribution
+      -- was implemented for VPN FxA links on 2021-12-08.
       OR (
         event_type = "fxa_rp_button - view"
         AND service IS NULL

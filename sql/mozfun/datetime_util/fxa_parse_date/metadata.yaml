@@ -1,0 +1,4 @@
+description: |
+  Function for converting a datetime or date string
+  in various formats into a date object
+friendly_name: fxa_parse_date

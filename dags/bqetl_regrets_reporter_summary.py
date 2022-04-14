@@ -51,7 +51,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        dag=dag,
     )
 
     wait_for_copy_deduplicate_all = ExternalTaskCompletedSensor(

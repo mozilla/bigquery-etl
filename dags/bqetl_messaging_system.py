@@ -52,7 +52,6 @@ with DAG(
         email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     messaging_system_derived__cfr_users_daily__v1 = bigquery_etl_query(
@@ -64,7 +63,6 @@ with DAG(
         email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     messaging_system_derived__cfr_users_last_seen__v1 = bigquery_etl_query(
@@ -76,7 +74,6 @@ with DAG(
         email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
-        dag=dag,
     )
 
     messaging_system_derived__onboarding_users_daily__v1 = bigquery_etl_query(
@@ -88,7 +85,6 @@ with DAG(
         email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     messaging_system_derived__onboarding_users_last_seen__v1 = bigquery_etl_query(
@@ -100,7 +96,6 @@ with DAG(
         email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
-        dag=dag,
     )
 
     messaging_system_derived__snippets_users_daily__v1 = bigquery_etl_query(
@@ -112,7 +107,6 @@ with DAG(
         email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     messaging_system_derived__snippets_users_last_seen__v1 = bigquery_etl_query(
@@ -124,7 +118,6 @@ with DAG(
         email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
-        dag=dag,
     )
 
     messaging_system_onboarding_exact_mau28_by_dimensions = bigquery_etl_query(
@@ -136,7 +129,6 @@ with DAG(
         email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     messaging_system_snippets_exact_mau28_by_dimensions = bigquery_etl_query(
@@ -148,7 +140,6 @@ with DAG(
         email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     messaging_system_derived__cfr_exact_mau28_by_dimensions__v1.set_upstream(

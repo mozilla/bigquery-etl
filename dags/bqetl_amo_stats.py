@@ -54,7 +54,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     amo_dev__amo_stats_installs__v3 = bigquery_etl_query(
@@ -66,7 +65,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     amo_prod__amo_stats_dau__v2 = bigquery_etl_query(
@@ -78,7 +76,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     amo_prod__amo_stats_installs__v3 = bigquery_etl_query(
@@ -90,7 +87,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     amo_prod__desktop_addons_by_client__v1 = bigquery_etl_query(
@@ -102,7 +98,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     amo_prod__fenix_addons_by_client__v1 = bigquery_etl_query(
@@ -114,7 +109,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     amo_dev__amo_stats_dau__v2.set_upstream(amo_prod__amo_stats_dau__v2)

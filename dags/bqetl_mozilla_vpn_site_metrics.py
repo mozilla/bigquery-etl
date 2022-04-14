@@ -56,7 +56,6 @@ with DAG(
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="date",
         depends_on_past=False,
-        dag=dag,
     )
 
     mozilla_vpn_derived__site_metrics_empty_check__v1 = bigquery_etl_query(
@@ -73,7 +72,6 @@ with DAG(
         retry_delay=datetime.timedelta(seconds=1800),
         retries=18,
         email_on_retry=False,
-        dag=dag,
     )
 
     mozilla_vpn_derived__site_metrics_summary__v1 = bigquery_etl_query(
@@ -85,7 +83,6 @@ with DAG(
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="date",
         depends_on_past=False,
-        dag=dag,
     )
 
     wait_for_mozilla_vpn_derived__all_subscriptions__v1 = ExternalTaskCompletedSensor(

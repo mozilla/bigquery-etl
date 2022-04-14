@@ -61,7 +61,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     firefox_accounts_derived__fxa_auth_events__v1 = bigquery_etl_query(
@@ -74,7 +73,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-        dag=dag,
     )
 
     firefox_accounts_derived__fxa_content_events__v1 = bigquery_etl_query(
@@ -87,7 +85,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-        dag=dag,
     )
 
     firefox_accounts_derived__fxa_delete_events__v1 = bigquery_etl_query(
@@ -99,7 +96,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     firefox_accounts_derived__fxa_log_auth_events__v1 = bigquery_etl_query(
@@ -111,7 +107,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     firefox_accounts_derived__fxa_log_content_events__v1 = bigquery_etl_query(
@@ -123,7 +118,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     firefox_accounts_derived__fxa_log_device_command_events__v1 = bigquery_etl_query(
@@ -135,7 +129,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     firefox_accounts_derived__fxa_stdout_events__v1 = bigquery_etl_query(
@@ -148,7 +141,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-        dag=dag,
     )
 
     firefox_accounts_derived__fxa_users_daily__v1 = bigquery_etl_query(
@@ -160,7 +152,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     firefox_accounts_derived__fxa_users_first_seen__v1 = bigquery_etl_query(
@@ -179,7 +170,6 @@ with DAG(
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
         priority_weight=80,
-        dag=dag,
     )
 
     firefox_accounts_derived__fxa_users_last_seen__v1 = bigquery_etl_query(
@@ -192,7 +182,6 @@ with DAG(
         start_date=datetime.datetime(2019, 4, 23, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=True,
-        dag=dag,
     )
 
     firefox_accounts_derived__fxa_users_services_daily__v1 = bigquery_etl_query(
@@ -204,7 +193,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     firefox_accounts_derived__nonprod_fxa_auth_events__v1 = bigquery_etl_query(
@@ -217,7 +205,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-        dag=dag,
     )
 
     firefox_accounts_derived__nonprod_fxa_content_events__v1 = bigquery_etl_query(
@@ -230,7 +217,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-        dag=dag,
     )
 
     firefox_accounts_derived__nonprod_fxa_stdout_events__v1 = bigquery_etl_query(
@@ -243,7 +229,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-        dag=dag,
     )
 
     firefox_accounts_derived__exact_mau28__v1.set_upstream(

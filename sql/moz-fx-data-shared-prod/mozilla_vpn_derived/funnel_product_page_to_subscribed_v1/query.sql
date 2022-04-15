@@ -132,17 +132,25 @@ flows AS (
       -- In the past the FxA payment server didn't set the service based on the VPN OAuth client ID,
       -- and for a while Bedrock incorrectly passed "guardian-vpn" as the OAuth client ID.
       OR oauth_client_id IN ("e6eb0d1e856335fc", "guardian-vpn")
-      OR events.entrypoint LIKE "www.mozilla.org-vpn-%"
-      OR events.utm_source LIKE "www.mozilla.org-vpn-%"
-      -- The www.mozilla.org navbar CTA button was changed to link to VPN for Firefox users
-      -- on 2021-09-02, attribution was implemented for it on 2021-09-15, and service attribution
-      -- was implemented for VPN FxA links on 2021-12-08.
       OR (
+        -- Service attribution was implemented for VPN FxA links on 2021-12-08.
         event_type = "fxa_rp_button - view"
         AND service IS NULL
-        AND events.utm_source = "www.mozilla.org"
-        AND events.utm_campaign = "navigation"
-        AND (partition_date BETWEEN "2021-09-15" AND "2021-12-08")
+        AND partition_date <= "2021-12-08"
+        AND (
+          events.entrypoint LIKE "www.mozilla.org-vpn-%"
+          -- Include campaigns that promoted VPN prior to service attribution for VPN FxA links.
+          OR events.utm_campaign LIKE '%vpn%'
+          OR REGEXP_CONTAINS(events.utm_campaign, r"^welcome(-page)?(9|10|11)")
+          OR REGEXP_CONTAINS(events.utm_campaign, r"^whatsnew(82|84|85|88|90|92|93)")
+          -- The www.mozilla.org navbar CTA button was changed to link to VPN for Firefox users
+          -- on 2021-09-02, and attribution was implemented for it on 2021-09-15.
+          OR (
+            events.utm_source = "www.mozilla.org"
+            AND events.utm_campaign = "navigation"
+            AND partition_date >= "2021-09-15"
+          )
+        )
       )
     )
 ),

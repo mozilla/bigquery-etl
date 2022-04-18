@@ -580,6 +580,146 @@ fields:
       mode: REPEATED
       name: gmp_update_xml_fetch_result
       type: RECORD
+    - description: 'How many miliseconds of CPU time were used. Broken down by thread
+        name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_cpu_ms_per_thread_content_background
+      type: RECORD
+    - description: 'How many miliseconds of CPU time were used. Broken down by thread
+        name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_cpu_ms_per_thread_content_foreground
+      type: RECORD
+    - description: 'How many miliseconds of CPU time were used. Broken down by thread
+        name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_cpu_ms_per_thread_gpu_process
+      type: RECORD
+    - description: 'How many miliseconds of CPU time were used. Broken down by thread
+        name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_cpu_ms_per_thread_parent_active
+      type: RECORD
+    - description: 'How many miliseconds of CPU time were used. Broken down by thread
+        name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_cpu_ms_per_thread_parent_inactive
+      type: RECORD
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+        Broken down by thread name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_wakeups_per_thread_content_background
+      type: RECORD
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+        Broken down by thread name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_wakeups_per_thread_content_foreground
+      type: RECORD
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+        Broken down by thread name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_wakeups_per_thread_gpu_process
+      type: RECORD
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+        Broken down by thread name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_wakeups_per_thread_parent_active
+      type: RECORD
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+        Broken down by thread name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_wakeups_per_thread_parent_inactive
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

@@ -47708,6 +47708,80 @@ fields:
           mode: REPEATED
           name: power_wakeups_per_process_type
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'A keyed uint recording how many times the user has blocked/dismissed
+              non-sponsored Firefox Suggest results in the urlbar, including best
+              matches (a.k.a. top picks). The key is the 1-based index of each result.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: contextual_services_quicksuggest_block_nonsponsored
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'A keyed uint recording how many times the user has blocked/dismissed
+              non-sponsored Firefox Suggest best match (a.k.a. top pick) results in
+              the urlbar. The key is the 1-based index of each result.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: contextual_services_quicksuggest_block_nonsponsored_bestmatch
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'A keyed uint recording how many times the user has blocked/dismissed
+              sponsored Firefox Suggest results in the urlbar, including best matches
+              (a.k.a. top picks). The key is the 1-based index of each result.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: contextual_services_quicksuggest_block_sponsored
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'A keyed uint recording how many times the user has blocked/dismissed
+              sponsored Firefox Suggest best match (a.k.a. top pick) results in the
+              urlbar. The key is the 1-based index of each result.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: contextual_services_quicksuggest_block_sponsored_bestmatch
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'Counts how many times this result type was picked at a given
+              index.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: urlbar_picked_quicksuggest
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD

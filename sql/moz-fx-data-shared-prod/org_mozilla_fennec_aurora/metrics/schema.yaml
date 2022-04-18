@@ -985,6 +985,21 @@ fields:
       mode: NULLABLE
       name: power_total_thread_wakeups
       type: INTEGER
+    - description: 'Counts how often the loading placeholder is shown and the resulting
+        tab
+
+        is the same as it was before the load.
+
+        '
+      mode: NULLABLE
+      name: recent_synced_tabs_latest_synced_tab_is_stale
+      type: INTEGER
+    - description: 'Counts how many times "show all synced tabs" button has been clicked.
+
+        '
+      mode: NULLABLE
+      name: recent_synced_tabs_show_all_synced_tabs_clicked
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -2037,6 +2052,191 @@ fields:
         type: INTEGER
       mode: REPEATED
       name: gmp_update_xml_fetch_result
+      type: RECORD
+    - description: 'Counts the number of times a recent synced tab is opened, labeled
+        by the
+
+        device type the tab originates from.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: recent_synced_tabs_recent_synced_tab_opened
+      type: RECORD
+    - description: 'Counts impressions of a recent synced tab on the homepage, labeled
+        by the
+
+        device type the tab originates from.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: recent_synced_tabs_recent_synced_tab_shown
+      type: RECORD
+    - description: 'The area that the tabs tray was accessed from.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: tabs_tray_access_point
+      type: RECORD
+    - description: 'How many miliseconds of CPU time were used. Broken down by thread
+        name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_cpu_ms_per_thread_content_background
+      type: RECORD
+    - description: 'How many miliseconds of CPU time were used. Broken down by thread
+        name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_cpu_ms_per_thread_content_foreground
+      type: RECORD
+    - description: 'How many miliseconds of CPU time were used. Broken down by thread
+        name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_cpu_ms_per_thread_gpu_process
+      type: RECORD
+    - description: 'How many miliseconds of CPU time were used. Broken down by thread
+        name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_cpu_ms_per_thread_parent_active
+      type: RECORD
+    - description: 'How many miliseconds of CPU time were used. Broken down by thread
+        name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_cpu_ms_per_thread_parent_inactive
+      type: RECORD
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+        Broken down by thread name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_wakeups_per_thread_content_background
+      type: RECORD
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+        Broken down by thread name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_wakeups_per_thread_content_foreground
+      type: RECORD
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+        Broken down by thread name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_wakeups_per_thread_gpu_process
+      type: RECORD
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+        Broken down by thread name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_wakeups_per_thread_parent_active
+      type: RECORD
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+        Broken down by thread name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_wakeups_per_thread_parent_inactive
       type: RECORD
     mode: NULLABLE
     name: labeled_counter
@@ -6389,6 +6589,45 @@ fields:
         type: RECORD
       mode: NULLABLE
       name: wr_rasterize_glyphs_time
+      type: RECORD
+    - description: 'Measures the amount of time between the beginning of a sync and
+        the end.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: recent_synced_tabs_recent_synced_tab_time_to_load
       type: RECORD
     mode: NULLABLE
     name: timing_distribution

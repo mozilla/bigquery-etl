@@ -98,3 +98,19 @@ fields:
 - mode: NULLABLE
   name: build_id
   type: STRING
+- fields:
+  - mode: NULLABLE
+    name: version
+    type: STRING
+  - mode: NULLABLE
+    name: major_version
+    type: NUMERIC
+  - mode: NULLABLE
+    name: minor_version
+    type: NUMERIC
+  - mode: NULLABLE
+    name: is_major_release
+    type: BOOLEAN
+  mode: NULLABLE
+  name: browser_version_info
+  type: RECORD

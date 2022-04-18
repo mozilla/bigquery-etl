@@ -3,6 +3,7 @@ WITH fxa_content_auth_stdout_events AS (
     DATE(`timestamp`) AS partition_date,
     `timestamp`,
     service,
+    oauth_client_id,
     event_type,
     flow_id,
     user_id,
@@ -51,18 +52,30 @@ flows AS (
     fxa_content_auth_stdout_events
   WHERE
     IF(@date IS NULL, partition_date < CURRENT_DATE, partition_date = @date)
-    -- cannot filter service because
+    AND flow_id IS NOT NULL
     AND (
-      service = "guardian-vpn"
-      -- service is missing for these event types
+      -- Service attribution was implemented for VPN FxA links on 2021-12-08, so past that date we
+      -- include all events here and use the HAVING clause to filter down to flows involving VPN.
+      partition_date > "2021-12-08"
+      -- Prior to that we use the attribution events filter that was in place at the time.
+      OR service = "guardian-vpn"
       OR (
         (service IS NULL OR service = "undefined_oauth")
         AND (event_type = "fxa_rp_button - view" OR event_type LIKE "fxa_pay_%")
       )
     )
-    AND flow_id IS NOT NULL
   GROUP BY
     flow_id
+  HAVING
+    LOGICAL_OR(
+      service = "guardian-vpn"
+      -- In the past the FxA payment server didn't set the service based on the VPN OAuth client ID,
+      -- and for a while Bedrock incorrectly passed "guardian-vpn" as the OAuth client ID.
+      OR oauth_client_id IN ("e6eb0d1e856335fc", "guardian-vpn")
+      -- Prior to service attribution for VPN FxA links being implemented on 2021-12-08 we rely on
+      -- the attribution events filter in the WHERE clause that was in place at the time.
+      OR partition_date <= "2021-12-08"
+    )
   UNION ALL
   SELECT
     *

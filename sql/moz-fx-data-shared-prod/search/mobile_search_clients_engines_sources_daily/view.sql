@@ -4,6 +4,7 @@ AS
 SELECT
   * EXCEPT (normalized_engine),
   `moz-fx-data-shared-prod`.udf.normalize_search_engine(engine) AS normalized_engine,
+  `mozfun.norm.browser_version_info`(app_version) as browser_version_info,
   search_count AS sap,
 FROM
   `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`

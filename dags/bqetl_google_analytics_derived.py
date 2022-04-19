@@ -54,7 +54,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     ga_derived__blogs_empty_check__v1 = bigquery_etl_query(
@@ -68,7 +67,6 @@ with DAG(
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         sql_file_path="sql/moz-fx-data-marketing-prod/ga_derived/blogs_empty_check_v1/query.sql",
-        dag=dag,
     )
 
     ga_derived__blogs_goals__v1 = bigquery_etl_query(
@@ -80,7 +78,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     ga_derived__blogs_landing_page_summary__v1 = bigquery_etl_query(
@@ -92,7 +89,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     ga_derived__blogs_sessions__v1 = bigquery_etl_query(
@@ -104,7 +100,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     ga_derived__www_site_downloads__v1 = bigquery_etl_query(
@@ -116,7 +111,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     ga_derived__www_site_empty_check__v1 = bigquery_etl_query(
@@ -130,7 +124,6 @@ with DAG(
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         sql_file_path="sql/moz-fx-data-marketing-prod/ga_derived/www_site_empty_check_v1/query.sql",
-        dag=dag,
     )
 
     ga_derived__www_site_events_metrics__v1 = bigquery_etl_query(
@@ -142,7 +135,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     ga_derived__www_site_hits__v1 = bigquery_etl_query(
@@ -154,7 +146,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     ga_derived__www_site_landing_page_metrics__v1 = bigquery_etl_query(
@@ -166,7 +157,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     ga_derived__www_site_metrics_summary__v1 = bigquery_etl_query(
@@ -178,7 +168,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     ga_derived__www_site_page_metrics__v1 = bigquery_etl_query(
@@ -190,7 +179,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     ga_derived__blogs_daily_summary__v1.set_upstream(ga_derived__blogs_goals__v1)

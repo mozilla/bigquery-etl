@@ -59,7 +59,6 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     wait_for_search_derived__mobile_search_clients_daily__v1 = (

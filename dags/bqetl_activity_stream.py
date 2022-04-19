@@ -53,7 +53,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     activity_stream_bi__impression_stats_flat__v1 = bigquery_etl_query(
@@ -65,7 +64,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     activity_stream_bi__impression_stats_by_experiment__v1.set_upstream(

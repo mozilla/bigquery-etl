@@ -117,7 +117,6 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             email_on_retry={{ task.email_on_retry }},
             {%+ endif -%}
     {% if not task.is_python_script -%}
-            dag=dag,
     {% endif -%}
         )
 {% endfor -%}

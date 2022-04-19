@@ -51,7 +51,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=True,
         arguments=["--append_table"],
-        dag=dag,
     )
 
     fivetran_import_1_sync_start = FivetranOperator(

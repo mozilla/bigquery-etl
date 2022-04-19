@@ -58,7 +58,6 @@ with DAG(
             'submission_date:DATE:{{ (execution_date - macros.timedelta(hours=2)).strftime("%Y-%m-%d") }}'
         ],
         sql_file_path="sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/flows_v1/query.sql",
-        dag=dag,
     )
 
     cjms_bigquery__refunds__v1 = bigquery_etl_query(
@@ -71,7 +70,6 @@ with DAG(
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        dag=dag,
     )
 
     cjms_bigquery__subscriptions__v1 = bigquery_etl_query(
@@ -84,7 +82,6 @@ with DAG(
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        dag=dag,
     )
 
     fivetran_stripe_nonprod_sync_start = FivetranOperator(

@@ -100,7 +100,6 @@ with DAG(
         email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     monitoring_derived__stable_table_column_counts__v1 = bigquery_etl_query(
@@ -114,7 +113,6 @@ with DAG(
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         sql_file_path="sql/moz-fx-data-shared-prod/monitoring_derived/stable_table_column_counts_v1/script.sql",
-        dag=dag,
     )
 
     monitoring_derived__stable_table_sizes__v1 = gke_command(
@@ -162,7 +160,6 @@ with DAG(
         email=["aplacitelli@mozilla.com", "ascholtz@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     monitoring_derived__telemetry_distinct_docids__v1 = bigquery_etl_query(
@@ -174,7 +171,6 @@ with DAG(
         email=["ascholtz@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     monitoring_derived__telemetry_missing_columns__v3 = bigquery_etl_query(
@@ -186,7 +182,6 @@ with DAG(
         email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     wait_for_copy_deduplicate_all = ExternalTaskCompletedSensor(

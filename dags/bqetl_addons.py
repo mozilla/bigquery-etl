@@ -53,7 +53,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__addon_names__v1 = bigquery_etl_query(
@@ -66,7 +65,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        dag=dag,
     )
 
     telemetry_derived__addons__v2 = bigquery_etl_query(
@@ -78,7 +76,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__addons_daily__v1 = bigquery_etl_query(
@@ -90,7 +87,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     wait_for_copy_deduplicate_main_ping = ExternalTaskCompletedSensor(

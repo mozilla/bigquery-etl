@@ -126,11 +126,6 @@ def stripe_():
     ),
     help="BigQuery time partitioning type for --table",
 )
-@click.option(
-    "--allow-empty",
-    is_flag=True,
-    help="Allow empty imports to succeed; Used when importing non-prod events",
-)
 def stripe_import(
     api_key: Optional[str],
     date: Optional[datetime],
@@ -141,7 +136,6 @@ def stripe_import(
     report_type: str,
     time_partitioning_field: str,
     time_partitioning_type: str,
-    allow_empty: bool,
 ):
     """Import Stripe data into BigQuery."""
     if after_date:
@@ -173,24 +167,16 @@ def stripe_import(
     else:
         handle = sys.stdout.buffer
     with handle as file_obj:
-        has_rows = False
         path = Path(__file__).parent / f"{report_type}.schema.json"
         root = bigquery.SchemaField.from_api_repr(
             {"name": "root", "type": "RECORD", "fields": ujson.loads(path.read_text())}
         )
         columns = [f.name for f in root.fields]
-        has_headers = False
         for row in _get_report_rows(
             api_key, after_date, before_date, report_type, columns
         ):
             file_obj.write(row)
-            if not has_headers:
-                has_headers = True
-            else:
-                has_rows = True
-        if not has_rows and not allow_empty:
-            raise click.ClickException("no rows returned")
-        elif table:
+        if table:
             if file_obj.writable():
                 file_obj.seek(0)
             warnings.filterwarnings("ignore", module="google.auth._default")

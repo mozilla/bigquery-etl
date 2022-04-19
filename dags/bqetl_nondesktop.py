@@ -55,7 +55,6 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__firefox_nondesktop_day_2_7_activation__v1 = bigquery_etl_query(
@@ -67,7 +66,6 @@ with DAG(
         email=["gkaberere@mozilla.com", "jklukas@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__firefox_nondesktop_exact_mau28__v1 = bigquery_etl_query(
@@ -83,7 +81,6 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__mobile_usage__v1 = bigquery_etl_query(
@@ -99,7 +96,6 @@ with DAG(
         ],
         date_partition_parameter=None,
         depends_on_past=False,
-        dag=dag,
     )
 
     wait_for_telemetry_derived__core_clients_last_seen__v1 = (

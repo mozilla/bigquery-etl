@@ -63,7 +63,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "echo@mozilla.com", "shong@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
-        dag=dag,
     )
 
     iprospect__adspend_raw__v1 = gke_command(

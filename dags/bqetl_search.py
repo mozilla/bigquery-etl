@@ -55,7 +55,6 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     search_derived__search_clients_daily__v8 = bigquery_etl_query(
@@ -71,7 +70,6 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     search_derived__search_clients_last_seen__v1 = bigquery_etl_query(
@@ -87,7 +85,6 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=True,
-        dag=dag,
     )
 
     search_derived__search_metric_contribution__v1 = bigquery_etl_query(
@@ -104,7 +101,6 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     search_derived__search_aggregates__v8.set_upstream(

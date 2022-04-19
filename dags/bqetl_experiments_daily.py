@@ -53,7 +53,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        dag=dag,
     )
 
     monitoring__query_cost__v1 = bigquery_etl_query(
@@ -65,7 +64,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__experiment_enrollment_aggregates__v1 = bigquery_etl_query(
@@ -77,7 +75,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__experiment_search_aggregates__v1 = bigquery_etl_query(
@@ -89,7 +86,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__experiments_daily_active_clients__v1 = bigquery_etl_query(
@@ -101,7 +97,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     experiment_enrollment_daily_active_population.set_upstream(

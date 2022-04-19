@@ -52,7 +52,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__desktop_funnel_installs__v1 = bigquery_etl_query(
@@ -64,7 +63,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__desktop_funnel_new_profiles__v1 = bigquery_etl_query(
@@ -76,7 +74,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     wait_for_copy_deduplicate_all = ExternalTaskCompletedSensor(

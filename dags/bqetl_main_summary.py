@@ -63,7 +63,6 @@ with DAG(
         ],
         date_partition_parameter=None,
         depends_on_past=False,
-        dag=dag,
     )
 
     firefox_desktop_exact_mau28_by_client_count_dimensions = bigquery_etl_query(
@@ -80,7 +79,6 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     firefox_desktop_exact_mau28_by_dimensions = bigquery_etl_query(
@@ -97,7 +95,6 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     firefox_desktop_exact_mau28_by_dimensions_v2 = bigquery_etl_query(
@@ -114,7 +111,6 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__clients_daily__v6 = bigquery_etl_query(
@@ -132,7 +128,6 @@ with DAG(
         start_date=datetime.datetime(2019, 11, 5, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__clients_daily_event__v1 = bigquery_etl_query(
@@ -151,7 +146,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         priority_weight=85,
-        dag=dag,
     )
 
     telemetry_derived__clients_daily_joined__v1 = bigquery_etl_query(
@@ -170,7 +164,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         priority_weight=85,
-        dag=dag,
     )
 
     telemetry_derived__clients_first_seen__v1 = bigquery_etl_query(
@@ -190,7 +183,6 @@ with DAG(
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
         priority_weight=80,
-        dag=dag,
     )
 
     telemetry_derived__clients_last_seen__v1 = bigquery_etl_query(
@@ -204,7 +196,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=True,
         priority_weight=85,
-        dag=dag,
     )
 
     telemetry_derived__clients_last_seen_event__v1 = bigquery_etl_query(
@@ -223,7 +214,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=True,
         priority_weight=85,
-        dag=dag,
     )
 
     telemetry_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
@@ -242,7 +232,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=True,
         priority_weight=85,
-        dag=dag,
     )
 
     telemetry_derived__events_1pct__v1 = bigquery_etl_query(
@@ -261,7 +250,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-        dag=dag,
     )
 
     telemetry_derived__firefox_desktop_usage__v1 = bigquery_etl_query(
@@ -278,7 +266,6 @@ with DAG(
         ],
         date_partition_parameter=None,
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__main_1pct__v1 = bigquery_etl_query(
@@ -297,7 +284,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-        dag=dag,
     )
 
     telemetry_derived__main_nightly__v1 = bigquery_etl_query(
@@ -316,7 +302,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-        dag=dag,
     )
 
     telemetry_derived__main_summary__v4 = bigquery_etl_query(
@@ -337,7 +322,6 @@ with DAG(
         multipart=True,
         sql_file_path="sql/moz-fx-data-shared-prod/telemetry_derived/main_summary_v4",
         priority_weight=90,
-        dag=dag,
     )
 
     firefox_desktop_exact_mau28_by_client_count_dimensions.set_upstream(

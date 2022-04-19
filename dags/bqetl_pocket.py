@@ -55,7 +55,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        dag=dag,
     )
 
     pocket_derived__rolling_monthly_active_user_counts_history__v1 = gke_command(
@@ -80,7 +79,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        dag=dag,
     )
 
     pocket_derived__spoc_tile_ids_history__v1 = gke_command(
@@ -105,7 +103,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        dag=dag,
     )
 
     pocket_derived__twice_weekly_active_user_counts_history__v1 = gke_command(

@@ -141,6 +141,7 @@ mobile_with_searches AS (
     unioned.submission_date,
     unioned.uri_count,
     unioned.is_default_browser,
+    0 AS attribution,
     search.* EXCEPT (submission_date, client_id),
     NULL AS active_hours_sum
   FROM
@@ -175,6 +176,8 @@ desktop AS (
       scalar_parent_browser_engagement_total_uri_count_sum
     ) AS uri_count,
     is_default_browser,
+    CASE WHEN attribution.source IS NOT NULL THEN 1
+     ELSE 0 END AS attribution,
     ad_clicks_count_all AS ad_clicks,
     search_count_organic AS organic_search_count,
     search_count_all AS search_count,

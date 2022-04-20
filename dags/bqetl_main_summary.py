@@ -29,7 +29,6 @@ default_args = {
         "telemetry-alerts@mozilla.com",
         "dthorn@mozilla.com",
         "jklukas@mozilla.com",
-        "frank@mozilla.com",
     ],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
@@ -56,7 +55,6 @@ with DAG(
         owner="wlachance@mozilla.com",
         email=[
             "dthorn@mozilla.com",
-            "frank@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "wlachance@mozilla.com",
@@ -73,7 +71,6 @@ with DAG(
         owner="jklukas@mozilla.com",
         email=[
             "dthorn@mozilla.com",
-            "frank@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -89,7 +86,6 @@ with DAG(
         owner="dthorn@mozilla.com",
         email=[
             "dthorn@mozilla.com",
-            "frank@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -105,7 +101,6 @@ with DAG(
         owner="jklukas@mozilla.com",
         email=[
             "dthorn@mozilla.com",
-            "frank@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -121,7 +116,6 @@ with DAG(
         owner="dthorn@mozilla.com",
         email=[
             "dthorn@mozilla.com",
-            "frank@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -138,7 +132,6 @@ with DAG(
         owner="jklukas@mozilla.com",
         email=[
             "dthorn@mozilla.com",
-            "frank@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -156,7 +149,6 @@ with DAG(
         owner="jklukas@mozilla.com",
         email=[
             "dthorn@mozilla.com",
-            "frank@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -174,7 +166,6 @@ with DAG(
         owner="jklukas@mozilla.com",
         email=[
             "dthorn@mozilla.com",
-            "frank@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -206,7 +197,6 @@ with DAG(
         owner="jklukas@mozilla.com",
         email=[
             "dthorn@mozilla.com",
-            "frank@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -224,7 +214,6 @@ with DAG(
         owner="jklukas@mozilla.com",
         email=[
             "dthorn@mozilla.com",
-            "frank@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -242,7 +231,6 @@ with DAG(
         owner="jklukas@mozilla.com",
         email=[
             "dthorn@mozilla.com",
-            "frank@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -260,7 +248,6 @@ with DAG(
         owner="jklukas@mozilla.com",
         email=[
             "dthorn@mozilla.com",
-            "frank@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -276,7 +263,6 @@ with DAG(
         owner="jklukas@mozilla.com",
         email=[
             "dthorn@mozilla.com",
-            "frank@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -294,7 +280,6 @@ with DAG(
         owner="jklukas@mozilla.com",
         email=[
             "dthorn@mozilla.com",
-            "frank@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -312,7 +297,6 @@ with DAG(
         owner="dthorn@mozilla.com",
         email=[
             "dthorn@mozilla.com",
-            "frank@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],

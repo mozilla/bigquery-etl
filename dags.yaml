@@ -62,12 +62,10 @@ bqetl_core:
 bqetl_nondesktop:
   schedule_interval: 0 3 * * *
   default_args:
-    owner: mgorlick@mozilla.com
+    owner: "jklukas@mozilla.com"
     start_date: "2019-07-25"
     email: [
       "telemetry-alerts@mozilla.com",
-      "jklukas@mozilla.com",
-      "mgorlick@mozilla.com"
     ]
     retries: 1
     retry_delay: 5m

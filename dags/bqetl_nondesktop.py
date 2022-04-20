@@ -12,19 +12,15 @@ Built from bigquery-etl repo, [`dags/bqetl_nondesktop.py`](https://github.com/mo
 
 #### Owner
 
-mgorlick@mozilla.com
+jklukas@mozilla.com
 """
 
 
 default_args = {
-    "owner": "mgorlick@mozilla.com",
+    "owner": "jklukas@mozilla.com",
     "start_date": datetime.datetime(2019, 7, 25, 0, 0),
     "end_date": None,
-    "email": [
-        "telemetry-alerts@mozilla.com",
-        "jklukas@mozilla.com",
-        "mgorlick@mozilla.com",
-    ],
+    "email": ["telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=300),
     "email_on_failure": True,
@@ -48,11 +44,7 @@ with DAG(
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
-        email=[
-            "jklukas@mozilla.com",
-            "mgorlick@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -74,11 +66,7 @@ with DAG(
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
-        email=[
-            "jklukas@mozilla.com",
-            "mgorlick@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -89,11 +77,7 @@ with DAG(
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
-        email=[
-            "jklukas@mozilla.com",
-            "mgorlick@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
     )

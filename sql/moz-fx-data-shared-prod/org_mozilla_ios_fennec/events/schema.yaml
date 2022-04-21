@@ -353,6 +353,18 @@ fields:
     mode: REPEATED
     name: text
     type: RECORD
+  - fields:
+    - description: 'Counts the number of times a user taps to open an
+
+        existing tab from the History Highlights section
+
+        '
+      mode: NULLABLE
+      name: firefox_home_page_history_highlights_item_opened
+      type: INTEGER
+    mode: NULLABLE
+    name: counter
+    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

@@ -17,7 +17,7 @@
     
     
       
-        <title>Bytes - BigQuery ETL</title>
+        <title>bytes - BigQuery ETL</title>
       
     
     
@@ -67,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#bit_pos_to_byte_pos-udf" class="md-skip">
+        <a href="#bytes" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Bytes
+              bytes
             
           </span>
         </div>
@@ -1661,14 +1661,16 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
+        
+      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Bytes
+          bytes
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Bytes
+        bytes
       </a>
       
         
@@ -1677,12 +1679,21 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#zero_right-udf" class="md-nav__link">
+    zero_right (UDF)
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#bit_pos_to_byte_pos-udf" class="md-nav__link">
@@ -1727,6 +1738,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../glam/" class="md-nav__link">
+        Glam
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../glean/" class="md-nav__link">
         glean
       </a>
@@ -1743,6 +1768,20 @@
     <li class="md-nav__item">
       <a href="../hist/" class="md-nav__link">
         hist
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iap/" class="md-nav__link">
+        iap
       </a>
     </li>
   
@@ -2043,12 +2082,21 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#zero_right-udf" class="md-nav__link">
+    zero_right (UDF)
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#bit_pos_to_byte_pos-udf" class="md-nav__link">
@@ -2078,8 +2126,10 @@
                 
 
 
-  <h1>Bytes</h1>
-
+<h1 id="bytes">bytes</h1>
+<h2 id="zero_right-udf">zero_right (UDF)</h2>
+<p>Zero bits on the right of byte</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bytes/zero_right">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bytes/zero_right/metadata.yaml">Edit</a></p>
 <h2 id="bit_pos_to_byte_pos-udf">bit_pos_to_byte_pos (UDF)</h2>
 <p>Given a bit position, get the byte that bit appears in.
 1-indexed (to match substr), and accepts negative values.</p>

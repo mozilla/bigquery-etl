@@ -289,9 +289,6 @@ DELETE_TARGETS = {
     context_id_target(
         table="contextual_services_stable.quicksuggest_impression_v1"
     ): CONTEXTUAL_SERVICES_SRC,
-    context_id_target(
-        table="contextual_services_derived.suggest_impression_sanitized_v1"
-    ): CONTEXTUAL_SERVICES_SRC,
     # legacy mobile
     DeleteTarget(
         table="telemetry_stable.core_v1",

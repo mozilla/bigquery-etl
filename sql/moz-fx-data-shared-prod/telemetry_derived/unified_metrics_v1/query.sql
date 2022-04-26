@@ -1,4 +1,4 @@
-WITH unioned AS (
+WITH clients_last_seen_unioned AS (
   SELECT
     *,
     'Fenix' AS normalized_app_name
@@ -61,10 +61,17 @@ WITH unioned AS (
   FROM
     telemetry.core_clients_last_seen
   WHERE
-    days_since_seen = 0
+    submission_date = @submission_date
     AND app_name = 'Focus'
     AND os = 'Android'
-    AND submission_date = @submission_date
+),
+unioned AS (
+  SELECT
+    *
+  FROM
+    clients_last_seen_unioned
+  WHERE
+    days_since_seen = 0
 ),
 search_clients AS (
   SELECT

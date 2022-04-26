@@ -72,7 +72,8 @@ unioned AS (
     clients_last_seen_unioned
   WHERE
     days_since_seen = 0
-) search_clients AS (
+),
+search_clients AS (
   SELECT
     *
   FROM

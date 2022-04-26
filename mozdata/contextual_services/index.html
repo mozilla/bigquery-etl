@@ -533,6 +533,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#quicksuggest_block" class="md-nav__link">
+    quicksuggest_block
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#quicksuggest_click" class="md-nav__link">
     quicksuggest_click
   </a>
@@ -2135,6 +2142,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#quicksuggest_block" class="md-nav__link">
+    quicksuggest_block
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#quicksuggest_click" class="md-nav__link">
     quicksuggest_click
   </a>
@@ -2235,6 +2249,32 @@
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/contextual_services/event_aggregates">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/contextual_services/event_aggregates/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/contextual_services/event_aggregates/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="quicksuggest_block"><a href="#quicksuggest_block">quicksuggest_block</a></h2>
+<p><strong>Historical Pings for <code>contextual-services/quicksuggest-block</code></strong></p>
+<p><code>contextual_services.quicksuggest_block</code></p>
+<p>A historical view of pings sent for the
+<code>contextual-services/quicksuggest-block</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/contextual_services_stable>contextual_services_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/contextual_services_stable/quicksuggest_block_v1>quicksuggest_block_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/contextual_services/quicksuggest_block">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/contextual_services/quicksuggest_block/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/contextual_services/quicksuggest_block/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="quicksuggest_click"><a href="#quicksuggest_click">quicksuggest_click</a></h2>
 <p><strong>Historical Pings for <code>contextual-services/quicksuggest-click</code></strong></p>

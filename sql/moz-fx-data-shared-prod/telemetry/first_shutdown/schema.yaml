@@ -19751,6 +19751,26 @@ fields:
       mode: NULLABLE
       name: use_counter2_xsltprocessor_constructor_page
       type: STRING
+    - description: Whether a document used MozPreservesPitchDeprecatedPrefix
+      mode: NULLABLE
+      name: use_counter2_deprecated_moz_preserves_pitch_deprecated_prefix_document
+      type: STRING
+    - description: Whether a page used MozPreservesPitchDeprecatedPrefix
+      mode: NULLABLE
+      name: use_counter2_deprecated_moz_preserves_pitch_deprecated_prefix_page
+      type: STRING
+    - description: Whether a document calls window.open with an empty url argument
+      mode: NULLABLE
+      name: use_counter2_windowopenemptyurl_document
+      type: STRING
+    - description: Whether a page calls window.open with an empty url argument
+      mode: NULLABLE
+      name: use_counter2_windowopenemptyurl_page
+      type: STRING
+    - description: Time taken by WebRender to rasterize a set of glyphs
+      mode: NULLABLE
+      name: wr_rasterize_glyphs_time
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -40791,6 +40811,22 @@ fields:
           mode: NULLABLE
           name: video_dropped_sink_frames_proportion_exponential
           type: STRING
+        - description: Whether a document used MozPreservesPitchDeprecatedPrefix
+          mode: NULLABLE
+          name: use_counter2_deprecated_moz_preserves_pitch_deprecated_prefix_document
+          type: STRING
+        - description: Whether a page used MozPreservesPitchDeprecatedPrefix
+          mode: NULLABLE
+          name: use_counter2_deprecated_moz_preserves_pitch_deprecated_prefix_page
+          type: STRING
+        - description: Whether a document calls window.open with an empty url argument
+          mode: NULLABLE
+          name: use_counter2_windowopenemptyurl_document
+          type: STRING
+        - description: Whether a page calls window.open with an empty url argument
+          mode: NULLABLE
+          name: use_counter2_windowopenemptyurl_page
+          type: STRING
         mode: NULLABLE
         name: histograms
         type: RECORD
@@ -44315,6 +44351,10 @@ fields:
             on the event loop and compositing its result onto the screen (ms)
           mode: NULLABLE
           name: mouseup_followed_by_click_present_latency
+          type: STRING
+        - description: Time taken by WebRender to rasterize a set of glyphs
+          mode: NULLABLE
+          name: wr_rasterize_glyphs_time
           type: STRING
         mode: NULLABLE
         name: histograms

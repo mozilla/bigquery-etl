@@ -97,8 +97,6 @@ search_metrics AS (
   ON
     unioned.client_id = m.client_id
     AND DATE_ADD(unioned.submission_date, INTERVAL 1 DAY) = m.submission_date
-  WHERE
-    days_since_seen = 0
   GROUP BY
     1,
     2

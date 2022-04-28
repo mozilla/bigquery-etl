@@ -33,7 +33,7 @@ WITH base AS (
     COALESCE(client_info.locale, metrics.string.glean_baseline_locale) AS locale,
     metadata.geo.city,
     metadata.geo.country,
-    metadata.isp.`name` AS isp,
+    metadata.isp.name AS isp,
     normalized_channel,
     normalized_os,
     normalized_os_version,

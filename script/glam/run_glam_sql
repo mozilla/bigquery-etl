@@ -2,7 +2,7 @@
 # Run the scalars sql job against all Glean pings in a product. Assumes that
 # generate_fenix_sql has already been run.
 
-set -e
+set -ex
 
 # `date` is not consistent across MacOS and GNU/Linux
 function yesterday {

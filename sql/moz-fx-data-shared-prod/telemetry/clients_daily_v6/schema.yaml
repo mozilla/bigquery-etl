@@ -1645,6 +1645,9 @@ fields:
     name: minor_version
     type: NUMERIC
   - mode: NULLABLE
+    name: patch_revision
+    type: NUMERIC
+  - mode: NULLABLE
     name: is_major_release
     type: BOOLEAN
   mode: NULLABLE

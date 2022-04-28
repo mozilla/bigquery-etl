@@ -970,9 +970,9 @@ sqlparse==0.4.2 \
     --hash=sha256:0c00730c74263a94e5a9919ade150dfc3b19c574389985446148402998287dae \
     --hash=sha256:48719e356bb8b42991bdbb1e8b83223757b93789c00910a616a071910ca4a64d
     # via -r requirements.in
-stripe==2.73.0 \
-    --hash=sha256:679246d663da5fb38494be3c3a82258d476abb84caae67f0ae1f3967cd62d33a \
-    --hash=sha256:6abdaddcd7a9d8b9f43e419e57147248ff2e8f87fb7ba91571417147e0f4f2a8
+stripe==2.74.0 \
+    --hash=sha256:f16e577a3f8b25ac912ba9f1c0f84490d37ff01e7749a168deafc7708ce7a866 \
+    --hash=sha256:fa8ed2b5c241bfda5e8984d606721f9c352aa1d886dec5502416ca04e00b92d0
     # via -r requirements.in
 toml==0.10.2 \
     --hash=sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b \

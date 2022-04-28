@@ -1,7 +1,7 @@
 WITH clients_last_seen_unioned AS (
   SELECT
     *,
-     CAST(NULL AS string) AS distribution_id,
+    CAST(NULL AS string) AS distribution_id,
     'Fenix' AS normalized_app_name
   FROM
     fenix.clients_last_seen_joined

@@ -195,8 +195,8 @@ class Schema:
                             nodes[node_name][node_attr_key] = node_attr_value
                             # Netlify has a problem starting 2022-03-07 where lots of
                             # logging slows down builds to the point where our builds hit
-                            # the time limit and fail, and this print statement accounts
-                            # for 84% of our build logging.
+                            # the time limit and fail (bug 1761292), and this print
+                            # statement accounts for 84% of our build logging.
                             # TODO: Uncomment this print when Netlify fixes the problem.
                             # print(
                             #    f"Attribute {node_attr_key} added to {prefix}.{field_path}"

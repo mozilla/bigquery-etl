@@ -1801,41 +1801,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#fenix_build_to_date-udf" class="md-nav__link">
-    fenix_build_to_date (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#product_info-udf" class="md-nav__link">
-    product_info (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#browser_version_info-udf" class="md-nav__link">
-    browser_version_info (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#os-udf" class="md-nav__link">
-    os (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#extract_version-udf" class="md-nav__link">
-    extract_version (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#glean_ping_info-udf" class="md-nav__link">
     glean_ping_info (UDF)
   </a>
@@ -1873,6 +1838,41 @@
         <li class="md-nav__item">
   <a href="#vpn_attribution-udf" class="md-nav__link">
     vpn_attribution (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fenix_build_to_date-udf" class="md-nav__link">
+    fenix_build_to_date (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#product_info-udf" class="md-nav__link">
+    product_info (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#browser_version_info-udf" class="md-nav__link">
+    browser_version_info (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#os-udf" class="md-nav__link">
+    os (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract_version-udf" class="md-nav__link">
+    extract_version (UDF)
   </a>
   
 </li>
@@ -2148,41 +2148,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#fenix_build_to_date-udf" class="md-nav__link">
-    fenix_build_to_date (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#product_info-udf" class="md-nav__link">
-    product_info (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#browser_version_info-udf" class="md-nav__link">
-    browser_version_info (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#os-udf" class="md-nav__link">
-    os (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#extract_version-udf" class="md-nav__link">
-    extract_version (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#glean_ping_info-udf" class="md-nav__link">
     glean_ping_info (UDF)
   </a>
@@ -2224,6 +2189,41 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#fenix_build_to_date-udf" class="md-nav__link">
+    fenix_build_to_date (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#product_info-udf" class="md-nav__link">
+    product_info (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#browser_version_info-udf" class="md-nav__link">
+    browser_version_info (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#os-udf" class="md-nav__link">
+    os (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract_version-udf" class="md-nav__link">
+    extract_version (UDF)
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2240,6 +2240,37 @@
 
 <h1 id="norm">norm</h1>
 <p>Functions for normalizing data.</p>
+<h2 id="glean_ping_info-udf">glean_ping_info (UDF)</h2>
+<p>Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_ping_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_ping_info/metadata.yaml">Edit</a></p>
+<h2 id="metadata-udf">metadata (UDF)</h2>
+<p>Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/metadata">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/metadata/metadata.yaml">Edit</a></p>
+<h2 id="diff_months-udf">diff_months (UDF)</h2>
+<p>Determine the number of whole months after grace period between start and end. Month is dependent on timezone, so start and end must both be datetimes, or both be dates, in the correct timezone. Grace period can be used to account for billing delay, usually 1 day, and is counted after months. When inclusive is FALSE, start and end are not included in whole months.
+For example, diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-01', grace_period =&gt; INTERVAL 0 day, inclusive =&gt; FALSE) returns 1, because start plus two months plus grace period is not less than end. Changing inclusive to TRUE returns 2, because start plus two months plus grace period is less than or equal to end. diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-02 00:00:00.000001', grace_period =&gt; INTERVAL 1 DAY, inclusive =&gt; FALSE) returns 2, because start plus two months plus grace period is less than end.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/diff_months">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/diff_months/metadata.yaml">Edit</a></p>
+<h2 id="glean_baseline_client_info-udf">glean_baseline_client_info (UDF)</h2>
+<p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_baseline_client_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_baseline_client_info/metadata.yaml">Edit</a></p>
+<h2 id="truncate_version-udf">truncate_version (UDF)</h2>
+<p>Truncates a version string like <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code> to
+either the major or minor version. The return value is <code>NUMERIC</code>,
+which means that you can sort the results without fear (e.g. 100
+will be categorized as greater than 80, which isn't the case when
+sorting lexigraphically).</p>
+<p>For example, "5.1.0" would be translated to <code>5.1</code> if the parameter is
+"minor" or <code>5</code> if the parameter is major.</p>
+<p>If the version is only a major and/or minor version, then it will be left
+unchanged (for example "10" would stay as <code>10</code> when run through this
+function, no matter what the arguments).</p>
+<p>This is useful for grouping Linux and Mac operating system versions inside
+aggregate datasets or queries where there may be many different patch
+releases in the field.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/truncate_version">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/truncate_version/metadata.yaml">Edit</a></p>
+<h2 id="vpn_attribution-udf">vpn_attribution (UDF)</h2>
+<p>Accepts vpn attribution fields as input and returns a struct of normalized fields.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/vpn_attribution">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/vpn_attribution/metadata.yaml">Edit</a></p>
 <h2 id="fenix_build_to_date-udf">fenix_build_to_date (UDF)</h2>
 <p>Convert the Fenix client_info.app_build-format string to
 a DATETIME. May return NULL on failure.</p>
@@ -2607,37 +2638,6 @@ GROUP BY
   geckoview_version
 </code></pre>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/fenix_app_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/fenix_app_info/metadata.yaml">Edit</a></p>
-<h2 id="glean_ping_info-udf">glean_ping_info (UDF)</h2>
-<p>Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_ping_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_ping_info/metadata.yaml">Edit</a></p>
-<h2 id="metadata-udf">metadata (UDF)</h2>
-<p>Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/metadata">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/metadata/metadata.yaml">Edit</a></p>
-<h2 id="diff_months-udf">diff_months (UDF)</h2>
-<p>Determine the number of whole months after grace period between start and end. Month is dependent on timezone, so start and end must both be datetimes, or both be dates, in the correct timezone. Grace period can be used to account for billing delay, usually 1 day, and is counted after months. When inclusive is FALSE, start and end are not included in whole months.
-For example, diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-01', grace_period =&gt; INTERVAL 0 day, inclusive =&gt; FALSE) returns 1, because start plus two months plus grace period is not less than end. Changing inclusive to TRUE returns 2, because start plus two months plus grace period is less than or equal to end. diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-02 00:00:00.000001', grace_period =&gt; INTERVAL 1 DAY, inclusive =&gt; FALSE) returns 2, because start plus two months plus grace period is less than end.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/diff_months">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/diff_months/metadata.yaml">Edit</a></p>
-<h2 id="glean_baseline_client_info-udf">glean_baseline_client_info (UDF)</h2>
-<p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_baseline_client_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_baseline_client_info/metadata.yaml">Edit</a></p>
-<h2 id="truncate_version-udf">truncate_version (UDF)</h2>
-<p>Truncates a version string like <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code> to
-either the major or minor version. The return value is <code>NUMERIC</code>,
-which means that you can sort the results without fear (e.g. 100
-will be categorized as greater than 80, which isn't the case when
-sorting lexigraphically).</p>
-<p>For example, "5.1.0" would be translated to <code>5.1</code> if the parameter is
-"minor" or <code>5</code> if the parameter is major.</p>
-<p>If the version is only a major and/or minor version, then it will be left
-unchanged (for example "10" would stay as <code>10</code> when run through this
-function, no matter what the arguments).</p>
-<p>This is useful for grouping Linux and Mac operating system versions inside
-aggregate datasets or queries where there may be many different patch
-releases in the field.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/truncate_version">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/truncate_version/metadata.yaml">Edit</a></p>
-<h2 id="vpn_attribution-udf">vpn_attribution (UDF)</h2>
-<p>Accepts vpn attribution fields as input and returns a struct of normalized fields.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/vpn_attribution">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/vpn_attribution/metadata.yaml">Edit</a></p>
 
               
             </article>

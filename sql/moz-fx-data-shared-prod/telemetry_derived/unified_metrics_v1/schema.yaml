@@ -51,6 +51,15 @@ fields:
   name: normalized_os_version
   type: STRING
 - mode: NULLABLE
+  name: os_version_major
+  type: INTEGER
+- mode: NULLABLE
+  name: os_version_minor
+  type: INTEGER
+- mode: NULLABLE
+  name: os_version_patch
+  type: INTEGER
+- mode: NULLABLE
   name: durations
   type: NUMERIC
 - mode: NULLABLE
@@ -62,12 +71,6 @@ fields:
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
-- mode: NULLABLE
-  name: os_version_major
-  type: STRING
-- mode: NULLABLE
-  name: os_version_minor
-  type: STRING
 - mode: NULLABLE
   name: distribution_id
   type: STRING

@@ -1,7 +1,7 @@
 WITH clients_last_seen_unioned AS (
   SELECT
     *,
-    CAST(NULL AS string) AS distribution_id,
+     CAST(NULL AS string) AS distribution_id,
     'Fenix' AS normalized_app_name
   FROM
     fenix.clients_last_seen_joined
@@ -150,16 +150,13 @@ mobile_with_searches AS (
     unioned.first_seen_date,
     unioned.normalized_os,
     unioned.normalized_os_version,
+    CAST(SPLIT(normalized_os_version, '.')[SAFE_OFFSET(0)] AS NUMERIC) AS os_version_major,
+    CAST(SPLIT(normalized_os_version, '.')[SAFE_OFFSET(1)] AS NUMERIC) AS os_version_minor,
+    CAST(SPLIT(normalized_os_version, '.')[SAFE_OFFSET(2)] AS NUMERIC) AS os_version_patch,
     unioned.durations,
     unioned.submission_date,
     unioned.uri_count,
     unioned.is_default_browser,
-    SPLIT(unioned.normalized_os_version, '.')[SAFE_OFFSET(0)] AS os_version_major,
-    CONCAT(
-      SPLIT(unioned.normalized_os_version, '.')[SAFE_OFFSET(0)],
-      '.',
-      SPLIT(unioned.normalized_os_version, '.')[SAFE_OFFSET(1)]
-    ) AS os_version_minor,
     unioned.distribution_id AS distribution_id,
     CAST(NULL AS string) AS attribution_content,
     CAST(NULL AS string) AS attribution_source,
@@ -196,6 +193,9 @@ desktop AS (
     first_seen_date,
     os AS normalized_os,
     normalized_os_version,
+    CAST(SPLIT(normalized_os_version, '.')[SAFE_OFFSET(0)] AS NUMERIC) AS os_version_major,
+    CAST(SPLIT(normalized_os_version, '.')[SAFE_OFFSET(1)] AS NUMERIC) AS os_version_minor,
+    CAST(SPLIT(normalized_os_version, '.')[SAFE_OFFSET(2)] AS NUMERIC) AS os_version_patch,
     subsession_hours_sum AS durations,
     submission_date,
     COALESCE(
@@ -203,12 +203,6 @@ desktop AS (
       scalar_parent_browser_engagement_total_uri_count_sum
     ) AS uri_count,
     is_default_browser,
-    SPLIT(normalized_os_version, '.')[SAFE_OFFSET(0)] AS os_version_major,
-    CONCAT(
-      SPLIT(normalized_os_version, '.')[SAFE_OFFSET(0)],
-      '.',
-      SPLIT(normalized_os_version, '.')[SAFE_OFFSET(1)]
-    ) AS os_version_minor,
     distribution_id AS distribution_id,
     attribution.content AS attribution_content,
     attribution.source AS attribution_source,

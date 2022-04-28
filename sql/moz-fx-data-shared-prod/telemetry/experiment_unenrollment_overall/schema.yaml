@@ -9,8 +9,5 @@ fields:
   name: branch
   type: STRING
 - mode: NULLABLE
-  name: event
-  type: STRING
-- mode: NULLABLE
   name: value
   type: INTEGER

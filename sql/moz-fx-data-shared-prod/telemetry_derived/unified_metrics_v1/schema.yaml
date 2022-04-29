@@ -52,13 +52,13 @@ fields:
   type: STRING
 - mode: NULLABLE
   name: os_version_major
-  type: INTEGER
+  type: NUMERIC
 - mode: NULLABLE
   name: os_version_minor
-  type: INTEGER
+  type: NUMERIC
 - mode: NULLABLE
   name: os_version_patch
-  type: INTEGER
+  type: NUMERIC
 - mode: NULLABLE
   name: durations
   type: NUMERIC

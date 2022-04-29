@@ -7,9 +7,20 @@
     <packaging>jar</packaging>
     <version>0.1-SNAPSHOT</version>
 
+    <profiles>
+        <profile>
+            <id>java-8-api</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <properties>
+                <maven.compiler.release>8</maven.compiler.release>
+            </properties>
+        </profile>
+    </profiles>
+
     <properties>
-        <maven.compiler.release>11</maven.compiler.release>
-        <zetasql.version>2022.02.1</zetasql.version>
+        <zetasql.version>2022.04.1</zetasql.version>
     </properties>
 
     <dependencies>
@@ -35,6 +46,11 @@
                     <compilerArgument>-Xlint:all</compilerArgument>
                     <compilerArgument>-Xdoclint:all</compilerArgument>
                     <compilerArgument>-Werror</compilerArgument>
+                    <!-- Java 8 support is maintained for compatibility with Netlify's default JDK.
+                         For JDK 9+ the java-8-api profile is automatically activated, which sets
+                         maven.compiler.release=8, causing source and target to be ignored. -->
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -50,7 +66,7 @@
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <version>[11,)</version>
+                                    <version>[1.8,)</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>

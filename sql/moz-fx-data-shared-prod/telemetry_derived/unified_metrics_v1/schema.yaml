@@ -15,10 +15,16 @@ fields:
   name: app_display_version
   type: STRING
 - mode: NULLABLE
+  name: app_version
+  type: STRING
+- mode: NULLABLE
   name: normalized_channel
   type: STRING
 - mode: NULLABLE
   name: country
+  type: STRING
+- mode: NULLABLE
+  name: city
   type: STRING
 - mode: NULLABLE
   name: days_seen_bits
@@ -42,6 +48,18 @@ fields:
   name: normalized_os
   type: STRING
 - mode: NULLABLE
+  name: normalized_os_version
+  type: STRING
+- mode: NULLABLE
+  name: os_version_major
+  type: INTEGER
+- mode: NULLABLE
+  name: os_version_minor
+  type: INTEGER
+- mode: NULLABLE
+  name: os_version_patch
+  type: INTEGER
+- mode: NULLABLE
   name: durations
   type: NUMERIC
 - mode: NULLABLE
@@ -53,6 +71,27 @@ fields:
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
+- mode: NULLABLE
+  name: distribution_id
+  type: STRING
+- mode: NULLABLE
+  name: attribution_content
+  type: STRING
+- mode: NULLABLE
+  name: attribution_source
+  type: STRING
+- mode: NULLABLE
+  name: attribution_medium
+  type: STRING
+- mode: NULLABLE
+  name: attribution_campaign
+  type: STRING
+- mode: NULLABLE
+  name: attribution_experiment
+  type: STRING
+- mode: NULLABLE
+  name: attribution_variation
+  type: STRING
 - mode: NULLABLE
   name: ad_click
   type: INTEGER
@@ -68,6 +107,3 @@ fields:
 - mode: NULLABLE
   name: active_hours_sum
   type: FLOAT
-- mode: NULLABLE
-  name: normalized_os_version
-  type: STRING

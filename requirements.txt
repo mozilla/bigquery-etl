@@ -987,7 +987,7 @@ six==1.15.0 \
     #   pyjnius
     #   python-dateutil
     #   virtualenv
-smart_open==6.0.0 \
+smart-open==6.0.0 \
     --hash=sha256:94afbd5058a45d4fdc4f859ed158b46054cb5ca1c019d76f6f8a60495f662129 \
     --hash=sha256:d60106b96f0bcaedf5f1cd46ff5524a1c3d02d5653425618bb0fa66e158d22b0
     # via -r requirements.in

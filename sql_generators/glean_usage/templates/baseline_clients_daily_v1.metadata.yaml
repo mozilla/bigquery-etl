@@ -1,6 +1,4 @@
----
-# Generated via bigquery_etl.glean_usage
-
+{{ header_yaml }}
 friendly_name: Baseline Clients Daily
 description: |-
   A daily aggregate of baseline pings per `client_id`.

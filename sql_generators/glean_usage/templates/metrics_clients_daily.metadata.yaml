@@ -1,6 +1,4 @@
----
-# Generated via bigquery_etl.glean_usage
-
+{{ header_yaml }}
 friendly_name: Metrics Clients Daily
 description: |-
   Daily per-client aggregates on top of metrics pings

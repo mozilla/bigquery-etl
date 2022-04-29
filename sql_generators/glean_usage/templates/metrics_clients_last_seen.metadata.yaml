@@ -1,6 +1,4 @@
----
-# Generated via bigquery_etl.glean_usage
-
+{{ header_yaml }}
 friendly_name: Metrics Clients Last Seen
 description: |-
   Window over the previous 28 days of the clients metrics daily table,

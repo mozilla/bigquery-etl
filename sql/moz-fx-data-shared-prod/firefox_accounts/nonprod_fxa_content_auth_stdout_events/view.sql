@@ -105,5 +105,6 @@ SELECT
   JSON_VALUE(event_properties, "$.promotionCode") AS promotion_code,
   JSON_VALUE(event_properties, "$.payment_provider") AS payment_provider,
   JSON_VALUE(event_properties, "$.checkout_type") AS checkout_type,
+  JSON_VALUE(event_properties, "$.source_country") AS source_country,
 FROM
   unioned

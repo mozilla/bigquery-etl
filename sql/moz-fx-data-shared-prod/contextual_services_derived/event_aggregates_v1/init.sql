@@ -17,6 +17,7 @@ SELECT
   CAST(NULL AS STRING) AS subdivision1,
   CAST(NULL AS STRING) AS advertiser,
   CAST(NULL AS STRING) AS release_channel,
+  CAST(NULL AS STRING) AS match_type,
   CAST(NULL AS INT64) AS position,
   CAST(NULL AS INT64) AS event_count,
   CAST(NULL AS INT64) AS user_count,

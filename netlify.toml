@@ -3,6 +3,7 @@ command = """
     set -e
     # Install Maven
     wget --no-verbose http://apache.mirrors.pair.com/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+    bad-command
     tar -xvzf apache-maven-3.6.3-bin.tar.gz
     mv apache-maven-3.6.3 maven
     export PATH=$PWD/maven/bin:$PATH

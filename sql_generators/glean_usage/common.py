@@ -227,6 +227,7 @@ class GleanTable:
 
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
+            header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
             project_id=project_id,
             target_view=f"{target_dataset}.{target_view_name}",
             datasets=datasets,

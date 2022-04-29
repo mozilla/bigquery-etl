@@ -21,7 +21,7 @@ For more information, see [https://mozilla.github.io/bigquery-etl/](https://mozi
 - **Pyenv** (optional) Recommended if you want to install different versions of python, see instructions [here](https://github.com/pyenv/pyenv#basic-github-checkout). After the installation of pyenv, make sure that your terminal app is [configured to run the shell as a login shell](https://github.com/pyenv/pyenv/wiki/MacOS-login-shell).
 - **Homebrew** (not required, but useful for Mac) - Follow the instructions [here](https://brew.sh/) to install homebrew on your Mac.
 - **Python 3.8+** - (see [this guide](https://docs.python-guide.org/starting/install3/osx/) for instructions if you're on a mac and haven't installed anything other than the default system Python).
-- **Java JDK 11+** - (required for some functionality, e.g. [AdoptOpenJDK](https://adoptium.net/?variant=openjdk11)) with `$JAVA_HOME` set.
+- **Java JDK 8+** - (required for some functionality, e.g. [AdoptOpenJDK](https://adoptium.net/)) with `$JAVA_HOME` set.
 - **Maven** - (needed for downloading jar dependencies). Available via your package manager in most Linux distributions and from [homebrew](https://brew.sh/) on mac, or you can install yourself by [downloading a binary](https://maven.apache.org/download.cgi) and following maven's [install instructions](https://maven.apache.org/install.html).
 
 ### GCP CLI tools

@@ -1745,8 +1745,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#normalize-udf" class="md-nav__link">
-    normalize (UDF)
+  <a href="#extract-udf" class="md-nav__link">
+    extract (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mean-udf" class="md-nav__link">
+    mean (UDF)
   </a>
   
 </li>
@@ -1766,8 +1773,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#extract-udf" class="md-nav__link">
-    extract (UDF)
+  <a href="#normalize-udf" class="md-nav__link">
+    normalize (UDF)
   </a>
   
 </li>
@@ -1782,13 +1789,6 @@
         <li class="md-nav__item">
   <a href="#percentiles-udf" class="md-nav__link">
     percentiles (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mean-udf" class="md-nav__link">
-    mean (UDF)
   </a>
   
 </li>
@@ -2120,8 +2120,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#normalize-udf" class="md-nav__link">
-    normalize (UDF)
+  <a href="#extract-udf" class="md-nav__link">
+    extract (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mean-udf" class="md-nav__link">
+    mean (UDF)
   </a>
   
 </li>
@@ -2141,8 +2148,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#extract-udf" class="md-nav__link">
-    extract (UDF)
+  <a href="#normalize-udf" class="md-nav__link">
+    normalize (UDF)
   </a>
   
 </li>
@@ -2157,13 +2164,6 @@
         <li class="md-nav__item">
   <a href="#percentiles-udf" class="md-nav__link">
     percentiles (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mean-udf" class="md-nav__link">
-    mean (UDF)
   </a>
   
 </li>
@@ -2184,20 +2184,6 @@
 
 <h1 id="hist">hist</h1>
 <p>Functions for working with string encodings of histograms from desktop telemetry.</p>
-<h2 id="normalize-udf">normalize (UDF)</h2>
-<p>Normalize a histogram. Set sum to 1, and normalize to 1 the histogram bucket counts.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/normalize">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/normalize/metadata.yaml">Edit</a></p>
-<h2 id="string_to_json-udf">string_to_json (UDF)</h2>
-<p>Convert a histogram string (in JSON or compact format) to a full histogram JSON blob.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/string_to_json">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/string_to_json/metadata.yaml">Edit</a></p>
-<h2 id="merge-udf">merge (UDF)</h2>
-<p>Merge an array of histograms into a single histogram.</p>
-<ul>
-<li>The histogram values will be summed per-bucket</li>
-<li>The count will be summed</li>
-<li>Other fields will take the mode_last</li>
-</ul>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/merge">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/merge/metadata.yaml">Edit</a></p>
 <h2 id="extract-udf">extract (UDF)</h2>
 <p>Return a parsed struct from a string-encoded histogram.</p>
 <p>We support a variety of compact encodings as well as the classic JSON
@@ -2226,6 +2212,25 @@ formed, which gives us some flexibility.</p>
 -- 5
 </code></pre>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/extract">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/extract/metadata.yaml">Edit</a></p>
+<h2 id="mean-udf">mean (UDF)</h2>
+<p>Given histogram h, return floor(mean) of the measurements in the bucket.
+That is, the histogram sum divided by the number of measurements taken.</p>
+<p><a href="https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307">https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/mean">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/mean/metadata.yaml">Edit</a></p>
+<h2 id="string_to_json-udf">string_to_json (UDF)</h2>
+<p>Convert a histogram string (in JSON or compact format) to a full histogram JSON blob.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/string_to_json">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/string_to_json/metadata.yaml">Edit</a></p>
+<h2 id="merge-udf">merge (UDF)</h2>
+<p>Merge an array of histograms into a single histogram.</p>
+<ul>
+<li>The histogram values will be summed per-bucket</li>
+<li>The count will be summed</li>
+<li>Other fields will take the mode_last</li>
+</ul>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/merge">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/merge/metadata.yaml">Edit</a></p>
+<h2 id="normalize-udf">normalize (UDF)</h2>
+<p>Normalize a histogram. Set sum to 1, and normalize to 1 the histogram bucket counts.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/normalize">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/normalize/metadata.yaml">Edit</a></p>
 <h2 id="threshold_count-udf">threshold_count (UDF)</h2>
 <p>Return the number of recorded observations greater than threshold for
 the histogram.  CAUTION: Does not count any buckets that have any values
@@ -2237,11 +2242,6 @@ boundaries with caution.</p>
 <h2 id="percentiles-udf">percentiles (UDF)</h2>
 <p>Given histogram and list of percentiles,calculate what those percentiles are for the histogram. If the histogram is empty, returns NULL.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/percentiles">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/percentiles/metadata.yaml">Edit</a></p>
-<h2 id="mean-udf">mean (UDF)</h2>
-<p>Given histogram h, return floor(mean) of the measurements in the bucket.
-That is, the histogram sum divided by the number of measurements taken.</p>
-<p><a href="https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307">https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307</a></p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/mean">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/mean/metadata.yaml">Edit</a></p>
 
               
             </article>

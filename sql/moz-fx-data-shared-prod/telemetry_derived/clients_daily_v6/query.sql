@@ -512,6 +512,10 @@ clients_summary AS (
         ARRAY_AGG(
           IF(key = 'browser.urlbar.quicksuggest.dataCollection.enabled', value, NULL) IGNORE NULLS
         )[SAFE_OFFSET(0)] AS user_pref_browser_urlbar_quicksuggest_data_collection_enabled,
+        -- New pref for Firefox Suggest introduced in bug 1756917
+        ARRAY_AGG(IF(key = 'browser.urlbar.suggest.bestmatch', value, NULL) IGNORE NULLS)[
+          SAFE_OFFSET(0)
+        ] AS user_pref_browser_urlbar_suggest_bestmatch,
         ARRAY_AGG(IF(key = 'browser.newtabpage.enabled', value, NULL) IGNORE NULLS)[
           SAFE_OFFSET(0)
         ] AS user_pref_browser_newtabpage_enabled,
@@ -1206,6 +1210,9 @@ aggregates AS (
       ORDER BY
         submission_timestamp DESC
     )[OFFSET(0)] AS user_pref_browser_urlbar_quicksuggest_data_collection_enabled,
+    ARRAY_AGG(user_pref_browser_urlbar_suggest_bestmatch ORDER BY submission_timestamp DESC)[
+      OFFSET(0)
+    ] AS user_pref_browser_urlbar_suggest_bestmatch,
   FROM
     clients_summary
   GROUP BY

@@ -12,9 +12,6 @@ fields:
   name: normalized_app_name
   type: STRING
 - mode: NULLABLE
-  name: app_display_version
-  type: STRING
-- mode: NULLABLE
   name: app_version
   type: STRING
 - mode: NULLABLE
@@ -44,6 +41,9 @@ fields:
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
+- mode: NULLABLE
+  name: days_since_seen
+  type: INTEGER
 - mode: NULLABLE
   name: normalized_os
   type: STRING

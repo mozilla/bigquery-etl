@@ -69,14 +69,6 @@ WITH clients_last_seen_unioned AS (
     AND app_name = 'Focus'
     AND os = 'Android'
 ),
-unioned AS (
-  SELECT
-    *
-  FROM
-    clients_last_seen_unioned
-  WHERE
-    days_since_seen = 0
-),
 search_clients AS (
   SELECT
     *
@@ -95,7 +87,7 @@ search_metrics AS (
     SUM(search_count) AS search_count,
     SUM(search_with_ads) AS search_with_ads,
   FROM
-    unioned
+    clients_last_seen_unioned AS unioned
   LEFT JOIN
     search_clients m
   ON
@@ -137,8 +129,7 @@ mobile_with_searches AS (
     END
     AS activity_segment,
     unioned.normalized_app_name,
-    unioned.app_display_version,
-    CAST(NULL AS string) AS app_version,
+    unioned.app_display_version AS app_version,
     unioned.normalized_channel,
     unioned.country,
     unioned.city,
@@ -167,7 +158,7 @@ mobile_with_searches AS (
     search.* EXCEPT (submission_date, client_id),
     NULL AS active_hours_sum
   FROM
-    unioned
+    clients_last_seen_unioned AS unioned
   LEFT JOIN
     search_metrics search
   ON
@@ -180,7 +171,6 @@ desktop AS (
     sample_id,
     activity_segments_v1 AS activity_segment,
     'Firefox Desktop' AS normalized_app_name,
-    app_display_version,
     app_version AS app_version,
     normalized_channel,
     country,
@@ -191,6 +181,7 @@ desktop AS (
     submission_date = first_seen_date AS is_new_profile,
     locale,
     first_seen_date,
+    days_since_seen,
     os AS normalized_os,
     normalized_os_version,
     CAST(SPLIT(normalized_os_version, '.')[SAFE_OFFSET(0)] AS NUMERIC) AS os_version_major,
@@ -218,7 +209,6 @@ desktop AS (
   FROM
     telemetry.clients_last_seen
   WHERE
-    days_since_seen = 0
     AND submission_date = @submission_date
 )
 SELECT

@@ -5,7 +5,9 @@
 # schema updates with downstream detection is insufficient to cross the per-addId to per-app boundary.
 # As such, it's practical to run a custom script instead to inject the schema of affected tables.
 
-# See PR X for context.
+# For context, see:
+# https://github.com/mozilla/bigquery-etl/pull/2928
+# https://bugzilla.mozilla.org/show_bug.cgi?id=1757216
 
 
 # This script assumes that the following has been run locally:

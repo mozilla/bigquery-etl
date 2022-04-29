@@ -51,7 +51,7 @@ venv/bin/pre-commit install
 ```bash
 mvn package
 # specify `<(echo mozilla-bigquery-etl)` to retain bqetl from `./bqetl bootstrap`
-venv/bin/pip-sync --pip-args=--no-deps requirements.txt java-requirements.txt <(echo mozilla-bigquery-etl)
+venv/bin/pip-sync --pip-args=--no-deps requirements.txt <(echo mozilla-bigquery-etl)
 ```
 
 Finally, if you are using Visual Studio Code, you may also wish to use our recommended defaults:

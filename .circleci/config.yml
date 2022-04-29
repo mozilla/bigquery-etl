@@ -85,10 +85,7 @@ jobs:
           command: |
             pip install pip-tools --constraint requirements.in
             pip-compile --quiet --allow-unsafe --generate-hashes
-            pip-compile --quiet --allow-unsafe --generate-hashes \
-              java-requirements.in
-            git diff --exit-code -G '^ *[^# ]' -- requirements.txt \
-              java-requirements.txt
+            git diff --exit-code -G '^ *[^# ]' -- requirements.txt
   test-sql:
     docker: *docker
     steps:
@@ -176,8 +173,7 @@ jobs:
             apt update
             apt install -y maven default-jdk-headless
             mvn package
-            venv/bin/pip-sync --pip-args=--no-deps requirements.txt \
-              java-requirements.txt
+            venv/bin/pip-sync --pip-args=--no-deps requirements.txt
       - run:
           name: PyTest Integration Test
           # Google's client libraries will check for
@@ -499,7 +495,6 @@ jobs:
 
             cd bigquery-etl-main
             pip install --no-deps -r requirements.txt
-            pip install --no-deps -r java-requirements.txt
             mvn package
             ./script/bqetl generate all \
               --target-project moz-fx-data-shared-prod

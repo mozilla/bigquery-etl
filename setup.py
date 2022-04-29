@@ -16,7 +16,9 @@ setup(
     author_email="fx-data-dev@mozilla.org",
     description="Tooling for building derived datasets in BigQuery",
     url="https://github.com/mozilla/bigquery-etl",
-    packages=find_namespace_packages(include=["bigquery_etl.*", "bigquery_etl", "sql_generators", "sql_generators.*"]),
+    packages=find_namespace_packages(
+        include=["bigquery_etl.*", "bigquery_etl", "sql_generators", "sql_generators.*"]
+    ),
     package_data={
         "bigquery_etl": [
             "query_scheduling/templates/*.j2",
@@ -24,9 +26,7 @@ setup(
             "stripe/*.json",
             "stripe/*.yaml",
         ],
-        "sql_generators": [
-            "*/templates/*"
-        ]
+        "sql_generators": ["*/templates/*"],
     },
     include_package_data=True,
     install_requires=[
@@ -56,7 +56,6 @@ setup(
         "stripe",
         "authlib",
     ],
-    extras_require={"java": ["pyjnius"]},
     long_description="Tooling for building derived datasets in BigQuery",
     long_description_content_type="text/markdown",
     python_requires=">=3.8",

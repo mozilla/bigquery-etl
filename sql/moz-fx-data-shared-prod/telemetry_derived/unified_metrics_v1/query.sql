@@ -1,6 +1,7 @@
 WITH clients_last_seen_unioned AS (
   SELECT
     *,
+    CAST(NULL AS string) AS distribution_id,
     'Fenix' AS normalized_app_name
   FROM
     fenix.clients_last_seen_joined
@@ -9,6 +10,7 @@ WITH clients_last_seen_unioned AS (
   UNION ALL
   SELECT
     *,
+    CAST(NULL AS string) AS distribution_id,
     'Firefox iOS' AS normalized_app_name
   FROM
     firefox_ios.clients_last_seen_joined
@@ -17,6 +19,7 @@ WITH clients_last_seen_unioned AS (
   UNION ALL
   SELECT
     *,
+    CAST(NULL AS string) AS distribution_id,
     'Focus iOS' AS normalized_app_name
   FROM
     focus_ios.clients_last_seen_joined
@@ -57,6 +60,7 @@ WITH clients_last_seen_unioned AS (
     NULL AS days_sent_metrics_ping_bits,
     NULL AS uri_count,
     default_browser AS is_default_browser,
+    distribution_id AS distribution_id,
     'Focus Android' AS normalized_app_name
   FROM
     telemetry.core_clients_last_seen
@@ -134,8 +138,10 @@ mobile_with_searches AS (
     AS activity_segment,
     unioned.normalized_app_name,
     unioned.app_display_version,
+    CAST(NULL AS string) AS app_version,
     unioned.normalized_channel,
     unioned.country,
+    unioned.city,
     unioned.days_seen_bits,
     DATE_DIFF(unioned.submission_date, unioned.first_seen_date, DAY) AS days_since_first_seen,
     unioned.device_model,
@@ -144,10 +150,20 @@ mobile_with_searches AS (
     unioned.first_seen_date,
     unioned.normalized_os,
     unioned.normalized_os_version,
+    CAST(SPLIT(normalized_os_version, '.')[SAFE_OFFSET(0)] AS NUMERIC) AS os_version_major,
+    CAST(SPLIT(normalized_os_version, '.')[SAFE_OFFSET(1)] AS NUMERIC) AS os_version_minor,
+    CAST(SPLIT(normalized_os_version, '.')[SAFE_OFFSET(2)] AS NUMERIC) AS os_version_patch,
     unioned.durations,
     unioned.submission_date,
     unioned.uri_count,
     unioned.is_default_browser,
+    unioned.distribution_id AS distribution_id,
+    CAST(NULL AS string) AS attribution_content,
+    CAST(NULL AS string) AS attribution_source,
+    CAST(NULL AS string) AS attribution_medium,
+    CAST(NULL AS string) AS attribution_campaign,
+    CAST(NULL AS string) AS attribution_experiment,
+    CAST(NULL AS string) AS attribution_variation,
     search.* EXCEPT (submission_date, client_id),
     NULL AS active_hours_sum
   FROM
@@ -165,8 +181,10 @@ desktop AS (
     activity_segments_v1 AS activity_segment,
     'Firefox Desktop' AS normalized_app_name,
     app_display_version,
+    app_version AS app_version,
     normalized_channel,
     country,
+    city,
     days_visited_1_uri_bits AS days_seen_bits,
     days_since_first_seen,
     CAST(NULL AS string) AS device_model,
@@ -175,6 +193,9 @@ desktop AS (
     first_seen_date,
     os AS normalized_os,
     normalized_os_version,
+    CAST(SPLIT(normalized_os_version, '.')[SAFE_OFFSET(0)] AS NUMERIC) AS os_version_major,
+    CAST(SPLIT(normalized_os_version, '.')[SAFE_OFFSET(1)] AS NUMERIC) AS os_version_minor,
+    CAST(SPLIT(normalized_os_version, '.')[SAFE_OFFSET(2)] AS NUMERIC) AS os_version_patch,
     subsession_hours_sum AS durations,
     submission_date,
     COALESCE(
@@ -182,6 +203,13 @@ desktop AS (
       scalar_parent_browser_engagement_total_uri_count_sum
     ) AS uri_count,
     is_default_browser,
+    distribution_id AS distribution_id,
+    attribution.content AS attribution_content,
+    attribution.source AS attribution_source,
+    attribution.medium AS attribution_medium,
+    attribution.campaign AS attribution_campaign,
+    attribution.experiment AS attribution_experiment,
+    attribution.variation AS attribution_variation,
     ad_clicks_count_all AS ad_clicks,
     search_count_organic AS organic_search_count,
     search_count_all AS search_count,

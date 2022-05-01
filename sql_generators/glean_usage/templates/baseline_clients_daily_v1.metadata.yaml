@@ -8,3 +8,12 @@ description: |-
   See also: `baseline_clients_last_seen`
 owners:
   - jklukas@mozilla.com
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: true
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id

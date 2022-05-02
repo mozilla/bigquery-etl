@@ -92,3 +92,6 @@ fields:
 - mode: NULLABLE
   name: days_sent_metrics_ping_bits
   type: INTEGER
+- mode: NULLABLE
+  name: isp
+  type: STRING

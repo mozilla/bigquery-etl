@@ -98,3 +98,6 @@ fields:
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
+- mode: NULLABLE
+  name: isp
+  type: STRING

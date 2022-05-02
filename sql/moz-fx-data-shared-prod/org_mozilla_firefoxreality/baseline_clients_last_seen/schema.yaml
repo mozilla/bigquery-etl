@@ -86,3 +86,6 @@ fields:
 - mode: NULLABLE
   name: is_new_profile
   type: BOOLEAN
+- mode: NULLABLE
+  name: isp
+  type: STRING

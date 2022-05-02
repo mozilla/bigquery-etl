@@ -19771,6 +19771,22 @@ fields:
       mode: NULLABLE
       name: wr_rasterize_glyphs_time
       type: STRING
+    - description: Whether any kind of H264 is enabled
+      mode: NULLABLE
+      name: webrtc_h264_enabled
+      type: STRING
+    - description: Whether software H264 is enabled
+      mode: NULLABLE
+      name: webrtc_hardware_h264_enabled
+      type: STRING
+    - description: Whether the user has H264 hardware
+      mode: NULLABLE
+      name: webrtc_has_h264_hardware
+      type: STRING
+    - description: Whether hardware H264 is enabled
+      mode: NULLABLE
+      name: webrtc_software_h264_enabled
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -40826,6 +40842,22 @@ fields:
         - description: Whether a page calls window.open with an empty url argument
           mode: NULLABLE
           name: use_counter2_windowopenemptyurl_page
+          type: STRING
+        - description: Whether any kind of H264 is enabled
+          mode: NULLABLE
+          name: webrtc_h264_enabled
+          type: STRING
+        - description: Whether software H264 is enabled
+          mode: NULLABLE
+          name: webrtc_hardware_h264_enabled
+          type: STRING
+        - description: Whether the user has H264 hardware
+          mode: NULLABLE
+          name: webrtc_has_h264_hardware
+          type: STRING
+        - description: Whether hardware H264 is enabled
+          mode: NULLABLE
+          name: webrtc_software_h264_enabled
           type: STRING
         mode: NULLABLE
         name: histograms

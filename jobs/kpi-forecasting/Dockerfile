@@ -12,8 +12,6 @@ RUN groupadd --gid ${USER_ID} ${GROUP_ID} && \
 
 WORKDIR ${HOME}
 
-RUN curl -sSL https://sdk.cloud.google.com | bash
-
 RUN apt install gcc
 RUN apt install g++
 

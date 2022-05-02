@@ -61,7 +61,8 @@ WITH clients_last_seen_unioned AS (
     NULL AS uri_count,
     default_browser AS is_default_browser,
     distribution_id AS distribution_id,
-    'Focus Android' AS normalized_app_name
+    'Focus Android' AS normalized_app_name,
+    NULL AS isp
   FROM
     telemetry.core_clients_last_seen
   WHERE

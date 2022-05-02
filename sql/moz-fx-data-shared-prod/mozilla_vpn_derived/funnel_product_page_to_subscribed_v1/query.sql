@@ -1,4 +1,3 @@
--- this will be updated once the service parameter get passed for "fxa_rp_button - view"
 WITH stripe_plans AS (
   SELECT
     id AS plan_id,
@@ -14,9 +13,16 @@ WITH stripe_plans AS (
   FROM
     `moz-fx-data-bq-fivetran`.stripe.plan
 ),
+events AS (
+  SELECT
+    *,
+    DATE(`timestamp`) AS partition_date,
+  FROM
+    mozdata.firefox_accounts.fxa_content_auth_stdout_events
+),
 flows AS (
   SELECT
-    DATE(`timestamp`) AS partition_date,
+    partition_date,
     flow_id,
     ARRAY_AGG(country IGNORE NULLS ORDER BY `timestamp` LIMIT 1)[SAFE_OFFSET(0)] AS country,
     ARRAY_AGG(
@@ -107,15 +113,46 @@ flows AS (
     LOGICAL_OR(event_type = "fxa_subscribe_coupon - fail") AS subscribe_coupon_fail,
     LOGICAL_OR(event_type = "fxa_subscribe_coupon - success") AS subscribe_coupon_success,
   FROM
-    mozdata.firefox_accounts.fxa_content_auth_stdout_events
+    events
   WHERE
-    IF(@date IS NULL, DATE(`timestamp`) < CURRENT_DATE, DATE(`timestamp`) = @date)
+    IF(
+      @date IS NULL,
+      -- The fully FxA-based funnel for VPN was enabled on 2021-08-25.
+      (partition_date >= "2021-08-25" AND partition_date < CURRENT_DATE),
+      partition_date = @date
+    )
+    AND flow_id IS NOT NULL
   GROUP BY
     partition_date,
     flow_id
   HAVING
     -- NOTE: flows near date boundaries may not meet this condition for all dates
-    LOGICAL_OR(service = "guardian-vpn")
+    LOGICAL_OR(
+      service = "guardian-vpn"
+      -- In the past the FxA payment server didn't set the service based on the VPN OAuth client ID,
+      -- and for a while Bedrock incorrectly passed "guardian-vpn" as the OAuth client ID.
+      OR oauth_client_id IN ("e6eb0d1e856335fc", "guardian-vpn")
+      OR (
+        -- Service attribution was implemented for VPN FxA links on 2021-12-08.
+        event_type = "fxa_rp_button - view"
+        AND service IS NULL
+        AND partition_date <= "2021-12-08"
+        AND (
+          events.entrypoint LIKE "www.mozilla.org-vpn-%"
+          -- Include campaigns that promoted VPN prior to service attribution for VPN FxA links.
+          OR events.utm_campaign LIKE '%vpn%'
+          OR REGEXP_CONTAINS(events.utm_campaign, r"^welcome(-page)?(9|10|11)")
+          OR REGEXP_CONTAINS(events.utm_campaign, r"^whatsnew(82|84|85|88|90|92|93)")
+          -- The www.mozilla.org navbar CTA button was changed to link to VPN for Firefox users
+          -- on 2021-09-02, and attribution was implemented for it on 2021-09-15.
+          OR (
+            events.utm_source = "www.mozilla.org"
+            AND events.utm_campaign = "navigation"
+            AND partition_date >= "2021-09-15"
+          )
+        )
+      )
+    )
 ),
 flow_counts AS (
   SELECT

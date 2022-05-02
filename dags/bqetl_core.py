@@ -51,7 +51,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         priority_weight=75,
-        dag=dag,
     )
 
     telemetry_derived__core_clients_last_seen__v1 = bigquery_etl_query(
@@ -64,7 +63,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=True,
         priority_weight=70,
-        dag=dag,
     )
 
     wait_for_copy_deduplicate_all = ExternalTaskCompletedSensor(

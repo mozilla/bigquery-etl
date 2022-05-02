@@ -51,7 +51,6 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     search_derived__desktop_search_aggregates_for_searchreport__v1 = bigquery_etl_query(
@@ -67,7 +66,6 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     search_derived__mobile_search_aggregates_for_searchreport__v1 = bigquery_etl_query(
@@ -84,7 +82,6 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskCompletedSensor(

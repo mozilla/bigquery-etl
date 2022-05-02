@@ -53,7 +53,6 @@ with DAG(
         + ["--project_id=moz-fx-data-test-project"]
         + ["--parameter=submission_date:DATE:{{ds}}"],
         image=docker_image,
-        dag=dag,
     )
 
     wait_for_test__non_incremental_query__v1 = ExternalTaskCompletedSensor(
@@ -74,7 +73,6 @@ with DAG(
         task_id="public_data_gcs_metadata",
         command=["script/publish_public_data_gcs_metadata"],
         docker_image=docker_image,
-        dag=dag,
     )
 
     public_data_gcs_metadata.set_upstream(

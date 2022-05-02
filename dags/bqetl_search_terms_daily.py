@@ -67,7 +67,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-        dag=dag,
     )
 
     search_terms_derived__aggregated_search_terms_daily__v1 = bigquery_etl_query(
@@ -83,7 +82,6 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     search_terms_derived__suggest_impression_sanitized__v1 = bigquery_etl_query(
@@ -100,7 +98,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-        dag=dag,
     )
 
     search_terms_derived__suggest_impression_sanitized__v2 = bigquery_etl_query(
@@ -117,7 +114,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-        dag=dag,
     )
 
     search_terms_derived__adm_weekly_aggregates__v1.set_upstream(

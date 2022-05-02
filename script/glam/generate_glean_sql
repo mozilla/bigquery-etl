@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 function write_scalars {
     local product=$1

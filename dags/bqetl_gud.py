@@ -50,7 +50,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__smoot_usage_desktop_compressed__v2 = bigquery_etl_query(
@@ -62,7 +61,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__smoot_usage_fxa__v2 = bigquery_etl_query(
@@ -74,7 +72,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__smoot_usage_fxa_compressed__v2 = bigquery_etl_query(
@@ -86,7 +83,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__smoot_usage_new_profiles__v2 = bigquery_etl_query(
@@ -98,7 +94,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__smoot_usage_new_profiles_compressed__v2 = bigquery_etl_query(
@@ -110,7 +105,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__smoot_usage_nondesktop__v2 = bigquery_etl_query(
@@ -122,7 +116,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__smoot_usage_nondesktop_compressed__v2 = bigquery_etl_query(
@@ -134,7 +127,6 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskCompletedSensor(

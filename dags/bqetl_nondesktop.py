@@ -12,19 +12,15 @@ Built from bigquery-etl repo, [`dags/bqetl_nondesktop.py`](https://github.com/mo
 
 #### Owner
 
-mgorlick@mozilla.com
+jklukas@mozilla.com
 """
 
 
 default_args = {
-    "owner": "mgorlick@mozilla.com",
+    "owner": "jklukas@mozilla.com",
     "start_date": datetime.datetime(2019, 7, 25, 0, 0),
     "end_date": None,
-    "email": [
-        "telemetry-alerts@mozilla.com",
-        "jklukas@mozilla.com",
-        "mgorlick@mozilla.com",
-    ],
+    "email": ["telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=300),
     "email_on_failure": True,
@@ -48,14 +44,9 @@ with DAG(
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
-        email=[
-            "jklukas@mozilla.com",
-            "mgorlick@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__firefox_nondesktop_day_2_7_activation__v1 = bigquery_etl_query(
@@ -67,7 +58,6 @@ with DAG(
         email=["gkaberere@mozilla.com", "jklukas@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__firefox_nondesktop_exact_mau28__v1 = bigquery_etl_query(
@@ -76,14 +66,9 @@ with DAG(
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
-        email=[
-            "jklukas@mozilla.com",
-            "mgorlick@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__mobile_usage__v1 = bigquery_etl_query(
@@ -92,14 +77,9 @@ with DAG(
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
-        email=[
-            "jklukas@mozilla.com",
-            "mgorlick@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        dag=dag,
     )
 
     wait_for_telemetry_derived__core_clients_last_seen__v1 = (

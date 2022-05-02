@@ -59,7 +59,6 @@ with DAG(
         + ["--dataset_id=telemetry_derived"]
         + ["--project_id=moz-fx-data-shared-prod"],
         image=docker_image,
-        dag=dag,
     )
 
     export_public_data_json_mozregression_aggregates__v1 = GKEPodOperator(
@@ -74,7 +73,6 @@ with DAG(
         + ["--project_id=moz-fx-data-shared-prod"]
         + ["--parameter=submission_date:DATE:{{ds}}"],
         image=docker_image,
-        dag=dag,
     )
 
     export_public_data_json_telemetry_derived__ssl_ratios__v1 = GKEPodOperator(
@@ -89,7 +87,6 @@ with DAG(
         + ["--project_id=moz-fx-data-shared-prod"]
         + ["--parameter=submission_date:DATE:{{ds}}"],
         image=docker_image,
-        dag=dag,
     )
 
     wait_for_client_probe_processes__v1 = ExternalTaskCompletedSensor(
@@ -141,7 +138,6 @@ with DAG(
         task_id="public_data_gcs_metadata",
         command=["script/publish_public_data_gcs_metadata"],
         docker_image=docker_image,
-        dag=dag,
     )
 
     public_data_gcs_metadata.set_upstream(

@@ -58,7 +58,6 @@ with DAG(
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     cjms_bigquery__refunds__v1 = bigquery_etl_query(
@@ -71,7 +70,6 @@ with DAG(
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        dag=dag,
     )
 
     cjms_bigquery__subscriptions__v1 = bigquery_etl_query(
@@ -84,7 +82,6 @@ with DAG(
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        dag=dag,
     )
 
     mozilla_vpn_derived__active_subscription_ids__v1 = bigquery_etl_query(
@@ -98,7 +95,6 @@ with DAG(
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
         sql_file_path="sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscription_ids_v1/query.sql",
-        dag=dag,
     )
 
     mozilla_vpn_derived__active_subscriptions__v1 = bigquery_etl_query(
@@ -112,7 +108,6 @@ with DAG(
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
         sql_file_path="sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscriptions_v1/query.sql",
-        dag=dag,
     )
 
     mozilla_vpn_derived__add_device_events__v1 = bigquery_etl_query(
@@ -124,7 +119,6 @@ with DAG(
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     mozilla_vpn_derived__all_subscriptions__v1 = bigquery_etl_query(
@@ -136,7 +130,6 @@ with DAG(
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        dag=dag,
     )
 
     mozilla_vpn_derived__channel_group_proportions__v1 = bigquery_etl_query(
@@ -150,7 +143,6 @@ with DAG(
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
         sql_file_path="sql/moz-fx-data-shared-prod/mozilla_vpn_derived/channel_group_proportions_v1/query.sql",
-        dag=dag,
     )
 
     mozilla_vpn_derived__devices__v1 = bigquery_etl_query(
@@ -162,7 +154,6 @@ with DAG(
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        dag=dag,
     )
 
     mozilla_vpn_derived__exchange_rates__v1 = gke_command(
@@ -206,7 +197,6 @@ with DAG(
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        dag=dag,
     )
 
     mozilla_vpn_derived__funnel_product_page_to_subscribed__v1 = bigquery_etl_query(
@@ -218,7 +208,6 @@ with DAG(
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="date",
         depends_on_past=False,
-        dag=dag,
     )
 
     mozilla_vpn_derived__fxa_attribution__v1 = bigquery_etl_query(
@@ -231,7 +220,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["date:DATE:{{ds}}"],
-        dag=dag,
     )
 
     mozilla_vpn_derived__login_flows__v1 = bigquery_etl_query(
@@ -244,7 +232,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["date:DATE:{{ds}}"],
-        dag=dag,
     )
 
     mozilla_vpn_derived__protected__v1 = bigquery_etl_query(
@@ -257,7 +244,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["date:DATE:{{ds}}"],
-        dag=dag,
     )
 
     mozilla_vpn_derived__subscription_events__v1 = bigquery_etl_query(
@@ -271,7 +257,6 @@ with DAG(
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
         sql_file_path="sql/moz-fx-data-shared-prod/mozilla_vpn_derived/subscription_events_v1/query.sql",
-        dag=dag,
     )
 
     mozilla_vpn_derived__subscriptions__v1 = bigquery_etl_query(
@@ -283,7 +268,6 @@ with DAG(
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        dag=dag,
     )
 
     mozilla_vpn_derived__survey_cancellation_of_service__v1 = gke_command(
@@ -414,7 +398,6 @@ with DAG(
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        dag=dag,
     )
 
     mozilla_vpn_derived__vat_rates__v1 = gke_command(
@@ -443,7 +426,6 @@ with DAG(
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        dag=dag,
     )
 
     mozilla_vpn_external__devices__v1 = bigquery_etl_query(
@@ -458,7 +440,6 @@ with DAG(
         parameters=[
             "external_database_query:STRING:SELECT * FROM devices WHERE DATE(updated_at) = DATE '{{ds}}'"
         ],
-        dag=dag,
     )
 
     mozilla_vpn_external__subscriptions__v1 = bigquery_etl_query(
@@ -473,7 +454,6 @@ with DAG(
         parameters=[
             "external_database_query:STRING:SELECT * FROM subscriptions WHERE DATE(updated_at) = DATE '{{ds}}'"
         ],
-        dag=dag,
     )
 
     mozilla_vpn_external__users__v1 = bigquery_etl_query(
@@ -488,7 +468,6 @@ with DAG(
         parameters=[
             "external_database_query:STRING:SELECT * FROM users WHERE DATE(updated_at) = DATE '{{ds}}'"
         ],
-        dag=dag,
     )
 
     mozilla_vpn_external__waitlist__v1 = bigquery_etl_query(
@@ -503,219 +482,6 @@ with DAG(
         parameters=[
             "external_database_query:STRING:SELECT * FROM vpn_waitlist WHERE DATE(updated_at) = DATE '{{ds}}'"
         ],
-        dag=dag,
-    )
-
-    stripe_derived__customers__v1 = bigquery_etl_query(
-        task_id="stripe_derived__customers__v1",
-        destination_table="customers_v1",
-        dataset_id="stripe_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        dag=dag,
-    )
-
-    stripe_derived__nonprod_customers__v1 = bigquery_etl_query(
-        task_id="stripe_derived__nonprod_customers__v1",
-        destination_table="nonprod_customers_v1",
-        dataset_id="stripe_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        dag=dag,
-    )
-
-    stripe_derived__nonprod_plans__v1 = bigquery_etl_query(
-        task_id="stripe_derived__nonprod_plans__v1",
-        destination_table="nonprod_plans_v1",
-        dataset_id="stripe_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        dag=dag,
-    )
-
-    stripe_derived__nonprod_products__v1 = bigquery_etl_query(
-        task_id="stripe_derived__nonprod_products__v1",
-        destination_table="nonprod_products_v1",
-        dataset_id="stripe_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        dag=dag,
-    )
-
-    stripe_derived__nonprod_subscriptions__v1 = bigquery_etl_query(
-        task_id="stripe_derived__nonprod_subscriptions__v1",
-        destination_table="nonprod_subscriptions_v1",
-        dataset_id="stripe_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        dag=dag,
-    )
-
-    stripe_derived__plans__v1 = bigquery_etl_query(
-        task_id="stripe_derived__plans__v1",
-        destination_table="plans_v1",
-        dataset_id="stripe_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        dag=dag,
-    )
-
-    stripe_derived__products__v1 = bigquery_etl_query(
-        task_id="stripe_derived__products__v1",
-        destination_table="products_v1",
-        dataset_id="stripe_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        dag=dag,
-    )
-
-    stripe_derived__subscriptions__v1 = bigquery_etl_query(
-        task_id="stripe_derived__subscriptions__v1",
-        destination_table="subscriptions_v1",
-        dataset_id="stripe_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        dag=dag,
-    )
-
-    stripe_external__charges__v1 = bigquery_etl_query(
-        task_id="stripe_external__charges__v1",
-        destination_table="charges_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    stripe_external__credit_notes__v1 = bigquery_etl_query(
-        task_id="stripe_external__credit_notes__v1",
-        destination_table="credit_notes_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    stripe_external__customers__v1 = bigquery_etl_query(
-        task_id="stripe_external__customers__v1",
-        destination_table="customers_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    stripe_external__discounts__v1 = bigquery_etl_query(
-        task_id="stripe_external__discounts__v1",
-        destination_table="discounts_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    stripe_external__disputes__v1 = bigquery_etl_query(
-        task_id="stripe_external__disputes__v1",
-        destination_table="disputes_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    stripe_external__events__v1 = gke_command(
-        task_id="stripe_external__events__v1",
-        command=[
-            "python",
-            "sql/moz-fx-data-shared-prod/stripe_external/events_v1/query.py",
-        ]
-        + [
-            "--date={{ ds }}",
-            "--api-key={{ var.value.stripe_api_key }}",
-            "--resource=Event",
-            "--table=moz-fx-data-shared-prod.stripe_external.events_v1",
-        ],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        retry_delay=datetime.timedelta(seconds=300),
-    )
-
-    stripe_external__events_schema_check__v1 = gke_command(
-        task_id="stripe_external__events_schema_check__v1",
-        command=[
-            "python",
-            "sql/moz-fx-data-shared-prod/stripe_external/events_schema_check_v1/query.py",
-        ]
-        + [
-            "--date={{ ds }}",
-            "--api-key={{ var.value.stripe_api_key }}",
-            "--resource=Event",
-            "--format-resources",
-            "--strict-schema",
-            "--quiet",
-        ],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        retry_delay=datetime.timedelta(seconds=300),
-    )
-
-    stripe_external__invoices__v1 = bigquery_etl_query(
-        task_id="stripe_external__invoices__v1",
-        destination_table="invoices_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
     )
 
     stripe_external__itemized_payout_reconciliation__v5 = gke_command(
@@ -737,233 +503,6 @@ with DAG(
         retry_delay=datetime.timedelta(seconds=1800),
         retries=47,
         email_on_retry=False,
-    )
-
-    stripe_external__nonprod_charges__v1 = bigquery_etl_query(
-        task_id="stripe_external__nonprod_charges__v1",
-        destination_table="nonprod_charges_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    stripe_external__nonprod_customers__v1 = bigquery_etl_query(
-        task_id="stripe_external__nonprod_customers__v1",
-        destination_table="nonprod_customers_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    stripe_external__nonprod_discounts__v1 = bigquery_etl_query(
-        task_id="stripe_external__nonprod_discounts__v1",
-        destination_table="nonprod_discounts_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    stripe_external__nonprod_events__v1 = gke_command(
-        task_id="stripe_external__nonprod_events__v1",
-        command=[
-            "python",
-            "sql/moz-fx-data-shared-prod/stripe_external/nonprod_events_v1/query.py",
-        ]
-        + [
-            "--date={{ ds }}",
-            "--api-key={{ var.value.nonprod_stripe_api_key }}",
-            "--resource=Event",
-            "--table=moz-fx-data-shared-prod.stripe_external.nonprod_events_v1",
-            "--allow-empty",
-        ],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        retry_delay=datetime.timedelta(seconds=300),
-    )
-
-    stripe_external__nonprod_invoices__v1 = bigquery_etl_query(
-        task_id="stripe_external__nonprod_invoices__v1",
-        destination_table="nonprod_invoices_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    stripe_external__nonprod_plans__v1 = bigquery_etl_query(
-        task_id="stripe_external__nonprod_plans__v1",
-        destination_table="nonprod_plans_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    stripe_external__nonprod_products__v1 = bigquery_etl_query(
-        task_id="stripe_external__nonprod_products__v1",
-        destination_table="nonprod_products_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    stripe_external__nonprod_promotion_codes__v1 = bigquery_etl_query(
-        task_id="stripe_external__nonprod_promotion_codes__v1",
-        destination_table="nonprod_promotion_codes_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    stripe_external__nonprod_subscriptions__v1 = bigquery_etl_query(
-        task_id="stripe_external__nonprod_subscriptions__v1",
-        destination_table="nonprod_subscriptions_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    stripe_external__payment_intents__v1 = bigquery_etl_query(
-        task_id="stripe_external__payment_intents__v1",
-        destination_table="payment_intents_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    stripe_external__payouts__v1 = bigquery_etl_query(
-        task_id="stripe_external__payouts__v1",
-        destination_table="payouts_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    stripe_external__plans__v1 = bigquery_etl_query(
-        task_id="stripe_external__plans__v1",
-        destination_table="plans_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    stripe_external__prices__v1 = bigquery_etl_query(
-        task_id="stripe_external__prices__v1",
-        destination_table="prices_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    stripe_external__products__v1 = bigquery_etl_query(
-        task_id="stripe_external__products__v1",
-        destination_table="products_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    stripe_external__promotion_codes__v1 = bigquery_etl_query(
-        task_id="stripe_external__promotion_codes__v1",
-        destination_table="promotion_codes_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    stripe_external__setup_intents__v1 = bigquery_etl_query(
-        task_id="stripe_external__setup_intents__v1",
-        destination_table="setup_intents_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    stripe_external__subscriptions__v1 = bigquery_etl_query(
-        task_id="stripe_external__subscriptions__v1",
-        destination_table="subscriptions_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        dag=dag,
     )
 
     wait_for_firefox_accounts_derived__fxa_auth_events__v1 = (
@@ -1131,83 +670,3 @@ with DAG(
     mozilla_vpn_derived__users__v1.set_upstream(mozilla_vpn_external__users__v1)
 
     mozilla_vpn_derived__waitlist__v1.set_upstream(mozilla_vpn_external__waitlist__v1)
-
-    stripe_derived__customers__v1.set_upstream(stripe_external__customers__v1)
-
-    stripe_derived__nonprod_customers__v1.set_upstream(
-        stripe_external__nonprod_customers__v1
-    )
-
-    stripe_derived__nonprod_plans__v1.set_upstream(stripe_external__nonprod_plans__v1)
-
-    stripe_derived__nonprod_products__v1.set_upstream(
-        stripe_external__nonprod_products__v1
-    )
-
-    stripe_derived__nonprod_subscriptions__v1.set_upstream(
-        stripe_external__nonprod_subscriptions__v1
-    )
-
-    stripe_derived__plans__v1.set_upstream(stripe_external__plans__v1)
-
-    stripe_derived__products__v1.set_upstream(stripe_external__products__v1)
-
-    stripe_derived__subscriptions__v1.set_upstream(stripe_external__subscriptions__v1)
-
-    stripe_external__charges__v1.set_upstream(stripe_external__events__v1)
-
-    stripe_external__credit_notes__v1.set_upstream(stripe_external__events__v1)
-
-    stripe_external__customers__v1.set_upstream(stripe_external__events__v1)
-
-    stripe_external__discounts__v1.set_upstream(stripe_external__events__v1)
-
-    stripe_external__disputes__v1.set_upstream(stripe_external__events__v1)
-
-    stripe_external__invoices__v1.set_upstream(stripe_external__events__v1)
-
-    stripe_external__nonprod_charges__v1.set_upstream(
-        stripe_external__nonprod_events__v1
-    )
-
-    stripe_external__nonprod_customers__v1.set_upstream(
-        stripe_external__nonprod_events__v1
-    )
-
-    stripe_external__nonprod_discounts__v1.set_upstream(
-        stripe_external__nonprod_events__v1
-    )
-
-    stripe_external__nonprod_invoices__v1.set_upstream(
-        stripe_external__nonprod_events__v1
-    )
-
-    stripe_external__nonprod_plans__v1.set_upstream(stripe_external__nonprod_events__v1)
-
-    stripe_external__nonprod_products__v1.set_upstream(
-        stripe_external__nonprod_events__v1
-    )
-
-    stripe_external__nonprod_promotion_codes__v1.set_upstream(
-        stripe_external__nonprod_events__v1
-    )
-
-    stripe_external__nonprod_subscriptions__v1.set_upstream(
-        stripe_external__nonprod_events__v1
-    )
-
-    stripe_external__payment_intents__v1.set_upstream(stripe_external__events__v1)
-
-    stripe_external__payouts__v1.set_upstream(stripe_external__events__v1)
-
-    stripe_external__plans__v1.set_upstream(stripe_external__events__v1)
-
-    stripe_external__prices__v1.set_upstream(stripe_external__events__v1)
-
-    stripe_external__products__v1.set_upstream(stripe_external__events__v1)
-
-    stripe_external__promotion_codes__v1.set_upstream(stripe_external__events__v1)
-
-    stripe_external__setup_intents__v1.set_upstream(stripe_external__events__v1)
-
-    stripe_external__subscriptions__v1.set_upstream(stripe_external__events__v1)

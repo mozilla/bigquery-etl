@@ -48,7 +48,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        dag=dag,
     )
 
     fenix_derived__event_types_history__v1 = bigquery_etl_query(
@@ -60,7 +59,6 @@ with DAG(
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
-        dag=dag,
     )
 
     fenix_derived__events_daily__v1 = bigquery_etl_query(
@@ -72,7 +70,6 @@ with DAG(
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     fenix_derived__event_types__v1.set_upstream(fenix_derived__event_types_history__v1)

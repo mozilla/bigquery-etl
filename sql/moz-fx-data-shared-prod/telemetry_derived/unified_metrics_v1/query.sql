@@ -139,11 +139,39 @@ mobile_with_searches AS (
     unioned.is_new_profile,
     unioned.locale,
     unioned.first_seen_date,
+    unioned.days_since_seen,
     unioned.normalized_os,
     unioned.normalized_os_version,
-    CAST(SPLIT(normalized_os_version, '.')[SAFE_OFFSET(0)] AS NUMERIC) AS os_version_major,
-    CAST(SPLIT(normalized_os_version, '.')[SAFE_OFFSET(1)] AS NUMERIC) AS os_version_minor,
-    CAST(SPLIT(normalized_os_version, '.')[SAFE_OFFSET(2)] AS NUMERIC) AS os_version_patch,
+    CASE
+      SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(0)]
+    WHEN
+      ''
+    THEN
+      0
+    ELSE
+      CAST(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(0)] AS NUMERIC)
+    END
+    AS os_version_major,
+    CASE
+      SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(1)]
+    WHEN
+      ''
+    THEN
+      0
+    ELSE
+      CAST(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(1)] AS NUMERIC)
+    END
+    AS os_version_minor,
+    CASE
+      SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(2)]
+    WHEN
+      ''
+    THEN
+      0
+    ELSE
+      CAST(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(2)] AS NUMERIC)
+    END
+    AS os_version_patch,
     unioned.durations,
     unioned.submission_date,
     unioned.uri_count,
@@ -184,9 +212,36 @@ desktop AS (
     days_since_seen,
     os AS normalized_os,
     normalized_os_version,
-    CAST(SPLIT(normalized_os_version, '.')[SAFE_OFFSET(0)] AS NUMERIC) AS os_version_major,
-    CAST(SPLIT(normalized_os_version, '.')[SAFE_OFFSET(1)] AS NUMERIC) AS os_version_minor,
-    CAST(SPLIT(normalized_os_version, '.')[SAFE_OFFSET(2)] AS NUMERIC) AS os_version_patch,
+    CASE
+      SPLIT(normalized_os_version, ".")[SAFE_OFFSET(0)]
+    WHEN
+      ''
+    THEN
+      0
+    ELSE
+      CAST(SPLIT(normalized_os_version, ".")[SAFE_OFFSET(0)] AS NUMERIC)
+    END
+    AS os_version_major,
+    CASE
+      SPLIT(normalized_os_version, ".")[SAFE_OFFSET(1)]
+    WHEN
+      ''
+    THEN
+      0
+    ELSE
+      CAST(SPLIT(normalized_os_version, ".")[SAFE_OFFSET(1)] AS NUMERIC)
+    END
+    AS os_version_minor,
+    CASE
+      SPLIT(normalized_os_version, ".")[SAFE_OFFSET(2)]
+    WHEN
+      ''
+    THEN
+      0
+    ELSE
+      CAST(SPLIT(normalized_os_version, ".")[SAFE_OFFSET(2)] AS NUMERIC)
+    END
+    AS os_version_patch,
     subsession_hours_sum AS durations,
     submission_date,
     COALESCE(
@@ -209,7 +264,7 @@ desktop AS (
   FROM
     telemetry.clients_last_seen
   WHERE
-    AND submission_date = @submission_date
+    submission_date = @submission_date
 )
 SELECT
   *

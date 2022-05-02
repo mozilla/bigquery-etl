@@ -107,3 +107,6 @@ fields:
 - mode: NULLABLE
   name: active_hours_sum
   type: FLOAT
+- mode: NULLABLE
+  name: app_display_version
+  type: STRING

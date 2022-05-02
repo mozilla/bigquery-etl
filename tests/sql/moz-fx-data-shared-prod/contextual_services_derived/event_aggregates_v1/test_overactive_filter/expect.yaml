@@ -9,7 +9,6 @@
   subdivision1: AZ
   advertiser: ad1
   release_channel: release
-  match_type: "firefox-suggest"
   position: 1
   event_count: 52
   user_count: 2
@@ -22,6 +21,7 @@
 - <<: *base
   source: suggest
   event_type: click
+  match_type: "firefox-suggest"
   event_count: 1
   user_count: 1
 - <<: *base

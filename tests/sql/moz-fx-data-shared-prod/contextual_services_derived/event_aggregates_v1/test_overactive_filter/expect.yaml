@@ -16,6 +16,7 @@
   source: topsites
   provider: contile
   event_type: impression
+  match_type: ""
   event_count: 52
   user_count: 2
 - <<: *base
@@ -28,6 +29,7 @@
   source: topsites
   provider: contile
   event_type: click
+  match_type: ""
   event_count: 1
   user_count: 1
 - &base_mobile

@@ -1,4 +1,4 @@
-WITH clients_last_seen_unioned AS (
+WITH unioned AS (
   SELECT
     *,
     CAST(NULL AS string) AS distribution_id,
@@ -88,7 +88,7 @@ search_metrics AS (
     SUM(search_count) AS search_count,
     SUM(search_with_ads) AS search_with_ads,
   FROM
-    clients_last_seen_unioned AS unioned
+    unioned
   LEFT JOIN
     search_clients m
   ON
@@ -169,7 +169,7 @@ mobile_with_searches AS (
     search.* EXCEPT (submission_date, client_id),
     NULL AS active_hours_sum
   FROM
-    clients_last_seen_unioned AS unioned
+    unioned
   LEFT JOIN
     search_metrics search
   ON

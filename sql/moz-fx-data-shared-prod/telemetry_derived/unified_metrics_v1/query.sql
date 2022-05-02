@@ -150,36 +150,9 @@ mobile_with_searches AS (
     unioned.first_seen_date,
     unioned.normalized_os,
     unioned.normalized_os_version,
-    CASE
-      SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(0)]
-    WHEN
-      ''
-    THEN
-      0
-    ELSE
-      CAST(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(0)] AS INTEGER)
-    END
-    AS os_version_major,
-    CASE
-      SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(1)]
-    WHEN
-      ''
-    THEN
-      0
-    ELSE
-      CAST(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(1)] AS INTEGER)
-    END
-    AS os_version_minor,
-    CASE
-      SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(2)]
-    WHEN
-      ''
-    THEN
-      0
-    ELSE
-      CAST(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(2)] AS INTEGER)
-    END
-    AS os_version_patch,
+    COALESCE(CAST(NULLIF(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(0)], "") AS INTEGER), 0) AS os_version_major,
+    COALESCE(CAST(NULLIF(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(1)], "") AS INTEGER), 0) AS os_version_minor,
+    COALESCE(CAST(NULLIF(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(2)], "") AS INTEGER), 0) AS os_version_patch,
     unioned.durations,
     unioned.submission_date,
     unioned.uri_count,
@@ -220,36 +193,9 @@ desktop AS (
     first_seen_date,
     os AS normalized_os,
     normalized_os_version,
-    CASE
-      SPLIT(normalized_os_version, ".")[SAFE_OFFSET(0)]
-    WHEN
-      ''
-    THEN
-      0
-    ELSE
-      CAST(SPLIT(normalized_os_version, ".")[SAFE_OFFSET(0)] AS INTEGER)
-    END
-    AS os_version_major,
-    CASE
-      SPLIT(normalized_os_version, ".")[SAFE_OFFSET(1)]
-    WHEN
-      ''
-    THEN
-      0
-    ELSE
-      CAST(SPLIT(normalized_os_version, ".")[SAFE_OFFSET(1)] AS INTEGER)
-    END
-    AS os_version_minor,
-    CASE
-      SPLIT(normalized_os_version, ".")[SAFE_OFFSET(2)]
-    WHEN
-      ''
-    THEN
-      0
-    ELSE
-      CAST(SPLIT(normalized_os_version, ".")[SAFE_OFFSET(2)] AS INTEGER)
-    END
-    AS os_version_patch,
+    COALESCE(CAST(NULLIF(SPLIT(normalized_os_version, ".")[SAFE_OFFSET(0)], "") AS INTEGER), 0) AS os_version_major,
+    COALESCE(CAST(NULLIF(SPLIT(normalized_os_version, ".")[SAFE_OFFSET(1)], "") AS INTEGER), 0) AS os_version_minor,
+    COALESCE(CAST(NULLIF(SPLIT(normalized_os_version, ".")[SAFE_OFFSET(2)], "") AS INTEGER), 0) AS os_version_patch,
     subsession_hours_sum AS durations,
     submission_date,
     COALESCE(

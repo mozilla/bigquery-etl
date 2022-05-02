@@ -26,8 +26,7 @@ tables_to_modify() {
         | sed 's,./sql/\(.*\)/\(.*\)/\(.*\)/query.sql,\1:\2.\3,'
 }
 
-#for t in $(tables_to_modify)
-for t in mozdata:tmp.klukas_isp_test1
+for t in $(tables_to_modify)
 do
     echo "Processing $t"
 

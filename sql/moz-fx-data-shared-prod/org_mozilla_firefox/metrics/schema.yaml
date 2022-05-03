@@ -581,9 +581,12 @@ fields:
       mode: NULLABLE
       name: events_total_uri_count
       type: INTEGER
-    - description: 'The number of tasks queued in the pre-initialization buffer.
+    - description: 'The number of tasks that overflowed the pre-initialization buffer.
 
-        Only sent if the buffer overflows.
+        Only sent if the buffer ever overflows.
+
+
+        In Version 0 this reported the total number of tasks enqueued.
 
         '
       mode: NULLABLE

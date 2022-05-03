@@ -12,9 +12,6 @@ fields:
   name: normalized_app_name
   type: STRING
 - mode: NULLABLE
-  name: app_display_version
-  type: STRING
-- mode: NULLABLE
   name: normalized_channel
   type: STRING
 - mode: NULLABLE
@@ -107,3 +104,6 @@ fields:
 - mode: NULLABLE
   name: attribution_variation
   type: STRING
+- mode: NULLABLE
+  name: days_since_seen
+  type: INTEGER

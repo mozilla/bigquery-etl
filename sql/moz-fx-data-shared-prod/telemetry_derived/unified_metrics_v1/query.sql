@@ -1,4 +1,4 @@
-WITH clients_last_seen_unioned AS (
+WITH unioned AS (
   SELECT
     *,
     CAST(NULL AS string) AS distribution_id,
@@ -61,21 +61,14 @@ WITH clients_last_seen_unioned AS (
     NULL AS uri_count,
     default_browser AS is_default_browser,
     distribution_id AS distribution_id,
-    'Focus Android' AS normalized_app_name
+    'Focus Android' AS normalized_app_name,
+    NULL AS isp
   FROM
     telemetry.core_clients_last_seen
   WHERE
     submission_date = @submission_date
     AND app_name = 'Focus'
     AND os = 'Android'
-),
-unioned AS (
-  SELECT
-    *
-  FROM
-    clients_last_seen_unioned
-  WHERE
-    days_since_seen = 0
 ),
 search_clients AS (
   SELECT
@@ -137,8 +130,7 @@ mobile_with_searches AS (
     END
     AS activity_segment,
     unioned.normalized_app_name,
-    unioned.app_display_version,
-    CAST(NULL AS string) AS app_version,
+    unioned.app_display_version AS app_version,
     unioned.normalized_channel,
     unioned.country,
     unioned.city,
@@ -148,6 +140,7 @@ mobile_with_searches AS (
     unioned.is_new_profile,
     unioned.locale,
     unioned.first_seen_date,
+    unioned.days_since_seen,
     unioned.normalized_os,
     unioned.normalized_os_version,
     COALESCE(
@@ -189,7 +182,6 @@ desktop AS (
     sample_id,
     activity_segments_v1 AS activity_segment,
     'Firefox Desktop' AS normalized_app_name,
-    app_display_version,
     app_version AS app_version,
     normalized_channel,
     country,
@@ -200,6 +192,7 @@ desktop AS (
     submission_date = first_seen_date AS is_new_profile,
     locale,
     first_seen_date,
+    days_since_seen,
     os AS normalized_os,
     normalized_os_version,
     COALESCE(
@@ -236,8 +229,7 @@ desktop AS (
   FROM
     telemetry.clients_last_seen
   WHERE
-    days_since_seen = 0
-    AND submission_date = @submission_date
+    submission_date = @submission_date
 )
 SELECT
   *

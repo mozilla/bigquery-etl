@@ -90,30 +90,30 @@ SELECT
 Adding a new field to a table schema also means that the field has to propagate to several downstream tables, which makes it a more complex case.
 
 1. Open the query.sql file inside the `<dataset>.<table>` location and add the new field definitions.
-2. Run `./bqetl query validate <dataset>.<table>` to dry run and format the query.
-3. Run `./bqetl query schema update <dataset>.<table> --update_downstream` to make local schema.yaml updates and update schemas of downstream dependencies.
+1. Run `./bqetl query validate <dataset>.<table>` to dry run and format the query.
+1. Run `./bqetl query schema update <dataset>.<table> --update_downstream` to make local schema.yaml updates and update schemas of downstream dependencies.
    * [x] This requires [GCP access](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#bigquery-access-request).
    * [x] Note that schema.yaml files of downstream dependencies will be automatically updated.
-4. Open a new PR with these changes.
-5. The dry-run-sql task is expected to fail at this point due to mismatch with deployed schemas!
-6. PR reviewed and approved.
-7. Deploy schema changes by running: `./bqetl query schema deploy <dataset>.<table>;`
-8. Rerun the CI pipeline in the PR.
+1. Open a new PR with these changes.
+1. The dry-run-sql task is expected to fail at this point due to mismatch with deployed schemas!
+1. PR reviewed and approved.
+1. Deploy schema changes by running: `./bqetl query schema deploy <dataset>.<table>;`
+1. Rerun the CI pipeline in the PR.
    *[x] Make sure all dry runs are successful.
-9. Merge pull-request.
+1. Merge pull-request.
 
 The following is an example to update a new field in telemetry_derived.clients_daily_v6
 
 ### Example: Add a new field to clients_daily
 
 1. Open the `clients_daily_v6` `query.sql` file and add new field definitions.
-2. Run `./bqetl query validate telemetry_derived.clients_daily_v6`.
-3. Run `./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream`.
+1. Run `./bqetl query validate telemetry_derived.clients_daily_v6`.
+1. Run `./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream`.
     *[x] `schema.yaml` files of downstream dependencies, like `clients_last_seen_v1` are updated.
-4. Open a PR with these changes.
+1. Open a PR with these changes.
     * [x] The `dry-run-sql` task fails.
-5. PR is reviewed and approved.
-6. Deploy schema changes by running:
+1. PR is reviewed and approved.
+1. Deploy schema changes by running:
    ```
    ./bqetl query schema deploy telemetry_derived.clients_daily_v6;
    ./bqetl query schema deploy telemetry_derived.clients_daily_joined_v1;
@@ -121,9 +121,9 @@ The following is an example to update a new field in telemetry_derived.clients_d
    ./bqetl query schema deploy telemetry_derived.clients_last_seen_joined_v1;
    ./bqetl query schema deploy --force telemetry_derived.clients_first_seen_v1;
    ```
-7. Rerun CI pipeline
+1. Rerun CI pipeline
    *[x] All tests pass
-9. Merge pull-request.
+1. Merge pull-request.
 
 ## Remove a field from a table schema
 

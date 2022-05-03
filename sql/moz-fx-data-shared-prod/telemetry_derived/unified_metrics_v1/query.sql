@@ -1,4 +1,4 @@
-WITH unioned_including_browserstack AS (
+WITH unioned_source AS (
   SELECT
     *,
     CAST(NULL AS string) AS distribution_id,
@@ -84,7 +84,7 @@ unioned AS (
       ) AS normalized_app_name
     )
   FROM
-    unioned_including_browserstack
+    unioned_source
 ),
 search_clients AS (
   SELECT

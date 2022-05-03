@@ -89,8 +89,9 @@ SELECT
 ## Add a new field to a table schema
 Adding a new field to a table schema also means that the field has to propagate to several downstream tables, which makes it a more complex case.
 
-1. Open the query.sql file inside the `<dataset>.<table>` location and add the new field definitions.
-1. Run `./bqetl query validate <dataset>.<table>` to dry run and format the query.
+1. Open the `query.sql` file inside the `<dataset>.<table>` location and add the new definitions for the field.
+1. Run `./bqetl format <path to the query>` to format the query. Alternatively, run `./bqetl format $(git ls-tree -d HEAD --name-only)` validate the format of all queries that have been modified.
+1. Run `./bqetl query validate <dataset>.<table>` to dry run the query.
 1. Run `./bqetl query schema update <dataset>.<table> --update_downstream` to make local schema.yaml updates and update schemas of downstream dependencies.
    * [x] This requires [GCP access](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#bigquery-access-request).
    * [x] Note that schema.yaml files of downstream dependencies will be automatically updated.
@@ -99,7 +100,7 @@ Adding a new field to a table schema also means that the field has to propagate 
 1. PR reviewed and approved.
 1. Deploy schema changes by running: `./bqetl query schema deploy <dataset>.<table>;`
 1. Rerun the CI pipeline in the PR.
-   *[x] Make sure all dry runs are successful.
+   * [x] Make sure all dry runs are successful.
 1. Merge pull-request.
 
 The following is an example to update a new field in telemetry_derived.clients_daily_v6
@@ -107,9 +108,10 @@ The following is an example to update a new field in telemetry_derived.clients_d
 ### Example: Add a new field to clients_daily
 
 1. Open the `clients_daily_v6` `query.sql` file and add new field definitions.
+1. Run `./bqetl format sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/query.sql`
 1. Run `./bqetl query validate telemetry_derived.clients_daily_v6`.
 1. Run `./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream`.
-    *[x] `schema.yaml` files of downstream dependencies, like `clients_last_seen_v1` are updated.
+    * [x] `schema.yaml` files of downstream dependencies, like `clients_last_seen_v1` are updated.
 1. Open a PR with these changes.
     * [x] The `dry-run-sql` task fails.
 1. PR is reviewed and approved.
@@ -122,12 +124,14 @@ The following is an example to update a new field in telemetry_derived.clients_d
    ./bqetl query schema deploy --force telemetry_derived.clients_first_seen_v1;
    ```
 1. Rerun CI pipeline
-   *[x] All tests pass
+   * [x] All tests pass
 1. Merge pull-request.
 
 ## Remove a field from a table schema
 
-* Follow [Big Query docs](https://cloud.google.com/bigquery/docs/managing-table-schemas#deleting_columns_from_a_tables_schema_definition) in case a field needs to be deleted from a table.
+Deleting a field from an existing table schema should be done only when is totally neccessary. If you decide to delete it:
+* [x] Validate if there is data in the column and make sure data it is either backed up or it can be reprocessed.
+* Follow [Big Query docs](https://cloud.google.com/bigquery/docs/managing-table-schemas#deleting_columns_from_a_tables_schema_definition) recommendations for deleting.
 * If the column size exceeds the allowed limit, consider setting the field as NULL. See this [search_clients_daily_v8](https://github.com/mozilla/bigquery-etl/pull/2463) PR for an example.
 
 ## Adding a new mozfun UDF

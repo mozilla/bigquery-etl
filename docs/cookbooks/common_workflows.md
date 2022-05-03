@@ -99,11 +99,11 @@ Adding a new field to a table schema also means that the field has to propagate 
 1. The dry-run-sql task is expected to fail at this point due to mismatch with deployed schemas!
 1. PR reviewed and approved.
 1. Deploy schema changes by running: `./bqetl query schema deploy <dataset>.<table>;`
-1. Rerun the CI pipeline in the PR.
+1. Find and run again the [CI pipeline](https://app.circleci.com/pipelines/github/mozilla/bigquery-etl?) for the PR.
    * [x] Make sure all dry runs are successful.
 1. Merge pull-request.
 
-The following is an example to update a new field in telemetry_derived.clients_daily_v6
+The following is an example to update a new field in `telemetry_derived.clients_daily_v6`
 
 ### Example: Add a new field to clients_daily
 

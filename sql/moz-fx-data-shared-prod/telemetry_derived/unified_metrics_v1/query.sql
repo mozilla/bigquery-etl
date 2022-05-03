@@ -1,10 +1,8 @@
-WITH unioned AS (
+WITH unioned_including_browserstack AS (
   SELECT
     *,
     CAST(NULL AS string) AS distribution_id,
-    -- Per bug 1757216 we need to exclude BrowserStack clients from KPIs,
-    -- so we mark them with a separate app name here.
-    IF(isp = 'BrowserStack', 'Fenix BrowserStack', 'Fenix') AS normalized_app_name
+    'Fenix' AS normalized_app_name
   FROM
     fenix.clients_last_seen_joined
   WHERE
@@ -71,6 +69,22 @@ WITH unioned AS (
     submission_date = @submission_date
     AND app_name = 'Focus'
     AND os = 'Android'
+),
+unioned AS (
+  SELECT
+    * REPLACE (
+      -- Per bug 1757216 we need to exclude BrowserStack clients from KPIs,
+      -- so we mark them with a separate app name here. We expect BrowserStack
+      -- clients only on release channel of Fenix, so the only variant this is
+      -- expected to produce is 'Fenix BrowserStack'
+      IF(
+        isp = 'BrowserStack',
+        CONCAT(normalized_app_name, ' BrowserStack'),
+        normalized_app_name
+      ) AS normalized_app_name
+    )
+  FROM
+    unioned_including_browserstack
 ),
 search_clients AS (
   SELECT

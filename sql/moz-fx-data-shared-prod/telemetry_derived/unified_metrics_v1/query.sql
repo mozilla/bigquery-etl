@@ -2,7 +2,9 @@ WITH unioned AS (
   SELECT
     *,
     CAST(NULL AS string) AS distribution_id,
-    'Fenix' AS normalized_app_name
+    -- Per bug 1757216 we need to exclude BrowserStack clients from KPIs,
+    -- so we mark them with a separate app name here.
+    IF(isp = 'BrowserStack', 'Fenix BrowserStack', 'Fenix') AS normalized_app_name
   FROM
     fenix.clients_last_seen_joined
   WHERE

@@ -1857,6 +1857,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#vpn_attribution-udf" class="md-nav__link">
+    vpn_attribution (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#glean_baseline_client_info-udf" class="md-nav__link">
     glean_baseline_client_info (UDF)
   </a>
@@ -1866,13 +1873,6 @@
         <li class="md-nav__item">
   <a href="#truncate_version-udf" class="md-nav__link">
     truncate_version (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#vpn_attribution-udf" class="md-nav__link">
-    vpn_attribution (UDF)
   </a>
   
 </li>
@@ -2204,6 +2204,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#vpn_attribution-udf" class="md-nav__link">
+    vpn_attribution (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#glean_baseline_client_info-udf" class="md-nav__link">
     glean_baseline_client_info (UDF)
   </a>
@@ -2213,13 +2220,6 @@
         <li class="md-nav__item">
   <a href="#truncate_version-udf" class="md-nav__link">
     truncate_version (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#vpn_attribution-udf" class="md-nav__link">
-    vpn_attribution (UDF)
   </a>
   
 </li>
@@ -2617,6 +2617,9 @@ GROUP BY
 <p>Determine the number of whole months after grace period between start and end. Month is dependent on timezone, so start and end must both be datetimes, or both be dates, in the correct timezone. Grace period can be used to account for billing delay, usually 1 day, and is counted after months. When inclusive is FALSE, start and end are not included in whole months.
 For example, diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-01', grace_period =&gt; INTERVAL 0 day, inclusive =&gt; FALSE) returns 1, because start plus two months plus grace period is not less than end. Changing inclusive to TRUE returns 2, because start plus two months plus grace period is less than or equal to end. diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-02 00:00:00.000001', grace_period =&gt; INTERVAL 1 DAY, inclusive =&gt; FALSE) returns 2, because start plus two months plus grace period is less than end.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/diff_months">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/diff_months/metadata.yaml">Edit</a></p>
+<h2 id="vpn_attribution-udf">vpn_attribution (UDF)</h2>
+<p>Accepts vpn attribution fields as input and returns a struct of normalized fields.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/vpn_attribution">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/vpn_attribution/metadata.yaml">Edit</a></p>
 <h2 id="glean_baseline_client_info-udf">glean_baseline_client_info (UDF)</h2>
 <p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_baseline_client_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_baseline_client_info/metadata.yaml">Edit</a></p>
@@ -2635,9 +2638,6 @@ function, no matter what the arguments).</p>
 aggregate datasets or queries where there may be many different patch
 releases in the field.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/truncate_version">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/truncate_version/metadata.yaml">Edit</a></p>
-<h2 id="vpn_attribution-udf">vpn_attribution (UDF)</h2>
-<p>Accepts vpn attribution fields as input and returns a struct of normalized fields.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/vpn_attribution">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/vpn_attribution/metadata.yaml">Edit</a></p>
 
               
             </article>

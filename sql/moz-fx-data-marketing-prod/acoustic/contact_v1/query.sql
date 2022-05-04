@@ -38,16 +38,14 @@ SELECT
   CAST(COALESCE(CAST(sub_about_mozilla AS INTEGER), 0) AS BOOLEAN) AS sub_about_mozilla,
   CAST(COALESCE(CAST(sub_apps_and_hacks AS INTEGER), 0) AS BOOLEAN) AS sub_apps_and_hacks,
   CAST(COALESCE(CAST(sub_rally AS INTEGER), 0) AS BOOLEAN) AS sub_rally,
-  CAST(
-    COALESCE(CAST(NULLIF(sub_firefox_sweepstakes, '') AS INTEGER), 0) AS BOOLEAN
-  ) AS sub_firefox_sweepstakes,
+  CAST(COALESCE(CAST(sub_firefox_sweepstakes AS INTEGER), 0) AS BOOLEAN) AS sub_firefox_sweepstakes,
   LOWER(NULLIF(vpn_waitlist_geo, '')) AS vpn_waitlist_geo,
   SPLIT(NULLIF(vpn_waitlist_platform, ''), ",") AS vpn_waitlist_platform,
-  LOWER(NULLIF(relay_waitlist_geo, '')),
+  LOWER(NULLIF(relay_waitlist_geo, '')) AS relay_waitlist_geo,
   RECIPIENT_ID AS recipient_id,
   mozfun.datetime_util.fxa_parse_date(create_timestamp) AS date_created,
   last_modified_date,
 FROM
-  `moz-fx-data-marketing-prod.acoustic.contact_export_raw_v1`
+  `moz-fx-data-marketing-prod.acoustic.contact_raw_v1`
 WHERE
   last_modified_date = DATE(@submission_date)

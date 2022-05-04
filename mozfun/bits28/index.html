@@ -1696,13 +1696,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#from_string-udf" class="md-nav__link">
-    from_string (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#days_since_seen-udf" class="md-nav__link">
     days_since_seen (UDF)
   </a>
@@ -1710,8 +1703,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#to_string-udf" class="md-nav__link">
-    to_string (UDF)
+  <a href="#from_string-udf" class="md-nav__link">
+    from_string (UDF)
   </a>
   
 </li>
@@ -1719,6 +1712,13 @@
         <li class="md-nav__item">
   <a href="#retention-udf" class="md-nav__link">
     retention (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#to_string-udf" class="md-nav__link">
+    to_string (UDF)
   </a>
   
 </li>
@@ -1740,6 +1740,20 @@
     <li class="md-nav__item">
       <a href="../bytes/" class="md-nav__link">
         bytes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datetime_util/" class="md-nav__link">
+        datetime_util.fxa_parse_date
       </a>
     </li>
   
@@ -2141,13 +2155,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#from_string-udf" class="md-nav__link">
-    from_string (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#days_since_seen-udf" class="md-nav__link">
     days_since_seen (UDF)
   </a>
@@ -2155,8 +2162,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#to_string-udf" class="md-nav__link">
-    to_string (UDF)
+  <a href="#from_string-udf" class="md-nav__link">
+    from_string (UDF)
   </a>
   
 </li>
@@ -2164,6 +2171,13 @@
         <li class="md-nav__item">
   <a href="#retention-udf" class="md-nav__link">
     retention (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#to_string-udf" class="md-nav__link">
+    to_string (UDF)
   </a>
   
 </li>
@@ -2228,12 +2242,6 @@ WHERE
 <p>See detailed docs for the bits28 suite of functions:
 <a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/to_dates">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/to_dates/metadata.yaml">Edit</a></p>
-<h2 id="from_string-udf">from_string (UDF)</h2>
-<p>Convert a string representing individual bits into an INT64.</p>
-<p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/from_string">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/from_string/metadata.yaml">Edit</a></p>
 <h2 id="days_since_seen-udf">days_since_seen (UDF)</h2>
 <p>Return the position of the rightmost set bit in an INT64 bit pattern.</p>
 <p>To determine this position, we take a bitwise AND of the bit pattern and
@@ -2246,6 +2254,16 @@ logarithm; see <a href="https://stackoverflow.com/a/42747608/1260237">https://st
 -- &gt;&gt; 1
 </code></pre>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/days_since_seen">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/days_since_seen/metadata.yaml">Edit</a></p>
+<h2 id="from_string-udf">from_string (UDF)</h2>
+<p>Convert a string representing individual bits into an INT64.</p>
+<p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/from_string">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/from_string/metadata.yaml">Edit</a></p>
+<h2 id="retention-udf">retention (UDF)</h2>
+<p>Return a nested struct providing booleans indicating whether a given client
+was active various time periods based on the passed bit pattern.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/retention">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/retention/metadata.yaml">Edit</a></p>
 <h2 id="to_string-udf">to_string (UDF)</h2>
 <p>Convert an INT64 field into a 28-character string representing
 the individual bits.</p>
@@ -2259,10 +2277,6 @@ the individual bits.</p>
 --      '0000000000000000000000000011']
 </code></pre>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/to_string">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/to_string/metadata.yaml">Edit</a></p>
-<h2 id="retention-udf">retention (UDF)</h2>
-<p>Return a nested struct providing booleans indicating whether a given client
-was active various time periods based on the passed bit pattern.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/retention">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/retention/metadata.yaml">Edit</a></p>
 
               
             </article>

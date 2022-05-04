@@ -94,7 +94,8 @@ Adding a new field to a table schema also means that the field has to propagate 
 1. Run `./bqetl query validate <dataset>.<table>` to dry run the query.
 1. Run `./bqetl query schema update <dataset>.<table> --update_downstream` to make local schema.yaml updates and update schemas of downstream dependencies.
    * [x] This requires [GCP access](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#bigquery-access-request).
-   * [x] Note that schema.yaml files of downstream dependencies will be automatically updated.
+   * [x] `--update_downstream` is optional as it takes longer. It is recommended when you know that there are downstream dependencies whose `schema.yaml` need to be updated, in which case, the update will happen automatically.
+   * [x] `--force` should only be used in very specific cases, particularly the `clients_last_seen` tables. It skips some checks that would otherwise catch some error scenarios.
 1. Open a new PR with these changes.
 1. The dry-run-sql task is expected to fail at this point due to mismatch with deployed schemas!
 1. PR reviewed and approved.

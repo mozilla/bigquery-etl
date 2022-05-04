@@ -13,6 +13,6 @@ SELECT
   LOWER(COALESCE(NULLIF(suppression_reason, ''), "unknown")) AS suppression_reason,
   submission_date,
 FROM
-  `moz-fx-data-marketing-prod.acoustic.raw_recipient_export_raw_v1`
+  `moz-fx-data-marketing-prod.acoustic.raw_recipient_raw_v1`
 WHERE
   submission_date = DATE(@submission_date);

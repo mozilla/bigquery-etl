@@ -151,6 +151,10 @@ SKIP = {
     ),
     "sql/moz-fx-data-shared-prod/telemetry/xfocsp_error_report/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/regrets_reporter_update/view.sql",
+    *glob.glob(
+        "sql/moz-fx-data-marketing-prod/acoustic/**/*.sql",
+        recursive=True,
+    ),
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501

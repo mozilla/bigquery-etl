@@ -9,8 +9,8 @@ For any workflow, the bigquery-etl repositiory needs to be locally available, fo
 The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/) provides a more detailed guide on creating scheduled queries.
 
 1. Run `./bqetl query create <dataset>.<table>_<version>`
-    * Specify the desired destination dataset and table name for `<dataset>.<table>_<version>`
-    * Directories and files are generated automatically
+   1. Specify the desired destination dataset and table name for `<dataset>.<table>_<version>`
+   1. Directories and files are generated automatically
 1. Open `query.sql` file that has been created in `sql/moz-fx-data-shared-prod/<dataset>/<table>_<version>/` to write the query
 1. [Optional] Run `./bqetl query schema update <dataset>.<table>_<version>` to generate the `schema.yaml` file
     * Optionally add column descriptions to `schema.yaml`
@@ -26,11 +26,11 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
     * CI fails since table doesn't exist yet
 1. PR gets reviewed and eventually approved
 1. Create destination table: `./bqetl query schema deploy` (requires a `schema.yaml` file to be present)
-    * This step needs to be performed by a data engineer as it requires DE credentials.
+     * This step needs to be performed by a data engineer as it requires DE credentials.
 1. Merge pull-request
 1. Backfill data
-    * Option 1: via Airflow interface
-    * Option 2: `./bqetl query backfill --project-id <project id> <dataset>.<table>_<version>`
+     * Option 1: via Airflow interface
+     * Option 2: `./bqetl query backfill --project-id <project id> <dataset>.<table>_<version>`
 
 ## Update an existing query
 
@@ -86,21 +86,37 @@ SELECT
   -- format:on
 ```
 
-## Add a new field to clients_daily
+## Add a new field to a table schema
+Adding a new field to a table schema also means that the field has to propagate to several downstream tables, which makes it a more complex case.
 
-Adding a new field to `clients_daily` also means that field has to propagate to several
-downstream tables, so this is a more complex case.
+1. Open the `query.sql` file inside the `<dataset>.<table>` location and add the new definitions for the field.
+1. Run `./bqetl format <path to the query>` to format the query. Alternatively, run `./bqetl format $(git ls-tree -d HEAD --name-only)` validate the format of all queries that have been modified.
+1. Run `./bqetl query validate <dataset>.<table>` to dry run the query.
+1. Run `./bqetl query schema update <dataset>.<table> --update_downstream` to make local schema.yaml updates and update schemas of downstream dependencies.
+   * [x] This requires [GCP access](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#bigquery-access-request).
+   * [x] `--update_downstream` is optional as it takes longer. It is recommended when you know that there are downstream dependencies whose `schema.yaml` need to be updated, in which case, the update will happen automatically.
+   * [x] `--force` should only be used in very specific cases, particularly the `clients_last_seen` tables. It skips some checks that would otherwise catch some error scenarios.
+1. Open a new PR with these changes.
+1. The dry-run-sql task is expected to fail at this point due to mismatch with deployed schemas!
+1. PR reviewed and approved.
+1. Deploy schema changes by running: `./bqetl query schema deploy <dataset>.<table>;`
+1. Find and run again the [CI pipeline](https://app.circleci.com/pipelines/github/mozilla/bigquery-etl?) for the PR.
+   * [x] Make sure all dry runs are successful.
+1. Merge pull-request.
 
-1. Open the `clients_daily_v6` `query.sql` file and add new field definitions
-1. Run `./bqetl query validate telemetry_derived.clients_daily_v6` to dry run and format the query
-1. Run `./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream` to make local `schema.yaml` updates and update schemas of downstream dependencies
-    * This requires GCP access
-    * `schema.yaml` files of downstream dependencies, like `clients_last_seen_v1`, will be automatically updated
-1. Open PR with changes
-    * The `dry-run-sql` task is expected to fail at this point due to mismatch with deployed schemas
-1. PR reviewed and approved
+The following is an example to update a new field in `telemetry_derived.clients_daily_v6`
+
+### Example: Add a new field to clients_daily
+
+1. Open the `clients_daily_v6` `query.sql` file and add new field definitions.
+1. Run `./bqetl format sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/query.sql`
+1. Run `./bqetl query validate telemetry_derived.clients_daily_v6`.
+1. Run `./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream`.
+    * [x] `schema.yaml` files of downstream dependencies, like `clients_last_seen_v1` are updated.
+1. Open a PR with these changes.
+    * [x] The `dry-run-sql` task fails.
+1. PR is reviewed and approved.
 1. Deploy schema changes by running:
-
    ```
    ./bqetl query schema deploy telemetry_derived.clients_daily_v6;
    ./bqetl query schema deploy telemetry_derived.clients_daily_joined_v1;
@@ -108,9 +124,16 @@ downstream tables, so this is a more complex case.
    ./bqetl query schema deploy telemetry_derived.clients_last_seen_joined_v1;
    ./bqetl query schema deploy --force telemetry_derived.clients_first_seen_v1;
    ```
+1. Rerun CI pipeline
+   * [x] All tests pass
+1. Merge pull-request.
 
-1. Rerun CI to ensure all dry runs are successful
-1. Merge pull-request
+## Remove a field from a table schema
+
+Deleting a field from an existing table schema should be done only when is totally neccessary. If you decide to delete it:
+* [x] Validate if there is data in the column and make sure data it is either backed up or it can be reprocessed.
+* Follow [Big Query docs](https://cloud.google.com/bigquery/docs/managing-table-schemas#deleting_columns_from_a_tables_schema_definition) recommendations for deleting.
+* If the column size exceeds the allowed limit, consider setting the field as NULL. See this [search_clients_daily_v8](https://github.com/mozilla/bigquery-etl/pull/2463) PR for an example.
 
 ## Adding a new mozfun UDF
 

@@ -34,7 +34,7 @@ def _load_table(
     data_file_path, schema_file_path=None, description_file_path=None, project=None
 ):
     # Assume path is ...project/dataset/table/data.csv
-    path_split = os.path.normcase(data_file_path).split("/")
+    path_split = os.path.normcase(data_file_path).split(os.path.sep)
     dataset_id = path_split[-3]
     table_id = path_split[-2]
     if not project:

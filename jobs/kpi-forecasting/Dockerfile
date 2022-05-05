@@ -10,8 +10,6 @@ ENV HOME=${HOME}
 RUN groupadd --gid ${USER_ID} ${GROUP_ID} && \
     useradd --create-home --uid ${USER_ID} --gid ${GROUP_ID} --home-dir ${HOME} ${GROUP_ID}
 
-curl https://sdk.cloud.google.com | bash
-
 WORKDIR ${HOME}
 
 RUN apt install gcc

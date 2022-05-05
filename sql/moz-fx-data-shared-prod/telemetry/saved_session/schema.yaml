@@ -19778,6 +19778,11 @@ fields:
       mode: NULLABLE
       name: webrtc_software_h264_enabled
       type: STRING
+    - description: Whether H264 encoding is an available capability for being sent
+        to the content processes
+      mode: NULLABLE
+      name: media_gmp_update_content_process_has_h264
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD

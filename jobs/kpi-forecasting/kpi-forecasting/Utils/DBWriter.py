@@ -108,10 +108,9 @@ def write_confidence_intervals_to_bigquery(
     else:
         bq_client = client
 
-    confidences["target"] = config["target"]
-
     today = str(date.today())
 
+    confidences["target"] = config["target"]
     confidences["forecast_parameters"] = str(json.dumps(config["forecast_parameters"]))
     confidences["forecast_date"] = today
 

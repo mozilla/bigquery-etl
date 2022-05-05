@@ -1274,6 +1274,41 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#temp_bookmarks_sync" class="md-nav__link">
+    temp_bookmarks_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#temp_history_sync" class="md-nav__link">
+    temp_history_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#temp_logins_sync" class="md-nav__link">
+    temp_logins_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#temp_sync" class="md-nav__link">
+    temp_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#temp_tabs_sync" class="md-nav__link">
+    temp_tabs_sync
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2172,6 +2207,41 @@
         <li class="md-nav__item">
   <a href="#metrics" class="md-nav__link">
     metrics
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#temp_bookmarks_sync" class="md-nav__link">
+    temp_bookmarks_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#temp_history_sync" class="md-nav__link">
+    temp_history_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#temp_logins_sync" class="md-nav__link">
+    temp_logins_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#temp_sync" class="md-nav__link">
+    temp_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#temp_tabs_sync" class="md-nav__link">
+    temp_tabs_sync
   </a>
   
 </li>
@@ -3139,6 +3209,541 @@ and to contain only one row per distinct <code>document_id</code> within a given
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/metrics">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/metrics/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/metrics/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="temp_bookmarks_sync"><a href="#temp_bookmarks_sync">temp_bookmarks_sync</a></h2>
+<p><strong>Historical Pings for <code>org-mozilla-ios-fennec/temp-bookmarks-sync</code></strong></p>
+<p><code>org_mozilla_ios_fennec.temp_bookmarks_sync</code></p>
+<p>A historical view of pings sent for the
+<code>org-mozilla-ios-fennec/temp-bookmarks-sync</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>additional_properties</td>
+        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td>The document ID specified in the URI when the client sent this message</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>events</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metrics</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td>Time when the ingestion edge server accepted this message</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec_stable>org_mozilla_ios_fennec_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec_stable/temp_bookmarks_sync_v1>temp_bookmarks_sync_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_bookmarks_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_bookmarks_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_bookmarks_sync/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="temp_history_sync"><a href="#temp_history_sync">temp_history_sync</a></h2>
+<p><strong>Historical Pings for <code>org-mozilla-ios-fennec/temp-history-sync</code></strong></p>
+<p><code>org_mozilla_ios_fennec.temp_history_sync</code></p>
+<p>A historical view of pings sent for the
+<code>org-mozilla-ios-fennec/temp-history-sync</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>additional_properties</td>
+        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td>The document ID specified in the URI when the client sent this message</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>events</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metrics</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td>Time when the ingestion edge server accepted this message</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec_stable>org_mozilla_ios_fennec_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec_stable/temp_history_sync_v1>temp_history_sync_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_history_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_history_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_history_sync/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="temp_logins_sync"><a href="#temp_logins_sync">temp_logins_sync</a></h2>
+<p><strong>Historical Pings for <code>org-mozilla-ios-fennec/temp-logins-sync</code></strong></p>
+<p><code>org_mozilla_ios_fennec.temp_logins_sync</code></p>
+<p>A historical view of pings sent for the
+<code>org-mozilla-ios-fennec/temp-logins-sync</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>additional_properties</td>
+        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td>The document ID specified in the URI when the client sent this message</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>events</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metrics</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td>Time when the ingestion edge server accepted this message</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec_stable>org_mozilla_ios_fennec_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec_stable/temp_logins_sync_v1>temp_logins_sync_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_logins_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_logins_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_logins_sync/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="temp_sync"><a href="#temp_sync">temp_sync</a></h2>
+<p><strong>Historical Pings for <code>org-mozilla-ios-fennec/temp-sync</code></strong></p>
+<p><code>org_mozilla_ios_fennec.temp_sync</code></p>
+<p>A historical view of pings sent for the
+<code>org-mozilla-ios-fennec/temp-sync</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>additional_properties</td>
+        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td>The document ID specified in the URI when the client sent this message</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>events</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metrics</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td>Time when the ingestion edge server accepted this message</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec_stable>org_mozilla_ios_fennec_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec_stable/temp_sync_v1>temp_sync_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_sync/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="temp_tabs_sync"><a href="#temp_tabs_sync">temp_tabs_sync</a></h2>
+<p><strong>Historical Pings for <code>org-mozilla-ios-fennec/temp-tabs-sync</code></strong></p>
+<p><code>org_mozilla_ios_fennec.temp_tabs_sync</code></p>
+<p>A historical view of pings sent for the
+<code>org-mozilla-ios-fennec/temp-tabs-sync</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>additional_properties</td>
+        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td>The document ID specified in the URI when the client sent this message</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>events</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metrics</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td>Time when the ingestion edge server accepted this message</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec_stable>org_mozilla_ios_fennec_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec_stable/temp_tabs_sync_v1>temp_tabs_sync_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_tabs_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_tabs_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_tabs_sync/metadata.yaml">Metadata File</a> </p>
 <hr />
 
               

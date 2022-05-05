@@ -770,6 +770,41 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#temp_bookmarks_sync" class="md-nav__link">
+    temp_bookmarks_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#temp_history_sync" class="md-nav__link">
+    temp_history_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#temp_logins_sync" class="md-nav__link">
+    temp_logins_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#temp_sync" class="md-nav__link">
+    temp_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#temp_tabs_sync" class="md-nav__link">
+    temp_tabs_sync
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2232,6 +2267,41 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#temp_bookmarks_sync" class="md-nav__link">
+    temp_bookmarks_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#temp_history_sync" class="md-nav__link">
+    temp_history_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#temp_logins_sync" class="md-nav__link">
+    temp_logins_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#temp_sync" class="md-nav__link">
+    temp_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#temp_tabs_sync" class="md-nav__link">
+    temp_tabs_sync
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3106,6 +3176,526 @@ for the release channel of the Glean application "Firefox for iOS"
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/metrics_clients_last_seen">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/metrics_clients_last_seen/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/metrics_clients_last_seen/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="temp_bookmarks_sync"><a href="#temp_bookmarks_sync">temp_bookmarks_sync</a></h2>
+<p><strong>App-specific view for Glean ping "temp-bookmarks-sync"</strong></p>
+<p><code>firefox_ios.temp_bookmarks_sync</code></p>
+<p>This is a pointer to the main view to the stable ping table
+for the release channel of the Glean application "Firefox for iOS"
+(moz-fx-data-shared-prod.org_mozilla_ios_firefox.temp_bookmarks_sync).</p>
+<p>It is used by Looker.</p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>additional_properties</td>
+        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td>The document ID specified in the URI when the client sent this message</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>events</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metrics</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td>Time when the ingestion edge server accepted this message</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox>org_mozilla_ios_firefox</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/temp_bookmarks_sync>temp_bookmarks_sync</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/temp_bookmarks_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/temp_bookmarks_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/temp_bookmarks_sync/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="temp_history_sync"><a href="#temp_history_sync">temp_history_sync</a></h2>
+<p><strong>App-specific view for Glean ping "temp-history-sync"</strong></p>
+<p><code>firefox_ios.temp_history_sync</code></p>
+<p>This is a pointer to the main view to the stable ping table
+for the release channel of the Glean application "Firefox for iOS"
+(moz-fx-data-shared-prod.org_mozilla_ios_firefox.temp_history_sync).</p>
+<p>It is used by Looker.</p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>additional_properties</td>
+        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td>The document ID specified in the URI when the client sent this message</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>events</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metrics</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td>Time when the ingestion edge server accepted this message</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox>org_mozilla_ios_firefox</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/temp_history_sync>temp_history_sync</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/temp_history_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/temp_history_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/temp_history_sync/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="temp_logins_sync"><a href="#temp_logins_sync">temp_logins_sync</a></h2>
+<p><strong>App-specific view for Glean ping "temp-logins-sync"</strong></p>
+<p><code>firefox_ios.temp_logins_sync</code></p>
+<p>This is a pointer to the main view to the stable ping table
+for the release channel of the Glean application "Firefox for iOS"
+(moz-fx-data-shared-prod.org_mozilla_ios_firefox.temp_logins_sync).</p>
+<p>It is used by Looker.</p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>additional_properties</td>
+        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td>The document ID specified in the URI when the client sent this message</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>events</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metrics</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td>Time when the ingestion edge server accepted this message</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox>org_mozilla_ios_firefox</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/temp_logins_sync>temp_logins_sync</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/temp_logins_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/temp_logins_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/temp_logins_sync/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="temp_sync"><a href="#temp_sync">temp_sync</a></h2>
+<p><strong>App-specific view for Glean ping "temp-sync"</strong></p>
+<p><code>firefox_ios.temp_sync</code></p>
+<p>This is a pointer to the main view to the stable ping table
+for the release channel of the Glean application "Firefox for iOS"
+(moz-fx-data-shared-prod.org_mozilla_ios_firefox.temp_sync).</p>
+<p>It is used by Looker.</p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>additional_properties</td>
+        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td>The document ID specified in the URI when the client sent this message</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>events</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metrics</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td>Time when the ingestion edge server accepted this message</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox>org_mozilla_ios_firefox</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/temp_sync>temp_sync</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/temp_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/temp_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/temp_sync/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="temp_tabs_sync"><a href="#temp_tabs_sync">temp_tabs_sync</a></h2>
+<p><strong>App-specific view for Glean ping "temp-tabs-sync"</strong></p>
+<p><code>firefox_ios.temp_tabs_sync</code></p>
+<p>This is a pointer to the main view to the stable ping table
+for the release channel of the Glean application "Firefox for iOS"
+(moz-fx-data-shared-prod.org_mozilla_ios_firefox.temp_tabs_sync).</p>
+<p>It is used by Looker.</p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>additional_properties</td>
+        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td>The document ID specified in the URI when the client sent this message</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>events</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metrics</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td>Time when the ingestion edge server accepted this message</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox>org_mozilla_ios_firefox</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/temp_tabs_sync>temp_tabs_sync</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/temp_tabs_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/temp_tabs_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/temp_tabs_sync/metadata.yaml">Metadata File</a> </p>
 <hr />
 
               

@@ -33,14 +33,14 @@ def _parse_args():
 def _load_table(
     data_file_path, schema_file_path=None, description_file_path=None, project=None
 ):
-    client = bigquery.Client(project)
-
     # Assume path is ...project/dataset/table/data.csv
     path_split = os.path.normcase(data_file_path).split("/")
     dataset_id = path_split[-3]
     table_id = path_split[-2]
     if not project:
-        project = path_split[0]
+        project = path_split[-4]
+
+    client = bigquery.Client(project)
     dataset_ref = client.dataset(dataset_id, project=project)
     table_ref = dataset_ref.table(table_id)
 

@@ -7,6 +7,11 @@ description: >
   Each partition represents CSV data that was provided Acoustic
   for the date correponding to Airflow's execution date
 
+  NOTE: raw_recipient_raw_[VERSION] -
+  raw appears twice as the first "raw" is part of the original
+  Acoustic object type/name, the second raw represents raw data
+  as served by Acoustic.
+
   Data source: https://developer.goacoustic.com/acoustic-campaign/reference/rawrecipientdataexport
   Jira: https://mozilla-hub.atlassian.net/browse/DENG-17
 

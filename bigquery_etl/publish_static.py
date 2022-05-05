@@ -16,7 +16,12 @@ DESCRIPTION_FILENAME = "description.txt"
 def _parse_args():
     parser = ArgumentParser(__doc__)
     parser.add_argument(
-        "--project-id", "--project_id", help="Project to publish tables to"
+        "--project-id",
+        "--project_id",
+        help=(
+            "Project to publish static tables for.  If this is `mozdata` it will publish"
+            " static tables from `moz-fx-data-shared-prod` to `mozdata`."
+        ),
     )
     return parser.parse_args()
 
@@ -78,12 +83,13 @@ def main():
     """Publish csv files as BigQuery tables."""
     args = _parse_args()
 
-    # This machinery is only compatible with
-    # the sql/moz-fx-data-shared-prod/static directory.
-    projects = project_dirs("moz-fx-data-shared-prod")
+    source_project = args.project_id
+    target_project = args.project_id
+    if target_project == "mozdata":
+        source_project = "moz-fx-data-shared-prod"
 
-    for data_dir in projects:
-        for root, dirs, files in os.walk(data_dir):
+    for project_dir in project_dirs(source_project):
+        for root, dirs, files in os.walk(project_dir):
             for filename in files:
                 if filename == DATA_FILENAME:
                     schema_file_path = (
@@ -100,7 +106,7 @@ def main():
                         os.path.join(root, filename),
                         schema_file_path,
                         description_file_path,
-                        args.project_id,
+                        target_project,
                     )
 
 

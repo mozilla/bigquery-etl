@@ -108,13 +108,12 @@ def write_confidence_intervals_to_bigquery(
     else:
         bq_client = client
 
+    write_table = config["confidences_table"]
     today = str(date.today())
 
     confidences["target"] = config["target"]
     confidences["forecast_parameters"] = str(json.dumps(config["forecast_parameters"]))
     confidences["forecast_date"] = today
-
-    write_table = config["confidences_table"]
 
     job_config = bigquery.LoadJobConfig(
         schema=[

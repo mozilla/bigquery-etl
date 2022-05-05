@@ -1,11 +1,13 @@
 """Publish csv files as BigQuery tables."""
 
+import functools
 import json
 import os
 from argparse import ArgumentParser
 
 from google.cloud import bigquery
 
+from bigquery_etl.metadata.parse_metadata import DATASET_METADATA_FILE, DatasetMetadata
 from bigquery_etl.util.common import project_dirs
 
 DATA_FILENAME = "data.csv"
@@ -20,7 +22,8 @@ def _parse_args():
         "--project_id",
         help=(
             "Project to publish static tables for.  If this is `mozdata` it will publish"
-            " static tables from `moz-fx-data-shared-prod` to `mozdata`."
+            " static tables from user-facing datasets in `moz-fx-data-shared-prod` to"
+            " corresponding datasets in `mozdata`."
         ),
     )
     return parser.parse_args()
@@ -79,6 +82,15 @@ def _load_table(
             client.update_table(table, ["description"])
 
 
+@functools.lru_cache
+def _is_user_facing_dataset(dataset_directory):
+    dataset_metadata_file_path = os.path.join(dataset_directory, DATASET_METADATA_FILE)
+    return (
+        os.path.exists(dataset_metadata_file_path)
+        and DatasetMetadata.from_file(dataset_metadata_file_path).user_facing
+    )
+
+
 def main():
     """Publish csv files as BigQuery tables."""
     args = _parse_args()
@@ -92,6 +104,10 @@ def main():
         for root, dirs, files in os.walk(project_dir):
             for filename in files:
                 if filename == DATA_FILENAME:
+                    if target_project == "mozdata" and not _is_user_facing_dataset(
+                        os.path.dirname(root)
+                    ):
+                        continue
                     schema_file_path = (
                         os.path.join(root, SCHEMA_FILENAME)
                         if SCHEMA_FILENAME in files

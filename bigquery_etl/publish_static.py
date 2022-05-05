@@ -1,6 +1,7 @@
 """Publish csv files as BigQuery tables."""
 
 import functools
+import glob
 import json
 import os
 from argparse import ArgumentParser
@@ -101,29 +102,29 @@ def main():
         source_project = "moz-fx-data-shared-prod"
 
     for project_dir in project_dirs(source_project):
-        for root, dirs, files in os.walk(project_dir):
-            for filename in files:
-                if filename == DATA_FILENAME:
-                    if target_project == "mozdata" and not _is_user_facing_dataset(
-                        os.path.dirname(root)
-                    ):
-                        continue
-                    schema_file_path = (
-                        os.path.join(root, SCHEMA_FILENAME)
-                        if SCHEMA_FILENAME in files
-                        else None
-                    )
-                    description_file_path = (
-                        os.path.join(root, DESCRIPTION_FILENAME)
-                        if DESCRIPTION_FILENAME in files
-                        else None
-                    )
-                    _load_table(
-                        os.path.join(root, filename),
-                        schema_file_path,
-                        description_file_path,
-                        target_project,
-                    )
+        # Assumes directory structure is project/dataset/table/files.
+        for data_file_path in glob.iglob(
+            os.path.join(project_dir, "*", "*", DATA_FILENAME)
+        ):
+            table_dir = os.path.dirname(data_file_path)
+            dataset_dir = os.path.dirname(table_dir)
+            if target_project == "mozdata" and not _is_user_facing_dataset(dataset_dir):
+                continue
+
+            schema_file_path = os.path.join(table_dir, SCHEMA_FILENAME)
+            if not os.path.exists(schema_file_path):
+                schema_file_path = None
+
+            description_file_path = os.path.join(table_dir, DESCRIPTION_FILENAME)
+            if not os.path.exists(description_file_path):
+                description_file_path = None
+
+            _load_table(
+                data_file_path,
+                schema_file_path,
+                description_file_path,
+                target_project,
+            )
 
 
 if __name__ == "__main__":

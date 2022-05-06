@@ -3,12 +3,14 @@
 import functools
 import glob
 import json
+import logging
 import os
 from argparse import ArgumentParser
 
 from google.cloud import bigquery
 
 from bigquery_etl.metadata.parse_metadata import DATASET_METADATA_FILE, DatasetMetadata
+from bigquery_etl.util import standard_args
 from bigquery_etl.util.common import project_dirs
 
 DATA_FILENAME = "data.csv"
@@ -27,6 +29,7 @@ def _parse_args():
             " corresponding datasets in `mozdata`."
         ),
     )
+    standard_args.add_log_level(parser)
     return parser.parse_args()
 
 
@@ -39,6 +42,9 @@ def _load_table(
     table_id = path_split[-2]
     if not project:
         project = path_split[-4]
+    logging.info(
+        f"Loading `{project}.{dataset_id}.{table_id}` table from `{data_file_path}`."
+    )
 
     client = bigquery.Client(project)
     dataset_ref = client.dataset(dataset_id, project=project)
@@ -109,6 +115,10 @@ def main():
             table_dir = os.path.dirname(data_file_path)
             dataset_dir = os.path.dirname(table_dir)
             if target_project == "mozdata" and not _is_user_facing_dataset(dataset_dir):
+                logging.debug(
+                    f"Skipping `{data_file_path}` for {target_project} because it isn't"
+                    " in a user-facing dataset."
+                )
                 continue
 
             schema_file_path = os.path.join(table_dir, SCHEMA_FILENAME)

@@ -53,5 +53,8 @@ def generate(target_project, output_dir):
                 f"Multiple mappings found for {alias}, please update aliases.yaml."
             )
 
-    with open(target_path / "data.csv", "w") as data_file:
-        data_file.write(csv_template.render(aliases_to_code=aliases_to_code))
+    try:
+        with open(target_path / "data.csv", "w") as data_file:
+            data_file.write(csv_template.render(aliases_to_code=aliases_to_code))
+    except FileNotFoundError:
+        pass

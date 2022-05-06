@@ -47,6 +47,7 @@ _previous AS (
     (client_id)
   WHERE
     fs.first_seen_date > "2010-01-01"
+    AND fs.first_seen_date < @submission_date
 )
 {% else %}
 _current AS (
@@ -71,7 +72,8 @@ _previous AS (
   FROM
     `{{ first_seen_table }}`
   WHERE
-    first_seen_date < @submission_date
+    first_seen_date > "2010-01-01"
+    AND first_seen_date < @submission_date
 )
 {% endif %}
   --

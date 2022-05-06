@@ -119,7 +119,7 @@ WITH unioned AS (
     is_default_browser,
     isp,
     CAST(NULL AS string) AS distribution_id,
-    'Focus iOS' AS normalized_app_name,
+    'Focus iOS' AS normalized_app_name
   FROM
     focus_ios.clients_last_seen_joined
   WHERE

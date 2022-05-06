@@ -71,7 +71,7 @@ _previous AS (
   FROM
     `{{ first_seen_table }}`
   WHERE
-    first_seen_date > "2010-01-01"
+    first_seen_date < @submission_date
 )
 {% endif %}
   --

@@ -31,11 +31,11 @@ from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
 from ..metadata.parse_metadata import (
     METADATA_FILE,
+    BigQueryMetadata,
+    ClusteringMetadata,
     DatasetMetadata,
     Metadata,
-    BigQueryMetadata,
     PartitionMetadata,
-    ClusteringMetadata,
     PartitionType,
 )
 from ..query_scheduling.dag_collection import DagCollection
@@ -582,7 +582,9 @@ def backfill(
         sys.exit(1)
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    print("These are the query files: " + str(query_files))
     if query_files == []:
+        print("Running generators!!!!!")
         # run SQL generators if no matching query has been found
         ctx.invoke(
             generate_all,

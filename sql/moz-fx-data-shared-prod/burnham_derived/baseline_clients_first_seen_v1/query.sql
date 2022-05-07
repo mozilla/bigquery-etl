@@ -22,6 +22,7 @@ _previous AS (
     `burnham_derived.baseline_clients_first_seen_v1`
   WHERE
     first_seen_date > "2010-01-01"
+    AND first_seen_date < @submission_date
 )
   --
 SELECT

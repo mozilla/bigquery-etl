@@ -1,5 +1,5 @@
 ---
-friendly_name: Duplicate Rate
+friendly_name: Live Duplicate Rate
 description: >
   Generates a list of distinct and non-distinct document counts per live table.
 owners:

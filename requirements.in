@@ -19,7 +19,7 @@ pandas==1.4.2
 pathos==0.2.8
 pip-tools==6.6.0
 pre-commit==2.19.0
-pyarrow==7.0.0
+pyarrow==8.0.0
 pyjnius==1.4.1
 pytest-black==0.3.12
 pytest-flake8==1.1.1

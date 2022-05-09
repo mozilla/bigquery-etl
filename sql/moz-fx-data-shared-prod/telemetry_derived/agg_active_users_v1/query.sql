@@ -20,8 +20,8 @@ SELECT
   attribution_experiment,
   attribution_variation,
   COUNT(DISTINCT client_id) AS mau,
-  APPROX_COUNT_DISTINCT(IF(days_since_seen < 7, client_id, NULL)) AS wau,
-  APPROX_COUNT_DISTINCT(IF(days_since_seen = 0, client_id, NULL)) AS dau
+  COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS wau,
+  COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS dau
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.unified_metrics_v1` metrics
 LEFT JOIN

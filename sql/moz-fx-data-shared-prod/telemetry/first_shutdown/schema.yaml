@@ -19788,7 +19788,8 @@ fields:
       name: webrtc_software_h264_enabled
       type: STRING
     - description: Whether H264 encoding is an available capability for being sent
-        to the content processes
+        to the content processes. 0=no h264, 1=h264 avaiable, 2=no h264 1 directory
+        added, 3=no h264 >1 directories added, 4=directory adds in prorgress
       mode: NULLABLE
       name: media_gmp_update_content_process_has_h264
       type: STRING
@@ -22947,6 +22948,30 @@ fields:
         type: STRING
       mode: REPEATED
       name: search_suggestions_latency_ms
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: Successfully started HTTP channels for page loading when TRR
+          is enabled; Keyed by TRR domain
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: http_channel_page_onstart_success_trr3
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: Successfully started HTTP channels for resource loading when
+          TRR is enabled; Keyed by TRR domain
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: http_channel_sub_onstart_success_trr3
       type: RECORD
     mode: NULLABLE
     name: keyed_histograms

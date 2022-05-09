@@ -1441,6 +1441,10 @@ fields:
       mode: NULLABLE
       name: windows_package_family_name
       type: STRING
+    - description: <integer>, The SandboxingKind passed for this Utility process instance
+      mode: NULLABLE
+      name: utility_process_sandboxing_kind
+      type: STRING
     mode: NULLABLE
     name: metadata
     type: RECORD

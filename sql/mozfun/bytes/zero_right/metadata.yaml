@@ -1,2 +1,10 @@
-description: Zero bits on the right of byte
 friendly_name: Zero Right
+description: |-
+  Zero bits on the right of byte
+owners: []
+labels: {}
+scheduling:
+  dag_name: bqetl_analytics_aggregations
+  task_name: agg_active_users
+bigquery: null
+references: {}

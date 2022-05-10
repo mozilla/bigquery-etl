@@ -126,6 +126,11 @@ def main():
         help="Generate a query without parameters",
     )
     parser.add_argument("--source-table", type=str, help="Name of Glean table")
+    parser.add_argument(
+        "--product",
+        type=str,
+        default="org_mozilla_fenix",
+    )
     args = parser.parse_args()
 
     # If set to 1 day, then runs of copy_deduplicate may not be done yet
@@ -141,6 +146,11 @@ def main():
         + (" --no-parameterize" if args.no_parameterize else "")
     )
 
+    # This enables build_id filtering against Buildhub data
+    # and filtering out of an erroneous version "1024" (see query template for details).
+    # Only the desktop builds are reported to Buildhub
+    filter_desktop_builds = True if args.product == "firefox_desktop" else False
+
     schema = get_schema(args.source_table)
     unlabeled_metric_names = get_scalar_metrics(schema, "unlabeled")
     labeled_metric_names = get_scalar_metrics(schema, "labeled")
@@ -154,6 +164,7 @@ def main():
     print(
         render_main(
             header=header,
+            filter_desktop_builds=filter_desktop_builds,
             source_table=args.source_table,
             submission_date=submission_date,
             attributes=ATTRIBUTES,

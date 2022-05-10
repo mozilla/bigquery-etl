@@ -669,6 +669,7 @@ bqetl_unified:
       - "telemetry-alerts@mozilla.com"
       - "ascholtz@mozilla.com"
       - "loines@mozilla.com"
+      - "lvargas@mozilla.com"
     retries: 2
     retry_delay: 30m
   tags:
@@ -738,14 +739,17 @@ bqetl_acoustic_raw_recipient_export:
 bqetl_analytics_aggregations:
   default_args:
     depends_on_past: false
-    email: ["telemetry-alerts@mozilla.com", "lvargas@mozilla.com"]
+    email:
+      - "telemetry-alerts@mozilla.com"
+      - "lvargas@mozilla.com"
+      - "gkaberere@mozilla.com"
     email_on_failure: true
     email_on_retry: true
     end_date: null
     owner: lvargas@mozilla.com
     retries: 2
     retry_delay: 30m
-    start_date: '2022-05-10'
+    start_date: '2022-05-11'
   description: Scheduler to populate the aggregations required for
     analytics engineering and reports optimization.
     It provides data to build growth, search and usage metrics, as well

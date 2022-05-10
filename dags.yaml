@@ -745,9 +745,12 @@ bqetl_analytics_aggregations:
     owner: lvargas@mozilla.com
     retries: 2
     retry_delay: 30m
-    start_date: '2022-05-09'
-  description: This DAG schedules queries to populate the aggregations
-    required for analytics engineering and reports optimization.
+    start_date: '2022-05-10'
+  description: Scheduler to populate the aggregations required for
+    analytics engineering and reports optimization.
+    It provides data to build growth, search and usage metrics, as well
+    as acquisition and retention KPIs, in a structure that facilitates
+    reporting in Looker.
   schedule_interval: 0 1 * * *
   tags:
     - impact/tier_1

@@ -31,11 +31,11 @@ from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
 from ..metadata.parse_metadata import (
     METADATA_FILE,
+    BigQueryMetadata,
+    ClusteringMetadata,
     DatasetMetadata,
     Metadata,
-    BigQueryMetadata,
     PartitionMetadata,
-    ClusteringMetadata,
     PartitionType,
 )
 from ..query_scheduling.dag_collection import DagCollection
@@ -587,7 +587,7 @@ def backfill(
         ctx.invoke(
             generate_all,
             output_dir=ctx.obj["TMP_DIR"],
-            ignore=["derived_view_schemas", "stable_views"],
+            ignore=["derived_view_schemas", "stable_views", "country_code_lookup"],
         )
         query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
 

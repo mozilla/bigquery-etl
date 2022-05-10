@@ -20,6 +20,8 @@ bigquery:
     expiration_days: null
   clustering:
     fields:
+    - country
     - app_name
+    - attribution_medium
     - channel
 references: {}

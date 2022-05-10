@@ -102,15 +102,18 @@ def write_predictions_to_bigquery(
 def write_confidence_intervals_to_bigquery(
     confidences: pd.DataFrame, config: dict, client: client = None
 ) -> None:
-
     project = config["write_project"]
     if client is None:
         bq_client = bigquery.Client(project=project)
     else:
         bq_client = client
 
-    confidences["target"] = config["target"]
     write_table = config["confidences_table"]
+    today = str(date.today())
+
+    confidences["target"] = config["target"]
+    confidences["forecast_parameters"] = str(json.dumps(config["forecast_parameters"]))
+    confidences["forecast_date"] = today
 
     job_config = bigquery.LoadJobConfig(
         schema=[

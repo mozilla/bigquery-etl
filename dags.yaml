@@ -749,7 +749,7 @@ bqetl_analytics_aggregations:
   description: Scheduler to populate the aggregations required for
     analytics engineering and reports optimization.
     It provides data to build growth, search and usage metrics, as well
-    as acquisition and retention KPIs, in a structure that facilitates
+    as acquisition and retention KPIs, in a model that facilitates
     reporting in Looker.
   schedule_interval: 0 1 * * *
   tags:

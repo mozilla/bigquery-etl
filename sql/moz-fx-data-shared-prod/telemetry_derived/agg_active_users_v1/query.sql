@@ -30,7 +30,7 @@ SELECT
   SUM(search_count) AS search_count,
   SUM(search_with_ads) AS search_with_ads,
 FROM
-  `moz-fx-data-shared-prod.analysis.unified_metrics_v1` metrics
+  `moz-fx-data-shared-prod.analysis.unified_metrics_v1`
 WHERE
   submission_date = @submission_date
 GROUP BY

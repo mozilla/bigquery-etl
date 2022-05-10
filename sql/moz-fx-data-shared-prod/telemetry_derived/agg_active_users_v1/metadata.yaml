@@ -21,4 +21,5 @@ bigquery:
   clustering:
     fields:
     - app_name
+    - channel
 references: {}

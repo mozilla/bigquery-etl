@@ -175,13 +175,12 @@ search_clients AS (
   FROM
     search_derived.mobile_search_clients_daily_v1
   WHERE
-    submission_date = DATE_ADD(@submission_date, INTERVAL 1 DAY)
+    submission_date = @submission_date
 ),
 search_metrics AS (
   SELECT
     unioned.client_id,
     unioned.submission_date,
-        -- the table is more than one row per client (one row per engine, looks like), so we have to aggregate.
     SUM(ad_click) AS ad_click,
     SUM(organic) AS organic_search_count,
     SUM(search_count) AS search_count,
@@ -189,13 +188,13 @@ search_metrics AS (
   FROM
     unioned
   LEFT JOIN
-    search_clients m
+    search_clients s
   ON
-    unioned.client_id = m.client_id
-    AND DATE_ADD(unioned.submission_date, INTERVAL 1 DAY) = m.submission_date
+    unioned.client_id = s.client_id
+    AND unioned.submission_date = s.submission_date
   GROUP BY
-    1,
-    2
+    client_id,
+    submission_date
 ),
 mobile_with_searches AS (
   SELECT
@@ -273,7 +272,7 @@ mobile_with_searches AS (
     search_metrics search
   ON
     search.client_id = unioned.client_id
-    AND search.submission_date = DATE_ADD(unioned.submission_date, INTERVAL 1 DAY)
+    AND search.submission_date = unioned.submission_date
 ),
 desktop AS (
   SELECT

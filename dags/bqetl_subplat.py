@@ -20,6 +20,10 @@ operational DB as well as derived tables based on that data.
 
 Depends on `bqetl_fxa_events`, so is scheduled to run a bit after that.
 
+Stripe data for stripe_external__itemized_payout_reconciliation__v5 has
+highly variable timing, so it retries every 30 minutes to wait for data to
+be available.
+
 #### Owner
 
 dthorn@mozilla.com

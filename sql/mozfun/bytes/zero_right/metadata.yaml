@@ -1,6 +1,3 @@
 friendly_name: Zero Right
 description: |-
   Zero bits on the right of byte
-scheduling:
-  dag_name: bqetl_analytics_aggregations
-  task_name: agg_active_users

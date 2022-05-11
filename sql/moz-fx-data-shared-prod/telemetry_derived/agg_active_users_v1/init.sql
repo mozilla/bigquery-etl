@@ -1,4 +1,8 @@
--- Aggregated clients data including active users, new profiles and search metrics
+CREATE OR REPLACE TABLE
+  `mozilla-public-data`.telemetry_derived.unified_metrics_v1
+PARTITION BY
+  DATE(submission_date)
+AS
 SELECT
   activity_segment AS segment,
   app_version AS app_version,

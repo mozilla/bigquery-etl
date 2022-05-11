@@ -12,6 +12,7 @@ function write_scalars {
     mkdir -p "$directory"
     if ! python3 -m bigquery_etl.glam.clients_daily_scalar_aggregates \
         --source-table "$dataset.$table" \
+        --product "$product" \
         > "$directory/query.sql"; then
             echo "skipping $directory/query.sql: no probes found"
             rm -r "$directory"
@@ -30,6 +31,7 @@ function write_histograms {
     mkdir -p "$directory"
     if ! python3 -m bigquery_etl.glam.clients_daily_histogram_aggregates \
         --source-table "$dataset.$table" \
+        --product "$product" \
         > "$directory/query.sql"; then
             echo "skipping $directory/query.sql: no probes found"
             rm -r "$directory"

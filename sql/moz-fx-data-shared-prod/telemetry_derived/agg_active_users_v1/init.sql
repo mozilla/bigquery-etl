@@ -2,6 +2,11 @@ CREATE OR REPLACE TABLE
   `mozilla-public-data`.telemetry_derived.agg_active_users_v1
 PARTITION BY
   DATE(submission_date)
+CLUSTER BY
+  country,
+  app_name,
+  attribution_medium,
+  channel
 AS
 SELECT
   activity_segment AS segment,

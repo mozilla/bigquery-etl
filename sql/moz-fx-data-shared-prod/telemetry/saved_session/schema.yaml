@@ -47884,6 +47884,20 @@ fields:
           mode: REPEATED
           name: urlbar_picked_quicksuggest
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'The amount of times an unexpected error has been raised
+              while reading the Extensions StartupCache file
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: extensions_startup_cache_read_errors
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD
@@ -50762,6 +50776,24 @@ fields:
           mode: NULLABLE
           name: privacy_dfpi_rollout_tcp_by_default_feature
           type: BOOLEAN
+        - description: 'Time to load and deserialize the extensions startupCache data.
+            This scalar is mirroring the never expiring Glean metric named extensions.startup_cache_load_time,
+            which is defined in toolkit/components/extensions/metrics.yaml. Unlike
+            the related glean metric, this scalar has an expiring date, set as a deadline
+            to consider removing the mirrored scalar in favor to just use the Glean
+            metric).
+
+            '
+          mode: NULLABLE
+          name: extensions_startup_cache_load_time
+          type: INTEGER
+        - description: 'The amount of bytes writted into the Extensions StartupCache
+            file.
+
+            '
+          mode: NULLABLE
+          name: extensions_startup_cache_write_byte_length
+          type: INTEGER
         mode: NULLABLE
         name: scalars
         type: RECORD

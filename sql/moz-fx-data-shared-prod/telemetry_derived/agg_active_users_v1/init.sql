@@ -41,7 +41,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.unified_metrics_v1`
 WHERE
-  submission_date = @submission_date
+  submission_date = DATE(@submission_date)
 GROUP BY
   app_version,
   attribution_campaign,

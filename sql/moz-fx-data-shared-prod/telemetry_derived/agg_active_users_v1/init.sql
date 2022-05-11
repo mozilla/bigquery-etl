@@ -1,7 +1,7 @@
 CREATE OR REPLACE TABLE
   `mozilla-public-data`.telemetry_derived.agg_active_users_v1
 PARTITION BY
-  DATE(submission_date)
+  submission_date
 CLUSTER BY
   country,
   app_name,

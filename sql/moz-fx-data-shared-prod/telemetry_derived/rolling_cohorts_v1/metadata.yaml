@@ -1,0 +1,25 @@
+friendly_name: Rolling Cohorts
+description: |-
+  Rolling Cohorts consists of one row per client per date (each date
+  representing a new cohort) i.e. all the clients that had
+  profiles created that day. This can be left joined to calculate
+  activity metrics for particular cohorts.
+owners:
+- anicholson@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_unified
+bigquery:
+  time_partitioning:
+    field: cohort_date
+    type: day
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - attribution_medium
+    - channel
+    - country
+    - app_name
+references: {}

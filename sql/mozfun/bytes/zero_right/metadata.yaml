@@ -1,7 +1,6 @@
 friendly_name: Zero Right
 description: |-
   Zero bits on the right of byte
-owners: []
 labels: {}
 scheduling:
   dag_name: bqetl_analytics_aggregations

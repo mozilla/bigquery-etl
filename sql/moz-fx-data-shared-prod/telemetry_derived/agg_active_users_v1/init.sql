@@ -41,7 +41,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.unified_metrics_v1`
 WHERE
-  submission_date <= DATE('2022-05-11')
+  submission_date < DATE('2022-05-11')
 GROUP BY
   app_version,
   attribution_campaign,

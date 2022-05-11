@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  `mozilla-public-data`.telemetry_derived.unified_metrics_v1
+  `mozilla-public-data`.telemetry_derived.agg_active_users_v1
 PARTITION BY
   DATE(submission_date)
 AS

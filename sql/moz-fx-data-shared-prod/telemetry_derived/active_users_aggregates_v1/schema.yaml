@@ -86,3 +86,9 @@ fields:
 - mode: NULLABLE
   name: search_with_ads
   type: INTEGER
+- mode: NULLABLE
+  name: uri_count
+  type: INTEGER
+- mode: NULLABLE
+  name: active_hours
+  type: FLOAT

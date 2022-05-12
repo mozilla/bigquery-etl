@@ -194,8 +194,8 @@ search_metrics AS (
     unioned.client_id = m.client_id
     AND DATE_ADD(unioned.submission_date, INTERVAL 1 DAY) = m.submission_date
   GROUP BY
-    1,
-    2
+    client_id,
+    submission_date
 ),
 mobile_with_searches AS (
   SELECT

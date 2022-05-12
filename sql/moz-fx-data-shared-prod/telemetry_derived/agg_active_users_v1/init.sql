@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  `mozilla-public-data`.telemetry_derived.agg_active_users_v1
+  `moz-fx-data-shared-prod`.telemetry_derived.agg_active_users_v1
 PARTITION BY
   submission_date
 CLUSTER BY

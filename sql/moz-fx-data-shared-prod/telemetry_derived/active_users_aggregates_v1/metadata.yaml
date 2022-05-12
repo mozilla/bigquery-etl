@@ -24,4 +24,3 @@ bigquery:
     - app_name
     - attribution_medium
     - channel
-references: {}

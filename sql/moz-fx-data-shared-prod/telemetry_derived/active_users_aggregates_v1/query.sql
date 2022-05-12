@@ -1,4 +1,4 @@
--- Aggregated clients data including active users, new profiles and search metrics
+-- Aggregated clients data including active users, uri_count, new profiles and search metrics
 SELECT
   activity_segment AS segment,
   app_version AS app_version,
@@ -28,7 +28,9 @@ SELECT
   SUM(ad_click) AS ad_clicks,
   SUM(organic_search_count) AS organic_search_count,
   SUM(search_count) AS search_count,
-  SUM(search_with_ads) AS search_with_ads
+  SUM(search_with_ads) AS search_with_ads,
+  SUM(uri_count) as uri_count,
+  SUM(active_hours_sum) as active_hours
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.unified_metrics_v1`
 WHERE

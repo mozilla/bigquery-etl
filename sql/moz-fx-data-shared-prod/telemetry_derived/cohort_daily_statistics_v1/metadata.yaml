@@ -1,6 +1,8 @@
 friendly_name: Cohort Daily Statistics
 description: |-
-  Please provide a description for the query
+  Cohort Daily Statistics consists of one row per cohort date
+  per activity date (up to 180 days after the cohort start date)
+  It's a summary of the cohort's activity in that day.
 owners:
 - example@mozilla.com
 labels:

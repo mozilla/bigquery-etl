@@ -21,7 +21,7 @@ lvargas@mozilla.com
 
 default_args = {
     "owner": "lvargas@mozilla.com",
-    "start_date": datetime.datetime(2022, 5, 11, 0, 0),
+    "start_date": datetime.datetime(2022, 5, 12, 0, 0),
     "end_date": None,
     "email": [
         "telemetry-alerts@mozilla.com",

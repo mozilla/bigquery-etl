@@ -60,21 +60,6 @@ with DAG(
         depends_on_past=False,
     )
 
-    agg_active_users = bigquery_etl_query(
-        task_id="agg_active_users",
-        destination_table="agg_active_users_v1",
-        dataset_id="telemetry_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="lvargas@mozilla.com",
-        email=[
-            "gkaberere@mozilla.com",
-            "lvargas@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     wait_for_telemetry_derived__unified_metrics__v1 = ExternalTaskCompletedSensor(
         task_id="wait_for_telemetry_derived__unified_metrics__v1",
         external_dag_id="bqetl_unified",
@@ -88,5 +73,3 @@ with DAG(
     active_users_aggregates_v1.set_upstream(
         wait_for_telemetry_derived__unified_metrics__v1
     )
-
-    agg_active_users.set_upstream(wait_for_telemetry_derived__unified_metrics__v1)

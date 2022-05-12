@@ -28,6 +28,7 @@ default_args = {
         "telemetry-alerts@mozilla.com",
         "ascholtz@mozilla.com",
         "loines@mozilla.com",
+        "lvargas@mozilla.com",
     ],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
@@ -55,6 +56,7 @@ with DAG(
         email=[
             "ascholtz@mozilla.com",
             "loines@mozilla.com",
+            "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",

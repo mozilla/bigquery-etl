@@ -1,4 +1,4 @@
--- Aggregated clients data including active users, uri_count, new profiles and search metrics
+-- Aggregated clients data including active users, new profiles and search metrics
 SELECT
   activity_segment AS segment,
   app_version AS app_version,
@@ -12,6 +12,7 @@ SELECT
   country,
   device_model,
   distribution_id,
+  first_seen_date,
   is_default_browser,
   locale,
   normalized_app_name AS app_name,
@@ -29,8 +30,8 @@ SELECT
   SUM(organic_search_count) AS organic_search_count,
   SUM(search_count) AS search_count,
   SUM(search_with_ads) AS search_with_ads,
-  SUM(uri_count) AS uri_count,
-  SUM(active_hours_sum) AS active_hours
+  SUM(uri_count) as uri_count,
+  SUM(active_hours_sum) as active_hours
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.unified_metrics_v1`
 WHERE
@@ -47,6 +48,7 @@ GROUP BY
   country,
   device_model,
   distribution_id,
+  first_seen_date,
   is_default_browser,
   locale,
   app_name,

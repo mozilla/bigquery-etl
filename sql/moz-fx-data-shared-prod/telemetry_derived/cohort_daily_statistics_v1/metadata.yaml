@@ -1,0 +1,23 @@
+friendly_name: Cohort Daily Statistics
+description: |-
+  Cohort Daily Statistics consists of one row per cohort date
+  per activity date (up to 180 days after the cohort start date)
+  It's a summary of the cohort's activity in that day.
+
+  Note that the values for client attributes are based on the
+  attributes at the time the cohort started (rather than the
+  values at activity time)
+# TODO: Partitioning, can we partition by cohort_date with write_append?
+owners:
+- anicholson@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_analytics_aggregations
+bigquery:
+  clustering:
+    fields:
+    - attribution_medium
+    - channel
+    - country
+    - app_name

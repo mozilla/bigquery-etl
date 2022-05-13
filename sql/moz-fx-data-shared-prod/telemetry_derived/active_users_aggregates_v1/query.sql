@@ -1,4 +1,4 @@
--- Aggregated clients data including active users, uri_count, new profiles and search metrics
+-- Aggregated clients data including active users, new profiles and search metrics
 SELECT
   activity_segment AS segment,
   app_version AS app_version,
@@ -12,6 +12,7 @@ SELECT
   country,
   device_model,
   distribution_id,
+  first_seen_date,
   is_default_browser,
   locale,
   normalized_app_name AS app_name,
@@ -47,6 +48,7 @@ GROUP BY
   country,
   device_model,
   distribution_id,
+  first_seen_date,
   is_default_browser,
   locale,
   app_name,

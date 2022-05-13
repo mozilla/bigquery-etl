@@ -49,7 +49,7 @@ activity_cohort_match AS (
   SELECT
     cohorts_in_range.client_id AS cohort_client_id,
     submission_date_activity.client_id AS active_client_id,
-    cohorts_in_range.*
+    cohorts_in_range.* EXCEPT(client_id)
   FROM
     cohorts_in_range
   LEFT JOIN

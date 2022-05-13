@@ -20,6 +20,6 @@ bigquery:
   clustering:
     fields:
     - attribution_medium
-    - channel
+    - normalized_channel
     - country
-    - app_name
+    - normalized_app_name

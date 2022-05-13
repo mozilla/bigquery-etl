@@ -72,8 +72,9 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="cohort_date",
         depends_on_past=False,
+        arguments=["--append_table"],
     )
 
     wait_for_telemetry_derived__unified_metrics__v1 = ExternalTaskCompletedSensor(

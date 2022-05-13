@@ -14,7 +14,8 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_analytics_aggregations
-  date_partition_parameter: null
+  date_partition_parameter: cohort_date
+  arguments: ['--append_table']
 bigquery:
   clustering:
     fields:

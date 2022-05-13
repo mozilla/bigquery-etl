@@ -43,7 +43,7 @@ cohorts_in_range AS (
     cohort_date > DATE_SUB(
       @submission_date,
       INTERVAL 180 DAY
-    )
+    ) -- Note this is a pretty big scan... Look here for problems
 ),
 activity_cohort_match AS (
   SELECT

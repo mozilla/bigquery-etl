@@ -1,9 +1,14 @@
 friendly_name: Rolling Cohorts
 description: |-
   Rolling Cohorts consists of one row per client per date (each date
-  representing a new cohort) i.e. all the clients that had
-  profiles created that day. This can be left joined to calculate
-  activity metrics for particular cohorts.
+  representing a new cohort) i.e. all the clients that had their first
+  ping sent that day. This can be left joined with various activity
+  tables to calculate activity metrics for particular cohorts.
+
+  Note that client-attributes such as os versions, is default browser,
+  etc. are based on the values at the time the cohort is created.
+  This might not be the same as when activity happens. For example
+  if a client changes whether Firefox is the default browser.
 owners:
 - anicholson@mozilla.com
 labels:
@@ -22,4 +27,3 @@ bigquery:
     - channel
     - country
     - app_name
-references: {}

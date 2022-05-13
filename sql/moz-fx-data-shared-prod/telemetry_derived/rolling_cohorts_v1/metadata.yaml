@@ -15,12 +15,8 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_unified
+  date_partition_parameter: cohort_date
 bigquery:
-  time_partitioning:
-    field: cohort_date
-    type: day
-    require_partition_filter: true
-    expiration_days: null
   clustering:
     fields:
     - attribution_medium

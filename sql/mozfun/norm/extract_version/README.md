@@ -14,6 +14,6 @@ Example using `"96.05.01"`:
 ```sql
 SELECT
     mozfun.norm.extract_version('96.05.01', 'major') as major_version, -- 96
-    mozfun.norm.extract_version('96.05.01', 'minor') as minor_version, -- .05
-    mozfun.norm.extract_version('96.05.01', 'patch') as patch_version  -- .01
+    mozfun.norm.extract_version('96.05.01', 'minor') as minor_version, -- 5
+    mozfun.norm.extract_version('96.05.01', 'patch') as patch_version  -- 1
 ```

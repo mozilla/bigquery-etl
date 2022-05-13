@@ -14,10 +14,11 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_analytics_aggregations
+  date_partition_parameter: null
 bigquery:
   clustering:
     fields:
     - attribution_medium
-    - channel
+    - normalized_channel
     - country
-    - app_name
+    - normalized_app_name

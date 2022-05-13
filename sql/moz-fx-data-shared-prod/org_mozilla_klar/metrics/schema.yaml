@@ -863,6 +863,23 @@ fields:
     mode: NULLABLE
     name: custom_distribution
     type: RECORD
+  - fields:
+    - description: 'Measures the time spent to download the nimbus experiments
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: NULLABLE
+      name: nimbus_experiments_nimbus_initial_fetch
+      type: RECORD
+    mode: NULLABLE
+    name: timespan
+    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

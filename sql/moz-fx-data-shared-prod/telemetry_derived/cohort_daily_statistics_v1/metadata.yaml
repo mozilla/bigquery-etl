@@ -7,7 +7,6 @@ description: |-
   Note that the values for client attributes are based on the
   attributes at the time the cohort started (rather than the
   values at activity time)
-# TODO: Partitioning, can we partition by cohort_date with write_append?
 owners:
 - anicholson@mozilla.com
 labels:

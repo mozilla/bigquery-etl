@@ -3,7 +3,7 @@
 This guide takes you through the creation of a simple derived dataset using bigquery-etl and scheduling it using Airflow, to be updated on a daily basis. It applies to the products we ship to customers, that use (or will use) the Glean SDK.
 
 This guide also includes the specific instructions to set it as a [public dataset](https://blog.mozilla.org/data/2020/09/25/data-publishing-mozilla/).
-**Important!** Make sure you only set the dataset public if you expect the data to be available outside Mozilla. Read our [public datasets reference](https://mozilla.github.io/bigquery-etl/reference/public_data/) for context.
+_Make sure you only set the dataset public if you expect the data to be available outside Mozilla_. Read our [public datasets reference](https://mozilla.github.io/bigquery-etl/reference/public_data/) for context.
 
 To illustrate the overall process, we will use a simple test case and a small [Glean](https://mozilla.github.io/glean/) application for which we want to generate an aggregated dataset based on the raw ping data.
 
@@ -35,18 +35,18 @@ In our example:
 ./bqetl query create org_mozilla_mozregression_derived.mozregression_aggregates
 ```
 
-This command does a two things:
+This command does two things:
 
-- Generate the template files `metadata.yaml` and `query.sql` representing a query to build the dataset in `sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/mozregression_aggregates_v1`
+- Generate the template files `metadata.yaml` and `query.sql` representing the query to build the dataset in `sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/mozregression_aggregates_v1`
 - Generate a "view" of the dataset in `sql/moz-fx-data-shared-prod/org_mozilla_mozregression/mozregression_aggregates`.
 
-We generate the view to enable a stable interface, while allowing the dataset backend to evolve over time. Views are automatically published to the `mozdata` project.
+We generate the view to have a stable interface, while allowing the dataset backend to evolve over time. Views are automatically published to the `mozdata` project.
 
 ## Fill out the YAML
 
 The next step is to modify the generated `metadata.yaml` and `query.sql` sections with specific information.
 
-Let's look at how the `metadata.yaml` file for our example looks. Make sure to adapt your to your dataset.
+Let's look at what the `metadata.yaml` file for our example looks like. Make sure to adapt this file for your own dataset.
 
 ```yaml
 friendly_name: mozregression aggregates
@@ -70,12 +70,12 @@ bigquery:
 
 Most of the fields are self-explanatory. `incremental` means that the table is updated incrementally, e.g. a new partition gets added/updated to the destination table whenever the query is run. For non-incremental queries the entire destination is overwritten when the query is executed.
 
-[For big datasets make sure to include optimization strategies](https://docs.telemetry.mozilla.org/cookbooks/bigquery/optimization.html). Our aggregation is small but for the sake of the example, we are including a partition by `date` field and clustering on `app_used` and `os`.
+[For big datasets make sure to include optimization strategies](https://docs.telemetry.mozilla.org/cookbooks/bigquery/optimization.html). Our aggregation is small so it is only for illustration purposes that we are including a partition by the `date` field and a clustering on `app_used` and `os`.
 
 
-#### Note! This os only if you want to setup the dataset as public
+#### The YAML file structure for a public dataset
 Setting the dataset as public means that it will be both in Mozilla's public BigQuery project and a world-accessible JSON endpoint, and is a process that requires a data review.
-For the YAMl some labels are required: `public_json`, `public_bigquery` and the `review_bugs` secrtion that refers to the Bugzilla bug where opening this data set up to the public was approved: we'll get to that in a subsequent section.
+The required labels are: `public_json`, `public_bigquery` and `review_bugs` which refers to the Bugzilla bug where opening this data set up to the public was approved: we'll get to that in a subsequent section.
 
 ```yaml
 friendly_name: mozregression aggregates
@@ -107,7 +107,7 @@ Now that we've filled out the metadata, we can look into creating a query. In ma
 
 Test your query and add it to the `query.sql` file.
 
-In our example, the query is tested in `sql.telemetry.mozilla.org`, and the file looks like this:
+In our example, the query is tested in `sql.telemetry.mozilla.org`, and the `query.sql` file looks like this:
 
 
 ```sql
@@ -153,7 +153,9 @@ If there are no problems, you should see no output.
 
 ## Creating the table schema
 
-Use bqetl to setup the schema that will be used to create the table. The output of the following command is the schema.YAML file.
+Use bqetl to set up the schema that will be used to create the table.
+
+Review the schema.YAML generated as an output of the following command, and make sure all data types are set correctly and according to the data expected from the query.
 
 ```bash
 ./bqetl query schema update <dataset>.<table>`
@@ -214,7 +216,7 @@ _This is for public datasets only! You can skip this step if you're only creatin
 
 Before a dataset can be made public, it needs to go through data review according to our [data publishing process](https://wiki.mozilla.org/Data_Publishing#Dataset_Publishing_Process_2). This means filing a bug, answering a few questions, and then finding a [data steward](https://wiki.mozilla.org/Firefox/Data_Collection) to review your proposal.
 
-The dataset we're using in this example is very simple and straightforward and doesn't have any particularly sensitive data, so the data review is very simple. You can see the full details in [bug 1691105](https://bugzilla.mozilla.org/show_bug.cgi?id=1691105).
+The dataset we're using in this example is very simple and straightforward and does not have any particularly sensitive data, so the data review is very simple. You can see the full details in [bug 1691105](https://bugzilla.mozilla.org/show_bug.cgi?id=1691105).
 
 ## Create a Pull Request
 
@@ -227,7 +229,7 @@ git commit
 git push origin <new_branch_name>
 ```
 
-And this for our specific example:
+And next is the workflow for our specific example:
 
 ```bash
 git checkout -b mozregression-aggregates
@@ -238,13 +240,15 @@ git push origin mozregression-aggregates
 
 Then create your pull request, either from the GitHub web interface or the command line, per your preference.
 
-Note this example assumes that `origin` points to your fork. Adjust the last push invocation appropriately if you have a different [remote](https://git-scm.com/docs/git-remote) set.
+**Note** At this point, the CI is expected to fail because the schema does not exist yet in BigQuery. This will be handled in the next step.
+
+This example assumes that `origin` points to your fork. Adjust the last push invocation appropriately if you have a different [remote](https://git-scm.com/docs/git-remote) set.
 
 Speaking of forks, note that if you're making this pull request from a fork, many jobs will currently fail due to lack of credentials. In fact, even if you're pushing to the origin, you'll get failures because the table is not yet created. That brings us to the next step, but before going further it's generally best to get someone to review your work: at this point we have more than enough for people to provide good feedback on.
 
 ## Creating an initial table
 
-Once the PR has been aproved, deploy the schema to bqetl using this command:
+Once the PR has been approved, deploy the schema to bqetl using this command:
 
 ```bash
 ./bqetl query schema deploy <schema>.<table>
@@ -255,10 +259,7 @@ For our example:
 ./bqetl query schema deploy org_mozilla_mozregression_derived.mozregression_aggregates_v1
 ```
 
-At his point, the table exists in Bigquery, so we need to [find and re-run the CI](https://app.circleci.com/pipelines/github/mozilla/bigquery-etl?) for your PR and the tests should pass.
-
-
-## Backfilling your dataset
+## Backfilling the dataset
 
 It is recommended to use the [bqetl backfill command](https://mozilla.github.io/bigquery-etl/bqetl/#backfill) in order to load the data in your new table, and set specific dates for large sets of data, as well as following the [recommended practices](https://mozilla.github.io/bigquery-etl/reference/recommended_practices/#backfills).
 
@@ -272,3 +273,9 @@ For our example:
 ```
 
 **Note**. Alternatively, you can trigger the Airflow DAG to backfill the data. In this case, it is recommended to talk to someone in in Data Engineering or Data SRE to trigger the DAG.
+
+## Completing the Pull Request
+
+At this point, the table exists in Bigquery so you are able to:
+- [Find and re-run the CI](https://app.circleci.com/pipelines/github/mozilla/bigquery-etl?) of your PR and make sure that all tests pass
+- Merge your PR.

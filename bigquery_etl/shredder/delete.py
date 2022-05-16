@@ -192,9 +192,11 @@ def delete_from_partition(
 ):
     """Return callable to handle deletion requests for partitions of a target table."""
     job_config = bigquery.QueryJobConfig(dry_run=dry_run, priority=priority)
-    # special partitions can't be set as a destination, so DML must be used except
-    # in dry runs because destination isn't required and DML may not be allowed
-    if partition.is_special and not dry_run:
+    # whole table operations must use DML to protect against dropping partitions in the
+    # case of conflicting write operations in ETL, and special partitions must use DML
+    # because they can't be set as a query destination, except in dry runs because DML
+    # may not be allowed and destination isn't required
+    if (partition.id is None or partition.is_special) and not dry_run:
         use_dml = True
     elif not use_dml and not partition.is_special:
         job_config.destination = sql_table_id(target) + (

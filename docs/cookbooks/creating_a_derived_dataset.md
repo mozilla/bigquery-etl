@@ -176,7 +176,9 @@ Before scheduling your query, you'll need to find an [Airflow DAG](https://airfl
 ./bqetl dag create <dag_name> --schedule-interval "0 4 * * *" --owner <email_for_notifications> --description "Add a clear description of the DAG here" --start-date <YYYY-MM-DD> --tag impact/<tier>
 ```
 
-For our example, the starting date is `2020-06-01`, we use a schedule interval of `0 4 \* \* \*` (4am UTC daily) instead of "daily" (12am UTC daily) to make sure this isn't competing for slots with desktop and mobile product ETL. The `--tag impact/tier3` parameter specifies that this DAG is considered "tier 3". For a list of valid tags and their descriptions see [Airflow Tags](../reference/airflow_tags.md).
+For our example, the starting date is `2020-06-01` and we use a schedule interval of `0 4 \* \* \*` (4am UTC daily) instead of "daily" (12am UTC daily) to make sure this isn't competing for slots with desktop and mobile product ETL.
+
+The `--tag impact/tier3` parameter specifies that this DAG is considered "tier 3". For a list of valid tags and their descriptions see [Airflow Tags](../reference/airflow_tags.md).
 
 ```bash
 ./bqetl dag create bqetl_internal_tooling --schedule-interval "0 4 * * *" --owner wlachance@mozilla.com --description "This DAG schedules queries for populating queries related to Mozilla's internal developer tooling (e.g. mozregression)." --start-date 2020-06-01 --tag impact/tier_3

@@ -40,10 +40,11 @@ cohorts_in_range AS (
   FROM
     telemetry_derived.rolling_cohorts_v1
   WHERE
-    cohort_date > DATE_SUB(
+    cohort_date >= DATE_SUB( -- Note this is a pretty big scan... Look here for problems
       @activity_date,
       INTERVAL 180 DAY
-    ) -- Note this is a pretty big scan... Look here for problems
+    )
+    AND cohort_date < @activity_date -- No need to get activity for the cohort date - everyone will be retained
 ),
 activity_cohort_match AS (
   SELECT

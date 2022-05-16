@@ -75,6 +75,7 @@ with DAG(
         date_partition_parameter="cohort_date",
         depends_on_past=False,
         arguments=["--append_table"],
+        parameters=["submission_date:DATE:{{ds}}"],
     )
 
     wait_for_telemetry_derived__unified_metrics__v1 = ExternalTaskCompletedSensor(

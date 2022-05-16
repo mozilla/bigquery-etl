@@ -176,16 +176,9 @@ jobs:
             venv/bin/pip-sync --pip-args=--no-deps requirements.txt
       - run:
           name: PyTest Integration Test
-          # Google's client libraries will check for
-          # GOOGLE_APPLICATION_CREDENTIALS
-          # and use a file in that location for credentials if present;
-          # See https://cloud.google.com/docs/authentication/production
           # yamllint disable rule:line-length
           command: |
-            export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
-            echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
             PATH="venv/bin:$PATH" script/entrypoint -m 'integration or java' -n 8
-          # yamllint enable rule:line-length
       - save_cache:
           paths:
             - ~/.m2

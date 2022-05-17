@@ -33,7 +33,7 @@ fields:
   type: TIMESTAMP
   mode: NULLABLE
 - name: canceled_for_customer_at
-  type: STRING
+  type: TIMESTAMP
   mode: NULLABLE
 - name: cancel_at
   type: TIMESTAMP

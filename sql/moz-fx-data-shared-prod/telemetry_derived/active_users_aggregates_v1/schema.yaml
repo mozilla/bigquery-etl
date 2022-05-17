@@ -95,3 +95,6 @@ fields:
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
+- mode: NULLABLE
+  name: first_seen_year
+  type: INTEGER

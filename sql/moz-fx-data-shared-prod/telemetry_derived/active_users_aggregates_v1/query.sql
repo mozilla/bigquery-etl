@@ -12,7 +12,7 @@ SELECT
   country,
   device_model,
   distribution_id,
-  CAST (EXTRACT(YEAR from first_seen_date) AS INT) as first_seen_year,
+  EXTRACT(YEAR from first_seen_date) as first_seen_year,
   is_default_browser,
   locale,
   normalized_app_name AS app_name,

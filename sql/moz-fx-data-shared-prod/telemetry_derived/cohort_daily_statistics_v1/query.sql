@@ -43,7 +43,7 @@ cohorts_in_range AS (
     cohort_date
     BETWEEN DATE_SUB(@activity_date, INTERVAL 180 DAY)
     AND DATE_SUB(@activity_date, INTERVAL 1 DAY)
-    -- (1) No need to get activity for the cohort date - everyone will be retained
+    -- (1) No need to get activity for the cohort created on activity_date - everyone will be retained
     -- (2) Note this is a pretty big scan... Look here for problems
 ),
 activity_cohort_match AS (

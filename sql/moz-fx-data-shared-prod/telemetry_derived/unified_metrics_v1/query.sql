@@ -120,7 +120,7 @@ search_clients AS (
   FROM
     search_derived.mobile_search_clients_daily_v1
   WHERE
-    submission_date = @submission_date
+    submission_date = DATE_ADD(@submission_date, INTERVAL 1 DAY)
 ),
 search_metrics AS (
   SELECT
@@ -221,7 +221,7 @@ mobile_with_searches AS (
     search_metrics search
   ON
     search.client_id = unioned.client_id
-    AND search.submission_date = unioned.submission_date
+    AND search.submission_date = DATE_ADD(unioned.submission_date, INTERVAL 1 DAY)
 ),
 desktop AS (
   SELECT

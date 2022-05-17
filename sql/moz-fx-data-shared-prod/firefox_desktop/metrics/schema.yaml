@@ -1222,6 +1222,31 @@ fields:
     mode: NULLABLE
     name: uuid
     type: RECORD
+  - fields:
+    - description: 'Records how many percent of battery was available for each period
+        of user activity.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: power_battery_percentage_when_user_active
+      type: RECORD
+    mode: NULLABLE
+    name: custom_distribution
+    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

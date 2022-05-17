@@ -126,6 +126,7 @@ search_metrics AS (
   SELECT
     unioned.client_id,
     unioned.submission_date,
+        -- the table is more than one row per client (one row per engine, looks like), so we have to aggregate.
     SUM(ad_click) AS ad_click,
     SUM(organic) AS organic_search_count,
     SUM(search_count) AS search_count,

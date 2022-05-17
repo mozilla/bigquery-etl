@@ -136,7 +136,7 @@ search_metrics AS (
     search_clients s
   ON
     unioned.client_id = s.client_id
-    AND unioned.submission_date = s.submission_date
+    AND DATE_ADD(unioned.submission_date, INTERVAL 1 DAY) = s.submission_date
   GROUP BY
     client_id,
     submission_date

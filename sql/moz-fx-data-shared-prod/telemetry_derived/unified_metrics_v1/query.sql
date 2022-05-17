@@ -134,10 +134,10 @@ search_metrics AS (
   FROM
     unioned
   LEFT JOIN
-    search_clients s
+    search_clients
   ON
-    unioned.client_id = s.client_id
-    AND DATE_ADD(unioned.submission_date, INTERVAL 1 DAY) = s.submission_date
+    unioned.client_id = search_clients.client_id
+    AND DATE_ADD(unioned.submission_date, INTERVAL 1 DAY) = search_clients.submission_date
   GROUP BY
     client_id,
     submission_date
@@ -176,7 +176,7 @@ mobile_with_searches AS (
     unioned.normalized_app_name,
     unioned.app_display_version AS app_version,
     unioned.normalized_channel,
-    IFNULL(unioned.country, '??') country,
+    COALESCE(unioned.country, '??') country,
     unioned.city,
     unioned.days_seen_bits,
     unioned.days_created_profile_bits,

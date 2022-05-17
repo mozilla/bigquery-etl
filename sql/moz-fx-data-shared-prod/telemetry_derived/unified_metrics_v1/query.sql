@@ -175,7 +175,7 @@ mobile_with_searches AS (
     unioned.normalized_app_name,
     unioned.app_display_version AS app_version,
     unioned.normalized_channel,
-    IFNULL(country, '??') country,
+    IFNULL(unioned.country, '??') country,
     unioned.city,
     unioned.days_seen_bits,
     unioned.days_created_profile_bits,

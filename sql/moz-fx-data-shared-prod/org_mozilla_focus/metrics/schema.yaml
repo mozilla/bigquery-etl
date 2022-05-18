@@ -291,6 +291,33 @@ fields:
       mode: NULLABLE
       name: mozilla_products_is_fenix_default_browser
       type: BOOLEAN
+    - description: 'True if the Proton default theme is enabled.
+
+        '
+      mode: NULLABLE
+      name: browser_ui_proton_enabled
+      type: BOOLEAN
+    - description: 'True if we failed to register with the idle service. Absent otherwise.
+
+        Means IPC probably isn''t working well.
+
+        Child-process data will likely be absent, or incomplete.
+
+        '
+      mode: NULLABLE
+      name: fog_failed_idle_registration
+      type: BOOLEAN
+    - description: 'The value `true`, recorded when a Firefox Telemetry "main" ping
+        is about
+
+        to be assembled.
+
+        To be used to validate GIFFT.
+
+        '
+      mode: NULLABLE
+      name: gifft_validation_main_ping_assembling
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD
@@ -453,6 +480,78 @@ fields:
         '
       mode: NULLABLE
       name: browser_report_site_issue_counter
+      type: INTEGER
+    - description: 'The number of times we failed to flush all non-parent-process
+        data,
+
+        throwing even partial results into the trash.
+
+        If this number is high, we might consider writing custom `MozPromise`-
+
+        handling code instead of using `MozPromise::All`.
+
+        '
+      mode: NULLABLE
+      name: fog_ipc_flush_failures
+      type: INTEGER
+    - description: 'The number of times the ipc buffer failed to be replayed in the
+
+        parent process.
+
+        '
+      mode: NULLABLE
+      name: fog_ipc_replay_failures
+      type: INTEGER
+    - description: 'The number of times we tried to register shutdown flush routines
+        for
+
+        content child processes, and failed (probably because there was no main
+
+        thread).
+
+        As a result there may be data loss from content child processes.
+
+        Large or rising number of clients experiencing this indicates we should
+
+        perhaps refactor content child shutdown in FOG to try harder to register
+
+        flush operations.
+
+        Will likely be obsoleted by bug 1641989.
+
+        '
+      mode: NULLABLE
+      name: fog_ipc_shutdown_registration_failures
+      type: INTEGER
+    - description: 'Impossibly large CPU time values that were discarded.
+
+        '
+      mode: NULLABLE
+      name: power_cpu_time_bogus_values
+      type: INTEGER
+    - description: 'Impossibly large GPU time values that were discarded.
+
+        '
+      mode: NULLABLE
+      name: power_gpu_time_bogus_values
+      type: INTEGER
+    - description: 'Total CPU time used by all processes in ms.
+
+        '
+      mode: NULLABLE
+      name: power_total_cpu_time_ms
+      type: INTEGER
+    - description: 'Total GPU time used by all processes in ms.
+
+        '
+      mode: NULLABLE
+      name: power_total_gpu_time_ms
+      type: INTEGER
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+
+        '
+      mode: NULLABLE
+      name: power_total_thread_wakeups
       type: INTEGER
     mode: NULLABLE
     name: counter
@@ -675,6 +774,202 @@ fields:
       mode: REPEATED
       name: browser_search_search_count
       type: RECORD
+    - description: 'The result of Gecko fetching an update.xml from Balrog. This captures
+        3 different data points: success or failure of the request, if cert pinning
+        or content signatures were used to verify the result, and the reason for failure,
+        if the request failed.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: gmp_update_xml_fetch_result
+      type: RECORD
+    - description: 'How many miliseconds of CPU time were used. Broken down by thread
+        name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_cpu_ms_per_thread_content_background
+      type: RECORD
+    - description: 'How many miliseconds of CPU time were used. Broken down by thread
+        name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_cpu_ms_per_thread_content_foreground
+      type: RECORD
+    - description: 'How many miliseconds of CPU time were used. Broken down by thread
+        name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_cpu_ms_per_thread_gpu_process
+      type: RECORD
+    - description: 'How many miliseconds of CPU time were used. Broken down by thread
+        name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_cpu_ms_per_thread_parent_active
+      type: RECORD
+    - description: 'How many miliseconds of CPU time were used. Broken down by thread
+        name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_cpu_ms_per_thread_parent_inactive
+      type: RECORD
+    - description: 'CPU time used by each process type in ms.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_cpu_time_per_process_type_ms
+      type: RECORD
+    - description: 'GPU time used by each process type in ms.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_gpu_time_per_process_type_ms
+      type: RECORD
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+        Broken down by process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_wakeups_per_process_type
+      type: RECORD
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+        Broken down by thread name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_wakeups_per_thread_content_background
+      type: RECORD
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+        Broken down by thread name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_wakeups_per_thread_content_foreground
+      type: RECORD
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+        Broken down by thread name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_wakeups_per_thread_gpu_process
+      type: RECORD
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+        Broken down by thread name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_wakeups_per_thread_parent_active
+      type: RECORD
+    - description: 'How many times threads woke up and could have woken up a CPU core.
+        Broken down by thread name for a given process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: power_wakeups_per_thread_parent_inactive
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD
@@ -767,6 +1062,27 @@ fields:
       mode: NULLABLE
       name: glean_upload_pending_pings_directory_size
       type: RECORD
+    - description: 'The number and size of the IPC buffers being received over FOG
+        IPC.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: fog_ipc_buffer_sizes
+      type: RECORD
     mode: NULLABLE
     name: memory_distribution
     type: RECORD
@@ -805,6 +1121,20 @@ fields:
     - description: Used to identify the source the app was installed from.
       mode: NULLABLE
       name: browser_install_source
+      type: STRING
+    - description: 'The Buildid of the Gecko engine, example: 20200205124310 Mirror
+        of `geckoview.build_id` for validation of migrated data.
+
+        '
+      mode: NULLABLE
+      name: geckoview_validation_build_id
+      type: STRING
+    - description: 'The version of the Gecko engine, example: 74.0a1 Mirror of `geckoview.version`
+        for validation of migrated data.
+
+        '
+      mode: NULLABLE
+      name: geckoview_validation_version
       type: STRING
     mode: NULLABLE
     name: string
@@ -860,6 +1190,27 @@ fields:
       mode: NULLABLE
       name: tab_count_app_backgrounded
       type: RECORD
+    - description: 'Records how many percent of battery was available for each period
+        of user activity.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: power_battery_percentage_when_user_active
+      type: RECORD
     mode: NULLABLE
     name: custom_distribution
     type: RECORD
@@ -877,8 +1228,255 @@ fields:
       mode: NULLABLE
       name: nimbus_experiments_nimbus_initial_fetch
       type: RECORD
+    - description: 'Time the FOG initialization takes.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: NULLABLE
+      name: fog_initialization
+      type: RECORD
     mode: NULLABLE
     name: timespan
+    type: RECORD
+  - fields:
+    - description: 'The length of time between asking the child processes for their
+
+        IPC buffers and all of them being received by the parent.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: fog_ipc_flush_durations
+      type: RECORD
+    - description: 'The time to build a Gecko display list.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: paint_build_displaylist_time
+      type: RECORD
+    - description: 'The time to rasterize glyphs for consumption by WebRender.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: wr_framebuild_time
+      type: RECORD
+    - description: 'The time to rasterize glyphs for consumption by WebRender.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: wr_rasterize_glyphs_time
+      type: RECORD
+    - description: 'WebRender scene build time.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: wr_scenebuild_time
+      type: RECORD
+    - description: 'WebRender scene swap time.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: wr_sceneswap_time
+      type: RECORD
+    mode: NULLABLE
+    name: timing_distribution
     type: RECORD
   mode: NULLABLE
   name: metrics

@@ -32,6 +32,10 @@ fields:
     mode: NULLABLE
     name: architecture
     type: STRING
+  - description: The date & time the application was built
+    mode: NULLABLE
+    name: build_date
+    type: STRING
   - description: A UUID uniquely identifying the client.
     mode: NULLABLE
     name: client_id
@@ -70,10 +74,6 @@ fields:
   - description: The version of the Glean SDK
     mode: NULLABLE
     name: telemetry_sdk_build
-    type: STRING
-  - description: The date & time the application was built
-    mode: NULLABLE
-    name: build_date
     type: STRING
   mode: NULLABLE
   name: client_info
@@ -149,6 +149,10 @@ fields:
       mode: NULLABLE
       name: x_foxsec_ip_reputation
       type: STRING
+    - description: X-LB-Tags HTTP header
+      mode: NULLABLE
+      name: x_lb_tags
+      type: STRING
     - description: X-PingSender-Version HTTP header
       mode: NULLABLE
       name: x_pingsender_version
@@ -160,10 +164,6 @@ fields:
     - description: X-Telemetry-Agent HTTP header
       mode: NULLABLE
       name: x_telemetry_agent
-      type: STRING
-    - description: X-LB-Tags HTTP header
-      mode: NULLABLE
-      name: x_lb_tags
       type: STRING
     - mode: NULLABLE
       name: parsed_date
@@ -221,76 +221,6 @@ fields:
   type: RECORD
 - fields:
   - fields:
-    - description: 'Is Focus the default browser? This is true only if the user
-
-        changes the default browser through the app settings.
-
-        '
-      mode: NULLABLE
-      name: browser_is_default
-      type: BOOLEAN
-    - description: Reports `true` if the client was successfully migrated from the
-        Android-specific implementation of the Glean SDK to the cross-platform one.
-      mode: NULLABLE
-      name: glean_core_migration_successful
-      type: BOOLEAN
-    - description: Set to true if the tasks that are queued prior to Glean initialization
-        time out.
-      mode: NULLABLE
-      name: glean_error_preinit_tasks_timeout
-      type: BOOLEAN
-    - description: 'If Fenix is installed on the users''s device.
-
-        '
-      mode: NULLABLE
-      name: mozilla_products_has_fenix_installed
-      type: BOOLEAN
-    - description: 'Fenix is the default browser on user''s device
-
-        '
-      mode: NULLABLE
-      name: mozilla_products_is_fenix_default_browser
-      type: BOOLEAN
-    - description: 'The user has changed the setting for enhanced tracking protection
-
-        at least once.
-
-        '
-      mode: NULLABLE
-      name: tracking_protection_has_advertising_blocked
-      type: BOOLEAN
-    - description: 'The user has changed the setting for enhanced tracking protection
-
-        at least once.
-
-        '
-      mode: NULLABLE
-      name: tracking_protection_has_analytics_blocked
-      type: BOOLEAN
-    - description: 'The user has changed the setting for enhanced tracking protection
-
-        at least once.
-
-        '
-      mode: NULLABLE
-      name: tracking_protection_has_content_blocked
-      type: BOOLEAN
-    - description: 'The user has changed the setting for enhanced tracking protection
-
-        at least once.
-
-        '
-      mode: NULLABLE
-      name: tracking_protection_has_ever_changed_etp
-      type: BOOLEAN
-    - description: 'The user has changed the setting for enhanced tracking protection
-
-        at least once.
-
-        '
-      mode: NULLABLE
-      name: tracking_protection_has_social_blocked
-      type: BOOLEAN
     - description: 'True if the Proton default theme is enabled.
 
         '
@@ -318,23 +248,95 @@ fields:
       mode: NULLABLE
       name: gifft_validation_main_ping_assembling
       type: BOOLEAN
+    - description: Reports `true` if the client was successfully migrated from the
+        Android-specific implementation of the Glean SDK to the cross-platform one.
+      mode: NULLABLE
+      name: glean_core_migration_successful
+      type: BOOLEAN
+    - description: Set to true if the tasks that are queued prior to Glean initialization
+        time out.
+      mode: NULLABLE
+      name: glean_error_preinit_tasks_timeout
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD
   - fields:
-    - description: 'Records count of URIs visited by the user in the current session,
+    - description: 'The number of five-second intervals (''ticks'') the user was considered
 
-        including page reloads.
+        ''active''.
 
-        It does not include background page requests and URIs from embedded pages
 
-        but may be incremented without user interaction by website scripts
+        ''active'' means keyboard or mouse interaction with the application.
 
-        that programmatically redirect to a new location.
+        It doesn''t take into account whether or not the window has focus or is in
+
+        the foreground, only if it is receiving these interaction events.
+
+
+        Migrated from Telemetry''s `browser.engagement.active_ticks`.
 
         '
       mode: NULLABLE
-      name: browser_total_uri_count
+      name: browser_engagement_active_ticks
+      type: INTEGER
+    - description: 'The number of total non-unique http(s) URIs visited, including
+        page
+
+        reloads, after the session has been restored. URIs on minimized or
+
+        background tabs may also be counted. Private browsing uris are included.
+
+
+        Migrated from Telemetry''s
+
+        `browser.engagement.total_uri_count_normal_and_private_mode`.
+
+        '
+      mode: NULLABLE
+      name: browser_engagement_uri_count
+      type: INTEGER
+    - description: 'The number of times we failed to flush all non-parent-process
+        data,
+
+        throwing even partial results into the trash.
+
+        If this number is high, we might consider writing custom `MozPromise`-
+
+        handling code instead of using `MozPromise::All`.
+
+        '
+      mode: NULLABLE
+      name: fog_ipc_flush_failures
+      type: INTEGER
+    - description: 'The number of times the ipc buffer failed to be replayed in the
+
+        parent process.
+
+        '
+      mode: NULLABLE
+      name: fog_ipc_replay_failures
+      type: INTEGER
+    - description: 'The number of times we tried to register shutdown flush routines
+        for
+
+        content child processes, and failed (probably because there was no main
+
+        thread).
+
+        As a result there may be data loss from content child processes.
+
+        Large or rising number of clients experiencing this indicates we should
+
+        perhaps refactor content child shutdown in FOG to try harder to register
+
+        flush operations.
+
+        Will likely be obsoleted by bug 1641989.
+
+        '
+      mode: NULLABLE
+      name: fog_ipc_shutdown_registration_failures
       type: INTEGER
     - description: 'The number of times we encountered an IO error
 
@@ -409,120 +411,6 @@ fields:
       mode: NULLABLE
       name: glean_validation_foreground_count
       type: INTEGER
-    - description: 'A counter that indicates how many times a user has added
-
-        a website to the autocomplete list.
-
-        '
-      mode: NULLABLE
-      name: settings_screen_autocomplete_domain_added
-      type: INTEGER
-    - description: 'A counter that indicates how many times a user has clicked
-
-        the whats new button from settings screen.
-
-        '
-      mode: NULLABLE
-      name: settings_screen_whats_new_tapped
-      type: INTEGER
-    - description: 'A counter that indicates how many times a user has added
-
-        a website to shortcuts.
-
-        '
-      mode: NULLABLE
-      name: shortcuts_shortcut_added_counter
-      type: INTEGER
-    - description: 'A counter that indicates how many times a user has opened
-
-        a website from a shortcut in the home screen.
-
-        '
-      mode: NULLABLE
-      name: shortcuts_shortcut_opened_counter
-      type: INTEGER
-    - description: 'A counter that indicates how many times a user has opened
-
-        the tracking protection settings panel from the toolbar.
-
-        '
-      mode: NULLABLE
-      name: tracking_protection_toolbar_shield_clicked
-      type: INTEGER
-    - description: 'A counter that indicates how many times a user has added
-
-        a website to the autocomplete list.
-
-        '
-      mode: NULLABLE
-      name: autocomplete_domain_added
-      type: INTEGER
-    - description: 'A counter that indicates how many times a user has removed
-
-        a website from the autocomplete list.
-
-        '
-      mode: NULLABLE
-      name: autocomplete_domain_removed
-      type: INTEGER
-    - description: 'A counter that indicates how many times a user has reordered
-
-        the autocomplete list.
-
-        '
-      mode: NULLABLE
-      name: autocomplete_list_order_changed
-      type: INTEGER
-    - description: 'A counter that indicates how many times a user has tapped
-
-        the report site issue from browser menu
-
-        '
-      mode: NULLABLE
-      name: browser_report_site_issue_counter
-      type: INTEGER
-    - description: 'The number of times we failed to flush all non-parent-process
-        data,
-
-        throwing even partial results into the trash.
-
-        If this number is high, we might consider writing custom `MozPromise`-
-
-        handling code instead of using `MozPromise::All`.
-
-        '
-      mode: NULLABLE
-      name: fog_ipc_flush_failures
-      type: INTEGER
-    - description: 'The number of times the ipc buffer failed to be replayed in the
-
-        parent process.
-
-        '
-      mode: NULLABLE
-      name: fog_ipc_replay_failures
-      type: INTEGER
-    - description: 'The number of times we tried to register shutdown flush routines
-        for
-
-        content child processes, and failed (probably because there was no main
-
-        thread).
-
-        As a result there may be data loss from content child processes.
-
-        Large or rising number of clients experiencing this indicates we should
-
-        perhaps refactor content child shutdown in FOG to try harder to register
-
-        flush operations.
-
-        Will likely be obsoleted by bug 1641989.
-
-        '
-      mode: NULLABLE
-      name: fog_ipc_shutdown_registration_failures
-      type: INTEGER
     - description: 'Impossibly large CPU time values that were discarded.
 
         '
@@ -557,6 +445,31 @@ fields:
     name: counter
     type: RECORD
   - fields:
+    - description: 'Records how many percent of battery was available for each period
+        of user activity.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: power_battery_percentage_when_user_active
+      type: RECORD
+    mode: NULLABLE
+    name: custom_distribution
+    type: RECORD
+  - fields:
     - description: 'The hour of the first run of the application.
 
         '
@@ -567,78 +480,24 @@ fields:
     name: datetime
     type: RECORD
   - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: jwe
+    - description: 'The outcome after the app detected that it was running from DMG
+        or an app translocated location and should offer to install and relaunch itself.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: BOOLEAN
+      mode: REPEATED
+      name: startup_run_from_dmg_install_outcome
+      type: RECORD
+    mode: NULLABLE
+    name: labeled_boolean
     type: RECORD
   - fields:
-    - description: 'Records clicks of adverts on SERP pages.
-
-        The key format is `<provider-name>`.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: browser_search_ad_clicks
-      type: RECORD
-    - description: 'Records the type of interaction a user has on SERP pages.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: browser_search_in_content
-      type: RECORD
-    - description: 'Records counts of SERP pages with adverts displayed.
-
-        The key format is `<provider-name>`.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: browser_search_with_ads
-      type: RECORD
-    - description: 'Counts the number of crashes that occur in the application. This
-        measures only the counts of each crash in association with the labeled type
-        of the crash. The labels correspond to the types of crashes handled by lib-crash.
-
-        Deprecated: `native_code_crash`, `fatal_native_code_crash` and `nonfatal_native_code_crash`
-        replaced by `main_proc_native_code_crash`, `fg_proc_native_code_crash` and
-        `bg_proc_native_code_crash`.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: crash_metrics_crash_count
-      type: RECORD
     - description: 'Counts the number of times a metric was set with an invalid label.
 
         The labels are the `category.name` identifier of the metric.
@@ -731,48 +590,6 @@ fields:
         type: INTEGER
       mode: REPEATED
       name: glean_validation_pings_submitted
-      type: RECORD
-    - description: 'A counter that indicates how many times a user has removed
-
-        a website from shortcuts.
-
-        It also indicates the screen it was removed from, home or browser.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: shortcuts_shortcut_removed_counter
-      type: RECORD
-    - description: 'The labels for this counter are `<search-engine-name>.<source>`.
-
-
-        If the search engine is bundled with Focus `search-engine-name` will be
-
-        the name of the search engine. If it''s a custom search engine (defined:
-
-        https://github.com/mozilla-mobile/fenix/issues/1607) the value will be
-
-        `custom`.
-
-
-        `source` will be: `action`, `suggestion`
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: browser_search_search_count
       type: RECORD
     - description: 'The result of Gecko fetching an update.xml from Balrog. This captures
         3 different data points: success or failure of the request, if cert pinning
@@ -974,30 +791,27 @@ fields:
     name: labeled_counter
     type: RECORD
   - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - fields:
+    - description: 'The number and size of the IPC buffers being received over FOG
+        IPC.
+
+        '
+      fields:
       - mode: NULLABLE
-        name: key
-        type: STRING
+        name: sum
+        type: INTEGER
       - fields:
         - mode: NULLABLE
-          name: denominator
-          type: INTEGER
+          name: key
+          type: STRING
         - mode: NULLABLE
-          name: numerator
+          name: value
           type: INTEGER
-        mode: NULLABLE
-        name: value
+        mode: REPEATED
+        name: values
         type: RECORD
-      mode: REPEATED
-      name: value
+      mode: NULLABLE
+      name: fog_ipc_buffer_sizes
       type: RECORD
-    mode: REPEATED
-    name: labeled_rate
-    type: RECORD
-  - fields:
     - description: 'The size of the database file at startup.
 
         '
@@ -1062,78 +876,21 @@ fields:
       mode: NULLABLE
       name: glean_upload_pending_pings_directory_size
       type: RECORD
-    - description: 'The number and size of the IPC buffers being received over FOG
-        IPC.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      mode: NULLABLE
-      name: fog_ipc_buffer_sizes
-      type: RECORD
     mode: NULLABLE
     name: memory_distribution
     type: RECORD
   - fields:
-    - description: 'The number of shortcuts the user has on home screen,
-
-        0, 1, 2, 3 or 4 (maximum)
+    - description: 'browser.link.open_newwindow.restriction preference value, that
+        is one of 0, 1, or 2, where 2 is desktop default
 
         '
       mode: NULLABLE
-      name: shortcuts_shortcuts_on_home_number
+      name: browser_link_open_newwindow_restriction
       type: INTEGER
     mode: NULLABLE
     name: quantity
     type: RECORD
   - fields:
-    - description: 'A string containing the default search engine name.
-
-        '
-      mode: NULLABLE
-      name: browser_default_search_engine
-      type: STRING
-    - description: Used to identify the source the app was installed from.
-      mode: NULLABLE
-      name: browser_install_source
-      type: STRING
-    - description: 'The locale that differs from the system locale if a user
-
-        specifically overrides it for the app.
-
-        '
-      mode: NULLABLE
-      name: browser_locale_override
-      type: STRING
-    - description: 'The optional reason the ping was submitted.
-
-        The specific values for reason are specific to each ping, and are
-
-        documented in the ping''s pings.yaml file.
-
-        '
-      mode: NULLABLE
-      name: ping_reason
-      type: STRING
-    - description: 'A string that indicates the theme. Can be one of LIGHT, DARK,
-        or FOLLOW DEVICE. Default is FOLLOW DEVICE.
-
-        '
-      mode: NULLABLE
-      name: preferences_user_theme
-      type: STRING
     - description: 'The Buildid of the Gecko engine, example: 20200205124310 Mirror
         of `geckoview.build_id` for validation of migrated data.
 
@@ -1148,86 +905,20 @@ fields:
       mode: NULLABLE
       name: geckoview_validation_version
       type: STRING
+    - description: 'The optional reason the ping was submitted.
+
+        The specific values for reason are specific to each ping, and are
+
+        documented in the ping''s pings.yaml file.
+
+        '
+      mode: NULLABLE
+      name: ping_reason
+      type: STRING
     mode: NULLABLE
     name: string
     type: RECORD
   - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: text
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: url
-    type: RECORD
-  - fields:
-    - description: Number of opened tabs when the app has been send to background.
-      fields:
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      mode: NULLABLE
-      name: tab_count_app_backgrounded
-      type: RECORD
-    - description: 'Records how many percent of battery was available for each period
-        of user activity.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      mode: NULLABLE
-      name: power_battery_percentage_when_user_active
-      type: RECORD
-    mode: NULLABLE
-    name: custom_distribution
-    type: RECORD
-  - fields:
-    - description: 'Measures the time spent to download the nimbus experiments
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: NULLABLE
-      name: nimbus_experiments_nimbus_initial_fetch
-      type: RECORD
     - description: 'Time the FOG initialization takes.
 
         '
@@ -1477,6 +1168,30 @@ fields:
       type: RECORD
     mode: NULLABLE
     name: timing_distribution
+    type: RECORD
+  - fields:
+    - description: 'The client_id according to Telemetry.
+
+        Might not always have a value due to being too early for it to have
+
+        loaded.
+
+        Value may be the canary client id `c0ffeec0-ffee-c0ff-eec0-ffeec0ffeec0`
+
+        in pings near when the data upload pref is disabled (if Telemetry gets
+
+        to go first), or between when a client_id has been removed and when it
+
+        has been regenerated.
+
+        Does not need to be sent in the Glean "deletion-request" ping.
+
+        '
+      mode: NULLABLE
+      name: legacy_telemetry_client_id
+      type: STRING
+    mode: NULLABLE
+    name: uuid
     type: RECORD
   mode: NULLABLE
   name: metrics

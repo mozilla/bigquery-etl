@@ -50845,6 +50845,15 @@ fields:
           mode: NULLABLE
           name: extensions_startup_cache_write_byte_length
           type: INTEGER
+        - description: 'The AppUpdatePin Enterprise Policy controls the maximum version
+            that the browser can update to. If the policy is set, this probe will
+            report the policy''s value. The possible policy values are "X." and "X.Y.",
+            where X is the pinned major version and Y is the pinned minor version.
+
+            '
+          mode: NULLABLE
+          name: update_version_pin
+          type: STRING
         mode: NULLABLE
         name: scalars
         type: RECORD

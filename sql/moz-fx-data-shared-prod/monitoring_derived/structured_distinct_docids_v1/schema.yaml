@@ -1,6 +1,6 @@
 fields:
 - description: null
-  mode: REQUIRED
+  mode: NULLABLE
   name: submission_date
   type: DATE
 - description: null

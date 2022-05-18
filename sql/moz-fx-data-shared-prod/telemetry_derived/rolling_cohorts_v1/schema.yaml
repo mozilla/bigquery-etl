@@ -1,6 +1,12 @@
 fields:
 - mode: NULLABLE
-  name: segment
+  name: client_id
+  type: STRING
+- mode: NULLABLE
+  name: cohort_date
+  type: DATE
+- mode: NULLABLE
+  name: activity_segment
   type: STRING
 - mode: NULLABLE
   name: app_version
@@ -42,16 +48,16 @@ fields:
   name: locale
   type: STRING
 - mode: NULLABLE
-  name: app_name
+  name: normalized_app_name
   type: STRING
 - mode: NULLABLE
-  name: channel
+  name: normalized_channel
   type: STRING
 - mode: NULLABLE
-  name: os
+  name: normalized_os
   type: STRING
 - mode: NULLABLE
-  name: os_version
+  name: normalized_os_version
   type: STRING
 - mode: NULLABLE
   name: os_version_major
@@ -59,39 +65,3 @@ fields:
 - mode: NULLABLE
   name: os_version_minor
   type: INTEGER
-- mode: NULLABLE
-  name: submission_date
-  type: DATE
-- mode: NULLABLE
-  name: dau
-  type: INTEGER
-- mode: NULLABLE
-  name: wau
-  type: INTEGER
-- mode: NULLABLE
-  name: mau
-  type: INTEGER
-- mode: NULLABLE
-  name: new_profiles
-  type: INTEGER
-- mode: NULLABLE
-  name: ad_clicks
-  type: INTEGER
-- mode: NULLABLE
-  name: organic_search_count
-  type: INTEGER
-- mode: NULLABLE
-  name: search_count
-  type: INTEGER
-- mode: NULLABLE
-  name: search_with_ads
-  type: INTEGER
-- mode: NULLABLE
-  name: uri_count
-  type: INTEGER
-- mode: NULLABLE
-  name: active_hours
-  type: FLOAT
-- mode: NULLABLE
-  name: first_seen_date
-  type: DATE

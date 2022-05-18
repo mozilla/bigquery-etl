@@ -53,7 +53,7 @@ SELECT
   assert.equals('73.0.1', browser_info.version),
   assert.equals(73, browser_info.major_version),
   assert.equals(73.0, browser_info.minor_version),
-  assert.equals(.1, browser_info.patch_revision),
+  assert.equals(1, browser_info.patch_revision),
   assert.false(browser_info.is_major_release)
 FROM
   browser_info;

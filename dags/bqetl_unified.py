@@ -28,6 +28,7 @@ default_args = {
         "telemetry-alerts@mozilla.com",
         "ascholtz@mozilla.com",
         "loines@mozilla.com",
+        "lvargas@mozilla.com",
     ],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
@@ -46,6 +47,23 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    telemetry_derived__rolling_cohorts__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__rolling_cohorts__v1",
+        destination_table="rolling_cohorts_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="anicholson@mozilla.com",
+        email=[
+            "anicholson@mozilla.com",
+            "ascholtz@mozilla.com",
+            "loines@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="cohort_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__unified_metrics__v1 = bigquery_etl_query(
         task_id="telemetry_derived__unified_metrics__v1",
         destination_table="unified_metrics_v1",
@@ -55,10 +73,15 @@ with DAG(
         email=[
             "ascholtz@mozilla.com",
             "loines@mozilla.com",
+            "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    telemetry_derived__rolling_cohorts__v1.set_upstream(
+        telemetry_derived__unified_metrics__v1
     )
 
     wait_for_search_derived__mobile_search_clients_daily__v1 = (

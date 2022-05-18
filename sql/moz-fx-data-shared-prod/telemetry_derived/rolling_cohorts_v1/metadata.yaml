@@ -17,6 +17,10 @@ scheduling:
   dag_name: bqetl_unified
   date_partition_parameter: cohort_date
 bigquery:
+  time_partitioning:
+    field: cohort_date
+    type: day
+    require_partition_filter: true
   clustering:
     fields:
     - attribution_medium

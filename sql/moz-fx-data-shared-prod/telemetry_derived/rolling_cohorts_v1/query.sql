@@ -24,8 +24,8 @@ SELECT
 FROM
   telemetry_derived.unified_metrics_v1
 WHERE
-  submission_date = @submission_date
-  AND first_seen_date = @submission_date
+  submission_date = @cohort_date
+  AND first_seen_date = @cohort_date
 GROUP BY
   client_id,
   first_seen_date

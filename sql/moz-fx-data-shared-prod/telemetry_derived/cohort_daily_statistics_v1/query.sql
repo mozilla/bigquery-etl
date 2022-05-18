@@ -5,7 +5,7 @@ WITH submission_date_activity AS (
   FROM
     telemetry_derived.unified_metrics_v1
   WHERE
-    submission_date = @submission_date
+    submission_date = @activity_date
     AND days_since_seen = 0
   GROUP BY
     client_id,
@@ -16,7 +16,7 @@ cohorts_in_range AS (
   SELECT
     client_id,
     cohort_date,
-    DATE(@submission_date) AS activity_date,
+    DATE(@activity_date) AS activity_date,
     activity_segment,
     app_version,
     attribution_campaign,
@@ -40,10 +40,11 @@ cohorts_in_range AS (
   FROM
     telemetry_derived.rolling_cohorts_v1
   WHERE
-    cohort_date > DATE_SUB(
-      @submission_date,
-      INTERVAL 180 DAY
-    ) -- Note this is a pretty big scan... Look here for problems
+    cohort_date
+    BETWEEN DATE_SUB(@activity_date, INTERVAL 180 DAY)
+    AND DATE_SUB(@activity_date, INTERVAL 1 DAY)
+    -- (1) No need to get activity for the cohort created on activity_date - everyone will be retained
+    -- (2) Note this is a pretty big scan... Look here for problems
 ),
 activity_cohort_match AS (
   SELECT

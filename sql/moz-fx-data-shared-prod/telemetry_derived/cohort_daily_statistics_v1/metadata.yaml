@@ -13,9 +13,12 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_analytics_aggregations
-  date_partition_parameter: cohort_date
-  arguments: ['--append_table']
+  date_partition_parameter: activity_date
 bigquery:
+  time_partitioning:
+    field: activity_date
+    type: day
+    require_partition_filter: true
   clustering:
     fields:
     - attribution_medium

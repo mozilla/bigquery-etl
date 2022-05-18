@@ -23,11 +23,11 @@ fields:
   mode: NULLABLE
   name: stable
   type: INTEGER
-- description: Non-distinct count of submissions in the decoded table
+- description: "Non-distinct count of submissions in the decoded table"
   mode: NULLABLE
   name: decoded_nondistinct
   type: INTEGER
-- description: Non-distinct count of submissions in the live table
+- description: "Non-distinct count of submissions in the live table"
   mode: NULLABLE
   name: live_nondistinct
   type: INTEGER

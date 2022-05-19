@@ -158,8 +158,8 @@ class ExperimentV6:
             experimenter_slug=None,
             type="v6",
             status="Live"
-            if self.endDate
-            and self.endDate <= pytz.utc.localize(datetime.datetime.now())
+            if self.endDate is None or (self.endDate
+            and self.endDate <= pytz.utc.localize(datetime.datetime.now()))
             else "Complete",
             start_date=self.startDate,
             end_date=self.endDate,

@@ -19793,6 +19793,22 @@ fields:
       mode: NULLABLE
       name: media_gmp_update_content_process_has_h264
       type: STRING
+    - description: Whether a document used MozCurrentTransform
+      mode: NULLABLE
+      name: use_counter2_deprecated_moz_current_transform_document
+      type: STRING
+    - description: Whether a document used MozCurrentTransformInverse
+      mode: NULLABLE
+      name: use_counter2_deprecated_moz_current_transform_inverse_document
+      type: STRING
+    - description: Whether a page used MozCurrentTransformInverse
+      mode: NULLABLE
+      name: use_counter2_deprecated_moz_current_transform_inverse_page
+      type: STRING
+    - description: Whether a page used MozCurrentTransform
+      mode: NULLABLE
+      name: use_counter2_deprecated_moz_current_transform_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -40888,6 +40904,22 @@ fields:
         - description: Whether hardware H264 is enabled
           mode: NULLABLE
           name: webrtc_software_h264_enabled
+          type: STRING
+        - description: Whether a document used MozCurrentTransform
+          mode: NULLABLE
+          name: use_counter2_deprecated_moz_current_transform_document
+          type: STRING
+        - description: Whether a document used MozCurrentTransformInverse
+          mode: NULLABLE
+          name: use_counter2_deprecated_moz_current_transform_inverse_document
+          type: STRING
+        - description: Whether a page used MozCurrentTransformInverse
+          mode: NULLABLE
+          name: use_counter2_deprecated_moz_current_transform_inverse_page
+          type: STRING
+        - description: Whether a page used MozCurrentTransform
+          mode: NULLABLE
+          name: use_counter2_deprecated_moz_current_transform_page
           type: STRING
         mode: NULLABLE
         name: histograms

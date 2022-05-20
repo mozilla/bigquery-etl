@@ -36,6 +36,9 @@ fields:
   name: distribution_id
   type: STRING
 - mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+- mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
 - mode: NULLABLE

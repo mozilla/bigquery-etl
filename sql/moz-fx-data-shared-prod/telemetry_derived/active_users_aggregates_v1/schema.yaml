@@ -93,5 +93,5 @@ fields:
   name: active_hours
   type: FLOAT
 - mode: NULLABLE
-  name: first_seen_date
-  type: DATE
+  name: first_seen_year
+  type: INTEGER

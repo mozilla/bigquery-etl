@@ -8,6 +8,11 @@ owners:
 labels:
   schedule: daily
   incremental: true
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: false
 scheduling:
   dag_name: bqetl_monitoring
   arguments: ["--date", "{{ ds }}"]

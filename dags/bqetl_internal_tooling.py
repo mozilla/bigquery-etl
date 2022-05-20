@@ -12,18 +12,20 @@ Built from bigquery-etl repo, [`dags/bqetl_internal_tooling.py`](https://github.
 
 #### Description
 
-This DAG schedules queries that calculate FOG decision support metrics.
+This DAG schedules queries for populating queries related to Mozilla's
+internal developer tooling (e.g. mozregression).
+
 #### Owner
 
-pmcmanis@mozilla.com
+wlachance@mozilla.com
 """
 
 
 default_args = {
-    "owner": "pmcmanis@mozilla.com",
-    "start_date": datetime.datetime(2022, 5, 25, 0, 0),
+    "owner": "wlachance@mozilla.com",
+    "start_date": datetime.datetime(2020, 6, 1, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "pmcmanis@mozilla.com"],
+    "email": ["wlachance@mozilla.com", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -41,28 +43,13 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    fog_decision_support_percentiles_v1 = bigquery_etl_query(
-        task_id="fog_decision_support_percentiles_v1",
-        destination_table="fog_decision_support_percentiles_v1",
-        dataset_id="telemetry_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="pmcmanis@mozilla.com",
-        email=["pmcmanis@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     mozregression_aggregates__v1 = bigquery_etl_query(
         task_id="mozregression_aggregates__v1",
         destination_table="mozregression_aggregates_v1",
         dataset_id="org_mozilla_mozregression_derived",
         project_id="moz-fx-data-shared-prod",
         owner="wlachance@mozilla.com",
-        email=[
-            "pmcmanis@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-            "wlachance@mozilla.com",
-        ],
+        email=["telemetry-alerts@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

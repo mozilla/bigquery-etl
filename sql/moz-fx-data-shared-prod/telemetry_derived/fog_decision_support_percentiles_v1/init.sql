@@ -1,7 +1,3 @@
-CREATE OR REPLACE TABLE
-  `moz-fx-data-shared-prod`.telemetry_derived.fog_decision_support_percentiles_v1
-PARTITION BY
-  DATE(submission_date)
 WITH metrics_base AS (
   SELECT
     submission_timestamp,
@@ -291,6 +287,11 @@ windowed AS (
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY channel, metric_name) = 1
 )
+CREATE OR REPLACE TABLE
+  `moz-fx-data-shared-prod`.telemetry_derived.fog_decision_support_percentiles_v1
+PARTITION BY
+  DATE(submission_date)
+
 SELECT
   "2022-05-20" AS submission_date,
   "metrics" AS ping,

@@ -13,7 +13,7 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_fog_decision_support
-  task_name: fog_decision_support_percentiles_v1
+  task_name: fog_decision_support
 bigquery:
   time_partitioning:
     field: submission_date

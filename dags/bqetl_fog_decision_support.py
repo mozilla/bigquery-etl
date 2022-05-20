@@ -12,7 +12,7 @@ Built from bigquery-etl repo, [`dags/bqetl_fog_decision_support.py`](https://git
 
 #### Description
 
-This DAG schedules queries that calculate FOG decision support metrics.
+This DAG schedules queries for calculating FOG decision support metrics.
 #### Owner
 
 pmcmanis@mozilla.com
@@ -21,7 +21,7 @@ pmcmanis@mozilla.com
 
 default_args = {
     "owner": "pmcmanis@mozilla.com",
-    "start_date": datetime.datetime(2022, 5, 25, 0, 0),
+    "start_date": datetime.datetime(2022, 5, 22, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com", "pmcmanis@mozilla.com"],
     "depends_on_past": False,
@@ -41,8 +41,8 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    fog_decision_support_percentiles_v1 = bigquery_etl_query(
-        task_id="fog_decision_support_percentiles_v1",
+    fog_decision_support = bigquery_etl_query(
+        task_id="fog_decision_support",
         destination_table="fog_decision_support_percentiles_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
@@ -51,3 +51,15 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
+
+    wait_for_telemetry_derived__main_1pct__v1 = ExternalTaskCompletedSensor(
+        task_id="wait_for_telemetry_derived__main_1pct__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__main_1pct__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    fog_decision_support.set_upstream(wait_for_telemetry_derived__main_1pct__v1)

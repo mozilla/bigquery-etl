@@ -771,8 +771,8 @@ bqetl_fog_decision_support:
     owner: pmcmanis@mozilla.com
     retries: 2
     retry_delay: 30m
-    start_date: '2022-05-25'
-  description: This DAG schedules queries that calculate FOG decision
+    start_date: '2022-05-22'
+  description: This DAG schedules queries for calculating FOG decision
     support metrics.
   schedule_interval: 0 4 * * *
   tags:

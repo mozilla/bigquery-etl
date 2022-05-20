@@ -6,9 +6,9 @@ import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
 docs = """
-### bqetl_internal_tooling
+### bqetl_fog_decision_support
 
-Built from bigquery-etl repo, [`dags/bqetl_internal_tooling.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_internal_tooling.py)
+Built from bigquery-etl repo, [`dags/bqetl_fog_decision_support.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_fog_decision_support.py)
 
 #### Description
 
@@ -34,7 +34,7 @@ default_args = {
 tags = ["impact/tier_3", "repo/bigquery-etl"]
 
 with DAG(
-    "bqetl_internal_tooling",
+    "bqetl_fog_decision_support",
     default_args=default_args,
     schedule_interval="0 4 * * *",
     doc_md=docs,
@@ -51,30 +51,3 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
-
-    mozregression_aggregates__v1 = bigquery_etl_query(
-        task_id="mozregression_aggregates__v1",
-        destination_table="mozregression_aggregates_v1",
-        dataset_id="org_mozilla_mozregression_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="wlachance@mozilla.com",
-        email=[
-            "pmcmanis@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-            "wlachance@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    wait_for_copy_deduplicate_all = ExternalTaskCompletedSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=10800),
-        check_existence=True,
-        mode="reschedule",
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    mozregression_aggregates__v1.set_upstream(wait_for_copy_deduplicate_all)

@@ -83,14 +83,15 @@ def list_daily(project, dataset):
 @click.argument("app-id", type=str)
 @click.argument("start-date", type=str)
 @click.argument("end-date", type=str)
+@click.option("--project", default="glam-fenix-dev")
 @click.option("--dataset", type=str, default="glam_etl_dev")
-def backfill_daily(app_id, start_date, end_date, dataset):
+def backfill_daily(app_id, start_date, end_date, project, dataset):
     """Backfill the daily tables."""
     _check_root()
     run(
         "script/glam/generate_glean_sql",
         cwd=ROOT,
-        env={**os.environ, **dict(PRODUCT=app_id, STAGE="daily")},
+        env={**os.environ, **dict(PROJECT=project, PRODUCT=app_id, STAGE="daily")},
     )
     run(
         "script/glam/backfill_glean",
@@ -98,6 +99,7 @@ def backfill_daily(app_id, start_date, end_date, dataset):
         env={
             **os.environ,
             **dict(
+                PROJECT=project,
                 DATASET=dataset,
                 PRODUCT=app_id,
                 STAGE="daily",

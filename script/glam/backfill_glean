@@ -23,6 +23,7 @@ print("\n".join(dates))
 EOD
 }
 
+export PROJECT=${PROJECT:-"glam-fenix-dev"}
 export DATASET=${DATASET:-glam_etl_dev}
 
 START_DATE=${START_DATE?}

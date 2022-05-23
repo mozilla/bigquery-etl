@@ -67,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#a-quick-guide-to-creating-a-derived-dataset-with-bigquery-etl" class="md-skip">
+        <a href="#a-quick-guide-to-creating-a-derived-dataset-with-bigquery-etl-and-how-to-set-it-up-as-a-public-dataset" class="md-skip">
           Skip to content
         </a>
       
@@ -1945,6 +1945,26 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#fill-out-the-yaml" class="md-nav__link">
+    Fill out the YAML
+  </a>
+  
+    <nav class="md-nav" aria-label="Fill out the YAML">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-yaml-file-structure-for-a-public-dataset" class="md-nav__link">
+    The YAML file structure for a public dataset
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#fill-out-the-query" class="md-nav__link">
     Fill out the query
   </a>
@@ -1954,6 +1974,13 @@
         <li class="md-nav__item">
   <a href="#formatting-and-validating-the-query" class="md-nav__link">
     Formatting and validating the query
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-the-table-schema" class="md-nav__link">
+    Creating the table schema
   </a>
   
 </li>
@@ -1994,8 +2021,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#backfilling-your-dataset" class="md-nav__link">
-    Backfilling your dataset
+  <a href="#backfilling-the-dataset" class="md-nav__link">
+    Backfilling the dataset
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#completing-the-pull-request" class="md-nav__link">
+    Completing the Pull Request
   </a>
   
 </li>
@@ -2195,6 +2229,26 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#fill-out-the-yaml" class="md-nav__link">
+    Fill out the YAML
+  </a>
+  
+    <nav class="md-nav" aria-label="Fill out the YAML">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-yaml-file-structure-for-a-public-dataset" class="md-nav__link">
+    The YAML file structure for a public dataset
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#fill-out-the-query" class="md-nav__link">
     Fill out the query
   </a>
@@ -2204,6 +2258,13 @@
         <li class="md-nav__item">
   <a href="#formatting-and-validating-the-query" class="md-nav__link">
     Formatting and validating the query
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-the-table-schema" class="md-nav__link">
+    Creating the table schema
   </a>
   
 </li>
@@ -2244,8 +2305,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#backfilling-your-dataset" class="md-nav__link">
-    Backfilling your dataset
+  <a href="#backfilling-the-dataset" class="md-nav__link">
+    Backfilling the dataset
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#completing-the-pull-request" class="md-nav__link">
+    Completing the Pull Request
   </a>
   
 </li>
@@ -2264,31 +2332,60 @@
                 
 
 
-<h1 id="a-quick-guide-to-creating-a-derived-dataset-with-bigquery-etl">A quick guide to creating a derived dataset with BigQuery-ETL</h1>
-<p>This is designed to be a quick guide around creating a simple derived dataset using bigquery-etl and scheduling it using Airflow so it can be updated on a daily basis. We'll be using a simple test case (a small <a href="https://mozilla.github.io/glean/">Glean</a> application for which we want to generate an aggregated dataset based on the raw ping data) to illustrate the process. If you are interested in looking at the end result of this, you can view the pull request at <a href="https://github.com/mozilla/bigquery-etl/pull/1760">mozilla/bigquery-etl#1760</a>.</p>
+<h1 id="a-quick-guide-to-creating-a-derived-dataset-with-bigquery-etl-and-how-to-set-it-up-as-a-public-dataset">A quick guide to creating a derived dataset with BigQuery-ETL and how to set it up as a public dataset</h1>
+<p>This guide takes you through the creation of a simple derived dataset using bigquery-etl and scheduling it using Airflow, to be updated on a daily basis. It applies to the products we ship to customers, that use (or will use) the Glean SDK.</p>
+<p>This guide also includes the specific instructions to set it as a <a href="https://blog.mozilla.org/data/2020/09/25/data-publishing-mozilla/">public dataset</a>.
+<em>Make sure you only set the dataset public if you expect the data to be available outside Mozilla</em>. Read our <a href="https://mozilla.github.io/bigquery-etl/reference/public_data/">public datasets reference</a> for context.</p>
+<p>To illustrate the overall process, we will use a simple test case and a small <a href="https://mozilla.github.io/glean/">Glean</a> application for which we want to generate an aggregated dataset based on the raw ping data.</p>
+<p>If you are interested in looking at the end result, you can view the pull request at <a href="https://github.com/mozilla/bigquery-etl/pull/1760">mozilla/bigquery-etl#1760</a>.</p>
 <h2 id="background">Background</h2>
-<p><a href="https://mozilla.github.io/mozregression/">mozregression</a> is a developer tool used to help developers and community members bisect builds of Firefox to find a regression range in which a bug was introduced. It forms a key part of our quality assurance process.</p>
-<p>While in some ways mozregression might seem dissimilar from, say, Firefox most of the concepts illustrated here will apply straightforwardly to the products we ship to customers which use (or will use) the Glean SDK.</p>
-<p>In this case, we want to create a simple table of aggregated metrics related to mozregression's use that we can use to power dashboards (to prioritize feature development internally inside Mozilla), as well as syndication as a <a href="https://blog.mozilla.org/data/2020/09/25/data-publishing-mozilla/">public dataset</a>.</p>
+<p><a href="https://mozilla.github.io/mozregression/">Mozregression</a> is a developer tool used to help developers and community members bisect builds of Firefox to find a regression range in which a bug was introduced. It forms a key part of our quality assurance process.</p>
+<p>In this example, we will create a table of aggregated metrics related to <code>mozregression</code>, that will be used in dashboards to help prioritize feature development inside Mozilla.</p>
 <h2 id="initial-steps">Initial steps</h2>
 <p>Set up bigquery-etl on your system per the instructions in the <a href="https://github.com/mozilla/bigquery-etl/blob/main/README.md">README.md</a>.</p>
 <h2 id="create-the-query">Create the Query</h2>
-<p>First, you'll need to create a query file to work off of. For this step, you'll need to know what you want your derived dataset to be called. In this case, we'll name it <code>org_mozilla_mozregression_derived.mozregression_aggregates</code>.</p>
-<p>The <code>org_mozilla_mozregression_derived</code> part represents a <em>BigQuery dataset</em> (a concept that is essentially a container of tables). By convention, we use the <code>_derived</code> postfix to hold derived tables like this one.</p>
+<p>The first step is to create a query file and decide on the name of your derived dataset. In this case, we'll name it <code>org_mozilla_mozregression_derived.mozregression_aggregates</code>.</p>
+<p>The <code>org_mozilla_mozregression_derived</code> part represents a <a href="https://cloud.google.com/bigquery/docs/datasets-intro">BigQuery dataset</a>, which is essentially a container of tables. By convention, we use the <code>_derived</code> postfix to hold derived tables like this one.</p>
 <p>Run:</p>
+<pre><code class="language-bash">./bqetl query create &lt;dataset&gt;.&lt;table_name&gt;
+</code></pre>
+<p>In our example:</p>
 <pre><code class="language-bash">./bqetl query create org_mozilla_mozregression_derived.mozregression_aggregates
 </code></pre>
-<p>This will do a couple things:</p>
+<p>This command does two things:</p>
 <ul>
-<li>Generate some template files (<code>metadata.yaml</code>, <code>query.sql</code>) representing a query to build the dataset in <code>sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/mozregression_aggregates_v1</code></li>
+<li>Generate the template files <code>metadata.yaml</code> and <code>query.sql</code> representing the query to build the dataset in <code>sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/mozregression_aggregates_v1</code></li>
 <li>Generate a "view" of the dataset in <code>sql/moz-fx-data-shared-prod/org_mozilla_mozregression/mozregression_aggregates</code>.</li>
 </ul>
-<p>We generate the view to allow us to have a stable interface, while allowing us to evolve the backend details of a dataset over time. Views are automatically published to the <code>mozdata</code> project.</p>
-<h2 id="fill-out-the-query">Fill out the query</h2>
-<p>The next step is to modify the generated <code>metadata.yaml</code> and <code>query.sql</code> sections with actual information.</p>
-<p>Let's look at the <code>metadata.yaml</code> first:</p>
+<p>We generate the view to have a stable interface, while allowing the dataset backend to evolve over time. Views are automatically published to the <code>mozdata</code> project.</p>
+<h2 id="fill-out-the-yaml">Fill out the YAML</h2>
+<p>The next step is to modify the generated <code>metadata.yaml</code> and <code>query.sql</code> sections with specific information.</p>
+<p>Let's look at what the <code>metadata.yaml</code> file for our example looks like. Make sure to adapt this file for your own dataset.</p>
 <pre><code class="language-yaml">friendly_name: mozregression aggregates
-description: &gt;
+description:
+  Aggregated metrics of mozregression usage
+labels:
+  incremental: true
+owners:
+  - wlachance@mozilla.com
+bigquery:
+  time_partitioning:
+    field: date
+    type: day
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - app_used
+    - os
+</code></pre>
+<p>Most of the fields are self-explanatory. <code>incremental</code> means that the table is updated incrementally, e.g. a new partition gets added/updated to the destination table whenever the query is run. For non-incremental queries the entire destination is overwritten when the query is executed.</p>
+<p><a href="https://docs.telemetry.mozilla.org/cookbooks/bigquery/optimization.html">For big datasets make sure to include optimization strategies</a>. Our aggregation is small so it is only for illustration purposes that we are including a partition by the <code>date</code> field and a clustering on <code>app_used</code> and <code>os</code>.</p>
+<h4 id="the-yaml-file-structure-for-a-public-dataset">The YAML file structure for a public dataset</h4>
+<p>Setting the dataset as public means that it will be both in Mozilla's public BigQuery project and a world-accessible JSON endpoint, and is a process that requires a data review.
+The required labels are: <code>public_json</code>, <code>public_bigquery</code> and <code>review_bugs</code> which refers to the Bugzilla bug where opening this data set up to the public was approved: we'll get to that in a subsequent section.</p>
+<pre><code class="language-yaml">friendly_name: mozregression aggregates
+description:
   Aggregated metrics of mozregression usage
 labels:
   incremental: true
@@ -2298,11 +2395,21 @@ labels:
     - 1691105
 owners:
   - wlachance@mozilla.com
+bigquery:
+  time_partitioning:
+    field: date
+    type: day
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - app_used
+    - os
 </code></pre>
-<p>Most of the fields are self-explanatory. <code>incremental</code> means that the table is updated incrementally, e.g. a new partition gets added/updated to the destination table whenever the query is run. For non-incremental queries the entire destination gets overwritten when the query is executed.</p>
-<p>You'll also note the <code>public_json</code> and <code>public_bigquery</code> fields: these mean that the dataset will be published in both Mozilla's public BigQuery project and a world-accessible JSON endpoint. The <code>review_bugs</code> section is required, and refers to the Bugzilla bug where opening this data set up to the public was approved: we'll get to that in a subsequent section.</p>
+<h2 id="fill-out-the-query">Fill out the query</h2>
 <p>Now that we've filled out the metadata, we can look into creating a query. In many ways, this is similar to creating a SQL query to run on BigQuery in other contexts (e.g. on sql.telemetry.mozilla.org or the BigQuery console)-- the key difference is that we use a <code>@submission_date</code> parameter so that the query can be run on a <em>day's worth</em> of data to update the underlying table incrementally.</p>
-<p>After testing our query on sql.telemetry.mozilla.org, we'll write this query out to <code>query.sql</code>:</p>
+<p>Test your query and add it to the <code>query.sql</code> file.</p>
+<p>In our example, the query is tested in <code>sql.telemetry.mozilla.org</code>, and the <code>query.sql</code> file looks like this:</p>
 <pre><code class="language-sql">SELECT
   DATE(submission_timestamp) AS date,
   client_info.app_display_version AS mozregression_version,
@@ -2329,81 +2436,84 @@ GROUP BY
 <p>We also have a short clause (<code>client_info.app_display_version NOT LIKE '%.dev%'</code>) to omit developer versions from the aggregates: this makes sure we're not including people developing or testing mozregression itself in our results.</p>
 <h2 id="formatting-and-validating-the-query">Formatting and validating the query</h2>
 <p>Now that we've written our query, we can format it and validate it. Once that's done, we run:</p>
+<pre><code class="language-bash">./bqetl query validate &lt;dataset&gt;.&lt;table&gt;
+</code></pre>
+<p>For our example:</p>
 <pre><code class="language-bash">./bqetl query validate org_mozilla_mozregression_derived.mozregression_aggregates
 </code></pre>
 <p>If there are no problems, you should see no output.</p>
+<h2 id="creating-the-table-schema">Creating the table schema</h2>
+<p>Use bqetl to set up the schema that will be used to create the table.</p>
+<p>Review the schema.YAML generated as an output of the following command, and make sure all data types are set correctly and according to the data expected from the query.</p>
+<pre><code class="language-bash">./bqetl query schema update &lt;dataset&gt;.&lt;table&gt;`
+</code></pre>
+<p>For our example:</p>
+<pre><code class="language-bash">./bqetl query schema update org_mozilla_mozregression_derived.mozregression_aggregates_v1
+</code></pre>
 <h2 id="creating-a-dag">Creating a DAG</h2>
 <p>BigQuery-ETL has some facilities in it to automatically add your query to <a href="https://github.com/mozilla/telemetry-airflow">telemetry-airflow</a> (our instance of Airflow).</p>
 <p>Before scheduling your query, you'll need to find an <a href="https://airflow.apache.org/docs/apache-airflow/stable/concepts.html#dags">Airflow DAG</a> to run it off of. In some cases, one may already exist that makes sense to use for your dataset -- look in <code>dags.yaml</code> at the root or run <code>./bqetl dag info</code>. In this particular case, there's no DAG that really makes sense -- so we'll create a new one:</p>
+<pre><code class="language-bash">./bqetl dag create &lt;dag_name&gt; --schedule-interval &quot;0 4 * * *&quot; --owner &lt;email_for_notifications&gt; --description &quot;Add a clear description of the DAG here&quot; --start-date &lt;YYYY-MM-DD&gt; --tag impact/&lt;tier&gt;
+</code></pre>
+<p>For our example, the starting date is <code>2020-06-01</code> and we use a schedule interval of <code>0 4 \* \* \*</code> (4am UTC daily) instead of "daily" (12am UTC daily) to make sure this isn't competing for slots with desktop and mobile product ETL.</p>
+<p>The <code>--tag impact/tier3</code> parameter specifies that this DAG is considered "tier 3". For a list of valid tags and their descriptions see <a href="../../reference/airflow_tags/">Airflow Tags</a>.</p>
 <pre><code class="language-bash">./bqetl dag create bqetl_internal_tooling --schedule-interval &quot;0 4 * * *&quot; --owner wlachance@mozilla.com --description &quot;This DAG schedules queries for populating queries related to Mozilla's internal developer tooling (e.g. mozregression).&quot; --start-date 2020-06-01 --tag impact/tier_3
 </code></pre>
-<p>Most of the options above should be self-explanatory. We use a schedule interval of "0 4 * * *" (4am UTC daily) instead of "daily" (12am UTC daily) to make sure this isn't competing for slots with desktop and mobile product ETL.</p>
-<p>The <code>--tag impact/tier3</code> parameter specifies that this DAG is considered "tier 3". For a list of valid tags and their descriptions see <a href="../../reference/airflow_tags/">Airflow Tags</a>.</p>
 <h2 id="scheduling-your-query">Scheduling your query</h2>
 <p>Once again, you access this functionality via the <code>bqetl</code> tool:</p>
+<pre><code class="language-bash">./bqetl query schedule &lt;dataset&gt;.&lt;table&gt; --dag &lt;dag_name&gt; --task-name &lt;task_name&gt;
+</code></pre>
+<p>Here is the command for our example. Notice the name of the table as created with the suffix _v1.</p>
 <pre><code class="language-bash">./bqetl query schedule org_mozilla_mozregression_derived.mozregression_aggregates_v1 --dag bqetl_internal_tooling --task-name mozregression_aggregates__v1
 </code></pre>
 <p>Note that we are scheduling the generation of the underlying <em>table</em> which is <code>org_mozilla_mozregression_derived.mozregression_aggregates_v1</code> rather than the view.</p>
 <p>After doing this, you will also want to generate the actual airflow configuration which telemetry-airflow will pick up. Run:</p>
+<pre><code class="language-bash">./bqetl dag generate &lt;dag_name&gt;
+</code></pre>
+<p>For this example:</p>
 <pre><code class="language-bash">./bqetl dag generate bqetl_internal_tooling
 </code></pre>
 <p>This may take a while, as it currently does a dry run through every query defined in bigquery-etl.</p>
 <h2 id="get-data-review">Get Data Review</h2>
 <p><em>This is for public datasets only! You can skip this step if you're only creating a dataset for Mozilla-internal use.</em></p>
 <p>Before a dataset can be made public, it needs to go through data review according to our <a href="https://wiki.mozilla.org/Data_Publishing#Dataset_Publishing_Process_2">data publishing process</a>. This means filing a bug, answering a few questions, and then finding a <a href="https://wiki.mozilla.org/Firefox/Data_Collection">data steward</a> to review your proposal.</p>
-<p>The dataset we're using in this example is very simple and straightforward and doesn't have any particularly sensitive data, so the data review is very simple. You can see the full details in <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1691105">bug 1691105</a>.</p>
+<p>The dataset we're using in this example is very simple and straightforward and does not have any particularly sensitive data, so the data review is very simple. You can see the full details in <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1691105">bug 1691105</a>.</p>
 <h2 id="create-a-pull-request">Create a Pull Request</h2>
-<p>Now would be a good time to create a pull request with your changes to GitHub. This is the usual git workflow:</p>
+<p>Now is a good time to create a pull request with your changes to GitHub. This is the usual git workflow:</p>
+<pre><code class="language-bash">git checkout -b &lt;new_branch_name&gt;
+git add dags.yaml dags/&lt;dag_name&gt;.py sql/moz-fx-data-shared-prod/telemetry/&lt;view&gt; sql/moz-fx-data-shared-prod/&lt;dataset&gt;/&lt;table&gt;
+git commit
+git push origin &lt;new_branch_name&gt;
+</code></pre>
+<p>And next is the workflow for our specific example:</p>
 <pre><code class="language-bash">git checkout -b mozregression-aggregates
 git add dags.yaml dags/bqetl_internal_tooling.py sql/moz-fx-data-shared-prod/telemetry/mozregression_aggregates sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/mozregression_aggregates_v1
 git commit
 git push origin mozregression-aggregates
 </code></pre>
 <p>Then create your pull request, either from the GitHub web interface or the command line, per your preference.</p>
-<p>Note this example assumes that <code>origin</code> points to your fork. Adjust the last push invocation appropriately if you have a different <a href="https://git-scm.com/docs/git-remote">remote</a> set.</p>
+<p><strong>Note</strong> At this point, the CI is expected to fail because the schema does not exist yet in BigQuery. This will be handled in the next step.</p>
+<p>This example assumes that <code>origin</code> points to your fork. Adjust the last push invocation appropriately if you have a different <a href="https://git-scm.com/docs/git-remote">remote</a> set.</p>
 <p>Speaking of forks, note that if you're making this pull request from a fork, many jobs will currently fail due to lack of credentials. In fact, even if you're pushing to the origin, you'll get failures because the table is not yet created. That brings us to the next step, but before going further it's generally best to get someone to review your work: at this point we have more than enough for people to provide good feedback on.</p>
 <h2 id="creating-an-initial-table">Creating an initial table</h2>
-<p>To bootstrap an initial table, the normal best practice is to create another SQL file, similar to the incremental query above, which creates the table. We'll write out another file called <code>init.sql</code> in <code>sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/mozregression_aggregates_v1</code>:</p>
-<pre><code class="language-sql">CREATE OR REPLACE TABLE
-  `mozilla-public-data`.org_mozilla_mozregression_derived.mozregression_aggregates
-PARTITION BY
-  DATE(date)
-AS
-SELECT
-  DATE(submission_timestamp) AS date,
-  client_info.app_display_version AS mozregression_version,
-  metrics.string.usage_variant AS mozregression_variant,
-  metrics.string.usage_app AS app_used,
-  normalized_os AS os,
-  mozfun.norm.truncate_version(normalized_os_version, &quot;minor&quot;) AS os_version,
-  count(DISTINCT(client_info.client_id)) AS distinct_clients,
-  count(*) AS total_uses
-FROM
-  `moz-fx-data-shared-prod`.org_mozilla_mozregression.usage
-WHERE
-  client_info.app_display_version NOT LIKE '%.dev%'
-GROUP BY
-  date,
-  mozregression_version,
-  mozregression_variant,
-  app_used,
-  os,
-  os_version;
+<p>Once the PR has been approved, deploy the schema to bqetl using this command:</p>
+<pre><code class="language-bash">./bqetl query schema deploy &lt;schema&gt;.&lt;table&gt;
 </code></pre>
-<p>As the dataset will be published in both Mozilla's public BigQuery project, the table will need to be created in the <code>mozilla-public-data</code> project. Once the ETL is running, a view <code>org_mozilla_mozregression_derived.mozregression_aggregates</code> to the public table will be automatically created in <code>moz-fx-data-shared-prod</code>.</p>
-<p>Note the <code>PARTITION BY DATE(date)</code> in the statement. This makes it so BigQuery will partition the table by date. This isn't too big a deal for mozregression (where even the size of unaggregated data is very small) but <a href="https://docs.telemetry.mozilla.org/cookbooks/bigquery/optimization.html">can be a godsend for datasets where each day is hundreds of gigabytes or terabytes big</a>.</p>
-<p>Go ahead and add this to your pull request. Now that we have an initial table definition, we can create a table using this command (if you're not in data engineering, you might have to get someone to run this for you as it implies modifying what we have in production):</p>
-<pre><code class="language-bash">./bqetl query initialize org_mozilla_mozregression_derived.mozregression_aggregates_v1
+<p>For our example:</p>
+<pre><code class="language-bash">./bqetl query schema deploy org_mozilla_mozregression_derived.mozregression_aggregates_v1
 </code></pre>
-<h2 id="backfilling-your-dataset">Backfilling your dataset</h2>
-<p>In the above example, we actually created the entire history for the table in the initial query. But in many cases, this is not practical and you'd want to manually backfill the data, day-by-day. There are two options here:</p>
-<ol>
-<li>Backfill the table by triggering the Airflow DAG</li>
-<li>Using <code>bqetl backfill</code></li>
-</ol>
-<p>The first approach is out of scope for this tutorial: you should talk to someone in Data Engineering or Data SRE if you want to do this. The second approach (which is normally pretty effective, at least if your underlying data isn't <strong>too</strong> big) is relatively straightforward though. Run:</p>
-<pre><code class="language-bash">./bqetl query backfill --start-date 2020-04-01 --end-date 2021-02-01 org_mozilla_mozregression_derived.mozregression_aggregates_v1
+<h2 id="backfilling-the-dataset">Backfilling the dataset</h2>
+<p>It is recommended to use the <a href="https://mozilla.github.io/bigquery-etl/bqetl/#backfill">bqetl backfill command</a> in order to load the data in your new table, and set specific dates for large sets of data, as well as following the <a href="https://mozilla.github.io/bigquery-etl/reference/recommended_practices/#backfills">recommended practices</a>.</p>
+<pre><code class="language-bash">bqetl query backfill &lt;dataset&gt;.&lt;table&gt; --project_id=moz-fx-data-shared-prod -s &lt;YYYY-MM-DD&gt; -e &lt;YYYY-MM-DD&gt; -n 0
 </code></pre>
+<p>For our example:</p>
+<pre><code class="language-bash">./bqetl query backfill org_mozilla_mozregression_derived.mozregression_aggregates_v1 --s 2020-04-01 --e 2021-02-01
+</code></pre>
+<p><strong>Note</strong>. Alternatively, you can trigger the Airflow DAG to backfill the data. In this case, it is recommended to talk to someone in in Data Engineering or Data SRE to trigger the DAG.</p>
+<h2 id="completing-the-pull-request">Completing the Pull Request</h2>
+<p>At this point, the table exists in Bigquery so you are able to:
+- <a href="https://app.circleci.com/pipelines/github/mozilla/bigquery-etl?">Find and re-run the CI</a> of your PR and make sure that all tests pass
+- Merge your PR.</p>
 
               
             </article>

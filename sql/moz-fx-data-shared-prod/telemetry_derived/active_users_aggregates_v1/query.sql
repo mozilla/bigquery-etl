@@ -12,7 +12,7 @@ WITH aggregated AS (
     distribution_id,
     EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
     is_default_browser,
-    locale,
+    COALESCE(REGEXP_EXTRACT(locale, r'^(.+?)-'), locale, NULL) AS locale,
     normalized_app_name AS app_name,
     normalized_channel AS channel,
     normalized_os AS os,
@@ -71,4 +71,4 @@ FROM
 LEFT JOIN
   `mozdata.static.csa_gblmkt_languages` AS languages
 ON
-  COALESCE(REGEXP_EXTRACT(locale, r'^(.+?)-'), locale, NULL) = languages.code
+  aggregated.locale = languages.code

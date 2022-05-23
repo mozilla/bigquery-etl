@@ -1,0 +1,24 @@
+friendly_name: Active Users Aggregates Device
+description: |-
+  Active users and search metrics, aggregated by Mozilla product,
+  attribution, device model and os details)
+owners:
+- lvargas@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_analytics_aggregations
+  task_name: active_users_aggregates_device_v1
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - app_name
+    - attribution_medium
+    - channel
+    - os
+references: {}

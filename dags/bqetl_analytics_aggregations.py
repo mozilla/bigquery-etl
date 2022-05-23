@@ -15,18 +15,19 @@ Built from bigquery-etl repo, [`dags/bqetl_analytics_aggregations.py`](https://g
 Scheduler to populate the aggregations required for analytics engineering and reports optimization. It provides data to build growth, search and usage metrics, as well as acquisition and retention KPIs, in a model that facilitates reporting in Looker.
 #### Owner
 
-lvargas@mozilla.com
+gkaberere@mozilla.com
 """
 
 
 default_args = {
-    "owner": "lvargas@mozilla.com",
+    "owner": "gkaberere@mozilla.com",
     "start_date": datetime.datetime(2022, 5, 12, 0, 0),
     "end_date": None,
     "email": [
-        "telemetry-alerts@mozilla.com",
-        "lvargas@mozilla.com",
+        "anicholson@mozilla.com",
         "gkaberere@mozilla.com",
+        "lvargas@mozilla.com",
+        "telemetry-alerts@mozilla.com",
     ],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
@@ -44,6 +45,21 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
+    active_users_aggregates_device_v1 = bigquery_etl_query(
+        task_id="active_users_aggregates_device_v1",
+        destination_table="active_users_aggregates_device_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="lvargas@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
 
     active_users_aggregates_v1 = bigquery_etl_query(
         task_id="active_users_aggregates_v1",
@@ -84,6 +100,10 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    active_users_aggregates_device_v1.set_upstream(
+        wait_for_telemetry_derived__unified_metrics__v1
     )
 
     active_users_aggregates_v1.set_upstream(

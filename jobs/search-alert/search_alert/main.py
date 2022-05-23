@@ -44,6 +44,7 @@ def main(project_id, submission_date, dry_run):
         SELECT
             submission_date,
             country,
+	        normalized_engine as engine, 
             SUM(sap) AS sap,
             SUM(tagged_sap) AS tagged_sap,
             SUM(tagged_follow_on) AS tagged_follow_on,
@@ -55,17 +56,20 @@ def main(project_id, submission_date, dry_run):
             submission_date = @submission_date
         GROUP BY
             1,
-            2 ),
+            2,
+	        3 ),
         long_data AS (
         SELECT
             submission_date,
             country,
+	        engine,
             metric,
             value
         FROM (
             SELECT
             submission_date,
             country,
+	        engine,
             'sap' AS metric,
             sap AS value
             FROM
@@ -74,6 +78,7 @@ def main(project_id, submission_date, dry_run):
             SELECT
             submission_date,
             country,
+	        engine,
             'tagged_sap' AS metric,
             tagged_sap AS value
             FROM
@@ -82,6 +87,7 @@ def main(project_id, submission_date, dry_run):
             SELECT
             submission_date,
             country,
+	    engine,
             'tagged_follow_on' AS metric,
             tagged_follow_on AS value
             FROM
@@ -90,6 +96,7 @@ def main(project_id, submission_date, dry_run):
             SELECT
             submission_date,
             country,
+	        engine,
             'search_with_ads' AS metric,
             search_with_ads AS value
             FROM
@@ -98,16 +105,44 @@ def main(project_id, submission_date, dry_run):
             SELECT
             submission_date,
             country,
+	        engine,
             'ad_click' AS metric,
             ad_click AS value
             FROM
             new_data) ),
+	full_data AS (
+	SELECT
+	    submission_date, 
+	    country, 
+	    engine, 
+	    metric, 
+	    value
+	FROM (
+	    SELECT
+	    submission_date, 
+	    country, 
+	    "ALL" as engine, 
+	    metric, 
+	    sum(value) as value
+	    FROM long_data
+	    GROUP BY 1,2,3,4)
+	UNION ALL (
+	    SELECT
+	    submission_date, 
+	    country, 
+	    engine, 
+	    metric, 
+	    value
+	    FROM long_data
+	    WHERE engine in ("Google", "Bing", "DuckDuckGo", "DDG", "Yandex")
+	    )),	
         extended_new_data AS (
         SELECT
             submission_date,
             country,
             new_data_index,
             metric,
+	        engine,
             value
         FROM (
             SELECT
@@ -115,6 +150,7 @@ def main(project_id, submission_date, dry_run):
             country,
             FALSE AS new_data_index,
             metric,
+	        engine,
             value
             FROM
             `mozdata.analysis.desktop_search_alert_historical_data`
@@ -127,9 +163,10 @@ def main(project_id, submission_date, dry_run):
             country,
             TRUE AS new_data_index,
             metric,
-            value
+            engine, 
+	        value
             FROM
-            long_data)
+            full_data)
         ORDER BY
             submission_date,
             country )
@@ -155,42 +192,42 @@ def main(project_id, submission_date, dry_run):
     search_data['submission_date'] = pd.to_datetime(search_data['submission_date'])
 
     # today as day 0, what's the value in day -1, -2, -7, -14, -21, -28
-    search_data['value_prev1d'] = search_data.groupby(['country', 'metric']).value.shift(1)
-    search_data['value_prev2d'] = search_data.groupby(['country', 'metric']).value.shift(2)
-    search_data['value_prev1w'] = search_data.groupby(['country', 'metric']).value.shift(7)
-    search_data['value_prev2w'] = search_data.groupby(['country', 'metric']).value.shift(14)
-    search_data['value_prev3w'] = search_data.groupby(['country', 'metric']).value.shift(21)
-    search_data['value_prev4w'] = search_data.groupby(['country', 'metric']).value.shift(28)
+    search_data['value_prev1d'] = search_data.groupby(['country', 'metric', 'engine']).value.shift(1)
+    search_data['value_prev2d'] = search_data.groupby(['country', 'metric', 'engine']).value.shift(2)
+    search_data['value_prev1w'] = search_data.groupby(['country', 'metric', 'engine']).value.shift(7)
+    search_data['value_prev2w'] = search_data.groupby(['country', 'metric', 'engine']).value.shift(14)
+    search_data['value_prev3w'] = search_data.groupby(['country', 'metric', 'engine']).value.shift(21)
+    search_data['value_prev4w'] = search_data.groupby(['country', 'metric', 'engine']).value.shift(28)
 
     # today as day 0, what's today's value over day -1, -2, -7, -14, -21, -28
-    search_data['dod'] = search_data['value']/search_data.groupby(['country', 'metric']).value.shift(1)
-    search_data['do2d'] = search_data['value']/search_data.groupby(['country', 'metric']).value.shift(2)
-    search_data['wow'] = search_data['value']/search_data.groupby(['country', 'metric']).value.shift(7)
-    search_data['wo2w'] = search_data['value']/search_data.groupby(['country', 'metric']).value.shift(14)
-    search_data['wo3w'] = search_data['value']/search_data.groupby(['country', 'metric']).value.shift(21)
-    search_data['wo4w'] = search_data['value']/search_data.groupby(['country', 'metric']).value.shift(28)
+    search_data['dod'] = search_data['value']/search_data.groupby(['country', 'metric', 'engine']).value.shift(1)
+    search_data['do2d'] = search_data['value']/search_data.groupby(['country', 'metric', 'engine']).value.shift(2)
+    search_data['wow'] = search_data['value']/search_data.groupby(['country', 'metric', 'engine']).value.shift(7)
+    search_data['wo2w'] = search_data['value']/search_data.groupby(['country', 'metric', 'engine']).value.shift(14)
+    search_data['wo3w'] = search_data['value']/search_data.groupby(['country', 'metric', 'engine']).value.shift(21)
+    search_data['wo4w'] = search_data['value']/search_data.groupby(['country', 'metric', 'engine']).value.shift(28)
 
     # today as day 0, what's today's value contribution over global; and how did it look like day -1, -2, -7, -8 
-    search_data['pcnt_value'] = search_data['value']/search_data.groupby(['submission_date', 'metric']).value.transform(np.sum)
-    search_data['pcnt_value_prevd'] = search_data.groupby(['country', 'metric']).pcnt_value.shift(1)
-    search_data['pcnt_value_prev2d'] = search_data.groupby(['country', 'metric']).pcnt_value.shift(2)
-    search_data['pcnt_value_prev1w'] = search_data.groupby(['country', 'metric']).pcnt_value.shift(7)
-    search_data['pcnt_value_prevd_prev1w'] = search_data.groupby(['country', 'metric']).pcnt_value.shift(8)
+    search_data['pcnt_value'] = search_data['value']/search_data.groupby(['submission_date', 'metric', 'engine']).value.transform(np.sum)
+    search_data['pcnt_value_prevd'] = search_data.groupby(['country', 'metric', 'engine']).pcnt_value.shift(1)
+    search_data['pcnt_value_prev2d'] = search_data.groupby(['country', 'metric', 'engine']).pcnt_value.shift(2)
+    search_data['pcnt_value_prev1w'] = search_data.groupby(['country', 'metric', 'engine']).pcnt_value.shift(7)
+    search_data['pcnt_value_prevd_prev1w'] = search_data.groupby(['country', 'metric', 'engine']).pcnt_value.shift(8)
 
     # in terms of dod, how did it look like for day -1, -2
-    search_data['dod_prevd'] = search_data.groupby(['country', 'metric']).dod.shift(1)
-    search_data['dod_prev2d'] = search_data.groupby(['country', 'metric']).dod.shift(2)
+    search_data['dod_prevd'] = search_data.groupby(['country', 'metric', 'engine']).dod.shift(1)
+    search_data['dod_prev2d'] = search_data.groupby(['country', 'metric', 'engine']).dod.shift(2)
 
     # in terms of wow, how did it look like for day -1, -2
-    search_data['wow_prevd'] = search_data.groupby(['country', 'metric']).wow.shift(1)
-    search_data['wow_prev2d'] = search_data.groupby(['country', 'metric']).wow.shift(2)
+    search_data['wow_prevd'] = search_data.groupby(['country', 'metric', 'engine']).wow.shift(1)
+    search_data['wow_prev2d'] = search_data.groupby(['country', 'metric', 'engine']).wow.shift(2)
 
     # how did it look like for dod today, and dod same day last week? 
-    search_data['wow_in_dod'] = search_data['dod']/search_data.groupby(['country', 'metric']).dod.shift(7)
+    search_data['wow_in_dod'] = search_data['dod']/search_data.groupby(['country', 'metric', 'engine']).dod.shift(7)
 
     # how did it look like for wow today, and wow yesterday, and the day before yesterday?
-    search_data['dod_in_wow'] = search_data['wow']/search_data.groupby(['country', 'metric']).wow.shift(1)
-    search_data['do2d_in_wow'] = search_data['wow']/search_data.groupby(['country', 'metric']).wow.shift(2)
+    search_data['dod_in_wow'] = search_data['wow']/search_data.groupby(['country', 'metric', 'engine']).wow.shift(1)
+    search_data['do2d_in_wow'] = search_data['wow']/search_data.groupby(['country', 'metric', 'engine']).wow.shift(2)
 
     # Only grab the data after the latest_date and add to the table
     search_data = search_data.loc[search_data.new_data_index == True]
@@ -213,31 +250,54 @@ def main(project_id, submission_date, dry_run):
 
     # Note, the checking quit after the first satisfying condition is met, so should aim to add criterion only if they won't meet by with previous conditions
     conditions = [    
-        # Rule1: drop we want to capture on day1 
-        (search_data.value_prev1d > 1000) & (search_data['pcnt_value_prevd'] > 0.001) & (search_data['dod'] < 0.1), # decrease (-2)
-        (search_data.value_prev1d > 1000) & (search_data['pcnt_value_prevd'] > 0.005) & (search_data['dod'] < 0.3), # decrease (-2)
-        (search_data.value_prev1d > 1000) & (search_data['pcnt_value_prevd'] > 0.015) & (search_data['dod'] < 0.6) & (search_data['dayofweek'] < 5), # decrease (-2)  
+    ### Overall engines
+    # Rule1: drop we want to capture on day1 
+    (search_data.engine == 'ALL') & (search_data.value_prev1d > 10000) & (search_data['pcnt_value_prevd'] > 0.001) & (search_data['dod'] < 0.1), # decrease (-2)
+    (search_data.engine == 'ALL') & (search_data.value_prev1d > 10000) & (search_data['pcnt_value_prevd'] > 0.005) & (search_data['dod'] < 0.3), # decrease (-2)
+    (search_data.engine == 'ALL') & (search_data.value_prev1d > 10000) & (search_data['pcnt_value_prevd'] > 0.015) & (search_data['dod'] < 0.6) & (search_data['dayofweek'] < 5), # decrease (-2)  
 
-        (search_data.value_prev1d > 1000) & (search_data['pcnt_value_prevd'] > 0.002) & (search_data['dod'] < 0.25), # decrease (-1)
-        (search_data.value_prev1d > 1000) & (search_data['pcnt_value_prevd'] > 0.005) & (search_data['dod'] < 0.6) & (search_data['dayofweek'] < 5), # decrease (-1)
-        (search_data.value_prev1d > 1000) & (search_data['pcnt_value_prevd'] > 0.025) & (search_data['wow'] < 0.8) & (search_data['dod_in_wow'] < 0.8), # decrease (-1)
+    (search_data.engine == 'ALL') & (search_data.value_prev1d > 10000) & (search_data['pcnt_value_prevd'] > 0.002) & (search_data['dod'] < 0.25), # decrease (-1)
+    (search_data.engine == 'ALL') & (search_data.value_prev1d > 10000) & (search_data['pcnt_value_prevd'] > 0.005) & (search_data['dod'] < 0.6) & (search_data['dayofweek'] < 5), # decrease (-1)
+    (search_data.engine == 'ALL') & (search_data.value_prev1d > 10000) & (search_data['pcnt_value_prevd'] > 0.025) & (search_data['wow'] < 0.8) & (search_data['dod_in_wow'] < 0.8), # decrease (-1)
 
-        # increase we want to capture on day1 -- less sensitive than deal with drop
-        (search_data.value_prev1d > 1000) & (search_data['pcnt_value_prevd'] > 0.01) & (search_data['dod'] > 3) & (search_data['dayofweek'] != 0), # increase (1)
-        (search_data.value_prev1d > 1000) & (search_data['pcnt_value_prevd'] > 0.01) & (search_data['wow'] > 2) & (search_data['dod_in_wow'] > 2), # increase (1)
+    # increase we want to capture on day1 -- less sensitive than deal with drop
+    (search_data.engine == 'ALL') & (search_data.value_prev1d > 10000) & (search_data['pcnt_value_prevd'] > 0.01) & (search_data['dod'] > 3) & (search_data['dayofweek'] != 0), # increase (1)
+    (search_data.engine == 'ALL') & (search_data.value_prev1d > 10000) & (search_data['pcnt_value_prevd'] > 0.01) & (search_data['wow'] > 2) & (search_data['dod_in_wow'] > 2), # increase (1)
 
-        # Rule2: We aim to capture the drop on the completion of the 2nd day if we didn't capture it on the 1st day 
-        # if (1) do2d dropped to < 40%, and (2) wow < 60% and (3) the contribution > 0.1% 
-        (search_data.value_prev2d > 1000) & (search_data['pcnt_value_prev2d'] > 0.002) & (search_data['wow'] < 0.5) \
-        & (search_data['dod'] < 0.9) & (search_data['do2d'] < 0.6) & (search_data['dayofweek'] < 5), 
-        # if (1) wow dropped to <60% two days in a roll
-        (search_data.pcnt_value_prevd_prev1w >= 0.05) & (search_data['wow'] < 0.75) & (search_data['wow_prevd'] < 0.75),
-        # increase
-        (search_data.value> 1000) & (search_data['pcnt_value'] > 0.003) & (search_data['wow'] > 1.5*1.0/0.6) & (search_data['do2d'] > 1.5*1.0/0.4) 
+    # Rule2: We aim to capture the drop on the completion of the 2nd day if we didn't capture it on the 1st day 
+    # if (1) do2d dropped to < 40%, and (2) wow < 60% and (3) the contribution > 0.1% 
+    (search_data.engine == 'ALL') & (search_data.value_prev2d > 10000) & (search_data['pcnt_value_prev2d'] > 0.002) & (search_data['wow'] < 0.5) \
+       & (search_data['dod'] < 0.9) & (search_data['do2d'] < 0.6) & (search_data['dayofweek'] < 5), 
+    # if (1) wow dropped to <60% two days in a roll
+    (search_data.engine == 'ALL') & (search_data.pcnt_value_prevd_prev1w >= 0.05) & (search_data['wow'] < 0.75) & (search_data['wow_prevd'] < 0.75),
+    # increase
+    (search_data.engine == 'ALL') & (search_data.value > 10000) & (search_data['pcnt_value'] > 0.003) & (search_data['wow'] > 1.5*1.0/0.6) & (search_data['do2d'] > 1.5*1.0/0.4), 
+	    
+    ### For individual engine
+    (search_data.engine != 'ALL') & (search_data.value_prev1d > 10000) & (search_data['pcnt_value_prevd'] > 0.01) & (search_data['dod'] < 0.1), # decrease (-2)
+    (search_data.engine != 'ALL') & (search_data.value_prev1d > 10000) & (search_data['pcnt_value_prevd'] > 0.03) & (search_data['dod'] < 0.4) & (search_data['dayofweek'] < 5), # not on F/S/S decrease (-2)
+    (search_data.engine != 'ALL') & (search_data.value_prev1d > 10000) & (search_data['pcnt_value_prevd'] > 0.05) & (search_data['dod'] < 0.6) & (search_data['dayofweek'] < 5), # decrease (-2)  
+
+    (search_data.engine != 'ALL') & (search_data.value_prev1d > 10000) & (search_data['pcnt_value_prevd'] > 0.03) & (search_data['dod'] < 0.25) & (search_data['dayofweek'] < 5), # decrease (-1)
+    (search_data.engine != 'ALL') & (search_data.value_prev1d > 10000) & (search_data['pcnt_value_prevd'] > 0.05) & (search_data['dod'] < 0.6) & (search_data['dayofweek'] < 5), # decrease (-1)
+    (search_data.engine != 'ALL') & (search_data.value_prev1d > 10000) & (search_data['pcnt_value_prevd'] > 0.10) & (search_data['wow'] < 0.8) & (search_data['dod_in_wow'] < 0.8), # decrease (-1)
+
+    # increase we want to capture on day1 -- less sensitive than deal with drop
+    (search_data.engine != 'ALL') & (search_data.value_prev1d > 10000) & (search_data['pcnt_value_prevd'] > 0.05) & (search_data['dod'] > 4) & (search_data['dayofweek'] <= 1), # increase (1)
+    (search_data.engine != 'ALL') & (search_data.value_prev1d > 10000) & (search_data['pcnt_value_prevd'] > 0.05) & (search_data['wow'] > 4) & (search_data['dod_in_wow'] > 2), # increase (1)
+
+    # Rule2: We aim to capture the drop on the completion of the 2nd day if we didn't capture it on the 1st day 
+    # if (1) do2d dropped to < 40%, and (2) wow < 60% and (3) the contribution > 0.1% 
+    (search_data.engine != 'ALL') & (search_data.value_prev2d > 10000) & (search_data['pcnt_value_prev2d'] > 0.03) & (search_data['wow'] < 0.5) \
+       & (search_data['dod'] < 0.9) & (search_data['do2d'] < 0.6) & (search_data['dayofweek'] < 5), 
+    # if (1) wow dropped to <60% two days in a roll
+    (search_data.engine != 'ALL') & (search_data.pcnt_value_prevd_prev1w >= 0.05) & (search_data['wow'] < 0.6) & (search_data['wow_prevd'] < 0.6),
+    # increase
+    #(search_data.engine != 'ALL') & (search_data.value> 10000) & (search_data['pcnt_value'] > 0.05) & (search_data['wow'] > 1.5*1.0/0.6) & (search_data['do2d'] > 1.5*1.0/0.4) 
 
     ]
 
-    choices = [-2, -2, -2, -1,  -1, -1, 1, 1, -1, -1, 1]
+    choices = [-2, -2, -2, -1,  -1, -1, 1, 1, -1, -1, 1, -2, -2, -2, -1, -1, -1, 1, 1, -1, -1]
     search_data['abnormal'] = np.select(conditions, choices, default=0)
     abnormality_data = search_data.loc[(search_data.abnormal != 0)]
     abnormality_data['is_holiday'] = [is_it_holiday(abnormality_data.iloc[i]['submission_date'], abnormality_data.iloc[i]['country']) for i in range(abnormality_data.shape[0])]
@@ -252,7 +312,8 @@ def main(project_id, submission_date, dry_run):
             job_config = bigquery.LoadJobConfig(write_disposition = 'WRITE_APPEND')
             job = client.load_table_from_dataframe(abnormality_data, 'mozdata.analysis.desktop_search_alert_records', job_config = job_config)
             job.result()
-
+		
+		
     # Append to 'mozdata.analysis.desktop_search_alert_latest_daily' daily the latest abnormality date so we can properly trigger the Looker alert
     # In Looker, time series alert check the last 2 rows in the data table (so we need to append daily even there is no abnormality o/t the alert won't work
     query_statement = """

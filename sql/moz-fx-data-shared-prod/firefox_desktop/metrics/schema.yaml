@@ -861,6 +861,116 @@ fields:
       mode: NULLABLE
       name: geckoview_validation_version
       type: STRING
+    - description: 'The display name of the user''s default engine.
+
+        '
+      mode: NULLABLE
+      name: search_engine_default_display_name
+      type: STRING
+    - description: 'The telemetry id of the search engine.
+
+        For application provided engines, this is either supplied by the
+
+        configuration or from the first part of the associated WebExtension Id.
+
+        For other engines, this is `other-<extensionName>`.
+
+        '
+      mode: NULLABLE
+      name: search_engine_default_engine_id
+      type: STRING
+    - description: "A path relating to where the search engine was installed/loaded\
+        \ from.\nFor example:\n  `[other]addEngineWithDetails:<extension id>` for\
+        \ a WebExtension based\n  engine.\n  `[https]developer.mozilla.org/mdn-web-docs.xml`\
+        \ for an OpenSearch based\n  engine.\nNote: this metric is truncated at 100\
+        \ characters.\n"
+      mode: NULLABLE
+      name: search_engine_default_load_path
+      type: STRING
+    - description: 'The verified status of the search engine.
+
+        For application provided engines, this will always be `default`.
+
+        For other engines this will either be `verified` or `unverified` depending
+
+        on if the loadPathHash is valid.
+
+        '
+      mode: NULLABLE
+      name: search_engine_default_verified
+      type: STRING
+    - description: 'The display name of the user''s default engine.
+
+        If this string is an empty string (`""`), this means that one or both of
+
+        the preferences `browser.search.separatePrivateDefault` and
+
+        `browser.search.separatePrivateDefault.ui.enabled` are set to false.
+
+        It is possible that the user selects the same private engine as for the
+
+        default engine, and hence both versions of these fields will be filled in.
+
+        '
+      mode: NULLABLE
+      name: search_engine_private_display_name
+      type: STRING
+    - description: 'The telemetry id of the search engine.
+
+        For application provided engines, this is either supplied by the
+
+        configuration or from the first part of the associated WebExtension Id.
+
+        For other engines, this is `other-<extensionName>`.
+
+        If this string is an empty string (`""`), this means that one or both of
+
+        the preferences `browser.search.separatePrivateDefault` and
+
+        `browser.search.separatePrivateDefault.ui.enabled` are set to false.
+
+        It is possible that the user selects the same private engine as for the
+
+        default engine, and hence both versions of these fields will be filled in.
+
+        '
+      mode: NULLABLE
+      name: search_engine_private_engine_id
+      type: STRING
+    - description: "A path relating to where the search engine was installed/loaded\
+        \ from.\nFor example:\n  `[other]addEngineWithDetails:<extension id>` for\
+        \ a WebExtension based\n  engine.\n  `[https]developer.mozilla.org/mdn-web-docs.xml`\
+        \ for an OpenSearch based\n  engine.\nNote: this metric is truncated at 100\
+        \ characters.\nIf this string is an empty string (`\"\"`), this means that\
+        \ one or both of\nthe preferences `browser.search.separatePrivateDefault`\
+        \ and\n`browser.search.separatePrivateDefault.ui.enabled` are set to false.\n\
+        It is possible that the user selects the same private engine as for the\n\
+        default engine, and hence both versions of these fields will be filled in.\n"
+      mode: NULLABLE
+      name: search_engine_private_load_path
+      type: STRING
+    - description: 'The verified status of the search engine.
+
+        For application provided engines, this will always be `default`.
+
+        For other engines this will either be `verified` or `unverified` depending
+
+        on if the loadPathHash is valid.
+
+        If this string is an empty string (`""`), this means that one or both of
+
+        the preferences `browser.search.separatePrivateDefault` and
+
+        `browser.search.separatePrivateDefault.ui.enabled` are set to false.
+
+        It is possible that the user selects the same private engine as for the
+
+        default engine, and hence both versions of these fields will be filled in.
+
+        '
+      mode: NULLABLE
+      name: search_engine_private_verified
+      type: STRING
     mode: NULLABLE
     name: string
     type: RECORD
@@ -1246,6 +1356,29 @@ fields:
       type: RECORD
     mode: NULLABLE
     name: custom_distribution
+    type: RECORD
+  - fields:
+    - description: "The submission URL of the default engine. This is only reported\
+        \ in the\ncases where:\n  The engine is an application provided engine.\n\
+        \  The engine has the same name as an application provided engine.\n  The\
+        \ engine matches one of a specific list of well known search engines.\n"
+      mode: NULLABLE
+      name: search_engine_default_submission_url
+      type: STRING
+    - description: "The submission URL of the default engine. This is only reported\
+        \ in the\ncases where:\n  The engine is an application provided engine.\n\
+        \  The engine has the same name as an application provided engine.\n  The\
+        \ engine matches one of a specific list of well known search engines.\nIf\
+        \ this string is an empty string (`\"\"`), this means that one or both of\n\
+        the preferences `browser.search.separatePrivateDefault` and\n`browser.search.separatePrivateDefault.ui.enabled`\
+        \ are set to false.\nIt is possible that the user selects the same private\
+        \ engine as for the\ndefault engine, and hence both versions of these fields\
+        \ will be filled in.\n"
+      mode: NULLABLE
+      name: search_engine_private_submission_url
+      type: STRING
+    mode: NULLABLE
+    name: url2
     type: RECORD
   mode: NULLABLE
   name: metrics

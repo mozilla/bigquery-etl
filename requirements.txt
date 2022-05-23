@@ -999,9 +999,9 @@ sqlparse==0.4.2 \
     --hash=sha256:0c00730c74263a94e5a9919ade150dfc3b19c574389985446148402998287dae \
     --hash=sha256:48719e356bb8b42991bdbb1e8b83223757b93789c00910a616a071910ca4a64d
     # via -r requirements.in
-stripe==3.0.0 \
-    --hash=sha256:f87027ebdcb5b3f3cb3ca67cc1a14c5b44aacdacd081b8b50a6bf94e2bb86f13 \
-    --hash=sha256:feb400d70a0fbfa54df7e6376c8f9b87651ded977cd6a02ee32c661a607e259a
+stripe==3.1.0 \
+    --hash=sha256:9a1fab25dcb8c4c24a6a00c4b7f5faea1e12d106b954356920624ce228854dce \
+    --hash=sha256:d7fa4c18578d26a7e7f689e5177dd8ebb47f2879b1c06019aa0b888e2dd1aeb9
     # via -r requirements.in
 toml==0.10.2 \
     --hash=sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b \

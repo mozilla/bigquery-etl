@@ -15,19 +15,18 @@ Built from bigquery-etl repo, [`dags/bqetl_analytics_aggregations.py`](https://g
 Scheduler to populate the aggregations required for analytics engineering and reports optimization. It provides data to build growth, search and usage metrics, as well as acquisition and retention KPIs, in a model that facilitates reporting in Looker.
 #### Owner
 
-gkaberere@mozilla.com
+lvargas@mozilla.com
 """
 
 
 default_args = {
-    "owner": "gkaberere@mozilla.com",
+    "owner": "lvargas@mozilla.com",
     "start_date": datetime.datetime(2022, 5, 12, 0, 0),
     "end_date": None,
     "email": [
-        "anicholson@mozilla.com",
-        "gkaberere@mozilla.com",
-        "lvargas@mozilla.com",
         "telemetry-alerts@mozilla.com",
+        "lvargas@mozilla.com",
+        "gkaberere@mozilla.com",
     ],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),

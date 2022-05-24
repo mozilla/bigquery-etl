@@ -24,9 +24,6 @@ fields:
   name: is_default_browser
   type: BOOLEAN
 - mode: NULLABLE
-  name: locale
-  type: STRING
-- mode: NULLABLE
   name: app_name
   type: STRING
 - mode: NULLABLE
@@ -83,3 +80,6 @@ fields:
 - mode: NULLABLE
   name: attributed
   type: BOOLEAN
+- mode: NULLABLE
+  name: language_name
+  type: STRING

@@ -1,17 +1,14 @@
--- Aggregated clients data including active users, new profiles and search metrics
+-- Query for telemetry_derived.active_users_aggregates_device_v1
 SELECT
-  activity_segment AS segment,
   app_version,
-  attribution_medium,
-  attribution_source,
   attribution_medium IS NOT NULL
   OR attribution_source IS NOT NULL AS attributed,
-  city,
+  attribution_medium,
+  attribution_source,
   country,
-  distribution_id,
+  device_model,
   EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
   is_default_browser,
-  locale,
   normalized_app_name AS app_name,
   normalized_channel AS channel,
   normalized_os AS os,
@@ -35,20 +32,17 @@ WHERE
   submission_date = @submission_date
 GROUP BY
   app_version,
+  attributed,
   attribution_medium,
   attribution_source,
-  attributed,
-  city,
   country,
-  distribution_id,
+  device_model,
   first_seen_year,
   is_default_browser,
-  locale,
   app_name,
   channel,
   os,
   os_version,
   os_version_major,
   os_version_minor,
-  submission_date,
-  segment
+  submission_date

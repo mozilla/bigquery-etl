@@ -1,16 +1,13 @@
 -- Aggregated clients data including active users, new profiles and search metrics
 SELECT
   activity_segment AS segment,
-  app_version AS app_version,
-  attribution_campaign,
-  attribution_content,
-  attribution_experiment,
+  app_version,
   attribution_medium,
   attribution_source,
-  attribution_variation,
+  attribution_medium IS NOT NULL
+  OR attribution_source IS NOT NULL AS attributed,
   city,
   country,
-  device_model,
   distribution_id,
   EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
   is_default_browser,
@@ -38,15 +35,11 @@ WHERE
   submission_date = @submission_date
 GROUP BY
   app_version,
-  attribution_campaign,
-  attribution_content,
-  attribution_experiment,
   attribution_medium,
   attribution_source,
-  attribution_variation,
+  attributed,
   city,
   country,
-  device_model,
   distribution_id,
   first_seen_year,
   is_default_browser,

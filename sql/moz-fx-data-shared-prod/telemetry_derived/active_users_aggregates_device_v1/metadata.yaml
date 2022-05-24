@@ -1,0 +1,29 @@
+friendly_name: Active Users Aggregates Device
+description: |-
+  Active users aggregated by Mozilla product and business dimensions:
+  device model, os details, attribution medium and attribution source.
+
+  This aggregation is part of the set of analytics aggregations that include
+  active_users_aggregates as the base for analysis. It is required to
+  drill down to device model in combination with OS, while reducing the size
+  of active_users_aggregates given the uniqueness the device models for
+  each client.
+owners:
+- lvargas@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_analytics_aggregations
+  task_name: active_users_aggregates_device_v1
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - country
+    - app_name
+    - attribution_medium
+    - channel

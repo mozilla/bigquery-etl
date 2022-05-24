@@ -96,11 +96,5 @@ fields:
   name: first_seen_year
   type: INTEGER
 - mode: NULLABLE
-  name: first_seen_date
-  type: DATE
-- mode: NULLABLE
   name: attributed
   type: BOOLEAN
-- mode: NULLABLE
-  name: language_name
-  type: STRING

@@ -17,7 +17,7 @@ SELECT
   COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS dau,
   COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS wau,
   COUNT(DISTINCT client_id) AS mau,
-  COUNT(DISTINCT IF(is_new_profile IS TRUE, client_id, NULL)) AS new_profiles,
+  COUNT(DISTINCT IF(submission_date = first_seen_date, client_id, NULL)) AS new_profiles,
   SUM(ad_click) AS ad_clicks,
   SUM(organic_search_count) AS organic_search_count,
   SUM(search_count) AS search_count,

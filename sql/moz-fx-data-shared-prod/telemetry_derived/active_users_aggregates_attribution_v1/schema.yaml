@@ -65,3 +65,6 @@ fields:
 - mode: NULLABLE
   name: active_hours
   type: FLOAT
+- mode: NULLABLE
+  name: attributed
+  type: BOOLEAN

@@ -6,31 +6,16 @@ fields:
   name: app_version
   type: STRING
 - mode: NULLABLE
-  name: attribution_campaign
-  type: STRING
-- mode: NULLABLE
-  name: attribution_content
-  type: STRING
-- mode: NULLABLE
-  name: attribution_experiment
-  type: STRING
-- mode: NULLABLE
   name: attribution_medium
   type: STRING
 - mode: NULLABLE
   name: attribution_source
   type: STRING
 - mode: NULLABLE
-  name: attribution_variation
-  type: STRING
-- mode: NULLABLE
   name: city
   type: STRING
 - mode: NULLABLE
   name: country
-  type: STRING
-- mode: NULLABLE
-  name: device_model
   type: STRING
 - mode: NULLABLE
   name: distribution_id

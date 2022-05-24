@@ -35,7 +35,6 @@ WITH aggregated AS (
   WHERE
     submission_date = @submission_date
   GROUP BY
-    segment,
     app_version,
     attribution_medium,
     attribution_source,
@@ -52,7 +51,8 @@ WITH aggregated AS (
     os_version,
     os_version_major,
     os_version_minor,
-    submission_date
+    submission_date,
+    segment
 )
 SELECT
   aggregated.* EXCEPT (locale),

@@ -20,6 +20,7 @@ WITH unioned AS (
     uri_count,
     is_default_browser,
     CAST(NULL AS string) AS distribution_id,
+    isp,
     'Fenix' AS normalized_app_name
   FROM
     fenix.clients_last_seen_joined
@@ -47,6 +48,7 @@ WITH unioned AS (
     uri_count,
     is_default_browser,
     CAST(NULL AS string) AS distribution_id,
+    isp,
     'Firefox iOS' AS normalized_app_name
   FROM
     firefox_ios.clients_last_seen_joined
@@ -74,6 +76,7 @@ WITH unioned AS (
     uri_count,
     is_default_browser,
     CAST(NULL AS string) AS distribution_id,
+    isp,
     'Focus iOS' AS normalized_app_name
   FROM
     focus_ios.clients_last_seen_joined
@@ -101,6 +104,7 @@ WITH unioned AS (
     NULL AS uri_count,
     default_browser AS is_default_browser,
     distribution_id,
+    CAST(NULL AS string) AS isp,
     'Focus Android' AS normalized_app_name
   FROM
     telemetry.core_clients_last_seen
@@ -182,6 +186,7 @@ mobile_with_searches AS (
     unioned.days_created_profile_bits,
     DATE_DIFF(unioned.submission_date, unioned.first_seen_date, DAY) AS days_since_first_seen,
     unioned.device_model,
+    unioned.isp,
     unioned.is_new_profile,
     unioned.locale,
     unioned.first_seen_date,
@@ -238,6 +243,7 @@ desktop AS (
     days_created_profile_bits,
     days_since_first_seen,
     CAST(NULL AS string) AS device_model,
+    CAST(NULL AS string) AS isp,
     submission_date = first_seen_date AS is_new_profile,
     locale,
     first_seen_date,

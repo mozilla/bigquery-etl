@@ -1,5 +1,7 @@
 -- Query for telemetry_derived.active_users_aggregates_attribution_v1
 SELECT
+  attribution_medium IS NOT NULL
+  OR attribution_source IS NOT NULL AS attributed,
   attribution_campaign,
   attribution_content,
   attribution_experiment,
@@ -27,6 +29,7 @@ FROM
 WHERE
   submission_date = @submission_date
 GROUP BY
+  attributed,
   attribution_campaign,
   attribution_content,
   attribution_experiment,

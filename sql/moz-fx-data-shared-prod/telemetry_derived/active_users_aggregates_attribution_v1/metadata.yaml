@@ -1,19 +1,23 @@
 friendly_name: Active Users Aggregates Attribution
 description: |-
-  Please provide a description for the query
+  Active users aggregated by Mozilla product and business dimensions:
+  country, city and attribution details
 owners:
-- example@mozilla.com
+- lvargas@mozilla.com
 labels:
   incremental: true
 scheduling:
   dag_name: bqetl_analytics_aggregations
-  task_name: active_users_aggregates_attribution
+  task_name: active_users_aggregates_attribution_v1
 bigquery:
   time_partitioning:
-    field: ''
+    field: submission_date
     type: day
     require_partition_filter: true
     expiration_days: null
   clustering:
-    fields: []
-references: {}
+    fields:
+    - country
+    - city
+    - app_name
+    - attribution_medium

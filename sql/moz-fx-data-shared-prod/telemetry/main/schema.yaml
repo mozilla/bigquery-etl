@@ -19800,6 +19800,14 @@ fields:
       mode: NULLABLE
       name: use_counter2_deprecated_moz_current_transform_page
       type: STRING
+    - description: Whether a document used the CSS property overflow-clip-margin
+      mode: NULLABLE
+      name: use_counter2_css_property_overflow_clip_margin_document
+      type: STRING
+    - description: Whether a page used the CSS property overflow-clip-margin
+      mode: NULLABLE
+      name: use_counter2_css_property_overflow_clip_margin_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -40911,6 +40919,14 @@ fields:
         - description: Whether a page used MozCurrentTransform
           mode: NULLABLE
           name: use_counter2_deprecated_moz_current_transform_page
+          type: STRING
+        - description: Whether a document used the CSS property overflow-clip-margin
+          mode: NULLABLE
+          name: use_counter2_css_property_overflow_clip_margin_document
+          type: STRING
+        - description: Whether a page used the CSS property overflow-clip-margin
+          mode: NULLABLE
+          name: use_counter2_css_property_overflow_clip_margin_page
           type: STRING
         mode: NULLABLE
         name: histograms

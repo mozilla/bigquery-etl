@@ -1,4 +1,4 @@
-WITH unioned AS (
+WITH unioned_source AS (
   SELECT
     submission_date,
     normalized_channel,
@@ -20,6 +20,7 @@ WITH unioned AS (
     uri_count,
     is_default_browser,
     CAST(NULL AS string) AS distribution_id,
+    isp,
     'Fenix' AS normalized_app_name
   FROM
     fenix.clients_last_seen_joined
@@ -47,6 +48,7 @@ WITH unioned AS (
     uri_count,
     is_default_browser,
     CAST(NULL AS string) AS distribution_id,
+    isp,
     'Firefox iOS' AS normalized_app_name
   FROM
     firefox_ios.clients_last_seen_joined
@@ -74,6 +76,7 @@ WITH unioned AS (
     uri_count,
     is_default_browser,
     CAST(NULL AS string) AS distribution_id,
+    isp,
     'Focus iOS' AS normalized_app_name
   FROM
     focus_ios.clients_last_seen_joined
@@ -101,6 +104,7 @@ WITH unioned AS (
     NULL AS uri_count,
     default_browser AS is_default_browser,
     distribution_id,
+    CAST(NULL AS string) AS isp,
     'Focus Android' AS normalized_app_name
   FROM
     telemetry.core_clients_last_seen
@@ -108,6 +112,22 @@ WITH unioned AS (
     submission_date = @submission_date
     AND app_name = 'Focus'
     AND os = 'Android'
+),
+unioned AS (
+  SELECT
+    * EXCEPT (isp) REPLACE(
+      -- Per bug 1757216 we need to exclude BrowserStack clients from KPIs,
+      -- so we mark them with a separate app name here. We expect BrowserStack
+      -- clients only on release channel of Fenix, so the only variant this is
+      -- expected to produce is 'Fenix BrowserStack'
+      IF(
+        isp = 'BrowserStack',
+        CONCAT(normalized_app_name, ' BrowserStack'),
+        normalized_app_name
+      ) AS normalized_app_name
+    )
+  FROM
+    unioned_source
 ),
 search_clients AS (
   SELECT

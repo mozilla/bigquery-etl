@@ -1212,6 +1212,27 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#baseline_clients_daily" class="md-nav__link">
+    baseline_clients_daily
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#baseline_clients_first_seen" class="md-nav__link">
+    baseline_clients_first_seen
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#baseline_clients_last_seen" class="md-nav__link">
+    baseline_clients_last_seen
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#deletion_request" class="md-nav__link">
     deletion_request
   </a>
@@ -2163,6 +2184,27 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#baseline_clients_daily" class="md-nav__link">
+    baseline_clients_daily
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#baseline_clients_first_seen" class="md-nav__link">
+    baseline_clients_first_seen
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#baseline_clients_last_seen" class="md-nav__link">
+    baseline_clients_last_seen
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#deletion_request" class="md-nav__link">
     deletion_request
   </a>
@@ -2421,6 +2463,101 @@ and to contain only one row per distinct <code>document_id</code> within a given
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus/baseline">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus/baseline/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus/baseline/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="baseline_clients_daily"><a href="#baseline_clients_daily">baseline_clients_daily</a></h2>
+<p><strong>Baseline Clients Daily</strong></p>
+<p><code>org_mozilla_focus.baseline_clients_daily</code></p>
+<p>A daily aggregate of baseline pings per <code>client_id</code>.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<p>See also: <code>baseline_clients_last_seen</code></p>
+<ul>
+<li>
+<p>Owners:</p>
+<ul>
+<li><a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a></li>
+</ul>
+</li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_derived>org_mozilla_focus_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_derived/baseline_clients_daily_v1>baseline_clients_daily_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus/baseline_clients_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus/baseline_clients_daily/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus/baseline_clients_daily/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="baseline_clients_first_seen"><a href="#baseline_clients_first_seen">baseline_clients_first_seen</a></h2>
+<p><strong>Baseline Clients First Seen</strong></p>
+<p><code>org_mozilla_focus.baseline_clients_first_seen</code></p>
+<p>Captures the earliest server date that we observe a particular client in the
+baseline table. A client may have a <code>first_seen_date</code> that is earlier than the
+epoch of the baseline table; this is the result of a migration from a legacy
+data collection system. These clients are therefore not captured in this
+table.</p>
+<p>Clustering fields: <code>sample_id</code></p>
+<p>See also: <code>baseline_clients_daily</code> and <code>baseline_clients_last_seen</code>.</p>
+<ul>
+<li>
+<p>Owners:</p>
+<ul>
+<li><a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a></li>
+</ul>
+</li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_derived>org_mozilla_focus_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_derived/baseline_clients_daily_v1>baseline_clients_daily_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus/baseline_clients_first_seen">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus/baseline_clients_first_seen/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus/baseline_clients_first_seen/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="baseline_clients_last_seen"><a href="#baseline_clients_last_seen">baseline_clients_last_seen</a></h2>
+<p><strong>Baseline Clients Last Seen</strong></p>
+<p><code>org_mozilla_focus.baseline_clients_last_seen</code></p>
+<p>Captures activity history of each client in 28-day
+windows for each submission date based on baseline pings.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<p>See also: <code>baseline_clients_daily</code></p>
+<ul>
+<li>
+<p>Owners:</p>
+<ul>
+<li><a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a></li>
+</ul>
+</li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_derived>org_mozilla_focus_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_derived/baseline_clients_last_seen_v1>baseline_clients_last_seen_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus/baseline_clients_last_seen">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus/baseline_clients_last_seen/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus/baseline_clients_last_seen/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="deletion_request"><a href="#deletion_request">deletion_request</a></h2>
 <p><strong>Historical Pings for <code>org-mozilla-focus/deletion-request</code></strong></p>

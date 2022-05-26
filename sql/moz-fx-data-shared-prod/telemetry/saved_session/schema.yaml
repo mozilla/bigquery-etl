@@ -19808,6 +19808,14 @@ fields:
       mode: NULLABLE
       name: use_counter2_css_property_overflow_clip_margin_page
       type: STRING
+    - description: Counts how often specific query parameters are stripped.
+      mode: NULLABLE
+      name: query_stripping_count_by_param
+      type: STRING
+    - description: If query params get stripped, how many per navigation/redirect.
+      mode: NULLABLE
+      name: query_stripping_param_count
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -40928,6 +40936,14 @@ fields:
           mode: NULLABLE
           name: use_counter2_css_property_overflow_clip_margin_page
           type: STRING
+        - description: Counts how often specific query parameters are stripped.
+          mode: NULLABLE
+          name: query_stripping_count_by_param
+          type: STRING
+        - description: If query params get stripped, how many per navigation/redirect.
+          mode: NULLABLE
+          name: query_stripping_param_count
+          type: STRING
         mode: NULLABLE
         name: histograms
         type: RECORD
@@ -47964,8 +47980,8 @@ fields:
           - mode: NULLABLE
             name: key
             type: STRING
-          - description: 'Counts how many times this result type was picked at a given
-              index.
+          - description: 'Counts how many times an origin (domain) autofill result
+              (e.g., "mozilla.org") was picked at a given index.
 
               '
             mode: NULLABLE
@@ -47978,8 +47994,8 @@ fields:
           - mode: NULLABLE
             name: key
             type: STRING
-          - description: 'Counts how many times this result type was picked at a given
-              index.
+          - description: 'Counts how many times a URL autofill result (e.g., "mozilla.org/firefox")
+              was picked at a given index.
 
               '
             mode: NULLABLE
@@ -47987,6 +48003,52 @@ fields:
             type: INTEGER
           mode: REPEATED
           name: urlbar_picked_autofill_url
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'Counts how many times an about-page autofill result (e.g.,
+              "about:config") was picked at a given index.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: urlbar_picked_autofill_about
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'Counts how many times some other type of autofill result
+              that does not have a specific keyed scalar was picked at a given index.
+              This is a fallback that is used when the code is not properly setting
+              a specific autofill type, and it should not normally be used. If it
+              appears in the data, it means we need to investigate and fix the code
+              that is not properly setting a specific autofill type.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: urlbar_picked_autofill_other
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'Counts how many times a preloaded site autofill result was
+              picked at a given index.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: urlbar_picked_autofill_preloaded
           type: RECORD
         mode: NULLABLE
         name: keyed_scalars

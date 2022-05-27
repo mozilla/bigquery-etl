@@ -328,21 +328,8 @@ def main(project_id, submission_date, dry_run):
             `mozdata.analysis.desktop_search_alert_records`
         WHERE
             is_holiday IS FALSE
-            AND DATE(submission_date) <= @submission_date
-        GROUP BY
-            1,
-            2 ),
-        holiday_update AS (
-        SELECT
-            @submission_date AS asof,
-            "Yes" AS is_holiday,
-            DATE(MAX(submission_date)) AS latest_abnormality_date,
-            MAX(latest_abnormality_in_days) AS latest_abnormality_date_int
-        FROM
-            `mozdata.analysis.desktop_search_alert_records`
-        WHERE
-            is_holiday IS TRUE
-            AND DATE(submission_date) <= @submission_date
+            AND (abnormal = -2 or abnormal = 2)
+	    AND DATE(submission_date) <= @submission_date
         GROUP BY
             1,
             2 ),
@@ -355,7 +342,8 @@ def main(project_id, submission_date, dry_run):
         FROM
             `mozdata.analysis.desktop_search_alert_records`
         WHERE
-            DATE(submission_date) <= @submission_date
+            (abnormal = -2 or abnormal = 2)
+	    AND DATE(submission_date) <= @submission_date
         GROUP BY
             1,
             2 )

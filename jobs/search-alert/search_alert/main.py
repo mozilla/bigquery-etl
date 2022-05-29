@@ -361,14 +361,6 @@ def main(project_id, submission_date, dry_run):
             latest_abnormality_date,
             latest_abnormality_date_int
         FROM
-            holiday_update)
-        UNION ALL (
-        SELECT
-            asof,
-            is_holiday,
-            latest_abnormality_date,
-            latest_abnormality_date_int
-        FROM
             all_update)
     """
 

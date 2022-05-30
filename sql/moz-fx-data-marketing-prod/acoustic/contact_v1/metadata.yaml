@@ -18,7 +18,7 @@ owners:
 
 scheduling:
   dag_name: bqetl_acoustic_contact_export
-  arguments: ["--submission_date", "{{ ds }}"]
+  date_partition_parameter: submission_date
   referenced_tables:
     - ['moz-fx-data-marketing-prod', 'acoustic', 'contact_raw_v1']
 

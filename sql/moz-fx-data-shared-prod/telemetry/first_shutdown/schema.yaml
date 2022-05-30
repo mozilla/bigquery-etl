@@ -19825,6 +19825,10 @@ fields:
       mode: NULLABLE
       name: query_stripping_param_count
       type: STRING
+    - description: Script loaded from file:// has a correct MIME type.
+      mode: NULLABLE
+      name: script_file_protocol_correct_mime
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -40952,6 +40956,10 @@ fields:
         - description: If query params get stripped, how many per navigation/redirect.
           mode: NULLABLE
           name: query_stripping_param_count
+          type: STRING
+        - description: Script loaded from file:// has a correct MIME type.
+          mode: NULLABLE
+          name: script_file_protocol_correct_mime
           type: STRING
         mode: NULLABLE
         name: histograms

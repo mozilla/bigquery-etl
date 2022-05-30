@@ -45,6 +45,21 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    active_users_aggregates_attribution_v1 = bigquery_etl_query(
+        task_id="active_users_aggregates_attribution_v1",
+        destination_table="active_users_aggregates_attribution_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="lvargas@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     active_users_aggregates_device_v1 = bigquery_etl_query(
         task_id="active_users_aggregates_device_v1",
         destination_table="active_users_aggregates_device_v1",
@@ -99,6 +114,10 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    active_users_aggregates_attribution_v1.set_upstream(
+        wait_for_telemetry_derived__unified_metrics__v1
     )
 
     active_users_aggregates_device_v1.set_upstream(

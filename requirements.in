@@ -16,7 +16,7 @@ mkdocs-material==8.2.16
 mkdocs-awesome-pages-plugin==2.7.0
 mozilla-schema-generator==0.5.1
 pandas==1.4.2
-pathos==0.2.8
+pathos==0.2.9
 pip-tools==6.6.2
 pre-commit==2.19.0
 pyarrow==8.0.0

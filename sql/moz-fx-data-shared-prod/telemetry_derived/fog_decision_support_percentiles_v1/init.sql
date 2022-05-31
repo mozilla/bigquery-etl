@@ -210,8 +210,8 @@ base AS (
       SECOND
     ) AS client_submission_latency,
   FROM
-    `moz-fx-data-shared-prod.main_v4`
- --`mozdata.telemetry.main_1pct`
+    --`moz-fx-data-shared-prod.main_v4`
+    `mozdata.telemetry.main_1pct`
   WHERE
     normalized_channel IN ('nightly', 'beta', 'release')
     AND DATE(submission_timestamp) = "2022-05-20"

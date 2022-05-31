@@ -22,4 +22,3 @@ bigquery:
     expiration_days: null
   clustering:
     fields: []
-references: {}

@@ -52,14 +52,14 @@ with DAG(
         depends_on_past=False,
     )
 
-    wait_for_telemetry_derived__main_1pct__v1 = ExternalTaskCompletedSensor(
-        task_id="wait_for_telemetry_derived__main_1pct__v1",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__main_1pct__v1",
-        execution_delta=datetime.timedelta(seconds=7200),
+    wait_for_copy_deduplicate_main_ping = ExternalTaskCompletedSensor(
+        task_id="wait_for_copy_deduplicate_main_ping",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_main_ping",
+        execution_delta=datetime.timedelta(seconds=10800),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    fog_decision_support.set_upstream(wait_for_telemetry_derived__main_1pct__v1)
+    fog_decision_support.set_upstream(wait_for_copy_deduplicate_main_ping)

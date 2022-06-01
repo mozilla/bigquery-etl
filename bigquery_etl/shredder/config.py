@@ -605,6 +605,7 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
             and not table.table_id.startswith("enrollment_")
             and not table.table_id.startswith("study_enrollment_")
             and not table.table_id.startswith("study_unenrollment_")
+            and not table.table_id.startswith("unenrollment_")
         },
         **{
             # derived tables with pioneer_id

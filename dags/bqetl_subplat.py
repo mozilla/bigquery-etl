@@ -20,6 +20,17 @@ operational DB as well as derived tables based on that data.
 
 Depends on `bqetl_fxa_events`, so is scheduled to run a bit after that.
 
+Stripe data retrieved by stripe_external__itemized_payout_reconciliation__v5
+task has highly viariable availability timing, so it is possible for it to
+fail with the following type of error:
+`Error: Request req_OTssZ0Zv1cEmmm: Data for the report type
+        payout_reconciliation.itemized.5 is only available through
+        2022-05-08 12:00:00 UTC; you requested `interval_end`
+        = 2022-05-09 00:00:00 UTC.`
+In such cases the failure is expected, the task will continue to retry every
+30 minutes until the data becomes available. If failure observed looks
+different then it should be reported using the Airflow triage process.
+
 #### Owner
 
 dthorn@mozilla.com

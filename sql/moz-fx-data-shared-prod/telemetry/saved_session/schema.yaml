@@ -19820,6 +19820,10 @@ fields:
       mode: NULLABLE
       name: script_file_protocol_correct_mime
       type: STRING
+    - description: Time taken by WebRender to rasterize blobs
+      mode: NULLABLE
+      name: wr_rasterize_blobs_time
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -44480,6 +44484,10 @@ fields:
         - description: Time taken by WebRender to rasterize a set of glyphs
           mode: NULLABLE
           name: wr_rasterize_glyphs_time
+          type: STRING
+        - description: Time taken by WebRender to rasterize blobs
+          mode: NULLABLE
+          name: wr_rasterize_blobs_time
           type: STRING
         mode: NULLABLE
         name: histograms

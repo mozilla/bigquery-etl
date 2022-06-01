@@ -31,7 +31,7 @@ default_args = {
     "retries": 2,
 }
 
-tags = ["impact/tier3", "repo/bigquery-etl"]
+tags = ["impact/tier_3", "repo/bigquery-etl"]
 
 with DAG(
     "bqetl_fog_decision_support",

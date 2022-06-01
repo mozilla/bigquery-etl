@@ -12,7 +12,7 @@ Built from bigquery-etl repo, [`dags/bqetl_fog_decision_support.py`](https://git
 
 #### Description
 
-This DAG schedules queries for calculating FOG decision support metrics.
+This DAG schedules queries for calculating FOG decision support metrics
 #### Owner
 
 pmcmanis@mozilla.com
@@ -21,7 +21,7 @@ pmcmanis@mozilla.com
 
 default_args = {
     "owner": "pmcmanis@mozilla.com",
-    "start_date": datetime.datetime(2022, 5, 22, 0, 0),
+    "start_date": datetime.datetime(2022, 5, 25, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com", "pmcmanis@mozilla.com"],
     "depends_on_past": False,
@@ -31,7 +31,7 @@ default_args = {
     "retries": 2,
 }
 
-tags = ["impact/tier_3", "repo/bigquery-etl"]
+tags = ["impact/tier3", "repo/bigquery-etl"]
 
 with DAG(
     "bqetl_fog_decision_support",
@@ -41,8 +41,8 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    fog_decision_support = bigquery_etl_query(
-        task_id="fog_decision_support",
+    fog_decision_support_v1 = bigquery_etl_query(
+        task_id="fog_decision_support_v1",
         destination_table="fog_decision_support_percentiles_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
@@ -62,4 +62,4 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    fog_decision_support.set_upstream(wait_for_copy_deduplicate_main_ping)
+    fog_decision_support_v1.set_upstream(wait_for_copy_deduplicate_main_ping)

@@ -20,5 +20,3 @@ bigquery:
     type: day
     require_partition_filter: true
     expiration_days: null
-  clustering:
-    fields: []

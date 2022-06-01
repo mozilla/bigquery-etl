@@ -788,5 +788,5 @@ bqetl_fog_decision_support:
    support metrics
   schedule_interval: 0 4 * * *
   tags:
-    - impact/tier3
+    - impact/tier_3
     - repo/bigquery-etl

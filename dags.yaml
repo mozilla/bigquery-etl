@@ -719,7 +719,7 @@ bqetl_cjms_nonprod:
     - impact/tier_3
 
 bqetl_acoustic_contact_export:
-  schedule_interval: 0 8 * * *
+  schedule_interval: 0 9 * * *
   description: |
     Processing data loaded by
     fivetran_acoustic_contact_export
@@ -734,7 +734,7 @@ bqetl_acoustic_contact_export:
     - impact/tier_3
 
 bqetl_acoustic_raw_recipient_export:
-  schedule_interval: 0 8 * * *
+  schedule_interval: 0 9 * * *
   description: |
     Processing data loaded by
     fivetran_acoustic_raw_recipient_export

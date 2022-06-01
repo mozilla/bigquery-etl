@@ -36,36 +36,6 @@ WITH glean_final AS (
     'VR Browser Baseline' AS app_name,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_vrbrowser.baseline_clients_last_seen`
-  UNION ALL
-  SELECT
-    *,
-    'Firefox iOS Baseline' AS app_name,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_fennec.baseline_clients_last_seen`
-  UNION ALL
-  SELECT
-    *,
-    'Focus Android Baseline' AS app_name,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_focus.baseline_clients_last_seen`
-  UNION ALL
-  SELECT
-    *,
-    'Focus iOS Baseline' AS app_name,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_focus.baseline_clients_last_seen`
-  UNION ALL
-  SELECT
-    *,
-    'Klar Android Baseline' AS app_name,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_klar.baseline_clients_last_seen`
-  UNION ALL
-  SELECT
-    *,
-    'Klar iOS Baseline' AS app_name,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_klar.baseline_clients_last_seen`
 ),
 unioned AS (
   SELECT

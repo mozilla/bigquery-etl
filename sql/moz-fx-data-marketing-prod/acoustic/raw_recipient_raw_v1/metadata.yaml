@@ -23,7 +23,7 @@ owners:
 
 scheduling:
   dag_name: bqetl_acoustic_raw_recipient_export
-  arguments: ["--submission_date", "{{ ds }}"]
+  date_partition_parameter: submission_date
   referenced_tables:
     - [
       'moz-fx-data-bq-fivetran',

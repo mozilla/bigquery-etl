@@ -53,7 +53,6 @@ with DAG(
         email=["kignasiak@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        arguments=["--submission_date", "{{ ds }}"],
     )
 
     acoustic__raw_recipient_raw__v1 = bigquery_etl_query(
@@ -65,7 +64,6 @@ with DAG(
         email=["kignasiak@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        arguments=["--submission_date", "{{ ds }}"],
     )
 
     acoustic__raw_recipient__v1.set_upstream(acoustic__raw_recipient_raw__v1)

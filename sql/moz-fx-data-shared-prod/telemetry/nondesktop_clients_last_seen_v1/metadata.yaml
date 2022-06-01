@@ -3,7 +3,12 @@
 references:
   view.sql:
   - moz-fx-data-shared-prod.mozilla_lockbox.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.org_mozilla_focus.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.org_mozilla_ios_fennec.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.org_mozilla_ios_focus.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.org_mozilla_ios_klar.baseline_clients_last_seen
   - moz-fx-data-shared-prod.org_mozilla_ios_lockbox.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.org_mozilla_klar.baseline_clients_last_seen
   - moz-fx-data-shared-prod.org_mozilla_reference_browser.baseline_clients_last_seen
   - moz-fx-data-shared-prod.org_mozilla_tv_firefox.baseline_clients_last_seen
   - moz-fx-data-shared-prod.org_mozilla_vrbrowser.baseline_clients_last_seen

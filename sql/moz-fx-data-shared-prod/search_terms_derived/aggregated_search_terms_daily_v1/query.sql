@@ -11,5 +11,3 @@ WHERE
 GROUP BY
   submission_date,
   search_terms
-HAVING
-  client_days > 30000

@@ -39,7 +39,7 @@ tags = ["impact/tier_3", "repo/bigquery-etl"]
 with DAG(
     "bqetl_acoustic_contact_export",
     default_args=default_args,
-    schedule_interval="0 8 * * *",
+    schedule_interval="0 9 * * *",
     doc_md=docs,
     tags=tags,
 ) as dag:

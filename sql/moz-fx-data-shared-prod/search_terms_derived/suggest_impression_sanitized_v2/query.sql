@@ -50,7 +50,6 @@ validated_impressions AS (
       ),
       TRUE
     )
-
 )
 SELECT
   *

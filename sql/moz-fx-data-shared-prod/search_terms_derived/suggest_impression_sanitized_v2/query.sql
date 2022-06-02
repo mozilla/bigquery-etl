@@ -17,7 +17,8 @@ WITH sanitized_impressions AS (
 ),
 sanitized_impressions_count AS (
   SELECT
-    COUNT(*) AS _n
+    COUNT(*) AS _n,
+    COUNT(sanitized_query) AS _n_with_query,
   FROM
     sanitized_impressions
 ),
@@ -27,7 +28,7 @@ sanitized_impressions_count AS (
 -- output, which allows us to raise an error in the WHERE clause.
 validated_impressions AS (
   SELECT
-    * EXCEPT (_n),
+    * EXCEPT (_n, _n_with_query),
   FROM
     sanitized_impressions_count
   LEFT JOIN
@@ -39,6 +40,13 @@ validated_impressions AS (
       _n < 1,
       ERROR(
         "The source partition of suggest-searches-prod-a30f.sanitized.suggest_impression_sanitized_v2 is empty; retry later or investigate upstream issues"
+      ),
+      TRUE
+    )
+    AND IF(
+      _n_with_query < 1,
+      ERROR(
+        "The source partition of suggest-searches-prod-a30f.sanitized.suggest_impression_sanitized_v2 contains rows, but none have sanitized_query populated; investigate upstream issues with log routing"
       ),
       TRUE
     )

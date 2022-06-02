@@ -6,6 +6,8 @@ description: >
   Each partition represents CSV data extracted from Acoustic
   each submission_date represents contacts that were last modified
   on the date corresponding to Airflow's execution date
+  (this means each record corresponds to the latest contact
+  change event)
 
   Data source: https://developer.goacoustic.com/acoustic-campaign/reference/export-from-a-database
   Jira: https://mozilla-hub.atlassian.net/browse/DENG-17

@@ -1,0 +1,19 @@
+---
+friendly_name: Sanitation Job Metadata
+owners:
+  - ctroy@mozilla.com
+labels:
+  incremental: true
+description: |-
+  This table tracks the success of sanitation jobs and some aggregate metrics about what got
+  sanitized for use in model evaluation.
+scheduling:
+  dag_name: bqetl_search_terms_daily
+  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:search-terms/sanitized
+  - role: roles/bigquery.dataEditor
+    members:
+      - workgroup:search-terms/sanitized-writer

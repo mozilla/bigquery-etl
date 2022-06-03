@@ -1,0 +1,31 @@
+---
+friendly_name: Sanitized Firefox Search Terms
+owners:
+  - ctroy@mozilla.com
+labels:
+  incremental: true
+description: |-
+  A sanitized variant of search terms submitted to Firefox.
+
+  This table allows removal of PII and slightly longer retention than
+  the underlying ping table.
+scheduling:
+  dag_name: bqetl_search_terms_daily
+  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+bigquery:
+  time_partitioning:
+    field: submission_timestamp
+    type: day
+    require_partition_filter: true
+    expiration_days: 15
+  clustering:
+    fields:
+      - normalized_channel
+      - sample_id
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:search-terms/sanitized
+  - role: roles/bigquery.dataEditor
+    members:
+      - workgroup:search-terms/sanitized-writer

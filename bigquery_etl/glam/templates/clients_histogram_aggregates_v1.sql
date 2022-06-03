@@ -113,7 +113,10 @@ SELECT
     COALESCE(accumulated.{{ attribute }}, daily.{{ attribute }}) AS {{ attribute }},
   {% endfor %}
   udf_merged_user_data(
-    ARRAY_CONCAT(accumulated.histogram_aggregates, daily.histogram_aggregates)
+    ARRAY_CONCAT(
+      COALESCE(accumulated.histogram_aggregates, []),
+      COALESCE(daily.histogram_aggregates, [])
+    )
   ) AS histogram_aggregates
 FROM
   filtered_accumulated AS accumulated

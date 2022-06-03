@@ -97,3 +97,6 @@ fields:
   mode: REPEATED
   name: experiments
   type: RECORD
+- mode: NULLABLE
+  name: country
+  type: STRING

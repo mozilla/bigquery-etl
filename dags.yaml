@@ -719,7 +719,7 @@ bqetl_cjms_nonprod:
     - impact/tier_3
 
 bqetl_acoustic_contact_export:
-  schedule_interval: 0 8 * * *
+  schedule_interval: 0 9 * * *
   description: |
     Processing data loaded by
     fivetran_acoustic_contact_export
@@ -734,7 +734,7 @@ bqetl_acoustic_contact_export:
     - impact/tier_3
 
 bqetl_acoustic_raw_recipient_export:
-  schedule_interval: 0 8 * * *
+  schedule_interval: 0 9 * * *
   description: |
     Processing data loaded by
     fivetran_acoustic_raw_recipient_export
@@ -770,3 +770,23 @@ bqetl_analytics_aggregations:
   schedule_interval: 0 1 * * *
   tags:
     - impact/tier_1
+
+bqetl_fog_decision_support:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - pmcmanis@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: pmcmanis@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2022-05-25'
+  description: This DAG schedules queries for calculating FOG decision
+   support metrics
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl

@@ -13,7 +13,7 @@
       
       
       <link rel="icon" href="../../favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.16">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.3.2">
     
     
       
@@ -21,15 +21,16 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.1c3799f8.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.5d38496d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.cc9b2e1e.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.cbb835fc.min.css">
         
           
           
           <meta name="theme-color" content="#009485">
         
+      
       
     
     
@@ -1703,29 +1704,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#days_since_seen-udf" class="md-nav__link">
-    days_since_seen (UDF)
+  <a href="#range-udf" class="md-nav__link">
+    range (UDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#from_string-udf" class="md-nav__link">
-    from_string (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#retention-udf" class="md-nav__link">
-    retention (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#to_string-udf" class="md-nav__link">
-    to_string (UDF)
+  <a href="#to_dates-udf" class="md-nav__link">
+    to_dates (UDF)
   </a>
   
 </li>
@@ -1738,15 +1725,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#range-udf" class="md-nav__link">
-    range (UDF)
+  <a href="#retention-udf" class="md-nav__link">
+    retention (UDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#to_dates-udf" class="md-nav__link">
-    to_dates (UDF)
+  <a href="#from_string-udf" class="md-nav__link">
+    from_string (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#days_since_seen-udf" class="md-nav__link">
+    days_since_seen (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#to_string-udf" class="md-nav__link">
+    to_string (UDF)
   </a>
   
 </li>
@@ -2162,29 +2163,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#days_since_seen-udf" class="md-nav__link">
-    days_since_seen (UDF)
+  <a href="#range-udf" class="md-nav__link">
+    range (UDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#from_string-udf" class="md-nav__link">
-    from_string (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#retention-udf" class="md-nav__link">
-    retention (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#to_string-udf" class="md-nav__link">
-    to_string (UDF)
+  <a href="#to_dates-udf" class="md-nav__link">
+    to_dates (UDF)
   </a>
   
 </li>
@@ -2197,15 +2184,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#range-udf" class="md-nav__link">
-    range (UDF)
+  <a href="#retention-udf" class="md-nav__link">
+    retention (UDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#to_dates-udf" class="md-nav__link">
-    to_dates (UDF)
+  <a href="#from_string-udf" class="md-nav__link">
+    from_string (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#days_since_seen-udf" class="md-nav__link">
+    days_since_seen (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#to_string-udf" class="md-nav__link">
+    to_string (UDF)
   </a>
   
 </li>
@@ -2238,50 +2239,6 @@ metrics based on these usage histories, such as various retention definitions.</
 type of the field is a BigQuery INT64, but logically the integer
 represents an array of bits, with each 1 indicating a day where the given clients
 was active and each 0 indicating a day where the client was inactive.</p>
-<h2 id="days_since_seen-udf">days_since_seen (UDF)</h2>
-<p>Return the position of the rightmost set bit in an INT64 bit pattern.</p>
-<p>To determine this position, we take a bitwise AND of the bit pattern and
-its complement, then we determine the position of the bit via base-2
-logarithm; see <a href="https://stackoverflow.com/a/42747608/1260237">https://stackoverflow.com/a/42747608/1260237</a></p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<pre><code class="language-sql">SELECT
-  mozfun.bits28.days_since_seen(18)
--- &gt;&gt; 1
-</code></pre>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/days_since_seen">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/days_since_seen/metadata.yaml">Edit</a></p>
-<h2 id="from_string-udf">from_string (UDF)</h2>
-<p>Convert a string representing individual bits into an INT64.</p>
-<p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/from_string">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/from_string/metadata.yaml">Edit</a></p>
-<h2 id="retention-udf">retention (UDF)</h2>
-<p>Return a nested struct providing booleans indicating whether a given client
-was active various time periods based on the passed bit pattern.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/retention">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/retention/metadata.yaml">Edit</a></p>
-<h2 id="to_string-udf">to_string (UDF)</h2>
-<p>Convert an INT64 field into a 28-character string representing
-the individual bits.</p>
-<p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<pre><code class="language-sql">SELECT
-  [mozfun.bits28.to_string(1), mozfun.bits28.to_string(2), mozfun.bits28.to_string(3)]
--- &gt;&gt;&gt; ['0000000000000000000000000001',
---      '0000000000000000000000000010',
---      '0000000000000000000000000011']
-</code></pre>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/to_string">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/to_string/metadata.yaml">Edit</a></p>
-<h2 id="active_in_range-udf">active_in_range (UDF)</h2>
-<p>Return a boolean indicating if any bits are set in the specified range
-of a bit pattern. The <code>start_offset</code> must be zero or a negative number
-indicating an offset from the rightmost bit in the pattern. n_bits is
-the number of bits to consider, counting right from the bit at
-<code>start_offset</code>.</p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/active_in_range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/active_in_range/metadata.yaml">Edit</a></p>
 <h2 id="range-udf">range (UDF)</h2>
 <p>Return an INT64 representing a range of bits from a source bit pattern.</p>
 <p>The start_offset must be zero or a negative number indicating an offset from
@@ -2305,9 +2262,54 @@ WHERE
 <p>See detailed docs for the bits28 suite of functions:
 <a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/to_dates">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/to_dates/metadata.yaml">Edit</a></p>
+<h2 id="active_in_range-udf">active_in_range (UDF)</h2>
+<p>Return a boolean indicating if any bits are set in the specified range
+of a bit pattern. The <code>start_offset</code> must be zero or a negative number
+indicating an offset from the rightmost bit in the pattern. n_bits is
+the number of bits to consider, counting right from the bit at
+<code>start_offset</code>.</p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/active_in_range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/active_in_range/metadata.yaml">Edit</a></p>
+<h2 id="retention-udf">retention (UDF)</h2>
+<p>Return a nested struct providing booleans indicating whether a given client
+was active various time periods based on the passed bit pattern.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/retention">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/retention/metadata.yaml">Edit</a></p>
+<h2 id="from_string-udf">from_string (UDF)</h2>
+<p>Convert a string representing individual bits into an INT64.</p>
+<p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/from_string">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/from_string/metadata.yaml">Edit</a></p>
+<h2 id="days_since_seen-udf">days_since_seen (UDF)</h2>
+<p>Return the position of the rightmost set bit in an INT64 bit pattern.</p>
+<p>To determine this position, we take a bitwise AND of the bit pattern and
+its complement, then we determine the position of the bit via base-2
+logarithm; see <a href="https://stackoverflow.com/a/42747608/1260237">https://stackoverflow.com/a/42747608/1260237</a></p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<pre><code class="language-sql">SELECT
+  mozfun.bits28.days_since_seen(18)
+-- &gt;&gt; 1
+</code></pre>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/days_since_seen">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/days_since_seen/metadata.yaml">Edit</a></p>
+<h2 id="to_string-udf">to_string (UDF)</h2>
+<p>Convert an INT64 field into a 28-character string representing
+the individual bits.</p>
+<p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<pre><code class="language-sql">SELECT
+  [mozfun.bits28.to_string(1), mozfun.bits28.to_string(2), mozfun.bits28.to_string(3)]
+-- &gt;&gt;&gt; ['0000000000000000000000000001',
+--      '0000000000000000000000000010',
+--      '0000000000000000000000000011']
+</code></pre>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/to_string">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/to_string/metadata.yaml">Edit</a></p>
 
               
             </article>
+            
           </div>
         </div>
         
@@ -2315,7 +2317,8 @@ WHERE
       
         <footer class="md-footer">
   
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
         <a href="../about/" class="md-footer__link md-footer__link--prev" aria-label="Previous: mozfun" rel="prev">
@@ -2370,10 +2373,10 @@ WHERE
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.b028fd86.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.3a4b43e5.min.js"></script>
+      <script src="../../assets/javascripts/bundle.7f366e99.min.js"></script>
       
     
   </body>

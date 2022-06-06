@@ -1,14 +1,14 @@
 ---
-friendly_name: Sanitation Job Metadata
+friendly_name: Sanitized Firefox Search Terms
 owners:
   - ctroy@mozilla.com
 labels:
   incremental: true
 description: |-
-  A sanitized variant of search terms submitted to Firefox.
-
-  This table allows removal of PII and slightly longer retention than
-  the underlying ping table.
+  This table tracks the success of sanitation jobs and some aggregate metrics about what got
+  sanitized for use in model evaluation.
+bigquery:
+  {}
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

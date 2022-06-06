@@ -1,13 +1,16 @@
 CREATE TABLE IF NOT EXISTS
-  `moz-fx-data-shared-prod.search_terms_derived.suggest_impression_sanitized_v3`
+  `moz-fx-data-shared-prod.search_terms_derived.suggest_impression_sanitized_v3` (
+   timestamp timestamp,
+   request_id string,
+   query string,
+   country string,
+   region string,
+   dma string,
+   form_factor string,
+   browser string,
+   os_family string
+)
 PARTITION BY
   DATE(timestamp)
 OPTIONS
-  (require_partition_filter = TRUE, partition_expiration_days = 15)
-AS
-SELECT
-  *
-FROM
-  `mozdata.search_terms_unsanitized_analysis.prototype_sanitized_data`
-WHERE
-  DATE(timestamp) >= (CURRENT_DATE() - 14)
+  (require_partition_filter = TRUE, partition_expiration_days = 15);

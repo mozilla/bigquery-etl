@@ -110,8 +110,9 @@ def write_confidence_intervals_to_bigquery(
 
     write_table = config["confidences_table"]
     today = str(date.today())
+    metric = f'{config["target"]}_{config["forecast_variable"]}'
 
-    confidences["target"] = config["target"]
+    confidences["target"] = metric
     confidences["forecast_parameters"] = str(json.dumps(config["forecast_parameters"]))
     confidences["forecast_date"] = today
 

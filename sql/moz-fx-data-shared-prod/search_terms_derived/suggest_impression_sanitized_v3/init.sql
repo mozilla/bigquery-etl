@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  `moz-fx-data-shared-prod.search_terms_derived.sanitized_search_terms_v1`
+  `moz-fx-data-shared-prod.search_terms_derived.suggest_impression_sanitized_v3`
 PARTITION BY
   DATE(timestamp)
 OPTIONS

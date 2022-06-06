@@ -7,7 +7,7 @@ from google.cloud import bigquery, client
 
 
 def write_predictions_to_bigquery(
-    predictions: pd.DataFrame, config: dict, client: client = None
+        predictions: pd.DataFrame, config: dict, client: client = None
 ) -> None:
     project = config["write_project"]
     if client is None:
@@ -100,7 +100,7 @@ def write_predictions_to_bigquery(
 
 
 def write_confidence_intervals_to_bigquery(
-    confidences: pd.DataFrame, config: dict, client: client = None
+        confidences: pd.DataFrame, config: dict, client: client = None
 ) -> None:
     project = config["write_project"]
     if client is None:
@@ -110,8 +110,9 @@ def write_confidence_intervals_to_bigquery(
 
     write_table = config["confidences_table"]
     today = str(date.today())
+    metric = f'{config["target"]}_{config["forecast_variable"]}'
 
-    confidences["target"] = config["target"]
+    confidences["target"] = metric
     confidences["forecast_parameters"] = str(json.dumps(config["forecast_parameters"]))
     confidences["forecast_date"] = today
 

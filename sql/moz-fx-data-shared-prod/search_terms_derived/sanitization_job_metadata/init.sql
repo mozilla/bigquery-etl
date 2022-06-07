@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  `moz-fx-data-shared-prod.search_terms_derived.sanitization_job_metadata` (
+  `moz-fx-data-shared-prod.search_terms_derived.sanitization_job_metadata`(
     status string,
     started_at timestamp,
     finished_at timestamp,
@@ -14,5 +14,4 @@ CREATE TABLE IF NOT EXISTS
     sum_terms_containing_us_census_surname integer,
     approximate_language_proportions_json string,
     failure_reason string
-);
-
+  );

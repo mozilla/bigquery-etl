@@ -5,7 +5,8 @@ owners:
 labels:
   incremental: true
 description: |-
-  This table tracks the success of sanitation jobs and some aggregate metrics about what got
+  This table tracks the success of sanitation jobs
+  and some aggregate metrics about what got
   sanitized for use in model evaluation.
 bigquery:
   {}

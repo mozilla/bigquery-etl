@@ -15,6 +15,9 @@ fields:
   name: normalized_channel
   type: STRING
 - mode: NULLABLE
+  name: country
+  type: STRING
+- mode: NULLABLE
   name: locale
   type: STRING
 - mode: NULLABLE

@@ -55,6 +55,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    acoustic__contact_current_snapshot__v1 = bigquery_etl_query(
+        task_id="acoustic__contact_current_snapshot__v1",
+        destination_table="contact_current_snapshot_v1",
+        dataset_id="acoustic",
+        project_id="moz-fx-data-marketing-prod",
+        owner="kignasiak@mozilla.com",
+        email=["kignasiak@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+    )
+
     acoustic__contact_raw__v1 = bigquery_etl_query(
         task_id="acoustic__contact_raw__v1",
         destination_table="contact_raw_v1",
@@ -67,6 +78,8 @@ with DAG(
     )
 
     acoustic__contact__v1.set_upstream(acoustic__contact_raw__v1)
+
+    acoustic__contact_current_snapshot__v1.set_upstream(acoustic__contact__v1)
 
     wait_for_fivetran_load_completed = ExternalTaskCompletedSensor(
         task_id="wait_for_fivetran_load_completed",

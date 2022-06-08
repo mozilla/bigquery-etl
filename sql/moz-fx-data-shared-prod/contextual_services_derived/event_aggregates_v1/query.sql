@@ -67,6 +67,8 @@ WITH combined AS (
       'contile'
     END
     AS provider,
+    -- `match_type` is only available for `quicksuggest_*` tables
+    NULL AS match_type,
   FROM
     contextual_services.topsites_impression
   UNION ALL

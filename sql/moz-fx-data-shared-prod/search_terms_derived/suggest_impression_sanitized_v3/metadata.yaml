@@ -1,0 +1,18 @@
+---
+friendly_name: Sanitized Firefox Search Terms
+owners:
+  - ctroy@mozilla.com
+labels:
+  incremental: true
+description: |-
+  A sanitized variant of search terms submitted to Firefox.
+
+  This table allows removal of PII and slightly longer retention than
+  the underlying ping table.
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:search-terms/sanitized
+  - role: roles/bigquery.dataEditor
+    members:
+      - workgroup:search-terms/sanitized-writer

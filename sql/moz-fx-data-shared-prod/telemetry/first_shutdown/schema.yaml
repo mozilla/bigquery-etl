@@ -19833,6 +19833,11 @@ fields:
       mode: NULLABLE
       name: wr_rasterize_blobs_time
       type: STRING
+    - description: 'Records the result of App Signature Verification. See the comments
+        in OpenSignedAppFile. '
+      mode: NULLABLE
+      name: addon_signature_verification_status
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -40964,6 +40969,11 @@ fields:
         - description: Script loaded from file:// has a correct MIME type.
           mode: NULLABLE
           name: script_file_protocol_correct_mime
+          type: STRING
+        - description: 'Records the result of App Signature Verification. See the
+            comments in OpenSignedAppFile. '
+          mode: NULLABLE
+          name: addon_signature_verification_status
           type: STRING
         mode: NULLABLE
         name: histograms

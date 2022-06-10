@@ -19838,6 +19838,19 @@ fields:
       mode: NULLABLE
       name: addon_signature_verification_status
       type: STRING
+    - description: The time spent waiting for the GPU to complete previously issued
+        drawing commands in milliseconds
+      mode: NULLABLE
+      name: wr_gpu_wait_time
+      type: STRING
+    - description: The time spent by WebRender in the Renderer in milliseconds.
+      mode: NULLABLE
+      name: wr_renderer_time
+      type: STRING
+    - description: Time taken by WebRender to update the texture cache in milliseconds.
+      mode: NULLABLE
+      name: wr_texture_cache_update_time
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -44507,6 +44520,19 @@ fields:
         - description: Time taken by WebRender to rasterize blobs
           mode: NULLABLE
           name: wr_rasterize_blobs_time
+          type: STRING
+        - description: The time spent waiting for the GPU to complete previously issued
+            drawing commands in milliseconds
+          mode: NULLABLE
+          name: wr_gpu_wait_time
+          type: STRING
+        - description: The time spent by WebRender in the Renderer in milliseconds.
+          mode: NULLABLE
+          name: wr_renderer_time
+          type: STRING
+        - description: Time taken by WebRender to update the texture cache in milliseconds.
+          mode: NULLABLE
+          name: wr_texture_cache_update_time
           type: STRING
         mode: NULLABLE
         name: histograms

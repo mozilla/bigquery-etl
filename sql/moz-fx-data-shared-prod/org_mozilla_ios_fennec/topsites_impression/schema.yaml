@@ -292,6 +292,13 @@ fields:
       mode: NULLABLE
       name: top_site_contile_tile_id
       type: INTEGER
+    - description: 'A unique identifier provided by the AdM for the sponsored TopSites
+        tile
+
+        '
+      mode: NULLABLE
+      name: top_sites_contile_tile_id
+      type: INTEGER
     mode: NULLABLE
     name: quantity
     type: RECORD
@@ -302,6 +309,12 @@ fields:
       mode: NULLABLE
       name: top_site_contile_advertiser
       type: STRING
+    - description: 'Advertiser brand for the sponsored TopSites tile
+
+        '
+      mode: NULLABLE
+      name: top_sites_contile_advertiser
+      type: STRING
     mode: NULLABLE
     name: string
     type: RECORD
@@ -310,6 +323,11 @@ fields:
         \ event,\nclick_url for \u201Cclick\u201D event).\n"
       mode: NULLABLE
       name: top_site_contile_reporting_url
+      type: STRING
+    - description: "The AdM reporting endpoint (impression_url for \u201Cimpression\u201D\
+        \ event,\nclick_url for \u201Cclick\u201D event).\n"
+      mode: NULLABLE
+      name: top_sites_contile_reporting_url
       type: STRING
     mode: NULLABLE
     name: url2
@@ -325,6 +343,17 @@ fields:
         '
       mode: NULLABLE
       name: top_site_context_id
+      type: STRING
+    - description: 'A UUID that is unjoinable with other browser metrics. This ID
+        will not be
+
+        shared with AdM, only for internal uses. This ID is shared across all
+
+        contextual services features.
+
+        '
+      mode: NULLABLE
+      name: top_sites_context_id
       type: STRING
     mode: NULLABLE
     name: uuid

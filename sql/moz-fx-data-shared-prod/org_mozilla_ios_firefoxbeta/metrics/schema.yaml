@@ -1765,6 +1765,21 @@ fields:
       mode: REPEATED
       name: history_selected_item
       type: RECORD
+    - description: 'Records an event when user taps on top site tile,
+
+        with a home page origin.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: top_sites_pressed_tile_origin
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS
     scalar_aggregates {{ user_data_type }}
   )
 PARTITION BY
-  RANGE_BUCKET(app_version, GENERATE_ARRAY(0, 100, 1))
+  RANGE_BUCKET(app_version, GENERATE_ARRAY(0, 200, 1))
 CLUSTER BY
   app_version,
   channel,

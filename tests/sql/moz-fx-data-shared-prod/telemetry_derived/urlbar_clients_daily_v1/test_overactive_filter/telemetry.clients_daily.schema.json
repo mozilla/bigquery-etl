@@ -29,6 +29,11 @@
     "name": "locale",
     "type": "STRING"
   },
+    {
+    "mode": "NULLABLE",
+    "name": "country",
+    "type": "STRING"
+  },
   {
     "mode": "NULLABLE",
     "name": "user_pref_browser_search_region",
@@ -349,6 +354,23 @@
     ],
     "mode": "REPEATED",
     "name": "scalar_parent_urlbar_picked_visiturl_sum",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "STRING"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "experiments",
     "type": "RECORD"
   }
 ]

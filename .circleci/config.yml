@@ -34,7 +34,7 @@ jobs:
           command: |
             python3.8 -m venv venv/
             venv/bin/pip install pip-tools --constraint requirements.in
-            venv/bin/pip-sync
+            venv/bin/pip-sync --pip-args=--no-deps
       - run:
           name: Yamllint Test
           command: PATH="venv/bin:$PATH" yamllint -c .yamllint.yaml .
@@ -85,10 +85,7 @@ jobs:
           command: |
             pip install pip-tools --constraint requirements.in
             pip-compile --quiet --allow-unsafe --generate-hashes
-            pip-compile --quiet --allow-unsafe --generate-hashes \
-              java-requirements.in
-            git diff --exit-code -G '^ *[^# ]' -- requirements.txt \
-              java-requirements.txt
+            git diff --exit-code -G '^ *[^# ]' -- requirements.txt
   test-sql:
     docker: *docker
     steps:
@@ -175,20 +172,13 @@ jobs:
           command: |
             apt update
             apt install -y maven default-jdk-headless
-            mvn dependency:copy-dependencies
-            venv/bin/pip-sync requirements.txt java-requirements.txt
+            mvn package
+            venv/bin/pip-sync --pip-args=--no-deps requirements.txt
       - run:
           name: PyTest Integration Test
-          # Google's client libraries will check for
-          # GOOGLE_APPLICATION_CREDENTIALS
-          # and use a file in that location for credentials if present;
-          # See https://cloud.google.com/docs/authentication/production
           # yamllint disable rule:line-length
           command: |
-            export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
-            echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
             PATH="venv/bin:$PATH" script/entrypoint -m 'integration or java' -n 8
-          # yamllint enable rule:line-length
       - save_cache:
           paths:
             - ~/.m2
@@ -205,7 +195,9 @@ jobs:
       - *copy_generated_sql
       - run:
           name: Generate DAGs
-          command: PATH="venv/bin:$PATH" script/generate_airflow_dags
+          command: |
+            PATH="venv/bin:$PATH" script/generate_airflow_dags
+            mv dags/ /tmp/workspace/generated-sql
       # this task is overwriting the content produced by generate-sql;
       # the behaviour here is additive, generated DAGs are just added to
       # the generated-sql output
@@ -363,6 +355,8 @@ jobs:
             cd generated-sql/
             rm -rf sql/
             cp -r /tmp/workspace/generated-sql/sql sql
+            rm -rf dags/
+            cp -r /tmp/workspace/generated-sql/dags dags
             git add .
             git commit -m "Auto-push due to change on main branch [ci skip]" \
               && git push \
@@ -372,23 +366,20 @@ jobs:
     executor: ubuntu-machine-executor
     steps:
       - checkout
-      - *attach_generated_sql
-      - *copy_generated_sql
       - when:
           condition: &deploy-condition
             or:
               - equal: [main, << pipeline.git.branch >>]
               - << pipeline.git.tag >>
           steps:
+            - *attach_generated_sql
+            - *copy_generated_sql
             - docker/check:
                 docker-password: DOCKER_PASS
                 docker-username: DOCKER_USER
-      - docker/build: &public-image
-          image: ${CIRCLE_PROJECT_USERNAME+$CIRCLE_PROJECT_USERNAME/}${CIRCLE_PROJECT_REPONAME:-bigquery-etl}
-          tag: ${CIRCLE_TAG:-latest}
-      - when:
-          condition: *deploy-condition
-          steps:
+            - docker/build: &public-image
+                image: ${CIRCLE_PROJECT_USERNAME+$CIRCLE_PROJECT_USERNAME/}${CIRCLE_PROJECT_REPONAME:-bigquery-etl}
+                tag: ${CIRCLE_TAG:-latest}
             - docker/push: *public-image
   private-generate-sql:
     docker: *docker
@@ -459,22 +450,19 @@ jobs:
     executor: ubuntu-machine-executor
     steps:
       - checkout
-      - *attach_generated_sql
-      - run:
-          name: Move generated-sql into place
-          command: |
-            rm -rf sql/
-            cp -r /tmp/workspace/private-generated-sql/sql sql
       - when:
           condition: *deploy-condition
           steps:
+            - *attach_generated_sql
+            - run:
+                name: Move generated-sql into place
+                command: |
+                  rm -rf sql/
+                  cp -r /tmp/workspace/private-generated-sql/sql sql
             - gcp-gcr/gcr-auth
-      - gcp-gcr/build-image: &private-image
-          image: bigquery-etl
-          tag: ${CIRCLE_TAG:-latest}
-      - when:
-          condition: *deploy-condition
-          steps:
+            - gcp-gcr/build-image: &private-image
+                image: bigquery-etl
+                tag: ${CIRCLE_TAG:-latest}
             - gcp-gcr/push-image: *private-image
   generate-diff:
     docker: *docker
@@ -499,16 +487,23 @@ jobs:
               bigquery-etl-main
 
             cd bigquery-etl-main
-            pip install -r requirements.txt
-            pip install -r java-requirements.txt
-            mvn dependency:copy-dependencies
-            ./script/generate_sql \
+            pip install --no-deps -r requirements.txt
+            mvn package
+            ./script/bqetl generate all \
               --target-project moz-fx-data-shared-prod
+            ./script/bqetl dependency record \
+              --skip-existing \
+              "sql/"
+
+            ./script/generate_airflow_dags
 
             cd ..
             diff -bur --no-dereference \
               bigquery-etl-main/sql/ /tmp/workspace/generated-sql/sql/ \
               > /tmp/workspace/generated-sql/sql.diff || true
+            diff -bur --no-dereference \
+              bigquery-etl-main/dags/ /tmp/workspace/generated-sql/dags/ \
+              >> /tmp/workspace/generated-sql/sql.diff || true
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -592,7 +587,7 @@ workflows:
       - generate-sql
       - generate-diff:
           requires:
-            - generate-sql
+            - generate-dags
           filters:
             branches:
               ignore: main

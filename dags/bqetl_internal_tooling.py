@@ -52,7 +52,6 @@ with DAG(
         email=["telemetry-alerts@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     wait_for_copy_deduplicate_all = ExternalTaskCompletedSensor(

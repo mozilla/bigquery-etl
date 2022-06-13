@@ -3,6 +3,7 @@ CREATE TEMP FUNCTION in_available_geos(`date` DATE, country STRING) AS (
   OR (`date` >= "2021-04-28" AND country IN ("France", "Germany"))
   OR (`date` >= "2021-07-12" AND country IN ("Austria", "Belgium", "Spain", "Italy", "Switzerland"))
   OR (`date` >= "2021-10-05" AND country IN ("Ireland", "Netherlands"))
+  OR (`date` >= "2022-03-08" AND country IN ("Finland", "Sweden"))
 );
 
 WITH website_base AS (
@@ -50,6 +51,7 @@ website AS (
     website_base
   WHERE
     `date` >= '2020-07-01'
+    AND IF(@date IS NULL, `date` < CURRENT_DATE, `date` = @date)
   GROUP BY
     `date`,
     normalized_medium,
@@ -82,8 +84,14 @@ subscriptions AS (
     all_subscriptions_v1
   WHERE
     DATE(subscription_start_date) >= '2020-07-01'
+    AND IF(
+      @date IS NULL,
+      DATE(subscription_start_date) < CURRENT_DATE,
+      DATE(subscription_start_date) = @date
+    )
     AND product_name = "Mozilla VPN"
-    AND provider LIKE "FxA %"
+    -- only count subscriptions that can have UTMs matching GA, which currently maps to non-IAP providers
+    AND provider NOT IN ("Apple Store", "Google Play")
   GROUP BY
     `date`,
     normalized_medium,

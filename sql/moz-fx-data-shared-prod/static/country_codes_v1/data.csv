@@ -1,251 +1,253 @@
-name,code
-Afghanistan,AF
-Åland Islands,AX
-Albania,AL
-Algeria,DZ
-American Samoa,AS
-Andorra,AD
-Angola,AO
-Anguilla,AI
-Antarctica,AQ
-Antigua and Barbuda,AG
-Argentina,AR
-Armenia,AM
-Aruba,AW
-Australia,AU
-Austria,AT
-Azerbaijan,AZ
-Bahamas,BS
-Bahrain,BH
-Bangladesh,BD
-Barbados,BB
-Belarus,BY
-Belgium,BE
-Belize,BZ
-Benin,BJ
-Bermuda,BM
-Bhutan,BT
-"Bolivia, Plurinational State of",BO
-"Bonaire, Sint Eustatius and Saba",BQ
-Bosnia and Herzegovina,BA
-Botswana,BW
-Bouvet Island,BV
-Brazil,BR
-British Indian Ocean Territory,IO
-Brunei Darussalam,BN
-Bulgaria,BG
-Burkina Faso,BF
-Burundi,BI
-Cambodia,KH
-Cameroon,CM
-Canada,CA
-Cape Verde,CV
-Cayman Islands,KY
-Central African Republic,CF
-Chad,TD
-Chile,CL
-China,CN
-Christmas Island,CX
-Cocos (Keeling) Islands,CC
-Colombia,CO
-Comoros,KM
-Congo,CG
-"Congo, the Democratic Republic of the",CD
-Cook Islands,CK
-Costa Rica,CR
-Côte d'Ivoire,CI
-Croatia,HR
-Cuba,CU
-Curaçao,CW
-Cyprus,CY
-Czech Republic,CZ
-Denmark,DK
-Djibouti,DJ
-Dominica,DM
-Dominican Republic,DO
-Ecuador,EC
-Egypt,EG
-El Salvador,SV
-Equatorial Guinea,GQ
-Eritrea,ER
-Estonia,EE
-Ethiopia,ET
-Falkland Islands (Malvinas),FK
-Faroe Islands,FO
-Fiji,FJ
-Finland,FI
-France,FR
-French Guiana,GF
-French Polynesia,PF
-French Southern Territories,TF
-Gabon,GA
-Gambia,GM
-Georgia,GE
-Germany,DE
-Ghana,GH
-Gibraltar,GI
-Greece,GR
-Greenland,GL
-Grenada,GD
-Guadeloupe,GP
-Guam,GU
-Guatemala,GT
-Guernsey,GG
-Guinea,GN
-Guinea-Bissau,GW
-Guyana,GY
-Haiti,HT
-Heard Island and McDonald Islands,HM
-Holy See (Vatican City State),VA
-Honduras,HN
-Hong Kong,HK
-Hungary,HU
-Iceland,IS
-India,IN
-Indonesia,ID
-"Iran, Islamic Republic of",IR
-Iraq,IQ
-Ireland,IE
-Isle of Man,IM
-Israel,IL
-Italy,IT
-Jamaica,JM
-Japan,JP
-Jersey,JE
-Jordan,JO
-Kazakhstan,KZ
-Kenya,KE
-Kiribati,KI
-"Korea, Democratic People's Republic of",KP
-"Korea, Republic of",KR
-Kuwait,KW
-Kyrgyzstan,KG
-Lao People's Democratic Republic,LA
-Latvia,LV
-Lebanon,LB
-Lesotho,LS
-Liberia,LR
-Libya,LY
-Liechtenstein,LI
-Lithuania,LT
-Luxembourg,LU
-Macao,MO
-"Macedonia, the Former Yugoslav Republic of",MK
-Madagascar,MG
-Malawi,MW
-Malaysia,MY
-Maldives,MV
-Mali,ML
-Malta,MT
-Marshall Islands,MH
-Martinique,MQ
-Mauritania,MR
-Mauritius,MU
-Mayotte,YT
-Mexico,MX
-"Micronesia, Federated States of",FM
-"Moldova, Republic of",MD
-Monaco,MC
-Mongolia,MN
-Montenegro,ME
-Montserrat,MS
-Morocco,MA
-Mozambique,MZ
-Myanmar,MM
-Namibia,NA
-Nauru,NR
-Nepal,NP
-Netherlands,NL
-New Caledonia,NC
-New Zealand,NZ
-Nicaragua,NI
-Niger,NE
-Nigeria,NG
-Niue,NU
-Norfolk Island,NF
-Northern Mariana Islands,MP
-Norway,NO
-Oman,OM
-Pakistan,PK
-Palau,PW
-"Palestine, State of",PS
-Panama,PA
-Papua New Guinea,PG
-Paraguay,PY
-Peru,PE
-Philippines,PH
-Pitcairn,PN
-Poland,PL
-Portugal,PT
-Puerto Rico,PR
-Qatar,QA
-Réunion,RE
-Romania,RO
-Russian Federation,RU
-Rwanda,RW
-Saint Barthélemy,BL
-"Saint Helena, Ascension and Tristan da Cunha",SH
-Saint Kitts and Nevis,KN
-Saint Lucia,LC
-Saint Martin (French part),MF
-Saint Pierre and Miquelon,PM
-Saint Vincent and the Grenadines,VC
-Samoa,WS
-San Marino,SM
-Sao Tome and Principe,ST
-Saudi Arabia,SA
-Senegal,SN
-Serbia,RS
-Seychelles,SC
-Sierra Leone,SL
-Singapore,SG
-Sint Maarten (Dutch part),SX
-Slovakia,SK
-Slovenia,SI
-Solomon Islands,SB
-Somalia,SO
-South Africa,ZA
-South Georgia and the South Sandwich Islands,GS
-South Sudan,SS
-Spain,ES
-Sri Lanka,LK
-Sudan,SD
-Suriname,SR
-Svalbard and Jan Mayen,SJ
-Swaziland,SZ
-Sweden,SE
-Switzerland,CH
-Syrian Arab Republic,SY
-"Taiwan, Province of China",TW
-Tajikistan,TJ
-"Tanzania, United Republic of",TZ
-Thailand,TH
-Timor-Leste,TL
-Togo,TG
-Tokelau,TK
-Tonga,TO
-Trinidad and Tobago,TT
-Tunisia,TN
-Turkey,TR
-Turkmenistan,TM
-Turks and Caicos Islands,TC
-Tuvalu,TV
-Uganda,UG
-Ukraine,UA
-United Arab Emirates,AE
-United Kingdom,GB
-United States,US
-United States Minor Outlying Islands,UM
-Uruguay,UY
-Uzbekistan,UZ
-Vanuatu,VU
-"Venezuela, Bolivarian Republic of",VE
-Viet Nam,VN
-"Virgin Islands, British",VG
-"Virgin Islands, U.S.",VI
-Wallis and Futuna,WF
-Western Sahara,EH
-Yemen,YE
-Zambia,ZM
-Zimbabwe,ZW
-Kosovo,XK
+name,code,region_name,subregion_name,intermediate_region_name
+Afghanistan,AF,Asia,Southern Asia,Unspecified
+Åland Islands,AX,Europe,Northern Europe,Unspecified
+Albania,AL,Europe,Southern Europe,Unspecified
+Algeria,DZ,Africa,Northern Africa,Unspecified
+American Samoa,AS,Oceania,Polynesia,Unspecified
+Andorra,AD,Europe,Southern Europe,Unspecified
+Angola,AO,Africa,Sub-Saharan Africa,Middle Africa
+Anguilla,AI,Americas,Latin America and the Caribbean,Caribbean
+Antarctica,AQ,Unspecified,Unspecified,Unspecified
+Antigua and Barbuda,AG,Americas,Latin America and the Caribbean,Caribbean
+Argentina,AR,Americas,Latin America and the Caribbean,South America
+Armenia,AM,Asia,Western Asia,Unspecified
+Aruba,AW,Americas,Latin America and the Caribbean,Caribbean
+Australia,AU,Oceania,Australia and New Zealand,Unspecified
+Austria,AT,Europe,Western Europe,Unspecified
+Azerbaijan,AZ,Asia,Western Asia,Unspecified
+Bahamas,BS,Americas,Latin America and the Caribbean,Caribbean
+Bahrain,BH,Asia,Western Asia,Unspecified
+Bangladesh,BD,Asia,Southern Asia,Unspecified
+Barbados,BB,Americas,Latin America and the Caribbean,Caribbean
+Belarus,BY,Europe,Eastern Europe,Unspecified
+Belgium,BE,Europe,Western Europe,Unspecified
+Belize,BZ,Americas,Latin America and the Caribbean,Central America
+Benin,BJ,Africa,Sub-Saharan Africa,Western Africa
+Bermuda,BM,Americas,Northern America,Unspecified
+Bhutan,BT,Asia,Southern Asia,Unspecified
+"Bolivia, Plurinational State of",BO,Americas,Latin America and the Caribbean,South America
+"Bonaire, Sint Eustatius and Saba",BQ,Americas,Latin America and the Caribbean,Unspecified
+Bosnia and Herzegovina,BA,Europe,Southern Europe,Unspecified
+Botswana,BW,Africa,Sub-Saharan Africa,Southern Africa
+Bouvet Island,BV,Americas,Latin America and the Caribbean,South America
+Brazil,BR,Americas,Latin America and the Caribbean,South America
+British Indian Ocean Territory,IO,Africa,Sub-Saharan Africa,Eastern Africa
+Brunei Darussalam,BN,Asia,South-eastern Asia,Unspecified
+Bulgaria,BG,Europe,Eastern Europe,Unspecified
+Burkina Faso,BF,Africa,Sub-Saharan Africa,Western Africa
+Burundi,BI,Africa,Sub-Saharan Africa,Eastern Africa
+Cambodia,KH,Asia,South-eastern Asia,Unspecified
+Cameroon,CM,Africa,Sub-Saharan Africa,Middle Africa
+Canada,CA,Americas,Northern America,Unspecified
+Cape Verde,CV,Africa,Sub-Saharan Africa,Western Africa
+Cayman Islands,KY,Americas,Latin America and the Caribbean,Caribbean
+Central African Republic,CF,Africa,Sub-Saharan Africa,Middle Africa
+Chad,TD,Africa,Sub-Saharan Africa,Middle Africa
+Chile,CL,Americas,Latin America and the Caribbean,South America
+China,CN,Asia,Eastern Asia,Unspecified
+Christmas Island,CX,Oceania,Australia and New Zealand,Unspecified
+Cocos (Keeling) Islands,CC,Oceania,Australia and New Zealand,Unspecified
+Colombia,CO,Americas,Latin America and the Caribbean,South America
+Comoros,KM,Africa,Sub-Saharan Africa,Eastern Africa
+Congo,CG,Africa,Sub-Saharan Africa,Middle Africa
+"Congo, the Democratic Republic of the",CD,Africa,Sub-Saharan Africa,Middle Africa
+Cook Islands,CK,Oceania,Polynesia,Unspecified
+Costa Rica,CR,Americas,Latin America and the Caribbean,Central America
+Côte d'Ivoire,CI,Africa,Sub-Saharan Africa,Western Africa
+Croatia,HR,Europe,Southern Europe,Unspecified
+Cuba,CU,Americas,Latin America and the Caribbean,Caribbean
+Curaçao,CW,Americas,Latin America and the Caribbean,Caribbean
+Cyprus,CY,Asia,Western Asia,Unspecified
+Czech Republic,CZ,Europe,Eastern Europe,Unspecified
+Denmark,DK,Europe,Northern Europe,Unspecified
+Djibouti,DJ,Africa,Sub-Saharan Africa,Eastern Africa
+Dominica,DM,Americas,Latin America and the Caribbean,Caribbean
+Dominican Republic,DO,Americas,Latin America and the Caribbean,Caribbean
+Ecuador,EC,Americas,Latin America and the Caribbean,South America
+Egypt,EG,Africa,Northern Africa,Unspecified
+El Salvador,SV,Americas,Latin America and the Caribbean,Central America
+Equatorial Guinea,GQ,Africa,Sub-Saharan Africa,Middle Africa
+Eritrea,ER,Africa,Sub-Saharan Africa,Eastern Africa
+Estonia,EE,Europe,Northern Europe,Unspecified
+Ethiopia,ET,Africa,Sub-Saharan Africa,Eastern Africa
+Falkland Islands (Malvinas),FK,Americas,Latin America and the Caribbean,South America
+Faroe Islands,FO,Europe,Northern Europe,Unspecified
+Fiji,FJ,Oceania,Melanesia,Unspecified
+Finland,FI,Europe,Northern Europe,Unspecified
+France,FR,Europe,Western Europe,Unspecified
+French Guiana,GF,Americas,Latin America and the Caribbean,South America
+French Polynesia,PF,Oceania,Polynesia,Unspecified
+French Southern Territories,TF,Africa,Sub-Saharan Africa,Eastern Africa
+Gabon,GA,Africa,Sub-Saharan Africa,Middle Africa
+Gambia,GM,Africa,Sub-Saharan Africa,Western Africa
+Georgia,GE,Asia,Western Asia,Unspecified
+Germany,DE,Europe,Western Europe,Unspecified
+Ghana,GH,Africa,Sub-Saharan Africa,Western Africa
+Gibraltar,GI,Europe,Southern Europe,Unspecified
+Greece,GR,Europe,Southern Europe,Unspecified
+Greenland,GL,Americas,Northern America,Unspecified
+Grenada,GD,Americas,Latin America and the Caribbean,Caribbean
+Guadeloupe,GP,Americas,Latin America and the Caribbean,Caribbean
+Guam,GU,Oceania,Micronesia,Unspecified
+Guatemala,GT,Americas,Latin America and the Caribbean,Central America
+Guernsey,GG,Europe,Northern Europe,Channel Islands
+Guinea,GN,Africa,Sub-Saharan Africa,Western Africa
+Guinea-Bissau,GW,Africa,Sub-Saharan Africa,Western Africa
+Guyana,GY,Americas,Latin America and the Caribbean,South America
+Haiti,HT,Americas,Latin America and the Caribbean,Caribbean
+Heard Island and McDonald Islands,HM,Oceania,Australia and New Zealand,Unspecified
+Holy See (Vatican City State),VA,Europe,Southern Europe,Unspecified
+Honduras,HN,Americas,Latin America and the Caribbean,Central America
+Hong Kong,HK,Asia,Eastern Asia,Unspecified
+Hungary,HU,Europe,Eastern Europe,Unspecified
+Iceland,IS,Europe,Northern Europe,Unspecified
+India,IN,Asia,Southern Asia,Unspecified
+Indonesia,ID,Asia,South-eastern Asia,Unspecified
+"Iran, Islamic Republic of",IR,Asia,Southern Asia,Unspecified
+Iraq,IQ,Asia,Western Asia,Unspecified
+Ireland,IE,Europe,Northern Europe,Unspecified
+Isle of Man,IM,Europe,Northern Europe,Unspecified
+Israel,IL,Asia,Western Asia,Unspecified
+Italy,IT,Europe,Southern Europe,Unspecified
+Jamaica,JM,Americas,Latin America and the Caribbean,Caribbean
+Japan,JP,Asia,Eastern Asia,Unspecified
+Jersey,JE,Europe,Northern Europe,Channel Islands
+Jordan,JO,Asia,Western Asia,Unspecified
+Kazakhstan,KZ,Asia,Central Asia,Unspecified
+Kenya,KE,Africa,Sub-Saharan Africa,Eastern Africa
+Kiribati,KI,Oceania,Micronesia,Unspecified
+"Korea, Democratic People's Republic of",KP,Asia,Eastern Asia,Unspecified
+"Korea, Republic of",KR,Asia,Eastern Asia,Unspecified
+Kuwait,KW,Asia,Western Asia,Unspecified
+Kyrgyzstan,KG,Asia,Central Asia,Unspecified
+Lao People's Democratic Republic,LA,Asia,South-eastern Asia,Unspecified
+Latvia,LV,Europe,Northern Europe,Unspecified
+Lebanon,LB,Asia,Western Asia,Unspecified
+Lesotho,LS,Africa,Sub-Saharan Africa,Southern Africa
+Liberia,LR,Africa,Sub-Saharan Africa,Western Africa
+Libya,LY,Africa,Northern Africa,Unspecified
+Liechtenstein,LI,Europe,Western Europe,Unspecified
+Lithuania,LT,Europe,Northern Europe,Unspecified
+Luxembourg,LU,Europe,Western Europe,Unspecified
+Macao,MO,Asia,Eastern Asia,Unspecified
+"Macedonia, the Former Yugoslav Republic of",MK,Europe,Southern Europe,Unspecified
+Madagascar,MG,Africa,Sub-Saharan Africa,Eastern Africa
+Malawi,MW,Africa,Sub-Saharan Africa,Eastern Africa
+Malaysia,MY,Asia,South-eastern Asia,Unspecified
+Maldives,MV,Asia,Southern Asia,Unspecified
+Mali,ML,Africa,Sub-Saharan Africa,Western Africa
+Malta,MT,Europe,Southern Europe,Unspecified
+Marshall Islands,MH,Oceania,Micronesia,Unspecified
+Martinique,MQ,Americas,Latin America and the Caribbean,Caribbean
+Mauritania,MR,Africa,Sub-Saharan Africa,Western Africa
+Mauritius,MU,Africa,Sub-Saharan Africa,Eastern Africa
+Mayotte,YT,Africa,Sub-Saharan Africa,Eastern Africa
+Mexico,MX,Americas,Latin America and the Caribbean,Central America
+"Micronesia, Federated States of",FM,Oceania,Micronesia,Unspecified
+"Moldova, Republic of",MD,Europe,Eastern Europe,Unspecified
+Monaco,MC,Europe,Western Europe,Unspecified
+Mongolia,MN,Asia,Eastern Asia,Unspecified
+Montenegro,ME,Europe,Southern Europe,Unspecified
+Montserrat,MS,Americas,Latin America and the Caribbean,Caribbean
+Morocco,MA,Africa,Northern Africa,Unspecified
+Mozambique,MZ,Africa,Sub-Saharan Africa,Eastern Africa
+Myanmar,MM,Asia,South-eastern Asia,Unspecified
+Namibia,NA,Africa,Sub-Saharan Africa,Southern Africa
+Nauru,NR,Oceania,Micronesia,Unspecified
+Nepal,NP,Asia,Southern Asia,Unspecified
+Netherlands,NL,Europe,Western Europe,Unspecified
+New Caledonia,NC,Oceania,Melanesia,Unspecified
+New Zealand,NZ,Oceania,Australia and New Zealand,Unspecified
+Nicaragua,NI,Americas,Latin America and the Caribbean,Central America
+Niger,NE,Africa,Sub-Saharan Africa,Western Africa
+Nigeria,NG,Africa,Sub-Saharan Africa,Western Africa
+Niue,NU,Oceania,Polynesia,Unspecified
+Norfolk Island,NF,Oceania,Australia and New Zealand,Unspecified
+Northern Mariana Islands,MP,Oceania,Micronesia,Unspecified
+Norway,NO,Europe,Northern Europe,Unspecified
+Oman,OM,Asia,Western Asia,Unspecified
+Pakistan,PK,Asia,Southern Asia,Unspecified
+Palau,PW,Oceania,Micronesia,Unspecified
+"Palestine, State of",PS,Asia,Western Asia,Unspecified
+Panama,PA,Americas,Latin America and the Caribbean,Central America
+Papua New Guinea,PG,Oceania,Melanesia,Unspecified
+Paraguay,PY,Americas,Latin America and the Caribbean,South America
+Peru,PE,Americas,Latin America and the Caribbean,South America
+Philippines,PH,Asia,South-eastern Asia,Unspecified
+Pitcairn,PN,Oceania,Polynesia,Unspecified
+Poland,PL,Europe,Eastern Europe,Unspecified
+Portugal,PT,Europe,Southern Europe,Unspecified
+Puerto Rico,PR,Americas,Latin America and the Caribbean,Caribbean
+Qatar,QA,Asia,Western Asia,Unspecified
+Réunion,RE,Africa,Sub-Saharan Africa,Eastern Africa
+Romania,RO,Europe,Eastern Europe,Unspecified
+Russian Federation,RU,Europe,Eastern Europe,Unspecified
+Rwanda,RW,Africa,Sub-Saharan Africa,Eastern Africa
+Saint Barthélemy,BL,Americas,Latin America and the Caribbean,Caribbean
+"Saint Helena, Ascension and Tristan da Cunha",SH,Africa,Sub-Saharan Africa,Western Africa
+Saint Kitts and Nevis,KN,Americas,Latin America and the Caribbean,Caribbean
+Saint Lucia,LC,Americas,Latin America and the Caribbean,Caribbean
+Saint Martin (French part),MF,Americas,Latin America and the Caribbean,Caribbean
+Saint Pierre and Miquelon,PM,Americas,Northern America,Unspecified
+Saint Vincent and the Grenadines,VC,Americas,Latin America and the Caribbean,Caribbean
+Samoa,WS,Oceania,Polynesia,Unspecified
+San Marino,SM,Europe,Southern Europe,Unspecified
+Sao Tome and Principe,ST,Africa,Sub-Saharan Africa,Middle Africa
+Saudi Arabia,SA,Asia,Western Asia,Unspecified
+Senegal,SN,Africa,Sub-Saharan Africa,Western Africa
+Serbia,RS,Europe,Southern Europe,Unspecified
+Seychelles,SC,Africa,Sub-Saharan Africa,Eastern Africa
+Sierra Leone,SL,Africa,Sub-Saharan Africa,Western Africa
+Singapore,SG,Africa,Sub-Saharan Africa,Unspecified
+Sint Maarten (Dutch part),SX,Americas,Latin America and the Caribbean,Caribbean
+Slovakia,SK,Europe,Eastern Europe,Unspecified
+Slovenia,SI,Europe,Southern Europe,Unspecified
+Solomon Islands,SB,Oceania,Melanesia,Unspecified
+Somalia,SO,Africa,Sub-Saharan Africa,Eastern Africa
+South Africa,ZA,Africa,Sub-Saharan Africa,Southern Africa
+South Georgia and the South Sandwich Islands,GS,Americas,Latin America and the Caribbean,South America
+South Sudan,SS,Africa,Sub-Saharan Africa,Eastern Africa
+Spain,ES,Europe,Southern Europe,Unspecified
+Sri Lanka,LK,Asia,Southern Asia,Unspecified
+Sudan,SD,Africa,Northern Africa,Unspecified
+Suriname,SR,Americas,Latin America and the Caribbean,South America
+Svalbard and Jan Mayen,SJ,Europe,Northern Europe,Unspecified
+Swaziland,SZ,Africa,Sub-Saharan Africa,Unspecified
+Sweden,SE,Europe,Northern Europe,Unspecified
+Switzerland,CH,Europe,Western Europe,Unspecified
+Syrian Arab Republic,SY,Asia,Western Asia,Unspecified
+"Taiwan, Province of China",TW,Asia,Eastern Asia,Unspecified
+Tajikistan,TJ,Asia,Central Asia,Unspecified
+"Tanzania, United Republic of",TZ,Africa,Sub-Saharan Africa,Eastern Africa
+Thailand,TH,Asia,Southern Asia,Unspecified
+Timor-Leste,TL,Asia,South-eastern Asia,Unspecified
+Togo,TG,Africa,Sub-Saharan Africa,Western Africa
+Tokelau,TK,Oceania,Polynesia,Unspecified
+Tonga,TO,Oceania,Polynesia,Unspecified
+Trinidad and Tobago,TT,Americas,Latin America and the Caribbean,Caribbean
+Tunisia,TN,Africa,Northern Africa,Unspecified
+Turkey,TR,Asia,Western Asia,Unspecified
+Turkmenistan,TM,Asia,Central Asia,Unspecified
+Turks and Caicos Islands,TC,Americas,Latin America and the Caribbean,Caribbean
+Tuvalu,TV,Oceania,Polynesia,Unspecified
+Uganda,UG,Africa,Sub-Saharan Africa,Eastern Africa
+Ukraine,UA,Europe,Eastern Europe,Unspecified
+United Arab Emirates,AE,Asia,Western Asia,Unspecified
+United Kingdom,GB,Europe,Northern Europe,Unspecified
+United States,US,Americas,Northern America,Unspecified
+United States Minor Outlying Islands,UM,Oceania,Micronesia,Unspecified
+Uruguay,UY,Americas,Latin America and the Caribbean,South America
+Uzbekistan,UZ,Asia,Central Asia,Unspecified
+Vanuatu,VU,Oceania,Melanesia,Unspecified
+"Venezuela, Bolivarian Republic of",VE,Americas,Latin America and the Caribbean,South America
+Viet Nam,VN,Asia,South-eastern Asia,Unspecified
+"Virgin Islands, British",VG,Americas,Latin America and the Caribbean,Caribbean
+"Virgin Islands, U.S.",VI,Americas,Latin America and the Caribbean,Caribbean
+Wallis and Futuna,WF,Oceania,Polynesia,Unspecified
+Western Sahara,EH,Africa,Northern Africa,Unspecified
+Yemen,YE,Asia,Western Asia,Unspecified
+Zambia,ZM,Africa,Sub-Saharan Africa,Eastern Africa
+Zimbabwe,ZW,Africa,Sub-Saharan Africa,Eastern Africa
+Kosovo,XK,Unspecified,Unspecified,Unspecified
+Rest of World,ROW,Unspecified,Unspecified,Unspecified
+Unknown Country Name,??,Unknown Region,Unknown Sub-region,Unknown Intermediate Region

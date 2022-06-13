@@ -67,7 +67,7 @@ FROM
 seconds_per_day = 60 * 60 * 24
 seconds_per_year = seconds_per_day * 365
 flat_rate_dollars_per_year_per_slot = 12 * 8500 / 500
-on_demand_bytes_per_dollar = 2 ** 40 / 5
+on_demand_bytes_per_dollar = 2**40 / 5
 min_flat_rate_bytes_per_second_per_slot = (
     on_demand_bytes_per_dollar * flat_rate_dollars_per_year_per_slot / seconds_per_year
 )
@@ -211,7 +211,7 @@ def main():
     # estimate how much it increases costs to store data
     total_num_bytes = on_demand_num_bytes + flat_rate_num_bytes
     added_storage_cost_per_gigabyte_per_year = 0.01 * 12  # $0.01 per GiB
-    bytes_per_gigabyte = 2 ** 30
+    bytes_per_gigabyte = 2**30
     storage_cost = (
         total_num_bytes * added_storage_cost_per_gigabyte_per_year / bytes_per_gigabyte
     )

@@ -266,8 +266,9 @@ clients_summary AS (
         udf.extract_histogram_sum(value) AS `count`
       FROM
         UNNEST(payload.keyed_histograms.search_counts),
+        -- Bug 1481671 - probe was briefly implemented with '.' rather than ':'
         UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
-        UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+[.].'))]) AS pos
+        UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+?[.].'))]) AS pos
     ) AS search_counts,
     udf_js.main_summary_active_addons(environment.addons.active_addons, NULL) AS active_addons,
     ARRAY_LENGTH(environment.addons.active_addons) AS active_addons_count,
@@ -421,6 +422,16 @@ clients_summary AS (
     payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click,
     payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression,
     payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help_nonsponsored_bestmatch,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help_sponsored_bestmatch,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_block_nonsponsored,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_block_sponsored,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_block_sponsored_bestmatch,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_block_nonsponsored_bestmatch,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click_sponsored_bestmatch,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click_nonsponsored_bestmatch,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression_sponsored_bestmatch,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression_nonsponsored_bestmatch,
     payload.processes.parent.keyed_scalars.contextual_services_topsites_click,
     payload.processes.parent.keyed_scalars.contextual_services_topsites_impression,
     payload.processes.parent.keyed_scalars.a11y_theme,
@@ -501,6 +512,10 @@ clients_summary AS (
         ARRAY_AGG(
           IF(key = 'browser.urlbar.quicksuggest.dataCollection.enabled', value, NULL) IGNORE NULLS
         )[SAFE_OFFSET(0)] AS user_pref_browser_urlbar_quicksuggest_data_collection_enabled,
+        -- New pref for Firefox Suggest introduced in bug 1756917
+        ARRAY_AGG(IF(key = 'browser.urlbar.suggest.bestmatch', value, NULL) IGNORE NULLS)[
+          SAFE_OFFSET(0)
+        ] AS user_pref_browser_urlbar_suggest_bestmatch,
         ARRAY_AGG(IF(key = 'browser.newtabpage.enabled', value, NULL) IGNORE NULLS)[
           SAFE_OFFSET(0)
         ] AS user_pref_browser_newtabpage_enabled,
@@ -1134,6 +1149,16 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_nonsponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_sponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_nonsponsored)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_sponsored)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_sponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_nonsponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_sponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_nonsponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_sponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_nonsponsored_bestmatch)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_topsites_click)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_topsites_impression))
     ] AS map_sum_aggregates,
@@ -1185,6 +1210,9 @@ aggregates AS (
       ORDER BY
         submission_timestamp DESC
     )[OFFSET(0)] AS user_pref_browser_urlbar_quicksuggest_data_collection_enabled,
+    ARRAY_AGG(user_pref_browser_urlbar_suggest_bestmatch ORDER BY submission_timestamp DESC)[
+      OFFSET(0)
+    ] AS user_pref_browser_urlbar_suggest_bestmatch,
   FROM
     clients_summary
   GROUP BY
@@ -1281,7 +1309,33 @@ SELECT
   map_sum_aggregates[OFFSET(70)].map AS contextual_services_quicksuggest_click_sum,
   map_sum_aggregates[OFFSET(71)].map AS contextual_services_quicksuggest_impression_sum,
   map_sum_aggregates[OFFSET(72)].map AS contextual_services_quicksuggest_help_sum,
-  map_sum_aggregates[OFFSET(73)].map AS contextual_services_topsites_click_sum,
-  map_sum_aggregates[OFFSET(74)].map AS contextual_services_topsites_impression_sum,
+  map_sum_aggregates[
+    OFFSET(73)
+  ].map AS contextual_services_quicksuggest_help_nonsponsored_bestmatch_sum,
+  map_sum_aggregates[
+    OFFSET(74)
+  ].map AS contextual_services_quicksuggest_help_sponsored_bestmatch_sum,
+  map_sum_aggregates[OFFSET(75)].map AS contextual_services_quicksuggest_block_nonsponsored_sum,
+  map_sum_aggregates[OFFSET(76)].map AS contextual_services_quicksuggest_block_sponsored_sum,
+  map_sum_aggregates[
+    OFFSET(77)
+  ].map AS contextual_services_quicksuggest_block_sponsored_bestmatch_sum,
+  map_sum_aggregates[
+    OFFSET(78)
+  ].map AS contextual_services_quicksuggest_block_nonsponsored_bestmatch_sum,
+  map_sum_aggregates[
+    OFFSET(79)
+  ].map AS contextual_services_quicksuggest_click_sponsored_bestmatch_sum,
+  map_sum_aggregates[
+    OFFSET(80)
+  ].map AS contextual_services_quicksuggest_click_nonsponsored_bestmatch_sum,
+  map_sum_aggregates[
+    OFFSET(81)
+  ].map AS contextual_services_quicksuggest_impression_sponsored_bestmatch_sum,
+  map_sum_aggregates[
+    OFFSET(82)
+  ].map AS contextual_services_quicksuggest_impression_nonsponsored_bestmatch_sum,
+  map_sum_aggregates[OFFSET(83)].map AS contextual_services_topsites_click_sum,
+  map_sum_aggregates[OFFSET(84)].map AS contextual_services_topsites_impression_sum,
 FROM
   udf_aggregates

@@ -2,7 +2,7 @@
 # To be run in glam via:
 #    docker-compose run server ./manage.py import_glean_aggs
 
-set -e
+set -ex
 
 src_project=${SRC_PROJECT:-glam-fenix-dev}
 # TODO: glam-dev-bespoke-nonprod-dataops-mozgcp-net
@@ -22,7 +22,3 @@ bq extract --destination_format CSV --noprint_header \
     "${src_project}:${dataset}.${product}__extract_user_counts_v1" \
     "$bucket/glam-extract-${product}-counts.csv"
 
-bq extract --destination_format CSV --noprint_header \
-    "${src_project}:${dataset}.${product}__extract_sample_counts_v1" \
-    "$bucket/glam-extract-${product}-sample-counts.csv"
-    

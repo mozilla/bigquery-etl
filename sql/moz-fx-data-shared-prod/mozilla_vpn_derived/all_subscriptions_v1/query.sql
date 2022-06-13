@@ -1,96 +1,4 @@
-WITH stripe_subscriptions AS (
-  SELECT
-    customer AS customer_id,
-    id AS subscription_id,
-    plan AS plan_id,
-    status,
-    event_timestamp,
-    MIN(COALESCE(trial_end, start_date)) OVER (
-      PARTITION BY
-        customer
-      ROWS BETWEEN
-        UNBOUNDED PRECEDING
-        AND UNBOUNDED FOLLOWING
-    ) AS customer_start_date,
-    COALESCE(trial_end, start_date) AS subscription_start_date,
-    created,
-    trial_end,
-    canceled_at,
-    mozfun.map.get_key(metadata, "cancelled_for_customer_at") AS canceled_for_customer_at,
-    cancel_at,
-    cancel_at_period_end,
-    ended_at,
-    COALESCE(ended_at, TIMESTAMP(CURRENT_DATE)) AS end_date,
-    discount.promotion_code AS promotion_code_id,
-  FROM
-    mozdata.stripe.subscriptions
-  WHERE
-    status NOT IN ("incomplete", "incomplete_expired")
-),
-stripe_customers AS (
-  SELECT
-    id AS customer_id,
-    mozfun.map.get_key(metadata, "fxa_uid") AS fxa_uid,
-  FROM
-    mozdata.stripe.customers
-),
-stripe_charges AS (
-  SELECT
-    id AS charge_id,
-    payment_method_details.card.country,
-  FROM
-    `moz-fx-data-shared-prod`.stripe_external.charges_v1
-  WHERE
-    status = "succeeded"
-),
-stripe_invoice_lines AS (
-  SELECT
-    lines.subscription AS subscription_id,
-    IF(
-      "paypalTransactionId" IN (SELECT key FROM UNNEST(invoices_v1.metadata)),
-      -- FxA copies paypal billing agreement location to customer_address
-      STRUCT("Paypal" AS provider, invoices_v1.customer_address.country),
-      ("Stripe", stripe_charges.country)
-    ).*,
-    invoices_v1.event_timestamp,
-  FROM
-    `moz-fx-data-shared-prod`.stripe_external.invoices_v1
-  CROSS JOIN
-    UNNEST(lines) AS lines
-  LEFT JOIN
-    stripe_customers
-  ON
-    invoices_v1.customer = stripe_customers.customer_id
-  LEFT JOIN
-    stripe_charges
-  ON
-    invoices_v1.charge = stripe_charges.charge_id
-),
-stripe_promotion_codes AS (
-  SELECT
-    id AS promotion_code_id,
-    code AS promotion_code,
-  FROM
-    `moz-fx-data-shared-prod`.stripe_external.promotion_codes_v1
-),
-stripe_subscription_provider_country AS (
-  SELECT
-    subscription_id,
-    ARRAY_AGG(
-      STRUCT(provider, LOWER(country) AS country)
-      ORDER BY
-        -- prefer rows with country
-        IF(country IS NULL, 0, 1) DESC,
-        event_timestamp DESC
-      LIMIT
-        1
-    )[OFFSET(0)].*
-  FROM
-    stripe_invoice_lines
-  GROUP BY
-    subscription_id
-),
-standardized_country AS (
+WITH standardized_country AS (
   SELECT
     raw_country AS country,
     standardized_country AS country_name,
@@ -118,26 +26,7 @@ users AS (
   FROM
     mozdata.mozilla_vpn.users
 ),
-stripe_vpn_plans AS (
-  SELECT
-    plans.id AS plan_id,
-    plans.amount AS plan_amount,
-    plans.billing_scheme,
-    plans.currency AS plan_currency,
-    plans.interval AS plan_interval,
-    plans.interval_count AS plan_interval_count,
-    plans.product AS product_id,
-    products.name AS product_name,
-  FROM
-    mozdata.stripe.plans
-  LEFT JOIN
-    mozdata.stripe.products
-  ON
-    plans.product = products.id
-  WHERE
-    products.name = "Mozilla VPN"
-),
-fxa_subscriptions AS (
+stripe_subscriptions AS (
   SELECT
     user_id,
     customer_id,
@@ -145,7 +34,6 @@ fxa_subscriptions AS (
     plan_id,
     status,
     event_timestamp,
-    customer_start_date,
     subscription_start_date,
     created,
     trial_end,
@@ -153,8 +41,7 @@ fxa_subscriptions AS (
     canceled_for_customer_at,
     cancel_at,
     cancel_at_period_end,
-    ended_at,
-    end_date,
+    IF(ended_at < TIMESTAMP(CURRENT_DATE), ended_at, NULL) AS ended_at,
     fxa_uid,
     country,
     country_name,
@@ -166,13 +53,13 @@ fxa_subscriptions AS (
     utm_medium,
     utm_source,
     utm_term,
-    CONCAT("FxA ", provider) AS provider,
+    provider,
     plan_amount,
     billing_scheme,
     plan_currency,
     plan_interval,
     plan_interval_count,
-    "Etc/UTC" AS plan_interval_timezone,
+    plan_interval_timezone,
     product_id,
     product_name,
     CONCAT(
@@ -184,27 +71,15 @@ fxa_subscriptions AS (
       "-",
       (plan_amount / 100)
     ) AS pricing_plan,
-    -- Stripe default billing grace period is 1 day and Paypal is billed by Stripe
-    INTERVAL 1 DAY AS billing_grace_period,
-    IF(promotion_code IS NULL, [], [promotion_code]) AS promotion_codes,
+    -- Stripe billing grace period is 7 day and Paypal is billed by Stripe
+    INTERVAL 7 DAY AS billing_grace_period,
+    promotion_codes,
   FROM
-    stripe_subscriptions
-  JOIN -- exclude subscriptions to non-vpn products
-    stripe_vpn_plans
-  USING
-    (plan_id)
-  LEFT JOIN
-    stripe_subscription_provider_country
-  USING
-    (subscription_id)
+    mozdata.subscription_platform.stripe_subscriptions
   LEFT JOIN
     standardized_country
   USING
     (country)
-  LEFT JOIN
-    stripe_customers
-  USING
-    (customer_id)
   LEFT JOIN
     users
   USING
@@ -213,10 +88,8 @@ fxa_subscriptions AS (
     attribution
   USING
     (fxa_uid)
-  LEFT JOIN
-    stripe_promotion_codes
-  USING
-    (promotion_code_id)
+  WHERE
+    product_name = "Mozilla VPN"
 ),
 apple_iap_subscriptions AS (
   SELECT
@@ -226,15 +99,6 @@ apple_iap_subscriptions AS (
     CAST(NULL AS STRING) AS plan_id,
     CAST(NULL AS STRING) AS status,
     updated_at AS event_timestamp,
-    TIMESTAMP(
-      MIN(start_time) OVER (
-        PARTITION BY
-          user_id
-        ROWS BETWEEN
-          UNBOUNDED PRECEDING
-          AND UNBOUNDED FOLLOWING
-      )
-    ) AS customer_start_date,
     start_time AS subscription_start_date,
     created_at AS created,
     CAST(NULL AS TIMESTAMP) AS trial_end,
@@ -243,7 +107,6 @@ apple_iap_subscriptions AS (
     CAST(NULL AS TIMESTAMP) AS cancel_at,
     CAST(NULL AS BOOL) AS cancel_at_period_end,
     IF(end_time < TIMESTAMP(CURRENT_DATE), end_time, NULL) AS ended_at,
-    LEAST(end_time, TIMESTAMP(CURRENT_DATE)) AS end_date,
     fxa_uid,
     CAST(NULL AS STRING) AS country,
     CAST(NULL AS STRING) AS country_name,
@@ -255,7 +118,7 @@ apple_iap_subscriptions AS (
     utm_medium,
     utm_source,
     utm_term,
-    "Apple Store IAP" AS provider,
+    "Apple Store" AS provider,
     NULL AS plan_amount,
     CAST(NULL AS STRING) AS billing_scheme,
     CAST(NULL AS STRING) AS plan_currency,
@@ -369,8 +232,12 @@ android_iap_periods AS (
         ("day", 1)
       END
     ).*,
-    auto_renewing,
-    payment_state,
+    (
+      auto_renewing
+      AND payment_state = 0
+      -- only the last set of active dates can be in the billing grace period
+      AND 1 = ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY active_dates_offset DESC)
+    ) AS in_billing_grace_period,
   FROM
     android_iap_aggregates
   LEFT JOIN
@@ -390,6 +257,8 @@ android_iap_periods AS (
           UNNEST(start_times) AS start_time
         GROUP BY
           end_time
+        ORDER BY
+          start_time
       )
     )
     WITH OFFSET AS active_dates_offset
@@ -402,15 +271,6 @@ android_iap_subscriptions AS (
     plan_id,
     CAST(NULL AS STRING) AS status,
     event_timestamp,
-    TIMESTAMP(
-      MIN(start_time) OVER (
-        PARTITION BY
-          fxa_uid
-        ROWS BETWEEN
-          UNBOUNDED PRECEDING
-          AND UNBOUNDED FOLLOWING
-      )
-    ) AS customer_start_date,
     start_time AS subscription_start_date,
     created,
     CAST(NULL AS TIMESTAMP) AS trial_end,
@@ -418,8 +278,12 @@ android_iap_subscriptions AS (
     canceled_for_customer_at,
     CAST(NULL AS TIMESTAMP) AS cancel_at,
     CAST(NULL AS BOOL) AS cancel_at_period_end,
-    IF(end_time < TIMESTAMP(CURRENT_DATE), end_time, NULL) AS ended_at,
-    LEAST(end_time, TIMESTAMP(CURRENT_DATE)) AS end_date,
+    IF(
+      in_billing_grace_period,
+      -- android subscriptions in grace period have not ended
+      CAST(NULL AS TIMESTAMP),
+      IF(end_time < TIMESTAMP(CURRENT_DATE), end_time, CAST(NULL AS TIMESTAMP))
+    ) AS ended_at,
     fxa_uid,
     country,
     country_name,
@@ -449,14 +313,7 @@ android_iap_subscriptions AS (
       "-",
       (plan_amount / 100)
     ) AS pricing_plan,
-    IF(
-      -- in billing grace period
-      auto_renewing
-      AND payment_state = 0,
-      -- grace period lasts from event_timestamp to end_time
-      end_time - event_timestamp,
-      INTERVAL 0 DAY
-    ) AS billing_grace_period,
+    IF(in_billing_grace_period, INTERVAL 1 MONTH, INTERVAL 0 DAY) AS billing_grace_period,
     CAST(NULL AS ARRAY<STRING>) AS promotion_codes,
   FROM
     android_iap_periods
@@ -477,7 +334,7 @@ vpn_subscriptions AS (
   SELECT
     *
   FROM
-    fxa_subscriptions
+    stripe_subscriptions
   UNION ALL
   SELECT
     *
@@ -488,6 +345,14 @@ vpn_subscriptions AS (
     *
   FROM
     android_iap_subscriptions
+),
+vpn_subscriptions_with_end_date AS (
+  SELECT
+    *,
+    MIN(subscription_start_date) OVER (PARTITION BY customer_id) AS customer_start_date,
+    COALESCE(ended_at, TIMESTAMP(CURRENT_DATE)) AS end_date,
+  FROM
+    vpn_subscriptions
 )
 SELECT
   *,
@@ -510,7 +375,7 @@ SELECT
     inclusive => FALSE
   ) AS current_months_since_subscription_start,
 FROM
-  vpn_subscriptions
+  vpn_subscriptions_with_end_date
 WHERE
   -- exclude subscriptions that never left the trial period
   DATE(subscription_start_date) < DATE(end_date)

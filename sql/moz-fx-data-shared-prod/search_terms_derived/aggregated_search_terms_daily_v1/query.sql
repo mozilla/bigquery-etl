@@ -12,8 +12,6 @@ WITH aggregated_search_terms AS (
   GROUP BY
     submission_date,
     search_terms
-  HAVING
-    client_days > 30000
 ),
 suggest_attributes AS (
   SELECT

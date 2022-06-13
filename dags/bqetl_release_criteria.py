@@ -52,7 +52,6 @@ with DAG(
         start_date=datetime.datetime(2020, 12, 3, 0, 0),
         date_partition_parameter=None,
         depends_on_past=False,
-        dag=dag,
     )
 
     release_criteria__rc_flattened_test_data__v1 = bigquery_etl_query(
@@ -69,7 +68,6 @@ with DAG(
         start_date=datetime.datetime(2020, 12, 3, 0, 0),
         date_partition_parameter=None,
         depends_on_past=False,
-        dag=dag,
     )
 
     release_criteria__release_criteria__v1 = bigquery_etl_query(
@@ -86,7 +84,6 @@ with DAG(
         start_date=datetime.datetime(2020, 12, 3, 0, 0),
         date_partition_parameter=None,
         depends_on_past=False,
-        dag=dag,
     )
 
     release_criteria__release_criteria_summary__v1 = bigquery_etl_query(
@@ -103,7 +100,6 @@ with DAG(
         start_date=datetime.datetime(2020, 12, 3, 0, 0),
         date_partition_parameter=None,
         depends_on_past=False,
-        dag=dag,
     )
 
     release_criteria__stale_tests__v1 = bigquery_etl_query(
@@ -120,7 +116,6 @@ with DAG(
         start_date=datetime.datetime(2020, 12, 3, 0, 0),
         date_partition_parameter=None,
         depends_on_past=False,
-        dag=dag,
     )
 
     release_criteria__dashboard_health__v1.set_upstream(

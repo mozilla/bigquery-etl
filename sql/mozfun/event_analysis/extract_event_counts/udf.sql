@@ -18,9 +18,7 @@ WITH results AS (
   SELECT
     event_analysis.extract_event_counts('a,a,b,') AS multi,
     event_analysis.extract_event_counts('b,b,b,') AS single,
-    event_analysis.extract_event_counts('aa,ab,ac,')
-  AS
-    with_event_props
+    event_analysis.extract_event_counts('aa,ab,ac,') AS with_event_props
 )
 SELECT
   assert.equals('a', multi[OFFSET(0)].index),

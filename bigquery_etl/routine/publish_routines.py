@@ -143,7 +143,7 @@ def publish_routine(
 
         # adjust paths for dependencies stored in GCS
         query = OPTIONS_LIB_RE.sub(
-            fr'library = "gs://{gcs_bucket}/{gcs_path}\1"', definition
+            rf'library = "gs://{gcs_bucket}/{gcs_path}\1"', definition
         )
 
         # add UDF descriptions

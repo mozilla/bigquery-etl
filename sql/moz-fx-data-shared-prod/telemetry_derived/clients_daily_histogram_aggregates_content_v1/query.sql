@@ -16443,6 +16443,13 @@ histograms AS (
         (1, 100, 50)
       ),
       (
+        'video_dropped_frames_proportion_exponential',
+        'histogram-exponential',
+        'content',
+        payload.processes.content.histograms.video_dropped_frames_proportion_exponential,
+        (1, 10000, 100)
+      ),
+      (
         'video_eme_play_success',
         'histogram-boolean',
         'content',

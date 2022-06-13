@@ -18,8 +18,8 @@ try:
 
     if not jnius_config.vm_running:
         # this has to run before jnius is imported the first time
-        root = Path(__file__).parent.parent / "target" / "dependency"
-        for path in root.glob("*.jar"):
+        target = Path(__file__).parent.parent / "target"
+        for path in target.glob("*.jar"):
             jnius_config.add_classpath(path.resolve().as_posix())
 except ImportError:
     # ignore so this module can be imported safely without java installed
@@ -32,25 +32,21 @@ def extract_table_references(sql: str) -> List[str]:
     import jnius  # noqa: E402
 
     try:
-        Analyzer = jnius.autoclass("com.google.zetasql.Analyzer")
-        AnalyzerOptions = jnius.autoclass("com.google.zetasql.AnalyzerOptions")
+        ZetaSqlHelper = jnius.autoclass("com.mozilla.telemetry.ZetaSqlHelper")
     except jnius.JavaException:
         # replace jnius.JavaException because it's not available outside this function
         raise ImportError(
-            "failed to import java class via jni, please download java dependencies "
-            "with: mvn dependency:copy-dependencies"
+            "failed to import java class via jni, please build java dependencies "
+            "with: mvn package"
         )
-    # enable support for CreateViewStatement and others
-    options = AnalyzerOptions()
-    options.getLanguageOptions().setSupportsAllStatementKinds()
     try:
-        result = Analyzer.extractTableNamesFromStatement(sql, options)
+        result = ZetaSqlHelper.extractTableNamesFromStatement(sql)
     except jnius.JavaException:
         # Only use extractTableNamesFromScript when extractTableNamesFromStatement
         # fails, because for scripts zetasql incorrectly includes CTE references from
         # subquery expressions
         try:
-            result = Analyzer.extractTableNamesFromScript(sql, options)
+            result = ZetaSqlHelper.extractTableNamesFromScript(sql)
         except jnius.JavaException as e:
             # replace jnius.JavaException because it's not available outside this function
             raise ValueError(*e.args)

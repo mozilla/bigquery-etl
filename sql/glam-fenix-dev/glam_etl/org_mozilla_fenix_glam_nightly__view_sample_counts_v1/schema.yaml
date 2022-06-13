@@ -9,9 +9,11 @@ fields:
   type: STRING
 - name: channel
   type: STRING
-- name: key
-  type: STRING
 - name: metric
   type: STRING
+- name: key
+  type: STRING
+- name: agg_type
+  type: STRING
 - name: total_sample
-  type: INTEGER
+  type: FLOAT

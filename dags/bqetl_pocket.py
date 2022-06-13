@@ -55,7 +55,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        dag=dag,
     )
 
     pocket_derived__rolling_monthly_active_user_counts_history__v1 = gke_command(
@@ -80,7 +79,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        dag=dag,
     )
 
     pocket_derived__spoc_tile_ids_history__v1 = gke_command(
@@ -95,10 +93,38 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
+    pocket_derived__twice_weekly_active_user_counts__v1 = bigquery_etl_query(
+        task_id="pocket_derived__twice_weekly_active_user_counts__v1",
+        destination_table="twice_weekly_active_user_counts_v1",
+        dataset_id="pocket_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
+    pocket_derived__twice_weekly_active_user_counts_history__v1 = gke_command(
+        task_id="pocket_derived__twice_weekly_active_user_counts_history__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/pocket_derived/twice_weekly_active_user_counts_history_v1/query.py",
+        ]
+        + ["--date", "{{ ds }}"],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+    )
+
     pocket_derived__rolling_monthly_active_user_counts__v1.set_upstream(
         pocket_derived__rolling_monthly_active_user_counts_history__v1
     )
 
     pocket_derived__spoc_tile_ids__v1.set_upstream(
         pocket_derived__spoc_tile_ids_history__v1
+    )
+
+    pocket_derived__twice_weekly_active_user_counts__v1.set_upstream(
+        pocket_derived__twice_weekly_active_user_counts_history__v1
     )

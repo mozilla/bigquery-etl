@@ -10,10 +10,10 @@ python3.8 -m venv venv/
 ./venv/bin/pip install pip-tools -c requirements.in
 
 # install python dependencies with pip-sync (provided by pip-tools)
-./venv/bin/pip-sync
+./venv/bin/pip-sync --pip-args=--no-deps requirements.txt
 
-# install java dependencies with maven
-mvn dependency:copy-dependencies
+# build java dependencies with maven
+mvn package
 
 # run pytest with all linters and 4 workers in parallel
 ./venv/bin/pytest --black --pydocstyle --flake8 --mypy-ignore-missing-imports -n 4

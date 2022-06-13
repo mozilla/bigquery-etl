@@ -6,6 +6,7 @@
   app_version: "one"
   normalized_channel: "nightly"
   locale: "en-US"
+  country: "US"
   user_pref_browser_search_region: "US"
   user_pref_browser_search_suggest_enabled: true
   user_pref_browser_widget_in_navbar: true
@@ -35,6 +36,9 @@
   scalar_parent_urlbar_picked_topsite_sum: []
   scalar_parent_urlbar_picked_unknown_sum: []
   scalar_parent_urlbar_picked_visiturl_sum: []
+  experiments:
+    - key: "experiment_key"
+      value: "experiment_value"
 - <<: *base
   client_id: "client_2"
   scalar_parent_urlbar_picked_autofill_sum:

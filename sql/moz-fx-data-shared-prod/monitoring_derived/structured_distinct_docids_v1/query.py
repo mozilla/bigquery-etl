@@ -14,7 +14,7 @@ WITH decoded AS (
     * EXCEPT (metadata),  -- Some tables have different field order in metadata
     metadata.header.x_source_tags,
     metadata.document_namespace,
-    metadata.document_type,
+    CONCAT(metadata.document_type, '_v', metadata.document_version) AS document_type,
   FROM
     `moz-fx-data-shared-prod.monitoring.payload_bytes_decoded_structured`
   UNION ALL
@@ -22,16 +22,17 @@ WITH decoded AS (
     * EXCEPT (metadata),
     metadata.header.x_source_tags,
     metadata.document_namespace,
-    metadata.document_type,
+    CONCAT(metadata.document_type, '_v', metadata.document_version) AS document_type,
   FROM
     `moz-fx-data-shared-prod.monitoring.payload_bytes_decoded_stub_installer`
 )
 SELECT
   DATE(submission_timestamp) AS submission_date,
   -- We sub '-' for '_' for historical continuity
-  LOWER(REGEXP_REPLACE(REPLACE(document_namespace, '-', '_'), r"[^_\w]", "")) AS namespace,
-  LOWER(REGEXP_REPLACE(REPLACE(document_type,      '-', '_'), r"[^_\w]", "")) AS doc_type,
+  LOWER(REGEXP_REPLACE(REPLACE(document_namespace, '-', '_'), r"[^_\\w]", "")) AS namespace,
+  LOWER(REGEXP_REPLACE(REPLACE(document_type,      '-', '_'), r"[^_\\w]", "")) AS doc_type,
   COUNT(DISTINCT(document_id)) AS docid_count,
+  COUNT(*) AS nondistinct_count,
 FROM
   decoded
 WHERE
@@ -51,6 +52,7 @@ SELECT
   DATE(submission_timestamp) AS submission_date,
   _TABLE_SUFFIX AS doc_type,
   COUNT(DISTINCT(document_id)) AS docid_count,
+  COUNT(*) AS nondistinct_count,
 FROM
   `moz-fx-data-shared-prod.{namespace}_{type}.*`
 WHERE
@@ -93,6 +95,9 @@ def get_docid_counts(date, project, destination_dataset, destination_table):
         docid_counts_by_doc_type_by_table[(row["namespace"], row["doc_type"])][
             "decoded"
         ] = row["docid_count"]
+        docid_counts_by_doc_type_by_table[(row["namespace"], row["doc_type"])][
+            "decoded_nondistinct"
+        ] = row["nondistinct_count"]
 
         namespaces.add(row["namespace"])
 
@@ -117,6 +122,9 @@ def get_docid_counts(date, project, destination_dataset, destination_table):
             docid_counts_by_doc_type_by_table[(namespace, row["doc_type"])][
                 "live"
             ] = row["docid_count"]
+            docid_counts_by_doc_type_by_table[(namespace, row["doc_type"])][
+                "live_nondistinct"
+            ] = row["nondistinct_count"]
 
     # Transform into format for bigquery load
     output_data = []

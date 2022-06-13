@@ -5,7 +5,7 @@ Airflow tags enable DAGs to be filtered in the web ui view to reduce the number 
 
 Additionally, their objective is to provide a little bit more information such as their impact to make it easier to understand the DAG and impact of failures when doing Airflow triage.
 
-More information and the discussions can be found the the original [Airflow tags proposal](https://docs.google.com/document/d/1LqOCmadsC6kPTusqyczHha-mdG_DVsNWK4-a1-NHI_8).
+More information and the discussions can be found the the original Airflow Tags Proposal (can be found within data org `proposals/` folder).
 ## Valid tags
 
 ### impact/tier tag

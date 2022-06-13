@@ -14,6 +14,7 @@ SELECT
     IFNULL(city, '??') AS city,
     IFNULL(geo_subdivision1, '??') AS geo_subdivision1,
     IFNULL(geo_subdivision2, '??') AS geo_subdivision2
-  )
+  ),
+  `mozfun.norm.browser_version_info`(app_version) AS browser_version_info,
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.clients_daily_joined_v1`

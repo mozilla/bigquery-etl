@@ -17,7 +17,7 @@ python3 -m venv venv
 source venv/bin/activate
 
 # install dependencies
-pip install -r requirements.txt
+pip install --no-deps -r requirements.txt
 # install bqetl command-line tool
 pip install -e .
 ```

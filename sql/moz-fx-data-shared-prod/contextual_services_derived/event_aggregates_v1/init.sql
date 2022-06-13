@@ -12,6 +12,7 @@ SELECT
   CAST(NULL AS date) AS submission_date,
   CAST(NULL AS STRING) AS source,
   CAST(NULL AS STRING) AS event_type,
+  CAST(NULL AS STRING) AS form_factor,
   CAST(NULL AS STRING) AS country,
   CAST(NULL AS STRING) AS subdivision1,
   CAST(NULL AS STRING) AS advertiser,
@@ -19,3 +20,4 @@ SELECT
   CAST(NULL AS INT64) AS position,
   CAST(NULL AS INT64) AS event_count,
   CAST(NULL AS INT64) AS user_count,
+  CAST(NULL AS STRING) AS match_type,

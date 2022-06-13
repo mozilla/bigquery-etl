@@ -48,7 +48,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        dag=dag,
     )
 
     firefox_accounts_derived__event_types_history__v1 = bigquery_etl_query(
@@ -60,7 +59,6 @@ with DAG(
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
-        dag=dag,
     )
 
     firefox_accounts_derived__events_daily__v1 = bigquery_etl_query(
@@ -72,7 +70,6 @@ with DAG(
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     funnel_events_source__v1 = bigquery_etl_query(
@@ -85,7 +82,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-        dag=dag,
     )
 
     messaging_system_derived__event_types__v1 = bigquery_etl_query(
@@ -98,7 +94,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        dag=dag,
     )
 
     messaging_system_derived__event_types_history__v1 = bigquery_etl_query(
@@ -110,7 +105,6 @@ with DAG(
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
-        dag=dag,
     )
 
     messaging_system_derived__events_daily__v1 = bigquery_etl_query(
@@ -122,7 +116,6 @@ with DAG(
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     mozilla_vpn_derived__event_types__v1 = bigquery_etl_query(
@@ -135,7 +128,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        dag=dag,
     )
 
     mozilla_vpn_derived__event_types_history__v1 = bigquery_etl_query(
@@ -147,7 +139,6 @@ with DAG(
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
-        dag=dag,
     )
 
     mozilla_vpn_derived__events_daily__v1 = bigquery_etl_query(
@@ -159,7 +150,6 @@ with DAG(
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__event_types__v1 = bigquery_etl_query(
@@ -172,7 +162,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        dag=dag,
     )
 
     telemetry_derived__event_types_history__v1 = bigquery_etl_query(
@@ -184,7 +173,6 @@ with DAG(
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
-        dag=dag,
     )
 
     telemetry_derived__events_daily__v1 = bigquery_etl_query(
@@ -196,7 +184,6 @@ with DAG(
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     firefox_accounts_derived__event_types__v1.set_upstream(

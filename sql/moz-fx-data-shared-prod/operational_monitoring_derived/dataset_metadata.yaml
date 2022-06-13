@@ -1,8 +1,7 @@
 friendly_name: Operational Monitoring Derived
 description: |-
   Derived data based operational monitoring project requirements.
-  Queries are generated via an airflow task here:
-  https://github.com/mozilla/telemetry-airflow/blob/main/dags/operational_monitoring.py
+  The dataset is populated via https://github.com/mozilla/opmon
 dataset_base_acl: derived
 user_facing: false
 labels: {}

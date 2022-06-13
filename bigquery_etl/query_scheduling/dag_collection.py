@@ -85,8 +85,8 @@ class DagCollection:
             dag = self.dag_by_name(dag_name)
             if dag is None:
                 raise InvalidDag(
-                    f"DAG {dag_name} does not exist in dags.yaml"
-                    "but used in task definition {next(group).task_name}."
+                    f"DAG {dag_name} does not exist in dags.yaml "
+                    f"but used in task definition {next(group).task_name}."
                 )
             dag.add_tasks(list(group))
 

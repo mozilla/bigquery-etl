@@ -57,7 +57,6 @@ with DAG(
         start_date=datetime.datetime(2018, 8, 1, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     telemetry_derived__devtools_panel_usage__v1 = bigquery_etl_query(
@@ -70,7 +69,6 @@ with DAG(
         start_date=datetime.datetime(2019, 11, 25, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        dag=dag,
     )
 
     wait_for_copy_deduplicate_main_ping = ExternalTaskCompletedSensor(

@@ -1,6 +1,4 @@
----
-# Generated via bigquery_etl.glean_usage
-
+{{ header_yaml }}
 friendly_name: Baseline Clients First Seen
 description: |-
   Captures the earliest server date that we observe a particular client in the
@@ -13,4 +11,4 @@ description: |-
 
   See also: `baseline_clients_daily` and `baseline_clients_last_seen`.
 owners:
-  - amiyaguchi@mozilla.com
+  - jklukas@mozilla.com

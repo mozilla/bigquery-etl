@@ -4,10 +4,12 @@
   source: suggest
   provider: merino
   event_type: impression
+  form_factor: desktop
   country: US
   subdivision1: AZ
   advertiser: ad1
   release_channel: release
+  match_type: "firefox-suggest"
   position: 1
   event_count: 52
   user_count: 2
@@ -15,16 +17,39 @@
   source: topsites
   provider: contile
   event_type: impression
+  match_type: null
   event_count: 52
   user_count: 2
 - <<: *base
   source: suggest
   event_type: click
+  match_type: "firefox-suggest"
   event_count: 1
   user_count: 1
 - <<: *base
   source: topsites
   provider: contile
   event_type: click
+  match_type: null
   event_count: 1
   user_count: 1
+- &base_mobile
+  submission_date: "2020-01-01"
+  source: topsites
+  provider: contile
+  event_type: click
+  form_factor: phone
+  country: US
+  subdivision1: NY
+  advertiser: ad3
+  release_channel: release
+  match_type: null
+  position: 1
+  event_count: 1
+  user_count: 1
+- <<: *base_mobile
+  release_channel: beta
+  match_type: null
+- <<: *base_mobile
+  release_channel: nightly
+  match_type: null

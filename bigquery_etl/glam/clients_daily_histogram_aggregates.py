@@ -6,6 +6,7 @@ from typing import Dict, List
 from jinja2 import Environment, PackageLoader
 
 from bigquery_etl.format_sql.formatter import reformat
+from bigquery_etl.util.probe_filters import get_etl_excluded_probes_quickfix
 
 from .utils import get_schema, ping_type_from_table
 
@@ -42,6 +43,7 @@ def get_distribution_metrics(schema: Dict) -> Dict[str, List[str]]:
         "custom_distribution",
     }
     metrics: Dict[str, List[str]] = {metric_type: [] for metric_type in metric_type_set}
+    excluded_metrics = get_etl_excluded_probes_quickfix("fenix")
 
     # Iterate over every element in the schema under the metrics section and
     # collect a list of metric names.
@@ -53,7 +55,8 @@ def get_distribution_metrics(schema: Dict) -> Dict[str, List[str]]:
             if metric_type not in metric_type_set:
                 continue
             for field in metric_field["fields"]:
-                metrics[metric_type].append(field["name"])
+                if field["name"] not in excluded_metrics:
+                    metrics[metric_type].append(field["name"])
     return metrics
 
 
@@ -88,6 +91,11 @@ def main():
         help="Name of Glean table",
         default="org_mozilla_fenix_stable.metrics_v1",
     )
+    parser.add_argument(
+        "--product",
+        type=str,
+        default="org_mozilla_fenix",
+    )
     args = parser.parse_args()
 
     # If set to 1 day, then runs of copy_deduplicate may not be done yet
@@ -103,6 +111,11 @@ def main():
         + (" --no-parameterize" if args.no_parameterize else "")
     )
 
+    # This enables build_id filtering against Buildhub data
+    # and filtering out of an erroneous version "1024" (see query template for details).
+    # Only the desktop builds are reported to Buildhub
+    filter_desktop_builds = True if args.product == "firefox_desktop" else False
+
     schema = get_schema(args.source_table)
     distributions = get_distribution_metrics(schema)
     metrics_sql = get_metrics_sql(distributions).strip()
@@ -113,6 +126,7 @@ def main():
     print(
         render_main(
             header=header,
+            filter_desktop_builds=filter_desktop_builds,
             source_table=args.source_table,
             submission_date=submission_date,
             attributes=ATTRIBUTES,

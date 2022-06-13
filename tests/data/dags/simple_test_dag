@@ -51,7 +51,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=True,
         arguments=["--append_table"],
-        dag=dag,
     )
 
     fivetran_import_1_sync_start = FivetranOperator(
@@ -66,6 +65,7 @@ with DAG(
     )
 
     fivetran_import_1_sync_wait.set_upstream(fivetran_import_1_sync_start)
+
     test__non_incremental_query__v1.set_upstream(fivetran_import_1_sync_wait)
 
     fivetran_import_2_sync_start = FivetranOperator(
@@ -80,4 +80,5 @@ with DAG(
     )
 
     fivetran_import_2_sync_wait.set_upstream(fivetran_import_2_sync_start)
+
     test__non_incremental_query__v1.set_upstream(fivetran_import_2_sync_wait)

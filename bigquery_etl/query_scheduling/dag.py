@@ -214,6 +214,11 @@ class Dag:
         dag_template = env.get_template(AIRFLOW_DAG_TEMPLATE)
 
         args = self.__dict__
+        if len(args["tasks"]) == 0:
+            raise InvalidDag(
+                f"DAG {self.name} has no tasks - cannot convert it to a valid .py DAG "
+                f"file. Does it appear under `scheduling` in any metadata.yaml files?"
+            )
 
         for task in args["tasks"]:
             task.with_dependencies(dag_collection)

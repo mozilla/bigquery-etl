@@ -52,7 +52,11 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v2/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v2/view.sql",
     *glob.glob(
-        "sql/moz-fx-data-shared-prod/monitoring*/*_rate_live*/*.sql",
+        "sql/moz-fx-data-shared-prod/monitoring*/suggest*_rate*_live*/*.sql",
+        recursive=True,
+    ),
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/monitoring*/topsites*_rate*_live*/*.sql",
         recursive=True,
     ),
     "sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql",
@@ -72,6 +76,9 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_stdout_events_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_auth_events_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_content_events_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_stdout_events_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_update/view.sql",
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_v1/query.sql",
     "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_structured/view.sql",
@@ -83,61 +90,38 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_distinct_docids_v1/query.sql",
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized/query.sql",
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/stripe_derived/customers_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/stripe_derived/plans_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/stripe_derived/products_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/stripe_derived/subscriptions_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/charges_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/credit_notes_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/customers_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/disputes_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/fxa_pay_setup_complete_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/invoices_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/payment_intents_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/payouts_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/plans_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/prices_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/products_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/promotion_codes_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/setup_intents_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/subscriptions_v1/query.sql",
+    *glob.glob("sql/moz-fx-data-shared-prod/stripe_derived/**/*.sql", recursive=True),
+    *glob.glob("sql/moz-fx-data-shared-prod/stripe_external/**/*.sql", recursive=True),
+    *glob.glob("sql/moz-fx-cjms-*/**/*.sql", recursive=True),
+    "sql/moz-fx-data-shared-prod/subscription_platform/stripe_subscriptions/view.sql",
+    "sql/moz-fx-data-shared-prod/subscription_platform/nonprod_stripe_subscriptions/view.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/stripe/itemized_payout_reconciliation/view.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscriptions_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscription_ids_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/all_subscriptions_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/channel_group_proportions_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/devices_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/fxa_attribution_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/funnel_product_page_to_subscribed_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/login_flows_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/protected_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/site_metrics_empty_check_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/site_metrics_summary_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/subscriptions_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/subscription_events_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/users_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/waitlist_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_external/waitlist_v1/query.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v3/query.sql",
     "sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/subscriptions_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_external/waitlist_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/protected_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/init.sql",
     *glob.glob("sql/moz-fx-data-shared-prod/search_terms*/**/*.sql", recursive=True),
-    "sql/moz-fx-data-shared-prod/stripe_external/charges_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/payouts_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/subscriptions_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/payment_intents_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/products_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/disputes_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/credit_notes_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/customers_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/invoices_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/setup_intents_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/plans_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/prices_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/stripe_external/promotion_codes_v1/init.sql",
     "sql/moz-fx-data-bq-performance/release_criteria/dashboard_health_v1/query.sql",
     "sql/moz-fx-data-bq-performance/release_criteria/rc_flattened_test_data_v1/query.sql",
     "sql/moz-fx-data-bq-performance/release_criteria/release_criteria_summary_v1/query.sql",
@@ -145,6 +129,9 @@ SKIP = {
     "sql/moz-fx-data-bq-performance/release_criteria/release_criteria_v1/query.sql",
     *glob.glob(
         "sql/moz-fx-data-shared-prod/contextual_services/**/*.sql", recursive=True
+    ),
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/**/topsites_impression/view.sql", recursive=True
     ),
     "sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/query.sql",
     "sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/init.sql",
@@ -161,6 +148,10 @@ SKIP = {
     ),
     "sql/moz-fx-data-shared-prod/telemetry/xfocsp_error_report/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/regrets_reporter_update/view.sql",
+    *glob.glob(
+        "sql/moz-fx-data-marketing-prod/acoustic/**/*.sql",
+        recursive=True,
+    ),
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501

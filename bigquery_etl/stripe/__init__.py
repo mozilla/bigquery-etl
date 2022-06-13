@@ -1,104 +1,72 @@
-"""Import Stripe data into BigQuery."""
+"""Import Stripe reports into BigQuery."""
 
 import os
 import sys
 import warnings
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
+from pathlib import Path
 from tempfile import TemporaryFile
-from typing import Any, Dict, Optional, Type
+from time import sleep
+from typing import Any, Dict, List, Optional
 
 import click
+import requests
 import stripe
 import ujson
+from dateutil.relativedelta import relativedelta
 from google.cloud import bigquery
-from stripe.api_resources.abstract import ListableAPIResource
-
-from .allowed_fields import ALLOWED_FIELDS, FilteredSchema
+from requests.auth import HTTPBasicAuth
 
 
-class StripeResourceType(click.ParamType):
-    """Click parameter type for stripe listable resources."""
-
-    name = "stripe resource"
-
-    def convert(self, value, param, ctx):
-        """Get a listable stripe resource type by name."""
-        if isinstance(value, type) and issubclass(value, ListableAPIResource):
-            return value
-
-        if value.islower():
-            value = value.capitalize()
-        try:
-            result = getattr(stripe, value)
-        except AttributeError:
-            self.fail(f"resource type {value!r} not found in stripe")
-        if not issubclass(result, ListableAPIResource):
-            self.fail("resource must be listable")
-        return result
-
-
-def _get_rows(
+def _get_report_rows(
     api_key: Optional[str],
-    date: Optional[datetime],
+    after_date: Optional[datetime],
     before_date: Optional[datetime],
-    resource: Type[ListableAPIResource],
+    report_type: str,
+    columns: List[str],
 ):
     if api_key is None:
-        yield from (ujson.loads(line) for line in sys.stdin)
+        yield from sys.stdin.buffer
     else:
         stripe.api_key = api_key
-        kwargs: Dict[str, Any] = {}
-        if date:
-            start = date.replace(tzinfo=timezone.utc)
-            kwargs["created"] = {
-                "gte": int(start.timestamp()),
-                # make sure to use timedelta before converting to timestamp,
-                # so that leap seconds are properly accounted for.
-                "lt": int((start + timedelta(days=1)).timestamp()),
-            }
-        elif before_date:
-            end = before_date.replace(tzinfo=timezone.utc)
-            kwargs["created"] = {
-                "lt": int(end.timestamp()),
-            }
-        if resource is stripe.Subscription:
-            # list subscriptions api does not list canceled subscriptions by default
-            # https://stripe.com/docs/api/subscriptions/list
-            kwargs["status"] = "all"
-        for instance in resource.list(**kwargs).auto_paging_iter():
-            row: Dict[str, Any] = {
-                "created": datetime.utcfromtimestamp(instance.created).isoformat()
-            }
-            if resource is stripe.Event:
-                event_resource = instance.data.object.object.replace(".", "_")
-                if event_resource not in ALLOWED_FIELDS["event"]["data"]:
-                    continue  # skip events for resources that aren't allowed
-                row["data"] = {
-                    event_resource: instance.data.object,
-                }
-            for key, value in instance.items():
-                if key not in row:
-                    row[key] = value
-            yield FilteredSchema.expand(row)
+        parameters: Dict[str, Any] = {"columns": columns}
+        if after_date:
+            parameters["interval_start"] = int(after_date.timestamp())
+        if before_date:
+            parameters["interval_end"] = int(before_date.timestamp())
+
+        try:
+            run = stripe.reporting.ReportRun.create(
+                report_type=report_type,
+                parameters=parameters,
+            )
+        except stripe.error.InvalidRequestError as e:
+            # Wrap exception to hide unnecessary traceback
+            raise click.ClickException(str(e))
+
+        click.echo(f"Waiting on report {run.id!r}", file=sys.stderr)
+        # wait up to 30 minutes for report to finish
+        timeout = datetime.utcnow() + relativedelta(minutes=30)
+        while datetime.utcnow() < timeout:
+            if run.status != "pending":
+                break
+            sleep(10)
+            run.refresh()
+        if run.status != "succeeded":
+            raise click.ClickException(
+                f"Report {run.id!r} did not succeed, status was {run.status!r}"
+            )
+        response = requests.get(
+            run.result.url, auth=HTTPBasicAuth(api_key, ""), stream=True
+        )
+        response.raise_for_status()
+        yield from (line + b"\n" for line in response.iter_lines())
 
 
 @click.group("stripe", help="Commands for Stripe ETL.")
 def stripe_():
     """Create the CLI group for stripe commands."""
     pass
-
-
-@stripe_.command("schema", help="Print BigQuery schema for Stripe resource types.")
-@click.option(
-    "--resource",
-    default="Event",
-    type=StripeResourceType(),
-    help="Print the schema of this Stripe resource type",
-)
-def schema(resource: Type[ListableAPIResource]):
-    """Print BigQuery schema for Stripe resource types."""
-    filtered_schema = FilteredSchema(resource)
-    click.echo(ujson.dumps([f.to_api_repr() for f in filtered_schema.filtered]))
 
 
 @stripe_.command("import", help=__doc__)
@@ -109,9 +77,15 @@ def schema(resource: Type[ListableAPIResource]):
 )
 @click.option(
     "--date",
-    type=click.DateTime(formats=["%Y-%m-%d"]),
+    type=click.DateTime(formats=["%Y-%m-%d", "%Y-%m", "%Y"]),
     help="Creation date of resources to pull from stripe API; Added to --table "
     "to ensure only that date partition is replaced",
+)
+@click.option(
+    "--after-date",
+    type=click.DateTime(formats=["%Y-%m-%d"]),
+    help="Only pull resources from stripe API with a creation date on or after this; "
+    "Used when importing resources older than the earliest available events",
 )
 @click.option(
     "--before-date",
@@ -125,42 +99,67 @@ def schema(resource: Type[ListableAPIResource]):
     "if not set resources will be written to stdout",
 )
 @click.option(
-    "--format-resources",
-    is_flag=True,
-    help="Format resources before writing to stdout, or after reading from stdin",
-)
-@click.option(
-    "--strict-schema",
-    is_flag=True,
-    help="Throw an exception if an unexpected field is present in a resource",
-)
-@click.option(
     "--quiet",
     is_flag=True,
     help="Write output to os.devnull instead of sys.stdout",
 )
 @click.option(
-    "--resource",
-    default="Event",
-    type=StripeResourceType(),
-    help="Type of stripe resource to import",
+    "--report-type",
+    help="Stripe report type to import",
+    required=True,
+)
+@click.option(
+    "--time-partitioning-field",
+    default="created",
+    help="Field to use for partitioning and clustering; if --date or --before-date or"
+    " --after-date are specified, values must fall within that window",
+)
+@click.option(
+    "--time-partitioning-type",
+    default=bigquery.TimePartitioningType.DAY,
+    type=click.Choice(
+        [
+            bigquery.TimePartitioningType.DAY,
+            bigquery.TimePartitioningType.MONTH,
+            bigquery.TimePartitioningType.YEAR,
+        ]
+    ),
+    help="BigQuery time partitioning type for --table",
 )
 def stripe_import(
     api_key: Optional[str],
     date: Optional[datetime],
+    after_date: Optional[datetime],
     before_date: Optional[datetime],
     table: Optional[str],
-    format_resources: bool,
-    strict_schema: bool,
     quiet: bool,
-    resource: Type[ListableAPIResource],
+    report_type: str,
+    time_partitioning_field: str,
+    time_partitioning_type: str,
 ):
     """Import Stripe data into BigQuery."""
-    if resource is stripe.Event and not date:
-        click.echo("must specify --date for --resource=Event")
-        sys.exit(1)
-    if table and date:
-        table = f"{table}${date:%Y%m%d}"
+    if after_date:
+        after_date = after_date.replace(tzinfo=timezone.utc)
+    if before_date:
+        before_date = before_date.replace(tzinfo=timezone.utc)
+    if date:
+        date = date.replace(tzinfo=timezone.utc)
+        if time_partitioning_type == bigquery.TimePartitioningType.DAY:
+            after_date = date
+            before_date = after_date + relativedelta(days=1)
+            if table:
+                table = f"{table}${date:%Y%m%d}"
+        elif time_partitioning_type == bigquery.TimePartitioningType.MONTH:
+            after_date = date.replace(day=1)
+            before_date = after_date + relativedelta(months=1)
+            if table:
+                table = f"{table}${date:%Y%m}"
+        elif time_partitioning_type == bigquery.TimePartitioningType.YEAR:
+            after_date = date.replace(month=1, day=1)
+            before_date = after_date + relativedelta(years=1)
+            if table:
+                table = f"{table}${date:%Y}"
+
     if table:
         handle = TemporaryFile(mode="w+b")
     elif quiet:
@@ -168,28 +167,29 @@ def stripe_import(
     else:
         handle = sys.stdout.buffer
     with handle as file_obj:
-        filtered_schema = FilteredSchema(resource)
-        has_rows = False
-        for row in _get_rows(api_key, date, before_date, resource):
-            if format_resources or (table and api_key):
-                row = filtered_schema.format_row(row, strict=strict_schema)
-            file_obj.write(ujson.dumps(row).encode("UTF-8"))
-            file_obj.write(b"\n")
-            has_rows = True
-        if not has_rows:
-            click.echo(f"no {filtered_schema.type}s returned")
-            sys.exit(1)
-        elif table:
+        path = Path(__file__).parent / f"{report_type}.schema.json"
+        root = bigquery.SchemaField.from_api_repr(
+            {"name": "root", "type": "RECORD", "fields": ujson.loads(path.read_text())}
+        )
+        columns = [f.name for f in root.fields]
+        for row in _get_report_rows(
+            api_key, after_date, before_date, report_type, columns
+        ):
+            file_obj.write(row)
+        if table:
             if file_obj.writable():
                 file_obj.seek(0)
             warnings.filterwarnings("ignore", module="google.auth._default")
             job_config = bigquery.LoadJobConfig(
-                clustering_fields=["created"],
+                clustering_fields=[time_partitioning_field],
                 ignore_unknown_values=False,
-                schema=filtered_schema.filtered,
-                source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
-                time_partitioning=bigquery.TimePartitioning(field="created"),
+                time_partitioning=bigquery.TimePartitioning(
+                    field=time_partitioning_field, type_=time_partitioning_type
+                ),
                 write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+                source_format=bigquery.SourceFormat.CSV,
+                skip_leading_rows=1,
+                schema=root.fields,
             )
             if "$" in table:
                 job_config.schema_update_options = [
@@ -204,11 +204,11 @@ def stripe_import(
                 click.echo(f"Waiting for {job.job_id}", file=sys.stderr)
                 job.result()
             except Exception as e:
-                click.echo(f"{job.job_id} failed: {e}", file=sys.stderr)
+                full_message = f"{job.job_id} failed: {e}"
                 for error in job.errors or ():
                     message = error.get("message")
                     if message and message != getattr(e, "message", None):
-                        click.echo(message, file=sys.stderr)
-                sys.exit(1)
+                        full_message += "\n" + message
+                raise click.ClickException(full_message)
             else:
                 click.echo(f"{job.job_id} succeeded", file=sys.stderr)

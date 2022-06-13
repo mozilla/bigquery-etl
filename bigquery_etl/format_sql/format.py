@@ -13,7 +13,6 @@ SKIP = {
     *glob.glob("sql_generators/events_daily/templates/**/*.sql"),
     *glob.glob("sql_generators/glean_usage/templates/*.sql"),
     *glob.glob("sql_generators/search/templates/*.sql"),
-    *glob.glob("bigquery_etl/operational_monitoring/templates/*.sql"),
     *glob.glob("sql_generators/experiment_monitoring/templates/**/*.sql"),
     *glob.glob("sql_generators/feature_usage/templates/*.sql"),
     "sql/moz-fx-data-shared-prod/telemetry/fenix_events_v1/view.sql",

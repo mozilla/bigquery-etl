@@ -1,8 +1,7 @@
 friendly_name: Operational Monitoring
 description: |-
-  Views on data for operational monitoring projects. Queries
-  are generate via an airflow task here:
-  https://github.com/mozilla/telemetry-airflow/blob/main/dags/operational_monitoring.py
+  Views on data for operational monitoring projects.
+  The dataset is populated via https://github.com/mozilla/opmon
 dataset_base_acl: view
 user_facing: true
 labels: {}

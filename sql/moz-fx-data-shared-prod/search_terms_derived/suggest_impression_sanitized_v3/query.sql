@@ -1,57 +1,53 @@
 /*
+This query is here to join Firefox Suggest impression pings
+with sanitized search query data captured in logs from the backend Merino service.
 
-This query copies from a table in moz-fx-data-shared-prod.search_terms_derived
-project to shared-prod, but throws an error on empty input in order to signal an
-upstream delay or error.
-
-In order to produce the error, it includes aggregations and join steps.
-
+The results of this are copied into suggest_impression_sanitized_v3,
+which is also defined in this directory.
 */
-WITH sanitized_impressions AS (
+WITH impressions AS (
   SELECT
-    *
+    -- This should already be truncated to second level per CONSVC-1364
+    -- but we reapply truncation to be explicit about granularity.
+    TIMESTAMP_TRUNC(submission_timestamp, SECOND) AS submission_timestamp,
+    request_id,
+    -- Firefox allows casing and whitespace differences when matching to the
+    -- list of suggestions in RemoteSettings.
+    LTRIM(LOWER(search_query)) AS telemetry_query,
+    advertiser,
+    block_id,
+    context_id,
+    sample_id,
+    is_clicked,
+    locale,
+    metadata.geo.country,
+    metadata.geo.subdivision1 AS region,
+    normalized_os,
+    normalized_os_version,
+    release_channel AS normalized_channel,
+    position,
+    reporting_url,
+    scenario,
+    -- Truncate to just Firefox major version
+    SPLIT(version, '.')[SAFE_OFFSET(0)] AS version,
   FROM
-    `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3`
+    `moz-fx-data-shared-prod.contextual_services_stable.quicksuggest_impression_v1`
   WHERE
     DATE(submission_timestamp) = @submission_date
 ),
-sanitized_impressions_count AS (
+sanitized_queries AS (
   SELECT
-    COUNT(*) AS _n,
-    COUNT(sanitized_query) AS _n_with_query,
+    *
   FROM
-    sanitized_impressions
-),
--- We perform a LEFT JOIN on TRUE as a workaround to attach the count to every
--- row from the impressions table; the LEFT JOIN has the important property that
--- if the input impressions partition is empty, we will still get a single row of
--- output, which allows us to raise an error in the WHERE clause.
-validated_impressions AS (
-  SELECT
-    * EXCEPT (_n, _n_with_query),
-  FROM
-    sanitized_impressions_count
-  LEFT JOIN
-    sanitized_impressions
-  ON
-    TRUE
+    `search_terms_derived.merino_log_sanitized_v3`
   WHERE
-    IF(
-      _n < 1,
-      ERROR(
-        "The source partition of moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3 is empty; retry later or investigate upstream issues"
-      ),
-      TRUE
-    )
-    AND IF(
-      _n_with_query < 1,
-      ERROR(
-        "The source partition of moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3 contains rows, but none have sanitized_query populated; investigate upstream issues with log routing"
-      ),
-      TRUE
-    )
+    DATE(timestamp) = @submission_date
 )
 SELECT
   *
 FROM
-  validated_impressions
+  sanitized_queries
+LEFT JOIN
+  impressions
+USING
+  (request_id)

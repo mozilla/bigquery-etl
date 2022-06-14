@@ -20,3 +20,7 @@ bigquery:
 scheduling:
   dag_name: bqetl_search_terms_daily
   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+  external_downstream_tasks:
+    - task_id: wait_for_adm_weekly_aggregates
+      dag_name: adm_export
+      execution_delta: 2h

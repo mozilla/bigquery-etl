@@ -1,7 +1,9 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from operators.task_sensor import ExternalTaskCompletedSensor
+from airflow.sensors.external_task import ExternalTaskMarker
+from airflow.sensors.external_task import ExternalTaskSensor
+from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
@@ -84,7 +86,7 @@ with DAG(
         depends_on_past=False,
     )
 
-    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskCompletedSensor(
+    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_last_seen__v1",
         external_dag_id="bqetl_main_summary",
         external_task_id="telemetry_derived__clients_last_seen__v1",
@@ -98,7 +100,7 @@ with DAG(
         wait_for_telemetry_derived__clients_last_seen__v1
     )
 
-    wait_for_search_derived__search_aggregates__v8 = ExternalTaskCompletedSensor(
+    wait_for_search_derived__search_aggregates__v8 = ExternalTaskSensor(
         task_id="wait_for_search_derived__search_aggregates__v8",
         external_dag_id="bqetl_search",
         external_task_id="search_derived__search_aggregates__v8",
@@ -112,16 +114,14 @@ with DAG(
         wait_for_search_derived__search_aggregates__v8
     )
 
-    wait_for_search_derived__mobile_search_clients_daily__v1 = (
-        ExternalTaskCompletedSensor(
-            task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
-            external_dag_id="bqetl_mobile_search",
-            external_task_id="search_derived__mobile_search_clients_daily__v1",
-            execution_delta=datetime.timedelta(seconds=7200),
-            check_existence=True,
-            mode="reschedule",
-            pool="DATA_ENG_EXTERNALTASKSENSOR",
-        )
+    wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
+        external_dag_id="bqetl_mobile_search",
+        external_task_id="search_derived__mobile_search_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     search_derived__mobile_search_aggregates_for_searchreport__v1.set_upstream(

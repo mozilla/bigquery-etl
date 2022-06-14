@@ -4,7 +4,7 @@ from airflow import DAG
 from airflow.utils.state import State
 import datetime
 from operators.gcp_container_operator import GKEPodOperator
-from operators.task_sensor import ExternalTaskCompletedSensor
+from operators.task_sensor import ExternalTaskSensor
 from utils.gcp import gke_command
 
 docs = """
@@ -52,11 +52,11 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 {% endfor -%}
 
 {% for task in tasks | sort(attribute='task_name') %}
-    {% for dependency in task.dependencies | sort(attribute='task_id') -%}
+    {% for dependency in task.upstream_dependencies | sort(attribute='task_id') -%}
     {% if dependency.dag_name == name -%}
     {{ task.task_name }}.set_upstream({{ dependency.task_id }})
     {% else -%}
-    wait_for_{{ dependency.task_id }} = ExternalTaskCompletedSensor(
+    wait_for_{{ dependency.task_id }} = ExternalTaskSensor(
         task_id='wait_for_{{ dependency.task_id }}',
         external_dag_id='{{ dependency.dag_name }}',
         external_task_id='{{ dependency.task_id }}',
@@ -72,6 +72,22 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     {{ task.task_name }}.set_upstream(wait_for_{{ dependency.task_id }})
     {% endif -%}
     {% endfor -%}
+
+    {% if (task.downstream_dependencies + task.external_downstream_tasks)|length > 0 -%}
+    with TaskGroup('{{ task.task_name }}_external') as {{ task.task_name }}_external:
+        {% for downstream_task in task.downstream_dependencies + task.external_downstream_tasks -%}
+        ExternalTaskMarker(
+            task_id='{{ downstream_task.dag_name }}__wait_for_{{ downstream_task.task_id }}',
+            external_dag_id='{{ downstream_task.dag_name }}',
+            external_task_id='wait_for_{{ downstream_task.task_id }}',
+            {% if downstream_task.get_execution_delta(schedule_interval) -%}
+            execution_date="{% raw %}{{{% endraw %} (execution_date + {{ downstream_task.get_execution_delta(schedule_interval) | format_timedelta_macro }}).isoformat() {% raw %}}}{% endraw %}",
+            {% endif -%}
+        )
+        {% endfor -%}
+
+        {{ task.task_name }}_external.set_upstream({{ task.task_name }})
+    {% endif -%}
 {% endfor %}
 
     public_data_gcs_metadata = gke_command(

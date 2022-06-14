@@ -1,7 +1,9 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from operators.task_sensor import ExternalTaskCompletedSensor
+from airflow.sensors.external_task import ExternalTaskMarker
+from airflow.sensors.external_task import ExternalTaskSensor
+from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
@@ -57,6 +59,19 @@ with DAG(
         depends_on_past=False,
     )
 
+    with TaskGroup(
+        "search_derived__search_aggregates__v8_external"
+    ) as search_derived__search_aggregates__v8_external:
+        ExternalTaskMarker(
+            task_id="bqetl_search_dashboard__wait_for_search_derived__desktop_search_aggregates_for_searchreport__v1",
+            external_dag_id="bqetl_search_dashboard",
+            external_task_id="wait_for_search_derived__desktop_search_aggregates_for_searchreport__v1",
+            execution_date="{{ (execution_date + macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+        search_derived__search_aggregates__v8_external.set_upstream(
+            search_derived__search_aggregates__v8
+        )
+
     search_derived__search_clients_daily__v8 = bigquery_etl_query(
         task_id="search_derived__search_clients_daily__v8",
         destination_table="search_clients_daily_v8",
@@ -72,6 +87,31 @@ with DAG(
         depends_on_past=False,
     )
 
+    with TaskGroup(
+        "search_derived__search_clients_daily__v8_external"
+    ) as search_derived__search_clients_daily__v8_external:
+        ExternalTaskMarker(
+            task_id="bqetl_addons__wait_for_telemetry_derived__addons_daily__v1",
+            external_dag_id="bqetl_addons",
+            external_task_id="wait_for_telemetry_derived__addons_daily__v1",
+            execution_date="{{ (execution_date + macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+        ExternalTaskMarker(
+            task_id="jetstream__wait_for_wait_for_search_clients_daily",
+            external_dag_id="jetstream",
+            external_task_id="wait_for_wait_for_search_clients_daily",
+            execution_date="{{ (execution_date + macros.timedelta(seconds=3600)).isoformat() }}",
+        )
+        ExternalTaskMarker(
+            task_id="operational_monitoring__wait_for_wait_for_search_clients_daily",
+            external_dag_id="operational_monitoring",
+            external_task_id="wait_for_wait_for_search_clients_daily",
+            execution_date="{{ (execution_date + macros.timedelta(seconds=3600)).isoformat() }}",
+        )
+        search_derived__search_clients_daily__v8_external.set_upstream(
+            search_derived__search_clients_daily__v8
+        )
+
     search_derived__search_clients_last_seen__v1 = bigquery_etl_query(
         task_id="search_derived__search_clients_last_seen__v1",
         destination_table="search_clients_last_seen_v1",
@@ -86,6 +126,19 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=True,
     )
+
+    with TaskGroup(
+        "search_derived__search_clients_last_seen__v1_external"
+    ) as search_derived__search_clients_last_seen__v1_external:
+        ExternalTaskMarker(
+            task_id="ltv_daily__wait_for_wait_for_search_clients_last_seen",
+            external_dag_id="ltv_daily",
+            external_task_id="wait_for_wait_for_search_clients_last_seen",
+            execution_date="{{ (execution_date + macros.timedelta(seconds=3600)).isoformat() }}",
+        )
+        search_derived__search_clients_last_seen__v1_external.set_upstream(
+            search_derived__search_clients_last_seen__v1
+        )
 
     search_derived__search_metric_contribution__v1 = bigquery_etl_query(
         task_id="search_derived__search_metric_contribution__v1",
@@ -107,7 +160,7 @@ with DAG(
         search_derived__search_clients_daily__v8
     )
 
-    wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskCompletedSensor(
+    wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
         external_dag_id="bqetl_main_summary",
         external_task_id="telemetry_derived__clients_daily_joined__v1",

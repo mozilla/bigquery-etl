@@ -545,9 +545,10 @@ jobs:
 
             echo "Integration tests for this fork need to be triggered manually"
             echo "Users with write access to the repository can trigger" \
-              "integration tests by visiting: "
-            echo "https://github.com/mozilla/bigquery-etl/actions/workflows/push-to-upstream.yml".
-            echo "Trigger via 'Run workflow' and provide '$CIRCLE_PR_BRANCH' as parameter."
+              "integration tests by following these steps: "
+            echo "  Open the following page:"
+            echo "    https://github.com/mozilla/bigquery-etl/actions/workflows/push-to-upstream.yml"
+            echo "  Choose the 'Run workflow' dropdown and provide '$CIRCLE_PR_BRANCH' as parameter."
 
             exit 1
           # yamllint enable rule:line-length

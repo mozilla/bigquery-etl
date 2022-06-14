@@ -9,3 +9,4 @@
   release_channel: release
   position: 1
   request_id: "HASH123"
+  match_type: "firefox-suggest"

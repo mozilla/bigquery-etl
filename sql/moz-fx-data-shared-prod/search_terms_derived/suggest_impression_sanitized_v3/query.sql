@@ -1,6 +1,6 @@
 /*
 
-This query simply copies data from a table in the restricted suggest-searches-prod
+This query copies from a table in moz-fx-data-shared-prod.search_terms_derived
 project to shared-prod, but throws an error on empty input in order to signal an
 upstream delay or error.
 
@@ -11,7 +11,7 @@ WITH sanitized_impressions AS (
   SELECT
     *
   FROM
-    `suggest-searches-prod-a30f.sanitized.suggest_impression_sanitized_v3`
+    `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3`
   WHERE
     DATE(submission_timestamp) = @submission_date
 ),
@@ -39,14 +39,14 @@ validated_impressions AS (
     IF(
       _n < 1,
       ERROR(
-        "The source partition of suggest-searches-prod-a30f.sanitized.suggest_impression_sanitized_v3 is empty; retry later or investigate upstream issues"
+        "The source partition of moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3 is empty; retry later or investigate upstream issues"
       ),
       TRUE
     )
     AND IF(
       _n_with_query < 1,
       ERROR(
-        "The source partition of suggest-searches-prod-a30f.sanitized.suggest_impression_sanitized_v3 contains rows, but none have sanitized_query populated; investigate upstream issues with log routing"
+        "The source partition of moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3 contains rows, but none have sanitized_query populated; investigate upstream issues with log routing"
       ),
       TRUE
     )

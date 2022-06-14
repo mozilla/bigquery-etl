@@ -19,6 +19,7 @@ WITH combined AS (
       'merino'
     END
     AS provider,
+    match_type,
   FROM
     contextual_services.quicksuggest_impression
   UNION ALL
@@ -42,6 +43,7 @@ WITH combined AS (
       'merino'
     END
     AS provider,
+    match_type,
   FROM
     contextual_services.quicksuggest_click
   UNION ALL
@@ -65,6 +67,8 @@ WITH combined AS (
       'contile'
     END
     AS provider,
+    -- `match_type` is only available for `quicksuggest_*` tables
+    NULL AS match_type,
   FROM
     contextual_services.topsites_impression
   UNION ALL
@@ -88,6 +92,8 @@ WITH combined AS (
       'contile'
     END
     AS provider,
+    -- `match_type` is only available for `quicksuggest_*` tables
+    NULL AS match_type,
   FROM
     contextual_services.topsites_click
   UNION ALL
@@ -115,6 +121,8 @@ WITH combined AS (
       'contile'
     END
     AS provider,
+    -- `match_type` is only available for `quicksuggest_*` tables
+    NULL AS match_type,
   FROM
     org_mozilla_firefox.topsites_impression
   UNION ALL
@@ -140,6 +148,8 @@ WITH combined AS (
       'contile'
     END
     AS provider,
+    -- `match_type` is only available for `quicksuggest_*` tables
+    NULL AS match_type,
   FROM
     org_mozilla_firefox_beta.topsites_impression
   UNION ALL
@@ -165,6 +175,8 @@ WITH combined AS (
       'contile'
     END
     AS provider,
+    -- `match_type` is only available for `quicksuggest_*` tables
+    NULL AS match_type,
   FROM
     org_mozilla_fenix.topsites_impression
 ),
@@ -204,4 +216,5 @@ GROUP BY
   advertiser,
   release_channel,
   position,
-  provider
+  provider,
+  match_type

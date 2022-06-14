@@ -4,7 +4,7 @@ from airflow import DAG
 from airflow.utils.state import State
 import datetime
 from operators.gcp_container_operator import GKEPodOperator
-from operators.task_sensor import ExternalTaskCompletedSensor
+from operators.task_sensor import ExternalTaskSensor
 from utils.gcp import gke_command
 
 docs = """
@@ -53,20 +53,6 @@ with DAG(
         + ["--project_id=moz-fx-data-test-project"]
         + ["--parameter=submission_date:DATE:{{ds}}"],
         image=docker_image,
-    )
-
-    wait_for_test__non_incremental_query__v1 = ExternalTaskCompletedSensor(
-        task_id="wait_for_test__non_incremental_query__v1",
-        external_dag_id="bqetl_core",
-        external_task_id="test__non_incremental_query__v1",
-        check_existence=True,
-        mode="reschedule",
-        failed_states=[State.FAILED, State.UPSTREAM_FAILED, State.SKIPPED],
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    export_public_data_json_test__non_incremental_query__v1.set_upstream(
-        wait_for_test__non_incremental_query__v1
     )
 
     public_data_gcs_metadata = gke_command(

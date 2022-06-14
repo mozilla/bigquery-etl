@@ -25,3 +25,7 @@ scheduling:
   # previous day and adding dau from the new day, but this would make each
   # query dependent on history. Recreating the table is simpler and more robust.
   date_partition_parameter: null
+  external_downstream_tasks:
+    - task_id: wait_for_mobile_usage
+      dag_name: kpi_forecasting
+      execution_delta: 1h

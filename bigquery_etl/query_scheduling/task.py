@@ -162,8 +162,12 @@ class Task:
     date_partition_parameter: Optional[str] = "submission_date"
     # indicate whether data should be published as JSON
     public_json: bool = attr.ib(False)
+    # upstream dependencies
     depends_on: List[TaskRef] = attr.ib([])
     depends_on_fivetran: List[FivetranTask] = attr.ib([])
+    external_downstream_tasks: List[TaskRef] = attr.ib([])
+    upstream_dependencies: List[TaskRef] = attr.ib([])
+    downstream_dependencies: List[TaskRef] = attr.ib([])
     arguments: List[str] = attr.ib([])
     parameters: List[str] = attr.ib([])
     multipart: bool = attr.ib(False)
@@ -351,6 +355,16 @@ class Task:
         task.is_python_script = True
         return task
 
+    def to_ref(self, dag_collection):
+        """Return the task as `TaskRef`."""
+        return TaskRef(
+            dag_name=self.dag_name,
+            task_id=self.task_name,
+            schedule_interval=dag_collection.dag_by_name(
+                self.dag_name
+            ).schedule_interval,
+        )
+
     def _get_referenced_tables(self):
         """Use zetasql to get tables the query depends on."""
         logging.info(f"Get dependencies for {self.task_name}")
@@ -377,7 +391,7 @@ class Task:
             self.referenced_tables = sorted(table_names)
         return self.referenced_tables
 
-    def with_dependencies(self, dag_collection):
+    def with_upstream_dependencies(self, dag_collection):
         """Perfom a dry_run to get upstream dependencies."""
         dependencies = []
 
@@ -391,13 +405,7 @@ class Task:
             upstream_task = dag_collection.task_for_table(table[0], table[1], table[2])
 
             if upstream_task is not None:
-                task = TaskRef(
-                    dag_name=upstream_task.dag_name,
-                    task_id=upstream_task.task_name,
-                    schedule_interval=dag_collection.dag_by_name(
-                        upstream_task.dag_name
-                    ).schedule_interval,
-                )
+                task = upstream_task.to_ref(dag_collection)
                 if not _duplicate_dependency(task):
                     dependencies.append(task)
             else:
@@ -408,4 +416,15 @@ class Task:
                             dependencies.append(task)
                         break  # stop after the first match
 
-        self.dependencies = dependencies
+        self.upstream_dependencies = dependencies
+
+    def with_downstream_dependencies(self, dag_collection):
+        """Get downstream tasks by looking up upstream dependencies in DAG collection."""
+        task_ref = self.to_ref(dag_collection)
+        external_downstream_tasks = dag_collection.downstream_tasks.get(task_ref, [])
+        downstream_dependencies = [
+            task.to_ref(dag_collection)
+            for task in external_downstream_tasks
+            if task.dag_name != self.dag_name
+        ]
+        self.downstream_dependencies = downstream_dependencies

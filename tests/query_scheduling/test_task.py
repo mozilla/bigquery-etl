@@ -403,7 +403,7 @@ class TestTask:
 
         task = Task.of_query(query_file, metadata)
         dags = DagCollection.from_dict({})
-        task.with_dependencies(dags)
+        task.with_upstream_dependencies(dags)
         assert task.dependencies == []
 
     @pytest.mark.java
@@ -444,7 +444,7 @@ class TestTask:
             }
         ).with_tasks([task, table_task1, table_task2])
 
-        task.with_dependencies(dags)
+        task.with_upstream_dependencies(dags)
         result = task.dependencies
 
         tables = [t.task_id for t in result]
@@ -490,7 +490,7 @@ class TestTask:
             }
         ).with_tasks([task, table_task1, table_task2])
 
-        task.with_dependencies(dags)
+        task.with_upstream_dependencies(dags)
         result = task.dependencies
 
         tables = [t.task_id for t in result]
@@ -545,7 +545,7 @@ class TestTask:
             }
         ).with_tasks([task, table_task1, table_task2])
 
-        task.with_dependencies(dags)
+        task.with_upstream_dependencies(dags)
         result = task.dependencies
 
         tables = [t.task_id for t in result]
@@ -609,7 +609,7 @@ class TestTask:
             }
         ).with_tasks([task, table_task1, table_task2])
 
-        task.with_dependencies(dags)
+        task.with_upstream_dependencies(dags)
         result = task.dependencies
         tables = [t.task_id for t in result]
 

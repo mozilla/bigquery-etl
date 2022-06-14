@@ -1,7 +1,9 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from operators.task_sensor import ExternalTaskCompletedSensor
+from airflow.sensors.external_task import ExternalTaskMarker
+from airflow.sensors.external_task import ExternalTaskSensor
+from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
@@ -76,7 +78,7 @@ with DAG(
         depends_on_past=False,
     )
 
-    wait_for_copy_deduplicate_all = ExternalTaskCompletedSensor(
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
@@ -89,7 +91,7 @@ with DAG(
     telemetry_derived__desktop_funnel_activation_day_6__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
-    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskCompletedSensor(
+    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_last_seen__v1",
         external_dag_id="bqetl_main_summary",
         external_task_id="telemetry_derived__clients_last_seen__v1",

@@ -98,6 +98,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
     search_terms_derived__suggest_impression_sanitized__v1 = bigquery_etl_query(

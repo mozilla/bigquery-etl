@@ -20,9 +20,9 @@ suggest_attributes AS (
     iab_category,
     title,
   FROM
-    search_terms_derived.remotesettings_suggestions_v1 t
+    search_terms_derived.remotesettings_suggestions_v1 AS t
   CROSS JOIN
-    t.keywords search_terms
+    t.keywords AS search_terms
 )
 SELECT
   *

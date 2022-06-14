@@ -41,10 +41,17 @@
         dag_name: external_dag
         execution_delta: 1h
     ```
-    - `task_id`: name of task query depends on
-    - `dag_name`: name of the DAG the external task is part of
-    - `execution_delta`: time difference between the `schedule_intervals` of the external DAG and the DAG the query is part of
+      - `task_id`: name of task query depends on
+      - `dag_name`: name of the DAG the external task is part of
+      - `execution_delta`: time difference between the `schedule_intervals` of the external DAG and the DAG the query is part of
     - `destination_table`: The table to write to. If unspecified, defaults to the query destination; if None, no destination table is used (the query is simply run as-is). Note that if no destination table is specified, you will need to specify the `submission_date` parameter manually
+    - `external_downstream_tasks` defines external downstream dependencies for which [`ExternalTaskMarker`s](https://airflow.apache.org/docs/apache-airflow/stable/howto/operator/external_task_sensor.html#externaltaskmarker) will be added to the generated DAG. These task markers ensure that when the task is cleared for triggering a rerun, all downstream tasks are automatically cleared as well.
+    ```yaml
+    external_downstream_tasks:
+      - task_id: external_downstream_task
+        dag_name: external_dag
+        execution_delta: 1h
+    ```
 - Queries can also be scheduled using the `bqetl` CLI: `./bqetl query schedule path/to/query_v1 --dag bqetl_ssl_ratios `
 - To generate all Airflow DAGs run `./script/generate_airflow_dags` or `./bqetl dag generate`
   - Generated DAGs are located in the `dags/` directory

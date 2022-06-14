@@ -162,10 +162,12 @@ class Task:
     date_partition_parameter: Optional[str] = "submission_date"
     # indicate whether data should be published as JSON
     public_json: bool = attr.ib(False)
-    # upstream dependencies
+    # manually specified upstream dependencies
     depends_on: List[TaskRef] = attr.ib([])
     depends_on_fivetran: List[FivetranTask] = attr.ib([])
+    # manually specified downstream depdencies
     external_downstream_tasks: List[TaskRef] = attr.ib([])
+    # automatically determined upstream and downstream dependencies
     upstream_dependencies: List[TaskRef] = attr.ib([])
     downstream_dependencies: List[TaskRef] = attr.ib([])
     arguments: List[str] = attr.ib([])

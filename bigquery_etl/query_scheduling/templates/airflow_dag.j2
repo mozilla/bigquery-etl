@@ -5,6 +5,7 @@ from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
+from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
 {% set ns = namespace(uses_fivetran=False) -%}
@@ -123,16 +124,33 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         )
 
     {% if (task.downstream_dependencies + task.external_downstream_tasks)|length > 0 -%}
+    {% set seenDownstreamDags = [] %}
     with TaskGroup('{{ task.task_name }}_external') as {{ task.task_name }}_external:
-        {% for downstream_task in task.downstream_dependencies + task.external_downstream_tasks -%}
+        {% for downstream_task in task.downstream_dependencies | sort(attribute='task_id') -%}
+        {% if downstream_task.dag_name not in seenDownstreamDags -%}
         ExternalTaskMarker(
-            task_id='{{ downstream_task.dag_name }}__wait_for_{{ downstream_task.task_id }}',
+            task_id='{{ downstream_task.dag_name }}__wait_for_{{ task.task_name }}',
             external_dag_id='{{ downstream_task.dag_name }}',
-            external_task_id='wait_for_{{ downstream_task.task_id }}',
+            external_task_id='wait_for_{{ task.task_name }}',
+            {% if downstream_task.get_execution_delta(schedule_interval) -%}
+            execution_date="{% raw %}{{{% endraw %} (execution_date - {{ downstream_task.get_execution_delta(schedule_interval) | format_timedelta_macro }}).isoformat() {% raw %}}}{% endraw %}",
+            {% endif -%}
+        )
+        {{ seenDownstreamDags.append(downstream_task.dag_name) or "" }}
+        {% endif -%}
+        {% endfor -%}
+        {% for downstream_task in task.external_downstream_tasks | sort(attribute='task_id') -%}
+        {% if downstream_task.dag_name not in seenDownstreamDags -%}
+        ExternalTaskMarker(
+            task_id='{{ downstream_task.dag_name }}__{{ downstream_task.task_id }}',
+            external_dag_id='{{ downstream_task.dag_name }}',
+            external_task_id='{{ downstream_task.task_id }}',
             {% if downstream_task.get_execution_delta(schedule_interval) -%}
             execution_date="{% raw %}{{{% endraw %} (execution_date + {{ downstream_task.get_execution_delta(schedule_interval) | format_timedelta_macro }}).isoformat() {% raw %}}}{% endraw %}",
             {% endif -%}
         )
+        {{ seenDownstreamDags.append(downstream_task.dag_name) or "" }}
+        {% endif -%}
         {% endfor -%}
 
         {{ task.task_name }}_external.set_upstream({{ task.task_name }})
@@ -158,6 +176,8 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         {% endif -%}
         check_existence=True,
         mode='reschedule',
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool='DATA_ENG_EXTERNALTASKSENSOR',
     )
     {{ wait_for_seen.append((dependency.dag_name, dependency.task_id)) or "" }}

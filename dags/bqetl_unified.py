@@ -5,6 +5,7 @@ from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
+from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
 docs = """
@@ -70,11 +71,12 @@ with DAG(
         "telemetry_derived__rolling_cohorts__v1_external"
     ) as telemetry_derived__rolling_cohorts__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_telemetry_derived__cohort_daily_statistics__v1",
+            task_id="bqetl_analytics_aggregations__wait_for_telemetry_derived__rolling_cohorts__v1",
             external_dag_id="bqetl_analytics_aggregations",
-            external_task_id="wait_for_telemetry_derived__cohort_daily_statistics__v1",
-            execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
+            external_task_id="wait_for_telemetry_derived__rolling_cohorts__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
         )
+
         telemetry_derived__rolling_cohorts__v1_external.set_upstream(
             telemetry_derived__rolling_cohorts__v1
         )
@@ -99,35 +101,19 @@ with DAG(
         "telemetry_derived__unified_metrics__v1_external"
     ) as telemetry_derived__unified_metrics__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_active_users_aggregates_device_v1",
+            task_id="bqetl_analytics_aggregations__wait_for_telemetry_derived__unified_metrics__v1",
             external_dag_id="bqetl_analytics_aggregations",
-            external_task_id="wait_for_active_users_aggregates_device_v1",
-            execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
+            external_task_id="wait_for_telemetry_derived__unified_metrics__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
         )
+
         ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_telemetry_derived__cohort_daily_statistics__v1",
-            external_dag_id="bqetl_analytics_aggregations",
-            external_task_id="wait_for_telemetry_derived__cohort_daily_statistics__v1",
-            execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
-        )
-        ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_active_users_aggregates_attribution_v1",
-            external_dag_id="bqetl_analytics_aggregations",
-            external_task_id="wait_for_active_users_aggregates_attribution_v1",
-            execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
-        )
-        ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_active_users_aggregates_v1",
-            external_dag_id="bqetl_analytics_aggregations",
-            external_task_id="wait_for_active_users_aggregates_v1",
-            execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
-        )
-        ExternalTaskMarker(
-            task_id="kpi_forecasting__wait_for_wait_for_unified_metrics",
+            task_id="kpi_forecasting__wait_for_unified_metrics",
             external_dag_id="kpi_forecasting",
-            external_task_id="wait_for_wait_for_unified_metrics",
+            external_task_id="wait_for_unified_metrics",
             execution_date="{{ (execution_date + macros.timedelta(seconds=3600)).isoformat() }}",
         )
+
         telemetry_derived__unified_metrics__v1_external.set_upstream(
             telemetry_derived__unified_metrics__v1
         )
@@ -143,6 +129,8 @@ with DAG(
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
@@ -156,6 +144,8 @@ with DAG(
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
@@ -169,6 +159,8 @@ with DAG(
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 

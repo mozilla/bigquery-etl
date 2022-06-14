@@ -210,33 +210,17 @@ class Dag:
 
     def to_airflow_dag(self):
         """Convert the DAG to its Airflow representation and return the python code."""
+        if len(self.tasks) == 0:
+            raise InvalidDag(
+                f"DAG {self.name} has no tasks - cannot convert it to a valid .py DAG "
+                f"file. Does it appear under `scheduling` in any metadata.yaml files?"
+            )
+
         env = self._jinja_env()
         dag_template = env.get_template(AIRFLOW_DAG_TEMPLATE)
         args = self.__dict__
 
         return dag_template.render(args)
-
-    def with_upstream_dependencies(self, dag_collection):
-        """Determine upstream dependencies of DAG tasks."""
-        if len(self.tasks) == 0:
-            raise InvalidDag(
-                f"DAG {self.name} has no tasks - cannot convert it to a valid .py DAG "
-                f"file. Does it appear under `scheduling` in any metadata.yaml files?"
-            )
-
-        for task in self.tasks:
-            task.with_upstream_dependencies(dag_collection)
-
-    def with_downstream_dependencies(self, dag_collection):
-        """Determine downstream dependencies."""
-        if len(self.tasks) == 0:
-            raise InvalidDag(
-                f"DAG {self.name} has no tasks - cannot convert it to a valid .py DAG "
-                f"file. Does it appear under `scheduling` in any metadata.yaml files?"
-            )
-
-        for task in self.tasks:
-            task.with_downstream_dependencies(dag_collection)
 
 
 class PublicDataJsonDag(Dag):

@@ -5,6 +5,7 @@ from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
+from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
 docs = """
@@ -78,17 +79,19 @@ with DAG(
         "search_derived__mobile_search_clients_daily__v1_external"
     ) as search_derived__mobile_search_clients_daily__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_search_dashboard__wait_for_search_derived__mobile_search_aggregates_for_searchreport__v1",
+            task_id="bqetl_search_dashboard__wait_for_search_derived__mobile_search_clients_daily__v1",
             external_dag_id="bqetl_search_dashboard",
-            external_task_id="wait_for_search_derived__mobile_search_aggregates_for_searchreport__v1",
-            execution_date="{{ (execution_date + macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
+            external_task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
         )
+
         ExternalTaskMarker(
-            task_id="bqetl_unified__wait_for_telemetry_derived__unified_metrics__v1",
+            task_id="bqetl_unified__wait_for_search_derived__mobile_search_clients_daily__v1",
             external_dag_id="bqetl_unified",
-            external_task_id="wait_for_telemetry_derived__unified_metrics__v1",
-            execution_date="{{ (execution_date + macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+            external_task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
         )
+
         search_derived__mobile_search_clients_daily__v1_external.set_upstream(
             search_derived__mobile_search_clients_daily__v1
         )
@@ -119,6 +122,8 @@ with DAG(
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 

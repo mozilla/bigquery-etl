@@ -5,6 +5,7 @@ from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
+from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
 docs = """
@@ -91,11 +92,12 @@ with DAG(
         "search_terms_derived__adm_weekly_aggregates__v1_external"
     ) as search_terms_derived__adm_weekly_aggregates__v1_external:
         ExternalTaskMarker(
-            task_id="adm_export__wait_for_wait_for_adm_weekly_aggregates",
+            task_id="adm_export__wait_for_adm_weekly_aggregates",
             external_dag_id="adm_export",
-            external_task_id="wait_for_wait_for_adm_weekly_aggregates",
+            external_task_id="wait_for_adm_weekly_aggregates",
             execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
         )
+
         search_terms_derived__adm_weekly_aggregates__v1_external.set_upstream(
             search_terms_derived__adm_weekly_aggregates__v1
         )

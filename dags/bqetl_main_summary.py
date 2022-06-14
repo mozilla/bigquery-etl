@@ -5,6 +5,7 @@ from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
+from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
 docs = """
@@ -130,29 +131,33 @@ with DAG(
         "telemetry_derived__clients_daily__v6_external"
     ) as telemetry_derived__clients_daily__v6_external:
         ExternalTaskMarker(
-            task_id="bqetl_internet_outages__wait_for_internet_outages__global_outages__v1",
+            task_id="bqetl_internet_outages__wait_for_telemetry_derived__clients_daily__v6",
             external_dag_id="bqetl_internet_outages",
-            external_task_id="wait_for_internet_outages__global_outages__v1",
-            execution_date="{{ (execution_date + macros.timedelta(days=-1, seconds=68400)).isoformat() }}",
+            external_task_id="wait_for_telemetry_derived__clients_daily__v6",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=68400)).isoformat() }}",
         )
+
         ExternalTaskMarker(
-            task_id="jetstream__wait_for_wait_for_clients_daily",
+            task_id="jetstream__wait_for_clients_daily",
             external_dag_id="jetstream",
-            external_task_id="wait_for_wait_for_clients_daily",
+            external_task_id="wait_for_clients_daily",
             execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
         )
+
         ExternalTaskMarker(
-            task_id="operational_monitoring__wait_for_wait_for_clients_daily",
+            task_id="operational_monitoring__wait_for_clients_daily",
             external_dag_id="operational_monitoring",
-            external_task_id="wait_for_wait_for_clients_daily",
+            external_task_id="wait_for_clients_daily",
             execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
         )
+
         ExternalTaskMarker(
-            task_id="parquet_export__wait_for_wait_for_clients_daily",
+            task_id="parquet_export__wait_for_clients_daily",
             external_dag_id="parquet_export",
-            external_task_id="wait_for_wait_for_clients_daily",
+            external_task_id="wait_for_clients_daily",
             execution_date="{{ (execution_date + macros.timedelta(seconds=3600)).isoformat() }}",
         )
+
         telemetry_derived__clients_daily__v6_external.set_upstream(
             telemetry_derived__clients_daily__v6
         )
@@ -195,29 +200,33 @@ with DAG(
         "telemetry_derived__clients_daily_joined__v1_external"
     ) as telemetry_derived__clients_daily_joined__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_search__wait_for_search_derived__search_clients_daily__v8",
+            task_id="bqetl_search__wait_for_telemetry_derived__clients_daily_joined__v1",
             external_dag_id="bqetl_search",
-            external_task_id="wait_for_search_derived__search_clients_daily__v8",
-            execution_date="{{ (execution_date + macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+            external_task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
         )
+
         ExternalTaskMarker(
-            task_id="bqetl_devtools__wait_for_telemetry_derived__devtools_panel_usage__v1",
+            task_id="bqetl_devtools__wait_for_telemetry_derived__clients_daily_joined__v1",
             external_dag_id="bqetl_devtools",
-            external_task_id="wait_for_telemetry_derived__devtools_panel_usage__v1",
-            execution_date="{{ (execution_date + macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+            external_task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
         )
+
         ExternalTaskMarker(
-            task_id="bqetl_experiments_daily__wait_for_telemetry_derived__experiments_daily_active_clients__v1",
+            task_id="bqetl_experiments_daily__wait_for_telemetry_derived__clients_daily_joined__v1",
             external_dag_id="bqetl_experiments_daily",
-            external_task_id="wait_for_telemetry_derived__experiments_daily_active_clients__v1",
-            execution_date="{{ (execution_date + macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+            external_task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
         )
+
         ExternalTaskMarker(
-            task_id="bqetl_urlbar__wait_for_telemetry_derived__urlbar_clients_daily__v1",
+            task_id="bqetl_urlbar__wait_for_telemetry_derived__clients_daily_joined__v1",
             external_dag_id="bqetl_urlbar",
-            external_task_id="wait_for_telemetry_derived__urlbar_clients_daily__v1",
-            execution_date="{{ (execution_date + macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+            external_task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
         )
+
         telemetry_derived__clients_daily_joined__v1_external.set_upstream(
             telemetry_derived__clients_daily_joined__v1
         )
@@ -257,47 +266,54 @@ with DAG(
         "telemetry_derived__clients_last_seen__v1_external"
     ) as telemetry_derived__clients_last_seen__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_gud__wait_for_telemetry_derived__smoot_usage_desktop__v2",
-            external_dag_id="bqetl_gud",
-            external_task_id="wait_for_telemetry_derived__smoot_usage_desktop__v2",
-            execution_date="{{ (execution_date + macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
-        )
-        ExternalTaskMarker(
-            task_id="bqetl_addons__wait_for_telemetry_derived__addons_daily__v1",
-            external_dag_id="bqetl_addons",
-            external_task_id="wait_for_telemetry_derived__addons_daily__v1",
-            execution_date="{{ (execution_date + macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
-        )
-        ExternalTaskMarker(
-            task_id="bqetl_search_dashboard__wait_for_search_derived__desktop_search_aggregates_by_userstate__v1",
+            task_id="bqetl_search_dashboard__wait_for_telemetry_derived__clients_last_seen__v1",
             external_dag_id="bqetl_search_dashboard",
-            external_task_id="wait_for_search_derived__desktop_search_aggregates_by_userstate__v1",
-            execution_date="{{ (execution_date + macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
+            external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
         )
+
         ExternalTaskMarker(
-            task_id="bqetl_desktop_funnel__wait_for_telemetry_derived__desktop_funnel_activation_day_6__v1",
+            task_id="bqetl_addons__wait_for_telemetry_derived__clients_last_seen__v1",
+            external_dag_id="bqetl_addons",
+            external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_desktop_funnel__wait_for_telemetry_derived__clients_last_seen__v1",
             external_dag_id="bqetl_desktop_funnel",
-            external_task_id="wait_for_telemetry_derived__desktop_funnel_activation_day_6__v1",
-            execution_date="{{ (execution_date + macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
+            external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
         )
+
         ExternalTaskMarker(
-            task_id="bqetl_feature_usage__wait_for_telemetry_derived__feature_usage__v2",
+            task_id="bqetl_feature_usage__wait_for_telemetry_derived__clients_last_seen__v1",
             external_dag_id="bqetl_feature_usage",
-            external_task_id="wait_for_telemetry_derived__feature_usage__v2",
-            execution_date="{{ (execution_date + macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
+            external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
         )
+
         ExternalTaskMarker(
-            task_id="bqetl_unified__wait_for_telemetry_derived__unified_metrics__v1",
+            task_id="bqetl_gud__wait_for_telemetry_derived__clients_last_seen__v1",
+            external_dag_id="bqetl_gud",
+            external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_unified__wait_for_telemetry_derived__clients_last_seen__v1",
             external_dag_id="bqetl_unified",
-            external_task_id="wait_for_telemetry_derived__unified_metrics__v1",
-            execution_date="{{ (execution_date + macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+            external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
         )
+
         ExternalTaskMarker(
-            task_id="taar_daily__wait_for_wait_for_clients_last_seen",
+            task_id="taar_daily__wait_for_clients_last_seen",
             external_dag_id="taar_daily",
-            external_task_id="wait_for_wait_for_clients_last_seen",
+            external_task_id="wait_for_clients_last_seen",
             execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
         )
+
         telemetry_derived__clients_last_seen__v1_external.set_upstream(
             telemetry_derived__clients_last_seen__v1
         )
@@ -389,11 +405,12 @@ with DAG(
         "telemetry_derived__main_1pct__v1_external"
     ) as telemetry_derived__main_1pct__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_feature_usage__wait_for_telemetry_derived__feature_usage__v2",
+            task_id="bqetl_feature_usage__wait_for_telemetry_derived__main_1pct__v1",
             external_dag_id="bqetl_feature_usage",
-            external_task_id="wait_for_telemetry_derived__feature_usage__v2",
-            execution_date="{{ (execution_date + macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
+            external_task_id="wait_for_telemetry_derived__main_1pct__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
         )
+
         telemetry_derived__main_1pct__v1_external.set_upstream(
             telemetry_derived__main_1pct__v1
         )
@@ -438,23 +455,26 @@ with DAG(
         "telemetry_derived__main_summary__v4_external"
     ) as telemetry_derived__main_summary__v4_external:
         ExternalTaskMarker(
-            task_id="jetstream__wait_for_wait_for_main_summary",
+            task_id="jetstream__wait_for_main_summary",
             external_dag_id="jetstream",
-            external_task_id="wait_for_wait_for_main_summary",
+            external_task_id="wait_for_main_summary",
             execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
         )
+
         ExternalTaskMarker(
-            task_id="operational_monitoring__wait_for_wait_for_main_summary",
+            task_id="operational_monitoring__wait_for_main_summary",
             external_dag_id="operational_monitoring",
-            external_task_id="wait_for_wait_for_main_summary",
+            external_task_id="wait_for_main_summary",
             execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
         )
+
         ExternalTaskMarker(
-            task_id="parquet_export__wait_for_wait_for_main_summary",
+            task_id="parquet_export__wait_for_main_summary",
             external_dag_id="parquet_export",
-            external_task_id="wait_for_wait_for_main_summary",
+            external_task_id="wait_for_main_summary",
             execution_date="{{ (execution_date + macros.timedelta(seconds=3600)).isoformat() }}",
         )
+
         telemetry_derived__main_summary__v4_external.set_upstream(
             telemetry_derived__main_summary__v4
         )
@@ -478,6 +498,8 @@ with DAG(
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
@@ -492,6 +514,8 @@ with DAG(
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
@@ -503,6 +527,8 @@ with DAG(
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 

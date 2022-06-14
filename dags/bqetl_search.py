@@ -5,6 +5,7 @@ from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
+from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
 docs = """
@@ -63,11 +64,12 @@ with DAG(
         "search_derived__search_aggregates__v8_external"
     ) as search_derived__search_aggregates__v8_external:
         ExternalTaskMarker(
-            task_id="bqetl_search_dashboard__wait_for_search_derived__desktop_search_aggregates_for_searchreport__v1",
+            task_id="bqetl_search_dashboard__wait_for_search_derived__search_aggregates__v8",
             external_dag_id="bqetl_search_dashboard",
-            external_task_id="wait_for_search_derived__desktop_search_aggregates_for_searchreport__v1",
-            execution_date="{{ (execution_date + macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+            external_task_id="wait_for_search_derived__search_aggregates__v8",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
         )
+
         search_derived__search_aggregates__v8_external.set_upstream(
             search_derived__search_aggregates__v8
         )
@@ -91,23 +93,26 @@ with DAG(
         "search_derived__search_clients_daily__v8_external"
     ) as search_derived__search_clients_daily__v8_external:
         ExternalTaskMarker(
-            task_id="bqetl_addons__wait_for_telemetry_derived__addons_daily__v1",
+            task_id="bqetl_addons__wait_for_search_derived__search_clients_daily__v8",
             external_dag_id="bqetl_addons",
-            external_task_id="wait_for_telemetry_derived__addons_daily__v1",
-            execution_date="{{ (execution_date + macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+            external_task_id="wait_for_search_derived__search_clients_daily__v8",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
         )
+
         ExternalTaskMarker(
-            task_id="jetstream__wait_for_wait_for_search_clients_daily",
+            task_id="jetstream__wait_for_search_clients_daily",
             external_dag_id="jetstream",
-            external_task_id="wait_for_wait_for_search_clients_daily",
+            external_task_id="wait_for_search_clients_daily",
             execution_date="{{ (execution_date + macros.timedelta(seconds=3600)).isoformat() }}",
         )
+
         ExternalTaskMarker(
-            task_id="operational_monitoring__wait_for_wait_for_search_clients_daily",
+            task_id="operational_monitoring__wait_for_search_clients_daily",
             external_dag_id="operational_monitoring",
-            external_task_id="wait_for_wait_for_search_clients_daily",
+            external_task_id="wait_for_search_clients_daily",
             execution_date="{{ (execution_date + macros.timedelta(seconds=3600)).isoformat() }}",
         )
+
         search_derived__search_clients_daily__v8_external.set_upstream(
             search_derived__search_clients_daily__v8
         )
@@ -131,11 +136,12 @@ with DAG(
         "search_derived__search_clients_last_seen__v1_external"
     ) as search_derived__search_clients_last_seen__v1_external:
         ExternalTaskMarker(
-            task_id="ltv_daily__wait_for_wait_for_search_clients_last_seen",
+            task_id="ltv_daily__wait_for_search_clients_last_seen",
             external_dag_id="ltv_daily",
-            external_task_id="wait_for_wait_for_search_clients_last_seen",
+            external_task_id="wait_for_search_clients_last_seen",
             execution_date="{{ (execution_date + macros.timedelta(seconds=3600)).isoformat() }}",
         )
+
         search_derived__search_clients_last_seen__v1_external.set_upstream(
             search_derived__search_clients_last_seen__v1
         )
@@ -167,6 +173,8 @@ with DAG(
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 

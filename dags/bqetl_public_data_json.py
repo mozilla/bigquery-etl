@@ -5,6 +5,7 @@ from airflow.utils.state import State
 import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from operators.task_sensor import ExternalTaskSensor
+from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import gke_command
 
 docs = """
@@ -95,7 +96,8 @@ with DAG(
         external_task_id="copy_deduplicate_all",
         check_existence=True,
         mode="reschedule",
-        failed_states=[State.FAILED, State.UPSTREAM_FAILED, State.SKIPPED],
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
@@ -109,7 +111,8 @@ with DAG(
         external_task_id="copy_deduplicate_main_ping",
         check_existence=True,
         mode="reschedule",
-        failed_states=[State.FAILED, State.UPSTREAM_FAILED, State.SKIPPED],
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 

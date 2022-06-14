@@ -23,11 +23,13 @@ class DagCollection:
     @property
     def downstream_tasks(self):
         """Return collection to quickly lookup downstream tasks."""
+        # use cached information about downstream tasks
         if downstream_tasks := getattr(self, "_downstream_tasks", None):
             return downstream_tasks
 
+        # if no information has been cached, then determine downstream tasks
+        # based on the information on existing upstream dependencies
         self._downstream_tasks = {}
-
         for dag in self.dags:
             for task in dag.tasks:
                 for upstream_dependency in task.depends_on + task.upstream_dependencies:
@@ -128,11 +130,13 @@ class DagCollection:
         output_file.write_text(formatted_dag)
 
     def _get_upstream_dependencies(self, dag):
-        dag.with_upstream_dependencies(self)
+        for task in dag.tasks:
+            task.with_upstream_dependencies(self)
         return dag
 
     def _get_downstream_dependencies(self, dag):
-        dag.with_downstream_dependencies(self)
+        for task in dag.tasks:
+            task.with_downstream_dependencies(self)
         return dag
 
     def to_airflow_dags(self, output_dir, dag_to_generate=None):

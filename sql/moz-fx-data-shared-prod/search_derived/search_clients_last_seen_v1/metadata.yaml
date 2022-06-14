@@ -14,9 +14,9 @@ scheduling:
   dag_name: bqetl_search
   depends_on_past: true
   external_downstream_tasks:
-    - task_id: wait_for_search_clients_last_seen
-      dag_name: ltv_daily
-      execution_delta: 1h
+  - task_id: wait_for_search_clients_last_seen
+    dag_name: ltv_daily
+    execution_delta: 1h
 bigquery:
   time_partitioning:
     field: submission_date

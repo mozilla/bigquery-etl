@@ -5,6 +5,7 @@ from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
+from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
 docs = """
@@ -84,11 +85,12 @@ with DAG(
         "telemetry_derived__addons__v2_external"
     ) as telemetry_derived__addons__v2_external:
         ExternalTaskMarker(
-            task_id="bqetl_feature_usage__wait_for_telemetry_derived__feature_usage__v2",
+            task_id="bqetl_feature_usage__wait_for_telemetry_derived__addons__v2",
             external_dag_id="bqetl_feature_usage",
-            external_task_id="wait_for_telemetry_derived__feature_usage__v2",
-            execution_date="{{ (execution_date + macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+            external_task_id="wait_for_telemetry_derived__addons__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
         )
+
         telemetry_derived__addons__v2_external.set_upstream(
             telemetry_derived__addons__v2
         )
@@ -111,6 +113,8 @@ with DAG(
         execution_delta=datetime.timedelta(seconds=10800),
         check_existence=True,
         mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
@@ -129,6 +133,8 @@ with DAG(
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
@@ -142,6 +148,8 @@ with DAG(
         execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 

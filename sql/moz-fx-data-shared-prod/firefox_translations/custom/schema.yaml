@@ -533,7 +533,9 @@ fields:
       mode: NULLABLE
       name: metadata_firefox_client_id
       type: STRING
-    - description: 'Translation source language.
+    - description: 'Translation source language
+
+        (it can be set manually and different from detected_lang).
 
         '
       mode: NULLABLE
@@ -574,6 +576,12 @@ fields:
         '
       mode: NULLABLE
       name: metadata_channel
+      type: STRING
+    - description: 'Translation source language that was automatically detected.
+
+        '
+      mode: NULLABLE
+      name: metadata_detected_lang
       type: STRING
     mode: NULLABLE
     name: string

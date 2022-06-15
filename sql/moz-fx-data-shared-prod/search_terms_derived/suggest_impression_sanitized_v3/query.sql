@@ -39,7 +39,7 @@ sanitized_queries AS (
   SELECT
     *
   FROM
-    `search_terms_derived.merino_log_sanitized_v3`
+    `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3`
   WHERE
     DATE(timestamp) = @submission_date
 )

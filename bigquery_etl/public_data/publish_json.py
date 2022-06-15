@@ -10,7 +10,8 @@ import sys
 from argparse import ArgumentParser
 
 import smart_open
-from google.cloud import bigquery, storage
+from google.cloud import storage  # type: ignore
+from google.cloud import bigquery
 
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.metadata.validate_metadata import validate_public_data

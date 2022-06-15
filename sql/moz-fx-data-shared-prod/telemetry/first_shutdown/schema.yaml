@@ -19851,6 +19851,32 @@ fields:
       mode: NULLABLE
       name: wr_texture_cache_update_time
       type: STRING
+    - description: SSL handshake result for connections which used ECH 'Real', 0=success,
+        1-255=NSS error offset, 256-511=SEC error offset + 256, 512-639=NSPR error
+        offset + 512, 640-670=PKIX error, 671=unknown err
+      mode: NULLABLE
+      name: ssl_handshake_result_ech
+      type: STRING
+    - description: SSL handshake result for connections which used ECH GREASE, 0=success,
+        1-255=NSS error offset, 256-511=SEC error offset + 256, 512-639=NSPR error
+        offset + 512, 640-670=PKIX error, 671=unknown err
+      mode: NULLABLE
+      name: ssl_handshake_result_ech_grease
+      type: STRING
+    - description: ms of SSL wait time including TCP and proxy tunneling for connections
+        using ECH 'Real'
+      mode: NULLABLE
+      name: ssl_time_until_ready_ech
+      type: STRING
+    - description: ms of SSL wait time including TCP and proxy tunneling for connections
+        using ECH GREASE
+      mode: NULLABLE
+      name: ssl_time_until_ready_ech_grease
+      type: STRING
+    - description: Counts of GMP codec initialization success and failure
+      mode: NULLABLE
+      name: webrtc_gmp_init_success
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -40987,6 +41013,32 @@ fields:
             comments in OpenSignedAppFile. '
           mode: NULLABLE
           name: addon_signature_verification_status
+          type: STRING
+        - description: SSL handshake result for connections which used ECH 'Real',
+            0=success, 1-255=NSS error offset, 256-511=SEC error offset + 256, 512-639=NSPR
+            error offset + 512, 640-670=PKIX error, 671=unknown err
+          mode: NULLABLE
+          name: ssl_handshake_result_ech
+          type: STRING
+        - description: SSL handshake result for connections which used ECH GREASE,
+            0=success, 1-255=NSS error offset, 256-511=SEC error offset + 256, 512-639=NSPR
+            error offset + 512, 640-670=PKIX error, 671=unknown err
+          mode: NULLABLE
+          name: ssl_handshake_result_ech_grease
+          type: STRING
+        - description: ms of SSL wait time including TCP and proxy tunneling for connections
+            using ECH 'Real'
+          mode: NULLABLE
+          name: ssl_time_until_ready_ech
+          type: STRING
+        - description: ms of SSL wait time including TCP and proxy tunneling for connections
+            using ECH GREASE
+          mode: NULLABLE
+          name: ssl_time_until_ready_ech_grease
+          type: STRING
+        - description: Counts of GMP codec initialization success and failure
+          mode: NULLABLE
+          name: webrtc_gmp_init_success
           type: STRING
         mode: NULLABLE
         name: histograms

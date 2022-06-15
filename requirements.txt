@@ -270,15 +270,15 @@ google-cloud-bigquery-storage==2.13.2 \
     --hash=sha256:ac4ce734e805aca7e73a69617b14d31e690a113446136e92292a74e1d8b3e3b2 \
     --hash=sha256:b3f72c66e6c92afdb8ba76b81cceba1969d217a205c35acb4eb1a5257b7fd21d
     # via google-cloud-bigquery
-google-cloud-core==1.6.0 \
-    --hash=sha256:40d9c2da2d03549b5ac3dcccf289d4f15e6d1210044c6381ce45c92913e62904 \
-    --hash=sha256:c6abb18527545379fc82efc4de75ce9a3772ccad2fc645adace593ba097cbb02
+google-cloud-core==2.3.1 \
+    --hash=sha256:113ba4f492467d5bd442c8d724c1a25ad7384045c3178369038840ecdd19346c \
+    --hash=sha256:34334359cb04187bdc80ddcf613e462dfd7a3aabbc3fe4d118517ab4b9303d53
     # via
     #   google-cloud-bigquery
     #   google-cloud-storage
-google-cloud-storage==2.2.1 \
-    --hash=sha256:0244f4612710cb5ec445fc6774387564e23f9823363fb408b28724e2102401b7 \
-    --hash=sha256:abdf0fadf26516172e804e00b9c24819a3b3f7351cd32f35ca249bbfac965494
+google-cloud-storage==2.4.0 \
+    --hash=sha256:5fe26f1381b30e3cc328f46e13531ca8525458f870c1e303c616bdeb7b7f5c66 \
+    --hash=sha256:973e7f7d9afcd4805769b6ea9ac15ab9df7037530850374f1494b5a2c8f65b6b
     # via
     #   -r requirements.in
     #   gcsfs
@@ -749,7 +749,6 @@ protobuf==3.20.1 \
     #   google-api-core
     #   google-cloud-bigquery
     #   google-cloud-bigquery-storage
-    #   google-cloud-storage
     #   googleapis-common-protos
     #   proto-plus
 py==1.10.0 \
@@ -990,7 +989,6 @@ six==1.15.0 \
     #   gcloud
     #   google-api-core
     #   google-auth
-    #   google-cloud-core
     #   grpcio
     #   oauth2client
     #   ppft

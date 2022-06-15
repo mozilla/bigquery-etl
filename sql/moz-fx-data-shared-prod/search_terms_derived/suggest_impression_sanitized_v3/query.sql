@@ -46,7 +46,7 @@ sanitized_queries AS (
 sanitized_queries_count AS (
   SELECT
     COUNT(*) AS _n,
-    COUNT(sanitized_query) AS _n_with_query,
+    COUNT(query) AS _n_with_query,
   FROM
     sanitized_queries
 ),

@@ -100,15 +100,26 @@ apple_iap_subscriptions AS (
     CAST(NULL AS STRING) AS plan_id,
     CAST(NULL AS STRING) AS status,
     updated_at AS event_timestamp,
-    start_time AS subscription_start_date,
+    IF(
+      apple_receipt.trial_period.end_time > apple_receipt.active_period.start_time,
+      apple_receipt.trial_period.end_time,
+      apple_receipt.active_period.start_time
+    ) AS subscription_start_date,
     created_at AS created,
-    CAST(NULL AS TIMESTAMP) AS trial_start,
-    CAST(NULL AS TIMESTAMP) AS trial_end,
+    apple_receipt.trial_period.start_time AS trial_start,
+    apple_receipt.trial_period.end_time AS trial_end,
     CAST(NULL AS TIMESTAMP) AS canceled_at,
     CAST(NULL AS STRING) AS canceled_for_customer_at,
     CAST(NULL AS TIMESTAMP) AS cancel_at,
     CAST(NULL AS BOOL) AS cancel_at_period_end,
-    IF(end_time < TIMESTAMP(CURRENT_DATE), end_time, NULL) AS ended_at,
+    IF(
+      COALESCE(
+        apple_receipt.active_period.end_time,
+        apple_receipt.trial_period.end_time
+      ) < TIMESTAMP(CURRENT_DATE),
+      COALESCE(apple_receipt.active_period.end_time, apple_receipt.trial_period.end_time),
+      NULL
+    ) AS ended_at,
     fxa_uid,
     CAST(NULL AS STRING) AS country,
     CAST(NULL AS STRING) AS country_name,
@@ -124,19 +135,23 @@ apple_iap_subscriptions AS (
     NULL AS plan_amount,
     CAST(NULL AS STRING) AS billing_scheme,
     CAST(NULL AS STRING) AS plan_currency,
-    `interval` AS plan_interval,
-    interval_count AS plan_interval_count,
+    apple_receipt.active_period.`interval` AS plan_interval,
+    apple_receipt.active_period.interval_count AS plan_interval_count,
     "America/Los_Angeles" AS plan_interval_timezone,
     CAST(NULL AS STRING) AS product_id,
     "Mozilla VPN" AS product_name,
-    CONCAT(interval_count, "-", `interval`, "-", "apple") AS pricing_plan,
+    CONCAT(
+      apple_receipt.active_period.interval_count,
+      "-",
+      apple_receipt.active_period.`interval`,
+      "-",
+      "apple"
+    ) AS pricing_plan,
     -- Apple bills recurring subscriptions before they end
     INTERVAL 0 DAY AS billing_grace_period,
     CAST(NULL AS ARRAY<STRING>) AS promotion_codes,
   FROM
     mozdata.mozilla_vpn.subscriptions
-  CROSS JOIN
-    UNNEST(apple_receipt.active_periods)
   LEFT JOIN
     users
   USING
@@ -352,7 +367,10 @@ vpn_subscriptions AS (
 vpn_subscriptions_with_end_date AS (
   SELECT
     *,
-    MIN(subscription_start_date) OVER (PARTITION BY customer_id) AS customer_start_date,
+    MIN(COALESCE(trial_start, subscription_start_date)) OVER (
+      PARTITION BY
+        customer_id
+    ) AS customer_start_date,
     COALESCE(ended_at, TIMESTAMP(CURRENT_DATE)) AS end_date,
   FROM
     vpn_subscriptions
@@ -379,6 +397,3 @@ SELECT
   ) AS current_months_since_subscription_start,
 FROM
   vpn_subscriptions_with_end_date
-WHERE
-  -- exclude subscriptions that never left the trial period
-  DATE(subscription_start_date) < DATE(end_date)

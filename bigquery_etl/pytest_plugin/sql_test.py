@@ -137,13 +137,13 @@ def load_tables(
                     file_obj, destination, job_config=job_config
                 )
         else:
-            file_obj = BytesIO()
+            mem_file = BytesIO()
             for row in load(*table.source_path):
-                file_obj.write(
+                mem_file.write(
                     json.dumps(row, default=default_encoding).encode() + b"\n"
                 )
-            file_obj.seek(0)
-            job = bq.load_table_from_file(file_obj, destination, job_config=job_config)
+            mem_file.seek(0)
+            job = bq.load_table_from_file(mem_file, destination, job_config=job_config)
 
         try:
             job.result()

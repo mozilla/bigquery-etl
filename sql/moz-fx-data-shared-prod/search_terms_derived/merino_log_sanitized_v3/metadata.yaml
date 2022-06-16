@@ -8,6 +8,12 @@ description: |-
 
   This table allows removal of PII and slightly longer retention than
   the underlying ping table.
+bigquery:
+  time_partitioning:
+    field: timestamp
+    type: day
+    require_partition_filter: true
+    expiration_days: 15
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

@@ -6,8 +6,11 @@ labels:
 description: |-
   A sanitized variant of search terms submitted to Firefox.
 
-  This table allows removal of PII and slightly longer retention than
-  the underlying ping table.
+  This table allows removal of PII and longer retention than
+  the underlying logs.
+  
+  See https://github.com/mozilla/search-terms-sanitization (private)
+  for the code that populates this table.
 bigquery:
   time_partitioning:
     field: timestamp

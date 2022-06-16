@@ -11,7 +11,7 @@ import requests
 from dataclasses import asdict, dataclass
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
-from typing import Dict, List
+from typing import Iterator, List, Optional
 
 
 @dataclass
@@ -23,33 +23,36 @@ class KintoSuggestion:
     # if there's new unexpected fields, ensuring we take the
     # appropriate actions to update the table schemas.
     advertiser: str
-    click_url: str
     iab_category: str
     icon: str
-    impression_url: str
     id: int
     keywords: List[str]
     title: str
     url: str
+    # `click_url` and `impression_url` are both optional, they're currently only
+    # used by suggestions from adMarketplace. Mozilla's in-house Wikipedia suggestions
+    # do not provide those fields.
+    click_url: Optional[str] = None
+    impression_url: Optional[str] = None
 
 
-def download_suggestions(client: kinto_http.Client) -> Dict[int, KintoSuggestion]:
+def download_suggestions(client: kinto_http.Client) -> Iterator[KintoSuggestion]:
     """Get records, download attachments and return the suggestions."""
 
     # Retrieve the base_url for attachments
     server_info = client.server_info()
     attachments_base_url = server_info["capabilities"]["attachments"]["base_url"]
 
-    # Only consider "data" records, search for the following code in Merino
-    # for record in remote_settings_client.records_of_type("data".to_string())
+    # Load records for both "type: data" and "type: offline-expansion-data".
+    # See details in: https://mozilla-hub.atlassian.net/browse/CONSVC-1818
     data_records = [
-        record for record in client.get_records() if record["type"] == "data"
+        record
+        for record in client.get_records()
+        if record["type"] in ["data", "offline-expansion-data"]
     ]
 
     # Make use of connection pooling because all requests go to the same host
     requests_session = requests.Session()
-
-    suggestions = {}
 
     for record in data_records:
         attachment_url = f"{attachments_base_url}{record['attachment']['location']}"
@@ -71,23 +74,17 @@ def download_suggestions(client: kinto_http.Client) -> Dict[int, KintoSuggestion
         # Each attachment is a list of suggestion objects and each suggestion
         # object contains a list of keywords. Load the suggestions into pydantic
         # model instances to discard all fields which we don't care about here.
-        suggestions.update(
-            {
-                suggestion_data["id"]: KintoSuggestion(**suggestion_data)
-                for suggestion_data in response.json()
-            }
-        )
-
-    return suggestions
+        for suggestion_data in response.json():
+            yield KintoSuggestion(**suggestion_data)
 
 
 def store_suggestions(
     today: datetime.date,
     destination_project: str,
     destination_table_id: str,
-    kinto_suggestions: Dict[int, KintoSuggestion],
+    kinto_suggestions: Iterator[KintoSuggestion],
 ):
-    """Get records, download attachments and return the suggestions."""
+    """Upload suggestions to BigQuery."""
 
     today_as_iso = today.isoformat()
 
@@ -95,7 +92,7 @@ def store_suggestions(
     # an insertion date.
     suggestions = [
         {**asdict(suggestion), "submission_date": today_as_iso}
-        for suggestion in kinto_suggestions.values()
+        for suggestion in kinto_suggestions
     ]
 
     client = bigquery.Client(project=destination_project)
@@ -191,7 +188,7 @@ def main(
     )
     kinto_suggestions = download_suggestions(kinto_client)
 
-    logging.info(f"Downloaded {len(kinto_suggestions.keys())} suggestions")
+    logging.info("Download finished, uploading suggestions to BigQuery")
 
     store_suggestions(
         datetime.date.today(),

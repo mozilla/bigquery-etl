@@ -111,15 +111,12 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/subscription_events_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/users_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/waitlist_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_external/waitlist_v1/query.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v3/query.sql",
     "sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/subscriptions_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_external/waitlist_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/protected_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/init.sql",
@@ -151,6 +148,10 @@ SKIP = {
     ),
     "sql/moz-fx-data-shared-prod/telemetry/xfocsp_error_report/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/regrets_reporter_update/view.sql",
+    *glob.glob(
+        "sql/moz-fx-data-marketing-prod/acoustic/**/*.sql",
+        recursive=True,
+    ),
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501

@@ -31,11 +31,11 @@ from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
 from ..metadata.parse_metadata import (
     METADATA_FILE,
+    BigQueryMetadata,
+    ClusteringMetadata,
     DatasetMetadata,
     Metadata,
-    BigQueryMetadata,
     PartitionMetadata,
-    ClusteringMetadata,
     PartitionType,
 )
 from ..query_scheduling.dag_collection import DagCollection
@@ -445,6 +445,7 @@ def info(ctx, name, sql_dir, project_id, cost, last_updated):
 def _backfill_query(
     query_file_path,
     project_id,
+    date_partition_parameter,
     exclude,
     max_rows,
     dry_run,
@@ -466,12 +467,12 @@ def _backfill_query(
 
         click.echo(
             f"Run backfill for {project}.{dataset}.{destination_table} "
-            f"with @submission_date={backfill_date}"
+            f"with @{date_partition_parameter}={backfill_date}"
         )
 
         arguments = [
             "query",
-            f"--parameter=submission_date:DATE:{backfill_date}",
+            f"--parameter={date_partition_parameter}:DATE:{backfill_date}",
             "--use_legacy_sql=false",
             "--replace",
             f"--max_rows={max_rows}",
@@ -482,7 +483,9 @@ def _backfill_query(
 
         run(query_file_path, dataset, destination_table, arguments)
     else:
-        click.echo(f"Skip {query_file_path} with @submission_date={backfill_date}")
+        click.echo(
+            f"Skip {query_file_path} with @{date_partition_parameter}={backfill_date}"
+        )
 
     return True
 
@@ -587,7 +590,7 @@ def backfill(
         ctx.invoke(
             generate_all,
             output_dir=ctx.obj["TMP_DIR"],
-            ignore=["derived_view_schemas", "stable_views"],
+            ignore=["derived_view_schemas", "stable_views", "country_code_lookup"],
         )
         query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
 
@@ -596,11 +599,19 @@ def backfill(
     for query_file in query_files:
         query_file_path = Path(query_file)
 
+        depends_on_past = False
+        date_partition_parameter = "submission_date"
+
         try:
             metadata = Metadata.of_query_file(str(query_file_path))
-            depends_on_past = metadata.scheduling.get("depends_on_past", False)
+            depends_on_past = metadata.scheduling.get(
+                "depends_on_past", depends_on_past
+            )
+            date_partition_parameter = metadata.scheduling.get(
+                "date_partition_parameter", date_partition_parameter
+            )
         except FileNotFoundError:
-            depends_on_past = False
+            click.echo(f"No metadata defined for {query_file_path}")
 
         if depends_on_past and exclude != []:
             click.echo(
@@ -619,6 +630,7 @@ def backfill(
             _backfill_query,
             query_file_path,
             project_id,
+            date_partition_parameter,
             exclude,
             max_rows,
             dry_run,

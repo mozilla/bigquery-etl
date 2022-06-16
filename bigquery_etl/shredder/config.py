@@ -599,6 +599,10 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
             for table in stable_tables
             if not table.table_id.startswith("deletion_request_")
             and not table.table_id.startswith("pioneer_enrollment_")
+            and not table.table_id.startswith("enrollment_")
+            and not table.table_id.startswith("study_enrollment_")
+            and not table.table_id.startswith("study_unenrollment_")
+            and not table.table_id.startswith("unenrollment_")
         },
         **{
             # derived tables with pioneer_id

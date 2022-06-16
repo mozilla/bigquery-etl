@@ -1,0 +1,78 @@
+fields:
+
+# source:
+# https://developer.goacoustic.com/acoustic-campaign/reference/rawrecipientdataexport
+
+- mode: NULLABLE
+  name: email
+  type: STRING
+  description: The contact’s email address.
+
+- mode: NULLABLE
+  name: recipient_id
+  type: INTEGER
+  description: The ID of the contact associated with the event.
+
+- mode: NULLABLE
+  name: report_id
+  type: INTEGER
+  description: null
+
+- mode: NULLABLE
+  name: mailing_id
+  type: INTEGER
+  description: The ID of the Sent email associated with the event.
+
+- mode: NULLABLE
+  name: campaign_id
+  type: INTEGER
+  description: The ID of the campaign associated with the event.
+
+- mode: NULLABLE
+  name: content_id
+  type: INTEGER
+  description: The ID of the content associated with the event.
+
+- mode: NULLABLE
+  name: event_timestamp
+  type: DATETIME
+  description: The date and time of the event in the API user’s time zone.
+
+- mode: NULLABLE
+  name: event_type
+  type: STRING
+  description: The type of contact event.
+
+- mode: NULLABLE
+  name: recipient_type
+  type: STRING
+  description: The type of contact to whom the Acoustic Campaign sent the email.
+
+- mode: NULLABLE
+  name: body_type
+  type: STRING
+  description: The body type the contact received.
+
+- mode: NULLABLE
+  name: click_name
+  type: STRING
+  description: The user-specified name of the link or Clickstream.
+
+- mode: NULLABLE
+  name: url
+  type: STRING
+  description: The hyperlink of a Clickthrough or Clickstream.
+
+- mode: NULLABLE
+  name: suppression_reason
+  type: STRING
+  description: The reason a contact was suppressed.
+
+
+###### ETL fields
+
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Airflow's execution date should \
+    overlap with date inside event_timestamp field

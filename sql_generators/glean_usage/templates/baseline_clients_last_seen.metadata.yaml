@@ -1,6 +1,4 @@
----
-# Generated via bigquery_etl.glean_usage
-
+{{ header_yaml }}
 friendly_name: Baseline Clients Last Seen
 description: |-
   Captures activity history of each client in 28-day

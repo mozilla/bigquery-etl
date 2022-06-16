@@ -1,2 +1,0 @@
-# pyjnius breaks dependabot unless it is kept in a separate file
-pyjnius==1.4.1

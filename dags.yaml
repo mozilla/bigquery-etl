@@ -116,6 +116,18 @@ bqetl_subplat:
     operational DB as well as derived tables based on that data.
 
     Depends on `bqetl_fxa_events`, so is scheduled to run a bit after that.
+
+    Stripe data retrieved by stripe_external__itemized_payout_reconciliation__v5
+    task has highly viariable availability timing, so it is possible for it to
+    fail with the following type of error:
+    `Error: Request req_OTssZ0Zv1cEmmm: Data for the report type
+            payout_reconciliation.itemized.5 is only available through
+            2022-05-08 12:00:00 UTC; you requested `interval_end`
+            = 2022-05-09 00:00:00 UTC.`
+    In such cases the failure is expected, the task will continue to retry every
+    30 minutes until the data becomes available. If failure observed looks
+    different then it should be reported using the Airflow triage process.
+
   default_args:
     owner: dthorn@mozilla.com
     start_date: "2021-07-20"
@@ -669,6 +681,7 @@ bqetl_unified:
       - "telemetry-alerts@mozilla.com"
       - "ascholtz@mozilla.com"
       - "loines@mozilla.com"
+      - "lvargas@mozilla.com"
     retries: 2
     retry_delay: 30m
   tags:
@@ -704,3 +717,76 @@ bqetl_cjms_nonprod:
     retry_delay: 5m
   tags:
     - impact/tier_3
+
+bqetl_acoustic_contact_export:
+  schedule_interval: 0 9 * * *
+  description: |
+    Processing data loaded by
+    fivetran_acoustic_contact_export
+    DAG to clean up the data loaded from Acoustic.
+  default_args:
+    owner: kignasiak@mozilla.com
+    start_date: "2021-03-01"
+    email: ["telemetry-alerts@mozilla.com", "kignasiak@mozilla.com"]
+    retries: 2
+    retry_delay: 5m
+  tags:
+    - impact/tier_3
+
+bqetl_acoustic_raw_recipient_export:
+  schedule_interval: 0 9 * * *
+  description: |
+    Processing data loaded by
+    fivetran_acoustic_raw_recipient_export
+    DAG to clean up the data loaded from Acoustic.
+  default_args:
+    owner: kignasiak@mozilla.com
+    start_date: "2022-03-01"
+    email: ["telemetry-alerts@mozilla.com", "kignasiak@mozilla.com"]
+    retries: 2
+    retry_delay: 5m
+  tags:
+    - impact/tier_3
+
+bqetl_analytics_aggregations:
+  default_args:
+    depends_on_past: false
+    email:
+      - "telemetry-alerts@mozilla.com"
+      - "lvargas@mozilla.com"
+      - "gkaberere@mozilla.com"
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: lvargas@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2022-05-12'
+  description: Scheduler to populate the aggregations required for
+    analytics engineering and reports optimization.
+    It provides data to build growth, search and usage metrics, as well
+    as acquisition and retention KPIs, in a model that facilitates
+    reporting in Looker.
+  schedule_interval: 0 1 * * *
+  tags:
+    - impact/tier_1
+
+bqetl_fog_decision_support:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - pmcmanis@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: pmcmanis@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2022-05-25'
+  description: This DAG schedules queries for calculating FOG decision
+   support metrics
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl

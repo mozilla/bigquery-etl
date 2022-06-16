@@ -1,6 +1,26 @@
-WITH unioned AS (
+WITH unioned_source AS (
   SELECT
-    *,
+    submission_date,
+    normalized_channel,
+    client_id,
+    sample_id,
+    days_since_seen,
+    days_seen_bits,
+    days_created_profile_bits,
+    durations,
+    normalized_os,
+    normalized_os_version,
+    locale,
+    city,
+    country,
+    app_display_version,
+    device_model,
+    first_seen_date,
+    submission_date = first_seen_date AS is_new_profile,
+    uri_count,
+    is_default_browser,
+    CAST(NULL AS string) AS distribution_id,
+    isp,
     'Fenix' AS normalized_app_name
   FROM
     fenix.clients_last_seen_joined
@@ -8,7 +28,27 @@ WITH unioned AS (
     submission_date = @submission_date
   UNION ALL
   SELECT
-    *,
+    submission_date,
+    normalized_channel,
+    client_id,
+    sample_id,
+    days_since_seen,
+    days_seen_bits,
+    days_created_profile_bits,
+    durations,
+    normalized_os,
+    normalized_os_version,
+    locale,
+    city,
+    country,
+    app_display_version,
+    device_model,
+    first_seen_date,
+    submission_date = first_seen_date AS is_new_profile,
+    uri_count,
+    is_default_browser,
+    CAST(NULL AS string) AS distribution_id,
+    isp,
     'Firefox iOS' AS normalized_app_name
   FROM
     firefox_ios.clients_last_seen_joined
@@ -16,7 +56,27 @@ WITH unioned AS (
     submission_date = @submission_date
   UNION ALL
   SELECT
-    *,
+    submission_date,
+    normalized_channel,
+    client_id,
+    sample_id,
+    days_since_seen,
+    days_seen_bits,
+    days_created_profile_bits,
+    durations,
+    normalized_os,
+    normalized_os_version,
+    locale,
+    city,
+    country,
+    app_display_version,
+    device_model,
+    first_seen_date,
+    submission_date = first_seen_date AS is_new_profile,
+    uri_count,
+    is_default_browser,
+    CAST(NULL AS string) AS distribution_id,
+    isp,
     'Focus iOS' AS normalized_app_name
   FROM
     focus_ios.clients_last_seen_joined
@@ -29,50 +89,58 @@ WITH unioned AS (
     client_id,
     udf_js.sample_id(client_id) AS sample_id,
     days_since_seen,
-    days_since_created_profile,
-    NULL AS days_since_seen_session_start,
-    NULL AS days_since_seen_session_end,
     days_seen_bits,
     days_created_profile_bits,
-    first_seen_date AS first_run_date,
     durations,
-    NULL AS days_seen_session_start_bits,
-    NULL AS days_seen_session_end_bits,
     os AS normalized_os,
     osversion AS normalized_os_version,
-    NULL AS android_sdk_version,
     locale,
     city,
     country,
-    app_build_id AS app_build,
-    NULL AS app_channel,
     metadata_app_version AS app_display_version,
-    NULL AS architecture,
-    NULL AS device_manufacturer,
     device AS device_model,
-    NULL AS telemetry_sdk_build,
     first_seen_date,
     submission_date = first_seen_date AS is_new_profile,
-    NULL AS n_metrics_ping,
-    NULL AS days_sent_metrics_ping_bits,
     NULL AS uri_count,
     default_browser AS is_default_browser,
+    distribution_id,
+    CAST(NULL AS string) AS isp,
     'Focus Android' AS normalized_app_name
   FROM
     telemetry.core_clients_last_seen
   WHERE
-    days_since_seen = 0
+    submission_date = @submission_date
     AND app_name = 'Focus'
     AND os = 'Android'
-    AND submission_date = @submission_date
+),
+unioned AS (
+  SELECT
+    * EXCEPT (isp) REPLACE(
+      -- Per bug 1757216 we need to exclude BrowserStack clients from KPIs,
+      -- so we mark them with a separate app name here. We expect BrowserStack
+      -- clients only on release channel of Fenix, so the only variant this is
+      -- expected to produce is 'Fenix BrowserStack'
+      IF(
+        isp = 'BrowserStack',
+        CONCAT(normalized_app_name, ' BrowserStack'),
+        normalized_app_name
+      ) AS normalized_app_name
+    )
+  FROM
+    unioned_source
 ),
 search_clients AS (
   SELECT
-    *
+    client_id,
+    submission_date,
+    ad_click,
+    organic,
+    search_count,
+    search_with_ads
   FROM
     search_derived.mobile_search_clients_daily_v1
   WHERE
-    submission_date = DATE_ADD(@submission_date, INTERVAL 1 DAY)
+    submission_date = @submission_date
 ),
 search_metrics AS (
   SELECT
@@ -86,13 +154,13 @@ search_metrics AS (
   FROM
     unioned
   LEFT JOIN
-    search_clients m
+    search_clients s
   ON
-    unioned.client_id = m.client_id
-    AND DATE_ADD(unioned.submission_date, INTERVAL 1 DAY) = m.submission_date
+    unioned.client_id = s.client_id
+    AND unioned.submission_date = s.submission_date
   GROUP BY
-    1,
-    2
+    client_id,
+    submission_date
 ),
 mobile_with_searches AS (
   SELECT
@@ -126,22 +194,47 @@ mobile_with_searches AS (
     END
     AS activity_segment,
     unioned.normalized_app_name,
-    unioned.app_display_version,
+    unioned.app_display_version AS app_version,
     unioned.normalized_channel,
-    unioned.country,
+    IFNULL(country, '??') country,
+    unioned.city,
     unioned.days_seen_bits,
+    unioned.days_created_profile_bits,
     DATE_DIFF(unioned.submission_date, unioned.first_seen_date, DAY) AS days_since_first_seen,
     unioned.device_model,
     unioned.is_new_profile,
     unioned.locale,
     unioned.first_seen_date,
+    unioned.days_since_seen,
     unioned.normalized_os,
     unioned.normalized_os_version,
+    COALESCE(
+      CAST(NULLIF(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(0)], "") AS INTEGER),
+      0
+    ) AS os_version_major,
+    COALESCE(
+      CAST(NULLIF(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(1)], "") AS INTEGER),
+      0
+    ) AS os_version_minor,
+    COALESCE(
+      CAST(NULLIF(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(2)], "") AS INTEGER),
+      0
+    ) AS os_version_patch,
     unioned.durations,
     unioned.submission_date,
     unioned.uri_count,
     unioned.is_default_browser,
-    search.* EXCEPT (submission_date, client_id),
+    unioned.distribution_id,
+    CAST(NULL AS string) AS attribution_content,
+    CAST(NULL AS string) AS attribution_source,
+    CAST(NULL AS string) AS attribution_medium,
+    CAST(NULL AS string) AS attribution_campaign,
+    CAST(NULL AS string) AS attribution_experiment,
+    CAST(NULL AS string) AS attribution_variation,
+    search.ad_click,
+    search.organic_search_count,
+    search.search_count,
+    search.search_with_ads,
     NULL AS active_hours_sum
   FROM
     unioned
@@ -149,7 +242,7 @@ mobile_with_searches AS (
     search_metrics search
   ON
     search.client_id = unioned.client_id
-    AND search.submission_date = DATE_ADD(unioned.submission_date, INTERVAL 1 DAY)
+    AND search.submission_date = unioned.submission_date
 ),
 desktop AS (
   SELECT
@@ -157,17 +250,32 @@ desktop AS (
     sample_id,
     activity_segments_v1 AS activity_segment,
     'Firefox Desktop' AS normalized_app_name,
-    app_display_version,
+    app_version AS app_version,
     normalized_channel,
-    country,
+    IFNULL(country, '??') country,
+    city,
     days_visited_1_uri_bits AS days_seen_bits,
+    days_created_profile_bits,
     days_since_first_seen,
     CAST(NULL AS string) AS device_model,
     submission_date = first_seen_date AS is_new_profile,
     locale,
     first_seen_date,
+    days_since_seen,
     os AS normalized_os,
     normalized_os_version,
+    COALESCE(
+      CAST(NULLIF(SPLIT(normalized_os_version, ".")[SAFE_OFFSET(0)], "") AS INTEGER),
+      0
+    ) AS os_version_major,
+    COALESCE(
+      CAST(NULLIF(SPLIT(normalized_os_version, ".")[SAFE_OFFSET(1)], "") AS INTEGER),
+      0
+    ) AS os_version_minor,
+    COALESCE(
+      CAST(NULLIF(SPLIT(normalized_os_version, ".")[SAFE_OFFSET(2)], "") AS INTEGER),
+      0
+    ) AS os_version_patch,
     subsession_hours_sum AS durations,
     submission_date,
     COALESCE(
@@ -175,6 +283,13 @@ desktop AS (
       scalar_parent_browser_engagement_total_uri_count_sum
     ) AS uri_count,
     is_default_browser,
+    distribution_id,
+    attribution.content AS attribution_content,
+    attribution.source AS attribution_source,
+    attribution.medium AS attribution_medium,
+    attribution.campaign AS attribution_campaign,
+    attribution.experiment AS attribution_experiment,
+    attribution.variation AS attribution_variation,
     ad_clicks_count_all AS ad_clicks,
     search_count_organic AS organic_search_count,
     search_count_all AS search_count,
@@ -183,8 +298,7 @@ desktop AS (
   FROM
     telemetry.clients_last_seen
   WHERE
-    days_since_seen = 0
-    AND submission_date = @submission_date
+    submission_date = @submission_date
 )
 SELECT
   *

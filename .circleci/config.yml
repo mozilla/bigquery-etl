@@ -85,10 +85,7 @@ jobs:
           command: |
             pip install pip-tools --constraint requirements.in
             pip-compile --quiet --allow-unsafe --generate-hashes
-            pip-compile --quiet --allow-unsafe --generate-hashes \
-              java-requirements.in
-            git diff --exit-code -G '^ *[^# ]' -- requirements.txt \
-              java-requirements.txt
+            git diff --exit-code -G '^ *[^# ]' -- requirements.txt
   test-sql:
     docker: *docker
     steps:
@@ -176,20 +173,12 @@ jobs:
             apt update
             apt install -y maven default-jdk-headless
             mvn package
-            venv/bin/pip-sync --pip-args=--no-deps requirements.txt \
-              java-requirements.txt
+            venv/bin/pip-sync --pip-args=--no-deps requirements.txt
       - run:
           name: PyTest Integration Test
-          # Google's client libraries will check for
-          # GOOGLE_APPLICATION_CREDENTIALS
-          # and use a file in that location for credentials if present;
-          # See https://cloud.google.com/docs/authentication/production
           # yamllint disable rule:line-length
           command: |
-            export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
-            echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
             PATH="venv/bin:$PATH" script/entrypoint -m 'integration or java' -n 8
-          # yamllint enable rule:line-length
       - save_cache:
           paths:
             - ~/.m2
@@ -499,7 +488,6 @@ jobs:
 
             cd bigquery-etl-main
             pip install --no-deps -r requirements.txt
-            pip install --no-deps -r java-requirements.txt
             mvn package
             ./script/bqetl generate all \
               --target-project moz-fx-data-shared-prod
@@ -557,9 +545,10 @@ jobs:
 
             echo "Integration tests for this fork need to be triggered manually"
             echo "Users with write access to the repository can trigger" \
-              "integration tests by visiting: "
-            echo "https://github.com/mozilla/bigquery-etl/actions/workflows/push-to-upstream.yml".
-            echo "Trigger via 'Run workflow' and provide '$CIRCLE_PR_BRANCH' as parameter."
+              "integration tests by following these steps: "
+            echo "  Open the following page:"
+            echo "    https://github.com/mozilla/bigquery-etl/actions/workflows/push-to-upstream.yml"
+            echo "  Choose the 'Run workflow' dropdown and provide '$CIRCLE_PR_BRANCH' as parameter."
 
             exit 1
           # yamllint enable rule:line-length

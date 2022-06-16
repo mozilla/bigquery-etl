@@ -1,0 +1,25 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+- mode: NULLABLE
+  name: ping
+  type: STRING
+- mode: NULLABLE
+  name: channel
+  type: STRING
+- mode: NULLABLE
+  name: metric_name
+  type: STRING
+- mode: REPEATED
+  name: percentiles
+  type: INTEGER
+- mode: NULLABLE
+  name: mean
+  type: FLOAT
+- mode: NULLABLE
+  name: std_dev
+  type: FLOAT
+- mode: NULLABLE
+  name: median
+  type: INTEGER

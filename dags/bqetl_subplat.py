@@ -20,6 +20,17 @@ operational DB as well as derived tables based on that data.
 
 Depends on `bqetl_fxa_events`, so is scheduled to run a bit after that.
 
+Stripe data retrieved by stripe_external__itemized_payout_reconciliation__v5
+task has highly viariable availability timing, so it is possible for it to
+fail with the following type of error:
+`Error: Request req_OTssZ0Zv1cEmmm: Data for the report type
+        payout_reconciliation.itemized.5 is only available through
+        2022-05-08 12:00:00 UTC; you requested `interval_end`
+        = 2022-05-09 00:00:00 UTC.`
+In such cases the failure is expected, the task will continue to retry every
+30 minutes until the data becomes available. If failure observed looks
+different then it should be reported using the Airflow triage process.
+
 #### Owner
 
 dthorn@mozilla.com
@@ -177,6 +188,22 @@ with DAG(
             "SGD",
             "NZD",
             "MYR",
+            "AED",
+            "BRL",
+            "CLP",
+            "COP",
+            "EGP",
+            "IDR",
+            "MMK",
+            "MXN",
+            "PHP",
+            "QAR",
+            "RUB",
+            "SAR",
+            "SEK",
+            "THB",
+            "TZS",
+            "UAH",
         ],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="dthorn@mozilla.com",
@@ -417,17 +444,6 @@ with DAG(
         retry_delay=datetime.timedelta(seconds=300),
     )
 
-    mozilla_vpn_derived__waitlist__v1 = bigquery_etl_query(
-        task_id="mozilla_vpn_derived__waitlist__v1",
-        destination_table="waitlist_v1",
-        dataset_id="mozilla_vpn_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-    )
-
     mozilla_vpn_external__devices__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_external__devices__v1",
         destination_table="devices_v1",
@@ -467,20 +483,6 @@ with DAG(
         depends_on_past=True,
         parameters=[
             "external_database_query:STRING:SELECT * FROM users WHERE DATE(updated_at) = DATE '{{ds}}'"
-        ],
-    )
-
-    mozilla_vpn_external__waitlist__v1 = bigquery_etl_query(
-        task_id="mozilla_vpn_external__waitlist__v1",
-        destination_table="waitlist_v1",
-        dataset_id="mozilla_vpn_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=True,
-        parameters=[
-            "external_database_query:STRING:SELECT * FROM vpn_waitlist WHERE DATE(updated_at) = DATE '{{ds}}'"
         ],
     )
 
@@ -668,5 +670,3 @@ with DAG(
     )
 
     mozilla_vpn_derived__users__v1.set_upstream(mozilla_vpn_external__users__v1)
-
-    mozilla_vpn_derived__waitlist__v1.set_upstream(mozilla_vpn_external__waitlist__v1)

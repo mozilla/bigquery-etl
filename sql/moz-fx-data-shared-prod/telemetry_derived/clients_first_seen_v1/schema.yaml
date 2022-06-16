@@ -1611,3 +1611,6 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_nonsponsored_bestmatch_sum
   type: RECORD
+- mode: NULLABLE
+  name: user_pref_browser_urlbar_suggest_bestmatch
+  type: STRING

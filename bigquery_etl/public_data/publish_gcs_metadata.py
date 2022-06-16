@@ -8,7 +8,7 @@ from argparse import ArgumentParser
 from itertools import groupby
 
 import smart_open
-from google.cloud import storage
+from google.cloud import storage  # type: ignore
 
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.util import standard_args

@@ -158,12 +158,15 @@ class GleanTable:
         query_filename = f"{self.target_table_id}.query.sql"
         view_filename = f"{self.target_table_id[:-3]}.view.sql"
         view_metadata_filename = f"{self.target_table_id[:-3]}.metadata.yaml"
+        table_metadata_filename = f"{self.target_table_id}.metadata.yaml"
 
         table = tables[f"{self.prefix}_table"]
         view = tables[f"{self.prefix}_view"]
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
+            header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
             project_id=project_id,
+            derived_dataset=tables["daily_table"].split(".")[-2],
         )
 
         render_kwargs.update(self.custom_render_kwargs)
@@ -173,6 +176,9 @@ class GleanTable:
         view_sql = render(view_filename, template_folder=PATH, **render_kwargs)
         view_metadata = render(
             view_metadata_filename, template_folder=PATH, format=False, **render_kwargs
+        )
+        table_metadata = render(
+            table_metadata_filename, template_folder=PATH, format=False, **render_kwargs
         )
 
         if not self.no_init:
@@ -190,6 +196,7 @@ class GleanTable:
         if output_dir:
             write_sql(output_dir, view, "metadata.yaml", view_metadata)
             write_sql(output_dir, view, "view.sql", view_sql)
+            write_sql(output_dir, table, "metadata.yaml", table_metadata)
             write_sql(output_dir, table, "query.sql", query_sql)
 
             if not self.no_init:
@@ -220,6 +227,7 @@ class GleanTable:
 
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
+            header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
             project_id=project_id,
             target_view=f"{target_dataset}.{target_view_name}",
             datasets=datasets,

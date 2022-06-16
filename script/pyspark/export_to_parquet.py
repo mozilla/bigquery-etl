@@ -11,7 +11,7 @@ from textwrap import dedent
 try:
     from google.cloud import bigquery
 except ImportError as e:
-    bigquery = None
+    bigquery = None  # type: ignore
     bigquery_error = e
 
 parser = ArgumentParser(description=__doc__)

@@ -34,7 +34,11 @@ stripe_subscriptions AS (
     plan_id,
     status,
     event_timestamp,
-    subscription_start_date,
+    IF(
+      (trial_end > TIMESTAMP(CURRENT_DATE) OR ended_at <= trial_end),
+      NULL,
+      subscription_start_date
+    ) AS subscription_start_date,
     created,
     trial_start,
     trial_end,

@@ -1,18 +1,27 @@
----
-friendly_name: Sanitized Firefox Search Terms
+friendly_name: Sanitized Firefox Search Impression Data
+
 owners:
   - ctroy@mozilla.com
+
 labels:
   incremental: true
+
 description: |-
-  A sanitized variant of search terms submitted to Firefox.
+  Firefox Suggest impression pings
+  joined with sanitized search query data
+  captured in logs from the backend Merino service.
 
   This table allows removal of PII and slightly longer retention than
   the underlying ping table.
+
+bigquery:
+  time_partitioning:
+    field: timestamp
+    type: day
+    require_partition_filter: true
+    expiration_days: 15
+
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
       - workgroup:search-terms/sanitized
-  - role: roles/bigquery.dataEditor
-    members:
-      - workgroup:search-terms/sanitized-writer

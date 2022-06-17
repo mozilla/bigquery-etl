@@ -13,7 +13,7 @@
       
       
       <link rel="icon" href="../../favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.3.5">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.3.6">
     
     
       
@@ -1802,13 +1802,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#scrub_apple_receipt-udf" class="md-nav__link">
-    scrub_apple_receipt (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#derive_apple_subscription_interval-udf" class="md-nav__link">
     derive_apple_subscription_interval (UDF)
   </a>
@@ -1825,6 +1818,13 @@
         <li class="md-nav__item">
   <a href="#parse_apple_receipt-udf" class="md-nav__link">
     parse_apple_receipt (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scrub_apple_receipt-udf" class="md-nav__link">
+    scrub_apple_receipt (UDF)
   </a>
   
 </li>
@@ -2142,13 +2142,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#scrub_apple_receipt-udf" class="md-nav__link">
-    scrub_apple_receipt (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#derive_apple_subscription_interval-udf" class="md-nav__link">
     derive_apple_subscription_interval (UDF)
   </a>
@@ -2169,6 +2162,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#scrub_apple_receipt-udf" class="md-nav__link">
+    scrub_apple_receipt (UDF)
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2184,9 +2184,6 @@
 
 
 <h1 id="iap">iap</h1>
-<h2 id="scrub_apple_receipt-udf">scrub_apple_receipt (UDF)</h2>
-<p>Take output from mozfun.iap.parse_apple_receipt and remove fields or reduce their granularity so that the returned value can be exposed to all employees via redash.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/iap/scrub_apple_receipt">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/iap/scrub_apple_receipt/metadata.yaml">Edit</a></p>
 <h2 id="derive_apple_subscription_interval-udf">derive_apple_subscription_interval (UDF)</h2>
 <p>Take output purchase_date and expires_date from mozfun.iap.parse_apple_receipt and return the subscription interval to use for accounting. Values must be DATETIME in America/Los_Angeles to get correct results because of how timezone and daylight savings impact the time of day and the length of a month.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/iap/derive_apple_subscription_interval">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/iap/derive_apple_subscription_interval/metadata.yaml">Edit</a></p>
@@ -2196,6 +2193,9 @@
 <h2 id="parse_apple_receipt-udf">parse_apple_receipt (UDF)</h2>
 <p>Used to parse provider_receipt_json in mozilla vpn subscriptions where provider is "APPLE". The content is documented at <a href="https://developer.apple.com/documentation/appstorereceipts/responsebody">https://developer.apple.com/documentation/appstorereceipts/responsebody</a></p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/iap/parse_apple_receipt">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/iap/parse_apple_receipt/metadata.yaml">Edit</a></p>
+<h2 id="scrub_apple_receipt-udf">scrub_apple_receipt (UDF)</h2>
+<p>Take output from mozfun.iap.parse_apple_receipt and remove fields or reduce their granularity so that the returned value can be exposed to all employees via redash.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/iap/scrub_apple_receipt">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/iap/scrub_apple_receipt/metadata.yaml">Edit</a></p>
 
               
             </article>
@@ -2266,7 +2266,7 @@
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.85cb4492.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.431f3d41.min.js"></script>
+      <script src="../../assets/javascripts/bundle.a877e258.min.js"></script>
       
     
   </body>

@@ -19877,6 +19877,11 @@ fields:
       mode: NULLABLE
       name: webrtc_gmp_init_success
       type: STRING
+    - description: Whether a cookie was skipped in GetCookiesForURI because of a same-site
+        issue. This is a bit field.
+      mode: NULLABLE
+      name: cookie_retrieval_samesite_problem
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -41039,6 +41044,11 @@ fields:
         - description: Counts of GMP codec initialization success and failure
           mode: NULLABLE
           name: webrtc_gmp_init_success
+          type: STRING
+        - description: Whether a cookie was skipped in GetCookiesForURI because of
+            a same-site issue. This is a bit field.
+          mode: NULLABLE
+          name: cookie_retrieval_samesite_problem
           type: STRING
         mode: NULLABLE
         name: histograms

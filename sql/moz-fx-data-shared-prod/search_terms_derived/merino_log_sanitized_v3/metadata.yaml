@@ -16,10 +16,6 @@ bigquery:
     type: day
     require_partition_filter: true
     expiration_days: 15
-scheduling:
-  dag_name: bqetl_search_terms_daily
-  referenced_tables: []
-  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

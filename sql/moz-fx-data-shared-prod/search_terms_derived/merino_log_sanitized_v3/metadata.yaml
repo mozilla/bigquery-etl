@@ -8,7 +8,6 @@ description: |-
 
   This table allows removal of PII and longer retention than
   the underlying logs.
-  
   See https://github.com/mozilla/search-terms-sanitization (private)
   for the code that populates this table.
 bigquery:

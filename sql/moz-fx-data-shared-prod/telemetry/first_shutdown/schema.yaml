@@ -51078,6 +51078,44 @@ fields:
           mode: NULLABLE
           name: update_version_pin
           type: STRING
+        - description: 'Counts how many times about-page type was autofilled per engagement.
+
+            '
+          mode: NULLABLE
+          name: urlbar_impression_autofill_about
+          type: INTEGER
+        - description: 'Counts how many times adaptive history type was autofilled
+            per engagement.
+
+            '
+          mode: NULLABLE
+          name: urlbar_impression_autofill_adaptive
+          type: INTEGER
+        - description: 'Counts how many times origin type was autofilled per engagement.
+
+            '
+          mode: NULLABLE
+          name: urlbar_impression_autofill_origin
+          type: INTEGER
+        - description: 'Counts how many times other type was autofilled per engagement.
+
+            '
+          mode: NULLABLE
+          name: urlbar_impression_autofill_other
+          type: INTEGER
+        - description: 'Counts how many times preloaded site type was autofilled per
+            engagement.
+
+            '
+          mode: NULLABLE
+          name: urlbar_impression_autofill_preloaded
+          type: INTEGER
+        - description: 'Counts how many times url type was autofilled per engagement.
+
+            '
+          mode: NULLABLE
+          name: urlbar_impression_autofill_url
+          type: INTEGER
         mode: NULLABLE
         name: scalars
         type: RECORD

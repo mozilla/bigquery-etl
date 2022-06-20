@@ -318,6 +318,31 @@ fields:
       mode: NULLABLE
       name: gifft_validation_main_ping_assembling
       type: BOOLEAN
+    - description: 'The `AppStartReasonProvider.ActivityLifecycleCallbacks.onActivityCreated`
+
+        was unexpectedly called twice. We can use this metric to validate our
+
+        assumptions about how these APIs are called. This probe can be removed
+
+        once we validate these assumptions.
+
+        '
+      mode: NULLABLE
+      name: metrics_start_reason_activity_error
+      type: BOOLEAN
+    - description: 'The `AppStartReasonProvider.ProcessLifecycleObserver.onCreate`
+        was
+
+        unexpectedly called twice. We can use this metric to validate our
+
+        assumptions about how these APIs are called. This probe can be removed
+
+        once we validate these assumptions.
+
+        '
+      mode: NULLABLE
+      name: metrics_start_reason_process_error
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD
@@ -969,6 +994,62 @@ fields:
         type: INTEGER
       mode: REPEATED
       name: power_wakeups_per_thread_parent_inactive
+      type: RECORD
+    - description: 'Indicates how the browser was started. The label is divided into
+        two
+
+        variables. `state` is how cached the browser is when started. `path` is
+
+        what code path we are expected to take. Together, they create a combined
+
+        label: `state_path`. For brevity, the specific states are documented in
+
+        the [Fenix perf
+
+        glossary](https://wiki.mozilla.org/index.php?title=Performance/Fenix/Glossary).
+
+        <br><br>
+
+        This implementation is intended to be simple, not comprehensive. We list
+
+        the implications below.
+
+
+        <br><br>
+
+        These ways of opening the app undesirably adds events to our primary
+
+        buckets (non-`unknown` cases):
+
+        <br>- App switcher cold/warm: `cold/warm_` + duplicates path from
+
+        previous launch
+
+        <br>- An Intent is sent internally that''s uses `ACTION_MAIN` or
+
+        `ACTION_VIEW` could be: `*_main/view` (unknown if this ever happens)
+
+        <br>- A command-line launch uses `ACTION_MAIN` or `ACTION_VIEW` could be:
+
+        `*_main/view`
+
+
+        <br><br>
+
+        These ways of opening the app undesirably do not add their events to our
+
+        primary buckets:
+
+        <br>- Close and reopen '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: perf_startup_startup_type
       type: RECORD
     mode: NULLABLE
     name: labeled_counter

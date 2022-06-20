@@ -3,14 +3,28 @@
 {% from 'macros.sql' import enumerate_table_combinations %}
 
 WITH
-{{
-    enumerate_table_combinations(
-        source_table,
-        "all_combos",
-        cubed_attributes,
-        attribute_combinations
-    )
-}},
+build_ids AS (
+  SELECT
+    app_build_id,
+    channel,
+  FROM
+    {{ source_table }}
+  GROUP BY
+    app_build_id,
+    channel
+  HAVING
+    COUNT(DISTINCT client_id) > {{ minimum_client_count }}
+),
+valid_clients_scalar_aggregates AS (
+  SELECT
+    *
+  FROM
+    {{ source_table }}
+  INNER JOIN
+    build_ids
+  USING
+    (app_build_id, channel)
+),
 bucketed_booleans AS (
   SELECT
     client_id,
@@ -20,19 +34,8 @@ bucketed_booleans AS (
     NULL AS bucket_count,
     udf_boolean_buckets(scalar_aggregates) AS scalar_aggregates,
   FROM
-    all_combos
+    valid_clients_scalar_aggregates
 ),
-build_ids AS (
-  SELECT
-    app_build_id,
-    channel,
-  FROM
-    all_combos
-  GROUP BY
-    1,
-    2
-  HAVING
-      COUNT(DISTINCT client_id) > {{ minimum_client_count }}),
 log_min_max AS (
   SELECT
     metric,
@@ -41,11 +44,13 @@ log_min_max AS (
     LOG(IF(MAX(value) <= 0, 1, MAX(value)), 2) as range_max,
     100 as bucket_count
   FROM
-    all_combos
+    valid_clients_scalar_aggregates
     CROSS JOIN UNNEST(scalar_aggregates)
   WHERE
     metric_type <> "boolean"
-  GROUP BY 1, 2
+  GROUP BY
+    metric,
+    key
 ),
 buckets_by_metric AS (
   SELECT
@@ -70,7 +75,7 @@ bucketed_scalars AS (
       FORMAT("%.*f", 2, mozfun.glam.histogram_bucket_from_value(buckets, value) + 0.0001)
       AS STRING) AS bucket
   FROM
-    all_combos
+    valid_clients_scalar_aggregates
   CROSS JOIN UNNEST(scalar_aggregates)
   LEFT JOIN buckets_by_metric
     USING(metric, key)
@@ -104,14 +109,43 @@ booleans_and_scalars AS (
   FROM
     bucketed_scalars
 ),
-valid_booleans_scalars AS (
-  SELECT *
-  FROM booleans_and_scalars
-  INNER JOIN
-    build_ids
-  USING
-    (app_build_id, channel)
-)
+booleans_and_scalars_grouped AS (
+  SELECT
+    {{ attributes }},
+    {{ aggregate_attributes }},
+    agg_type,
+    range_min,
+    range_max,
+    bucket_count,
+    bucket,
+    -- Aggregate client ids into HLL sketch before cross joining with
+    -- attribute combinations to make the final aggregation cheaper
+    HLL_COUNT.INIT(client_id, 24) AS clients_hll,
+  FROM
+    booleans_and_scalars
+  GROUP BY
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    metric_type,
+    key,
+    agg_type,
+    range_min,
+    range_max,
+    bucket_count,
+    bucket
+),
+{{
+    enumerate_table_combinations(
+        "booleans_and_scalars_grouped",
+        "all_combos",
+        cubed_attributes,
+        attribute_combinations
+    )
+}}
 SELECT
   {{ attributes }},
   {{ aggregate_attributes }},
@@ -121,10 +155,9 @@ SELECT
   range_max,
   bucket_count,
   bucket,
-  -- we could rely on count(*) because there is one row per client and bucket
-  COUNT(DISTINCT client_id) AS count
+  HLL_COUNT.MERGE(clients_hll) AS count
 FROM
-  valid_booleans_scalars
+  all_combos
 GROUP BY
   {{ attributes }},
   {{ aggregate_attributes }},

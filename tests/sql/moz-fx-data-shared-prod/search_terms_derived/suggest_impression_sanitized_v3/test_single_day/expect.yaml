@@ -1,4 +1,5 @@
 - advertiser: shoe store
+  request_id: rid1
   block_id: bid1
   context_id: cid1
   country: US
@@ -14,7 +15,7 @@
   region: OH
   normalized_channel: nightly
   reporting_url: url1
-  query: "shoes for "
+  query: "shoes for"
   scenario: online
   submission_timestamp: 2021-01-01T12:00:00+00:00
   version: "94"
@@ -35,6 +36,7 @@
   version: "94"
 - block_id: bid7
   context_id: cid7
+  request_id: rid7
   country: US
   is_clicked: false
   locale: en-US

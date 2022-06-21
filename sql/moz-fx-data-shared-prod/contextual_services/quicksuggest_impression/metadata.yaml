@@ -4,19 +4,13 @@ friendly_name: Historical Pings for `contextual-services/quicksuggest-impression
 description: |-
   A historical view of pings sent for the
   `contextual-services/quicksuggest-impression`
-  document type, but with search terms fields excluded.
-
-  For search terms data contained in `quicksuggest-impression` pings,
-  consult the `search_terms` dataset which is governed by a separate access
-  policy.
+  document type.
 
   This view is guaranteed to contain only complete days
   (per `submission_timestamp`)
   and to contain only one row per distinct `document_id` within a given date.
 
   Clustering fields: `normalized_channel`, `sample_id`
-labels:
-  authorized: true
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

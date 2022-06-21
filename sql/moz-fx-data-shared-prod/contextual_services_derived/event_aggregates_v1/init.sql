@@ -21,3 +21,4 @@ SELECT
   CAST(NULL AS INT64) AS event_count,
   CAST(NULL AS INT64) AS user_count,
   CAST(NULL AS STRING) AS match_type,
+  CAST(NULL AS STRING) AS normalized_os,

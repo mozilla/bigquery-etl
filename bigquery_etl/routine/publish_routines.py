@@ -5,7 +5,8 @@ import os
 import re
 from argparse import ArgumentParser
 
-from google.cloud import bigquery, storage
+from google.cloud import storage  # type: ignore
+from google.cloud import bigquery
 
 from bigquery_etl.routine.parse_routine import accumulate_dependencies, read_routine_dir
 from bigquery_etl.util import standard_args

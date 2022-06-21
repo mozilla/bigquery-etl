@@ -1513,13 +1513,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#suggest_impression_sanitized" class="md-nav__link">
-    suggest_impression_sanitized
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -2156,13 +2149,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#suggest_impression_sanitized" class="md-nav__link">
-    suggest_impression_sanitized
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -2214,34 +2200,6 @@ Contextual Services Suggest Impression Pings</p>
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/aggregated_search_terms_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/aggregated_search_terms_daily/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/aggregated_search_terms_daily/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="suggest_impression_sanitized"><a href="#suggest_impression_sanitized">suggest_impression_sanitized</a></h2>
-<p><strong>Sanitized Firefox Suggest Impressions with Search Terms</strong></p>
-<p><code>search_terms.suggest_impression_sanitized</code></p>
-<p>A sanitized historical view of pings sent for the
-<code>contextual-services/quicksuggest-impression</code>
-document type, including search terms fields.</p>
-<p>Note that <code>quicksuggest-impression</code> pings with search terms excluded
-are presented separately under the <code>contextual_services</code> dataset.</p>
-<p>This view is guaranteed to contain only complete days
-(per <code>submission_timestamp</code>)
-and to contain only one row per distinct <code>document_id</code> within a given date.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms_derived>search_terms_derived</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms_derived/suggest_impression_sanitized_v1>suggest_impression_sanitized_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/suggest_impression_sanitized">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/suggest_impression_sanitized/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/suggest_impression_sanitized/metadata.yaml">Metadata File</a> </p>
 <hr />
 
               

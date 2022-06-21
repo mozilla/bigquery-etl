@@ -2401,10 +2401,7 @@ document type.</p>
 <p><code>contextual_services.quicksuggest_impression</code></p>
 <p>A historical view of pings sent for the
 <code>contextual-services/quicksuggest-impression</code>
-document type, but with search terms fields excluded.</p>
-<p>For search terms data contained in <code>quicksuggest-impression</code> pings,
-consult the <code>search_terms</code> dataset which is governed by a separate access
-policy.</p>
+document type.</p>
 <p>This view is guaranteed to contain only complete days
 (per <code>submission_timestamp</code>)
 and to contain only one row per distinct <code>document_id</code> within a given date.</p>
@@ -2418,8 +2415,8 @@ and to contain only one row per distinct <code>document_id</code> within a given
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms_derived>search_terms_derived</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms_derived/suggest_impression_sanitized_v1>suggest_impression_sanitized_v1</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/contextual_services_stable>contextual_services_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/contextual_services_stable/quicksuggest_impression_v1>quicksuggest_impression_v1</a></td>
         </tr>
 </table>
 

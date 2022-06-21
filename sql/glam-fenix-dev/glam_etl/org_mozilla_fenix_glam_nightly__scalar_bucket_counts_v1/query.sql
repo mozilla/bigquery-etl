@@ -89,39 +89,27 @@ RETURNS ARRAY<
   )
 );
 
-WITH
--- Cross join with the attribute combinations to reduce the query complexity
--- with respect to the number of operations. A table with n rows cross joined
--- with a combination of m attributes will generate a new table with n*m rows.
--- The glob ("*") symbol can be understood as selecting all of values belonging
--- to that group.
-static_combos AS (
+WITH build_ids AS (
   SELECT
-    combos.*
+    app_build_id,
+    channel,
   FROM
-    UNNEST(
-      ARRAY<STRUCT<ping_type STRING, os STRING, app_build_id STRING>>[
-        (NULL, NULL, NULL),
-        (NULL, NULL, "*"),
-        (NULL, "*", NULL),
-        ("*", NULL, NULL),
-        (NULL, "*", "*"),
-        ("*", NULL, "*"),
-        ("*", "*", NULL),
-        ("*", "*", "*")
-      ]
-    ) AS combos
+    glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1
+  GROUP BY
+    app_build_id,
+    channel
+  HAVING
+    COUNT(DISTINCT client_id) > 800
 ),
-all_combos AS (
+valid_clients_scalar_aggregates AS (
   SELECT
-    table.* EXCEPT (ping_type, os, app_build_id),
-    COALESCE(combo.ping_type, table.ping_type) AS ping_type,
-    COALESCE(combo.os, table.os) AS os,
-    COALESCE(combo.app_build_id, table.app_build_id) AS app_build_id
+    *
   FROM
-    glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1 table
-  CROSS JOIN
-    static_combos combo
+    glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1
+  INNER JOIN
+    build_ids
+  USING
+    (app_build_id, channel)
 ),
 bucketed_booleans AS (
   SELECT
@@ -136,19 +124,7 @@ bucketed_booleans AS (
     NULL AS bucket_count,
     udf_boolean_buckets(scalar_aggregates) AS scalar_aggregates,
   FROM
-    all_combos
-),
-build_ids AS (
-  SELECT
-    app_build_id,
-    channel,
-  FROM
-    all_combos
-  GROUP BY
-    1,
-    2
-  HAVING
-    COUNT(DISTINCT client_id) > 800
+    valid_clients_scalar_aggregates
 ),
 log_min_max AS (
   SELECT
@@ -158,14 +134,14 @@ log_min_max AS (
     LOG(IF(MAX(value) <= 0, 1, MAX(value)), 2) AS range_max,
     100 AS bucket_count
   FROM
-    all_combos
+    valid_clients_scalar_aggregates
   CROSS JOIN
     UNNEST(scalar_aggregates)
   WHERE
     metric_type <> "boolean"
   GROUP BY
-    1,
-    2
+    metric,
+    key
 ),
 buckets_by_metric AS (
   SELECT
@@ -201,7 +177,7 @@ bucketed_scalars AS (
       FORMAT("%.*f", 2, mozfun.glam.histogram_bucket_from_value(buckets, value) + 0.0001) AS STRING
     ) AS bucket
   FROM
-    all_combos
+    valid_clients_scalar_aggregates
   CROSS JOIN
     UNNEST(scalar_aggregates)
   LEFT JOIN
@@ -250,15 +226,73 @@ booleans_and_scalars AS (
   FROM
     bucketed_scalars
 ),
-valid_booleans_scalars AS (
+booleans_and_scalars_grouped AS (
   SELECT
-    *
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    metric_type,
+    key,
+    agg_type,
+    range_min,
+    range_max,
+    bucket_count,
+    bucket,
+    -- Aggregate client ids into HLL sketch before cross joining with
+    -- attribute combinations to make the final aggregation cheaper
+    HLL_COUNT.INIT(client_id, 24) AS clients_hll,
   FROM
     booleans_and_scalars
-  INNER JOIN
-    build_ids
-  USING
-    (app_build_id, channel)
+  GROUP BY
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    metric_type,
+    key,
+    agg_type,
+    range_min,
+    range_max,
+    bucket_count,
+    bucket
+),
+-- Cross join with the attribute combinations to reduce the query complexity
+-- with respect to the number of operations. A table with n rows cross joined
+-- with a combination of m attributes will generate a new table with n*m rows.
+-- The glob ("*") symbol can be understood as selecting all of values belonging
+-- to that group.
+static_combos AS (
+  SELECT
+    combos.*
+  FROM
+    UNNEST(
+      ARRAY<STRUCT<ping_type STRING, os STRING, app_build_id STRING>>[
+        (NULL, NULL, NULL),
+        (NULL, NULL, "*"),
+        (NULL, "*", NULL),
+        ("*", NULL, NULL),
+        (NULL, "*", "*"),
+        ("*", NULL, "*"),
+        ("*", "*", NULL),
+        ("*", "*", "*")
+      ]
+    ) AS combos
+),
+all_combos AS (
+  SELECT
+    table.* EXCEPT (ping_type, os, app_build_id),
+    COALESCE(combo.ping_type, table.ping_type) AS ping_type,
+    COALESCE(combo.os, table.os) AS os,
+    COALESCE(combo.app_build_id, table.app_build_id) AS app_build_id
+  FROM
+    booleans_and_scalars_grouped table
+  CROSS JOIN
+    static_combos combo
 )
 SELECT
   ping_type,
@@ -275,10 +309,9 @@ SELECT
   range_max,
   bucket_count,
   bucket,
-  -- we could rely on count(*) because there is one row per client and bucket
-  COUNT(DISTINCT client_id) AS count
+  HLL_COUNT.MERGE(clients_hll) AS count
 FROM
-  valid_booleans_scalars
+  all_combos
 GROUP BY
   ping_type,
   os,

@@ -1780,6 +1780,21 @@ fields:
       mode: REPEATED
       name: top_sites_pressed_tile_origin
       type: RECORD
+    - description: 'Recorded when the user enters the background. This reports
+
+        the currently selected wallpaper if it''s not the default.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: wallpaper_analytics_themed_wallpaper
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

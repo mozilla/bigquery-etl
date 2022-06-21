@@ -75,10 +75,8 @@ validated_queries AS (
 SELECT
   *
 FROM
-  validated_queries
-LEFT JOIN
   impressions
+LEFT JOIN
+  validated_queries
 USING
   (request_id)
-WHERE
-  impressions.request_id IS NOT NULL

@@ -2277,6 +2277,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#product_info_with_baseline" class="md-nav__link">
+    product_info_with_baseline
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#quantile_search_metric_contribution" class="md-nav__link">
     quantile_search_metric_contribution
   </a>
@@ -3620,6 +3627,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#product_info_with_baseline" class="md-nav__link">
+    product_info_with_baseline
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#quantile_search_metric_contribution" class="md-nav__link">
     quantile_search_metric_contribution
   </a>
@@ -4304,6 +4318,12 @@ by build date.</p>
 <p><code>udf.pos_of_trailing_set_bit</code></p>
 <p>Identical to bits28_days_since_seen.  Returns a 0-based index of the rightmost set bit in the passed bit pattern or null if no bits are set (bits = 0).  To determine this position, we take a bitwise AND of the bit pattern and its complement, then we determine the position of the bit via base-2 logarithm; see https://stackoverflow.com/a/42747608/1260237</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/pos_of_trailing_set_bit">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/pos_of_trailing_set_bit/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="product_info_with_baseline"><a href="#product_info_with_baseline">product_info_with_baseline</a></h2>
+<p><strong>Product Info with Baseline</strong></p>
+<p><code>udf.product_info_with_baseline</code></p>
+<p>Similar to mozfun.norm.product_info(), but this UDF also handles "baseline" apps that were introduced differentiate for certain apps whether data is sent through Glean or core pings. This UDF has been temporarily introduced as part of https://bugzilla.mozilla.org/show_bug.cgi?id=1775216</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/product_info_with_baseline">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/product_info_with_baseline/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="quantile_search_metric_contribution"><a href="#quantile_search_metric_contribution">quantile_search_metric_contribution</a></h2>
 <p><strong>Quantile Search Metric Contribution</strong></p>

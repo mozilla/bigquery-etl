@@ -37,7 +37,9 @@ WITH impressions AS (
 ),
 sanitized_queries AS (
   SELECT
-    *
+    TIMESTAMP_TRUNC(timestamp, SECOND) as timestamp,
+    LTRIM(LOWER(query)) as query,
+    * except (timestamp, query)
   FROM
     `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3`
   WHERE

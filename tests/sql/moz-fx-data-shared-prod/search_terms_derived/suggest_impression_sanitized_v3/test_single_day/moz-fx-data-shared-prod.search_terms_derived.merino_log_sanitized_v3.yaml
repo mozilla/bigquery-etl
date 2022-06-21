@@ -1,27 +1,27 @@
 - timestamp: "2021-01-01 12:00:01.456789"
   request_id: rid1
   query: "shoes for"
-  country: US
-  region: none
-  dma: none
+  country: null
+  region: null
+  dma: null
   form_factor: desktop
   browser: firefox(96)
   os_family: windows
 - timestamp: "2021-01-01 12:07:00.223"
   request_id: rid7
   query: "another query"
-  country: US
-  region: none
-  dma: none
+  country: null
+  region: null
+  dma: null
   form_factor: desktop
   browser: firefox(96)
   os_family: macos
 - timestamp: "2021-01-01 12:09:00.223"
   request_id: rid9
   query: "query with no impression"
-  country: US
-  region: none
-  dma: none
+  country: null
+  region: null
+  dma: null
   form_factor: desktop
   browser: firefox(96)
   os_family: macos

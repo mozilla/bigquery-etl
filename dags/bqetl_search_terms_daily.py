@@ -117,6 +117,23 @@ with DAG(
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
+    search_terms_derived__suggest_impression_sanitized__v3 = bigquery_etl_query(
+        task_id="search_terms_derived__suggest_impression_sanitized__v3",
+        destination_table="suggest_impression_sanitized_v3",
+        dataset_id="search_terms_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ctroy@mozilla.com",
+        email=[
+            "ctroy@mozilla.com",
+            "jklukas@mozilla.com",
+            "rburwei@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+    )
+
     search_terms_derived__adm_daily_aggregates__v1.set_upstream(
         search_terms_derived__suggest_impression_sanitized__v2
     )

@@ -56,7 +56,7 @@ sanitized_queries_count AS (
 -- output, which allows us to raise an error in the WHERE clause.
 validated_queries AS (
   SELECT
-    * EXCEPT (_n, _n_with_query),
+    * EXCEPT (_n, _n_with_query, region, country),
   FROM
     sanitized_queries_count
   LEFT JOIN
@@ -80,3 +80,5 @@ LEFT JOIN
   impressions
 USING
   (request_id)
+WHERE
+  impressions.request_id IS NOT NULL

@@ -1,5 +1,9 @@
 - agg_type: percentiles
   aggregates:
+  - key: '0.1'
+    value: 4.0
+  - key: '0.1'
+    value: 4.0
   - key: '5'
     value: 4.0
   - key: '25'
@@ -9,6 +13,10 @@
   - key: '75'
     value: 8.0
   - key: '95'
+    value: 8.0
+  - key: '99'
+    value: 8.0
+  - key: '99.9'
     value: 8.0
   app_build_id: '*'
   app_version: 84

@@ -4,11 +4,10 @@
   country: US
   is_clicked: False
   locale: en-US
-  merino_browser: firefox(96)
-  merino_country: US
-  merino_form_factor: desktop
-  merino_os_family: windows
-  merino_timestamp: 2021-01-01T12:00:01+00:00
+  browser: firefox(96)
+  form_factor: desktop
+  os_family: windows
+  timestamp: 2021-01-01T12:00:01+00:00
   normalized_os: Windows
   normalized_os_version: 11.0
   position: 1
@@ -31,7 +30,6 @@
   region: AK
   normalized_channel: nightly
   reporting_url: url2
-  query: "new gui"
   scenario: online
   submission_timestamp: 2021-01-01T12:03:00+00:00
   version: "94"
@@ -40,11 +38,10 @@
   country: US
   is_clicked: false
   locale: en-US
-  merino_browser: firefox(96)
-  merino_country: US
-  merino_form_factor: desktop
-  merino_os_family: macos
-  merino_timestamp: 2021-01-01T12:07:00+00:00
+  browser: firefox(96)
+  form_factor: desktop
+  os_family: macos
+  timestamp: 2021-01-01T12:07:00+00:00
   normalized_os: macOS
   normalized_os_version: 10.9
   position: 7

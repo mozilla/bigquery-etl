@@ -37,9 +37,9 @@ WITH impressions AS (
 ),
 sanitized_queries AS (
   SELECT
-    TIMESTAMP_TRUNC(timestamp, SECOND) as timestamp,
-    LTRIM(LOWER(query)) as query,
-    * except (timestamp, query)
+    TIMESTAMP_TRUNC(timestamp, SECOND) AS timestamp,
+    LTRIM(LOWER(query)) AS query,
+    * EXCEPT (timestamp, query, region, country)
   FROM
     `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3`
   WHERE
@@ -58,7 +58,7 @@ sanitized_queries_count AS (
 -- output, which allows us to raise an error in the WHERE clause.
 validated_queries AS (
   SELECT
-    * EXCEPT (_n, _n_with_query, region, country),
+    * EXCEPT (_n, _n_with_query),
   FROM
     sanitized_queries_count
   LEFT JOIN

@@ -239,7 +239,7 @@ unioned AS (
     locale,
     NULL AS distribution_id,
     app_display_version AS app_version,
-    mozfun.norm.product_info(app_name, normalized_os) AS pinfo,
+    `moz-fx-data-shared-prod.udf.product_info_with_baseline`(app_name, normalized_os) AS pinfo,
   FROM
     glean_final
 )

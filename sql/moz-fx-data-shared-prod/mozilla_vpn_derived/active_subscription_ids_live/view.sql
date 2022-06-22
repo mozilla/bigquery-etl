@@ -8,3 +8,5 @@ FROM
   mozdata.mozilla_vpn.all_subscriptions
 CROSS JOIN
   UNNEST(GENERATE_DATE_ARRAY(DATE(subscription_start_date), DATE(end_date) - 1)) AS active_date
+WHERE
+  subscription_start_date IS NOT NULL

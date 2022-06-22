@@ -2168,6 +2168,13 @@ depends_on:</li>
 <li><code>dag_name</code>: name of the DAG the external task is part of</li>
 <li><code>execution_delta</code>: time difference between the <code>schedule_intervals</code> of the external DAG and the DAG the query is part of</li>
 <li><code>destination_table</code>: The table to write to. If unspecified, defaults to the query destination; if None, no destination table is used (the query is simply run as-is). Note that if no destination table is specified, you will need to specify the <code>submission_date</code> parameter manually</li>
+<li><code>external_downstream_tasks</code> defines external downstream dependencies for which <a href="https://airflow.apache.org/docs/apache-airflow/stable/howto/operator/external_task_sensor.html#externaltaskmarker"><code>ExternalTaskMarker</code>s</a> will be added to the generated DAG. These task markers ensure that when the task is cleared for triggering a rerun, all downstream tasks are automatically cleared as well.
+```yaml
+external_downstream_tasks:</li>
+<li>task_id: external_downstream_task
+    dag_name: external_dag
+    execution_delta: 1h
+```</li>
 </ul>
 </li>
 <li>Queries can also be scheduled using the <code>bqetl</code> CLI: <code>./bqetl query schedule path/to/query_v1 --dag bqetl_ssl_ratios</code></li>

@@ -23,6 +23,10 @@ scheduling:
   - dthorn@mozilla.com
   - jklukas@mozilla.com
   depends_on_past: true
+  external_downstream_tasks:
+  - task_id: wait_for_clients_last_seen
+    dag_name: taar_daily
+    execution_delta: 2h
 bigquery:
   time_partitioning:
     field: submission_date

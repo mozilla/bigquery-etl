@@ -1,8 +1,11 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from operators.task_sensor import ExternalTaskCompletedSensor
+from airflow.sensors.external_task import ExternalTaskMarker
+from airflow.sensors.external_task import ExternalTaskSensor
+from airflow.utils.task_group import TaskGroup
 import datetime
+from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
 docs = """
@@ -84,6 +87,20 @@ with DAG(
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
+
+    with TaskGroup(
+        "search_terms_derived__adm_weekly_aggregates__v1_external"
+    ) as search_terms_derived__adm_weekly_aggregates__v1_external:
+        ExternalTaskMarker(
+            task_id="adm_export__wait_for_adm_weekly_aggregates",
+            external_dag_id="adm_export",
+            external_task_id="wait_for_adm_weekly_aggregates",
+            execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        search_terms_derived__adm_weekly_aggregates__v1_external.set_upstream(
+            search_terms_derived__adm_weekly_aggregates__v1
+        )
 
     search_terms_derived__aggregated_search_terms_daily__v1 = bigquery_etl_query(
         task_id="search_terms_derived__aggregated_search_terms_daily__v1",

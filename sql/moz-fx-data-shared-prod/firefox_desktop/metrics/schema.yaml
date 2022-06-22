@@ -988,6 +988,19 @@ fields:
       mode: NULLABLE
       name: fog_initialization
       type: RECORD
+    - description: 'Time to load and deserialize the extensions startupCache data.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: NULLABLE
+      name: extensions_startup_cache_load_time
+      type: RECORD
     mode: NULLABLE
     name: timespan
     type: RECORD

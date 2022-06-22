@@ -351,6 +351,9 @@ clients_summary AS (
     payload.processes.parent.keyed_scalars.urlbar_searchmode_typed AS scalar_parent_urlbar_searchmode_typed,
     payload.processes.parent.keyed_scalars.browser_ui_interaction_preferences_pane_home AS scalar_parent_browser_ui_interaction_preferences_pane_home,
     payload.processes.parent.keyed_scalars.urlbar_picked_autofill AS scalar_parent_urlbar_picked_autofill,
+    payload.processes.parent.keyed_scalars.urlbar_picked_autofill_adaptive AS scalar_parent_urlbar_picked_autofill_adaptive,
+    payload.processes.parent.keyed_scalars.urlbar_picked_autofill_origin AS scalar_parent_urlbar_picked_autofill_origin,
+    payload.processes.parent.keyed_scalars.urlbar_picked_autofill_url AS scalar_parent_urlbar_picked_autofill_url,
     payload.processes.parent.keyed_scalars.urlbar_picked_bookmark AS scalar_parent_urlbar_picked_bookmark,
     payload.processes.parent.keyed_scalars.urlbar_picked_dynamic AS scalar_parent_urlbar_picked_dynamic,
     payload.processes.parent.keyed_scalars.urlbar_picked_extension AS scalar_parent_urlbar_picked_extension,
@@ -1093,6 +1096,9 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_typed)),
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_browser_ui_interaction_preferences_pane_home)),
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_adaptive)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_origin)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_url)),
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_bookmark)),
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_dynamic)),
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_extension)),
@@ -1252,7 +1258,7 @@ SELECT
   map_sum_aggregates[
     OFFSET(15)
   ].map AS scalar_parent_browser_ui_interaction_preferences_pane_home_sum,
-  map_sum_aggregates[OFFSET(16)].map AS scalar_parent_urlbar_picked_autofill_sum,
+  map_sum_aggregates[OFFSET(16)].map AS scalar_parent_urlbar_picked_autofill_sum, --WHAT DO WE DO HERE
   map_sum_aggregates[OFFSET(17)].map AS scalar_parent_urlbar_picked_bookmark_sum,
   map_sum_aggregates[OFFSET(18)].map AS scalar_parent_urlbar_picked_dynamic_sum,
   map_sum_aggregates[OFFSET(19)].map AS scalar_parent_urlbar_picked_extension_sum,

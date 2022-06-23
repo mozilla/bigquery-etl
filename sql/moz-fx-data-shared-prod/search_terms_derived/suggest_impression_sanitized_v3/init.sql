@@ -1,14 +1,29 @@
 CREATE TABLE IF NOT EXISTS
   `moz-fx-data-shared-prod.search_terms_derived.suggest_impression_sanitized_v3`(
-    timestamp timestamp,
-    request_id string,
-    query string,
-    country string,
-    region string,
-    dma string,
-    form_factor string,
-    browser string,
-    os_family string
+    request_id STRING,
+    submission_timestamp TIMESTAMP,
+    telemetry_query STRING,
+    advertiser STRING,
+    block_id INTEGER,
+    context_id STRING,
+    sample_id INTEGER,
+    is_clicked BOOLEAN,
+    locale STRING,
+    country STRING,
+    region STRING,
+    normalized_os STRING,
+    normalized_os_version STRING,
+    normalized_channel STRING,
+    position INTEGER,
+    reporting_url STRING,
+    scenario STRING,
+    version STRING,
+    timestamp TIMESTAMP,
+    query STRING,
+    dma STRING,
+    form_factor STRING,
+    browser STRING,
+    os_family STRING,
   )
 PARTITION BY
   DATE(timestamp)

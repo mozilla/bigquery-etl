@@ -16,7 +16,7 @@ description: |-
 
 bigquery:
   time_partitioning:
-    field: timestamp
+    field: submission_timestamp
     type: day
     require_partition_filter: true
     expiration_days: 15

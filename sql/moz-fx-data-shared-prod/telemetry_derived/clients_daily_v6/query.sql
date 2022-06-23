@@ -1084,6 +1084,12 @@ aggregates AS (
       ),
       SUM((SELECT SUM(value) FROM UNNEST(scalar_parent_browser_search_with_ads)))
     ) AS search_with_ads_count_all,
+    SUM(scalar_parent_urlbar_impression_autofill_about) AS scalar_parent_urlbar_impression_autofill_about,
+    SUM(scalar_parent_urlbar_impression_autofill_adaptive) AS scalar_parent_urlbar_impression_autofill_adaptive,
+    SUM(scalar_parent_urlbar_impression_autofill_origin) AS scalar_parent_urlbar_impression_autofill_origin,
+    SUM(scalar_parent_urlbar_impression_autofill_other) AS scalar_parent_urlbar_impression_autofill_other,
+    SUM(scalar_parent_urlbar_impression_autofill_preloaded) AS scalar_parent_urlbar_impression_autofill_preloaded,
+    SUM(scalar_parent_urlbar_impression_autofill_url) AS scalar_parent_urlbar_impression_autofill_url,
     [
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_telemetry_event_counts) AS agg),
       STRUCT(ARRAY_CONCAT_AGG(scalar_content_telemetry_event_counts)),

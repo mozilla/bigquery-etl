@@ -403,8 +403,9 @@ class TestTask:
 
         task = Task.of_query(query_file, metadata)
         dags = DagCollection.from_dict({})
-        task.with_dependencies(dags)
-        assert task.dependencies == []
+        task.with_upstream_dependencies(dags)
+        assert task.upstream_dependencies == []
+        assert task.downstream_dependencies == []
 
     @pytest.mark.java
     def test_task_get_multiple_dependencies(self, tmp_path):
@@ -444,8 +445,8 @@ class TestTask:
             }
         ).with_tasks([task, table_task1, table_task2])
 
-        task.with_dependencies(dags)
-        result = task.dependencies
+        task.with_upstream_dependencies(dags)
+        result = task.upstream_dependencies
 
         tables = [t.task_id for t in result]
 
@@ -490,8 +491,8 @@ class TestTask:
             }
         ).with_tasks([task, table_task1, table_task2])
 
-        task.with_dependencies(dags)
-        result = task.dependencies
+        task.with_upstream_dependencies(dags)
+        result = task.upstream_dependencies
 
         tables = [t.task_id for t in result]
 
@@ -545,8 +546,8 @@ class TestTask:
             }
         ).with_tasks([task, table_task1, table_task2])
 
-        task.with_dependencies(dags)
-        result = task.dependencies
+        task.with_upstream_dependencies(dags)
+        result = task.upstream_dependencies
 
         tables = [t.task_id for t in result]
 
@@ -609,8 +610,8 @@ class TestTask:
             }
         ).with_tasks([task, table_task1, table_task2])
 
-        task.with_dependencies(dags)
-        result = task.dependencies
+        task.with_upstream_dependencies(dags)
+        result = task.upstream_dependencies
         tables = [t.task_id for t in result]
 
         assert "test__table1__v1" in tables

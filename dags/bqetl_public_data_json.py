@@ -4,7 +4,8 @@ from airflow import DAG
 from airflow.utils.state import State
 import datetime
 from operators.gcp_container_operator import GKEPodOperator
-from operators.task_sensor import ExternalTaskCompletedSensor
+from operators.task_sensor import ExternalTaskSensor
+from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import gke_command
 
 docs = """
@@ -89,49 +90,34 @@ with DAG(
         image=docker_image,
     )
 
-    wait_for_client_probe_processes__v1 = ExternalTaskCompletedSensor(
-        task_id="wait_for_client_probe_processes__v1",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="client_probe_processes__v1",
-        execution_delta=datetime.timedelta(seconds=10800),
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
         check_existence=True,
         mode="reschedule",
-        failed_states=[State.FAILED, State.UPSTREAM_FAILED, State.SKIPPED],
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    export_public_data_json_client_probe_processes__v1.set_upstream(
-        wait_for_client_probe_processes__v1
-    )
-
-    wait_for_mozregression_aggregates__v1 = ExternalTaskCompletedSensor(
-        task_id="wait_for_mozregression_aggregates__v1",
-        external_dag_id="bqetl_internal_tooling",
-        external_task_id="mozregression_aggregates__v1",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        failed_states=[State.FAILED, State.UPSTREAM_FAILED, State.SKIPPED],
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     export_public_data_json_mozregression_aggregates__v1.set_upstream(
-        wait_for_mozregression_aggregates__v1
+        wait_for_copy_deduplicate_all
     )
 
-    wait_for_telemetry_derived__ssl_ratios__v1 = ExternalTaskCompletedSensor(
-        task_id="wait_for_telemetry_derived__ssl_ratios__v1",
-        external_dag_id="bqetl_ssl_ratios",
-        external_task_id="telemetry_derived__ssl_ratios__v1",
-        execution_delta=datetime.timedelta(seconds=10800),
+    wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_main_ping",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_main_ping",
         check_existence=True,
         mode="reschedule",
-        failed_states=[State.FAILED, State.UPSTREAM_FAILED, State.SKIPPED],
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     export_public_data_json_telemetry_derived__ssl_ratios__v1.set_upstream(
-        wait_for_telemetry_derived__ssl_ratios__v1
+        wait_for_copy_deduplicate_main_ping
     )
 
     public_data_gcs_metadata = gke_command(

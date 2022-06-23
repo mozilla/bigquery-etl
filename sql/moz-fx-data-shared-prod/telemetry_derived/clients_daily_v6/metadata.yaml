@@ -17,6 +17,16 @@ labels:
 scheduling:
   dag_name: bqetl_main_summary
   start_date: '2019-11-05'
+  external_downstream_tasks:
+  - task_id: wait_for_clients_daily
+    dag_name: jetstream
+    execution_delta: 2h
+  - task_id: wait_for_clients_daily
+    dag_name: operational_monitoring
+    execution_delta: 2h
+  - task_id: wait_for_clients_daily
+    dag_name: parquet_export
+    execution_delta: 1h
 bigquery:
   time_partitioning:
     field: submission_date

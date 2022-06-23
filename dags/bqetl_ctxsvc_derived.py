@@ -1,8 +1,11 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from operators.task_sensor import ExternalTaskCompletedSensor
+from airflow.sensors.external_task import ExternalTaskMarker
+from airflow.sensors.external_task import ExternalTaskSensor
+from airflow.utils.task_group import TaskGroup
 import datetime
+from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
 docs = """
@@ -53,30 +56,18 @@ with DAG(
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
-    wait_for_copy_deduplicate_all = ExternalTaskCompletedSensor(
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
         execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     contextual_services_derived__event_aggregates__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-    wait_for_search_terms_derived__suggest_impression_sanitized__v1 = (
-        ExternalTaskCompletedSensor(
-            task_id="wait_for_search_terms_derived__suggest_impression_sanitized__v1",
-            external_dag_id="bqetl_search_terms_daily",
-            external_task_id="search_terms_derived__suggest_impression_sanitized__v1",
-            check_existence=True,
-            mode="reschedule",
-            pool="DATA_ENG_EXTERNALTASKSENSOR",
-        )
-    )
-
-    contextual_services_derived__event_aggregates__v1.set_upstream(
-        wait_for_search_terms_derived__suggest_impression_sanitized__v1
     )

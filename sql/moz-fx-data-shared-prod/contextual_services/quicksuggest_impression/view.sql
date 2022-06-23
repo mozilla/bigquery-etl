@@ -7,4 +7,4 @@ SELECT
     LOWER(advertiser) AS advertiser
   )
 FROM
-  `moz-fx-data-shared-prod.search_terms_derived.suggest_impression_sanitized_v1`
+  `moz-fx-data-shared-prod.contextual_services_stable.quicksuggest_impression_v1`

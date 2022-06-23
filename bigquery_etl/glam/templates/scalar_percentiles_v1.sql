@@ -23,7 +23,7 @@ percentiles AS (
         {{ aggregate_attributes }},
         agg_type AS client_agg_type,
         'percentiles' AS agg_type,
-        COUNT(DISTINCT(client_id)) AS total_users,
+        APPROX_COUNT_DISTINCT(client_id) AS total_users,
         APPROX_QUANTILES(value, 1000) AS aggregates
     FROM
         all_combos

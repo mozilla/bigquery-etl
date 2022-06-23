@@ -54,6 +54,12 @@ def format_timedelta(timdelta_string):
     return timedelta(**time_params)
 
 
+def format_timedelta_macro(timedelta_string):
+    """Format an Airflow timedelta macro."""
+    timedelta = repr(format_timedelta(timedelta_string))
+    return timedelta.replace("datetime", "macros")
+
+
 def format_optional_string(val):
     """Format a value that is either None or a string."""
     if val is None:

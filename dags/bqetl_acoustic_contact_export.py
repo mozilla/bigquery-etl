@@ -1,8 +1,11 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from operators.task_sensor import ExternalTaskCompletedSensor
+from airflow.sensors.external_task import ExternalTaskMarker
+from airflow.sensors.external_task import ExternalTaskSensor
+from airflow.utils.task_group import TaskGroup
 import datetime
+from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
 docs = """
@@ -81,13 +84,15 @@ with DAG(
 
     acoustic__contact_current_snapshot__v1.set_upstream(acoustic__contact__v1)
 
-    wait_for_fivetran_load_completed = ExternalTaskCompletedSensor(
+    wait_for_fivetran_load_completed = ExternalTaskSensor(
         task_id="wait_for_fivetran_load_completed",
         external_dag_id="fivetran_acoustic_contact_export",
         external_task_id="fivetran_load_completed",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 

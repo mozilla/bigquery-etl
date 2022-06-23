@@ -208,20 +208,17 @@ class Dag:
 
         return env
 
-    def to_airflow_dag(self, dag_collection):
+    def to_airflow_dag(self):
         """Convert the DAG to its Airflow representation and return the python code."""
-        env = self._jinja_env()
-        dag_template = env.get_template(AIRFLOW_DAG_TEMPLATE)
-
-        args = self.__dict__
-        if len(args["tasks"]) == 0:
+        if len(self.tasks) == 0:
             raise InvalidDag(
                 f"DAG {self.name} has no tasks - cannot convert it to a valid .py DAG "
                 f"file. Does it appear under `scheduling` in any metadata.yaml files?"
             )
 
-        for task in args["tasks"]:
-            task.with_dependencies(dag_collection)
+        env = self._jinja_env()
+        dag_template = env.get_template(AIRFLOW_DAG_TEMPLATE)
+        args = self.__dict__
 
         return dag_template.render(args)
 
@@ -229,7 +226,7 @@ class Dag:
 class PublicDataJsonDag(Dag):
     """Special DAG with tasks exporting public json data to GCS."""
 
-    def to_airflow_dag(self, dag_collection):
+    def to_airflow_dag(self):
         """Convert the DAG to its Airflow representation and return the python code."""
         env = self._jinja_env()
         dag_template = env.get_template(PUBLIC_DATA_JSON_DAG_TEMPLATE)

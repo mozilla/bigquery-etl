@@ -10,6 +10,7 @@
   advertiser: ad1
   release_channel: release
   match_type: "firefox-suggest"
+  normalized_os: Windows
   position: 1
   event_count: 52
   user_count: 2
@@ -27,6 +28,7 @@
   subdivision1: AZ
   advertiser: ad1
   release_channel: release
+  normalized_os: Windows
   position: 1
   event_count: 52
   user_count: 2
@@ -44,6 +46,7 @@
   subdivision1: NY
   advertiser: ad3
   release_channel: release
+  normalized_os: Android
   position: 1
   event_count: 1
   user_count: 1

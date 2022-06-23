@@ -1,8 +1,11 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from operators.task_sensor import ExternalTaskCompletedSensor
+from airflow.sensors.external_task import ExternalTaskMarker
+from airflow.sensors.external_task import ExternalTaskSensor
+from airflow.utils.task_group import TaskGroup
 import datetime
+from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
 docs = """
@@ -26,15 +29,15 @@ mitigation.
 
 #### Owner
 
-jklukas@mozilla.com
+dthorn@mozilla.com
 """
 
 
 default_args = {
-    "owner": "jklukas@mozilla.com",
+    "owner": "dthorn@mozilla.com",
     "start_date": datetime.datetime(2019, 3, 1, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=600),
     "email_on_failure": True,
@@ -57,8 +60,8 @@ with DAG(
         destination_table="exact_mau28_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -68,32 +71,74 @@ with DAG(
         destination_table="fxa_auth_events_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
+
+    with TaskGroup(
+        "firefox_accounts_derived__fxa_auth_events__v1_external"
+    ) as firefox_accounts_derived__fxa_auth_events__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_subplat__wait_for_firefox_accounts_derived__fxa_auth_events__v1",
+            external_dag_id="bqetl_subplat",
+            external_task_id="wait_for_firefox_accounts_derived__fxa_auth_events__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_event_rollup__wait_for_firefox_accounts_derived__fxa_auth_events__v1",
+            external_dag_id="bqetl_event_rollup",
+            external_task_id="wait_for_firefox_accounts_derived__fxa_auth_events__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
+        )
+
+        firefox_accounts_derived__fxa_auth_events__v1_external.set_upstream(
+            firefox_accounts_derived__fxa_auth_events__v1
+        )
 
     firefox_accounts_derived__fxa_content_events__v1 = bigquery_etl_query(
         task_id="firefox_accounts_derived__fxa_content_events__v1",
         destination_table="fxa_content_events_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
+
+    with TaskGroup(
+        "firefox_accounts_derived__fxa_content_events__v1_external"
+    ) as firefox_accounts_derived__fxa_content_events__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_subplat__wait_for_firefox_accounts_derived__fxa_content_events__v1",
+            external_dag_id="bqetl_subplat",
+            external_task_id="wait_for_firefox_accounts_derived__fxa_content_events__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_event_rollup__wait_for_firefox_accounts_derived__fxa_content_events__v1",
+            external_dag_id="bqetl_event_rollup",
+            external_task_id="wait_for_firefox_accounts_derived__fxa_content_events__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
+        )
+
+        firefox_accounts_derived__fxa_content_events__v1_external.set_upstream(
+            firefox_accounts_derived__fxa_content_events__v1
+        )
 
     firefox_accounts_derived__fxa_delete_events__v1 = bigquery_etl_query(
         task_id="firefox_accounts_derived__fxa_delete_events__v1",
         destination_table="fxa_delete_events_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -103,8 +148,8 @@ with DAG(
         destination_table="fxa_log_auth_events_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -114,8 +159,8 @@ with DAG(
         destination_table="fxa_log_content_events_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -125,8 +170,8 @@ with DAG(
         destination_table="fxa_log_device_command_events_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -136,20 +181,34 @@ with DAG(
         destination_table="fxa_stdout_events_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
+
+    with TaskGroup(
+        "firefox_accounts_derived__fxa_stdout_events__v1_external"
+    ) as firefox_accounts_derived__fxa_stdout_events__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_subplat__wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
+            external_dag_id="bqetl_subplat",
+            external_task_id="wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+        )
+
+        firefox_accounts_derived__fxa_stdout_events__v1_external.set_upstream(
+            firefox_accounts_derived__fxa_stdout_events__v1
+        )
 
     firefox_accounts_derived__fxa_users_daily__v1 = bigquery_etl_query(
         task_id="firefox_accounts_derived__fxa_users_daily__v1",
         destination_table="fxa_users_daily_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -161,8 +220,8 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",
         email=[
+            "dthorn@mozilla.com",
             "frank@mozilla.com",
-            "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         start_date=datetime.datetime(2021, 7, 9, 0, 0),
@@ -177,20 +236,34 @@ with DAG(
         destination_table="fxa_users_last_seen_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         start_date=datetime.datetime(2019, 4, 23, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=True,
     )
+
+    with TaskGroup(
+        "firefox_accounts_derived__fxa_users_last_seen__v1_external"
+    ) as firefox_accounts_derived__fxa_users_last_seen__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_gud__wait_for_firefox_accounts_derived__fxa_users_last_seen__v1",
+            external_dag_id="bqetl_gud",
+            external_task_id="wait_for_firefox_accounts_derived__fxa_users_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
+        )
+
+        firefox_accounts_derived__fxa_users_last_seen__v1_external.set_upstream(
+            firefox_accounts_derived__fxa_users_last_seen__v1
+        )
 
     firefox_accounts_derived__fxa_users_services_daily__v1 = bigquery_etl_query(
         task_id="firefox_accounts_derived__fxa_users_services_daily__v1",
         destination_table="fxa_users_services_daily_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -200,8 +273,8 @@ with DAG(
         destination_table="nonprod_fxa_auth_events_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
@@ -212,8 +285,8 @@ with DAG(
         destination_table="nonprod_fxa_content_events_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
@@ -224,8 +297,8 @@ with DAG(
         destination_table="nonprod_fxa_stdout_events_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],

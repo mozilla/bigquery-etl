@@ -1,8 +1,11 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from operators.task_sensor import ExternalTaskCompletedSensor
+from airflow.sensors.external_task import ExternalTaskMarker
+from airflow.sensors.external_task import ExternalTaskSensor
+from airflow.utils.task_group import TaskGroup
 import datetime
+from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
 {% set ns = namespace(uses_fivetran=False) -%}
@@ -119,19 +122,52 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     {% if not task.is_python_script -%}
     {% endif -%}
         )
+
+    {% if (task.downstream_dependencies + task.external_downstream_tasks)|length > 0 -%}
+    {% set seenDownstreamDags = [] %}
+    with TaskGroup('{{ task.task_name }}_external') as {{ task.task_name }}_external:
+        {% for downstream_task in task.downstream_dependencies | sort(attribute='task_id') -%}
+        {% if downstream_task.dag_name not in seenDownstreamDags -%}
+        ExternalTaskMarker(
+            task_id='{{ downstream_task.dag_name }}__wait_for_{{ task.task_name }}',
+            external_dag_id='{{ downstream_task.dag_name }}',
+            external_task_id='wait_for_{{ task.task_name }}',
+            {% if downstream_task.get_execution_delta(schedule_interval) -%}
+            execution_date="{% raw %}{{{% endraw %} (execution_date - {{ downstream_task.get_execution_delta(schedule_interval) | format_timedelta_macro }}).isoformat() {% raw %}}}{% endraw %}",
+            {% endif -%}
+        )
+        {{ seenDownstreamDags.append(downstream_task.dag_name) or "" }}
+        {% endif -%}
+        {% endfor -%}
+        {% for downstream_task in task.external_downstream_tasks | sort(attribute='task_id') -%}
+        {% if downstream_task.dag_name not in seenDownstreamDags -%}
+        ExternalTaskMarker(
+            task_id='{{ downstream_task.dag_name }}__{{ downstream_task.task_id }}',
+            external_dag_id='{{ downstream_task.dag_name }}',
+            external_task_id='{{ downstream_task.task_id }}',
+            {% if downstream_task.get_execution_delta(schedule_interval) -%}
+            execution_date="{% raw %}{{{% endraw %} (execution_date + {{ downstream_task.get_execution_delta(schedule_interval) | format_timedelta_macro }}).isoformat() {% raw %}}}{% endraw %}",
+            {% endif -%}
+        )
+        {{ seenDownstreamDags.append(downstream_task.dag_name) or "" }}
+        {% endif -%}
+        {% endfor -%}
+
+        {{ task.task_name }}_external.set_upstream({{ task.task_name }})
+    {% endif -%}
 {% endfor -%}
 
 {% set wait_for_seen = [] -%}
 {% set fivetran_seen = [] -%}
 {% for task in tasks | sort(attribute='task_name') %}
-    {% for dependency in (task.dependencies + task.depends_on) | sort(attribute='task_id') -%}
+    {% for dependency in (task.upstream_dependencies + task.depends_on) | sort(attribute='task_id') -%}
     {% if dependency.dag_name == name and dependency not in task.depends_on -%}
     {% if dependency.task_id != task.task_name %}
     {{ task.task_name }}.set_upstream({{ dependency.task_id }})
     {% endif -%}
     {% else -%}
     {% if (dependency.dag_name, dependency.task_id) not in wait_for_seen -%}
-    wait_for_{{ dependency.task_id }} = ExternalTaskCompletedSensor(
+    wait_for_{{ dependency.task_id }} = ExternalTaskSensor(
         task_id='wait_for_{{ dependency.task_id }}',
         external_dag_id='{{ dependency.dag_name }}',
         external_task_id='{{ dependency.task_id }}',
@@ -140,6 +176,8 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         {% endif -%}
         check_existence=True,
         mode='reschedule',
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool='DATA_ENG_EXTERNALTASKSENSOR',
     )
     {{ wait_for_seen.append((dependency.dag_name, dependency.task_id)) or "" }}

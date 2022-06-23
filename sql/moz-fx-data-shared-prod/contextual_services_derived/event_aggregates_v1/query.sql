@@ -20,6 +20,7 @@ WITH combined AS (
     END
     AS provider,
     match_type,
+    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
   FROM
     contextual_services.quicksuggest_impression
   UNION ALL
@@ -44,6 +45,7 @@ WITH combined AS (
     END
     AS provider,
     match_type,
+    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
   FROM
     contextual_services.quicksuggest_click
   UNION ALL
@@ -69,6 +71,7 @@ WITH combined AS (
     AS provider,
     -- `match_type` is only available for `quicksuggest_*` tables
     NULL AS match_type,
+    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
   FROM
     contextual_services.topsites_impression
   UNION ALL
@@ -94,6 +97,7 @@ WITH combined AS (
     AS provider,
     -- `match_type` is only available for `quicksuggest_*` tables
     NULL AS match_type,
+    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
   FROM
     contextual_services.topsites_click
   UNION ALL
@@ -123,6 +127,7 @@ WITH combined AS (
     AS provider,
     -- `match_type` is only available for `quicksuggest_*` tables
     NULL AS match_type,
+    normalized_os,
   FROM
     org_mozilla_firefox.topsites_impression
   UNION ALL
@@ -150,6 +155,7 @@ WITH combined AS (
     AS provider,
     -- `match_type` is only available for `quicksuggest_*` tables
     NULL AS match_type,
+    normalized_os,
   FROM
     org_mozilla_firefox_beta.topsites_impression
   UNION ALL
@@ -177,6 +183,7 @@ WITH combined AS (
     AS provider,
     -- `match_type` is only available for `quicksuggest_*` tables
     NULL AS match_type,
+    normalized_os,
   FROM
     org_mozilla_fenix.topsites_impression
 ),
@@ -217,4 +224,5 @@ GROUP BY
   release_channel,
   position,
   provider,
-  match_type
+  match_type,
+  normalized_os

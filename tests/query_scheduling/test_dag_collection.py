@@ -317,7 +317,7 @@ class TestDagCollection:
         assert result == expected
 
     @pytest.mark.java
-    def test_to_airflow_with_dependencies(self, tmp_path):
+    def test_to_airflow_with_upstream_dependencies(self, tmp_path):
         query_file_path = tmp_path / "test-project" / "test" / "query_v1"
         os.makedirs(query_file_path)
 
@@ -402,7 +402,7 @@ class TestDagCollection:
 
         dags.to_airflow_dags(tmp_path)
 
-        expected_dag_with_dependencies = (
+        expected_dag_with_upstream_dependencies = (
             (TEST_DIR / "data" / "dags" / "test_dag_with_dependencies")
             .read_text()
             .strip()
@@ -413,12 +413,14 @@ class TestDagCollection:
             .strip()
         )
 
-        dag_with_dependencies = (tmp_path / "bqetl_test_dag.py").read_text().strip()
+        dag_with_upstream_dependencies = (
+            (tmp_path / "bqetl_test_dag.py").read_text().strip()
+        )
         dag_external_dependency = (
             (tmp_path / "bqetl_external_test_dag.py").read_text().strip()
         )
 
-        assert dag_with_dependencies == expected_dag_with_dependencies
+        assert dag_with_upstream_dependencies == expected_dag_with_upstream_dependencies
         assert dag_external_dependency == expected_dag_external_dependency
 
     @pytest.mark.java

@@ -26,6 +26,6 @@ CREATE TABLE IF NOT EXISTS
     os_family STRING,
   )
 PARTITION BY
-  DATE(timestamp)
+  DATE(submission_timestamp)
 OPTIONS
   (require_partition_filter = TRUE, partition_expiration_days = 15);

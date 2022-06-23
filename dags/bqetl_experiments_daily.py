@@ -1,8 +1,11 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from operators.task_sensor import ExternalTaskCompletedSensor
+from airflow.sensors.external_task import ExternalTaskMarker
+from airflow.sensors.external_task import ExternalTaskSensor
+from airflow.utils.task_group import TaskGroup
 import datetime
+from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
 docs = """
@@ -103,39 +106,45 @@ with DAG(
         telemetry_derived__experiments_daily_active_clients__v1
     )
 
-    wait_for_bq_main_events = ExternalTaskCompletedSensor(
+    wait_for_bq_main_events = ExternalTaskSensor(
         task_id="wait_for_bq_main_events",
         external_dag_id="copy_deduplicate",
         external_task_id="bq_main_events",
         execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     telemetry_derived__experiment_enrollment_aggregates__v1.set_upstream(
         wait_for_bq_main_events
     )
-    wait_for_copy_deduplicate_all = ExternalTaskCompletedSensor(
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
         execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     telemetry_derived__experiment_enrollment_aggregates__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
-    wait_for_event_events = ExternalTaskCompletedSensor(
+    wait_for_event_events = ExternalTaskSensor(
         task_id="wait_for_event_events",
         external_dag_id="copy_deduplicate",
         external_task_id="event_events",
         execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
@@ -146,13 +155,15 @@ with DAG(
     telemetry_derived__experiment_search_aggregates__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
-    wait_for_copy_deduplicate_main_ping = ExternalTaskCompletedSensor(
+    wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_main_ping",
         execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
@@ -163,13 +174,15 @@ with DAG(
     telemetry_derived__experiments_daily_active_clients__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
-    wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskCompletedSensor(
+    wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
         external_dag_id="bqetl_main_summary",
         external_task_id="telemetry_derived__clients_daily_joined__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 

@@ -10,6 +10,10 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_unified
+  external_downstream_tasks:
+  - task_id: wait_for_unified_metrics
+    dag_name: kpi_forecasting
+    execution_delta: 1h
 bigquery:
   time_partitioning:
     field: submission_date

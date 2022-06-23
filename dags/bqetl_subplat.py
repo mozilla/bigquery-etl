@@ -1,8 +1,11 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from operators.task_sensor import ExternalTaskCompletedSensor
+from airflow.sensors.external_task import ExternalTaskMarker
+from airflow.sensors.external_task import ExternalTaskSensor
+from airflow.utils.task_group import TaskGroup
 import datetime
+from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
 from operators.backport.fivetran.operator import FivetranOperator
@@ -142,6 +145,20 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
     )
+
+    with TaskGroup(
+        "mozilla_vpn_derived__all_subscriptions__v1_external"
+    ) as mozilla_vpn_derived__all_subscriptions__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_mozilla_vpn_site_metrics__wait_for_mozilla_vpn_derived__all_subscriptions__v1",
+            external_dag_id="bqetl_mozilla_vpn_site_metrics",
+            external_task_id="wait_for_mozilla_vpn_derived__all_subscriptions__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=38700)).isoformat() }}",
+        )
+
+        mozilla_vpn_derived__all_subscriptions__v1_external.set_upstream(
+            mozilla_vpn_derived__all_subscriptions__v1
+        )
 
     mozilla_vpn_derived__channel_group_proportions__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__channel_group_proportions__v1",
@@ -507,46 +524,46 @@ with DAG(
         email_on_retry=False,
     )
 
-    wait_for_firefox_accounts_derived__fxa_auth_events__v1 = (
-        ExternalTaskCompletedSensor(
-            task_id="wait_for_firefox_accounts_derived__fxa_auth_events__v1",
-            external_dag_id="bqetl_fxa_events",
-            external_task_id="firefox_accounts_derived__fxa_auth_events__v1",
-            execution_delta=datetime.timedelta(seconds=900),
-            check_existence=True,
-            mode="reschedule",
-            pool="DATA_ENG_EXTERNALTASKSENSOR",
-        )
+    wait_for_firefox_accounts_derived__fxa_auth_events__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_accounts_derived__fxa_auth_events__v1",
+        external_dag_id="bqetl_fxa_events",
+        external_task_id="firefox_accounts_derived__fxa_auth_events__v1",
+        execution_delta=datetime.timedelta(seconds=900),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     cjms_bigquery__flows__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_auth_events__v1
     )
-    wait_for_firefox_accounts_derived__fxa_content_events__v1 = (
-        ExternalTaskCompletedSensor(
-            task_id="wait_for_firefox_accounts_derived__fxa_content_events__v1",
-            external_dag_id="bqetl_fxa_events",
-            external_task_id="firefox_accounts_derived__fxa_content_events__v1",
-            execution_delta=datetime.timedelta(seconds=900),
-            check_existence=True,
-            mode="reschedule",
-            pool="DATA_ENG_EXTERNALTASKSENSOR",
-        )
+    wait_for_firefox_accounts_derived__fxa_content_events__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_accounts_derived__fxa_content_events__v1",
+        external_dag_id="bqetl_fxa_events",
+        external_task_id="firefox_accounts_derived__fxa_content_events__v1",
+        execution_delta=datetime.timedelta(seconds=900),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     cjms_bigquery__flows__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_content_events__v1
     )
-    wait_for_firefox_accounts_derived__fxa_stdout_events__v1 = (
-        ExternalTaskCompletedSensor(
-            task_id="wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
-            external_dag_id="bqetl_fxa_events",
-            external_task_id="firefox_accounts_derived__fxa_stdout_events__v1",
-            execution_delta=datetime.timedelta(seconds=900),
-            check_existence=True,
-            mode="reschedule",
-            pool="DATA_ENG_EXTERNALTASKSENSOR",
-        )
+    wait_for_firefox_accounts_derived__fxa_stdout_events__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
+        external_dag_id="bqetl_fxa_events",
+        external_task_id="firefox_accounts_derived__fxa_stdout_events__v1",
+        execution_delta=datetime.timedelta(seconds=900),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     cjms_bigquery__flows__v1.set_upstream(

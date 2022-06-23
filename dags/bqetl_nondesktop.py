@@ -1,8 +1,11 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from operators.task_sensor import ExternalTaskCompletedSensor
+from airflow.sensors.external_task import ExternalTaskMarker
+from airflow.sensors.external_task import ExternalTaskSensor
+from airflow.utils.task_group import TaskGroup
 import datetime
+from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
 docs = """
@@ -82,29 +85,45 @@ with DAG(
         depends_on_past=False,
     )
 
-    wait_for_telemetry_derived__core_clients_last_seen__v1 = (
-        ExternalTaskCompletedSensor(
-            task_id="wait_for_telemetry_derived__core_clients_last_seen__v1",
-            external_dag_id="bqetl_core",
-            external_task_id="telemetry_derived__core_clients_last_seen__v1",
-            execution_delta=datetime.timedelta(seconds=3600),
-            check_existence=True,
-            mode="reschedule",
-            pool="DATA_ENG_EXTERNALTASKSENSOR",
+    with TaskGroup(
+        "telemetry_derived__mobile_usage__v1_external"
+    ) as telemetry_derived__mobile_usage__v1_external:
+        ExternalTaskMarker(
+            task_id="kpi_forecasting__wait_for_mobile_usage",
+            external_dag_id="kpi_forecasting",
+            external_task_id="wait_for_mobile_usage",
+            execution_date="{{ (execution_date + macros.timedelta(seconds=3600)).isoformat() }}",
         )
+
+        telemetry_derived__mobile_usage__v1_external.set_upstream(
+            telemetry_derived__mobile_usage__v1
+        )
+
+    wait_for_telemetry_derived__core_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__core_clients_last_seen__v1",
+        external_dag_id="bqetl_core",
+        external_task_id="telemetry_derived__core_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     firefox_nondesktop_exact_mau28_by_client_count_dimensions.set_upstream(
         wait_for_telemetry_derived__core_clients_last_seen__v1
     )
 
-    wait_for_baseline_clients_last_seen = ExternalTaskCompletedSensor(
+    wait_for_baseline_clients_last_seen = ExternalTaskSensor(
         task_id="wait_for_baseline_clients_last_seen",
         external_dag_id="copy_deduplicate",
         external_task_id="baseline_clients_last_seen",
         execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 

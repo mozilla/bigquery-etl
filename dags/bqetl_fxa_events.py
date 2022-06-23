@@ -1,8 +1,11 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from operators.task_sensor import ExternalTaskCompletedSensor
+from airflow.sensors.external_task import ExternalTaskMarker
+from airflow.sensors.external_task import ExternalTaskSensor
+from airflow.utils.task_group import TaskGroup
 import datetime
+from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
 docs = """
@@ -75,6 +78,27 @@ with DAG(
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
+    with TaskGroup(
+        "firefox_accounts_derived__fxa_auth_events__v1_external"
+    ) as firefox_accounts_derived__fxa_auth_events__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_subplat__wait_for_firefox_accounts_derived__fxa_auth_events__v1",
+            external_dag_id="bqetl_subplat",
+            external_task_id="wait_for_firefox_accounts_derived__fxa_auth_events__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_event_rollup__wait_for_firefox_accounts_derived__fxa_auth_events__v1",
+            external_dag_id="bqetl_event_rollup",
+            external_task_id="wait_for_firefox_accounts_derived__fxa_auth_events__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
+        )
+
+        firefox_accounts_derived__fxa_auth_events__v1_external.set_upstream(
+            firefox_accounts_derived__fxa_auth_events__v1
+        )
+
     firefox_accounts_derived__fxa_content_events__v1 = bigquery_etl_query(
         task_id="firefox_accounts_derived__fxa_content_events__v1",
         destination_table="fxa_content_events_v1",
@@ -86,6 +110,27 @@ with DAG(
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
+
+    with TaskGroup(
+        "firefox_accounts_derived__fxa_content_events__v1_external"
+    ) as firefox_accounts_derived__fxa_content_events__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_subplat__wait_for_firefox_accounts_derived__fxa_content_events__v1",
+            external_dag_id="bqetl_subplat",
+            external_task_id="wait_for_firefox_accounts_derived__fxa_content_events__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_event_rollup__wait_for_firefox_accounts_derived__fxa_content_events__v1",
+            external_dag_id="bqetl_event_rollup",
+            external_task_id="wait_for_firefox_accounts_derived__fxa_content_events__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
+        )
+
+        firefox_accounts_derived__fxa_content_events__v1_external.set_upstream(
+            firefox_accounts_derived__fxa_content_events__v1
+        )
 
     firefox_accounts_derived__fxa_delete_events__v1 = bigquery_etl_query(
         task_id="firefox_accounts_derived__fxa_delete_events__v1",
@@ -143,6 +188,20 @@ with DAG(
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
+    with TaskGroup(
+        "firefox_accounts_derived__fxa_stdout_events__v1_external"
+    ) as firefox_accounts_derived__fxa_stdout_events__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_subplat__wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
+            external_dag_id="bqetl_subplat",
+            external_task_id="wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+        )
+
+        firefox_accounts_derived__fxa_stdout_events__v1_external.set_upstream(
+            firefox_accounts_derived__fxa_stdout_events__v1
+        )
+
     firefox_accounts_derived__fxa_users_daily__v1 = bigquery_etl_query(
         task_id="firefox_accounts_derived__fxa_users_daily__v1",
         destination_table="fxa_users_daily_v1",
@@ -183,6 +242,20 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=True,
     )
+
+    with TaskGroup(
+        "firefox_accounts_derived__fxa_users_last_seen__v1_external"
+    ) as firefox_accounts_derived__fxa_users_last_seen__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_gud__wait_for_firefox_accounts_derived__fxa_users_last_seen__v1",
+            external_dag_id="bqetl_gud",
+            external_task_id="wait_for_firefox_accounts_derived__fxa_users_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
+        )
+
+        firefox_accounts_derived__fxa_users_last_seen__v1_external.set_upstream(
+            firefox_accounts_derived__fxa_users_last_seen__v1
+        )
 
     firefox_accounts_derived__fxa_users_services_daily__v1 = bigquery_etl_query(
         task_id="firefox_accounts_derived__fxa_users_services_daily__v1",

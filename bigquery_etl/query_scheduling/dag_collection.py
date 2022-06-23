@@ -20,6 +20,27 @@ class DagCollection:
         self.dags = dags
         self.dags_by_name = {dag.name: dag for dag in dags}
 
+    @property
+    def downstream_tasks(self):
+        """Return collection to quickly lookup downstream tasks."""
+        # use cached information about downstream tasks
+        if downstream_tasks := getattr(self, "_downstream_tasks", None):
+            return downstream_tasks
+
+        # if no information has been cached, then determine downstream tasks
+        # based on the information on existing upstream dependencies
+        self._downstream_tasks = {}
+        for dag in self.dags:
+            for task in dag.tasks:
+                for upstream_dependency in task.depends_on + task.upstream_dependencies:
+                    if upstream_dependency.dag_name != task.dag_name:
+                        if upstream_dependency in self._downstream_tasks:
+                            self._downstream_tasks[upstream_dependency].append(task)
+                        else:
+                            self._downstream_tasks[upstream_dependency] = [task]
+
+        return self._downstream_tasks
+
     @classmethod
     def from_dict(cls, d):
         """
@@ -104,9 +125,19 @@ class DagCollection:
         """Generate the Airflow DAG representation for the provided DAG."""
         output_file = Path(output_dir) / (dag.name + ".py")
         formatted_dag = format_file_contents(
-            dag.to_airflow_dag(self), fast=False, mode=FileMode()
+            dag.to_airflow_dag(), fast=False, mode=FileMode()
         )
         output_file.write_text(formatted_dag)
+
+    def _get_upstream_dependencies(self, dag):
+        for task in dag.tasks:
+            task.with_upstream_dependencies(self)
+        return dag
+
+    def _get_downstream_dependencies(self, dag):
+        for task in dag.tasks:
+            task.with_downstream_dependencies(self)
+        return dag
 
     def to_airflow_dags(self, output_dir, dag_to_generate=None):
         """Write DAG representation as Airflow dags to file."""
@@ -117,6 +148,13 @@ class DagCollection:
             set_start_method("spawn")
         except Exception:
             pass
+
+        with get_context("spawn").Pool(8) as p:
+            self.dags = p.map(self._get_upstream_dependencies, self.dags)
+
+        with get_context("spawn").Pool(8) as p:
+            self.dags = p.map(self._get_downstream_dependencies, self.dags)
+
         to_airflow_dag = partial(self.dag_to_airflow, output_dir)
 
         if dag_to_generate is None:

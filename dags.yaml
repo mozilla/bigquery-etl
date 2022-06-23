@@ -101,9 +101,9 @@ bqetl_fxa_events:
     See https://github.com/mozilla/bigquery-etl/issues/1684 for an example
     mitigation.
   default_args:
-    owner: jklukas@mozilla.com
+    owner: dthorn@mozilla.com
     start_date: "2019-03-01"
-    email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"]
     retries: 1
     retry_delay: 10m
   tags:

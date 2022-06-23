@@ -47098,7 +47098,7 @@ fields:
           - mode: NULLABLE
             name: key
             type: STRING
-          - description: "RRecords clicks of adverts on SERP pages where the search\
+          - description: "Records clicks of adverts on SERP pages where the search\
               \ was started from the search bar. The key format is \u2018<provider>:<tagged|organic>\u2019\
               \n"
             mode: NULLABLE

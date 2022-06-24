@@ -1086,22 +1086,22 @@ aggregates AS (
     ) AS search_with_ads_count_all,
     SUM(
       scalar_parent_urlbar_impression_autofill_about
-    ) AS scalar_parent_urlbar_impression_autofill_about,
+    ) AS scalar_parent_urlbar_impression_autofill_about_sum,
     SUM(
       scalar_parent_urlbar_impression_autofill_adaptive
-    ) AS scalar_parent_urlbar_impression_autofill_adaptive,
+    ) AS scalar_parent_urlbar_impression_autofill_adaptive_sum,
     SUM(
       scalar_parent_urlbar_impression_autofill_origin
-    ) AS scalar_parent_urlbar_impression_autofill_origin,
+    ) AS scalar_parent_urlbar_impression_autofill_origin_sum,
     SUM(
       scalar_parent_urlbar_impression_autofill_other
-    ) AS scalar_parent_urlbar_impression_autofill_other,
+    ) AS scalar_parent_urlbar_impression_autofill_other_sum,
     SUM(
       scalar_parent_urlbar_impression_autofill_preloaded
-    ) AS scalar_parent_urlbar_impression_autofill_preloaded,
+    ) AS scalar_parent_urlbar_impression_autofill_preloaded_sum,
     SUM(
       scalar_parent_urlbar_impression_autofill_url
-    ) AS scalar_parent_urlbar_impression_autofill_url,
+    ) AS scalar_parent_urlbar_impression_autofill_url_sum,
     [
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_telemetry_event_counts) AS agg),
       STRUCT(ARRAY_CONCAT_AGG(scalar_content_telemetry_event_counts)),

@@ -13,6 +13,9 @@ https://github.com/mozilla/bigquery-etl/blob/813a485/sql/moz-fx-data-shared-prod
 WITH base AS (
   SELECT
     *,
+    -- We batch multiple fields into an array here in order to share a single
+    -- UDF invocation which keeps query complexity down; order of fields here
+    -- is important, as we pull these out by numerical offset later.
     ARRAY(
       SELECT AS STRUCT
         mozfun.map.get_key(mozfun.hist.extract(histogram).values, 0) AS histogram
@@ -52,6 +55,9 @@ WITH base AS (
           ]
         ) AS histogram
     ) AS count_histograms,
+    -- We batch multiple fields into an array here in order to share a single
+    -- UDF invocation which keeps query complexity down; order of fields here
+    -- is important, as we pull these out by numerical offset later.
     ARRAY(
       SELECT
         udf.extract_histogram_sum(mozfun.map.get_key(histogram, key))
@@ -78,6 +84,9 @@ WITH base AS (
           ]
         )
     ) AS hist_key_sums,
+    -- We batch multiple fields into an array here in order to share a single
+    -- UDF invocation which keeps query complexity down; order of fields here
+    -- is important, as we pull these out by numerical offset later.
     ARRAY(
       SELECT
         udf.extract_histogram_sum(histogram)
@@ -195,6 +204,8 @@ clients_summary AS (
     ) AS attribution,
     environment.settings.sandbox.effective_content_process_level AS sandbox_effective_content_process_level,
     payload.info.timezone_offset,
+    -- CAUTION: the order of fields here must match the order defined in
+    -- hist_key_sums above and offsets must increment on each line.
     hist_key_sums[OFFSET(0)] AS plugin_hangs,
     hist_key_sums[OFFSET(1)] AS aborts_plugin,
     hist_key_sums[OFFSET(2)] AS aborts_content,
@@ -237,6 +248,8 @@ clients_summary AS (
     environment.settings.default_private_search_engine_data.origin AS default_private_search_engine_data_origin,
     environment.settings.default_private_search_engine_data.submission_url AS default_private_search_engine_data_submission_url,
     environment.settings.default_private_search_engine,
+    -- CAUTION: the order of fields here must match the order defined in
+    -- hist_sums above and offsets must increment on each line.
     hist_sums[OFFSET(0)] AS devtools_toolbox_opened_count,
     hist_sums[OFFSET(1)] AS push_api_notify,
     hist_sums[OFFSET(2)] AS web_notification_shown,
@@ -444,6 +457,8 @@ clients_summary AS (
     payload.processes.parent.keyed_scalars.contextual_services_topsites_click,
     payload.processes.parent.keyed_scalars.contextual_services_topsites_impression,
     payload.processes.parent.keyed_scalars.a11y_theme,
+    -- CAUTION: the order of fields here must match the order defined in
+    -- count_histograms above and offsets must increment on each line.
     count_histograms[OFFSET(0)].histogram AS histogram_parent_devtools_aboutdebugging_opened_count,
     count_histograms[
       OFFSET(1)
@@ -1102,6 +1117,10 @@ aggregates AS (
     SUM(
       scalar_parent_urlbar_impression_autofill_url
     ) AS scalar_parent_urlbar_impression_autofill_url_sum,
+    -- We batch multiple fields into an array here in order to share a single
+    -- UDF invocation in the udf_aggregates CTE below which keeps query
+    -- complexity down; order of fields here is important, as we pull these out
+    -- by numerical offset later.
     [
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_telemetry_event_counts) AS agg),
       STRUCT(ARRAY_CONCAT_AGG(scalar_content_telemetry_event_counts)),
@@ -1264,6 +1283,8 @@ udf_aggregates AS (
 )
 SELECT
   * EXCEPT (map_sum_aggregates),
+  -- CAUTION: the order of fields here must match the order defined in
+  -- map_sum_aggregates above and offsets must increment on each line.
   map_sum_aggregates[OFFSET(0)].map AS scalar_parent_telemetry_event_counts_sum,
   map_sum_aggregates[OFFSET(1)].map AS scalar_content_telemetry_event_counts_sum,
   map_sum_aggregates[OFFSET(2)].map AS scalar_parent_urlbar_searchmode_bookmarkmenu_sum,

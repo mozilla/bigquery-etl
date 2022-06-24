@@ -17,25 +17,26 @@ Built from bigquery-etl repo, [`dags/bqetl_search_terms_daily.py`](https://githu
 
 Derived tables on top of search terms data.
 
-Note that the task for populating `suggest_impression_sanitized_v2` is
+Note that the tasks for populating `suggest_impression_sanitized_v*` are
 particularly important because the source unsanitized dataset has only
 a 2-day retention period, so errors fairly quickly become unrecoverable
 and can impact reporting to partners. If this task errors out, it could
 indicate trouble with an upstream task that runs in a restricted project
-outside of Airflow. Contact `jklukas` and/or `jbuck`.
+outside of Airflow. Contact `ctroy`, `whd`, and `jbuck`.
 
 #### Owner
 
-jklukas@mozilla.com
+ctroy@mozilla.com
 """
 
 
 default_args = {
-    "owner": "jklukas@mozilla.com",
+    "owner": "ctroy@mozilla.com",
     "start_date": datetime.datetime(2021, 9, 20, 0, 0),
     "end_date": None,
     "email": [
-        "jklukas@mozilla.com",
+        "ctroy@mozilla.com",
+        "wstuckey@mozilla.com",
         "rburwei@mozilla.com",
         "telemetry-alerts@mozilla.com",
     ],
@@ -61,11 +62,12 @@ with DAG(
         destination_table="adm_daily_aggregates_v1",
         dataset_id="search_terms_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
+        owner="rburwei@mozilla.com",
         email=[
-            "jklukas@mozilla.com",
+            "ctroy@mozilla.com",
             "rburwei@mozilla.com",
             "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
@@ -79,9 +81,10 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="rburwei@mozilla.com",
         email=[
-            "jklukas@mozilla.com",
+            "ctroy@mozilla.com",
             "rburwei@mozilla.com",
             "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
@@ -93,11 +96,12 @@ with DAG(
         destination_table="suggest_impression_sanitized_v2",
         dataset_id="search_terms_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
+        owner="ctroy@mozilla.com",
         email=[
-            "jklukas@mozilla.com",
+            "ctroy@mozilla.com",
             "rburwei@mozilla.com",
             "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
@@ -112,9 +116,9 @@ with DAG(
         owner="ctroy@mozilla.com",
         email=[
             "ctroy@mozilla.com",
-            "jklukas@mozilla.com",
             "rburwei@mozilla.com",
             "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,

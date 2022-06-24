@@ -1090,6 +1090,10 @@ aggregates AS (
       ),
       SUM((SELECT SUM(value) FROM UNNEST(scalar_parent_browser_search_with_ads)))
     ) AS search_with_ads_count_all,
+    -- We batch multiple fields into an array here in order to share a single
+    -- UDF invocation in the udf_aggregates CTE below which keeps query
+    -- complexity down; order of fields here is important, as we pull these out
+    -- by numerical offset later.
     [
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_telemetry_event_counts) AS agg),
       STRUCT(ARRAY_CONCAT_AGG(scalar_content_telemetry_event_counts)),

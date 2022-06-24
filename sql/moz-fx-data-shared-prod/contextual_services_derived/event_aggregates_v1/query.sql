@@ -160,7 +160,6 @@ WITH combined AS (
     ) AS position,
     -- Only Contile is available for mobile tiles.
     'contile' AS provider,
-    AS provider,
     -- `match_type` is only available for `quicksuggest_*` tables
     NULL AS match_type,
     normalized_os,

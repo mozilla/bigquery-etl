@@ -6706,11 +6706,6 @@ desktop client.</p>
         <td>Date</td>
         <td>Yes</td>
     </tr><tr>
-        <td>sample_id</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
         <td>client_id</td>
         <td></td>
         <td>String</td>
@@ -7301,6 +7296,11 @@ desktop client.</p>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
+        <td>sample_id</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>sandbox_effective_content_process_level</td>
         <td></td>
         <td>Integer</td>
@@ -7491,6 +7491,11 @@ desktop client.</p>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
+        <td>search_count_urlbar_handoff</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>session_restored_mean</td>
         <td></td>
         <td>Float</td>
@@ -7616,6 +7621,36 @@ desktop client.</p>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_about_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_adaptive_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_origin_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_other_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_preloaded_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_url_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>scalar_parent_telemetry_event_counts_sum</td>
         <td></td>
         <td>Record</td>
@@ -7701,12 +7736,17 @@ desktop client.</p>
         <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
-        <td>scalar_parent_os_environment_launched_via_start_menu</td>
+        <td>scalar_parent_os_environment_launched_via_taskbar</td>
         <td></td>
         <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
-        <td>scalar_parent_os_environment_launched_via_taskbar</td>
+        <td>scalar_parent_os_environment_launched_via_other</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_os_environment_launched_via_start_menu</td>
         <td></td>
         <td>Boolean</td>
         <td>Yes</td>
@@ -7716,9 +7756,19 @@ desktop client.</p>
         <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
-        <td>scalar_parent_os_environment_launched_via_other</td>
+        <td>n_logged_event</td>
         <td></td>
-        <td>Boolean</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>n_created_pictureinpicture</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>n_viewed_protection_report</td>
+        <td></td>
+        <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>search_count_webextension</td>
@@ -7742,6 +7792,21 @@ desktop client.</p>
         <td>No</td>
     </tr><tr>
         <td>scalar_parent_urlbar_picked_autofill_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_picked_autofill_adaptive_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_picked_autofill_origin_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_picked_autofill_url_sum</td>
         <td></td>
         <td>Record</td>
         <td>No</td>
@@ -7871,6 +7936,11 @@ desktop client.</p>
         <td>Record</td>
         <td>No</td>
     </tr><tr>
+        <td>search_content_urlbar_handoff_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
         <td>search_content_urlbar_searchmode_sum</td>
         <td></td>
         <td>Record</td>
@@ -7926,6 +7996,11 @@ desktop client.</p>
         <td>Record</td>
         <td>No</td>
     </tr><tr>
+        <td>search_withads_urlbar_handoff_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
         <td>search_withads_urlbar_searchmode_sum</td>
         <td></td>
         <td>Record</td>
@@ -7977,6 +8052,11 @@ desktop client.</p>
         <td>No</td>
     </tr><tr>
         <td>search_adclicks_urlbar_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>search_adclicks_urlbar_handoff_sum</td>
         <td></td>
         <td>Record</td>
         <td>No</td>
@@ -8066,21 +8146,6 @@ desktop client.</p>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
-        <td>n_logged_event</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>n_created_pictureinpicture</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>n_viewed_protection_report</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
         <td>first_seen_date</td>
         <td></td>
         <td>Date</td>
@@ -8100,26 +8165,6 @@ desktop client.</p>
         <td></td>
         <td>Integer</td>
         <td>Yes</td>
-    </tr><tr>
-        <td>search_count_urlbar_handoff</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>search_content_urlbar_handoff_sum</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>search_withads_urlbar_handoff_sum</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>search_adclicks_urlbar_handoff_sum</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
     </tr><tr>
         <td>user_pref_browser_newtabpage_enabled</td>
         <td></td>
@@ -8311,11 +8356,6 @@ desktop client.</p>
         <td>Date</td>
         <td>Yes</td>
     </tr><tr>
-        <td>sample_id</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
         <td>client_id</td>
         <td></td>
         <td>String</td>
@@ -8906,6 +8946,11 @@ desktop client.</p>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
+        <td>sample_id</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>sandbox_effective_content_process_level</td>
         <td></td>
         <td>Integer</td>
@@ -9096,6 +9141,11 @@ desktop client.</p>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
+        <td>search_count_urlbar_handoff</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>session_restored_mean</td>
         <td></td>
         <td>Float</td>
@@ -9221,6 +9271,36 @@ desktop client.</p>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_about_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_adaptive_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_origin_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_other_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_preloaded_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_url_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>scalar_parent_telemetry_event_counts_sum</td>
         <td></td>
         <td>Record</td>
@@ -9306,12 +9386,17 @@ desktop client.</p>
         <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
-        <td>scalar_parent_os_environment_launched_via_start_menu</td>
+        <td>scalar_parent_os_environment_launched_via_taskbar</td>
         <td></td>
         <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
-        <td>scalar_parent_os_environment_launched_via_taskbar</td>
+        <td>scalar_parent_os_environment_launched_via_other</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_os_environment_launched_via_start_menu</td>
         <td></td>
         <td>Boolean</td>
         <td>Yes</td>
@@ -9321,9 +9406,19 @@ desktop client.</p>
         <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
-        <td>scalar_parent_os_environment_launched_via_other</td>
+        <td>n_logged_event</td>
         <td></td>
-        <td>Boolean</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>n_created_pictureinpicture</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>n_viewed_protection_report</td>
+        <td></td>
+        <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>search_count_webextension</td>
@@ -9347,6 +9442,21 @@ desktop client.</p>
         <td>No</td>
     </tr><tr>
         <td>scalar_parent_urlbar_picked_autofill_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_picked_autofill_adaptive_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_picked_autofill_origin_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_picked_autofill_url_sum</td>
         <td></td>
         <td>Record</td>
         <td>No</td>
@@ -9476,6 +9586,11 @@ desktop client.</p>
         <td>Record</td>
         <td>No</td>
     </tr><tr>
+        <td>search_content_urlbar_handoff_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
         <td>search_content_urlbar_searchmode_sum</td>
         <td></td>
         <td>Record</td>
@@ -9531,6 +9646,11 @@ desktop client.</p>
         <td>Record</td>
         <td>No</td>
     </tr><tr>
+        <td>search_withads_urlbar_handoff_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
         <td>search_withads_urlbar_searchmode_sum</td>
         <td></td>
         <td>Record</td>
@@ -9582,6 +9702,11 @@ desktop client.</p>
         <td>No</td>
     </tr><tr>
         <td>search_adclicks_urlbar_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>search_adclicks_urlbar_handoff_sum</td>
         <td></td>
         <td>Record</td>
         <td>No</td>
@@ -9671,21 +9796,6 @@ desktop client.</p>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
-        <td>n_logged_event</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>n_created_pictureinpicture</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>n_viewed_protection_report</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
         <td>first_seen_date</td>
         <td></td>
         <td>Date</td>
@@ -9705,26 +9815,6 @@ desktop client.</p>
         <td></td>
         <td>Integer</td>
         <td>Yes</td>
-    </tr><tr>
-        <td>search_count_urlbar_handoff</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>search_content_urlbar_handoff_sum</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>search_withads_urlbar_handoff_sum</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>search_adclicks_urlbar_handoff_sum</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
     </tr><tr>
         <td>user_pref_browser_newtabpage_enabled</td>
         <td></td>
@@ -10702,6 +10792,11 @@ directly only when you're investigating client activation questions.</p>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
+        <td>search_count_urlbar_handoff</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>session_restored_mean</td>
         <td></td>
         <td>Float</td>
@@ -10828,6 +10923,36 @@ directly only when you're investigating client activation questions.</p>
         <td>Yes</td>
     </tr><tr>
         <td>search_with_ads_count_all</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_about_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_adaptive_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_origin_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_other_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_preloaded_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_url_sum</td>
         <td></td>
         <td>Integer</td>
         <td>Yes</td>
@@ -10962,6 +11087,21 @@ directly only when you're investigating client activation questions.</p>
         <td>Record</td>
         <td>No</td>
     </tr><tr>
+        <td>scalar_parent_urlbar_picked_autofill_adaptive_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_picked_autofill_origin_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_picked_autofill_url_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
         <td>scalar_parent_urlbar_picked_bookmark_sum</td>
         <td></td>
         <td>Record</td>
@@ -11087,6 +11227,11 @@ directly only when you're investigating client activation questions.</p>
         <td>Record</td>
         <td>No</td>
     </tr><tr>
+        <td>search_content_urlbar_handoff_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
         <td>search_content_urlbar_searchmode_sum</td>
         <td></td>
         <td>Record</td>
@@ -11142,6 +11287,11 @@ directly only when you're investigating client activation questions.</p>
         <td>Record</td>
         <td>No</td>
     </tr><tr>
+        <td>search_withads_urlbar_handoff_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
         <td>search_withads_urlbar_searchmode_sum</td>
         <td></td>
         <td>Record</td>
@@ -11193,6 +11343,11 @@ directly only when you're investigating client activation questions.</p>
         <td>No</td>
     </tr><tr>
         <td>search_adclicks_urlbar_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>search_adclicks_urlbar_handoff_sum</td>
         <td></td>
         <td>Record</td>
         <td>No</td>
@@ -11291,26 +11446,6 @@ directly only when you're investigating client activation questions.</p>
         <td></td>
         <td>Integer</td>
         <td>Yes</td>
-    </tr><tr>
-        <td>search_count_urlbar_handoff</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>search_content_urlbar_handoff_sum</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>search_withads_urlbar_handoff_sum</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>search_adclicks_urlbar_handoff_sum</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
     </tr><tr>
         <td>user_pref_browser_newtabpage_enabled</td>
         <td></td>
@@ -11611,6 +11746,11 @@ article on docs.telemetry.mozilla.org for more detailed notes on usage.</p>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
+        <td>submission_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>first_seen_date</td>
         <td></td>
         <td>Date</td>
@@ -11665,11 +11805,6 @@ article on docs.telemetry.mozilla.org for more detailed notes on usage.</p>
         <td></td>
         <td>Record</td>
         <td>No</td>
-    </tr><tr>
-        <td>submission_date</td>
-        <td></td>
-        <td>Date</td>
-        <td>Yes</td>
     </tr><tr>
         <td>client_id</td>
         <td></td>
@@ -12456,6 +12591,11 @@ article on docs.telemetry.mozilla.org for more detailed notes on usage.</p>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
+        <td>search_count_urlbar_handoff</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>session_restored_mean</td>
         <td></td>
         <td>Float</td>
@@ -12581,6 +12721,36 @@ article on docs.telemetry.mozilla.org for more detailed notes on usage.</p>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_about_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_adaptive_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_origin_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_other_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_preloaded_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_impression_autofill_url_sum</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>scalar_parent_telemetry_event_counts_sum</td>
         <td></td>
         <td>Record</td>
@@ -12666,22 +12836,22 @@ article on docs.telemetry.mozilla.org for more detailed notes on usage.</p>
         <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
-        <td>scalar_parent_os_environment_launched_via_taskbar</td>
-        <td></td>
-        <td>Boolean</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>scalar_parent_os_environment_launched_via_other</td>
-        <td></td>
-        <td>Boolean</td>
-        <td>Yes</td>
-    </tr><tr>
         <td>scalar_parent_os_environment_launched_via_start_menu</td>
         <td></td>
         <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
+        <td>scalar_parent_os_environment_launched_via_taskbar</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>scalar_parent_os_environment_launched_via_other_shortcut</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>scalar_parent_os_environment_launched_via_other</td>
         <td></td>
         <td>Boolean</td>
         <td>Yes</td>
@@ -12707,6 +12877,21 @@ article on docs.telemetry.mozilla.org for more detailed notes on usage.</p>
         <td>No</td>
     </tr><tr>
         <td>scalar_parent_urlbar_picked_autofill_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_picked_autofill_adaptive_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_picked_autofill_origin_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>scalar_parent_urlbar_picked_autofill_url_sum</td>
         <td></td>
         <td>Record</td>
         <td>No</td>
@@ -12836,6 +13021,11 @@ article on docs.telemetry.mozilla.org for more detailed notes on usage.</p>
         <td>Record</td>
         <td>No</td>
     </tr><tr>
+        <td>search_content_urlbar_handoff_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
         <td>search_content_urlbar_searchmode_sum</td>
         <td></td>
         <td>Record</td>
@@ -12891,6 +13081,11 @@ article on docs.telemetry.mozilla.org for more detailed notes on usage.</p>
         <td>Record</td>
         <td>No</td>
     </tr><tr>
+        <td>search_withads_urlbar_handoff_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
         <td>search_withads_urlbar_searchmode_sum</td>
         <td></td>
         <td>Record</td>
@@ -12942,6 +13137,11 @@ article on docs.telemetry.mozilla.org for more detailed notes on usage.</p>
         <td>No</td>
     </tr><tr>
         <td>search_adclicks_urlbar_sum</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>search_adclicks_urlbar_handoff_sum</td>
         <td></td>
         <td>Record</td>
         <td>No</td>
@@ -13040,26 +13240,6 @@ article on docs.telemetry.mozilla.org for more detailed notes on usage.</p>
         <td></td>
         <td>Integer</td>
         <td>Yes</td>
-    </tr><tr>
-        <td>search_count_urlbar_handoff</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>search_content_urlbar_handoff_sum</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>search_withads_urlbar_handoff_sum</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>search_adclicks_urlbar_handoff_sum</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
     </tr><tr>
         <td>user_pref_browser_newtabpage_enabled</td>
         <td></td>

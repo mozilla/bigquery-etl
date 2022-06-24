@@ -83,7 +83,8 @@ subscriptions AS (
   FROM
     all_subscriptions_v1
   WHERE
-    DATE(subscription_start_date) >= '2020-07-01'
+    subscription_start_date IS NOT NULL
+    AND DATE(subscription_start_date) >= '2020-07-01'
     AND IF(
       @date IS NULL,
       DATE(subscription_start_date) < CURRENT_DATE,

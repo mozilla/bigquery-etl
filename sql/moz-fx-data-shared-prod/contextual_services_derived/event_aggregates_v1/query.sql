@@ -113,12 +113,11 @@ WITH combined AS (
     metadata.geo.subdivision1 AS subdivision1,
     metrics.string.top_sites_contile_advertiser AS advertiser,
     'release' AS release_channel,
-    CAST(
+    SAFE_CAST(
       (SELECT value FROM UNNEST(events[SAFE_OFFSET(0)].extra) WHERE key = 'position') AS INT64
     ) AS position,
     -- Only Contile is available for mobile tiles.
     'contile' AS provider,
-    AS provider,
     -- `match_type` is only available for `quicksuggest_*` tables
     NULL AS match_type,
     normalized_os,
@@ -135,7 +134,7 @@ WITH combined AS (
     metadata.geo.subdivision1 AS subdivision1,
     metrics.string.top_sites_contile_advertiser AS advertiser,
     'beta' AS release_channel,
-    CAST(
+    SAFE_CAST(
       (SELECT value FROM UNNEST(events[SAFE_OFFSET(0)].extra) WHERE key = 'position') AS INT64
     ) AS position,
     -- Only Contile is available for mobile tiles.
@@ -156,7 +155,7 @@ WITH combined AS (
     metadata.geo.subdivision1 AS subdivision1,
     metrics.string.top_sites_contile_advertiser AS advertiser,
     'nightly' AS release_channel,
-    CAST(
+    SAFE_CAST(
       (SELECT value FROM UNNEST(events[SAFE_OFFSET(0)].extra) WHERE key = 'position') AS INT64
     ) AS position,
     -- Only Contile is available for mobile tiles.
@@ -182,7 +181,7 @@ WITH combined AS (
     metadata.geo.subdivision1 AS subdivision1,
     IFNULL(metrics.string.top_sites_contile_advertiser, metrics.string.top_site_contile_advertiser) AS advertiser,
     'release' AS release_channel,
-    CAST(
+    SAFE_CAST(
       (SELECT value FROM UNNEST(events[SAFE_OFFSET(0)].extra) WHERE key = 'position') AS INT64
     ) AS position,
     -- Only Contile is available for mobile tiles.
@@ -209,7 +208,7 @@ WITH combined AS (
     metadata.geo.subdivision1 AS subdivision1,
     IFNULL(metrics.string.top_sites_contile_advertiser, metrics.string.top_site_contile_advertiser) AS advertiser,
     'beta' AS release_channel,
-    CAST(
+    SAFE_CAST(
       (SELECT value FROM UNNEST(events[SAFE_OFFSET(0)].extra) WHERE key = 'position') AS INT64
     ) AS position,
     -- Only Contile is available for mobile tiles.

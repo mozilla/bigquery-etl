@@ -34,8 +34,13 @@ stripe_subscriptions AS (
     plan_id,
     status,
     event_timestamp,
-    subscription_start_date,
+    IF(
+      (trial_end > TIMESTAMP(CURRENT_DATE) OR ended_at <= trial_end),
+      NULL,
+      subscription_start_date
+    ) AS subscription_start_date,
     created,
+    trial_start,
     trial_end,
     canceled_at,
     canceled_for_customer_at,
@@ -99,14 +104,26 @@ apple_iap_subscriptions AS (
     CAST(NULL AS STRING) AS plan_id,
     CAST(NULL AS STRING) AS status,
     updated_at AS event_timestamp,
-    start_time AS subscription_start_date,
+    IF(
+      apple_receipt.trial_period.end_time > apple_receipt.active_period.start_time,
+      apple_receipt.trial_period.end_time,
+      apple_receipt.active_period.start_time
+    ) AS subscription_start_date,
     created_at AS created,
-    CAST(NULL AS TIMESTAMP) AS trial_end,
+    apple_receipt.trial_period.start_time AS trial_start,
+    apple_receipt.trial_period.end_time AS trial_end,
     CAST(NULL AS TIMESTAMP) AS canceled_at,
     CAST(NULL AS STRING) AS canceled_for_customer_at,
     CAST(NULL AS TIMESTAMP) AS cancel_at,
     CAST(NULL AS BOOL) AS cancel_at_period_end,
-    IF(end_time < TIMESTAMP(CURRENT_DATE), end_time, NULL) AS ended_at,
+    IF(
+      COALESCE(
+        apple_receipt.active_period.end_time,
+        apple_receipt.trial_period.end_time
+      ) < TIMESTAMP(CURRENT_DATE),
+      COALESCE(apple_receipt.active_period.end_time, apple_receipt.trial_period.end_time),
+      NULL
+    ) AS ended_at,
     fxa_uid,
     CAST(NULL AS STRING) AS country,
     CAST(NULL AS STRING) AS country_name,
@@ -122,19 +139,23 @@ apple_iap_subscriptions AS (
     NULL AS plan_amount,
     CAST(NULL AS STRING) AS billing_scheme,
     CAST(NULL AS STRING) AS plan_currency,
-    `interval` AS plan_interval,
-    interval_count AS plan_interval_count,
+    apple_receipt.active_period.`interval` AS plan_interval,
+    apple_receipt.active_period.interval_count AS plan_interval_count,
     "America/Los_Angeles" AS plan_interval_timezone,
     CAST(NULL AS STRING) AS product_id,
     "Mozilla VPN" AS product_name,
-    CONCAT(interval_count, "-", `interval`, "-", "apple") AS pricing_plan,
+    CONCAT(
+      apple_receipt.active_period.interval_count,
+      "-",
+      apple_receipt.active_period.`interval`,
+      "-",
+      "apple"
+    ) AS pricing_plan,
     -- Apple bills recurring subscriptions before they end
     INTERVAL 0 DAY AS billing_grace_period,
     CAST(NULL AS ARRAY<STRING>) AS promotion_codes,
   FROM
     mozdata.mozilla_vpn.subscriptions
-  CROSS JOIN
-    UNNEST(apple_receipt.active_periods)
   LEFT JOIN
     users
   USING
@@ -158,7 +179,7 @@ android_iap_aggregates AS (
   SELECT
     document_id,
     MIN(event_timestamp) AS created,
-    ANY_VALUE(user_id) AS fxa_uid,
+    MAX(user_id) AS fxa_uid,
     ARRAY_CONCAT(
       ARRAY_CONCAT_AGG(IF(event_timestamp >= expiry_time, [expiry_time], [])),
       [MAX(expiry_time)]
@@ -194,6 +215,7 @@ android_iap_aggregates AS (
 ),
 android_iap_periods AS (
   SELECT
+    document_id,
     IF(
       active_dates_offset > 0,
       document_id || "-" || active_dates_offset,
@@ -263,60 +285,82 @@ android_iap_periods AS (
     )
     WITH OFFSET AS active_dates_offset
 ),
+android_iap_trial_periods AS (
+  SELECT
+    document_id,
+    start_time,
+    MAX(expiry_time) AS end_time,
+  FROM
+    android_iap_events
+  WHERE
+    payment_state = 2
+  GROUP BY
+    document_id,
+    start_time
+),
 android_iap_subscriptions AS (
   SELECT
-    user_id,
-    fxa_uid AS customer_id,
-    subscription_id,
-    plan_id,
+    users.user_id,
+    periods.fxa_uid AS customer_id,
+    periods.subscription_id,
+    periods.plan_id,
     CAST(NULL AS STRING) AS status,
-    event_timestamp,
-    start_time AS subscription_start_date,
-    created,
-    CAST(NULL AS TIMESTAMP) AS trial_end,
+    periods.event_timestamp,
+    IF(
+      periods.end_time <= trial_periods.end_time,
+      NULL,
+      COALESCE(trial_periods.end_time, periods.start_time)
+    ) AS subscription_start_date,
+    periods.created,
+    trial_periods.start_time AS trial_start,
+    trial_periods.end_time AS trial_end,
     CAST(NULL AS TIMESTAMP) AS canceled_at,
-    canceled_for_customer_at,
+    periods.canceled_for_customer_at,
     CAST(NULL AS TIMESTAMP) AS cancel_at,
     CAST(NULL AS BOOL) AS cancel_at_period_end,
     IF(
-      in_billing_grace_period,
+      periods.in_billing_grace_period,
       -- android subscriptions in grace period have not ended
       CAST(NULL AS TIMESTAMP),
-      IF(end_time < TIMESTAMP(CURRENT_DATE), end_time, CAST(NULL AS TIMESTAMP))
+      IF(periods.end_time < TIMESTAMP(CURRENT_DATE), periods.end_time, CAST(NULL AS TIMESTAMP))
     ) AS ended_at,
-    fxa_uid,
-    country,
-    country_name,
-    user_registration_date,
-    entrypoint_experiment,
-    entrypoint_variation,
-    utm_campaign,
-    utm_content,
-    utm_medium,
-    utm_source,
-    utm_term,
+    periods.fxa_uid,
+    periods.country,
+    standardized_country.country_name,
+    users.user_registration_date,
+    attribution.entrypoint_experiment,
+    attribution.entrypoint_variation,
+    attribution.utm_campaign,
+    attribution.utm_content,
+    attribution.utm_medium,
+    attribution.utm_source,
+    attribution.utm_term,
     "Google Play" AS provider,
-    plan_amount,
+    periods.plan_amount,
     CAST(NULL AS STRING) AS billing_scheme,
-    plan_currency,
-    plan_interval,
-    plan_interval_count,
+    periods.plan_currency,
+    periods.plan_interval,
+    periods.plan_interval_count,
     "Etc/UTC" AS plan_interval_timezone,
-    product_id,
+    periods.product_id,
     "Mozilla VPN" AS product_name,
     CONCAT(
-      plan_interval_count,
+      periods.plan_interval_count,
       "-",
-      plan_interval,
+      periods.plan_interval,
       "-",
-      plan_currency,
+      periods.plan_currency,
       "-",
-      (plan_amount / 100)
+      (periods.plan_amount / 100)
     ) AS pricing_plan,
-    IF(in_billing_grace_period, INTERVAL 1 MONTH, INTERVAL 0 DAY) AS billing_grace_period,
+    IF(periods.in_billing_grace_period, INTERVAL 1 MONTH, INTERVAL 0 DAY) AS billing_grace_period,
     CAST(NULL AS ARRAY<STRING>) AS promotion_codes,
   FROM
-    android_iap_periods
+    android_iap_periods AS periods
+  LEFT JOIN
+    android_iap_trial_periods AS trial_periods
+  USING
+    (document_id, start_time)
   LEFT JOIN
     standardized_country
   USING
@@ -376,6 +420,3 @@ SELECT
   ) AS current_months_since_subscription_start,
 FROM
   vpn_subscriptions_with_end_date
-WHERE
-  -- exclude subscriptions that never left the trial period
-  DATE(subscription_start_date) < DATE(end_date)

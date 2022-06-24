@@ -22,7 +22,7 @@ particularly important because the source unsanitized dataset has only
 a 2-day retention period, so errors fairly quickly become unrecoverable
 and can impact reporting to partners. If this task errors out, it could
 indicate trouble with an upstream task that runs in a restricted project
-outside of Airflow. Contact `ctroy`, `whd`, and `jbuck`.
+outside of Airflow. Contact `ctroy`, `wstuckey`, `whd`, and `jbuck`.
 
 #### Owner
 
@@ -62,7 +62,7 @@ with DAG(
         destination_table="adm_daily_aggregates_v1",
         dataset_id="search_terms_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="rburwei@mozilla.com",
+        owner="ctroy@mozilla.com",
         email=[
             "ctroy@mozilla.com",
             "rburwei@mozilla.com",

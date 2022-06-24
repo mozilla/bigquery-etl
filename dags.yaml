@@ -591,7 +591,7 @@ bqetl_search_terms_daily:
     a 2-day retention period, so errors fairly quickly become unrecoverable
     and can impact reporting to partners. If this task errors out, it could
     indicate trouble with an upstream task that runs in a restricted project
-    outside of Airflow. Contact `ctroy`, `whd`, and `jbuck`.
+    outside of Airflow. Contact `ctroy`, `wstuckey`, `whd`, and `jbuck`.
   schedule_interval: 0 3 * * *
   tags:
     - impact/tier_1

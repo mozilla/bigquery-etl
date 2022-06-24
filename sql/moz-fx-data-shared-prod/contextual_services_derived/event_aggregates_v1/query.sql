@@ -178,7 +178,10 @@ WITH combined AS (
     'phone' AS form_factor,
     normalized_country_code AS country,
     metadata.geo.subdivision1 AS subdivision1,
-    IFNULL(metrics.string.top_sites_contile_advertiser, metrics.string.top_site_contile_advertiser) AS advertiser,
+    IFNULL(
+      metrics.string.top_sites_contile_advertiser,
+      metrics.string.top_site_contile_advertiser
+    ) AS advertiser,
     'release' AS release_channel,
     SAFE_CAST(
       (SELECT value FROM UNNEST(events[SAFE_OFFSET(0)].extra) WHERE key = 'position') AS INT64
@@ -205,7 +208,10 @@ WITH combined AS (
     'phone' AS form_factor,
     normalized_country_code AS country,
     metadata.geo.subdivision1 AS subdivision1,
-    IFNULL(metrics.string.top_sites_contile_advertiser, metrics.string.top_site_contile_advertiser) AS advertiser,
+    IFNULL(
+      metrics.string.top_sites_contile_advertiser,
+      metrics.string.top_site_contile_advertiser
+    ) AS advertiser,
     'beta' AS release_channel,
     SAFE_CAST(
       (SELECT value FROM UNNEST(events[SAFE_OFFSET(0)].extra) WHERE key = 'position') AS INT64

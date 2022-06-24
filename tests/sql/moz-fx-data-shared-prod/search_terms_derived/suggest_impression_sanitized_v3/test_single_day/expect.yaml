@@ -1,0 +1,56 @@
+- advertiser: shoe store
+  request_id: rid1
+  block_id: bid1
+  context_id: cid1
+  country: US
+  is_clicked: False
+  locale: en-US
+  browser: firefox(96)
+  form_factor: desktop
+  os_family: windows
+  timestamp: 2021-01-01T12:00:01+00:00
+  normalized_os: Windows
+  normalized_os_version: 11.0
+  position: 1
+  region: OH
+  normalized_channel: nightly
+  reporting_url: url1
+  query: "shoes for"
+  scenario: online
+  submission_timestamp: 2021-01-01T12:00:00+00:00
+  version: "94"
+- advertiser: awesome guitar store
+  block_id: bid2
+  context_id: cid2
+  country: US
+  is_clicked: true
+  locale: en-US
+  normalized_os: Windows
+  normalized_os_version: 11.0
+  position: 2
+  region: AK
+  normalized_channel: nightly
+  reporting_url: url2
+  scenario: online
+  submission_timestamp: 2021-01-01T12:03:00+00:00
+  version: "94"
+- block_id: bid7
+  context_id: cid7
+  request_id: rid7
+  country: US
+  is_clicked: false
+  locale: en-US
+  browser: firefox(96)
+  form_factor: desktop
+  os_family: macos
+  timestamp: 2021-01-01T12:07:00+00:00
+  normalized_os: macOS
+  normalized_os_version: 10.9
+  position: 7
+  region: AZ
+  normalized_channel: beta
+  reporting_url: url7
+  query: "another query"
+  scenario: online
+  submission_timestamp: 2021-01-01T12:07:00+00:00
+  version: "94"

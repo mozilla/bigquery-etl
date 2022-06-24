@@ -5,7 +5,7 @@ description: |-
 
   See https://bugzilla.mozilla.org/show_bug.cgi?id=1649074
 owners:
-  - jklukas@mozilla.com
+  - dthorn@mozilla.com
 labels:
   application: fxa
   incremental: true

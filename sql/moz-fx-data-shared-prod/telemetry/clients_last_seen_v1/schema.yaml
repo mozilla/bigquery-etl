@@ -60,6 +60,9 @@ fields:
   name: days_since_interacted
   type: INTEGER
 - mode: NULLABLE
+  name: submission_date
+  type: DATE
+- mode: NULLABLE
   name: first_seen_date
   type: DATE
 - mode: NULLABLE
@@ -105,9 +108,6 @@ fields:
   mode: REPEATED
   name: days_seen_in_experiment
   type: RECORD
-- mode: NULLABLE
-  name: submission_date
-  type: DATE
 - mode: NULLABLE
   name: client_id
   type: STRING
@@ -662,6 +662,9 @@ fields:
   name: search_count_organic
   type: INTEGER
 - mode: NULLABLE
+  name: search_count_urlbar_handoff
+  type: INTEGER
+- mode: NULLABLE
   name: session_restored_mean
   type: FLOAT
 - mode: NULLABLE
@@ -735,6 +738,24 @@ fields:
   type: INTEGER
 - mode: NULLABLE
   name: search_with_ads_count_all
+  type: INTEGER
+- mode: NULLABLE
+  name: scalar_parent_urlbar_impression_autofill_about_sum
+  type: INTEGER
+- mode: NULLABLE
+  name: scalar_parent_urlbar_impression_autofill_adaptive_sum
+  type: INTEGER
+- mode: NULLABLE
+  name: scalar_parent_urlbar_impression_autofill_origin_sum
+  type: INTEGER
+- mode: NULLABLE
+  name: scalar_parent_urlbar_impression_autofill_other_sum
+  type: INTEGER
+- mode: NULLABLE
+  name: scalar_parent_urlbar_impression_autofill_preloaded_sum
+  type: INTEGER
+- mode: NULLABLE
+  name: scalar_parent_urlbar_impression_autofill_url_sum
   type: INTEGER
 - fields:
   - mode: NULLABLE
@@ -893,16 +914,16 @@ fields:
   name: scalar_parent_os_environment_launched_via_desktop
   type: BOOLEAN
 - mode: NULLABLE
-  name: scalar_parent_os_environment_launched_via_taskbar
-  type: BOOLEAN
-- mode: NULLABLE
-  name: scalar_parent_os_environment_launched_via_other
-  type: BOOLEAN
-- mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_start_menu
   type: BOOLEAN
 - mode: NULLABLE
+  name: scalar_parent_os_environment_launched_via_taskbar
+  type: BOOLEAN
+- mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_other_shortcut
+  type: BOOLEAN
+- mode: NULLABLE
+  name: scalar_parent_os_environment_launched_via_other
   type: BOOLEAN
 - mode: NULLABLE
   name: search_count_webextension
@@ -932,6 +953,36 @@ fields:
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_autofill_adaptive_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_autofill_origin_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_autofill_url_sum
   type: RECORD
 - fields:
   - mode: NULLABLE
@@ -1152,6 +1203,16 @@ fields:
     name: value
     type: INTEGER
   mode: REPEATED
+  name: search_content_urlbar_handoff_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
   name: search_content_urlbar_searchmode_sum
   type: RECORD
 - fields:
@@ -1262,6 +1323,16 @@ fields:
     name: value
     type: INTEGER
   mode: REPEATED
+  name: search_withads_urlbar_handoff_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
   name: search_withads_urlbar_searchmode_sum
   type: RECORD
 - fields:
@@ -1363,6 +1434,16 @@ fields:
     type: INTEGER
   mode: REPEATED
   name: search_adclicks_urlbar_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: search_adclicks_urlbar_handoff_sum
   type: RECORD
 - fields:
   - mode: NULLABLE
@@ -1491,39 +1572,6 @@ fields:
 - mode: NULLABLE
   name: scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum
   type: INTEGER
-- mode: NULLABLE
-  name: search_count_urlbar_handoff
-  type: INTEGER
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - mode: NULLABLE
-    name: value
-    type: INTEGER
-  mode: REPEATED
-  name: search_content_urlbar_handoff_sum
-  type: RECORD
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - mode: NULLABLE
-    name: value
-    type: INTEGER
-  mode: REPEATED
-  name: search_withads_urlbar_handoff_sum
-  type: RECORD
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - mode: NULLABLE
-    name: value
-    type: INTEGER
-  mode: REPEATED
-  name: search_adclicks_urlbar_handoff_sum
-  type: RECORD
 - mode: NULLABLE
   name: user_pref_browser_newtabpage_enabled
   type: STRING

@@ -1308,7 +1308,7 @@ SELECT
   map_sum_aggregates[OFFSET(51)].map AS search_withads_about_home_sum,
   map_sum_aggregates[OFFSET(52)].map AS search_withads_about_newtab_sum,
   map_sum_aggregates[OFFSET(53)].map AS search_withads_searchbar_sum,
-  map_sum_aggregates[OFFSET(54].map AS search_withads_system_sum,
+  map_sum_aggregates[OFFSET(54)].map AS search_withads_system_sum,
   map_sum_aggregates[OFFSET(55)].map AS search_withads_webextension_sum,
   map_sum_aggregates[OFFSET(56)].map AS search_withads_tabhistory_sum,
   map_sum_aggregates[OFFSET(57)].map AS search_withads_reload_sum,

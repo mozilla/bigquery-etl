@@ -61,8 +61,8 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         task_id='wait_for_{{ dependency.task_id }}',
         external_dag_id='{{ dependency.dag_name }}',
         external_task_id='{{ dependency.task_id }}',
-        {% if dependency.execution_delta -%}
-        execution_delta={{ dependency.execution_delta | format_timedelta | format_repr }},
+        {% if dependency.get_execution_delta(schedule_interval) -%}
+        execution_delta={{ dependency.get_execution_delta(schedule_interval) | format_timedelta | format_repr }},
         {% endif -%}
         check_existence=True,
         mode='reschedule',

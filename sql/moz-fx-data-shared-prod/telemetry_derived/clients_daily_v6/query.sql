@@ -1372,7 +1372,7 @@ SELECT
   map_sum_aggregates[OFFSET(76)].map AS contextual_services_quicksuggest_click_sum,
   map_sum_aggregates[OFFSET(77)].map AS contextual_services_quicksuggest_impression_sum,
   map_sum_aggregates[OFFSET(78)].map AS contextual_services_quicksuggest_help_sum,
-  map_sum_aggregates
+  map_sum_aggregates[
     OFFSET(79)
   ].map AS contextual_services_quicksuggest_help_nonsponsored_bestmatch_sum,
   map_sum_aggregates[

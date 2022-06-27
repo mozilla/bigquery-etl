@@ -1134,7 +1134,7 @@ fields:
     name: value
     type: INTEGER
   mode: REPEATED
-  name: scalar_parent_urlbar_picked_about_sum
+  name: scalar_parent_urlbar_picked_autofill_about_sum
   type: RECORD
 - fields:
   - mode: NULLABLE

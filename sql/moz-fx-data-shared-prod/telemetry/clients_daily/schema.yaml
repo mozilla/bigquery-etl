@@ -2,71 +2,94 @@ fields:
 - mode: NULLABLE
   name: submission_date_s3
   type: DATE
-- mode: NULLABLE
+- description: null
+  mode: NULLABLE
   name: submission_date
   type: DATE
-- mode: NULLABLE
+- description: null
+  mode: NULLABLE
   name: client_id
   type: STRING
-- mode: NULLABLE
+- description: null
+  mode: NULLABLE
   name: aborts_content_sum
   type: INTEGER
-- mode: NULLABLE
+- description: null
+  mode: NULLABLE
   name: aborts_gmplugin_sum
   type: INTEGER
-- mode: NULLABLE
+- description: null
+  mode: NULLABLE
   name: aborts_plugin_sum
   type: INTEGER
-- mode: NULLABLE
+- description: null
+  mode: NULLABLE
   name: active_addons_count_mean
   type: FLOAT
-- fields:
-  - mode: NULLABLE
+- description: null
+  fields:
+  - description: null
+    mode: NULLABLE
     name: addon_id
     type: STRING
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: blocklisted
     type: BOOLEAN
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: name
     type: STRING
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: user_disabled
     type: BOOLEAN
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: app_disabled
     type: BOOLEAN
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: version
     type: STRING
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: scope
     type: INTEGER
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: type
     type: STRING
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: foreign_install
     type: BOOLEAN
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: has_binary_components
     type: BOOLEAN
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: install_day
     type: INTEGER
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: update_day
     type: INTEGER
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: signed_state
     type: INTEGER
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: is_system
     type: BOOLEAN
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: is_web_extension
     type: BOOLEAN
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: multiprocess_compatible
     type: BOOLEAN
   mode: REPEATED
@@ -868,6 +891,16 @@ fields:
     name: value
     type: INTEGER
   mode: REPEATED
+  name: scalar_parent_urlbar_picked_autofill_about_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_adaptive_sum
   type: RECORD
 - fields:
@@ -879,6 +912,26 @@ fields:
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_origin_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_autofill_other_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_autofill_preloaded_sum
   type: RECORD
 - fields:
   - mode: NULLABLE

@@ -1211,21 +1211,21 @@ types-python-dateutil==2.8.18 \
     --hash=sha256:8695c7d7a5b1aef4002f3ab4e1247e23b1d41cd7cc1286d4594c2d8c5593c991 \
     --hash=sha256:fd5ed97262b76ae684695ea38ace8dd7c1bc9491aba7eb4edf6654b7ecabc870
     # via -r requirements.in
-types-pytz==2022.1.0 \
-    --hash=sha256:20984c0c321d312caac8fd0a0b5456b615cb9cce74473624a794851a606fabae \
-    --hash=sha256:bbe7eaf93b4fbec4780323af925286d265a6681f50dba57d16dbd8695c3ed63d
+types-pytz==2022.1.1 \
+    --hash=sha256:4e7add70886dc2ee6ee7535c8184a26eeb0ac9dbafae9962cb882d74b9f67330 \
+    --hash=sha256:581467742f32f15fff1098698b11fd511057a2a8a7568d33b604083f2b03c24f
     # via -r requirements.in
-types-pyyaml==6.0.8 \
-    --hash=sha256:56a7b0e8109602785f942a11ebfbd16e97d5d0e79f5fbb077ec4e6a0004837ff \
-    --hash=sha256:d9495d377bb4f9c5387ac278776403eb3b4bb376851025d913eea4c22b4c6438
+types-pyyaml==6.0.9 \
+    --hash=sha256:33ae75c84b8f61fddf0c63e9c7e557db9db1694ad3c2ee8628ec5efebb5a5e9b \
+    --hash=sha256:b738e9ef120da0af8c235ba49d3b72510f56ef9bcc308fc8e7357100ff122284
     # via -r requirements.in
 types-requests==2.28.0 \
     --hash=sha256:85383b4ef0535f639c3f06c5bbb6494bbf59570c4cd88bbcf540f0b2ac1b49ab \
     --hash=sha256:9863d16dfbb3fa55dcda64fa3b989e76e8859033b26c1e1623e30465cfe294d3
     # via -r requirements.in
-types-ujson==5.3.0 \
-    --hash=sha256:3b25f0ea993f0a9aa7b1edbf5d7a51fb6e17d4f375201684933ce16e4aa702de \
-    --hash=sha256:91702721e00c6f3003be6499f971ae7bbb1e5e1c9ffbad3a7648c7e7590d86e2
+types-ujson==5.3.1 \
+    --hash=sha256:09a9f1c1b511423c37cda6247492f93bde1157141b5ecff9509a28c920e8c0e4 \
+    --hash=sha256:64698711b7b5e21a270213aa491ae3a4e2d75406e9536b1d998c259efb8aa416
     # via -r requirements.in
 types-urllib3==1.26.15 \
     --hash=sha256:6011befa13f901fc934f59bb1fd6973be6f3acf4ebfce427593a27e7f492918f \

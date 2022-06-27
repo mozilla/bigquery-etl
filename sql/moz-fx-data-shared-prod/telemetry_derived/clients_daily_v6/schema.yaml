@@ -1134,6 +1134,16 @@ fields:
     name: value
     type: INTEGER
   mode: REPEATED
+  name: scalar_parent_urlbar_picked_about_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_adaptive_sum
   type: RECORD
 - fields:
@@ -1145,6 +1155,26 @@ fields:
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_origin_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_autofill_other_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_autofill_preloaded_sum
   type: RECORD
 - fields:
   - mode: NULLABLE

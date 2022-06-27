@@ -635,9 +635,9 @@ mkdocs-awesome-pages-plugin==2.7.0 \
     --hash=sha256:875ae2b1a1a782a40ceb6fb8a5f2e83ffb15e6bdca29c597a4decb6bdd76e066 \
     --hash=sha256:f0fb3cc8ccfd9ca904b8c6db0a0cbec24d0ff3f76540bfe063dc173b30f8d4a8
     # via -r requirements.in
-mkdocs-material==8.3.7 \
-    --hash=sha256:e0e01f5deeacb126ad0a64998bb66d512c24467f4c9550a0afc74f7f0719a9ae \
-    --hash=sha256:f24ed0fc185dd88b036abc0425ce9e31ecf1e7e673bf01d3b168b373c08e629a
+mkdocs-material==8.3.8 \
+    --hash=sha256:949c75fa934d4b9ecc7b519964e58f0c9fc29f2ceb04736c85809cdbc403dfb5 \
+    --hash=sha256:b9cd305c3c29ef758931dae06e4aea0ca9f8bcc8ac6b2d45f10f932a015d6b83
     # via -r requirements.in
 mkdocs-material-extensions==1.0.3 \
     --hash=sha256:a82b70e533ce060b2a5d9eb2bc2e1be201cf61f901f93704b4acf6e3d5983a44 \
@@ -1219,9 +1219,9 @@ types-pyyaml==6.0.8 \
     --hash=sha256:56a7b0e8109602785f942a11ebfbd16e97d5d0e79f5fbb077ec4e6a0004837ff \
     --hash=sha256:d9495d377bb4f9c5387ac278776403eb3b4bb376851025d913eea4c22b4c6438
     # via -r requirements.in
-types-requests==2.27.31 \
-    --hash=sha256:1b6cf6a2bf57fd8018c1b636b69762900466fafddfb62e1330e092f3d4b0966a \
-    --hash=sha256:6fab97b99fea52b9c7b466a4dd93e06bb325bc7e7420475e87831026a8dd35cc
+types-requests==2.28.0 \
+    --hash=sha256:85383b4ef0535f639c3f06c5bbb6494bbf59570c4cd88bbcf540f0b2ac1b49ab \
+    --hash=sha256:9863d16dfbb3fa55dcda64fa3b989e76e8859033b26c1e1623e30465cfe294d3
     # via -r requirements.in
 types-ujson==5.3.0 \
     --hash=sha256:3b25f0ea993f0a9aa7b1edbf5d7a51fb6e17d4f375201684933ce16e4aa702de \

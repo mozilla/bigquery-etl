@@ -1872,36 +1872,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#metadata-udf" class="md-nav__link">
-    metadata (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#os-udf" class="md-nav__link">
-    os (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#extract_version-udf" class="md-nav__link">
     extract_version (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#fenix_build_to_date-udf" class="md-nav__link">
-    fenix_build_to_date (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#product_info-udf" class="md-nav__link">
-    product_info (UDF)
   </a>
   
 </li>
@@ -2177,36 +2149,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#metadata-udf" class="md-nav__link">
-    metadata (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#os-udf" class="md-nav__link">
-    os (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#extract_version-udf" class="md-nav__link">
     extract_version (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#fenix_build_to_date-udf" class="md-nav__link">
-    fenix_build_to_date (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#product_info-udf" class="md-nav__link">
-    product_info (UDF)
   </a>
   
 </li>
@@ -2227,16 +2171,6 @@
 
 <h1 id="norm">norm</h1>
 <p>Functions for normalizing data.</p>
-<h2 id="metadata-udf">metadata (UDF)</h2>
-<p>Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/metadata">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/metadata/metadata.yaml">Edit</a></p>
-<h2 id="os-udf">os (UDF)</h2>
-<p>Normalize an operating system string to one of the three major desktop
-platforms, one of the two major mobile platforms, or "Other".</p>
-<p>This is a reimplementation of
-<a href="&lt;https://github.com/mozilla/gcp-ingestion/blob/a6928fb089f1652856147c4605df715f327edfcd/ingestion-beam/src/main/java/com/mozilla/telemetry/transforms/NormalizeAttributes.java#L52-L74">logic used in the data pipeline</a>&gt;
-  to populate <code>normalized_os</code>.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/os">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/os/metadata.yaml">Edit</a></p>
 <h2 id="extract_version-udf">extract_version (UDF)</h2>
 <p>Extracts numeric version data from a version string like
 <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code>.</p>
@@ -2256,22 +2190,6 @@ platforms, one of the two major mobile platforms, or "Other".</p>
 
 
 
-## vpn_attribution (UDF)
-
-Accepts vpn attribution fields as input and returns a struct of normalized fields.
-
-[Source](https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/vpn_attribution)  |  [Edit](https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/vpn_attribution/metadata.yaml)
-
-
-
-## glean_ping_info (UDF)
-
-Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.
-
-[Source](https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_ping_info)  |  [Edit](https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_ping_info/metadata.yaml)
-
-
-
 ## browser_version_info (UDF)
 
 Adds metadata related to the browser version in a struct.
@@ -2285,21 +2203,11 @@ that serves as a source of truth for version releases.
 
 
 
-## diff_months (UDF)
+## glean_ping_info (UDF)
 
-Determine the number of whole months after grace period between start and end. Month is dependent on timezone, so start and end must both be datetimes, or both be dates, in the correct timezone. Grace period can be used to account for billing delay, usually 1 day, and is counted after months. When inclusive is FALSE, start and end are not included in whole months.
-For example, diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-01', grace_period =&gt; INTERVAL 0 day, inclusive =&gt; FALSE) returns 1, because start plus two months plus grace period is not less than end. Changing inclusive to TRUE returns 2, because start plus two months plus grace period is less than or equal to end. diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-02 00:00:00.000001', grace_period =&gt; INTERVAL 1 DAY, inclusive =&gt; FALSE) returns 2, because start plus two months plus grace period is less than end.
+Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.
 
-
-[Source](https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/diff_months)  |  [Edit](https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/diff_months/metadata.yaml)
-
-
-
-## glean_baseline_client_info (UDF)
-
-Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.
-
-[Source](https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_baseline_client_info)  |  [Edit](https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_baseline_client_info/metadata.yaml)
+[Source](https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_ping_info)  |  [Edit](https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_ping_info/metadata.yaml)
 
 
 
@@ -2324,6 +2232,162 @@ releases in the field.
 
 
 [Source](https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/truncate_version)  |  [Edit](https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/truncate_version/metadata.yaml)
+
+
+
+## fenix_build_to_date (UDF)
+
+Convert the Fenix client_info.app_build-format string to
+a DATETIME. May return NULL on failure.
+
+Fenix originally used an
+[8-digit app_build format](
+  &lt;https://github.com/mozilla-mobile/fenix/blob/c7283447/automation/gradle/versionCode.gradle#L12-L16)&gt;
+
+In short it is `yDDDHHmm`:
+
+ * y is years since 2018
+ * DDD is day of year, 0-padded, 001-366
+ * HH is hour of day, 00-23
+ * mm is minute of hour, 00-59
+
+The last date seen with an 8-digit build ID is 2020-08-10.
+
+Newer builds use a
+[10-digit format](
+  &lt;https://github.com/mozilla-mobile/fenix/blob/e6ee13dc/buildSrc/src/main/java/Config.kt#L55-L112)&gt;
+where the integer represents a pattern consisting of 32 bits.
+The 17 bits starting 13 bits from the left represent a number of hours since
+UTC midnight beginning 2014-12-28.
+
+This function tolerates both formats.
+
+After using this you may wish to `DATETIME_TRUNC(result, DAY)` for
+grouping by build date.
+
+
+[Source](https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/fenix_build_to_date)  |  [Edit](https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/fenix_build_to_date/metadata.yaml)
+
+
+
+## glean_baseline_client_info (UDF)
+
+Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.
+
+[Source](https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_baseline_client_info)  |  [Edit](https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_baseline_client_info/metadata.yaml)
+
+
+
+## product_info (UDF)
+
+Returns a normalized `app_name` and `canonical_app_name`
+for a product based on `legacy_app_name` and `normalized_os` values.
+Thus, this function serves as a bridge to get from legacy application
+identifiers to the consistent identifiers we are using for reporting in 2021.
+
+As of 2021, most Mozilla products are sending telemetry via the Glean SDK,
+with Glean telemetry in active development for desktop Firefox as well. The
+`probeinfo` API is the single source of truth for metadata about applications
+sending Glean telemetry; the values for `app_name` and
+`canonical_app_name` returned here correspond to the &quot;end-to-end identifier&quot;
+values documented in
+[the v2 Glean app listings endpoint
+](https://mozilla.github.io/probe-scraper/#operation/getAppListings).
+For non-Glean telemetry, we provide values in the same style to provide
+continuity as we continue the migration to Glean.
+
+For legacy telemetry pings like `main` ping for desktop and `core` ping for
+mobile products, the `legacy_app_name` given as input to this function
+should come from the submission URI (stored as
+`metadata.uri.app_name` in BigQuery ping tables).
+For Glean pings, we have invented `product` values that can be passed
+in to this function as the `legacy_app_name` parameter.
+
+The returned `app_name` values are intended to be
+readable and unambiguous, but short and easy to type.
+They are suitable for use as a key in derived tables.
+`product` is a deprecated field that was similar in intent.
+
+The returned `canonical_app_name` is more verbose and is suited for displaying
+in visualizations. `canonical_name` is a synonym that we provide for
+historical compatibility with previous versions of this function.
+
+The returned struct also contains boolean `contributes_to_2021_kpi` as the
+canonical reference for whether the given application is included in KPI
+reporting. Additional fields may be added for future years.
+
+The `normalized_os` value that's passed in should be the top-level
+`normalized_os` value present in any ping table or you may want
+to wrap a raw value in `mozfun.norm.os`
+like `mozfun.norm.product_info(app_name, mozfun.norm.os(os))`.
+
+This function also tolerates passing in a `product` value as
+`legacy_app_name` so that this function is still useful for derived tables
+which have thrown away the raw `app_name` value from legacy pings.
+
+
+The mappings are as follows:
+
+legacy_app_name  | normalized_os | app_name         | product          | canonical_app_name              | 2019  | 2020  | 2021
+---------------- | ------------- | ---------------- | ---------------- | ------------------------------- | ----- | ----  | ----
+Firefox          | *             | firefox_desktop  | Firefox          | Firefox for Desktop             | true  | true  | true
+Fenix            | Android       | fenix            | Fenix            | Firefox for Android (Fenix)     | true  | true  | true
+Fennec           | Android       | fennec           | Fennec           | Firefox for Android (Fennec)    | true  | true  | true
+Firefox Preview  | Android       | firefox_preview  | Firefox Preview  | Firefox Preview for Android     | true  | true  | true
+Fennec           | iOS           | firefox_ios      | Firefox iOS      | Firefox for iOS                 | true  | true  | true
+FirefoxForFireTV | Android       | firefox_fire_tv  | Firefox Fire TV  | Firefox for Fire TV             | false | false | false
+FirefoxConnect   | Android       | firefox_connect  | Firefox Echo     | Firefox for Echo Show           | true  | true  | false
+Zerda            | Android       | firefox_lite     | Firefox Lite     | Firefox Lite                    | true  | true  | false
+Zerda_cn         | Android       | firefox_lite_cn  | Firefox Lite CN  | Firefox Lite (China)            | false | false | false
+Focus            | Android       | focus_android    | Focus Android    | Firefox Focus for Android       | true  | true  | true
+Focus            | iOS           | focus_ios        | Focus iOS        | Firefox Focus for iOS           | true  | true  | true
+Klar             | Android       | klar_android     | Klar Android     | Firefox Klar for Android        | false | false | false
+Klar             | iOS           | klar_ios         | Klar iOS         | Firefox Klar for iOS            | false | false | false
+Lockbox          | Android       | lockwise_android | Lockwise Android | Lockwise for Android            | true  | true  | false
+Lockbox          | iOS           | lockwise_ios     | Lockwise iOS     | Lockwise for iOS                | true  | true  | false
+FirefoxReality*  | Android       | firefox_reality  | Firefox Reality  | Firefox Reality                 | false | false | false
+[Source](https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/product_info)  |  [Edit](https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/product_info/metadata.yaml)
+
+
+
+## metadata (UDF)
+
+Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.
+
+[Source](https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/metadata)  |  [Edit](https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/metadata/metadata.yaml)
+
+
+
+## os (UDF)
+
+Normalize an operating system string to one of the three major desktop
+platforms, one of the two major mobile platforms, or &quot;Other&quot;.
+
+This is a reimplementation of
+[logic used in the data pipeline](
+  &lt;https://github.com/mozilla/gcp-ingestion/blob/a6928fb089f1652856147c4605df715f327edfcd/ingestion-beam/src/main/java/com/mozilla/telemetry/transforms/NormalizeAttributes.java#L52-L74)&gt;
+  to populate `normalized_os`.
+
+
+[Source](https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/os)  |  [Edit](https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/os/metadata.yaml)
+
+
+
+## vpn_attribution (UDF)
+
+Accepts vpn attribution fields as input and returns a struct of normalized fields.
+
+[Source](https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/vpn_attribution)  |  [Edit](https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/vpn_attribution/metadata.yaml)
+
+
+
+## diff_months (UDF)
+
+Determine the number of whole months after grace period between start and end. Month is dependent on timezone, so start and end must both be datetimes, or both be dates, in the correct timezone. Grace period can be used to account for billing delay, usually 1 day, and is counted after months. When inclusive is FALSE, start and end are not included in whole months.
+For example, diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-01', grace_period =&gt; INTERVAL 0 day, inclusive =&gt; FALSE) returns 1, because start plus two months plus grace period is not less than end. Changing inclusive to TRUE returns 2, because start plus two months plus grace period is less than or equal to end. diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-02 00:00:00.000001', grace_period =&gt; INTERVAL 1 DAY, inclusive =&gt; FALSE) returns 2, because start plus two months plus grace period is less than end.
+
+
+[Source](https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/diff_months)  |  [Edit](https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/diff_months/metadata.yaml)
 
 
 
@@ -2415,253 +2479,6 @@ GROUP BY
   geckoview_version
 </code></pre>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/fenix_app_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/fenix_app_info/metadata.yaml">Edit</a></p>
-<h2 id="fenix_build_to_date-udf">fenix_build_to_date (UDF)</h2>
-<p>Convert the Fenix client_info.app_build-format string to
-a DATETIME. May return NULL on failure.</p>
-<p>Fenix originally used an
-<a href="&lt;https://github.com/mozilla-mobile/fenix/blob/c7283447/automation/gradle/versionCode.gradle#L12-L16">8-digit app_build format</a>&gt;</p>
-<p>In short it is <code>yDDDHHmm</code>:</p>
-<ul>
-<li>y is years since 2018</li>
-<li>DDD is day of year, 0-padded, 001-366</li>
-<li>HH is hour of day, 00-23</li>
-<li>mm is minute of hour, 00-59</li>
-</ul>
-<p>The last date seen with an 8-digit build ID is 2020-08-10.</p>
-<p>Newer builds use a
-<a href="&lt;https://github.com/mozilla-mobile/fenix/blob/e6ee13dc/buildSrc/src/main/java/Config.kt#L55-L112">10-digit format</a>&gt;
-where the integer represents a pattern consisting of 32 bits.
-The 17 bits starting 13 bits from the left represent a number of hours since
-UTC midnight beginning 2014-12-28.</p>
-<p>This function tolerates both formats.</p>
-<p>After using this you may wish to <code>DATETIME_TRUNC(result, DAY)</code> for
-grouping by build date.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/fenix_build_to_date">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/fenix_build_to_date/metadata.yaml">Edit</a></p>
-<h2 id="product_info-udf">product_info (UDF)</h2>
-<p>Returns a normalized <code>app_name</code> and <code>canonical_app_name</code>
-for a product based on <code>legacy_app_name</code> and <code>normalized_os</code> values.
-Thus, this function serves as a bridge to get from legacy application
-identifiers to the consistent identifiers we are using for reporting in 2021.</p>
-<p>As of 2021, most Mozilla products are sending telemetry via the Glean SDK,
-with Glean telemetry in active development for desktop Firefox as well. The
-<code>probeinfo</code> API is the single source of truth for metadata about applications
-sending Glean telemetry; the values for <code>app_name</code> and
-<code>canonical_app_name</code> returned here correspond to the "end-to-end identifier"
-values documented in
-<a href="https://mozilla.github.io/probe-scraper/#operation/getAppListings">the v2 Glean app listings endpoint
-</a>.
-For non-Glean telemetry, we provide values in the same style to provide
-continuity as we continue the migration to Glean.</p>
-<p>For legacy telemetry pings like <code>main</code> ping for desktop and <code>core</code> ping for
-mobile products, the <code>legacy_app_name</code> given as input to this function
-should come from the submission URI (stored as
-<code>metadata.uri.app_name</code> in BigQuery ping tables).
-For Glean pings, we have invented <code>product</code> values that can be passed
-in to this function as the <code>legacy_app_name</code> parameter.</p>
-<p>The returned <code>app_name</code> values are intended to be
-readable and unambiguous, but short and easy to type.
-They are suitable for use as a key in derived tables.
-<code>product</code> is a deprecated field that was similar in intent.</p>
-<p>The returned <code>canonical_app_name</code> is more verbose and is suited for displaying
-in visualizations. <code>canonical_name</code> is a synonym that we provide for
-historical compatibility with previous versions of this function.</p>
-<p>The returned struct also contains boolean <code>contributes_to_2021_kpi</code> as the
-canonical reference for whether the given application is included in KPI
-reporting. Additional fields may be added for future years.</p>
-<p>The <code>normalized_os</code> value that's passed in should be the top-level
-<code>normalized_os</code> value present in any ping table or you may want
-to wrap a raw value in <code>mozfun.norm.os</code>
-like <code>mozfun.norm.product_info(app_name, mozfun.norm.os(os))</code>.</p>
-<p>This function also tolerates passing in a <code>product</code> value as
-<code>legacy_app_name</code> so that this function is still useful for derived tables
-which have thrown away the raw <code>app_name</code> value from legacy pings.</p>
-<p>The mappings are as follows:</p>
-<table>
-<thead>
-<tr>
-<th>legacy_app_name</th>
-<th>normalized_os</th>
-<th>app_name</th>
-<th>product</th>
-<th>canonical_app_name</th>
-<th>2019</th>
-<th>2020</th>
-<th>2021</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Firefox</td>
-<td>*</td>
-<td>firefox_desktop</td>
-<td>Firefox</td>
-<td>Firefox for Desktop</td>
-<td>true</td>
-<td>true</td>
-<td>true</td>
-</tr>
-<tr>
-<td>Fenix</td>
-<td>Android</td>
-<td>fenix</td>
-<td>Fenix</td>
-<td>Firefox for Android (Fenix)</td>
-<td>true</td>
-<td>true</td>
-<td>true</td>
-</tr>
-<tr>
-<td>Fennec</td>
-<td>Android</td>
-<td>fennec</td>
-<td>Fennec</td>
-<td>Firefox for Android (Fennec)</td>
-<td>true</td>
-<td>true</td>
-<td>true</td>
-</tr>
-<tr>
-<td>Firefox Preview</td>
-<td>Android</td>
-<td>firefox_preview</td>
-<td>Firefox Preview</td>
-<td>Firefox Preview for Android</td>
-<td>true</td>
-<td>true</td>
-<td>true</td>
-</tr>
-<tr>
-<td>Fennec</td>
-<td>iOS</td>
-<td>firefox_ios</td>
-<td>Firefox iOS</td>
-<td>Firefox for iOS</td>
-<td>true</td>
-<td>true</td>
-<td>true</td>
-</tr>
-<tr>
-<td>FirefoxForFireTV</td>
-<td>Android</td>
-<td>firefox_fire_tv</td>
-<td>Firefox Fire TV</td>
-<td>Firefox for Fire TV</td>
-<td>false</td>
-<td>false</td>
-<td>false</td>
-</tr>
-<tr>
-<td>FirefoxConnect</td>
-<td>Android</td>
-<td>firefox_connect</td>
-<td>Firefox Echo</td>
-<td>Firefox for Echo Show</td>
-<td>true</td>
-<td>true</td>
-<td>false</td>
-</tr>
-<tr>
-<td>Zerda</td>
-<td>Android</td>
-<td>firefox_lite</td>
-<td>Firefox Lite</td>
-<td>Firefox Lite</td>
-<td>true</td>
-<td>true</td>
-<td>false</td>
-</tr>
-<tr>
-<td>Zerda_cn</td>
-<td>Android</td>
-<td>firefox_lite_cn</td>
-<td>Firefox Lite CN</td>
-<td>Firefox Lite (China)</td>
-<td>false</td>
-<td>false</td>
-<td>false</td>
-</tr>
-<tr>
-<td>Focus</td>
-<td>Android</td>
-<td>focus_android</td>
-<td>Focus Android</td>
-<td>Firefox Focus for Android</td>
-<td>true</td>
-<td>true</td>
-<td>true</td>
-</tr>
-<tr>
-<td>Focus</td>
-<td>iOS</td>
-<td>focus_ios</td>
-<td>Focus iOS</td>
-<td>Firefox Focus for iOS</td>
-<td>true</td>
-<td>true</td>
-<td>true</td>
-</tr>
-<tr>
-<td>Klar</td>
-<td>Android</td>
-<td>klar_android</td>
-<td>Klar Android</td>
-<td>Firefox Klar for Android</td>
-<td>false</td>
-<td>false</td>
-<td>false</td>
-</tr>
-<tr>
-<td>Klar</td>
-<td>iOS</td>
-<td>klar_ios</td>
-<td>Klar iOS</td>
-<td>Firefox Klar for iOS</td>
-<td>false</td>
-<td>false</td>
-<td>false</td>
-</tr>
-<tr>
-<td>Lockbox</td>
-<td>Android</td>
-<td>lockwise_android</td>
-<td>Lockwise Android</td>
-<td>Lockwise for Android</td>
-<td>true</td>
-<td>true</td>
-<td>false</td>
-</tr>
-<tr>
-<td>Lockbox</td>
-<td>iOS</td>
-<td>lockwise_ios</td>
-<td>Lockwise iOS</td>
-<td>Lockwise for iOS</td>
-<td>true</td>
-<td>true</td>
-<td>false</td>
-</tr>
-<tr>
-<td>FirefoxReality*</td>
-<td>Android</td>
-<td>firefox_reality</td>
-<td>Firefox Reality</td>
-<td>Firefox Reality</td>
-<td>false</td>
-<td>false</td>
-<td>false</td>
-</tr>
-<tr>
-<td><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/product_info">Source</a></td>
-<td><a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/product_info/metadata.yaml">Edit</a></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
 
               
             </article>

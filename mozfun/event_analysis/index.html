@@ -1774,20 +1774,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#create_count_steps_query-stored-procedure" class="md-nav__link">
-    create_count_steps_query (Stored Procedure)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#event_index_to_match_string-udf" class="md-nav__link">
-    event_index_to_match_string (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#aggregate_match_strings-udf" class="md-nav__link">
     aggregate_match_strings (UDF)
   </a>
@@ -1954,6 +1940,20 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create_count_steps_query-stored-procedure" class="md-nav__link">
+    create_count_steps_query (Stored Procedure)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#event_index_to_match_string-udf" class="md-nav__link">
+    event_index_to_match_string (UDF)
+  </a>
   
 </li>
       
@@ -2326,20 +2326,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#create_count_steps_query-stored-procedure" class="md-nav__link">
-    create_count_steps_query (Stored Procedure)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#event_index_to_match_string-udf" class="md-nav__link">
-    event_index_to_match_string (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#aggregate_match_strings-udf" class="md-nav__link">
     aggregate_match_strings (UDF)
   </a>
@@ -2509,6 +2495,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#create_count_steps_query-stored-procedure" class="md-nav__link">
+    create_count_steps_query (Stored Procedure)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#event_index_to_match_string-udf" class="md-nav__link">
+    event_index_to_match_string (UDF)
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2539,12 +2539,6 @@ knows what that action's representation is (using the compressed mapping from 1.
 create a regex string that checks for the presence of that event. The view makes this
 transparent, and allows users to simply query a boolean field representing the presence
 of that event on that day.</p>
-<h2 id="create_count_steps_query-stored-procedure">create_count_steps_query (Stored Procedure)</h2>
-<p>Generate the SQL statement that can be used to create an easily queryable view on events data.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/event_analysis/create_count_steps_query">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/event_analysis/create_count_steps_query/metadata.yaml">Edit</a></p>
-<h2 id="event_index_to_match_string-udf">event_index_to_match_string (UDF)</h2>
-<p>Given an event index string, create a match string that is an exact match in the events_daily table.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/event_analysis/event_index_to_match_string">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/event_analysis/event_index_to_match_string/metadata.yaml">Edit</a></p>
 <h2 id="aggregate_match_strings-udf">aggregate_match_strings (UDF)</h2>
 <p>Given an array of strings that each match a single event, aggregate those into a single regex string that will match any of the events.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/event_analysis/aggregate_match_strings">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/event_analysis/aggregate_match_strings/metadata.yaml">Edit</a></p>
@@ -2797,6 +2791,12 @@ of unicode chars.</p>
 <p>See <a href="https://sql.telemetry.mozilla.org/dashboard/fenix-events">this dashboard</a>
 for example usage.
 <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/event_analysis/extract_event_counts">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/event_analysis/extract_event_counts/metadata.yaml">Edit</a></p>
+<h2 id="create_count_steps_query-stored-procedure">create_count_steps_query (Stored Procedure)</h2>
+<p>Generate the SQL statement that can be used to create an easily queryable view on events data.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/event_analysis/create_count_steps_query">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/event_analysis/create_count_steps_query/metadata.yaml">Edit</a></p>
+<h2 id="event_index_to_match_string-udf">event_index_to_match_string (UDF)</h2>
+<p>Given an event index string, create a match string that is an exact match in the events_daily table.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/event_analysis/event_index_to_match_string">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/event_analysis/event_index_to_match_string/metadata.yaml">Edit</a></p>
 
               
             </article>

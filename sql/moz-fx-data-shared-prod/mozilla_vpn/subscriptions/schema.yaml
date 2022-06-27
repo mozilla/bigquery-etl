@@ -46,8 +46,18 @@ fields:
     - mode: NULLABLE
       name: interval_count
       type: INTEGER
-    mode: REPEATED
-    name: active_periods
+    mode: NULLABLE
+    name: active_period
+    type: RECORD
+  - fields:
+    - mode: NULLABLE
+      name: start_time
+      type: TIMESTAMP
+    - mode: NULLABLE
+      name: end_time
+      type: TIMESTAMP
+    mode: NULLABLE
+    name: trial_period
     type: RECORD
   mode: NULLABLE
   name: apple_receipt

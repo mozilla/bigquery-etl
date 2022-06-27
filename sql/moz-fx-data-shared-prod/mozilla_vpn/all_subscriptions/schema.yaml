@@ -24,6 +24,9 @@ fields:
   name: created
   type: TIMESTAMP
 - mode: NULLABLE
+  name: trial_start
+  type: TIMESTAMP
+- mode: NULLABLE
   name: trial_end
   type: TIMESTAMP
 - mode: NULLABLE

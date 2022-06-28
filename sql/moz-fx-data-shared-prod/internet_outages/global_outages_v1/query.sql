@@ -426,8 +426,7 @@ ssl_error_prop AS (
   GROUP BY
     country,
     city,
-    time_slot,
-    client_id
+    time_slot
   HAVING
     COUNT(*) > 50
 ),

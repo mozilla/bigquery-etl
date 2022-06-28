@@ -826,16 +826,16 @@ fields:
   name: scalar_parent_os_environment_launched_via_desktop
   type: BOOLEAN
 - mode: NULLABLE
-  name: scalar_parent_os_environment_launched_via_start_menu
-  type: BOOLEAN
-- mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_taskbar
   type: BOOLEAN
 - mode: NULLABLE
-  name: scalar_parent_os_environment_launched_via_other_shortcut
+  name: scalar_parent_os_environment_launched_via_other
   type: BOOLEAN
 - mode: NULLABLE
-  name: scalar_parent_os_environment_launched_via_other
+  name: scalar_parent_os_environment_launched_via_start_menu
+  type: BOOLEAN
+- mode: NULLABLE
+  name: scalar_parent_os_environment_launched_via_other_shortcut
   type: BOOLEAN
 - mode: NULLABLE
   name: search_count_webextension

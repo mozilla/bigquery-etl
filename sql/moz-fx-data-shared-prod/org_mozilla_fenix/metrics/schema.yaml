@@ -1024,6 +1024,30 @@ fields:
       mode: NULLABLE
       name: fog_ipc_shutdown_registration_failures
       type: INTEGER
+    - description: 'A counter of the number of addresses that have been deleted by
+
+        the user.
+
+        '
+      mode: NULLABLE
+      name: addresses_deleted
+      type: INTEGER
+    - description: 'A counter of the number of addresses that have been saved
+
+        manually by the user.
+
+        '
+      mode: NULLABLE
+      name: addresses_saved
+      type: INTEGER
+    - description: 'A counter of the number of addresses that have been updated
+
+        manually by the user.
+
+        '
+      mode: NULLABLE
+      name: addresses_updated
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

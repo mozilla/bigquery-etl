@@ -36,6 +36,62 @@ GLEAN_TABLES = [
 # one to avoid confusion: https://github.com/mozilla/bigquery-etl/issues/2499
 SKIP_APPS = ["mlhackweek_search", "regrets_reporter"]
 
+# List of glean apps tables should be generated for.
+# New Glean apps needs to be added to the list and tables
+# need to be generated and deployed manually.
+ALLOWED_APPS = [
+    "firefox_desktop",
+    "firefox_desktop_background_update",
+    "pine",
+    "fenix",
+    "firefox_ios",
+    "reference_browser",
+    "firefox_fire_tv",
+    "firefox_reality",
+    "lockwise_android",
+    "lockwise_ios",
+    "mozregression",
+    "burnham",
+    "mozphab",
+    "firefox_echo_show",
+    "firefox_reality_pc",
+    "mach",
+    "focus_ios",
+    "klar_ios",
+    "focus_android",
+    "klar_android",
+    "bergamot",
+    "firefox_translations",
+    "mozilla_vpn",
+    "mozilla_vpn_android",
+    "glean_dictionary",
+    "bedrock",
+    "mozilla_lockbox",
+    "mozilla_mach",
+    "org_mozilla_connect_firefox",
+    "org_mozilla_fenix_nightly",
+    "org_mozilla_fenix",
+    "org_mozilla_fennec_aurora",
+    "org_mozilla_firefox_beta",
+    "org_mozilla_firefox_vpn",
+    "org_mozilla_firefox",
+    "org_mozilla_firefoxreality",
+    "org_mozilla_focus_beta",
+    "org_mozilla_focus_nightly",
+    "org_mozilla_focus",
+    "org_mozilla_ios_fennec",
+    "org_mozilla_ios_firefox",
+    "org_mozilla_ios_firefoxbeta",
+    "org_mozilla_ios_focus",
+    "org_mozilla_ios_klar",
+    "org_mozilla_ios_lockbox",
+    "org_mozilla_klar",
+    "org_mozilla_mozregression",
+    "org_mozilla_reference_browser",
+    "org_mozilla_tv_firefox",
+    "org_mozilla_vrbrowser",
+]
+
 
 @click.command()
 @click.option(
@@ -88,6 +144,7 @@ def generate(target_project, output_dir, parallelism, exclude, only, app_name):
         only_tables=[only] if only else None,
         table_filter=table_filter,
     )
+
     # filter out skipped apps
     baseline_tables = [
         baseline_table
@@ -103,7 +160,7 @@ def generate(target_project, output_dir, parallelism, exclude, only, app_name):
     if app_name:
         app_info = {name: info for name, info in app_info.items() if name == app_name}
 
-    app_info = [info for name, info in app_info.items() if name not in SKIP_APPS]
+    app_info = [info for name, info in app_info.items() if name in ALLOWED_APPS]
 
     # Prepare parameters so that generation of all Glean datasets can be done in parallel
 

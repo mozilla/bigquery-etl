@@ -2,7 +2,7 @@
 friendly_name: FxA Users Services First Seen
 description: Usage aggregations describing when each FxA user was first seen
 owners:
-  - jklukas@mozilla.com
+  - dthorn@mozilla.com
 labels:
   application: fxa
   incremental: true

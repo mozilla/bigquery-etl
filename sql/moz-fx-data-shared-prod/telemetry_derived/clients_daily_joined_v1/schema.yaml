@@ -861,6 +861,30 @@ fields:
   name: search_with_ads_count_all
   type: INTEGER
 - description: null
+  mode: NULLABLE
+  name: scalar_parent_urlbar_impression_autofill_about_sum
+  type: INTEGER
+- description: null
+  mode: NULLABLE
+  name: scalar_parent_urlbar_impression_autofill_adaptive_sum
+  type: INTEGER
+- description: null
+  mode: NULLABLE
+  name: scalar_parent_urlbar_impression_autofill_origin_sum
+  type: INTEGER
+- description: null
+  mode: NULLABLE
+  name: scalar_parent_urlbar_impression_autofill_other_sum
+  type: INTEGER
+- description: null
+  mode: NULLABLE
+  name: scalar_parent_urlbar_impression_autofill_preloaded_sum
+  type: INTEGER
+- description: null
+  mode: NULLABLE
+  name: scalar_parent_urlbar_impression_autofill_url_sum
+  type: INTEGER
+- description: null
   fields:
   - description: null
     mode: NULLABLE
@@ -1110,6 +1134,66 @@ fields:
     type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_autofill_about_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_autofill_adaptive_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_autofill_origin_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_autofill_other_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_autofill_preloaded_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_autofill_url_sum
   type: RECORD
 - fields:
   - mode: NULLABLE

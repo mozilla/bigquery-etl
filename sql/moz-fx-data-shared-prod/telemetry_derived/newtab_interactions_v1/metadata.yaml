@@ -1,0 +1,16 @@
+friendly_name: Newtab Interactions
+description: |-
+  Please provide a description for the query
+owners:
+- example@mozilla.com
+labels:
+  incremental: true
+bigquery:
+  time_partitioning:
+    field: ''
+    type: day
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields: []
+references: {}

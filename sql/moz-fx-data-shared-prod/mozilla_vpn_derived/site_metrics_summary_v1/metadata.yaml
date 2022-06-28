@@ -2,7 +2,7 @@ friendly_name: GA Site Metrics Summary for Mozilla VPN
 description: >
   GA Site Metrics Summary for Mozilla VPN
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily

@@ -2,7 +2,7 @@ friendly_name: Funnel GA to Subscriptions
 description: >
   Funnel from Google Analytics to Mozilla VPN Subscriptions
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily

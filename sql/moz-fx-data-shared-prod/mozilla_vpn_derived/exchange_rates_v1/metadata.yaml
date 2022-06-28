@@ -3,7 +3,7 @@ friendly_name: Exchange Rates
 description: >
   Import exchange rates from Oanda.
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   incremental: true
   schedule: daily

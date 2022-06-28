@@ -1,7 +1,7 @@
 friendly_name: Stripe refunds on CJ subscriptions
 description: Stripe refunds on CJ subscriptions
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   application: cjms
   schedule: hourly

@@ -83,7 +83,7 @@ with DAG(
 
     telemetry_derived__unified_metrics__v1 = bigquery_etl_query(
         task_id="telemetry_derived__unified_metrics__v1",
-        destination_table="unified_metrics_v1",
+        destination_table='unified_metrics_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="loines@mozilla.com",
@@ -93,20 +93,14 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     with TaskGroup(
         "telemetry_derived__unified_metrics__v1_external"
     ) as telemetry_derived__unified_metrics__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_telemetry_derived__unified_metrics__v1",
-            external_dag_id="bqetl_analytics_aggregations",
-            external_task_id="wait_for_telemetry_derived__unified_metrics__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
-        )
-
         ExternalTaskMarker(
             task_id="kpi_forecasting__wait_for_unified_metrics",
             external_dag_id="kpi_forecasting",
@@ -122,6 +116,21 @@ with DAG(
         telemetry_derived__unified_metrics__v1
     )
 
+    wait_for_clients_last_seen_joined = ExternalTaskSensor(
+        task_id="wait_for_clients_last_seen_joined",
+        external_dag_id="copy_deduplicate",
+        external_task_id="clients_last_seen_joined",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__unified_metrics__v1.set_upstream(
+        wait_for_clients_last_seen_joined
+    )
     wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
         task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
         external_dag_id="bqetl_mobile_search",

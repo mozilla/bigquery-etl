@@ -50,7 +50,7 @@ with DAG(
 
     active_users_aggregates_attribution_v1 = bigquery_etl_query(
         task_id="active_users_aggregates_attribution_v1",
-        destination_table="active_users_aggregates_attribution_v1",
+        destination_table='active_users_aggregates_attribution_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -59,13 +59,14 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     active_users_aggregates_device_v1 = bigquery_etl_query(
         task_id="active_users_aggregates_device_v1",
-        destination_table="active_users_aggregates_device_v1",
+        destination_table='active_users_aggregates_device_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -74,13 +75,14 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     active_users_aggregates_v1 = bigquery_etl_query(
         task_id="active_users_aggregates_v1",
-        destination_table="active_users_aggregates_v1",
+        destination_table='active_users_aggregates_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -89,13 +91,14 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     telemetry_derived__cohort_daily_statistics__v1 = bigquery_etl_query(
         task_id="telemetry_derived__cohort_daily_statistics__v1",
-        destination_table="cohort_daily_statistics_v1",
+        destination_table='cohort_daily_statistics_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="anicholson@mozilla.com",
@@ -105,8 +108,9 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter="activity_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["activity_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     wait_for_telemetry_derived__unified_metrics__v1 = ExternalTaskSensor(

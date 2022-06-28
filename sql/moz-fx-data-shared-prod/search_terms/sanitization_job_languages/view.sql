@@ -4,7 +4,7 @@ AS
 SELECT
   started_at as job_start_time,
   lang.key AS language_code,
-  CAST(lang.value AS int) AS search_term_count
+  SAFE_CAST(lang.value AS int) AS search_term_count
 FROM
   `moz-fx-data-shared-prod.search_terms_derived.sanitization_job_metadata`
 CROSS JOIN

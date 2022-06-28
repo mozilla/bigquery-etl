@@ -14,6 +14,34 @@ max_active_date AS (
   FROM
     mozdata.mozilla_vpn.active_subscription_ids
 ),
+trials AS (
+  SELECT
+    *
+  FROM
+    all_subscriptions
+  WHERE
+    trial_start IS NOT NULL
+    AND DATE(trial_start) <= (SELECT max_active_date FROM max_active_date)
+),
+new_trial_events AS (
+  SELECT
+    DATE(trial_start) AS event_date,
+    subscription_id,
+    "New Trial" AS event_type,
+  FROM
+    trials
+),
+cancelled_trial_events AS (
+  SELECT
+    DATE(ended_at) AS event_date,
+    subscription_id,
+    "Cancelled Trial" AS event_type,
+  FROM
+    trials
+  WHERE
+    subscription_start_date IS NULL
+    AND ended_at IS NOT NULL
+),
 new_events AS (
   SELECT
     active_date AS event_date,
@@ -49,6 +77,16 @@ events AS (
   SELECT
     *
   FROM
+    new_trial_events
+  UNION ALL
+  SELECT
+    *
+  FROM
+    cancelled_trial_events
+  UNION ALL
+  SELECT
+    *
+  FROM
     new_events
   UNION ALL
   SELECT
@@ -60,18 +98,27 @@ SELECT
   events.event_date,
   events.event_type,
   CASE
+  -- Trial events
+  WHEN
+    events.event_type IN ("New Trial", "Cancelled Trial")
+  THEN
+    events.event_type
   -- "New" events
   WHEN
     events.event_type = "New"
-    AND DATE(all_subscriptions.subscription_start_date) = DATE(
-      all_subscriptions.customer_start_date
-    )
   THEN
-    "New"
-  WHEN
-    events.event_type = "New"
-  THEN
-    "Resurrected"
+    CASE
+    WHEN
+      all_subscriptions.trial_start IS NOT NULL
+    THEN
+      "Converted Trial"
+    WHEN
+      DATE(all_subscriptions.subscription_start_date) = DATE(all_subscriptions.customer_start_date)
+    THEN
+      "New"
+    ELSE
+      "Resurrected"
+    END
   -- "Cancelled" events
   WHEN
     all_subscriptions.provider = "Apple Store"

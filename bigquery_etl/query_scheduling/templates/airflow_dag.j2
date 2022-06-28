@@ -58,7 +58,8 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     {%+ else -%}
         {{ task.task_name }} = bigquery_etl_query(
             task_id='{{ task.task_name }}',
-            destination_table={%+ if task.destination_table -%}'{{ task.destination_table }}'
+            destination_table={%+ if task.date_partition_offset -%}'{{ task.destination_table }}${% raw %}{{{% endraw %} macros.ds_format(macros.ds_add(ds, {{ task.date_partition_offset }}), "%Y-%m-%d", "%Y%m%d") {% raw %}}}{% endraw %}'
+                            {%+ elif task.destination_table -%}'{{ task.destination_table }}'
                             {%+ else -%}None
                             {%+ endif -%},
             {%+ if task.query_project -%}
@@ -78,14 +79,18 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             {%+ if task.start_date -%}
             start_date={{ task.start_date | format_date | format_repr }},
             {%+ endif -%}
-            {%+ if task.date_partition_parameter == None or task.date_partition_parameter is string -%}
+            {%+ if task.date_partition_offset -%}
+            date_partition_parameter=None,
+            {%+ elif task.date_partition_parameter == None or task.date_partition_parameter is string -%}
             date_partition_parameter={{ task.date_partition_parameter | format_optional_string }},
             {%+ endif -%}
             depends_on_past={{ task.depends_on_past }},
             {%+ if task.arguments | length > 0 -%}
             arguments={{ task.arguments }},
             {%+ endif -%}
-            {%+ if task.parameters | length > 0 -%}
+            {%+ if task.date_partition_offset -%}
+            parameters=["{{ task.date_partition_parameter }}:DATE:{% raw %}{{{% endraw %}macros.ds_add(ds, {{ task.date_partition_offset }}){% raw %}}}{%endraw%}"]{% if task.parameters | length > 0 %} + {{ task.parameters }}{% endif %},
+            {%+ elif task.parameters | length > 0 -%}
             parameters={{ task.parameters }},
             {%+ endif -%}
             {%+ if task.multipart -%}

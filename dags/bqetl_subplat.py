@@ -108,7 +108,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
-        sql_file_path="sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscription_ids_v1/query.sql",
     )
 
     mozilla_vpn_derived__active_subscriptions__v1 = bigquery_etl_query(
@@ -121,7 +120,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
-        sql_file_path="sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscriptions_v1/query.sql",
     )
 
     mozilla_vpn_derived__add_device_events__v1 = bigquery_etl_query(
@@ -170,7 +168,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
-        sql_file_path="sql/moz-fx-data-shared-prod/mozilla_vpn_derived/channel_group_proportions_v1/query.sql",
     )
 
     mozilla_vpn_derived__devices__v1 = bigquery_etl_query(
@@ -300,7 +297,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
-        sql_file_path="sql/moz-fx-data-shared-prod/mozilla_vpn_derived/subscription_events_v1/query.sql",
     )
 
     mozilla_vpn_derived__subscriptions__v1 = bigquery_etl_query(

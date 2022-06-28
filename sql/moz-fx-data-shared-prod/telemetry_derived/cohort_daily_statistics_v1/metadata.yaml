@@ -14,6 +14,7 @@ labels:
 scheduling:
   dag_name: bqetl_analytics_aggregations
   date_partition_parameter: activity_date
+  date_partition_offset: -1
 bigquery:
   time_partitioning:
     field: activity_date

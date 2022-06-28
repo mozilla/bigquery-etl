@@ -235,20 +235,20 @@ android_iap_periods AS (
     (
       CASE
       WHEN
-        ENDS_WITH(sku, ".1_month_subscription")
-        OR ENDS_WITH(sku, ".monthly")
+        CONTAINS_SUBSTR(sku, ".1_month_subscription")
+        OR CONTAINS_SUBSTR(sku, ".monthly")
       THEN
         STRUCT("month" AS plan_interval, 1 AS plan_interval_count)
       WHEN
-        ENDS_WITH(sku, ".6_month_subscription")
+        CONTAINS_SUBSTR(sku, ".6_month_subscription")
       THEN
         ("month", 6)
       WHEN
-        ENDS_WITH(sku, ".12_month_subscription")
+        CONTAINS_SUBSTR(sku, ".12_month_subscription")
       THEN
         ("year", 1)
       WHEN
-        ENDS_WITH(sku, ".1_day_subscription")
+        CONTAINS_SUBSTR(sku, ".1_day_subscription")
       THEN
         -- only used for testing
         ("day", 1)

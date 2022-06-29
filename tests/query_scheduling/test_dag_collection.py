@@ -498,6 +498,8 @@ class TestDagCollection:
             {
                 "dag_name": "bqetl_test_dag",
                 "depends_on_past": True,
+                "date_partition_offset": -2,
+                "date_partition_parameter": "date",
                 "depends_on": [{"dag_name": "external", "task_id": "task1"}],
             },
         )

@@ -9,6 +9,5 @@ labels:
 scheduling:
   dag_name: bqetl_subplat
   # delay aggregates by 7 days, to ensure data is complete
-  date_partition_parameter: null
   date_partition_offset: -7
   date_partition_parameter: date

@@ -134,15 +134,18 @@ EXTERNAL_TASKS = {
     ): ["*.baseline_clients_last_seen*"],
     TaskRef(
         dag_name="copy_deduplicate",
-        task_id="copy_deduplicate_all",
-        schedule_interval="0 1 * * *",
-    ): ["*_stable.*"],
-    TaskRef(
-        dag_name="copy_deduplicate",
         task_id="clients_last_seen_joined",
         schedule_interval="0 1 * * *",
         date_partition_offset=-1,
     ): ["*.clients_last_seen_joined"],
+    # *_stable.* should be matched last since all
+    # pattern before are downstream dependencies of
+    # copy_deduplicate_all.
+    TaskRef(
+        dag_name="copy_deduplicate",
+        task_id="copy_deduplicate_all",
+        schedule_interval="0 1 * * *",
+    ): ["*_stable.*"],
 }
 
 
@@ -428,19 +431,24 @@ class Task:
                             dependencies.append(task)
                         break  # stop after the first match
 
-        # adjust submission_date parameter based on whether upstream tasks have date_partition offsets
-        date_partition_offsets = [
-            dependency.date_partition_offset
-            for dependency in dependencies
-            if dependency.date_partition_offset
-        ]
+        if (
+            self.date_partition_parameter is not None
+            and self.date_partition_offset is None
+        ):
+            # adjust submission_date parameter based on whether upstream tasks have
+            # date partition offsets
+            date_partition_offsets = [
+                dependency.date_partition_offset
+                for dependency in dependencies
+                if dependency.date_partition_offset
+            ]
 
-        if len(date_partition_offsets) > 0:
-            self.date_partition_offset = (
-                min(date_partition_offsets)
-                if self.date_partition_offset is None
-                else self.date_partition_offset
-            )
+            if len(date_partition_offsets) > 0:
+                self.date_partition_offset = (
+                    min(date_partition_offsets)
+                    if self.date_partition_offset is None
+                    else self.date_partition_offset
+                )
 
         self.upstream_dependencies = dependencies
 

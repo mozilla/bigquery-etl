@@ -454,6 +454,72 @@ class TestTask:
         assert "test__table2__v1" in tables
 
     @pytest.mark.java
+    def test_task_date_partition_offset(self, tmp_path):
+        query_file_path = tmp_path / "test-project" / "test" / "query_v1"
+        os.makedirs(query_file_path)
+
+        query_file = query_file_path / "query.sql"
+        query_file.write_text(
+            "SELECT * FROM `test-project`.test.table1_v1 "
+            "UNION ALL SELECT * FROM `test-project`.test.table2_v1"
+        )
+
+        metadata = Metadata(
+            "test", "test", ["test@example.org"], {}, self.default_scheduling
+        )
+
+        metadata_task1 = Metadata(
+            "test",
+            "test",
+            ["test@example.org"],
+            {},
+            {**self.default_scheduling, **{"date_partition_offset": -2}},
+        )
+
+        metadata_task2 = Metadata(
+            "test",
+            "test",
+            ["test@example.org"],
+            {},
+            {**self.default_scheduling, **{"date_partition_offset": -1}},
+        )
+
+        task = Task.of_query(query_file, metadata)
+
+        table_task1 = Task.of_query(
+            tmp_path / "test-project" / "test" / "table1_v1" / "query.sql",
+            metadata_task1,
+        )
+        table_task2 = Task.of_query(
+            tmp_path / "test-project" / "test" / "table2_v1" / "query.sql",
+            metadata_task2,
+        )
+
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": {
+                        "owner": "test@example.org",
+                        "start_date": "2020-01-01",
+                    },
+                }
+            }
+        ).with_tasks([task, table_task1, table_task2])
+
+        task.with_upstream_dependencies(dags)
+        result = task.upstream_dependencies
+
+        assert task.date_partition_offset == -2
+        assert [
+            t.date_partition_offset for t in result if t.task_id == "test__table1__v1"
+        ] == [-2]
+        assert [
+            t.date_partition_offset for t in result if t.task_id == "test__table2__v1"
+        ] == [-1]
+        assert task.date_partition_parameter == "submission_date"
+
+    @pytest.mark.java
     def test_multipart_task_get_dependencies(self, tmp_path):
         query_file_path = tmp_path / "test-project" / "test" / "query_v1"
         os.makedirs(query_file_path)

@@ -25,6 +25,8 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox.baseline
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.baseline
   - moz-fx-data-shared-prod.org_mozilla_focus.baseline
+  - moz-fx-data-shared-prod.org_mozilla_focus_beta.baseline
+  - moz-fx-data-shared-prod.org_mozilla_focus_nightly.baseline
   - moz-fx-data-shared-prod.org_mozilla_ios_fennec.baseline
   - moz-fx-data-shared-prod.org_mozilla_ios_firefox.baseline
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.baseline

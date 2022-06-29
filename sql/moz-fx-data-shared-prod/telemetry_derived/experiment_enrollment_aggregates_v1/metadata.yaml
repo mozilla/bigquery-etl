@@ -12,6 +12,8 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox.events
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.events
   - moz-fx-data-shared-prod.org_mozilla_focus.events
+  - moz-fx-data-shared-prod.org_mozilla_focus_beta.events
+  - moz-fx-data-shared-prod.org_mozilla_focus_nightly.events
   - moz-fx-data-shared-prod.org_mozilla_ios_fennec.events
   - moz-fx-data-shared-prod.org_mozilla_ios_firefox.events
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.events

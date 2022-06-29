@@ -25,6 +25,8 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_fenix_stable.metrics_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.metrics_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_stable.metrics_v1
+  - moz-fx-data-shared-prod.org_mozilla_focus_beta_stable.metrics_v1
+  - moz-fx-data-shared-prod.org_mozilla_focus_nightly_stable.metrics_v1
   - moz-fx-data-shared-prod.org_mozilla_focus_stable.metrics_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_fennec_stable.metrics_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.metrics_v1

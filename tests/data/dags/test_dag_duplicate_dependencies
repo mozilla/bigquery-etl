@@ -43,24 +43,26 @@ with DAG(
 
     test__no_metadata_query__v1 = bigquery_etl_query(
         task_id="test__no_metadata_query__v1",
-        destination_table="no_metadata_query_v1",
+        destination_table='no_metadata_query_v1${{ macros.ds_format(macros.ds_add(ds, -2), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="test",
         project_id="moz-fx-data-test-project",
         owner="test@example.com",
         email=["test@example.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=True,
+        parameters=["date:DATE:{{macros.ds_add(ds, -2)}}"],
     )
 
     test__non_incremental_query__v1 = bigquery_etl_query(
         task_id="test__non_incremental_query__v1",
-        destination_table="non_incremental_query_v1",
+        destination_table='non_incremental_query_v1${{ macros.ds_format(macros.ds_add(ds, -2), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="test",
         project_id="moz-fx-data-test-project",
         owner="test@example.com",
         email=["test@example.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=True,
+        parameters=["date:DATE:{{macros.ds_add(ds, -2)}}"],
     )
 
     wait_for_task1 = ExternalTaskSensor(

@@ -135,6 +135,34 @@ org_mozilla_focus AS (
     event.category = 'nimbus_events'
     AND DATE(submission_timestamp) = @submission_date
 ),
+org_mozilla_focus_nightly AS (
+  SELECT
+    submission_timestamp AS `timestamp`,
+    event.category AS `type`,
+    mozfun.map.get_key(event.extra, 'experiment') AS experiment,
+    mozfun.map.get_key(event.extra, 'branch') AS branch,
+    event.name AS event_method
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_focus_nightly.events`,
+    UNNEST(events) AS event
+  WHERE
+    event.category = 'nimbus_events'
+    AND DATE(submission_timestamp) = @submission_date
+),
+org_mozilla_focus_beta AS (
+  SELECT
+    submission_timestamp AS `timestamp`,
+    event.category AS `type`,
+    mozfun.map.get_key(event.extra, 'experiment') AS experiment,
+    mozfun.map.get_key(event.extra, 'branch') AS branch,
+    event.name AS event_method
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_focus_beta.events`,
+    UNNEST(events) AS event
+  WHERE
+    event.category = 'nimbus_events'
+    AND DATE(submission_timestamp) = @submission_date
+),
 org_mozilla_ios_klar AS (
   SELECT
     submission_timestamp AS `timestamp`,
@@ -208,6 +236,16 @@ all_events AS (
     *
   FROM
     org_mozilla_focus
+  UNION ALL
+  SELECT
+    *
+  FROM
+    org_mozilla_focus_nightly
+  UNION ALL
+  SELECT
+    *
+  FROM
+    org_mozilla_focus_beta
   UNION ALL
   SELECT
     *

@@ -98,6 +98,28 @@ org_mozilla_focus AS (
   CROSS JOIN
     UNNEST(ping_info.experiments) AS e
 ),
+org_mozilla_focus_nightly AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    e.key AS experiment_id,
+    e.value.branch AS branch,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_focus_nightly.baseline`
+  CROSS JOIN
+    UNNEST(ping_info.experiments) AS e
+),
+org_mozilla_focus_beta AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    e.key AS experiment_id,
+    e.value.branch AS branch,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_focus_beta.baseline`
+  CROSS JOIN
+    UNNEST(ping_info.experiments) AS e
+),
 org_mozilla_ios_klar AS (
   SELECT DISTINCT
     DATE(submission_timestamp) AS submission_date,
@@ -171,6 +193,16 @@ FROM
       *
     FROM
       org_mozilla_focus
+    UNION ALL
+    SELECT
+      *
+    FROM
+      org_mozilla_focus_nightly
+    UNION ALL
+    SELECT
+      *
+    FROM
+      org_mozilla_focus_beta
     UNION ALL
     SELECT
       *

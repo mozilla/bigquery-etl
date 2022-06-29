@@ -17,7 +17,7 @@ mkdocs-awesome-pages-plugin==2.7.0
 mozilla-schema-generator==0.5.1
 pandas==1.4.3
 pathos==0.2.9
-pip-tools==6.6.2
+pip-tools==6.7.0
 pre-commit==2.19.0
 pyarrow==8.0.0
 pyjnius==1.4.1

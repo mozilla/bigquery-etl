@@ -24,3 +24,5 @@ references:
   - org_mozilla_fenix.topsites_impression
   - org_mozilla_firefox.topsites_impression
   - org_mozilla_firefox_beta.topsites_impression
+  - org_mozilla_ios_firefox.topsites_impression
+  - org_mozilla_ios_firefoxbeta.topsites_impression

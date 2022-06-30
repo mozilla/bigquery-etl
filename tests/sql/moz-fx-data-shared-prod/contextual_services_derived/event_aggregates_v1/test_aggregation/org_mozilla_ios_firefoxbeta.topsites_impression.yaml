@@ -1,0 +1,19 @@
+---
+- submission_timestamp: "2020-01-01 01:00:00"
+  metrics:
+    uuid:
+      top_site_context_id: null
+      top_sites_context_id: fenix-a
+    string:
+      top_site_contile_advertiser: null
+      top_sites_contile_advertiser: ad3
+  events:
+    - name: contile_click
+      extra:
+        - key: position
+          value: '1'
+  metadata:
+    geo:
+      subdivision1: NY
+  normalized_country_code: US
+  normalized_os: iOS

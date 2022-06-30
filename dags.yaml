@@ -129,9 +129,9 @@ bqetl_subplat:
     different then it should be reported using the Airflow triage process.
 
   default_args:
-    owner: dthorn@mozilla.com
+    owner: srose@mozilla.com
     start_date: "2021-07-20"
-    email: ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "srose@mozilla.com"]
     retries: 2
     retry_delay: 30m
   tags:
@@ -147,9 +147,9 @@ bqetl_mozilla_vpn_site_metrics:
     queries depend on site_metrics_empty_check_v1, which retries every 30
     minutes to wait for data to be available.
   default_args:
-    owner: dthorn@mozilla.com
+    owner: srose@mozilla.com
     start_date: "2021-04-22"
-    email: ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "srose@mozilla.com"]
     retries: 2
     retry_delay: 30m
   tags:
@@ -594,30 +594,6 @@ bqetl_search_terms_daily:
   tags:
     - impact/tier_1
 
-bqetl_app_store_connect:
-  schedule_interval: 0 20 * * *
-  description: |
-    Reports from Apple's App Store Connect API.
-
-    Reports are based on Pacific Standard Time (PST). A day includes
-    transactions that happened from 12:00 a.m. to 11:59 p.m. PST.
-    https://help.apple.com/app-store-connect/#/dev061699fdb
-
-    Daily reports for the Americas are available by 5 am Pacific Time, which can
-    be either 12:00 or 13:00 UTC, depending on Daylight Savings Time. Daily
-    reports for Japan, Australia, and New Zealand by 5 am Japan Standard Time;
-    and 5 am Central European Time for all other territories.
-
-    Based on [bug 1720767](https://bugzilla.mozilla.org/show_bug.cgi?id=1720767)
-    imports have been adjusted to 20:00 UTC.
-  default_args:
-    owner: dthorn@mozilla.com
-    start_date: "2021-01-15"
-    retries: 2
-    retry_delay: 30m
-  tags:
-    - impact/tier_3
-
 bqetl_experimenter_experiments_import:
   schedule_interval: "*/10 * * * *"
   description: |
@@ -710,9 +686,9 @@ bqetl_cjms_nonprod:
   description: |
     Hourly ETL for cjms nonprod.
   default_args:
-    owner: dthorn@mozilla.com
+    owner: srose@mozilla.com
     start_date: "2022-03-24"
-    email: ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "srose@mozilla.com"]
     retries: 2
     retry_delay: 5m
   tags:

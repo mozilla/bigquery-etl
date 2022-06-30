@@ -22,15 +22,15 @@ Hourly ETL for cjms nonprod.
 
 #### Owner
 
-dthorn@mozilla.com
+srose@mozilla.com
 """
 
 
 default_args = {
-    "owner": "dthorn@mozilla.com",
+    "owner": "srose@mozilla.com",
     "start_date": datetime.datetime(2022, 3, 24, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "srose@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=300),
     "email_on_failure": True,
@@ -53,8 +53,8 @@ with DAG(
         destination_table='flows_v1${{ (execution_date - macros.timedelta(hours=2)).strftime("%Y%m%d") }}',
         dataset_id="moz-fx-cjms-nonprod-9a36:cjms_bigquery",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=[
@@ -69,8 +69,8 @@ with DAG(
         dataset_id="moz-fx-cjms-nonprod-9a36:cjms_bigquery",
         project_id="moz-fx-data-shared-prod",
         sql_file_path="sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/refunds_v1/query.sql",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
     )
@@ -81,8 +81,8 @@ with DAG(
         dataset_id="moz-fx-cjms-nonprod-9a36:cjms_bigquery",
         project_id="moz-fx-data-shared-prod",
         sql_file_path="sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/subscriptions_v1/query.sql",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
     )

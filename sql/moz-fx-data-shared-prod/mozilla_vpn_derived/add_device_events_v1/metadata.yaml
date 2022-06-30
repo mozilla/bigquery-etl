@@ -2,7 +2,7 @@ friendly_name: Mozilla VPN add device events
 description: >
   Event timestamps where accounts added a device
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily

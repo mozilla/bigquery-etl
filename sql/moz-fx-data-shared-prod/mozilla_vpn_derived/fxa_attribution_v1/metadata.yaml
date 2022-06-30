@@ -2,7 +2,7 @@ friendly_name: Mozilla VPN FxA Attribution
 description: >
   Attribution for FxA flow ids for Mozilla VPN, and associated FxA user ids
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily

@@ -3,7 +3,7 @@ description: >
   Check if there is Google Analytics data for vpn.mozilla.org
   and mozilla.org for the given date
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   application: mozilla_vpn
   incremental: true

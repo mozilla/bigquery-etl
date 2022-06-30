@@ -1,7 +1,7 @@
 friendly_name: Stripe subscriptions attributed to CJ flows
 description: Stripe subscriptions attributed to CJ flows
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   application: cjms
   schedule: hourly

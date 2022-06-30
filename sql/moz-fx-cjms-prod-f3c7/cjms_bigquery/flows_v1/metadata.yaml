@@ -2,7 +2,7 @@ friendly_name: FxA flows by date
 description: >
   FxA flow_id, first seen timestamp, and last seen user id by date
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   application: cjms
   schedule: hourly

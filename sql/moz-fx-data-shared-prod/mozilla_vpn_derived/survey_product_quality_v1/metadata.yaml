@@ -4,7 +4,7 @@ description: >
   An import of survey data from Alchemer (SurveyGizmo) for the Mozilla VPN
   Product Quality Survey (2019+).
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   incremental: true
   schedule: daily

@@ -3,7 +3,7 @@ description: >
   A subset of Mozilla VPN users columns that are accessible to a
   broader audience.
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily

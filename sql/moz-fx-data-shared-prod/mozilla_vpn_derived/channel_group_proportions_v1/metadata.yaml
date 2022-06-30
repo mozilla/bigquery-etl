@@ -3,7 +3,7 @@ description: >
   Count of new subscriptions by utm values, and by channel group as a percent
   of the total for that date
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily

@@ -562,6 +562,20 @@ fields:
       mode: NULLABLE
       name: customize_home_contile
       type: BOOLEAN
+    - description: 'An indication of whether Pocket sponsored stories are enabled
+
+        to be displayed
+
+        '
+      mode: NULLABLE
+      name: customize_home_sponsored_pocket
+      type: BOOLEAN
+    - description: 'Is the default wallpapper set to be shown?
+
+        '
+      mode: NULLABLE
+      name: metrics_default_wallpaper
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD

@@ -50,6 +50,14 @@ search_metrics:
     ad_clicks_count: metrics.labeled_counter.browser_search_ad_clicks
     search_with_ads_count: metrics.labeled_counter.browser_search_with_ads
     search_count: null
+  org_mozilla_focus_nightly:
+    ad_clicks_count: metrics.labeled_counter.browser_search_ad_clicks
+    search_with_ads_count: metrics.labeled_counter.browser_search_with_ads
+    search_count: null
+  org_mozilla_focus_beta:
+    ad_clicks_count: metrics.labeled_counter.browser_search_ad_clicks
+    search_with_ads_count: metrics.labeled_counter.browser_search_with_ads
+    search_count: null
   org_mozilla_ios_klar:
     ad_clicks_count: null
     search_with_ads_count: null
@@ -68,5 +76,7 @@ applications:
   - telemetry
   - org_mozilla_klar
   - org_mozilla_focus
+  - org_mozilla_focus_nightly
+  - org_mozilla_focus_beta
   - org_mozilla_ios_klar
   - org_mozilla_ios_focus

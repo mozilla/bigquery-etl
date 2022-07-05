@@ -3,7 +3,7 @@ description: >
   A list of users that attempted to login to FxA, to sign up for or
   login to Mozilla VPN.
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily

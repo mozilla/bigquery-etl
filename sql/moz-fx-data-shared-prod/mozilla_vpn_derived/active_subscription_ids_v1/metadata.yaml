@@ -2,7 +2,7 @@ friendly_name: Active Mozilla VPN Subscription IDs
 description: >
   IDs of active Mozilla VPN subscriptions by date.
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily

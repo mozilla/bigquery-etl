@@ -113,18 +113,11 @@ WITH combined AS (
     metadata.geo.subdivision1 AS subdivision1,
     metrics.string.top_sites_contile_advertiser AS advertiser,
     'release' AS release_channel,
-    CAST(
+    SAFE_CAST(
       (SELECT value FROM UNNEST(events[SAFE_OFFSET(0)].extra) WHERE key = 'position') AS INT64
     ) AS position,
-    CASE
-    WHEN
-      metrics.url2.top_sites_contile_reporting_url IS NULL
-    THEN
-      'remote settings'
-    ELSE
-      'contile'
-    END
-    AS provider,
+    -- Only Contile is available for mobile tiles.
+    'contile' AS provider,
     -- `match_type` is only available for `quicksuggest_*` tables
     NULL AS match_type,
     normalized_os,
@@ -141,18 +134,11 @@ WITH combined AS (
     metadata.geo.subdivision1 AS subdivision1,
     metrics.string.top_sites_contile_advertiser AS advertiser,
     'beta' AS release_channel,
-    CAST(
+    SAFE_CAST(
       (SELECT value FROM UNNEST(events[SAFE_OFFSET(0)].extra) WHERE key = 'position') AS INT64
     ) AS position,
-    CASE
-    WHEN
-      metrics.url2.top_sites_contile_reporting_url IS NULL
-    THEN
-      'remote settings'
-    ELSE
-      'contile'
-    END
-    AS provider,
+    -- Only Contile is available for mobile tiles.
+    'contile' AS provider,
     -- `match_type` is only available for `quicksuggest_*` tables
     NULL AS match_type,
     normalized_os,
@@ -169,23 +155,76 @@ WITH combined AS (
     metadata.geo.subdivision1 AS subdivision1,
     metrics.string.top_sites_contile_advertiser AS advertiser,
     'nightly' AS release_channel,
-    CAST(
+    SAFE_CAST(
       (SELECT value FROM UNNEST(events[SAFE_OFFSET(0)].extra) WHERE key = 'position') AS INT64
     ) AS position,
-    CASE
-    WHEN
-      metrics.url2.top_sites_contile_reporting_url IS NULL
-    THEN
-      'remote settings'
-    ELSE
-      'contile'
-    END
-    AS provider,
+    -- Only Contile is available for mobile tiles.
+    'contile' AS provider,
     -- `match_type` is only available for `quicksuggest_*` tables
     NULL AS match_type,
     normalized_os,
   FROM
     org_mozilla_fenix.topsites_impression
+  UNION ALL
+  SELECT
+    -- Due to the renaming (from 'topsite' to 'topsites'), some legacy Firefox
+    -- versions are still using the `topsite` key in the telemetry
+    IFNULL(metrics.uuid.top_sites_context_id, metrics.uuid.top_site_context_id) AS context_id,
+    DATE(submission_timestamp) AS submission_date,
+    'topsites' AS source,
+    IF(events[SAFE_OFFSET(0)].name = 'contile_click', 'click', 'impression') AS event_type,
+    -- The adMarketplace APIs accept form factors out of "desktop", "phone", or "tablet";
+    -- we are currently always using "phone" for Fenix, so stay consistent with that here.
+    'phone' AS form_factor,
+    normalized_country_code AS country,
+    metadata.geo.subdivision1 AS subdivision1,
+    IFNULL(
+      metrics.string.top_sites_contile_advertiser,
+      metrics.string.top_site_contile_advertiser
+    ) AS advertiser,
+    'release' AS release_channel,
+    SAFE_CAST(
+      (SELECT value FROM UNNEST(events[SAFE_OFFSET(0)].extra) WHERE key = 'position') AS INT64
+    ) AS position,
+    -- Only Contile is available for mobile tiles.
+    'contile' AS provider,
+    -- `match_type` is only available for `quicksuggest_*` tables
+    NULL AS match_type,
+    -- This is now hardcoded, we can use the derived `normalized_os` once
+    -- https://bugzilla.mozilla.org/show_bug.cgi?id=1773722 is fixed
+    'iOS' AS normalized_os,
+  FROM
+    org_mozilla_ios_firefox.topsites_impression
+  UNION ALL
+  SELECT
+    -- Due to the renaming (from 'topsite' to 'topsites'), some legacy Firefox
+    -- versions are still using the `topsite` key in the telemetry
+    IFNULL(metrics.uuid.top_sites_context_id, metrics.uuid.top_site_context_id) AS context_id,
+    DATE(submission_timestamp) AS submission_date,
+    'topsites' AS source,
+    IF(events[SAFE_OFFSET(0)].name = 'contile_click', 'click', 'impression') AS event_type,
+    -- The adMarketplace APIs accept form factors out of "desktop", "phone", or "tablet";
+    -- we are currently always using "phone" for Fenix, so stay consistent with that here.
+    'phone' AS form_factor,
+    normalized_country_code AS country,
+    metadata.geo.subdivision1 AS subdivision1,
+    IFNULL(
+      metrics.string.top_sites_contile_advertiser,
+      metrics.string.top_site_contile_advertiser
+    ) AS advertiser,
+    'beta' AS release_channel,
+    SAFE_CAST(
+      (SELECT value FROM UNNEST(events[SAFE_OFFSET(0)].extra) WHERE key = 'position') AS INT64
+    ) AS position,
+    -- Only Contile is available for mobile tiles.
+    'contile' AS provider,
+    -- `match_type` is only available for `quicksuggest_*` tables
+    NULL AS match_type,
+    -- This is now hardcoded, we can use the derived `normalized_os` once
+    -- https://bugzilla.mozilla.org/show_bug.cgi?id=1773722 is fixed
+    'iOS' AS normalized_os,
+  FROM
+    org_mozilla_ios_firefoxbeta.topsites_impression
 ),
 with_event_count AS (
   SELECT

@@ -2,7 +2,7 @@ friendly_name: All Mozilla VPN Subscriptions
 description: >
   Mozilla VPN Subscriptions from both IAP and FxA.
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily

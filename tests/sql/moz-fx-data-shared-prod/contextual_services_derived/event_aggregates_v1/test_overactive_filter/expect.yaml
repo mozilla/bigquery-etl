@@ -54,3 +54,8 @@
   release_channel: beta
 - <<: *base_mobile
   release_channel: nightly
+- <<: *base_mobile
+  normalized_os: iOS
+- <<: *base_mobile
+  normalized_os: iOS
+  release_channel: beta

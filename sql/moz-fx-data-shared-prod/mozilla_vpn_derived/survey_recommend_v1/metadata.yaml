@@ -4,7 +4,7 @@ description: >
   An import of survey data from Alchemer (SurveyGizmo) for the Mozilla VPN
   Recommend survey.
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   incremental: true
   schedule: daily

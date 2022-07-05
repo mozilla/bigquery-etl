@@ -2,7 +2,7 @@ friendly_name: Funnel FxA Login to Protected
 description: >
   Funnel from FxA Login to Protected with 2-day time limit
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily

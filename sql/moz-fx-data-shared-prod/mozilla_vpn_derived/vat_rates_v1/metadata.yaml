@@ -3,7 +3,7 @@ friendly_name: VAT Rates
 description: >
   Import VAT rates from Google Sheets.
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   schedule: daily
 scheduling:

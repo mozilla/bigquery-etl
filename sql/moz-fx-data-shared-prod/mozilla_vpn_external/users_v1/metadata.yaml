@@ -7,7 +7,7 @@ description: >
   made are not destructive, except in the case of self-serve
   data deletion.
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily

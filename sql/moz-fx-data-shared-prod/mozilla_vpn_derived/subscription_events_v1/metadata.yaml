@@ -2,7 +2,7 @@ friendly_name: Mozilla VPN Subscription Events
 description: >
   Aggregated count of Mozilla VPN subscription start/end events.
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily

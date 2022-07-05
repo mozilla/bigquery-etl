@@ -36,15 +36,15 @@ different then it should be reported using the Airflow triage process.
 
 #### Owner
 
-dthorn@mozilla.com
+srose@mozilla.com
 """
 
 
 default_args = {
-    "owner": "dthorn@mozilla.com",
+    "owner": "srose@mozilla.com",
     "start_date": datetime.datetime(2021, 7, 20, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "srose@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -68,8 +68,8 @@ with DAG(
         dataset_id="moz-fx-cjms-prod-f3c7:cjms_bigquery",
         project_id="moz-fx-data-shared-prod",
         sql_file_path="sql/moz-fx-cjms-prod-f3c7/cjms_bigquery/flows_v1/query.sql",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -80,8 +80,8 @@ with DAG(
         dataset_id="moz-fx-cjms-prod-f3c7:cjms_bigquery",
         project_id="moz-fx-data-shared-prod",
         sql_file_path="sql/moz-fx-cjms-prod-f3c7/cjms_bigquery/refunds_v1/query.sql",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
     )
@@ -92,8 +92,8 @@ with DAG(
         dataset_id="moz-fx-cjms-prod-f3c7:cjms_bigquery",
         project_id="moz-fx-data-shared-prod",
         sql_file_path="sql/moz-fx-cjms-prod-f3c7/cjms_bigquery/subscriptions_v1/query.sql",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
     )
@@ -103,8 +103,8 @@ with DAG(
         destination_table='active_subscription_ids_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
@@ -115,8 +115,8 @@ with DAG(
         destination_table='active_subscriptions_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
@@ -127,8 +127,8 @@ with DAG(
         destination_table="add_device_events_v1",
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -138,8 +138,8 @@ with DAG(
         destination_table="all_subscriptions_v1",
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
     )
@@ -163,8 +163,8 @@ with DAG(
         destination_table='channel_group_proportions_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
@@ -175,8 +175,8 @@ with DAG(
         destination_table="devices_v1",
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
     )
@@ -220,8 +220,8 @@ with DAG(
             "UAH",
         ],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         gcp_conn_id="google_cloud_airflow_gke",
         gke_project_id="moz-fx-data-airflow-gke-prod",
         gke_location="us-west1",
@@ -234,8 +234,8 @@ with DAG(
         destination_table="funnel_fxa_login_to_protected_v1",
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
     )
@@ -245,8 +245,8 @@ with DAG(
         destination_table="funnel_product_page_to_subscribed_v1",
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="date",
         depends_on_past=False,
     )
@@ -256,8 +256,8 @@ with DAG(
         destination_table="fxa_attribution_v1",
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["date:DATE:{{ds}}"],
@@ -268,8 +268,8 @@ with DAG(
         destination_table="login_flows_v1",
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["date:DATE:{{ds}}"],
@@ -280,8 +280,8 @@ with DAG(
         destination_table="protected_v1",
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["date:DATE:{{ds}}"],
@@ -292,8 +292,8 @@ with DAG(
         destination_table='subscription_events_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
@@ -304,8 +304,8 @@ with DAG(
         destination_table="subscriptions_v1",
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
     )
@@ -332,7 +332,7 @@ with DAG(
         owner="amiyaguchi@mozilla.com",
         email=[
             "amiyaguchi@mozilla.com",
-            "dthorn@mozilla.com",
+            "srose@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
     )
@@ -356,8 +356,8 @@ with DAG(
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_intercept_q3_v1",
         ],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     mozilla_vpn_derived__survey_market_fit__v1 = gke_command(
@@ -379,8 +379,8 @@ with DAG(
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_market_fit_v1",
         ],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     mozilla_vpn_derived__survey_product_quality__v1 = gke_command(
@@ -402,8 +402,8 @@ with DAG(
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_product_quality_v1",
         ],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     mozilla_vpn_derived__survey_recommend__v1 = gke_command(
@@ -425,8 +425,8 @@ with DAG(
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_recommend_v1",
         ],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     mozilla_vpn_derived__users__v1 = bigquery_etl_query(
@@ -434,8 +434,8 @@ with DAG(
         destination_table="users_v1",
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
     )
@@ -448,8 +448,8 @@ with DAG(
         ]
         + [],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         gcp_conn_id="google_cloud_airflow_gke",
         gke_project_id="moz-fx-data-airflow-gke-prod",
         gke_location="us-west1",
@@ -462,8 +462,8 @@ with DAG(
         destination_table="devices_v1",
         dataset_id="mozilla_vpn_external",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=[
@@ -476,8 +476,8 @@ with DAG(
         destination_table="subscriptions_v1",
         dataset_id="mozilla_vpn_external",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=[
@@ -490,8 +490,8 @@ with DAG(
         destination_table="users_v1",
         dataset_id="mozilla_vpn_external",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=[
@@ -513,8 +513,8 @@ with DAG(
             "--time-partitioning-field=automatic_payout_effective_at",
         ],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         retry_delay=datetime.timedelta(seconds=1800),
         retries=47,
         email_on_retry=False,

@@ -24,15 +24,15 @@ minutes to wait for data to be available.
 
 #### Owner
 
-dthorn@mozilla.com
+srose@mozilla.com
 """
 
 
 default_args = {
-    "owner": "dthorn@mozilla.com",
+    "owner": "srose@mozilla.com",
     "start_date": datetime.datetime(2021, 4, 22, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "srose@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -55,8 +55,8 @@ with DAG(
         destination_table="funnel_ga_to_subscriptions_v1",
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="date",
         depends_on_past=False,
     )
@@ -66,8 +66,8 @@ with DAG(
         destination_table=None,
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         parameters=["date:DATE:{{ds}}"],
@@ -82,8 +82,8 @@ with DAG(
         destination_table="site_metrics_summary_v1",
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="date",
         depends_on_past=False,
     )

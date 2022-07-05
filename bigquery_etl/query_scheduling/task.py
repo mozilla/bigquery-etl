@@ -444,11 +444,7 @@ class Task:
             ]
 
             if len(date_partition_offsets) > 0:
-                self.date_partition_offset = (
-                    min(date_partition_offsets)
-                    if self.date_partition_offset is None
-                    else self.date_partition_offset
-                )
+                self.date_partition_offset = min(date_partition_offsets)
 
         self.upstream_dependencies = dependencies
 

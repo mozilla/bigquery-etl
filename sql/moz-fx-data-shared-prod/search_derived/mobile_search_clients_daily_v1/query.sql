@@ -344,13 +344,13 @@ metrics_org_mozilla_ios_fennec AS (
   WHERE
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') >= 28
 ),
--- metrics for Focus Android release
+-- metrics for Focus Android Baseline release
 metrics_org_mozilla_focus AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     normalized_country_code AS country,
-    'Focus' AS app_name,
+    'Focus Android Baseline' AS app_name,
     'Focus' AS normalized_app_name,
     client_info.app_display_version AS app_version,
     'Release' AS channel,
@@ -359,8 +359,7 @@ metrics_org_mozilla_focus AS (
     metrics.string.browser_default_search_engine AS default_search_engine,
     CAST(NULL AS STRING) AS default_search_engine_submission_url,
     sample_id,
-    ARRAY<STRUCT<key STRING, value INT64>>[] AS search_count,
-        -- metrics.labeled_counter.search_counts AS search_count, -- TODO: Make sure the key for this looks like Fenix keys
+    metrics.labeled_counter.browser_search_search_count AS search_count,
     metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
     metrics.labeled_counter.browser_search_in_content AS search_in_content,
     metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
@@ -371,19 +370,14 @@ metrics_org_mozilla_focus AS (
     client_info.locale,
   FROM
     org_mozilla_focus.metrics AS org_mozilla_focus_metrics
-  WHERE
-    mozfun.norm.truncate_version(
-      client_info.android_sdk_version,
-      'minor'
-    ) >= 98  -- TODO: Update this with the actual version
 ),
--- metrics for Focus Android beta
+-- metrics for Focus Android Baseline beta
 metrics_org_mozilla_focus_beta AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     normalized_country_code AS country,
-    'Focus' AS app_name,
+    'Focus Android Baseline' AS app_name,
     'Focus' AS normalized_app_name,
     client_info.app_display_version AS app_version,
     'Release' AS channel,
@@ -392,8 +386,7 @@ metrics_org_mozilla_focus_beta AS (
     metrics.string.browser_default_search_engine AS default_search_engine,
     CAST(NULL AS STRING) AS default_search_engine_submission_url,
     sample_id,
-    ARRAY<STRUCT<key STRING, value INT64>>[] AS search_count,
-        -- metrics.labeled_counter.search_counts AS search_count, -- TODO: Make sure the key for this looks like Fenix keys
+    metrics.labeled_counter.browser_search_search_count AS search_count,
     metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
     metrics.labeled_counter.browser_search_in_content AS search_in_content,
     metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
@@ -404,19 +397,14 @@ metrics_org_mozilla_focus_beta AS (
     client_info.locale,
   FROM
     org_mozilla_focus_beta.metrics AS org_mozilla_focus_beta_metrics
-  WHERE
-    mozfun.norm.truncate_version(
-      client_info.android_sdk_version,
-      'minor'
-    ) >= 98  -- TODO: Update this with the actual version
 ),
--- metrics for Focus Android nightly
+-- metrics for Focus Android Baseline nightly
 metrics_org_mozilla_focus_nightly AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     normalized_country_code AS country,
-    'Focus' AS app_name,
+    'Focus Android Baseline' AS app_name,
     'Focus' AS normalized_app_name,
     client_info.app_display_version AS app_version,
     'Release' AS channel,
@@ -425,8 +413,7 @@ metrics_org_mozilla_focus_nightly AS (
     metrics.string.browser_default_search_engine AS default_search_engine,
     CAST(NULL AS STRING) AS default_search_engine_submission_url,
     sample_id,
-    ARRAY<STRUCT<key STRING, value INT64>>[] AS search_count,
-        -- metrics.labeled_counter.search_counts AS search_count, -- TODO: Make sure the key for this looks like Fenix keys
+    metrics.labeled_counter.browser_search_search_count AS search_count,
     metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
     metrics.labeled_counter.browser_search_in_content AS search_in_content,
     metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
@@ -437,19 +424,14 @@ metrics_org_mozilla_focus_nightly AS (
     client_info.locale,
   FROM
     org_mozilla_focus_nightly.metrics AS org_mozilla_focus_nightly_metrics
-  WHERE
-    mozfun.norm.truncate_version(
-      client_info.android_sdk_version,
-      'minor'
-    ) >= 98  -- TODO: Update this with the actual version
 ),
--- metrics for Focus Android release
+-- metrics for Klar Android Baseline release
 metrics_org_mozilla_klar AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     normalized_country_code AS country,
-    'Klar' AS app_name,
+    'Klar Android Baseline' AS app_name,
     'Focus' AS normalized_app_name,
     client_info.app_display_version AS app_version,
     'Release' AS channel,
@@ -458,8 +440,7 @@ metrics_org_mozilla_klar AS (
     metrics.string.browser_default_search_engine AS default_search_engine,
     CAST(NULL AS STRING) AS default_search_engine_submission_url,
     sample_id,
-    ARRAY<STRUCT<key STRING, value INT64>>[] AS search_count,
-        -- metrics.labeled_counter.search_counts AS search_count, -- TODO: Make sure the key for this looks like Fenix keys
+    metrics.labeled_counter.browser_search_search_count AS search_count,
     metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
     metrics.labeled_counter.browser_search_in_content AS search_in_content,
     metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
@@ -470,11 +451,6 @@ metrics_org_mozilla_klar AS (
     client_info.locale,
   FROM
     org_mozilla_klar.metrics AS org_mozilla_klar_metrics
-  WHERE
-    mozfun.norm.truncate_version(
-      client_info.android_sdk_version,
-      'minor'
-    ) >= 98  -- TODO: Update this with the actual version
 ),
 fenix_baseline AS (
   SELECT

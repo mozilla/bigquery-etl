@@ -1,4 +1,4 @@
--- metrics for Focus Android {{ channel }}
+-- metrics for {{ app_name }} {{ channel }}
 metrics_{{ namespace }} AS (
     SELECT
         DATE(submission_timestamp) AS submission_date,
@@ -13,8 +13,7 @@ metrics_{{ namespace }} AS (
         metrics.string.browser_default_search_engine AS default_search_engine,
         CAST(NULL AS STRING) AS default_search_engine_submission_url,
         sample_id,
-        ARRAY<STRUCT<key STRING, value INT64>>[] as search_count,
-        -- metrics.labeled_counter.search_counts AS search_count, -- TODO: Make sure the key for this looks like Fenix keys
+        metrics.labeled_counter.browser_search_search_count AS search_count,
         metrics.labeled_counter.browser_search_ad_clicks as search_ad_clicks,
         metrics.labeled_counter.browser_search_in_content AS search_in_content,
         metrics.labeled_counter.browser_search_with_ads as search_with_ads,
@@ -25,6 +24,4 @@ metrics_{{ namespace }} AS (
         client_info.locale,
     FROM
         {{ namespace }}.metrics AS {{ namespace }}_metrics
-    WHERE
-        mozfun.norm.truncate_version(client_info.android_sdk_version, 'minor') >= 98  -- TODO: Update this with the actual version
 ),

@@ -102,13 +102,6 @@ WITH core_flattened_searches AS (
       IF(ARRAY_LENGTH(searches) = 0, null_search(), searches)
     ) AS searches
   WHERE
-    NOT (
-        normalizes_os = 'Android'
-        AND normalized_app_name IN ('Focus', 'Klar')
-        AND mozfun.norm.truncate_version(metadata.uri.app_version, 'minor') >= 96.2 -- TODO: What date should this actually be?
-        AND normalized_channel = 'release'
-    )
-    AND
     NOT (  -- Filter out newer versions of Firefox iOS in favour of Glean pings
       normalized_os = 'iOS'
       AND normalized_app_name = 'Fennec'

@@ -1,0 +1,6 @@
+friendly_name: FOG Latest Versions
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+  - workgroup:dataops-managed/glam

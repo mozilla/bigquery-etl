@@ -12,6 +12,8 @@ metrics AS (
   FROM
     `moz-fx-data-shared-prod.reference_browser.metrics_clients_last_seen`
   WHERE
+    -- The join between baseline and metrics pings is based on submission_date with a 1 day delay,
+    -- since metrics pings usually arrive within 1 day after their logical activity period.
     submission_date = DATE_ADD(@submission_date, INTERVAL 1 DAY)
 )
 SELECT

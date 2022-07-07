@@ -1126,6 +1126,14 @@ fields:
       mode: NULLABLE
       name: history_group_list
       type: INTEGER
+    - description: 'Counts the number of times a user runs the
+
+        sd web image library cache cleanup
+
+        '
+      mode: NULLABLE
+      name: migration_image_sd_cache_cleanup
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

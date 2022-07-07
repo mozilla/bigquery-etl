@@ -353,8 +353,15 @@ Examples:
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option
+@click.option(
+    "--docs-only",
+    "--docs_only",
+    default=False,
+    is_flag=True,
+    help="Only validate docs.",
+)
 @click.pass_context
-def validate(ctx, name, sql_dir, project_id):
+def validate(ctx, name, sql_dir, project_id, docs_only):
     """Validate routines by formatting and running tests."""
     project_id = get_project_id(ctx, project_id)
 
@@ -364,9 +371,11 @@ def validate(ctx, name, sql_dir, project_id):
     routine_files = _routines_matching_name_pattern(name, sql_dir, project_id)
 
     validate_docs.validate(project_dirs(project_id))
-    for routine_file in routine_files:
-        ctx.invoke(format, paths=[str(routine_file.parent)])
-        pytest.main([str(routine_file.parent)])
+
+    if not docs_only:
+        for routine_file in routine_files:
+            ctx.invoke(format, paths=[str(routine_file.parent)], check=True)
+            pytest.main([str(routine_file.parent)])
 
 
 mozfun.add_command(copy.copy(validate))

@@ -561,9 +561,9 @@ jinja2==3.1.2 \
     #   -r requirements.in
     #   mkdocs
     #   mkdocs-material
-jsonschema==4.6.1 \
-    --hash=sha256:5eb781753403847fb320f05e9ab2191725b58c5e7f97f1bed63285ca423159bc \
-    --hash=sha256:ec2802e6a37517f09d47d9ba107947589ae1d25ff557b925d83a321fc2aa5d3b
+jsonschema==4.6.2 \
+    --hash=sha256:b19f62322b0f06927e8ae6215c01654e1885857cdcaf58ae1772b1aa97f1faf2 \
+    --hash=sha256:e331e32e29743014fa59fa77895b5d8669382a4904c8ef23144f7f078ec031c7
     # via
     #   -r requirements.in
     #   mozilla-schema-generator

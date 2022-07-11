@@ -36,6 +36,9 @@ FOCUS_ANDROID_TUPLES = [
     ("org_mozilla_focus",           "Focus Android Baseline",    "release"),  # noqa E241 E501
     ("org_mozilla_focus_beta",      "Focus Android Baseline",    "beta"),  # noqa E241 E501
     ("org_mozilla_focus_nightly",   "Focus Android Baseline",    "nightly"),  # noqa E241 E501
+]
+
+KLAR_ANDROID_TUPLES = [
     ("org_mozilla_klar",            "Klar Android Baseline",     "release"),  # noqa E241 E501
 ]
 # fmt: on
@@ -69,6 +72,7 @@ def generate(output_dir, target_project):
     android_query_template = env.get_template("fenix_metrics.template.sql")
     ios_query_template = env.get_template("ios_metrics.template.sql")
     android_focus_template = env.get_template("android_focus.template.sql")
+    android_klar_template = env.get_template("android_klar.template.sql")
 
     firefox_android_queries = [
         android_query_template.render(
@@ -91,7 +95,19 @@ def generate(output_dir, target_project):
         for namespace, app_name, channel in FOCUS_ANDROID_TUPLES
     ]
 
-    queries = firefox_android_queries + firefox_ios_queries + focus_android_queries
+    klar_android_queries = [
+        android_klar_template.render(
+            namespace=namespace, app_name=app_name, channel=channel
+        )
+        for namespace, app_name, channel in KLAR_ANDROID_TUPLES
+    ]
+
+    queries = (
+        firefox_android_queries
+        + firefox_ios_queries
+        + focus_android_queries
+        + klar_android_queries
+    )
 
     search_query_template = env.get_template("mobile_search_clients_daily.template.sql")
 
@@ -116,6 +132,12 @@ def generate(output_dir, target_project):
             for namespace, _, _ in FOCUS_ANDROID_TUPLES
         ]
     )
+    android_klar_combined_metrics = union_statements(
+        [
+            f"SELECT * FROM metrics_{namespace}"
+            for namespace, _, _ in KLAR_ANDROID_TUPLES
+        ]
+    )
 
     search_query = search_query_template.render(
         baseline_and_metrics_by_namespace="\n".join(queries),
@@ -123,6 +145,7 @@ def generate(output_dir, target_project):
         fenix_metrics=fenix_combined_metrics,
         ios_metrics=ios_combined_metrics,
         android_focus_metrics=android_focus_combined_metrics,
+        android_klar_metrics=android_klar_combined_metrics,
     )
 
     print(reformat(search_query))

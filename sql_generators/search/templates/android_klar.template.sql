@@ -5,7 +5,7 @@ metrics_{{ namespace }} AS (
         client_info.client_id,
         normalized_country_code AS country,
         '{{ app_name }}' AS app_name,
-        'Focus' AS normalized_app_name,
+        'Klar' AS normalized_app_name,
         client_info.app_display_version AS app_version,
         '{{ channel }}' AS channel,
         normalized_os AS os,

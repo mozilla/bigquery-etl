@@ -353,7 +353,7 @@ metrics_org_mozilla_focus AS (
     'Focus Android Baseline' AS app_name,
     'Focus' AS normalized_app_name,
     client_info.app_display_version AS app_version,
-    'Release' AS channel,
+    'release' AS channel,
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
     metrics.string.browser_default_search_engine AS default_search_engine,
@@ -380,7 +380,7 @@ metrics_org_mozilla_focus_beta AS (
     'Focus Android Baseline' AS app_name,
     'Focus' AS normalized_app_name,
     client_info.app_display_version AS app_version,
-    'Release' AS channel,
+    'beta' AS channel,
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
     metrics.string.browser_default_search_engine AS default_search_engine,
@@ -407,7 +407,7 @@ metrics_org_mozilla_focus_nightly AS (
     'Focus Android Baseline' AS app_name,
     'Focus' AS normalized_app_name,
     client_info.app_display_version AS app_version,
-    'Release' AS channel,
+    'nightly' AS channel,
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
     metrics.string.browser_default_search_engine AS default_search_engine,
@@ -432,9 +432,9 @@ metrics_org_mozilla_klar AS (
     client_info.client_id,
     normalized_country_code AS country,
     'Klar Android Baseline' AS app_name,
-    'Focus' AS normalized_app_name,
+    'Klar' AS normalized_app_name,
     client_info.app_display_version AS app_version,
-    'Release' AS channel,
+    'release' AS channel,
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
     metrics.string.browser_default_search_engine AS default_search_engine,
@@ -535,7 +535,8 @@ android_focus_metrics AS (
     *
   FROM
     metrics_org_mozilla_focus_nightly
-  UNION ALL
+),
+android_klar_metrics AS (
   SELECT
     *
   FROM
@@ -600,6 +601,11 @@ glean_metrics AS (
     *
   FROM
     android_focus_metrics
+  UNION ALL
+  SELECT
+    *
+  FROM
+    android_klar_metrics
 ),
 glean_combined_searches AS (
   SELECT

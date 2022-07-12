@@ -19873,6 +19873,11 @@ fields:
       mode: NULLABLE
       name: cookie_retrieval_samesite_problem
       type: STRING
+    - description: Update result when updating SafeBrowsing database via RemoteSettings.
+        (0=success, 1=update error, 2=download error)
+      mode: NULLABLE
+      name: urlclassifier_update_remote_settings_result
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD

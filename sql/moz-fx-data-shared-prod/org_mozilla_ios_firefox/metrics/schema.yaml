@@ -321,6 +321,12 @@ fields:
       mode: NULLABLE
       name: device_authentication
       type: BOOLEAN
+    - description: 'Measures the state of the show Pocket stories preference.
+
+        '
+      mode: NULLABLE
+      name: firefox_home_page_pocket_stories_visible
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD

@@ -447,11 +447,12 @@ def get_scalar_probes(scalar_type):
     with urllib.request.urlopen(PROBE_INFO_SERVICE) as url:
         data = json.loads(gzip.decompress(url.read()).decode())
         excluded_probes = probe_filters.get_etl_excluded_probes_quickfix("desktop")
+        most_used_probes = probe_filters.get_most_used_probes()
         scalar_probes = set(
             [
                 snake_case(x.replace("scalar/", ""))
                 for x in data.keys()
-                if x.startswith("scalar/")
+                if x.startswith("scalar/") and snake_case(x.replace("scalar/", "")) in most_used_probes
             ]
         ) - excluded_probes
 

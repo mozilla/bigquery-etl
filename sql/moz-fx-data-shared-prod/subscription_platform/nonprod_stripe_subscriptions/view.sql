@@ -77,10 +77,16 @@ invoices_provider_country AS (
   WHERE
     invoices.status = "paid"
 ),
-subscriptions_promotion_codes AS (
+subscriptions_promotions AS (
   SELECT
     invoices.subscription_id,
     ARRAY_AGG(DISTINCT promotion_codes.code IGNORE NULLS) AS promotion_codes,
+    SUM(
+      COALESCE(coupons.amount_off, 0) + COALESCE(
+        CAST((invoices.subtotal * coupons.percent_off / 100) AS INT64),
+        0
+      )
+    ) AS promotion_discounts_amount,
   FROM
     `dev-fivetran`.stripe_nonprod.invoice AS invoices
   JOIN
@@ -91,6 +97,10 @@ subscriptions_promotion_codes AS (
     `dev-fivetran`.stripe_nonprod.promotion_code AS promotion_codes
   ON
     invoice_discounts.promotion_code = promotion_codes.id
+  JOIN
+    `dev-fivetran`.stripe_nonprod.coupon AS coupons
+  ON
+    promotion_codes.coupon_id = coupons.id
   WHERE
     invoices.status = "paid"
   GROUP BY
@@ -131,33 +141,34 @@ plans AS (
     plans.product_id = products.id
 )
 SELECT
-  customer_id,
-  subscription_id,
-  subscription_item_id,
-  plan_id,
-  status,
-  _fivetran_synced AS event_timestamp,
-  subscription_start_date,
-  created,
-  trial_start,
-  trial_end,
-  canceled_at,
-  canceled_for_customer_at,
-  cancel_at,
-  cancel_at_period_end,
-  ended_at,
-  fxa_uid,
-  country,
-  provider,
-  plan_amount,
-  billing_scheme,
-  plan_currency,
-  plan_interval,
-  plan_interval_count,
+  subscriptions.customer_id,
+  subscriptions.subscription_id,
+  subscription_items.subscription_item_id,
+  subscription_items.plan_id,
+  subscriptions.status,
+  subscriptions._fivetran_synced AS event_timestamp,
+  subscriptions.subscription_start_date,
+  subscriptions.created,
+  subscriptions.trial_start,
+  subscriptions.trial_end,
+  subscriptions.canceled_at,
+  subscriptions.canceled_for_customer_at,
+  subscriptions.cancel_at,
+  subscriptions.cancel_at_period_end,
+  subscriptions.ended_at,
+  customers.fxa_uid,
+  subscriptions_provider_country.country,
+  subscriptions_provider_country.provider,
+  plans.plan_amount,
+  plans.billing_scheme,
+  plans.plan_currency,
+  plans.plan_interval,
+  plans.plan_interval_count,
   "Etc/UTC" AS plan_interval_timezone,
-  product_id,
-  product_name,
-  promotion_codes,
+  plans.product_id,
+  plans.product_name,
+  subscriptions_promotions.promotion_codes,
+  subscriptions_promotions.promotion_discounts_amount,
 FROM
   subscriptions
 LEFT JOIN
@@ -177,6 +188,6 @@ LEFT JOIN
 USING
   (customer_id)
 LEFT JOIN
-  subscriptions_promotion_codes
+  subscriptions_promotions
 USING
   (subscription_id)

@@ -4,6 +4,7 @@ references:
   view.sql:
   - dev-fivetran.stripe_nonprod.card
   - dev-fivetran.stripe_nonprod.charge
+  - dev-fivetran.stripe_nonprod.coupon
   - dev-fivetran.stripe_nonprod.customer
   - dev-fivetran.stripe_nonprod.invoice
   - dev-fivetran.stripe_nonprod.invoice_discount

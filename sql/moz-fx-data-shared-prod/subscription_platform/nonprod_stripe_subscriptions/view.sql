@@ -77,10 +77,16 @@ invoices_provider_country AS (
   WHERE
     invoices.status = "paid"
 ),
-subscriptions_promotion_codes AS (
+subscriptions_promotions AS (
   SELECT
     invoices.subscription_id,
     ARRAY_AGG(DISTINCT promotion_codes.code IGNORE NULLS) AS promotion_codes,
+    SUM(
+      COALESCE(coupons.amount_off, 0) + COALESCE(
+        CAST((invoices.subtotal * coupons.percent_off / 100) AS INT64),
+        0
+      )
+    ) AS promotion_discounts_amount,
   FROM
     `dev-fivetran`.stripe_nonprod.invoice AS invoices
   JOIN
@@ -91,6 +97,10 @@ subscriptions_promotion_codes AS (
     `dev-fivetran`.stripe_nonprod.promotion_code AS promotion_codes
   ON
     invoice_discounts.promotion_code = promotion_codes.id
+  JOIN
+    `dev-fivetran`.stripe_nonprod.coupon AS coupons
+  ON
+    promotion_codes.coupon_id = coupons.id
   WHERE
     invoices.status = "paid"
   GROUP BY
@@ -157,7 +167,8 @@ SELECT
   "Etc/UTC" AS plan_interval_timezone,
   plans.product_id,
   plans.product_name,
-  subscriptions_promotion_codes.promotion_codes,
+  subscriptions_promotions.promotion_codes,
+  subscriptions_promotions.promotion_discounts_amount,
 FROM
   subscriptions
 LEFT JOIN
@@ -177,6 +188,6 @@ LEFT JOIN
 USING
   (customer_id)
 LEFT JOIN
-  subscriptions_promotion_codes
+  subscriptions_promotions
 USING
   (subscription_id)

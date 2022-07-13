@@ -13,5 +13,6 @@ CREATE TABLE IF NOT EXISTS
     sum_uppercase_chars_all_search_terms integer,
     sum_terms_containing_us_census_surname integer,
     approximate_language_proportions_json string,
-    failure_reason string
+    failure_reason string,
+    implementation_notes string
   );

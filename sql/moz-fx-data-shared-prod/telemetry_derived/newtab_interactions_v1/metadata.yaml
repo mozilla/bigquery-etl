@@ -6,6 +6,7 @@ owners:
 - anicholson@mozilla.com
 labels:
   application: firefox
+  incremental: true
   schedule: daily
 scheduling:
   dag_name: bqetl_newtab
@@ -14,6 +15,7 @@ bigquery:
     field: submission_date
     type: day
     require_partition_filter: true
+    expiration_days: null
   clustering:
     fields:
     - channel

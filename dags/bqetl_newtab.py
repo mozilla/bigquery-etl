@@ -26,7 +26,7 @@ default_args = {
     "owner": "anicholson@mozilla.com",
     "start_date": datetime.datetime(2022, 7, 1, 0, 0),
     "end_date": None,
-    "email": ["anicholson@mozilla.com", "anicholson@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "anicholson@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -44,13 +44,29 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     telemetry_derived__newtab_interactions__v1 = bigquery_etl_query(
         task_id="telemetry_derived__newtab_interactions__v1",
         destination_table="newtab_interactions_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="anicholson@mozilla.com",
-        email=["anicholson@mozilla.com"],
+        email=["anicholson@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    telemetry_derived__newtab_interactions__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )

@@ -5,10 +5,12 @@ import re
 import string
 import sys
 import tempfile
+import yaml
 from datetime import date, timedelta
 from functools import partial
 from multiprocessing.pool import Pool
 from pathlib import Path
+import subprocess
 from tempfile import NamedTemporaryFile
 
 import click
@@ -40,7 +42,6 @@ from ..metadata.parse_metadata import (
 )
 from ..query_scheduling.dag_collection import DagCollection
 from ..query_scheduling.generate_airflow_dags import get_dags
-from ..run_query import run
 from ..schema import SCHEMA_FILE, Schema
 from ..util import extract_from_query_path
 from ..util.common import random_str
@@ -49,7 +50,8 @@ from .generate import generate_all
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
 VERSION_RE = re.compile(r"_v[0-9]+")
-
+DESTINATION_TABLE_RE = re.compile(r"^[a-zA-Z0-9_$]{0,1024}$")
+PUBLIC_PROJECT_ID = "mozilla-public-data"
 
 @click.group(help="Commands for managing queries.")
 @click.pass_context
@@ -443,6 +445,7 @@ def info(ctx, name, sql_dir, project_id, cost, last_updated):
 
 
 def _backfill_query(
+    ctx,
     query_file_path,
     project_id,
     date_partition_parameter,
@@ -481,7 +484,13 @@ def _backfill_query(
         if dry_run:
             arguments += ["--dry_run"]
 
-        run(query_file_path, dataset, destination_table, arguments)
+        ctx.invoke(
+            run,
+            query_file_path,
+            dataset_id=dataset,
+            destination_table=destination_table,
+            **arguments,
+        )
     else:
         click.echo(
             f"Skip {query_file_path} with @{date_partition_parameter}={backfill_date}"
@@ -628,6 +637,7 @@ def backfill(
 
         backfill_query = partial(
             _backfill_query,
+            ctx,
             query_file_path,
             project_id,
             date_partition_parameter,
@@ -648,6 +658,134 @@ def backfill(
             # if data depends on previous runs, then execute backfill sequentially
             for backfill_date in dates:
                 backfill_query(backfill_date)
+
+
+@query.command(
+    help="""Run a query. Additional parameters will get passed to bq.
+
+    Examples:
+
+    \b
+    # Backfill for specific date range
+    # second comment line
+    ./bqetl query run telemetry_derived.ssl_ratios_v1 
+
+    \b
+    # Run a query file
+    ./bqetl query run /path/to/query.sql
+    """,
+    context_settings=dict(
+        ignore_unknown_options=True,
+        allow_extra_args=True,
+    ),
+)
+@click.argument("name")
+@sql_dir_option
+@project_id_option
+@click.option(
+    "--public_project_id",
+    "--public-project-id",
+    default=PUBLIC_PROJECT_ID,
+    help="Project with publicly accessible data",
+)
+@click.option(
+    "--destination_table",
+    "--destination-table",
+    required=False,
+    help=(
+        "Destination table name results are written to. "
+        + "If not set, determines destination table based on query."
+    ),
+)
+@click.option(
+    "--dataset_id",
+    "--dataset-id",
+    required=False,
+    help=(
+        "Destination dataset results are written to. "
+        + "If not set, determines destination dataset based on query."
+    ),
+)
+@click.pass_context
+def run(
+    ctx,
+    name,
+    sql_dir,
+    project_id,
+    public_project_id,
+    destination_table,
+    dataset_id,
+):
+    if not is_authenticated():
+        click.echo(
+            "Authentication to GCP required. Run `gcloud auth login` "
+            "and check that the project is set correctly."
+        )
+        sys.exit(1)
+
+    query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    if query_files == []:
+        # run SQL generators if no matching query has been found
+        ctx.invoke(
+            generate_all,
+            output_dir=ctx.obj["TMP_DIR"],
+            ignore=["derived_view_schemas", "stable_views", "country_code_lookup"],
+        )
+        query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
+
+    query_arguments = ctx.args
+
+    if dataset_id is not None:
+        # dataset ID was parsed by argparse but needs to be passed as parameter
+        # when running the query
+        query_arguments.append("--dataset_id={}".format(dataset_id))
+
+    for query_file in query_files:
+        use_public_table = False
+
+        query_file = Path(query_file)
+        try:
+            metadata = Metadata.of_query_file(query_file)
+            if metadata.is_public_bigquery():
+                if not validate_metadata.validate_public_data(metadata, query_file):
+                    sys.exit(1)
+
+                # change the destination table to write results to the public dataset;
+                # a view to the public table in the internal dataset is created
+                # when CI runs
+                if (
+                    dataset_id is not None
+                    and destination_table is not None
+                    and re.match(DESTINATION_TABLE_RE, destination_table)
+                ):
+                    destination_table = "{}:{}.{}".format(
+                        public_project_id, dataset_id, destination_table
+                    )
+                    query_arguments.append(
+                        "--destination_table={}".format(destination_table)
+                    )
+                    use_public_table = True
+                else:
+                    print(
+                        "ERROR: Cannot run public dataset query. Parameters"
+                        " --destination_table=<table without dataset ID> and"
+                        " --dataset_id=<dataset> required"
+                    )
+                    sys.exit(1)
+        except yaml.YAMLError as e:
+            print(e)
+            sys.exit(1)
+        except FileNotFoundError:
+            print("INFO: No metadata.yaml found for {}", query_file)
+
+        if not use_public_table and destination_table is not None:
+            # destination table was parsed by argparse, however if it wasn't modified to
+            # point to a public table it needs to be passed as parameter for the query
+            query_arguments.append("--destination_table={}".format(destination_table))
+
+        with open(query_file) as query_stream:
+            # run the query as shell command so that passed parameters can be used as is
+            subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
 
 
 @query.command(

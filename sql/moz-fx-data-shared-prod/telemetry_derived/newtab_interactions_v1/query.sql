@@ -1,6 +1,6 @@
 WITH events_unnested AS (
   SELECT
-    DATE_TRUNC(submission_timestamp, DAY) AS submission_date,
+    DATE(submission_timestamp) AS submission_date,
     category AS event_category,
     name AS event_name,
     timestamp AS event_timestamp,

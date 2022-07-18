@@ -79,6 +79,7 @@ stripe_subscriptions AS (
     -- Stripe billing grace period is 7 day and Paypal is billed by Stripe
     INTERVAL 7 DAY AS billing_grace_period,
     promotion_codes,
+    promotion_discounts_amount,
   FROM
     mozdata.subscription_platform.stripe_subscriptions
   LEFT JOIN
@@ -154,6 +155,7 @@ apple_iap_subscriptions AS (
     -- Apple bills recurring subscriptions before they end
     INTERVAL 0 DAY AS billing_grace_period,
     CAST(NULL AS ARRAY<STRING>) AS promotion_codes,
+    CAST(NULL AS INT64) AS promotion_discounts_amount,
   FROM
     mozdata.mozilla_vpn.subscriptions
   LEFT JOIN
@@ -235,20 +237,20 @@ android_iap_periods AS (
     (
       CASE
       WHEN
-        ENDS_WITH(sku, ".1_month_subscription")
-        OR ENDS_WITH(sku, ".monthly")
+        CONTAINS_SUBSTR(sku, ".1_month_subscription")
+        OR CONTAINS_SUBSTR(sku, ".monthly")
       THEN
         STRUCT("month" AS plan_interval, 1 AS plan_interval_count)
       WHEN
-        ENDS_WITH(sku, ".6_month_subscription")
+        CONTAINS_SUBSTR(sku, ".6_month_subscription")
       THEN
         ("month", 6)
       WHEN
-        ENDS_WITH(sku, ".12_month_subscription")
+        CONTAINS_SUBSTR(sku, ".12_month_subscription")
       THEN
         ("year", 1)
       WHEN
-        ENDS_WITH(sku, ".1_day_subscription")
+        CONTAINS_SUBSTR(sku, ".1_day_subscription")
       THEN
         -- only used for testing
         ("day", 1)
@@ -355,6 +357,7 @@ android_iap_subscriptions AS (
     ) AS pricing_plan,
     IF(periods.in_billing_grace_period, INTERVAL 1 MONTH, INTERVAL 0 DAY) AS billing_grace_period,
     CAST(NULL AS ARRAY<STRING>) AS promotion_codes,
+    CAST(NULL AS INT64) AS promotion_discounts_amount,
   FROM
     android_iap_periods AS periods
   LEFT JOIN

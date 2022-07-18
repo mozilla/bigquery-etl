@@ -14,15 +14,22 @@ max_active_date AS (
   FROM
     mozdata.mozilla_vpn.active_subscription_ids
 ),
+trials AS (
+  SELECT
+    *
+  FROM
+    all_subscriptions
+  WHERE
+    trial_start IS NOT NULL
+    AND DATE(trial_start) <= (SELECT max_active_date FROM max_active_date)
+),
 new_trial_events AS (
   SELECT
     DATE(trial_start) AS event_date,
     subscription_id,
     "New Trial" AS event_type,
   FROM
-    all_subscriptions
-  WHERE
-    trial_start IS NOT NULL
+    trials
 ),
 cancelled_trial_events AS (
   SELECT
@@ -30,10 +37,9 @@ cancelled_trial_events AS (
     subscription_id,
     "Cancelled Trial" AS event_type,
   FROM
-    all_subscriptions
+    trials
   WHERE
-    trial_start IS NOT NULL
-    AND subscription_start_date IS NULL
+    subscription_start_date IS NULL
     AND ended_at IS NOT NULL
 ),
 new_events AS (

@@ -102,6 +102,84 @@ WITH all_searches AS (
     search_with_ads_count,
     search_count
   FROM
+    `moz-fx-data-shared-prod.org_mozilla_klar_derived.experiment_search_events_live_v1`
+  WHERE
+    window_start > TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))
+  UNION ALL
+  SELECT
+    branch,
+    experiment,
+    window_start,
+    window_end,
+    ad_clicks_count,
+    search_with_ads_count,
+    search_count
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_focus_derived.experiment_search_events_live_v1`
+  WHERE
+    window_start > TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))
+  UNION ALL
+  SELECT
+    branch,
+    experiment,
+    window_start,
+    window_end,
+    ad_clicks_count,
+    search_with_ads_count,
+    search_count
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_focus_nightly_derived.experiment_search_events_live_v1`
+  WHERE
+    window_start > TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))
+  UNION ALL
+  SELECT
+    branch,
+    experiment,
+    window_start,
+    window_end,
+    ad_clicks_count,
+    search_with_ads_count,
+    search_count
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_focus_beta_derived.experiment_search_events_live_v1`
+  WHERE
+    window_start > TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))
+  UNION ALL
+  SELECT
+    branch,
+    experiment,
+    window_start,
+    window_end,
+    ad_clicks_count,
+    search_with_ads_count,
+    search_count
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_klar_derived.experiment_search_events_live_v1`
+  WHERE
+    window_start > TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))
+  UNION ALL
+  SELECT
+    branch,
+    experiment,
+    window_start,
+    window_end,
+    ad_clicks_count,
+    search_with_ads_count,
+    search_count
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_focus_derived.experiment_search_events_live_v1`
+  WHERE
+    window_start > TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))
+  UNION ALL
+  SELECT
+    branch,
+    experiment,
+    window_start,
+    window_end,
+    ad_clicks_count,
+    search_with_ads_count,
+    search_count
+  FROM
     `moz-fx-data-shared-prod.telemetry_derived.experiment_search_aggregates_v1`
   WHERE
     window_start <= TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))

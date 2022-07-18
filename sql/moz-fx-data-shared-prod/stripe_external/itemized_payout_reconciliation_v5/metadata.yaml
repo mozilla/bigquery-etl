@@ -3,7 +3,7 @@ friendly_name: Stripe itemized payout reconciliation report
 description: >
   Import itemized payout reconciliation report from the Stripe API.
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   incremental: true
   schedule: daily

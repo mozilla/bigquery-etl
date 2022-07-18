@@ -2,25 +2,12 @@ friendly_name: Mozilla VPN Subscription Events
 description: >
   Aggregated count of Mozilla VPN subscription start/end events.
 owners:
-  - dthorn@mozilla.com
+  - srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily
 scheduling:
   dag_name: bqetl_subplat
   # delay aggregates by 7 days, to ensure data is complete
-  date_partition_parameter: null
-  destination_table:
-    # TODO when airflow is updated to 2.2+ use ds_nodash filter:
-    # "subscription_events_v1${{macros.ds_add(ds, -7)|ds_nodash}}"
-    >-
-    subscription_events_v1${{
-    macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d")
-    }}
-  parameters:
-    - "date:DATE:{{macros.ds_add(ds, -7)}}"
-  query_file_path:
-    # explicit query file path is necessary because the destination table
-    # includes a partition identifier that is not in the path
-    # yamllint disable rule:line-length
-    sql/moz-fx-data-shared-prod/mozilla_vpn_derived/subscription_events_v1/query.sql
+  date_partition_offset: -7
+  date_partition_parameter: date

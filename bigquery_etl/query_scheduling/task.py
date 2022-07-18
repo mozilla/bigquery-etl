@@ -67,6 +67,7 @@ class TaskRef:
     task_id: str = attr.ib()
     execution_delta: Optional[str] = attr.ib(None)
     schedule_interval: Optional[str] = attr.ib(None)
+    date_partition_offset: Optional[int] = attr.ib(None)
 
     @execution_delta.validator
     def validate_execution_delta(self, attribute, value):
@@ -133,6 +134,15 @@ EXTERNAL_TASKS = {
     ): ["*.baseline_clients_last_seen*"],
     TaskRef(
         dag_name="copy_deduplicate",
+        task_id="clients_last_seen_joined",
+        schedule_interval="0 1 * * *",
+        date_partition_offset=-1,
+    ): ["*.clients_last_seen_joined"],
+    # *_stable.* should be matched last since all
+    # pattern before are downstream dependencies of
+    # copy_deduplicate_all.
+    TaskRef(
+        dag_name="copy_deduplicate",
         task_id="copy_deduplicate_all",
         schedule_interval="0 1 * * *",
     ): ["*_stable.*"],
@@ -160,6 +170,8 @@ class Task:
     depends_on_past: bool = attr.ib(False)
     start_date: Optional[str] = attr.ib(None)
     date_partition_parameter: Optional[str] = "submission_date"
+    # number of days date partition parameter should be offset
+    date_partition_offset: Optional[int] = None
     # indicate whether data should be published as JSON
     public_json: bool = attr.ib(False)
     # manually specified upstream dependencies
@@ -362,6 +374,7 @@ class Task:
         return TaskRef(
             dag_name=self.dag_name,
             task_id=self.task_name,
+            date_partition_offset=self.date_partition_offset,
             schedule_interval=dag_collection.dag_by_name(
                 self.dag_name
             ).schedule_interval,
@@ -417,6 +430,21 @@ class Task:
                         if not _duplicate_dependency(task):
                             dependencies.append(task)
                         break  # stop after the first match
+
+        if (
+            self.date_partition_parameter is not None
+            and self.date_partition_offset is None
+        ):
+            # adjust submission_date parameter based on whether upstream tasks have
+            # date partition offsets
+            date_partition_offsets = [
+                dependency.date_partition_offset
+                for dependency in dependencies
+                if dependency.date_partition_offset
+            ]
+
+            if len(date_partition_offsets) > 0:
+                self.date_partition_offset = min(date_partition_offsets)
 
         self.upstream_dependencies = dependencies
 

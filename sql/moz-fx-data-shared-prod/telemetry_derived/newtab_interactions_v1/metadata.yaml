@@ -14,9 +14,8 @@ bigquery:
     field: submission_date
     type: day
     require_partition_filter: true
-    expiration_days: null
   clustering:
     fields:
-    - normalized_channel
-    - sample_id
+    - channel
+    - country
 references: {}

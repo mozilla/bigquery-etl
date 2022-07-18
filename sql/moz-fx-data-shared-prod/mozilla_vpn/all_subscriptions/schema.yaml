@@ -114,6 +114,9 @@ fields:
   name: promotion_codes
   type: STRING
 - mode: NULLABLE
+  name: promotion_discounts_amount
+  type: INTEGER
+- mode: NULLABLE
   name: customer_start_date
   type: TIMESTAMP
 - mode: NULLABLE

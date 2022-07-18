@@ -59,7 +59,7 @@ with DAG(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=3600),
+        execution_delta=datetime.timedelta(days=-1, seconds=82800),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,

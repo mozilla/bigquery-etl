@@ -360,6 +360,52 @@ with DAG(
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
+    mozilla_vpn_derived__survey_lifecycle_28d_desktop__v1 = gke_command(
+        task_id="mozilla_vpn_derived__survey_lifecycle_28d_desktop__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/survey_lifecycle_28d_desktop_v1/query.py",
+        ]
+        + [
+            "--date",
+            "{{ ds }}",
+            "--survey_id",
+            "6897437",
+            "--api_token",
+            "{{ var.value.surveygizmo_api_token }}",
+            "--api_secret",
+            "{{ var.value.surveygizmo_api_secret }}",
+            "--destination_table",
+            "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_lifecycle_28d_desktop_v1",
+        ],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+    )
+
+    mozilla_vpn_derived__survey_lifecycle_28d_mobile__v1 = gke_command(
+        task_id="mozilla_vpn_derived__survey_lifecycle_28d_mobile__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/survey_lifecycle_28d_mobile_v1/query.py",
+        ]
+        + [
+            "--date",
+            "{{ ds }}",
+            "--survey_id",
+            "6897488",
+            "--api_token",
+            "{{ var.value.surveygizmo_api_token }}",
+            "--api_secret",
+            "{{ var.value.surveygizmo_api_secret }}",
+            "--destination_table",
+            "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_lifecycle_28d_mobile_v1",
+        ],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+    )
+
     mozilla_vpn_derived__survey_market_fit__v1 = gke_command(
         task_id="mozilla_vpn_derived__survey_market_fit__v1",
         command=[

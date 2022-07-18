@@ -14,6 +14,7 @@ WITH events_unnested AS (
     extra AS event_details,
     metrics
   FROM
+    -- https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/pings/newtab
     `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1`,
     UNNEST(events)
   WHERE

@@ -784,4 +784,3 @@ bqetl_newtab:
   schedule_interval: daily
   tags:
     - impact/tier_1
-    - repo/bigquery-etl

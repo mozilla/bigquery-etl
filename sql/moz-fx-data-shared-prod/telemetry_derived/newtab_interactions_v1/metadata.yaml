@@ -19,5 +19,4 @@ bigquery:
   clustering:
     fields:
     - channel
-    - country
-references: {}
+    - country_code

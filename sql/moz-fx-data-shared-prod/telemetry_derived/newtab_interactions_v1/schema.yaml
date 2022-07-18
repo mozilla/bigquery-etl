@@ -7,7 +7,7 @@ fields:
   type: STRING
 - mode: NULLABLE
   name: submission_date
-  type: TIMESTAMP
+  type: DATE
 - mode: NULLABLE
   name: search_engine
   type: STRING

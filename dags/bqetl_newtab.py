@@ -44,6 +44,17 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    telemetry_derived__newtab_interactions__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__newtab_interactions__v1",
+        destination_table="newtab_interactions_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="anicholson@mozilla.com",
+        email=["anicholson@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -54,17 +65,6 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    telemetry_derived__newtab_interactions__v1 = bigquery_etl_query(
-        task_id="telemetry_derived__newtab_interactions__v1",
-        destination_table="newtab_interactions_v1",
-        dataset_id="telemetry_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="anicholson@mozilla.com",
-        email=["anicholson@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
     )
 
     telemetry_derived__newtab_interactions__v1.set_upstream(

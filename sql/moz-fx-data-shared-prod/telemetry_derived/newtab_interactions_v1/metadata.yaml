@@ -1,20 +1,22 @@
 friendly_name: Newtab Interactions
 description: |-
-  Interactions on the newtab page, roughly one row per newtab "visit"
+  Interactions on the newtab page, roughly one row per newtab "visit" per-day
   (identified by the visit id).
 owners:
-  - anicholson@mozilla.com
+- anicholson@mozilla.com
 labels:
   application: firefox
   schedule: daily
-#TODO scheduling:
+scheduling:
+  dag_name: bqetl_newtab
 bigquery:
   time_partitioning:
     field: submission_date
     type: day
     require_partition_filter: true
+    expiration_days: null
   clustering:
     fields:
-      - normalized_channel
-      - sample_id
+    - normalized_channel
+    - sample_id
 references: {}

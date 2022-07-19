@@ -119,6 +119,9 @@ fields:
 - name: promotion_codes
   type: STRING
   mode: REPEATED
+- name: promotion_discounts_amount
+  type: INTEGER
+  mode: NULLABLE
 - name: normalized_acquisition_channel
   type: STRING
   mode: NULLABLE

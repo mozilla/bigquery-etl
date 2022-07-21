@@ -8,7 +8,6 @@ workgroup_access:
       - workgroup:search-terms/aggregated
 owners:
   - rburwei@mozilla.com
-  - jklukas@mozilla.com
 bigquery:
   time_partitioning:
     field: submission_date

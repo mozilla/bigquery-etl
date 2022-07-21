@@ -5,7 +5,6 @@ description: |-
   Contextual Services Suggest Impression Pings
 owners:
   - rburwei@mozilla.com
-  - jklukas@mozilla.com
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

@@ -9,7 +9,7 @@ description: |-
 
   Fulfills https://mozilla-hub.atlassian.net/browse/ROAD-85
 owners:
-  - jklukas@mozilla.com
+  - ctroy@mozilla.com
 labels:
   incremental: true
 scheduling:

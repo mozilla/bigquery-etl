@@ -2,7 +2,7 @@ friendly_name: Contextual Services Event Aggregates
 description: |-
   Aggregated event and user counts for topsites and quicksuggest
 owners:
-  - jklukas@mozilla.com
+  - rburwei@mozilla.com
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

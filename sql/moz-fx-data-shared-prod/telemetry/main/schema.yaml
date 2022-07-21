@@ -19888,6 +19888,16 @@ fields:
       mode: NULLABLE
       name: wr_time_to_render_start_ms
       type: STRING
+    - description: A count of the classified email trackers. ('base_normal' = The
+        classified email tracker is in base category and loaded under a normal site,
+        'content_normal' = The classified email tracker is in content category and
+        loaded under a normal site, 'base_email_webapp' = The classified email tracker
+        is in base category and loaded under a known email webapp, 'content_email_webapp'
+        = The classified email tracker is in content category and loaded under a known
+        email webapp.)
+      mode: NULLABLE
+      name: email_tracker_count
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD

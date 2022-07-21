@@ -7,7 +7,7 @@ description: |-
   The sending to adMarketplace takes place in a separate DAG defined in
   the telemetry-airflow repository directly.
 owners:
-  - jklukas@mozilla.com
+  - ctroy@mozilla.com
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

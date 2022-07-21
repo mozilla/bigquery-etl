@@ -1,7 +1,0 @@
-#!/bin/sh
-
-# Validate view definitions.
-
-cd "$(dirname "$0")/.."
-
-./script/bqetl view validate "$@"

@@ -24,7 +24,6 @@ from ..cli.utils import (
     is_authenticated,
     is_valid_project,
     paths_matching_name_pattern,
-    parallelism_option,
     project_id_option,
     respect_dryrun_skip_option,
     sql_dir_option,
@@ -687,7 +686,7 @@ def backfill(
 )
 @click.argument("name")
 @sql_dir_option
-@project_id_option
+@project_id_option()
 @click.option(
     "--public_project_id",
     "--public-project-id",
@@ -712,7 +711,6 @@ def backfill(
         + "If not set, determines destination dataset based on query."
     ),
 )
-@parallelism_option
 @click.pass_context
 def run(
     ctx,
@@ -723,6 +721,7 @@ def run(
     destination_table,
     dataset_id,
 ):
+    """Run a query."""
     if not is_authenticated():
         click.echo(
             "Authentication to GCP required. Run `gcloud auth login` "
@@ -812,7 +811,6 @@ def run(
 @click.argument(
     "query_dir",
     type=click.Path(file_okay=False),
-    help="Path to the query directory that contains part*.sql files",
 )
 @click.option(
     "--using",
@@ -830,8 +828,8 @@ def run(
     "--dataset-id",
     help="Default dataset, if not specified all tables must be qualified with dataset",
 )
-@project_id_option
-@temp_dataset_option
+@project_id_option()
+@temp_dataset_option()
 @click.option(
     "--destination_table",
     required=True,
@@ -849,13 +847,14 @@ def run(
 )
 @click.option(
     "--dry_run",
-    action="store_true",
+    is_flag=True,
+    default=False,
     help="Print bytes that would be processed for each part and don't run queries",
 )
 @click.option(
     "--parameter",
     "--parameters",
-    action="append",
+    multiple=True,
     default=[],
     type=lambda p: bigquery.ScalarQueryParameter(*p.split(":", 2)),
     metavar="NAME:TYPE:VALUE",
@@ -863,9 +862,8 @@ def run(
 )
 @click.option(
     "--priority",
-    choices=["BATCH", "INTERACTIVE"],
     default="INTERACTIVE",
-    type=str.upper,
+    type=click.Choice(["BATCH", "INTERACTIVE"]),
     help=(
         "Priority for BigQuery query jobs; BATCH priority will significantly slow "
         "down queries if reserved slots are not enabled for the billing project; "
@@ -875,16 +873,18 @@ def run(
 @click.option(
     "--schema_update_option",
     "--schema_update_options",
-    action="append",
-    choices=[
-        bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION,
-        bigquery.SchemaUpdateOption.ALLOW_FIELD_RELAXATION,
-        # Airflow passes an empty string when the field addition date doesn't
-        # match the run date.
-        # See https://github.com/mozilla/telemetry-airflow/blob/
-        # e49fa7e6b3f5ec562dd248d257770c2303cf0cba/dags/utils/gcp.py#L515
-        "",
-    ],
+    multiple=True,
+    type=click.Choice(
+        [
+            bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION,
+            bigquery.SchemaUpdateOption.ALLOW_FIELD_RELAXATION,
+            # Airflow passes an empty string when the field addition date doesn't
+            # match the run date.
+            # See https://github.com/mozilla/telemetry-airflow/blob/
+            # e49fa7e6b3f5ec562dd248d257770c2303cf0cba/dags/utils/gcp.py#L515
+            "",
+        ]
+    ),
     default=[],
     help="Optional options for updating the schema.",
 )
@@ -903,6 +903,7 @@ def run_multipart(
     priority,
     schema_update_options,
 ):
+    """Run a multipart query."""
     if dataset_id is not None and "." not in dataset_id and project_id is not None:
         dataset_id = f"{project_id}.{dataset_id}"
     if "." not in destination_table and dataset_id is not None:
@@ -963,7 +964,7 @@ def run_multipart(
 def _run_part(
     client, part, query_dir, temp_dataset, dataset_id, dry_run, parameters, priority
 ):
-    """Runs a query part."""
+    """Run a query part."""
     with open(os.path.join(query_dir, part)) as sql_file:
         query = sql_file.read()
     job_config = bigquery.QueryJobConfig(

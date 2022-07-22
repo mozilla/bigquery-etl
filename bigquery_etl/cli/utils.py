@@ -9,7 +9,7 @@ import click
 import re
 from google.cloud import bigquery
 
-from bigquery_etl.util.common import project_dirs
+from bigquery_etl.util.common import project_dirs, TempDatasetReference
 
 QUERY_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
@@ -146,4 +146,18 @@ def respect_dryrun_skip_option(default=True):
         help="Respect or ignore dry run SKIP configuration. "
         f"Default is {flags[default]}.",
         default=default,
+    )
+
+
+def temp_dataset_option(default="moz-fx-data-shared-prod.tmp"):
+    """Generate a temp-dataset option."""
+    return click.option(
+        "--temp-dataset",
+        "--temp_dataset",
+        "--temporary-dataset",
+        "--temporary_dataset",
+        default="moz-fx-data-shared-prod.tmp",
+        type=TempDatasetReference.from_string,
+        help="Dataset where intermediate query results will be temporarily stored, "
+        "formatted as PROJECT_ID.DATASET_ID",
     )

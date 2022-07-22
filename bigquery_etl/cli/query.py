@@ -1,6 +1,7 @@
 """bigquery-etl CLI query command."""
 
 import copy
+import os
 import re
 import string
 import sys
@@ -9,6 +10,7 @@ import yaml
 from datetime import date, timedelta
 from functools import partial
 from multiprocessing.pool import Pool
+from multiprocessing.pool import ThreadPool
 from pathlib import Path
 import subprocess
 from tempfile import NamedTemporaryFile
@@ -22,9 +24,11 @@ from ..cli.utils import (
     is_authenticated,
     is_valid_project,
     paths_matching_name_pattern,
+    parallelism_option,
     project_id_option,
     respect_dryrun_skip_option,
     sql_dir_option,
+    temp_dataset_option,
     use_cloud_function_option,
 )
 from ..dependency import get_dependency_graph
@@ -44,6 +48,7 @@ from ..query_scheduling.dag_collection import DagCollection
 from ..query_scheduling.generate_airflow_dags import get_dags
 from ..schema import SCHEMA_FILE, Schema
 from ..util import extract_from_query_path
+from ..util.bigquery_id import sql_table_id
 from ..util.common import random_str
 from .dryrun import dryrun
 from .generate import generate_all
@@ -52,6 +57,7 @@ QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)
 VERSION_RE = re.compile(r"_v[0-9]+")
 DESTINATION_TABLE_RE = re.compile(r"^[a-zA-Z0-9_$]{0,1024}$")
 PUBLIC_PROJECT_ID = "mozilla-public-data"
+
 
 @click.group(help="Commands for managing queries.")
 @click.pass_context
@@ -668,7 +674,7 @@ def backfill(
     \b
     # Backfill for specific date range
     # second comment line
-    ./bqetl query run telemetry_derived.ssl_ratios_v1 
+    ./bqetl query run telemetry_derived.ssl_ratios_v1
 
     \b
     # Run a query file
@@ -706,6 +712,7 @@ def backfill(
         + "If not set, determines destination dataset based on query."
     ),
 )
+@parallelism_option
 @click.pass_context
 def run(
     ctx,
@@ -786,6 +793,195 @@ def run(
         with open(query_file) as query_stream:
             # run the query as shell command so that passed parameters can be used as is
             subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
+
+
+@query.command(
+    help="""Run a multipart query.
+
+    Examples:
+
+    \b
+    # Run a multipart query
+    ./bqetl query run_multipart /path/to/query.sql
+    """,
+    context_settings=dict(
+        ignore_unknown_options=True,
+        allow_extra_args=True,
+    ),
+)
+@click.argument(
+    "query_dir",
+    type=click.Path(file_okay=False),
+    help="Path to the query directory that contains part*.sql files",
+)
+@click.option(
+    "--using",
+    default="document_id",
+    help="comma separated list of join columns to use when combining results",
+)
+@click.option(
+    "--parallelism",
+    default=4,
+    type=int,
+    help="Maximum number of queries to execute concurrently",
+)
+@click.option(
+    "--dataset_id",
+    "--dataset-id",
+    help="Default dataset, if not specified all tables must be qualified with dataset",
+)
+@project_id_option
+@temp_dataset_option
+@click.option(
+    "--destination_table",
+    required=True,
+    help="table where combined results will be written",
+)
+@click.option(
+    "--time_partitioning_field",
+    type=lambda f: bigquery.TimePartitioning(field=f),
+    help="time partition field on the destination table",
+)
+@click.option(
+    "--clustering_fields",
+    type=lambda f: f.split(","),
+    help="comma separated list of clustering fields on the destination table",
+)
+@click.option(
+    "--dry_run",
+    action="store_true",
+    help="Print bytes that would be processed for each part and don't run queries",
+)
+@click.option(
+    "--parameter",
+    "--parameters",
+    action="append",
+    default=[],
+    type=lambda p: bigquery.ScalarQueryParameter(*p.split(":", 2)),
+    metavar="NAME:TYPE:VALUE",
+    help="query parameter(s) to pass when running parts",
+)
+@click.option(
+    "--priority",
+    choices=["BATCH", "INTERACTIVE"],
+    default="INTERACTIVE",
+    type=str.upper,
+    help=(
+        "Priority for BigQuery query jobs; BATCH priority will significantly slow "
+        "down queries if reserved slots are not enabled for the billing project; "
+        "defaults to INTERACTIVE"
+    ),
+)
+@click.option(
+    "--schema_update_option",
+    "--schema_update_options",
+    action="append",
+    choices=[
+        bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION,
+        bigquery.SchemaUpdateOption.ALLOW_FIELD_RELAXATION,
+        # Airflow passes an empty string when the field addition date doesn't
+        # match the run date.
+        # See https://github.com/mozilla/telemetry-airflow/blob/
+        # e49fa7e6b3f5ec562dd248d257770c2303cf0cba/dags/utils/gcp.py#L515
+        "",
+    ],
+    default=[],
+    help="Optional options for updating the schema.",
+)
+def run_multipart(
+    query_dir,
+    using,
+    parallelism,
+    dataset_id,
+    project_id,
+    temp_dataset,
+    destination_table,
+    time_partitioning_field,
+    clustering_fields,
+    dry_run,
+    parameters,
+    priority,
+    schema_update_options,
+):
+    if dataset_id is not None and "." not in dataset_id and project_id is not None:
+        dataset_id = f"{project_id}.{dataset_id}"
+    if "." not in destination_table and dataset_id is not None:
+        destination_table = f"{dataset_id}.{destination_table}"
+    client = bigquery.Client(project_id)
+    with ThreadPool(parallelism) as pool:
+        parts = pool.starmap(
+            _run_part,
+            [
+                (
+                    client,
+                    part,
+                    query_dir,
+                    temp_dataset,
+                    dataset_id,
+                    dry_run,
+                    parameters,
+                    priority,
+                )
+                for part in sorted(next(os.walk(query_dir))[2])
+                if part.startswith("part") and part.endswith(".sql")
+            ],
+            chunksize=1,
+        )
+    if not dry_run:
+        total_bytes = sum(job.total_bytes_processed for _, job in parts)
+        query = (
+            f"SELECT\n  *\nFROM\n  `{sql_table_id(parts[0][1].destination)}`"
+            + "".join(
+                f"\nFULL JOIN\n  `{sql_table_id(job.destination)}`"
+                f"\nUSING\n  ({using})"
+                for _, job in parts[1:]
+            )
+        )
+        try:
+            job = client.query(
+                query=query,
+                job_config=bigquery.QueryJobConfig(
+                    destination=destination_table,
+                    time_partitioning=time_partitioning_field,
+                    clustering_fields=clustering_fields,
+                    write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+                    use_legacy_sql=False,
+                    priority=priority,
+                    schema_update_options=schema_update_options,
+                ),
+            )
+            job.result()
+            print(f"Processed {job.total_bytes_processed:,d} bytes to combine results")
+            total_bytes += job.total_bytes_processed
+            print(f"Processed {total_bytes:,d} bytes in total")
+        finally:
+            for _, job in parts:
+                client.delete_table(sql_table_id(job.destination).split("$")[0])
+            print(f"Deleted {len(parts)} temporary tables")
+
+
+def _run_part(
+    client, part, query_dir, temp_dataset, dataset_id, dry_run, parameters, priority
+):
+    """Runs a query part."""
+    with open(os.path.join(query_dir, part)) as sql_file:
+        query = sql_file.read()
+    job_config = bigquery.QueryJobConfig(
+        destination=temp_dataset.temp_table(),
+        default_dataset=dataset_id,
+        use_legacy_sql=False,
+        dry_run=dry_run,
+        query_parameters=parameters,
+        priority=priority,
+        allow_large_results=True,
+    )
+    job = client.query(query=query, job_config=job_config)
+    if job.dry_run:
+        print(f"Would process {job.total_bytes_processed:,d} bytes for {part}")
+    else:
+        job.result()
+        print(f"Processed {job.total_bytes_processed:,d} bytes for {part}")
+    return part, job
 
 
 @query.command(

@@ -874,9 +874,9 @@ ppft==1.7.6.5 \
     --hash=sha256:07166097d7dd45af7b98859654390d579d11dadf20780f6baca4bded3f55a580 \
     --hash=sha256:47e0dab87a516c0b9992cd5b0c908348e4c7d964304d106b227fad28ae03219e
     # via pathos
-pre-commit==2.19.0 \
-    --hash=sha256:10c62741aa5704faea2ad69cb550ca78082efe5697d6f04e5710c3c229afdd10 \
-    --hash=sha256:4233a1e38621c87d9dda9808c6606d7e7ba0e087cd56d3fe03202a01d2919615
+pre-commit==2.20.0 \
+    --hash=sha256:51a5ba7c480ae8072ecdb6933df22d2f812dc897d5fe848778116129a681aac7 \
+    --hash=sha256:a978dac7bc9ec0bcee55c18a277d553b0f419d259dadb4b9418ff2d00eb43959
     # via -r requirements.in
 proto-plus==1.20.6 \
     --hash=sha256:449b4537e83f4776bd69051c4d776db8ffe3f9d0641f1e87b06c116eb94c90e9 \

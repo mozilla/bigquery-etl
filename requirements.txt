@@ -635,9 +635,9 @@ mkdocs==1.3.1 \
     #   -r requirements.in
     #   mkdocs-awesome-pages-plugin
     #   mkdocs-material
-mkdocs-awesome-pages-plugin==2.7.0 \
-    --hash=sha256:875ae2b1a1a782a40ceb6fb8a5f2e83ffb15e6bdca29c597a4decb6bdd76e066 \
-    --hash=sha256:f0fb3cc8ccfd9ca904b8c6db0a0cbec24d0ff3f76540bfe063dc173b30f8d4a8
+mkdocs-awesome-pages-plugin==2.8.0 \
+    --hash=sha256:6b21ad4f41aecbe89e3a9a51f8837892cc7ce8ca0f9f4e0a355d56159ace3d68 \
+    --hash=sha256:af7e327e14b2eea3b2735c37428e33a528ecd2d9ae2296dc0f1632f0f3bc28f7
     # via -r requirements.in
 mkdocs-material==8.3.9 \
     --hash=sha256:263f2721f3abe533b61f7c8bed435a0462620912742c919821ac2d698b4bfe67 \
@@ -768,6 +768,10 @@ mypy-extensions==0.4.3 \
     # via
     #   black
     #   mypy
+natsort==8.1.0 \
+    --hash=sha256:c7c1f3f27c375719a4dfcab353909fe39f26c2032a062a8c80cc844eaaca0445 \
+    --hash=sha256:f59988d2f24e77b6b56f8a8f882d5df6b3b637e09e075abc67b486d59fba1a4b
+    # via mkdocs-awesome-pages-plugin
 nodeenv==1.6.0 \
     --hash=sha256:3ef13ff90291ba2a4a7a4ff9a979b63ffdd00a464dbe04acf0ea6471517a4c2b \
     --hash=sha256:621e6b7076565ddcacd2db0294c0381e01fd28945ab36bcf00f41c5daf63bef7

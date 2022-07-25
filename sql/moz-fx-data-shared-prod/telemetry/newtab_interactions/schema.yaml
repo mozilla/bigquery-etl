@@ -9,9 +9,6 @@ fields:
   name: submission_date
   type: DATE
 - mode: NULLABLE
-  name: search_engine
-  type: STRING
-- mode: NULLABLE
   name: search_access_point
   type: STRING
 - fields:
@@ -101,3 +98,6 @@ fields:
 - mode: NULLABLE
   name: tagged_follow_on_search_ad_impressions
   type: INTEGER
+- mode: NULLABLE
+  name: search_engine
+  type: STRING

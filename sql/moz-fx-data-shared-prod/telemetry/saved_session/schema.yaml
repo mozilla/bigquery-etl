@@ -19898,6 +19898,32 @@ fields:
       mode: NULLABLE
       name: email_tracker_count
       type: STRING
+    - description: MacOS video low power state achieved when enqueueing a video frame.
+      mode: NULLABLE
+      name: gfx_macos_video_low_power
+      type: STRING
+    - description: SSL handshake result for conservative mode connections, 0=success,
+        1-255=NSS error offset, 256-511=SEC error offset + 256, 512-639=NSPR error
+        offset + 512, 640-670=PKIX error, 671=unknown err
+      mode: NULLABLE
+      name: ssl_handshake_result_conservative
+      type: STRING
+    - description: SSL handshake result for first-try connections, 0=success, 1-255=NSS
+        error offset, 256-511=SEC error offset + 256, 512-639=NSPR error offset +
+        512, 640-670=PKIX error, 671=unknown err
+      mode: NULLABLE
+      name: ssl_handshake_result_first_try
+      type: STRING
+    - description: ms of SSL wait time including TCP and proxy tunneling for conservative-mode
+        connections
+      mode: NULLABLE
+      name: ssl_time_until_ready_conservative
+      type: STRING
+    - description: ms of SSL wait time including TCP and proxy tunneling for first-try
+        connections
+      mode: NULLABLE
+      name: ssl_time_until_ready_first_try
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -41065,6 +41091,28 @@ fields:
             a same-site issue. This is a bit field.
           mode: NULLABLE
           name: cookie_retrieval_samesite_problem
+          type: STRING
+        - description: SSL handshake result for conservative mode connections, 0=success,
+            1-255=NSS error offset, 256-511=SEC error offset + 256, 512-639=NSPR error
+            offset + 512, 640-670=PKIX error, 671=unknown err
+          mode: NULLABLE
+          name: ssl_handshake_result_conservative
+          type: STRING
+        - description: SSL handshake result for first-try connections, 0=success,
+            1-255=NSS error offset, 256-511=SEC error offset + 256, 512-639=NSPR error
+            offset + 512, 640-670=PKIX error, 671=unknown err
+          mode: NULLABLE
+          name: ssl_handshake_result_first_try
+          type: STRING
+        - description: ms of SSL wait time including TCP and proxy tunneling for conservative-mode
+            connections
+          mode: NULLABLE
+          name: ssl_time_until_ready_conservative
+          type: STRING
+        - description: ms of SSL wait time including TCP and proxy tunneling for first-try
+            connections
+          mode: NULLABLE
+          name: ssl_time_until_ready_first_try
           type: STRING
         mode: NULLABLE
         name: histograms

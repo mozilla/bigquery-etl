@@ -22,3 +22,4 @@ SELECT
   CAST(NULL AS INT64) AS user_count,
   CAST(NULL AS STRING) AS match_type,
   CAST(NULL AS STRING) AS normalized_os,
+  CAST(NULL AS STRING) AS user_group,

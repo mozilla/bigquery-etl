@@ -11,7 +11,7 @@
   release_channel: release
   match_type: "firefox-suggest"
   normalized_os: Windows
-  user_group: online
+  suggest_data_sharing_enabled: true
   position: 1
   event_count: 52
   user_count: 2

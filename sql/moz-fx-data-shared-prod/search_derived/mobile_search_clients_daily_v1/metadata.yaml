@@ -26,7 +26,11 @@ references:
   - org_mozilla_firefox.metrics
   - org_mozilla_firefox_beta.baseline
   - org_mozilla_firefox_beta.metrics
+  - org_mozilla_focus.metrics
+  - org_mozilla_focus_beta.metrics
+  - org_mozilla_focus_nightly.metrics
   - org_mozilla_ios_fennec.metrics
   - org_mozilla_ios_firefox.metrics
   - org_mozilla_ios_firefoxbeta.metrics
+  - org_mozilla_klar.metrics
   - telemetry.core

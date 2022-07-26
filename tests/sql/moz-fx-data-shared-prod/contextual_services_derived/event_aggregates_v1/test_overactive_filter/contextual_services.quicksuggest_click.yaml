@@ -13,6 +13,8 @@
   position: 1
   request_id: "HASH123"
   match_type: "firefox-suggest"
+  scenario: online
+  improve_suggest_experience_checked: true
 - <<: *base
   context_id: b
 - <<: *base

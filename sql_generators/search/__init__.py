@@ -33,13 +33,13 @@ FIREFOX_IOS_TUPLES = [
 ]
 
 FOCUS_ANDROID_TUPLES = [
-    ("org_mozilla_focus",           "Focus Android Baseline",    "release"),  # noqa E241 E501
-    ("org_mozilla_focus_beta",      "Focus Android Baseline",    "beta"),  # noqa E241 E501
-    ("org_mozilla_focus_nightly",   "Focus Android Baseline",    "nightly"),  # noqa E241 E501
+    ("org_mozilla_focus",           "Focus Android Glean",    "release"),  # noqa E241 E501
+    ("org_mozilla_focus_beta",      "Focus Android Glean",    "beta"),  # noqa E241 E501
+    ("org_mozilla_focus_nightly",   "Focus Android Glean",    "nightly"),  # noqa E241 E501
 ]
 
 KLAR_ANDROID_TUPLES = [
-    ("org_mozilla_klar",            "Klar Android Baseline",     "release"),  # noqa E241 E501
+    ("org_mozilla_klar",            "Klar Android Glean",     "release"),  # noqa E241 E501
 ]
 # fmt: on
 

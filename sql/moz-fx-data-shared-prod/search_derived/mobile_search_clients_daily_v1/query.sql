@@ -344,13 +344,13 @@ metrics_org_mozilla_ios_fennec AS (
   WHERE
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') >= 28
 ),
--- metrics for Focus Android Baseline release
+-- metrics for Focus Android Glean release
 metrics_org_mozilla_focus AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     normalized_country_code AS country,
-    'Focus Android Baseline' AS app_name,
+    'Focus Android Glean' AS app_name,
     'Focus' AS normalized_app_name,
     client_info.app_display_version AS app_version,
     'release' AS channel,
@@ -371,13 +371,13 @@ metrics_org_mozilla_focus AS (
   FROM
     org_mozilla_focus.metrics AS org_mozilla_focus_metrics
 ),
--- metrics for Focus Android Baseline beta
+-- metrics for Focus Android Glean beta
 metrics_org_mozilla_focus_beta AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     normalized_country_code AS country,
-    'Focus Android Baseline' AS app_name,
+    'Focus Android Glean' AS app_name,
     'Focus' AS normalized_app_name,
     client_info.app_display_version AS app_version,
     'beta' AS channel,
@@ -398,13 +398,13 @@ metrics_org_mozilla_focus_beta AS (
   FROM
     org_mozilla_focus_beta.metrics AS org_mozilla_focus_beta_metrics
 ),
--- metrics for Focus Android Baseline nightly
+-- metrics for Focus Android Glean nightly
 metrics_org_mozilla_focus_nightly AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     normalized_country_code AS country,
-    'Focus Android Baseline' AS app_name,
+    'Focus Android Glean' AS app_name,
     'Focus' AS normalized_app_name,
     client_info.app_display_version AS app_version,
     'nightly' AS channel,
@@ -425,13 +425,13 @@ metrics_org_mozilla_focus_nightly AS (
   FROM
     org_mozilla_focus_nightly.metrics AS org_mozilla_focus_nightly_metrics
 ),
--- metrics for Klar Android Baseline release
+-- metrics for Klar Android Glean release
 metrics_org_mozilla_klar AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     normalized_country_code AS country,
-    'Klar Android Baseline' AS app_name,
+    'Klar Android Glean' AS app_name,
     'Klar' AS normalized_app_name,
     client_info.app_display_version AS app_version,
     'release' AS channel,

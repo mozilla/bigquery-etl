@@ -21,6 +21,12 @@ WITH combined AS (
     AS provider,
     match_type,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
+    (
+      -- The first check is for Fx 103+, the last two checks are for Fx 102 and prior.
+      improve_suggest_experience_checked
+      OR request_id IS NOT NULL
+      OR scenario = 'online'
+    ) AS suggest_data_sharing_enabled,
   FROM
     contextual_services.quicksuggest_impression
   UNION ALL
@@ -46,6 +52,12 @@ WITH combined AS (
     AS provider,
     match_type,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
+    (
+      -- The first check is for Fx 103+, the last two checks are for Fx 102 and prior.
+      improve_suggest_experience_checked
+      OR request_id IS NOT NULL
+      OR scenario = 'online'
+    ) AS suggest_data_sharing_enabled,
   FROM
     contextual_services.quicksuggest_click
   UNION ALL
@@ -72,6 +84,8 @@ WITH combined AS (
     -- `match_type` is only available for `quicksuggest_*` tables
     NULL AS match_type,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
+    -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
+    NULL AS suggest_data_sharing_enabled,
   FROM
     contextual_services.topsites_impression
   UNION ALL
@@ -98,6 +112,8 @@ WITH combined AS (
     -- `match_type` is only available for `quicksuggest_*` tables
     NULL AS match_type,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
+    -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
+    NULL AS suggest_data_sharing_enabled,
   FROM
     contextual_services.topsites_click
   UNION ALL
@@ -121,6 +137,8 @@ WITH combined AS (
     -- `match_type` is only available for `quicksuggest_*` tables
     NULL AS match_type,
     normalized_os,
+    -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
+    NULL AS suggest_data_sharing_enabled,
   FROM
     org_mozilla_firefox.topsites_impression
   UNION ALL
@@ -142,6 +160,8 @@ WITH combined AS (
     -- `match_type` is only available for `quicksuggest_*` tables
     NULL AS match_type,
     normalized_os,
+    -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
+    NULL AS suggest_data_sharing_enabled,
   FROM
     org_mozilla_firefox_beta.topsites_impression
   UNION ALL
@@ -163,6 +183,8 @@ WITH combined AS (
     -- `match_type` is only available for `quicksuggest_*` tables
     NULL AS match_type,
     normalized_os,
+    -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
+    NULL AS suggest_data_sharing_enabled,
   FROM
     org_mozilla_fenix.topsites_impression
   UNION ALL
@@ -193,6 +215,8 @@ WITH combined AS (
     -- This is now hardcoded, we can use the derived `normalized_os` once
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1773722 is fixed
     'iOS' AS normalized_os,
+    -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
+    NULL AS suggest_data_sharing_enabled,
   FROM
     org_mozilla_ios_firefox.topsites_impression
   UNION ALL
@@ -223,6 +247,8 @@ WITH combined AS (
     -- This is now hardcoded, we can use the derived `normalized_os` once
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1773722 is fixed
     'iOS' AS normalized_os,
+    -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
+    NULL AS suggest_data_sharing_enabled,
   FROM
     org_mozilla_ios_firefoxbeta.topsites_impression
 ),
@@ -264,4 +290,5 @@ GROUP BY
   position,
   provider,
   match_type,
-  normalized_os
+  normalized_os,
+  suggest_data_sharing_enabled

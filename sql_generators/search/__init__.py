@@ -18,15 +18,28 @@ from jinja2 import Environment, FileSystemLoader
 from bigquery_etl.format_sql.formatter import reformat
 
 # fmt: off
-APP_CHANNEL_TUPLES = [
-    ("org_mozilla_fenix",           "Firefox Preview",  "beta",      "android"),  # noqa E241 E501
-    ("org_mozilla_fenix_nightly",   "Firefox Preview",  "nightly",   "android"),  # noqa E241 E501
-    ("org_mozilla_fennec_aurora",   "Fenix",            "nightly",   "android"),  # noqa E241 E501
-    ("org_mozilla_firefox_beta",    "Fenix",            "beta",      "android"),  # noqa E241 E501
-    ("org_mozilla_firefox",         "Fenix",            "release",   "android"),  # noqa E241 E501
-    ("org_mozilla_ios_firefox",     "Fennec",           "release",   "ios"),  # noqa E241 E501
-    ("org_mozilla_ios_firefoxbeta", "Fennec",           "beta",      "ios"),  # noqa E241 E501
-    ("org_mozilla_ios_fennec",      "Fennec",           "nightly",   "ios"),  # noqa E241 E501
+FIREFOX_ANDROID_TUPLES = [
+    ("org_mozilla_fenix",           "Firefox Preview",  "beta"),  # noqa E241 E501
+    ("org_mozilla_fenix_nightly",   "Firefox Preview",  "nightly"),  # noqa E241 E501
+    ("org_mozilla_fennec_aurora",   "Fenix",            "nightly"),  # noqa E241 E501
+    ("org_mozilla_firefox_beta",    "Fenix",            "beta"),  # noqa E241 E501
+    ("org_mozilla_firefox",         "Fenix",            "release"),  # noqa E241 E501
+]
+
+FIREFOX_IOS_TUPLES = [
+    ("org_mozilla_ios_firefox",     "Fennec", "release"),  # noqa E241 E501
+    ("org_mozilla_ios_firefoxbeta", "Fennec", "beta"),  # noqa E241 E501
+    ("org_mozilla_ios_fennec",      "Fennec", "nightly"),  # noqa E241 E501
+]
+
+FOCUS_ANDROID_TUPLES = [
+    ("org_mozilla_focus",           "Focus Android Glean",    "release"),  # noqa E241 E501
+    ("org_mozilla_focus_beta",      "Focus Android Glean",    "beta"),  # noqa E241 E501
+    ("org_mozilla_focus_nightly",   "Focus Android Glean",    "nightly"),  # noqa E241 E501
+]
+
+KLAR_ANDROID_TUPLES = [
+    ("org_mozilla_klar",            "Klar Android Glean",     "release"),  # noqa E241 E501
 ]
 # fmt: on
 
@@ -58,39 +71,71 @@ def generate(output_dir, target_project):
 
     android_query_template = env.get_template("fenix_metrics.template.sql")
     ios_query_template = env.get_template("ios_metrics.template.sql")
+    android_focus_template = env.get_template("android_focus.template.sql")
+    android_klar_template = env.get_template("android_klar.template.sql")
 
-    queries = [
+    firefox_android_queries = [
         android_query_template.render(
-            namespace=app_channel[0], app_name=app_channel[1], channel=app_channel[2]
+            namespace=namespace, app_name=app_name, channel=channel
         )
-        if app_channel[3] == "android"
-        else ios_query_template.render(
-            namespace=app_channel[0], app_name=app_channel[1], channel=app_channel[2]
-        )
-        for app_channel in APP_CHANNEL_TUPLES
+        for namespace, app_name, channel in FIREFOX_ANDROID_TUPLES
     ]
+
+    firefox_ios_queries = [
+        ios_query_template.render(
+            namespace=namespace, app_name=app_name, channel=channel
+        )
+        for namespace, app_name, channel in FIREFOX_IOS_TUPLES
+    ]
+
+    focus_android_queries = [
+        android_focus_template.render(
+            namespace=namespace, app_name=app_name, channel=channel
+        )
+        for namespace, app_name, channel in FOCUS_ANDROID_TUPLES
+    ]
+
+    klar_android_queries = [
+        android_klar_template.render(
+            namespace=namespace, app_name=app_name, channel=channel
+        )
+        for namespace, app_name, channel in KLAR_ANDROID_TUPLES
+    ]
+
+    queries = (
+        firefox_android_queries
+        + firefox_ios_queries
+        + focus_android_queries
+        + klar_android_queries
+    )
 
     search_query_template = env.get_template("mobile_search_clients_daily.template.sql")
 
     fenix_combined_baseline = union_statements(
         [
             f"SELECT * FROM baseline_{namespace}"
-            for namespace, _, _, platform in APP_CHANNEL_TUPLES
-            if platform == "android"
+            for namespace, _, _ in FIREFOX_ANDROID_TUPLES
         ]
     )
     fenix_combined_metrics = union_statements(
         [
             f"SELECT * FROM metrics_{namespace}"
-            for namespace, _, _, platform in APP_CHANNEL_TUPLES
-            if platform == "android"
+            for namespace, _, _ in FIREFOX_ANDROID_TUPLES
         ]
     )
     ios_combined_metrics = union_statements(
+        [f"SELECT * FROM metrics_{namespace}" for namespace, _, _ in FIREFOX_IOS_TUPLES]
+    )
+    android_focus_combined_metrics = union_statements(
         [
             f"SELECT * FROM metrics_{namespace}"
-            for namespace, _, _, platform in APP_CHANNEL_TUPLES
-            if platform == "ios"
+            for namespace, _, _ in FOCUS_ANDROID_TUPLES
+        ]
+    )
+    android_klar_combined_metrics = union_statements(
+        [
+            f"SELECT * FROM metrics_{namespace}"
+            for namespace, _, _ in KLAR_ANDROID_TUPLES
         ]
     )
 
@@ -99,6 +144,8 @@ def generate(output_dir, target_project):
         fenix_baseline=fenix_combined_baseline,
         fenix_metrics=fenix_combined_metrics,
         ios_metrics=ios_combined_metrics,
+        android_focus_metrics=android_focus_combined_metrics,
+        android_klar_metrics=android_klar_combined_metrics,
     )
 
     print(reformat(search_query))

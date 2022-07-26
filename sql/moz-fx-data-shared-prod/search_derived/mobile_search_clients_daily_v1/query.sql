@@ -344,6 +344,114 @@ metrics_org_mozilla_ios_fennec AS (
   WHERE
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') >= 28
 ),
+-- metrics for Focus Android Glean release
+metrics_org_mozilla_focus AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    normalized_country_code AS country,
+    'Focus Android Glean' AS app_name,
+    'Focus' AS normalized_app_name,
+    client_info.app_display_version AS app_version,
+    'release' AS channel,
+    normalized_os AS os,
+    client_info.android_sdk_version AS os_version,
+    metrics.string.browser_default_search_engine AS default_search_engine,
+    CAST(NULL AS STRING) AS default_search_engine_submission_url,
+    sample_id,
+    metrics.labeled_counter.browser_search_search_count AS search_count,
+    metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
+    metrics.labeled_counter.browser_search_in_content AS search_in_content,
+    metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
+    client_info.first_run_date,
+    ping_info.end_time,
+    ping_info.experiments,
+    metrics.counter.browser_total_uri_count,
+    client_info.locale,
+  FROM
+    org_mozilla_focus.metrics AS org_mozilla_focus_metrics
+),
+-- metrics for Focus Android Glean beta
+metrics_org_mozilla_focus_beta AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    normalized_country_code AS country,
+    'Focus Android Glean' AS app_name,
+    'Focus' AS normalized_app_name,
+    client_info.app_display_version AS app_version,
+    'beta' AS channel,
+    normalized_os AS os,
+    client_info.android_sdk_version AS os_version,
+    metrics.string.browser_default_search_engine AS default_search_engine,
+    CAST(NULL AS STRING) AS default_search_engine_submission_url,
+    sample_id,
+    metrics.labeled_counter.browser_search_search_count AS search_count,
+    metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
+    metrics.labeled_counter.browser_search_in_content AS search_in_content,
+    metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
+    client_info.first_run_date,
+    ping_info.end_time,
+    ping_info.experiments,
+    metrics.counter.browser_total_uri_count,
+    client_info.locale,
+  FROM
+    org_mozilla_focus_beta.metrics AS org_mozilla_focus_beta_metrics
+),
+-- metrics for Focus Android Glean nightly
+metrics_org_mozilla_focus_nightly AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    normalized_country_code AS country,
+    'Focus Android Glean' AS app_name,
+    'Focus' AS normalized_app_name,
+    client_info.app_display_version AS app_version,
+    'nightly' AS channel,
+    normalized_os AS os,
+    client_info.android_sdk_version AS os_version,
+    metrics.string.browser_default_search_engine AS default_search_engine,
+    CAST(NULL AS STRING) AS default_search_engine_submission_url,
+    sample_id,
+    metrics.labeled_counter.browser_search_search_count AS search_count,
+    metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
+    metrics.labeled_counter.browser_search_in_content AS search_in_content,
+    metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
+    client_info.first_run_date,
+    ping_info.end_time,
+    ping_info.experiments,
+    metrics.counter.browser_total_uri_count,
+    client_info.locale,
+  FROM
+    org_mozilla_focus_nightly.metrics AS org_mozilla_focus_nightly_metrics
+),
+-- metrics for Klar Android Glean release
+metrics_org_mozilla_klar AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    normalized_country_code AS country,
+    'Klar Android Glean' AS app_name,
+    'Klar' AS normalized_app_name,
+    client_info.app_display_version AS app_version,
+    'release' AS channel,
+    normalized_os AS os,
+    client_info.android_sdk_version AS os_version,
+    metrics.string.browser_default_search_engine AS default_search_engine,
+    CAST(NULL AS STRING) AS default_search_engine_submission_url,
+    sample_id,
+    metrics.labeled_counter.browser_search_search_count AS search_count,
+    metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
+    metrics.labeled_counter.browser_search_in_content AS search_in_content,
+    metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
+    client_info.first_run_date,
+    ping_info.end_time,
+    ping_info.experiments,
+    metrics.counter.browser_total_uri_count,
+    client_info.locale,
+  FROM
+    org_mozilla_klar.metrics AS org_mozilla_klar_metrics
+),
 fenix_baseline AS (
   SELECT
     *
@@ -412,6 +520,28 @@ ios_metrics AS (
   FROM
     metrics_org_mozilla_ios_fennec
 ),
+android_focus_metrics AS (
+  SELECT
+    *
+  FROM
+    metrics_org_mozilla_focus
+  UNION ALL
+  SELECT
+    *
+  FROM
+    metrics_org_mozilla_focus_beta
+  UNION ALL
+  SELECT
+    *
+  FROM
+    metrics_org_mozilla_focus_nightly
+),
+android_klar_metrics AS (
+  SELECT
+    *
+  FROM
+    metrics_org_mozilla_klar
+),
 -- iOS organic counts are incorrect until version 34.0
 -- https://github.com/mozilla-mobile/firefox-ios/issues/8412
 ios_organic_filtered AS (
@@ -466,6 +596,16 @@ glean_metrics AS (
     *
   FROM
     ios_organic_filtered
+  UNION ALL
+  SELECT
+    *
+  FROM
+    android_focus_metrics
+  UNION ALL
+  SELECT
+    *
+  FROM
+    android_klar_metrics
 ),
 glean_combined_searches AS (
   SELECT

@@ -382,6 +382,14 @@ fields:
       mode: NULLABLE
       name: browser_total_uri_count
       type: INTEGER
+    - description: 'Counts the number of times setting as default
+
+        browser menu option is tapped.
+
+        '
+      mode: NULLABLE
+      name: settings_screen_set_as_default_browser_pressed
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

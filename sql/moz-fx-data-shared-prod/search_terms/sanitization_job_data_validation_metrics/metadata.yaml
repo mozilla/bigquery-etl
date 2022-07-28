@@ -1,0 +1,14 @@
+---
+friendly_name: Sanitization Job Data Validation Metrics
+description: |-
+  The proportion of raw customer search volume that possesses characteristics like capital letters, census surnames, or English words.
+
+  We use this + other metrics to assess
+  whether the constituency using our search features is changing.
+owners:
+  - ctroy@mozilla.com
+  - dzeber@mozilla.com
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:search-terms/aggregated

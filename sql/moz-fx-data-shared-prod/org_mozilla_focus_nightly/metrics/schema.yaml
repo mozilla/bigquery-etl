@@ -1051,6 +1051,20 @@ fields:
       mode: REPEATED
       name: perf_startup_startup_type
       type: RECORD
+    - description: 'Counts the different type of resources that are sent for early
+        hints.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: netwerk_early_hints
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

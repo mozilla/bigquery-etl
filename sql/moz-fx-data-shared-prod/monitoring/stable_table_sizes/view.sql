@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.monitoring_derived.stable_table_sizes_v1`
+  `moz-fx-data-shared-prod.monitoring_derived.stable_and_derived_table_sizes_v1`

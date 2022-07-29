@@ -10,7 +10,7 @@ RETURNS STRING AS (
     CONCAT(
       TRIM(SPLIT(error_message, ":")[OFFSET(1)]),
       COALESCE(
-        CONCAT("/", REGEXP_SUBSTR(error_message, r"required key \[([^\]]+)\] not found")),
+        CONCAT("/", REGEXP_SUBSTR(error_message, r"(?:extraneous|required) key \[([^\]]+)\]")),
         ""
       )
     ),
@@ -35,5 +35,11 @@ SELECT
     "#/client_info",
     udf.extract_schema_validation_path(
       "org.everit.json.schema.ValidationException: #: required key [client_info] not found"
+    )
+  ),
+  assert.equals(
+    "#/application/buildID",
+    udf.extract_schema_validation_path(
+      "org.everit.json.schema.ValidationException: #/application: extraneous key [buildID] is not permitted"
     )
   );

@@ -7,7 +7,13 @@ CREATE OR REPLACE FUNCTION udf.extract_schema_validation_path(error_message STRI
 RETURNS STRING AS (
   IF(
     STARTS_WITH(error_message, "org.everit.json.schema.ValidationException"),
-    TRIM(SPLIT(error_message, ":")[OFFSET(1)]),
+    CONCAT(
+      TRIM(SPLIT(error_message, ":")[OFFSET(1)]),
+      COALESCE(
+        CONCAT("/", REGEXP_SUBSTR(error_message, r"required key \[([^\]]+)\] not found")),
+        ""
+      )
+    ),
     NULL
   )
 );
@@ -23,5 +29,11 @@ SELECT
     "#/events/1/timestamp",
     udf.extract_schema_validation_path(
       "org.everit.json.schema.ValidationException: #/events/1/timestamp: -2 is not greater or equal to 0"
+    )
+  ),
+  assert.equals(
+    "#/client_info",
+    udf.extract_schema_validation_path(
+      "org.everit.json.schema.ValidationException: #: required key [client_info] not found"
     )
   );

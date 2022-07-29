@@ -105,6 +105,18 @@ with DAG(
         depends_on_past=False,
     )
 
+    monitoring_derived__stable_and_derived_table_sizes__v1 = gke_command(
+        task_id="monitoring_derived__stable_and_derived_table_sizes__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/monitoring_derived/stable_and_derived_table_sizes_v1/query.py",
+        ]
+        + ["--date", "{{ ds }}"],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com"],
+    )
+
     monitoring_derived__stable_table_column_counts__v1 = bigquery_etl_query(
         task_id="monitoring_derived__stable_table_column_counts__v1",
         destination_table=None,
@@ -116,18 +128,6 @@ with DAG(
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         sql_file_path="sql/moz-fx-data-shared-prod/monitoring_derived/stable_table_column_counts_v1/script.sql",
-    )
-
-    monitoring_derived__stable_and_derived_table_sizes__v1 = gke_command(
-        task_id="monitoring_derived__stable_table_sizes__v1",
-        command=[
-            "python",
-            "sql/moz-fx-data-shared-prod/monitoring_derived/stable_and_derived_table_sizes_v1/query.py",
-        ]
-        + ["--date", "{{ ds }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com"],
     )
 
     monitoring_derived__structured_distinct_docids__v1 = gke_command(
@@ -192,10 +192,6 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
-    monitoring_derived__average_ping_sizes__v1.set_upstream(
-        monitoring_derived__stable_and_derived_table_sizes__v1
-    )
-
     wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",
@@ -212,17 +208,17 @@ with DAG(
         wait_for_copy_deduplicate_main_ping
     )
 
-    monitoring_derived__stable_table_column_counts__v1.set_upstream(
+    monitoring_derived__stable_and_derived_table_sizes__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
-    monitoring_derived__stable_table_column_counts__v1.set_upstream(
+    monitoring_derived__stable_and_derived_table_sizes__v1.set_upstream(
         wait_for_copy_deduplicate_main_ping
     )
 
-    monitoring_derived__stable_and_derived_table_sizes__v1.set_upstream(
+    monitoring_derived__stable_table_column_counts__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
-    monitoring_derived__stable_and_derived_table_sizes__v1.set_upstream(
+    monitoring_derived__stable_table_column_counts__v1.set_upstream(
         wait_for_copy_deduplicate_main_ping
     )
 

@@ -11,3 +11,13 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_fxa_events
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: true
+  clustering:
+    fields:
+      - service
+      - country
+      - os_name

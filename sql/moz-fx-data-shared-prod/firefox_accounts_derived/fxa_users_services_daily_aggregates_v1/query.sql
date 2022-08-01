@@ -2,7 +2,7 @@ SELECT
   submission_date,
   service,
   country,
-  LANGUAGE,
+  language,
   app_version,
   os_name,
   os_version,
@@ -15,7 +15,7 @@ GROUP BY
   submission_date,
   service,
   country,
-  LANGUAGE,
+  language,
   app_version,
   os_name,
   os_version

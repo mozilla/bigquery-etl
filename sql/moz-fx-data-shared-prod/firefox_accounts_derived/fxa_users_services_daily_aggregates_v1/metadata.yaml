@@ -1,7 +1,7 @@
 ---
-friendly_name: FxA Users Services Daily Summary
+friendly_name: FxA Users Services Daily Aggregates
 description: |
-  Usage aggregations summary per day
+  Usage pre-aggregated FxA service usage per day
   per FxA service per usage dimensions
 owners:
   - kignasiak@mozilla.com

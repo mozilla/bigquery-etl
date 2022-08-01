@@ -48271,6 +48271,20 @@ fields:
           mode: REPEATED
           name: security_client_auth_cert_usage
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'Whether or not the identified PSM UI element has been interacted
+              with this session.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: BOOLEAN
+          mode: REPEATED
+          name: security_psm_ui_interaction
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD

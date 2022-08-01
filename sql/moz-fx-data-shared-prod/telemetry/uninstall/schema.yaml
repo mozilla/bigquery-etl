@@ -1193,3 +1193,6 @@ fields:
 - mode: NULLABLE
   name: version
   type: FLOAT
+- mode: NULLABLE
+  name: type
+  type: STRING

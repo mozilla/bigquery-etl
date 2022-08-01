@@ -1,0 +1,534 @@
+fields:
+- mode: NULLABLE
+  name: date
+  type: DATE
+- mode: NULLABLE
+  name: logName
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: type
+    type: STRING
+  - fields:
+    - mode: NULLABLE
+      name: project_id
+      type: STRING
+    - mode: NULLABLE
+      name: instance_id
+      type: STRING
+    - mode: NULLABLE
+      name: zone
+      type: STRING
+    mode: NULLABLE
+    name: labels
+    type: RECORD
+  mode: NULLABLE
+  name: resource
+  type: RECORD
+- mode: NULLABLE
+  name: textPayload
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: op
+    type: STRING
+  - mode: NULLABLE
+    name: email
+    type: BYTES
+  - mode: NULLABLE
+    name: pid
+    type: FLOAT
+  - mode: NULLABLE
+    name: hostname
+    type: STRING
+  - mode: NULLABLE
+    name: unblock
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: suspect
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: name
+    type: STRING
+  - mode: NULLABLE
+    name: action
+    type: STRING
+  - mode: NULLABLE
+    name: block
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: msg
+    type: STRING
+  - mode: NULLABLE
+    name: level
+    type: FLOAT
+  - mode: NULLABLE
+    name: ip
+    type: BYTES
+  - mode: NULLABLE
+    name: v
+    type: FLOAT
+  - mode: NULLABLE
+    name: err
+    type: STRING
+  - mode: NULLABLE
+    name: rtime
+    type: STRING
+  - mode: NULLABLE
+    name: filename
+    type: STRING
+  - mode: NULLABLE
+    name: filesize
+    type: FLOAT
+  - mode: NULLABLE
+    name: reputation
+    type: FLOAT
+  - mode: NULLABLE
+    name: errno
+    type: FLOAT
+  - mode: NULLABLE
+    name: foundin
+    type: FLOAT
+  - mode: NULLABLE
+    name: statuscode
+    type: FLOAT
+  - mode: NULLABLE
+    name: regex
+    type: STRING
+  - mode: NULLABLE
+    name: heuristic
+    type: STRING
+  - mode: NULLABLE
+    name: reportonly
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: heuristic_description
+    type: STRING
+  - mode: NULLABLE
+    name: confidence
+    type: FLOAT
+  - mode: NULLABLE
+    name: timestamp
+    type: STRING
+  - mode: NULLABLE
+    name: reason
+    type: STRING
+  - mode: NULLABLE
+    name: id
+    type: STRING
+  - mode: NULLABLE
+    name: suggested_action
+    type: STRING
+  - mode: NULLABLE
+    name: listhitcount
+    type: FLOAT
+  - mode: NULLABLE
+    name: listhits
+    type: STRING
+  - mode: NULLABLE
+    name: loadedin
+    type: FLOAT
+  - fields:
+    - mode: REPEATED
+      name: allowedemaildomains
+      type: STRING
+    - fields:
+      - mode: NULLABLE
+        name: flowidrequiredonlogin
+        type: BOOLEAN
+      - mode: NULLABLE
+        name: treateveryonewithsuspicion
+        type: BOOLEAN
+      - mode: REPEATED
+        name: flowidexemptuseragentres
+        type: STRING
+      mode: NULLABLE
+      name: requestchecks
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: tracessamplerate
+        type: FLOAT
+      - mode: NULLABLE
+        name: env
+        type: STRING
+      - mode: NULLABLE
+        name: servername
+        type: STRING
+      - mode: NULLABLE
+        name: samplerate
+        type: FLOAT
+      - mode: NULLABLE
+        name: dsn
+        type: STRING
+      mode: NULLABLE
+      name: sentry
+      type: RECORD
+    - mode: NULLABLE
+      name: updatepollintervalseconds
+      type: FLOAT
+    - mode: REPEATED
+      name: allowedips
+      type: STRING
+    - mode: REPEATED
+      name: allowedphonenumbers
+      type: STRING
+    - fields:
+      - fields:
+        - mode: REPEATED
+          name: actions
+          type: STRING
+        - fields:
+          - mode: NULLABLE
+            name: ratelimitintervalms
+            type: FLOAT
+          - mode: NULLABLE
+            name: periodms
+            type: FLOAT
+          - mode: NULLABLE
+            name: max
+            type: FLOAT
+          mode: NULLABLE
+          name: limits
+          type: RECORD
+        mode: NULLABLE
+        name: tokencoderules
+        type: RECORD
+      - fields:
+        - mode: REPEATED
+          name: actions
+          type: STRING
+        - fields:
+          - mode: NULLABLE
+            name: max
+            type: FLOAT
+          - mode: NULLABLE
+            name: periodms
+            type: FLOAT
+          - mode: NULLABLE
+            name: ratelimitintervalms
+            type: FLOAT
+          mode: NULLABLE
+          name: limits
+          type: RECORD
+        mode: NULLABLE
+        name: totpcoderules
+        type: RECORD
+      mode: NULLABLE
+      name: userdefinedratelimitrules
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: address
+        type: STRING
+      - mode: NULLABLE
+        name: recordlifetimeseconds
+        type: FLOAT
+      mode: NULLABLE
+      name: memcache
+      type: RECORD
+    - mode: NULLABLE
+      name: env
+      type: STRING
+    - mode: NULLABLE
+      name: publicurl
+      type: STRING
+    - fields:
+      - mode: NULLABLE
+        name: blockbelow
+        type: FLOAT
+      - mode: NULLABLE
+        name: suspectbelow
+        type: FLOAT
+      - mode: NULLABLE
+        name: enable
+        type: BOOLEAN
+      - mode: NULLABLE
+        name: hawkid
+        type: STRING
+      - mode: NULLABLE
+        name: enablecheck
+        type: BOOLEAN
+      - mode: NULLABLE
+        name: timeout
+        type: FLOAT
+      - mode: NULLABLE
+        name: baseurl
+        type: STRING
+      - mode: NULLABLE
+        name: hawkkey
+        type: STRING
+      mode: NULLABLE
+      name: reputationservice
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: level
+        type: STRING
+      mode: NULLABLE
+      name: log
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: suspectinterval
+        type: FLOAT
+      - mode: NULLABLE
+        name: maxaccountaccess
+        type: FLOAT
+      - mode: NULLABLE
+        name: ipratelimitbandurationseconds
+        type: FLOAT
+      - fields:
+        - mode: NULLABLE
+          name: limitintervalseconds
+          type: FLOAT
+        - mode: NULLABLE
+          name: maxchecks
+          type: FLOAT
+        - mode: NULLABLE
+          name: bandurationseconds
+          type: FLOAT
+        mode: NULLABLE
+        name: uidratelimit
+        type: RECORD
+      - fields:
+        - mode: NULLABLE
+          name: limitintervalseconds
+          type: FLOAT
+        - mode: NULLABLE
+          name: maxsms
+          type: FLOAT
+        mode: NULLABLE
+        name: smsratelimit
+        type: RECORD
+      - mode: NULLABLE
+        name: maxunblockattempts
+        type: FLOAT
+      - mode: NULLABLE
+        name: maxverifycodes
+        type: FLOAT
+      - mode: NULLABLE
+        name: maxbadloginsperemail
+        type: FLOAT
+      - mode: NULLABLE
+        name: maxaccountstatuscheck
+        type: FLOAT
+      - mode: NULLABLE
+        name: maxbadloginsperip
+        type: FLOAT
+      - mode: NULLABLE
+        name: ratelimitintervalseconds
+        type: FLOAT
+      - mode: NULLABLE
+        name: maxbadlogins
+        type: FLOAT
+      - mode: NULLABLE
+        name: blockintervalseconds
+        type: FLOAT
+      - mode: NULLABLE
+        name: disableinterval
+        type: FLOAT
+      - mode: NULLABLE
+        name: ipratelimitintervalseconds
+        type: FLOAT
+      - mode: NULLABLE
+        name: maxemails
+        type: FLOAT
+      mode: NULLABLE
+      name: limits
+      type: RECORD
+    - fields:
+      - mode: REPEATED
+        name: logonlylists
+        type: STRING
+      - mode: REPEATED
+        name: lists
+        type: STRING
+      - mode: NULLABLE
+        name: updatepollinterval
+        type: FLOAT
+      - mode: NULLABLE
+        name: enable
+        type: BOOLEAN
+      mode: NULLABLE
+      name: ipblocklist
+      type: RECORD
+    - fields:
+      - fields:
+        - mode: NULLABLE
+          name: subscriptionname
+          type: STRING
+        - mode: NULLABLE
+          name: projectid
+          type: STRING
+        mode: NULLABLE
+        name: gcppubsub
+        type: RECORD
+      - mode: NULLABLE
+        name: enabled
+        type: BOOLEAN
+      - mode: NULLABLE
+        name: ignoreolderthan
+        type: FLOAT
+      - mode: NULLABLE
+        name: reportonly
+        type: BOOLEAN
+      mode: NULLABLE
+      name: dataflow
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: port
+        type: FLOAT
+      - mode: NULLABLE
+        name: host
+        type: STRING
+      mode: NULLABLE
+      name: listen
+      type: RECORD
+    mode: NULLABLE
+    name: config
+    type: RECORD
+  - mode: NULLABLE
+    name: host
+    type: STRING
+  - mode: NULLABLE
+    name: port
+    type: FLOAT
+  - mode: NULLABLE
+    name: message
+    type: STRING
+  - mode: NULLABLE
+    name: blockreason
+    type: STRING
+  mode: NULLABLE
+  name: jsonPayload
+  type: RECORD
+- mode: NULLABLE
+  name: timestamp
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: receiveTimestamp
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: severity
+  type: STRING
+- mode: NULLABLE
+  name: insertId
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: requestMethod
+    type: STRING
+  - mode: NULLABLE
+    name: requestUrl
+    type: STRING
+  - mode: NULLABLE
+    name: requestSize
+    type: INTEGER
+  - mode: NULLABLE
+    name: status
+    type: INTEGER
+  - mode: NULLABLE
+    name: responseSize
+    type: INTEGER
+  - mode: NULLABLE
+    name: userAgent
+    type: STRING
+  - mode: NULLABLE
+    name: remoteIp
+    type: STRING
+  - mode: NULLABLE
+    name: serverIp
+    type: STRING
+  - mode: NULLABLE
+    name: referer
+    type: STRING
+  - mode: NULLABLE
+    name: cacheLookup
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: cacheHit
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: cacheValidatedWithOriginServer
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: cacheFillBytes
+    type: INTEGER
+  - mode: NULLABLE
+    name: protocol
+    type: STRING
+  mode: NULLABLE
+  name: httpRequest
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: type
+    type: STRING
+  - mode: NULLABLE
+    name: application
+    type: STRING
+  - mode: NULLABLE
+    name: stack
+    type: STRING
+  - mode: NULLABLE
+    name: compute_googleapis_com_resource_name
+    type: STRING
+  - mode: NULLABLE
+    name: env
+    type: STRING
+  mode: NULLABLE
+  name: labels
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: id
+    type: STRING
+  - mode: NULLABLE
+    name: producer
+    type: STRING
+  - mode: NULLABLE
+    name: first
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: last
+    type: BOOLEAN
+  mode: NULLABLE
+  name: operation
+  type: RECORD
+- mode: NULLABLE
+  name: trace
+  type: STRING
+- mode: NULLABLE
+  name: spanId
+  type: STRING
+- mode: NULLABLE
+  name: traceSampled
+  type: BOOLEAN
+- fields:
+  - mode: NULLABLE
+    name: file
+    type: STRING
+  - mode: NULLABLE
+    name: line
+    type: INTEGER
+  - mode: NULLABLE
+    name: function
+    type: STRING
+  mode: NULLABLE
+  name: sourceLocation
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: uid
+    type: STRING
+  - mode: NULLABLE
+    name: index
+    type: INTEGER
+  - mode: NULLABLE
+    name: totalSplits
+    type: INTEGER
+  mode: NULLABLE
+  name: split
+  type: RECORD

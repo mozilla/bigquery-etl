@@ -1,0 +1,193 @@
+fields:
+- mode: NULLABLE
+  name: date
+  type: DATE
+- mode: NULLABLE
+  name: logName
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: type
+    type: STRING
+  - fields:
+    - mode: NULLABLE
+      name: project_id
+      type: STRING
+    - mode: NULLABLE
+      name: zone
+      type: STRING
+    - mode: NULLABLE
+      name: instance_id
+      type: STRING
+    mode: NULLABLE
+    name: labels
+    type: RECORD
+  mode: NULLABLE
+  name: resource
+  type: RECORD
+- mode: NULLABLE
+  name: textPayload
+  type: STRING
+- mode: NULLABLE
+  name: timestamp
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: receiveTimestamp
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: severity
+  type: STRING
+- mode: NULLABLE
+  name: insertId
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: requestMethod
+    type: STRING
+  - mode: NULLABLE
+    name: requestUrl
+    type: STRING
+  - mode: NULLABLE
+    name: requestSize
+    type: INTEGER
+  - mode: NULLABLE
+    name: status
+    type: INTEGER
+  - mode: NULLABLE
+    name: responseSize
+    type: INTEGER
+  - mode: NULLABLE
+    name: userAgent
+    type: STRING
+  - mode: NULLABLE
+    name: remoteIp
+    type: STRING
+  - mode: NULLABLE
+    name: serverIp
+    type: STRING
+  - mode: NULLABLE
+    name: referer
+    type: STRING
+  - mode: NULLABLE
+    name: cacheLookup
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: cacheHit
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: cacheValidatedWithOriginServer
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: cacheFillBytes
+    type: INTEGER
+  - mode: NULLABLE
+    name: protocol
+    type: STRING
+  mode: NULLABLE
+  name: httpRequest
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: compute_googleapis_com_resource_name
+    type: STRING
+  - mode: NULLABLE
+    name: env
+    type: STRING
+  - mode: NULLABLE
+    name: application
+    type: STRING
+  - mode: NULLABLE
+    name: stack
+    type: STRING
+  - mode: NULLABLE
+    name: type
+    type: STRING
+  mode: NULLABLE
+  name: labels
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: id
+    type: STRING
+  - mode: NULLABLE
+    name: producer
+    type: STRING
+  - mode: NULLABLE
+    name: first
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: last
+    type: BOOLEAN
+  mode: NULLABLE
+  name: operation
+  type: RECORD
+- mode: NULLABLE
+  name: trace
+  type: STRING
+- mode: NULLABLE
+  name: spanId
+  type: STRING
+- mode: NULLABLE
+  name: traceSampled
+  type: BOOLEAN
+- fields:
+  - mode: NULLABLE
+    name: file
+    type: STRING
+  - mode: NULLABLE
+    name: line
+    type: INTEGER
+  - mode: NULLABLE
+    name: function
+    type: STRING
+  mode: NULLABLE
+  name: sourceLocation
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: uid
+    type: STRING
+  - mode: NULLABLE
+    name: index
+    type: INTEGER
+  - mode: NULLABLE
+    name: totalSplits
+    type: INTEGER
+  mode: NULLABLE
+  name: split
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: type
+    type: STRING
+  - mode: NULLABLE
+    name: envversion
+    type: STRING
+  - mode: NULLABLE
+    name: logger
+    type: STRING
+  - mode: NULLABLE
+    name: severity
+    type: FLOAT
+  - fields:
+    - mode: NULLABLE
+      name: usergroupheader
+      type: STRING
+    - mode: NULLABLE
+      name: email
+      type: BYTES
+    - mode: NULLABLE
+      name: user
+      type: BYTES
+    mode: NULLABLE
+    name: fields
+    type: RECORD
+  - mode: NULLABLE
+    name: pid
+    type: FLOAT
+  - mode: NULLABLE
+    name: timestamp
+    type: FLOAT
+  mode: NULLABLE
+  name: jsonPayload
+  type: RECORD

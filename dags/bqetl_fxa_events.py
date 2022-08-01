@@ -298,6 +298,21 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefox_accounts_derived__fxa_users_services_daily_summary__v1 = bigquery_etl_query(
+        task_id="firefox_accounts_derived__fxa_users_services_daily_summary__v1",
+        destination_table="fxa_users_services_daily_summary_v1",
+        dataset_id="firefox_accounts_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kignasiak@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "kignasiak@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefox_accounts_derived__nonprod_fxa_auth_events__v1 = bigquery_etl_query(
         task_id="firefox_accounts_derived__nonprod_fxa_auth_events__v1",
         destination_table="nonprod_fxa_auth_events_v1",
@@ -364,4 +379,8 @@ with DAG(
 
     firefox_accounts_derived__fxa_users_services_daily__v1.set_upstream(
         firefox_accounts_derived__fxa_content_events__v1
+    )
+
+    firefox_accounts_derived__fxa_users_services_daily_summary__v1.set_upstream(
+        firefox_accounts_derived__fxa_users_services_daily__v1
     )

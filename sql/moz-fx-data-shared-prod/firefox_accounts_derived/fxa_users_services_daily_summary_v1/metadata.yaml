@@ -1,0 +1,13 @@
+---
+friendly_name: FxA Users Services Daily Summary
+description: |
+  Usage aggregations summary per day
+  per FxA service per usage dimensions
+owners:
+  - kignasiak@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_fxa_events

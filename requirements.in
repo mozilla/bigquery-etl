@@ -1,4 +1,4 @@
-attrs==21.4.0
+attrs==22.1.0
 authlib==1.0.1
 cattrs==22.1.0
 click==8.1.3

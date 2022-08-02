@@ -1,15 +1,15 @@
 ---
-target: desktop
-query_name: "desktop_qdau.sql"
+target: mobile
+query_name: "mobile_dau_v2.sql"
 dataset_project: "mozdata"
-forecast_variable: "QDAU"
+forecast_variable: "DAU"
 forecast_parameters:
   changepoint_prior_scale: 0.05
   changepoint_range: 0.8
   seasonality_prior_scale: 0.01
 columns:
 - submission_date
-- QDAU
+- DAU
 write_project: "moz-fx-data-shared-prod"
 output_table: "telemetry_derived.kpi_automated_forecast_v1"
 confidences_table: "telemetry_derived.kpi_automated_forecast_confidences_v1"

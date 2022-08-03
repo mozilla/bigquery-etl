@@ -1,6 +1,6 @@
 # SQL generators
 
-`sql_generators/` contains scripts for generating SQL queries. Generated SQL query code should *not* be checked in to `main`. The scripts for generating SQL queries are executed by CI only and will are followed by generating Airflow DAGs.
+`sql_generators/` contains scripts for generating SQL queries. Generated SQL query code should *not* be checked in to `main`. The scripts for generating SQL queries are executed by CI only and are followed by generating Airflow DAGs.
 
 ## Expected structure
 

@@ -10,6 +10,8 @@ metrics_{{ namespace }} AS (
         '{{ channel }}' AS channel,
         normalized_os AS os,
         client_info.android_sdk_version AS os_version,
+        CAST(NULL AS STRING) AS adjust_network,
+        CAST(NULL AS STRING) AS install_source,
         metrics.string.browser_default_search_engine AS default_search_engine,
         CAST(NULL AS STRING) AS default_search_engine_submission_url,
         sample_id,

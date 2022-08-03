@@ -148,7 +148,9 @@ def main():
                 "minimum_client_count": {
                     "type": "integer",
                     "minimum": 0,
-                    "description": "The minimum client count for each build id.",
+                    "description": "The minimum client count for each build id."
+                    "We generally want this to be roughly 0.5% of WAU."
+                    "For context see https://github.com/mozilla/glam/issues/1575#issuecomment-946880387",  # noqa E501
                 },
             },
             "required": [

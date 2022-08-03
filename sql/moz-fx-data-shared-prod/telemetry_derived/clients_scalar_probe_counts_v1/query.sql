@@ -202,6 +202,8 @@ build_ids AS (
     1,
     2
   HAVING
+    -- Filter out builds having less than 0.5% of WAU
+    -- for context see https://github.com/mozilla/glam/issues/1575#issuecomment-946880387
     CASE
     WHEN
       channel = 'release'

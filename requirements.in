@@ -6,7 +6,7 @@ gcsfs==2022.5.0
 gcloud==0.18.3
 gitpython==3.1.27
 google-cloud-bigquery==3.2.0
-google-cloud-storage==2.4.0
+google-cloud-storage==2.5.0
 importlib-resources>=1.4.0  # jsonschema dep for python<3.9
 Jinja2==3.1.2
 jsonschema==4.9.0

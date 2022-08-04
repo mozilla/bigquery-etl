@@ -1,3 +1,4 @@
+-- use unified_metrics as the source of truth for KPIs
 SELECT
     submission_date,
     COUNTIF(normalized_app_name = 'Firefox Desktop' AND active_hours_sum > 0 AND uri_count > 0) AS QDAU,

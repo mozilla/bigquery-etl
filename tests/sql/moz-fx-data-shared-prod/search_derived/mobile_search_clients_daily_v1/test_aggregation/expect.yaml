@@ -19,6 +19,8 @@
   os_version: '23'
   profile_creation_date: 16606
   profile_age_in_days: 1625
+  metrics_adjust_network: Organic
+  metrics_install_source: com.android.vending
   experiments: []
 - <<: *base
   client_id: b
@@ -34,6 +36,8 @@
   os_version: '26'
   profile_creation_date: 17332
   profile_age_in_days: 899
+  metrics_adjust_network: Google Organic Search
+  metrics_install_source: com.android.vending
 - <<: *base
   client_id: b
   engine: engine2

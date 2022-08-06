@@ -16,6 +16,8 @@
     string:
       search_default_engine_code: engine1
       search_default_engine_submission_url: engine1.url
+      adjust_network: Organic
+      install_source: com.android.vending
     labeled_counter:
       metrics_search_count: []
 - <<: *base
@@ -29,6 +31,8 @@
     string:
       search_default_engine_code:
       search_default_engine_submission_url:
+      adjust_network: Google Organic Search
+      install_source: com.android.vending
     labeled_counter:
       metrics_search_count:
         - key: engine1.action
@@ -46,6 +50,8 @@
     string:
       search_default_engine_code:
       search_default_engine_submission_url:
+      adjust_network:
+      install_source:
     labeled_counter:
       metrics_search_count:
         - key: engine1_action
@@ -63,6 +69,8 @@
     string:
       search_default_engine_code:
       search_default_engine_submission_url:
+      adjust_network:
+      install_source:
     labeled_counter:
       metrics_search_count:
         - key: invalid
@@ -78,6 +86,8 @@
     string:
       search_default_engine_code:
       search_default_engine_submission_url:
+      adjust_network:
+      install_source:
     labeled_counter:
       metrics_search_count:
         - key: engine2.suggestion
@@ -93,6 +103,8 @@
     string:
       search_default_engine_code:
       search_default_engine_submission_url:
+      adjust_network:
+      install_source:
     labeled_counter:
       metrics_search_count:
         - key: engine2.suggestion
@@ -140,6 +152,8 @@
     string:
       search_default_engine_code:
       search_default_engine_submission_url:
+      adjust_network:
+      install_source:
     labeled_counter:
       browser_search_ad_clicks:
         - key: engine4

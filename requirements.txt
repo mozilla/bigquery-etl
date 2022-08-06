@@ -395,9 +395,9 @@ google-cloud-core==2.3.1 \
     # via
     #   google-cloud-bigquery
     #   google-cloud-storage
-google-cloud-storage==2.4.0 \
-    --hash=sha256:5fe26f1381b30e3cc328f46e13531ca8525458f870c1e303c616bdeb7b7f5c66 \
-    --hash=sha256:973e7f7d9afcd4805769b6ea9ac15ab9df7037530850374f1494b5a2c8f65b6b
+google-cloud-storage==2.5.0 \
+    --hash=sha256:19a26c66c317ce542cea0830b7e787e8dac2588b6bfa4d3fd3b871ba16305ab0 \
+    --hash=sha256:382f34b91de2212e3c2e7b40ec079d27ee2e3dbbae99b75b1bcd8c63063ce235
     # via
     #   -r requirements.in
     #   gcsfs
@@ -561,9 +561,9 @@ jinja2==3.1.2 \
     #   -r requirements.in
     #   mkdocs
     #   mkdocs-material
-jsonschema==4.9.0 \
-    --hash=sha256:5d0be0cd1b670438b71c3d3145b2abba1f9d197e3e91adc4c4bae4c0e114e252 \
-    --hash=sha256:df10e65c8f3687a48e93d0d348ce0ce5f897b5a28e9bbcbbe8f7c7eaf019e850
+jsonschema==4.9.1 \
+    --hash=sha256:408c4c8ed0dede3b268f7a441784f74206380b04f93eb2d537c7befb3df3099f \
+    --hash=sha256:8ebad55894c002585271af2d327d99339ef566fb085d9129b69e2623867c4106
     # via
     #   -r requirements.in
     #   mozilla-schema-generator
@@ -1209,9 +1209,9 @@ sqlparse==0.4.2 \
     --hash=sha256:0c00730c74263a94e5a9919ade150dfc3b19c574389985446148402998287dae \
     --hash=sha256:48719e356bb8b42991bdbb1e8b83223757b93789c00910a616a071910ca4a64d
     # via -r requirements.in
-stripe==3.5.0 \
-    --hash=sha256:08f74cae6619d4a7d78f8162ff72bc3e9c913f53ec96ecd5ddc7d823c2e79ddd \
-    --hash=sha256:69d5bf4611624a503bcec84a61b1f2a2b874bfc828432e4fd75cd120bcc3efef
+stripe==4.0.2 \
+    --hash=sha256:d085b3e9450a5550912f476c6dbb2bafa129e485e24d6f4047c5094ff08d5de2 \
+    --hash=sha256:de2d532764d07aca0b974ac4ce8d1feee4007cf8c3c2cf6070c16b4cdbb4eb6d
     # via -r requirements.in
 toml==0.10.2 \
     --hash=sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b \

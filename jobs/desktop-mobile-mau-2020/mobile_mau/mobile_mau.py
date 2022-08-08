@@ -186,13 +186,13 @@ def create_plot(platform, y_min, y_max, actuals, forecast, plot_start_date, slic
         # autosize=force_width is None,
         # width=force_width,
         # height=force_height,
-        title="""
-        <b>{} {} MAU</b> <span style="font-size: medium;">at end of day {}</span>
+        title="""\
+        <b>{} {} MAU</b> <span style="font-size: medium;">at end of day {}</span>\
         """.format(
             slice_name,
             platform,
             data_end_date,
-        ),
+        ).strip(),
         titlefont={
             "size": 24,
         },

@@ -23104,6 +23104,24 @@ fields:
       mode: REPEATED
       name: http_channel_sub_onstart_success_trr3
       type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: A count of the embedded third-party email trackers for known
+          email web apps. ('base_normal' = The count of loaded base email trackers
+          under normal sites, 'conten_normal' = The count of loaded content email
+          trackers under normal sites, 'all_normal' = The count of all loaded email
+          trackers under normal sites, 'base_emailapp' = The count of loaded base
+          email trackers under email webapps, 'content_emailapp' = The count of loaded
+          content email trackers under email webapps, 'all_emailapp' = The count of
+          all loaded email trackers under email webapps.)
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: email_tracker_embedded_per_tab
+      type: RECORD
     mode: NULLABLE
     name: keyed_histograms
     type: RECORD

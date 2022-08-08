@@ -57,7 +57,7 @@ def create_table(template, platform, actual, forecast):
         - 1
     )
 
-    data_end_date = actual["date"].max().date()
+    # data_end_date = actual["date"].max().date()
 
     return template.render(
         platform=platform,
@@ -84,7 +84,8 @@ def create_table(template, platform, actual, forecast):
 
 def create_plot(platform, y_min, y_max, actuals, forecast, plot_start_date, slice_name):
     """
-    Display a plot given a platform (each mobile product), data for actuals and forecast, and slice (Global or Tier 1).
+    Display a plot given a platform (each mobile product),
+    data for actuals and forecast, and slice (Global or Tier 1).
     """
     main_metric_color = "#CA3524"
     main_metric_color_ci = "#DDDDDD"
@@ -185,11 +186,13 @@ def create_plot(platform, y_min, y_max, actuals, forecast, plot_start_date, slic
         # autosize=force_width is None,
         # width=force_width,
         # height=force_height,
-        title='<b>{} {} MAU</b> <span style="font-size: medium;">at end of day {}</span>'.format(
+        title="""\
+        <b>{} {} MAU</b> <span style="font-size: medium;">at end of day {}</span>\
+        """.format(
             slice_name,
             platform,
             data_end_date,
-        ),
+        ).strip(),
         titlefont={
             "size": 24,
         },

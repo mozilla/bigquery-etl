@@ -27,10 +27,10 @@ IMG_DIR = STATIC_DIR / "img"
 DESKTOP_QUERY = (ROOT_DIR / "mau_dau.sql").read_text()
 
 DESKTOP_USER_STATE_QUERY = """
-SELECT 
+SELECT
     *
-FROM 
-    `moz-fx-data-derived-datasets.analysis.xluo_kpi_plot_country_new_or_rescurrected_dau` 
+FROM
+    `moz-fx-data-derived-datasets.analysis.xluo_kpi_plot_country_new_or_rescurrected_dau`
 """
 
 
@@ -454,7 +454,8 @@ def plot_dau_mau_ratio(desktop_data):
         fontdict={"fontsize": 18, "color": "black"},
     )
 
-    # axs[1].plot.area([ind_dat["country_x"].isin(country_list)]["date", "country_x", "pcnt"], subplots=True)
+    # axs[1].plot.area([ind_dat["country_x"]\
+    # .isin(country_list)]["date", "country_x", "pcnt"], subplots=True)
     dat2 = ind_dat[ind_dat["country_x"].isin(country_list)][
         ["date", "country_x", "pcnt_MAU"]
     ].pivot(index="date", columns="country_x", values="pcnt_MAU")

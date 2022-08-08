@@ -3,6 +3,12 @@ friendly_name: FxA Users Services Daily Aggregates
 description: |
   Usage pre-aggregated FxA service usage per day
   per FxA service per usage dimensions
+
+  !!!
+  Please keep in mind that services are not mutually exclusive,
+  therefore suming on service user count should not be done
+  as it will result in overcounting!
+  !!!
 owners:
   - kignasiak@mozilla.com
 labels:

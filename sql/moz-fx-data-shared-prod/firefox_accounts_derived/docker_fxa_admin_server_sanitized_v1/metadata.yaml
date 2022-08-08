@@ -1,0 +1,21 @@
+friendly_name: Docker Fxa Admin Server Sanitized
+description: |-
+  Sanitized version of docker_fxa_admin_server from FxA.
+  PII is hashed.
+owners:
+- frank@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_fxa_events
+  task_name: docker_fxa_admin_server_v1
+bigquery:
+  time_partitioning:
+    field: date
+    type: day
+    require_partition_filter: false
+    expiration_days: null
+  clustering: null
+references: {}

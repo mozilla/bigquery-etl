@@ -12,9 +12,9 @@ from google.cloud import bigquery
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True)  # expect string with format yyyy-mm-dd
 parser.add_argument("--project", default="moz-fx-data-shared-prod")
-parser.add_argument("--dataset", default="*_stable")  # pattern
+parser.add_argument("--dataset", default=("*_derived", "*_stable"))  # pattern
 parser.add_argument("--destination_dataset", default="monitoring_derived")
-parser.add_argument("--destination_table", default="stable_table_sizes_v1")
+parser.add_argument("--destination_table", default="stable_and_derived_table_sizes_v1")
 
 
 def get_tables(client, project, dataset):
@@ -76,33 +76,33 @@ def save_table_sizes(client, table_sizes, date, destination_dataset, destination
 def main():
     args = parser.parse_args()
     client = bigquery.Client(args.project)
+    stable_derived_partition_sizes = []
 
-    stable_datasets = [
-        dataset.dataset_id
-        for dataset in list(client.list_datasets())
-        if fnmatchcase(dataset.dataset_id, args.dataset)
-    ]
+    for arg_dataset in args.dataset:
+        stable_datasets = [
+            dataset.dataset_id
+            for dataset in list(client.list_datasets())
+            if fnmatchcase(dataset.dataset_id, arg_dataset) and not fnmatchcase(dataset.dataset_id, 'monitoring_derived')
+        ]
+        with ThreadPool(20) as p:
+            stable_tables = p.map(
+                partial(get_tables, client, args.project), stable_datasets, chunksize=1,
+            )
+            stable_tables = [table for tables in stable_tables for table in tables]
+            partition_sizes = p.map(
+                partial(get_partition_size_json, client, args.date),
+                stable_tables,
+                chunksize=1,
+            )
+            stable_derived_partition_sizes.extend(partition_sizes)
 
-    with ThreadPool(20) as p:
-        stable_tables = p.map(
-            partial(get_tables, client, args.project), stable_datasets, chunksize=1,
-        )
-
-        stable_tables = [table for tables in stable_tables for table in tables]
-
-        partition_sizes = p.map(
-            partial(get_partition_size_json, client, args.date),
-            stable_tables,
-            chunksize=1,
-        )
-
-        save_table_sizes(
-            client,
-            partition_sizes,
-            args.date,
-            args.destination_dataset,
-            args.destination_table,
-        )
+    save_table_sizes(
+                client,
+                stable_derived_partition_sizes,
+                args.date,
+                args.destination_dataset,
+                args.destination_table,
+            )
 
 
 if __name__ == "__main__":

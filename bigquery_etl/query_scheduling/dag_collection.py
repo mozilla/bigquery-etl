@@ -144,6 +144,15 @@ class DagCollection:
         # https://pythonspeed.com/articles/python-multiprocessing/
         # when running tests on CI that call this function, we need
         # to create a custom pool to prevent processes from getting stuck
+
+        # Generate a single DAG:
+        if dag_to_generate is not None:
+            dag_to_generate = self._get_upstream_dependencies(dag_to_generate)
+            dag_to_generate = self._get_downstream_dependencies(dag_to_generate)
+            self.dag_to_airflow(output_dir, dag_to_generate)
+            return
+
+        # Generate all DAGs:
         try:
             set_start_method("spawn")
         except Exception:
@@ -156,9 +165,5 @@ class DagCollection:
             self.dags = p.map(self._get_downstream_dependencies, self.dags)
 
         to_airflow_dag = partial(self.dag_to_airflow, output_dir)
-
-        if dag_to_generate is None:
-            with get_context("spawn").Pool(8) as p:
-                p.map(to_airflow_dag, self.dags)
-        else:
-            self.dag_to_airflow(output_dir, self.dag_by_name(dag_to_generate))
+        with get_context("spawn").Pool(8) as p:
+            p.map(to_airflow_dag, self.dags)

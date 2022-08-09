@@ -37,6 +37,7 @@ SELECT
   all_subscriptions.normalized_source,
   all_subscriptions.website_channel_group,
   JSON_VALUE_ARRAY(all_subscriptions.json_promotion_codes) AS promotion_codes,
+  all_subscriptions.promotion_discounts_amount,
   COUNT(*) AS `count`,
 FROM
   all_subscriptions
@@ -72,4 +73,5 @@ GROUP BY
   normalized_medium,
   normalized_source,
   website_channel_group,
-  json_promotion_codes
+  json_promotion_codes,
+  promotion_discounts_amount

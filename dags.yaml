@@ -553,12 +553,13 @@ bqetl_ctxsvc_derived:
   default_args:
     depends_on_past: false
     email:
-      - jklukas@mozilla.com
+      - ctroy@mozilla.com
+      - wstuckey@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: jklukas@mozilla.com
+    owner: ctroy@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2021-05-01'
@@ -571,25 +572,26 @@ bqetl_search_terms_daily:
   default_args:
     depends_on_past: false
     email:
-      - jklukas@mozilla.com
+      - ctroy@mozilla.com
+      - wstuckey@mozilla.com
       - rburwei@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: jklukas@mozilla.com
+    owner: ctroy@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2021-09-20'
   description: |
     Derived tables on top of search terms data.
 
-    Note that the task for populating `suggest_impression_sanitized_v2` is
+    Note that the tasks for populating `suggest_impression_sanitized_v*` are
     particularly important because the source unsanitized dataset has only
     a 2-day retention period, so errors fairly quickly become unrecoverable
     and can impact reporting to partners. If this task errors out, it could
     indicate trouble with an upstream task that runs in a restricted project
-    outside of Airflow. Contact `jklukas` and/or `jbuck`.
+    outside of Airflow. Contact `ctroy`, `wstuckey`, `whd`, and `jbuck`.
   schedule_interval: 0 3 * * *
   tags:
     - impact/tier_1
@@ -766,3 +768,21 @@ bqetl_fog_decision_support:
   tags:
     - impact/tier_3
     - repo/bigquery-etl
+
+bqetl_newtab:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - anicholson@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: anicholson@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2022-07-01'
+  description: Schedules newtab related queries.
+  schedule_interval: daily
+  tags:
+    - impact/tier_1

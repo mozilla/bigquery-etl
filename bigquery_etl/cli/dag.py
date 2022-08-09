@@ -240,7 +240,7 @@ def generate(name, dags_config, output_dir):
             click.echo(f"DAG {name} does not exist.", err=True)
             sys.exit(1)
 
-        dags.dag_to_airflow(output_dir, dag)
+        dags.to_airflow_dags(output_dir, dag_to_generate=dag)
         click.echo(f"Generated {output_dir}{dag.name}.py")
     else:
         # re-generate all DAGs

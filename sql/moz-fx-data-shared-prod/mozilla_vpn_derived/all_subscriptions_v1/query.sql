@@ -396,7 +396,11 @@ vpn_subscriptions AS (
 vpn_subscriptions_with_end_date AS (
   SELECT
     *,
-    MIN(subscription_start_date) OVER (PARTITION BY customer_id) AS customer_start_date,
+    IF(
+      customer_id IS NOT NULL,
+      MIN(subscription_start_date) OVER (PARTITION BY customer_id),
+      subscription_start_date
+    ) AS customer_start_date,
     COALESCE(ended_at, TIMESTAMP(CURRENT_DATE)) AS end_date,
   FROM
     vpn_subscriptions

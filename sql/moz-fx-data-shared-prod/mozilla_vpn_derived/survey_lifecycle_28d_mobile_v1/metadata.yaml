@@ -1,0 +1,25 @@
+---
+friendly_name: Mozilla VPN Lifecycle Survey - Early Usage - 28d - Mobile
+description: >
+  An import of survey data from Alchemer (SurveyGizmo) for the Mozilla VPN
+  Lifecycle Survey - Early Usage - 28d - Mobile
+owners:
+  - srose@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  arguments:
+    [
+      "--date",
+      "{{ ds }}",
+      "--survey_id",
+      "6897488",
+      "--api_token",
+      "{{ var.value.surveygizmo_api_token }}",
+      "--api_secret",
+      "{{ var.value.surveygizmo_api_secret }}",
+      "--destination_table",
+      "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_lifecycle_28d_mobile_v1",
+    ]

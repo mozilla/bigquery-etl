@@ -1,5 +1,7 @@
 - timestamp: "2021-01-01 12:00:01.456789"
   request_id: rid1
+  session_id: sid1
+  sequence_no: 1
   query: "shoes for"
   country: null
   region: null
@@ -9,6 +11,8 @@
   os_family: windows
 - timestamp: "2021-01-01 12:07:00.223"
   request_id: rid7
+  session_id: sid7
+  sequence_no: 7
   query: "another query"
   country: null
   region: null
@@ -18,6 +22,8 @@
   os_family: macos
 - timestamp: "2021-01-01 12:09:00.223"
   request_id: rid9
+  session_id: sid9
+  sequence_no: 9
   query: "query with no impression"
   country: null
   region: null

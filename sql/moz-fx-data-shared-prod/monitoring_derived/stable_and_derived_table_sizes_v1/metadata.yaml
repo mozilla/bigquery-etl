@@ -13,3 +13,4 @@ scheduling:
   referenced_tables:
     - ['moz-fx-data-shared-prod', '*_stable', '*']
     - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v4']
+    - ['moz-fx-data-shared-prod', '*_derived', '*']

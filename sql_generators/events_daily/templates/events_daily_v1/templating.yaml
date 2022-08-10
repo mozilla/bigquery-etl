@@ -132,7 +132,7 @@ mozilla_vpn_derived:
   events_table_name: main
   glean: True
   dataset: mozilla_vpn
-  glean_app_ids: [ mozillavpn ]
+  glean_app_ids: [ mozillavpn, org_mozilla_firefox_vpn ]
   start_date: 2021-10-01
   dag_name: bqetl_event_rollup
   user_properties:

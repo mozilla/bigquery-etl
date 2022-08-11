@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Determine stable table size partitions by performing dry runs."""
+"""Determine stable and derived table size partitions by performing dry runs."""
 
 from argparse import ArgumentParser
 from fnmatch import fnmatchcase
@@ -33,24 +33,32 @@ def get_tables(client, project, dataset):
 def get_partition_size_json(client, date, table):
     """Returns the size of a specific date parition of the specified table."""
     job_config = bigquery.QueryJobConfig(dry_run=True, use_query_cache=False)
+    job_config_columns_info = bigquery.QueryJobConfig(dry_run=False, use_query_cache=False)
     dataset_id = table[0]
     table_id = table[1]
 
-    sql = f"""
-        SELECT * FROM {dataset_id}.{table_id}
-        WHERE DATE(submission_timestamp) = '{date}'
-    """
+    partition_column_sql = f"""
+                            SELECT column_name
+                            FROM {dataset_id}.INFORMATION_SCHEMA.COLUMNS
+                            WHERE table_name = '{table_id}' and is_partitioning_column = 'YES'
+                        """
+    partition_column_name_result = client.query(partition_column_sql, job_config=job_config_columns_info)
 
-    job = client.query(sql, job_config=job_config)
+    partition_column_name = [row[0] for row in partition_column_name_result.result()]
 
-    size = job.total_bytes_processed
-
-    return {
-        "submission_date": date,
-        "dataset_id": dataset_id,
-        "table_id": table_id,
-        "byte_size": size,
-    }
+    if len(partition_column_name) > 0 and partition_column_name[0] in ('submission_date', 'submission_timestamp'):
+        sql = f"""
+                SELECT * FROM {dataset_id}.{table_id}
+                WHERE DATE({partition_column_name[0]}) = '{date}'
+            """
+        job = client.query(sql, job_config=job_config)
+        size = job.total_bytes_processed if job.total_bytes_processed is not None else 0
+        return {
+            "submission_date": date,
+            "dataset_id": dataset_id,
+            "table_id": table_id,
+            "byte_size": size
+        }
 
 
 def save_table_sizes(client, table_sizes, date, destination_dataset, destination_table):
@@ -89,11 +97,13 @@ def main():
                 partial(get_tables, client, args.project), stable_datasets, chunksize=1,
             )
             stable_tables = [table for tables in stable_tables for table in tables]
+
             partition_sizes = p.map(
                 partial(get_partition_size_json, client, args.date),
                 stable_tables,
                 chunksize=1,
             )
+            partition_sizes = filter(lambda x: x is not None, partition_sizes)
             stable_derived_partition_sizes.extend(partition_sizes)
 
     save_table_sizes(

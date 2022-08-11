@@ -382,7 +382,7 @@ class Task:
 
     def _get_referenced_tables(self):
         """Use zetasql to get tables the query depends on."""
-        logging.info(f"Get dependencies for {self.task_name}")
+        logging.info(f"Get dependencies for {self.dag_name}.{self.task_name}")
 
         if self.is_python_script:
             # cannot do dry runs for python scripts
@@ -408,11 +408,14 @@ class Task:
 
     def with_upstream_dependencies(self, dag_collection):
         """Perfom a dry_run to get upstream dependencies."""
+        if self.upstream_dependencies:
+            return
+
         dependencies = []
 
-        def _duplicate_dependency(task):
+        def _duplicate_dependency(task_ref):
             return any(
-                d.dag_name == task.dag_name and d.task_id == task.task_id
+                d.dag_name == task_ref.dag_name and d.task_id == task_ref.task_id
                 for d in self.depends_on + dependencies
             )
 
@@ -420,15 +423,18 @@ class Task:
             upstream_task = dag_collection.task_for_table(table[0], table[1], table[2])
 
             if upstream_task is not None:
-                task = upstream_task.to_ref(dag_collection)
-                if not _duplicate_dependency(task):
-                    dependencies.append(task)
+                task_ref = upstream_task.to_ref(dag_collection)
+                if upstream_task != self and not _duplicate_dependency(task_ref):
+                    # Get its upstream dependencies so its date_partition_offset gets set.
+                    upstream_task.with_upstream_dependencies(dag_collection)
+                    task_ref = upstream_task.to_ref(dag_collection)
+                    dependencies.append(task_ref)
             else:
                 # see if there are some static dependencies
-                for task, patterns in EXTERNAL_TASKS.items():
+                for task_ref, patterns in EXTERNAL_TASKS.items():
                     if any(fnmatchcase(f"{table[1]}.{table[2]}", p) for p in patterns):
-                        if not _duplicate_dependency(task):
-                            dependencies.append(task)
+                        if not _duplicate_dependency(task_ref):
+                            dependencies.append(task_ref)
                         break  # stop after the first match
 
         if (
@@ -445,6 +451,16 @@ class Task:
 
             if len(date_partition_offsets) > 0:
                 self.date_partition_offset = min(date_partition_offsets)
+                date_partition_offset_task_ids = [
+                    f"{dependency.dag_name}.{dependency.task_id}"
+                    for dependency in dependencies
+                    if dependency.date_partition_offset == self.date_partition_offset
+                ]
+                logging.info(
+                    f"Set {self.dag_name}.{self.task_name} date partition offset"
+                    f" to {self.date_partition_offset}"
+                    f" based on {', '.join(date_partition_offset_task_ids)}."
+                )
 
         self.upstream_dependencies = dependencies
 

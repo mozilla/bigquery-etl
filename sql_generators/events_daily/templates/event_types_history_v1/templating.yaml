@@ -35,7 +35,7 @@ mozilla_vpn_derived:
   dataset: mozilla_vpn
   events_table_name: main
   glean: True
-  glean_app_ids: [ mozillavpn ]
+  glean_app_ids: [ mozillavpn, org_mozilla_firefox_vpn ]
   start_date: 2021-10-01
   skipped_properties:
     - time_ms

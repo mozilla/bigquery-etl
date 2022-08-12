@@ -516,6 +516,57 @@ class TestTask:
         assert task.date_partition_parameter == "submission_date"
 
     @pytest.mark.java
+    def test_task_date_partition_offset_recursive(self, tmp_path):
+        query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
+        os.makedirs(query_file.parent)
+        query_file.write_text("SELECT * FROM `test-project`.test.table1_v1")
+
+        metadata = Metadata(
+            "test", "test", ["test@example.org"], {}, self.default_scheduling
+        )
+
+        table2_metadata = Metadata(
+            "test",
+            "test",
+            ["test@example.org"],
+            {},
+            {**self.default_scheduling, **{"date_partition_offset": -2}},
+        )
+
+        task = Task.of_query(query_file, metadata)
+
+        table1_file = tmp_path / "test-project" / "test" / "table1_v1" / "query.sql"
+        os.makedirs(table1_file.parent)
+        table1_file.write_text("SELECT * FROM `test-project`.test.table2_v1")
+        table1_task = Task.of_query(table1_file, metadata)
+
+        table2_file = tmp_path / "test-project" / "test" / "table2_v1" / "query.sql"
+        os.makedirs(table2_file.parent)
+        table2_file.write_text("SELECT 67890")
+        table2_task = Task.of_query(table2_file, table2_metadata)
+
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": {
+                        "owner": "test@example.org",
+                        "start_date": "2020-01-01",
+                    },
+                }
+            }
+        ).with_tasks([task, table1_task, table2_task])
+
+        task.with_upstream_dependencies(dags)
+        result = task.upstream_dependencies
+
+        assert task.date_partition_offset == -2
+        assert [
+            t.date_partition_offset for t in result if t.task_id == "test__table1__v1"
+        ] == [-2]
+        assert task.date_partition_parameter == "submission_date"
+
+    @pytest.mark.java
     def test_multipart_task_get_dependencies(self, tmp_path):
         query_dir = tmp_path / "test-project" / "test" / "query_v1"
         os.makedirs(query_dir)

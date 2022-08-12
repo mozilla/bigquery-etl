@@ -1,0 +1,13 @@
+friendly_name: Sanitization Job Data Validation Reports
+description: |-
+  The comparisons between the past n number of days of search term data
+  aggregate metrics over historic ranges and moving averages.
+
+  Used for determining whether our recorded search term sources or
+  distributions are changing, to trigger manual model monitoring.
+owners:
+  - ctroy@mozilla.com
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:search-terms/aggregated

@@ -16,6 +16,7 @@ labels:
 scheduling:
   dag_name: bqetl_unified
   date_partition_parameter: cohort_date
+  date_partition_offset: -1
 bigquery:
   time_partitioning:
     field: cohort_date

@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.mozilla_vpn.all_main`
+  `moz-fx-data-shared-prod.mozilla_vpn.main`
 AS
 SELECT
   * EXCEPT (metrics)

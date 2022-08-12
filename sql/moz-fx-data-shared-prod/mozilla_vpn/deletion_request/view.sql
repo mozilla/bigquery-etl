@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.mozilla_vpn.all_deletion_request`
+  `moz-fx-data-shared-prod.mozilla_vpn.deletion_request`
 AS
 SELECT
   * EXCEPT (metrics)

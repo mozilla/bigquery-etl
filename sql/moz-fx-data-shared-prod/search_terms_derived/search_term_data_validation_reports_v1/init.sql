@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  `moz-fx-data-shared-prod.search_terms_derived.search_term_data_validation_reports`(
+  `moz-fx-data-shared-prod.search_terms_derived.search_term_data_validation_reports_v1`(
     from_sanitization_job_finished_at timestamp,
     started_at timestamp,
     range_alarm boolean,

@@ -1,0 +1,15 @@
+build-job-kpi-forecasting:
+  docker:
+    - image: docker:stable-git
+  steps:
+    - checkout
+    - compare-branch:
+        pattern: ^jobs/search-term-data-validation/
+    - setup_remote_docker:
+        version: 19.03.13
+    - run:
+        name: Build Docker image
+        command: docker build -t app:build jobs/search-term-data-validation/
+    - run:
+          name: Test Code
+          command: docker run app:build pytest --asyncio-mode=strict

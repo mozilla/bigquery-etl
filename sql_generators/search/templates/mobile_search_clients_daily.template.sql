@@ -293,6 +293,8 @@ combined_search_clients AS (
     normalized_channel AS channel,
     normalized_os AS os,
     normalized_os_version AS os_version,
+    CAST(NULL AS STRING) AS adjust_network,
+    CAST(NULL AS STRING) AS install_source,
     default_search AS default_search_engine,
     CAST(NULL AS STRING) AS default_search_engine_submission_url,
     distribution_id,
@@ -309,7 +311,6 @@ combined_search_clients AS (
     client_id,
     engine,
     source,
-
     CASE
     WHEN
       search_type = 'ad-click'
@@ -337,7 +338,6 @@ combined_search_clients AS (
     ELSE
       'unknown'
     END AS search_type,
-
     search_count,
     country,
     locale,
@@ -347,6 +347,8 @@ combined_search_clients AS (
     channel,
     os,
     os_version,
+    adjust_network,
+    install_source,
     default_search_engine,
     default_search_engine_submission_url,
     CAST(NULL AS STRING) AS distribution_id,
@@ -391,12 +393,15 @@ unfiltered_search_clients AS (
     SUM(
       IF(search_type != 'unknown' OR engine IS NULL OR search_count > 10000, 0, search_count)
     ) AS unknown,
+    -- Use mode_last() to return the most recurrent value
     udf.mode_last(ARRAY_AGG(country)) AS country,
     udf.mode_last(ARRAY_AGG(locale)) AS locale,
     udf.mode_last(ARRAY_AGG(app_version)) AS app_version,
     channel,
     udf.mode_last(ARRAY_AGG(os)) AS os,
     udf.mode_last(ARRAY_AGG(os_version)) AS os_version,
+    udf.mode_last(ARRAY_AGG(adjust_network) AS adjust_network,
+    udf.mode_last(ARRAY_AGG(install_source) AS install_source,
     udf.mode_last(ARRAY_AGG(default_search_engine)) AS default_search_engine,
     udf.mode_last(
       ARRAY_AGG(default_search_engine_submission_url)

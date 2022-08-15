@@ -758,6 +758,19 @@ fields:
       mode: REPEATED
       name: netwerk_early_hints
       type: RECORD
+    - description: 'Counts the number of times some PDF editing features are used.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: pdfjs_editing
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

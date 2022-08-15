@@ -1,4 +1,6 @@
--- use unified_metrics as the source of truth for KPIs
+-- Use unified_metrics as the source of truth for KPIs
+-- QDAU is aggregated to calculate QCDOU. 
+-- Forecasting procedure for QCDOU: Forecast QDAU then aggregate to QCDOU. QCDOU should not be forecasted directly.
 SELECT
     submission_date,
     COUNTIF(normalized_app_name = 'Firefox Desktop' AND active_hours_sum > 0 AND uri_count > 0) AS QDAU,

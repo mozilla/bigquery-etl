@@ -1,6 +1,6 @@
 ---
 target: mobile
-query_name: "mobile_dau_v2.sql"
+query_name: "mobile_dau.sql"
 dataset_project: "mozdata"
 forecast_variable: "DAU"
 forecast_parameters:

@@ -73,7 +73,9 @@ scalar_aggregates_new AS (
     version_filtered_new
   WHERE
     -- avoid overflows from very large numbers that are typically anomalies
-    value <= POW(2, 40)
+    -- Negative values are incorrect and should not happen but were observed,
+    -- probably due to some bit flips.
+    value BETWEEN 0 AND POW(2, 40)
   GROUP BY
     {{ attributes }},
     {{ user_data_attributes }},

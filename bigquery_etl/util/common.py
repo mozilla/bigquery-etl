@@ -1,13 +1,14 @@
 """Generic utility functions."""
+import logging
 import os
 import random
 import re
 import string
-import logging
-from typing import List
 from pathlib import Path
+from typing import List
 
 from jinja2 import Environment, FileSystemLoader
+
 from bigquery_etl.format_sql.formatter import reformat
 
 # Search for all camelCase situations in reverse with arbitrary lookaheads.
@@ -65,17 +66,21 @@ def get_table_dir(output_dir, full_table_id):
     return Path(os.path.join(output_dir, *list(full_table_id.split(".")[-2:])))
 
 
-def write_sql(output_dir, full_table_id, basename, sql):
+def write_sql(output_dir, full_table_id, basename, sql, skip_existing=False):
     """Write out a query to a location based on the table ID.
 
     :param output_dir:    Base target directory (probably sql/moz-fx-data-shared-prod/)
     :param full_table_id: Table ID in project.dataset.table form
     :param basename:      The name to give the written file (like query.sql)
     :param sql:           The query content to write out
+    :param skip_existing: Whether to skip an existing file rather than overwriting it
     """
     d = get_table_dir(output_dir, full_table_id)
     d.mkdir(parents=True, exist_ok=True)
     target = d / basename
+    if skip_existing and target.exists():
+        logging.info(f"Not writing {target} because it already exists")
+        return
     logging.info(f"Writing {target}")
     with target.open("w") as f:
         f.write(sql)

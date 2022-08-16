@@ -84,6 +84,7 @@ class GleanAppPingViews(GleanTable):
                             target=underlying_view_id,
                         )
                     ),
+                    skip_existing=True,
                 )
                 write_sql(
                     output_dir,
@@ -94,6 +95,7 @@ class GleanAppPingViews(GleanTable):
                         app_name=release_app["canonical_app_name"],
                         underlying_view_id=underlying_view_id,
                     ),
+                    skip_existing=True,
                 )
 
                 # we create a schema to the original view created for the

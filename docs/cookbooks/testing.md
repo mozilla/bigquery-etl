@@ -94,8 +94,8 @@ SELECT
      using `.isoformat()`
    - Columns named `generated_time` are removed from the result before
      comparing to `expect` because they should not be static
-1. Optionally add `.schema.json` files for input table schemas, e.g.
-   `clients_daily_v6.schema.json`
+1. Optionally add `.schema.json` files for input table schemas to the table directory, e.g.
+   `tests/telemetry_derived/clients_last_seen_raw_v1/clients_daily_v6.schema.json`
 1. Optionally add `query_params.yaml` to define query parameters
    - `query_params` must be a list
 

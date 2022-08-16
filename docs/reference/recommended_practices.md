@@ -99,6 +99,9 @@ labels:
 
 ## Backfills
 
+- Should be documented and reviewed by a peer using a
+  [new bug](https://bugzilla.mozilla.org/enter_bug.cgi) that describes
+  the context that required the backfill and the command or script used.
 - Should be avoided on large tables
   - Backfills may double storage cost for a table for 90 days by moving
     data from long-term storage to short-term storage

@@ -4,7 +4,11 @@ from sql_generators.glean_usage.common import GleanTable
 
 TARGET_TABLE_ID = "events_unnested_v1"
 PREFIX = "events_unnested"
-DATASET_SKIP = {"mozilla_vpn"}  # mozilla_vpn is getting events from main table
+DATASET_SKIP = {
+    # VPN events are in main pings
+    "mozilla_vpn",
+    "mozilla_vpn_android",
+}
 
 
 class EventsUnnestedTable(GleanTable):
@@ -20,6 +24,7 @@ class EventsUnnestedTable(GleanTable):
         self.cross_channel_template = "cross_channel_events_unnested.view.sql"
 
     def generate_per_app(self, project_id, app_info, output_dir=None):
+        """Generate the events_unnested table query per app_name."""
         target_dataset = app_info[0]["app_name"]
         if target_dataset not in DATASET_SKIP:
             super().generate_per_app(project_id, app_info, output_dir)

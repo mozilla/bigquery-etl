@@ -13,3 +13,4 @@ description: |-
 references:
   view.sql:
   - moz-fx-data-shared-prod.mozillavpn.deletion_request
+  - moz-fx-data-shared-prod.org_mozilla_firefox_vpn.deletion_request

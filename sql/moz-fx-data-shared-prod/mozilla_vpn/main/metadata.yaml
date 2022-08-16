@@ -13,3 +13,4 @@ description: |-
 references:
   view.sql:
   - moz-fx-data-shared-prod.mozillavpn.main
+  - moz-fx-data-shared-prod.org_mozilla_firefox_vpn.main

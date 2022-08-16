@@ -13,3 +13,4 @@ description: |-
 references:
   view.sql:
   - moz-fx-data-shared-prod.mozillavpn.events
+  - moz-fx-data-shared-prod.org_mozilla_firefox_vpn.events

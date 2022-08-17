@@ -16,6 +16,7 @@ WITH
     WHEN windows_build_number <= 19042 THEN 'Win10 20H2'
     WHEN windows_build_number <= 19043 THEN 'Win10 21H1'
     WHEN windows_build_number <= 19044 THEN 'Win10 21H2'
+    WHEN windows_build_number <= 19045 THEN 'Win10 22H2'
     WHEN windows_build_number < 22000 THEN 'Win10 Insider'
     WHEN windows_build_number = 22000 THEN 'Win11 21H2'
     WHEN windows_build_number <= 22621 THEN 'Win11 22H2'

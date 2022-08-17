@@ -9,5 +9,9 @@ labels:
   schedule: monthly
 scheduling:
   dag_name: bqetl_desktop_mobile_search_monthly
-bigquery: null
-references: {}
+bigquery:
+  time_partitioning:
+    field: submission_month
+    type: month
+    require_partition_filter: true
+  clustering: null

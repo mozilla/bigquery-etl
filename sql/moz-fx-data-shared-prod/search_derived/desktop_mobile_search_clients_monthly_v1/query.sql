@@ -3,7 +3,7 @@
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 SELECT
   client_id,
-  DATE_TRUNC(submission_date, MONTH) AS month,
+  DATE_TRUNC(submission_date, MONTH) AS submission_month,
   "mobile" AS device,
   normalized_engine,
   normalized_app_name,
@@ -23,7 +23,7 @@ WHERE
   AND last_day(date_sub(@submission_date, INTERVAL 1 month), month)
 GROUP BY
   client_id,
-  month,
+  submission_month,
   device,
   normalized_engine,
   normalized_app_name,
@@ -32,7 +32,7 @@ GROUP BY
 UNION ALL
 SELECT
   client_id,
-  DATE_TRUNC(submission_date, MONTH) AS month,
+  DATE_TRUNC(submission_date, MONTH) AS submission_month,
   "desktop" AS device,
   normalized_engine,
   'Firefox Desktop' AS normalized_app_name,
@@ -52,7 +52,7 @@ WHERE
   AND last_day(date_sub(@submission_date, INTERVAL 1 month), month)
 GROUP BY
   client_id,
-  month,
+  submission_month,
   device,
   normalized_engine,
   normalized_app_name,

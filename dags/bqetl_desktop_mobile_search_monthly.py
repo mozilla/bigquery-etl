@@ -15,7 +15,7 @@ Built from bigquery-etl repo, [`dags/bqetl_desktop_mobile_search_monthly.py`](ht
 
 #### Description
 
-Populate client level monthly based on daily clients table for desktop and mobile
+Populate monthly client-level data based on daily clients table for desktop and mobile
 #### Owner
 
 akommasani@mozilla.com
@@ -44,9 +44,9 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    search_derived__desktop_mobile_monthly_search__v1 = bigquery_etl_query(
-        task_id="search_derived__desktop_mobile_monthly_search__v1",
-        destination_table="desktop_mobile_monthly_search_v1",
+    search_derived__desktop_mobile_search_clients_monthly__v1 = bigquery_etl_query(
+        task_id="search_derived__desktop_mobile_search_clients_monthly__v1",
+        destination_table="desktop_mobile_search_clients_monthly_v1",
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
         owner="akommasani@mozilla.com",
@@ -59,7 +59,7 @@ with DAG(
         task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
         external_dag_id="bqetl_mobile_search",
         external_task_id="search_derived__mobile_search_clients_daily__v1",
-        execution_delta=datetime.timedelta(seconds=79200),
+        execution_delta=datetime.timedelta(days=2, seconds=10800),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -67,14 +67,14 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    search_derived__desktop_mobile_monthly_search__v1.set_upstream(
+    search_derived__desktop_mobile_search_clients_monthly__v1.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )
     wait_for_search_derived__search_clients_daily__v8 = ExternalTaskSensor(
         task_id="wait_for_search_derived__search_clients_daily__v8",
         external_dag_id="bqetl_search",
         external_task_id="search_derived__search_clients_daily__v8",
-        execution_delta=datetime.timedelta(seconds=75600),
+        execution_delta=datetime.timedelta(days=2, seconds=7200),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -82,6 +82,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    search_derived__desktop_mobile_monthly_search__v1.set_upstream(
+    search_derived__desktop_mobile_search_clients_monthly__v1.set_upstream(
         wait_for_search_derived__search_clients_daily__v8
     )

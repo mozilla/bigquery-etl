@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3
 MAINTAINER Chelsea Troy <ctroy@mozilla.com>
 
 WORKDIR /usr/app/src

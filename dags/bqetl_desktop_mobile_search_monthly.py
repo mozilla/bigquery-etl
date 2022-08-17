@@ -15,7 +15,7 @@ Built from bigquery-etl repo, [`dags/bqetl_desktop_mobile_search_monthly.py`](ht
 
 #### Description
 
-Populate monthly client-level data based on daily clients table for desktop and mobile
+Generate mnthly client data from daily search table
 #### Owner
 
 akommasani@mozilla.com

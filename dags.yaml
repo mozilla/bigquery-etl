@@ -791,8 +791,8 @@ bqetl_desktop_mobile_search_monthly:
   default_args:
     depends_on_past: false
     email:
-    - telemetry-alerts@mozilla.com
-    - akommasani@mozilla.com
+      - telemetry-alerts@mozilla.com
+      - akommasani@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
@@ -800,9 +800,8 @@ bqetl_desktop_mobile_search_monthly:
     retries: 2
     retry_delay: 30m
     start_date: '2019-01-01'
-  description: Populate monthly client-level data based on daily clients table for desktop and mobile
+  description: Generate mnthly client data from daily search table
   schedule_interval: "0 5 2 * *"
   tags:
-  - impact/tier_1
-  - repo/bigquery-etl
-
+    - impact/tier_1
+    - repo/bigquery-etl

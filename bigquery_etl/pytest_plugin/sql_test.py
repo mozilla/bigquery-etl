@@ -67,9 +67,10 @@ class Table:
             else:
                 resource_dir, full_name = self.source_path
             try:
+                table_dir, _ = os.path.split(resource_dir)
                 self.schema = [
                     bigquery.SchemaField.from_api_repr(field)
-                    for field in load(resource_dir, f"{full_name}.schema")
+                    for field in load(table_dir, f"{full_name}.schema")
                 ]
             except FileNotFoundError:
                 pass

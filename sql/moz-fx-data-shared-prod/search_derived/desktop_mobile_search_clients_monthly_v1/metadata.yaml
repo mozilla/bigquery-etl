@@ -9,6 +9,7 @@ labels:
   schedule: monthly
 scheduling:
   dag_name: bqetl_desktop_mobile_search_monthly
+  referenced_tables: []
 bigquery:
   time_partitioning:
     field: submission_month

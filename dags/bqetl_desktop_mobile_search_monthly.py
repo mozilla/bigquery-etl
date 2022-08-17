@@ -9,13 +9,13 @@ from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
 docs = """
-### bqetl_desktop_mobile_search_aggregates_monthly
+### bqetl_desktop_mobile_search_monthly
 
-Built from bigquery-etl repo, [`dags/bqetl_desktop_mobile_search_aggregates_monthly.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_desktop_mobile_search_aggregates_monthly.py)
+Built from bigquery-etl repo, [`dags/bqetl_desktop_mobile_search_monthly.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_desktop_mobile_search_monthly.py)
 
 #### Description
 
-Populate monthly aggregates based on daily clients table for desktop
+Populate client level monthly based on daily clients table for desktop and mobile
 #### Owner
 
 akommasani@mozilla.com
@@ -37,16 +37,16 @@ default_args = {
 tags = ["impact/tier_1", "repo/bigquery-etl"]
 
 with DAG(
-    "bqetl_desktop_mobile_search_aggregates_monthly",
+    "bqetl_desktop_mobile_search_monthly",
     default_args=default_args,
     schedule_interval="0 5 2 * *",
     doc_md=docs,
     tags=tags,
 ) as dag:
 
-    search_derived__desktop_mobile_monthly_search_aggregates__v1 = bigquery_etl_query(
-        task_id="search_derived__desktop_mobile_monthly_search_aggregates__v1",
-        destination_table="desktop_mobile_monthly_search_aggregates_v1",
+    search_derived__desktop_mobile_monthly_search__v1 = bigquery_etl_query(
+        task_id="search_derived__desktop_mobile_monthly_search__v1",
+        destination_table="desktop_mobile_monthly_search_v1",
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
         owner="akommasani@mozilla.com",
@@ -67,7 +67,7 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    search_derived__desktop_mobile_monthly_search_aggregates__v1.set_upstream(
+    search_derived__desktop_mobile_monthly_search__v1.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )
     wait_for_search_derived__search_clients_daily__v8 = ExternalTaskSensor(
@@ -82,6 +82,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    search_derived__desktop_mobile_monthly_search_aggregates__v1.set_upstream(
+    search_derived__desktop_mobile_monthly_search__v1.set_upstream(
         wait_for_search_derived__search_clients_daily__v8
     )

@@ -787,7 +787,7 @@ bqetl_newtab:
   tags:
     - impact/tier_1
 
-bqetl_desktop_mobile_search_aggregates_monthly:
+bqetl_desktop_mobile_search_monthly:
   default_args:
     depends_on_past: false
     email:
@@ -800,8 +800,8 @@ bqetl_desktop_mobile_search_aggregates_monthly:
     retries: 2
     retry_delay: 30m
     start_date: '2019-01-01'
-  description: Populate monthly aggregates based on daily clients table for desktop
-  schedule_interval: monthly
+  description: Populate monthly client-level data based on daily clients table for desktop and mobile
+  schedule_interval: "0 5 2 * *"
   tags:
   - impact/tier_1
   - repo/bigquery-etl

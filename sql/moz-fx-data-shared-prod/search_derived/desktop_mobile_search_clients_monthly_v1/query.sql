@@ -1,4 +1,4 @@
--- Query for search_derived.desktop_mobile_monthly_search_aggregates_v1
+-- Query for search_derived.desktop_mobile_monthly_search_v1
             -- For more information on writing queries see:
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 SELECT
@@ -22,13 +22,13 @@ WHERE
   BETWEEN date_trunc(date_sub(@submission_date, INTERVAL 1 month), month)
   AND last_day(date_sub(@submission_date, INTERVAL 1 month), month)
 GROUP BY
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7
+  client_id,
+  month,
+  device,
+  normalized_engine,
+  normalized_app_name,
+  os,
+  country
 UNION ALL
 SELECT
   client_id,
@@ -51,10 +51,10 @@ WHERE
   BETWEEN date_trunc(date_sub(@submission_date, INTERVAL 1 month), month)
   AND last_day(date_sub(@submission_date, INTERVAL 1 month), month)
 GROUP BY
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7
+  client_id,
+  month,
+  device,
+  normalized_engine,
+  normalized_app_name,
+  os,
+  country

@@ -2310,8 +2310,9 @@ SELECT
      using <code>.isoformat()</code></li>
 <li>Columns named <code>generated_time</code> are removed from the result before
      comparing to <code>expect</code> because they should not be static</li>
-<li>Optionally add <code>.schema.json</code> files for input table schemas, e.g.
-   <code>clients_daily_v6.schema.json</code></li>
+<li>Optionally add <code>.schema.json</code> files for input table schemas to the table directory, e.g.
+   <code>tests/telemetry_derived/clients_last_seen_raw_v1/clients_daily_v6.schema.json</code>.
+   These tables will be available for every test in the suite.</li>
 <li>Optionally add <code>query_params.yaml</code> to define query parameters</li>
 <li><code>query_params</code> must be a list</li>
 </ol>

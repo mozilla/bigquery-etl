@@ -2080,6 +2080,20 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#run" class="md-nav__link">
+    run
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-multipart" class="md-nav__link">
+    run-multipart
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#validate" class="md-nav__link">
     validate
   </a>
@@ -2478,6 +2492,20 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#run" class="md-nav__link">
+    run
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-multipart" class="md-nav__link">
+    run-multipart
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#validate" class="md-nav__link">
     validate
   </a>
@@ -2863,6 +2891,52 @@ Options:
       --end_date=2021-03-31 \
       --exclude=2021-03-03 \
       --dry_run
+</code></pre>
+<h4 id="run"><code>run</code></h4>
+<p>Run a query. Additional parameters will get passed to bq.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl query run [OPTIONS] [name]
+
+Options:
+
+--sql_dir: Path to directory which contains queries.
+--project_id: GCP project ID
+--public_project_id: Project with publicly accessible data
+--destination_table: Destination table name results are written to. If not set, determines destination table based on query.
+--dataset_id: Destination dataset results are written to. If not set, determines destination dataset based on query.
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash"># Backfill for specific date range
+    # second comment line
+    ./bqetl query run telemetry_derived.ssl_ratios_v1
+
+
+    # Run a query file
+    ./bqetl query run /path/to/query.sql
+</code></pre>
+<h4 id="run-multipart"><code>run-multipart</code></h4>
+<p>Run a multipart query.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl query run-multipart [OPTIONS] [query_dir]
+
+Options:
+
+--using: comma separated list of join columns to use when combining results
+--parallelism: Maximum number of queries to execute concurrently
+--dataset_id: Default dataset, if not specified all tables must be qualified with dataset
+--project_id: GCP project ID
+--temp_dataset: Dataset where intermediate query results will be temporarily stored, formatted as PROJECT_ID.DATASET_ID
+--destination_table: table where combined results will be written
+--time_partitioning_field: time partition field on the destination table
+--clustering_fields: comma separated list of clustering fields on the destination table
+--dry_run: Print bytes that would be processed for each part and don't run queries
+--parameter: query parameter(s) to pass when running parts
+--priority: Priority for BigQuery query jobs; BATCH priority will significantly slow down queries if reserved slots are not enabled for the billing project; defaults to INTERACTIVE
+--schema_update_option: Optional options for updating the schema.
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash"># Run a multipart query
+    ./bqetl query run_multipart /path/to/query.sql
 </code></pre>
 <h4 id="validate"><code>validate</code></h4>
 <p>Validate a query.

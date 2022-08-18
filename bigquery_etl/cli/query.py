@@ -450,7 +450,6 @@ def info(ctx, name, sql_dir, project_id, cost, last_updated):
 
 
 def _backfill_query(
-    ctx,
     query_file_path,
     project_id,
     date_partition_parameter,
@@ -489,13 +488,15 @@ def _backfill_query(
         if dry_run:
             arguments += ["--dry_run"]
 
-        ctx.invoke(
-            run,
-            query_file_path,
+        _run_query(
+            [query_file_path],
+            project_id=project_id,
             dataset_id=dataset,
             destination_table=destination_table,
-            **arguments,
+            public_project_id=PUBLIC_PROJECT_ID,
+            query_arguments=arguments,
         )
+
     else:
         click.echo(
             f"Skip {query_file_path} with @{date_partition_parameter}={backfill_date}"
@@ -642,7 +643,6 @@ def backfill(
 
         backfill_query = partial(
             _backfill_query,
-            ctx,
             query_file_path,
             project_id,
             date_partition_parameter,
@@ -739,8 +739,25 @@ def run(
         )
         query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
 
-    query_arguments = ctx.args
+    _run_query(
+        query_files,
+        project_id,
+        public_project_id,
+        destination_table,
+        dataset_id,
+        ctx.args,
+    )
 
+
+def _run_query(
+    query_files,
+    project_id,
+    public_project_id,
+    destination_table,
+    dataset_id,
+    query_arguments,
+):
+    """Run a query."""
     if dataset_id is not None:
         # dataset ID was parsed by argparse but needs to be passed as parameter
         # when running the query

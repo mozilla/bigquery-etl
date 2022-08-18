@@ -28,7 +28,9 @@ AS (
     -- Prevent overflows by only keeping buckets where value is less than 2^40
     -- allowing 2^24 entries. This value was chosen somewhat abitrarily, typically
     -- the max histogram value is somewhere on the order of ~20 bits.
-    WHERE agg.value <= POW(2, 40)
+    -- Negative values are incorrect and should not happen but were observed,
+    -- probably due to some bit flips.
+    WHERE agg.value BETWEEN 0 AND POW(2, 40)
     GROUP BY agg.key
   )
 );

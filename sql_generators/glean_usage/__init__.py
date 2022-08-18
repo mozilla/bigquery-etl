@@ -128,10 +128,15 @@ ALLOWED_APPS = [
 @click.option(
     "--app_name",
     "--app-name",
-    help="Generate per-app_id queries+views and per-app dataset metadata and union views.",
+    help="App to generate per-app dataset metadata and union views for.",
 )
 def generate(target_project, output_dir, parallelism, exclude, only, app_name):
-    """Generate per-appId queries, views along, per-app dataset metadata and union views."""
+    """Generate per-app_id queries and views, and per-app dataset metadata and union views.
+
+    Note that a file won't be generated if a corresponding file is already present
+    in the target directory, which allows manual overrides of generated files by
+    checking them into the sql/ tree of the default branch of the repository.
+    """
     table_filter = partial(table_matches_patterns, "*", False)
 
     if only:

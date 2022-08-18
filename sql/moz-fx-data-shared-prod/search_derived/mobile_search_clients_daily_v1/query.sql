@@ -100,8 +100,14 @@ metrics_org_mozilla_fenix AS (
     'beta' AS channel,
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
-    metrics.string.metrics_adjust_network AS adjust_network,
-    metrics.string.metrics_install_source AS install_source,
+    CASE
+      WHEN metrics.string.metrics_adjust_network NOT IN ('', 'Organic', 'Google Organic Search', 'Untrusted Devices', 'Product Marketing', 'Google Ads ACI') AND metrics.string.metrics_adjust_network IS NOT NULL THEN 'Other'
+      ELSE metrics.string.metrics_adjust_network
+    END AS adjust_network,
+    CASE
+      WHEN metrics.string.metrics_install_source NOT IN ('com.android.vending') AND metrics.string.metrics_install_source IS NOT NULL THEN 'Other'
+      ELSE metrics.string.metrics_install_source
+    END AS install_source,
     metrics.string.search_default_engine_code AS default_search_engine,
     metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
     sample_id,
@@ -137,8 +143,14 @@ metrics_org_mozilla_fenix_nightly AS (
     'nightly' AS channel,
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
-    metrics.string.metrics_adjust_network AS adjust_network,
-    metrics.string.metrics_install_source AS install_source,
+    CASE
+      WHEN metrics.string.metrics_adjust_network NOT IN ('', 'Organic', 'Google Organic Search', 'Untrusted Devices', 'Product Marketing', 'Google Ads ACI') AND metrics.string.metrics_adjust_network IS NOT NULL THEN 'Other'
+      ELSE metrics.string.metrics_adjust_network
+    END AS adjust_network,
+    CASE
+      WHEN metrics.string.metrics_install_source NOT IN ('com.android.vending') AND metrics.string.metrics_install_source IS NOT NULL THEN 'Other'
+      ELSE metrics.string.metrics_install_source
+    END AS install_source,
     metrics.string.search_default_engine_code AS default_search_engine,
     metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
     sample_id,
@@ -174,8 +186,14 @@ metrics_org_mozilla_fennec_aurora AS (
     'nightly' AS channel,
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
-    metrics.string.metrics_adjust_network AS adjust_network,
-    metrics.string.metrics_install_source AS install_source,
+    CASE
+      WHEN metrics.string.metrics_adjust_network NOT IN ('', 'Organic', 'Google Organic Search', 'Untrusted Devices', 'Product Marketing', 'Google Ads ACI') AND metrics.string.metrics_adjust_network IS NOT NULL THEN 'Other'
+      ELSE metrics.string.metrics_adjust_network
+    END AS adjust_network,
+    CASE
+      WHEN metrics.string.metrics_install_source NOT IN ('com.android.vending') AND metrics.string.metrics_install_source IS NOT NULL THEN 'Other'
+      ELSE metrics.string.metrics_install_source
+    END AS install_source,
     metrics.string.search_default_engine_code AS default_search_engine,
     metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
     sample_id,
@@ -211,8 +229,14 @@ metrics_org_mozilla_firefox_beta AS (
     'beta' AS channel,
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
-    metrics.string.metrics_adjust_network AS adjust_network,
-    metrics.string.metrics_install_source AS install_source,
+    CASE
+      WHEN metrics.string.metrics_adjust_network NOT IN ('', 'Organic', 'Google Organic Search', 'Untrusted Devices', 'Product Marketing', 'Google Ads ACI') AND metrics.string.metrics_adjust_network IS NOT NULL THEN 'Other'
+      ELSE metrics.string.metrics_adjust_network
+    END AS adjust_network,
+    CASE
+      WHEN metrics.string.metrics_install_source NOT IN ('com.android.vending') AND metrics.string.metrics_install_source IS NOT NULL THEN 'Other'
+      ELSE metrics.string.metrics_install_source
+    END AS install_source,
     metrics.string.search_default_engine_code AS default_search_engine,
     metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
     sample_id,
@@ -248,8 +272,14 @@ metrics_org_mozilla_firefox AS (
     'release' AS channel,
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
-    metrics.string.metrics_adjust_network AS adjust_network,
-    metrics.string.metrics_install_source AS install_source,
+    CASE
+      WHEN metrics.string.metrics_adjust_network NOT IN ('', 'Organic', 'Google Organic Search', 'Untrusted Devices', 'Product Marketing', 'Google Ads ACI') AND metrics.string.metrics_adjust_network IS NOT NULL THEN 'Other'
+      ELSE metrics.string.metrics_adjust_network
+    END AS adjust_network,
+    CASE
+      WHEN metrics.string.metrics_install_source NOT IN ('com.android.vending') AND metrics.string.metrics_install_source IS NOT NULL THEN 'Other'
+      ELSE metrics.string.metrics_install_source
+    END AS install_source,
     metrics.string.search_default_engine_code AS default_search_engine,
     metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
     sample_id,

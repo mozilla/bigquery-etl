@@ -4,8 +4,12 @@ import os
 import random
 import re
 import string
-from pathlib import Path
+import warnings
 from typing import List
+from pathlib import Path
+from uuid import uuid4
+
+from google.cloud import bigquery
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -85,3 +89,40 @@ def write_sql(output_dir, full_table_id, basename, sql, skip_existing=False):
     with target.open("w") as f:
         f.write(sql)
         f.write("\n")
+
+
+class TempDatasetReference(bigquery.DatasetReference):
+    """Extend DatasetReference to simplify generating temporary tables."""
+
+    def __init__(self, *args, **kwargs):
+        """Issue warning if dataset does not start with '_'."""
+        super().__init__(*args, **kwargs)
+        if not self.dataset_id.startswith("_"):
+            warnings.warn(
+                f"temp dataset {self.dataset_id!r} doesn't start with _"
+                ", web console will not consider resulting tables temporary"
+            )
+
+    def temp_table(self) -> bigquery.TableReference:
+        """Generate a temporary table and return the specified date partition.
+
+        Generates a table name that looks similar to, but won't collide with, a
+        server assigned table and that the web console will consider temporary.
+
+        In order for query results to use time partitioning, clustering, or an
+        expiration other than 24 hours, destination table must be explicitly set.
+        Destination must be generated locally and never collide with server
+        assigned table names, because server-assigned tables cannot be modified.
+        Server assigned tables for a dry_run query cannot be reused as that
+        constitutes a modification. Table expiration can't be set in the query job
+        config, but it can be set via a CREATE TABLE statement.
+
+        Server assigned tables have names that start with "anon" and follow with
+        either 40 hex characters or a uuid replacing "-" with "_", and cannot be
+        modified (i.e. reused).
+
+        The web console considers a table temporary if the dataset name starts with
+        "_" and table_id starts with "anon" and is followed by at least one
+        character.
+        """
+        return self.table(f"anon{uuid4().hex}")

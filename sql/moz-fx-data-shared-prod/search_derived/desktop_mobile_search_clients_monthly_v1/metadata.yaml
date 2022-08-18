@@ -1,0 +1,18 @@
+friendly_name: Desktop and Mobile Search Monthly Data
+description: |-
+  Daily search clients aggregated monthly, across unique sets of dimensions.
+  This table will be populated on 2nd of every month for the previous month
+owners:
+- akommasani@mozilla.com
+labels:
+  incremental: true
+  schedule: monthly
+scheduling:
+  dag_name: bqetl_desktop_mobile_search_monthly
+  referenced_tables: []
+bigquery:
+  time_partitioning:
+    field: submission_month
+    type: month
+    require_partition_filter: true
+  clustering: null

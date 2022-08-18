@@ -122,3 +122,27 @@ labels:
   - A useful pattern is to have the only reference to `@submission_date` be a
     clause `WHERE (@submission_date IS NULL OR @submission_date = submission_date)`
     which allows recreating all dates by passing `--parameter=submission_date:DATE:NULL`
+- After running the backfill, validate that the job ran without errors and the execution
+  times and bytes processed are as expected. The error normally appears in the parent job
+  which may or not include the dataset and table names, so is important to check for
+  errors in the jobs ran on that date. Here is a query you may use for this purpose:
+
+  ```
+  SELECT
+    job_id,
+    user_email,
+    parent_job_id,
+    creation_time,
+    destination_table.dataset_id,
+    destination_table.table_id,
+    end_time-start_time as task_duration,
+    total_bytes_processed/(1024*1024*1024) as gigabytes_processed,
+    state,
+    error_result.location AS error_location,
+    error_result.reason AS error_reason,
+    error_result.message AS error_message,
+  FROM `moz-fx-data-shared-prod`.`region-us`.INFORMATION_SCHEMA.JOBS_BY_PROJECT
+  WHERE DATE(creation_time) = <'YYYY-MM-DD'>
+    AND user_email = <'user@mozilla.com'>
+  ORDER BY creation_time DESC
+  ```

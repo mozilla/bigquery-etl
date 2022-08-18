@@ -122,11 +122,11 @@ labels:
   - A useful pattern is to have the only reference to `@submission_date` be a
     clause `WHERE (@submission_date IS NULL OR @submission_date = submission_date)`
     which allows recreating all dates by passing `--parameter=submission_date:DATE:NULL`
-- After running the backfill, validate that the job ran without errors and the execution
-  times and bytes processed are as expected. The error normally appears in the parent job
-  which may or not include the dataset and table names, so is important to check for
-  errors in the jobs ran on that date. Here is a query you may use for this purpose:
-
+- After running the backfill, is important to validate that the job ran without errors
+  and the execution times and bytes processed are as expected.
+  Errors normally appear in the parent job and may or may not include the dataset and
+  table names, therefore it is important to check for errors in the jobs ran on that date.
+  Here is a query you may use for this purpose:
   ```
   SELECT
     job_id,

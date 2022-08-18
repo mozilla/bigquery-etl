@@ -10,6 +10,8 @@ labels:
 scheduling:
   dag_name: bqetl_desktop_mobile_search_monthly
   referenced_tables: []
+  date_partition_parameter: submission_month
+  parameters: ["submission_date:DATE:{{ds}}"]
 bigquery:
   time_partitioning:
     field: submission_month

@@ -746,6 +746,9 @@ def run(
         # when running the query
         query_arguments.append("--dataset_id={}".format(dataset_id))
 
+    if project_id is not None:
+        query_arguments.append(f"--project_id={project_id}")
+
     for query_file in query_files:
         use_public_table = False
 

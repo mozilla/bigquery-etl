@@ -872,8 +872,8 @@ def _run_query(
     help="Print bytes that would be processed for each part and don't run queries",
 )
 @click.option(
-    "--parameter",
     "--parameters",
+    "--parameter",
     multiple=True,
     default=[],
     type=lambda p: bigquery.ScalarQueryParameter(*p.split(":", 2)),
@@ -891,8 +891,8 @@ def _run_query(
     ),
 )
 @click.option(
-    "--schema_update_option",
     "--schema_update_options",
+    "--schema_update_option",
     multiple=True,
     type=click.Choice(
         [

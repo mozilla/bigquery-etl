@@ -19924,6 +19924,11 @@ fields:
       mode: NULLABLE
       name: ssl_time_until_ready_first_try
       type: STRING
+    - description: The time spent by WebRender in the Renderer in milliseconds for
+        frames with no shader compilation.
+      mode: NULLABLE
+      name: wr_renderer_time_no_sc_ms
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -44687,6 +44692,11 @@ fields:
             a frame and the start of rendering.
           mode: NULLABLE
           name: wr_time_to_render_start_ms
+          type: STRING
+        - description: The time spent by WebRender in the Renderer in milliseconds
+            for frames with no shader compilation.
+          mode: NULLABLE
+          name: wr_renderer_time_no_sc_ms
           type: STRING
         mode: NULLABLE
         name: histograms

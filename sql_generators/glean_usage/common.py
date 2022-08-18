@@ -194,13 +194,17 @@ class GleanTable:
             return
 
         if output_dir:
-            write_sql(output_dir, view, "metadata.yaml", view_metadata)
-            write_sql(output_dir, view, "view.sql", view_sql)
-            write_sql(output_dir, table, "metadata.yaml", table_metadata)
-            write_sql(output_dir, table, "query.sql", query_sql)
+            write_sql(
+                output_dir, view, "metadata.yaml", view_metadata, skip_existing=True
+            )
+            write_sql(output_dir, view, "view.sql", view_sql, skip_existing=True)
+            write_sql(
+                output_dir, table, "metadata.yaml", table_metadata, skip_existing=True
+            )
+            write_sql(output_dir, table, "query.sql", query_sql, skip_existing=True)
 
             if not self.no_init:
-                write_sql(output_dir, table, "init.sql", init_sql)
+                write_sql(output_dir, table, "init.sql", init_sql, skip_existing=True)
 
             write_dataset_metadata(output_dir, view)
 
@@ -251,7 +255,7 @@ class GleanTable:
                 return
 
             if output_dir:
-                write_sql(output_dir, view, "view.sql", sql)
+                write_sql(output_dir, view, "view.sql", sql, skip_existing=True)
         else:
             query_filename = f"{target_view_name}.query.sql"
             query_sql = render(query_filename, template_folder=PATH, **render_kwargs)
@@ -275,8 +279,10 @@ class GleanTable:
                 return
 
             if output_dir:
-                write_sql(output_dir, table, "query.sql", query_sql)
-                write_sql(output_dir, table, "metadata.yaml", metadata)
-                write_sql(output_dir, view, "view.sql", view_sql)
+                write_sql(output_dir, table, "query.sql", query_sql, skip_existing=True)
+                write_sql(
+                    output_dir, table, "metadata.yaml", metadata, skip_existing=True
+                )
+                write_sql(output_dir, view, "view.sql", view_sql, skip_existing=True)
                 write_dataset_metadata(output_dir, view)
                 write_dataset_metadata(output_dir, table, derived_dataset_metadata=True)

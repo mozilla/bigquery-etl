@@ -2,11 +2,13 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.mozilla_vpn.events`
 AS
+-- Data from VPN clients using Glean.js
 SELECT
   *
 FROM
   `moz-fx-data-shared-prod.mozillavpn.events`
 UNION ALL
+-- Data from VPN Android clients using Glean Kotlin SDK
 SELECT
   *
 FROM

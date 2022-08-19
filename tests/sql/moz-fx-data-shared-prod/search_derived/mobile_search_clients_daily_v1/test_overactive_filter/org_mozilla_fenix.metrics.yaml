@@ -37,6 +37,8 @@
     string:
       search_default_engine_code:
       search_default_engine_submission_url:
+        adjust_network:
+        install_source:
     labeled_counter:
       metrics_search_count:
         - key: engine1.action
@@ -59,6 +61,8 @@
     string:
       search_default_engine_code:
       search_default_engine_submission_url:
+      adjust_network:
+      install_source:
     labeled_counter:
       metrics_search_count:
         - key: engine1.action

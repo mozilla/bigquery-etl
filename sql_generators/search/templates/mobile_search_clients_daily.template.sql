@@ -400,8 +400,8 @@ unfiltered_search_clients AS (
     channel,
     udf.mode_last(ARRAY_AGG(os)) AS os,
     udf.mode_last(ARRAY_AGG(os_version)) AS os_version,
-    udf.mode_last(ARRAY_AGG(adjust_network) AS adjust_network,
-    udf.mode_last(ARRAY_AGG(install_source) AS install_source,
+    udf.mode_last(ARRAY_AGG(adjust_network)) AS adjust_network,
+    udf.mode_last(ARRAY_AGG(install_source)) AS install_source,
     udf.mode_last(ARRAY_AGG(default_search_engine)) AS default_search_engine,
     udf.mode_last(
       ARRAY_AGG(default_search_engine_submission_url)

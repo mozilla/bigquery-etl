@@ -106,7 +106,8 @@
           },
           {
             "type": "STRING",
-            "name": "search_default_engine_submission_url",
+            "name": "search_default_engine_submission_url"
+          },
           {
             "type": "STRING",
             "name": "metrics_adjust_network"
@@ -114,7 +115,6 @@
           {
             "type": "STRING",
             "name": "metrics_install_source"
-          },
           }
         ],
         "type": "RECORD",

@@ -101,13 +101,32 @@ metrics_org_mozilla_fenix AS (
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
     CASE
-      WHEN metrics.string.metrics_adjust_network NOT IN ('', 'Organic', 'Google Organic Search', 'Untrusted Devices', 'Product Marketing', 'Google Ads ACI') AND metrics.string.metrics_adjust_network IS NOT NULL THEN 'Other'
-      ELSE metrics.string.metrics_adjust_network
-    END AS adjust_network,
+    WHEN
+      metrics.string.metrics_adjust_network NOT IN (
+        '',
+        'Organic',
+        'Google Organic Search',
+        'Untrusted Devices',
+        'Product Marketing',
+        'Google Ads ACI'
+      )
+      AND metrics.string.metrics_adjust_network IS NOT NULL
+    THEN
+      'Other'
+    ELSE
+      metrics.string.metrics_adjust_network
+    END
+    AS adjust_network,
     CASE
-      WHEN metrics.string.metrics_install_source NOT IN ('com.android.vending') AND metrics.string.metrics_install_source IS NOT NULL THEN 'Other'
-      ELSE metrics.string.metrics_install_source
-    END AS install_source,
+    WHEN
+      metrics.string.metrics_install_source NOT IN ('com.android.vending')
+      AND metrics.string.metrics_install_source IS NOT NULL
+    THEN
+      'Other'
+    ELSE
+      metrics.string.metrics_install_source
+    END
+    AS install_source,
     metrics.string.search_default_engine_code AS default_search_engine,
     metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
     sample_id,
@@ -144,13 +163,32 @@ metrics_org_mozilla_fenix_nightly AS (
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
     CASE
-      WHEN metrics.string.metrics_adjust_network NOT IN ('', 'Organic', 'Google Organic Search', 'Untrusted Devices', 'Product Marketing', 'Google Ads ACI') AND metrics.string.metrics_adjust_network IS NOT NULL THEN 'Other'
-      ELSE metrics.string.metrics_adjust_network
-    END AS adjust_network,
+    WHEN
+      metrics.string.metrics_adjust_network NOT IN (
+        '',
+        'Organic',
+        'Google Organic Search',
+        'Untrusted Devices',
+        'Product Marketing',
+        'Google Ads ACI'
+      )
+      AND metrics.string.metrics_adjust_network IS NOT NULL
+    THEN
+      'Other'
+    ELSE
+      metrics.string.metrics_adjust_network
+    END
+    AS adjust_network,
     CASE
-      WHEN metrics.string.metrics_install_source NOT IN ('com.android.vending') AND metrics.string.metrics_install_source IS NOT NULL THEN 'Other'
-      ELSE metrics.string.metrics_install_source
-    END AS install_source,
+    WHEN
+      metrics.string.metrics_install_source NOT IN ('com.android.vending')
+      AND metrics.string.metrics_install_source IS NOT NULL
+    THEN
+      'Other'
+    ELSE
+      metrics.string.metrics_install_source
+    END
+    AS install_source,
     metrics.string.search_default_engine_code AS default_search_engine,
     metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
     sample_id,
@@ -187,13 +225,32 @@ metrics_org_mozilla_fennec_aurora AS (
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
     CASE
-      WHEN metrics.string.metrics_adjust_network NOT IN ('', 'Organic', 'Google Organic Search', 'Untrusted Devices', 'Product Marketing', 'Google Ads ACI') AND metrics.string.metrics_adjust_network IS NOT NULL THEN 'Other'
-      ELSE metrics.string.metrics_adjust_network
-    END AS adjust_network,
+    WHEN
+      metrics.string.metrics_adjust_network NOT IN (
+        '',
+        'Organic',
+        'Google Organic Search',
+        'Untrusted Devices',
+        'Product Marketing',
+        'Google Ads ACI'
+      )
+      AND metrics.string.metrics_adjust_network IS NOT NULL
+    THEN
+      'Other'
+    ELSE
+      metrics.string.metrics_adjust_network
+    END
+    AS adjust_network,
     CASE
-      WHEN metrics.string.metrics_install_source NOT IN ('com.android.vending') AND metrics.string.metrics_install_source IS NOT NULL THEN 'Other'
-      ELSE metrics.string.metrics_install_source
-    END AS install_source,
+    WHEN
+      metrics.string.metrics_install_source NOT IN ('com.android.vending')
+      AND metrics.string.metrics_install_source IS NOT NULL
+    THEN
+      'Other'
+    ELSE
+      metrics.string.metrics_install_source
+    END
+    AS install_source,
     metrics.string.search_default_engine_code AS default_search_engine,
     metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
     sample_id,
@@ -230,13 +287,32 @@ metrics_org_mozilla_firefox_beta AS (
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
     CASE
-      WHEN metrics.string.metrics_adjust_network NOT IN ('', 'Organic', 'Google Organic Search', 'Untrusted Devices', 'Product Marketing', 'Google Ads ACI') AND metrics.string.metrics_adjust_network IS NOT NULL THEN 'Other'
-      ELSE metrics.string.metrics_adjust_network
-    END AS adjust_network,
+    WHEN
+      metrics.string.metrics_adjust_network NOT IN (
+        '',
+        'Organic',
+        'Google Organic Search',
+        'Untrusted Devices',
+        'Product Marketing',
+        'Google Ads ACI'
+      )
+      AND metrics.string.metrics_adjust_network IS NOT NULL
+    THEN
+      'Other'
+    ELSE
+      metrics.string.metrics_adjust_network
+    END
+    AS adjust_network,
     CASE
-      WHEN metrics.string.metrics_install_source NOT IN ('com.android.vending') AND metrics.string.metrics_install_source IS NOT NULL THEN 'Other'
-      ELSE metrics.string.metrics_install_source
-    END AS install_source,
+    WHEN
+      metrics.string.metrics_install_source NOT IN ('com.android.vending')
+      AND metrics.string.metrics_install_source IS NOT NULL
+    THEN
+      'Other'
+    ELSE
+      metrics.string.metrics_install_source
+    END
+    AS install_source,
     metrics.string.search_default_engine_code AS default_search_engine,
     metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
     sample_id,
@@ -273,13 +349,32 @@ metrics_org_mozilla_firefox AS (
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
     CASE
-      WHEN metrics.string.metrics_adjust_network NOT IN ('', 'Organic', 'Google Organic Search', 'Untrusted Devices', 'Product Marketing', 'Google Ads ACI') AND metrics.string.metrics_adjust_network IS NOT NULL THEN 'Other'
-      ELSE metrics.string.metrics_adjust_network
-    END AS adjust_network,
+    WHEN
+      metrics.string.metrics_adjust_network NOT IN (
+        '',
+        'Organic',
+        'Google Organic Search',
+        'Untrusted Devices',
+        'Product Marketing',
+        'Google Ads ACI'
+      )
+      AND metrics.string.metrics_adjust_network IS NOT NULL
+    THEN
+      'Other'
+    ELSE
+      metrics.string.metrics_adjust_network
+    END
+    AS adjust_network,
     CASE
-      WHEN metrics.string.metrics_install_source NOT IN ('com.android.vending') AND metrics.string.metrics_install_source IS NOT NULL THEN 'Other'
-      ELSE metrics.string.metrics_install_source
-    END AS install_source,
+    WHEN
+      metrics.string.metrics_install_source NOT IN ('com.android.vending')
+      AND metrics.string.metrics_install_source IS NOT NULL
+    THEN
+      'Other'
+    ELSE
+      metrics.string.metrics_install_source
+    END
+    AS install_source,
     metrics.string.search_default_engine_code AS default_search_engine,
     metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
     sample_id,
@@ -756,6 +851,8 @@ combined_search_clients AS (
     normalized_channel AS channel,
     normalized_os AS os,
     normalized_os_version AS os_version,
+    CAST(NULL AS STRING) AS adjust_network,
+    CAST(NULL AS STRING) AS install_source,
     default_search AS default_search_engine,
     CAST(NULL AS STRING) AS default_search_engine_submission_url,
     distribution_id,
@@ -812,6 +909,8 @@ combined_search_clients AS (
     channel,
     os,
     os_version,
+    adjust_network,
+    install_source,
     default_search_engine,
     default_search_engine_submission_url,
     CAST(NULL AS STRING) AS distribution_id,
@@ -874,12 +973,15 @@ unfiltered_search_clients AS (
     SUM(
       IF(search_type != 'unknown' OR engine IS NULL OR search_count > 10000, 0, search_count)
     ) AS unknown,
+    -- Use mode_last() to return the most recurrent value
     udf.mode_last(ARRAY_AGG(country)) AS country,
     udf.mode_last(ARRAY_AGG(locale)) AS locale,
     udf.mode_last(ARRAY_AGG(app_version)) AS app_version,
     channel,
     udf.mode_last(ARRAY_AGG(os)) AS os,
     udf.mode_last(ARRAY_AGG(os_version)) AS os_version,
+    udf.mode_last(ARRAY_AGG(adjust_network)) AS adjust_network,
+    udf.mode_last(ARRAY_AGG(install_source)) AS install_source,
     udf.mode_last(ARRAY_AGG(default_search_engine)) AS default_search_engine,
     udf.mode_last(
       ARRAY_AGG(default_search_engine_submission_url)

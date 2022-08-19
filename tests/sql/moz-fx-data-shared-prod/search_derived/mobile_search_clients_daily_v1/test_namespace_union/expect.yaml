@@ -20,8 +20,6 @@
   app_name: Fennec
   normalized_app_name: Fennec
   channel: release
-  adjust_network: Organic
-  install_source: com.android.vending
   experiments: []
 - <<: *base
   client_id: a

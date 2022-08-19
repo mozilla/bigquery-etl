@@ -89,16 +89,12 @@ def dryrun(paths, use_cloud_function, validate_schemas, respect_skip, project):
         print("Skipping dry run because no queries matched")
         sys.exit(0)
 
-    if use_cloud_function:
-        client = None
-    else:
-        if not is_authenticated():
-            click.echo("Not authenticated to GCP. Run `gcloud auth login` to login.")
-            sys.exit(1)
-        client = bigquery.Client(project=project)
+    if not use_cloud_function and not is_authenticated():
+        click.echo("Not authenticated to GCP. Run `gcloud auth login` to login.")
+        sys.exit(1)
 
     sql_file_valid = partial(
-        _sql_file_valid, use_cloud_function, client, respect_skip, validate_schemas
+        _sql_file_valid, use_cloud_function, project, respect_skip, validate_schemas
     )
 
     with Pool(8) as p:
@@ -108,8 +104,13 @@ def dryrun(paths, use_cloud_function, validate_schemas, respect_skip, project):
 
 
 def _sql_file_valid(
-    use_cloud_function, client, respect_skip, validate_schemas, sqlfile
+    use_cloud_function, project, respect_skip, validate_schemas, sqlfile
 ):
+    if not use_cloud_function:
+        client = bigquery.Client(project=project)
+    else:
+        client = None
+
     """Dry run the SQL file."""
     result = DryRun(
         sqlfile,

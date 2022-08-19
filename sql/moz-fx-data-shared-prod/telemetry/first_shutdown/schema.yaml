@@ -19938,6 +19938,10 @@ fields:
       mode: NULLABLE
       name: wr_renderer_time_no_sc_ms
       type: STRING
+    - description: Total time spent playing HDR video in milliseconds.
+      mode: NULLABLE
+      name: video_hdr_play_time_ms
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -41145,6 +41149,10 @@ fields:
             connections
           mode: NULLABLE
           name: ssl_time_until_ready_first_try
+          type: STRING
+        - description: Total time spent playing HDR video in milliseconds.
+          mode: NULLABLE
+          name: video_hdr_play_time_ms
           type: STRING
         mode: NULLABLE
         name: histograms

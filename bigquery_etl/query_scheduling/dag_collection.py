@@ -156,11 +156,9 @@ class DagCollection:
         except Exception:
             pass
 
-        with get_context("spawn").Pool(8) as p:
-            self.dags = p.map(self._get_upstream_dependencies, self.dags)
-
-        with get_context("spawn").Pool(8) as p:
-            self.dags = p.map(self._get_downstream_dependencies, self.dags)
+        for dag in self.dags:
+            self._get_upstream_dependencies(dag)
+            self._get_downstream_dependencies(dag)
 
         to_airflow_dag = partial(self.dag_to_airflow, output_dir)
         with get_context("spawn").Pool(8) as p:

@@ -15,8 +15,8 @@
     string:
       search_default_engine_code:
       search_default_engine_submission_url:
-      adjust_network: Google Organic Search
-      install_source: com.android.vending
+      metrics_adjust_network: Google Organic Search
+      metrics_install_source: com.android.vending
     labeled_counter:
       metrics_search_count:
         - key: engine1.action
@@ -37,8 +37,8 @@
     string:
       search_default_engine_code:
       search_default_engine_submission_url:
-        adjust_network:
-        install_source:
+        metrics_adjust_network:
+        metrics_install_source:
     labeled_counter:
       metrics_search_count:
         - key: engine1.action
@@ -61,8 +61,8 @@
     string:
       search_default_engine_code:
       search_default_engine_submission_url:
-      adjust_network:
-      install_source:
+      metrics_adjust_network:
+      metrics_install_source:
     labeled_counter:
       metrics_search_count:
         - key: engine1.action

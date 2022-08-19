@@ -59,8 +59,6 @@
   os_version: '29'
   profile_creation_date: 18207
   profile_age_in_days: 24
-  adjust_network: Google Organic Search
-  install_source: com.android.vending
 - <<: *base
   client_id: b
   channel: beta

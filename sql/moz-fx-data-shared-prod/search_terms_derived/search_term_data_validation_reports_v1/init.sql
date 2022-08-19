@@ -5,7 +5,6 @@ CREATE TABLE IF NOT EXISTS
     range_alarm boolean,
     range_low float,
     range_high float,
-    num_ranges_compared timestamp,
     num_ranges_compared integer,
     range_test_vals string,
     mean_alarm boolean,

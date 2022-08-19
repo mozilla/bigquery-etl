@@ -1,21 +1,16 @@
--- Generated via ./bqetl generate glean_usage
+-- Override the default glean_usage generated view to union data from all VPN clients.
 CREATE OR REPLACE VIEW
-  `{{ project_id }}.{{ target_view }}`
+  `moz-fx-data-shared-prod.mozilla_vpn.deletion_request`
 AS
-{% for (dataset, channel) in datasets -%}
-{% if not loop.first -%}
-UNION ALL
-{% endif -%}
+-- Data from VPN clients using Glean.js
 SELECT
-  e.*
-  EXCEPT (events, metrics)
-  REPLACE(
-    {% if app_name == "fenix" -%}
-    mozfun.norm.fenix_app_info("{{ dataset }}", client_info.app_build).channel AS normalized_channel,
-    {% else -%}
-    "{{ channel }}" AS normalized_channel,
-    {% endif -%}
-    -- Order of some fields differs between tables; we're verbose here for compatibility
+  *
+FROM
+  `moz-fx-data-shared-prod.mozillavpn.deletion_request`
+UNION ALL
+-- Data from VPN Android clients using Glean Kotlin SDK
+SELECT
+  * REPLACE (
     STRUCT(
       client_info.android_sdk_version AS android_sdk_version,
       client_info.app_build AS app_build,
@@ -50,21 +45,22 @@ SELECT
           ) AS header
         )
     ) AS metadata,
-    STRUCT (
-      ping_info.end_time,
-      ping_info.experiments,
-      ping_info.ping_type,
-      ping_info.seq,
-      ping_info.start_time,
-      ping_info.reason,
-      ping_info.parsed_start_time,
-      ping_info.parsed_end_time
-    ) AS ping_info
-  ),
-  event.timestamp AS event_timestamp,
-  event.category AS event_category,
-  event.name AS event_name,
-  event.extra AS event_extra,
-FROM `{{ project_id }}.{{ dataset }}.events` AS e
-CROSS JOIN UNNEST(e.events) AS event
-{% endfor %}
+    STRUCT(
+      CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS jwe,
+      metrics.labeled_counter AS labeled_counter,
+      CAST(
+        NULL
+        AS
+          ARRAY<
+            STRUCT<
+              key STRING,
+              value ARRAY<STRUCT<key STRING, value STRUCT<denominator INT64, numerator INT64>>>
+            >
+          >
+      ) AS labeled_rate,
+      CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS url,
+      CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS text
+    ) AS metrics
+  )
+FROM
+  `moz-fx-data-shared-prod.org_mozilla_firefox_vpn.deletion_request`

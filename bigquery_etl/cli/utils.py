@@ -9,12 +9,14 @@ import click
 import re
 from google.cloud import bigquery
 
-from bigquery_etl.util.common import project_dirs
+from bigquery_etl.util.common import project_dirs, TempDatasetReference
 
 QUERY_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
     r"(?:query\.sql|part1\.sql|script\.sql|query\.py|view\.sql)$"
 )
+TEST_PROJECT = "bigquery-etl-integration-test"
+MOZDATA = "mozdata"
 
 
 def is_valid_dir(ctx, param, value):
@@ -43,7 +45,10 @@ def is_authenticated(project_id=None):
 
 def is_valid_project(ctx, param, value):
     """Check if the provided project_id corresponds to an existing project."""
-    if value is None or value in [Path(p).name for p in project_dirs()]:
+    if value is None or value in [Path(p).name for p in project_dirs()] + [
+        TEST_PROJECT,
+        MOZDATA,
+    ]:
         return value
     raise click.BadParameter(f"Invalid project {value}")
 
@@ -66,8 +71,7 @@ def paths_matching_name_pattern(pattern, sql_path, project_id, files=("*.sql")):
             for file in files:
                 matching_files.extend(Path(root).rglob(file))
     elif os.path.isfile(pattern):
-        for file in files:
-            matching_files.extend(Path(sql_path).rglob(file))
+        matching_files.append(Path(pattern))
     else:
         sql_path = Path(sql_path)
         if project_id is not None:
@@ -146,4 +150,18 @@ def respect_dryrun_skip_option(default=True):
         help="Respect or ignore dry run SKIP configuration. "
         f"Default is {flags[default]}.",
         default=default,
+    )
+
+
+def temp_dataset_option(default="moz-fx-data-shared-prod.tmp"):
+    """Generate a temp-dataset option."""
+    return click.option(
+        "--temp-dataset",
+        "--temp_dataset",
+        "--temporary-dataset",
+        "--temporary_dataset",
+        default="moz-fx-data-shared-prod.tmp",
+        type=TempDatasetReference.from_string,
+        help="Dataset where intermediate query results will be temporarily stored, "
+        "formatted as PROJECT_ID.DATASET_ID",
     )

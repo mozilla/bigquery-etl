@@ -10,6 +10,17 @@ WITH all_events AS (
     mozillavpn.main e
   CROSS JOIN
     UNNEST(e.events) AS event
+  UNION ALL
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    SAFE.TIMESTAMP_ADD(ping_info.parsed_start_time, INTERVAL timestamp MILLISECOND) AS timestamp,
+    category,
+    name AS event,
+    extra,
+  FROM
+    org_mozilla_firefox_vpn.main e
+  CROSS JOIN
+    UNNEST(e.events) AS event
 ),
 current_events AS (
   SELECT

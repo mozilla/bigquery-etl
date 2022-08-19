@@ -127,16 +127,6 @@ class DagCollection:
         )
         output_file.write_text(formatted_dag)
 
-    def _get_upstream_dependencies(self, dag):
-        for task in dag.tasks:
-            task.with_upstream_dependencies(self)
-        return dag
-
-    def _get_downstream_dependencies(self, dag):
-        for task in dag.tasks:
-            task.with_downstream_dependencies(self)
-        return dag
-
     def to_airflow_dags(self, output_dir, dag_to_generate=None):
         """Write DAG representation as Airflow dags to file."""
         # https://pythonspeed.com/articles/python-multiprocessing/
@@ -145,8 +135,8 @@ class DagCollection:
 
         # Generate a single DAG:
         if dag_to_generate is not None:
-            dag_to_generate = self._get_upstream_dependencies(dag_to_generate)
-            dag_to_generate = self._get_downstream_dependencies(dag_to_generate)
+            dag_to_generate.with_upstream_dependencies(self)
+            dag_to_generate.with_downstream_dependencies(self)
             self.dag_to_airflow(output_dir, dag_to_generate)
             return
 
@@ -157,8 +147,8 @@ class DagCollection:
             pass
 
         for dag in self.dags:
-            self._get_upstream_dependencies(dag)
-            self._get_downstream_dependencies(dag)
+            dag.with_upstream_dependencies(self)
+            dag.with_downstream_dependencies(self)
 
         to_airflow_dag = partial(self.dag_to_airflow, output_dir)
         with get_context("spawn").Pool(8) as p:

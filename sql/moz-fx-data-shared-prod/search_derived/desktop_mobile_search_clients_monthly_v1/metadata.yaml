@@ -16,12 +16,12 @@ scheduling:
     desktop_mobile_search_clients_monthly_v1${{
     (execution_date +
     macros.dateutil.relativedelta.relativedelta(months=-1,
-    day=1)).strftime("%Y%m%d")
+    day=1)).strftime("%Y%m")
     }}
   parameters: ["submission_date:DATE:{{ds}}"]
 bigquery:
   time_partitioning:
     field: submission_month
-    type: day
+    type: month
     require_partition_filter: true
   clustering: null

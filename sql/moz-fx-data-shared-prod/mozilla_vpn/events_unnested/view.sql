@@ -5,7 +5,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.mozilla_vpn.events_unnested`
 AS
 SELECT
-  e.* EXCEPT (events, metrics) REPLACE (
+  e.* EXCEPT (events, metrics) REPLACE(
     "release" AS normalized_channel,
     -- Order of some fields differs between tables; we're verbose here for compatibility
     STRUCT(
@@ -63,7 +63,7 @@ CROSS JOIN
   UNNEST(e.events) AS event
 UNION ALL
 SELECT
-  e.* EXCEPT (events, metrics) REPLACE (
+  e.* EXCEPT (events, metrics) REPLACE(
     "release" AS normalized_channel,
     -- Order of some fields differs between tables; we're verbose here for compatibility
     STRUCT(

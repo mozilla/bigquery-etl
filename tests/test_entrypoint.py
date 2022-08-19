@@ -11,7 +11,7 @@ ENTRYPOINT_SCRIPT = Path(__file__).parent.parent / "script" / "entrypoint"
 class TestEntrypoint:
     @pytest.mark.integration
     def test_run_query(self, tmp_path, project_id):
-        query_file_path = tmp_path / "sql" / "test" / "query_v1"
+        query_file_path = tmp_path / "sql" / project_id / "query_v1"
         os.makedirs(query_file_path)
 
         query_file = query_file_path / "query.sql"
@@ -43,7 +43,7 @@ class TestEntrypoint:
     def test_run_query_write_to_table(
         self, tmp_path, bigquery_client, project_id, temporary_dataset
     ):
-        query_file_path = tmp_path / "sql" / "test" / "query_v1"
+        query_file_path = tmp_path / "sql" / project_id / "query_v1"
         os.makedirs(query_file_path)
 
         query_file = query_file_path / "query.sql"
@@ -87,5 +87,5 @@ class TestEntrypoint:
 
     @pytest.mark.integration
     def test_run_query_no_query_file(self):
-        with pytest.raises(subprocess.CalledProcessError):
-            subprocess.check_call([ENTRYPOINT_SCRIPT, "query"])
+        result = subprocess.check_output([ENTRYPOINT_SCRIPT, "query"])
+        assert b"No files matching:" in result

@@ -51,6 +51,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="akommasani@mozilla.com",
         email=["akommasani@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter="submission_month",
         depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
     )

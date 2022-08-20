@@ -153,7 +153,7 @@ class Dag:
         self.validate_tasks(None, self.tasks)
 
     def with_upstream_dependencies(self, dag_collection):
-        """Perfom a dry_run to get upstream dependencies."""
+        """Perform a dry_run to get upstream dependencies."""
         for task in self.tasks:
             task.with_upstream_dependencies(dag_collection)
 

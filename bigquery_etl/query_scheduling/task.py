@@ -417,7 +417,7 @@ class Task:
         return self.referenced_tables
 
     def with_upstream_dependencies(self, dag_collection):
-        """Perfom a dry_run to get upstream dependencies."""
+        """Perform a dry_run to get upstream dependencies."""
         if self.upstream_dependencies:
             return
 

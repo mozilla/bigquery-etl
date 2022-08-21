@@ -1050,13 +1050,12 @@ def validate(
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
     dataset_dirs = set()
     for query in query_files:
-        project = query.parent.parent.parent.name
         ctx.invoke(format, paths=[str(query)])
         ctx.invoke(
             dryrun,
             paths=[str(query)],
             use_cloud_function=use_cloud_function,
-            project=project,
+            project=project_id,
             validate_schemas=validate_schemas,
             respect_skip=respect_dryrun_skip,
         )

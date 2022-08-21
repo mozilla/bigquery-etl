@@ -16,6 +16,7 @@ QUERY_FILE_RE = re.compile(
     r"(?:query\.sql|part1\.sql|script\.sql|query\.py|view\.sql)$"
 )
 TEST_PROJECT = "bigquery-etl-integration-test"
+MOZDATA = "mozdata"
 
 
 def is_valid_dir(ctx, param, value):
@@ -45,7 +46,8 @@ def is_authenticated(project_id=None):
 def is_valid_project(ctx, param, value):
     """Check if the provided project_id corresponds to an existing project."""
     if value is None or value in [Path(p).name for p in project_dirs()] + [
-        TEST_PROJECT
+        TEST_PROJECT,
+        MOZDATA,
     ]:
         return value
     raise click.BadParameter(f"Invalid project {value}")
@@ -69,7 +71,7 @@ def paths_matching_name_pattern(pattern, sql_path, project_id, files=("*.sql")):
             for file in files:
                 matching_files.extend(Path(root).rglob(file))
     elif os.path.isfile(pattern):
-        matching_files.append(pattern)
+        matching_files.append(Path(pattern))
     else:
         sql_path = Path(sql_path)
         if project_id is not None:

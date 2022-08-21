@@ -13,6 +13,3 @@
       metrics_search_count:
         - key: engine1.actionbar
           value: "10"
-    string:
-      metrics_adjust_network: Organic
-      metrics_install_source: com.android.vending

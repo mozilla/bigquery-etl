@@ -76,8 +76,6 @@
   profile_age_in_days: 30
   default_search_engine: engine1
   default_search_engine_submission_url: engine1.url
-  adjust_network: Organic
-  install_source: com.android.vending
 - <<: *base
   client_id: b
   channel: beta
@@ -92,8 +90,6 @@
   os_version: '29'
   profile_creation_date: 18201
   profile_age_in_days: 30
-  adjust_network: Organic
-  install_source: com.android.vending
 - <<: *base
   client_id: b
   channel: beta
@@ -108,8 +104,6 @@
   os_version: '29'
   profile_creation_date: 18201
   profile_age_in_days: 30
-  adjust_network: Organic
-  install_source: com.android.vending
 - <<: *base
   client_id: b
   channel: beta
@@ -124,8 +118,6 @@
   os_version: '29'
   profile_creation_date: 18201
   profile_age_in_days: 30
-  adjust_network: Google Organic Search
-  install_source: com.android.vending
 - <<: *base
   client_id: c
   channel: beta
@@ -138,8 +130,6 @@
   os_version: '29'
   profile_creation_date: 18201
   profile_age_in_days: 30
-  adjust_network:
-  install_source:
 - <<: *base
   client_id: d
   channel: beta
@@ -153,8 +143,6 @@
   os_version: '29'
   profile_creation_date: 18201
   profile_age_in_days: 30
-  adjust_network: Untrusted Devices
-  install_source: com.android.vending
 - &new_field_base
   <<: *base
   client_id: e
@@ -175,8 +163,6 @@
     value: test_branch
   - key: test_experiment_2
     value: test_branch_2
-  adjust_network: Google Ads ACI
-  install_source: com.android.vending
 - <<: *new_field_base
   engine: engine3
   source: ad-click
@@ -244,8 +230,6 @@
   experiments:
   - key: test_experiment
     value: test_branch
-  adjust_network: 'Organic'
-  install_source: com.android.vending
 - &ios_base
   <<: *base
   client_id: release_ios

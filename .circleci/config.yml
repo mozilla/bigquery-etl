@@ -137,7 +137,7 @@ jobs:
           command: docker build -t app:build jobs/kpi-forecasting/
       - run:
             name: Test Code
-            command: docker run app:build pytest
+            command: docker run app:build pytest --black
 
 
   build-job-mozaggregator2bq:
@@ -235,7 +235,7 @@ jobs:
           command: docker build -t app:build jobs/search-term-data-validation/
       - run:
             name: Test Code
-            command: docker run app:build pytest --black
+            command: docker run app:build pytest
 
 
 workflows:

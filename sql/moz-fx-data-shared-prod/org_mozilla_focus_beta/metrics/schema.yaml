@@ -343,6 +343,12 @@ fields:
       mode: NULLABLE
       name: metrics_start_reason_process_error
       type: BOOLEAN
+    - description: 'Whether or not the search widget is installed
+
+        '
+      mode: NULLABLE
+      name: metrics_search_widget_installed
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD

@@ -19933,6 +19933,14 @@ fields:
       mode: NULLABLE
       name: video_hdr_play_time_ms
       type: STRING
+    - description: Whether a document used the CSS property animation-composition
+      mode: NULLABLE
+      name: use_counter2_css_property_animation_composition_document
+      type: STRING
+    - description: Whether a page used the CSS property animation-composition
+      mode: NULLABLE
+      name: use_counter2_css_property_animation_composition_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -41144,6 +41152,14 @@ fields:
         - description: Total time spent playing HDR video in milliseconds.
           mode: NULLABLE
           name: video_hdr_play_time_ms
+          type: STRING
+        - description: Whether a document used the CSS property animation-composition
+          mode: NULLABLE
+          name: use_counter2_css_property_animation_composition_document
+          type: STRING
+        - description: Whether a page used the CSS property animation-composition
+          mode: NULLABLE
+          name: use_counter2_css_property_animation_composition_page
           type: STRING
         mode: NULLABLE
         name: histograms

@@ -1,4 +1,4 @@
-build-job-kpi-forecasting:
+build-job-search-term-data-validation:
   docker:
     - image: docker:stable-git
   steps:

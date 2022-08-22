@@ -12,4 +12,4 @@ build-job-search-term-data-validation:
         command: docker build -t app:build jobs/search-term-data-validation/
     - run:
           name: Test Code
-          command: docker run app:build pytest --black
+          command: docker run app:build pytest

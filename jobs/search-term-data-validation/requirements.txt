@@ -8,3 +8,5 @@ db-dtypes==1.0.0
 black==20.8b1
 pytest==7.1.2
 pytest-asyncio==0.18.3
+pytest-black==0.3.11
+pytest-flake8==1.0.6

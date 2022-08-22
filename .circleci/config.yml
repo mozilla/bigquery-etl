@@ -235,7 +235,7 @@ jobs:
           command: docker build -t app:build jobs/search-term-data-validation/
       - run:
             name: Test Code
-            command: docker run app:build pytest --asyncio-mode=strict
+            command: docker run app:build pytest --black
 
 
 workflows:

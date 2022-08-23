@@ -359,8 +359,11 @@ desktop_events AS (
   FROM
     `mozdata.activity_stream.events`
   WHERE
-    (event = 'BLOCK' AND value LIKE '%spoc%' AND value LIKE '%card_type%')
-    OR (event = 'PREF_CHANGED' AND source = 'SPONSORED_TOP_SITES')
+    (
+      (event = 'BLOCK' AND value LIKE '%spoc%' AND value LIKE '%card_type%')
+      OR (event = 'PREF_CHANGED' AND source = 'SPONSORED_TOP_SITES')
+    )
+    AND date(submission_timestamp) = @submission_date
 ),
 -- merge on measures by client
 final_desktop_events AS (
@@ -387,6 +390,8 @@ final_desktop_events AS (
   ON
     clients_last_seen.client_id = desktop_events.client_id
     AND clients_last_seen.submission_date = desktop_events.submission_date
+  WHERE
+    clients_last_seen.submission_date = @submission_date
   ORDER BY
     clients_last_seen.days_since_created_profile DESC
 ),
@@ -404,7 +409,8 @@ ios_events AS (
   FROM
     `mozdata.firefox_ios.events_unnested` events
   WHERE
-    event_category = 'preferences'
+    date(submission_timestamp) = @submission_date
+    AND event_category = 'preferences'
     AND event_name = "changed"
     AND `mozfun.map.get_key`(event_extra, 'preference') = 'sponsoredTiles'
     AND `mozfun.map.get_key`(event_extra, 'changed_to') = 'false'
@@ -423,7 +429,8 @@ android_events AS (
   FROM
     `mozdata.fenix.events_unnested`
   WHERE
-    event_category = 'customize_home'
+    DATE(submission_timestamp) = @submission_date
+    AND event_category = 'customize_home'
     AND event_name = "preference_toggled"
     AND `mozfun.map.get_key`(event_extra, 'preference_key') = 'contile'
     AND `mozfun.map.get_key`(event_extra, 'enabled') = 'false'
@@ -450,7 +457,8 @@ android_events AS (
   FROM
     `mozdata.fenix.metrics`
   WHERE
-    metrics.boolean.customize_home_contile IS NOT NULL
+    date(submission_timestamp) = @submission_date
+    AND metrics.boolean.customize_home_contile IS NOT NULL
 ),
 -- merge on measures by client
 final_ios_events AS (
@@ -477,6 +485,8 @@ final_ios_events AS (
   ON
     clients_last_seen.client_id = ios_events.client_id
     AND clients_last_seen.submission_date = ios_events.submission_date
+  WHERE
+    clients_last_seen.submission_date = @submission_date
   ORDER BY
     clients_last_seen.days_since_created_profile DESC
 ),
@@ -504,6 +514,8 @@ final_android_events AS (
   ON
     clients_last_seen.client_id = android_events.client_id
     AND clients_last_seen.submission_date = android_events.submission_date
+  WHERE
+    clients_last_seen.submission_date = @submission_date
   ORDER BY
     clients_last_seen.days_since_created_profile DESC
 ),

@@ -331,23 +331,6 @@ newtab_unnested AS (
     UNNEST(t.events) s
 ),
 desktop_events AS (
-  -- desktop tiles clicks and impressions
-  SELECT
-    client_id,
-    submission_date,
-    name AS event_type,
-    'desktop' AS form_factor,
-    normalized_os,
-    country,
-    subdivision1,
-    normalized_channel
-  FROM
-    newtab_unnested
-  WHERE
-    name IN ("click", "impression")
-    AND category = "topsites"
-    AND mozfun.map.get_key(extra, "is_sponsored") = "true"
-  UNION ALL
 -- desktop Sponsored Tile Dismissals and Disables
   SELECT
     client_id,
@@ -408,34 +391,6 @@ final_desktop_events AS (
     clients_last_seen.days_since_created_profile DESC
 ),
 ios_events AS (
-  -- iOS clicks and impressions
-  SELECT
-    client_info.client_id,
-    DATE(submission_timestamp) AS submission_date,
-    CASE
-    WHEN
-      event_name = 'contile_click'
-    THEN
-      'click'
-    WHEN
-      event_name = 'contile_impression'
-    THEN
-      'impression'
-    ELSE
-      NULL
-    END
-    AS event_type,
-    'mobile' AS form_factor,
-    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
-    normalized_country_code AS country,
-    metadata.geo.subdivision1,
-    normalized_channel
-  FROM
-    `mozdata.firefox_ios.events_unnested` events
-  WHERE
-    event_category LIKE 'top_site%'
-    AND event_name IN ("contile_click", "contile_impression")
-  UNION ALL
   -- iOS Sponsored Tiles Disables
   SELECT
     client_info.client_id,
@@ -455,34 +410,6 @@ ios_events AS (
     AND `mozfun.map.get_key`(event_extra, 'changed_to') = 'false'
 ),
 android_events AS (
-  -- Android clicks and impressions
-  SELECT
-    client_info.client_id,
-    DATE(submission_timestamp) AS submission_date,
-    CASE
-    WHEN
-      event_name = 'contile_click'
-    THEN
-      'click'
-    WHEN
-      event_name = 'contile_impression'
-    THEN
-      'impression'
-    ELSE
-      NULL
-    END
-    AS event_type,
-    'mobile' AS form_factor,
-    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
-    normalized_country_code AS country,
-    metadata.geo.subdivision1,
-    normalized_channel
-  FROM
-    `mozdata.fenix.events_unnested` events
-  WHERE
-    event_category = 'top_sites'
-    AND event_name IN ("contile_click", "contile_impression")
-  UNION ALL
   -- Android Sponsored Tiles Disables
   SELECT
     client_info.client_id,

@@ -27,6 +27,7 @@ WITH combined AS (
       OR request_id IS NOT NULL
       OR scenario = 'online'
     ) AS suggest_data_sharing_enabled,
+    NULL AS days_since_created_profile,
   FROM
     contextual_services.quicksuggest_impression
   UNION ALL
@@ -58,6 +59,7 @@ WITH combined AS (
       OR request_id IS NOT NULL
       OR scenario = 'online'
     ) AS suggest_data_sharing_enabled,
+    NULL AS days_since_created_profile,
   FROM
     contextual_services.quicksuggest_click
   UNION ALL
@@ -86,6 +88,7 @@ WITH combined AS (
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    NULL AS days_since_created_profile,
   FROM
     contextual_services.topsites_impression
   UNION ALL
@@ -114,6 +117,7 @@ WITH combined AS (
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    NULL AS days_since_created_profile,
   FROM
     contextual_services.topsites_click
   UNION ALL
@@ -139,6 +143,7 @@ WITH combined AS (
     normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    NULL AS days_since_created_profile,
   FROM
     org_mozilla_firefox.topsites_impression
   UNION ALL
@@ -162,6 +167,7 @@ WITH combined AS (
     normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    NULL AS days_since_created_profile,
   FROM
     org_mozilla_firefox_beta.topsites_impression
   UNION ALL
@@ -185,6 +191,7 @@ WITH combined AS (
     normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    NULL AS days_since_created_profile,
   FROM
     org_mozilla_fenix.topsites_impression
   UNION ALL
@@ -217,6 +224,7 @@ WITH combined AS (
     'iOS' AS normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    NULL AS days_since_created_profile,
   FROM
     org_mozilla_ios_firefox.topsites_impression
   UNION ALL
@@ -249,6 +257,7 @@ WITH combined AS (
     'iOS' AS normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    NULL AS days_since_created_profile,
   FROM
     org_mozilla_ios_firefoxbeta.topsites_impression
 ),
@@ -268,7 +277,7 @@ with_event_count AS (
   ORDER BY
     context_id
 ),
-contextual_service_events AS (
+contextual_services_events AS (
   SELECT
     * EXCEPT (context_id, user_event_count),
     COUNT(*) AS event_count,
@@ -292,7 +301,8 @@ contextual_service_events AS (
     provider,
     match_type,
     normalized_os,
-    suggest_data_sharing_enabled
+    suggest_data_sharing_enabled,
+    days_since_created_profile
 ),
  -- event_aggregates_extended
 -- sponsored tiles data by client id
@@ -321,12 +331,12 @@ newtab_unnested AS (
     UNNEST(t.events) s
 ),
 desktop_events AS (
-  -- desktop tiles clicks
+  -- desktop tiles clicks and impressions
   SELECT
     client_id,
     submission_date,
-    'click' AS event_type,
-    'desktop' AS device, -- same as form_factor in event_aggregates
+    name AS event_type,
+    'desktop' AS form_factor,
     normalized_os,
     country,
     subdivision1,
@@ -334,24 +344,7 @@ desktop_events AS (
   FROM
     newtab_unnested
   WHERE
-    name = "click"
-    AND category = "topsites"
-    AND mozfun.map.get_key(extra, "is_sponsored") = "true"
-  UNION ALL
-  -- desktop tiles impressions
-  SELECT
-    client_id,
-    submission_date,
-    'impression' AS event_type,
-    'desktop' AS device, -- same as form_factor in event_aggregates
-    normalized_os,
-    country,
-    subdivision1,
-    normalized_channel
-  FROM
-    newtab_unnested
-  WHERE
-    name = "impression"
+    name in ("click", "impression")
     AND category = "topsites"
     AND mozfun.map.get_key(extra, "is_sponsored") = "true"
   UNION ALL
@@ -359,7 +352,11 @@ desktop_events AS (
   SELECT
     client_id,
     DATE(submission_timestamp) AS submission_date,
-    'Sponsored Tiles Dismissals' AS event_type,
+    case
+      when event = 'BLOCK' AND value LIKE '%spoc%' AND value LIKE '%card_type%' then 'Sponsored Tiles Dismissals'
+      when event = 'PREF_CHANGED' and source = 'SPONSSORED_TOP_SITES' then 'Sponsored Tiles Disables'
+      else null
+    AS event_type,
     'desktop' AS device,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     normalized_country_code AS country,
@@ -368,25 +365,9 @@ desktop_events AS (
   FROM
     `mozdata.activity_stream.events`
   WHERE
-    event = 'BLOCK'
-    AND value LIKE '%spoc%'
-    AND value LIKE '%card_type%'
-  UNION ALL
--- desktop Sponsored Tiles Disabled
-  SELECT
-    client_id,
-    DATE(submission_timestamp) AS submission_date,
-    'Sponsored Tiles Disables' AS event_type,
-    'desktop' AS device,
-    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
-    normalized_country_code AS country,
-    metadata.geo.subdivision1,
-    normalized_channel
-  FROM
-    `mozdata.activity_stream.events` events
-  WHERE
-    (events.event) = 'PREF_CHANGED'
-    AND (events.source) = 'SPONSORED_TOP_SITES'
+    (event = 'BLOCK' AND value LIKE '%spoc%' AND value LIKE '%card_type%')
+  OR
+    (event = 'PREF_CHANGED' AND source = 'SPONSORED_TOP_SITES')
 ),
 -- merge on measures by client
 final_desktop_events AS (

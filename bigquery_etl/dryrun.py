@@ -21,6 +21,7 @@ from urllib.request import Request, urlopen
 
 import click
 from google.cloud import bigquery
+from google.api_core.exceptions import PermissionDenied
 
 from .metadata.parse_metadata import Metadata
 
@@ -347,6 +348,11 @@ class DryRun:
                     ],
                 )
                 job = self.client.query(sql, job_config=job_config)
+                try:
+                    dataset_labels = self.client.get_dataset(job.default_dataset).labels
+                except PermissionDenied:
+                    dataset_labels = []
+
                 return {
                     "valid": True,
                     "referencedTables": [
@@ -357,9 +363,7 @@ class DryRun:
                         .get("query", {})
                         .get("schema", {})
                     ),
-                    "datasetLabels": (
-                        self.client.get_dataset(job.default_dataset).labels
-                    ),
+                    "datasetLabels": dataset_labels,
                 }
         except Exception as e:
             print(f"{self.sqlfile!s:59} ERROR\n", e)

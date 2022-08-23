@@ -1132,7 +1132,8 @@ def schema():
 
 
 @schema.command(
-    help="""Update the query schema based on the destination table schema and the query schema.
+    help="""
+    Update the query schema based on the destination table schema and the query schema.
     If no schema.yaml file exists for a query, one will be created.
 
     Examples:

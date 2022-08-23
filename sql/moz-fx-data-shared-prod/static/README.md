@@ -4,7 +4,7 @@ In particular, we have two tables based on a one-time export of Firefox Accounts
 extracted from Amplitude and imported to BigQuery.
 
 Tables can be defined as a CSV named `data.csv` and the table will be created by
-the `publish_static` script.  An optional `schema.json` and `description.txt`
+the `./bqetl static publish` command.  An optional `schema.json` and `description.txt`
 can be defined in the same directory.  If `schema.json` is not defined, column
 names are inferred from the first line of the CSV and are assumed to be strings.
 `description.txt` defines the table description in BigQuery.
@@ -16,6 +16,6 @@ ETL and analysis:
 # Generate data.csv for country_names
 bqetl generate country_code_lookup
 
-./script/publish_static --project-id mozdata
-./script/publish_static --project-id moz-fx-data-shared-prod
+./bqetl static publish --project-id mozdata
+./bqetl static publish --project-id moz-fx-data-shared-prod
 ```

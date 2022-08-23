@@ -2282,7 +2282,7 @@ This directory contains definitions for derived tables in the <code>static</code
 <p>In particular, we have two tables based on a one-time export of Firefox Accounts
 extracted from Amplitude and imported to BigQuery.</p>
 <p>Tables can be defined as a CSV named <code>data.csv</code> and the table will be created by
-the <code>publish_static</code> script.  An optional <code>schema.json</code> and <code>description.txt</code>
+the <code>./bqetl static publish</code> command.  An optional <code>schema.json</code> and <code>description.txt</code>
 can be defined in the same directory.  If <code>schema.json</code> is not defined, column
 names are inferred from the first line of the CSV and are assumed to be strings.
 <code>description.txt</code> defines the table description in BigQuery.</p>
@@ -2291,8 +2291,8 @@ ETL and analysis:</p>
 <pre><code># Generate data.csv for country_names
 bqetl generate country_code_lookup
 
-./script/publish_static --project-id mozdata
-./script/publish_static --project-id moz-fx-data-shared-prod
+./bqetl static publish --project-id mozdata
+./bqetl static publish --project-id moz-fx-data-shared-prod
 </code></pre>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static">Source Directory</a></p>
 <h2 id="country_codes_v1"><a href="#country_codes_v1">country_codes_v1</a></h2>

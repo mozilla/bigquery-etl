@@ -87,7 +87,7 @@ WITH combined AS (
     NULL AS match_type,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
-    NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS BOOL) AS suggest_data_sharing_enabled,
     NULL AS days_since_created_profile,
   FROM
     contextual_services.topsites_impression
@@ -116,7 +116,7 @@ WITH combined AS (
     NULL AS match_type,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
-    NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS BOOL) AS suggest_data_sharing_enabled,
     NULL AS days_since_created_profile,
   FROM
     contextual_services.topsites_click
@@ -142,7 +142,7 @@ WITH combined AS (
     NULL AS match_type,
     normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
-    NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS BOOL) AS suggest_data_sharing_enabled,
     NULL AS days_since_created_profile,
   FROM
     org_mozilla_firefox.topsites_impression
@@ -166,7 +166,7 @@ WITH combined AS (
     NULL AS match_type,
     normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
-    NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS BOOL) AS suggest_data_sharing_enabled,
     NULL AS days_since_created_profile,
   FROM
     org_mozilla_firefox_beta.topsites_impression
@@ -190,7 +190,7 @@ WITH combined AS (
     NULL AS match_type,
     normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
-    NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS BOOL) AS suggest_data_sharing_enabled,
     NULL AS days_since_created_profile,
   FROM
     org_mozilla_fenix.topsites_impression
@@ -223,7 +223,7 @@ WITH combined AS (
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1773722 is fixed
     'iOS' AS normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
-    NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS BOOL) AS suggest_data_sharing_enabled,
     NULL AS days_since_created_profile,
   FROM
     org_mozilla_ios_firefox.topsites_impression
@@ -256,7 +256,7 @@ WITH combined AS (
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1773722 is fixed
     'iOS' AS normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
-    NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS BOOL) AS suggest_data_sharing_enabled,
     NULL AS days_since_created_profile,
   FROM
     org_mozilla_ios_firefoxbeta.topsites_impression
@@ -365,17 +365,19 @@ desktop_events AS (
     THEN
       'Sponsored Tiles Disables'
     ELSE
-      NULL AS event_type,
-      'desktop' AS form_factor,
-      SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
-      normalized_country_code AS country,
-      metadata.geo.subdivision1,
-      normalized_channel
-      FROM
-        `mozdata.activity_stream.events`
-      WHERE
-        (event = 'BLOCK' AND value LIKE '%spoc%' AND value LIKE '%card_type%')
-        OR (event = 'PREF_CHANGED' AND source = 'SPONSORED_TOP_SITES')
+      NULL
+    END
+    AS event_type,
+    'desktop' AS form_factor,
+    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
+    normalized_country_code AS country,
+    metadata.geo.subdivision1,
+    normalized_channel
+  FROM
+    `mozdata.activity_stream.events`
+  WHERE
+    (event = 'BLOCK' AND value LIKE '%spoc%' AND value LIKE '%card_type%')
+    OR (event = 'PREF_CHANGED' AND source = 'SPONSORED_TOP_SITES')
 ),
 -- merge on measures by client
 final_desktop_events AS (
@@ -384,16 +386,16 @@ final_desktop_events AS (
     desktop_events.submission_date,
     'topsites' AS source,
     desktop_events.event_type,
-    desktop_events.forn_factor,
+    desktop_events.form_factor,
     desktop_events.country,
     desktop_events.subdivision1,
-    NULL AS advertiser,
+    "" AS advertiser,
     desktop_events.normalized_channel AS release_channel,
     NULL AS position,
-    NULL AS provider,
-    NULL AS match_type,
-    normalized_os,
-    NULL AS suggest_data_sharing_enabled,
+    "" AS provider,
+    "" AS match_type,
+    desktop_events.normalized_os,
+    CAST(NULL AS BOOL) AS suggest_data_sharing_enabled,
     clients_last_seen.days_since_created_profile -- note this is only recorded for profiles created in the last month
   FROM
     desktop_events
@@ -420,35 +422,37 @@ ios_events AS (
     THEN
       'impression'
     ELSE
-      NULL AS event_type,
-      'mobile' AS form_factor,
-      SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
-      normalized_country_code AS country,
-      metadata.geo.subdivision1,
-      normalized_channel
-      FROM
-        `mozdata.firefox_ios.events_unnested` events
-      WHERE
-        event_category LIKE 'top_site%'
-        AND event_name IN ("contile_click", "contile_impression")
-      UNION ALL
+      NULL
+    END
+    AS event_type,
+    'mobile' AS form_factor,
+    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
+    normalized_country_code AS country,
+    metadata.geo.subdivision1,
+    normalized_channel
+  FROM
+    `mozdata.firefox_ios.events_unnested` events
+  WHERE
+    event_category LIKE 'top_site%'
+    AND event_name IN ("contile_click", "contile_impression")
+  UNION ALL
   -- iOS Sponsored Tiles Disables
-      SELECT
-        client_info.client_id,
-        DATE(submission_timestamp) AS submission_date,
-        'Sponsored Tiles Disables' AS event_type,
-        'mobile' AS form_factor,
-        SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
-        normalized_country_code AS country,
-        metadata.geo.subdivision1,
-        normalized_channel
-      FROM
-        `mozdata.firefox_ios.events_unnested` events
-      WHERE
-        event_category = 'preferences'
-        AND event_name = "changed"
-        AND `mozfun.map.get_key`(event_extra, 'preference') = 'sponsoredTiles'
-        AND `mozfun.map.get_key`(event_extra, 'changed_to') = 'false'
+  SELECT
+    client_info.client_id,
+    DATE(submission_timestamp) AS submission_date,
+    'Sponsored Tiles Disables' AS event_type,
+    'mobile' AS form_factor,
+    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
+    normalized_country_code AS country,
+    metadata.geo.subdivision1,
+    normalized_channel
+  FROM
+    `mozdata.firefox_ios.events_unnested` events
+  WHERE
+    event_category = 'preferences'
+    AND event_name = "changed"
+    AND `mozfun.map.get_key`(event_extra, 'preference') = 'sponsoredTiles'
+    AND `mozfun.map.get_key`(event_extra, 'changed_to') = 'false'
 ),
 android_events AS (
   -- Android clicks and impressions
@@ -465,59 +469,61 @@ android_events AS (
     THEN
       'impression'
     ELSE
-      NULL AS event_type,
-      'mobile' AS form_factor,
-      SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
-      normalized_country_code AS country,
-      metadata.geo.subdivision1,
-      normalized_channel
-      FROM
-        `mozdata.fenix.events_unnested` events
-      WHERE
-        event_category = 'top_sites'
-        AND event_name IN ("contile_click", "contile_impression")
-      UNION ALL
+      NULL
+    END
+    AS event_type,
+    'mobile' AS form_factor,
+    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
+    normalized_country_code AS country,
+    metadata.geo.subdivision1,
+    normalized_channel
+  FROM
+    `mozdata.fenix.events_unnested` events
+  WHERE
+    event_category = 'top_sites'
+    AND event_name IN ("contile_click", "contile_impression")
+  UNION ALL
   -- Android Sponsored Tiles Disables
-      SELECT
-        client_info.client_id,
-        DATE(submission_timestamp) AS submission_date,
-        'Sponsored Tiles Disables' AS event_type,
-        'mobile' AS form_factor,
-        SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
-        normalized_country_code AS country,
-        metadata.geo.subdivision1,
-        normalized_channel
-      FROM
-        `mozdata.fenix.events_unnested`
-      WHERE
-        event_category = 'customize_home'
-        AND event_name = "preference_toggled"
-        AND `mozfun.map.get_key`(event_extra, 'preference_key') = 'contile'
-        AND `mozfun.map.get_key`(event_extra, 'enabled') = 'false'
-      UNION ALL
+  SELECT
+    client_info.client_id,
+    DATE(submission_timestamp) AS submission_date,
+    'Sponsored Tiles Disables' AS event_type,
+    'mobile' AS form_factor,
+    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
+    normalized_country_code AS country,
+    metadata.geo.subdivision1,
+    normalized_channel
+  FROM
+    `mozdata.fenix.events_unnested`
+  WHERE
+    event_category = 'customize_home'
+    AND event_name = "preference_toggled"
+    AND `mozfun.map.get_key`(event_extra, 'preference_key') = 'contile'
+    AND `mozfun.map.get_key`(event_extra, 'enabled') = 'false'
+  UNION ALL
   -- Android Sponsored Tiles Enabled at Startup
   -- Android Sponsored Tiles Disabled at Startup
-      SELECT
-        client_info.client_id,
-        DATE(submission_timestamp) AS submission_date,
-        CASE
-        WHEN
-          metrics.boolean.customize_home_contile
-        THEN
-          'Sponsored Tiles Enabled at Startup'
-        ELSE
-          'Sponsored Tiles Disabled at Startup'
-        END
-        AS event_type,
-        'mobile' AS form_factor,
-        SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
-        normalized_country_code AS country,
-        metadata.geo.subdivision1,
-        normalized_channel
-      FROM
-        `mozdata.fenix.metrics`
-      WHERE
-        metrics.boolean.customize_home_contile IS NOT NULL
+  SELECT
+    client_info.client_id,
+    DATE(submission_timestamp) AS submission_date,
+    CASE
+    WHEN
+      metrics.boolean.customize_home_contile
+    THEN
+      'Sponsored Tiles Enabled at Startup'
+    ELSE
+      'Sponsored Tiles Disabled at Startup'
+    END
+    AS event_type,
+    'mobile' AS form_factor,
+    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
+    normalized_country_code AS country,
+    metadata.geo.subdivision1,
+    normalized_channel
+  FROM
+    `mozdata.fenix.metrics`
+  WHERE
+    metrics.boolean.customize_home_contile IS NOT NULL
 ),
 -- merge on measures by client
 final_ios_events AS (
@@ -529,13 +535,13 @@ final_ios_events AS (
     ios_events.form_factor,
     ios_events.country,
     ios_events.subdivision1,
-    NULL AS advertiser,
+    "" AS advertiser,
     ios_events.normalized_channel AS release_channel,
     NULL AS position,
-    NULL AS provider,
-    NULL AS match_type,
+    "" AS provider,
+    "" AS match_type,
     ios_events.normalized_os,
-    NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS BOOL) AS suggest_data_sharing_enabled,
     clients_last_seen.days_since_created_profile -- note this is only recorded for profiles created in the last month
   FROM
     ios_events
@@ -556,13 +562,13 @@ final_android_events AS (
     android_events.form_factor,
     android_events.country,
     android_events.subdivision1,
-    NULL AS advertiser,
+    "" AS advertiser,
     android_events.normalized_channel AS release_channel,
     NULL AS position,
-    NULL AS provider,
-    NULL AS match_type,
+    "" AS provider,
+    "" AS match_type,
     android_events.normalized_os,
-    NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS BOOL) AS suggest_data_sharing_enabled,
     clients_last_seen.days_since_created_profile -- note this is only recorded for profiles created in the last month
   FROM
     android_events
@@ -574,7 +580,7 @@ final_android_events AS (
   ORDER BY
     clients_last_seen.days_since_created_profile DESC
 ),
-desktop_and_mobile_events AS (
+desktop_and_mobile_events_client_level AS (
 -- combine desktop and mobile
   SELECT
     *
@@ -590,6 +596,29 @@ desktop_and_mobile_events AS (
     *
   FROM
     final_android_events
+),
+desktop_and_mobile_events AS (
+  SELECT
+    * EXCEPT (client_id),
+    count(*) AS event_count,
+    count(DISTINCT client_id) AS user_count,
+  FROM
+    desktop_and_mobile_events_client_level
+  GROUP BY
+    submission_date,
+    source,
+    event_type,
+    form_factor,
+    country,
+    subdivision1,
+    advertiser,
+    release_channel,
+    position,
+    provider,
+    match_type,
+    normalized_os,
+    suggest_data_sharing_enabled,
+    days_since_created_profile
 )
 SELECT
   *

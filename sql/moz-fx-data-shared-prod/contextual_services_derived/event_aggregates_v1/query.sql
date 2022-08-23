@@ -348,7 +348,7 @@ desktop_events AS (
     AND category = "topsites"
     AND mozfun.map.get_key(extra, "is_sponsored") = "true"
   UNION ALL
--- desktop Sponsored Tile Dismissals
+-- desktop Sponsored Tile Dismissals and Disables
   SELECT
     client_id,
     DATE(submission_timestamp) AS submission_date,
@@ -357,7 +357,7 @@ desktop_events AS (
       when event = 'PREF_CHANGED' and source = 'SPONSSORED_TOP_SITES' then 'Sponsored Tiles Disables'
       else null
     AS event_type,
-    'desktop' AS device,
+    'desktop' AS form_factor,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     normalized_country_code AS country,
     metadata.geo.subdivision1,
@@ -374,12 +374,18 @@ final_desktop_events AS (
   SELECT
     desktop_events.client_id,
     desktop_events.submission_date,
+    'topsites' as source,
     desktop_events.event_type,
-    desktop_events.device,
-    desktop_events.normalized_os,
+    desktop_events.forn_factor,
     desktop_events.country,
     desktop_events.subdivision1,
-    desktop_events.normalized_channel,
+    NULL as advertiser,
+    desktop_events.normalized_channel as release_channel,
+    NULL AS position,
+    NULL AS provider,
+    NULL AS match_type,
+    normalized_os,
+    NULL AS suggest_data_sharing_enabled,
     clients_last_seen.days_since_created_profile -- note this is only recorded for profiles created in the last month
   FROM
     desktop_events
@@ -387,18 +393,17 @@ final_desktop_events AS (
     `mozdata.firefox_desktop.clients_last_seen_joined` clients_last_seen
   ON
     clients_last_seen.client_id = desktop_events.client_id
-    AND clients_last_seen.submission_date = '2022-08-01'
     AND clients_last_seen.submission_date = desktop_events.submission_date
   ORDER BY
     clients_last_seen.days_since_created_profile DESC
 ),
 ios_events AS (
-  -- iOS clicks
+  -- iOS clicks and impressions
   SELECT
     client_info.client_id,
     DATE(submission_timestamp) AS submission_date,
-    'click' AS event_type,
-    'mobile' AS device,
+    case when event_name = 'contile_click' then 'click' when event_name = 'contile_impression' then 'impression' else null AS event_type,
+    'mobile' AS form_factor,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     normalized_country_code AS country,
     metadata.geo.subdivision1,
@@ -407,30 +412,14 @@ ios_events AS (
     `mozdata.firefox_ios.events_unnested` events
   WHERE
     event_category LIKE 'top_site%'
-    AND event_name = "contile_click"
-  UNION ALL
-  -- iOS impressions
-  SELECT
-    client_info.client_id,
-    DATE(submission_timestamp) AS submission_date,
-    'impression' AS event_type,
-    'mobile' AS device,
-    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
-    normalized_country_code AS country,
-    metadata.geo.subdivision1,
-    normalized_channel
-  FROM
-    `mozdata.firefox_ios.events_unnested` events
-  WHERE
-    event_category LIKE 'top_site%'
-    AND event_name = "contile_impression"
+    AND event_name in ("contile_click", "contile_impression")
   UNION ALL
   -- iOS Sponsored Tiles Disables
   SELECT
     client_info.client_id,
     DATE(submission_timestamp) AS submission_date,
     'Sponsored Tiles Disables' AS event_type,
-    'mobile' AS device,
+    'mobile' AS form_factor,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     normalized_country_code AS country,
     metadata.geo.subdivision1,
@@ -444,12 +433,12 @@ ios_events AS (
     AND `mozfun.map.get_key`(event_extra, 'changed_to') = 'false'
 ),
 android_events AS (
-  -- Android clicks
+  -- Android clicks and impressions
   SELECT
     client_info.client_id,
     DATE(submission_timestamp) AS submission_date,
-    'click' AS event_type,
-    'mobile' AS device,
+    case when event_name = 'contile_click' then 'click' when event_name = 'contile_impression' then 'impression' else null AS event_type,
+    'mobile' AS form_factor,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     normalized_country_code AS country,
     metadata.geo.subdivision1,
@@ -458,30 +447,14 @@ android_events AS (
     `mozdata.fenix.events_unnested` events
   WHERE
     event_category = 'top_sites'
-    AND event_name = "contile_click"
-  UNION ALL
-  -- Android impressions
-  SELECT
-    client_info.client_id,
-    DATE(submission_timestamp) AS submission_date,
-    'impression' AS event_type,
-    'mobile' AS device,
-    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
-    normalized_country_code AS country,
-    metadata.geo.subdivision1,
-    normalized_channel
-  FROM
-    `mozdata.fenix.events_unnested` events
-  WHERE
-    event_category = 'top_sites'
-    AND event_name = "contile_impression"
+    AND event_name in ("contile_click", "contile_impression")
   UNION ALL
   -- Android Sponsored Tiles Disables
   SELECT
     client_info.client_id,
     DATE(submission_timestamp) AS submission_date,
     'Sponsored Tiles Disables' AS event_type,
-    'mobile' AS device,
+    'mobile' AS form_factor,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     normalized_country_code AS country,
     metadata.geo.subdivision1,
@@ -508,7 +481,7 @@ android_events AS (
       'Sponsored Tiles Disabled at Startup'
     END
     AS event_type,
-    'mobile' AS device,
+    'mobile' AS form_factor,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     normalized_country_code AS country,
     metadata.geo.subdivision1,
@@ -523,12 +496,18 @@ final_ios_events AS (
   SELECT
     ios_events.client_id,
     ios_events.submission_date,
+    'topsites' as source,
     ios_events.event_type,
-    ios_events.device,
-    ios_events.normalized_os,
+    ios_events.form_factor,
     ios_events.country,
     ios_events.subdivision1,
-    ios_events.normalized_channel,
+    NULL as advertiser,
+    ios_events.normalized_channel as release_channel,
+    NULL AS position,
+    NULL AS provider,
+    NULL AS match_type,
+    ios_events.normalized_os,
+    NULL AS suggest_data_sharing_enabled,
     clients_last_seen.days_since_created_profile -- note this is only recorded for profiles created in the last month
   FROM
     ios_events
@@ -544,12 +523,18 @@ final_android_events AS (
   SELECT
     android_events.client_id,
     android_events.submission_date,
+    'topsites' as source,
     android_events.event_type,
-    android_events.device,
-    android_events.normalized_os,
+    android_events.form_factor,
     android_events.country,
     android_events.subdivision1,
-    android_events.normalized_channel,
+    NULL as advertiser,
+    android_events.normalized_channel as release_channel,
+    NULL AS position,
+    NULL AS provider,
+    NULL AS match_type,
+    android_events.normalized_os,
+    NULL AS suggest_data_sharing_enabled,
     clients_last_seen.days_since_created_profile -- note this is only recorded for profiles created in the last month
   FROM
     android_events

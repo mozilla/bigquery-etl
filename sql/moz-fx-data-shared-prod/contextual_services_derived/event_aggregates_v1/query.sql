@@ -268,7 +268,7 @@ with_event_count AS (
   ORDER BY
     context_id
 ),
-contextual_service_events AS (
+contextual_services_events AS (
   SELECT
     * EXCEPT (context_id, user_event_count),
     COUNT(*) AS event_count,

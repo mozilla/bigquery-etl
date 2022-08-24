@@ -20,7 +20,7 @@ metrics_{{ namespace }} AS (
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
     CASE
-      WHEN metrics.string.metrics_adjust_network NOT IN ('', 'Organic', 'Google Organic Search', 'Untrusted Devices', 'Product Marketing', 'Google Ads ACI') AND metrics.string.metrics_adjust_network IS NOT NULL THEN 'Other'
+      WHEN metrics.string.metrics_adjust_network NOT IN ('', 'Organic', 'Google Organic Search', 'Untrusted Devices', 'Product Marketing (Owned media)', 'Google Ads ACI') AND metrics.string.metrics_adjust_network IS NOT NULL THEN 'Other'
       ELSE metrics.string.metrics_adjust_network
     END AS adjust_network,
     CASE

@@ -21,7 +21,6 @@ from urllib.request import Request, urlopen
 
 import click
 from google.cloud import bigquery
-from google.api_core.exceptions import PermissionDenied
 
 from .metadata.parse_metadata import Metadata
 
@@ -350,8 +349,15 @@ class DryRun:
                 job = self.client.query(sql, job_config=job_config)
                 try:
                     dataset_labels = self.client.get_dataset(job.default_dataset).labels
-                except PermissionDenied:
-                    dataset_labels = []
+                except Exception as e:
+                    # Most users do not have bigquery.datasets.get permission in
+                    # moz-fx-data-shared-prod
+                    # This should not prevent the dry run from running since the dataset
+                    # labels are usually not required
+                    if "Permission bigquery.datasets.get denied on dataset" in str(e):
+                        dataset_labels = []
+                    else:
+                        raise e
 
                 return {
                     "valid": True,

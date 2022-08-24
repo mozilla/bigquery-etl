@@ -15,7 +15,6 @@ labels:
 scheduling:
   dag_name: bqetl_analytics_aggregations
   task_name: active_users_aggregates_attribution_v1
-  date_partition_offset: -1
 bigquery:
   time_partitioning:
     field: submission_date

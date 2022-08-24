@@ -8,7 +8,7 @@ import sys
 
 from multiprocessing.pool import Pool, ThreadPool
 
-from ..view import View
+from ..view import View, broken_views
 from .dryrun import dryrun
 from ..cli.utils import (
     sql_dir_option,
@@ -209,3 +209,33 @@ def publish(
 
 def _publish_view(target_project, dry_run, view):
     return view.publish(target_project, dry_run)
+
+
+@view.command(
+    help="""List broken views.
+    Examples:
+
+    # Publish all views
+    ./bqetl view list-broken
+
+    # Publish a specific view
+    ./bqetl view list-broken --only telemetry
+    """
+)
+@project_id_option()
+@parallelism_option
+@click.option(
+    "--only",
+    "-o",
+    help="Process only the given tables",
+)
+@click.option(
+    "--log-level",
+    "--log_level",
+    help="Log level.",
+    default=logging.getLevelName(logging.INFO),
+    type=str.upper,
+)
+def list_broken(project_id, parallelism, only, log_level):
+    """List broken views."""
+    broken_views.list_broken_views(project_id, parallelism, only, log_level)

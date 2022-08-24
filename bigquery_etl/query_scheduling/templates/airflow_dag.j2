@@ -172,7 +172,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     {{ task.task_name }}.set_upstream({{ dependency.task_id }})
     {% endif -%}
     {% else -%}
-    {% if (dependency.dag_name, dependency.task_id) not in wait_for_seen -%}
+    {% if dependency.task_key not in wait_for_seen -%}
     wait_for_{{ dependency.task_id }} = ExternalTaskSensor(
         task_id='wait_for_{{ dependency.task_id }}',
         external_dag_id='{{ dependency.dag_name }}',
@@ -186,7 +186,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         failed_states=FAILED_STATES,
         pool='DATA_ENG_EXTERNALTASKSENSOR',
     )
-    {{ wait_for_seen.append((dependency.dag_name, dependency.task_id)) or "" }}
+    {{ wait_for_seen.append(dependency.task_key) or "" }}
     {% endif -%}
 
     {{ task.task_name }}.set_upstream(wait_for_{{ dependency.task_id }})

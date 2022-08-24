@@ -425,8 +425,7 @@ class Task:
 
         def _duplicate_dependency(task_ref):
             return any(
-                d.dag_name == task_ref.dag_name and d.task_id == task_ref.task_id
-                for d in self.depends_on + dependencies
+                d.task_key == task_ref.task_key for d in self.depends_on + dependencies
             )
 
         for table in self._get_referenced_tables():
@@ -461,15 +460,15 @@ class Task:
 
             if len(date_partition_offsets) > 0:
                 self.date_partition_offset = min(date_partition_offsets)
-                date_partition_offset_task_ids = [
-                    f"{dependency.dag_name}.{dependency.task_id}"
+                date_partition_offset_task_keys = [
+                    dependency.task_key
                     for dependency in dependencies
                     if dependency.date_partition_offset == self.date_partition_offset
                 ]
                 logging.info(
                     f"Set {self.task_key} date partition offset"
                     f" to {self.date_partition_offset}"
-                    f" based on {', '.join(date_partition_offset_task_ids)}."
+                    f" based on {', '.join(date_partition_offset_task_keys)}."
                 )
 
         self.upstream_dependencies = dependencies

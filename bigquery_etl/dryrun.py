@@ -347,6 +347,18 @@ class DryRun:
                     ],
                 )
                 job = self.client.query(sql, job_config=job_config)
+                try:
+                    dataset_labels = self.client.get_dataset(job.default_dataset).labels
+                except Exception as e:
+                    # Most users do not have bigquery.datasets.get permission in
+                    # moz-fx-data-shared-prod
+                    # This should not prevent the dry run from running since the dataset
+                    # labels are usually not required
+                    if "Permission bigquery.datasets.get denied on dataset" in str(e):
+                        dataset_labels = []
+                    else:
+                        raise e
+
                 return {
                     "valid": True,
                     "referencedTables": [
@@ -357,9 +369,7 @@ class DryRun:
                         .get("query", {})
                         .get("schema", {})
                     ),
-                    "datasetLabels": (
-                        self.client.get_dataset(job.default_dataset).labels
-                    ),
+                    "datasetLabels": dataset_labels,
                 }
         except Exception as e:
             print(f"{self.sqlfile!s:59} ERROR\n", e)

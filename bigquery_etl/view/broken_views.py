@@ -1,48 +1,39 @@
 """Tool for detecting and deleting broken views."""
 
 import logging
-from argparse import ArgumentParser
 from functools import partial
 from multiprocessing.pool import ThreadPool
 
 from google.api_core.exceptions import Forbidden, NotFound
 from google.cloud import bigquery
 
-from bigquery_etl.util import standard_args  # noqa E402
+from bigquery_etl.cli.utils import table_matches_patterns
 from bigquery_etl.util.bigquery_id import sql_table_id
 
-parser = ArgumentParser(description=__doc__)
-parser.add_argument(
-    "--project_id",
-    "--project-id",
-    default="moz-fx-data-shar-nonprod-efed",
-    help="ID of the project in which to find views",
-)
-standard_args.add_parallelism(parser)
-standard_args.add_dry_run(parser, debug_log_queries=False)
-standard_args.add_log_level(parser)
-standard_args.add_table_filter(parser)
 
-
-def main():
+def list_broken_views(project_id, parallelism, only, log_level):
     """Dry run all views in the configured project and report on broken ones."""
-    args = parser.parse_args()
-
     try:
-        logging.basicConfig(level=args.log_level, format="%(levelname)s %(message)s")
+        logging.basicConfig(level=log_level, format="%(levelname)s %(message)s")
     except ValueError as e:
-        parser.error(f"argument --log-level: {e}")
+        print(f"argument --log-level: {e}")
 
-    client = bigquery.Client(args.project_id)
+    client = bigquery.Client(project_id)
 
-    with ThreadPool(args.parallelism) as pool:
+    table_filter = partial(table_matches_patterns, "*", False)
+
+    if only:
+        table_filter = partial(table_matches_patterns, only, False)
+
+    with ThreadPool(parallelism) as pool:
         views = list_views(
             client=client,
             pool=pool,
-            project_id=args.project_id,
-            only_tables=getattr(args, "only_tables", None),
-            table_filter=args.table_filter,
+            project_id=project_id,
+            only_tables=[only] if only is not None else [],
+            table_filter=table_filter,
         )
+        print(views)
         results = pool.map(partial(dry_run_view, client), views)
     print("Failed with Forbidden error:")
     for result in results:
@@ -59,7 +50,7 @@ def main():
 def list_views(client, pool, project_id, only_tables, table_filter):
     """Make parallel BQ API calls to grab all views.
 
-    See `util.standard_args` for more context on table filtering.
+    See `util.standard_ for more context on table filtering.
 
     :param client:       A BigQuery client object
     :param pool:         A process pool for handling concurrent calls
@@ -80,6 +71,7 @@ def list_views(client, pool, project_id, only_tables, table_filter):
         }
     else:
         datasets = [d.reference.dataset_id for d in client.list_datasets(project_id)]
+
     return [
         sql_table_id(t)
         for tables in pool.map(client.list_tables, datasets)
@@ -112,7 +104,3 @@ def _contains_glob(patterns):
 def _extract_dataset_from_glob(pattern):
     # Assumes globs are in <dataset>.<table> form without a project specified.
     return pattern.split(".", 1)[0]
-
-
-if __name__ == "__main__":
-    main()

@@ -20,13 +20,32 @@ metrics_{{ namespace }} AS (
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
     CASE
-      WHEN metrics.string.metrics_adjust_network NOT IN ('', 'Organic', 'Google Organic Search', 'Untrusted Devices', 'Product Marketing (Owned media)', 'Google Ads ACI') AND metrics.string.metrics_adjust_network IS NOT NULL THEN 'Other'
-      ELSE metrics.string.metrics_adjust_network
-    END AS adjust_network,
+    WHEN
+      ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)] NOT IN (
+        '',
+        'Organic',
+        'Google Organic Search',
+        'Untrusted Devices',
+        'Product Marketing (Owned media)',
+        'Google Ads ACI'
+      )
+      AND ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)] IS NOT NULL
+    THEN
+      'Other'
+    ELSE
+      ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)]
+    END
+    AS adjust_network,
     CASE
-      WHEN metrics.string.metrics_install_source NOT IN ('com.android.vending') AND metrics.string.metrics_install_source IS NOT NULL THEN 'Other'
-      ELSE metrics.string.metrics_install_source
-    END AS install_source,
+    WHEN
+      ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)] NOT IN ('com.android.vending')
+      AND ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)] IS NOT NULL
+    THEN
+      'Other'
+    ELSE
+      ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)]
+    END
+    AS install_source,
     metrics.string.search_default_engine_code AS default_search_engine,
     metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
     sample_id,

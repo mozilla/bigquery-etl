@@ -102,29 +102,31 @@ metrics_org_mozilla_fenix AS (
     client_info.android_sdk_version AS os_version,
     CASE
     WHEN
-      metrics.string.metrics_adjust_network NOT IN (
+      ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)] NOT IN (
         '',
         'Organic',
         'Google Organic Search',
         'Untrusted Devices',
-        'Product Marketing',
+        'Product Marketing (Owned media)',
         'Google Ads ACI'
       )
-      AND metrics.string.metrics_adjust_network IS NOT NULL
+      AND ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)] IS NOT NULL
     THEN
       'Other'
     ELSE
-      metrics.string.metrics_adjust_network
+      ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)]
     END
     AS adjust_network,
     CASE
     WHEN
-      metrics.string.metrics_install_source NOT IN ('com.android.vending')
-      AND metrics.string.metrics_install_source IS NOT NULL
+      ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)] NOT IN (
+        'com.android.vending'
+      )
+      AND ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)] IS NOT NULL
     THEN
       'Other'
     ELSE
-      metrics.string.metrics_install_source
+      ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)]
     END
     AS install_source,
     metrics.string.search_default_engine_code AS default_search_engine,
@@ -164,29 +166,31 @@ metrics_org_mozilla_fenix_nightly AS (
     client_info.android_sdk_version AS os_version,
     CASE
     WHEN
-      metrics.string.metrics_adjust_network NOT IN (
+      ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)] NOT IN (
         '',
         'Organic',
         'Google Organic Search',
         'Untrusted Devices',
-        'Product Marketing',
+        'Product Marketing (Owned media)',
         'Google Ads ACI'
       )
-      AND metrics.string.metrics_adjust_network IS NOT NULL
+      AND ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)] IS NOT NULL
     THEN
       'Other'
     ELSE
-      metrics.string.metrics_adjust_network
+      ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)]
     END
     AS adjust_network,
     CASE
     WHEN
-      metrics.string.metrics_install_source NOT IN ('com.android.vending')
-      AND metrics.string.metrics_install_source IS NOT NULL
+      ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)] NOT IN (
+        'com.android.vending'
+      )
+      AND ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)] IS NOT NULL
     THEN
       'Other'
     ELSE
-      metrics.string.metrics_install_source
+      ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)]
     END
     AS install_source,
     metrics.string.search_default_engine_code AS default_search_engine,
@@ -226,29 +230,31 @@ metrics_org_mozilla_fennec_aurora AS (
     client_info.android_sdk_version AS os_version,
     CASE
     WHEN
-      metrics.string.metrics_adjust_network NOT IN (
+      ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)] NOT IN (
         '',
         'Organic',
         'Google Organic Search',
         'Untrusted Devices',
-        'Product Marketing',
+        'Product Marketing (Owned media)',
         'Google Ads ACI'
       )
-      AND metrics.string.metrics_adjust_network IS NOT NULL
+      AND ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)] IS NOT NULL
     THEN
       'Other'
     ELSE
-      metrics.string.metrics_adjust_network
+      ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)]
     END
     AS adjust_network,
     CASE
     WHEN
-      metrics.string.metrics_install_source NOT IN ('com.android.vending')
-      AND metrics.string.metrics_install_source IS NOT NULL
+      ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)] NOT IN (
+        'com.android.vending'
+      )
+      AND ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)] IS NOT NULL
     THEN
       'Other'
     ELSE
-      metrics.string.metrics_install_source
+      ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)]
     END
     AS install_source,
     metrics.string.search_default_engine_code AS default_search_engine,
@@ -288,29 +294,31 @@ metrics_org_mozilla_firefox_beta AS (
     client_info.android_sdk_version AS os_version,
     CASE
     WHEN
-      metrics.string.metrics_adjust_network NOT IN (
+      ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)] NOT IN (
         '',
         'Organic',
         'Google Organic Search',
         'Untrusted Devices',
-        'Product Marketing',
+        'Product Marketing (Owned media)',
         'Google Ads ACI'
       )
-      AND metrics.string.metrics_adjust_network IS NOT NULL
+      AND ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)] IS NOT NULL
     THEN
       'Other'
     ELSE
-      metrics.string.metrics_adjust_network
+      ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)]
     END
     AS adjust_network,
     CASE
     WHEN
-      metrics.string.metrics_install_source NOT IN ('com.android.vending')
-      AND metrics.string.metrics_install_source IS NOT NULL
+      ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)] NOT IN (
+        'com.android.vending'
+      )
+      AND ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)] IS NOT NULL
     THEN
       'Other'
     ELSE
-      metrics.string.metrics_install_source
+      ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)]
     END
     AS install_source,
     metrics.string.search_default_engine_code AS default_search_engine,
@@ -350,29 +358,31 @@ metrics_org_mozilla_firefox AS (
     client_info.android_sdk_version AS os_version,
     CASE
     WHEN
-      metrics.string.metrics_adjust_network NOT IN (
+      ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)] NOT IN (
         '',
         'Organic',
         'Google Organic Search',
         'Untrusted Devices',
-        'Product Marketing',
+        'Product Marketing (Owned media)',
         'Google Ads ACI'
       )
-      AND metrics.string.metrics_adjust_network IS NOT NULL
+      AND ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)] IS NOT NULL
     THEN
       'Other'
     ELSE
-      metrics.string.metrics_adjust_network
+      ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)]
     END
     AS adjust_network,
     CASE
     WHEN
-      metrics.string.metrics_install_source NOT IN ('com.android.vending')
-      AND metrics.string.metrics_install_source IS NOT NULL
+      ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)] NOT IN (
+        'com.android.vending'
+      )
+      AND ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)] IS NOT NULL
     THEN
       'Other'
     ELSE
-      metrics.string.metrics_install_source
+      ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)]
     END
     AS install_source,
     metrics.string.search_default_engine_code AS default_search_engine,

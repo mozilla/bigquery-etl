@@ -4,6 +4,8 @@ description: |-
 dataset_base_acl: view
 user_facing: true
 labels: {}
+dataset_authorized_by:
+- moz-fx-fxa-prod-0712.fxa_prod_logs
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

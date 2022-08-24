@@ -205,7 +205,8 @@ class Dag:
     def _jinja_env(self):
         """Prepare and load custom formatters into the jinja environment."""
         env = Environment(
-            loader=PackageLoader("bigquery_etl", "query_scheduling/templates")
+            loader=PackageLoader("bigquery_etl", "query_scheduling/templates"),
+            extensions=["jinja2.ext.do"],
         )
 
         # load custom formatters into Jinja env

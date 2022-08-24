@@ -44,4 +44,4 @@ See help for any command:
 $ ./bqetl [command] --help
 ```
 
-<!--- Documentation for comments is generated via bigquery_etl/docs/generate_docs -->
+<!--- Documentation for comments is generated via ./bqetl docs generate -->

@@ -17,6 +17,7 @@ from ..cli.routine import mozfun, routine
 from ..cli.view import view
 from ..dependency import dependency
 from ..glam.cli import glam
+from ..static import static_
 from ..stripe import stripe_
 from ..subplat.apple import apple
 
@@ -37,6 +38,7 @@ def cli(prog_name=None):
         "view": view,
         "alchemer": alchemer_,
         "apple": apple,
+        "static": static_,
     }
 
     @click.group(commands=commands)

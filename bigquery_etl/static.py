@@ -1,16 +1,16 @@
-"""Publish csv files as BigQuery tables."""
+"""Methods for publishing static CSV files to BigQuery."""
 
 import functools
 import glob
 import json
 import logging
 import os
-from argparse import ArgumentParser
 
+import click
 from google.cloud import bigquery
 
+from bigquery_etl.cli.utils import project_id_option
 from bigquery_etl.metadata.parse_metadata import DATASET_METADATA_FILE, DatasetMetadata
-from bigquery_etl.util import standard_args
 from bigquery_etl.util.common import project_dirs
 
 DATA_FILENAME = "data.csv"
@@ -18,19 +18,49 @@ SCHEMA_FILENAME = "schema.json"
 DESCRIPTION_FILENAME = "description.txt"
 
 
-def _parse_args():
-    parser = ArgumentParser(__doc__)
-    parser.add_argument(
-        "--project-id",
-        "--project_id",
-        help=(
-            "Project to publish static tables for.  If this is `mozdata` it will publish"
-            " static tables from user-facing datasets in `moz-fx-data-shared-prod` to"
-            " corresponding datasets in `mozdata`."
-        ),
-    )
-    standard_args.add_log_level(parser)
-    return parser.parse_args()
+@click.group("static", help="Commands for working with static CSV files.")
+def static_():
+    """Create the CLI group for static commands."""
+    pass
+
+
+@static_.command("publish", help="Publish CSV files as BigQuery tables.")
+@project_id_option()
+def publish(project_id):
+    """Publish CSV files as BigQuery tables."""
+    source_project = project_id
+    target_project = project_id
+    if target_project == "mozdata":
+        source_project = "moz-fx-data-shared-prod"
+
+    for project_dir in project_dirs(source_project):
+        # Assumes directory structure is project/dataset/table/files.
+        for data_file_path in glob.iglob(
+            os.path.join(project_dir, "*", "*", DATA_FILENAME)
+        ):
+            table_dir = os.path.dirname(data_file_path)
+            dataset_dir = os.path.dirname(table_dir)
+            if target_project == "mozdata" and not _is_user_facing_dataset(dataset_dir):
+                logging.debug(
+                    f"Skipping `{data_file_path}` for {target_project} because it isn't"
+                    " in a user-facing dataset."
+                )
+                continue
+
+            schema_file_path = os.path.join(table_dir, SCHEMA_FILENAME)
+            if not os.path.exists(schema_file_path):
+                schema_file_path = None
+
+            description_file_path = os.path.join(table_dir, DESCRIPTION_FILENAME)
+            if not os.path.exists(description_file_path):
+                description_file_path = None
+
+            _load_table(
+                data_file_path,
+                schema_file_path,
+                description_file_path,
+                target_project,
+            )
 
 
 def _load_table(
@@ -96,46 +126,3 @@ def _is_user_facing_dataset(dataset_directory):
         os.path.exists(dataset_metadata_file_path)
         and DatasetMetadata.from_file(dataset_metadata_file_path).user_facing
     )
-
-
-def main():
-    """Publish csv files as BigQuery tables."""
-    args = _parse_args()
-
-    source_project = args.project_id
-    target_project = args.project_id
-    if target_project == "mozdata":
-        source_project = "moz-fx-data-shared-prod"
-
-    for project_dir in project_dirs(source_project):
-        # Assumes directory structure is project/dataset/table/files.
-        for data_file_path in glob.iglob(
-            os.path.join(project_dir, "*", "*", DATA_FILENAME)
-        ):
-            table_dir = os.path.dirname(data_file_path)
-            dataset_dir = os.path.dirname(table_dir)
-            if target_project == "mozdata" and not _is_user_facing_dataset(dataset_dir):
-                logging.debug(
-                    f"Skipping `{data_file_path}` for {target_project} because it isn't"
-                    " in a user-facing dataset."
-                )
-                continue
-
-            schema_file_path = os.path.join(table_dir, SCHEMA_FILENAME)
-            if not os.path.exists(schema_file_path):
-                schema_file_path = None
-
-            description_file_path = os.path.join(table_dir, DESCRIPTION_FILENAME)
-            if not os.path.exists(description_file_path):
-                description_file_path = None
-
-            _load_table(
-                data_file_path,
-                schema_file_path,
-                description_file_path,
-                target_project,
-            )
-
-
-if __name__ == "__main__":
-    main()

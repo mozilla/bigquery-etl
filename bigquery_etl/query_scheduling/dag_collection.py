@@ -1,5 +1,6 @@
 """Represents a collection of configured Airflow DAGs."""
 
+from collections import defaultdict
 from functools import partial
 from itertools import groupby
 from multiprocessing import get_context, set_start_method
@@ -19,27 +20,6 @@ class DagCollection:
         """Instantiate DAGs."""
         self.dags = dags
         self.dags_by_name = {dag.name: dag for dag in dags}
-
-    @property
-    def downstream_tasks(self):
-        """Return collection to quickly lookup downstream tasks."""
-        # use cached information about downstream tasks
-        if downstream_tasks := getattr(self, "_downstream_tasks", None):
-            return downstream_tasks
-
-        # if no information has been cached, then determine downstream tasks
-        # based on the information on existing upstream dependencies
-        self._downstream_tasks = {}
-        for dag in self.dags:
-            for task in dag.tasks:
-                for upstream_dependency in task.depends_on + task.upstream_dependencies:
-                    if upstream_dependency.dag_name != task.dag_name:
-                        if upstream_dependency in self._downstream_tasks:
-                            self._downstream_tasks[upstream_dependency].append(task)
-                        else:
-                            self._downstream_tasks[upstream_dependency] = [task]
-
-        return self._downstream_tasks
 
     @classmethod
     def from_dict(cls, d):
@@ -121,6 +101,24 @@ class DagCollection:
 
         return self
 
+    def get_task_downstream_dependencies(self, task):
+        """Return all direct downstream dependencies of the task."""
+        # Cache the downstream dependencies for faster lookups.
+        if not hasattr(self, "_downstream_dependencies"):
+            downstream_dependencies = defaultdict(list)
+            for dag in self.dags:
+                for _task in dag.tasks:
+                    _task.with_upstream_dependencies(self)
+                    for upstream_dependency in (
+                        _task.depends_on + _task.upstream_dependencies
+                    ):
+                        downstream_dependencies[upstream_dependency.task_key].append(
+                            _task.to_ref(self)
+                        )
+            self._downstream_dependencies = downstream_dependencies
+
+        return self._downstream_dependencies[task.task_key]
+
     def dag_to_airflow(self, output_dir, dag):
         """Generate the Airflow DAG representation for the provided DAG."""
         output_file = Path(output_dir) / (dag.name + ".py")
@@ -128,16 +126,6 @@ class DagCollection:
             dag.to_airflow_dag(), fast=False, mode=FileMode()
         )
         output_file.write_text(formatted_dag)
-
-    def _get_upstream_dependencies(self, dag):
-        for task in dag.tasks:
-            task.with_upstream_dependencies(self)
-        return dag
-
-    def _get_downstream_dependencies(self, dag):
-        for task in dag.tasks:
-            task.with_downstream_dependencies(self)
-        return dag
 
     def to_airflow_dags(self, output_dir, dag_to_generate=None):
         """Write DAG representation as Airflow dags to file."""
@@ -147,8 +135,8 @@ class DagCollection:
 
         # Generate a single DAG:
         if dag_to_generate is not None:
-            dag_to_generate = self._get_upstream_dependencies(dag_to_generate)
-            dag_to_generate = self._get_downstream_dependencies(dag_to_generate)
+            dag_to_generate.with_upstream_dependencies(self)
+            dag_to_generate.with_downstream_dependencies(self)
             self.dag_to_airflow(output_dir, dag_to_generate)
             return
 
@@ -158,11 +146,9 @@ class DagCollection:
         except Exception:
             pass
 
-        with get_context("spawn").Pool(8) as p:
-            self.dags = p.map(self._get_upstream_dependencies, self.dags)
-
-        with get_context("spawn").Pool(8) as p:
-            self.dags = p.map(self._get_downstream_dependencies, self.dags)
+        for dag in self.dags:
+            dag.with_upstream_dependencies(self)
+            dag.with_downstream_dependencies(self)
 
         to_airflow_dag = partial(self.dag_to_airflow, output_dir)
         with get_context("spawn").Pool(8) as p:

@@ -1,9 +1,10 @@
 """Generate docs for bqetl commands."""
 
-import click
-from jinja2 import Environment, FileSystemLoader
 import os
 from pathlib import Path
+
+import click
+from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.cli.dag import dag
 from bigquery_etl.cli.dryrun import dryrun
@@ -11,7 +12,6 @@ from bigquery_etl.cli.format import format
 from bigquery_etl.cli.query import query
 from bigquery_etl.cli.routine import mozfun, routine
 from bigquery_etl.dependency import dependency
-
 
 # commands to document
 COMMANDS = {

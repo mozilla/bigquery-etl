@@ -88,7 +88,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             execution_date="{% raw %}{{{% endraw %} (execution_date - {{ downstream_task.get_execution_delta(schedule_interval) | format_timedelta_macro }}).isoformat() {% raw %}}}{% endraw %}",
             {% endif -%}
         )
-        {{ seenDownstreamDags.append(downstream_task.dag_name) or "" }}
+        {% do seenDownstreamDags.append(downstream_task.dag_name) %}
         {% endif -%}
         {% endfor -%}
         {% for downstream_task in task.external_downstream_tasks | sort(attribute='task_id') -%}
@@ -101,7 +101,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             execution_date="{% raw %}{{{% endraw %} (execution_date + {{ downstream_task.get_execution_delta(schedule_interval) | format_timedelta_macro }}).isoformat() {% raw %}}}{% endraw %}",
             {% endif -%}
         )
-        {{ seenDownstreamDags.append(downstream_task.dag_name) or "" }}
+        {% do seenDownstreamDags.append(downstream_task.dag_name) %}
         {% endif -%}
         {% endfor -%}
 

@@ -55,8 +55,17 @@ def is_valid_project(ctx, param, value):
 
 def table_matches_patterns(pattern, invert, table):
     """Check if tables match pattern."""
-    pattern = re.compile(fnmatch.translate(pattern))
-    return (pattern.match(table) is not None) != invert
+    if not isinstance(pattern, list):
+        pattern = [pattern]
+
+    matching = False
+    for p in pattern:
+        compiled_pattern = re.compile(fnmatch.translate(p))
+        if (compiled_pattern.match(table) is not None) != invert:
+            matching = True
+            break
+
+    return matching
 
 
 def paths_matching_name_pattern(pattern, sql_path, project_id, files=("*.sql")):

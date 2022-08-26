@@ -1,0 +1,27 @@
+friendly_name: Aggregate for investigation of incidents
+description: |-
+  The purpose of this aggregates is to facilitate the investigation
+  of Firefox Android incidents. It adds the first attribution to the
+  available dimensions.
+  Requirement definition:
+  https://docs.google.com/document/d/1fGBDDHIhdR-sBBbaAkAScN-D2dARJidBBTcM7832c7o/edit#
+owners:
+- lvargas@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_analytics_aggregations
+  task_name: investigation_aggregates
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - country
+    - channel
+    - install_source
+    - adjust_network
+references: {}

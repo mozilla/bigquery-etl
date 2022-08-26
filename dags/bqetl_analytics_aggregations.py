@@ -96,6 +96,22 @@ with DAG(
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
+    investigation_aggregates = bigquery_etl_query(
+        task_id="investigation_aggregates",
+        destination_table='investigation_aggregates_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="lvargas@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
+    )
+
     telemetry_derived__cohort_daily_statistics__v1 = bigquery_etl_query(
         task_id="telemetry_derived__cohort_daily_statistics__v1",
         destination_table='cohort_daily_statistics_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
@@ -134,6 +150,22 @@ with DAG(
     )
 
     active_users_aggregates_v1.set_upstream(
+        wait_for_telemetry_derived__unified_metrics__v1
+    )
+
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    investigation_aggregates.set_upstream(wait_for_copy_deduplicate_all)
+    investigation_aggregates.set_upstream(
         wait_for_telemetry_derived__unified_metrics__v1
     )
 

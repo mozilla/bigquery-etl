@@ -3,6 +3,6 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   * REPLACE (COALESCE(country, '??') AS country),
-  `mozfun.norm.browser_version_info`(app_version) as browser_version_info
+  `mozfun.norm.browser_version_info`(app_version) AS browser_version_info
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.unified_metrics_v1`

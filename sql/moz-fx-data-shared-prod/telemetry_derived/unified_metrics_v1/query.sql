@@ -1,4 +1,18 @@
-WITH unioned_source AS (
+WITH ios_is_default_browser AS (
+SELECT client_info.client_id AS client_id,
+          DATE(submission_timestamp) AS submission_date,
+          SUM(COALESCE(metrics.counter.app_opened_as_default_browser, 0)) > 0 AS is_default_browser,
+
+   FROM org_mozilla_ios_firefox.metrics m
+   WHERE DATE(submission_timestamp) >= DATE(2021, 1, 1)
+     AND CAST(REGEXP_EXTRACT(client_info.app_display_version, r'^([0-9]+\.[0-9]+)') AS float64) >= 29.2 -- ability to set default browser started in iOS 14
+     AND CAST(REGEXP_EXTRACT(client_info.os_version, r'^([0-9]+\.[0-9]+)') AS float64) >= 14.0
+     AND sample_id < 20
+   GROUP BY 1,
+            2
+ )
+,
+unioned_source AS (
   SELECT
     submission_date,
     normalized_channel,
@@ -27,33 +41,38 @@ WITH unioned_source AS (
   WHERE
     submission_date = @submission_date
   UNION ALL
-  SELECT
-    submission_date,
-    normalized_channel,
-    client_id,
-    sample_id,
-    days_since_seen,
-    days_seen_bits,
-    days_created_profile_bits,
-    durations,
-    normalized_os,
-    normalized_os_version,
-    locale,
-    city,
-    country,
-    app_display_version,
-    device_model,
-    first_seen_date,
-    submission_date = first_seen_date AS is_new_profile,
-    uri_count,
-    is_default_browser,
+SELECT
+    clsj.submission_date,
+    clsj.normalized_channel,
+    clsj.client_id,
+    clsj.sample_id,
+    clsj.days_since_seen,
+    clsj.days_seen_bits,
+    clsj.days_created_profile_bits,
+    clsj.durations,
+    clsj.normalized_os,
+    clsj.normalized_os_version,
+    clsj.locale,
+    clsj.city,
+    clsj.country,
+    clsj.app_display_version,
+    clsj.device_model,
+    clsj.first_seen_date,
+    clsj.submission_date = first_seen_date AS is_new_profile,
+    clsj.uri_count,
+    ios_db.is_default_browser,
     CAST(NULL AS string) AS distribution_id,
-    isp,
+    clsj.isp,
     'Firefox iOS' AS normalized_app_name
   FROM
-    firefox_ios.clients_last_seen_joined
+    firefox_ios.clients_last_seen_joined clsj
+  LEFT JOIN
+    ios_is_default_browser ios_db
+    ON ios_db.client_id = clsj.client_id
+    AND ios_db.submission_date = clsj.submission_date
   WHERE
-    submission_date = @submission_date
+    clsj.submission_date = @submission_date
+   -- AND ios_db.is_default_browser is not null  -- Prior to v. 14, we couldn't identify if default browser was set to default, so we will get nulls
   UNION ALL
   SELECT
     submission_date,
@@ -300,6 +319,7 @@ desktop AS (
   WHERE
     submission_date = @submission_date
 )
+
 SELECT
   *
 FROM

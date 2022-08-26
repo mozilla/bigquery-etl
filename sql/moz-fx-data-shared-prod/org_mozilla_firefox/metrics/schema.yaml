@@ -2708,6 +2708,15 @@ fields:
       mode: NULLABLE
       name: customize_home_opening_screen
       type: STRING
+    - description: "The option user has selected in the \"Custom\" mode of the\nEnhanced\
+        \ Tracking Protection settings.\nPossible values:\n- total-protection for\
+        \ \u201CIsolate cross-site cookies\u201D\n- social for \u201CCross-site and\
+        \ social media trackers\u201D\n- unvisited for \u201CCookies from unvisited\
+        \ sites\u201D\n- third-party for \u201CAll third-party cookies..\u201D\n-\
+        \ all for \u201CAll cookies..\u201D\n"
+      mode: NULLABLE
+      name: preferences_etp_custom_cookies_selection
+      type: STRING
     mode: NULLABLE
     name: string
     type: RECORD

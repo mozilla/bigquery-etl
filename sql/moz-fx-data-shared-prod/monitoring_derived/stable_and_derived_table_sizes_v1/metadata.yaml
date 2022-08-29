@@ -1,7 +1,7 @@
 ---
-friendly_name: Stable Table Sizes
+friendly_name: Stable & Derived Table Sizes
 description: >
-  Table sizes of stable tables, partitioned by day.
+  Table sizes of stable and derived tables, partitioned by day.
 owners:
   - ascholtz@mozilla.com
 labels:

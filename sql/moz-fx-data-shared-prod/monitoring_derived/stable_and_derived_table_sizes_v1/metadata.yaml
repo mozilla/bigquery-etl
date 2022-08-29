@@ -9,7 +9,8 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_monitoring
-  arguments: ["--date", "{{ ds }}"]
+  # Delay by 1 day to allow all derived tables to get populated for the date.
+  arguments: ["--date", "{{ macros.ds_add(ds, -1) }}"]
   referenced_tables:
     - ['moz-fx-data-shared-prod', '*_stable', '*']
     - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v4']

@@ -6,7 +6,11 @@ from typing import Dict, List
 from jinja2 import Environment, PackageLoader
 
 from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.util.probe_filters import get_etl_excluded_probes_quickfix, get_most_used_probes
+from bigquery_etl.util.glam_probe_utils import (
+    get_etl_excluded_probes_quickfix,
+    get_most_used_probes,
+    probe_is_recent_glean,
+)
 
 from .utils import get_schema, ping_type_from_table
 
@@ -31,7 +35,7 @@ def render_main(**kwargs):
     return reformat(main_sql.render(**kwargs))
 
 
-def get_distribution_metrics(schema: Dict) -> Dict[str, List[str]]:
+def get_distribution_metrics(schema: Dict, product: str) -> Dict[str, List[str]]:
     """Find all distribution-like metrics in a Glean table.
 
     Metric types are defined in the Glean documentation found here:
@@ -56,7 +60,10 @@ def get_distribution_metrics(schema: Dict) -> Dict[str, List[str]]:
             if metric_type not in metric_type_set:
                 continue
             for field in metric_field["fields"]:
-                if field["name"] in most_used_metrics and field["name"] not in excluded_metrics:
+                if (
+                    field["name"] in most_used_metrics
+                    or probe_is_recent_glean(field["name"], product)
+                ) and field["name"] not in excluded_metrics:
                     metrics[metric_type].append(field["name"])
     return metrics
 
@@ -118,7 +125,7 @@ def main():
     filter_desktop_builds = True if args.product == "firefox_desktop" else False
 
     schema = get_schema(args.source_table)
-    distributions = get_distribution_metrics(schema)
+    distributions = get_distribution_metrics(schema, args.product)
     metrics_sql = get_metrics_sql(distributions).strip()
     if not metrics_sql:
         print(header)

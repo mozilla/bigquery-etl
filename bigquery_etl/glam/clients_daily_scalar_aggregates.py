@@ -7,7 +7,11 @@ from typing import Dict, List
 from jinja2 import Environment, PackageLoader
 
 from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.util.probe_filters import get_etl_excluded_probes_quickfix, get_most_used_probes
+from bigquery_etl.util.glam_probe_utils import (
+    get_etl_excluded_probes_quickfix,
+    get_most_used_probes,
+    probe_is_recent_glean,
+)
 
 from .utils import get_schema, ping_type_from_table
 
@@ -86,7 +90,9 @@ def get_unlabeled_metrics_sql(probes: Dict[str, List[str]]) -> str:
     return probes_arr
 
 
-def get_scalar_metrics(schema: Dict, scalar_type: str) -> Dict[str, List[str]]:
+def get_scalar_metrics(
+    schema: Dict, scalar_type: str, product: str
+) -> Dict[str, List[str]]:
     """Find all scalar probes in a Glean table.
 
     Metric types are defined in the Glean documentation found here:
@@ -113,7 +119,10 @@ def get_scalar_metrics(schema: Dict, scalar_type: str) -> Dict[str, List[str]]:
             if metric_type not in metric_type_set[scalar_type]:
                 continue
             for field in metric_field["fields"]:
-                if field["name"] in most_used_metrics and field["name"] not in excluded_metrics:
+                if (
+                    field["name"] in most_used_metrics
+                    or probe_is_recent_glean(field["name"], product)
+                ) and field["name"] not in excluded_metrics:
                     scalars[metric_type].append(field["name"])
     return scalars
 
@@ -153,8 +162,8 @@ def main():
     filter_desktop_builds = True if args.product == "firefox_desktop" else False
 
     schema = get_schema(args.source_table)
-    unlabeled_metric_names = get_scalar_metrics(schema, "unlabeled")
-    labeled_metric_names = get_scalar_metrics(schema, "labeled")
+    unlabeled_metric_names = get_scalar_metrics(schema, "unlabeled", args.product)
+    labeled_metric_names = get_scalar_metrics(schema, "labeled", args.product)
     unlabeled_metrics = get_unlabeled_metrics_sql(unlabeled_metric_names).strip()
     labeled_metrics = get_labeled_metrics_sql(labeled_metric_names).strip()
 

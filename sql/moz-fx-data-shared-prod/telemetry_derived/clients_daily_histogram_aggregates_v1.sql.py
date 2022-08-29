@@ -10,7 +10,7 @@ from pathlib import Path
 from time import sleep
 
 from google.cloud import bigquery
-from bigquery_etl.util import probe_filters
+from bigquery_etl.util.glam_probe_utils import get_etl_excluded_probes_quickfix, get_most_used_probes, probe_is_recent_legacy
 
 sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
 from bigquery_etl.format_sql.formatter import reformat
@@ -456,20 +456,24 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
 
     with urllib.request.urlopen(PROBE_INFO_SERVICE) as url:
         data = json.loads(gzip.decompress(url.read()).decode())
-        excluded_probes = probe_filters.get_etl_excluded_probes_quickfix("desktop")
-        most_used_probes = probe_filters.get_most_used_probes()
-        histogram_probes = {
-            x.replace("histogram/", "").replace(".", "_").lower()
-            for x in data.keys()
-            if x.startswith("histogram/")
-        }
+        excluded_probes = get_etl_excluded_probes_quickfix("desktop")
+        most_used_probes = get_most_used_probes()
 
+        histogram_probes = []
+        recent_probes = []
+        for x in data.keys():
+            if x.startswith("histogram/"):
+                probe_name = x.replace("histogram/", "").replace(".", "_").lower()
+                histogram_probes.append(probe_name)
+                if probe_is_recent_legacy(data[x]):
+                    recent_probes.append(probe_name)
+        allowed_probes = most_used_probes + recent_probes
         bucket_details = {}
         relevant_probes = {
             histogram: {"processes": process}
             for histogram, process in main_summary_histograms.items()
             if histogram in histogram_probes
-            and histogram in most_used_probes
+            and histogram in allowed_probes
             and histogram not in excluded_probes
         }
         for key in data.keys():

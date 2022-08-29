@@ -1172,6 +1172,30 @@ fields:
       mode: NULLABLE
       name: firefox_home_page_synced_tab_tile_view
       type: INTEGER
+    - description: 'Counts the number of times a user creates a new tab from the
+
+        page action menu.
+
+        '
+      mode: NULLABLE
+      name: page_action_menu_create_new_tab
+      type: INTEGER
+    - description: 'Counts the number of times a user navigates to the downloads panel
+
+        from the page action menu.
+
+        '
+      mode: NULLABLE
+      name: page_action_menu_view_downloads_panel
+      type: INTEGER
+    - description: 'Counts the number of times a user navigates to the history panel
+
+        from the page action menu.
+
+        '
+      mode: NULLABLE
+      name: page_action_menu_view_history_panel
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

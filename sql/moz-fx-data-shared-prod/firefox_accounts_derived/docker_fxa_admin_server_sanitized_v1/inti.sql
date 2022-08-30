@@ -1,5 +1,4 @@
 -- Query for creating firefox_accounts_derived.docker_fxa_admin_server_sanitized_v1
-
 CREATE OR REPLACE TABLE
   firefox_accounts_derived.docker_fxa_admin_server_sanitized_v1
 PARTITION BY
@@ -24,4 +23,4 @@ SELECT
 FROM
   `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_admin_server_20*`
 WHERE
-  DATE(timestamp) >= DATE("2022-08-01")
+  _TABLE_SUFFIX >= FORMAT_DATE('%y%m%d', DATE("2022-08-01"))

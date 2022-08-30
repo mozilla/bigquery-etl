@@ -10,7 +10,7 @@ fields:
 - description: null
   mode: NULLABLE
   name: sample_id
-  type: STRING
+  type: INTEGER
 - description: null
   mode: NULLABLE
   name: application_name

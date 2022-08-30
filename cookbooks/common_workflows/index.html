@@ -2482,6 +2482,12 @@ SELECT
 <li>Open the <code>query.sql</code> file inside the <code>&lt;dataset&gt;.&lt;table&gt;</code> location and add the new definitions for the field.</li>
 <li>Run <code>./bqetl format &lt;path to the query&gt;</code> to format the query. Alternatively, run <code>./bqetl format $(git ls-tree -d HEAD --name-only)</code> validate the format of all queries that have been modified.</li>
 <li>Run <code>./bqetl query validate &lt;dataset&gt;.&lt;table&gt;</code> to dry run the query.</li>
+</ol>
+<p>For data scientists (and anyone without <code>jobs.create</code> permissions in <code>moz-fx-data-shared-prod</code>), run: </p>
+<p><code>gcloud auth login --update-adc   # to authenticate to GCP
+    gcloud config set project mozdata    # to set the project
+    ./bqetl query validate --use-cloud-function=false --project-id=mozdata &lt;full path to the query file&gt;</code></p>
+<ol>
 <li>Run <code>./bqetl query schema update &lt;dataset&gt;.&lt;table&gt; --update_downstream</code> to make local schema.yaml updates and update schemas of downstream dependencies.</li>
 <li>[x] This requires <a href="https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#bigquery-access-request">GCP access</a>.</li>
 <li>[x] <code>--update_downstream</code> is optional as it takes longer. It is recommended when you know that there are downstream dependencies whose <code>schema.yaml</code> need to be updated, in which case, the update will happen automatically.</li>

@@ -4,51 +4,9 @@ fields:
   mode: NULLABLE
   name: additional_properties
   type: STRING
-- mode: NULLABLE
-  name: addon_version
-  type: STRING
-- description: A mirror of the browser sessionId, as defined in https://github.com/mozilla-services/mozilla-pipeline-schemas/blob/main/schemas/telemetry/main/main.4.schema.json
-  mode: NULLABLE
-  name: browser_session_id
-  type: STRING
-- mode: NULLABLE
-  name: client_id
-  type: STRING
 - description: The document ID specified in the URI when the client sent this message
   mode: NULLABLE
   name: document_id
-  type: STRING
-- description: An event identifier
-  mode: NULLABLE
-  name: event
-  type: STRING
-- description: A string that describes the context about this event
-  mode: NULLABLE
-  name: event_context
-  type: STRING
-- description: 'An object to record all active experiments, experiments IDs are stored
-    as keys, and the value object stores the branch information. Example: {"experiment_1":
-    {"branch": "control"}, "experiment_2": {"branch": "treatment"}}. This deprecates
-    the "shield_id" used in activity-stream and messaging-system.'
-  fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - fields:
-    - mode: NULLABLE
-      name: branch
-      type: STRING
-    mode: NULLABLE
-    name: value
-    type: RECORD
-  mode: REPEATED
-  name: experiments
-  type: RECORD
-- mode: NULLABLE
-  name: locale
-  type: STRING
-- mode: NULLABLE
-  name: message_id
   type: STRING
 - fields:
   - description: Results of a geographic lookup based on the client's IP address
@@ -90,10 +48,6 @@ fields:
       mode: NULLABLE
       name: x_debug_id
       type: STRING
-    - description: X-Foxsec-IP-Reputation header
-      mode: NULLABLE
-      name: x_foxsec_ip_reputation
-      type: STRING
     - description: X-PingSender-Version HTTP header
       mode: NULLABLE
       name: x_pingsender_version
@@ -105,6 +59,10 @@ fields:
     - description: X-Telemetry-Agent HTTP header
       mode: NULLABLE
       name: x_telemetry_agent
+      type: STRING
+    - description: X-Foxsec-IP-Reputation header
+      mode: NULLABLE
+      name: x_foxsec_ip_reputation
       type: STRING
     - description: X-LB-Tags HTTP header
       mode: NULLABLE
@@ -129,6 +87,37 @@ fields:
     mode: NULLABLE
     name: header
     type: RECORD
+  - description: Components of the URI to which this ping was sent
+    fields:
+    - mode: NULLABLE
+      name: app_build_id
+      type: STRING
+    - mode: NULLABLE
+      name: app_name
+      type: STRING
+    - mode: NULLABLE
+      name: app_update_channel
+      type: STRING
+    - mode: NULLABLE
+      name: app_version
+      type: STRING
+    mode: NULLABLE
+    name: uri
+    type: RECORD
+  - description: Parsed components of the client's user agent string
+    fields:
+    - mode: NULLABLE
+      name: browser
+      type: STRING
+    - mode: NULLABLE
+      name: os
+      type: STRING
+    - mode: NULLABLE
+      name: version
+      type: STRING
+    mode: NULLABLE
+    name: user_agent
+    type: RECORD
   - description: Results of ISP lookup based on the client's IP address
     fields:
     - description: The specific geo ISP database version used for this lookup
@@ -146,20 +135,6 @@ fields:
       type: STRING
     mode: NULLABLE
     name: isp
-    type: RECORD
-  - description: Parsed components of the client's user agent string
-    fields:
-    - mode: NULLABLE
-      name: browser
-      type: STRING
-    - mode: NULLABLE
-      name: os
-      type: STRING
-    - mode: NULLABLE
-      name: version
-      type: STRING
-    mode: NULLABLE
-    name: user_agent
     type: RECORD
   mode: NULLABLE
   name: metadata
@@ -183,9 +158,6 @@ fields:
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
-- mode: NULLABLE
-  name: release_channel
-  type: STRING
 - description: Hashed version of client_id (if present) useful for partitioning; ranges
     from 0 to 99
   mode: NULLABLE
@@ -195,6 +167,3 @@ fields:
   mode: NULLABLE
   name: submission_timestamp
   type: TIMESTAMP
-- mode: NULLABLE
-  name: version
-  type: STRING

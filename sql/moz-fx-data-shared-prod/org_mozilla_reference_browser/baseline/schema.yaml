@@ -51,12 +51,6 @@ fields:
     mode: NULLABLE
     name: first_run_date
     type: STRING
-  - description: The locale of the application during initialization (e.g. "es-ES").
-      If the locale can't be determined on the system, the value is ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
-      to indicate "undetermined".
-    mode: NULLABLE
-    name: locale
-    type: STRING
   - description: 'The name of the operating system. Possible values: Android, iOS,
       Linux, Darwin, Windows, FreeBSD, NetBSD, OpenBSD, Solaris, unknown'
     mode: NULLABLE
@@ -70,6 +64,12 @@ fields:
   - description: The version of the Glean SDK
     mode: NULLABLE
     name: telemetry_sdk_build
+    type: STRING
+  - description: The locale of the application during initialization (e.g. "es-ES").
+      If the locale can't be determined on the system, the value is ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
+      to indicate "undetermined".
+    mode: NULLABLE
+    name: locale
     type: STRING
   - description: The date & time the application was built
     mode: NULLABLE
@@ -145,10 +145,6 @@ fields:
       mode: NULLABLE
       name: x_debug_id
       type: STRING
-    - description: X-Foxsec-IP-Reputation header
-      mode: NULLABLE
-      name: x_foxsec_ip_reputation
-      type: STRING
     - description: X-PingSender-Version HTTP header
       mode: NULLABLE
       name: x_pingsender_version
@@ -160,6 +156,10 @@ fields:
     - description: X-Telemetry-Agent HTTP header
       mode: NULLABLE
       name: x_telemetry_agent
+      type: STRING
+    - description: X-Foxsec-IP-Reputation header
+      mode: NULLABLE
+      name: x_foxsec_ip_reputation
       type: STRING
     - description: X-LB-Tags HTTP header
       mode: NULLABLE
@@ -184,6 +184,20 @@ fields:
     mode: NULLABLE
     name: header
     type: RECORD
+  - description: Parsed components of the client's user agent string
+    fields:
+    - mode: NULLABLE
+      name: browser
+      type: STRING
+    - mode: NULLABLE
+      name: os
+      type: STRING
+    - mode: NULLABLE
+      name: version
+      type: STRING
+    mode: NULLABLE
+    name: user_agent
+    type: RECORD
   - description: Results of ISP lookup based on the client's IP address
     fields:
     - description: The specific geo ISP database version used for this lookup
@@ -202,42 +216,42 @@ fields:
     mode: NULLABLE
     name: isp
     type: RECORD
-  - description: Parsed components of the client's user agent string
-    fields:
-    - mode: NULLABLE
-      name: browser
-      type: STRING
-    - mode: NULLABLE
-      name: os
-      type: STRING
-    - mode: NULLABLE
-      name: version
-      type: STRING
-    mode: NULLABLE
-    name: user_agent
-    type: RECORD
   mode: NULLABLE
   name: metadata
   type: RECORD
 - fields:
   - fields:
-    - description: True iff the type of the disk the current Firefox profile is stored
-        on is an SSD. (Windows only).
+    - description: 'The locale of the application during initialization (e.g. "es-ES").
+
+        If the locale can''t be determined on the system, the value is
+
+        ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
+
+        to indicate "undetermined".
+
+        '
       mode: NULLABLE
-      name: fog_validation_profile_disk_is_ssd
-      type: BOOLEAN
+      name: glean_baseline_locale
+      type: STRING
     mode: NULLABLE
-    name: boolean
+    name: string
     type: RECORD
   - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: jwe
+    - description: 'The duration of the last foreground session.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: NULLABLE
+      name: glean_baseline_duration
+      type: RECORD
+    mode: NULLABLE
+    name: timespan
     type: RECORD
   - fields:
     - description: 'Counts the number of times a metric was set with an invalid label.
@@ -255,7 +269,7 @@ fields:
       mode: REPEATED
       name: glean_error_invalid_label
       type: RECORD
-    - description: 'Counts the number of times a metric was set a value that overflowed.
+    - description: 'Counts the number of times a metric was set to an invalid value.
 
         The labels are the `category.name` identifier of the metric.
 
@@ -268,7 +282,7 @@ fields:
         name: value
         type: INTEGER
       mode: REPEATED
-      name: glean_error_invalid_overflow
+      name: glean_error_invalid_value
       type: RECORD
     - description: 'Counts the number of times a timing metric was used incorrectly.
 
@@ -285,7 +299,7 @@ fields:
       mode: REPEATED
       name: glean_error_invalid_state
       type: RECORD
-    - description: 'Counts the number of times a metric was set to an invalid value.
+    - description: 'Counts the number of times a metric was set a value that overflowed.
 
         The labels are the `category.name` identifier of the metric.
 
@@ -298,10 +312,55 @@ fields:
         name: value
         type: INTEGER
       mode: REPEATED
-      name: glean_error_invalid_value
+      name: glean_error_invalid_overflow
+      type: RECORD
+    - description: "A count of the pings submitted, by ping type.\n\nThis metric appears\
+        \ in both the metrics and baseline pings.\n\n- On the metrics ping, the counts\
+        \ include the number of pings sent since\n  the last metrics ping (including\
+        \ the last metrics ping)\n- On the baseline ping, the counts include the number\
+        \ of pings send since\n  the last baseline ping (including the last baseline\
+        \ ping)\n"
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: glean_validation_pings_submitted
       type: RECORD
     mode: NULLABLE
     name: labeled_counter
+    type: RECORD
+  - fields:
+    - description: The number of metrics pings sent during the lifetime of this baseline
+        ping.
+      mode: NULLABLE
+      name: glean_validation_metrics_ping_count
+      type: INTEGER
+    mode: NULLABLE
+    name: counter
+    type: RECORD
+  - fields:
+    - mode: NULLABLE
+      name: key
+      type: STRING
+    - mode: NULLABLE
+      name: value
+      type: STRING
+    mode: REPEATED
+    name: jwe
+    type: RECORD
+  - fields:
+    - description: 'The hour of the first run of the application.
+
+        '
+      mode: NULLABLE
+      name: glean_validation_first_run_hour
+      type: STRING
+    mode: NULLABLE
+    name: datetime
     type: RECORD
   - fields:
     - mode: NULLABLE
@@ -328,25 +387,6 @@ fields:
     name: labeled_rate
     type: RECORD
   - fields:
-    - description: The version of the OS running Firefox, as detected by Gecko. To
-        be sent only in the "fog-validation" ping.
-      mode: NULLABLE
-      name: fog_validation_os_version
-      type: STRING
-    mode: NULLABLE
-    name: string
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: text
-    type: RECORD
-  - fields:
     - mode: NULLABLE
       name: key
       type: STRING
@@ -357,13 +397,14 @@ fields:
     name: url
     type: RECORD
   - fields:
-    - description: The Telemetry client_id. To be sent only in the "fog-validation"
-        ping.
-      mode: NULLABLE
-      name: fog_validation_legacy_telemetry_client_id
+    - mode: NULLABLE
+      name: key
       type: STRING
-    mode: NULLABLE
-    name: uuid
+    - mode: NULLABLE
+      name: value
+      type: STRING
+    mode: REPEATED
+    name: text
     type: RECORD
   mode: NULLABLE
   name: metrics
@@ -416,13 +457,13 @@ fields:
     name: ping_type
     type: STRING
   - mode: NULLABLE
-    name: reason
-    type: STRING
-  - mode: NULLABLE
     name: seq
     type: INTEGER
   - mode: NULLABLE
     name: start_time
+    type: STRING
+  - mode: NULLABLE
+    name: reason
     type: STRING
   - mode: NULLABLE
     name: parsed_start_time

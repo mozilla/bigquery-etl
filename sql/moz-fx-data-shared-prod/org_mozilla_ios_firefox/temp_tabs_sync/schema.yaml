@@ -281,8 +281,63 @@ fields:
       mode: REPEATED
       name: glean_error_invalid_value
       type: RECORD
+    - description: 'Records why the tabs sync failed.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: tabs_sync_failure_reason
+      type: RECORD
+    - description: 'Records incoming tabs record counts. `applied` is the number of
+        incoming records that were successfully stored or updated in the local database.
+        `failed_to_apply` is the number of records that were ignored due to errors.
+        `reconciled` is the number of merged records.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: tabs_sync_incoming
+      type: RECORD
+    - description: 'Records outgoing tabs record counts. `uploaded` is the number
+        of records that were successfully sent to the server. `failed_to_upload` is
+        the number of records that weren''t uploaded, and will be retried on the next
+        sync.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: tabs_sync_outgoing
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
+    type: RECORD
+  - fields:
+    - description: 'The user''s hashed Firefox Account ID.
+
+        '
+      mode: NULLABLE
+      name: tabs_sync_uid
+      type: STRING
+    mode: NULLABLE
+    name: string
     type: RECORD
   mode: NULLABLE
   name: metrics

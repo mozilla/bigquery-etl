@@ -4,46 +4,9 @@ fields:
   mode: NULLABLE
   name: additional_properties
   type: STRING
-- fields:
-  - mode: NULLABLE
-    name: architecture
-    type: STRING
-  - mode: NULLABLE
-    name: build_id
-    type: STRING
-  - mode: NULLABLE
-    name: channel
-    type: STRING
-  - mode: NULLABLE
-    name: display_version
-    type: STRING
-  - mode: NULLABLE
-    name: name
-    type: STRING
-  - mode: NULLABLE
-    name: platform_version
-    type: STRING
-  - mode: NULLABLE
-    name: vendor
-    type: STRING
-  - mode: NULLABLE
-    name: version
-    type: STRING
-  - mode: NULLABLE
-    name: xpcom_abi
-    type: STRING
-  mode: NULLABLE
-  name: application
-  type: RECORD
-- mode: NULLABLE
-  name: creation_date
-  type: STRING
 - description: The document ID specified in the URI when the client sent this message
   mode: NULLABLE
   name: document_id
-  type: STRING
-- mode: NULLABLE
-  name: id
   type: STRING
 - fields:
   - description: Results of a geographic lookup based on the client's IP address
@@ -195,40 +158,6 @@ fields:
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
-- description: 'pioneer-study - '
-  fields:
-  - description: JOSE/JWE encrypted payload.
-    mode: NULLABLE
-    name: encrypted_data
-    type: STRING
-  - description: JOSE/JWK key id, e.g. pioneer-20170520.
-    mode: NULLABLE
-    name: encryption_key_id
-    type: STRING
-  - description: Custom pioneer id, must not be Telemetry clientId
-    mode: NULLABLE
-    name: pioneer_id
-    type: STRING
-  - description: Name of a schema used for validation of the encryptedData
-    mode: NULLABLE
-    name: schema_name
-    type: STRING
-  - description: Integer version number of the schema
-    mode: NULLABLE
-    name: schema_version
-    type: INTEGER
-  - description: Name of a particular study. Usually the addon_id.
-    mode: NULLABLE
-    name: study_name
-    type: STRING
-  - description: The namespace of the schema used for validation and routing to a
-      dataset.
-    mode: NULLABLE
-    name: schema_namespace
-    type: STRING
-  mode: NULLABLE
-  name: payload
-  type: RECORD
 - description: Hashed version of client_id (if present) useful for partitioning; ranges
     from 0 to 99
   mode: NULLABLE
@@ -238,10 +167,3 @@ fields:
   mode: NULLABLE
   name: submission_timestamp
   type: TIMESTAMP
-- description: doc_type, restated
-  mode: NULLABLE
-  name: type
-  type: STRING
-- mode: NULLABLE
-  name: version
-  type: INTEGER

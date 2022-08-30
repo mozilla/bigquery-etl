@@ -32,10 +32,6 @@ fields:
     mode: NULLABLE
     name: architecture
     type: STRING
-  - description: The date & time the application was built
-    mode: NULLABLE
-    name: build_date
-    type: STRING
   - description: A UUID uniquely identifying the client.
     mode: NULLABLE
     name: client_id
@@ -74,6 +70,10 @@ fields:
   - description: The version of the Glean SDK
     mode: NULLABLE
     name: telemetry_sdk_build
+    type: STRING
+  - description: The date & time the application was built
+    mode: NULLABLE
+    name: build_date
     type: STRING
   mode: NULLABLE
   name: client_info
@@ -149,10 +149,6 @@ fields:
       mode: NULLABLE
       name: x_foxsec_ip_reputation
       type: STRING
-    - description: X-LB-Tags HTTP header
-      mode: NULLABLE
-      name: x_lb_tags
-      type: STRING
     - description: X-PingSender-Version HTTP header
       mode: NULLABLE
       name: x_pingsender_version
@@ -164,6 +160,10 @@ fields:
     - description: X-Telemetry-Agent HTTP header
       mode: NULLABLE
       name: x_telemetry_agent
+      type: STRING
+    - description: X-LB-Tags HTTP header
+      mode: NULLABLE
+      name: x_lb_tags
       type: STRING
     - mode: NULLABLE
       name: parsed_date
@@ -220,6 +220,16 @@ fields:
   name: metadata
   type: RECORD
 - fields:
+  - fields:
+    - mode: NULLABLE
+      name: key
+      type: STRING
+    - mode: NULLABLE
+      name: value
+      type: STRING
+    mode: REPEATED
+    name: jwe
+    type: RECORD
   - fields:
     - description: 'Counts the number of times a metric was set with an invalid label.
 
@@ -285,78 +295,48 @@ fields:
     name: labeled_counter
     type: RECORD
   - fields:
-    - description: 'A unique identifier provided by the AdM for the sponsored TopSites
-        tile
-
-        '
-      mode: NULLABLE
-      name: top_site_contile_tile_id
-      type: INTEGER
-    - description: 'A unique identifier provided by the AdM for the sponsored TopSites
-        tile
-
-        '
-      mode: NULLABLE
-      name: top_sites_contile_tile_id
-      type: INTEGER
-    mode: NULLABLE
-    name: quantity
+    - mode: NULLABLE
+      name: key
+      type: STRING
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - fields:
+        - mode: NULLABLE
+          name: denominator
+          type: INTEGER
+        - mode: NULLABLE
+          name: numerator
+          type: INTEGER
+        mode: NULLABLE
+        name: value
+        type: RECORD
+      mode: REPEATED
+      name: value
+      type: RECORD
+    mode: REPEATED
+    name: labeled_rate
     type: RECORD
   - fields:
-    - description: 'Advertiser brand for the sponsored TopSites tile
-
-        '
-      mode: NULLABLE
-      name: top_site_contile_advertiser
+    - mode: NULLABLE
+      name: key
       type: STRING
-    - description: 'Advertiser brand for the sponsored TopSites tile
-
-        '
-      mode: NULLABLE
-      name: top_sites_contile_advertiser
+    - mode: NULLABLE
+      name: value
       type: STRING
-    mode: NULLABLE
-    name: string
+    mode: REPEATED
+    name: url
     type: RECORD
   - fields:
-    - description: "The AdM reporting endpoint (impression_url for \u201Cimpression\u201D\
-        \ event,\nclick_url for \u201Cclick\u201D event).\n"
-      mode: NULLABLE
-      name: top_site_contile_reporting_url
+    - mode: NULLABLE
+      name: key
       type: STRING
-    - description: "The AdM reporting endpoint (impression_url for \u201Cimpression\u201D\
-        \ event,\nclick_url for \u201Cclick\u201D event).\n"
-      mode: NULLABLE
-      name: top_sites_contile_reporting_url
+    - mode: NULLABLE
+      name: value
       type: STRING
-    mode: NULLABLE
-    name: url2
-    type: RECORD
-  - fields:
-    - description: 'A UUID that is unjoinable with other browser metrics. This ID
-        will not be
-
-        shared with AdM, only for internal uses. This ID is shared across all
-
-        contextual services features.
-
-        '
-      mode: NULLABLE
-      name: top_site_context_id
-      type: STRING
-    - description: 'A UUID that is unjoinable with other browser metrics. This ID
-        will not be
-
-        shared with AdM, only for internal uses. This ID is shared across all
-
-        contextual services features.
-
-        '
-      mode: NULLABLE
-      name: top_sites_context_id
-      type: STRING
-    mode: NULLABLE
-    name: uuid
+    mode: REPEATED
+    name: text
     type: RECORD
   mode: NULLABLE
   name: metrics

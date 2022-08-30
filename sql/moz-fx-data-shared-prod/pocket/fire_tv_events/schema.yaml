@@ -5,16 +5,7 @@ fields:
   name: additional_properties
   type: STRING
 - mode: NULLABLE
-  name: arch
-  type: STRING
-- mode: NULLABLE
-  name: client_id
-  type: STRING
-- mode: NULLABLE
-  name: created_date
-  type: STRING
-- mode: NULLABLE
-  name: created_timestamp
+  name: created
   type: INTEGER
 - mode: NULLABLE
   name: device
@@ -23,16 +14,6 @@ fields:
   mode: NULLABLE
   name: document_id
   type: STRING
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - mode: NULLABLE
-    name: value
-    type: STRING
-  mode: REPEATED
-  name: experiments
-  type: RECORD
 - mode: NULLABLE
   name: locale
   type: STRING
@@ -115,23 +96,6 @@ fields:
     mode: NULLABLE
     name: header
     type: RECORD
-  - description: Components of the URI to which this ping was sent
-    fields:
-    - mode: NULLABLE
-      name: app_build_id
-      type: STRING
-    - mode: NULLABLE
-      name: app_name
-      type: STRING
-    - mode: NULLABLE
-      name: app_update_channel
-      type: STRING
-    - mode: NULLABLE
-      name: app_version
-      type: STRING
-    mode: NULLABLE
-    name: uri
-    type: RECORD
   - description: Parsed components of the client's user agent string
     fields:
     - mode: NULLABLE
@@ -167,114 +131,6 @@ fields:
   mode: NULLABLE
   name: metadata
   type: RECORD
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - fields:
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - fields:
-        - mode: NULLABLE
-          name: bucket_count
-          type: INTEGER
-        - mode: NULLABLE
-          name: histogram_type
-          type: INTEGER
-        - mode: NULLABLE
-          name: log_sum
-          type: FLOAT
-        - mode: NULLABLE
-          name: log_sum_squares
-          type: FLOAT
-        - mode: REPEATED
-          name: range
-          type: INTEGER
-        - mode: NULLABLE
-          name: sum
-          type: INTEGER
-        - mode: NULLABLE
-          name: sum_squares_hi
-          type: INTEGER
-        - mode: NULLABLE
-          name: sum_squares_lo
-          type: INTEGER
-        - fields:
-          - mode: NULLABLE
-            name: key
-            type: STRING
-          - mode: NULLABLE
-            name: value
-            type: INTEGER
-          mode: REPEATED
-          name: values
-          type: RECORD
-        mode: NULLABLE
-        name: value
-        type: RECORD
-      mode: REPEATED
-      name: histograms
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - fields:
-          - mode: NULLABLE
-            name: bucket_count
-            type: INTEGER
-          - mode: NULLABLE
-            name: histogram_type
-            type: INTEGER
-          - mode: NULLABLE
-            name: log_sum
-            type: FLOAT
-          - mode: NULLABLE
-            name: log_sum_squares
-            type: FLOAT
-          - mode: REPEATED
-            name: range
-            type: INTEGER
-          - mode: NULLABLE
-            name: sum
-            type: INTEGER
-          - mode: NULLABLE
-            name: sum_squares_hi
-            type: INTEGER
-          - mode: NULLABLE
-            name: sum_squares_lo
-            type: INTEGER
-          - fields:
-            - mode: NULLABLE
-              name: key
-              type: STRING
-            - mode: NULLABLE
-              name: value
-              type: INTEGER
-            mode: REPEATED
-            name: values
-            type: RECORD
-          mode: NULLABLE
-          name: value
-          type: RECORD
-        mode: REPEATED
-        name: value
-        type: RECORD
-      mode: REPEATED
-      name: keyed_histograms
-      type: RECORD
-    mode: NULLABLE
-    name: value
-    type: RECORD
-  mode: REPEATED
-  name: metrics
-  type: RECORD
 - description: Set to "Other" if this message contained an unrecognized app name
   mode: NULLABLE
   name: normalized_app_name
@@ -301,7 +157,10 @@ fields:
   name: osversion
   type: STRING
 - mode: NULLABLE
-  name: profile_date
+  name: pocket_id
+  type: STRING
+- mode: NULLABLE
+  name: process_start_timestamp
   type: INTEGER
 - description: Hashed version of client_id (if present) useful for partitioning; ranges
     from 0 to 99
@@ -316,8 +175,34 @@ fields:
   name: submission_timestamp
   type: TIMESTAMP
 - mode: NULLABLE
-  name: tz
-  type: INTEGER
-- mode: NULLABLE
   name: v
   type: INTEGER
+- fields:
+  - mode: NULLABLE
+    name: f0_
+    type: INTEGER
+  - mode: NULLABLE
+    name: f1_
+    type: STRING
+  - mode: NULLABLE
+    name: f2_
+    type: STRING
+  - mode: NULLABLE
+    name: f3_
+    type: STRING
+  - mode: NULLABLE
+    name: f4_
+    type: STRING
+  - fields:
+    - mode: NULLABLE
+      name: key
+      type: STRING
+    - mode: NULLABLE
+      name: value
+      type: STRING
+    mode: REPEATED
+    name: f5_
+    type: RECORD
+  mode: REPEATED
+  name: events
+  type: RECORD

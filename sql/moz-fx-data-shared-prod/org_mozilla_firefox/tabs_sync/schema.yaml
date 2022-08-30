@@ -221,6 +221,36 @@ fields:
   type: RECORD
 - fields:
   - fields:
+    - description: 'Records the number of batches needed to upload all outgoing records.
+        The Sync server has a hard limit on the number of records (and request body
+        bytes) on the number of records that can fit into a single batch, and large
+        syncs may require multiple batches.
+
+        '
+      mode: NULLABLE
+      name: tabs_sync_outgoing_batches
+      type: INTEGER
+    mode: NULLABLE
+    name: counter
+    type: RECORD
+  - fields:
+    - description: 'Records when the tabs sync finished. This includes the time to
+        download, apply, and upload all records.
+
+        '
+      mode: NULLABLE
+      name: tabs_sync_finished_at
+      type: STRING
+    - description: 'Records when the tabs sync started.
+
+        '
+      mode: NULLABLE
+      name: tabs_sync_started_at
+      type: STRING
+    mode: NULLABLE
+    name: datetime
+    type: RECORD
+  - fields:
     - mode: NULLABLE
       name: key
       type: STRING
@@ -291,6 +321,38 @@ fields:
       mode: REPEATED
       name: glean_error_invalid_value
       type: RECORD
+    - description: 'Records incoming tabs record counts. `applied` is the number of
+        incoming records that were successfully stored or updated in the local database.
+        `failed_to_apply` is the number of records that were ignored due to errors.
+        `reconciled` is the number of merged records.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: tabs_sync_incoming
+      type: RECORD
+    - description: 'Records outgoing tabs record counts. `uploaded` is the number
+        of records that were successfully sent to the server. `failed_to_upload` is
+        the number of records that weren''t uploaded, and will be retried on the next
+        sync.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: tabs_sync_outgoing
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD
@@ -317,6 +379,35 @@ fields:
       type: RECORD
     mode: REPEATED
     name: labeled_rate
+    type: RECORD
+  - fields:
+    - description: 'Records why the tabs sync failed: either due to an authentication
+        error, unexpected exception, or other error. The error strings are truncated
+        and sanitized to omit PII, like URLs and file system paths.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: tabs_sync_failure_reason
+      type: RECORD
+    mode: NULLABLE
+    name: labeled_string
+    type: RECORD
+  - fields:
+    - description: 'The user''s hashed Firefox Account ID.
+
+        '
+      mode: NULLABLE
+      name: tabs_sync_uid
+      type: STRING
+    mode: NULLABLE
+    name: string
     type: RECORD
   - fields:
     - mode: NULLABLE

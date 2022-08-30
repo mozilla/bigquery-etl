@@ -83,16 +83,6 @@ fields:
           mode: NULLABLE
           name: is_system
           type: BOOLEAN
-        - description: Whether or not the add-on is a WebExtension add-on. This field
-            is available at startup.
-          mode: NULLABLE
-          name: is_web_extension
-          type: BOOLEAN
-        - description: Whether or not the add-on is a compatible with e10s. Since
-            Firefox 61, this is always true. This field is available at startup.
-          mode: NULLABLE
-          name: multiprocess_compatible
-          type: BOOLEAN
         - description: The add-on name, limited to 100 characters. This field is only
             available after the 'sessionstore-windows-restored' topic is notified.
           mode: NULLABLE
@@ -116,6 +106,16 @@ fields:
           mode: NULLABLE
           name: update_day
           type: INTEGER
+        - description: Whether or not the add-on is a WebExtension add-on. This field
+            is available at startup.
+          mode: NULLABLE
+          name: is_web_extension
+          type: BOOLEAN
+        - description: Whether or not the add-on is a compatible with e10s. Since
+            Firefox 61, this is always true. This field is available at startup.
+          mode: NULLABLE
+          name: multiprocess_compatible
+          type: BOOLEAN
         - mode: NULLABLE
           name: foreign_install
           type: INTEGER
@@ -380,16 +380,6 @@ fields:
     name: profile
     type: RECORD
   - fields:
-    - mode: NULLABLE
-      name: account_enabled
-      type: BOOLEAN
-    - mode: NULLABLE
-      name: sync_enabled
-      type: BOOLEAN
-    mode: NULLABLE
-    name: services
-    type: RECORD
-  - fields:
     - description: Whether application compatibility is respected for add-ons.
       mode: NULLABLE
       name: addon_compatibility_check_enabled
@@ -416,13 +406,13 @@ fields:
         mode: NULLABLE
         name: source
         type: STRING
-      - description: derived user agent, see bug 1595063
-        mode: NULLABLE
-        name: ua
-        type: STRING
       - description: funnel experiment parameters, see bug 1567339
         mode: NULLABLE
         name: variation
+        type: STRING
+      - description: derived user agent, see bug 1595063
+        mode: NULLABLE
+        name: ua
         type: STRING
       - description: Unique token created at Firefox download time, see bug 1677497
         mode: NULLABLE
@@ -527,9 +517,6 @@ fields:
       name: is_default_browser
       type: BOOLEAN
     - mode: NULLABLE
-      name: is_in_optout_sample
-      type: BOOLEAN
-    - mode: NULLABLE
       name: launcher_process_state
       type: INTEGER
     - description: The best locale that the application should be localized to.
@@ -577,10 +564,8 @@ fields:
       mode: NULLABLE
       name: update
       type: RECORD
-    - description: whether fission is enabled this session, and subframes can load
-        in a different process
-      mode: NULLABLE
-      name: fission_enabled
+    - mode: NULLABLE
+      name: is_in_optout_sample
       type: BOOLEAN
     - description: User preferences - limited to an allowlist defined in `toolkit/components/telemetry/app/TelemetryEnvironment.jsm`
       fields:
@@ -593,6 +578,11 @@ fields:
       mode: REPEATED
       name: user_prefs
       type: RECORD
+    - description: whether fission is enabled this session, and subframes can load
+        in a different process
+      mode: NULLABLE
+      name: fission_enabled
+      type: BOOLEAN
     mode: NULLABLE
     name: settings
     type: RECORD
@@ -684,9 +674,6 @@ fields:
           name: driver_date
           type: STRING
         - mode: NULLABLE
-          name: driver_vendor
-          type: STRING
-        - mode: NULLABLE
           name: driver_version
           type: STRING
         - mode: NULLABLE
@@ -701,13 +688,12 @@ fields:
         - mode: NULLABLE
           name: vendor_id
           type: STRING
+        - mode: NULLABLE
+          name: driver_vendor
+          type: STRING
         mode: REPEATED
         name: adapters
         type: RECORD
-      - description: The name of the content backend.
-        mode: NULLABLE
-        name: content_backend
-        type: STRING
       - description: Whether or not Direct2D is enabled. This is Windows only.
         mode: NULLABLE
         name: d2d_enabled
@@ -716,19 +702,14 @@ fields:
         mode: NULLABLE
         name: d_write_enabled
         type: BOOLEAN
-      - description: Whether or not Firefox desktop is embedded by Firefox Reality.
-          This is Windows only.
-        mode: NULLABLE
-        name: embedded_in_firefox_reality
-        type: BOOLEAN
       - fields:
         - fields:
           - mode: NULLABLE
-            name: no_constant_buffer_offsetting
-            type: BOOLEAN
-          - mode: NULLABLE
             name: status
             type: STRING
+          - mode: NULLABLE
+            name: no_constant_buffer_offsetting
+            type: BOOLEAN
           mode: NULLABLE
           name: advanced_layers
           type: RECORD
@@ -754,11 +735,6 @@ fields:
             mode: NULLABLE
             name: blacklisted
             type: BOOLEAN
-          - description: Indicates whether the d3d11 compositor was blocklisted due
-              to driver bugs. (This field replaces blacklisted as of bug 1647225).
-            mode: NULLABLE
-            name: blocklisted
-            type: BOOLEAN
           - mode: NULLABLE
             name: status
             type: STRING
@@ -771,6 +747,11 @@ fields:
           - mode: NULLABLE
             name: warp
             type: BOOLEAN
+          - description: Indicates whether the d3d11 compositor was blocklisted due
+              to driver bugs. (This field replaces blacklisted as of bug 1647225).
+            mode: NULLABLE
+            name: blocklisted
+            type: BOOLEAN
           mode: NULLABLE
           name: d3d11
           type: RECORD
@@ -780,6 +761,20 @@ fields:
             type: STRING
           mode: NULLABLE
           name: gpu_process
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: status
+            type: STRING
+          mode: NULLABLE
+          name: webrender
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: status
+            type: STRING
+          mode: NULLABLE
+          name: wr_qualified
           type: RECORD
         - fields:
           - mode: NULLABLE
@@ -800,21 +795,7 @@ fields:
             name: status
             type: STRING
           mode: NULLABLE
-          name: webrender
-          type: RECORD
-        - fields:
-          - mode: NULLABLE
-            name: status
-            type: STRING
-          mode: NULLABLE
           name: wr_compositor
-          type: RECORD
-        - fields:
-          - mode: NULLABLE
-            name: status
-            type: STRING
-          mode: NULLABLE
-          name: wr_qualified
           type: RECORD
         - description: Indicates whether the software backend to WebRender is enabled.
           fields:
@@ -860,6 +841,15 @@ fields:
         mode: REPEATED
         name: monitors
         type: RECORD
+      - description: The name of the content backend.
+        mode: NULLABLE
+        name: content_backend
+        type: STRING
+      - description: Whether or not Firefox desktop is embedded by Firefox Reality.
+          This is Windows only.
+        mode: NULLABLE
+        name: embedded_in_firefox_reality
+        type: BOOLEAN
       mode: NULLABLE
       name: gfx
       type: RECORD
@@ -921,9 +911,6 @@ fields:
     - description: The availability of the WoW64 subsystem. This is Windows only.
       mode: NULLABLE
       name: is_wow64
-      type: BOOLEAN
-    - mode: NULLABLE
-      name: is_wow_arm64
       type: BOOLEAN
     - description: The machines amount of RAM.
       mode: NULLABLE
@@ -1005,6 +992,9 @@ fields:
       mode: NULLABLE
       name: virtual_max_mb
       type: FLOAT
+    - mode: NULLABLE
+      name: is_wow_arm64
+      type: BOOLEAN
     - description: Is the process running with a package identity (e.g. from an MSIX
         install)? See bug 1709892. This is Windows only.
       mode: NULLABLE
@@ -1017,6 +1007,16 @@ fields:
       type: STRING
     mode: NULLABLE
     name: system
+    type: RECORD
+  - fields:
+    - mode: NULLABLE
+      name: account_enabled
+      type: BOOLEAN
+    - mode: NULLABLE
+      name: sync_enabled
+      type: BOOLEAN
+    mode: NULLABLE
+    name: services
     type: RECORD
   mode: NULLABLE
   name: environment
@@ -1103,24 +1103,6 @@ fields:
     mode: NULLABLE
     name: header
     type: RECORD
-  - description: Results of ISP lookup based on the client's IP address
-    fields:
-    - description: The specific geo ISP database version used for this lookup
-      mode: NULLABLE
-      name: db_version
-      type: STRING
-    - description: The name of the ISP associated with the client's IP address
-      mode: NULLABLE
-      name: name
-      type: STRING
-    - description: The name of a specific business entity associated with the client's
-        IP address when available; otherwise the ISP name
-      mode: NULLABLE
-      name: organization
-      type: STRING
-    mode: NULLABLE
-    name: isp
-    type: RECORD
   - description: Components of the URI to which this ping was sent
     fields:
     - mode: NULLABLE
@@ -1152,6 +1134,24 @@ fields:
     mode: NULLABLE
     name: user_agent
     type: RECORD
+  - description: Results of ISP lookup based on the client's IP address
+    fields:
+    - description: The specific geo ISP database version used for this lookup
+      mode: NULLABLE
+      name: db_version
+      type: STRING
+    - description: The name of the ISP associated with the client's IP address
+      mode: NULLABLE
+      name: name
+      type: STRING
+    - description: The name of a specific business entity associated with the client's
+        IP address when available; otherwise the ISP name
+      mode: NULLABLE
+      name: organization
+      type: STRING
+    mode: NULLABLE
+    name: isp
+    type: RECORD
   mode: NULLABLE
   name: metadata
   type: RECORD
@@ -1175,180 +1175,150 @@ fields:
   name: normalized_os_version
   type: STRING
 - fields:
-  - description: parent object for DNS responses for each RRTYPE and socket type
-    fields:
-    - mode: REPEATED
-      name: tcp_a
-      type: INTEGER
-    - mode: REPEATED
-      name: tcp_dnskey
-      type: INTEGER
-    - mode: REPEATED
-      name: tcp_https
-      type: INTEGER
-    - mode: REPEATED
-      name: tcp_newone
-      type: INTEGER
-    - mode: REPEATED
-      name: tcp_newtwo
-      type: INTEGER
-    - mode: REPEATED
-      name: tcp_rrsig
-      type: INTEGER
-    - mode: REPEATED
-      name: tcp_smimea
-      type: INTEGER
-    - mode: REPEATED
-      name: udp_a
-      type: INTEGER
-    - mode: REPEATED
-      name: udp_dnskey
-      type: INTEGER
-    - mode: REPEATED
-      name: udp_https
-      type: INTEGER
-    - mode: REPEATED
-      name: udp_newone
-      type: INTEGER
-    - mode: REPEATED
-      name: udp_newtwo
-      type: INTEGER
-    - mode: REPEATED
-      name: udp_rrsig
-      type: INTEGER
-    - mode: REPEATED
-      name: udp_smimea
-      type: INTEGER
-    - mode: REPEATED
-      name: tcp_ado
-      type: INTEGER
-    - mode: REPEATED
-      name: udp_ado
-      type: INTEGER
-    - mode: REPEATED
-      name: udp_a_web_ext
-      type: STRING
-    - mode: REPEATED
-      name: tcp_acd
-      type: INTEGER
-    - mode: REPEATED
-      name: tcp_adocd
-      type: INTEGER
-    - mode: REPEATED
-      name: tcp_newfour
-      type: INTEGER
-    - mode: REPEATED
-      name: tcp_newthree
-      type: INTEGER
-    - mode: REPEATED
-      name: udp_acd
-      type: INTEGER
-    - mode: REPEATED
-      name: udp_adocd
-      type: INTEGER
-    - mode: REPEATED
-      name: udp_newfour
-      type: INTEGER
-    - mode: REPEATED
-      name: udp_newthree
-      type: INTEGER
-    mode: NULLABLE
-    name: dns_data
-    type: RECORD
-  - mode: NULLABLE
-    name: error_attempt
-    type: FLOAT
-  - mode: NULLABLE
-    name: error_rrtype
-    type: STRING
-  - mode: NULLABLE
-    name: measurement_id
-    type: STRING
-  - mode: NULLABLE
-    name: reason
-    type: STRING
-  - description: parent object for DNS query attempts for each RRTYPE and socket type
-    fields:
-    - mode: NULLABLE
-      name: tcp_a
-      type: FLOAT
-    - mode: NULLABLE
-      name: tcp_ado
-      type: FLOAT
-    - mode: NULLABLE
-      name: tcp_dnskey
-      type: FLOAT
-    - mode: NULLABLE
-      name: tcp_https
-      type: FLOAT
-    - mode: NULLABLE
-      name: tcp_newone
-      type: FLOAT
-    - mode: NULLABLE
-      name: tcp_newtwo
-      type: FLOAT
-    - mode: NULLABLE
-      name: tcp_rrsig
-      type: FLOAT
-    - mode: NULLABLE
-      name: tcp_smimea
-      type: FLOAT
-    - mode: NULLABLE
-      name: udp_a
-      type: FLOAT
-    - description: Number of attempted dns.resolve() calls made using a domain name
-        we control
+  - fields:
+    - description: The value of the CompanyName field as extracted from the DLL's
+        version information. This property is only present when such version info
+        is present, and when the 'signedBy' property is absent.
       mode: NULLABLE
-      name: udp_a_web_ext
-      type: FLOAT
-    - mode: NULLABLE
-      name: udp_ado
-      type: FLOAT
-    - mode: NULLABLE
-      name: udp_dnskey
-      type: FLOAT
-    - mode: NULLABLE
-      name: udp_https
-      type: FLOAT
-    - mode: NULLABLE
-      name: udp_newone
-      type: FLOAT
-    - mode: NULLABLE
-      name: udp_newtwo
-      type: FLOAT
-    - mode: NULLABLE
-      name: udp_rrsig
-      type: FLOAT
-    - mode: NULLABLE
-      name: udp_smimea
-      type: FLOAT
-    - mode: NULLABLE
-      name: tcp_acd
-      type: FLOAT
-    - mode: NULLABLE
-      name: tcp_adocd
-      type: FLOAT
-    - mode: NULLABLE
-      name: tcp_newfour
-      type: FLOAT
-    - mode: NULLABLE
-      name: tcp_newthree
-      type: FLOAT
-    - mode: NULLABLE
-      name: udp_acd
-      type: FLOAT
-    - mode: NULLABLE
-      name: udp_adocd
-      type: FLOAT
-    - mode: NULLABLE
-      name: udp_newfour
-      type: FLOAT
-    - mode: NULLABLE
-      name: udp_newthree
-      type: FLOAT
-    mode: NULLABLE
-    name: dns_attempts
+      name: company_name
+      type: STRING
+    - description: Version of the DLL as contained in its resources's fixed version
+        information.
+      mode: NULLABLE
+      name: file_version
+      type: STRING
+    - description: The sanitized name of the module as resolved by the Windows loader.
+      mode: NULLABLE
+      name: resolved_dll_name
+      type: STRING
+    - description: The organization whose certificate was used to sign the DLL. Only
+        present for signed DLLs.
+      mode: NULLABLE
+      name: signed_by
+      type: STRING
+    - description: Flags that indicate this module's level of trustworthiness. This
+        corresponds to one or more mozilla::ModuleTrustFlags OR'd together.
+      mode: NULLABLE
+      name: trust_flags
+      type: INTEGER
+    mode: REPEATED
+    name: modules
     type: RECORD
+  - fields:
+    - mode: NULLABLE
+      name: key
+      type: STRING
+    - fields:
+      - description: Elapsed time since process creation that this object was generated,
+          in seconds.
+        mode: NULLABLE
+        name: elapsed
+        type: FLOAT
+      - fields:
+        - description: The base address to which the loader mapped the module.
+          mode: NULLABLE
+          name: base_address
+          type: STRING
+        - description: Time spent loading this module, in milliseconds.
+          mode: NULLABLE
+          name: load_duration_ms
+          type: FLOAT
+        - description: Index of the element in the modules array that contains details
+            about the module that was loaded during this event.
+          mode: NULLABLE
+          name: module_index
+          type: INTEGER
+        - description: Elapsed time since process creation that this event was generated,
+            in milliseconds.
+          mode: NULLABLE
+          name: process_uptime_ms
+          type: INTEGER
+        - description: The sanitized name of the module that was requested by the
+            invoking code. Only exists when it is different from the associated module's
+            resolvedDllName.
+          mode: NULLABLE
+          name: requested_dll_name
+          type: STRING
+        - description: Thread ID for the thread that loaded the module.
+          mode: NULLABLE
+          name: thread_id
+          type: INTEGER
+        - description: Name of the thread that loaded the module, when applicable.
+          mode: NULLABLE
+          name: thread_name
+          type: STRING
+        - description: True if the module is included in the executable's Import Directory
+            Table.
+          mode: NULLABLE
+          name: is_dependent
+          type: BOOLEAN
+        - description: The status of DLL load. This corresponds to enum ModuleLoadInfo::Status.
+          mode: NULLABLE
+          name: load_status
+          type: INTEGER
+        mode: REPEATED
+        name: events
+        type: RECORD
+      - description: Except for Default (which is remapped to 'browser'), one of the
+          process string names specified in xpcom/build/GeckoProcessTypes.h.
+        mode: NULLABLE
+        name: process_type
+        type: STRING
+      - description: Number of dropped events due to failures sanitizing file paths.
+        mode: NULLABLE
+        name: sanitization_failures
+        type: INTEGER
+      - description: Number of dropped events due to failures computing trust levels.
+        mode: NULLABLE
+        name: trust_test_failures
+        type: INTEGER
+      - description: Time spent loading xul.dll in milliseconds.
+        mode: NULLABLE
+        name: xul_load_duration_ms
+        type: FLOAT
+      - fields:
+        - fields:
+          - description: The filename of the PDB symbol file
+            mode: NULLABLE
+            name: f0_
+            type: STRING
+          - description: The debug ID of the DLL
+            mode: NULLABLE
+            name: f1_
+            type: STRING
+          mode: REPEATED
+          name: memory_map
+          type: RECORD
+        - fields:
+          - fields:
+            - description: Module index, an index into the combinedStacks/memoryMap
+                array, or -1 if not applicable
+              mode: NULLABLE
+              name: f0_
+              type: FLOAT
+            - description: Module offset, the RVA of the program counter for this
+                stack frame.
+              mode: NULLABLE
+              name: f1_
+              type: FLOAT
+            mode: REPEATED
+            name: list
+            type: RECORD
+          mode: REPEATED
+          name: stacks
+          type: RECORD
+        mode: NULLABLE
+        name: combined_stacks
+        type: RECORD
+      mode: NULLABLE
+      name: value
+      type: RECORD
+    mode: REPEATED
+    name: processes
+    type: RECORD
+  - mode: NULLABLE
+    name: struct_version
+    type: INTEGER
   mode: NULLABLE
   name: payload
   type: RECORD

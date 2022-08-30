@@ -20,7 +20,6 @@ SELECT
   mozfun.stats.mode_last(ARRAY_AGG(normalized_channel)) AS channel,
   mozfun.stats.mode_last(ARRAY_AGG(normalized_os)) AS os,
   mozfun.stats.mode_last(ARRAY_AGG(normalized_os_version)) AS os_version,
-  mozfun.stats.mode_last(ARRAY_AGG(normalized_channel)) AS channel,
   mozfun.stats.mode_last(ARRAY_AGG(normalized_country_code)) AS country_code,
   mozfun.map.sum(
     ARRAY_AGG(IF(NOT is_shutdown_kill, STRUCT(process_type AS key, 1 AS value), NULL) IGNORE NULLS)

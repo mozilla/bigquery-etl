@@ -9,7 +9,7 @@ fields:
   type: STRING
 - description: null
   mode: NULLABLE
-  name: sample_id 
+  name: sample_id
   type: STRING
 - description: null
   mode: NULLABLE

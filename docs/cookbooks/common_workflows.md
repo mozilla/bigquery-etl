@@ -93,7 +93,7 @@ Adding a new field to a table schema also means that the field has to propagate 
 1. Run `./bqetl format <path to the query>` to format the query. Alternatively, run `./bqetl format $(git ls-tree -d HEAD --name-only)` validate the format of all queries that have been modified.
 1. Run `./bqetl query validate <dataset>.<table>` to dry run the query.
 
-   For data scientists, run: 
+   For data scientists (and anyone without `jobs.create` permissions in `moz-fx-data-shared-prod`), run: 
    
    ```
     gcloud auth login --update-adc   # to authenticate to GCP

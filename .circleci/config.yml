@@ -311,7 +311,7 @@ jobs:
           name: Build and deploy docs
           command: |
             rm -r sql/ && cp -r /tmp/workspace/generated-sql/sql sql/
-            PATH="venv/bin:$PATH" script/generate_docs \
+            PATH="venv/bin:$PATH" script/bqetl docs generate \
                --output_dir=generated_docs/
             cd generated_docs/
             PATH="../venv/bin:$PATH" mkdocs gh-deploy \

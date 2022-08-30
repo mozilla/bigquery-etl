@@ -16,6 +16,7 @@ from ..cli.query import query
 from ..cli.routine import mozfun, routine
 from ..cli.view import view
 from ..dependency import dependency
+from ..docs import docs_
 from ..glam.cli import glam
 from ..static import static_
 from ..stripe import stripe_
@@ -39,6 +40,7 @@ def cli(prog_name=None):
         "alchemer": alchemer_,
         "apple": apple,
         "static": static_,
+        "docs": docs_,
     }
 
     @click.group(commands=commands)

@@ -1,0 +1,11 @@
+friendly_name: Airflow Users
+description: Most recent record of Airflow users
+labels:
+  incremental: false
+owners:
+  - kignasiak@mozilla.com
+scheduling:
+  dag_name: bqetl_monitoring_airflow
+  referenced_tables:
+    - ['moz-fx-data-bq-fivetran', 'airflow_metadata_airflow_db', 'ab_user']
+    - ['moz-fx-data-bq-fivetran', 'airflow_metadata_airflow_db', "ab_user_role"]

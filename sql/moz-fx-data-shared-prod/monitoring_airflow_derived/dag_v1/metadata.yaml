@@ -1,0 +1,10 @@
+friendly_name: Airflow DAGs
+description: List of DAGs
+labels:
+  incremental: false
+owners:
+  - kignasiak@mozilla.com
+scheduling:
+  dag_name: bqetl_monitoring_airflow
+  referenced_tables:
+    - ['moz-fx-data-bq-fivetran', 'airflow_metadata_airflow_db', 'dag']

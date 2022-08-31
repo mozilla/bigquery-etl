@@ -103,7 +103,7 @@ WITH base AS (
         ) AS histogram
     ) AS hist_sums
   FROM
-    telemetry_stable.main_v4
+    `moz-fx-data-shared-prod`.telemetry_stable.main_v4
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND normalized_app_name = 'Firefox'

@@ -1,0 +1,18 @@
+friendly_name: Suggest Clients Daily
+description: |-
+  daily client-level aggregates of Suggest-related fields
+owners:
+- rburwei@mozilla.com
+labels:
+  incremental: true
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id
+references: {}

@@ -51,6 +51,12 @@ fields:
     mode: NULLABLE
     name: first_run_date
     type: STRING
+  - description: The locale of the application during initialization (e.g. "es-ES").
+      If the locale can't be determined on the system, the value is ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
+      to indicate "undetermined".
+    mode: NULLABLE
+    name: locale
+    type: STRING
   - description: 'The name of the operating system. Possible values: Android, iOS,
       Linux, Darwin, Windows, FreeBSD, NetBSD, OpenBSD, Solaris, unknown'
     mode: NULLABLE
@@ -64,12 +70,6 @@ fields:
   - description: The version of the Glean SDK
     mode: NULLABLE
     name: telemetry_sdk_build
-    type: STRING
-  - description: The locale of the application during initialization (e.g. "es-ES").
-      If the locale can't be determined on the system, the value is ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
-      to indicate "undetermined".
-    mode: NULLABLE
-    name: locale
     type: STRING
   - description: The date & time the application was built
     mode: NULLABLE
@@ -184,20 +184,6 @@ fields:
     mode: NULLABLE
     name: header
     type: RECORD
-  - description: Parsed components of the client's user agent string
-    fields:
-    - mode: NULLABLE
-      name: browser
-      type: STRING
-    - mode: NULLABLE
-      name: os
-      type: STRING
-    - mode: NULLABLE
-      name: version
-      type: STRING
-    mode: NULLABLE
-    name: user_agent
-    type: RECORD
   - description: Results of ISP lookup based on the client's IP address
     fields:
     - description: The specific geo ISP database version used for this lookup
@@ -216,48 +202,33 @@ fields:
     mode: NULLABLE
     name: isp
     type: RECORD
+  - description: Parsed components of the client's user agent string
+    fields:
+    - mode: NULLABLE
+      name: browser
+      type: STRING
+    - mode: NULLABLE
+      name: os
+      type: STRING
+    - mode: NULLABLE
+      name: version
+      type: STRING
+    mode: NULLABLE
+    name: user_agent
+    type: RECORD
   mode: NULLABLE
   name: metadata
   type: RECORD
 - fields:
   - fields:
-    - description: 'A counter of URIs visited by the user in the current session,
-        including
-
-        page reloads. This does not include background page requests and URIs from
-
-        embedded pages or private browsing but may be incremented without user
-
-        interaction by website scripts that programmatically redirect to a new
-
-        location.
-
-        '
-      mode: NULLABLE
-      name: events_total_uri_count
-      type: INTEGER
-    - description: The number of metrics pings sent during the lifetime of this baseline
-        ping.
-      mode: NULLABLE
-      name: glean_validation_metrics_ping_count
-      type: INTEGER
-    - description: 'A counter of URIs visited by the user in the current session,
-        including
-
-        page reloads. This includes private browsing.  This does not include
-
-        background page requests and URIs from embedded pages but may be
-
-        incremented without user interaction by website scripts that
-
-        programmatically redirect to a new location.
-
-        '
-      mode: NULLABLE
-      name: events_normal_and_private_uri_count
-      type: INTEGER
-    mode: NULLABLE
-    name: counter
+    - mode: NULLABLE
+      name: key
+      type: STRING
+    - mode: NULLABLE
+      name: value
+      type: STRING
+    mode: REPEATED
+    name: jwe
     type: RECORD
   - fields:
     - description: 'Counts the number of times a metric was set with an invalid label.
@@ -275,7 +246,7 @@ fields:
       mode: REPEATED
       name: glean_error_invalid_label
       type: RECORD
-    - description: 'Counts the number of times a metric was set to an invalid value.
+    - description: 'Counts the number of times a metric was set a value that overflowed.
 
         The labels are the `category.name` identifier of the metric.
 
@@ -288,36 +259,7 @@ fields:
         name: value
         type: INTEGER
       mode: REPEATED
-      name: glean_error_invalid_value
-      type: RECORD
-    - description: 'The labels for this counter are `<search-engine-name>.<source>`.
-
-
-        If the search engine is bundled with Fenix `search-engine-name` will be
-
-        the name of the search engine. If it''s a custom search engine (defined:
-
-        https://github.com/mozilla-mobile/fenix/issues/1607) the value will be
-
-        `custom`.
-
-
-        `source` will be: `action`, `suggestion`, `widget`, `shortcut`, `topsite`
-
-        (depending on the source from which the search started). Also added the
-
-        `other` option for the source but it should never enter on this case.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: metrics_search_count
+      name: glean_error_invalid_overflow
       type: RECORD
     - description: 'Counts the number of times a timing metric was used incorrectly.
 
@@ -334,7 +276,7 @@ fields:
       mode: REPEATED
       name: glean_error_invalid_state
       type: RECORD
-    - description: 'Counts the number of times a metric was set a value that overflowed.
+    - description: 'Counts the number of times a metric was set to an invalid value.
 
         The labels are the `category.name` identifier of the metric.
 
@@ -347,50 +289,7 @@ fields:
         name: value
         type: INTEGER
       mode: REPEATED
-      name: glean_error_invalid_overflow
-      type: RECORD
-    - description: 'Records clicks of adverts on SERP pages.
-
-        The key format is `<provider-name>`.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: browser_search_ad_clicks
-      type: RECORD
-    - description: 'Records the type of interaction a user has on SERP pages.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: browser_search_in_content
-      type: RECORD
-    - description: 'Records counts of SERP pages with adverts displayed.
-
-        The key format is `<provider-name>`.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: browser_search_with_ads
+      name: glean_error_invalid_value
       type: RECORD
     - description: "A count of the pings submitted, by ping type.\n\nThis metric appears\
         \ in both the metrics and baseline pings.\n\n- On the metrics ping, the counts\
@@ -443,16 +342,6 @@ fields:
       type: RECORD
     mode: NULLABLE
     name: timespan
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: jwe
     type: RECORD
   - fields:
     - description: 'The hour of the first run of the application.
@@ -559,13 +448,13 @@ fields:
     name: ping_type
     type: STRING
   - mode: NULLABLE
+    name: reason
+    type: STRING
+  - mode: NULLABLE
     name: seq
     type: INTEGER
   - mode: NULLABLE
     name: start_time
-    type: STRING
-  - mode: NULLABLE
-    name: reason
     type: STRING
   - mode: NULLABLE
     name: parsed_start_time

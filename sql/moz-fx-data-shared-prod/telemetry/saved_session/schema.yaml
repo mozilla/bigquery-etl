@@ -20017,6 +20017,19 @@ fields:
       mode: NULLABLE
       name: use_counter2_privatebrowsingnavigatorserviceworker_page
       type: STRING
+    - description: The milliseconds of time the text recognition results took to display,
+        including the UI time and OS response time.
+      mode: NULLABLE
+      name: text_recognition_api_performance
+      type: STRING
+    - description: The milliseconds of time that a user viewed the text results.
+      mode: NULLABLE
+      name: text_recognition_interaction_timing
+      type: STRING
+    - description: Measures the length of the text that was recognized, in code units.
+      mode: NULLABLE
+      name: text_recognition_text_length
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -51424,6 +51437,13 @@ fields:
             '
           mode: NULLABLE
           name: urlbar_impression_autofill_url
+          type: INTEGER
+        - description: 'Recorded when text recognition in images fails for some unknown
+            reason.
+
+            '
+          mode: NULLABLE
+          name: browser_ui_interaction_textrecognition_error
           type: INTEGER
         mode: NULLABLE
         name: scalars

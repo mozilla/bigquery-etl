@@ -241,6 +241,21 @@ fields:
       mode: NULLABLE
       name: glean_validation_metrics_ping_count
       type: INTEGER
+    - description: 'A counter of URIs visited by the user in the current session,
+        including
+
+        page reloads. This includes private browsing.  This does not include
+
+        background page requests and URIs from embedded pages but may be
+
+        incremented without user interaction by website scripts that
+
+        programmatically redirect to a new location.
+
+        '
+      mode: NULLABLE
+      name: events_normal_and_private_uri_count
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

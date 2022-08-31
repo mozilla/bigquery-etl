@@ -221,43 +221,34 @@ fields:
   type: RECORD
 - fields:
   - fields:
-    - description: 'A counter of URIs visited by the user in the current session,
-        including
-
-        page reloads. This does not include background page requests and URIs from
-
-        embedded pages or private browsing but may be incremented without user
-
-        interaction by website scripts that programmatically redirect to a new
-
-        location.
+    - description: 'Records the number of batches needed to upload all outgoing records.
+        The Sync server has a hard limit on the number of records (and request body
+        bytes) on the number of records that can fit into a single batch, and large
+        syncs may require multiple batches.
 
         '
       mode: NULLABLE
-      name: events_total_uri_count
-      type: INTEGER
-    - description: The number of metrics pings sent during the lifetime of this baseline
-        ping.
-      mode: NULLABLE
-      name: glean_validation_metrics_ping_count
-      type: INTEGER
-    - description: 'A counter of URIs visited by the user in the current session,
-        including
-
-        page reloads. This includes private browsing.  This does not include
-
-        background page requests and URIs from embedded pages but may be
-
-        incremented without user interaction by website scripts that
-
-        programmatically redirect to a new location.
-
-        '
-      mode: NULLABLE
-      name: events_normal_and_private_uri_count
+      name: history_sync_outgoing_batches
       type: INTEGER
     mode: NULLABLE
     name: counter
+    type: RECORD
+  - fields:
+    - description: 'Records when the history sync finished. This includes the time
+        to download, apply, and upload all records.
+
+        '
+      mode: NULLABLE
+      name: history_sync_finished_at
+      type: STRING
+    - description: 'Records when the history sync started.
+
+        '
+      mode: NULLABLE
+      name: history_sync_started_at
+      type: STRING
+    mode: NULLABLE
+    name: datetime
     type: RECORD
   - fields:
     - description: 'Counts the number of times a metric was set with an invalid label.
@@ -290,23 +281,11 @@ fields:
       mode: REPEATED
       name: glean_error_invalid_value
       type: RECORD
-    - description: 'The labels for this counter are `<search-engine-name>.<source>`.
-
-
-        If the search engine is bundled with Fenix `search-engine-name` will be
-
-        the name of the search engine. If it''s a custom search engine (defined:
-
-        https://github.com/mozilla-mobile/fenix/issues/1607) the value will be
-
-        `custom`.
-
-
-        `source` will be: `action`, `suggestion`, `widget`, `shortcut`, `topsite`
-
-        (depending on the source from which the search started). Also added the
-
-        `other` option for the source but it should never enter on this case.
+    - description: 'Records incoming history record counts. `applied` is the number
+        of incoming history pages that were successfully stored or updated in the
+        local database. `failed_to_apply` is the number of pages that were ignored
+        due to errors. `reconciled` is the number of pages with new visits locally
+        and remotely, and had their visits merged.
 
         '
       fields:
@@ -317,7 +296,23 @@ fields:
         name: value
         type: INTEGER
       mode: REPEATED
-      name: metrics_search_count
+      name: history_sync_incoming
+      type: RECORD
+    - description: 'Records outgoing history record counts. `uploaded` is the number
+        of records that were successfully sent to the server. `failed_to_upload` is
+        the number of records that weren''t uploaded, and will be retried on the next
+        sync.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: history_sync_outgoing
       type: RECORD
     - description: 'Counts the number of times a timing metric was used incorrectly.
 
@@ -349,100 +344,51 @@ fields:
       mode: REPEATED
       name: glean_error_invalid_overflow
       type: RECORD
-    - description: 'Records clicks of adverts on SERP pages.
-
-        The key format is `<provider-name>`.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: browser_search_ad_clicks
-      type: RECORD
-    - description: 'Records the type of interaction a user has on SERP pages.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: browser_search_in_content
-      type: RECORD
-    - description: 'Records counts of SERP pages with adverts displayed.
-
-        The key format is `<provider-name>`.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: browser_search_with_ads
-      type: RECORD
-    - description: "A count of the pings submitted, by ping type.\n\nThis metric appears\
-        \ in both the metrics and baseline pings.\n\n- On the metrics ping, the counts\
-        \ include the number of pings sent since\n  the last metrics ping (including\
-        \ the last metrics ping)\n- On the baseline ping, the counts include the number\
-        \ of pings send since\n  the last baseline ping (including the last baseline\
-        \ ping)\n"
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: glean_validation_pings_submitted
-      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD
   - fields:
-    - description: 'The locale of the application during initialization (e.g. "es-ES").
+    - description: 'Records why the history sync failed: either due to an authentication
+        error, unexpected exception, or other error. The error strings are truncated
+        and sanitized to omit PII, like URLs and file system paths.
 
-        If the locale can''t be determined on the system, the value is
-
-        ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
-
-        to indicate "undetermined".
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: history_sync_failure_reason
+      type: RECORD
+    mode: NULLABLE
+    name: labeled_string
+    type: RECORD
+  - fields:
+    - description: 'The user''s hashed Firefox Account ID.
 
         '
       mode: NULLABLE
-      name: glean_baseline_locale
+      name: history_sync_uid
       type: STRING
     mode: NULLABLE
     name: string
     type: RECORD
   - fields:
-    - description: 'The duration of the last foreground session.
+    - description: 'Unique identifier for this sync, used to correlate together individual
+        pings for data types that were synchronized together (history, bookmarks,
+        logins). If a data type is synchronized by itself via the legacy ''sync''
+        API (as opposed to the Sync Manager), then this field will not be set on the
+        corresponding ping.
 
         '
-      fields:
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
       mode: NULLABLE
-      name: glean_baseline_duration
-      type: RECORD
+      name: sync_sync_uuid
+      type: STRING
     mode: NULLABLE
-    name: timespan
+    name: uuid
     type: RECORD
   - fields:
     - mode: NULLABLE
@@ -453,16 +399,6 @@ fields:
       type: STRING
     mode: REPEATED
     name: jwe
-    type: RECORD
-  - fields:
-    - description: 'The hour of the first run of the application.
-
-        '
-      mode: NULLABLE
-      name: glean_validation_first_run_hour
-      type: STRING
-    mode: NULLABLE
-    name: datetime
     type: RECORD
   - fields:
     - mode: NULLABLE

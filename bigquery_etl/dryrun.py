@@ -154,6 +154,7 @@ SKIP = {
         "sql/moz-fx-data-marketing-prod/acoustic/**/*.sql",
         recursive=True,
     ),
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_auth_events_v1/init.sql",  # noqa E501
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501

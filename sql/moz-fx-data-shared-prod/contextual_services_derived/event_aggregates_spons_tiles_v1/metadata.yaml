@@ -2,14 +2,15 @@ friendly_name: Contextual Services Event Aggregates for Sponsored tiles
 description: |-
   Aggregated event counts for sponsored tiles
 owners:
-  - rburwei@mozilla.com
+- rburwei@mozilla.com
 labels:
   incremental: true
   schedule: daily
 scheduling:
   dag_name: bqetl_ctxsvc_derived
-  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+bigquery: null
 workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:contextual-services
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:contextual-services
+references: {}

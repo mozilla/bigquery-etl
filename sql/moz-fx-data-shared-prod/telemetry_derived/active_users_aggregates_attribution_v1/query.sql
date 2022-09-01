@@ -1,6 +1,4 @@
 -- Query for telemetry_derived.active_users_aggregates_attribution_v1
-DECLARE start_date DATE DEFAULT '2021-01-01';
-
 CREATE TEMP FUNCTION normalize_adjust_network(key STRING) AS (
   (
     CASE
@@ -23,19 +21,7 @@ CREATE TEMP FUNCTION normalize_adjust_network(key STRING) AS (
 );
 
 CREATE TEMP FUNCTION normalize_install_source(key STRING) AS (
-  (
-    CASE
-    WHEN
-      key NOT IN (
-        'com.android.vending'
-      )
-      AND key IS NOT NULL
-    THEN
-      'Other'
-    ELSE
-      key
-    END
-  )
+  (CASE WHEN key NOT IN ('com.android.vending') AND key IS NOT NULL THEN 'Other' ELSE key END)
 );
 
 WITH baseline AS (
@@ -78,7 +64,7 @@ fenix_first_date_attributions AS (
   FROM
     org_mozilla_fenix.metrics AS org_mozilla_fenix_metrics
   WHERE
-    DATE(submission_timestamp) >= start_date
+    DATE(submission_timestamp) >= '2021-01-01'
     AND metrics.string.metrics_install_source IS NOT NULL
     AND metrics.string.metrics_adjust_network IS NOT NULL
   GROUP BY
@@ -93,7 +79,7 @@ fenix_first_date_attributions AS (
   FROM
     org_mozilla_fenix.metrics AS org_mozilla_fenix_metrics
   WHERE
-    DATE(submission_timestamp) >= start_date
+    DATE(submission_timestamp) >= '2021-01-01'
     AND metrics.string.metrics_install_source IS NOT NULL
     AND metrics.string.metrics_adjust_network IS NOT NULL
   GROUP BY
@@ -108,7 +94,7 @@ fenix_first_date_attributions AS (
   FROM
     org_mozilla_fennec_aurora.metrics AS org_mozilla_fennec_aurora_metrics
   WHERE
-    DATE(submission_timestamp) >= start_date
+    DATE(submission_timestamp) >= '2021-01-01'
     AND metrics.string.metrics_install_source IS NOT NULL
     AND metrics.string.metrics_adjust_network IS NOT NULL
   GROUP BY
@@ -123,7 +109,7 @@ fenix_first_date_attributions AS (
   FROM
     org_mozilla_firefox_beta.metrics AS org_mozilla_firefox_beta_metrics
   WHERE
-    DATE(submission_timestamp) >= start_date
+    DATE(submission_timestamp) >= '2021-01-01'
     AND metrics.string.metrics_install_source IS NOT NULL
     AND metrics.string.metrics_adjust_network IS NOT NULL
   GROUP BY
@@ -138,7 +124,7 @@ fenix_first_date_attributions AS (
   FROM
     org_mozilla_firefox.metrics AS org_mozilla_firefox_metrics
   WHERE
-    DATE(submission_timestamp) >= start_date
+    DATE(submission_timestamp) >= '2021-01-01'
     AND metrics.string.metrics_install_source IS NOT NULL
     AND metrics.string.metrics_adjust_network IS NOT NULL
   GROUP BY

@@ -289,14 +289,14 @@ with DAG(
 
     mozilla_vpn_derived__subscription_events__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__subscription_events__v1",
-        destination_table='subscription_events_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table='subscription_events_v1${{ macros.ds_format(macros.ds_add(ds, -8), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
+        parameters=["date:DATE:{{macros.ds_add(ds, -8)}}"],
     )
 
     mozilla_vpn_derived__subscriptions__v1 = bigquery_etl_query(

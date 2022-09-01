@@ -92,15 +92,10 @@ Adding a new field to a table schema also means that the field has to propagate 
 1. Open the `query.sql` file inside the `<dataset>.<table>` location and add the new definitions for the field.
 1. Run `./bqetl format <path to the query>` to format the query. Alternatively, run `./bqetl format $(git ls-tree -d HEAD --name-only)` validate the format of all queries that have been modified.
 1. Run `./bqetl query validate <dataset>.<table>` to dry run the query.
-
-   For data scientists (and anyone without `jobs.create` permissions in `moz-fx-data-shared-prod`), run: 
-   
-   ```
-    gcloud auth login --update-adc   # to authenticate to GCP
-    gcloud config set project mozdata    # to set the project
-    ./bqetl query validate --use-cloud-function=false --project-id=mozdata <full path to the query file>
-   ```
-
+    * For data scientists (and anyone without `jobs.create` permissions in `moz-fx-data-shared-prod`), run:
+        * (a) `gcloud auth login --update-adc   # to authenticate to GCP`
+        * (b) `gcloud config set project mozdata    # to set the project`
+        * (c) `./bqetl query validate --use-cloud-function=false --project-id=mozdata <full path to the query file>`
 1. Run `./bqetl query schema update <dataset>.<table> --update_downstream` to make local schema.yaml updates and update schemas of downstream dependencies.
    * [x] This requires [GCP access](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#bigquery-access-request).
    * [x] `--update_downstream` is optional as it takes longer. It is recommended when you know that there are downstream dependencies whose `schema.yaml` need to be updated, in which case, the update will happen automatically.

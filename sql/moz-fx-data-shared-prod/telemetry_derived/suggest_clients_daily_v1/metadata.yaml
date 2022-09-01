@@ -5,6 +5,8 @@ owners:
 - rburwei@mozilla.com
 labels:
   incremental: true
+scheduling:
+  dag_name: bqetl_main_summary
 bigquery:
   time_partitioning:
     field: submission_date

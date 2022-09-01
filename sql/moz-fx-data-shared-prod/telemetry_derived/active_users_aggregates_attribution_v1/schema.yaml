@@ -68,3 +68,9 @@ fields:
 - mode: NULLABLE
   name: attributed
   type: BOOLEAN
+- mode: NULLABLE
+  name: adjust_network
+  type: STRING
+- mode: NULLABLE
+  name: install_source
+  type: STRING

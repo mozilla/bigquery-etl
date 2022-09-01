@@ -58,7 +58,7 @@ fenix_first_date_attributions AS (
   -- Firefox Preview beta
   SELECT
     client_info.client_id AS client_id,
-    MIN(submission_timestamp) AS submission_timestamp,
+    MIN(submission_timestamp) AS min_submission_timestamp,
     ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)] AS adjust_network,
     ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)] AS install_source
   FROM
@@ -73,7 +73,7 @@ fenix_first_date_attributions AS (
   -- Firefox Preview nightly
   SELECT
     client_info.client_id AS client_id,
-    MIN(submission_timestamp) AS submission_timestamp,
+    MIN(submission_timestamp) AS min_submission_timestamp,
     ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)] AS adjust_network,
     ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)] AS install_source
   FROM
@@ -88,7 +88,7 @@ fenix_first_date_attributions AS (
   -- Fenix nightly
   SELECT
     client_info.client_id AS client_id,
-    MIN(submission_timestamp) AS submission_timestamp,
+    MIN(submission_timestamp) AS min_submission_timestamp,
     ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)] AS adjust_network,
     ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)] AS install_source
   FROM
@@ -103,7 +103,7 @@ fenix_first_date_attributions AS (
   -- Fenix beta
   SELECT
     client_info.client_id AS client_id,
-    MIN(submission_timestamp) AS submission_timestamp,
+    MIN(submission_timestamp) AS min_submission_timestamp,
     ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)] AS adjust_network,
     ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)] AS install_source
   FROM
@@ -118,7 +118,7 @@ fenix_first_date_attributions AS (
   -- Fenix release
   SELECT
     client_info.client_id AS client_id,
-    MIN(submission_timestamp) AS submission_timestamp,
+    MIN(submission_timestamp) AS min_submission_timestamp,
     ARRAY_AGG(metrics.string.metrics_adjust_network)[SAFE_OFFSET(0)] AS adjust_network,
     ARRAY_AGG(metrics.string.metrics_install_source)[SAFE_OFFSET(0)] AS install_source
   FROM
@@ -133,7 +133,7 @@ fenix_first_date_attributions AS (
 fenix_unique_attribution AS (
   SELECT
     client_id,
-    DATE(submission_timestamp) AS submission_date,
+    DATE(min_submission_timestamp) AS attribution_date,
     ANY_VALUE(adjust_network) AS adjust_network,
     ANY_VALUE(install_source) AS install_source
   FROM

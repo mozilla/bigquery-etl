@@ -68,7 +68,7 @@ fenix_first_date_attributions AS (
     AND metrics.string.metrics_install_source IS NOT NULL
     AND metrics.string.metrics_adjust_network IS NOT NULL
   GROUP BY
-    1
+    client_id
   UNION ALL
   -- Firefox Preview nightly
   SELECT
@@ -83,7 +83,7 @@ fenix_first_date_attributions AS (
     AND metrics.string.metrics_install_source IS NOT NULL
     AND metrics.string.metrics_adjust_network IS NOT NULL
   GROUP BY
-    1
+    client_id
   UNION ALL
   -- Fenix nightly
   SELECT
@@ -98,7 +98,7 @@ fenix_first_date_attributions AS (
     AND metrics.string.metrics_install_source IS NOT NULL
     AND metrics.string.metrics_adjust_network IS NOT NULL
   GROUP BY
-    1
+    client_id
   UNION ALL
   -- Fenix beta
   SELECT
@@ -113,7 +113,7 @@ fenix_first_date_attributions AS (
     AND metrics.string.metrics_install_source IS NOT NULL
     AND metrics.string.metrics_adjust_network IS NOT NULL
   GROUP BY
-    1
+    client_id
   UNION ALL
   -- Fenix release
   SELECT
@@ -128,7 +128,7 @@ fenix_first_date_attributions AS (
     AND metrics.string.metrics_install_source IS NOT NULL
     AND metrics.string.metrics_adjust_network IS NOT NULL
   GROUP BY
-    1
+    client_id
 ),
 fenix_unique_attribution AS (
   SELECT
@@ -139,8 +139,8 @@ fenix_unique_attribution AS (
   FROM
     fenix_first_date_attributions
   GROUP BY
-    1,
-    2
+    client_id,
+    attribution_date
 ),
 all_with_first_attribution AS (
   SELECT

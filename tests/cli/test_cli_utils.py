@@ -32,7 +32,7 @@ class TestUtils:
 
     @pytest.mark.integration
     def test_is_authenticated(self):
-        assert is_authenticated("non-existing-project") is False
+        assert is_authenticated()
 
     def test_is_valid_project(self):
         assert is_valid_project(None, None, "mozfun")

@@ -138,6 +138,11 @@ clients AS (
     `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE
     submission_date = @submission_date
+  --Suggest is only available for the following clients:
+    AND country = "US"
+    AND locale LIKE "en*"
+    AND browser_version_info.major_version >= 92
+    AND browser_version_info.version NOT IN ('92', '92.', '92.0', '92.0.0')
 )
 SELECT
   *

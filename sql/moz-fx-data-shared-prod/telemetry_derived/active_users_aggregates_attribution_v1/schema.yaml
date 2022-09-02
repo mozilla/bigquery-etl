@@ -18,6 +18,14 @@ fields:
   name: attribution_variation
   type: STRING
 - mode: NULLABLE
+  name: adjust_network
+  type: STRING
+  description: The type of source of a client installation
+- mode: NULLABLE
+  name: install_source
+  type: STRING
+  description: The source of a client installation
+- mode: NULLABLE
   name: city
   type: STRING
 - mode: NULLABLE
@@ -68,9 +76,3 @@ fields:
 - mode: NULLABLE
   name: attributed
   type: BOOLEAN
-- mode: NULLABLE
-  name: adjust_network
-  type: STRING
-- mode: NULLABLE
-  name: install_source
-  type: STRING

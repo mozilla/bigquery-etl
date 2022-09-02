@@ -76,17 +76,28 @@ _previous AS (
     AND first_seen_date < @submission_date
 )
 {% endif %}
-  --
-SELECT
-  IF(
-    _previous.client_id IS NULL
-    OR _previous.first_seen_date >= _current.first_seen_date,
-    _current,
+
+, _joined AS (
+  SELECT
+    IF(
+      _previous.client_id IS NULL
+      OR _previous.first_seen_date >= _current.first_seen_date,
+      _current,
+      _previous
+    ).*
+  FROM
+    _current
+  FULL JOIN
     _previous
-  ).*
-FROM
-  _current
-FULL JOIN
-  _previous
-USING
-  (client_id)
+  USING
+    (client_id)
+)
+
+-- added this as the result of bug#1788650
+SELECT
+  MIN(submission_date) AS submission_date,
+  MIN(first_seen_date) AS first_seen_date,
+  sample_id,
+  client_id
+FROM _joined
+GROUP BY sample_id, client_id

@@ -20039,6 +20039,11 @@ fields:
       mode: NULLABLE
       name: text_recognition_text_length
       type: STRING
+    - description: 0th bit - TLS13 used? 1th bit - Revocation Privacy, 2nd bit - DNS
+        Privacy, 3rd bit - ECH Privacy
+      mode: NULLABLE
+      name: ssl_handshake_privacy
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -48503,6 +48508,20 @@ fields:
             type: BOOLEAN
           mode: REPEATED
           name: security_psm_ui_interaction
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'Counts how many times this result type was picked at a given
+              index.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: urlbar_picked_quickaction
           type: RECORD
         mode: NULLABLE
         name: keyed_scalars

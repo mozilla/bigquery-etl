@@ -109,6 +109,18 @@ with DAG(
         depends_on_past=False,
     )
 
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    active_users_aggregates_attribution_v1.set_upstream(wait_for_copy_deduplicate_all)
     wait_for_telemetry_derived__unified_metrics__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__unified_metrics__v1",
         external_dag_id="bqetl_unified",

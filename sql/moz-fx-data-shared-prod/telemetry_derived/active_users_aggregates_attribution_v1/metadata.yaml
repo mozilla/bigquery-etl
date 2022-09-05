@@ -32,3 +32,7 @@ bigquery:
 references:
   query.sql:
   - moz-fx-data-shared-prod.telemetry_derived.unified_metrics_v1
+  - org_mozilla_fenix.metrics
+  - org_mozilla_fennec_aurora.metrics
+  - org_mozilla_firefox.metrics
+  - org_mozilla_firefox_beta.metrics

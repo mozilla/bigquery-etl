@@ -432,7 +432,7 @@ def publish(ctx, path, project_id, dependency_dir, gcs_bucket, gcs_path):
 
     public = False
 
-    if not is_authenticated(project_id):
+    if not is_authenticated():
         click.echo("User needs to be authenticated to publish routines.", err=True)
         sys.exit(1)
 

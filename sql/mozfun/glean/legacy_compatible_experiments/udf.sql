@@ -1,13 +1,9 @@
-
-                -- Definition for glean.legacy_compatible_experiments
-                -- For more information on writing UDFs see:
-                -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 CREATE OR REPLACE FUNCTION glean.legacy_compatible_experiments(ping_info__experiments array)
 RETURNS array AS (
   array(select struct(x.key as key, x.value.branch as value) from unnest(ping_info__experiments) x) as experiments
 );
 
-                -- Tests
+-- Tests
 with ping_info as (
   select array(
     struct("experiment_a" as key, struct("control" as branch, struct("type" as "firefox") as extra) as value),

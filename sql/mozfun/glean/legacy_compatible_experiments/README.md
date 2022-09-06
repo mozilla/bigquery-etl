@@ -1,12 +1,3 @@
+This UDF transforms the `ping_info.experiments` field from Glean pings into the format for `experiments` used by Legacy Telemetry pings. In particular, it drops the exta information that Glean pings collect.
 
-<!--
-This is a short README for your routine, you can add any extra
-documentation or examples that a user might want to see when
-viewing the documentation at https://mozilla.github.io/bigquery-etl
-
-You can embed an SQL file into your README using the following
-syntax:
-
-@sql(../examples/fenix_app_info.sql)
--->
-
+If you need to combine Glean data with Legacy Telemetry data, then you can use this UDF to transform a Glean experiments field into the structure of a Legacy Telemetry one.

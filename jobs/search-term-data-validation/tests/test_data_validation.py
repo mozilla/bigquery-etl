@@ -1,5 +1,5 @@
 import pytest
-from data_validation import range_check, mean_check
+from src.data_validation import range_check, mean_check
 import pandas as pd
 import numpy as np
 

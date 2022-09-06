@@ -1,7 +1,3 @@
-
-                -- Definition for glean.legacy_compatible_experiments
-                -- For more information on writing UDFs see:
-                -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 CREATE OR REPLACE FUNCTION glean.legacy_compatible_experiments(ping_info__experiments ARRAY)
 RETURNS ARRAY AS (
   ARRAY(

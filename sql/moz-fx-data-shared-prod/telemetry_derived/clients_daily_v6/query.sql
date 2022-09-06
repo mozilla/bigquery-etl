@@ -80,7 +80,9 @@ WITH base AS (
             STRUCT(payload.keyed_histograms.process_crash_submit_success, 'main-crash'),
             STRUCT(payload.keyed_histograms.process_crash_submit_success, 'content-crash'),
             STRUCT(payload.keyed_histograms.process_crash_submit_success, 'plugin-crash'),
-            STRUCT(payload.keyed_histograms.subprocess_kill_hard, 'ShutDownKill')
+            STRUCT(payload.keyed_histograms.subprocess_kill_hard, 'ShutDownKill'),
+            STRUCT(payload.keyed_histograms.media_play_time_ms, 'A'),
+            STRUCT(payload.keyed_histograms.media_play_time_ms, 'V'),
           ]
         )
     ) AS hist_key_sums,
@@ -220,6 +222,8 @@ clients_summary AS (
     hist_key_sums[OFFSET(11)] AS crash_submit_success_content,
     hist_key_sums[OFFSET(12)] AS crash_submit_success_plugin,
     hist_key_sums[OFFSET(13)] AS shutdown_kill,
+    hist_key_sums[OFFSET(14)] AS media_play_time_ms_audio,
+    hist_key_sums[OFFSET(15)] AS media_play_time_ms_video,
     (
       SELECT
         version
@@ -1009,6 +1013,8 @@ aggregates AS (
     AVG(session_restored) AS session_restored_mean,
     COUNTIF(subsession_counter = 1) AS sessions_started_on_this_day,
     SUM(shutdown_kill) AS shutdown_kill_sum,
+    SUM(media_play_time_ms_audio) AS media_play_time_ms_audio_sum,
+    SUM(media_play_time_ms_video) AS media_play_time_ms_video_sum,
     SUM(subsession_length / NUMERIC '3600') AS subsession_hours_sum,
     SUM(ssl_handshake_result_failure) AS ssl_handshake_result_failure_sum,
     SUM(ssl_handshake_result_success) AS ssl_handshake_result_success_sum,

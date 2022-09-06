@@ -82,7 +82,7 @@ WITH base AS (
             STRUCT(payload.keyed_histograms.process_crash_submit_success, 'plugin-crash'),
             STRUCT(payload.keyed_histograms.subprocess_kill_hard, 'ShutDownKill'),
             STRUCT(payload.keyed_histograms.media_play_time_ms, 'A'),
-            STRUCT(payload.keyed_histograms.media_play_time_ms, 'V'),
+            STRUCT(payload.keyed_histograms.media_play_time_ms, 'V')
           ]
         )
     ) AS hist_key_sums,

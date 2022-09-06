@@ -2,27 +2,37 @@
                 -- Definition for glean.legacy_compatible_experiments
                 -- For more information on writing UDFs see:
                 -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-CREATE OR REPLACE FUNCTION glean.legacy_compatible_experiments(ping_info__experiments array)
-RETURNS array AS (
-  array(select struct(x.key as key, x.value.branch as value) from unnest(ping_info__experiments) x) as experiments
+CREATE OR REPLACE FUNCTION glean.legacy_compatible_experiments(ping_info__experiments ARRAY)
+RETURNS ARRAY AS (
+  ARRAY(
+    SELECT
+      STRUCT(x.key AS key, x.value.branch AS value)
+    FROM
+      UNNEST(ping_info__experiments) x
+  ) AS experiments
 );
 
                 -- Tests
-with ping_info as (
-  select array(
-    struct("experiment_a" as key, struct("control" as branch, struct("type" as "firefox") as extra) as value),
-    struct("experiment_b" as key, struct("treatment" as branch, struct("type" as "firefoxOS") as extra) as value),
-  ) as experiments
-
+WITH ping_info AS (
+  SELECT
+    ARRAY(
+      STRUCT(
+        "experiment_a" AS key,
+        STRUCT("control" AS branch, STRUCT("type" AS "firefox") AS extra) AS value
+      ),
+      STRUCT(
+        "experiment_b" AS key,
+        STRUCT("treatment" AS branch, STRUCT("type" AS "firefoxOS") AS extra) AS value
+      ),
+    ) AS experiments
 ),
-expected as (
-  select array(
-    struct("experiment_a" as key, "control" as value),
-    struct("experiment_b" as key, "treatment" as value),
-  ) as experiments
-
+expected AS (
+  SELECT
+    ARRAY(
+      STRUCT("experiment_a" AS key, "control" AS value),
+      STRUCT("experiment_b" AS key, "treatment" AS value),
+    ) AS experiments
 ),
-
 )
 SELECT
   assert.equals(expected, glean.legacy_compatible_experiments(ping_info.experiments))

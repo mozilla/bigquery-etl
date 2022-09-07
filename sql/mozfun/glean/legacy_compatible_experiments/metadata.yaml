@@ -1,3 +1,4 @@
+---
 description: >
   Formats a Glean experiments field into a Legacy Telemetry experiments field
   by dropping the extra information that Glean collects

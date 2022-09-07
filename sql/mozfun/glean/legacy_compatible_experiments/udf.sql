@@ -29,7 +29,10 @@ expected AS (
     ] AS experiments
 )
 SELECT
-  assert.equals(expected.experiments, glean.legacy_compatible_experiments(ping_info.experiments))
+  assert.array_equals(
+    expected.experiments,
+    glean.legacy_compatible_experiments(ping_info.experiments)
+  )
 FROM
   ping_info,
   expected

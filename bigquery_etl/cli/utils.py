@@ -1,15 +1,16 @@
 """Utility functions used by the CLI."""
 
-import os
 import fnmatch
+import os
+import re
 from fnmatch import fnmatchcase
 from pathlib import Path
 
 import click
-import re
+from google.auth.exceptions import DefaultCredentialsError
 from google.cloud import bigquery
 
-from bigquery_etl.util.common import project_dirs, TempDatasetReference
+from bigquery_etl.util.common import TempDatasetReference, project_dirs
 
 QUERY_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
@@ -17,6 +18,8 @@ QUERY_FILE_RE = re.compile(
 )
 TEST_PROJECT = "bigquery-etl-integration-test"
 MOZDATA = "mozdata"
+PIONEER_NONPROD = "moz-fx-data-pioneer-nonprod"
+PIONEER_PROD = "moz-fx-data-pioneer-prod"
 
 
 def is_valid_dir(ctx, param, value):
@@ -33,13 +36,12 @@ def is_valid_file(ctx, param, value):
     return value
 
 
-def is_authenticated(project_id=None):
-    """Check if the user is authenticated to GCP and can access the project."""
-    client = bigquery.Client()
-
-    if project_id:
-        return client.project == project_id
-
+def is_authenticated():
+    """Check if the user is authenticated to GCP."""
+    try:
+        bigquery.Client(project="")
+    except DefaultCredentialsError:
+        return False
     return True
 
 
@@ -48,6 +50,8 @@ def is_valid_project(ctx, param, value):
     if value is None or value in [Path(p).name for p in project_dirs()] + [
         TEST_PROJECT,
         MOZDATA,
+        PIONEER_NONPROD,
+        PIONEER_PROD,
     ]:
         return value
     raise click.BadParameter(f"Invalid project {value}")
@@ -55,8 +59,17 @@ def is_valid_project(ctx, param, value):
 
 def table_matches_patterns(pattern, invert, table):
     """Check if tables match pattern."""
-    pattern = re.compile(fnmatch.translate(pattern))
-    return (pattern.match(table) is not None) != invert
+    if not isinstance(pattern, list):
+        pattern = [pattern]
+
+    matching = False
+    for p in pattern:
+        compiled_pattern = re.compile(fnmatch.translate(p))
+        if compiled_pattern.match(table) is not None:
+            matching = True
+            break
+
+    return matching != invert
 
 
 def paths_matching_name_pattern(pattern, sql_path, project_id, files=("*.sql")):

@@ -21,6 +21,7 @@ from ..glam.cli import glam
 from ..static import static_
 from ..stripe import stripe_
 from ..subplat.apple import apple
+from ..copy_deduplicate import copy_deduplicate
 
 
 def cli(prog_name=None):
@@ -41,6 +42,7 @@ def cli(prog_name=None):
         "apple": apple,
         "static": static_,
         "docs": docs_,
+        "copy_deduplicate": copy_deduplicate,
     }
 
     @click.group(commands=commands)

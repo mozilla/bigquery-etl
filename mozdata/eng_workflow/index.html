@@ -2206,6 +2206,172 @@ document type.</p>
 and to contain only one row per distinct <code>document_id</code> within a given date.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>additional_properties</td>
+        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>assigned_to</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>blocked_by</td>
+        <td></td>
+        <td>Integer</td>
+        <td>No</td>
+    </tr><tr>
+        <td>bug_id</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>bug_severity</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>bug_status</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>component</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>creation_ts</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>delta_ts</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>depends_on</td>
+        <td></td>
+        <td>Integer</td>
+        <td>No</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td>The document ID specified in the URI when the client sent this message</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>duplicate_of</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>duplicates</td>
+        <td></td>
+        <td>Integer</td>
+        <td>No</td>
+    </tr><tr>
+        <td>flags</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>groups</td>
+        <td></td>
+        <td>String</td>
+        <td>No</td>
+    </tr><tr>
+        <td>keywords</td>
+        <td></td>
+        <td>String</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>priority</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>product</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>qa_contact</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>reporter</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>resolution</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td>Time when the ingestion edge server accepted this message</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>target_milestone</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -2232,6 +2398,122 @@ document type.</p>
 and to contain only one row per distinct <code>document_id</code> within a given date.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>additional_properties</td>
+        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>argv</td>
+        <td></td>
+        <td>String</td>
+        <td>No</td>
+    </tr><tr>
+        <td>build_attrs</td>
+        <td>Attributes characterizing a build</td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>build_opts</td>
+        <td>Selected build options</td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_id</td>
+        <td>A UUID to uniquely identify a client</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>command</td>
+        <td>The mach command that was invoked</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td>The document ID specified in the URI when the client sent this message</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>duration_ms</td>
+        <td>Command duration in milliseconds</td>
+        <td>Float</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>exception</td>
+        <td>If a Python exception was encountered during the execution of the command, this value contains the result of calling `repr` on the exception object.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>file_types_changed</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td>Time when the ingestion edge server accepted this message</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>success</td>
+        <td>true if the command succeeded</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>system</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>time</td>
+        <td>Time at which this event happened</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -2257,6 +2539,97 @@ document type.</p>
 (per <code>submission_timestamp</code>)
 and to contain only one row per distinct <code>document_id</code> within a given date.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>additional_properties</td>
+        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>changeset_id</td>
+        <td>The 40 char hex ID of the changeset. See https://www.mercurial-scm.org/wiki/ChangeSetID.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>diffstat</td>
+        <td>Statistics about files changed by this changeset.  Similar to running 'hg diff --stat'.  May be null if diffstats were not computed.</td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td>The document ID specified in the URI when the client sent this message</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>landing_system</td>
+        <td>A string labelling the automated system used to land this changeset in this repository.  May be empty.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>push_date</td>
+        <td>Timestamp, in Unix time (seconds since the Unix epoch), of when the push to the repository occurred.  This value is obtained from the original repository pushlog.</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>repository</td>
+        <td>The URL of the repository the changeset was pushed to.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>review_system_used</td>
+        <td>A string labelling the code review system used to review this changeset.  Possible values include (but are not limited to): 'mozreview', 'phabricator', 'bmo', 'unknown', and 'not_applicable'.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td>Time when the ingestion edge server accepted this message</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
 <table>
 <caption>Referenced Tables</caption>
     <tr>

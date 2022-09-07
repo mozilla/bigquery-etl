@@ -18,6 +18,8 @@ QUERY_FILE_RE = re.compile(
 )
 TEST_PROJECT = "bigquery-etl-integration-test"
 MOZDATA = "mozdata"
+PIONEER_NONPROD = "moz-fx-data-pioneer-nonprod"
+PIONEER_PROD = "moz-fx-data-pioneer-prod"
 
 
 def is_valid_dir(ctx, param, value):
@@ -48,6 +50,8 @@ def is_valid_project(ctx, param, value):
     if value is None or value in [Path(p).name for p in project_dirs()] + [
         TEST_PROJECT,
         MOZDATA,
+        PIONEER_NONPROD,
+        PIONEER_PROD,
     ]:
         return value
     raise click.BadParameter(f"Invalid project {value}")
@@ -61,11 +65,11 @@ def table_matches_patterns(pattern, invert, table):
     matching = False
     for p in pattern:
         compiled_pattern = re.compile(fnmatch.translate(p))
-        if (compiled_pattern.match(table) is not None) != invert:
+        if compiled_pattern.match(table) is not None:
             matching = True
             break
 
-    return matching
+    return matching != invert
 
 
 def paths_matching_name_pattern(pattern, sql_path, project_id, files=("*.sql")):

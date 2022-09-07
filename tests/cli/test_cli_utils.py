@@ -8,6 +8,7 @@ from bigquery_etl.cli.utils import (
     is_valid_dir,
     is_valid_file,
     is_valid_project,
+    table_matches_patterns,
 )
 
 TEST_DIR = Path(__file__).parent.parent
@@ -39,3 +40,26 @@ class TestUtils:
         assert is_valid_project(None, None, "moz-fx-data-shared-prod")
         with pytest.raises(BadParameter):
             assert is_valid_project(None, None, "not-existing")
+
+    def test_table_matches_patterns(self):
+        assert not table_matches_patterns(
+            table="telemetry_live.main_v4",
+            pattern=["telemetry_live.main_v4", "telemetry_live.event_v4"],
+            invert=True,
+        )
+        assert not table_matches_patterns(
+            table="telemetry_live.main_v4",
+            pattern="telemetry_live.main_v4",
+            invert=True,
+        )
+
+        assert table_matches_patterns(
+            table="telemetry_live.main_v4",
+            pattern=["telemetry_live.first_shutdown_v4", "telemetry_live.event_v4"],
+            invert=True,
+        )
+        assert table_matches_patterns(
+            table="telemetry_live.main_v4",
+            pattern="telemetry_live.event_v4",
+            invert=True,
+        )

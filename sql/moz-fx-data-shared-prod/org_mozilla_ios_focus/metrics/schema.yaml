@@ -514,6 +514,30 @@ fields:
       mode: REPEATED
       name: shortcuts_shortcut_removed_counter
       type: RECORD
+    - description: "Records clicks of adverts on SERP pages.\nThe key format is \u2018\
+        <provider-name>\u2019.\n"
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: browser_search_ad_clicks
+      type: RECORD
+    - description: "Records counts of SERP pages with adverts displayed.\nThe key\
+        \ format is \u2018<provider-name>\u2019.\n"
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: browser_search_with_ads
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

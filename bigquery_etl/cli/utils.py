@@ -65,11 +65,11 @@ def table_matches_patterns(pattern, invert, table):
     matching = False
     for p in pattern:
         compiled_pattern = re.compile(fnmatch.translate(p))
-        if (compiled_pattern.match(table) is not None) != invert:
+        if compiled_pattern.match(table) is not None:
             matching = True
             break
 
-    return matching
+    return matching != invert
 
 
 def paths_matching_name_pattern(pattern, sql_path, project_id, files=("*.sql")):

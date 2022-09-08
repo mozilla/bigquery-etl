@@ -51473,6 +51473,14 @@ fields:
           mode: NULLABLE
           name: browser_ui_interaction_textrecognition_error
           type: INTEGER
+        - description: 'Number of sponsored visits that could not find their triggering
+            URL in history. We expect this to be a small number just due to the navigation
+            layer manipulating URLs. A large or growing value may be a concern.
+
+            '
+          mode: NULLABLE
+          name: places_sponsored_visit_no_triggering_url
+          type: INTEGER
         mode: NULLABLE
         name: scalars
         type: RECORD

@@ -4,6 +4,169 @@ fields:
   mode: NULLABLE
   name: additional_properties
   type: STRING
+- description: The document ID specified in the URI when the client sent this message
+  mode: NULLABLE
+  name: document_id
+  type: STRING
+- fields:
+  - description: Results of a geographic lookup based on the client's IP address
+    fields:
+    - mode: NULLABLE
+      name: city
+      type: STRING
+    - description: An ISO 3166-1 alpha-2 country code
+      mode: NULLABLE
+      name: country
+      type: STRING
+    - description: The specific geo database version used for this lookup
+      mode: NULLABLE
+      name: db_version
+      type: STRING
+    - description: First major country subdivision, typically a state, province, or
+        county
+      mode: NULLABLE
+      name: subdivision1
+      type: STRING
+    - description: Second major country subdivision; not applicable for most countries
+      mode: NULLABLE
+      name: subdivision2
+      type: STRING
+    mode: NULLABLE
+    name: geo
+    type: RECORD
+  - description: Headers included in the client's HTTP request
+    fields:
+    - description: Date HTTP header
+      mode: NULLABLE
+      name: date
+      type: STRING
+    - description: DNT (Do Not Track) HTTP header
+      mode: NULLABLE
+      name: dnt
+      type: STRING
+    - description: X-Debug-Id HTTP header
+      mode: NULLABLE
+      name: x_debug_id
+      type: STRING
+    - description: X-PingSender-Version HTTP header
+      mode: NULLABLE
+      name: x_pingsender_version
+      type: STRING
+    - description: X-Source-Tags HTTP header
+      mode: NULLABLE
+      name: x_source_tags
+      type: STRING
+    - description: X-Telemetry-Agent HTTP header
+      mode: NULLABLE
+      name: x_telemetry_agent
+      type: STRING
+    - description: X-Foxsec-IP-Reputation header
+      mode: NULLABLE
+      name: x_foxsec_ip_reputation
+      type: STRING
+    - description: X-LB-Tags HTTP header
+      mode: NULLABLE
+      name: x_lb_tags
+      type: STRING
+    - mode: NULLABLE
+      name: parsed_date
+      type: TIMESTAMP
+    - mode: REPEATED
+      name: parsed_x_source_tags
+      type: STRING
+    - fields:
+      - mode: NULLABLE
+        name: tls_version
+        type: STRING
+      - mode: NULLABLE
+        name: tls_cipher_hex
+        type: STRING
+      mode: NULLABLE
+      name: parsed_x_lb_tags
+      type: RECORD
+    mode: NULLABLE
+    name: header
+    type: RECORD
+  - description: Components of the URI to which this ping was sent
+    fields:
+    - mode: NULLABLE
+      name: app_build_id
+      type: STRING
+    - mode: NULLABLE
+      name: app_name
+      type: STRING
+    - mode: NULLABLE
+      name: app_update_channel
+      type: STRING
+    - mode: NULLABLE
+      name: app_version
+      type: STRING
+    mode: NULLABLE
+    name: uri
+    type: RECORD
+  - description: Parsed components of the client's user agent string
+    fields:
+    - mode: NULLABLE
+      name: browser
+      type: STRING
+    - mode: NULLABLE
+      name: os
+      type: STRING
+    - mode: NULLABLE
+      name: version
+      type: STRING
+    mode: NULLABLE
+    name: user_agent
+    type: RECORD
+  - description: Results of ISP lookup based on the client's IP address
+    fields:
+    - description: The specific geo ISP database version used for this lookup
+      mode: NULLABLE
+      name: db_version
+      type: STRING
+    - description: The name of the ISP associated with the client's IP address
+      mode: NULLABLE
+      name: name
+      type: STRING
+    - description: The name of a specific business entity associated with the client's
+        IP address when available; otherwise the ISP name
+      mode: NULLABLE
+      name: organization
+      type: STRING
+    mode: NULLABLE
+    name: isp
+    type: RECORD
+  mode: NULLABLE
+  name: metadata
+  type: RECORD
+- description: Set to "Other" if this message contained an unrecognized app name
+  mode: NULLABLE
+  name: normalized_app_name
+  type: STRING
+- description: Set to "Other" if this message contained an unrecognized channel name
+  mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+- description: An ISO 3166-1 alpha-2 country code
+  mode: NULLABLE
+  name: normalized_country_code
+  type: STRING
+- description: Set to "Other" if this message contained an unrecognized OS name
+  mode: NULLABLE
+  name: normalized_os
+  type: STRING
+- mode: NULLABLE
+  name: normalized_os_version
+  type: STRING
+- description: Hashed version of client_id (if present) useful for partitioning; ranges
+    from 0 to 99
+  mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+- description: Time when the ingestion edge server accepted this message
+  mode: NULLABLE
+  name: submission_timestamp
+  type: TIMESTAMP
 - fields:
   - mode: NULLABLE
     name: architecture
@@ -40,10 +203,6 @@ fields:
   type: STRING
 - mode: NULLABLE
   name: creation_date
-  type: STRING
-- description: The document ID specified in the URI when the client sent this message
-  mode: NULLABLE
-  name: document_id
   type: STRING
 - fields:
   - fields:
@@ -466,6 +625,11 @@ fields:
       mode: NULLABLE
       name: e10s_enabled
       type: BOOLEAN
+    - description: maximum number of processes that will be launched for regular web
+        content
+      mode: NULLABLE
+      name: e10s_multi_processes
+      type: INTEGER
     - fields:
       - mode: REPEATED
         name: accept_languages
@@ -540,11 +704,6 @@ fields:
       mode: NULLABLE
       name: update
       type: RECORD
-    - description: maximum number of processes that will be launched for regular web
-        content
-      mode: NULLABLE
-      name: e10s_multi_processes
-      type: INTEGER
     - mode: NULLABLE
       name: default_private_search_engine
       type: STRING
@@ -1025,156 +1184,6 @@ fields:
   name: id
   type: STRING
 - fields:
-  - description: Results of a geographic lookup based on the client's IP address
-    fields:
-    - mode: NULLABLE
-      name: city
-      type: STRING
-    - description: An ISO 3166-1 alpha-2 country code
-      mode: NULLABLE
-      name: country
-      type: STRING
-    - description: The specific geo database version used for this lookup
-      mode: NULLABLE
-      name: db_version
-      type: STRING
-    - description: First major country subdivision, typically a state, province, or
-        county
-      mode: NULLABLE
-      name: subdivision1
-      type: STRING
-    - description: Second major country subdivision; not applicable for most countries
-      mode: NULLABLE
-      name: subdivision2
-      type: STRING
-    mode: NULLABLE
-    name: geo
-    type: RECORD
-  - description: Headers included in the client's HTTP request
-    fields:
-    - description: Date HTTP header
-      mode: NULLABLE
-      name: date
-      type: STRING
-    - description: DNT (Do Not Track) HTTP header
-      mode: NULLABLE
-      name: dnt
-      type: STRING
-    - description: X-Debug-Id HTTP header
-      mode: NULLABLE
-      name: x_debug_id
-      type: STRING
-    - description: X-PingSender-Version HTTP header
-      mode: NULLABLE
-      name: x_pingsender_version
-      type: STRING
-    - description: X-Source-Tags HTTP header
-      mode: NULLABLE
-      name: x_source_tags
-      type: STRING
-    - description: X-Telemetry-Agent HTTP header
-      mode: NULLABLE
-      name: x_telemetry_agent
-      type: STRING
-    - description: X-Foxsec-IP-Reputation header
-      mode: NULLABLE
-      name: x_foxsec_ip_reputation
-      type: STRING
-    - description: X-LB-Tags HTTP header
-      mode: NULLABLE
-      name: x_lb_tags
-      type: STRING
-    - mode: NULLABLE
-      name: parsed_date
-      type: TIMESTAMP
-    - mode: REPEATED
-      name: parsed_x_source_tags
-      type: STRING
-    - fields:
-      - mode: NULLABLE
-        name: tls_version
-        type: STRING
-      - mode: NULLABLE
-        name: tls_cipher_hex
-        type: STRING
-      mode: NULLABLE
-      name: parsed_x_lb_tags
-      type: RECORD
-    mode: NULLABLE
-    name: header
-    type: RECORD
-  - description: Components of the URI to which this ping was sent
-    fields:
-    - mode: NULLABLE
-      name: app_build_id
-      type: STRING
-    - mode: NULLABLE
-      name: app_name
-      type: STRING
-    - mode: NULLABLE
-      name: app_update_channel
-      type: STRING
-    - mode: NULLABLE
-      name: app_version
-      type: STRING
-    mode: NULLABLE
-    name: uri
-    type: RECORD
-  - description: Parsed components of the client's user agent string
-    fields:
-    - mode: NULLABLE
-      name: browser
-      type: STRING
-    - mode: NULLABLE
-      name: os
-      type: STRING
-    - mode: NULLABLE
-      name: version
-      type: STRING
-    mode: NULLABLE
-    name: user_agent
-    type: RECORD
-  - description: Results of ISP lookup based on the client's IP address
-    fields:
-    - description: The specific geo ISP database version used for this lookup
-      mode: NULLABLE
-      name: db_version
-      type: STRING
-    - description: The name of the ISP associated with the client's IP address
-      mode: NULLABLE
-      name: name
-      type: STRING
-    - description: The name of a specific business entity associated with the client's
-        IP address when available; otherwise the ISP name
-      mode: NULLABLE
-      name: organization
-      type: STRING
-    mode: NULLABLE
-    name: isp
-    type: RECORD
-  mode: NULLABLE
-  name: metadata
-  type: RECORD
-- description: Set to "Other" if this message contained an unrecognized app name
-  mode: NULLABLE
-  name: normalized_app_name
-  type: STRING
-- description: Set to "Other" if this message contained an unrecognized channel name
-  mode: NULLABLE
-  name: normalized_channel
-  type: STRING
-- description: An ISO 3166-1 alpha-2 country code
-  mode: NULLABLE
-  name: normalized_country_code
-  type: STRING
-- description: Set to "Other" if this message contained an unrecognized OS name
-  mode: NULLABLE
-  name: normalized_os
-  type: STRING
-- mode: NULLABLE
-  name: normalized_os_version
-  type: STRING
-- fields:
   - fields:
     - description: A list of known accessibility clients that inject into Firefox
         process space (see https://searchfox.org/mozilla-central/source/accessible/windows/msaa/Compatibility.h).
@@ -1238,6 +1247,11 @@ fields:
         the common archive formats.
       mode: NULLABLE
       name: application_reputation_binary_archive
+      type: STRING
+    - description: Whether or not the file examined by download protection is a binary
+        type (or it's not possible to tell because the filename is missing).
+      mode: NULLABLE
+      name: application_reputation_binary_type
       type: STRING
     - description: For each Application Reputation lookup against both the V2 and
         V4 Google lists, note which version of block list returned a match (0 = no
@@ -1372,6 +1386,11 @@ fields:
     - description: A number of auto-rejected tranlation offers
       mode: NULLABLE
       name: auto_rejected_translation_offers
+      type: STRING
+    - description: counts the number of times a user changed the default autoplay
+        behavior to each setting during a subsession.
+      mode: NULLABLE
+      name: autoplay_default_setting_change
       type: STRING
     - description: The number of times the user adds a site to the allow list, removes
         a site from the allow list, adds a site to the block list and removes a site
@@ -4787,6 +4806,20 @@ fields:
       mode: NULLABLE
       name: httpconnmgr_used_speculative_conn
       type: STRING
+    - description: How many milliseconds it took to load a hyphenation resource.
+      mode: NULLABLE
+      name: hyphenation_load_time
+      type: STRING
+    - description: Total per-process memory used by loaded auto-hyphenation tables
+        (KB).
+      mode: NULLABLE
+      name: hyphenation_memory
+      type: STRING
+    - description: Tracking the use of the custom IDBFactory.open overload accepting
+        an options dictionary in one of the categories.
+      mode: NULLABLE
+      name: idb_custom_open_with_options_count
+      type: STRING
     - description: Time spent checking for and notifying listeners that the user is
         idle (ms)
       mode: NULLABLE
@@ -5866,6 +5899,10 @@ fields:
       mode: NULLABLE
       name: pdf_viewer_document_generator
       type: STRING
+    - description: The PDF document generator
+      mode: NULLABLE
+      name: pdf_viewer_document_generator_2
+      type: STRING
     - description: The PDF document size (KB)
       mode: NULLABLE
       name: pdf_viewer_document_size_kb
@@ -5874,10 +5911,18 @@ fields:
       mode: NULLABLE
       name: pdf_viewer_document_version
       type: STRING
+    - description: The PDF document version (1.1, 1.2, etc.)
+      mode: NULLABLE
+      name: pdf_viewer_document_version_2
+      type: STRING
     - description: 'A PDF document was embedded: true using OBJECT/EMBED and false
         using IFRAME'
       mode: NULLABLE
       name: pdf_viewer_embed
+      type: STRING
+    - description: A PDF document was embedded using OBJECT/EMBED and or an IFRAME
+      mode: NULLABLE
+      name: pdf_viewer_embed_2
       type: STRING
     - description: How many times PDF Viewer fallback bar was shown
       mode: NULLABLE
@@ -5887,9 +5932,17 @@ fields:
       mode: NULLABLE
       name: pdf_viewer_font_types
       type: STRING
+    - description: The PDF document font types used
+      mode: NULLABLE
+      name: pdf_viewer_font_types_2
+      type: STRING
     - description: 'A PDF form expected: true for AcroForm and false for XFA'
       mode: NULLABLE
       name: pdf_viewer_form
+      type: STRING
+    - description: If a form was used, its type.
+      mode: NULLABLE
+      name: pdf_viewer_form_2
       type: STRING
     - description: How many times PDF Viewer print functionality was used
       mode: NULLABLE
@@ -5898,6 +5951,10 @@ fields:
     - description: The PDF document compression stream types used
       mode: NULLABLE
       name: pdf_viewer_stream_types
+      type: STRING
+    - description: The PDF document compression stream types used
+      mode: NULLABLE
+      name: pdf_viewer_stream_types_2
       type: STRING
     - description: Time spent to display first page in PDF Viewer (ms)
       mode: NULLABLE
@@ -10305,54 +10362,6 @@ fields:
         areas") enabled.
       mode: NULLABLE
       name: zoomed_view_enabled
-      type: STRING
-    - description: Whether or not the file examined by download protection is a binary
-        type (or it's not possible to tell because the filename is missing).
-      mode: NULLABLE
-      name: application_reputation_binary_type
-      type: STRING
-    - description: counts the number of times a user changed the default autoplay
-        behavior to each setting during a subsession.
-      mode: NULLABLE
-      name: autoplay_default_setting_change
-      type: STRING
-    - description: How many milliseconds it took to load a hyphenation resource.
-      mode: NULLABLE
-      name: hyphenation_load_time
-      type: STRING
-    - description: Total per-process memory used by loaded auto-hyphenation tables
-        (KB).
-      mode: NULLABLE
-      name: hyphenation_memory
-      type: STRING
-    - description: Tracking the use of the custom IDBFactory.open overload accepting
-        an options dictionary in one of the categories.
-      mode: NULLABLE
-      name: idb_custom_open_with_options_count
-      type: STRING
-    - description: The PDF document generator
-      mode: NULLABLE
-      name: pdf_viewer_document_generator_2
-      type: STRING
-    - description: The PDF document version (1.1, 1.2, etc.)
-      mode: NULLABLE
-      name: pdf_viewer_document_version_2
-      type: STRING
-    - description: A PDF document was embedded using OBJECT/EMBED and or an IFRAME
-      mode: NULLABLE
-      name: pdf_viewer_embed_2
-      type: STRING
-    - description: The PDF document font types used
-      mode: NULLABLE
-      name: pdf_viewer_font_types_2
-      type: STRING
-    - description: If a form was used, its type.
-      mode: NULLABLE
-      name: pdf_viewer_form_2
-      type: STRING
-    - description: The PDF document compression stream types used
-      mode: NULLABLE
-      name: pdf_viewer_stream_types_2
       type: STRING
     - description: The number of style flush requests pending per style flush.
       mode: NULLABLE
@@ -20039,10 +20048,6 @@ fields:
     name: histograms
     type: RECORD
   - fields:
-    - description: the subsession length until now in seconds, monotonic
-      mode: NULLABLE
-      name: subsession_length
-      type: INTEGER
     - description: null if this is the first run, or the previous build ID is unknown
       mode: NULLABLE
       name: previous_build_id
@@ -20073,6 +20078,11 @@ fields:
       mode: NULLABLE
       name: session_id
       type: STRING
+    - description: the session length until now in seconds, monotonic; some clients
+        report erroneous negative values
+      mode: NULLABLE
+      name: session_length
+      type: INTEGER
     - description: hourly precision, ISO date in local time
       mode: NULLABLE
       name: session_start_date
@@ -20086,6 +20096,10 @@ fields:
       mode: NULLABLE
       name: subsession_id
       type: STRING
+    - description: the subsession length until now in seconds, monotonic
+      mode: NULLABLE
+      name: subsession_length
+      type: INTEGER
     - description: hourly precision, ISO date in local time
       mode: NULLABLE
       name: subsession_start_date
@@ -20093,11 +20107,6 @@ fields:
     - description: time-zone offset from UTC, in minutes, for the current locale
       mode: NULLABLE
       name: timezone_offset
-      type: INTEGER
-    - description: the session length until now in seconds, monotonic; some clients
-        report erroneous negative values
-      mode: NULLABLE
-      name: session_length
       type: INTEGER
     - description: obsolete, use environment.addons
       mode: NULLABLE
@@ -20903,6 +20912,21 @@ fields:
       - mode: NULLABLE
         name: key
         type: STRING
+      - description: Time taken (in ms) from the point of the parent sending the naviagion
+          triggering message to the content and the content receiving it. This message
+          can be either SessionStore:restoreTabContent or WebNavigation:LoadURI and
+          these names are used as keys for this histogram. This is e10s only and recorded
+          in the content process.
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: fx_tab_remote_navigation_delay_ms
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
       - description: Number of toplevel location changes in tablet and desktop mode
           (only used on win10 where tablet mode is available)
         mode: NULLABLE
@@ -21434,6 +21458,18 @@ fields:
         type: STRING
       mode: REPEATED
       name: qm_init_telemetry_error
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: Percentages of times for phases in an expensive refresh tick
+          relative to the time spent in the entire tick (REFRESH_DRIVER_TICK).
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: refresh_driver_tick_phase_weight
       type: RECORD
     - fields:
       - mode: NULLABLE
@@ -22085,33 +22121,6 @@ fields:
         type: STRING
       mode: REPEATED
       name: webext_user_script_injection_ms_by_addonid
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - description: Percentages of times for phases in an expensive refresh tick
-          relative to the time spent in the entire tick (REFRESH_DRIVER_TICK).
-        mode: NULLABLE
-        name: value
-        type: STRING
-      mode: REPEATED
-      name: refresh_driver_tick_phase_weight
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - description: Time taken (in ms) from the point of the parent sending the naviagion
-          triggering message to the content and the content receiving it. This message
-          can be either SessionStore:restoreTabContent or WebNavigation:LoadURI and
-          these names are used as keys for this histogram. This is e10s only and recorded
-          in the content process.
-        mode: NULLABLE
-        name: value
-        type: STRING
-      mode: REPEATED
-      name: fx_tab_remote_navigation_delay_ms
       type: RECORD
     - fields:
       - mode: NULLABLE
@@ -23239,6 +23248,25 @@ fields:
   - fields:
     - fields:
       - fields:
+        - description: A list of known accessibility clients that inject into Firefox
+            process space (see https://searchfox.org/mozilla-central/source/accessible/windows/msaa/Compatibility.h).
+          mode: NULLABLE
+          name: a11y_consumers
+          type: STRING
+        - description: Flag indicating the IAccessibleTable accessibility interface
+            has been used.
+          mode: NULLABLE
+          name: a11y_iatable_usage_flag
+          type: STRING
+        - description: Flag indicating accessibility support has been instantiated.
+          mode: NULLABLE
+          name: a11y_instantiated_flag
+          type: STRING
+        - description: Flag indicating the ISimpleDOM* accessibility interfaces has
+            been used.
+          mode: NULLABLE
+          name: a11y_isimpledom_usage_flag
+          type: STRING
         - description: The amount of time taken to update the accessibility tree (ms)
           mode: NULLABLE
           name: a11y_tree_update_timing_ms
@@ -23284,6 +23312,11 @@ fields:
             of the common archive formats.
           mode: NULLABLE
           name: application_reputation_binary_archive
+          type: STRING
+        - description: Whether or not the file examined by download protection is
+            a binary type (or it's not possible to tell because the filename is missing).
+          mode: NULLABLE
+          name: application_reputation_binary_type
           type: STRING
         - description: For each Application Reputation lookup against both the V2
             and V4 Google lists, note which version of block list returned a match
@@ -23423,6 +23456,11 @@ fields:
         - description: A number of auto-rejected tranlation offers
           mode: NULLABLE
           name: auto_rejected_translation_offers
+          type: STRING
+        - description: counts the number of times a user changed the default autoplay
+            behavior to each setting during a subsession.
+          mode: NULLABLE
+          name: autoplay_default_setting_change
           type: STRING
         - description: The number of times the user adds a site to the allow list,
             removes a site from the allow list, adds a site to the block list and
@@ -24945,6 +24983,23 @@ fields:
           mode: NULLABLE
           name: display_scaling
           type: STRING
+        - description: The number of unusable addresses reported for each record
+          mode: NULLABLE
+          name: dns_blacklist_count
+          type: STRING
+        - description: Time for an unsuccessful DNS OS resolution (msec)
+          mode: NULLABLE
+          name: dns_failed_lookup_time
+          type: STRING
+        - description: DNS Lookup Type (hit, renewal, negative-hit, literal, overflow,
+            network-first, network-shared)
+          mode: NULLABLE
+          name: dns_lookup_method2
+          type: STRING
+        - description: Time for a successful DNS resolution (msec)
+          mode: NULLABLE
+          name: dns_lookup_time
+          type: STRING
         - description: Number of DOH requests per connection
           mode: NULLABLE
           name: dns_trr_request_per_conn
@@ -25378,6 +25433,10 @@ fields:
           mode: NULLABLE
           name: fx_migration_source_browser
           type: STRING
+        - description: 'Firefox: Time taken to open a new browser window (ms)'
+          mode: NULLABLE
+          name: fx_new_window_ms
+          type: STRING
         - description: 'Firefox: Time taken to load a page (ms). This includes all
             static contents, no dynamic content. Loading of about: pages is not counted.'
           mode: NULLABLE
@@ -25530,6 +25589,11 @@ fields:
           mode: NULLABLE
           name: fx_session_restore_read_file_ms
           type: STRING
+        - description: 'Session restore: Time spent blocking the main thread while
+            restoring a window state (ms)'
+          mode: NULLABLE
+          name: fx_session_restore_restore_window_ms
+          type: STRING
         - description: Count of messages sent by SessionRestore from child frames
             to the parent and that cannot be transmitted as they eat up too much memory.
           mode: NULLABLE
@@ -25538,6 +25602,16 @@ fields:
         - description: 'Session restore: Time to JSON serialize session data (ms)'
           mode: NULLABLE
           name: fx_session_restore_serialize_data_ms
+          type: STRING
+        - description: 'Session restore: Time it takes to prepare the data structures
+            for restoring a session (ms)'
+          mode: NULLABLE
+          name: fx_session_restore_startup_init_session_ms
+          type: STRING
+        - description: 'Session restore: Time it takes to finish restoration once
+            we have first opened a window (ms)'
+          mode: NULLABLE
+          name: fx_session_restore_startup_onload_initial_window_ms
           type: STRING
         - description: 'Session restore: Time to write the session data to the file
             on disk (ms)'
@@ -25582,6 +25656,37 @@ fields:
             a tab click'
           mode: NULLABLE
           name: fx_tab_click_ms
+          type: STRING
+        - description: 'Firefox: Time taken from the point of closing a tab (with
+            animation), to the browser element being removed from the DOM. (ms).'
+          mode: NULLABLE
+          name: fx_tab_close_time_anim_ms
+          type: STRING
+        - description: 'Firefox: If the spinner interstitial displays during tab switching,
+            records the time in ms the graphic is visible. This probe is similar to
+            FX_TAB_SWITCH_SPINNER_VISIBLE_MS, but is for truly degenerate cases.'
+          mode: NULLABLE
+          name: fx_tab_switch_spinner_visible_long_ms
+          type: STRING
+        - description: 'Firefox: If the spinner interstitial displays during tab switching,
+            records the time in ms the graphic is visible'
+          mode: NULLABLE
+          name: fx_tab_switch_spinner_visible_ms
+          type: STRING
+        - description: 'Firefox: Time in ms between tab selection and tab content
+            paint in e10s windows'
+          mode: NULLABLE
+          name: fx_tab_switch_total_e10s_ms
+          type: STRING
+        - description: 'Firefox: Time in ms till a tab switch is complete including
+            the first paint for non-e10s windows'
+          mode: NULLABLE
+          name: fx_tab_switch_total_ms
+          type: STRING
+        - description: 'Firefox: Time in ms spent updating UI in response to a tab
+            switch'
+          mode: NULLABLE
+          name: fx_tab_switch_update_ms
           type: STRING
         - description: 'BACKGROUND THUMBNAILS: Time it took to draw the capture''s
             window to canvas (ms)'
@@ -26551,6 +26656,20 @@ fields:
           mode: NULLABLE
           name: httpconnmgr_used_speculative_conn
           type: STRING
+        - description: How many milliseconds it took to load a hyphenation resource.
+          mode: NULLABLE
+          name: hyphenation_load_time
+          type: STRING
+        - description: Total per-process memory used by loaded auto-hyphenation tables
+            (KB).
+          mode: NULLABLE
+          name: hyphenation_memory
+          type: STRING
+        - description: Tracking the use of the custom IDBFactory.open overload accepting
+            an options dictionary in one of the categories.
+          mode: NULLABLE
+          name: idb_custom_open_with_options_count
+          type: STRING
         - description: Time spent checking for and notifying listeners that the user
             is idle (ms)
           mode: NULLABLE
@@ -27078,6 +27197,15 @@ fields:
           mode: NULLABLE
           name: mixed_content_hsts_priming
           type: STRING
+        - description: How often do we get back an HSTS priming result which upgrades
+            the connection to HTTPS? 0=cached (no upgrade), 1=cached (do upgrade),
+            2=cached (blocked), 3=already upgraded, 4=priming succeeded, 5=priming
+            succeeded (block due to pref), 6=priming succeeded (no upgrade due to
+            pref), 7=priming failed (block), 8=priming failed (accept), 9=timeout
+            (block), 10=timeout (accept)
+          mode: NULLABLE
+          name: mixed_content_hsts_priming_result
+          type: STRING
         - description: How often objects load insecure content on secure pages (counting
             pages, not objects). 0=pages with no mixed object subrequests, 1=pages
             with mixed object subrequests
@@ -27566,6 +27694,10 @@ fields:
           mode: NULLABLE
           name: pdf_viewer_document_generator
           type: STRING
+        - description: The PDF document generator
+          mode: NULLABLE
+          name: pdf_viewer_document_generator_2
+          type: STRING
         - description: The PDF document size (KB)
           mode: NULLABLE
           name: pdf_viewer_document_size_kb
@@ -27574,10 +27706,18 @@ fields:
           mode: NULLABLE
           name: pdf_viewer_document_version
           type: STRING
+        - description: The PDF document version (1.1, 1.2, etc.)
+          mode: NULLABLE
+          name: pdf_viewer_document_version_2
+          type: STRING
         - description: 'A PDF document was embedded: true using OBJECT/EMBED and false
             using IFRAME'
           mode: NULLABLE
           name: pdf_viewer_embed
+          type: STRING
+        - description: A PDF document was embedded using OBJECT/EMBED and or an IFRAME
+          mode: NULLABLE
+          name: pdf_viewer_embed_2
           type: STRING
         - description: How many times PDF Viewer fallback bar was shown
           mode: NULLABLE
@@ -27587,9 +27727,17 @@ fields:
           mode: NULLABLE
           name: pdf_viewer_font_types
           type: STRING
+        - description: The PDF document font types used
+          mode: NULLABLE
+          name: pdf_viewer_font_types_2
+          type: STRING
         - description: 'A PDF form expected: true for AcroForm and false for XFA'
           mode: NULLABLE
           name: pdf_viewer_form
+          type: STRING
+        - description: If a form was used, its type.
+          mode: NULLABLE
+          name: pdf_viewer_form_2
           type: STRING
         - description: How many times PDF Viewer print functionality was used
           mode: NULLABLE
@@ -27598,6 +27746,10 @@ fields:
         - description: The PDF document compression stream types used
           mode: NULLABLE
           name: pdf_viewer_stream_types
+          type: STRING
+        - description: The PDF document compression stream types used
+          mode: NULLABLE
+          name: pdf_viewer_stream_types_2
           type: STRING
         - description: Time spent to display first page in PDF Viewer (ms)
           mode: NULLABLE
@@ -27638,6 +27790,10 @@ fields:
         - description: 'PLACES: Time for first autocomplete result if > 50ms (ms)'
           mode: NULLABLE
           name: places_autocomplete_1st_result_time_ms
+          type: STRING
+        - description: 'PLACES: Time for the 6 first autocomplete results (ms)'
+          mode: NULLABLE
+          name: places_autocomplete_6_first_results_time_ms
           type: STRING
         - description: 'PLACES: Duration of the domain query for the url inline autocompletion
             (ms)'
@@ -27939,6 +28095,97 @@ fields:
           mode: NULLABLE
           name: prconnectcontinue_blocking_time_shutdown
           type: STRING
+        - description: The base confidence calculated for a subresource
+          mode: NULLABLE
+          name: predictor_base_confidence
+          type: STRING
+        - description: The final confidence calculated for a subresource
+          mode: NULLABLE
+          name: predictor_confidence
+          type: STRING
+        - description: The global degradation calculated
+          mode: NULLABLE
+          name: predictor_global_degradation
+          type: STRING
+        - description: Number of times nsINetworkPredictor::Learn is called and attempts
+            to learn
+          mode: NULLABLE
+          name: predictor_learn_attempts
+          type: STRING
+        - description: Number of times nsINetworkPredictor::Learn doesn't continue
+            because the queue is full
+          mode: NULLABLE
+          name: predictor_learn_full_queue
+          type: STRING
+        - description: Amount of time spent doing the work for learn (ms)
+          mode: NULLABLE
+          name: predictor_learn_work_time
+          type: STRING
+        - description: Number of times nsINetworkPredictor::Predict is called and
+            attempts to predict
+          mode: NULLABLE
+          name: predictor_predict_attempts
+          type: STRING
+        - description: Number of times nsINetworkPredictor::Predict doesn't continue
+            because the queue is full
+          mode: NULLABLE
+          name: predictor_predict_full_queue
+          type: STRING
+        - description: How long it takes from the time Predict() is called to the
+            time we figure out there's nothing to do
+          mode: NULLABLE
+          name: predictor_predict_time_to_inaction
+          type: STRING
+        - description: How many prediction calculations are performed
+          mode: NULLABLE
+          name: predictor_predictions_calculated
+          type: STRING
+        - description: How long it takes from OnStartRequest to OnStopRequest for
+            a prefetch
+          mode: NULLABLE
+          name: predictor_prefetch_time
+          type: STRING
+        - description: The degradation calculated for a subresource
+          mode: NULLABLE
+          name: predictor_subresource_degradation
+          type: STRING
+        - description: How many actual preconnects happen
+          mode: NULLABLE
+          name: predictor_total_preconnects
+          type: STRING
+        - description: How many preconnects actually created a speculative socket
+          mode: NULLABLE
+          name: predictor_total_preconnects_created
+          type: STRING
+        - description: How many preconnects needlessly created a speculative socket
+          mode: NULLABLE
+          name: predictor_total_preconnects_unused
+          type: STRING
+        - description: How many preconnects actually created a used speculative socket
+          mode: NULLABLE
+          name: predictor_total_preconnects_used
+          type: STRING
+        - description: How many actual predictions (preresolves, preconnects, ...)
+            happen
+          mode: NULLABLE
+          name: predictor_total_predictions
+          type: STRING
+        - description: How many actual prefetches happen
+          mode: NULLABLE
+          name: predictor_total_prefetches
+          type: STRING
+        - description: How many prefetches are actually used by a channel
+          mode: NULLABLE
+          name: predictor_total_prefetches_used
+          type: STRING
+        - description: How many actual preresolves happen
+          mode: NULLABLE
+          name: predictor_total_preresolves
+          type: STRING
+        - description: Amount of time a predictor event waits in the queue (ms)
+          mode: NULLABLE
+          name: predictor_wait_time
+          type: STRING
         - description: A counter incremented every time the browser enters print preview.
           mode: NULLABLE
           name: print_preview_opened_count
@@ -27958,10 +28205,19 @@ fields:
           mode: NULLABLE
           name: push_api_notify
           type: STRING
+        - description: The number of sites for which the user has explicitly rejected
+            saving logins
+          mode: NULLABLE
+          name: pwmgr_blocklist_num_sites
+          type: STRING
         - description: The result of auto-filling a login form. See http://mzl.la/1Mbs6jL
             for bucket descriptions.
           mode: NULLABLE
           name: pwmgr_form_autofill_result
+          type: STRING
+        - description: Time in days each saved login was last used
+          mode: NULLABLE
+          name: pwmgr_login_last_used_days
           type: STRING
         - description: 'The safety of a page where we see a password field. (0: safe
             page & safe submit; 1: safe page & unsafe submit; 2: safe page & unknown
@@ -27988,14 +28244,47 @@ fields:
           mode: NULLABLE
           name: pwmgr_manage_deleted_all
           type: STRING
+        - description: Accumulates how the password management interface was opened.
+            (0=Preferences, 1=Page Info)
+          mode: NULLABLE
+          name: pwmgr_manage_opened
+          type: STRING
+        - description: Whether the visibility of passwords was toggled (0=Hide, 1=Show)
+          mode: NULLABLE
+          name: pwmgr_manage_visibility_toggled
+          type: STRING
         - description: Number of HTTP Auth logins
           mode: NULLABLE
           name: pwmgr_num_httpauth_passwords
+          type: STRING
+        - description: The number of passwords per hostname
+          mode: NULLABLE
+          name: pwmgr_num_passwords_per_hostname
+          type: STRING
+        - description: Total number of saved logins, including those that cannot be
+            decrypted
+          mode: NULLABLE
+          name: pwmgr_num_saved_passwords
           type: STRING
         - description: Whether an <input type=password> is associated with a <form>
             when it is added to a document
           mode: NULLABLE
           name: pwmgr_password_input_in_form
+          type: STRING
+        - description: Action taken by user through prompt for creating a login. (0=Prompt
+            displayed [always recorded], 1=Add login, 2=Don't save now, 3=Never save)
+          mode: NULLABLE
+          name: pwmgr_prompt_remember_action
+          type: STRING
+        - description: Action taken by user through prompt for modifying a login.
+            (0=Prompt displayed [always recorded], 1=Update login, 2=Don't update,
+            3=Remove saved login)
+          mode: NULLABLE
+          name: pwmgr_prompt_update_action
+          type: STRING
+        - description: Number of users who have password saving on globally
+          mode: NULLABLE
+          name: pwmgr_saving_enabled
           type: STRING
         - description: Whether a saved login has a username
           mode: NULLABLE
@@ -28044,6 +28333,10 @@ fields:
         - description: Whether the system has seccomp-bpf thread-sync capability
           mode: NULLABLE
           name: sandbox_has_seccomp_tsync
+          type: STRING
+        - description: Whether our process succedeed in creating a user namespace
+          mode: NULLABLE
+          name: sandbox_has_user_namespaces
           type: STRING
         - description: Whether the system has the capability to create privileged
             user namespaces
@@ -28130,6 +28423,10 @@ fields:
             user has hidden) and user-installed plugins.'
           mode: NULLABLE
           name: search_service_engine_count
+          type: STRING
+        - description: Time (ms) it takes to initialize the search service
+          mode: NULLABLE
+          name: search_service_init_ms
           type: STRING
         - description: search service has been initialized synchronously
           mode: NULLABLE
@@ -28244,6 +28541,10 @@ fields:
             UI
           mode: NULLABLE
           name: should_translation_ui_appear
+          type: STRING
+        - description: Did the browser start after a successful shutdown
+          mode: NULLABLE
+          name: shutdown_ok
           type: STRING
         - description: Duration of shutdown phase profile-before-change, as measured
             by the shutdown terminator in ticks of 100ms
@@ -28624,6 +28925,10 @@ fields:
           mode: NULLABLE
           name: startup_measurement_errors
           type: STRING
+        - description: Storage Access API UI events.
+          mode: NULLABLE
+          name: storage_access_api_ui
+          type: STRING
         - description: Number of OnSocketReady calls during a single poll.
           mode: NULLABLE
           name: sts_number_of_onsocketready_calls
@@ -28727,6 +29032,12 @@ fields:
             mute=0 , unmuted=1, unblockByVisitingTab=2, unblockingByClickingIcon=3
           mode: NULLABLE
           name: tab_audio_indicator_used
+          type: STRING
+        - description: 'Number of tabs opened across all windows, collected at most
+            every 5 minutes whenever the user interacts with the browser in the following
+            ways: open tab/window, page load.'
+          mode: NULLABLE
+          name: tab_count
           type: STRING
         - description: The time duration from tab's media was blocked to unblocked.
             Now we record from 1 to 90 seconds, but the record by milliseconds, so
@@ -29010,12 +29321,25 @@ fields:
           mode: NULLABLE
           name: total_scroll_y
           type: STRING
+        - description: Boolean indicating if a touch input device is detected.
+          mode: NULLABLE
+          name: touch_enabled_device
+          type: STRING
+        - description: True if tracking protection is enabled globally at startup.
+          mode: NULLABLE
+          name: tracking_protection_enabled
+          type: STRING
         - description: (Fennec Only) A value of 0 is sent when the security UI changes
             on pages loaded outside of Private Browsing mode, a value of 1 is sent
             when users manually disable TP on that page, and 2 is sent when users
             manually re-enable TP on that page.
           mode: NULLABLE
           name: tracking_protection_events
+          type: STRING
+        - description: True if tracking protection in Private Browsing mode is disabled
+            at startup.
+          mode: NULLABLE
+          name: tracking_protection_pbm_disabled
           type: STRING
         - description: Status of the shield icon for each top-level pageload (outside
             of Private Browsing mode) when tracking protection is enabled (0 = there
@@ -31371,321 +31695,6 @@ fields:
             small areas") enabled.
           mode: NULLABLE
           name: zoomed_view_enabled
-          type: STRING
-        - description: A list of known accessibility clients that inject into Firefox
-            process space (see https://searchfox.org/mozilla-central/source/accessible/windows/msaa/Compatibility.h).
-          mode: NULLABLE
-          name: a11y_consumers
-          type: STRING
-        - description: Flag indicating the IAccessibleTable accessibility interface
-            has been used.
-          mode: NULLABLE
-          name: a11y_iatable_usage_flag
-          type: STRING
-        - description: Flag indicating accessibility support has been instantiated.
-          mode: NULLABLE
-          name: a11y_instantiated_flag
-          type: STRING
-        - description: Flag indicating the ISimpleDOM* accessibility interfaces has
-            been used.
-          mode: NULLABLE
-          name: a11y_isimpledom_usage_flag
-          type: STRING
-        - description: Whether or not the file examined by download protection is
-            a binary type (or it's not possible to tell because the filename is missing).
-          mode: NULLABLE
-          name: application_reputation_binary_type
-          type: STRING
-        - description: counts the number of times a user changed the default autoplay
-            behavior to each setting during a subsession.
-          mode: NULLABLE
-          name: autoplay_default_setting_change
-          type: STRING
-        - description: The number of unusable addresses reported for each record
-          mode: NULLABLE
-          name: dns_blacklist_count
-          type: STRING
-        - description: Time for an unsuccessful DNS OS resolution (msec)
-          mode: NULLABLE
-          name: dns_failed_lookup_time
-          type: STRING
-        - description: DNS Lookup Type (hit, renewal, negative-hit, literal, overflow,
-            network-first, network-shared)
-          mode: NULLABLE
-          name: dns_lookup_method2
-          type: STRING
-        - description: Time for a successful DNS resolution (msec)
-          mode: NULLABLE
-          name: dns_lookup_time
-          type: STRING
-        - description: 'Firefox: Time taken to open a new browser window (ms)'
-          mode: NULLABLE
-          name: fx_new_window_ms
-          type: STRING
-        - description: 'Session restore: Time spent blocking the main thread while
-            restoring a window state (ms)'
-          mode: NULLABLE
-          name: fx_session_restore_restore_window_ms
-          type: STRING
-        - description: 'Session restore: Time it takes to prepare the data structures
-            for restoring a session (ms)'
-          mode: NULLABLE
-          name: fx_session_restore_startup_init_session_ms
-          type: STRING
-        - description: 'Session restore: Time it takes to finish restoration once
-            we have first opened a window (ms)'
-          mode: NULLABLE
-          name: fx_session_restore_startup_onload_initial_window_ms
-          type: STRING
-        - description: 'Firefox: Time taken from the point of closing a tab (with
-            animation), to the browser element being removed from the DOM. (ms).'
-          mode: NULLABLE
-          name: fx_tab_close_time_anim_ms
-          type: STRING
-        - description: 'Firefox: If the spinner interstitial displays during tab switching,
-            records the time in ms the graphic is visible. This probe is similar to
-            FX_TAB_SWITCH_SPINNER_VISIBLE_MS, but is for truly degenerate cases.'
-          mode: NULLABLE
-          name: fx_tab_switch_spinner_visible_long_ms
-          type: STRING
-        - description: 'Firefox: If the spinner interstitial displays during tab switching,
-            records the time in ms the graphic is visible'
-          mode: NULLABLE
-          name: fx_tab_switch_spinner_visible_ms
-          type: STRING
-        - description: 'Firefox: Time in ms between tab selection and tab content
-            paint in e10s windows'
-          mode: NULLABLE
-          name: fx_tab_switch_total_e10s_ms
-          type: STRING
-        - description: 'Firefox: Time in ms till a tab switch is complete including
-            the first paint for non-e10s windows'
-          mode: NULLABLE
-          name: fx_tab_switch_total_ms
-          type: STRING
-        - description: 'Firefox: Time in ms spent updating UI in response to a tab
-            switch'
-          mode: NULLABLE
-          name: fx_tab_switch_update_ms
-          type: STRING
-        - description: How many milliseconds it took to load a hyphenation resource.
-          mode: NULLABLE
-          name: hyphenation_load_time
-          type: STRING
-        - description: Total per-process memory used by loaded auto-hyphenation tables
-            (KB).
-          mode: NULLABLE
-          name: hyphenation_memory
-          type: STRING
-        - description: Tracking the use of the custom IDBFactory.open overload accepting
-            an options dictionary in one of the categories.
-          mode: NULLABLE
-          name: idb_custom_open_with_options_count
-          type: STRING
-        - description: How often do we get back an HSTS priming result which upgrades
-            the connection to HTTPS? 0=cached (no upgrade), 1=cached (do upgrade),
-            2=cached (blocked), 3=already upgraded, 4=priming succeeded, 5=priming
-            succeeded (block due to pref), 6=priming succeeded (no upgrade due to
-            pref), 7=priming failed (block), 8=priming failed (accept), 9=timeout
-            (block), 10=timeout (accept)
-          mode: NULLABLE
-          name: mixed_content_hsts_priming_result
-          type: STRING
-        - description: The PDF document generator
-          mode: NULLABLE
-          name: pdf_viewer_document_generator_2
-          type: STRING
-        - description: The PDF document version (1.1, 1.2, etc.)
-          mode: NULLABLE
-          name: pdf_viewer_document_version_2
-          type: STRING
-        - description: A PDF document was embedded using OBJECT/EMBED and or an IFRAME
-          mode: NULLABLE
-          name: pdf_viewer_embed_2
-          type: STRING
-        - description: The PDF document font types used
-          mode: NULLABLE
-          name: pdf_viewer_font_types_2
-          type: STRING
-        - description: If a form was used, its type.
-          mode: NULLABLE
-          name: pdf_viewer_form_2
-          type: STRING
-        - description: The PDF document compression stream types used
-          mode: NULLABLE
-          name: pdf_viewer_stream_types_2
-          type: STRING
-        - description: 'PLACES: Time for the 6 first autocomplete results (ms)'
-          mode: NULLABLE
-          name: places_autocomplete_6_first_results_time_ms
-          type: STRING
-        - description: The base confidence calculated for a subresource
-          mode: NULLABLE
-          name: predictor_base_confidence
-          type: STRING
-        - description: The final confidence calculated for a subresource
-          mode: NULLABLE
-          name: predictor_confidence
-          type: STRING
-        - description: The global degradation calculated
-          mode: NULLABLE
-          name: predictor_global_degradation
-          type: STRING
-        - description: Number of times nsINetworkPredictor::Learn is called and attempts
-            to learn
-          mode: NULLABLE
-          name: predictor_learn_attempts
-          type: STRING
-        - description: Number of times nsINetworkPredictor::Learn doesn't continue
-            because the queue is full
-          mode: NULLABLE
-          name: predictor_learn_full_queue
-          type: STRING
-        - description: Amount of time spent doing the work for learn (ms)
-          mode: NULLABLE
-          name: predictor_learn_work_time
-          type: STRING
-        - description: Number of times nsINetworkPredictor::Predict is called and
-            attempts to predict
-          mode: NULLABLE
-          name: predictor_predict_attempts
-          type: STRING
-        - description: Number of times nsINetworkPredictor::Predict doesn't continue
-            because the queue is full
-          mode: NULLABLE
-          name: predictor_predict_full_queue
-          type: STRING
-        - description: How long it takes from the time Predict() is called to the
-            time we figure out there's nothing to do
-          mode: NULLABLE
-          name: predictor_predict_time_to_inaction
-          type: STRING
-        - description: How many prediction calculations are performed
-          mode: NULLABLE
-          name: predictor_predictions_calculated
-          type: STRING
-        - description: How long it takes from OnStartRequest to OnStopRequest for
-            a prefetch
-          mode: NULLABLE
-          name: predictor_prefetch_time
-          type: STRING
-        - description: The degradation calculated for a subresource
-          mode: NULLABLE
-          name: predictor_subresource_degradation
-          type: STRING
-        - description: How many actual preconnects happen
-          mode: NULLABLE
-          name: predictor_total_preconnects
-          type: STRING
-        - description: How many preconnects actually created a speculative socket
-          mode: NULLABLE
-          name: predictor_total_preconnects_created
-          type: STRING
-        - description: How many preconnects needlessly created a speculative socket
-          mode: NULLABLE
-          name: predictor_total_preconnects_unused
-          type: STRING
-        - description: How many preconnects actually created a used speculative socket
-          mode: NULLABLE
-          name: predictor_total_preconnects_used
-          type: STRING
-        - description: How many actual predictions (preresolves, preconnects, ...)
-            happen
-          mode: NULLABLE
-          name: predictor_total_predictions
-          type: STRING
-        - description: How many actual prefetches happen
-          mode: NULLABLE
-          name: predictor_total_prefetches
-          type: STRING
-        - description: How many prefetches are actually used by a channel
-          mode: NULLABLE
-          name: predictor_total_prefetches_used
-          type: STRING
-        - description: How many actual preresolves happen
-          mode: NULLABLE
-          name: predictor_total_preresolves
-          type: STRING
-        - description: Amount of time a predictor event waits in the queue (ms)
-          mode: NULLABLE
-          name: predictor_wait_time
-          type: STRING
-        - description: The number of sites for which the user has explicitly rejected
-            saving logins
-          mode: NULLABLE
-          name: pwmgr_blocklist_num_sites
-          type: STRING
-        - description: Time in days each saved login was last used
-          mode: NULLABLE
-          name: pwmgr_login_last_used_days
-          type: STRING
-        - description: Accumulates how the password management interface was opened.
-            (0=Preferences, 1=Page Info)
-          mode: NULLABLE
-          name: pwmgr_manage_opened
-          type: STRING
-        - description: Whether the visibility of passwords was toggled (0=Hide, 1=Show)
-          mode: NULLABLE
-          name: pwmgr_manage_visibility_toggled
-          type: STRING
-        - description: The number of passwords per hostname
-          mode: NULLABLE
-          name: pwmgr_num_passwords_per_hostname
-          type: STRING
-        - description: Total number of saved logins, including those that cannot be
-            decrypted
-          mode: NULLABLE
-          name: pwmgr_num_saved_passwords
-          type: STRING
-        - description: Action taken by user through prompt for creating a login. (0=Prompt
-            displayed [always recorded], 1=Add login, 2=Don't save now, 3=Never save)
-          mode: NULLABLE
-          name: pwmgr_prompt_remember_action
-          type: STRING
-        - description: Action taken by user through prompt for modifying a login.
-            (0=Prompt displayed [always recorded], 1=Update login, 2=Don't update,
-            3=Remove saved login)
-          mode: NULLABLE
-          name: pwmgr_prompt_update_action
-          type: STRING
-        - description: Number of users who have password saving on globally
-          mode: NULLABLE
-          name: pwmgr_saving_enabled
-          type: STRING
-        - description: Whether our process succedeed in creating a user namespace
-          mode: NULLABLE
-          name: sandbox_has_user_namespaces
-          type: STRING
-        - description: Time (ms) it takes to initialize the search service
-          mode: NULLABLE
-          name: search_service_init_ms
-          type: STRING
-        - description: Did the browser start after a successful shutdown
-          mode: NULLABLE
-          name: shutdown_ok
-          type: STRING
-        - description: Storage Access API UI events.
-          mode: NULLABLE
-          name: storage_access_api_ui
-          type: STRING
-        - description: 'Number of tabs opened across all windows, collected at most
-            every 5 minutes whenever the user interacts with the browser in the following
-            ways: open tab/window, page load.'
-          mode: NULLABLE
-          name: tab_count
-          type: STRING
-        - description: Boolean indicating if a touch input device is detected.
-          mode: NULLABLE
-          name: touch_enabled_device
-          type: STRING
-        - description: True if tracking protection is enabled globally at startup.
-          mode: NULLABLE
-          name: tracking_protection_enabled
-          type: STRING
-        - description: True if tracking protection in Private Browsing mode is disabled
-            at startup.
-          mode: NULLABLE
-          name: tracking_protection_pbm_disabled
           type: STRING
         - description: The number of style flush requests pending per style flush.
           mode: NULLABLE
@@ -42118,6 +42127,18 @@ fields:
           - mode: NULLABLE
             name: key
             type: STRING
+          - description: The amount of time required for HSTS priming requests (ms),
+              keyed by success or failure of the priming request. (success, failure)
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: hsts_priming_request_duration
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
           - description: Stats about success rate of HTTP OMT request in content process,
               keyed by content policy.
             mode: NULLABLE
@@ -42299,6 +42320,44 @@ fields:
           - mode: NULLABLE
             name: key
             type: STRING
+          - description: (Bug 1207089) Time in ms between displaying a popup notification
+              and dismissing it without an action the first time, keyed by ID
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: popup_notification_dismissal_ms
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: (Bug 1207089) Time in ms between initially requesting a popup
+              notification and triggering the main action, keyed by ID
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: popup_notification_main_action_ms
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: (Bug 1207089) Usage of popup notifications, keyed by ID (0
+              = Offered, 1..4 = Action (3 is unused), 5 = Click outside (unused),
+              6 = Leave page, 7 = Use 'X' (unused), 8 = Not now (unused), 10 = Open
+              submenu, 11 = Learn more. Add 20 if happened after reopen.)
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: popup_notification_stats
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
           - description: The number of prefs in each prefs file loaded, keyed by filename.
             mode: NULLABLE
             name: value
@@ -42384,6 +42443,18 @@ fields:
             type: STRING
           mode: REPEATED
           name: pwmgr_manage_sorted
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: Percentages of times for phases in an expensive refresh tick
+              relative to the time spent in the entire tick (REFRESH_DRIVER_TICK).
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: refresh_driver_tick_phase_weight
           type: RECORD
         - fields:
           - mode: NULLABLE
@@ -42942,68 +43013,6 @@ fields:
             type: STRING
           mode: REPEATED
           name: webext_user_script_injection_ms_by_addonid
-          type: RECORD
-        - fields:
-          - mode: NULLABLE
-            name: key
-            type: STRING
-          - description: Percentages of times for phases in an expensive refresh tick
-              relative to the time spent in the entire tick (REFRESH_DRIVER_TICK).
-            mode: NULLABLE
-            name: value
-            type: STRING
-          mode: REPEATED
-          name: refresh_driver_tick_phase_weight
-          type: RECORD
-        - fields:
-          - mode: NULLABLE
-            name: key
-            type: STRING
-          - description: The amount of time required for HSTS priming requests (ms),
-              keyed by success or failure of the priming request. (success, failure)
-            mode: NULLABLE
-            name: value
-            type: STRING
-          mode: REPEATED
-          name: hsts_priming_request_duration
-          type: RECORD
-        - fields:
-          - mode: NULLABLE
-            name: key
-            type: STRING
-          - description: (Bug 1207089) Time in ms between displaying a popup notification
-              and dismissing it without an action the first time, keyed by ID
-            mode: NULLABLE
-            name: value
-            type: STRING
-          mode: REPEATED
-          name: popup_notification_dismissal_ms
-          type: RECORD
-        - fields:
-          - mode: NULLABLE
-            name: key
-            type: STRING
-          - description: (Bug 1207089) Time in ms between initially requesting a popup
-              notification and triggering the main action, keyed by ID
-            mode: NULLABLE
-            name: value
-            type: STRING
-          mode: REPEATED
-          name: popup_notification_main_action_ms
-          type: RECORD
-        - fields:
-          - mode: NULLABLE
-            name: key
-            type: STRING
-          - description: (Bug 1207089) Usage of popup notifications, keyed by ID (0
-              = Offered, 1..4 = Action (3 is unused), 5 = Click outside (unused),
-              6 = Leave page, 7 = Use 'X' (unused), 8 = Not now (unused), 10 = Open
-              submenu, 11 = Learn more. Add 20 if happened after reopen.)
-            mode: NULLABLE
-            name: value
-            type: STRING
-          mode: REPEATED
-          name: popup_notification_stats
           type: RECORD
         - fields:
           - mode: NULLABLE
@@ -43999,6 +44008,24 @@ fields:
           mode: NULLABLE
           name: navigator_storage_persist_count
           type: INTEGER
+        - description: 'How many times PDF Viewer fallback bar was shown.
+
+            '
+          mode: NULLABLE
+          name: pdf_viewer_fallback_shown
+          type: INTEGER
+        - description: 'How many times PDF Viewer print functionality was used.
+
+            '
+          mode: NULLABLE
+          name: pdf_viewer_print
+          type: INTEGER
+        - description: 'How many times PDF Viewer was used.
+
+            '
+          mode: NULLABLE
+          name: pdf_viewer_used
+          type: INTEGER
         - description: How many times we ended up recompiling a script from the script
             preloader on the main thread.
           mode: NULLABLE
@@ -44150,24 +44177,6 @@ fields:
             '
           mode: NULLABLE
           name: webrtc_peerconnection_promise_stats_used
-          type: INTEGER
-        - description: 'How many times PDF Viewer fallback bar was shown.
-
-            '
-          mode: NULLABLE
-          name: pdf_viewer_fallback_shown
-          type: INTEGER
-        - description: 'How many times PDF Viewer print functionality was used.
-
-            '
-          mode: NULLABLE
-          name: pdf_viewer_print
-          type: INTEGER
-        - description: 'How many times PDF Viewer was used.
-
-            '
-          mode: NULLABLE
-          name: pdf_viewer_used
           type: INTEGER
         - description: 'The number of times the connection failed with hostname obfuscation
             disabled. Hostname obfuscation uses mDNS addresses to prevent browser
@@ -49337,6 +49346,24 @@ fields:
           mode: NULLABLE
           name: networking_http_transactions_captive_portal
           type: INTEGER
+        - description: 'How many times PDF Viewer fallback bar was shown.
+
+            '
+          mode: NULLABLE
+          name: pdf_viewer_fallback_shown
+          type: INTEGER
+        - description: 'How many times PDF Viewer print functionality was used.
+
+            '
+          mode: NULLABLE
+          name: pdf_viewer_print
+          type: INTEGER
+        - description: 'How many times PDF Viewer was used.
+
+            '
+          mode: NULLABLE
+          name: pdf_viewer_used
+          type: INTEGER
         - description: A boolean indicating that profile/prefs.js was not found and
             it is being created for the first time in this session.
           mode: NULLABLE
@@ -50030,24 +50057,6 @@ fields:
             '
           mode: NULLABLE
           name: webrtc_peerconnection_promise_stats_used
-          type: INTEGER
-        - description: 'How many times PDF Viewer fallback bar was shown.
-
-            '
-          mode: NULLABLE
-          name: pdf_viewer_fallback_shown
-          type: INTEGER
-        - description: 'How many times PDF Viewer print functionality was used.
-
-            '
-          mode: NULLABLE
-          name: pdf_viewer_print
-          type: INTEGER
-        - description: 'How many times PDF Viewer was used.
-
-            '
-          mode: NULLABLE
-          name: pdf_viewer_used
           type: INTEGER
         - description: 'Keep track of the last time the "addons" remotesetting blocklist
             has been successfully updated (as a datetime string in UTC format), set
@@ -52828,9 +52837,6 @@ fields:
     mode: NULLABLE
     name: processes
     type: RECORD
-  - mode: NULLABLE
-    name: ver
-    type: INTEGER
   - fields:
     - mode: NULLABLE
       name: action
@@ -52850,6 +52856,9 @@ fields:
     mode: REPEATED
     name: ui_measurements
     type: RECORD
+  - mode: NULLABLE
+    name: ver
+    type: INTEGER
   - description: This sections reports writes to the file system that happen during
       shutdown. The reported data contains the stack and the file names of the loaded
       libraries at the time the writes happened.
@@ -52946,15 +52955,6 @@ fields:
   mode: NULLABLE
   name: payload
   type: RECORD
-- description: Hashed version of client_id (if present) useful for partitioning; ranges
-    from 0 to 99
-  mode: NULLABLE
-  name: sample_id
-  type: INTEGER
-- description: Time when the ingestion edge server accepted this message
-  mode: NULLABLE
-  name: submission_timestamp
-  type: TIMESTAMP
 - mode: NULLABLE
   name: type
   type: STRING

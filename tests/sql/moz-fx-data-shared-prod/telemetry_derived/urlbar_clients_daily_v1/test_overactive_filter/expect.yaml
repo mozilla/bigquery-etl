@@ -14,8 +14,18 @@
   show_search_suggestions_first: true
   count_picked_total: 20
   count_picked_by_type:
-    - key: "autofill"
+    - key: "autofill_about"
+      value: 1
+    - key: "autofill_adaptive"
+      value: 2
+    - key: "autofill_origin"
+      value: 3
+    - key: "autofill_other"
+      value: 4
+    - key: "autofill_preloaded"
       value: 5
+    - key: "autofill_url"
+      value: 6
     - key: "bookmark"
       value: 5
     - key: "history"
@@ -24,14 +34,34 @@
       value: 5
   count_picked_by_position:
     - key: 1
-      value: 10
+      value: 16
     - key: 2
       value: 10
   urlbar_picked_by_type_by_position:
-    - type: "autofill"
+    - type: "autofill_about"
+      position:
+        - key: 1
+          value: 1
+    - type: "autofill_adaptive"
+      position:
+        - key: 1
+          value: 2
+    - type: "autofill_origin"
+      position:
+        - key: 1
+          value: 3
+    - type: "autofill_other"
+      position:
+        - key: 1
+          value: 4
+    - type: "autofill_preloaded"
       position:
         - key: 1
           value: 5
+    - type: "autofill_url"
+      position:
+        - key: 1
+          value: 6
     - type: "bookmark"
       position:
         - key: 1
@@ -75,7 +105,7 @@
   client_id: "client_2"
   count_picked_total: 21
   count_picked_by_type:
-    - key: "autofill"
+    - key: "autofill_about"
       value: 6
     - key: "bookmark"
       value: 5
@@ -89,7 +119,7 @@
     - key: 2
       value: 10
   urlbar_picked_by_type_by_position:
-    - type: "autofill"
+    - type: "autofill_about"
       position:
         - key: 1
           value: 6

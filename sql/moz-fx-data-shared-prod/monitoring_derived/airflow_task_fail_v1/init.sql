@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  `moz-fx-data-shared-prod.monitoring_airflow_derived.task_fail_v1`
+  `moz-fx-data-shared-prod.monitoring_derived.airflow_task_fail_v1`
 AS
 SELECT
   dag_id,

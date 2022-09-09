@@ -46,10 +46,10 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    monitoring_airflow_derived__dag__v1 = bigquery_etl_query(
-        task_id="monitoring_airflow_derived__dag__v1",
-        destination_table="dag_v1",
-        dataset_id="monitoring_airflow_derived",
+    monitoring_derived__airflow_dag__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_dag__v1",
+        destination_table="airflow_dag_v1",
+        dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kignasiak@mozilla.com",
         email=["kignasiak@mozilla.com"],
@@ -57,10 +57,10 @@ with DAG(
         depends_on_past=False,
     )
 
-    monitoring_airflow_derived__dag_run__v1 = bigquery_etl_query(
-        task_id="monitoring_airflow_derived__dag_run__v1",
-        destination_table="dag_run_v1",
-        dataset_id="monitoring_airflow_derived",
+    monitoring_derived__airflow_dag_run__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_dag_run__v1",
+        destination_table="airflow_dag_run_v1",
+        dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kignasiak@mozilla.com",
         email=["kignasiak@mozilla.com"],
@@ -68,10 +68,10 @@ with DAG(
         depends_on_past=False,
     )
 
-    monitoring_airflow_derived__dag_tag__v1 = bigquery_etl_query(
-        task_id="monitoring_airflow_derived__dag_tag__v1",
-        destination_table="dag_tag_v1",
-        dataset_id="monitoring_airflow_derived",
+    monitoring_derived__airflow_dag_tag__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_dag_tag__v1",
+        destination_table="airflow_dag_tag_v1",
+        dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kignasiak@mozilla.com",
         email=["kignasiak@mozilla.com"],
@@ -79,10 +79,10 @@ with DAG(
         depends_on_past=False,
     )
 
-    monitoring_airflow_derived__slot_pool__v1 = bigquery_etl_query(
-        task_id="monitoring_airflow_derived__slot_pool__v1",
-        destination_table="slot_pool_v1",
-        dataset_id="monitoring_airflow_derived",
+    monitoring_derived__airflow_slot_pool__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_slot_pool__v1",
+        destination_table="airflow_slot_pool_v1",
+        dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kignasiak@mozilla.com",
         email=["kignasiak@mozilla.com"],
@@ -90,10 +90,10 @@ with DAG(
         depends_on_past=False,
     )
 
-    monitoring_airflow_derived__task_fail__v1 = bigquery_etl_query(
-        task_id="monitoring_airflow_derived__task_fail__v1",
-        destination_table="task_fail_v1",
-        dataset_id="monitoring_airflow_derived",
+    monitoring_derived__airflow_task_fail__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_task_fail__v1",
+        destination_table="airflow_task_fail_v1",
+        dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kignasiak@mozilla.com",
         email=["kignasiak@mozilla.com"],
@@ -101,10 +101,10 @@ with DAG(
         depends_on_past=False,
     )
 
-    monitoring_airflow_derived__task_reschedule__v1 = bigquery_etl_query(
-        task_id="monitoring_airflow_derived__task_reschedule__v1",
-        destination_table="task_reschedule_v1",
-        dataset_id="monitoring_airflow_derived",
+    monitoring_derived__airflow_task_reschedule__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_task_reschedule__v1",
+        destination_table="airflow_task_reschedule_v1",
+        dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kignasiak@mozilla.com",
         email=["kignasiak@mozilla.com"],
@@ -112,10 +112,10 @@ with DAG(
         depends_on_past=False,
     )
 
-    monitoring_airflow_derived__user__v1 = bigquery_etl_query(
-        task_id="monitoring_airflow_derived__user__v1",
-        destination_table="user_v1",
-        dataset_id="monitoring_airflow_derived",
+    monitoring_derived__airflow_user__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_user__v1",
+        destination_table="airflow_user_v1",
+        dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kignasiak@mozilla.com",
         email=["kignasiak@mozilla.com"],

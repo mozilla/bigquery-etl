@@ -1,11 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  `moz-fx-data-shared-prod.monitoring_airflow_derived.user_v1`
-PARTITION BY
-  submission_date
-CLUSTER BY
-  user_id
-OPTIONS
-  (require_partition_filter = TRUE)
+  `moz-fx-data-shared-prod.monitoring_derived.airflow_user_v1`
 AS
 SELECT
   user.id AS user_id,

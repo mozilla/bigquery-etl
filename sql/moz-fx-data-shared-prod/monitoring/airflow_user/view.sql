@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.monitoring_airflow.user`
+  `moz-fx-data-shared-prod.monitoring.airflow_user`
 AS
 WITH user_role_mapping AS (
   SELECT
@@ -20,7 +20,7 @@ SELECT
   role_name AS user_role,
   users.* EXCEPT (role_id, active)
 FROM
-  users
+  `moz-fx-data-shared-prod.monitoring_derived.airflow_user_v1` AS users
 LEFT JOIN
   user_role_mapping
 USING

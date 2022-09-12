@@ -7,6 +7,7 @@ WITH query_logs AS (
   WHERE
     jsonPayload.type = "web.suggest.request"
     AND jsonPayload.fields.session_id IS NOT NULL
+    AND DATE(timestamp) = @submission_date
 ),
 terminal_queries AS (
   SELECT

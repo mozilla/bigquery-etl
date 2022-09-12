@@ -1,13 +1,13 @@
 friendly_name: Search Terms Daily
 description: |-
-  Please provide a description for the query
+  Daily count of terminal search terms collected by Merino.
 owners:
 - example@mozilla.com
 labels:
   incremental: true
 bigquery:
   time_partitioning:
-    field: ''
+    field: merino_date
     type: day
     require_partition_filter: true
     expiration_days: null

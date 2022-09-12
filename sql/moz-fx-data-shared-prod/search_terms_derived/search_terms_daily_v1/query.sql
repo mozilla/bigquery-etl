@@ -1,22 +1,30 @@
-with query_logs as (
-    SELECT
-        TIMESTAMP_TRUNC(timestamp, DATE )AS merino_date,
-        jsonPayload.fields.*
-    FROM `suggest-searches-prod-a30f.logs.stdout`
-    WHERE
-        jsonPayload.type = "web.suggest.request"
-        and jsonPayload.fields.session_id is not null
-), terminal_queries as (
-    select 
-        array_agg(ql order by sequence_no desc limit 1)[offset(0)].*
-    from query_logs ql
-    group by ql.session_id
+WITH query_logs AS (
+  SELECT
+    DATE(timestamp) AS merino_date,
+    jsonPayload.fields.*
+  FROM
+    `suggest-searches-prod-a30f.logs.stdout`
+  WHERE
+    jsonPayload.type = "web.suggest.request"
+    AND jsonPayload.fields.session_id IS NOT NULL
+),
+terminal_queries AS (
+  SELECT
+    array_agg(ql ORDER BY sequence_no DESC LIMIT 1)[offset(0)].*
+  FROM
+    query_logs ql
+  GROUP BY
+    ql.session_id
 )
-select
-    merino_date,
-    query as search_term,
-    count(*) search_sessions
-from terminal_queries
-group by 1,2
+SELECT
+  merino_date,
+  query AS search_term,
+  count(*) search_sessions
+FROM
+  terminal_queries
+GROUP BY
+  1,
+  2
 -- Level 2 aggregation. See: https://wiki.mozilla.org/Data_Publishing
-having count(*) > 5000
+HAVING
+  count(*) > 5000

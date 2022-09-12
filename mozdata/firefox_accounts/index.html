@@ -744,6 +744,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#fxa_users_services_first_seen" class="md-nav__link">
+    fxa_users_services_first_seen
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#nonprod_fxa_content_auth_stdout_events" class="md-nav__link">
     nonprod_fxa_content_auth_stdout_events
   </a>
@@ -2395,6 +2402,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#fxa_users_services_first_seen" class="md-nav__link">
+    fxa_users_services_first_seen
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#nonprod_fxa_content_auth_stdout_events" class="md-nav__link">
     nonprod_fxa_content_auth_stdout_events
   </a>
@@ -2629,11 +2643,6 @@ and to contain only one row per distinct <code>document_id</code> within a given
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
-        <td>jsonPayload</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
         <td>timestamp</td>
         <td></td>
         <td>Timestamp</td>
@@ -2690,6 +2699,11 @@ and to contain only one row per distinct <code>document_id</code> within a given
         <td>Yes</td>
     </tr><tr>
         <td>split</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>jsonPayload</td>
         <td></td>
         <td>Record</td>
         <td>Yes</td>
@@ -3537,6 +3551,80 @@ and to contain only one row per distinct <code>document_id</code> within a given
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts/fxa_users_services_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts/fxa_users_services_daily/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts/fxa_users_services_daily/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="fxa_users_services_first_seen"><a href="#fxa_users_services_first_seen">fxa_users_services_first_seen</a></h2>
+<p><code>firefox_accounts.fxa_users_services_first_seen</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>user_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>service</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_service_flow</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>did_register</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>entrypoint</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_service_timestamp</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_service_country</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_service_os</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>service_number</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts_derived>firefox_accounts_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_first_seen_v1>fxa_users_services_first_seen_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts/fxa_users_services_first_seen">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts/fxa_users_services_first_seen/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts/fxa_users_services_first_seen/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="nonprod_fxa_content_auth_stdout_events"><a href="#nonprod_fxa_content_auth_stdout_events">nonprod_fxa_content_auth_stdout_events</a></h2>
 <p><code>firefox_accounts.nonprod_fxa_content_auth_stdout_events</code></p>

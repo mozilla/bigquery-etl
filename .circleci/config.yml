@@ -467,6 +467,27 @@ jobs:
                 image: bigquery-etl
                 tag: ${CIRCLE_TAG:-latest}
             - gcp-gcr/push-image: *private-image
+  glam-dev-deploy:
+    executor: ubuntu-machine-executor
+    steps:
+      - checkout
+      - when:
+          condition:
+            or:
+              - equal: [glam-etl-dev-dag, << pipeline.git.branch >>]
+              - equal: [glam-etl-dev-dag, << pipeline.git.branch >>]
+          steps:
+            - *attach_generated_sql
+            - run:
+                name: Move generated-sql into place
+                command: |
+                  rm -rf sql/
+                  cp -r /tmp/workspace/private-generated-sql/sql sql
+            - gcp-gcr/gcr-auth
+            - gcp-gcr/build-image: &private-image
+                image: glam-dev-bigquery-etl
+                tag: ${CIRCLE_TAG:-latest}
+            - gcp-gcr/push-image: *private-image
   generate-diff:
     docker: *docker
     steps:
@@ -642,6 +663,13 @@ workflows:
               only:
                 - main
       - deploy-to-private-gcr:
+          context: data-eng-airflow-gcr
+          requires:
+            - private-generate-sql
+            # can't run in parallel because CIRCLE_BUILD_NUM is same
+            - build
+            - generate-sql
+      - glam-dev-deploy:
           context: data-eng-airflow-gcr
           requires:
             - private-generate-sql

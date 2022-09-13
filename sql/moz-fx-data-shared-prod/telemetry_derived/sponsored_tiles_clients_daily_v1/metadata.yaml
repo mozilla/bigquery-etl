@@ -5,6 +5,9 @@ owners:
 - skahmann@mozilla.com
 labels:
   incremental: true
+scheduling:
+  dag_name: bqetl_sponsored_tiles_clients_daily
+  task_name: sponsored_tiles_clients_daily_v1
 bigquery:
   time_partitioning:
     field: submission_date

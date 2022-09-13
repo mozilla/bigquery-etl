@@ -1,0 +1,72 @@
+fields:
+- mode: NULLABLE
+  name: device
+  type: STRING
+- mode: NULLABLE
+  name: os
+  type: STRING
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: version
+    type: STRING
+  - mode: NULLABLE
+    name: major_version
+    type: NUMERIC
+  - mode: NULLABLE
+    name: minor_version
+    type: NUMERIC
+  - mode: NULLABLE
+    name: patch_revision
+    type: NUMERIC
+  - mode: NULLABLE
+    name: is_major_release
+    type: BOOLEAN
+  mode: NULLABLE
+  name: browser_version_info
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: STRING
+  mode: REPEATED
+  name: experiments
+  type: RECORD
+- mode: NULLABLE
+  name: country
+  type: STRING
+- mode: NULLABLE
+  name: locale
+  type: STRING
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+- mode: NULLABLE
+  name: normalized_os_version
+  type: STRING
+- mode: NULLABLE
+  name: profile_age_in_days
+  type: INTEGER
+- mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+- mode: NULLABLE
+  name: sponsored_tiles_click_count
+  type: INTEGER
+- mode: NULLABLE
+  name: sponsored_tiles_impression_count
+  type: INTEGER
+- mode: NULLABLE
+  name: sponsored_tiles_dismissal_count
+  type: INTEGER
+- mode: NULLABLE
+  name: sponsored_tiles_disable_count
+  type: INTEGER
+- mode: NULLABLE
+  name: sponsored_tiles_enabled_at_startup
+  type: BOOLEAN

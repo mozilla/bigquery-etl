@@ -19,8 +19,8 @@ WITH events_unnested AS (
     UNNEST(events)
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND category IN ('newtab', 'topsites', 'newtab.search', 'newtab.search.ad')
-    AND name IN ('closed', 'opened', 'impression', 'issued', 'click')
+    AND category IN ('newtab', 'topsites', 'newtab.search', 'newtab.search.ad', 'pocket')
+    AND name IN ('closed', 'opened', 'impression', 'issued', 'click', 'save', 'topic_click')
 ),
 categorized_events AS (
   SELECT
@@ -28,6 +28,7 @@ categorized_events AS (
     client_info.client_id,
     mozfun.map.get_key(event_details, "newtab_visit_id") AS newtab_visit_id,
         -- Metrics
+        -- Search
     event_name = "issued"
     AND event_category = "newtab.search" AS is_search_issued,
         -- ??? is_tagged_search
@@ -47,6 +48,7 @@ categorized_events AS (
     event_name = "click"
     AND event_category = 'newtab.search.ad'
     AND mozfun.map.get_key(event_details, "is_follow_on") = "true" AS is_follow_on_search_ad_click,
+        -- Topsites
     event_category = 'topsites'
     AND event_name = 'impression' AS is_topsite_impression,
     event_category = 'topsites'
@@ -60,6 +62,34 @@ categorized_events AS (
     event_category = 'topsites'
     AND event_name = 'click'
     AND mozfun.map.get_key(event_details, "is_sponsored") = "true" AS is_sponsored_topsite_click,
+        -- Pocket
+    event_category = 'pocket'
+    AND event_name = 'click' AS is_pocket_click,
+    event_category = 'pocket'
+    AND event_name = 'click'
+    AND mozfun.map.get_key(event_details, "is_sponsored") = "true" AS is_sponsored_pocket_click,
+    event_category = 'pocket'
+    AND event_name = 'click'
+    AND mozfun.map.get_key(event_details, "is_sponsored") != "true" AS is_organic_pocket_click,
+    event_category = 'pocket'
+    AND event_name = 'impression' AS is_pocket_impression,
+    event_category = 'pocket'
+    AND event_name = 'impression'
+    AND mozfun.map.get_key(
+      event_details,
+      "is_sponsored"
+    ) = "true" AS is_sponsored_pocket_impression,
+    event_category = 'pocket'
+    AND event_name = 'impression'
+    AND mozfun.map.get_key(event_details, "is_sponsored") != "true" AS is_organic_pocket_impression,
+    event_category = 'pocket'
+    AND event_name = 'save' AS is_pocket_save,
+    event_category = 'pocket'
+    AND event_name = 'save'
+    AND mozfun.map.get_key(event_details, "is_sponsored") = "true" AS is_sponsored_pocket_save,
+    event_category = 'pocket'
+    AND event_name = 'save'
+    AND mozfun.map.get_key(event_details, "is_sponsored") != "true" AS is_organic_pocket_save,
     IF(event_name = "opened", event_timestamp, NULL) AS newtab_visit_started_at,
     IF(event_name = "closed", event_timestamp, NULL) AS newtab_visit_ended_at,
         -- Client/Session-unique attributes
@@ -71,11 +101,16 @@ categorized_events AS (
     mozfun.map.get_key(event_details, "source") AS newtab_open_source,
     metrics.string.search_engine_private_engine_id AS default_search_engine,
     metrics.string.search_engine_default_engine_id AS default_private_search_engine,
+    metrics.boolean.pocket_enabled,
     ping_info.experiments,
         -- ??? private_browsing_mode
         -- Partially unique session attributes
     mozfun.map.get_key(event_details, "telemetry_id") AS search_engine,
     mozfun.map.get_key(event_details, "search_access_point") AS search_access_point,
+    mozfun.map.get_key(
+      event_details,
+      "position"
+    ) AS pocket_story_position, -- Note potential name-collision here with topsite position
         -- ??? topsite_advertiser_id
         -- ??? topsite_position
     submission_date
@@ -88,6 +123,7 @@ SELECT
   submission_date,
   search_engine,
   search_access_point,
+  pocket_story_position,
     -- topsite_advertiser_id,
     -- topsite_position,
   ANY_VALUE(experiments) AS experiments,
@@ -100,12 +136,15 @@ SELECT
   ANY_VALUE(app_display_version) AS browser_version,
   "Firefox Desktop" AS browser_name,
   ANY_VALUE(newtab_open_source) AS newtab_open_source,
+  ANY_VALUE(pocket_enabled) AS pocket_enabled,
   MIN(newtab_visit_started_at) AS newtab_visit_started_at,
   MIN(newtab_visit_ended_at) AS newtab_visit_ended_at,
+      -- Topsites
   COUNTIF(is_topsite_click) AS topsite_clicks,
   COUNTIF(is_sponsored_topsite_click) AS sponsored_topsite_clicks,
   COUNTIF(is_topsite_impression) AS topsite_impressions,
   COUNTIF(is_sponsored_topsite_impression) AS sponsored_topsite_impressions,
+      -- Search
   COUNTIF(is_search_issued) AS searches,
   COUNTIF(is_tagged_search_ad_click) AS tagged_search_ad_clicks,
   COUNTIF(is_tagged_search_ad_impression) AS tagged_search_ad_impressions,
@@ -119,6 +158,16 @@ SELECT
     is_tagged_search_ad_impression
     AND is_follow_on_search_ad_impression
   ) AS tagged_follow_on_search_ad_impressions,
+      -- Pocket
+  COUNTIF(is_pocket_impression) AS pocket_impressions,
+  COUNTIF(is_sponsored_pocket_impression) AS sponsored_pocket_impressions,
+  COUNTIF(is_organic_pocket_impression) AS organic_pocket_impressions,
+  COUNTIF(is_pocket_click) AS pocket_clicks,
+  COUNTIF(is_sponsored_pocket_click) AS sponsored_pocket_clicks,
+  COUNTIF(is_organic_pocket_click) AS organic_pocket_clicks,
+  COUNTIF(is_pocket_save) AS pocket_saves,
+  COUNTIF(is_sponsored_pocket_save) AS sponsored_pocket_saves,
+  COUNTIF(is_organic_pocket_save) AS organic_pocket_saves,
 FROM
   categorized_events
 GROUP BY
@@ -126,6 +175,7 @@ GROUP BY
   client_id,
   submission_date,
   search_engine,
-  search_access_point
+  search_access_point,
+  pocket_story_position
     -- topsite_advertiser_id,
     -- topsite_position

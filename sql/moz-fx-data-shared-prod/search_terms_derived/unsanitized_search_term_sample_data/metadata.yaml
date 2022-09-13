@@ -1,13 +1,14 @@
-friendly_name: Sanitized Firefox Search Terms Straight from Search Requests
+friendly_name: Unanitized Firefox Search Terms Sample for Data Validation
 owners:
   - ctroy@mozilla.com
 labels:
   incremental: true
 description: |-
-  A sanitized variant of search terms submitted to Firefox.
+  A 1% sample of raw search terms submitted to Firefox.
 
-  This table allows removal of PII and longer retention than
-  the underlying logs.
+  This table allows for data validation on raw data in the event
+  that the search volume metrics change in concerning ways.
+
   See https://github.com/mozilla/search-terms-sanitization
   for the code that populates this table.
 bigquery:

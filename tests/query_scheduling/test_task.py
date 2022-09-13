@@ -391,10 +391,8 @@ class TestTask:
 
     @pytest.mark.java
     def test_task_get_dependencies_none(self, tmp_path):
-        query_file_path = tmp_path / "test-project" / "test" / "query_v1"
-        os.makedirs(query_file_path)
-
-        query_file = query_file_path / "query.sql"
+        query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
+        os.makedirs(query_file.parent)
         query_file.write_text("SELECT 123423")
 
         metadata = Metadata(
@@ -409,10 +407,8 @@ class TestTask:
 
     @pytest.mark.java
     def test_task_get_multiple_dependencies(self, tmp_path):
-        query_file_path = tmp_path / "test-project" / "test" / "query_v1"
-        os.makedirs(query_file_path)
-
-        query_file = query_file_path / "query.sql"
+        query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
+        os.makedirs(query_file.parent)
         query_file.write_text(
             "SELECT * FROM `test-project`.test.table1_v1 "
             "UNION ALL SELECT * FROM `test-project`.test.table2_v1"
@@ -424,14 +420,15 @@ class TestTask:
 
         task = Task.of_query(query_file, metadata)
 
-        table_task1 = Task.of_query(
-            tmp_path / "test-project" / "test" / "table1_v1" / "query.sql",
-            metadata,
-        )
-        table_task2 = Task.of_query(
-            tmp_path / "test-project" / "test" / "table2_v1" / "query.sql",
-            metadata,
-        )
+        table1_file = tmp_path / "test-project" / "test" / "table1_v1" / "query.sql"
+        os.makedirs(table1_file.parent)
+        table1_file.write_text("SELECT 12345")
+        table1_task = Task.of_query(table1_file, metadata)
+
+        table2_file = tmp_path / "test-project" / "test" / "table2_v1" / "query.sql"
+        os.makedirs(table2_file.parent)
+        table2_file.write_text("SELECT 67890")
+        table2_task = Task.of_query(table2_file, metadata)
 
         dags = DagCollection.from_dict(
             {
@@ -443,7 +440,7 @@ class TestTask:
                     },
                 }
             }
-        ).with_tasks([task, table_task1, table_task2])
+        ).with_tasks([task, table1_task, table2_task])
 
         task.with_upstream_dependencies(dags)
         result = task.upstream_dependencies
@@ -455,10 +452,8 @@ class TestTask:
 
     @pytest.mark.java
     def test_task_date_partition_offset(self, tmp_path):
-        query_file_path = tmp_path / "test-project" / "test" / "query_v1"
-        os.makedirs(query_file_path)
-
-        query_file = query_file_path / "query.sql"
+        query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
+        os.makedirs(query_file.parent)
         query_file.write_text(
             "SELECT * FROM `test-project`.test.table1_v1 "
             "UNION ALL SELECT * FROM `test-project`.test.table2_v1"
@@ -486,14 +481,15 @@ class TestTask:
 
         task = Task.of_query(query_file, metadata)
 
-        table_task1 = Task.of_query(
-            tmp_path / "test-project" / "test" / "table1_v1" / "query.sql",
-            metadata_task1,
-        )
-        table_task2 = Task.of_query(
-            tmp_path / "test-project" / "test" / "table2_v1" / "query.sql",
-            metadata_task2,
-        )
+        table1_file = tmp_path / "test-project" / "test" / "table1_v1" / "query.sql"
+        os.makedirs(table1_file.parent)
+        table1_file.write_text("SELECT 12345")
+        table1_task = Task.of_query(table1_file, metadata_task1)
+
+        table2_file = tmp_path / "test-project" / "test" / "table2_v1" / "query.sql"
+        os.makedirs(table2_file.parent)
+        table2_file.write_text("SELECT 67890")
+        table2_task = Task.of_query(table2_file, metadata_task2)
 
         dags = DagCollection.from_dict(
             {
@@ -505,7 +501,7 @@ class TestTask:
                     },
                 }
             }
-        ).with_tasks([task, table_task1, table_task2])
+        ).with_tasks([task, table1_task, table2_task])
 
         task.with_upstream_dependencies(dags)
         result = task.upstream_dependencies
@@ -520,30 +516,34 @@ class TestTask:
         assert task.date_partition_parameter == "submission_date"
 
     @pytest.mark.java
-    def test_multipart_task_get_dependencies(self, tmp_path):
-        query_file_path = tmp_path / "test-project" / "test" / "query_v1"
-        os.makedirs(query_file_path)
-
-        query_file_part1 = query_file_path / "part1.sql"
-        query_file_part1.write_text("SELECT * FROM `test-project`.test.table1_v1")
-
-        query_file_part2 = query_file_path / "part2.sql"
-        query_file_part2.write_text("SELECT * FROM `test-project`.test.table2_v1")
+    def test_task_date_partition_offset_recursive(self, tmp_path):
+        query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
+        os.makedirs(query_file.parent)
+        query_file.write_text("SELECT * FROM `test-project`.test.table1_v1")
 
         metadata = Metadata(
             "test", "test", ["test@example.org"], {}, self.default_scheduling
         )
 
-        task = Task.of_multipart_query(query_file_part1, metadata)
+        table2_metadata = Metadata(
+            "test",
+            "test",
+            ["test@example.org"],
+            {},
+            {**self.default_scheduling, **{"date_partition_offset": -2}},
+        )
 
-        table_task1 = Task.of_query(
-            tmp_path / "test-project" / "test" / "table1_v1" / "query.sql",
-            metadata,
-        )
-        table_task2 = Task.of_query(
-            tmp_path / "test-project" / "test" / "table2_v1" / "query.sql",
-            metadata,
-        )
+        task = Task.of_query(query_file, metadata)
+
+        table1_file = tmp_path / "test-project" / "test" / "table1_v1" / "query.sql"
+        os.makedirs(table1_file.parent)
+        table1_file.write_text("SELECT * FROM `test-project`.test.table2_v1")
+        table1_task = Task.of_query(table1_file, metadata)
+
+        table2_file = tmp_path / "test-project" / "test" / "table2_v1" / "query.sql"
+        os.makedirs(table2_file.parent)
+        table2_file.write_text("SELECT 67890")
+        table2_task = Task.of_query(table2_file, table2_metadata)
 
         dags = DagCollection.from_dict(
             {
@@ -555,7 +555,55 @@ class TestTask:
                     },
                 }
             }
-        ).with_tasks([task, table_task1, table_task2])
+        ).with_tasks([task, table1_task, table2_task])
+
+        task.with_upstream_dependencies(dags)
+        result = task.upstream_dependencies
+
+        assert task.date_partition_offset == -2
+        assert [
+            t.date_partition_offset for t in result if t.task_id == "test__table1__v1"
+        ] == [-2]
+        assert task.date_partition_parameter == "submission_date"
+
+    @pytest.mark.java
+    def test_multipart_task_get_dependencies(self, tmp_path):
+        query_dir = tmp_path / "test-project" / "test" / "query_v1"
+        os.makedirs(query_dir)
+
+        query_file_part1 = query_dir / "part1.sql"
+        query_file_part1.write_text("SELECT * FROM `test-project`.test.table1_v1")
+
+        query_file_part2 = query_dir / "part2.sql"
+        query_file_part2.write_text("SELECT * FROM `test-project`.test.table2_v1")
+
+        metadata = Metadata(
+            "test", "test", ["test@example.org"], {}, self.default_scheduling
+        )
+
+        task = Task.of_multipart_query(query_file_part1, metadata)
+
+        table1_file = tmp_path / "test-project" / "test" / "table1_v1" / "query.sql"
+        os.makedirs(table1_file.parent)
+        table1_file.write_text("SELECT 12345")
+        table1_task = Task.of_query(table1_file, metadata)
+
+        table2_file = tmp_path / "test-project" / "test" / "table2_v1" / "query.sql"
+        os.makedirs(table2_file.parent)
+        table2_file.write_text("SELECT 67890")
+        table2_task = Task.of_query(table2_file, metadata)
+
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": {
+                        "owner": "test@example.org",
+                        "start_date": "2020-01-01",
+                    },
+                }
+            }
+        ).with_tasks([task, table1_task, table2_task])
 
         task.with_upstream_dependencies(dags)
         result = task.upstream_dependencies
@@ -567,19 +615,15 @@ class TestTask:
 
     @pytest.mark.java
     def test_task_get_view_dependencies(self, tmp_path):
-        query_file_path = tmp_path / "test-project" / "test" / "query_v1"
-        os.makedirs(query_file_path)
-
-        query_file = query_file_path / "query.sql"
+        query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
+        os.makedirs(query_file.parent)
         query_file.write_text(
             "SELECT * FROM `test-project`.test.table1_v1 "
             "UNION ALL SELECT * FROM `test-project`.test.test_view"
         )
 
-        view_file_path = tmp_path / "test-project" / "test" / "test_view"
-        os.makedirs(view_file_path)
-
-        view_file = view_file_path / "view.sql"
+        view_file = tmp_path / "test-project" / "test" / "test_view" / "view.sql"
+        os.makedirs(view_file.parent)
         view_file.write_text(
             "CREATE OR REPLACE VIEW `test-project`.test.test_view "
             "AS SELECT * FROM `test-project`.test.table2_v1"
@@ -591,14 +635,15 @@ class TestTask:
 
         task = Task.of_query(query_file, metadata)
 
-        table_task1 = Task.of_query(
-            tmp_path / "test-project" / "test" / "table1_v1" / "query.sql",
-            metadata,
-        )
-        table_task2 = Task.of_query(
-            tmp_path / "test-project" / "test" / "table2_v1" / "query.sql",
-            metadata,
-        )
+        table1_file = tmp_path / "test-project" / "test" / "table1_v1" / "query.sql"
+        os.makedirs(table1_file.parent)
+        table1_file.write_text("SELECT 12345")
+        table1_task = Task.of_query(table1_file, metadata)
+
+        table2_file = tmp_path / "test-project" / "test" / "table2_v1" / "query.sql"
+        os.makedirs(table2_file.parent)
+        table2_file.write_text("SELECT 67890")
+        table2_task = Task.of_query(table2_file, metadata)
 
         dags = DagCollection.from_dict(
             {
@@ -610,7 +655,7 @@ class TestTask:
                     },
                 }
             }
-        ).with_tasks([task, table_task1, table_task2])
+        ).with_tasks([task, table1_task, table2_task])
 
         task.with_upstream_dependencies(dags)
         result = task.upstream_dependencies
@@ -622,28 +667,22 @@ class TestTask:
 
     @pytest.mark.java
     def test_task_get_nested_view_dependencies(self, tmp_path):
-        query_file_path = tmp_path / "test-project" / "test" / "query_v1"
-        os.makedirs(query_file_path)
-
-        query_file = query_file_path / "query.sql"
+        query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
+        os.makedirs(query_file.parent)
         query_file.write_text(
             "SELECT * FROM `test-project`.test.table1_v1 "
             "UNION ALL SELECT * FROM `test-project`.test.test_view"
         )
 
-        view_file_path = tmp_path / "test-project" / "test" / "test_view"
-        os.makedirs(view_file_path)
-
-        view_file = view_file_path / "view.sql"
+        view_file = tmp_path / "test-project" / "test" / "test_view" / "view.sql"
+        os.makedirs(view_file.parent)
         view_file.write_text(
             "CREATE OR REPLACE VIEW `test-project`.test.test_view "
             "AS SELECT * FROM `test-project`.test.test_view2"
         )
 
-        view2_file_path = tmp_path / "test-project" / "test" / "test_view2"
-        os.makedirs(view2_file_path)
-
-        view2_file = view2_file_path / "view.sql"
+        view2_file = tmp_path / "test-project" / "test" / "test_view2" / "view.sql"
+        os.makedirs(view2_file.parent)
         view2_file.write_text(
             "CREATE OR REPLACE VIEW `test-project`.test.test_view2 "
             "AS SELECT * FROM `test-project`.test.table2_v1"
@@ -655,14 +694,15 @@ class TestTask:
 
         task = Task.of_query(query_file, metadata)
 
-        table_task1 = Task.of_query(
-            tmp_path / "test-project" / "test" / "table1_v1" / "query.sql",
-            metadata,
-        )
-        table_task2 = Task.of_query(
-            tmp_path / "test-project" / "test" / "table2_v1" / "query.sql",
-            metadata,
-        )
+        table1_file = tmp_path / "test-project" / "test" / "table1_v1" / "query.sql"
+        os.makedirs(table1_file.parent)
+        table1_file.write_text("SELECT 12345")
+        table1_task = Task.of_query(table1_file, metadata)
+
+        table2_file = tmp_path / "test-project" / "test" / "table2_v1" / "query.sql"
+        os.makedirs(table2_file.parent)
+        table2_file.write_text("SELECT 67890")
+        table2_task = Task.of_query(table2_file, metadata)
 
         dags = DagCollection.from_dict(
             {
@@ -674,7 +714,7 @@ class TestTask:
                     },
                 }
             }
-        ).with_tasks([task, table_task1, table_task2])
+        ).with_tasks([task, table1_task, table2_task])
 
         task.with_upstream_dependencies(dags)
         result = task.upstream_dependencies

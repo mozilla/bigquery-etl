@@ -79,6 +79,7 @@ stripe_subscriptions AS (
     -- Stripe billing grace period is 7 day and Paypal is billed by Stripe
     INTERVAL 7 DAY AS billing_grace_period,
     promotion_codes,
+    promotion_discounts_amount,
   FROM
     mozdata.subscription_platform.stripe_subscriptions
   LEFT JOIN
@@ -154,6 +155,7 @@ apple_iap_subscriptions AS (
     -- Apple bills recurring subscriptions before they end
     INTERVAL 0 DAY AS billing_grace_period,
     CAST(NULL AS ARRAY<STRING>) AS promotion_codes,
+    CAST(NULL AS INT64) AS promotion_discounts_amount,
   FROM
     mozdata.mozilla_vpn.subscriptions
   LEFT JOIN
@@ -355,6 +357,7 @@ android_iap_subscriptions AS (
     ) AS pricing_plan,
     IF(periods.in_billing_grace_period, INTERVAL 1 MONTH, INTERVAL 0 DAY) AS billing_grace_period,
     CAST(NULL AS ARRAY<STRING>) AS promotion_codes,
+    CAST(NULL AS INT64) AS promotion_discounts_amount,
   FROM
     android_iap_periods AS periods
   LEFT JOIN
@@ -393,7 +396,11 @@ vpn_subscriptions AS (
 vpn_subscriptions_with_end_date AS (
   SELECT
     *,
-    MIN(subscription_start_date) OVER (PARTITION BY customer_id) AS customer_start_date,
+    IF(
+      customer_id IS NOT NULL,
+      MIN(subscription_start_date) OVER (PARTITION BY customer_id),
+      subscription_start_date
+    ) AS customer_start_date,
     COALESCE(ended_at, TIMESTAMP(CURRENT_DATE)) AS end_date,
   FROM
     vpn_subscriptions

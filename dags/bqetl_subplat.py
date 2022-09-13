@@ -289,14 +289,14 @@ with DAG(
 
     mozilla_vpn_derived__subscription_events__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__subscription_events__v1",
-        destination_table='subscription_events_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table='subscription_events_v1${{ macros.ds_format(macros.ds_add(ds, -8), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="mozilla_vpn_derived",
         project_id="moz-fx-data-shared-prod",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
+        parameters=["date:DATE:{{macros.ds_add(ds, -8)}}"],
     )
 
     mozilla_vpn_derived__subscriptions__v1 = bigquery_etl_query(
@@ -354,6 +354,52 @@ with DAG(
             "{{ var.value.surveygizmo_api_secret }}",
             "--destination_table",
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_intercept_q3_v1",
+        ],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+    )
+
+    mozilla_vpn_derived__survey_lifecycle_28d_desktop__v1 = gke_command(
+        task_id="mozilla_vpn_derived__survey_lifecycle_28d_desktop__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/survey_lifecycle_28d_desktop_v1/query.py",
+        ]
+        + [
+            "--date",
+            "{{ ds }}",
+            "--survey_id",
+            "6897437",
+            "--api_token",
+            "{{ var.value.surveygizmo_api_token }}",
+            "--api_secret",
+            "{{ var.value.surveygizmo_api_secret }}",
+            "--destination_table",
+            "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_lifecycle_28d_desktop_v1",
+        ],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+    )
+
+    mozilla_vpn_derived__survey_lifecycle_28d_mobile__v1 = gke_command(
+        task_id="mozilla_vpn_derived__survey_lifecycle_28d_mobile__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/survey_lifecycle_28d_mobile_v1/query.py",
+        ]
+        + [
+            "--date",
+            "{{ ds }}",
+            "--survey_id",
+            "6897488",
+            "--api_token",
+            "{{ var.value.surveygizmo_api_token }}",
+            "--api_secret",
+            "{{ var.value.surveygizmo_api_secret }}",
+            "--destination_table",
+            "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_lifecycle_28d_mobile_v1",
         ],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="srose@mozilla.com",

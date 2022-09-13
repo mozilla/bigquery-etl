@@ -1,10 +1,11 @@
 import os
 from unittest.mock import patch
 
-import pytest
+from click.testing import CliRunner
+
 import yaml
 
-from bigquery_etl.run_query import run
+from bigquery_etl.cli.query import run
 
 
 class TestRunQuery:
@@ -23,9 +24,15 @@ class TestRunQuery:
         metadata_file = query_file_path / "metadata.yaml"
         metadata_file.write_text(yaml.dump(metadata_conf))
 
+        runner = CliRunner()
         with patch("subprocess.check_call") as mock_call:
             mock_call.return_value = True
-            run(query_file, "test", "query_v1", [])
+            result = runner.invoke(
+                run,
+                [str(query_file), "--dataset_id=test", "--destination_table=query_v1"],
+            )
+
+            assert result.exit_code == 0
 
             assert mock_call.call_args.args == (
                 ["bq", "--dataset_id=test", "--destination_table=query_v1"],
@@ -50,7 +57,13 @@ class TestRunQuery:
 
         with patch("subprocess.check_call") as mock_call:
             mock_call.return_value = True
-            run(query_file, "test", "query_v1", [])
+            runner = CliRunner()
+            result = runner.invoke(
+                run,
+                [str(query_file), "--dataset_id=test", "--destination_table=query_v1"],
+            )
+
+            assert result.exit_code == 0
 
             assert mock_call.call_args.args == (
                 [
@@ -76,11 +89,14 @@ class TestRunQuery:
 
         metadata_file = query_file_path / "metadata.yaml"
         metadata_file.write_text(yaml.dump(metadata_conf))
+        runner = CliRunner()
 
         with patch("subprocess.check_call") as mock_call:
             mock_call.return_value = True
-            with pytest.raises(SystemExit):
-                run(query_file, None, "query_v1", [])
+            result = runner.invoke(
+                run, [str(query_file), "--destination_table=query_v1"]
+            )
+            result.exit_code == 1
 
-            with pytest.raises(SystemExit):
-                run(query_file, "test", None, [])
+            result = runner.invoke(run, [str(query_file), "--dataset_id=test"])
+            result.exit_code == 1

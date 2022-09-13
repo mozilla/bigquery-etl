@@ -129,7 +129,7 @@ jobs:
               PATHS="$(git diff origin/main... --name-only --diff-filter=d -- sql)"
             fi
             echo $PATHS
-            PATH="venv/bin:$PATH" script/dryrun --validate-schemas $PATHS
+            PATH="venv/bin:$PATH" script/bqetl dryrun --validate-schemas $PATHS
           # yamllint enable rule:line-length
   validate-metadata:
     docker: *docker
@@ -141,7 +141,9 @@ jobs:
       - *copy_generated_sql
       - run:
           name: Verify that metadata files are valid
-          command: PATH="venv/bin:$PATH" script/validate_metadata
+          command: |
+            PATH="venv/bin:$PATH" script/bqetl query validate \
+              --respect-dryrun-skip
   integration:
     docker: *docker
     steps:
@@ -196,7 +198,7 @@ jobs:
       - run:
           name: Generate DAGs
           command: |
-            PATH="venv/bin:$PATH" script/generate_airflow_dags
+            PATH="venv/bin:$PATH" script/bqetl dag generate
             mv dags/ /tmp/workspace/generated-sql
       # this task is overwriting the content produced by generate-sql;
       # the behaviour here is additive, generated DAGs are just added to
@@ -262,7 +264,7 @@ jobs:
       - *java_deps
       - run:
           name: Generate DAGs
-          command: PATH="venv/bin:$PATH" script/generate_airflow_dags
+          command: PATH="venv/bin:$PATH" script/bqetl dag generate
       - run:
           name: Verify that DAGs were correctly generated and are up-to-date
           command: |
@@ -278,7 +280,8 @@ jobs:
       - *copy_generated_sql
       - run:
           name: Validate doc examples
-          command: PATH="venv/bin:$PATH" script/validate_docs
+          command: |
+            PATH="venv/bin:$PATH" script/bqetl routine validate --docs-only
   validate-views:
     docker: *docker
     steps:
@@ -308,7 +311,7 @@ jobs:
           name: Build and deploy docs
           command: |
             rm -r sql/ && cp -r /tmp/workspace/generated-sql/sql sql/
-            PATH="venv/bin:$PATH" script/generate_docs \
+            PATH="venv/bin:$PATH" script/bqetl docs generate \
                --output_dir=generated_docs/
             cd generated_docs/
             PATH="../venv/bin:$PATH" mkdocs gh-deploy \
@@ -495,7 +498,7 @@ jobs:
               --skip-existing \
               "sql/"
 
-            ./script/generate_airflow_dags
+            ./script/bqetl dag generate
 
             cd ..
             diff -bur --no-dereference \

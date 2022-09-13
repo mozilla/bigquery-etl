@@ -152,6 +152,16 @@ class Dag:
         self.tasks = self.tasks.copy() + tasks
         self.validate_tasks(None, self.tasks)
 
+    def with_upstream_dependencies(self, dag_collection):
+        """Perform a dry_run to get upstream dependencies."""
+        for task in self.tasks:
+            task.with_upstream_dependencies(dag_collection)
+
+    def with_downstream_dependencies(self, dag_collection):
+        """Get downstream tasks by looking up upstream dependencies in DAG collection."""
+        for task in self.tasks:
+            task.with_downstream_dependencies(dag_collection)
+
     def to_dict(self):
         """Return class as a dict."""
         d = self.__dict__
@@ -195,7 +205,8 @@ class Dag:
     def _jinja_env(self):
         """Prepare and load custom formatters into the jinja environment."""
         env = Environment(
-            loader=PackageLoader("bigquery_etl", "query_scheduling/templates")
+            loader=PackageLoader("bigquery_etl", "query_scheduling/templates"),
+            extensions=["jinja2.ext.do"],
         )
 
         # load custom formatters into Jinja env

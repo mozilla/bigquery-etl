@@ -15,7 +15,7 @@ import yaml
 
 from ..cli.format import format
 from ..cli.utils import is_authenticated, is_valid_dir, is_valid_project
-from ..docs import validate_docs
+from ..docs import validate as validate_docs
 from ..format_sql.formatter import reformat
 from ..routine import publish_routines
 from ..routine.parse_routine import PROCEDURE_FILE, UDF_FILE
@@ -353,8 +353,15 @@ Examples:
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option
+@click.option(
+    "--docs-only",
+    "--docs_only",
+    default=False,
+    is_flag=True,
+    help="Only validate docs.",
+)
 @click.pass_context
-def validate(ctx, name, sql_dir, project_id):
+def validate(ctx, name, sql_dir, project_id, docs_only):
     """Validate routines by formatting and running tests."""
     project_id = get_project_id(ctx, project_id)
 
@@ -363,10 +370,12 @@ def validate(ctx, name, sql_dir, project_id):
 
     routine_files = _routines_matching_name_pattern(name, sql_dir, project_id)
 
-    validate_docs.validate(project_dirs(project_id))
-    for routine_file in routine_files:
-        ctx.invoke(format, paths=[str(routine_file.parent)])
-        pytest.main([str(routine_file.parent)])
+    ctx.invoke(validate_docs, project_dirs=project_dirs(project_id))
+
+    if not docs_only:
+        for routine_file in routine_files:
+            ctx.invoke(format, paths=[str(routine_file.parent)], check=True)
+            pytest.main([str(routine_file.parent)])
 
 
 mozfun.add_command(copy.copy(validate))
@@ -423,7 +432,7 @@ def publish(ctx, path, project_id, dependency_dir, gcs_bucket, gcs_path):
 
     public = False
 
-    if not is_authenticated(project_id):
+    if not is_authenticated():
         click.echo("User needs to be authenticated to publish routines.", err=True)
         sys.exit(1)
 

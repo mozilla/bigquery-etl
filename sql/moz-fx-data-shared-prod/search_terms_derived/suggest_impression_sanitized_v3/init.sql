@@ -1,6 +1,8 @@
 CREATE TABLE IF NOT EXISTS
   `moz-fx-data-shared-prod.search_terms_derived.suggest_impression_sanitized_v3`(
     request_id STRING,
+    session_id STRING,
+    sequence_no INTEGER,
     submission_timestamp TIMESTAMP,
     telemetry_query STRING,
     advertiser STRING,

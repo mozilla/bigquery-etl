@@ -7,7 +7,7 @@ updates:
       interval: daily
     reviewers:
       - relud
-      - jklukas
+      - quiiver
   - package-ecosystem: maven
     directory: /
     schedule:

@@ -101,3 +101,36 @@ fields:
 - mode: NULLABLE
   name: tagged_follow_on_search_ad_impressions
   type: INTEGER
+- mode: NULLABLE
+  name: pocket_story_position
+  type: STRING
+- mode: NULLABLE
+  name: pocket_enabled
+  type: BOOLEAN
+- mode: NULLABLE
+  name: pocket_impressions
+  type: INTEGER
+- mode: NULLABLE
+  name: sponsored_pocket_impressions
+  type: INTEGER
+- mode: NULLABLE
+  name: organic_pocket_impressions
+  type: INTEGER
+- mode: NULLABLE
+  name: pocket_clicks
+  type: INTEGER
+- mode: NULLABLE
+  name: sponsored_pocket_clicks
+  type: INTEGER
+- mode: NULLABLE
+  name: organic_pocket_clicks
+  type: INTEGER
+- mode: NULLABLE
+  name: pocket_saves
+  type: INTEGER
+- mode: NULLABLE
+  name: sponsored_pocket_saves
+  type: INTEGER
+- mode: NULLABLE
+  name: organic_pocket_saves
+  type: INTEGER

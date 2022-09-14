@@ -38,6 +38,6 @@ extracted AS (
 )
 --
 SELECT
-  assert.equals(8, hcount)
+  assert.equals(7, hcount)
 FROM
   extracted;

@@ -44,7 +44,7 @@ WITH combined AS (
     'contile' AS provider,
     IF(events[SAFE_OFFSET(0)].name = 'contile_click', 'click', 'impression') AS event_type,
   FROM
-    `moz-fx-dat-shared-prod.org_mozilla_firefox.topsites_impression`
+    `moz-fx-data-shared-prod.org_mozilla_firefox.topsites_impression`
   UNION ALL
   SELECT
     metrics.uuid.top_sites_context_id AS context_id,

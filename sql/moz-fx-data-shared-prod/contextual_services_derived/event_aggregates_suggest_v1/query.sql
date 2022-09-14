@@ -18,7 +18,7 @@ WITH combined AS (
     ) AS suggest_data_sharing_enabled,
     'impression' AS event_type,
   FROM
-    contextual_services.quicksuggest_impression
+    `moz-fx-data-shared-prod.contextual_services.quicksuggest_impression`
   UNION ALL
   SELECT
     context_id,
@@ -39,7 +39,7 @@ WITH combined AS (
     ) AS suggest_data_sharing_enabled,
     'click' AS event_type,
   FROM
-    contextual_services.quicksuggest_click
+    `moz-fx-data-shared-prod.contextual_services.quicksuggest_click`
 ),
 with_event_count AS (
   SELECT

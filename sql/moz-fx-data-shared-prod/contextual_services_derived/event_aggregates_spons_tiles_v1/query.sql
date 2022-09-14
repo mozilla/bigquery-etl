@@ -11,7 +11,7 @@ WITH combined AS (
     IF(reporting_url IS NULL, 'remote settings', 'contile') AS provider,
     'impression' AS event_type,
   FROM
-    contextual_services.topsites_impression
+    `moz-fx-data-shared-prod.contextual_services.topsites_impression`
   UNION ALL
   SELECT
     context_id,
@@ -25,7 +25,7 @@ WITH combined AS (
     IF(reporting_url IS NULL, 'remote settings', 'contile') AS provider,
     'click' AS event_type,
   FROM
-    contextual_services.topsites_click
+    `moz-fx-data-shared-prod.contextual_services.quicksuggest_impression`
   UNION ALL
   SELECT
     metrics.uuid.top_sites_context_id AS context_id,
@@ -44,7 +44,7 @@ WITH combined AS (
     'contile' AS provider,
     IF(events[SAFE_OFFSET(0)].name = 'contile_click', 'click', 'impression') AS event_type,
   FROM
-    org_mozilla_firefox.topsites_impression
+    `moz-fx-dat-shared-prod.org_mozilla_firefox.topsites_impression`
   UNION ALL
   SELECT
     metrics.uuid.top_sites_context_id AS context_id,
@@ -61,7 +61,7 @@ WITH combined AS (
     'contile' AS provider,
     IF(events[SAFE_OFFSET(0)].name = 'contile_click', 'click', 'impression') AS event_type,
   FROM
-    org_mozilla_firefox_beta.topsites_impression
+    `moz-fx-data-shared-prod.org_mozilla_firefox_beta.topsites_impression`
   UNION ALL
   SELECT
     metrics.uuid.top_sites_context_id AS context_id,
@@ -78,7 +78,7 @@ WITH combined AS (
     'contile' AS provider,
     IF(events[SAFE_OFFSET(0)].name = 'contile_click', 'click', 'impression') AS event_type,
   FROM
-    org_mozilla_fenix.topsites_impression
+    `moz-fx-data-shared-prod.org_mozilla_fenix.topsites_impression`
   UNION ALL
   SELECT
     -- Due to the renaming (from 'topsite' to 'topsites'), some legacy Firefox
@@ -104,7 +104,7 @@ WITH combined AS (
     'contile' AS provider,
     IF(events[SAFE_OFFSET(0)].name = 'contile_click', 'click', 'impression') AS event_type,
   FROM
-    org_mozilla_ios_firefox.topsites_impression
+    `moz-fx-data-shared-prod.org_mozilla_ios_firefox.topsites_impression`
   UNION ALL
   SELECT
     -- Due to the renaming (from 'topsite' to 'topsites'), some legacy Firefox
@@ -130,7 +130,7 @@ WITH combined AS (
     'contile' AS provider,
     IF(events[SAFE_OFFSET(0)].name = 'contile_click', 'click', 'impression') AS event_type,
   FROM
-    org_mozilla_ios_firefoxbeta.topsites_impression
+    `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.topsites_impression`
 ),
 with_event_count AS (
   SELECT

@@ -4,7 +4,7 @@ WITH combined AS (
     DATE(submission_timestamp) AS submission_date,
     'desktop' AS form_factor,
     normalized_country_code AS country,
-    advertiser,
+    LOWER(advertiser) AS advertiser,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     release_channel,
     position,
@@ -18,7 +18,7 @@ WITH combined AS (
     DATE(submission_timestamp) AS submission_date,
     'desktop' AS form_factor,
     normalized_country_code AS country,
-    advertiser,
+    LOWER(advertiser) AS advertiser,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     release_channel,
     position,
@@ -34,7 +34,7 @@ WITH combined AS (
     -- we are currently always using "phone" for Fenix, so stay consistent with that here.
     'phone' AS form_factor,
     normalized_country_code AS country,
-    metrics.string.top_sites_contile_advertiser AS advertiser,
+    LOWER(metrics.string.top_sites_contile_advertiser) AS advertiser,
     normalized_os,
     'release' AS release_channel,
     SAFE_CAST(
@@ -51,7 +51,7 @@ WITH combined AS (
     DATE(submission_timestamp) AS submission_date,
     'phone' AS form_factor,
     normalized_country_code AS country,
-    metrics.string.top_sites_contile_advertiser AS advertiser,
+    LOWER(metrics.string.top_sites_contile_advertiser) AS advertiser,
     normalized_os,
     'beta' AS release_channel,
     SAFE_CAST(
@@ -68,7 +68,7 @@ WITH combined AS (
     DATE(submission_timestamp) AS submission_date,
     'phone' AS form_factor,
     normalized_country_code AS country,
-    metrics.string.top_sites_contile_advertiser AS advertiser,
+    LOWER(metrics.string.top_sites_contile_advertiser) AS advertiser,
     normalized_os,
     'nightly' AS release_channel,
     SAFE_CAST(
@@ -90,8 +90,8 @@ WITH combined AS (
     'phone' AS form_factor,
     normalized_country_code AS country,
     IFNULL(
-      metrics.string.top_sites_contile_advertiser,
-      metrics.string.top_site_contile_advertiser
+      LOWER(metrics.string.top_sites_contile_advertiser),
+      LOWER(metrics.string.top_site_contile_advertiser)
     ) AS advertiser,
     -- This is now hardcoded, we can use the derived `normalized_os` once
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1773722 is fixed
@@ -116,8 +116,8 @@ WITH combined AS (
     'phone' AS form_factor,
     normalized_country_code AS country,
     IFNULL(
-      metrics.string.top_sites_contile_advertiser,
-      metrics.string.top_site_contile_advertiser
+      LOWER(metrics.string.top_sites_contile_advertiser),
+      LOWER(metrics.string.top_site_contile_advertiser)
     ) AS advertiser,
     -- This is now hardcoded, we can use the derived `normalized_os` once
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1773722 is fixed

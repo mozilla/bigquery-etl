@@ -30,7 +30,7 @@ WITH histogram AS (
 --
 extracted AS (
   SELECT
-    histogram_count(h) AS hcount
+    hist.count(h) AS hcount
   FROM
     histogram
   CROSS JOIN

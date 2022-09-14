@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  contextual_services_derived.event_aggregates_spons_tiles_v1
+  `moz-fx-data-shared-prod.contextual_services_derived.event_aggregates_spons_tiles_v1`
 PARTITION BY
   submission_date
 OPTIONS

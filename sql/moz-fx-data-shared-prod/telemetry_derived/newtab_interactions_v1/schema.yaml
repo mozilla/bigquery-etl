@@ -103,7 +103,7 @@ fields:
   type: INTEGER
 - mode: NULLABLE
   name: pocket_story_position
-  type: STRING
+  type: INTEGER
 - mode: NULLABLE
   name: pocket_enabled
   type: BOOLEAN
@@ -134,3 +134,21 @@ fields:
 - mode: NULLABLE
   name: organic_pocket_saves
   type: INTEGER
+- mode: NULLABLE
+  name: pocket_is_signed_in
+  type: BOOLEAN
+- mode: NULLABLE
+  name: pocket_sponsored_stories_enabled
+  type: BOOLEAN
+- mode: NULLABLE
+  name: topsites_enabled
+  type: BOOLEAN
+- mode: NULLABLE
+  name: newtab_homepage_category
+  type: STRING
+- mode: NULLABLE
+  name: newtab_newtab_category
+  type: STRING
+- mode: NULLABLE
+  name: newtab_search_enabled
+  type: BOOLEAN

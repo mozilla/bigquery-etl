@@ -18,7 +18,7 @@ WITH events_unnested AS (
     `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1`,
     UNNEST(events)
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = DATE('2022-09-12')
     AND category IN ('newtab', 'topsites', 'newtab.search', 'newtab.search.ad', 'pocket')
     AND name IN ('closed', 'opened', 'impression', 'issued', 'click', 'save', 'topic_click')
 ),
@@ -92,7 +92,7 @@ categorized_events AS (
     AND mozfun.map.get_key(event_details, "is_sponsored") != "true" AS is_organic_pocket_save,
     IF(event_name = "opened", event_timestamp, NULL) AS newtab_visit_started_at,
     IF(event_name = "closed", event_timestamp, NULL) AS newtab_visit_ended_at,
-        -- Client/Session-unique attributes
+        -- Client/Visit-unique attributes
     normalized_os,
     normalized_os_version,
     normalized_country_code,
@@ -101,16 +101,22 @@ categorized_events AS (
     mozfun.map.get_key(event_details, "source") AS newtab_open_source,
     metrics.string.search_engine_private_engine_id AS default_search_engine,
     metrics.string.search_engine_default_engine_id AS default_private_search_engine,
+    metrics.boolean.pocket_is_signed_in,
     metrics.boolean.pocket_enabled,
+    metrics.boolean.pocket_sponsored_stories_enabled,
+    metrics.boolean.topsites_enabled,
+    metrics.string.newtab_homepage_category,
+    metrics.string.newtab_newtab_category,
+    metrics.boolean.newtab_search_enabled,
     ping_info.experiments,
         -- ??? private_browsing_mode
-        -- Partially unique session attributes
+        -- Partially unique visit attributes
     mozfun.map.get_key(event_details, "telemetry_id") AS search_engine,
     mozfun.map.get_key(event_details, "search_access_point") AS search_access_point,
-    mozfun.map.get_key(
+    SAFE_CAST(mozfun.map.get_key(
       event_details,
       "position"
-    ) AS pocket_story_position, -- Note potential name-collision here with topsite position
+    ) AS INT64) AS pocket_story_position, -- Note potential name-collision here with topsite position
         -- ??? topsite_advertiser_id
         -- ??? topsite_position
     submission_date
@@ -136,7 +142,13 @@ SELECT
   ANY_VALUE(app_display_version) AS browser_version,
   "Firefox Desktop" AS browser_name,
   ANY_VALUE(newtab_open_source) AS newtab_open_source,
+  ANY_VALUE(pocket_is_signed_in) as pocket_is_signed_in,
   ANY_VALUE(pocket_enabled) AS pocket_enabled,
+  ANY_VALUE(pocket_sponsored_stories_enabled) as pocket_sponsored_stories_enabled,
+  ANY_VALUE(topsites_enabled) as topsites_enabled,
+  ANY_VALUE(newtab_homepage_category) as newtab_homepage_category,
+  ANY_VALUE(newtab_newtab_category) as newtab_newtab_category,
+  ANY_VALUE(newtab_search_enabled) as newtab_search_enabled,
   MIN(newtab_visit_started_at) AS newtab_visit_started_at,
   MIN(newtab_visit_ended_at) AS newtab_visit_ended_at,
       -- Topsites

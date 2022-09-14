@@ -1193,9 +1193,9 @@ six==1.16.0 \
     #   pyjnius
     #   python-dateutil
     #   virtualenv
-smart-open==6.1.0 \
-    --hash=sha256:1a5315659844085a1ba7ec40d080c1d084ba8535ec113160d692fe8a0e032417 \
-    --hash=sha256:c8fd9e9f90f0e285f1346481b0ae0fb57bd04b1138826c5e826ee98b2029d7f3
+smart-open==6.2.0 \
+    --hash=sha256:088bf00f9327c71e549bc2f86567d3320df5d89667f009ce1c16568976068ef7 \
+    --hash=sha256:1b4df5c8365218f3852c507451920ccad606c80b0acb4e67508e50ba9b5d2632
     # via -r requirements.in
 smmap==5.0.0 \
     --hash=sha256:2aba19d6a040e78d8b09de5c57e96207b09ed71d8e55ce0959eeee6c8e190d94 \

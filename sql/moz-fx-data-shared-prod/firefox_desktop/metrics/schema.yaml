@@ -771,6 +771,20 @@ fields:
       mode: REPEATED
       name: pdfjs_editing
       type: RECORD
+    - description: 'Counts the number of times some actions are executed in the PDF
+        viewer.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: pdfjs_buttons
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

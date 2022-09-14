@@ -20044,6 +20044,18 @@ fields:
       mode: NULLABLE
       name: ssl_handshake_privacy
       type: STRING
+    - description: Time spent gathering memory telemetry in milliseconds
+      mode: NULLABLE
+      name: memory_collection_time
+      type: STRING
+    - description: Whether a document called Scheduler.postTask
+      mode: NULLABLE
+      name: use_counter2_scheduler_posttask_document
+      type: STRING
+    - description: Whether a page called Scheduler.postTask
+      mode: NULLABLE
+      name: use_counter2_scheduler_posttask_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -41342,6 +41354,18 @@ fields:
           mode: NULLABLE
           name: use_counter2_privatebrowsingnavigatorserviceworker_page
           type: STRING
+        - description: Time spent gathering memory telemetry in milliseconds
+          mode: NULLABLE
+          name: memory_collection_time
+          type: STRING
+        - description: Whether a document called Scheduler.postTask
+          mode: NULLABLE
+          name: use_counter2_scheduler_posttask_document
+          type: STRING
+        - description: Whether a page called Scheduler.postTask
+          mode: NULLABLE
+          name: use_counter2_scheduler_posttask_page
+          type: STRING
         mode: NULLABLE
         name: histograms
         type: RECORD
@@ -44902,6 +44926,10 @@ fields:
             for frames with no shader compilation.
           mode: NULLABLE
           name: wr_renderer_time_no_sc_ms
+          type: STRING
+        - description: Time spent gathering memory telemetry in milliseconds
+          mode: NULLABLE
+          name: memory_collection_time
           type: STRING
         mode: NULLABLE
         name: histograms
@@ -48522,6 +48550,21 @@ fields:
             type: INTEGER
           mode: REPEATED
           name: urlbar_picked_quickaction
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'Counts how many times quickaction results were selected.
+              The key is the in the form "actionkey-N" where N is the number of characters
+              the user typed to be shown the action.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: quickaction_picked
           type: RECORD
         mode: NULLABLE
         name: keyed_scalars

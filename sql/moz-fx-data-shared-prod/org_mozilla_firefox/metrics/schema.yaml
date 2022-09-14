@@ -7119,6 +7119,42 @@ fields:
       mode: NULLABLE
       name: wr_renderer_time_no_sc
       type: RECORD
+    - description: Time taken to execute `run_maintenance()`
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: places_manager_run_maintenance_time
+      type: RECORD
     mode: NULLABLE
     name: timing_distribution
     type: RECORD
@@ -7320,6 +7356,26 @@ fields:
         type: RECORD
       mode: NULLABLE
       name: fog_ipc_buffer_sizes
+      type: RECORD
+    - description: 'Size of the db after executing `run_maintenance()`
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: places_manager_db_size_after_maintenance
       type: RECORD
     mode: NULLABLE
     name: memory_distribution

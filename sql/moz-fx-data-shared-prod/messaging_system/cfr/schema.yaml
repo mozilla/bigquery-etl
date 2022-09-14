@@ -210,3 +210,7 @@ fields:
   mode: REPEATED
   name: experiments
   type: RECORD
+- description: 'Added to reduce validation exceptions: see #1787882'
+  mode: NULLABLE
+  name: source
+  type: STRING

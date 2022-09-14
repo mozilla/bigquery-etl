@@ -8,15 +8,7 @@ WITH combined AS (
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     release_channel,
     position,
-    CASE
-    WHEN
-      request_id IS NULL
-    THEN
-      'remote settings'
-    ELSE
-      'merino'
-    END
-    AS provider,
+    IF(request_id IS NULL, 'remote settings', 'merino') AS provider,
     match_type,
     (
       -- The first check is for Fx 103+, the last two checks are for Fx 102 and prior.
@@ -37,15 +29,7 @@ WITH combined AS (
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     release_channel,
     position,
-    CASE
-    WHEN
-      request_id IS NULL
-    THEN
-      'remote settings'
-    ELSE
-      'merino'
-    END
-    AS provider,
+    IF(request_id IS NULL, 'remote settings', 'merino') AS provider,
     match_type,
     (
       -- The first check is for Fx 103+, the last two checks are for Fx 102 and prior.

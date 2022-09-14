@@ -8,15 +8,7 @@ WITH combined AS (
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     release_channel,
     position,
-    CASE
-    WHEN
-      reporting_url IS NULL
-    THEN
-      'remote settings'
-    ELSE
-      'contile'
-    END
-    AS provider,
+    IF(reporting_url IS NULL, 'remote settings', 'contile') AS provider,
     'impression' AS event_type,
   FROM
     contextual_services.topsites_impression
@@ -30,15 +22,7 @@ WITH combined AS (
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     release_channel,
     position,
-    CASE
-    WHEN
-      reporting_url IS NULL
-    THEN
-      'remote settings'
-    ELSE
-      'contile'
-    END
-    AS provider,
+    IF(reporting_url IS NULL, 'remote settings', 'contile') AS provider,
     'click' AS event_type,
   FROM
     contextual_services.topsites_click

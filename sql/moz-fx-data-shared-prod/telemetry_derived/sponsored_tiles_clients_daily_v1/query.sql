@@ -45,11 +45,12 @@ desktop_events_2 AS (
     COUNTIF(
       event = 'BLOCK'
       AND value LIKE '%spoc%'
-      AND value LIKE '%card_type%'
+      AND source = 'TOP_SITES'
     ) AS sponsored_tiles_dismissal_count,
     COUNTIF(
       event = 'PREF_CHANGED'
       AND source = 'SPONSORED_TOP_SITES'
+      AND value LIKE '%false%'
     ) AS sponsored_tiles_disable_count
   FROM
     `mozdata.activity_stream.events`

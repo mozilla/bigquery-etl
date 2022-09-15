@@ -1,5 +1,8 @@
 fields:
 - mode: NULLABLE
+  name: submission_date
+  type: DATE
+- mode: NULLABLE
   name: device
   type: STRING
 - mode: NULLABLE

@@ -189,6 +189,7 @@ android_clients AS (
 -- merge on measures by client
 -- desktop
 SELECT
+  @submission_date AS submission_date,
   "desktop" AS device,
   os,
   client_id,
@@ -218,6 +219,7 @@ USING
 UNION ALL
 -- ios
 SELECT
+  @submission_date AS submission_date,
   "mobile" AS device,
   "iOS" AS os,
   client_id,
@@ -255,6 +257,7 @@ USING
   (submission_date, client_id)
 UNION ALL
 SELECT
+  @submission_date AS submission_date,
   "mobile" AS device,
   "Android" AS os,
   client_id,

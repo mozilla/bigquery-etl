@@ -1,26 +1,17 @@
-WITH query_logs AS (
+WITH terminal_queries AS (
   SELECT
-    DATE(timestamp) AS merino_date,
-    jsonPayload.fields.*
+    array_reverse(ARRAY_AGG(sanitized ORDER BY sequence_no, timestamp ASC))[SAFE_OFFSET(0)].*
   FROM
-    `suggest-searches-prod-a30f.logs.stdout`
+    `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3` sanitized
   WHERE
-    jsonPayload.type = "web.suggest.request"
-    AND jsonPayload.fields.session_id IS NOT NULL
-    AND DATE(timestamp) = @submission_date
-),
-terminal_queries AS (
-  SELECT
-    array_agg(ql ORDER BY sequence_no DESC LIMIT 1)[offset(0)].*
-  FROM
-    query_logs ql
+    date(timestamp) = @submission_date
   GROUP BY
-    ql.session_id
+    sanitized.session_id
 )
 SELECT
-  merino_date,
-  query AS search_term,
-  count(*) search_sessions
+  date(timestamp) AS submission_date,
+  query,
+  count(*) AS search_sessions
 FROM
   terminal_queries
 GROUP BY

@@ -133,7 +133,8 @@ SKIP = {
         "sql/moz-fx-data-shared-prod/contextual_services/**/*.sql", recursive=True
     ),
     *glob.glob(
-        "sql/moz-fx-data-shared-prod/contextual_services_derived/**/*.sql", recursive=True
+        "sql/moz-fx-data-shared-prod/contextual_services_derived/**/*.sql",
+        recursive=True,
     ),
     *glob.glob(
         "sql/moz-fx-data-shared-prod/**/topsites_impression/view.sql", recursive=True

@@ -2,7 +2,12 @@ friendly_name: Search Terms Daily
 description: |-
   Daily count of terminal search terms collected by Merino.
 owners:
-- example@mozilla.com
+  - ctroy@mozilla.com
+  - rburwei@mozilla.com
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:search-terms/aggregated
 labels:
   incremental: true
 bigquery:

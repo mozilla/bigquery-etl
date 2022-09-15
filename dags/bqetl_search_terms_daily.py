@@ -96,10 +96,9 @@ with DAG(
         destination_table="search_terms_daily_v1",
         dataset_id="search_terms_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="example@mozilla.com",
+        owner="ctroy@mozilla.com",
         email=[
             "ctroy@mozilla.com",
-            "example@mozilla.com",
             "rburwei@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",

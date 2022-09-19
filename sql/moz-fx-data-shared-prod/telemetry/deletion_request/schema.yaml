@@ -4,9 +4,49 @@ fields:
   mode: NULLABLE
   name: additional_properties
   type: STRING
+- fields:
+  - mode: NULLABLE
+    name: architecture
+    type: STRING
+  - mode: NULLABLE
+    name: build_id
+    type: STRING
+  - mode: NULLABLE
+    name: channel
+    type: STRING
+  - mode: NULLABLE
+    name: display_version
+    type: STRING
+  - mode: NULLABLE
+    name: name
+    type: STRING
+  - mode: NULLABLE
+    name: platform_version
+    type: STRING
+  - mode: NULLABLE
+    name: vendor
+    type: STRING
+  - mode: NULLABLE
+    name: version
+    type: STRING
+  - mode: NULLABLE
+    name: xpcom_abi
+    type: STRING
+  mode: NULLABLE
+  name: application
+  type: RECORD
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+- mode: NULLABLE
+  name: creation_date
+  type: STRING
 - description: The document ID specified in the URI when the client sent this message
   mode: NULLABLE
   name: document_id
+  type: STRING
+- mode: NULLABLE
+  name: id
   type: STRING
 - fields:
   - description: Results of a geographic lookup based on the client's IP address
@@ -167,3 +207,89 @@ fields:
   mode: NULLABLE
   name: submission_timestamp
   type: TIMESTAMP
+- mode: NULLABLE
+  name: type
+  type: STRING
+- mode: NULLABLE
+  name: version
+  type: FLOAT
+- fields:
+  - fields:
+    - fields:
+      - fields:
+        - description: 'An identifier used by user interaction pings in Pocket/newtab
+            and Messaging System.
+
+            '
+          mode: NULLABLE
+          name: deletion_request_impression_id
+          type: STRING
+        - description: 'An identifier used by sync ping, to identify the current Firefox
+            profile for a specific Account.
+
+            '
+          mode: NULLABLE
+          name: deletion_request_sync_device_id
+          type: STRING
+        - description: 'An identifier used by the ecosystem ping, to delete all ecosystem
+            metrics collected from this profile if the user opts out of telemetry.
+
+            '
+          mode: NULLABLE
+          name: deletion_request_ecosystem_client_id
+          type: STRING
+        - description: 'An identifier to identify users for Contextual Services user
+            interaction pings.
+
+            '
+          mode: NULLABLE
+          name: deletion_request_context_id
+          type: STRING
+        mode: NULLABLE
+        name: scalars
+        type: RECORD
+      mode: NULLABLE
+      name: parent
+      type: RECORD
+    mode: NULLABLE
+    name: processes
+    type: RECORD
+  - fields:
+    - fields:
+      - description: 'An identifier used by user interaction pings in Pocket/newtab
+          and Messaging System.
+
+          '
+        mode: NULLABLE
+        name: deletion_request_impression_id
+        type: STRING
+      - description: 'An identifier used by sync ping, to identify the current Firefox
+          profile for a specific Account.
+
+          '
+        mode: NULLABLE
+        name: deletion_request_sync_device_id
+        type: STRING
+      - description: 'An identifier used by the ecosystem ping, to delete all ecosystem
+          metrics collected from this profile if the user opts out of telemetry.
+
+          '
+        mode: NULLABLE
+        name: deletion_request_ecosystem_client_id
+        type: STRING
+      - description: 'An identifier to identify users for Contextual Services user
+          interaction pings.
+
+          '
+        mode: NULLABLE
+        name: deletion_request_context_id
+        type: STRING
+      mode: NULLABLE
+      name: parent
+      type: RECORD
+    mode: NULLABLE
+    name: scalars
+    type: RECORD
+  mode: NULLABLE
+  name: payload
+  type: RECORD

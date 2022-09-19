@@ -1,0 +1,26 @@
+friendly_name: Crashes Daily
+description: |-
+  One row per-client, per-day, for those who crashed on that day.
+  Includes a bit of helpful information for analysis, like
+  os, os_version, channel, and country; however this data
+  will be most useful when joined with clients_daily.
+  Clustered on channel and os, since these are common
+  query dimensions.
+owners:
+- frank@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_telemetry_crashes_daily
+  task_name: crashes_daily_v1
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - channel
+    - os
+references: {}

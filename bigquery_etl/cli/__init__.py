@@ -16,9 +16,12 @@ from ..cli.query import query
 from ..cli.routine import mozfun, routine
 from ..cli.view import view
 from ..dependency import dependency
+from ..docs import docs_
 from ..glam.cli import glam
+from ..static import static_
 from ..stripe import stripe_
 from ..subplat.apple import apple
+from ..copy_deduplicate import copy_deduplicate
 
 
 def cli(prog_name=None):
@@ -37,6 +40,9 @@ def cli(prog_name=None):
         "view": view,
         "alchemer": alchemer_,
         "apple": apple,
+        "static": static_,
+        "docs": docs_,
+        "copy_deduplicate": copy_deduplicate,
     }
 
     @click.group(commands=commands)

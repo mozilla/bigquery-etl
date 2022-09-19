@@ -69,6 +69,11 @@ class TaskRef:
     schedule_interval: Optional[str] = attr.ib(None)
     date_partition_offset: Optional[int] = attr.ib(None)
 
+    @property
+    def task_key(self):
+        """Key to uniquely identify the task."""
+        return f"{self.dag_name}.{self.task_id}"
+
     @execution_delta.validator
     def validate_execution_delta(self, attribute, value):
         """Check that execution_delta is in a valid timedelta format."""
@@ -198,6 +203,11 @@ class Task:
     gke_location: Optional[str] = attr.ib(None)
     gke_cluster_name: Optional[str] = attr.ib(None)
     query_project: Optional[str] = attr.ib(None)
+
+    @property
+    def task_key(self):
+        """Key to uniquely identify the task."""
+        return f"{self.dag_name}.{self.task_name}"
 
     @owner.validator
     def validate_owner(self, attribute, value):
@@ -382,7 +392,7 @@ class Task:
 
     def _get_referenced_tables(self):
         """Use zetasql to get tables the query depends on."""
-        logging.info(f"Get dependencies for {self.task_name}")
+        logging.info(f"Get dependencies for {self.task_key}")
 
         if self.is_python_script:
             # cannot do dry runs for python scripts
@@ -407,28 +417,33 @@ class Task:
         return self.referenced_tables
 
     def with_upstream_dependencies(self, dag_collection):
-        """Perfom a dry_run to get upstream dependencies."""
+        """Perform a dry_run to get upstream dependencies."""
+        if self.upstream_dependencies:
+            return
+
         dependencies = []
 
-        def _duplicate_dependency(task):
+        def _duplicate_dependency(task_ref):
             return any(
-                d.dag_name == task.dag_name and d.task_id == task.task_id
-                for d in self.depends_on + dependencies
+                d.task_key == task_ref.task_key for d in self.depends_on + dependencies
             )
 
         for table in self._get_referenced_tables():
             upstream_task = dag_collection.task_for_table(table[0], table[1], table[2])
 
             if upstream_task is not None:
-                task = upstream_task.to_ref(dag_collection)
-                if not _duplicate_dependency(task):
-                    dependencies.append(task)
+                task_ref = upstream_task.to_ref(dag_collection)
+                if upstream_task != self and not _duplicate_dependency(task_ref):
+                    # Get its upstream dependencies so its date_partition_offset gets set.
+                    upstream_task.with_upstream_dependencies(dag_collection)
+                    task_ref = upstream_task.to_ref(dag_collection)
+                    dependencies.append(task_ref)
             else:
                 # see if there are some static dependencies
-                for task, patterns in EXTERNAL_TASKS.items():
+                for task_ref, patterns in EXTERNAL_TASKS.items():
                     if any(fnmatchcase(f"{table[1]}.{table[2]}", p) for p in patterns):
-                        if not _duplicate_dependency(task):
-                            dependencies.append(task)
+                        if not _duplicate_dependency(task_ref):
+                            dependencies.append(task_ref)
                         break  # stop after the first match
 
         if (
@@ -445,16 +460,23 @@ class Task:
 
             if len(date_partition_offsets) > 0:
                 self.date_partition_offset = min(date_partition_offsets)
+                date_partition_offset_task_keys = [
+                    dependency.task_key
+                    for dependency in dependencies
+                    if dependency.date_partition_offset == self.date_partition_offset
+                ]
+                logging.info(
+                    f"Set {self.task_key} date partition offset"
+                    f" to {self.date_partition_offset}"
+                    f" based on {', '.join(date_partition_offset_task_keys)}."
+                )
 
         self.upstream_dependencies = dependencies
 
     def with_downstream_dependencies(self, dag_collection):
         """Get downstream tasks by looking up upstream dependencies in DAG collection."""
-        task_ref = self.to_ref(dag_collection)
-        external_downstream_tasks = dag_collection.downstream_tasks.get(task_ref, [])
-        downstream_dependencies = [
-            task.to_ref(dag_collection)
-            for task in external_downstream_tasks
-            if task.dag_name != self.dag_name
+        self.downstream_dependencies = [
+            task_ref
+            for task_ref in dag_collection.get_task_downstream_dependencies(self)
+            if task_ref.dag_name != self.dag_name
         ]
-        self.downstream_dependencies = downstream_dependencies

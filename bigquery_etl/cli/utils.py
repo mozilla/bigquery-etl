@@ -1,20 +1,25 @@
 """Utility functions used by the CLI."""
 
-import os
 import fnmatch
+import os
+import re
 from fnmatch import fnmatchcase
 from pathlib import Path
 
 import click
-import re
+from google.auth.exceptions import DefaultCredentialsError
 from google.cloud import bigquery
 
-from bigquery_etl.util.common import project_dirs
+from bigquery_etl.util.common import TempDatasetReference, project_dirs
 
 QUERY_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
     r"(?:query\.sql|part1\.sql|script\.sql|query\.py|view\.sql)$"
 )
+TEST_PROJECT = "bigquery-etl-integration-test"
+MOZDATA = "mozdata"
+PIONEER_NONPROD = "moz-fx-data-pioneer-nonprod"
+PIONEER_PROD = "moz-fx-data-pioneer-prod"
 
 
 def is_valid_dir(ctx, param, value):
@@ -31,27 +36,40 @@ def is_valid_file(ctx, param, value):
     return value
 
 
-def is_authenticated(project_id=None):
-    """Check if the user is authenticated to GCP and can access the project."""
-    client = bigquery.Client()
-
-    if project_id:
-        return client.project == project_id
-
+def is_authenticated():
+    """Check if the user is authenticated to GCP."""
+    try:
+        bigquery.Client(project="")
+    except DefaultCredentialsError:
+        return False
     return True
 
 
 def is_valid_project(ctx, param, value):
     """Check if the provided project_id corresponds to an existing project."""
-    if value is None or value in [Path(p).name for p in project_dirs()]:
+    if value is None or value in [Path(p).name for p in project_dirs()] + [
+        TEST_PROJECT,
+        MOZDATA,
+        PIONEER_NONPROD,
+        PIONEER_PROD,
+    ]:
         return value
     raise click.BadParameter(f"Invalid project {value}")
 
 
 def table_matches_patterns(pattern, invert, table):
     """Check if tables match pattern."""
-    pattern = re.compile(fnmatch.translate(pattern))
-    return (pattern.match(table) is not None) != invert
+    if not isinstance(pattern, list):
+        pattern = [pattern]
+
+    matching = False
+    for p in pattern:
+        compiled_pattern = re.compile(fnmatch.translate(p))
+        if compiled_pattern.match(table) is not None:
+            matching = True
+            break
+
+    return matching != invert
 
 
 def paths_matching_name_pattern(pattern, sql_path, project_id, files=("*.sql")):
@@ -66,8 +84,7 @@ def paths_matching_name_pattern(pattern, sql_path, project_id, files=("*.sql")):
             for file in files:
                 matching_files.extend(Path(root).rglob(file))
     elif os.path.isfile(pattern):
-        for file in files:
-            matching_files.extend(Path(sql_path).rglob(file))
+        matching_files.append(Path(pattern))
     else:
         sql_path = Path(sql_path)
         if project_id is not None:
@@ -146,4 +163,18 @@ def respect_dryrun_skip_option(default=True):
         help="Respect or ignore dry run SKIP configuration. "
         f"Default is {flags[default]}.",
         default=default,
+    )
+
+
+def temp_dataset_option(default="moz-fx-data-shared-prod.tmp"):
+    """Generate a temp-dataset option."""
+    return click.option(
+        "--temp-dataset",
+        "--temp_dataset",
+        "--temporary-dataset",
+        "--temporary_dataset",
+        default="moz-fx-data-shared-prod.tmp",
+        type=TempDatasetReference.from_string,
+        help="Dataset where intermediate query results will be temporarily stored, "
+        "formatted as PROJECT_ID.DATASET_ID",
     )

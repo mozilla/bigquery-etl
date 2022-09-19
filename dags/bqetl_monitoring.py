@@ -111,7 +111,7 @@ with DAG(
             "python",
             "sql/moz-fx-data-shared-prod/monitoring_derived/stable_and_derived_table_sizes_v1/query.py",
         ]
-        + ["--date", "{{ ds }}"],
+        + ["--date", "{{ macros.ds_add(ds, -1) }}"],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com"],

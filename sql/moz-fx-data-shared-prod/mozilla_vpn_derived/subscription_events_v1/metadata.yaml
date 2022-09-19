@@ -8,6 +8,7 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_subplat
-  # delay aggregates by 7 days, to ensure data is complete
-  date_partition_offset: -7
+  # Delay aggregates by 8 days, to ensure data is complete. Upstream tables are
+  # delayed 7 days, and this needs an additional day of delay for cancel events.
+  date_partition_offset: -8
   date_partition_parameter: date

@@ -15,7 +15,7 @@ import yaml
 
 from ..cli.format import format
 from ..cli.utils import is_authenticated, is_valid_dir, is_valid_project
-from ..docs import validate_docs
+from ..docs import validate as validate_docs
 from ..format_sql.formatter import reformat
 from ..routine import publish_routines
 from ..routine.parse_routine import PROCEDURE_FILE, UDF_FILE
@@ -370,7 +370,7 @@ def validate(ctx, name, sql_dir, project_id, docs_only):
 
     routine_files = _routines_matching_name_pattern(name, sql_dir, project_id)
 
-    validate_docs.validate(project_dirs(project_id))
+    ctx.invoke(validate_docs, project_dirs=project_dirs(project_id))
 
     if not docs_only:
         for routine_file in routine_files:
@@ -432,7 +432,7 @@ def publish(ctx, path, project_id, dependency_dir, gcs_bucket, gcs_path):
 
     public = False
 
-    if not is_authenticated(project_id):
+    if not is_authenticated():
         click.echo("User needs to be authenticated to publish routines.", err=True)
         sys.exit(1)
 

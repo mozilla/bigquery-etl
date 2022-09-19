@@ -639,9 +639,9 @@ mkdocs-awesome-pages-plugin==2.8.0 \
     --hash=sha256:6b21ad4f41aecbe89e3a9a51f8837892cc7ce8ca0f9f4e0a355d56159ace3d68 \
     --hash=sha256:af7e327e14b2eea3b2735c37428e33a528ecd2d9ae2296dc0f1632f0f3bc28f7
     # via -r requirements.in
-mkdocs-material==8.4.0 \
-    --hash=sha256:6c0a6e6cda8b43956e0c562374588160af8110584a1444f422b1cfd91930f9c7 \
-    --hash=sha256:ef6641e1910d4f217873ac376b4594f3157dca3949901b88b4991ba8e5477577
+mkdocs-material==8.5.2 \
+    --hash=sha256:16ca1304a93b085e5dfb0dbcc681b74dad1587d8ba727c89c8fd4259dd8fe004 \
+    --hash=sha256:1962099d8c6eb7571896a0e7fdc52ff4fda1e906969d0e42ae3537418e807868
     # via -r requirements.in
 mkdocs-material-extensions==1.0.3 \
     --hash=sha256:a82b70e533ce060b2a5d9eb2bc2e1be201cf61f901f93704b4acf6e3d5983a44 \
@@ -1170,6 +1170,7 @@ requests==2.28.0 \
     #   google-api-core
     #   google-cloud-bigquery
     #   google-cloud-storage
+    #   mkdocs-material
     #   mozilla-schema-generator
     #   requests-oauthlib
     #   stripe

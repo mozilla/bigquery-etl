@@ -32,10 +32,6 @@ fields:
     mode: NULLABLE
     name: architecture
     type: STRING
-  - description: The date & time the application was built
-    mode: NULLABLE
-    name: build_date
-    type: STRING
   - description: A UUID uniquely identifying the client.
     mode: NULLABLE
     name: client_id
@@ -74,6 +70,10 @@ fields:
   - description: The version of the Glean SDK
     mode: NULLABLE
     name: telemetry_sdk_build
+    type: STRING
+  - description: The date & time the application was built
+    mode: NULLABLE
+    name: build_date
     type: STRING
   mode: NULLABLE
   name: client_info
@@ -145,14 +145,6 @@ fields:
       mode: NULLABLE
       name: x_debug_id
       type: STRING
-    - description: X-Foxsec-IP-Reputation header
-      mode: NULLABLE
-      name: x_foxsec_ip_reputation
-      type: STRING
-    - description: X-LB-Tags HTTP header
-      mode: NULLABLE
-      name: x_lb_tags
-      type: STRING
     - description: X-PingSender-Version HTTP header
       mode: NULLABLE
       name: x_pingsender_version
@@ -164,6 +156,14 @@ fields:
     - description: X-Telemetry-Agent HTTP header
       mode: NULLABLE
       name: x_telemetry_agent
+      type: STRING
+    - description: X-Foxsec-IP-Reputation header
+      mode: NULLABLE
+      name: x_foxsec_ip_reputation
+      type: STRING
+    - description: X-LB-Tags HTTP header
+      mode: NULLABLE
+      name: x_lb_tags
       type: STRING
     - mode: NULLABLE
       name: parsed_date
@@ -220,6 +220,46 @@ fields:
   name: metadata
   type: RECORD
 - fields:
+  - fields:
+    - description: 'Records the number of batches needed to upload all outgoing records.
+        The Sync server has a hard limit on the number of records (and request body
+        bytes) on the number of records that can fit into a single batch, and large
+        syncs may require multiple batches.
+
+        '
+      mode: NULLABLE
+      name: tabs_sync_outgoing_batches
+      type: INTEGER
+    mode: NULLABLE
+    name: counter
+    type: RECORD
+  - fields:
+    - description: 'Records when the tabs sync finished. This includes the time to
+        download, apply, and upload all records.
+
+        '
+      mode: NULLABLE
+      name: tabs_sync_finished_at
+      type: STRING
+    - description: 'Records when the tabs sync started.
+
+        '
+      mode: NULLABLE
+      name: tabs_sync_started_at
+      type: STRING
+    mode: NULLABLE
+    name: datetime
+    type: RECORD
+  - fields:
+    - mode: NULLABLE
+      name: key
+      type: STRING
+    - mode: NULLABLE
+      name: value
+      type: STRING
+    mode: REPEATED
+    name: jwe
+    type: RECORD
   - fields:
     - description: 'Counts the number of times a metric was set with an invalid label.
 
@@ -281,7 +321,10 @@ fields:
       mode: REPEATED
       name: glean_error_invalid_value
       type: RECORD
-    - description: 'Records why the passwords sync failed.
+    - description: 'Records incoming tabs record counts. `applied` is the number of
+        incoming records that were successfully stored or updated in the local database.
+        `failed_to_apply` is the number of records that were ignored due to errors.
+        `reconciled` is the number of merged records.
 
         '
       fields:
@@ -292,26 +335,9 @@ fields:
         name: value
         type: INTEGER
       mode: REPEATED
-      name: logins_sync_failure_reason
+      name: tabs_sync_incoming
       type: RECORD
-    - description: 'Records incoming passwords record counts. `applied` is the number
-        of incoming passwords entries that were successfully stored or updated in
-        the local database. `failed_to_apply` is the number of entries that were ignored
-        due to errors. `reconciled` is the number of entries with changes both locally
-        and remotely that were merged.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: logins_sync_incoming
-      type: RECORD
-    - description: 'Records outgoing passwords record counts. `uploaded` is the number
+    - description: 'Records outgoing tabs record counts. `uploaded` is the number
         of records that were successfully sent to the server. `failed_to_upload` is
         the number of records that weren''t uploaded, and will be retried on the next
         sync.
@@ -325,34 +351,83 @@ fields:
         name: value
         type: INTEGER
       mode: REPEATED
-      name: logins_sync_outgoing
+      name: tabs_sync_outgoing
       type: RECORD
     mode: NULLABLE
     name: labeled_counter
+    type: RECORD
+  - fields:
+    - mode: NULLABLE
+      name: key
+      type: STRING
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - fields:
+        - mode: NULLABLE
+          name: denominator
+          type: INTEGER
+        - mode: NULLABLE
+          name: numerator
+          type: INTEGER
+        mode: NULLABLE
+        name: value
+        type: RECORD
+      mode: REPEATED
+      name: value
+      type: RECORD
+    mode: REPEATED
+    name: labeled_rate
+    type: RECORD
+  - fields:
+    - description: 'Records why the tabs sync failed: either due to an authentication
+        error, unexpected exception, or other error. The error strings are truncated
+        and sanitized to omit PII, like URLs and file system paths.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: tabs_sync_failure_reason
+      type: RECORD
+    mode: NULLABLE
+    name: labeled_string
     type: RECORD
   - fields:
     - description: 'The user''s hashed Firefox Account ID.
 
         '
       mode: NULLABLE
-      name: logins_sync_uid
+      name: tabs_sync_uid
       type: STRING
     mode: NULLABLE
     name: string
     type: RECORD
   - fields:
-    - description: 'Unique identifier for this sync, used to correlate together individual
-        pings for data types that were synchronized together (history, bookmarks,
-        logins, and tabs). If a data type is synchronized by itself via the legacy
-        ''sync'' API (as opposed to the Sync Manager), then this field will not be
-        set on the corresponding ping.
-
-        '
-      mode: NULLABLE
-      name: sync_sync_uuid
+    - mode: NULLABLE
+      name: key
       type: STRING
-    mode: NULLABLE
-    name: uuid
+    - mode: NULLABLE
+      name: value
+      type: STRING
+    mode: REPEATED
+    name: url
+    type: RECORD
+  - fields:
+    - mode: NULLABLE
+      name: key
+      type: STRING
+    - mode: NULLABLE
+      name: value
+      type: STRING
+    mode: REPEATED
+    name: text
     type: RECORD
   mode: NULLABLE
   name: metrics

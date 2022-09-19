@@ -4,18 +4,9 @@ fields:
   mode: NULLABLE
   name: additional_properties
   type: STRING
-- mode: NULLABLE
-  name: browser
-  type: STRING
-- mode: NULLABLE
-  name: browser_version
-  type: STRING
 - description: The document ID specified in the URI when the client sent this message
   mode: NULLABLE
   name: document_id
-  type: STRING
-- mode: NULLABLE
-  name: domain
   type: STRING
 - fields:
   - description: Results of a geographic lookup based on the client's IP address
@@ -96,6 +87,23 @@ fields:
     mode: NULLABLE
     name: header
     type: RECORD
+  - description: Components of the URI to which this ping was sent
+    fields:
+    - mode: NULLABLE
+      name: app_build_id
+      type: STRING
+    - mode: NULLABLE
+      name: app_name
+      type: STRING
+    - mode: NULLABLE
+      name: app_update_channel
+      type: STRING
+    - mode: NULLABLE
+      name: app_version
+      type: STRING
+    mode: NULLABLE
+    name: uri
+    type: RECORD
   - description: Parsed components of the client's user agent string
     fields:
     - mode: NULLABLE
@@ -150,18 +158,6 @@ fields:
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
-- mode: NULLABLE
-  name: os
-  type: STRING
-- mode: NULLABLE
-  name: os_version
-  type: STRING
-- mode: NULLABLE
-  name: property
-  type: STRING
-- mode: NULLABLE
-  name: request_uri
-  type: STRING
 - description: Hashed version of client_id (if present) useful for partitioning; ranges
     from 0 to 99
   mode: NULLABLE
@@ -171,32 +167,3 @@ fields:
   mode: NULLABLE
   name: submission_timestamp
   type: TIMESTAMP
-- fields:
-  - mode: NULLABLE
-    name: f0_
-    type: INTEGER
-  - mode: NULLABLE
-    name: f1_
-    type: STRING
-  - mode: NULLABLE
-    name: f2_
-    type: STRING
-  - mode: NULLABLE
-    name: f3_
-    type: STRING
-  - mode: NULLABLE
-    name: f4_
-    type: STRING
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: f5_
-    type: RECORD
-  mode: NULLABLE
-  name: event
-  type: RECORD

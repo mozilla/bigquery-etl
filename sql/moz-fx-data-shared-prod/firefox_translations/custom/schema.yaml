@@ -221,6 +221,64 @@ fields:
   type: RECORD
 - fields:
   - fields:
+    - description: 'Marian code related error.
+
+        '
+      mode: NULLABLE
+      name: errors_marian
+      type: INTEGER
+    - description: 'Memory allocation error.
+
+        '
+      mode: NULLABLE
+      name: errors_memory
+      type: INTEGER
+    - description: 'Failed to download a model for a supported language pair.
+
+        '
+      mode: NULLABLE
+      name: errors_model_download
+      type: INTEGER
+    - description: 'The translation procedure has failed.
+
+        '
+      mode: NULLABLE
+      name: errors_translation
+      type: INTEGER
+    - description: 'The user and website languages do not match.
+
+        '
+      mode: NULLABLE
+      name: service_lang_mismatch
+      type: INTEGER
+    - description: 'Language pair of user and website languages is not supported.
+
+        '
+      mode: NULLABLE
+      name: service_not_supported
+      type: INTEGER
+    - description: 'Failed to download translation engine module.
+
+        '
+      mode: NULLABLE
+      name: errors_engine_download
+      type: INTEGER
+    - description: 'Failed to load translation engine wasm module in memory.
+
+        '
+      mode: NULLABLE
+      name: errors_engine_load
+      type: INTEGER
+    - description: 'Failed to load translation model in memory.
+
+        '
+      mode: NULLABLE
+      name: errors_model_load
+      type: INTEGER
+    mode: NULLABLE
+    name: counter
+    type: RECORD
+  - fields:
     - description: 'Counts the number of times a metric was set with an invalid label.
 
         The labels are the `category.name` identifier of the metric.
@@ -281,77 +339,359 @@ fields:
       mode: REPEATED
       name: glean_error_invalid_value
       type: RECORD
-    - description: 'Records why the tabs sync failed.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: rust_tabs_sync_failure_reason
-      type: RECORD
-    - description: 'Records incoming tabs record counts. `applied` is the number of
-        incoming records that were successfully stored or updated in the local database.
-        `failed_to_apply` is the number of records that were ignored due to errors.
-        `reconciled` is the number of merged records.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: rust_tabs_sync_incoming
-      type: RECORD
-    - description: 'Records outgoing tabs record counts. `uploaded` is the number
-        of records that were successfully sent to the server. `failed_to_upload` is
-        the number of records that weren''t uploaded, and will be retried on the next
-        sync.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: rust_tabs_sync_outgoing
-      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD
   - fields:
-    - description: 'The user''s hashed Firefox Account ID.
+    - description: 'Telemetry Environment `system.cpu.cores` metric
 
         '
       mode: NULLABLE
-      name: rust_tabs_sync_uid
+      name: metadata_cpu_cores_count
+      type: INTEGER
+    - description: 'Telemetry Environment `system.cpu.count` metric
+
+        '
+      mode: NULLABLE
+      name: metadata_cpu_count
+      type: INTEGER
+    - description: 'Telemetry Environment `system.cpu.family` metric
+
+        '
+      mode: NULLABLE
+      name: metadata_cpu_family
+      type: INTEGER
+    - description: 'Telemetry Environment `system.cpu.l2cacheKB` metric
+
+        '
+      mode: NULLABLE
+      name: metadata_cpu_l2_cache
+      type: INTEGER
+    - description: 'Telemetry Environment `system.cpu.l3cacheKB` metric
+
+        '
+      mode: NULLABLE
+      name: metadata_cpu_l3_cache
+      type: INTEGER
+    - description: 'Telemetry Environment `system.cpu.model` metric
+
+        '
+      mode: NULLABLE
+      name: metadata_cpu_model
+      type: INTEGER
+    - description: 'Telemetry Environment `system.cpu.speedMHz` metric
+
+        '
+      mode: NULLABLE
+      name: metadata_cpu_speed
+      type: INTEGER
+    - description: 'Telemetry Environment `system.cpu.stepping` metric
+
+        '
+      mode: NULLABLE
+      name: metadata_cpu_stepping
+      type: INTEGER
+    - description: 'Telemetry Environment `system.memoryMB` metric
+
+        '
+      mode: NULLABLE
+      name: metadata_system_memory
+      type: INTEGER
+    - description: 'Speed of the translation from "translation button
+
+        pressed" to "full page is translated".
+
+        '
+      mode: NULLABLE
+      name: performance_full_page_translated_wps
+      type: INTEGER
+    - description: 'Speed of translation as measured by the translation engine.
+
+        '
+      mode: NULLABLE
+      name: performance_translation_engine_wps
+      type: INTEGER
+    - description: 'Total number of words on the original web page.
+
+        '
+      mode: NULLABLE
+      name: performance_word_count
+      type: INTEGER
+    - description: 'Total number of visible words on the original web page that
+
+        were visible in the viewport at the time of "translation button pressed".
+
+        '
+      mode: NULLABLE
+      name: performance_word_count_visible_in_viewport
+      type: INTEGER
+    - description: 'Total number of characters in all translated fields.
+
+        '
+      mode: NULLABLE
+      name: forms_character_count
+      type: INTEGER
+    - description: 'Number of text fields translated.
+
+        '
+      mode: NULLABLE
+      name: forms_field_count
+      type: INTEGER
+    - description: 'Total number of words in all translated fields.
+
+        '
+      mode: NULLABLE
+      name: forms_word_count
+      type: INTEGER
+    - description: '90th percentile of quality estimation of translation for sentences
+
+        multiplied by 1000.
+
+        '
+      mode: NULLABLE
+      name: quality_sent_90th
+      type: INTEGER
+    - description: 'Average quality estimation of translation for sentences
+
+        multiplied by 1000.
+
+        '
+      mode: NULLABLE
+      name: quality_sent_avg
+      type: INTEGER
+    - description: 'Median quality estimation of translation for sentences
+
+        multiplied by 1000.
+
+        '
+      mode: NULLABLE
+      name: quality_sent_median
+      type: INTEGER
+    - description: '90th percentile of quality estimation of translation for words
+
+        multiplied by 1000.
+
+        '
+      mode: NULLABLE
+      name: quality_word_90th
+      type: INTEGER
+    - description: 'Average quality estimation of translation for words
+
+        multiplied by 1000.
+
+        '
+      mode: NULLABLE
+      name: quality_word_avg
+      type: INTEGER
+    - description: 'Median quality estimation of translation for words
+
+        multiplied by 1000.
+
+        '
+      mode: NULLABLE
+      name: quality_word_median
+      type: INTEGER
+    mode: NULLABLE
+    name: quantity
+    type: RECORD
+  - fields:
+    - description: 'Bergamot translator engine version
+
+        '
+      mode: NULLABLE
+      name: metadata_bergamot_translator_version
+      type: STRING
+    - description: 'Telemetry Environment `system.cpu.extensions` metric
+
+        '
+      mode: NULLABLE
+      name: metadata_cpu_extensions
+      type: STRING
+    - description: 'Telemetry Environment `system.cpu.vendor` metric
+
+        '
+      mode: NULLABLE
+      name: metadata_cpu_vendor
+      type: STRING
+    - description: 'Extension build id, indicating which git revision
+
+        and build config was used to produce this build
+
+        '
+      mode: NULLABLE
+      name: metadata_extension_build_id
+      type: STRING
+    - description: 'Extension version
+
+        '
+      mode: NULLABLE
+      name: metadata_extension_version
+      type: STRING
+    - description: 'Firefox Telemetry client id.
+
+        '
+      mode: NULLABLE
+      name: metadata_firefox_client_id
+      type: STRING
+    - description: 'Translation source language
+
+        (it can be set manually and different from detected_lang).
+
+        '
+      mode: NULLABLE
+      name: metadata_from_lang
+      type: STRING
+    - description: 'Translation target language.
+
+        '
+      mode: NULLABLE
+      name: metadata_to_lang
+      type: STRING
+    - description: 'Quality estimation of translation.
+
+        '
+      mode: NULLABLE
+      name: performance_translation_quality
+      type: STRING
+    - description: 'Summary of quality estimation of translation.
+
+        All scores are in range [0,1].
+
+        <word_avg>,<word_median>,<word_90th>,<sent_avg>,<sent_median>,<sent_90th>
+
+        Example: "0.5,0.55,0.35,0.6,0.55,0.7"
+
+        '
+      mode: NULLABLE
+      name: quality_summary
+      type: STRING
+    - description: 'Version of translation model
+
+        '
+      mode: NULLABLE
+      name: metadata_model_version
+      type: STRING
+    - description: 'Firefox distribution channel
+
+        '
+      mode: NULLABLE
+      name: metadata_channel
+      type: STRING
+    - description: 'Translation source language that was automatically detected.
+
+        '
+      mode: NULLABLE
+      name: metadata_detected_lang
       type: STRING
     mode: NULLABLE
     name: string
     type: RECORD
   - fields:
-    - description: 'Unique identifier for this sync, used to correlate together individual
-        pings for data types that were synchronized together (history, bookmarks,
-        logins, and tabs). If a data type is synchronized by itself via the legacy
-        ''sync'' API (as opposed to the Sync Manager), then this field will not be
-        set on the corresponding ping.
+    - description: 'Timing from "translation button pressed"
+
+        to "full page is translated".
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: NULLABLE
+      name: performance_full_page_translated_time
+      type: RECORD
+    - description: 'Time spent on downloading a translation model for a language pair.
+
+        (Renamed from model_download_time to model_download_time_num as part of
+
+        changing type from string to quantity)
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: NULLABLE
+      name: performance_model_download_time_num
+      type: RECORD
+    - description: 'Time spent on loading a model into memory to start translation.
+
+        (Renamed from model_load_time to model_load_time_num as part of
+
+        changing type from string to quantity)
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: NULLABLE
+      name: performance_model_load_time_num
+      type: RECORD
+    - description: 'Time spent on translation by the translation engine.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: NULLABLE
+      name: performance_translation_engine_time
+      type: RECORD
+    - description: 'Timing from the first event to the last event.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: NULLABLE
+      name: performance_total_usage_time
+      type: RECORD
+    mode: NULLABLE
+    name: timespan
+    type: RECORD
+  - fields:
+    - description: 'Translation of forms is enabled.
 
         '
       mode: NULLABLE
-      name: sync_sync_uuid
-      type: STRING
+      name: infobar_outbound_enabled
+      type: BOOLEAN
+    - description: 'Indicates whether a supervised model was used for quality estimation.
+
+        '
+      mode: NULLABLE
+      name: quality_is_supervised
+      type: BOOLEAN
+    - description: 'Quality estimation is enabled.
+
+        '
+      mode: NULLABLE
+      name: infobar_qe_enabled
+      type: BOOLEAN
+    - description: '"Automatically translate as browse" is enabled.
+
+        '
+      mode: NULLABLE
+      name: infobar_auto_translate_enabled
+      type: BOOLEAN
     mode: NULLABLE
-    name: uuid
+    name: boolean
     type: RECORD
   mode: NULLABLE
   name: metrics

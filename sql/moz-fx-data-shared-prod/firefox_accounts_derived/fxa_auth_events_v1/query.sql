@@ -14,7 +14,8 @@ WITH base AS (
                   -- See https://bugzilla.mozilla.org/show_bug.cgi?id=1707571
                   CAST(NULL AS FLOAT64) AS emailverified,
                   CAST(NULL AS FLOAT64) AS isprimary,
-                  CAST(NULL AS FLOAT64) AS isverified
+                  CAST(NULL AS FLOAT64) AS isverified,
+                  CAST(NULL AS STRING) AS id
                 ),
                 TO_HEX(SHA256(jsonPayload.fields.user_id)) AS user_id
             ) AS fields

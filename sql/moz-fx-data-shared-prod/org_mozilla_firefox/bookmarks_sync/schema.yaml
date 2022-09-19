@@ -184,6 +184,20 @@ fields:
     mode: NULLABLE
     name: header
     type: RECORD
+  - description: Parsed components of the client's user agent string
+    fields:
+    - mode: NULLABLE
+      name: browser
+      type: STRING
+    - mode: NULLABLE
+      name: os
+      type: STRING
+    - mode: NULLABLE
+      name: version
+      type: STRING
+    mode: NULLABLE
+    name: user_agent
+    type: RECORD
   - description: Results of ISP lookup based on the client's IP address
     fields:
     - description: The specific geo ISP database version used for this lookup
@@ -202,25 +216,77 @@ fields:
     mode: NULLABLE
     name: isp
     type: RECORD
-  - description: Parsed components of the client's user agent string
-    fields:
-    - mode: NULLABLE
-      name: browser
-      type: STRING
-    - mode: NULLABLE
-      name: os
-      type: STRING
-    - mode: NULLABLE
-      name: version
-      type: STRING
-    mode: NULLABLE
-    name: user_agent
-    type: RECORD
   mode: NULLABLE
   name: metadata
   type: RECORD
 - fields:
   - fields:
+    - description: 'Records the number of batches needed to upload all outgoing records.
+
+        '
+      mode: NULLABLE
+      name: bookmarks_sync_outgoing_batches
+      type: INTEGER
+    mode: NULLABLE
+    name: counter
+    type: RECORD
+  - fields:
+    - description: 'Records when the bookmark sync finished.
+
+        '
+      mode: NULLABLE
+      name: bookmarks_sync_finished_at
+      type: STRING
+    - description: 'Records when the bookmark sync started.
+
+        '
+      mode: NULLABLE
+      name: bookmarks_sync_started_at
+      type: STRING
+    mode: NULLABLE
+    name: datetime
+    type: RECORD
+  - fields:
+    - description: 'Records incoming bookmark record counts.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: bookmarks_sync_incoming
+      type: RECORD
+    - description: 'Records outgoing bookmark record counts.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: bookmarks_sync_outgoing
+      type: RECORD
+    - description: 'Records counts for structure problems and divergences in the remote
+        bookmarks tree. These are documented in https://github.com/mozilla/dogear/blob/fbade15f2a4f11215e30b8f428a0a8df3defeaec/src/tree.rs#L1273-L1294.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: bookmarks_sync_remote_tree_problems
+      type: RECORD
     - description: 'Counts the number of times a metric was set with an invalid label.
 
         The labels are the `category.name` identifier of the metric.
@@ -283,6 +349,47 @@ fields:
       type: RECORD
     mode: NULLABLE
     name: labeled_counter
+    type: RECORD
+  - fields:
+    - description: 'Records bookmark sync failure reasons.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: bookmarks_sync_failure_reason
+      type: RECORD
+    mode: NULLABLE
+    name: labeled_string
+    type: RECORD
+  - fields:
+    - description: 'The user''s hashed Firefox Account ID.
+
+        '
+      mode: NULLABLE
+      name: bookmarks_sync_uid
+      type: STRING
+    mode: NULLABLE
+    name: string
+    type: RECORD
+  - fields:
+    - description: 'Unique identifier for this sync, used to correlate together individual
+        pings for data types that were synchronized together (history, bookmarks,
+        logins). If a data type is synchronized by itself via the legacy ''sync''
+        API (as opposed to the Sync Manager), then this field will not be set on the
+        corresponding ping.
+
+        '
+      mode: NULLABLE
+      name: sync_sync_uuid
+      type: STRING
+    mode: NULLABLE
+    name: uuid
     type: RECORD
   - fields:
     - mode: NULLABLE

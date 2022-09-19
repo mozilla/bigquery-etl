@@ -221,6 +221,90 @@ fields:
   type: RECORD
 - fields:
   - fields:
+    - description: 'True if the exit code/status of the background update task is
+        3, which means an exception was thrown.
+
+        '
+      mode: NULLABLE
+      name: background_update_exit_code_exception
+      type: BOOLEAN
+    - description: 'True if the exit code/status of the background update task is
+        0, which means success.
+
+        '
+      mode: NULLABLE
+      name: background_update_exit_code_success
+      type: BOOLEAN
+    - description: 'Per-installation preference "app.update.auto": whether to fetch
+        and install updates without user intervention.
+
+        '
+      mode: NULLABLE
+      name: update_auto_download
+      type: BOOLEAN
+    - description: 'Per-installation preference "app.update.background.enabled": whether
+        to fetch and install updates in the background when Firefox is not running.
+
+        '
+      mode: NULLABLE
+      name: update_background_update
+      type: BOOLEAN
+    - description: 'Whether or not the Update Service can usually download and install
+        updates. See `canUsuallyApplyUpdates` in https://searchfox.org/mozilla-central/source/toolkit/mozapps/update/nsIUpdateService.idl.
+
+        '
+      mode: NULLABLE
+      name: update_can_usually_apply_updates
+      type: BOOLEAN
+    - description: 'Whether or not the Update Service can usually check for updates.
+        See `canUsuallyCheckForUpdates` in https://searchfox.org/mozilla-central/source/toolkit/mozapps/update/nsIUpdateService.idl.
+
+        '
+      mode: NULLABLE
+      name: update_can_usually_check_for_updates
+      type: BOOLEAN
+    - description: 'Whether the Update Service is usually able to stage updates. See
+        `canUsuallyStageUpdates` in https://searchfox.org/mozilla-central/source/toolkit/mozapps/update/nsIUpdateService.idl.
+
+        '
+      mode: NULLABLE
+      name: update_can_usually_stage_updates
+      type: BOOLEAN
+    - description: 'On Windows, whether the Update Service can usually use BITS. See
+        `canUsuallyUseBits` in https://searchfox.org/mozilla-central/source/toolkit/mozapps/update/nsIUpdateService.idl.
+
+        '
+      mode: NULLABLE
+      name: update_can_usually_use_bits
+      type: BOOLEAN
+    - description: 'True when policies are disabled or when the "DisableAppUpdate"
+        is not in effect.
+
+        '
+      mode: NULLABLE
+      name: update_enabled
+      type: BOOLEAN
+    - description: 'Preference "app.update.service.enabled": whether the Mozilla Maintenance
+        Service is enabled.
+
+        '
+      mode: NULLABLE
+      name: update_service_enabled
+      type: BOOLEAN
+    mode: NULLABLE
+    name: boolean
+    type: RECORD
+  - fields:
+    - mode: NULLABLE
+      name: key
+      type: STRING
+    - mode: NULLABLE
+      name: value
+      type: STRING
+    mode: REPEATED
+    name: jwe
+    type: RECORD
+  - fields:
     - description: 'Counts the number of times a metric was set with an invalid label.
 
         The labels are the `category.name` identifier of the metric.
@@ -281,112 +365,8 @@ fields:
       mode: REPEATED
       name: glean_error_invalid_value
       type: RECORD
-    - description: 'Counts the number of times a space-travel technology is used.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: technology_space_travel
-      type: RECORD
-    - description: 'Counts the number of times a space-travel technology is used.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: test_burnham_space_travel
-      type: RECORD
     mode: NULLABLE
     name: labeled_counter
-    type: RECORD
-  - fields:
-    - description: 'The identifier of the current mission.
-
-        '
-      mode: NULLABLE
-      name: mission_identifier
-      type: STRING
-    - description: 'The status of the current mission.
-
-        '
-      mode: NULLABLE
-      name: mission_status
-      type: STRING
-    - description: 'The identifier of the current mission.
-
-        '
-      mode: NULLABLE
-      name: test_burnham_mission
-      type: STRING
-    - description: 'The current position of the discovery.
-
-        '
-      mode: NULLABLE
-      name: test_burnham_position
-      type: STRING
-    - description: 'The current status of space ship.
-
-        '
-      mode: NULLABLE
-      name: test_burnham_status
-      type: STRING
-    - description: 'Name of the current test.
-
-        '
-      mode: NULLABLE
-      name: test_burnham_test_name
-      type: STRING
-    - description: 'Name of the current test.
-
-        '
-      mode: NULLABLE
-      name: test_name
-      type: STRING
-    - description: 'ID of the Airflow task that runs the client
-
-        '
-      mode: NULLABLE
-      name: test_airflow_task_id
-      type: STRING
-    mode: NULLABLE
-    name: string
-    type: RECORD
-  - fields:
-    - description: 'ID of the current test run.
-
-        '
-      mode: NULLABLE
-      name: test_burnham_test_run
-      type: STRING
-    - description: 'ID of the current test run.
-
-        '
-      mode: NULLABLE
-      name: test_run
-      type: STRING
-    mode: NULLABLE
-    name: uuid
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: jwe
     type: RECORD
   - fields:
     - mode: NULLABLE
@@ -411,6 +391,43 @@ fields:
       type: RECORD
     mode: REPEATED
     name: labeled_rate
+    type: RECORD
+  - fields:
+    - description: 'String description of the final state the update state machine
+        reached.
+
+        '
+      mode: NULLABLE
+      name: background_update_final_state
+      type: STRING
+    - description: 'The update channel.
+
+        '
+      mode: NULLABLE
+      name: update_channel
+      type: STRING
+    mode: NULLABLE
+    name: string
+    type: RECORD
+  - fields:
+    - mode: REPEATED
+      name: background_update_reasons
+      type: STRING
+    - mode: REPEATED
+      name: background_update_states
+      type: STRING
+    mode: NULLABLE
+    name: string_list
+    type: RECORD
+  - fields:
+    - description: 'The Telemetry client ID of the default profile.
+
+        '
+      mode: NULLABLE
+      name: background_update_client_id
+      type: STRING
+    mode: NULLABLE
+    name: uuid
     type: RECORD
   - fields:
     - mode: NULLABLE

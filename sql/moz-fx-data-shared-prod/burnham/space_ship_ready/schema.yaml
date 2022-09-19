@@ -221,6 +221,16 @@ fields:
   type: RECORD
 - fields:
   - fields:
+    - mode: NULLABLE
+      name: key
+      type: STRING
+    - mode: NULLABLE
+      name: value
+      type: STRING
+    mode: REPEATED
+    name: jwe
+    type: RECORD
+  - fields:
     - description: 'Counts the number of times a metric was set with an invalid label.
 
         The labels are the `category.name` identifier of the metric.
@@ -283,16 +293,6 @@ fields:
       type: RECORD
     mode: NULLABLE
     name: labeled_counter
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: jwe
     type: RECORD
   - fields:
     - description: 'Name of the current test.

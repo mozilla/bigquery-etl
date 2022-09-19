@@ -32,6 +32,10 @@ fields:
     mode: NULLABLE
     name: architecture
     type: STRING
+  - description: The date & time the application was built
+    mode: NULLABLE
+    name: build_date
+    type: STRING
   - description: A UUID uniquely identifying the client.
     mode: NULLABLE
     name: client_id
@@ -70,10 +74,6 @@ fields:
   - description: The version of the Glean SDK
     mode: NULLABLE
     name: telemetry_sdk_build
-    type: STRING
-  - description: The date & time the application was built
-    mode: NULLABLE
-    name: build_date
     type: STRING
   mode: NULLABLE
   name: client_info
@@ -145,6 +145,14 @@ fields:
       mode: NULLABLE
       name: x_debug_id
       type: STRING
+    - description: X-Foxsec-IP-Reputation header
+      mode: NULLABLE
+      name: x_foxsec_ip_reputation
+      type: STRING
+    - description: X-LB-Tags HTTP header
+      mode: NULLABLE
+      name: x_lb_tags
+      type: STRING
     - description: X-PingSender-Version HTTP header
       mode: NULLABLE
       name: x_pingsender_version
@@ -156,14 +164,6 @@ fields:
     - description: X-Telemetry-Agent HTTP header
       mode: NULLABLE
       name: x_telemetry_agent
-      type: STRING
-    - description: X-Foxsec-IP-Reputation header
-      mode: NULLABLE
-      name: x_foxsec_ip_reputation
-      type: STRING
-    - description: X-LB-Tags HTTP header
-      mode: NULLABLE
-      name: x_lb_tags
       type: STRING
     - mode: NULLABLE
       name: parsed_date
@@ -220,15 +220,6 @@ fields:
   name: metadata
   type: RECORD
 - fields:
-  - fields:
-    - description: The number of metrics pings sent during the lifetime of this baseline
-        ping.
-      mode: NULLABLE
-      name: glean_validation_metrics_ping_count
-      type: INTEGER
-    mode: NULLABLE
-    name: counter
-    type: RECORD
   - fields:
     - description: 'Counts the number of times a metric was set with an invalid label.
 
@@ -290,121 +281,8 @@ fields:
       mode: REPEATED
       name: glean_error_invalid_value
       type: RECORD
-    - description: "A count of the pings submitted, by ping type.\n\nThis metric appears\
-        \ in both the metrics and baseline pings.\n\n- On the metrics ping, the counts\
-        \ include the number of pings sent since\n  the last metrics ping (including\
-        \ the last metrics ping)\n- On the baseline ping, the counts include the number\
-        \ of pings send since\n  the last baseline ping (including the last baseline\
-        \ ping)\n"
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: glean_validation_pings_submitted
-      type: RECORD
     mode: NULLABLE
     name: labeled_counter
-    type: RECORD
-  - fields:
-    - description: 'The locale of the application during initialization (e.g. "es-ES").
-
-        If the locale can''t be determined on the system, the value is
-
-        ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
-
-        to indicate "undetermined".
-
-        '
-      mode: NULLABLE
-      name: glean_baseline_locale
-      type: STRING
-    mode: NULLABLE
-    name: string
-    type: RECORD
-  - fields:
-    - description: 'The duration of the last foreground session.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: NULLABLE
-      name: glean_baseline_duration
-      type: RECORD
-    mode: NULLABLE
-    name: timespan
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: jwe
-    type: RECORD
-  - fields:
-    - description: 'The hour of the first run of the application.
-
-        '
-      mode: NULLABLE
-      name: glean_validation_first_run_hour
-      type: STRING
-    mode: NULLABLE
-    name: datetime
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - fields:
-        - mode: NULLABLE
-          name: denominator
-          type: INTEGER
-        - mode: NULLABLE
-          name: numerator
-          type: INTEGER
-        mode: NULLABLE
-        name: value
-        type: RECORD
-      mode: REPEATED
-      name: value
-      type: RECORD
-    mode: REPEATED
-    name: labeled_rate
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: url
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: text
     type: RECORD
   mode: NULLABLE
   name: metrics

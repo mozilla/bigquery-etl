@@ -20047,6 +20047,16 @@ fields:
       mode: NULLABLE
       name: use_counter2_scheduler_posttask_page
       type: STRING
+    - description: The number of times an event page hit the idle timeout and results
+        in one of the categories, keyed by addon id.
+      mode: NULLABLE
+      name: webext_eventpage_idle_result_count
+      type: STRING
+    - description: The amount of time (keyed by addon id) that an event page has been
+        running before being suspended, or the entire addon shutdown.
+      mode: NULLABLE
+      name: webext_eventpage_running_time_ms
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -23244,6 +23254,30 @@ fields:
         type: STRING
       mode: REPEATED
       name: email_tracker_embedded_per_tab
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: The number of times an event page hit the idle timeout and results
+          in one of the categories, keyed by addon id.
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: webext_eventpage_idle_result_count_by_addonid
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: The amount of time (keyed by addon id) that an event page has
+          been running before being suspended, or the entire addon shutdown.
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: webext_eventpage_running_time_ms_by_addonid
       type: RECORD
     mode: NULLABLE
     name: keyed_histograms

@@ -1,29 +1,12 @@
 fields:
-- description: A zero based integer indicating the position of this event
-  mode: NULLABLE
-  name: action_position
-  type: INTEGER
 - description: A JSON string containing any payload properties not present in the
     schema
   mode: NULLABLE
   name: additional_properties
   type: STRING
-- mode: NULLABLE
-  name: addon_version
-  type: STRING
-- mode: NULLABLE
-  name: client_id
-  type: STRING
 - description: The document ID specified in the URI when the client sent this message
   mode: NULLABLE
   name: document_id
-  type: STRING
-- description: An event identifier
-  mode: NULLABLE
-  name: event
-  type: STRING
-- mode: NULLABLE
-  name: locale
   type: STRING
 - fields:
   - description: Results of a geographic lookup based on the client's IP address
@@ -158,71 +141,17 @@ fields:
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
-- mode: NULLABLE
-  name: page
-  type: STRING
-- mode: NULLABLE
-  name: profile_creation_date
-  type: INTEGER
-- mode: NULLABLE
-  name: region
-  type: STRING
-- mode: NULLABLE
-  name: release_channel
+- description: Pre-existing Firefox Accounts metrics field used to identify Amplitude
+    metrics events.
+  mode: NULLABLE
+  name: op
   type: STRING
 - description: Hashed version of client_id (if present) useful for partitioning; ranges
     from 0 to 99
   mode: NULLABLE
   name: sample_id
   type: INTEGER
-- description: A UUID representing an Activity Stream session. This can be used to
-    do table joins between `sessions` and `events` in Activity Stream. Note that `n/a`
-    denotes that the session is not applicable in the context.
-  mode: NULLABLE
-  name: session_id
-  type: STRING
-- description: '[DEPRECATED]: use `experiments` instead. A semicolon separated string
-    to store a list of Shield study IDs'
-  mode: NULLABLE
-  name: shield_id
-  type: STRING
-- mode: NULLABLE
-  name: source
-  type: STRING
 - description: Time when the ingestion edge server accepted this message
   mode: NULLABLE
   name: submission_timestamp
   type: TIMESTAMP
-- description: An encoded integer representing user's preferences of Activity Stream
-  mode: NULLABLE
-  name: user_prefs
-  type: INTEGER
-- description: A string that describes the context about this event
-  mode: NULLABLE
-  name: value
-  type: STRING
-- mode: NULLABLE
-  name: version
-  type: STRING
-- description: A mirror of the browser sessionId, as defined in https://github.com/mozilla-services/mozilla-pipeline-schemas/blob/main/schemas/telemetry/main/main.4.schema.json
-  mode: NULLABLE
-  name: browser_session_id
-  type: STRING
-- description: 'An object to record all active experiments, experiments IDs are stored
-    as keys, and the value object stores the branch information. Example: {"experiment_1":
-    {"branch": "control"}, "experiment_2": {"branch": "treatment"}}. This deprecates
-    the "shield_id" used in activity-stream and messaging-system.'
-  fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - fields:
-    - mode: NULLABLE
-      name: branch
-      type: STRING
-    mode: NULLABLE
-    name: value
-    type: RECORD
-  mode: REPEATED
-  name: experiments
-  type: RECORD

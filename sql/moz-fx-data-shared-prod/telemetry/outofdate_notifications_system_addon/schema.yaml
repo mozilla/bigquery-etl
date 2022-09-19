@@ -9,49 +9,6 @@ fields:
   name: document_id
   type: STRING
 - fields:
-  - description: An event identifier.
-    mode: NULLABLE
-    name: action
-    type: STRING
-  - description: A zero based integer indicating the position of this event.
-    mode: NULLABLE
-    name: position
-    type: INTEGER
-  - description: An identifier for where the event occurred (e.g. what part of the
-      Pocket button UI a click was performed on).
-    mode: NULLABLE
-    name: source
-    type: STRING
-  mode: REPEATED
-  name: events
-  type: RECORD
-- description: 'An object to record all active experiments, experiments IDs are stored
-    as keys, and the value object stores the branch information. Example: {"experiment_1":
-    {"branch": "control"}, "experiment_2": {"branch": "treatment"}}. This deprecates
-    the "shield_id" used in activity-stream and messaging-system.'
-  fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - fields:
-    - mode: NULLABLE
-      name: branch
-      type: STRING
-    mode: NULLABLE
-    name: value
-    type: RECORD
-  mode: REPEATED
-  name: experiments
-  type: RECORD
-- description: A UUID representing this user. Note that it's not client_id, nor can
-    it be used to link to a client_id
-  mode: NULLABLE
-  name: impression_id
-  type: STRING
-- mode: NULLABLE
-  name: locale
-  type: STRING
-- fields:
   - description: Results of a geographic lookup based on the client's IP address
     fields:
     - mode: NULLABLE
@@ -130,6 +87,37 @@ fields:
     mode: NULLABLE
     name: header
     type: RECORD
+  - description: Components of the URI to which this ping was sent
+    fields:
+    - mode: NULLABLE
+      name: app_build_id
+      type: STRING
+    - mode: NULLABLE
+      name: app_name
+      type: STRING
+    - mode: NULLABLE
+      name: app_update_channel
+      type: STRING
+    - mode: NULLABLE
+      name: app_version
+      type: STRING
+    mode: NULLABLE
+    name: uri
+    type: RECORD
+  - description: Parsed components of the client's user agent string
+    fields:
+    - mode: NULLABLE
+      name: browser
+      type: STRING
+    - mode: NULLABLE
+      name: os
+      type: STRING
+    - mode: NULLABLE
+      name: version
+      type: STRING
+    mode: NULLABLE
+    name: user_agent
+    type: RECORD
   - description: Results of ISP lookup based on the client's IP address
     fields:
     - description: The specific geo ISP database version used for this lookup
@@ -148,28 +136,9 @@ fields:
     mode: NULLABLE
     name: isp
     type: RECORD
-  - description: Parsed components of the client's user agent string
-    fields:
-    - mode: NULLABLE
-      name: browser
-      type: STRING
-    - mode: NULLABLE
-      name: os
-      type: STRING
-    - mode: NULLABLE
-      name: version
-      type: STRING
-    mode: NULLABLE
-    name: user_agent
-    type: RECORD
   mode: NULLABLE
   name: metadata
   type: RECORD
-- description: (In the case of actions related to on-save recs) An identifier for
-    the machine learning model used to generate the recommendations.
-  mode: NULLABLE
-  name: model
-  type: STRING
 - description: Set to "Other" if this message contained an unrecognized app name
   mode: NULLABLE
   name: normalized_app_name
@@ -189,17 +158,6 @@ fields:
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
-- description: A boolean for whether the user was logged-in to the Pocket Firefox
-    integration when they performed the indicated action(s). True = logged in.
-  mode: NULLABLE
-  name: pocket_logged_in_status
-  type: BOOLEAN
-- mode: NULLABLE
-  name: profile_creation_date
-  type: INTEGER
-- mode: NULLABLE
-  name: release_channel
-  type: STRING
 - description: Hashed version of client_id (if present) useful for partitioning; ranges
     from 0 to 99
   mode: NULLABLE
@@ -209,6 +167,3 @@ fields:
   mode: NULLABLE
   name: submission_timestamp
   type: TIMESTAMP
-- mode: NULLABLE
-  name: version
-  type: STRING

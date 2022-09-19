@@ -4,47 +4,37 @@ fields:
   mode: NULLABLE
   name: additional_properties
   type: STRING
+- mode: NULLABLE
+  name: app_name
+  type: STRING
+- mode: NULLABLE
+  name: channel
+  type: STRING
+- description: telemetry client_id, included only if identifer is empty
+  mode: NULLABLE
+  name: client_id
+  type: STRING
+- mode: NULLABLE
+  name: created
+  type: STRING
+- mode: NULLABLE
+  name: distribution_id
+  type: STRING
 - description: The document ID specified in the URI when the client sent this message
   mode: NULLABLE
   name: document_id
   type: STRING
-- fields:
-  - description: An event identifier
-    mode: NULLABLE
-    name: action
-    type: STRING
-  - description: A zero based integer indicating the position of this event
-    mode: NULLABLE
-    name: position
-    type: INTEGER
-  mode: REPEATED
-  name: events
-  type: RECORD
-- description: 'An object to record all active experiments, experiments IDs are stored
-    as keys, and the value object stores the branch information. Example: {"experiment_1":
-    {"branch": "control"}, "experiment_2": {"branch": "treatment"}}. This deprecates
-    the "shield_id" used in activity-stream and messaging-system.'
-  fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - fields:
-    - mode: NULLABLE
-      name: branch
-      type: STRING
-    mode: NULLABLE
-    name: value
-    type: RECORD
-  mode: REPEATED
-  name: experiments
-  type: RECORD
-- description: A UUID representing this user. Note that it's not client_id, nor can
-    it be used to link to a client_id
+- description: hashed version of Google ID
   mode: NULLABLE
-  name: impression_id
+  name: identifier
   type: STRING
-- mode: NULLABLE
+- description: application locale, such as 'en-US'
+  mode: NULLABLE
   name: locale
+  type: STRING
+- description: Build.MANUFACTURER
+  mode: NULLABLE
+  name: manufacturer
   type: STRING
 - fields:
   - description: Results of a geographic lookup based on the client's IP address
@@ -125,6 +115,20 @@ fields:
     mode: NULLABLE
     name: header
     type: RECORD
+  - description: Parsed components of the client's user agent string
+    fields:
+    - mode: NULLABLE
+      name: browser
+      type: STRING
+    - mode: NULLABLE
+      name: os
+      type: STRING
+    - mode: NULLABLE
+      name: version
+      type: STRING
+    mode: NULLABLE
+    name: user_agent
+    type: RECORD
   - description: Results of ISP lookup based on the client's IP address
     fields:
     - description: The specific geo ISP database version used for this lookup
@@ -143,24 +147,10 @@ fields:
     mode: NULLABLE
     name: isp
     type: RECORD
-  - description: Parsed components of the client's user agent string
-    fields:
-    - mode: NULLABLE
-      name: browser
-      type: STRING
-    - mode: NULLABLE
-      name: os
-      type: STRING
-    - mode: NULLABLE
-      name: version
-      type: STRING
-    mode: NULLABLE
-    name: user_agent
-    type: RECORD
   mode: NULLABLE
   name: metadata
   type: RECORD
-- description: An identifier for the machine learning model used to generate the recommendations
+- description: Build.MODEL
   mode: NULLABLE
   name: model
   type: STRING
@@ -184,11 +174,14 @@ fields:
   name: normalized_os_version
   type: STRING
 - mode: NULLABLE
-  name: profile_creation_date
-  type: INTEGER
-- mode: NULLABLE
-  name: release_channel
+  name: os
   type: STRING
+- mode: NULLABLE
+  name: osversion
+  type: STRING
+- mode: NULLABLE
+  name: profile_date
+  type: INTEGER
 - description: Hashed version of client_id (if present) useful for partitioning; ranges
     from 0 to 99
   mode: NULLABLE
@@ -198,6 +191,7 @@ fields:
   mode: NULLABLE
   name: submission_timestamp
   type: TIMESTAMP
-- mode: NULLABLE
-  name: version
-  type: STRING
+- description: timezone offset in minutes from UTC
+  mode: NULLABLE
+  name: tz
+  type: INTEGER

@@ -1967,3 +1967,34 @@ fields:
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_bestmatch
   type: STRING
+- mode: NULLABLE
+  name: scalar_parent_browser_ui_interaction_textrecognition_error_sum
+  type: INTEGER
+- mode: NULLABLE
+  name: text_recognition_interaction_timing_sum
+  type: INTEGER
+- mode: NULLABLE
+  name: text_recognition_interaction_timing_count_sum
+  type: INTEGER
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_browser_ui_interaction_content_context_sum
+  type: RECORD
+- mode: NULLABLE
+  name: text_recognition_api_performance_sum
+  type: INTEGER
+- mode: NULLABLE
+  name: text_recognition_api_performance_count_sum
+  type: INTEGER
+- mode: NULLABLE
+  name: text_recognition_text_length_sum
+  type: INTEGER
+- mode: NULLABLE
+  name: text_recognition_text_length_count_sum
+  type: INTEGER

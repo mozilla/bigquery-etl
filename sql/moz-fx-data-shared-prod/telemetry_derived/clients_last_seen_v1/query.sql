@@ -21,6 +21,13 @@ WITH _current AS (
     CAST(active_hours_sum >= 0.011 AS INT64) AS days_had_8_active_ticks_bits,
     CAST(devtools_toolbox_opened_count_sum > 0 AS INT64) AS days_opened_dev_tools_bits,
     CAST(active_hours_sum > 0 AS INT64) AS days_interacted_bits,
+    CAST(
+      (
+        scalar_parent_browser_engagement_total_uri_count_sum >= 1
+        OR scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum >= 1
+      )
+      AND active_hours_sum > 0 AS INT64
+    ) AS days_qualified_use_v1_bits,
     -- We only trust profile_date if it is within one week of the ping submission,
     -- so we ignore any value more than seven days old.
     udf.days_since_created_profile_as_28_bits(

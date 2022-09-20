@@ -13,6 +13,7 @@ WITH days_since AS (
     mozfun.bits28.days_since_seen(days_opened_dev_tools_bits) AS days_since_opened_dev_tools,
     mozfun.bits28.days_since_seen(days_created_profile_bits) AS days_since_created_profile,
     mozfun.bits28.days_since_seen(days_interacted_bits) AS days_since_interacted,
+    mozfun.bits28.days_since_seen(days_qualified_use_v1_bits) AS days_since_qualified_use_v1,
     *
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v1`

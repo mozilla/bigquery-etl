@@ -2618,6 +2618,102 @@ and to contain only one row per distinct <code>document_id</code> within a given
 <h2 id="docker_fxa_admin_server_sanitized"><a href="#docker_fxa_admin_server_sanitized">docker_fxa_admin_server_sanitized</a></h2>
 <p><code>firefox_accounts.docker_fxa_admin_server_sanitized</code></p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>logName</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>resource</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>textPayload</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>timestamp</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>receiveTimestamp</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>severity</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>insertId</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>httpRequest</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>labels</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>operation</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>trace</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>spanId</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>traceSampled</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sourceLocation</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>split</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>jsonPayload</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -3301,6 +3397,32 @@ and to contain only one row per distinct <code>document_id</code> within a given
 <hr />
 <h2 id="fxa_users_first_seen"><a href="#fxa_users_first_seen">fxa_users_first_seen</a></h2>
 <p><code>firefox_accounts.fxa_users_first_seen</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>user_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_seen_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>services_used</td>
+        <td></td>
+        <td>String</td>
+        <td>No</td>
+    </tr>
+</table>
+
 <table>
 <caption>Referenced Tables</caption>
     <tr>

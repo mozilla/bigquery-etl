@@ -1,0 +1,294 @@
+fields:
+- description: A JSON string containing any payload properties not present in the
+    schema
+  mode: NULLABLE
+  name: additional_properties
+  type: STRING
+- description: Build ID of the failing binary
+  mode: NULLABLE
+  name: build_id
+  type: STRING
+- description: Version of the failing binary
+  mode: NULLABLE
+  name: build_version
+  type: STRING
+- description: One of the values from the Windows SYSTEM_INFO::wProcessorArchitecture
+    field
+  mode: NULLABLE
+  name: cpu_arch
+  type: INTEGER
+- mode: NULLABLE
+  name: creation_date
+  type: STRING
+- description: The document ID specified in the URI when the client sent this message
+  mode: NULLABLE
+  name: document_id
+  type: STRING
+- mode: NULLABLE
+  name: id
+  type: STRING
+- description: The error that raised the launcher process failure
+  fields:
+  - description: The HRESULT error code from the launcher failure
+    mode: NULLABLE
+    name: hresult
+    type: INTEGER
+  - description: The leaf name of the source file where the failure originated
+    mode: NULLABLE
+    name: source_file
+    type: STRING
+  - description: The line in the source code where the failure originated
+    mode: NULLABLE
+    name: source_line
+    type: INTEGER
+  - description: First sixteen bytes of a function that we failed to hook (Nightly-only).  This
+      field is added only on detour failures.
+    mode: NULLABLE
+    name: detour_orig_bytes
+    type: STRING
+  mode: NULLABLE
+  name: launcher_error
+  type: RECORD
+- description: Information about the host computer's memory configuration
+  fields:
+  - description: Free space available in the page file, in bytes
+    mode: NULLABLE
+    name: avail_page_file
+    type: INTEGER
+  - description: Available physical memory on the machine, in bytes
+    mode: NULLABLE
+    name: avail_phys
+    type: INTEGER
+  - description: Available virtual memory on the machine, in bytes
+    mode: NULLABLE
+    name: avail_virt
+    type: INTEGER
+  - description: Total physical memory on the machine, in bytes
+    mode: NULLABLE
+    name: total_phys
+    type: INTEGER
+  mode: NULLABLE
+  name: memory
+  type: RECORD
+- fields:
+  - description: Results of a geographic lookup based on the client's IP address
+    fields:
+    - mode: NULLABLE
+      name: city
+      type: STRING
+    - description: An ISO 3166-1 alpha-2 country code
+      mode: NULLABLE
+      name: country
+      type: STRING
+    - description: The specific geo database version used for this lookup
+      mode: NULLABLE
+      name: db_version
+      type: STRING
+    - description: First major country subdivision, typically a state, province, or
+        county
+      mode: NULLABLE
+      name: subdivision1
+      type: STRING
+    - description: Second major country subdivision; not applicable for most countries
+      mode: NULLABLE
+      name: subdivision2
+      type: STRING
+    mode: NULLABLE
+    name: geo
+    type: RECORD
+  - description: Headers included in the client's HTTP request
+    fields:
+    - description: Date HTTP header
+      mode: NULLABLE
+      name: date
+      type: STRING
+    - description: DNT (Do Not Track) HTTP header
+      mode: NULLABLE
+      name: dnt
+      type: STRING
+    - description: X-Debug-Id HTTP header
+      mode: NULLABLE
+      name: x_debug_id
+      type: STRING
+    - description: X-PingSender-Version HTTP header
+      mode: NULLABLE
+      name: x_pingsender_version
+      type: STRING
+    - description: X-Source-Tags HTTP header
+      mode: NULLABLE
+      name: x_source_tags
+      type: STRING
+    - description: X-Telemetry-Agent HTTP header
+      mode: NULLABLE
+      name: x_telemetry_agent
+      type: STRING
+    - description: X-Foxsec-IP-Reputation header
+      mode: NULLABLE
+      name: x_foxsec_ip_reputation
+      type: STRING
+    - description: X-LB-Tags HTTP header
+      mode: NULLABLE
+      name: x_lb_tags
+      type: STRING
+    - mode: NULLABLE
+      name: parsed_date
+      type: TIMESTAMP
+    - mode: REPEATED
+      name: parsed_x_source_tags
+      type: STRING
+    - fields:
+      - mode: NULLABLE
+        name: tls_version
+        type: STRING
+      - mode: NULLABLE
+        name: tls_cipher_hex
+        type: STRING
+      mode: NULLABLE
+      name: parsed_x_lb_tags
+      type: RECORD
+    mode: NULLABLE
+    name: header
+    type: RECORD
+  - description: Parsed components of the client's user agent string
+    fields:
+    - mode: NULLABLE
+      name: browser
+      type: STRING
+    - mode: NULLABLE
+      name: os
+      type: STRING
+    - mode: NULLABLE
+      name: version
+      type: STRING
+    mode: NULLABLE
+    name: user_agent
+    type: RECORD
+  - description: Results of ISP lookup based on the client's IP address
+    fields:
+    - description: The specific geo ISP database version used for this lookup
+      mode: NULLABLE
+      name: db_version
+      type: STRING
+    - description: The name of the ISP associated with the client's IP address
+      mode: NULLABLE
+      name: name
+      type: STRING
+    - description: The name of a specific business entity associated with the client's
+        IP address when available; otherwise the ISP name
+      mode: NULLABLE
+      name: organization
+      type: STRING
+    mode: NULLABLE
+    name: isp
+    type: RECORD
+  mode: NULLABLE
+  name: metadata
+  type: RECORD
+- description: Set to "Other" if this message contained an unrecognized app name
+  mode: NULLABLE
+  name: normalized_app_name
+  type: STRING
+- description: Set to "Other" if this message contained an unrecognized channel name
+  mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+- description: An ISO 3166-1 alpha-2 country code
+  mode: NULLABLE
+  name: normalized_country_code
+  type: STRING
+- description: Set to "Other" if this message contained an unrecognized OS name
+  mode: NULLABLE
+  name: normalized_os
+  type: STRING
+- mode: NULLABLE
+  name: normalized_os_version
+  type: STRING
+- description: The number of logical CPUs on the host machine
+  mode: NULLABLE
+  name: num_logical_cpus
+  type: INTEGER
+- description: The current user's OS locale setting
+  mode: NULLABLE
+  name: os_locale
+  type: STRING
+- description: Windows version numnber in major.minor.build.UBR format (UBR is optional,
+    only available on Win10)
+  mode: NULLABLE
+  name: os_version
+  type: STRING
+- description: Hashed version of client_id (if present) useful for partitioning; ranges
+    from 0 to 99
+  mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+- description: Information about the security applications registered with Windows
+    on the host computer
+  fields:
+  - mode: REPEATED
+    name: antispyware
+    type: STRING
+  - mode: REPEATED
+    name: av
+    type: STRING
+  - mode: REPEATED
+    name: firewall
+    type: STRING
+  mode: NULLABLE
+  name: security
+  type: RECORD
+- description: True if this build was running atop a Windows Server OS
+  mode: NULLABLE
+  name: server_os
+  type: BOOLEAN
+- mode: REPEATED
+  name: signatures
+  type: STRING
+- description: Time when the ingestion edge server accepted this message
+  mode: NULLABLE
+  name: submission_timestamp
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: type
+  type: STRING
+- description: Channel that this build was built for
+  mode: NULLABLE
+  name: update_channel
+  type: STRING
+- mode: NULLABLE
+  name: version
+  type: FLOAT
+- description: This build's XPCOM_ABI string
+  mode: NULLABLE
+  name: xpcom_abi
+  type: STRING
+- description: True if the process was launched with Administrator privileges but
+    without User Account Control (= UAC)
+  mode: NULLABLE
+  name: is_admin_without_uac
+  type: BOOLEAN
+- description: List of leaf names of all modules found in the launcher process at
+    the time of failure
+  fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - fields:
+    - description: Version number in the format major.minor.patch.build
+      mode: NULLABLE
+      name: f0_
+      type: STRING
+    - description: Index into the signatures array indicating which signature this
+        binary was signed with
+      mode: NULLABLE
+      name: f1_
+      type: INTEGER
+    mode: NULLABLE
+    name: value
+    type: RECORD
+  mode: REPEATED
+  name: modules
+  type: RECORD
+- description: The type of the process which failed to start as a sandboxed process
+  mode: NULLABLE
+  name: process_type
+  type: STRING

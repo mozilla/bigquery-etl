@@ -36,6 +36,12 @@ fields:
   name: days_interacted_bits
   type: INTEGER
 - mode: NULLABLE
+  name: days_visited_1_uri_normal_mode_bits
+  type: INTEGER
+- mode: NULLABLE
+  name: days_visited_1_uri_private_mode_bits
+  type: INTEGER
+- mode: NULLABLE
   name: days_created_profile_bits
   type: INTEGER
 - fields:

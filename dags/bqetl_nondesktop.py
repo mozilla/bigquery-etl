@@ -83,6 +83,7 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     with TaskGroup(

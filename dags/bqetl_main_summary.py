@@ -64,6 +64,7 @@ with DAG(
         ],
         date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     firefox_desktop_exact_mau28_by_client_count_dimensions = bigquery_etl_query(
@@ -382,6 +383,7 @@ with DAG(
         ],
         date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     telemetry_derived__main_1pct__v1 = bigquery_etl_query(

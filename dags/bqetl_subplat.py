@@ -84,6 +84,7 @@ with DAG(
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     cjms_bigquery__subscriptions__v1 = bigquery_etl_query(
@@ -96,6 +97,7 @@ with DAG(
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     mozilla_vpn_derived__active_subscription_ids__v1 = bigquery_etl_query(
@@ -142,6 +144,7 @@ with DAG(
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     with TaskGroup(
@@ -179,6 +182,7 @@ with DAG(
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     mozilla_vpn_derived__exchange_rates__v1 = gke_command(
@@ -238,6 +242,7 @@ with DAG(
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     mozilla_vpn_derived__funnel_product_page_to_subscribed__v1 = bigquery_etl_query(
@@ -260,6 +265,7 @@ with DAG(
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
         parameters=["date:DATE:{{ds}}"],
     )
 
@@ -272,6 +278,7 @@ with DAG(
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
         parameters=["date:DATE:{{ds}}"],
     )
 
@@ -284,6 +291,7 @@ with DAG(
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
         parameters=["date:DATE:{{ds}}"],
     )
 
@@ -308,6 +316,7 @@ with DAG(
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     mozilla_vpn_derived__survey_cancellation_of_service__v1 = gke_command(
@@ -484,6 +493,7 @@ with DAG(
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     mozilla_vpn_derived__vat_rates__v1 = gke_command(

@@ -13,7 +13,7 @@
       
       
       <link rel="icon" href="../../favicon.png">
-      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.5.2">
+      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.5.3">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.9f9400aa.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7a952b86.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.cbb835fc.min.css">
@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#histogram_generate_exponential_buckets-udf" class="md-skip">
+        <a href="#histogram_normalized_sum-udf" class="md-skip">
           Skip to content
         </a>
       
@@ -1800,34 +1800,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#histogram_generate_exponential_buckets-udf" class="md-nav__link">
-    histogram_generate_exponential_buckets (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_generate_functional_buckets-udf" class="md-nav__link">
-    histogram_generate_functional_buckets (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_generate_linear_buckets-udf" class="md-nav__link">
-    histogram_generate_linear_buckets (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_from_buckets_uniform-udf" class="md-nav__link">
-    histogram_from_buckets_uniform (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#histogram_normalized_sum-udf" class="md-nav__link">
     histogram_normalized_sum (UDF)
   </a>
@@ -1914,6 +1886,34 @@
         <li class="md-nav__item">
   <a href="#histogram_buckets_cast_string_array-udf" class="md-nav__link">
     histogram_buckets_cast_string_array (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#histogram_generate_exponential_buckets-udf" class="md-nav__link">
+    histogram_generate_exponential_buckets (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#histogram_generate_functional_buckets-udf" class="md-nav__link">
+    histogram_generate_functional_buckets (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#histogram_generate_linear_buckets-udf" class="md-nav__link">
+    histogram_generate_linear_buckets (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#histogram_from_buckets_uniform-udf" class="md-nav__link">
+    histogram_from_buckets_uniform (UDF)
   </a>
   
 </li>
@@ -2271,34 +2271,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#histogram_generate_exponential_buckets-udf" class="md-nav__link">
-    histogram_generate_exponential_buckets (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_generate_functional_buckets-udf" class="md-nav__link">
-    histogram_generate_functional_buckets (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_generate_linear_buckets-udf" class="md-nav__link">
-    histogram_generate_linear_buckets (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_from_buckets_uniform-udf" class="md-nav__link">
-    histogram_from_buckets_uniform (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#histogram_normalized_sum-udf" class="md-nav__link">
     histogram_normalized_sum (UDF)
   </a>
@@ -2389,6 +2361,34 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#histogram_generate_exponential_buckets-udf" class="md-nav__link">
+    histogram_generate_exponential_buckets (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#histogram_generate_functional_buckets-udf" class="md-nav__link">
+    histogram_generate_functional_buckets (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#histogram_generate_linear_buckets-udf" class="md-nav__link">
+    histogram_generate_linear_buckets (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#histogram_from_buckets_uniform-udf" class="md-nav__link">
+    histogram_from_buckets_uniform (UDF)
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2406,23 +2406,6 @@
 
   <h1>Glam</h1>
 
-<h2 id="histogram_generate_exponential_buckets-udf">histogram_generate_exponential_buckets (UDF)</h2>
-<p>Generate exponential buckets for a histogram.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/glam/histogram_generate_exponential_buckets">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/glam/histogram_generate_exponential_buckets/metadata.yaml">Edit</a></p>
-<h2 id="histogram_generate_functional_buckets-udf">histogram_generate_functional_buckets (UDF)</h2>
-<p>Generate functional buckets for a histogram. This is specific to Glean.</p>
-<p>See: <a href="https://github.com/mozilla/glean/blob/main/glean-core/src/histogram/functional.rs">https://github.com/mozilla/glean/blob/main/glean-core/src/histogram/functional.rs</a></p>
-<p>A functional bucketing algorithm. The bucket index of a given sample is
-determined with the following function:</p>
-<p>i = $$ \lfloor{n log_{\text{base}}{(x)}}\rfloor $$</p>
-<p>In other words, there are n buckets for each power of <code>base</code> magnitude.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/glam/histogram_generate_functional_buckets">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/glam/histogram_generate_functional_buckets/metadata.yaml">Edit</a></p>
-<h2 id="histogram_generate_linear_buckets-udf">histogram_generate_linear_buckets (UDF)</h2>
-<p>Generate linear buckets for a histogram.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/glam/histogram_generate_linear_buckets">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/glam/histogram_generate_linear_buckets/metadata.yaml">Edit</a></p>
-<h2 id="histogram_from_buckets_uniform-udf">histogram_from_buckets_uniform (UDF)</h2>
-<p>Create an empty histogram from an array of buckets.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/glam/histogram_from_buckets_uniform">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/glam/histogram_from_buckets_uniform/metadata.yaml">Edit</a></p>
 <h2 id="histogram_normalized_sum-udf">histogram_normalized_sum (UDF)</h2>
 <p>Compute the normalized sum of an array of histograms.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/glam/histogram_normalized_sum">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/glam/histogram_normalized_sum/metadata.yaml">Edit</a></p>
@@ -2472,6 +2455,23 @@ estimate for final density is {k1: (P1+1/K) / (nreporting+1), k2:(P2+1/K) /
 <h2 id="histogram_buckets_cast_string_array-udf">histogram_buckets_cast_string_array (UDF)</h2>
 <p>Cast histogram buckets into a string array.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/glam/histogram_buckets_cast_string_array">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/glam/histogram_buckets_cast_string_array/metadata.yaml">Edit</a></p>
+<h2 id="histogram_generate_exponential_buckets-udf">histogram_generate_exponential_buckets (UDF)</h2>
+<p>Generate exponential buckets for a histogram.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/glam/histogram_generate_exponential_buckets">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/glam/histogram_generate_exponential_buckets/metadata.yaml">Edit</a></p>
+<h2 id="histogram_generate_functional_buckets-udf">histogram_generate_functional_buckets (UDF)</h2>
+<p>Generate functional buckets for a histogram. This is specific to Glean.</p>
+<p>See: <a href="https://github.com/mozilla/glean/blob/main/glean-core/src/histogram/functional.rs">https://github.com/mozilla/glean/blob/main/glean-core/src/histogram/functional.rs</a></p>
+<p>A functional bucketing algorithm. The bucket index of a given sample is
+determined with the following function:</p>
+<p>i = $$ \lfloor{n log_{\text{base}}{(x)}}\rfloor $$</p>
+<p>In other words, there are n buckets for each power of <code>base</code> magnitude.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/glam/histogram_generate_functional_buckets">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/glam/histogram_generate_functional_buckets/metadata.yaml">Edit</a></p>
+<h2 id="histogram_generate_linear_buckets-udf">histogram_generate_linear_buckets (UDF)</h2>
+<p>Generate linear buckets for a histogram.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/glam/histogram_generate_linear_buckets">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/glam/histogram_generate_linear_buckets/metadata.yaml">Edit</a></p>
+<h2 id="histogram_from_buckets_uniform-udf">histogram_from_buckets_uniform (UDF)</h2>
+<p>Create an empty histogram from an array of buckets.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/glam/histogram_from_buckets_uniform">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/glam/histogram_from_buckets_uniform/metadata.yaml">Edit</a></p>
 
 
 
@@ -2545,10 +2545,10 @@ estimate for final density is {k1: (P1+1/K) / (nreporting+1), k2:(P2+1/K) /
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.ecf98df9.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.5bf1dace.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.39f04ddb.min.js"></script>
+      <script src="../../assets/javascripts/bundle.37e9125f.min.js"></script>
       
     
   </body>

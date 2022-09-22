@@ -195,6 +195,7 @@ class Task:
     referenced_tables: Optional[List[Tuple[str, str, str]]] = attr.ib(None)
     destination_table: Optional[str] = attr.ib(default=DEFAULT_DESTINATION_TABLE_STR)
     is_python_script: bool = attr.ib(False)
+    task_concurrency: Optional[int] = attr.ib(None)
     retry_delay: Optional[str] = attr.ib(None)
     retries: Optional[int] = attr.ib(None)
     email_on_retry: Optional[bool] = attr.ib(None)

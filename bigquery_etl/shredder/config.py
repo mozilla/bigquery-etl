@@ -518,15 +518,19 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
                 return RALLY_ID
         elif (
             table.dataset_id == "analysis"
-            and study_name
-            and study_name.startswith("rally-")
         ):
             # Rally analysis tables do not have schemas specified upfront,
             # analysts might decide to use either nested or top-level rally_id.
+            # Shared datasets, like attention stream, may also have derived
+            # datasets with rally IDs
+            # See https://github.com/mozilla-services/cloudops-infra/blob/master/projects/data-pioneer/tf/prod/envs/prod/study-projects/main.tf#L60-L67
             if any(_has_nested_rally_id(field) for field in table.schema):
                 return RALLY_ID
             elif any(field.name == RALLY_ID_TOP_LEVEL for field in table.schema):
                 return RALLY_ID_TOP_LEVEL
+            # Pioneer derived tables will have a PIONEER_ID
+            elif any(field.name == PIONEER_ID for field in table.shema):
+                return PIONEER_ID
             else:
                 logging.error(f"Failed to find client_id field for {table}")
         else:
@@ -608,11 +612,12 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
             # derived tables with pioneer_id
             DeleteTarget(
                 table=qualified_table_id(table),
-                field=_get_client_id_field(table),
+                field=field,
                 project=PIONEER_PROD,
             ): sources[table.dataset_id]
             for dataset in derived_datasets
             for table in _get_tables_with_pioneer_id(dataset)
+            if field := _get_client_id_field(table) in 
         },
         **{
             # tables with pioneer_id located in study analysis projects

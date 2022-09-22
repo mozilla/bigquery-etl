@@ -1,7 +1,5 @@
 """Functions that retrieve allow or block lists of probes."""
-from urllib.request import Request, urlopen
-import json
-from datetime import date, datetime
+from datetime import date
 from dateutil.relativedelta import relativedelta
 
 six_months = date.today() + relativedelta(months=+6)
@@ -78,6 +76,9 @@ def probe_is_recent_legacy(probe_data):
 
 def probe_is_recent_glean(probe, product):
     """Return whether probe was created in the last 90 days."""
+    # Temporarily return false in favor of hardcoded list of recently used probes
+    return False
+    """
     product_map = {
         "firefox_desktop": "firefox_desktop",
         "org_mozilla_fenix": "fenix",
@@ -98,3 +99,4 @@ def probe_is_recent_glean(probe, product):
         )
 
     return (datetime.now() - probe_created_on).days <= RECENT_PROBE_DAYS
+    """

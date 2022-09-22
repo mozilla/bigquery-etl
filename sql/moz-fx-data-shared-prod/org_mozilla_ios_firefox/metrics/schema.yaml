@@ -1989,6 +1989,42 @@ fields:
       mode: NULLABLE
       name: preferences_home_page_setting
       type: STRING
+    - description: 'A string containing the Adjust ad group ID from which the user
+        installed
+
+        Firefox-iOS.
+
+        '
+      mode: NULLABLE
+      name: adjust_ad_group
+      type: STRING
+    - description: 'A string containing the Adjust campaign ID from which the user
+        installed
+
+        Firefox-iOS.
+
+        '
+      mode: NULLABLE
+      name: adjust_campaign
+      type: STRING
+    - description: 'A string containing the Adjust creative ID from which the user
+        installed
+
+        Firefox-iOS.
+
+        '
+      mode: NULLABLE
+      name: adjust_creative
+      type: STRING
+    - description: 'A string containing the Adjust network ID from which the user
+        installed
+
+        Firefox-iOS.
+
+        '
+      mode: NULLABLE
+      name: adjust_network
+      type: STRING
     mode: NULLABLE
     name: string
     type: RECORD

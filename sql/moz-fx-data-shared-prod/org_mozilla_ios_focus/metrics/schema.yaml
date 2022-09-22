@@ -390,6 +390,16 @@ fields:
       mode: NULLABLE
       name: settings_screen_set_as_default_browser_pressed
       type: INTEGER
+    - description: 'Recorded when a preference is changed and includes the
+
+        preference that changed as well as the value changed to
+
+        recorded in the extra keys.
+
+        '
+      mode: NULLABLE
+      name: app_opened_as_default_browser
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

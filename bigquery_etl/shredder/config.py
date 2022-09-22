@@ -527,7 +527,7 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
             elif any(field.name == RALLY_ID_TOP_LEVEL for field in table.schema):
                 return RALLY_ID_TOP_LEVEL
             # Pioneer derived tables will have a PIONEER_ID
-            elif any(field.name == PIONEER_ID for field in table.shema):
+            elif any(field.name == PIONEER_ID for field in table.schema):
                 return PIONEER_ID
             else:
                 logging.error(f"Failed to find client_id field for {table}")

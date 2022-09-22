@@ -4,7 +4,7 @@ This repository uses `pytest`:
 
 ```
 # create a venv
-python3.8 -m venv venv/
+python3.10 -m venv venv/
 
 # install pip-tools for managing dependencies
 ./venv/bin/pip install pip-tools -c requirements.in

@@ -58,7 +58,7 @@ setup(
     ],
     long_description="Tooling for building derived datasets in BigQuery",
     long_description_content_type="text/markdown",
-    python_requires=">=3.8",
+    python_requires=">=3.10",
     entry_points="""
         [console_scripts]
         bqetl=bigquery_etl.cli:cli

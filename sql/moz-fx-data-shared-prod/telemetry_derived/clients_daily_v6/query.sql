@@ -531,6 +531,18 @@ clients_summary AS (
     hist_counts[OFFSET(0)] AS text_recognition_interaction_timing_count,
     hist_counts[OFFSET(1)] AS text_recognition_api_performance_count,
     hist_counts[OFFSET(2)] AS text_recognition_text_length_count,
+    COALESCE(
+      payload.processes.parent.scalars.dom_parentprocess_private_window_used,
+      FALSE
+    ) AS scalar_parent_dom_parentprocess_private_window_used,
+    COALESCE(
+      payload.processes.parent.scalars.os_environment_is_taskbar_pinned,
+      FALSE
+    ) AS scalar_parent_os_environment_is_taskbar_pinned_any,
+    COALESCE(
+      payload.processes.parent.scalars.os_environment_is_taskbar_pinned_private,
+      FALSE
+    ) AS scalar_parent_os_environment_is_taskbar_pinned_private,
     -- Select out some individual userPrefs values; note that prefs are only available in
     -- the environment based on registration in DEFAULT_ENVIRONMENT_PREFS; see
     -- https://searchfox.org/mozilla-central/source/toolkit/components/telemetry/app/TelemetryEnvironment.jsm
@@ -1030,6 +1042,9 @@ aggregates AS (
     COUNTIF(
       'Other' = scalar_parent_os_environment_launch_method
     ) > 0 AS scalar_parent_os_environment_launched_via_other,
+    COUNTIF(
+      'TaskbarPrivate' = scalar_parent_os_environment_launch_method
+    ) > 0 AS scalar_parent_os_environment_launched_via_taskbar_private,
     SUM(
       scalar_parent_storage_sync_api_usage_extensions_using
     ) AS scalar_parent_storage_sync_api_usage_extensions_using_sum,
@@ -1307,6 +1322,22 @@ aggregates AS (
     SUM(text_recognition_api_performance_count) AS text_recognition_api_performance_count_sum,
     SUM(text_recognition_text_length) AS text_recognition_text_length_sum,
     SUM(text_recognition_text_length_count) AS text_recognition_text_length_count_sum,
+    LOGICAL_OR(
+      scalar_parent_dom_parentprocess_private_window_used
+    ) AS dom_parentprocess_private_window_used,
+    LOGICAL_OR(
+      scalar_parent_os_environment_is_taskbar_pinned_any
+    ) AS os_environment_is_taskbar_pinned_any,
+    LOGICAL_OR(
+      scalar_parent_os_environment_is_taskbar_pinned_private
+    ) AS os_environment_is_taskbar_pinned_private_any,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(
+        scalar_parent_os_environment_is_taskbar_pinned_private
+        ORDER BY
+          submission_timestamp
+      )
+    ) AS os_environment_is_taskbar_pinned_private
   FROM
     clients_summary
   GROUP BY

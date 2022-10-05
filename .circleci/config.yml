@@ -58,6 +58,7 @@ jobs:
     steps:
       - checkout
       - *restore_venv_cache
+      - *build
       - &attach_generated_sql
         attach_workspace:
           at: /tmp/workspace

@@ -400,6 +400,20 @@ fields:
       mode: NULLABLE
       name: app_opened_as_default_browser
       type: INTEGER
+    - description: 'Counts the number of times default browser onboarding is dismissed.
+
+        '
+      mode: NULLABLE
+      name: default_browser_onboarding_dismiss_pressed
+      type: INTEGER
+    - description: 'Counts the number of times the Go To Settings button on
+
+        default browser onboarding is clicked.
+
+        '
+      mode: NULLABLE
+      name: default_browser_onboarding_go_to_settings_pressed
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

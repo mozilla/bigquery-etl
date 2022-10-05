@@ -13,7 +13,7 @@ executors:
 jobs:
   build:
     docker: &docker
-      - image: python:3.8
+      - image: python:3.10
     steps:
       - checkout
       - &restore_venv_cache
@@ -23,16 +23,16 @@ jobs:
             # patterns to restore cache
             - &python_cache_key
               # yamllint disable-line rule:line-length
-              python-3.8-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-{{ checksum "requirements.txt" }}
+              python-3.10-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-{{ checksum "requirements.txt" }}
               # yamllint disable-line rule:line-length
-            - python-3.8-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-
-            - python-3.8-packages-v1-{{ .Branch }}-
-            - python-3.8-packages-v1-main-
+            - python-3.10-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-
+            - python-3.10-packages-v1-{{ .Branch }}-
+            - python-3.10-packages-v1-main-
       - &build
         run:
           name: Build
           command: |
-            python3.8 -m venv venv/
+            python3 -m venv venv/
             venv/bin/pip install pip-tools --constraint requirements.in
             venv/bin/pip-sync --pip-args=--no-deps
       - run:

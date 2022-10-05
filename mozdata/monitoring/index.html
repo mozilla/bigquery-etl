@@ -2787,6 +2787,32 @@ including views on <code>payload_bytes</code> tables</p>
 <h2 id="deletion_request_volume"><a href="#deletion_request_volume">deletion_request_volume</a></h2>
 <p><code>monitoring.deletion_request_volume</code></p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>submission_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>dataset_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>num_rows</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -3046,6 +3072,37 @@ fields except the payload.</p>
 <h2 id="stable_and_derived_table_sizes"><a href="#stable_and_derived_table_sizes">stable_and_derived_table_sizes</a></h2>
 <p><code>monitoring.stable_and_derived_table_sizes</code></p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>submission_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>dataset_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>table_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>byte_size</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -3113,6 +3170,37 @@ fields except the payload.</p>
 <h2 id="stable_table_sizes"><a href="#stable_table_sizes">stable_table_sizes</a></h2>
 <p><code>monitoring.stable_table_sizes</code></p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>submission_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>dataset_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>table_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>byte_size</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -3130,6 +3218,67 @@ fields except the payload.</p>
 <hr />
 <h2 id="structured_detailed_error_counts"><a href="#structured_detailed_error_counts">structured_detailed_error_counts</a></h2>
 <p><code>monitoring.structured_detailed_error_counts</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>hour</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_namespace</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_type</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>error_type</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_count</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>error_count</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>error_message</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_payload</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>error_ratio</td>
+        <td></td>
+        <td>Float</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -3347,6 +3496,62 @@ fields except the payload.</p>
 <p><strong>Live <code>quicksuggest-click</code> Ping Count Per Minute</strong></p>
 <p><code>monitoring.suggest_click_rate_live</code></p>
 <p>A live view of submissions intended for operational monitoring use cases.</p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>submission_minute</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>n</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>n_release</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>n_beta</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>n_nightly</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>n_merino</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>n_merino_release</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>n_merino_beta</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>n_merino_nightly</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -3571,6 +3776,37 @@ fields except the payload.</p>
 <p><strong>Live <code>topsites-click</code> Ping Count Per Minute</strong></p>
 <p><code>monitoring.topsites_click_rate_live</code></p>
 <p>A live view of submissions intended for operational monitoring use cases.</p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>submission_minute</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>n</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>n_contile</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>n_remotesettings</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
 <table>
 <caption>Referenced Tables</caption>
     <tr>

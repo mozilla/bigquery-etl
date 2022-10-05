@@ -1,7 +1,0 @@
-fields:
-- mode: NULLABLE
-  name: name
-  type: STRING
-- mode: NULLABLE
-  name: code
-  type: STRING

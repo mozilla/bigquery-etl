@@ -25,7 +25,7 @@ pyjnius==1.4.2
 pytest-black==0.3.12
 pytest-flake8==1.1.1
 pytest-isort==3.0.0
-pytest-mypy==0.9.1
+pytest-mypy==0.10.0
 pytest-pydocstyle==2.3.0
 pytest-xdist==2.5.0
 pytest==7.1.3

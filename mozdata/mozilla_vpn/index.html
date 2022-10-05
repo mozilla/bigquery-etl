@@ -2886,6 +2886,262 @@
 <h2 id="all_subscriptions"><a href="#all_subscriptions">all_subscriptions</a></h2>
 <p><code>mozilla_vpn.all_subscriptions</code></p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>user_id</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>customer_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>subscription_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>plan_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>status</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>event_timestamp</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>subscription_start_date</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>created</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>trial_start</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>trial_end</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>canceled_at</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>canceled_for_customer_at</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>cancel_at</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>cancel_at_period_end</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ended_at</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>fxa_uid</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>country</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>country_name</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>user_registration_date</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>entrypoint_experiment</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>entrypoint_variation</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>utm_campaign</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>utm_content</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>utm_medium</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>utm_source</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>utm_term</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>provider</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>plan_amount</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>billing_scheme</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>plan_currency</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>plan_interval</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>plan_interval_count</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>plan_interval_timezone</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>product_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>product_name</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>pricing_plan</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>billing_grace_period</td>
+        <td></td>
+        <td>Interval</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>promotion_codes</td>
+        <td></td>
+        <td>String</td>
+        <td>No</td>
+    </tr><tr>
+        <td>promotion_discounts_amount</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>customer_start_date</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>end_date</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_acquisition_channel</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_campaign</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_content</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_medium</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_source</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>website_channel_group</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>months_retained</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>current_months_since_subscription_start</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -3184,47 +3440,6 @@ for the release channel of the Glean application "Mozilla VPN"
 <h2 id="event_types"><a href="#event_types">event_types</a></h2>
 <p><code>mozilla_vpn.event_types</code></p>
 <table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>category</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>event</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>first_timestamp</td>
-        <td></td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>numeric_index</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>index</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>event_properties</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr>
-</table>
-
-<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -3518,6 +3733,97 @@ sent in an "events" ping.</p>
 <hr />
 <h2 id="funnel_ga_to_subscriptions"><a href="#funnel_ga_to_subscriptions">funnel_ga_to_subscriptions</a></h2>
 <p><code>mozilla_vpn.funnel_ga_to_subscriptions</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>utm_join</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>site</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_acquisition_channel</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_medium</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_source</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_campaign</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_content</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>website_channel_group</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sessions</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sessions_in_available_geos</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>subscribe_intent</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>subscription_intent_in_available_geos</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>total_new_subscriptions</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>returning_subscriptions</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_time_subscriptions</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -4590,6 +4896,47 @@ for the release channel of the Glean application "Mozilla VPN"
 <h2 id="survey_lifecycle_28d_mobile"><a href="#survey_lifecycle_28d_mobile">survey_lifecycle_28d_mobile</a></h2>
 <p><code>mozilla_vpn.survey_lifecycle_28d_mobile</code></p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>survey_data</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>response_time</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>session_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>id</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>status</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -4877,6 +5224,47 @@ for the release channel of the Glean application "Mozilla VPN"
 <hr />
 <h2 id="waitlist"><a href="#waitlist">waitlist</a></h2>
 <p><code>mozilla_vpn.waitlist</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>platforms</td>
+        <td></td>
+        <td>String</td>
+        <td>No</td>
+    </tr><tr>
+        <td>country</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>region</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>region_subdivision</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>waitlist_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>joined_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
 <table>
 <caption>Referenced Tables</caption>
     <tr>

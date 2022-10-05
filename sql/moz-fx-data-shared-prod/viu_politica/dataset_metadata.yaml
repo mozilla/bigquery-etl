@@ -1,0 +1,10 @@
+friendly_name: viu-politica
+description: |-
+  User-facing views related to document namespace viu-politica; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/viu-politica
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

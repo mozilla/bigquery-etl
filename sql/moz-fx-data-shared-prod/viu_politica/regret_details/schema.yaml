@@ -32,6 +32,10 @@ fields:
     mode: NULLABLE
     name: architecture
     type: STRING
+  - description: The date & time the application was built
+    mode: NULLABLE
+    name: build_date
+    type: STRING
   - description: A UUID uniquely identifying the client.
     mode: NULLABLE
     name: client_id
@@ -70,10 +74,6 @@ fields:
   - description: The version of the Glean SDK
     mode: NULLABLE
     name: telemetry_sdk_build
-    type: STRING
-  - description: The date & time the application was built
-    mode: NULLABLE
-    name: build_date
     type: STRING
   mode: NULLABLE
   name: client_info
@@ -145,6 +145,14 @@ fields:
       mode: NULLABLE
       name: x_debug_id
       type: STRING
+    - description: X-Foxsec-IP-Reputation header
+      mode: NULLABLE
+      name: x_foxsec_ip_reputation
+      type: STRING
+    - description: X-LB-Tags HTTP header
+      mode: NULLABLE
+      name: x_lb_tags
+      type: STRING
     - description: X-PingSender-Version HTTP header
       mode: NULLABLE
       name: x_pingsender_version
@@ -156,14 +164,6 @@ fields:
     - description: X-Telemetry-Agent HTTP header
       mode: NULLABLE
       name: x_telemetry_agent
-      type: STRING
-    - description: X-Foxsec-IP-Reputation header
-      mode: NULLABLE
-      name: x_foxsec_ip_reputation
-      type: STRING
-    - description: X-LB-Tags HTTP header
-      mode: NULLABLE
-      name: x_lb_tags
       type: STRING
     - mode: NULLABLE
       name: parsed_date
@@ -285,84 +285,20 @@ fields:
     name: labeled_counter
     type: RECORD
   - fields:
-    - description: 'The client id from legacy telemetry.
-
-        '
+    - description: Video UUID (not to be confused with YT video id)
       mode: NULLABLE
-      name: legacy_ids_client_id
-      type: STRING
-    - description: 'The FxA device id.
-
-        '
-      mode: NULLABLE
-      name: deletion_fxa_device_id
-      type: STRING
-    mode: NULLABLE
-    name: uuid
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: jwe
-    type: RECORD
-  - fields:
-    - description: 'The FxA device id.
-
-        '
-      mode: NULLABLE
-      name: deletion_sync_device_id
+      name: regret_details_video_data_id
       type: STRING
     mode: NULLABLE
     name: string
     type: RECORD
   - fields:
-    - mode: NULLABLE
-      name: key
+    - description: Regret feedback text
+      mode: NULLABLE
+      name: regret_details_feedback_text
       type: STRING
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - fields:
-        - mode: NULLABLE
-          name: denominator
-          type: INTEGER
-        - mode: NULLABLE
-          name: numerator
-          type: INTEGER
-        mode: NULLABLE
-        name: value
-        type: RECORD
-      mode: REPEATED
-      name: value
-      type: RECORD
-    mode: REPEATED
-    name: labeled_rate
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: url
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: text
+    mode: NULLABLE
+    name: text2
     type: RECORD
   mode: NULLABLE
   name: metrics

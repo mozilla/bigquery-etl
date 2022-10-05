@@ -32,6 +32,10 @@ fields:
     mode: NULLABLE
     name: architecture
     type: STRING
+  - description: The date & time the application was built
+    mode: NULLABLE
+    name: build_date
+    type: STRING
   - description: A UUID uniquely identifying the client.
     mode: NULLABLE
     name: client_id
@@ -70,10 +74,6 @@ fields:
   - description: The version of the Glean SDK
     mode: NULLABLE
     name: telemetry_sdk_build
-    type: STRING
-  - description: The date & time the application was built
-    mode: NULLABLE
-    name: build_date
     type: STRING
   mode: NULLABLE
   name: client_info
@@ -145,6 +145,14 @@ fields:
       mode: NULLABLE
       name: x_debug_id
       type: STRING
+    - description: X-Foxsec-IP-Reputation header
+      mode: NULLABLE
+      name: x_foxsec_ip_reputation
+      type: STRING
+    - description: X-LB-Tags HTTP header
+      mode: NULLABLE
+      name: x_lb_tags
+      type: STRING
     - description: X-PingSender-Version HTTP header
       mode: NULLABLE
       name: x_pingsender_version
@@ -156,14 +164,6 @@ fields:
     - description: X-Telemetry-Agent HTTP header
       mode: NULLABLE
       name: x_telemetry_agent
-      type: STRING
-    - description: X-Foxsec-IP-Reputation header
-      mode: NULLABLE
-      name: x_foxsec_ip_reputation
-      type: STRING
-    - description: X-LB-Tags HTTP header
-      mode: NULLABLE
-      name: x_lb_tags
       type: STRING
     - mode: NULLABLE
       name: parsed_date
@@ -281,89 +281,64 @@ fields:
       mode: REPEATED
       name: glean_error_invalid_value
       type: RECORD
-    - description: 'Counts the number of times user toggle (expand or collapse)
-
-        inactive tab section.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: inactive_tabs_tray_toggle_inactive_tab_tray
-      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD
   - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: jwe
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - fields:
-        - mode: NULLABLE
-          name: denominator
-          type: INTEGER
-        - mode: NULLABLE
-          name: numerator
-          type: INTEGER
-        mode: NULLABLE
-        name: value
-        type: RECORD
-      mode: REPEATED
-      name: value
-      type: RECORD
-    mode: REPEATED
-    name: labeled_rate
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: url
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: text
-    type: RECORD
-  - fields:
-    - description: 'Counts the number of times a user taps to open an
-
-        existing tab from the History Highlights section
-
-        '
+    - description: Video duration
       mode: NULLABLE
-      name: firefox_home_page_history_highlights_item_opened
+      name: video_data_duration
       type: INTEGER
     mode: NULLABLE
-    name: counter
+    name: quantity
+    type: RECORD
+  - fields:
+    - description: Experiment arm
+      mode: NULLABLE
+      name: metadata_experiment_arm
+      type: STRING
+    - description: Feedback UI variant
+      mode: NULLABLE
+      name: metadata_feedback_ui_variant
+      type: STRING
+    - description: Installation ID
+      mode: NULLABLE
+      name: metadata_installation_id
+      type: STRING
+    - description: Owner channel Id
+      mode: NULLABLE
+      name: video_data_channel_id
+      type: STRING
+    - description: Video Id
+      mode: NULLABLE
+      name: video_data_id
+      type: STRING
+    - description: Video posted date
+      mode: NULLABLE
+      name: video_data_posted_date
+      type: STRING
+    - description: Video title
+      mode: NULLABLE
+      name: video_data_title
+      type: STRING
+    - description: Video data UUID
+      mode: NULLABLE
+      name: video_data_uuid
+      type: STRING
+    - description: Video view count
+      mode: NULLABLE
+      name: video_data_view_count
+      type: STRING
+    mode: NULLABLE
+    name: string
+    type: RECORD
+  - fields:
+    - description: Video description
+      mode: NULLABLE
+      name: video_data_description
+      type: STRING
+    mode: NULLABLE
+    name: text2
     type: RECORD
   mode: NULLABLE
   name: metrics

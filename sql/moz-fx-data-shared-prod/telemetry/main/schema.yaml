@@ -20057,6 +20057,46 @@ fields:
       mode: NULLABLE
       name: webext_eventpage_running_time_ms
       type: STRING
+    - description: Whether a document used the CSS property contain-intrinsic-block-size
+      mode: NULLABLE
+      name: use_counter2_css_property_contain_intrinsic_block_size_document
+      type: STRING
+    - description: Whether a page used the CSS property contain-intrinsic-block-size
+      mode: NULLABLE
+      name: use_counter2_css_property_contain_intrinsic_block_size_page
+      type: STRING
+    - description: Whether a document used the CSS property contain-intrinsic-height
+      mode: NULLABLE
+      name: use_counter2_css_property_contain_intrinsic_height_document
+      type: STRING
+    - description: Whether a page used the CSS property contain-intrinsic-height
+      mode: NULLABLE
+      name: use_counter2_css_property_contain_intrinsic_height_page
+      type: STRING
+    - description: Whether a document used the CSS property contain-intrinsic-inline-size
+      mode: NULLABLE
+      name: use_counter2_css_property_contain_intrinsic_inline_size_document
+      type: STRING
+    - description: Whether a page used the CSS property contain-intrinsic-inline-size
+      mode: NULLABLE
+      name: use_counter2_css_property_contain_intrinsic_inline_size_page
+      type: STRING
+    - description: Whether a document used the CSS property contain-intrinsic-size
+      mode: NULLABLE
+      name: use_counter2_css_property_contain_intrinsic_size_document
+      type: STRING
+    - description: Whether a page used the CSS property contain-intrinsic-size
+      mode: NULLABLE
+      name: use_counter2_css_property_contain_intrinsic_size_page
+      type: STRING
+    - description: Whether a document used the CSS property contain-intrinsic-width
+      mode: NULLABLE
+      name: use_counter2_css_property_contain_intrinsic_width_document
+      type: STRING
+    - description: Whether a page used the CSS property contain-intrinsic-width
+      mode: NULLABLE
+      name: use_counter2_css_property_contain_intrinsic_width_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -41390,6 +41430,51 @@ fields:
         - description: Whether a page called Scheduler.postTask
           mode: NULLABLE
           name: use_counter2_scheduler_posttask_page
+          type: STRING
+        - description: The time spent from HttpChannelChild::AsyncOpen to adding the
+            transactionto the nsHttpConnectionMgr, in milliseconds
+          mode: NULLABLE
+          name: network_async_open_to_transaction_pending_ms
+          type: STRING
+        - description: Whether a document used the CSS property contain-intrinsic-block-size
+          mode: NULLABLE
+          name: use_counter2_css_property_contain_intrinsic_block_size_document
+          type: STRING
+        - description: Whether a page used the CSS property contain-intrinsic-block-size
+          mode: NULLABLE
+          name: use_counter2_css_property_contain_intrinsic_block_size_page
+          type: STRING
+        - description: Whether a document used the CSS property contain-intrinsic-height
+          mode: NULLABLE
+          name: use_counter2_css_property_contain_intrinsic_height_document
+          type: STRING
+        - description: Whether a page used the CSS property contain-intrinsic-height
+          mode: NULLABLE
+          name: use_counter2_css_property_contain_intrinsic_height_page
+          type: STRING
+        - description: Whether a document used the CSS property contain-intrinsic-inline-size
+          mode: NULLABLE
+          name: use_counter2_css_property_contain_intrinsic_inline_size_document
+          type: STRING
+        - description: Whether a page used the CSS property contain-intrinsic-inline-size
+          mode: NULLABLE
+          name: use_counter2_css_property_contain_intrinsic_inline_size_page
+          type: STRING
+        - description: Whether a document used the CSS property contain-intrinsic-size
+          mode: NULLABLE
+          name: use_counter2_css_property_contain_intrinsic_size_document
+          type: STRING
+        - description: Whether a page used the CSS property contain-intrinsic-size
+          mode: NULLABLE
+          name: use_counter2_css_property_contain_intrinsic_size_page
+          type: STRING
+        - description: Whether a document used the CSS property contain-intrinsic-width
+          mode: NULLABLE
+          name: use_counter2_css_property_contain_intrinsic_width_document
+          type: STRING
+        - description: Whether a page used the CSS property contain-intrinsic-width
+          mode: NULLABLE
+          name: use_counter2_css_property_contain_intrinsic_width_page
           type: STRING
         mode: NULLABLE
         name: histograms

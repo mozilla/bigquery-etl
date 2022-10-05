@@ -221,15 +221,6 @@ fields:
   type: RECORD
 - fields:
   - fields:
-    - description: True iff the type of the disk the current Firefox profile is stored
-        on is an SSD. (Windows only).
-      mode: NULLABLE
-      name: fog_validation_profile_disk_is_ssd
-      type: BOOLEAN
-    mode: NULLABLE
-    name: boolean
-    type: RECORD
-  - fields:
     - description: 'Counts the number of times a metric was set with an invalid label.
 
         The labels are the `category.name` identifier of the metric.
@@ -294,22 +285,20 @@ fields:
     name: labeled_counter
     type: RECORD
   - fields:
-    - description: The version of the OS running Firefox, as detected by Gecko. To
-        be sent only in the "fog-validation" ping.
+    - description: Experiment arm
       mode: NULLABLE
-      name: fog_validation_os_version
+      name: metadata_experiment_arm
+      type: STRING
+    - description: Feedback UI variant
+      mode: NULLABLE
+      name: metadata_feedback_ui_variant
+      type: STRING
+    - description: Installation ID
+      mode: NULLABLE
+      name: metadata_installation_id
       type: STRING
     mode: NULLABLE
     name: string
-    type: RECORD
-  - fields:
-    - description: The Telemetry client_id. To be sent only in the "fog-validation"
-        ping.
-      mode: NULLABLE
-      name: fog_validation_legacy_telemetry_client_id
-      type: STRING
-    mode: NULLABLE
-    name: uuid
     type: RECORD
   mode: NULLABLE
   name: metrics

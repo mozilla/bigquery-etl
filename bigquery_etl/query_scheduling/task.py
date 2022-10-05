@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 import attr
-import cattr
+import cattrs
 
 from bigquery_etl.dependency import extract_table_references_without_views
 from bigquery_etl.metadata.parse_metadata import Metadata
@@ -296,7 +296,7 @@ class Task:
         If `metadata` is set, then it is used instead of the metadata.yaml
         file that might exist alongside the query file.
         """
-        converter = cattr.Converter()
+        converter = cattrs.BaseConverter()
         if metadata is None:
             metadata = Metadata.of_query_file(query_file)
 

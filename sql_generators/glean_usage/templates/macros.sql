@@ -27,5 +27,7 @@ _core_clients_first_seen AS (
   JOIN
      _core
   ON _fennec_id_lookup.fennec_client_id = _core.client_id
+  QUALIFY
+    ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY first_seen_date ASC) = 1
 )
 {% endmacro %}

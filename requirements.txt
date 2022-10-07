@@ -1239,9 +1239,9 @@ types-pyyaml==6.0.12 \
     --hash=sha256:29228db9f82df4f1b7febee06bbfb601677882e98a3da98132e31c6874163e15 \
     --hash=sha256:f6f350418125872f3f0409d96a62a5a5ceb45231af5cc07ee0034ec48a3c82fa
     # via -r requirements.in
-types-requests==2.28.11.1 \
-    --hash=sha256:02b1806c5b9904edcd87fa29236164aea0e6cdc4d93ea020cd615ef65cb43d65 \
-    --hash=sha256:1ff2c1301f6fe58b5d1c66cdf631ca19734cb3b1a4bbadc878d75557d183291a
+types-requests==2.28.11.2 \
+    --hash=sha256:14941f8023a80b16441b3b46caffcbfce5265fd14555844d6029697824b5a2ef \
+    --hash=sha256:fdcd7bd148139fb8eef72cf4a41ac7273872cad9e6ada14b11ff5dfdeee60ed3
     # via -r requirements.in
 types-ujson==5.5.0 \
     --hash=sha256:6051e6b80d71382f1f85b0f97b475d84621eae3e2789ed24c5721f784b0846e1 \

@@ -2388,6 +2388,52 @@
 <h2 id="amo_stats_installs"><a href="#amo_stats_installs">amo_stats_installs</a></h2>
 <p><code>amo_dev.amo_stats_installs</code></p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>submission_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>hashed_addon_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>total_downloads</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>downloads_per_campaign</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>downloads_per_content</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>downloads_per_source</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>downloads_per_medium</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -2416,6 +2462,52 @@
 </ul>
 </li>
 </ul>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>submission_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>hashed_addon_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>total_downloads</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>downloads_per_source</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>downloads_per_content</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>downloads_per_medium</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>downloads_per_campaign</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr>
+</table>
+
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_dev/amo_stats_installs_v3">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_dev/amo_stats_installs_v3/metadata.yaml">Metadata File</a> </p>
 <hr />
 

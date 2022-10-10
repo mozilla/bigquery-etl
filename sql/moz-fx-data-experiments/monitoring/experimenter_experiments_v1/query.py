@@ -10,7 +10,7 @@ from argparse import ArgumentParser
 from typing import List, Optional
 
 import attr
-import cattr
+import cattrs
 import pytz
 import requests
 from google.cloud import bigquery
@@ -89,7 +89,7 @@ class ExperimentV1:
 
     @classmethod
     def from_dict(cls, d) -> "ExperimentV1":
-        converter = cattr.Converter()
+        converter = cattrs.BaseConverter()
         converter.register_structure_hook(
             datetime.datetime,
             lambda num, _: cls._unix_millis_to_datetime(num),
@@ -142,7 +142,7 @@ class ExperimentV6:
 
     @classmethod
     def from_dict(cls, d) -> "ExperimentV6":
-        converter = cattr.Converter()
+        converter = cattrs.BaseConverter()
         converter.register_structure_hook(
             datetime.datetime,
             lambda num, _: datetime.datetime.fromisoformat(
@@ -250,7 +250,7 @@ def main():
     job_config = bigquery.LoadJobConfig(write_disposition="WRITE_TRUNCATE")
     job_config.schema = bq_schema
 
-    converter = cattr.Converter()
+    converter = cattrs.BaseConverter()
     converter.register_unstructure_hook(
         datetime.datetime, lambda d: datetime.datetime.strftime(d, format="%Y-%m-%d")
     )

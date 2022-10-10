@@ -3,24 +3,24 @@ fields:
 - mode: NULLABLE
   name: id
   type: STRING
-  description:
+  description: Pool id
 
 - mode: NULLABLE
   name: pool
   type: STRING
-  description:
+  description: Pool name
 
 - mode: NULLABLE
   name: description
   type: STRING
-  description:
+  description: Pool description
 
 - mode: NULLABLE
   name: slots
   type: STRING
-  description:
+  description: Number of slots available in the pool
 
 - mode: NULLABLE
   name: is_deleted
   type: BOOLEAN
-  description:
+  description: Row deleted from the source table (Fivetran managed field)

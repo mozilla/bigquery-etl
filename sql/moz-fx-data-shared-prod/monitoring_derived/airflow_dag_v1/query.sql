@@ -8,6 +8,7 @@ SELECT
   is_paused,
   has_task_concurrency_limits,
   concurrency,
+  max_active_runs,
   _fivetran_deleted AS is_deleted
 FROM
   `moz-fx-data-bq-fivetran.airflow_metadata_airflow_db.dag`

@@ -3,49 +3,54 @@ fields:
 - mode: NULLABLE
   name: dag_id
   type: STRING
-  description:
+  description: Airflow DAG id (<root_dag_id>.<subdag_id>)
 
 - mode: NULLABLE
   name: root_dag_id
   type: STRING
-  description:
+  description: Airflow Root DAG id
 
 - mode: NULLABLE
   name: subdag_id
   type: STRING
-  description:
+  description: Airflow subdag id
 
 - mode: NULLABLE
   name: is_subdag
   type: BOOLEAN
-  description:
+  description: Indicates if this DAG is a subdag
 
 - mode: NULLABLE
   name: owners
   type: STRING
-  description:
+  description: DAG owners (comma separated)
 
 - mode: NULLABLE
   name: is_active
   type: BOOLEAN
-  description:
+  description: Indicates if the DAG is active
 
 - mode: NULLABLE
   name: is_paused
   type: BOOLEAN
-  description:
+  description: Indicates if the DAG is currently paused
 
 - mode: NULLABLE
   name: has_task_concurrency_limits
   type: BOOLEAN
-  description:
+  description: Indicates if DAG has concurrency limit set
 
 - mode: NULLABLE
   name: concurrency
-  type: STRING
-  description:
+  type: INTEGER
+  description: Cuncerrency settings for the DAG
+
+- mode: NULLABLE
+  name: max_active_runs
+  type: INTEGER
+  description: Max number of active DAG runs allowed
 
 - mode: NULLABLE
   name: is_deleted
   type: BOOLEAN
-  description:
+  description: Row deleted from the source table (Fivetran managed field)

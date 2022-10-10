@@ -3,14 +3,14 @@ fields:
 - mode: NULLABLE
   name: dag_id
   type: STRING
-  description:
+  description: Airflow DAG id
 
 - mode: NULLABLE
   name: tag_name
   type: STRING
-  description:
+  description: Airflow tag name
 
 - mode: NULLABLE
   name: is_deleted
   type: BOOLEAN
-  description:
+  description: Row deleted from the source table (Fivetran managed field)

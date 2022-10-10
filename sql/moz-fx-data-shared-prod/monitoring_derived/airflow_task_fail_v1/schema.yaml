@@ -3,17 +3,17 @@ fields:
 - mode: NULLABLE
   name: dag_id
   type: STRING
-  description:
+  description: Airflow DAG id
 
 - mode: NULLABLE
   name: task_id
   type: STRING
-  description:
+  description: Airflow task id
 
 - mode: NULLABLE
   name: duration
   type: STRING
-  description:
+  description: Time elapsed since start until end of task's exeuction (seconds)
 
 - mode: NULLABLE
   name: execution_date
@@ -33,4 +33,4 @@ fields:
 - mode: NULLABLE
   name: is_deleted
   type: BOOLEAN
-  description:
+  description: Row deleted from the source table (Fivetran managed field)

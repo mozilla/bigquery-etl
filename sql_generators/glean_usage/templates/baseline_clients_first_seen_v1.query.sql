@@ -95,8 +95,8 @@ _previous AS (
 
 -- added this as the result of bug#1788650
 SELECT
-  MIN(submission_date) AS submission_date,
-  MIN(first_seen_date) AS first_seen_date,
+  submission_date,
+  first_seen_date,
   sample_id,
   client_id
 FROM _joined

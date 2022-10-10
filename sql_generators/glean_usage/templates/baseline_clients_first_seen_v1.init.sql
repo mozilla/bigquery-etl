@@ -34,13 +34,12 @@ WITH
   {{ core_clients_first_seen(migration_table) }}
   SELECT
     client_id,
-    MIN(submission_date) AS submission_date,
-    MIN(COALESCE(core.first_seen_date, baseline.first_seen_date)) AS first_seen_date,
+    submission_date,
+    COALESCE(core.first_seen_date, baseline.first_seen_date) AS first_seen_date,
     sample_id,
   FROM baseline
-  LEFT JOIN _core_clients_first_seen core
+  LEFT JOIN _core_clients_first_seen AS core
   USING (client_id)
-  GROUP BY client_id, sample_id
 {% else %}
   SELECT * FROM baseline
 {% endif %}

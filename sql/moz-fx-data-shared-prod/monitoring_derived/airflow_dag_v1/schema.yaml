@@ -1,0 +1,51 @@
+fields:
+
+- mode: NULLABLE
+  name: dag_id
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: root_dag_id
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: subdag_id
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: is_subdag
+  type: BOOLEAN
+  description:
+
+- mode: NULLABLE
+  name: owners
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: is_active
+  type: BOOLEAN
+  description:
+
+- mode: NULLABLE
+  name: is_paused
+  type: BOOLEAN
+  description:
+
+- mode: NULLABLE
+  name: has_task_concurrency_limits
+  type: BOOLEAN
+  description:
+
+- mode: NULLABLE
+  name: concurrency
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: is_deleted
+  type: BOOLEAN
+  description:

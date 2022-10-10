@@ -1,0 +1,41 @@
+fields:
+
+- mode: NULLABLE
+  name: dag_id
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: task_id
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: execution_date
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: reschedule_date
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: start_date
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: end_date
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: duration
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: is_deleted
+  type: BOOLEAN
+  description:

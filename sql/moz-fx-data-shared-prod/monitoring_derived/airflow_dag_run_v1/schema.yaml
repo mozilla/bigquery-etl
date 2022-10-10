@@ -1,0 +1,41 @@
+fields:
+
+- mode: NULLABLE
+  name: dag_id
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: run_type
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: external_trigger
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: state
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: execution_date
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: start_date
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: end_date
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: is_deleted
+  type: BOOLEAN
+  description:

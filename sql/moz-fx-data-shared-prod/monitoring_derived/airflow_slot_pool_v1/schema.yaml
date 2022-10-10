@@ -1,0 +1,26 @@
+fields:
+
+- mode: NULLABLE
+  name: id
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: pool
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: description
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: slots
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: is_deleted
+  type: BOOLEAN
+  description:

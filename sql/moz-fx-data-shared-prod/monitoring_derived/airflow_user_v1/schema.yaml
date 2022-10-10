@@ -1,0 +1,31 @@
+fields:
+
+- mode: NULLABLE
+  name: user_id
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: role_id
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: active
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: created_on
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: changed_on
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: last_login
+  type: STRING
+  description:

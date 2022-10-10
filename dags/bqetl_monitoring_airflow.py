@@ -8,6 +8,9 @@ import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
+from operators.backport.fivetran.operator import FivetranOperator
+from operators.backport.fivetran.sensor import FivetranSensor
+
 docs = """
 ### bqetl_monitoring_airflow
 
@@ -121,4 +124,47 @@ with DAG(
         email=["kignasiak@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    fivetran_airflow_metadata_import_sync_start = FivetranOperator(
+        connector_id="{{ var.value.fivetran_airflow_metadata_import_connector_id }}",
+        task_id="fivetran_airflow_metadata_import_task",
+    )
+
+    fivetran_airflow_metadata_import_sync_wait = FivetranSensor(
+        connector_id="{{ var.value.fivetran_airflow_metadata_import_connector_id }}",
+        task_id="fivetran_airflow_metadata_import_sensor",
+        poke_interval=5,
+    )
+
+    fivetran_airflow_metadata_import_sync_wait.set_upstream(
+        fivetran_airflow_metadata_import_sync_start
+    )
+
+    monitoring_derived__airflow_dag__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
+    monitoring_derived__airflow_dag_run__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
+    monitoring_derived__airflow_dag_tag__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
+    monitoring_derived__airflow_slot_pool__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
+    monitoring_derived__airflow_task_fail__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
+    monitoring_derived__airflow_task_reschedule__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
+    monitoring_derived__airflow_user__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
     )

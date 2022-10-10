@@ -12,3 +12,5 @@ scheduling:
       'airflow_metadata_airflow_db',
       'task_reschedule'
     ]
+  depends_on_fivetran:
+    - task_id: fivetran_airflow_metadata_import

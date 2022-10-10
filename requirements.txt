@@ -538,9 +538,9 @@ idna==3.3 \
     # via
     #   requests
     #   yarl
-importlib-resources==5.9.0 \
-    --hash=sha256:5481e97fb45af8dcf2f798952625591c58fe599d0735d86b10f54de086a61681 \
-    --hash=sha256:f78a8df21a79bcc30cfd400bdc38f314333de7c0fb619763f6b9dabab8268bb7
+importlib-resources==5.10.0 \
+    --hash=sha256:c01b1b94210d9849f286b86bb51bcea7cd56dde0600d8db721d7b81330711668 \
+    --hash=sha256:ee17ec648f85480d523596ce49eae8ead87d5631ae1551f913c0100b5edd3437
     # via -r requirements.in
 iniconfig==1.1.1 \
     --hash=sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3 \

@@ -59,15 +59,24 @@ _core_clients_first_seen AS (
     _core
   ON
     _fennec_id_lookup.fennec_client_id = _core.client_id
+  WHERE
+    TRUE
+  QUALIFY
+    IF(
+      COUNT(*) OVER (PARTITION BY _fennec_id_lookup.client_id) > 1
+      OR COUNT(*) OVER (PARTITION BY _core.client_id) > 1,
+      ERROR("duplicate client_id detected"),
+      TRUE
+    )
 )
 SELECT
   client_id,
   submission_date,
   COALESCE(core.first_seen_date, baseline.first_seen_date) AS first_seen_date,
-  sample_id
+  sample_id,
 FROM
   baseline
 LEFT JOIN
-  _core_clients_first_seen core
+  _core_clients_first_seen AS core
 USING
   (client_id)

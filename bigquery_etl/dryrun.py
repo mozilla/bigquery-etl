@@ -156,7 +156,7 @@ SKIP = {
         recursive=True,
     ),
     *glob.glob(
-        "sql/moz-fx-data-shared-prod/monitoring_derived/**/airflow_*.sql",
+        "sql/moz-fx-data-shared-prod/monitoring_derived/airflow_*/*.sql",
         recursive=True,
     ),  # noqa E501
     # Materialized views

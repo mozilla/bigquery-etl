@@ -1,0 +1,19 @@
+friendly_name: AdM Forecasting
+description: |-
+  Data for AdM forecasts: Sponsored Tiles and Suggest.
+owners:
+- skahmann@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name:
+  task_name:
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields: []
+references: {}

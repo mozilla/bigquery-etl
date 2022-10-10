@@ -27,5 +27,14 @@ _core_clients_first_seen AS (
   JOIN
      _core
   ON _fennec_id_lookup.fennec_client_id = _core.client_id
+  WHERE
+    TRUE
+  QUALIFY
+    IF(
+      COUNT(*) OVER (PARTITION BY _fennec_id_lookup.client_id) > 1
+      OR COUNT(*) OVER (PARTITION BY _core.client_id) > 1,
+      ERROR("duplicate client_id detected"),
+      TRUE
+    )
 )
 {% endmacro %}

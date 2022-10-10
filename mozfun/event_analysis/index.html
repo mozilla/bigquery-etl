@@ -1818,6 +1818,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#escape_metachars-udf" class="md-nav__link">
+    escape_metachars (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#get_funnel_steps_sql-stored-procedure" class="md-nav__link">
     get_funnel_steps_sql (Stored Procedure)
   </a>
@@ -1876,20 +1883,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#create_count_steps_query-stored-procedure" class="md-nav__link">
-    create_count_steps_query (Stored Procedure)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#escape_metachars-udf" class="md-nav__link">
-    escape_metachars (UDF)
-  </a>
   
 </li>
       
@@ -1984,6 +1977,13 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create_count_steps_query-stored-procedure" class="md-nav__link">
+    create_count_steps_query (Stored Procedure)
+  </a>
   
 </li>
       
@@ -2370,6 +2370,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#escape_metachars-udf" class="md-nav__link">
+    escape_metachars (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#get_funnel_steps_sql-stored-procedure" class="md-nav__link">
     get_funnel_steps_sql (Stored Procedure)
   </a>
@@ -2428,20 +2435,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#create_count_steps_query-stored-procedure" class="md-nav__link">
-    create_count_steps_query (Stored Procedure)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#escape_metachars-udf" class="md-nav__link">
-    escape_metachars (UDF)
-  </a>
   
 </li>
       
@@ -2539,6 +2532,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#create_count_steps_query-stored-procedure" class="md-nav__link">
+    create_count_steps_query (Stored Procedure)
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2576,6 +2576,9 @@ of that event on that day.</p>
 <h2 id="aggregate_match_strings-udf">aggregate_match_strings (UDF)</h2>
 <p>Given an array of strings that each match a single event, aggregate those into a single regex string that will match any of the events.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/event_analysis/aggregate_match_strings">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/event_analysis/aggregate_match_strings/metadata.yaml">Edit</a></p>
+<h2 id="escape_metachars-udf">escape_metachars (UDF)</h2>
+<p>Escape all metachars from a regex string. This will make the string an exact match, no matter what it contains.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/event_analysis/escape_metachars">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/event_analysis/escape_metachars/metadata.yaml">Edit</a></p>
 <h2 id="get_funnel_steps_sql-stored-procedure">get_funnel_steps_sql (Stored Procedure)</h2>
 <p>For a given funnel, get a SQL statement that can be used to determine if an events string contains that funnel.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/event_analysis/get_funnel_steps_sql">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/event_analysis/get_funnel_steps_sql/metadata.yaml">Edit</a></p>
@@ -2608,12 +2611,6 @@ and for all events without their properties.</p>
 <p>This allows us to include both total counts for an event (with any
 property value), and events that don't have properties.
 <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/event_analysis/extract_event_counts_with_properties">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/event_analysis/extract_event_counts_with_properties/metadata.yaml">Edit</a></p>
-<h2 id="create_count_steps_query-stored-procedure">create_count_steps_query (Stored Procedure)</h2>
-<p>Generate the SQL statement that can be used to create an easily queryable view on events data.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/event_analysis/create_count_steps_query">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/event_analysis/create_count_steps_query/metadata.yaml">Edit</a></p>
-<h2 id="escape_metachars-udf">escape_metachars (UDF)</h2>
-<p>Escape all metachars from a regex string. This will make the string an exact match, no matter what it contains.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/event_analysis/escape_metachars">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/event_analysis/escape_metachars/metadata.yaml">Edit</a></p>
 <h2 id="create_events_view-stored-procedure">create_events_view (Stored Procedure)</h2>
 <p>Create a view that queries the <code>events_daily</code> table. This view currently supports both funnels and event counts.
 Funnels are created as a struct, with each step in the funnel as a boolean column in the struct, indicating whether the user completed that step on that day.
@@ -2828,6 +2825,9 @@ of unicode chars.</p>
 <p>See <a href="https://sql.telemetry.mozilla.org/dashboard/fenix-events">this dashboard</a>
 for example usage.
 <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/event_analysis/extract_event_counts">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/event_analysis/extract_event_counts/metadata.yaml">Edit</a></p>
+<h2 id="create_count_steps_query-stored-procedure">create_count_steps_query (Stored Procedure)</h2>
+<p>Generate the SQL statement that can be used to create an easily queryable view on events data.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/event_analysis/create_count_steps_query">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/event_analysis/create_count_steps_query/metadata.yaml">Edit</a></p>
 
 
 

@@ -1780,3 +1780,12 @@ fields:
   mode: NULLABLE
   name: browser_version_info
   type: RECORD
+- mode: NULLABLE
+  name: total_uri_count
+  type: INTEGER
+- mode: NULLABLE
+  name: total_uri_count_normal_mode
+  type: INTEGER
+- mode: NULLABLE
+  name: total_uri_count_private_mode
+  type: INTEGER

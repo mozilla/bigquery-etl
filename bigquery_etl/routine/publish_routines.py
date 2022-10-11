@@ -124,9 +124,10 @@ def publish_routine(
         dataset = client.create_dataset(raw_routine.dataset, exists_ok=True)
 
         # set permissions for dataset, public for everyone
-        entry = bigquery.AccessEntry("READER", "specialGroup", "allAuthenticatedUsers")
+        read_entry = bigquery.AccessEntry("READER", bigquery.enums.EntityTypes.SPECIAL_GROUP, "allAuthenticatedUsers")
+        write_entry = bigquery.AccessEntry("WRITER", bigquery.enums.EntityTypes.IAM_MEMBER, "workgroup:platform-infra/internal")
         entries = list(dataset.access_entries)
-        entries.append(entry)
+        entries += [read_entry, write_entry]
         dataset.access_entries = entries
         dataset = client.update_dataset(dataset, ["access_entries"])
 

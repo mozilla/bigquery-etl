@@ -135,7 +135,7 @@ WITH base AS (
     -- is important, as we pull these out by numerical offset later.
     ARRAY(
       SELECT
-        mozfun.extract_keyed_hist_sum(value.keyed_histogram)
+        mozfun.hist.extract_keyed_hist_sum(value.keyed_histogram)
       FROM
         UNNEST(
           [

@@ -1376,7 +1376,19 @@ aggregates AS (
         ORDER BY
           submission_timestamp
       )
-    ) AS os_environment_is_taskbar_pinned_private
+    ) AS os_environment_is_taskbar_pinned_private,
+    SUM(bookmark_migrations_quantity_chrome) AS bookmark_migrations_quantity_chrome,
+    SUM(bookmark_migrations_quantity_edge) AS bookmark_migrations_quantity_edge,
+    SUM(bookmark_migrations_quantity_safari) AS bookmark_migrations_quantity_safari,
+    SUM(bookmark_migrations_quantity_all) AS bookmark_migrations_quantity_all,
+    SUM(history_migrations_quantity_chrome) AS history_migrations_quantity_chrome,
+    SUM(history_migrations_quantity_edge) AS history_migrations_quantity_edge,
+    SUM(history_migrations_quantity_safari) AS history_migrations_quantity_safari,
+    SUM(history_migrations_quantity_all) AS history_migrations_quantity_all,
+    SUM(logins_migrations_quantity_chrome) AS logins_migrations_quantity_chrome,
+    SUM(logins_migrations_quantity_edge) AS logins_migrations_quantity_edge,
+    SUM(logins_migrations_quantity_safari) AS logins_migrations_quantity_safari,
+    SUM(logins_migrations_quantity_all) AS logins_migrations_quantity_all,
   FROM
     clients_summary
   GROUP BY

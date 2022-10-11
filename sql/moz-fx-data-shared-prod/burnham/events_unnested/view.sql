@@ -4,7 +4,6 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   e.* EXCEPT (events, metrics) REPLACE(
-    "release" AS normalized_channel,
     -- Order of some fields differs between tables; we're verbose here for compatibility
     STRUCT(
       client_info.android_sdk_version AS android_sdk_version,

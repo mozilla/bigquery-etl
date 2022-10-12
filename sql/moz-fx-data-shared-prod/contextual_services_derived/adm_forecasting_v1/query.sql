@@ -342,7 +342,7 @@ daily_mobile_clients AS (
   FROM
     telemetry.unified_metrics AS browser_dau
   WHERE
-    `mozfun`.bits28.active_in_range(browser_dau.days_seen_bits, 0, 1)
+    mozfun.bits28.active_in_range(browser_dau.days_seen_bits, 0, 1)
         -- don't want Focus apps
     AND browser_dau.normalized_app_name IN ('Fenix', "Firefox iOS")
     AND country IN UNNEST(["US"])

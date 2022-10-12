@@ -67,7 +67,7 @@ WITH client_counts AS (
       END
     ) AS eligible_clients
   FROM
-    `mozdata.telemetry.unified_metrics`
+    telemetry.unified_metrics
   WHERE
     `mozfun`.bits28.active_in_range(days_seen_bits, 0, 1)
     AND submission_date

@@ -4,4 +4,5 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1
   - moz-fx-data-shared-prod.telemetry.fenix_clients_last_seen
+  - mozdata.fenix.baseline_clients_first_seen
   - mozdata.fenix.first_session

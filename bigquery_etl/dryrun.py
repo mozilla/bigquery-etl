@@ -577,12 +577,14 @@ class DryRun:
             project_name, dataset_name, table_name, partitioned_by
         )
 
+        # This check relies on the new schema being deployed to prod
         if not query_schema.compatible(table_schema):
             click.echo(
                 click.style(
                     f"ERROR: Schema for query in {query_file_path} "
                     f"incompatible with schema deployed for "
-                    f"{project_name}.{dataset_name}.{table_name}",
+                    f"{project_name}.{dataset_name}.{table_name}\n"
+                    f"Did you deploy new the schema to prod yet?",
                     fg="red",
                 ),
                 err=True,

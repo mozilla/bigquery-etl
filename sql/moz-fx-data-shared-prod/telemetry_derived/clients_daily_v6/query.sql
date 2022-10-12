@@ -81,7 +81,16 @@ WITH base AS (
             STRUCT(payload.keyed_histograms.process_crash_submit_success, 'main-crash'),
             STRUCT(payload.keyed_histograms.process_crash_submit_success, 'content-crash'),
             STRUCT(payload.keyed_histograms.process_crash_submit_success, 'plugin-crash'),
-            STRUCT(payload.keyed_histograms.subprocess_kill_hard, 'ShutDownKill')
+            STRUCT(payload.keyed_histograms.subprocess_kill_hard, 'ShutDownKill'),
+            STRUCT(payload.keyed_histograms.fx_migration_bookmarks_quantity, "chrome"),
+            STRUCT(payload.keyed_histograms.fx_migration_bookmarks_quantity, "chromium-edge"),
+            STRUCT(payload.keyed_histograms.fx_migration_bookmarks_quantity, "safari"),
+            STRUCT(payload.keyed_histograms.fx_migration_history_quantity, "chrome"),
+            STRUCT(payload.keyed_histograms.fx_migration_history_quantity, "chromium-edge"),
+            STRUCT(payload.keyed_histograms.fx_migration_history_quantity, "safari"),
+            STRUCT(payload.keyed_histograms.fx_migration_logins_quantity, "chrome"),
+            STRUCT(payload.keyed_histograms.fx_migration_logins_quantity, "chromium-edge"),
+            STRUCT(payload.keyed_histograms.fx_migration_logins_quantity, "safari")
           ]
         )
     ) AS hist_key_sums,
@@ -120,7 +129,23 @@ WITH base AS (
             payload.histograms.text_recognition_text_length
           ]
         ) AS histogram
-    ) AS hist_counts
+    ) AS hist_counts,
+    -- We batch multiple fields into an array here in order to share a single
+    -- UDF invocation which keeps query complexity down; order of fields here
+    -- is important, as we pull these out by numerical offset later.
+    ARRAY(
+      SELECT
+        mozfun.hist.extract_keyed_hist_sum(value.keyed_histogram)
+      FROM
+        UNNEST(
+          [
+            -- We add a struct layer here b/c BQ doesn't allow nested arrays
+            STRUCT(payload.keyed_histograms.fx_migration_bookmarks_quantity AS keyed_histogram),
+            STRUCT(payload.keyed_histograms.fx_migration_history_quantity AS keyed_histogram),
+            STRUCT(payload.keyed_histograms.fx_migration_logins_quantity AS keyed_histogram)
+          ]
+        ) AS value
+    ) AS keyed_hist_sums,
   FROM
     `moz-fx-data-shared-prod`.telemetry_stable.main_v4
   WHERE
@@ -239,6 +264,15 @@ clients_summary AS (
     hist_key_sums[OFFSET(11)] AS crash_submit_success_content,
     hist_key_sums[OFFSET(12)] AS crash_submit_success_plugin,
     hist_key_sums[OFFSET(13)] AS shutdown_kill,
+    hist_key_sums[OFFSET(14)] AS bookmark_migrations_quantity_chrome,
+    hist_key_sums[OFFSET(15)] AS bookmark_migrations_quantity_edge,
+    hist_key_sums[OFFSET(16)] AS bookmark_migrations_quantity_safari,
+    hist_key_sums[OFFSET(17)] AS history_migrations_quantity_chrome,
+    hist_key_sums[OFFSET(18)] AS history_migrations_quantity_edge,
+    hist_key_sums[OFFSET(19)] AS history_migrations_quantity_safari,
+    hist_key_sums[OFFSET(20)] AS logins_migrations_quantity_chrome,
+    hist_key_sums[OFFSET(21)] AS logins_migrations_quantity_edge,
+    hist_key_sums[OFFSET(22)] AS logins_migrations_quantity_safari,
     (
       SELECT
         version
@@ -531,6 +565,11 @@ clients_summary AS (
     hist_counts[OFFSET(0)] AS text_recognition_interaction_timing_count,
     hist_counts[OFFSET(1)] AS text_recognition_api_performance_count,
     hist_counts[OFFSET(2)] AS text_recognition_text_length_count,
+    -- CAUTION: the order of fields here must match the order defined in
+    -- keyed_hist_sums above and offsets must increment on each line.
+    keyed_hist_sums[OFFSET(0)] AS bookmark_migrations_quantity_all,
+    keyed_hist_sums[OFFSET(1)] AS history_migrations_quantity_all,
+    keyed_hist_sums[OFFSET(2)] AS logins_migrations_quantity_all,
     COALESCE(
       payload.processes.parent.scalars.dom_parentprocess_private_window_used,
       FALSE
@@ -1337,7 +1376,19 @@ aggregates AS (
         ORDER BY
           submission_timestamp
       )
-    ) AS os_environment_is_taskbar_pinned_private
+    ) AS os_environment_is_taskbar_pinned_private,
+    SUM(bookmark_migrations_quantity_chrome) AS bookmark_migrations_quantity_chrome,
+    SUM(bookmark_migrations_quantity_edge) AS bookmark_migrations_quantity_edge,
+    SUM(bookmark_migrations_quantity_safari) AS bookmark_migrations_quantity_safari,
+    SUM(bookmark_migrations_quantity_all) AS bookmark_migrations_quantity_all,
+    SUM(history_migrations_quantity_chrome) AS history_migrations_quantity_chrome,
+    SUM(history_migrations_quantity_edge) AS history_migrations_quantity_edge,
+    SUM(history_migrations_quantity_safari) AS history_migrations_quantity_safari,
+    SUM(history_migrations_quantity_all) AS history_migrations_quantity_all,
+    SUM(logins_migrations_quantity_chrome) AS logins_migrations_quantity_chrome,
+    SUM(logins_migrations_quantity_edge) AS logins_migrations_quantity_edge,
+    SUM(logins_migrations_quantity_safari) AS logins_migrations_quantity_safari,
+    SUM(logins_migrations_quantity_all) AS logins_migrations_quantity_all,
   FROM
     clients_summary
   GROUP BY

@@ -310,7 +310,7 @@ daily_mobile_clients AS (
         client_id,
         country
       FROM
-        `mozdata.telemetry.unified_metrics` AS browser_dau
+        telemetry.unified_metrics AS browser_dau
       WHERE
         mozfun.bits28.active_in_range(browser_dau.days_seen_bits, 0, 1)
             -- don't want Focus apps

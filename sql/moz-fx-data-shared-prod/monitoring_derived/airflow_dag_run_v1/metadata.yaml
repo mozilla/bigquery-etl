@@ -1,0 +1,12 @@
+friendly_name: Airflow DAG run instances
+description: List of DAG run instances
+labels:
+  incremental: false
+owners:
+  - kignasiak@mozilla.com
+scheduling:
+  dag_name: bqetl_monitoring_airflow
+  referenced_tables:
+    - ['moz-fx-data-bq-fivetran', 'airflow_metadata_airflow_db', 'dag_run']
+  depends_on_fivetran:
+    - task_id: fivetran_airflow_metadata_import

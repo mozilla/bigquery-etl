@@ -155,6 +155,10 @@ SKIP = {
         "sql/moz-fx-data-marketing-prod/acoustic/**/*.sql",
         recursive=True,
     ),
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/monitoring_derived/airflow_*/*.sql",
+        recursive=True,
+    ),  # noqa E501
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501

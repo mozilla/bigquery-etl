@@ -419,7 +419,7 @@ clicks AS (
       0
     ) AS other_clicks
   FROM
-    `mozdata.contextual_services.event_aggregates`
+    contextual_services.event_aggregates
   WHERE
     submission_Date >= "2022-06-01"
     AND release_channel = "release"

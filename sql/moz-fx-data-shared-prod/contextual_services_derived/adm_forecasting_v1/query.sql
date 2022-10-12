@@ -69,7 +69,7 @@ WITH client_counts AS (
   FROM
     telemetry.unified_metrics
   WHERE
-    `mozfun`.bits28.active_in_range(days_seen_bits, 0, 1)
+    mozfun.bits28.active_in_range(days_seen_bits, 0, 1)
     AND submission_date
     BETWEEN "2022-06-01"
     AND "2022-09-30"

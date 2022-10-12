@@ -178,7 +178,7 @@ suggest_percentages AS (
       END
     ) AS other_dou,
   FROM
-    `mozdata.contextual_services.event_aggregates`
+    contextual_services.event_aggregates
   WHERE
     submission_date >= "2022-06-07"
     AND release_channel = "release"

@@ -1,0 +1,41 @@
+fields:
+
+- mode: NULLABLE
+  name: dag_id
+  type: STRING
+  description: Airflow DAG id
+
+- mode: NULLABLE
+  name: run_type
+  type: STRING
+  description: manual, scheduled or backfill
+
+- mode: NULLABLE
+  name: external_trigger
+  type: BOOLEAN
+  description: Indicates if the DAG was triggered externally
+
+- mode: NULLABLE
+  name: state
+  type: STRING
+  description: State of the DAG run instance (e.g. success)
+
+- mode: NULLABLE
+  name: execution_date
+  type: TIMESTAMP
+  description: Execution date of the DAG Run instance
+
+- mode: NULLABLE
+  name: start_date
+  type: TIMESTAMP
+  description: When the DAG run started
+
+- mode: NULLABLE
+  name: end_date
+  type: TIMESTAMP
+  description: When the DAG run finished
+
+- mode: NULLABLE
+  name: is_deleted
+  type: BOOLEAN
+  description: Row deleted from the source table (Fivetran managed field)

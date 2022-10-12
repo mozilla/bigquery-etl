@@ -137,7 +137,7 @@ tiles_percentages AS (
       END
     ) / NULLIF(SUM(user_count), 0) AS p_other
   FROM
-    `mozdata.contextual_services.event_aggregates`
+    contextual_services.event_aggregates
   WHERE
     submission_date >= "2022-06-01"
     AND release_channel = "release"

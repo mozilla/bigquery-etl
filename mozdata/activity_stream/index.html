@@ -2563,32 +2563,6 @@ document type.</p>
 and to contain only one row per distinct <code>document_id</code> within a given date.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/activity_stream_stable>activity_stream_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/activity_stream_stable/on_save_recs_v1>on_save_recs_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/activity_stream/on_save_recs">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/activity_stream/on_save_recs/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/activity_stream/on_save_recs/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="pocket_button"><a href="#pocket_button">pocket_button</a></h2>
-<p><strong>Historical Pings for <code>activity-stream/pocket-button</code></strong></p>
-<p><code>activity_stream.pocket_button</code></p>
-<p>A historical view of pings sent for the
-<code>activity-stream/pocket-button</code>
-document type.</p>
-<p>This view is guaranteed to contain only complete days
-(per <code>submission_timestamp</code>)
-and to contain only one row per distinct <code>document_id</code> within a given date.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<table>
 <caption>Schema</caption>
     <tr>
         <th>Column</th>
@@ -2633,7 +2607,7 @@ and to contain only one row per distinct <code>document_id</code> within a given
         <td>Yes</td>
     </tr><tr>
         <td>model</td>
-        <td>(In the case of actions related to on-save recs) An identifier for the machine learning model used to generate the recommendations.</td>
+        <td>An identifier for the machine learning model used to generate the recommendations</td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2660,11 +2634,6 @@ and to contain only one row per distinct <code>document_id</code> within a given
         <td>normalized_os_version</td>
         <td></td>
         <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>pocket_logged_in_status</td>
-        <td>A boolean for whether the user was logged-in to the Pocket Firefox integration when they performed the indicated action(s). True = logged in.</td>
-        <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
         <td>profile_creation_date</td>
@@ -2704,6 +2673,32 @@ and to contain only one row per distinct <code>document_id</code> within a given
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/activity_stream_stable>activity_stream_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/activity_stream_stable/on_save_recs_v1>on_save_recs_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/activity_stream/on_save_recs">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/activity_stream/on_save_recs/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/activity_stream/on_save_recs/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="pocket_button"><a href="#pocket_button">pocket_button</a></h2>
+<p><strong>Historical Pings for <code>activity-stream/pocket-button</code></strong></p>
+<p><code>activity_stream.pocket_button</code></p>
+<p>A historical view of pings sent for the
+<code>activity-stream/pocket-button</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/activity_stream_stable>activity_stream_stable</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/activity_stream_stable/pocket_button_v1>pocket_button_v1</a></td>
         </tr>
 </table>
@@ -2720,132 +2715,6 @@ document type.</p>
 (per <code>submission_timestamp</code>)
 and to contain only one row per distinct <code>document_id</code> within a given date.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>addon_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>client_id</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>locale</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>metadata</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>page</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>perf</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>profile_creation_date</td>
-        <td>Profile age in days since Unix epoch</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>release_channel</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>session_duration</td>
-        <td>The duration of this session in milliseconds. The session begins at `perf.visibility_event_rcvd_ts` and ends when the page is navigated away</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>session_id</td>
-        <td>A UUID representing an Activity Stream session. This can be used to do table joins between `sessions` and `events` in Activity Stream. Note that `n/a` denotes that the session is not applicable in the context.</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>shield_id</td>
-        <td>[DEPRECATED]: use `experiments` instead. A semicolon separated string to store a list of Shield study IDs</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>user_prefs</td>
-        <td>An encoded integer representing user's preferences of Activity Stream</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>experiments</td>
-        <td>An object to record all active experiments, experiments IDs are stored as keys, and the value object stores the branch information. Example: {"experiment_1": {"branch": "control"}, "experiment_2": {"branch": "treatment"}}. This deprecates the "shield_id" used in activity-stream and messaging-system.</td>
-        <td>Record</td>
-        <td>No</td>
-    </tr>
-</table>
-
 <table>
 <caption>Referenced Tables</caption>
     <tr>

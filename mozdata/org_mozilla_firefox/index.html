@@ -2503,87 +2503,6 @@ document type.</p>
 and to contain only one row per distinct <code>document_id</code> within a given date.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>client_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>events</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>metadata</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>metrics</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ping_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -2610,6 +2529,32 @@ document type.</p>
 and to contain only one row per distinct <code>document_id</code> within a given date.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox_stable>org_mozilla_firefox_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox_stable/addresses_sync_v1>addresses_sync_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox/addresses_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox/addresses_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox/addresses_sync/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="baseline"><a href="#baseline">baseline</a></h2>
+<p><strong>Historical Pings for <code>org-mozilla-firefox/baseline</code></strong></p>
+<p><code>org_mozilla_firefox.baseline</code></p>
+<p>A historical view of pings sent for the
+<code>org-mozilla-firefox/baseline</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<table>
 <caption>Schema</caption>
     <tr>
         <th>Column</th>
@@ -2690,32 +2635,6 @@ and to contain only one row per distinct <code>document_id</code> within a given
     </tr>
 </table>
 
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox_stable>org_mozilla_firefox_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox_stable/addresses_sync_v1>addresses_sync_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox/addresses_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox/addresses_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox/addresses_sync/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="baseline"><a href="#baseline">baseline</a></h2>
-<p><strong>Historical Pings for <code>org-mozilla-firefox/baseline</code></strong></p>
-<p><code>org_mozilla_firefox.baseline</code></p>
-<p>A historical view of pings sent for the
-<code>org-mozilla-firefox/baseline</code>
-document type.</p>
-<p>This view is guaranteed to contain only complete days
-(per <code>submission_timestamp</code>)
-and to contain only one row per distinct <code>document_id</code> within a given date.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -3261,6 +3180,32 @@ document type.</p>
 and to contain only one row per distinct <code>document_id</code> within a given date.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox_stable>org_mozilla_firefox_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox_stable/bookmarks_sync_v1>bookmarks_sync_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox/bookmarks_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox/bookmarks_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox/bookmarks_sync/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="creditcards_sync"><a href="#creditcards_sync">creditcards_sync</a></h2>
+<p><strong>Historical Pings for <code>org-mozilla-firefox/creditcards-sync</code></strong></p>
+<p><code>org_mozilla_firefox.creditcards_sync</code></p>
+<p>A historical view of pings sent for the
+<code>org-mozilla-firefox/creditcards-sync</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<table>
 <caption>Schema</caption>
     <tr>
         <th>Column</th>
@@ -3341,32 +3286,6 @@ and to contain only one row per distinct <code>document_id</code> within a given
     </tr>
 </table>
 
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox_stable>org_mozilla_firefox_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox_stable/bookmarks_sync_v1>bookmarks_sync_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox/bookmarks_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox/bookmarks_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox/bookmarks_sync/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="creditcards_sync"><a href="#creditcards_sync">creditcards_sync</a></h2>
-<p><strong>Historical Pings for <code>org-mozilla-firefox/creditcards-sync</code></strong></p>
-<p><code>org_mozilla_firefox.creditcards_sync</code></p>
-<p>A historical view of pings sent for the
-<code>org-mozilla-firefox/creditcards-sync</code>
-document type.</p>
-<p>This view is guaranteed to contain only complete days
-(per <code>submission_timestamp</code>)
-and to contain only one row per distinct <code>document_id</code> within a given date.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -3394,87 +3313,6 @@ document type.</p>
 and to contain only one row per distinct <code>document_id</code> within a given date.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>client_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>events</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>metadata</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>metrics</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ping_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -3500,87 +3338,6 @@ document type.</p>
 (per <code>submission_timestamp</code>)
 and to contain only one row per distinct <code>document_id</code> within a given date.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>client_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>events</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>metadata</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>metrics</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ping_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -3715,87 +3472,6 @@ document type.</p>
 and to contain only one row per distinct <code>document_id</code> within a given date.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>client_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>events</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>metadata</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>metrics</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ping_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -3822,87 +3498,6 @@ document type.</p>
 and to contain only one row per distinct <code>document_id</code> within a given date.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>client_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>events</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>metadata</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>metrics</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ping_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -3928,87 +3523,6 @@ document type.</p>
 (per <code>submission_timestamp</code>)
 and to contain only one row per distinct <code>document_id</code> within a given date.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>client_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>events</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>metadata</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>metrics</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ping_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -4204,87 +3718,6 @@ document type.</p>
 and to contain only one row per distinct <code>document_id</code> within a given date.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>client_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>events</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>metadata</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>metrics</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ping_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -4310,87 +3743,6 @@ document type.</p>
 (per <code>submission_timestamp</code>)
 and to contain only one row per distinct <code>document_id</code> within a given date.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>client_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>events</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>metadata</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>metrics</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ping_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
 <table>
 <caption>Referenced Tables</caption>
     <tr>

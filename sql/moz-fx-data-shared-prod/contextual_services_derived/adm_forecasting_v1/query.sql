@@ -256,7 +256,7 @@ desktop_population AS (
     "desktop" AS device,
     COUNT(DISTINCT client_id) AS clients
   FROM
-    `mozdata.telemetry.clients_daily`
+    telemetry.clients_daily
   CROSS JOIN
     UNNEST(experiments) AS experiment
   WHERE

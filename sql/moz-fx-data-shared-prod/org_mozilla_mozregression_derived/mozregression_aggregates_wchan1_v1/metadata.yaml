@@ -1,0 +1,16 @@
+friendly_name: mozregression aggregates wchan1
+description: |-
+  Aggregated metrics of mozregression usage
+owners:
+- wichan@mozilla.com
+labels:
+  incremental: true
+  public_json: true
+  public_bigquery: true
+  review_bugs:
+  - '1691105'
+scheduling:
+  dag_name: bqetl_internal_tooling_wchan
+  task_name: mozregression_aggregates__wchan_v1
+bigquery: null
+references: {}

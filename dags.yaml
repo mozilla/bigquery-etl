@@ -838,3 +838,23 @@ bqetl_telemetry_crashes_daily:
   tags:
     - impact/tier_2
     - repo/bigquery-etl
+
+bqetl_internal_tooling_wchan:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - wichan@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: wichan@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2022-10-01'
+  description: This DAG schedules queries for populating queries related to
+    Mozilla's internal developer tooling (e.g. mozregression).
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl

@@ -30,7 +30,7 @@ WITH client_counts AS (
       WHEN
         normalized_app_name = "Firefox Desktop"
         AND (
-        -- tiles default on
+        -- desktop tiles default on
           (
             submission_date >= "2021-09-07"
             AND browser_version_info.major_version > 92
@@ -39,7 +39,7 @@ WITH client_counts AS (
             )
           )
           OR
-        -- Japan experiment now default on
+        -- Japan desktop now default on
           (
             submission_date >= "2022-01-25"
             AND browser_version_info.major_version > 92
@@ -70,14 +70,12 @@ WITH client_counts AS (
     telemetry.unified_metrics
   WHERE
     mozfun.bits28.active_in_range(days_seen_bits, 0, 1)
-    AND submission_date
-    BETWEEN "2022-06-01"
-    AND "2022-09-30"
+    AND submission_date >= "2021-09-07"
     AND sample_id < 10
   GROUP BY
-    1,
-    2,
-    3
+    country,
+    device,
+    submission_date
 ),
 grand_total AS (
   SELECT
@@ -89,8 +87,8 @@ grand_total AS (
   WHERE
     device IS NOT NULL
   GROUP BY
-    1,
-    2
+    device,
+    submission_date
 ),
 client_share AS (
   SELECT
@@ -139,16 +137,16 @@ tiles_percentages AS (
   FROM
     contextual_services.event_aggregates
   WHERE
-    submission_date >= "2022-06-01"
+    submission_date >= "2021-09-07"
     AND release_channel = "release"
     AND event_type = "impression"
     AND source = "topsites"
     AND country IN UNNEST(["AU", "BR", "CA", "DE", "ES", "FR", "GB", "IN", "IT", "JP", "MX", "US"])
   GROUP BY
-    1,
-    2,
-    3,
-    4
+    product,
+    submission_date,
+    country,
+    device
 ),
 suggest_percentages AS (
   SELECT
@@ -186,10 +184,10 @@ suggest_percentages AS (
     AND source = "suggest"
     AND country IN UNNEST(["US"])
   GROUP BY
-    1,
-    2,
-    3,
-    4
+    product,
+    submission_date,
+    country,
+    device
 ),
 -- number of active clients enrolled in sponsored topsites each day (by country)
 desktop_population AS (
@@ -205,7 +203,7 @@ desktop_population AS (
   CROSS JOIN
     UNNEST(experiments) AS experiment
   WHERE
-    submission_date >= "2022-06-01"
+    submission_date >= "2021-09-07"
     AND normalized_channel = "release"
     AND active_hours_sum > 0
     AND scalar_parent_browser_engagement_total_uri_count_sum > 0
@@ -243,10 +241,10 @@ desktop_population AS (
     AND country IN UNNEST(["AU", "BR", "CA", "DE", "ES", "FR", "GB", "IN", "IT", "JP", "MX", "US"])
     -- AND sample_id = 1
   GROUP BY
-    1,
-    2,
-    3,
-    4
+    product,
+    submission_date,
+    country,
+    device
   UNION ALL
 -- Suggest desktop eligible population
   SELECT
@@ -275,10 +273,10 @@ desktop_population AS (
     AND country IN UNNEST(["US"])
     -- AND sample_id = 1
   GROUP BY
-    1,
-    2,
-    3,
-    4
+    product,
+    submission_date,
+    country,
+    device
 ),
 mobile_experiment_clients AS (
   SELECT
@@ -316,7 +314,7 @@ daily_mobile_clients AS (
             -- don't want Focus apps
         AND browser_dau.normalized_app_name IN ('Fenix', "Firefox iOS")
         AND country IN UNNEST(["US"])
-        AND submission_date >= "2022-06-01" -- "2022-05-10"
+        AND submission_date >= "2022-05-10"
         AND normalized_channel = "release"
             -- AND sample_id = 1
         AND (
@@ -364,10 +362,10 @@ mobile_population AS (
   FROM
     daily_mobile_clients
   GROUP BY
-    1,
-    2,
-    3,
-    4
+    product,
+    submission_date,
+    country,
+    device
 ),
 -- total desktop and mobile clients per day
 population AS (
@@ -421,16 +419,16 @@ clicks AS (
   FROM
     contextual_services.event_aggregates
   WHERE
-    submission_Date >= "2022-06-01"
+    submission_Date >= "2021-09-07"
     AND release_channel = "release"
     AND event_type = "click"
     AND source = "topsites"
     AND country IN UNNEST(["AU", "BR", "CA", "DE", "ES", "FR", "GB", "IN", "IT", "JP", "MX", "US"])
   GROUP BY
-    1,
-    2,
-    3,
-    4
+    product,
+    submission_date,
+    country,
+    device
   UNION ALL
   SELECT
     "suggest" AS product,
@@ -459,10 +457,10 @@ clicks AS (
     AND source = "suggest"
     AND country IN UNNEST(["US"])
   GROUP BY
-    1,
-    2,
-    3,
-    4
+    product,
+    submission_date,
+    country,
+    device
 )
 -- number of clicks and client-days-of-use by advertiser (and country and month)
 -- daily AS (
@@ -542,7 +540,7 @@ USING
 WHERE
   submission_date = @submission_date
 ORDER BY
-  1,
-  2,
-  3,
-  4
+  product,
+  submission_date,
+  country,
+  device

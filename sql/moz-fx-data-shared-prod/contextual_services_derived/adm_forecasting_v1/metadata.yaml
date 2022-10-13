@@ -5,15 +5,18 @@ owners:
 - skahmann@mozilla.com
 labels:
   incremental: true
+  schedule: daily
 scheduling:
   dag_name:
   task_name:
+  arguments:
 bigquery:
   time_partitioning:
     field: submission_date
     type: day
     require_partition_filter: true
     expiration_days: null
-  clustering:
-    fields: []
-references: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:contextual-services

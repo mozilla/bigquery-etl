@@ -67,6 +67,23 @@ with DAG(
         task_concurrency=1,
     )
 
+    crashes_daily_v1 = bigquery_etl_query(
+        task_id="crashes_daily_v1",
+        destination_table="crashes_daily_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "frank@mozilla.com",
+            "jklukas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        priority_weight=85,
+    )
+
     firefox_desktop_exact_mau28_by_client_count_dimensions = bigquery_etl_query(
         task_id="firefox_desktop_exact_mau28_by_client_count_dimensions",
         destination_table="firefox_desktop_exact_mau28_by_client_count_dimensions_v1",
@@ -185,9 +202,10 @@ with DAG(
         destination_table="clients_daily_joined_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
+        owner="frank@mozilla.com",
         email=[
             "dthorn@mozilla.com",
+            "frank@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -535,6 +553,8 @@ with DAG(
     )
 
     telemetry_derived__clients_daily_event__v1.set_upstream(wait_for_event_events)
+
+    telemetry_derived__clients_daily_joined__v1.set_upstream(crashes_daily_v1)
 
     telemetry_derived__clients_daily_joined__v1.set_upstream(
         telemetry_derived__clients_daily__v6

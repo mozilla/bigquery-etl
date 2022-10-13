@@ -1842,5 +1842,41 @@ fields:
   name: days_visited_1_uri_private_mode_bits
   type: INTEGER
 - mode: NULLABLE
+  name: bookmark_migrations_quantity_chrome
+  type: INTEGER
+- mode: NULLABLE
+  name: bookmark_migrations_quantity_edge
+  type: INTEGER
+- mode: NULLABLE
+  name: bookmark_migrations_quantity_safari
+  type: INTEGER
+- mode: NULLABLE
+  name: bookmark_migrations_quantity_all
+  type: INTEGER
+- mode: NULLABLE
+  name: history_migrations_quantity_chrome
+  type: INTEGER
+- mode: NULLABLE
+  name: history_migrations_quantity_edge
+  type: INTEGER
+- mode: NULLABLE
+  name: history_migrations_quantity_safari
+  type: INTEGER
+- mode: NULLABLE
+  name: history_migrations_quantity_all
+  type: INTEGER
+- mode: NULLABLE
+  name: logins_migrations_quantity_chrome
+  type: INTEGER
+- mode: NULLABLE
+  name: logins_migrations_quantity_edge
+  type: INTEGER
+- mode: NULLABLE
+  name: logins_migrations_quantity_safari
+  type: INTEGER
+- mode: NULLABLE
+  name: logins_migrations_quantity_all
+  type: INTEGER
+- mode: NULLABLE
   name: _sample_id_string
   type: STRING

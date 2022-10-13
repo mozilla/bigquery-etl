@@ -2,71 +2,94 @@ fields:
 - mode: NULLABLE
   name: submission_date_s3
   type: DATE
-- mode: NULLABLE
+- description: null
+  mode: NULLABLE
   name: submission_date
   type: DATE
-- mode: NULLABLE
+- description: null
+  mode: NULLABLE
   name: client_id
   type: STRING
-- mode: NULLABLE
+- description: null
+  mode: NULLABLE
   name: aborts_content_sum
   type: INTEGER
-- mode: NULLABLE
+- description: null
+  mode: NULLABLE
   name: aborts_gmplugin_sum
   type: INTEGER
-- mode: NULLABLE
+- description: null
+  mode: NULLABLE
   name: aborts_plugin_sum
   type: INTEGER
-- mode: NULLABLE
+- description: null
+  mode: NULLABLE
   name: active_addons_count_mean
   type: FLOAT
-- fields:
-  - mode: NULLABLE
+- description: null
+  fields:
+  - description: null
+    mode: NULLABLE
     name: addon_id
     type: STRING
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: blocklisted
     type: BOOLEAN
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: name
     type: STRING
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: user_disabled
     type: BOOLEAN
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: app_disabled
     type: BOOLEAN
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: version
     type: STRING
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: scope
     type: INTEGER
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: type
     type: STRING
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: foreign_install
     type: BOOLEAN
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: has_binary_components
     type: BOOLEAN
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: install_day
     type: INTEGER
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: update_day
     type: INTEGER
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: signed_state
     type: INTEGER
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: is_system
     type: BOOLEAN
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: is_web_extension
     type: BOOLEAN
-  - mode: NULLABLE
+  - description: null
+    mode: NULLABLE
     name: multiprocess_compatible
     type: BOOLEAN
   mode: REPEATED
@@ -1738,6 +1761,42 @@ fields:
 - mode: NULLABLE
   name: os_environment_is_taskbar_pinned_private
   type: BOOLEAN
+- mode: NULLABLE
+  name: bookmark_migrations_quantity_chrome
+  type: INTEGER
+- mode: NULLABLE
+  name: bookmark_migrations_quantity_edge
+  type: INTEGER
+- mode: NULLABLE
+  name: bookmark_migrations_quantity_safari
+  type: INTEGER
+- mode: NULLABLE
+  name: bookmark_migrations_quantity_all
+  type: INTEGER
+- mode: NULLABLE
+  name: history_migrations_quantity_chrome
+  type: INTEGER
+- mode: NULLABLE
+  name: history_migrations_quantity_edge
+  type: INTEGER
+- mode: NULLABLE
+  name: history_migrations_quantity_safari
+  type: INTEGER
+- mode: NULLABLE
+  name: history_migrations_quantity_all
+  type: INTEGER
+- mode: NULLABLE
+  name: logins_migrations_quantity_chrome
+  type: INTEGER
+- mode: NULLABLE
+  name: logins_migrations_quantity_edge
+  type: INTEGER
+- mode: NULLABLE
+  name: logins_migrations_quantity_safari
+  type: INTEGER
+- mode: NULLABLE
+  name: logins_migrations_quantity_all
+  type: INTEGER
 - fields:
   - mode: NULLABLE
     name: version

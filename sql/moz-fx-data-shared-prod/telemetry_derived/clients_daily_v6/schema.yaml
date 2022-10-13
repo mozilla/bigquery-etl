@@ -2000,37 +2000,37 @@ fields:
   type: BOOLEAN
 - mode: NULLABLE
   name: bookmark_migrations_quantity_chrome
-  type: INT64
+  type: INTEGER
 - mode: NULLABLE
   name: bookmark_migrations_quantity_edge
-  type: INT64
+  type: INTEGER
 - mode: NULLABLE
   name: bookmark_migrations_quantity_safari
-  type: INT64
+  type: INTEGER
 - mode: NULLABLE
   name: bookmark_migrations_quantity_all
-  type: INT64
+  type: INTEGER
 - mode: NULLABLE
   name: history_migrations_quantity_chrome
-  type: INT64
+  type: INTEGER
 - mode: NULLABLE
   name: history_migrations_quantity_edge
-  type: INT64
+  type: INTEGER
 - mode: NULLABLE
   name: history_migrations_quantity_safari
-  type: INT64
+  type: INTEGER
 - mode: NULLABLE
   name: history_migrations_quantity_all
-  type: INT64
+  type: INTEGER
 - mode: NULLABLE
   name: logins_migrations_quantity_chrome
-  type: INT64
+  type: INTEGER
 - mode: NULLABLE
   name: logins_migrations_quantity_edge
-  type: INT64
+  type: INTEGER
 - mode: NULLABLE
   name: logins_migrations_quantity_safari
-  type: INT64
+  type: INTEGER
 - mode: NULLABLE
   name: logins_migrations_quantity_all
-  type: INT64
+  type: INTEGER

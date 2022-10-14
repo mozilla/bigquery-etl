@@ -1,7 +1,7 @@
 friendly_name: Top Domains
 description: |-
   A combination of the CrUX (chrome ux report) origins and Tranco top domains.
-  CrUX has domains broken down by country and Tranco has ranking information. 
+  CrUX has domains broken down by country and Tranco has ranking information.
   Neither dataset has a perfectly joinable key so we do a "good enough for
   government work" effort in joining the two.
 owners:
@@ -16,4 +16,3 @@ workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
       - workgroup:mozilla-confidential
-

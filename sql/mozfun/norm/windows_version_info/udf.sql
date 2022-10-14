@@ -64,14 +64,14 @@ RETURNS STRING AS (
 
   -- Tests
 SELECT
-  ASSERT.equals('Windows_95', norm.windows_version_info('Windows_95', NULL, NULL)),
-  ASSERT.equals('Windows_98', norm.windows_version_info('Windows_98', NULL, NULL)),
-  ASSERT.equals('Windows NT 4.0', norm.windows_version_info('Windows_NT', 4.0, NULL)),
-  ASSERT.equals('Windows XP', norm.windows_version_info('Windows_NT', 5.1, NULL)),
-  ASSERT.equals('Windows XP', norm.windows_version_info('Windows_NT', 5.2, NULL)),
-  ASSERT.equals('Windows 7', norm.windows_version_info('Windows_NT', '6.1', 7601)),
-  ASSERT.equals('Windows 10', norm.windows_version_info('Windows_NT', '10.0', 19043)),
-  ASSERT.equals('Windows 11', norm.windows_version_info('Windows_NT', '10.0', 22623)),
-  ASSERT.equals(NULL, norm.windows_version_info('Darwin', '11.4.2', NULL)),
-  ASSERT.equals(NULL, norm.windows_version_info('Windows_NT', '7.7', 19043)),
-  ASSERT.equals(NULL, norm.windows_version_info('Windows_NT', '10.0', NULL))
+  assert.equals('Windows_95', norm.windows_version_info('Windows_95', NULL, NULL)),
+  assert.equals('Windows_98', norm.windows_version_info('Windows_98', NULL, NULL)),
+  assert.equals('Windows NT 4.0', norm.windows_version_info('Windows_NT', '4.0', NULL)),
+  assert.equals('Windows XP', norm.windows_version_info('Windows_NT', '5.1', NULL)),
+  assert.equals('Windows XP', norm.windows_version_info('Windows_NT', '5.2', NULL)),
+  assert.equals('Windows 7', norm.windows_version_info('Windows_NT', '6.1', 7601)),
+  assert.equals('Windows 10', norm.windows_version_info('Windows_NT', '10.0', 19043)),
+  assert.equals('Windows 11', norm.windows_version_info('Windows_NT', '10.0', 22623)),
+  assert.equals(NULL, norm.windows_version_info('Darwin', '11.4.2', NULL)),
+  assert.equals(NULL, norm.windows_version_info('Windows_NT', '7.7', 19043)),
+  assert.equals(NULL, norm.windows_version_info('Windows_NT', '10.0', NULL))

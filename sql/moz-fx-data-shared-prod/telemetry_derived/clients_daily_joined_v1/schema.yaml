@@ -2049,3 +2049,24 @@ fields:
 - mode: NULLABLE
   name: logins_migrations_quantity_all
   type: INTEGER
+- mode: NULLABLE
+  name: main_crash_count
+  type: INTEGER
+- mode: NULLABLE
+  name: content_crash_count
+  type: INTEGER
+- mode: NULLABLE
+  name: gpu_crash_count
+  type: INTEGER
+- mode: NULLABLE
+  name: rdd_crash_count
+  type: INTEGER
+- mode: NULLABLE
+  name: socket_crash_count
+  type: INTEGER
+- mode: NULLABLE
+  name: utility_crash_count
+  type: INTEGER
+- mode: NULLABLE
+  name: vr_crash_count
+  type: INTEGER

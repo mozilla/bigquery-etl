@@ -585,6 +585,19 @@ fields:
       mode: REPEATED
       name: browser_search_search_count
       type: RECORD
+    - description: 'Records the type of interaction a user has on SERP pages.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: browser_search_in_content
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

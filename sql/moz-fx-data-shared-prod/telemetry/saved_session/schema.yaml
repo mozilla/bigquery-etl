@@ -20097,6 +20097,18 @@ fields:
       mode: NULLABLE
       name: use_counter2_css_property_contain_intrinsic_width_page
       type: STRING
+    - description: Which revocation checking mechanisms were used?
+      mode: NULLABLE
+      name: cert_revocation_mechanisms
+      type: STRING
+    - description: Whether a document used the CSS property font-palette
+      mode: NULLABLE
+      name: use_counter2_css_property_font_palette_document
+      type: STRING
+    - description: Whether a page used the CSS property font-palette
+      mode: NULLABLE
+      name: use_counter2_css_property_font_palette_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -23318,6 +23330,18 @@ fields:
         type: STRING
       mode: REPEATED
       name: webext_eventpage_running_time_ms_by_addonid
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: The time spent from dns resolution to connect start, in milliseconds,
+          keyed by protocol version and classOfService
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: network_dns_end_to_connect_start_ms
       type: RECORD
     mode: NULLABLE
     name: keyed_histograms
@@ -41476,6 +41500,14 @@ fields:
           mode: NULLABLE
           name: use_counter2_css_property_contain_intrinsic_width_page
           type: STRING
+        - description: Whether a document used the CSS property font-palette
+          mode: NULLABLE
+          name: use_counter2_css_property_font_palette_document
+          type: STRING
+        - description: Whether a page used the CSS property font-palette
+          mode: NULLABLE
+          name: use_counter2_css_property_font_palette_page
+          type: STRING
         mode: NULLABLE
         name: histograms
         type: RECORD
@@ -43723,6 +43755,32 @@ fields:
             type: STRING
           mode: REPEATED
           name: h3p_perf_page_load_time_ms
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: The time spent from HttpChannelChild::AsyncOpen to adding
+              the transactionto the nsHttpConnectionMgr, in milliseconds, keyed by
+              classOfService
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: network_async_open_child_to_transaction_pending_ms
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: The time spent relaying response start from the socket thread
+              of the parent process to the content process, in milliseconds, keyed
+              by classOfService
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: network_response_start_parent_to_content_ms
           type: RECORD
         mode: NULLABLE
         name: keyed_histograms
@@ -51633,6 +51691,34 @@ fields:
             '
           mode: NULLABLE
           name: places_sponsored_visit_no_triggering_url
+          type: INTEGER
+        - description: 'Records the number of insecure (i.e., using http) OpenSearch
+            search engines a given user has installed
+
+            '
+          mode: NULLABLE
+          name: browser_searchinit_insecure_opensearch_engine_count
+          type: INTEGER
+        - description: 'Records the number of OpenSearch search engines with insecure
+            updates enabled (i.e., using http) a given user has installed
+
+            '
+          mode: NULLABLE
+          name: browser_searchinit_insecure_opensearch_update_count
+          type: INTEGER
+        - description: 'Records the number of secure (i.e., using https) OpenSearch
+            search engines a given user has installed
+
+            '
+          mode: NULLABLE
+          name: browser_searchinit_secure_opensearch_engine_count
+          type: INTEGER
+        - description: 'Records the number of OpenSearch search engines with secure
+            updates enabled (i.e., using https) a given user has installed
+
+            '
+          mode: NULLABLE
+          name: browser_searchinit_secure_opensearch_update_count
           type: INTEGER
         mode: NULLABLE
         name: scalars

@@ -64,8 +64,8 @@ RETURNS STRING AS (
 
   -- Tests
 SELECT
-  assert.equals('Windows_95', norm.windows_version_info('Windows_95', NULL, NULL)),
-  assert.equals('Windows_98', norm.windows_version_info('Windows_98', NULL, NULL)),
+  assert.equals('Windows 95', norm.windows_version_info('Windows_95', NULL, NULL)),
+  assert.equals('Windows 98', norm.windows_version_info('Windows_98', NULL, NULL)),
   assert.equals('Windows NT 4.0', norm.windows_version_info('Windows_NT', '4.0', NULL)),
   assert.equals('Windows XP', norm.windows_version_info('Windows_NT', '5.1', NULL)),
   assert.equals('Windows XP', norm.windows_version_info('Windows_NT', '5.2', NULL)),

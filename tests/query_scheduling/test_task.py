@@ -241,8 +241,12 @@ class TestTask:
 
         metadata = Metadata("test", "test", ["test@example.org"], {}, scheduling)
 
+        task = Task.of_query(query_file, metadata)
+        assert task.task_name == "test__" + "a" * 56
+
         with pytest.raises(ValueError):
-            Task.of_query(query_file, metadata)
+            task.task_name = "a" * 64
+            Task.validate_task_name(task, "task_name", task.task_name)
 
     def test_dag_name_validation(self):
         query_file = (

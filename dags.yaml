@@ -846,7 +846,6 @@ bqetl_internal_tooling_wchan:
       - telemetry-alerts@mozilla.com
       - wichan@mozilla.com
     email_on_failure: true
-    email_on_retry: true
     owner: wichan@mozilla.com
     retries: 2
     retry_delay: 30m

@@ -3,6 +3,7 @@ SELECT
   pool,
   description,
   slots,
-  _fivetran_deleted AS is_deleted
 FROM
   `moz-fx-data-bq-fivetran.airflow_metadata_airflow_db.slot_pool`
+WHERE
+  NOT _fivetran_deleted

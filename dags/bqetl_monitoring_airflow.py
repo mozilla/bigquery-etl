@@ -56,8 +56,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="kignasiak@mozilla.com",
         email=["kignasiak@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     monitoring_derived__airflow_dag_run__v1 = bigquery_etl_query(
@@ -67,8 +68,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="kignasiak@mozilla.com",
         email=["kignasiak@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     monitoring_derived__airflow_dag_tag__v1 = bigquery_etl_query(
@@ -78,8 +80,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="kignasiak@mozilla.com",
         email=["kignasiak@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     monitoring_derived__airflow_slot_pool__v1 = bigquery_etl_query(
@@ -89,8 +92,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="kignasiak@mozilla.com",
         email=["kignasiak@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     monitoring_derived__airflow_task_fail__v1 = bigquery_etl_query(
@@ -100,8 +104,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="kignasiak@mozilla.com",
         email=["kignasiak@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     monitoring_derived__airflow_task_reschedule__v1 = bigquery_etl_query(
@@ -111,8 +116,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="kignasiak@mozilla.com",
         email=["kignasiak@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     monitoring_derived__airflow_user__v1 = bigquery_etl_query(
@@ -122,8 +128,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="kignasiak@mozilla.com",
         email=["kignasiak@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     fivetran_airflow_metadata_import_sync_start = FivetranOperator(

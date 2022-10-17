@@ -20109,6 +20109,18 @@ fields:
       mode: NULLABLE
       name: use_counter2_css_property_font_palette_page
       type: STRING
+    - description: Total number of GC zones
+      mode: NULLABLE
+      name: gc_zone_count
+      type: STRING
+    - description: Number of zones collected in a zone GC
+      mode: NULLABLE
+      name: gc_zones_collected
+      type: STRING
+    - description: When OCSP and CRLite differ, how old is the OCSP response (in hours)?
+      mode: NULLABLE
+      name: ocsp_age_at_crlite_override
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -41507,6 +41519,14 @@ fields:
         - description: Whether a page used the CSS property font-palette
           mode: NULLABLE
           name: use_counter2_css_property_font_palette_page
+          type: STRING
+        - description: Total number of GC zones
+          mode: NULLABLE
+          name: gc_zone_count
+          type: STRING
+        - description: Number of zones collected in a zone GC
+          mode: NULLABLE
+          name: gc_zones_collected
           type: STRING
         mode: NULLABLE
         name: histograms

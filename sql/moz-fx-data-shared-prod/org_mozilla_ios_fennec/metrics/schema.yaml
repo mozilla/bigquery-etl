@@ -2353,6 +2353,44 @@ fields:
       mode: NULLABLE
       name: awesomebar_query_time
       type: RECORD
+    - description: 'A time distribution of how long it took for the migration to occur
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: places_history_migration_duration
+      type: RECORD
     mode: NULLABLE
     name: timing_distribution
     type: RECORD
@@ -2373,8 +2411,50 @@ fields:
       mode: NULLABLE
       name: tabs_private_tabs_quantity
       type: INTEGER
+    - description: 'The number of visits migrated to the places.db
+
+        '
+      mode: NULLABLE
+      name: places_history_migration_num_migrated
+      type: INTEGER
+    - description: 'The number of visits expected to migrate to the places.db
+
+        '
+      mode: NULLABLE
+      name: places_history_migration_num_to_migrate
+      type: INTEGER
     mode: NULLABLE
     name: quantity
+    type: RECORD
+  - fields:
+    - description: 'A Rate of how often migrations end
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: denominator
+        type: INTEGER
+      - mode: NULLABLE
+        name: numerator
+        type: INTEGER
+      mode: NULLABLE
+      name: places_history_migration_migration_ended_rate
+      type: RECORD
+    - description: 'A Rate of how often migrations error out
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: denominator
+        type: INTEGER
+      - mode: NULLABLE
+        name: numerator
+        type: INTEGER
+      mode: NULLABLE
+      name: places_history_migration_migration_error_rate
+      type: RECORD
+    mode: NULLABLE
+    name: rate
     type: RECORD
   mode: NULLABLE
   name: metrics

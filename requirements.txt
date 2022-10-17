@@ -1219,9 +1219,9 @@ tomli==2.0.1 \
     #   mypy
     #   pep517
     #   pytest
-types-python-dateutil==2.8.19 \
-    --hash=sha256:6284df1e4783d8fc6e587f0317a81333856b872a6669a282f8a325342bce7fa8 \
-    --hash=sha256:bfd3eb39c7253aea4ba23b10f69b017d30b013662bb4be4ab48b20bbd763f309
+types-python-dateutil==2.8.19.2 \
+    --hash=sha256:3f4dbe465e7e0c6581db11fd7a4855d1355b78712b3f292bd399cd332247e9c0 \
+    --hash=sha256:e6e32ce18f37765b08c46622287bc8d8136dc0c562d9ad5b8fd158c59963d7a7
     # via -r requirements.in
 types-pytz==2022.4.0.0 \
     --hash=sha256:17d66e4b16e80ceae0787726f3a22288df7d3f9fdebeb091dc64b92c0e4ea09d \

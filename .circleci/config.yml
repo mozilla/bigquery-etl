@@ -81,19 +81,6 @@ jobs:
           name: Test Code
           command: docker run app:build pytest --flake8 --black
 
-  build-job-etl-graph:
-    docker:
-      - image: docker:stable-git
-    steps:
-      - checkout
-      - compare-branch:
-          pattern: ^jobs/etl-graph/
-      - setup_remote_docker:
-          version: 19.03.13
-      - run:
-          name: Build Docker image
-          command: docker build -t app:build jobs/etl-graph/
-
 
   build-job-example_job:
     docker:
@@ -261,20 +248,6 @@ workflows:
   job-desktop-mobile-mau-2020:
     jobs:
       - build-job-desktop-mobile-mau-2020
-
-  job-etl-graph:
-    jobs:
-      - build-job-etl-graph
-      - gcp-gcr/build-and-push-image:
-          context: data-eng-airflow-gcr
-          docker-context: jobs/etl-graph/
-          path: jobs/etl-graph/
-          image: etl-graph_docker_etl
-          requires:
-            - build-job-etl-graph
-          filters:
-            branches:
-              only: main
 
 
   job-example_job:

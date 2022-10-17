@@ -7,9 +7,7 @@ labels:
   incremental: true
   schedule: daily
 scheduling:
-  dag_name:
-  task_name:
-  arguments:
+  dag_name: bqetl_ctxsvc_derived
 bigquery:
   time_partitioning:
     field: submission_date

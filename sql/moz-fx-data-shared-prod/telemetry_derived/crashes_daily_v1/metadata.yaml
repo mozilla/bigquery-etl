@@ -11,8 +11,9 @@ owners:
 labels:
   incremental: true
 scheduling:
-  dag_name: bqetl_telemetry_crashes_daily
+  dag_name: bqetl_main_summary
   task_name: crashes_daily_v1
+  priority: 85
 bigquery:
   time_partitioning:
     field: submission_date

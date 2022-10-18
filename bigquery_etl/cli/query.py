@@ -4,18 +4,17 @@ import copy
 import os
 import re
 import string
+import subprocess
 import sys
 import tempfile
-import yaml
 from datetime import date, timedelta
 from functools import partial
-from multiprocessing.pool import Pool
-from multiprocessing.pool import ThreadPool
+from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
-import subprocess
 from tempfile import NamedTemporaryFile
 
 import click
+import yaml
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
@@ -484,6 +483,7 @@ def _backfill_query(
             "--replace",
             f"--max_rows={max_rows}",
             f"--project_id={project_id}",
+            "--format=none",
         ] + args
         if dry_run:
             arguments += ["--dry_run"]

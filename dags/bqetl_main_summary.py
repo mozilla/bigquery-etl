@@ -219,6 +219,13 @@ with DAG(
         "telemetry_derived__clients_daily_joined__v1_external"
     ) as telemetry_derived__clients_daily_joined__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_ctxsvc_derived__wait_for_telemetry_derived__clients_daily_joined__v1",
+            external_dag_id="bqetl_ctxsvc_derived",
+            external_task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_search__wait_for_telemetry_derived__clients_daily_joined__v1",
             external_dag_id="bqetl_search",
             external_task_id="wait_for_telemetry_derived__clients_daily_joined__v1",

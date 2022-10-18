@@ -4,6 +4,10 @@ RETURNS STRUCT<
   latest_receipt BYTES,
   latest_receipt_info ARRAY<
     STRUCT<
+      cancellation_date STRING,  -- TIMESTAMP "%Y-%m-%d %H:%M:%E*S %Z"
+      cancellation_date_ms INT64,
+      cancellation_date_pst STRING,  -- TIMESTAMP "%Y-%m-%d %H:%M:%E*S %Z"
+      cancellation_reason STRING,
       expires_date STRING,  -- TIMESTAMP "%Y-%m-%d %H:%M:%E*S %Z"
       expires_date_ms INT64,
       expires_date_pst STRING,  -- TIMESTAMP "%Y-%m-%d %H:%M:%E*S %Z"
@@ -13,8 +17,9 @@ RETURNS STRUCT<
       original_purchase_date STRING,  -- TIMESTAMP "%Y-%m-%d %H:%M:%E*S %Z"
       original_purchase_date_ms INT64,
       original_purchase_date_pst STRING,  -- TIMESTAMP "%Y-%m-%d %H:%M:%E*S %Z"
-      original_transaction_id INT64,
+      original_transaction_id STRING,
       product_id STRING,
+      promotional_offer_id STRING,
       purchase_date STRING,  -- TIMESTAMP "%Y-%m-%d %H:%M:%E*S %Z"
       purchase_date_ms INT64,
       purchase_date_pst STRING,  -- TIMESTAMP "%Y-%m-%d %H:%M:%E*S %Z"
@@ -30,7 +35,7 @@ RETURNS STRUCT<
       auto_renew_status INT64,
       expiration_intent INT64,
       is_in_billing_retry_period INT64,
-      original_transaction_id INT64,
+      original_transaction_id STRING,
       product_id STRING
     >
   >,
@@ -42,6 +47,10 @@ RETURNS STRUCT<
     download_id INT64,
     in_app ARRAY<
       STRUCT<
+        cancellation_date STRING,  -- TIMESTAMP "%Y-%m-%d %H:%M:%E*S %Z"
+        cancellation_date_ms INT64,
+        cancellation_date_pst STRING,  -- TIMESTAMP "%Y-%m-%d %H:%M:%E*S %Z"
+        cancellation_reason STRING,
         expires_date STRING,  -- TIMESTAMP "%Y-%m-%d %H:%M:%E*S %Z"
         expires_date_ms INT64,
         expires_date_pst STRING,  -- TIMESTAMP "%Y-%m-%d %H:%M:%E*S %Z"
@@ -51,12 +60,14 @@ RETURNS STRUCT<
         original_purchase_date STRING,  -- TIMESTAMP "%Y-%m-%d %H:%M:%E*S %Z"
         original_purchase_date_ms INT64,
         original_purchase_date_pst STRING,  -- TIMESTAMP "%Y-%m-%d %H:%M:%E*S %Z"
-        original_transaction_id INT64,
+        original_transaction_id STRING,
         product_id STRING,
+        promotional_offer_id STRING,
         purchase_date STRING,  -- TIMESTAMP "%Y-%m-%d %H:%M:%E*S %Z"
         purchase_date_ms INT64,
         purchase_date_pst STRING,  -- TIMESTAMP "%Y-%m-%d %H:%M:%E*S %Z"
         quantity INT64,
+        subscription_group_identifier INT64,  -- added to match schema with latest_receipt_info
         transaction_id INT64,
         web_order_line_item_id INT64
       >
@@ -87,6 +98,10 @@ SELECT
       b"test" AS latest_receipt,
       [
         STRUCT(
+          "2021-01-08 02:10:36 Etc/GMT" AS cancellation_date,
+          1610071836000 AS cancellation_date_ms,
+          "2021-01-07 18:10:36 America/Los_Angeles" AS cancellation_date_pst,
+          "0" AS cancellation_reason,
           "2021-01-08 02:10:25 Etc/GMT" AS expires_date,
           1610071825000 AS expires_date_ms,
           "2021-01-07 18:10:25 America/Los_Angeles" AS expires_date_pst,
@@ -96,8 +111,9 @@ SELECT
           "2021-01-08 01:40:27 Etc/GMT" AS original_purchase_date,
           1610070027000 AS original_purchase_date_ms,
           "2021-01-07 17:40:27 America/Los_Angeles" AS original_purchase_date_pst,
-          1000000762442282 AS original_transaction_id,
+          "1000000762442282" AS original_transaction_id,
           "org.mozilla.ios.FirefoxVPN.product.1_month_subscription" AS product_id,
+          "promo code" AS promotional_offer_id,
           "2021-01-08 02:05:25 Etc/GMT" AS purchase_date,
           1610071525000 AS purchase_date_ms,
           "2021-01-07 18:05:25 America/Los_Angeles" AS purchase_date_pst,
@@ -113,7 +129,7 @@ SELECT
           0 AS auto_renew_status,
           1 AS expiration_intent,
           0 AS is_in_billing_retry_period,
-          1000000762442282 AS original_transaction_id,
+          "1000000762442282" AS original_transaction_id,
           "org.mozilla.ios.FirefoxVPN.product.1_month_subscription" AS product_id
         )
       ] AS pending_renewal_info,
@@ -125,6 +141,10 @@ SELECT
         0 AS download_id,
         [
           STRUCT(
+            "2021-01-08 02:10:36 Etc/GMT" AS cancellation_date,
+            1610071836000 AS cancellation_date_ms,
+            "2021-01-07 18:10:36 America/Los_Angeles" AS cancellation_date_pst,
+            "0" AS cancellation_reason,
             "2021-01-08 01:45:25 Etc/GMT" AS expires_date,
             1610070325000 AS expires_date_ms,
             "2021-01-07 17:45:25 America/Los_Angeles" AS expires_date_pst,
@@ -134,12 +154,14 @@ SELECT
             "2021-01-08 01:40:27 Etc/GMT" AS original_purchase_date,
             1610070027000 AS original_purchase_date_ms,
             "2021-01-07 17:40:27 America/Los_Angeles" AS original_purchase_date_pst,
-            1000000762442282 AS original_transaction_id,
+            "1000000762442282" AS original_transaction_id,
             "org.mozilla.ios.FirefoxVPN.product.1_month_subscription" AS product_id,
+            "promo code" AS promotional_offer_id,
             "2021-01-08 01:40:25 Etc/GMT" AS purchase_date,
             1610070025000 AS purchase_date_ms,
             "2021-01-07 17:40:25 America/Los_Angeles" AS purchase_date_pst,
             1 AS quantity,
+            CAST(NULL AS INT64) AS subscription_group_identifier,
             1000000762442282 AS transaction_id,
             1000000058912047 AS web_order_line_item_id
           )
@@ -182,7 +204,12 @@ SELECT
                 "original_transaction_id": 1000000762442282,
                 "is_in_intro_offer_period": "false",
                 "original_purchase_date_ms": 1610070027000,
-                "original_purchase_date_pst": "2021-01-07 17:40:27 America/Los_Angeles"
+                "original_purchase_date_pst": "2021-01-07 17:40:27 America/Los_Angeles",
+                "cancellation_date": "2021-01-08 02:10:36 Etc/GMT",
+                "cancellation_date_ms": 1610071836000,
+                "cancellation_date_pst": "2021-01-07 18:10:36 America/Los_Angeles",
+                "cancellation_reason": "0",
+                "promotional_offer_id": "promo code"
               }
             ],
             "adam_id": 0,
@@ -224,7 +251,12 @@ SELECT
               "is_in_intro_offer_period": "false",
               "original_purchase_date_ms": "1610070027000",
               "original_purchase_date_pst": "2021-01-07 17:40:27 America/Los_Angeles",
-              "subscription_group_identifier": "20693686"
+              "subscription_group_identifier": "20693686",
+              "cancellation_date": "2021-01-08 02:10:36 Etc/GMT",
+              "cancellation_date_ms": 1610071836000,
+              "cancellation_date_pst": "2021-01-07 18:10:36 America/Los_Angeles",
+              "cancellation_reason": "0",
+              "promotional_offer_id": "promo code"
             }
           ],
           "pending_renewal_info": [

@@ -1,0 +1,7 @@
+description: >
+  Used to parse `data` field from firestore export of fxa dataset
+  iap_app_store_purchases_raw. The content is documented at
+  https://developer.apple.com/documentation/appstoreservernotifications/responsebodyv2decodedpayload
+  and
+  https://github.com/mozilla/fxa/blob/700ed771860da450add97d62f7e6faf2ead0c6ba/packages/fxa-shared/payments/iap/apple-app-store/subscription-purchase.ts#L115-L171
+friendly_name: Parse Apple IAP Event from Subscription Platform

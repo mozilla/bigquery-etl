@@ -100,6 +100,8 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/subscription_platform/stripe_subscriptions_history/view.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/subscription_platform/nonprod_stripe_subscriptions/view.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/subscription_platform/nonprod_stripe_subscriptions_history/view.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/subscription_platform/apple_subscriptions/view.sql",
+    "sql/moz-fx-data-shared-prod/subscription_platform/nonprod_apple_subscriptions/view.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/stripe/itemized_payout_reconciliation/view.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscription_ids_v1/query.sql",  # noqa E501
@@ -109,6 +111,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/devices_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/fxa_attribution_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/funnel_product_page_to_subscribed_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/guardian_apple_events_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/login_flows_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/protected_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/site_metrics_empty_check_v1/query.sql",  # noqa E501

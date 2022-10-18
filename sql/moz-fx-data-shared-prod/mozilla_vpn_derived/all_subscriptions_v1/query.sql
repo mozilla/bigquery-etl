@@ -127,78 +127,65 @@ stripe_subscriptions AS (
 ),
 apple_iap_subscriptions AS (
   SELECT
-    user_id,
-    CAST(user_id AS STRING) AS customer_id,
-    CAST(id AS STRING) AS subscription_id,
-    CAST(NULL AS STRING) AS original_subscription_id,
-    CAST(NULL AS STRING) AS plan_id,
-    CAST(NULL AS STRING) AS status,
-    updated_at AS event_timestamp,
-    IF(
-      apple_receipt.trial_period.end_time > apple_receipt.active_period.start_time,
-      apple_receipt.trial_period.end_time,
-      apple_receipt.active_period.start_time
-    ) AS subscription_start_date,
+    users.user_id,
+    subplat.customer_id,
+    subplat.subscription_id,
+    subplat.original_subscription_id,
+    subplat.plan_id,
+    subplat.status,
+    subplat.event_timestamp,
+    subplat.subscription_start_date,
     CAST(NULL AS STRING) AS subscription_start_reason,
-    created_at AS created,
-    apple_receipt.trial_period.start_time AS trial_start,
-    apple_receipt.trial_period.end_time AS trial_end,
+    subplat.created,
+    subplat.trial_start,
+    subplat.trial_end,
     CAST(NULL AS TIMESTAMP) AS canceled_at,
     CAST(NULL AS STRING) AS canceled_for_customer_at,
     CAST(NULL AS TIMESTAMP) AS cancel_at,
     CAST(NULL AS BOOL) AS cancel_at_period_end,
     IF(
-      COALESCE(
-        apple_receipt.active_period.end_time,
-        apple_receipt.trial_period.end_time
-      ) < TIMESTAMP(CURRENT_DATE),
-      COALESCE(apple_receipt.active_period.end_time, apple_receipt.trial_period.end_time),
-      NULL
+      subplat.ended_at < TIMESTAMP(CURRENT_DATE),
+      subplat.ended_at,
+      CAST(NULL AS TIMESTAMP)
     ) AS ended_at,
-    CAST(NULL AS STRING) AS ended_reason,
-    fxa_uid,
+    subplat.ended_reason,
+    subplat.fxa_uid,
     CAST(NULL AS STRING) AS country,
     CAST(NULL AS STRING) AS country_name,
-    user_registration_date,
-    entrypoint_experiment,
-    entrypoint_variation,
-    utm_campaign,
-    utm_content,
-    utm_medium,
-    utm_source,
-    utm_term,
-    "Apple Store" AS provider,
-    NULL AS plan_amount,
+    users.user_registration_date,
+    attribution.entrypoint_experiment,
+    attribution.entrypoint_variation,
+    attribution.utm_campaign,
+    attribution.utm_content,
+    attribution.utm_medium,
+    attribution.utm_source,
+    attribution.utm_term,
+    subplat.provider,
+    CAST(NULL AS INT64) AS plan_amount,
     CAST(NULL AS STRING) AS billing_scheme,
     CAST(NULL AS STRING) AS plan_currency,
-    apple_receipt.active_period.`interval` AS plan_interval,
-    apple_receipt.active_period.interval_count AS plan_interval_count,
-    "America/Los_Angeles" AS plan_interval_timezone,
-    CAST(NULL AS STRING) AS product_id,
+    subplat.plan_interval,
+    subplat.plan_interval_count,
+    subplat.plan_interval_timezone,
+    subplat.product_id,
     "Mozilla VPN" AS product_name,
-    CONCAT(
-      apple_receipt.active_period.interval_count,
-      "-",
-      apple_receipt.active_period.`interval`,
-      "-",
-      "apple"
-    ) AS pricing_plan,
-    -- Apple bills recurring subscriptions before they end
-    INTERVAL 0 DAY AS billing_grace_period,
-    CAST(NULL AS ARRAY<STRING>) AS promotion_codes,
+    CONCAT(subplat.plan_interval_count, "-", subplat.plan_interval, "-", "apple") AS pricing_plan,
+    subplat.billing_grace_period,
+    subplat.promotion_codes,
     CAST(NULL AS INT64) AS promotion_discounts_amount,
   FROM
-    mozdata.mozilla_vpn.subscriptions
+    mozdata.subscription_platform.apple_subscriptions AS subplat
   LEFT JOIN
     users
   USING
-    (user_id)
+    (fxa_uid)
   LEFT JOIN
     attribution
   USING
     (fxa_uid)
   WHERE
-    apple_receipt.environment = "Production"
+    product_id = "org.mozilla.ios.FirefoxVPN"
+    AND fxa_uid IS NOT NULL
 ),
 android_iap_events AS (
   SELECT

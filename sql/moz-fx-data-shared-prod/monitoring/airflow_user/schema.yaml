@@ -1,0 +1,16 @@
+fields:
+- mode: NULLABLE
+  name: user_role
+  type: STRING
+- mode: NULLABLE
+  name: user_id
+  type: INTEGER
+- mode: NULLABLE
+  name: created_on
+  type: DATETIME
+- mode: NULLABLE
+  name: changed_on
+  type: DATETIME
+- mode: NULLABLE
+  name: last_login
+  type: DATETIME

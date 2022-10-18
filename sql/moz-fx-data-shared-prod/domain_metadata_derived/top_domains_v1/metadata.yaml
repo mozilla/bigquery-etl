@@ -6,12 +6,21 @@ description: |-
   government work" effort in joining the two.
 owners:
   - wstuckey@mozilla.com
+
 labels:
   incremental: true
-  schedule: daily
+  schedule: monthly
+
+bigquery:
+  time_partitioning:
+    field: submission_timestamp
+    type: month
+    require_partition_filter: true
+
 scheduling:
   dag_name: bqetl_domain_meta
   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

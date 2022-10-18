@@ -2664,57 +2664,6 @@ including views on <code>payload_bytes</code> tables</p>
 <h2 id="airflow_dag"><a href="#airflow_dag">airflow_dag</a></h2>
 <p><code>monitoring.airflow_dag</code></p>
 <table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>dag_id</td>
-        <td>Airflow DAG id (<root_dag_id>.<subdag_id>)</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>root_dag_id</td>
-        <td>Airflow Root DAG id</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>subdag_id</td>
-        <td>Airflow subdag id</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>is_subdag</td>
-        <td>Indicates if this DAG is a subdag</td>
-        <td>Boolean</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>owners</td>
-        <td>DAG owners (comma separated)</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>is_paused</td>
-        <td></td>
-        <td>Boolean</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>has_task_concurrency_limits</td>
-        <td></td>
-        <td>Boolean</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>concurrency</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -2732,52 +2681,6 @@ including views on <code>payload_bytes</code> tables</p>
 <hr />
 <h2 id="airflow_dag_run"><a href="#airflow_dag_run">airflow_dag_run</a></h2>
 <p><code>monitoring.airflow_dag_run</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>dag_id</td>
-        <td>Airflow DAG id</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>run_type</td>
-        <td>manual, scheduled or backfill</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>external_trigger</td>
-        <td>Indicates if the DAG was triggered externally</td>
-        <td>Boolean</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>state</td>
-        <td>State of the DAG run instance (e.g. success)</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>execution_date</td>
-        <td>Execution date of the DAG Run instance</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>start_date</td>
-        <td>When the DAG run started</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>end_date</td>
-        <td>When the DAG run finished</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -2797,27 +2700,6 @@ including views on <code>payload_bytes</code> tables</p>
 <h2 id="airflow_dag_tag"><a href="#airflow_dag_tag">airflow_dag_tag</a></h2>
 <p><code>monitoring.airflow_dag_tag</code></p>
 <table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>dag_id</td>
-        <td>Airflow DAG id</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>tag_name</td>
-        <td>Airflow tag name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -2835,37 +2717,6 @@ including views on <code>payload_bytes</code> tables</p>
 <hr />
 <h2 id="airflow_slot_pool"><a href="#airflow_slot_pool">airflow_slot_pool</a></h2>
 <p><code>monitoring.airflow_slot_pool</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>id</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>pool</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>description</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>slots</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -2885,47 +2736,6 @@ including views on <code>payload_bytes</code> tables</p>
 <h2 id="airflow_task_fail"><a href="#airflow_task_fail">airflow_task_fail</a></h2>
 <p><code>monitoring.airflow_task_fail</code></p>
 <table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>dag_id</td>
-        <td>Airflow DAG id</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>task_id</td>
-        <td>Airflow task id</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>duration</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>execution_date</td>
-        <td></td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>start_date</td>
-        <td></td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>end_date</td>
-        <td></td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -2944,52 +2754,6 @@ including views on <code>payload_bytes</code> tables</p>
 <h2 id="airflow_task_reschedule"><a href="#airflow_task_reschedule">airflow_task_reschedule</a></h2>
 <p><code>monitoring.airflow_task_reschedule</code></p>
 <table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>dag_id</td>
-        <td>Airflow DAG id</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>task_id</td>
-        <td>Airflow task id</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>execution_date</td>
-        <td>Execution date of the DAG Run instance</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>reschedule_date</td>
-        <td>Datetime when task has been rescheduled</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>start_date</td>
-        <td>When the DAG run started</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>end_date</td>
-        <td>When the DAG run finished</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>duration</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -3007,42 +2771,6 @@ including views on <code>payload_bytes</code> tables</p>
 <hr />
 <h2 id="airflow_user"><a href="#airflow_user">airflow_user</a></h2>
 <p><code>monitoring.airflow_user</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>user_role</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>user_id</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>created_on</td>
-        <td></td>
-        <td>Datetime</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>changed_on</td>
-        <td></td>
-        <td>Datetime</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>last_login</td>
-        <td></td>
-        <td>Datetime</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
 <table>
 <caption>Referenced Tables</caption>
     <tr>

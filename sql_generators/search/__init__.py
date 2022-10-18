@@ -41,6 +41,14 @@ FOCUS_ANDROID_TUPLES = [
 KLAR_ANDROID_TUPLES = [
     ("org_mozilla_klar",            "Klar Android Glean",     "release"),  # noqa E241 E501
 ]
+
+FOCUS_iOS_TUPLES = [
+    ("org_mozilla_ios_focus",           "Focus iOS Glean",    "release"), # noqa E241 E501
+]
+
+KLAR_iOS_TUPLES = [
+    ("org_mozilla_ios_klar",            "Klar iOS Glean",     "release"),  # noqa E241 E501
+]
 # fmt: on
 
 
@@ -73,6 +81,8 @@ def generate(output_dir, target_project):
     ios_query_template = env.get_template("ios_metrics.template.sql")
     android_focus_template = env.get_template("android_focus.template.sql")
     android_klar_template = env.get_template("android_klar.template.sql")
+    ios_focus_template = env.get_template("ios_focus.template.sql")
+    ios_klar_template = env.get_template("ios_klar.template.sql")
 
     firefox_android_queries = [
         android_query_template.render(
@@ -102,11 +112,27 @@ def generate(output_dir, target_project):
         for namespace, app_name, channel in KLAR_ANDROID_TUPLES
     ]
 
+    focus_ios_queries = [
+        ios_focus_template.render(
+            namespace=namespace, app_name=app_name, channel=channel
+        )
+        for namespace, app_name, channel in FOCUS_iOS_TUPLES
+    ]
+
+    klar_ios_queries = [
+        ios_klar_template.render(
+            namespace=namespace, app_name=app_name, channel=channel
+        )
+        for namespace, app_name, channel in KLAR_iOS_TUPLES
+    ]
+
     queries = (
         firefox_android_queries
         + firefox_ios_queries
         + focus_android_queries
         + klar_android_queries
+        + focus_ios_queries
+        + klar_ios_queries
     )
 
     search_query_template = env.get_template("mobile_search_clients_daily.template.sql")
@@ -139,6 +165,19 @@ def generate(output_dir, target_project):
         ]
     )
 
+    ios_focus_combined_metrics = union_statements(
+        [
+            f"SELECT * FROM metrics_{namespace}"
+            for namespace, _, _ in FOCUS_iOS_TUPLES
+        ]
+    )
+    ios_klar_combined_metrics = union_statements(
+        [
+            f"SELECT * FROM metrics_{namespace}"
+            for namespace, _, _ in KLAR_iOS_TUPLES
+        ]
+    )
+
     search_query = search_query_template.render(
         baseline_and_metrics_by_namespace="\n".join(queries),
         fenix_baseline=fenix_combined_baseline,
@@ -146,6 +185,8 @@ def generate(output_dir, target_project):
         ios_metrics=ios_combined_metrics,
         android_focus_metrics=android_focus_combined_metrics,
         android_klar_metrics=android_klar_combined_metrics,
+        ios_focus_metrics=ios_focus_combined_metrics,
+        ios_klar_metrics=ios_klar_combined_metrics,
     )
 
     print(reformat(search_query))

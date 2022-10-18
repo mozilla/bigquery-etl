@@ -6,6 +6,7 @@ owners:
   - kignasiak@mozilla.com
 scheduling:
   dag_name: bqetl_monitoring_airflow
+  date_partition_parameter: null
   referenced_tables:
     - ['moz-fx-data-bq-fivetran', 'airflow_metadata_airflow_db', 'task_fail']
   depends_on_fivetran:

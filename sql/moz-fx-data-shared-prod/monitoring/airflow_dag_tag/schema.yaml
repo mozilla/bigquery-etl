@@ -1,9 +1,0 @@
-fields:
-- description: Airflow DAG id
-  mode: NULLABLE
-  name: dag_id
-  type: STRING
-- description: Airflow tag name
-  mode: NULLABLE
-  name: tag_name
-  type: STRING

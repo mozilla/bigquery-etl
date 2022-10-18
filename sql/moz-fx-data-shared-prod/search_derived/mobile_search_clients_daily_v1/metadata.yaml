@@ -32,5 +32,7 @@ references:
   - org_mozilla_ios_fennec.metrics
   - org_mozilla_ios_firefox.metrics
   - org_mozilla_ios_firefoxbeta.metrics
+  - org_mozilla_ios_focus.metrics
+  - org_mozilla_ios_klar.metrics
   - org_mozilla_klar.metrics
   - telemetry.core

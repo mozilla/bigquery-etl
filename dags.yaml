@@ -824,8 +824,8 @@ bqetl_domain_meta:
   default_args:
     depends_on_past: false
     email:
-    - telemetry-alerts@mozilla.com
-    - wstuckey@mozilla.com
+      - telemetry-alerts@mozilla.com
+      - wstuckey@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
@@ -836,5 +836,4 @@ bqetl_domain_meta:
   description: Domain metadata
   schedule_interval: monthly
   tags:
-  - repo/bigquery-etl
-
+    - repo/bigquery-etl

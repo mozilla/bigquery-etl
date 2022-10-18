@@ -6,5 +6,3 @@ SELECT
   tag_name
 FROM
   `moz-fx-data-shared-prod.monitoring_derived.airflow_dag_tag_v1`
-WHERE
-  NOT is_deleted

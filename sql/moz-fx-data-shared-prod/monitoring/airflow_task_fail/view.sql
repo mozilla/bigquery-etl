@@ -10,5 +10,3 @@ SELECT
   end_date
 FROM
   `moz-fx-data-shared-prod.monitoring_derived.airflow_task_fail_v1`
-WHERE
-  NOT is_deleted

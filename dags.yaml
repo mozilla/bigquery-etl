@@ -836,4 +836,5 @@ bqetl_domain_meta:
   description: Domain metadata
   schedule_interval: monthly
   tags:
+    - impact/tier_2
     - repo/bigquery-etl

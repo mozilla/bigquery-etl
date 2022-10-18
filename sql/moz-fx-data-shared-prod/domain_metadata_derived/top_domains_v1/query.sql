@@ -70,6 +70,7 @@ combined AS (
     domain_join
 )
 SELECT
+  @submission_date as submission_date,
   host_rank AS tranco_host_rank,
   domain_rank AS tranco_domain_rank,
   * EXCEPT (host_rank, domain_rank)

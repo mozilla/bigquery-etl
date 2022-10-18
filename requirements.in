@@ -1,6 +1,7 @@
 click==8.0.4
 importlib-metadata==4.11.3
 Jinja2==2.11.3
+markupsafe==2.0.1 # https://github.com/aws/aws-sam-cli/issues/3661#issuecomment-1266400556
 pytest==6.0.2
 pytest-black==0.3.11
 pytest-flake8==1.0.6

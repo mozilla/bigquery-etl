@@ -112,6 +112,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
 
     contextual_services_derived__adm_forecasting__v1.set_upstream(
         contextual_services_derived__event_aggregates__v1

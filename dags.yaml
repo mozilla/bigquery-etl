@@ -375,6 +375,20 @@ bqetl_monitoring:
   tags:
     - impact/tier_1
 
+bqetl_monitoring_airflow:
+  schedule_interval: 0 2 * * *
+  description: |
+    This DAG schedules queries and scripts for populating datasets
+    used for monitoring of Airflow DAGs.
+  default_args:
+    owner: kignasiak@mozilla.com
+    email: ["kignasiak@mozilla.com"]
+    start_date: "2022-09-01"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
 bqetl_event_rollup:
   schedule_interval: 0 3 * * *
   default_args:
@@ -804,23 +818,4 @@ bqetl_desktop_mobile_search_monthly:
   schedule_interval: "0 5 2 * *"
   tags:
     - impact/tier_1
-    - repo/bigquery-etl
-
-bqetl_telemetry_crashes_daily:
-  default_args:
-    depends_on_past: false
-    email:
-      - telemetry-alerts@mozilla.com
-      - frank@mozilla.com
-    email_on_failure: true
-    email_on_retry: true
-    end_date: null
-    owner: frank@mozilla.com
-    retries: 2
-    retry_delay: 30m
-    start_date: '2022-08-30'
-  description: Telemetry crashes daily
-  schedule_interval: 0 1 * * *
-  tags:
-    - impact/tier_2
     - repo/bigquery-etl

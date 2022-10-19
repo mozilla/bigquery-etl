@@ -5,8 +5,6 @@ WITH dau_client AS (
   SELECT
     submission_date,
     client_id,
-    first_seen_date,
-    country,
     COUNTIF(days_since_seen < 1) AS dau,
     COUNTIF(first_seen_date = submission_date) AS new_profiles
   FROM
@@ -16,9 +14,7 @@ WITH dau_client AS (
     AND days_since_seen < 1
   GROUP BY
     1,
-    2,
-    3,
-    4
+    2
 ),
 search AS (
   SELECT
@@ -32,6 +28,20 @@ search AS (
     submission_date >= '2021-01-01'
     AND normalized_app_name = 'Fenix'
     AND os = 'Android'
+  GROUP BY
+    1,
+    2
+),
+first_seen AS (
+  SELECT
+    client_id,
+    country,
+    MIN(first_seen_date) AS first_seen_date
+  FROM
+    mozdata.fenix.baseline_clients_first_seen
+  WHERE
+    first_seen_date >= '2021-01-01'
+    AND submission_date >= '2021-01-01'
   GROUP BY
     1,
     2
@@ -68,10 +78,14 @@ SELECT
   coalesce(ad_clicks, 0) AS ad_clicks
 FROM
   dau_client
-LEFT JOIN
+FULL OUTER JOIN
   search
 USING
   (client_id, submission_date)
+JOIN
+  first_seen
+USING
+  (client_id)
 JOIN
   adjust_client
 USING

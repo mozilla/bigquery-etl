@@ -80,6 +80,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_content_events_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_stdout_events_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_update/view.sql",
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_v1/query.sql",
@@ -139,6 +140,9 @@ SKIP = {
     *glob.glob(
         "sql/moz-fx-data-shared-prod/**/topsites_impression/view.sql", recursive=True
     ),
+    "sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/contextual_services_derived/adm_forecasting_v1/query.sql",
     "sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_summary/view.sql",
     *glob.glob(
         "sql/moz-fx-data-shared-prod/regrets_reporter_derived/regrets_reporter_summary_v1/*.sql",  # noqa E501
@@ -156,6 +160,10 @@ SKIP = {
         "sql/moz-fx-data-marketing-prod/acoustic/**/*.sql",
         recursive=True,
     ),
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/monitoring_derived/airflow_*/*.sql",
+        recursive=True,
+    ),  # noqa E501
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501
@@ -574,12 +582,14 @@ class DryRun:
             project_name, dataset_name, table_name, partitioned_by
         )
 
+        # This check relies on the new schema being deployed to prod
         if not query_schema.compatible(table_schema):
             click.echo(
                 click.style(
                     f"ERROR: Schema for query in {query_file_path} "
                     f"incompatible with schema deployed for "
-                    f"{project_name}.{dataset_name}.{table_name}",
+                    f"{project_name}.{dataset_name}.{table_name}\n"
+                    f"Did you deploy new the schema to prod yet?",
                     fg="red",
                 ),
                 err=True,

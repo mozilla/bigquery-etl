@@ -9,7 +9,7 @@ description: |-
   we received a main ping from that client on that day. The first_seen_date
   and second_seen_date is added to each client from clients_last_seen.
 owners:
-- jklukas@mozilla.com
+- frank@mozilla.com
 labels:
   application: firefox
   schedule: daily
@@ -22,7 +22,9 @@ bigquery:
     field: submission_date
     type: day
     require_partition_filter: true
+    expiration_days: null
   clustering:
     fields:
     - normalized_channel
     - sample_id
+references: {}

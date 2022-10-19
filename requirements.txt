@@ -1223,9 +1223,9 @@ types-python-dateutil==2.8.19.2 \
     --hash=sha256:3f4dbe465e7e0c6581db11fd7a4855d1355b78712b3f292bd399cd332247e9c0 \
     --hash=sha256:e6e32ce18f37765b08c46622287bc8d8136dc0c562d9ad5b8fd158c59963d7a7
     # via -r requirements.in
-types-pytz==2022.4.0.0 \
-    --hash=sha256:17d66e4b16e80ceae0787726f3a22288df7d3f9fdebeb091dc64b92c0e4ea09d \
-    --hash=sha256:950b0f3d64ed5b03a3e29c1e38fe2be8371c933c8e97922d0352345336eb8af4
+types-pytz==2022.5.0.0 \
+    --hash=sha256:0c163b15d3e598e6cc7074a99ca9ec72b25dc1b446acc133b827667af0b7b09a \
+    --hash=sha256:a8e1fe6a1b270fbfaf2553b20ad0f1316707cc320e596da903bb17d7373fed2d
     # via -r requirements.in
 types-pyyaml==6.0.12 \
     --hash=sha256:29228db9f82df4f1b7febee06bbfb601677882e98a3da98132e31c6874163e15 \

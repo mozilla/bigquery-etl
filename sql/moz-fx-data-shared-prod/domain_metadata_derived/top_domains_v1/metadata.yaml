@@ -13,7 +13,7 @@ labels:
 
 bigquery:
   time_partitioning:
-    field: submission_timestamp
+    field: submission_date
     type: month
     require_partition_filter: true
 

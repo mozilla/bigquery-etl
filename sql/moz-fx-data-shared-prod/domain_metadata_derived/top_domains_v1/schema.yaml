@@ -13,7 +13,7 @@ fields:
 
 - mode: NULLABLE
   name: tranco_domain_rank
-  tpe: INTEGER
+  type: INTEGER
   description: Rank from the tranco list when the domain names match exactly\
     with CrUX data. Domain names do not include sub-domains.\
     (i.e. google.com)

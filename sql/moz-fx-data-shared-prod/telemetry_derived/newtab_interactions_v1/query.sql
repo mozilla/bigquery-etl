@@ -18,7 +18,7 @@ WITH events_unnested AS (
     `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1`,
     UNNEST(events)
   WHERE
-    DATE(submission_timestamp) = DATE('2022-09-12')
+    DATE(submission_timestamp) = @submission_date
     AND category IN ('newtab', 'topsites', 'newtab.search', 'newtab.search.ad', 'pocket')
     AND name IN ('closed', 'opened', 'impression', 'issued', 'click', 'save', 'topic_click')
 ),
@@ -150,7 +150,7 @@ SELECT
   ANY_VALUE(newtab_search_enabled) AS newtab_search_enabled,
   MIN(newtab_visit_started_at) AS newtab_visit_started_at,
   MIN(newtab_visit_ended_at) AS newtab_visit_ended_at,
-      -- Topsites
+      -- Topsite
   COUNTIF(is_topsite_click) AS topsite_clicks,
   COUNTIF(is_sponsored_topsite_click) AS sponsored_topsite_clicks,
   COUNTIF(is_topsite_impression) AS topsite_impressions,

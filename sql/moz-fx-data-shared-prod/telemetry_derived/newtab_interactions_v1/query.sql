@@ -113,10 +113,9 @@ categorized_events AS (
         -- Partially unique visit attributes
     mozfun.map.get_key(event_details, "telemetry_id") AS search_engine,
     mozfun.map.get_key(event_details, "search_access_point") AS search_access_point,
-    SAFE_CAST(mozfun.map.get_key(
-      event_details,
-      "position"
-    ) AS INT64) AS pocket_story_position, -- Note potential name-collision here with topsite position
+    SAFE_CAST(
+      mozfun.map.get_key(event_details, "position") AS INT64
+    ) AS pocket_story_position, -- Note potential name-collision here with topsite position
         -- ??? topsite_advertiser_id
         -- ??? topsite_position
     submission_date
@@ -142,13 +141,13 @@ SELECT
   ANY_VALUE(app_display_version) AS browser_version,
   "Firefox Desktop" AS browser_name,
   ANY_VALUE(newtab_open_source) AS newtab_open_source,
-  ANY_VALUE(pocket_is_signed_in) as pocket_is_signed_in,
+  ANY_VALUE(pocket_is_signed_in) AS pocket_is_signed_in,
   ANY_VALUE(pocket_enabled) AS pocket_enabled,
-  ANY_VALUE(pocket_sponsored_stories_enabled) as pocket_sponsored_stories_enabled,
-  ANY_VALUE(topsites_enabled) as topsites_enabled,
-  ANY_VALUE(newtab_homepage_category) as newtab_homepage_category,
-  ANY_VALUE(newtab_newtab_category) as newtab_newtab_category,
-  ANY_VALUE(newtab_search_enabled) as newtab_search_enabled,
+  ANY_VALUE(pocket_sponsored_stories_enabled) AS pocket_sponsored_stories_enabled,
+  ANY_VALUE(topsites_enabled) AS topsites_enabled,
+  ANY_VALUE(newtab_homepage_category) AS newtab_homepage_category,
+  ANY_VALUE(newtab_newtab_category) AS newtab_newtab_category,
+  ANY_VALUE(newtab_search_enabled) AS newtab_search_enabled,
   MIN(newtab_visit_started_at) AS newtab_visit_started_at,
   MIN(newtab_visit_ended_at) AS newtab_visit_ended_at,
       -- Topsites

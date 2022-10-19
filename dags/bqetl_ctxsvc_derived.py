@@ -81,6 +81,38 @@ with DAG(
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
+    contextual_services_derived__event_aggregates_spons_tiles__v1 = bigquery_etl_query(
+        task_id="contextual_services_derived__event_aggregates_spons_tiles__v1",
+        destination_table="event_aggregates_spons_tiles_v1",
+        dataset_id="contextual_services_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="rburwei@mozilla.com",
+        email=[
+            "ctroy@mozilla.com",
+            "rburwei@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    contextual_services_derived__event_aggregates_suggest__v1 = bigquery_etl_query(
+        task_id="contextual_services_derived__event_aggregates_suggest__v1",
+        destination_table="event_aggregates_suggest_v1",
+        dataset_id="contextual_services_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="rburwei@mozilla.com",
+        email=[
+            "ctroy@mozilla.com",
+            "rburwei@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     contextual_services_derived__adm_forecasting__v1.set_upstream(
         contextual_services_derived__event_aggregates__v1
     )
@@ -127,5 +159,13 @@ with DAG(
     )
 
     contextual_services_derived__event_aggregates__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    contextual_services_derived__event_aggregates_spons_tiles__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    contextual_services_derived__event_aggregates_suggest__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )

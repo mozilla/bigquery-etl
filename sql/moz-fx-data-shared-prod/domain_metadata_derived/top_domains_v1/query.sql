@@ -70,9 +70,13 @@ combined AS (
     domain_join
 )
 SELECT
-  @submission_date AS submission_date,
+  DATE(@submission_date) AS submission_date,
   host_rank AS tranco_host_rank,
   domain_rank AS tranco_domain_rank,
-  * EXCEPT (host_rank, domain_rank)
+  domain,
+  host,
+  origin,
+  suffix,
+  country_code
 FROM
   combined

@@ -16,6 +16,7 @@ WITH base AS (
     -- We batch multiple fields into an array here in order to share a single
     -- UDF invocation which keeps query complexity down; order of fields here
     -- is important, as we pull these out by numerical offset later.
+    -- count_histograms are deprecated, going forward use scalar.
     ARRAY(
       SELECT AS STRUCT
         mozfun.map.get_key(mozfun.hist.extract(histogram).values, 0) AS histogram
@@ -80,7 +81,16 @@ WITH base AS (
             STRUCT(payload.keyed_histograms.process_crash_submit_success, 'main-crash'),
             STRUCT(payload.keyed_histograms.process_crash_submit_success, 'content-crash'),
             STRUCT(payload.keyed_histograms.process_crash_submit_success, 'plugin-crash'),
-            STRUCT(payload.keyed_histograms.subprocess_kill_hard, 'ShutDownKill')
+            STRUCT(payload.keyed_histograms.subprocess_kill_hard, 'ShutDownKill'),
+            STRUCT(payload.keyed_histograms.fx_migration_bookmarks_quantity, "chrome"),
+            STRUCT(payload.keyed_histograms.fx_migration_bookmarks_quantity, "chromium-edge"),
+            STRUCT(payload.keyed_histograms.fx_migration_bookmarks_quantity, "safari"),
+            STRUCT(payload.keyed_histograms.fx_migration_history_quantity, "chrome"),
+            STRUCT(payload.keyed_histograms.fx_migration_history_quantity, "chromium-edge"),
+            STRUCT(payload.keyed_histograms.fx_migration_history_quantity, "safari"),
+            STRUCT(payload.keyed_histograms.fx_migration_logins_quantity, "chrome"),
+            STRUCT(payload.keyed_histograms.fx_migration_logins_quantity, "chromium-edge"),
+            STRUCT(payload.keyed_histograms.fx_migration_logins_quantity, "safari")
           ]
         )
     ) AS hist_key_sums,
@@ -98,10 +108,44 @@ WITH base AS (
             payload.histograms.web_notification_shown,
             payload.histograms.plugins_infobar_shown,
             payload.histograms.plugins_infobar_block,
-            payload.histograms.plugins_infobar_allow
+            payload.histograms.plugins_infobar_allow,
+            payload.histograms.text_recognition_interaction_timing,
+            payload.histograms.text_recognition_api_performance,
+            payload.histograms.text_recognition_text_length
           ]
         ) AS histogram
-    ) AS hist_sums
+    ) AS hist_sums,
+    -- We batch multiple fields into an array here in order to share a single
+    -- UDF invocation which keeps query complexity down; order of fields here
+    -- is important, as we pull these out by numerical offset later.
+    ARRAY(
+      SELECT
+        mozfun.hist.count(histogram)
+      FROM
+        UNNEST(
+          [
+            payload.histograms.text_recognition_interaction_timing,
+            payload.histograms.text_recognition_api_performance,
+            payload.histograms.text_recognition_text_length
+          ]
+        ) AS histogram
+    ) AS hist_counts,
+    -- We batch multiple fields into an array here in order to share a single
+    -- UDF invocation which keeps query complexity down; order of fields here
+    -- is important, as we pull these out by numerical offset later.
+    ARRAY(
+      SELECT
+        mozfun.hist.extract_keyed_hist_sum(value.keyed_histogram)
+      FROM
+        UNNEST(
+          [
+            -- We add a struct layer here b/c BQ doesn't allow nested arrays
+            STRUCT(payload.keyed_histograms.fx_migration_bookmarks_quantity AS keyed_histogram),
+            STRUCT(payload.keyed_histograms.fx_migration_history_quantity AS keyed_histogram),
+            STRUCT(payload.keyed_histograms.fx_migration_logins_quantity AS keyed_histogram)
+          ]
+        ) AS value
+    ) AS keyed_hist_sums,
   FROM
     `moz-fx-data-shared-prod`.telemetry_stable.main_v4
   WHERE
@@ -220,6 +264,15 @@ clients_summary AS (
     hist_key_sums[OFFSET(11)] AS crash_submit_success_content,
     hist_key_sums[OFFSET(12)] AS crash_submit_success_plugin,
     hist_key_sums[OFFSET(13)] AS shutdown_kill,
+    hist_key_sums[OFFSET(14)] AS bookmark_migrations_quantity_chrome,
+    hist_key_sums[OFFSET(15)] AS bookmark_migrations_quantity_edge,
+    hist_key_sums[OFFSET(16)] AS bookmark_migrations_quantity_safari,
+    hist_key_sums[OFFSET(17)] AS history_migrations_quantity_chrome,
+    hist_key_sums[OFFSET(18)] AS history_migrations_quantity_edge,
+    hist_key_sums[OFFSET(19)] AS history_migrations_quantity_safari,
+    hist_key_sums[OFFSET(20)] AS logins_migrations_quantity_chrome,
+    hist_key_sums[OFFSET(21)] AS logins_migrations_quantity_edge,
+    hist_key_sums[OFFSET(22)] AS logins_migrations_quantity_safari,
     (
       SELECT
         version
@@ -256,6 +309,9 @@ clients_summary AS (
     hist_sums[OFFSET(3)] AS plugins_infobar_shown,
     hist_sums[OFFSET(4)] AS plugins_infobar_block,
     hist_sums[OFFSET(5)] AS plugins_infobar_allow,
+    hist_sums[OFFSET(6)] AS text_recognition_interaction_timing,
+    hist_sums[OFFSET(7)] AS text_recognition_api_performance,
+    hist_sums[OFFSET(8)] AS text_recognition_text_length,
     TIMESTAMP_DIFF(
       TIMESTAMP_TRUNC(submission_timestamp, SECOND),
       SAFE.PARSE_TIMESTAMP('%a, %d %b %Y %T %Z', metadata.header.date),
@@ -460,6 +516,8 @@ clients_summary AS (
     payload.processes.parent.keyed_scalars.contextual_services_topsites_click,
     payload.processes.parent.keyed_scalars.contextual_services_topsites_impression,
     payload.processes.parent.keyed_scalars.a11y_theme,
+    payload.processes.parent.keyed_scalars.browser_ui_interaction_content_context AS scalar_parent_browser_ui_interaction_content_context,
+    payload.processes.parent.scalars.browser_ui_interaction_textrecognition_error AS scalar_parent_browser_ui_interaction_textrecognition_error,
     -- CAUTION: the order of fields here must match the order defined in
     -- count_histograms above and offsets must increment on each line.
     count_histograms[OFFSET(0)].histogram AS histogram_parent_devtools_aboutdebugging_opened_count,
@@ -502,6 +560,28 @@ clients_summary AS (
     count_histograms[OFFSET(27)].histogram AS histogram_parent_devtools_webaudioeditor_opened_count,
     count_histograms[OFFSET(28)].histogram AS histogram_parent_devtools_webconsole_opened_count,
     count_histograms[OFFSET(29)].histogram AS histogram_parent_devtools_webide_opened_count,
+    -- CAUTION: the order of fields here must match the order defined in
+    -- hist_counts above and offsets must increment on each line.
+    hist_counts[OFFSET(0)] AS text_recognition_interaction_timing_count,
+    hist_counts[OFFSET(1)] AS text_recognition_api_performance_count,
+    hist_counts[OFFSET(2)] AS text_recognition_text_length_count,
+    -- CAUTION: the order of fields here must match the order defined in
+    -- keyed_hist_sums above and offsets must increment on each line.
+    keyed_hist_sums[OFFSET(0)] AS bookmark_migrations_quantity_all,
+    keyed_hist_sums[OFFSET(1)] AS history_migrations_quantity_all,
+    keyed_hist_sums[OFFSET(2)] AS logins_migrations_quantity_all,
+    COALESCE(
+      payload.processes.parent.scalars.dom_parentprocess_private_window_used,
+      FALSE
+    ) AS scalar_parent_dom_parentprocess_private_window_used,
+    COALESCE(
+      payload.processes.parent.scalars.os_environment_is_taskbar_pinned,
+      FALSE
+    ) AS scalar_parent_os_environment_is_taskbar_pinned_any,
+    COALESCE(
+      payload.processes.parent.scalars.os_environment_is_taskbar_pinned_private,
+      FALSE
+    ) AS scalar_parent_os_environment_is_taskbar_pinned_private,
     -- Select out some individual userPrefs values; note that prefs are only available in
     -- the environment based on registration in DEFAULT_ENVIRONMENT_PREFS; see
     -- https://searchfox.org/mozilla-central/source/toolkit/components/telemetry/app/TelemetryEnvironment.jsm
@@ -1001,6 +1081,9 @@ aggregates AS (
     COUNTIF(
       'Other' = scalar_parent_os_environment_launch_method
     ) > 0 AS scalar_parent_os_environment_launched_via_other,
+    COUNTIF(
+      'TaskbarPrivate' = scalar_parent_os_environment_launch_method
+    ) > 0 AS scalar_parent_os_environment_launched_via_taskbar_private,
     SUM(
       scalar_parent_storage_sync_api_usage_extensions_using
     ) AS scalar_parent_storage_sync_api_usage_extensions_using_sum,
@@ -1215,7 +1298,8 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_sponsored_bestmatch)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_nonsponsored_bestmatch)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_topsites_click)),
-      STRUCT(ARRAY_CONCAT_AGG(contextual_services_topsites_impression))
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_topsites_impression)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_browser_ui_interaction_content_context))
     ] AS map_sum_aggregates,
     udf.search_counts_map_sum(ARRAY_CONCAT_AGG(search_counts)) AS search_counts,
     mozfun.stats.mode_last(
@@ -1268,6 +1352,43 @@ aggregates AS (
     ARRAY_AGG(user_pref_browser_urlbar_suggest_bestmatch ORDER BY submission_timestamp DESC)[
       OFFSET(0)
     ] AS user_pref_browser_urlbar_suggest_bestmatch,
+    SUM(
+      scalar_parent_browser_ui_interaction_textrecognition_error
+    ) AS scalar_parent_browser_ui_interaction_textrecognition_error_sum,
+    SUM(text_recognition_interaction_timing) AS text_recognition_interaction_timing_sum,
+    SUM(text_recognition_interaction_timing_count) AS text_recognition_interaction_timing_count_sum,
+    SUM(text_recognition_api_performance) AS text_recognition_api_performance_sum,
+    SUM(text_recognition_api_performance_count) AS text_recognition_api_performance_count_sum,
+    SUM(text_recognition_text_length) AS text_recognition_text_length_sum,
+    SUM(text_recognition_text_length_count) AS text_recognition_text_length_count_sum,
+    LOGICAL_OR(
+      scalar_parent_dom_parentprocess_private_window_used
+    ) AS dom_parentprocess_private_window_used,
+    LOGICAL_OR(
+      scalar_parent_os_environment_is_taskbar_pinned_any
+    ) AS os_environment_is_taskbar_pinned_any,
+    LOGICAL_OR(
+      scalar_parent_os_environment_is_taskbar_pinned_private
+    ) AS os_environment_is_taskbar_pinned_private_any,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(
+        scalar_parent_os_environment_is_taskbar_pinned_private
+        ORDER BY
+          submission_timestamp
+      )
+    ) AS os_environment_is_taskbar_pinned_private,
+    SUM(bookmark_migrations_quantity_chrome) AS bookmark_migrations_quantity_chrome,
+    SUM(bookmark_migrations_quantity_edge) AS bookmark_migrations_quantity_edge,
+    SUM(bookmark_migrations_quantity_safari) AS bookmark_migrations_quantity_safari,
+    SUM(bookmark_migrations_quantity_all) AS bookmark_migrations_quantity_all,
+    SUM(history_migrations_quantity_chrome) AS history_migrations_quantity_chrome,
+    SUM(history_migrations_quantity_edge) AS history_migrations_quantity_edge,
+    SUM(history_migrations_quantity_safari) AS history_migrations_quantity_safari,
+    SUM(history_migrations_quantity_all) AS history_migrations_quantity_all,
+    SUM(logins_migrations_quantity_chrome) AS logins_migrations_quantity_chrome,
+    SUM(logins_migrations_quantity_edge) AS logins_migrations_quantity_edge,
+    SUM(logins_migrations_quantity_safari) AS logins_migrations_quantity_safari,
+    SUM(logins_migrations_quantity_all) AS logins_migrations_quantity_all,
   FROM
     clients_summary
   GROUP BY
@@ -1400,5 +1521,6 @@ SELECT
   ].map AS contextual_services_quicksuggest_impression_nonsponsored_bestmatch_sum,
   map_sum_aggregates[OFFSET(89)].map AS contextual_services_topsites_click_sum,
   map_sum_aggregates[OFFSET(90)].map AS contextual_services_topsites_impression_sum,
+  map_sum_aggregates[OFFSET(91)].map AS scalar_parent_browser_ui_interaction_content_context_sum,
 FROM
   udf_aggregates

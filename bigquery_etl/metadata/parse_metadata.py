@@ -6,7 +6,7 @@ import re
 from typing import Dict, List, Optional
 
 import attr
-import cattr
+import cattrs
 import yaml
 from google.cloud import bigquery
 
@@ -231,7 +231,7 @@ class Metadata:
                     scheduling = metadata["scheduling"]
 
                 if "bigquery" in metadata and metadata["bigquery"]:
-                    converter = cattr.Converter()
+                    converter = cattrs.BaseConverter()
                     bigquery = converter.structure(
                         metadata["bigquery"], BigQueryMetadata
                     )
@@ -240,11 +240,11 @@ class Metadata:
                     owners = metadata["owners"]
 
                 if "schema" in metadata:
-                    converter = cattr.Converter()
+                    converter = cattrs.BaseConverter()
                     schema = converter.structure(metadata["schema"], SchemaMetadata)
 
                 if "workgroup_access" in metadata:
-                    converter = cattr.Converter()
+                    converter = cattrs.BaseConverter()
                     workgroup_access = converter.structure(
                         metadata["workgroup_access"], List[WorkgroupAccessMetadata]
                     )
@@ -276,7 +276,7 @@ class Metadata:
 
     def write(self, file):
         """Write metadata information to the provided file."""
-        converter = cattr.Converter()
+        converter = cattrs.BaseConverter()
         metadata_dict = converter.unstructure(self)
 
         if metadata_dict["scheduling"] == {}:
@@ -394,7 +394,7 @@ class DatasetMetadata:
         if "description" in metadata_dict:
             metadata_dict["description"] = Literal(metadata_dict["description"])
 
-        converter = cattr.Converter()
+        converter = cattrs.BaseConverter()
         file.write_text(
             yaml.dump(
                 converter.unstructure(metadata_dict),

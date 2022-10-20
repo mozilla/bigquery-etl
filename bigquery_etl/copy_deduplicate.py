@@ -9,17 +9,21 @@ or to process only a specific list of tables.
 
 import json
 import logging
-from argparse import ArgumentParser
 from datetime import datetime, timedelta
+from functools import partial
 from itertools import groupby
 from multiprocessing.pool import ThreadPool
 
+import click
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
-from bigquery_etl.util import standard_args
+from bigquery_etl.cli.utils import table_matches_patterns
 from bigquery_etl.util.bigquery_id import sql_table_id
 from bigquery_etl.util.client_queue import ClientQueue
+from bigquery_etl.util.common import TempDatasetReference
+
+from .cli.utils import parallelism_option, project_id_option
 
 QUERY_TEMPLATE = """
 WITH
@@ -76,60 +80,6 @@ FROM
 WHERE
   _n = 1
 """
-
-parser = ArgumentParser(description=__doc__)
-parser.add_argument(
-    "--project_id",
-    "--project-id",
-    default="moz-fx-data-shar-nonprod-efed",
-    help="ID of the project in which to find tables",
-)
-parser.add_argument(
-    "--dates",
-    "--date",
-    nargs="+",
-    required=True,
-    type=lambda d: datetime.strptime(d, "%Y-%m-%d").date(),
-    help="One or more days of data to copy, in format 2019-01-01",
-)
-standard_args.add_parallelism(parser)
-standard_args.add_dry_run(parser, debug_log_queries=False)
-standard_args.add_log_level(parser)
-standard_args.add_priority(parser)
-standard_args.add_temp_dataset(parser)
-parser.add_argument(
-    "--slices",
-    type=int,
-    default=1,
-    help=(
-        "Number of queries to split deduplicate over, each handling an equal-size time "
-        "slice of the date; avoids memory overflow at the cost of less effective "
-        "clustering; recommended only for tables failing due to memory overflow"
-    ),
-)
-parser.add_argument(
-    "--hourly",
-    action="store_const",
-    dest="slices",
-    const=24,
-    help="Deduplicate one hour at a time; equivalent to --slices=24",
-)
-parser.add_argument(
-    "--preceding_days",
-    "--preceding-days",
-    type=int,
-    default=0,
-    help="Number of days preceding --date that should be used to filter out duplicates",
-)
-parser.add_argument(
-    "--num_retries",
-    "--num-retries",
-    type=int,
-    default=2,
-    help="Number of times to retry each slice in case of query error",
-)
-standard_args.add_billing_projects(parser)
-standard_args.add_table_filter(parser)
 
 
 def _get_query_job_configs(
@@ -292,21 +242,145 @@ def _list_live_tables(client, pool, project_id, only_tables, table_filter):
     ]
 
 
-def main():
+@click.command(
+    "copy_deduplicate",
+    help="Copy a day's data from live to stable ping tables, deduplicating on document_id",
+)
+@project_id_option("moz-fx-data-shar-nonprod-efed")
+@click.option(
+    "--dates",
+    "--date",
+    multiple=True,
+    required=True,
+    type=lambda d: datetime.strptime(d, "%Y-%m-%d").date(),
+    help="One or more days of data to copy, in format 2019-01-01",
+)
+@parallelism_option
+@click.option(
+    "--dry_run",
+    "--dry-run",
+    is_flag=True,
+    help="Do not make changes, only log actions that would be taken",
+)
+@click.option(
+    "--log-level",
+    "--log_level",
+    help="Log level.",
+    default=logging.getLevelName(logging.INFO),
+    type=str.upper,
+)
+@click.option(
+    "--priority",
+    default=bigquery.QueryPriority.INTERACTIVE,
+    type=click.Choice(
+        [bigquery.QueryPriority.BATCH, bigquery.QueryPriority.INTERACTIVE],
+        case_sensitive=False,
+    ),
+    help="Priority for BigQuery query jobs; BATCH priority may significantly slow "
+    "down queries if reserved slots are not enabled for the billing project; "
+    "INTERACTIVE priority is limited to 100 concurrent queries per project",
+)
+@click.option(
+    "--temp-dataset",
+    "--temp_dataset",
+    "--temporary-dataset",
+    "--temporary_dataset",
+    default="moz-fx-data-shared-prod.tmp",
+    type=TempDatasetReference.from_string,
+    help="Dataset where intermediate query results will be temporarily stored, "
+    "formatted as PROJECT_ID.DATASET_ID",
+)
+@click.option(
+    "--slices",
+    type=int,
+    default=1,
+    help=(
+        "Number of queries to split deduplicate over, each handling an equal-size time "
+        "slice of the date; avoids memory overflow at the cost of less effective "
+        "clustering; recommended only for tables failing due to memory overflow"
+    ),
+)
+@click.option(
+    "--hourly",
+    is_flag=True,
+    help="Deduplicate one hour at a time; equivalent to --slices=24",
+)
+@click.option(
+    "--preceding_days",
+    "--preceding-days",
+    type=int,
+    default=0,
+    help="Number of days preceding --date that should be used to filter out duplicates",
+)
+@click.option(
+    "--num_retries",
+    "--num-retries",
+    type=int,
+    default=2,
+    help="Number of times to retry each slice in case of query error",
+)
+@click.option(
+    "--billing-projects",
+    "--billing_projects",
+    "--billing-project",
+    "--billing_project",
+    "-p",
+    multiple=True,
+    default=[None],
+    help="One or more billing projects over which bigquery jobs should be "
+    "distributed",
+)
+@click.option(
+    "--except",
+    "-x",
+    "exclude",
+    multiple=True,
+    help="Process all tables except for the given tables",
+)
+@click.option(
+    "--only",
+    "-o",
+    multiple=True,
+    help="Process only the given tables",
+)
+def copy_deduplicate(
+    project_id,
+    dates,
+    parallelism,
+    dry_run,
+    log_level,
+    priority,
+    temp_dataset,
+    slices,
+    hourly,
+    preceding_days,
+    num_retries,
+    billing_projects,
+    exclude,
+    only,
+):
     """Copy a day's data from live to stable ping tables, dedup on document_id."""
-    args = parser.parse_args()
-
     # create a queue for balancing load across projects
-    client_q = ClientQueue(args.billing_projects, args.parallelism)
+    client_q = ClientQueue(billing_projects, parallelism)
 
-    with ThreadPool(args.parallelism) as pool:
+    if hourly:
+        slices = 24
+
+    table_filter = partial(table_matches_patterns, "*", False)
+
+    if only:
+        table_filter = partial(table_matches_patterns, list(only), False)
+    elif exclude:
+        table_filter = partial(table_matches_patterns, list(exclude), True)
+
+    with ThreadPool(parallelism) as pool:
         with client_q.client() as client:
             live_tables = _list_live_tables(
                 client=client,
                 pool=pool,
-                project_id=args.project_id,
-                only_tables=getattr(args, "only_tables", None),
-                table_filter=args.table_filter,
+                project_id=project_id,
+                only_tables=only,
+                table_filter=table_filter,
             )
 
             query_jobs = [
@@ -318,15 +392,15 @@ def main():
                             client,  # only use one client to create temp tables
                             live_table,
                             date,
-                            args.dry_run,
-                            args.slices,
-                            args.priority,
-                            args.preceding_days,
-                            args.num_retries,
-                            args.temp_dataset,
+                            dry_run,
+                            slices,
+                            priority,
+                            preceding_days,
+                            num_retries,
+                            temp_dataset,
                         )
                         for live_table in live_tables
-                        for date in args.dates
+                        for date in dates
                     ],
                 )
                 for args in jobs
@@ -339,7 +413,3 @@ def main():
             for stable_table, group in groupby(results, key=lambda result: result[0])
         ]
         pool.starmap(client_q.with_client, copy_jobs, chunksize=1)
-
-
-if __name__ == "__main__":
-    main()

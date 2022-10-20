@@ -124,6 +124,12 @@ android_focus_metrics AS (
 android_klar_metrics AS (
   {{ android_klar_metrics }}
 ),
+ios_focus_metrics AS (
+  {{ ios_focus_metrics }}
+),
+ios_klar_metrics AS (
+  {{ ios_klar_metrics }}
+),
 -- iOS organic counts are incorrect until version 34.0
 -- https://github.com/mozilla-mobile/firefox-ios/issues/8412
 ios_organic_filtered AS (
@@ -188,6 +194,16 @@ glean_metrics AS (
     *
   FROM
     android_klar_metrics
+  UNION ALL
+  SELECT
+    *
+  FROM
+    ios_focus_metrics
+  UNION ALL
+  SELECT
+    *
+  FROM
+    ios_klar_metrics
 ),
 glean_combined_searches AS (
   SELECT

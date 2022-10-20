@@ -5,6 +5,11 @@ orbs:
   gcp-gcr: circleci/gcp-gcr@0.13.0
   docker: circleci/docker@1.5
 
+parameters:
+  python-version:
+    type: string
+    default: '3.10'
+
 executors:
   ubuntu-machine-executor:
     machine:
@@ -13,7 +18,7 @@ executors:
 jobs:
   build:
     docker: &docker
-      - image: python:3.8
+      - image: python:<< pipeline.parameters.python-version >>
     steps:
       - checkout
       - &restore_venv_cache
@@ -23,16 +28,17 @@ jobs:
             # patterns to restore cache
             - &python_cache_key
               # yamllint disable-line rule:line-length
-              python-3.8-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-{{ checksum "requirements.txt" }}
-              # yamllint disable-line rule:line-length
-            - python-3.8-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-
-            - python-3.8-packages-v1-{{ .Branch }}-
-            - python-3.8-packages-v1-main-
+              python-<< pipeline.parameters.python-version >>-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-{{ checksum "requirements.txt" }}
+            # yamllint disable-line rule:line-length
+            - python-<< pipeline.parameters.python-version >>-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-
+            # yamllint disable-line rule:line-length
+            - python-<< pipeline.parameters.python-version >>-packages-v1-{{ .Branch }}-
+            - python-<< pipeline.parameters.python-version >>-packages-v1-main-
       - &build
         run:
           name: Build
           command: |
-            python3.8 -m venv venv/
+            python3 -m venv venv/
             venv/bin/pip install pip-tools --constraint requirements.in
             venv/bin/pip-sync --pip-args=--no-deps
       - run:
@@ -58,6 +64,7 @@ jobs:
     steps:
       - checkout
       - *restore_venv_cache
+      - *build
       - &attach_generated_sql
         attach_workspace:
           at: /tmp/workspace

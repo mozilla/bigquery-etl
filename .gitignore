@@ -9,6 +9,8 @@
 venv/
 target/
 
+.probe_cache/
+
 # ignore locally generated docs
 sql/**/docs
 sql/**/mkdocs.yml

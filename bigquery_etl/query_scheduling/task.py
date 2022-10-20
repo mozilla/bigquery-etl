@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 import attr
-import cattr
+import cattrs
 
 from bigquery_etl.dependency import extract_table_references_without_views
 from bigquery_etl.metadata.parse_metadata import Metadata
@@ -195,6 +195,7 @@ class Task:
     referenced_tables: Optional[List[Tuple[str, str, str]]] = attr.ib(None)
     destination_table: Optional[str] = attr.ib(default=DEFAULT_DESTINATION_TABLE_STR)
     is_python_script: bool = attr.ib(False)
+    task_concurrency: Optional[int] = attr.ib(None)
     retry_delay: Optional[str] = attr.ib(None)
     retries: Optional[int] = attr.ib(None)
     email_on_retry: Optional[bool] = attr.ib(None)
@@ -268,7 +269,8 @@ class Task:
             self.version = query_file_re.group(4)
 
             if self.task_name is None:
-                self.task_name = f"{self.dataset}__{self.table}__{self.version}"
+                # limiting task name to allow longer dataset names
+                self.task_name = f"{self.dataset}__{self.table}__{self.version}"[-62:]
                 self.validate_task_name(None, self.task_name)
 
             if self.destination_table == DEFAULT_DESTINATION_TABLE_STR:
@@ -295,7 +297,7 @@ class Task:
         If `metadata` is set, then it is used instead of the metadata.yaml
         file that might exist alongside the query file.
         """
-        converter = cattr.Converter()
+        converter = cattrs.BaseConverter()
         if metadata is None:
             metadata = Metadata.of_query_file(query_file)
 

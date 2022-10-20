@@ -2629,6 +2629,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#suggest_clients_daily" class="md-nav__link">
+    suggest_clients_daily
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#sync" class="md-nav__link">
     sync
   </a>
@@ -4597,6 +4604,13 @@
         <li class="md-nav__item">
   <a href="#ssl_ratios_v1" class="md-nav__link">
     ssl_ratios_v1
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#suggest_clients_daily" class="md-nav__link">
+    suggest_clients_daily
   </a>
   
 </li>
@@ -29021,6 +29035,91 @@ and to contain only one row per distinct <code>document_id</code> within a given
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
+        <td>pocket_story_position</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>pocket_enabled</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>pocket_impressions</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sponsored_pocket_impressions</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>organic_pocket_impressions</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>pocket_clicks</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sponsored_pocket_clicks</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>organic_pocket_clicks</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>pocket_saves</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sponsored_pocket_saves</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>organic_pocket_saves</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>pocket_is_signed_in</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>pocket_sponsored_stories_enabled</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>topsites_enabled</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>newtab_homepage_category</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>newtab_newtab_category</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>newtab_search_enabled</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>search_engine</td>
         <td></td>
         <td>String</td>
@@ -31302,6 +31401,24 @@ and to contain only one row per distinct <code>document_id</code> within a given
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/ssl_ratios_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/ssl_ratios_v1/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/ssl_ratios_v1/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="suggest_clients_daily"><a href="#suggest_clients_daily">suggest_clients_daily</a></h2>
+<p><code>telemetry.suggest_clients_daily</code></p>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry_derived>telemetry_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry_derived/suggest_clients_daily_v1>suggest_clients_daily_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/suggest_clients_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/suggest_clients_daily/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/suggest_clients_daily/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="sync"><a href="#sync">sync</a></h2>
 <p><code>telemetry.sync</code></p>

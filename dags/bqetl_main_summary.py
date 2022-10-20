@@ -506,6 +506,22 @@ with DAG(
             telemetry_derived__main_summary__v4
         )
 
+    telemetry_derived__suggest_clients_daily__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__suggest_clients_daily__v1",
+        destination_table="suggest_clients_daily_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="rburwei@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "jklukas@mozilla.com",
+            "rburwei@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -628,4 +644,11 @@ with DAG(
 
     telemetry_derived__main_summary__v4.set_upstream(
         wait_for_copy_deduplicate_main_ping
+    )
+
+    telemetry_derived__suggest_clients_daily__v1.set_upstream(wait_for_bq_main_events)
+    telemetry_derived__suggest_clients_daily__v1.set_upstream(wait_for_event_events)
+
+    telemetry_derived__suggest_clients_daily__v1.set_upstream(
+        telemetry_derived__clients_daily_joined__v1
     )

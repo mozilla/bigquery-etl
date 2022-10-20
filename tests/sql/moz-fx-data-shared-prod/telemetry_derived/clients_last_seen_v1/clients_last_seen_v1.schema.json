@@ -50,6 +50,16 @@
     "mode": "NULLABLE"
   },
   {
+    "name": "days_visited_1_uri_normal_mode_bits",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "days_visited_1_uri_private_mode_bits",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
     "name": "days_seen_in_experiment",
     "type": "RECORD",
     "mode": "REPEATED",
@@ -138,6 +148,16 @@
   {
     "name": "fxa_configured",
     "type": "BOOLEAN",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "app_display_version",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum",
+    "type": "INT64",
     "mode": "NULLABLE"
   }
 ]

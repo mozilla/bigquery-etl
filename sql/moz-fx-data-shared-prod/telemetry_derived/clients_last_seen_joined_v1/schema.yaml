@@ -36,6 +36,12 @@ fields:
   name: days_interacted_bits
   type: INTEGER
 - mode: NULLABLE
+  name: days_visited_1_uri_normal_mode_bits
+  type: INTEGER
+- mode: NULLABLE
+  name: days_visited_1_uri_private_mode_bits
+  type: INTEGER
+- mode: NULLABLE
   name: days_created_profile_bits
   type: INTEGER
 - fields:
@@ -1796,3 +1802,39 @@ fields:
 - mode: NULLABLE
   name: os_environment_is_taskbar_pinned_private
   type: BOOLEAN
+- mode: NULLABLE
+  name: bookmark_migrations_quantity_chrome
+  type: INTEGER
+- mode: NULLABLE
+  name: bookmark_migrations_quantity_edge
+  type: INTEGER
+- mode: NULLABLE
+  name: bookmark_migrations_quantity_safari
+  type: INTEGER
+- mode: NULLABLE
+  name: bookmark_migrations_quantity_all
+  type: INTEGER
+- mode: NULLABLE
+  name: history_migrations_quantity_chrome
+  type: INTEGER
+- mode: NULLABLE
+  name: history_migrations_quantity_edge
+  type: INTEGER
+- mode: NULLABLE
+  name: history_migrations_quantity_safari
+  type: INTEGER
+- mode: NULLABLE
+  name: history_migrations_quantity_all
+  type: INTEGER
+- mode: NULLABLE
+  name: logins_migrations_quantity_chrome
+  type: INTEGER
+- mode: NULLABLE
+  name: logins_migrations_quantity_edge
+  type: INTEGER
+- mode: NULLABLE
+  name: logins_migrations_quantity_safari
+  type: INTEGER
+- mode: NULLABLE
+  name: logins_migrations_quantity_all
+  type: INTEGER

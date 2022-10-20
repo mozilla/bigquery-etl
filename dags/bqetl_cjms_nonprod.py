@@ -73,6 +73,7 @@ with DAG(
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     cjms_bigquery__subscriptions__v1 = bigquery_etl_query(
@@ -85,6 +86,7 @@ with DAG(
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     fivetran_stripe_nonprod_sync_start = FivetranOperator(

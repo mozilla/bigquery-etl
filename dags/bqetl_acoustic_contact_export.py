@@ -67,6 +67,7 @@ with DAG(
         email=["kignasiak@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     acoustic__contact_raw__v1 = bigquery_etl_query(

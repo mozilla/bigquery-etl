@@ -3,7 +3,7 @@ WITH filtered_date_channel AS (
     * EXCEPT (app_version),
     CAST(app_version AS INT64) AS app_version
   FROM
-    telemetry_derived.clients_daily_scalar_aggregates_v1
+    dev_telemetry_derived.clients_daily_scalar_aggregates_v1
   WHERE
     submission_date = @submission_date
 ),
@@ -113,7 +113,7 @@ filtered_old AS (
     scalar_aggs.channel,
     scalar_aggregates
   FROM
-    telemetry_derived.clients_scalar_aggregates_v1 AS scalar_aggs
+    dev_telemetry_derived.clients_scalar_aggregates_v1 AS scalar_aggs
   LEFT JOIN
     latest_versions
   USING

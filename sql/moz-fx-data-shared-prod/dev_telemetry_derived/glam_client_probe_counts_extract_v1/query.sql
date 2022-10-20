@@ -52,9 +52,9 @@ glam_sample_counts AS (
     END
     AS total_sample
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.glam_sample_counts_v1` fsc1
+    `moz-fx-data-shared-prod.dev_telemetry_derived.glam_sample_counts_v1` fsc1
   INNER JOIN
-    `moz-fx-data-shared-prod.telemetry_derived.glam_sample_counts_v1` fsc2
+    `moz-fx-data-shared-prod.dev_telemetry_derived.glam_sample_counts_v1` fsc2
   ON
     fsc1.os = fsc2.os
     AND fsc1.app_build_id = fsc2.app_build_id

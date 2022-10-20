@@ -11,7 +11,7 @@ WITH deduped AS (
         total_users DESC
     ) AS rank
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.glam_user_counts_v1`
+    `moz-fx-data-shared-prod.dev_telemetry_derived.glam_user_counts_v1`
 )
 SELECT
   CASE

@@ -29,6 +29,7 @@
   engine: engine2
   organic: 3
 - <<: *base
+  app_name: Fennec
   client_id: core
   app_version: "27.0"
   source: actionbar

@@ -260,7 +260,7 @@ metrics_org_mozilla_ios_firefox AS (
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     normalized_country_code AS country,
-    'Fennec' AS app_name,
+    'Firefox iOS Glean' AS app_name,
     -- Fennec is used to be consistent with core pings
     'Fennec' AS normalized_app_name,
     client_info.app_display_version AS app_version,
@@ -290,7 +290,7 @@ metrics_org_mozilla_ios_firefoxbeta AS (
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     normalized_country_code AS country,
-    'Fennec' AS app_name,
+    'Firefox iOS Glean' AS app_name,
     -- Fennec is used to be consistent with core pings
     'Fennec' AS normalized_app_name,
     client_info.app_display_version AS app_version,
@@ -320,7 +320,7 @@ metrics_org_mozilla_ios_fennec AS (
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     normalized_country_code AS country,
-    'Fennec' AS app_name,
+    'Firefox iOS Glean' AS app_name,
     -- Fennec is used to be consistent with core pings
     'Fennec' AS normalized_app_name,
     client_info.app_display_version AS app_version,
@@ -504,7 +504,7 @@ metrics_org_mozilla_ios_klar AS (
     metrics.counter.browser_total_uri_count,
     client_info.locale,
   FROM
-    org_mozilla_ios_klar.metrics AS org_mozilla_klar_metrics
+    org_mozilla_ios_klar.metrics AS org_mozilla_ios_klar_metrics
 ),
 fenix_baseline AS (
   SELECT

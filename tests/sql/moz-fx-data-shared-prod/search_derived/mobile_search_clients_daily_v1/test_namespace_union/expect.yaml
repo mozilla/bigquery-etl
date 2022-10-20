@@ -54,6 +54,6 @@
   os_version: "13.0"
   client_id: b
   app_version: "31.0"
-  app_name: Fennec
+  app_name: Firefox iOS Glean
   normalized_app_name: Fennec
   channel: nightly

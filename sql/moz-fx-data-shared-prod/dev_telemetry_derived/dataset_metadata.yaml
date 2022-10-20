@@ -1,0 +1,12 @@
+friendly_name: Dev Telemetry Derived
+description: |-
+  Dev version of Telemetry Derived for testing Glam Dev ETL pipeline.
+  This dataset will be the destination of queries run during the tests and
+  will be removed after such tests, unless we find it useful to keep it.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

@@ -134,10 +134,15 @@ SKIP = {
         "sql/moz-fx-data-shared-prod/contextual_services/**/*.sql", recursive=True
     ),
     *glob.glob(
+        "sql/moz-fx-data-shared-prod/contextual_services_derived/**/*.sql",
+        recursive=True,
+    ),
+    *glob.glob(
         "sql/moz-fx-data-shared-prod/**/topsites_impression/view.sql", recursive=True
     ),
     "sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/query.sql",
     "sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/contextual_services_derived/adm_forecasting_v1/query.sql",
     "sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_summary/view.sql",
     *glob.glob(
         "sql/moz-fx-data-shared-prod/regrets_reporter_derived/regrets_reporter_summary_v1/*.sql",  # noqa E501

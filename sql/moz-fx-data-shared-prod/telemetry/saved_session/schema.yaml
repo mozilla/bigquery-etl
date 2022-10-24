@@ -20122,6 +20122,14 @@ fields:
       mode: NULLABLE
       name: ocsp_age_at_crlite_override
       type: STRING
+    - description: Whether a document used the CSS property font-variant-emoji
+      mode: NULLABLE
+      name: use_counter2_css_property_font_variant_emoji_document
+      type: STRING
+    - description: Whether a page used the CSS property font-variant-emoji
+      mode: NULLABLE
+      name: use_counter2_css_property_font_variant_emoji_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -23355,6 +23363,18 @@ fields:
         type: STRING
       mode: REPEATED
       name: network_dns_end_to_connect_start_ms
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: The time spent from dns resolution to connect start, in milliseconds,
+          keyed by protocol version and the classOfService flags
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: network_dns_end_to_connect_start_exp_ms
       type: RECORD
     mode: NULLABLE
     name: keyed_histograms
@@ -41530,6 +41550,14 @@ fields:
           mode: NULLABLE
           name: gc_zones_collected
           type: STRING
+        - description: Whether a document used the CSS property font-variant-emoji
+          mode: NULLABLE
+          name: use_counter2_css_property_font_variant_emoji_document
+          type: STRING
+        - description: Whether a page used the CSS property font-variant-emoji
+          mode: NULLABLE
+          name: use_counter2_css_property_font_variant_emoji_page
+          type: STRING
         mode: NULLABLE
         name: histograms
         type: RECORD
@@ -43803,6 +43831,32 @@ fields:
             type: STRING
           mode: REPEATED
           name: network_response_start_parent_to_content_ms
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: The time spent from HttpChannelChild::AsyncOpen to adding
+              the transactionto the nsHttpConnectionMgr, in milliseconds, keyed by
+              the classOfService flags
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: network_async_open_child_to_transaction_pending_exp_ms
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: The time spent relaying response start from the socket thread
+              of the parent process to the content process, in milliseconds, keyed
+              by the classOfService flags
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: network_response_start_parent_to_content_exp_ms
           type: RECORD
         mode: NULLABLE
         name: keyed_histograms

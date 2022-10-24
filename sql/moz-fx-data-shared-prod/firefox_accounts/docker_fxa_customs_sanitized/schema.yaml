@@ -423,6 +423,31 @@ fields:
       - mode: NULLABLE
         name: samplerate
         type: FLOAT
+      - mode: NULLABLE
+        name: clientname
+        type: STRING
+      - mode: NULLABLE
+        name: corsurls
+        type: STRING
+      - fields:
+        - mode: NULLABLE
+          name: concurrencylimit
+          type: FLOAT
+        - mode: NULLABLE
+          name: url
+          type: STRING
+        - mode: NULLABLE
+          name: enabled
+          type: BOOLEAN
+        mode: NULLABLE
+        name: otel
+        type: RECORD
+      - mode: NULLABLE
+        name: filterpii
+        type: BOOLEAN
+      - mode: NULLABLE
+        name: batchprocessor
+        type: BOOLEAN
       mode: NULLABLE
       name: tracing
       type: RECORD

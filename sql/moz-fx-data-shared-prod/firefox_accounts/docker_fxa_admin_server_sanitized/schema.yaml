@@ -11,10 +11,10 @@ fields:
     type: STRING
   - fields:
     - mode: NULLABLE
-      name: zone
+      name: project_id
       type: STRING
     - mode: NULLABLE
-      name: project_id
+      name: zone
       type: STRING
     - mode: NULLABLE
       name: instance_id
@@ -28,6 +28,65 @@ fields:
 - mode: NULLABLE
   name: textPayload
   type: STRING
+- fields:
+  - mode: NULLABLE
+    name: logger
+    type: STRING
+  - mode: NULLABLE
+    name: envversion
+    type: STRING
+  - mode: NULLABLE
+    name: timestamp
+    type: FLOAT
+  - mode: NULLABLE
+    name: pid
+    type: FLOAT
+  - mode: NULLABLE
+    name: severity
+    type: FLOAT
+  - mode: NULLABLE
+    name: type
+    type: STRING
+  - fields:
+    - mode: NULLABLE
+      name: usergroupheader
+      type: STRING
+    - mode: NULLABLE
+      name: email
+      type: BYTES
+    - mode: NULLABLE
+      name: user
+      type: BYTES
+    - mode: NULLABLE
+      name: auto_completed
+      type: BOOLEAN
+    - mode: NULLABLE
+      name: event
+      type: STRING
+    - mode: NULLABLE
+      name: search_type
+      type: STRING
+    - mode: NULLABLE
+      name: uid
+      type: STRING
+    - mode: NULLABLE
+      name: msg
+      type: STRING
+    - mode: NULLABLE
+      name: stack
+      type: STRING
+    - mode: NULLABLE
+      name: poolstats
+      type: STRING
+    - mode: NULLABLE
+      name: success
+      type: FLOAT
+    mode: NULLABLE
+    name: fields
+    type: RECORD
+  mode: NULLABLE
+  name: jsonPayload
+  type: RECORD
 - mode: NULLABLE
   name: timestamp
   type: TIMESTAMP
@@ -88,19 +147,19 @@ fields:
   type: RECORD
 - fields:
   - mode: NULLABLE
-    name: compute_googleapis_com_resource_name
+    name: stack
     type: STRING
   - mode: NULLABLE
     name: env
-    type: STRING
-  - mode: NULLABLE
-    name: stack
     type: STRING
   - mode: NULLABLE
     name: application
     type: STRING
   - mode: NULLABLE
     name: type
+    type: STRING
+  - mode: NULLABLE
+    name: compute_googleapis_com_resource_name
     type: STRING
   mode: NULLABLE
   name: labels
@@ -155,57 +214,4 @@ fields:
     type: INTEGER
   mode: NULLABLE
   name: split
-  type: RECORD
-- fields:
-  - fields:
-    - mode: NULLABLE
-      name: usergroupheader
-      type: STRING
-    - mode: NULLABLE
-      name: email
-      type: BYTES
-    - mode: NULLABLE
-      name: user
-      type: BYTES
-    - mode: NULLABLE
-      name: auto_completed
-      type: BOOLEAN
-    - mode: NULLABLE
-      name: search_type
-      type: STRING
-    - mode: NULLABLE
-      name: event
-      type: STRING
-    - mode: NULLABLE
-      name: msg
-      type: STRING
-    - mode: NULLABLE
-      name: poolstats
-      type: STRING
-    - mode: NULLABLE
-      name: stack
-      type: STRING
-    mode: NULLABLE
-    name: fields
-    type: RECORD
-  - mode: NULLABLE
-    name: pid
-    type: FLOAT
-  - mode: NULLABLE
-    name: envversion
-    type: STRING
-  - mode: NULLABLE
-    name: type
-    type: STRING
-  - mode: NULLABLE
-    name: timestamp
-    type: FLOAT
-  - mode: NULLABLE
-    name: severity
-    type: FLOAT
-  - mode: NULLABLE
-    name: logger
-    type: STRING
-  mode: NULLABLE
-  name: jsonPayload
   type: RECORD

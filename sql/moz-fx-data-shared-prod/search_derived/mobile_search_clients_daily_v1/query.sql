@@ -452,6 +452,60 @@ metrics_org_mozilla_klar AS (
   FROM
     org_mozilla_klar.metrics AS org_mozilla_klar_metrics
 ),
+-- metrics for Focus iOS Glean release
+metrics_org_mozilla_ios_focus AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    normalized_country_code AS country,
+    'Focus iOS Glean' AS app_name,
+    'Focus' AS normalized_app_name,
+    client_info.app_display_version AS app_version,
+    'release' AS channel,
+    normalized_os AS os,
+    client_info.android_sdk_version AS os_version,
+    metrics.string.search_default_engine AS default_search_engine,
+    CAST(NULL AS STRING) AS default_search_engine_submission_url,
+    sample_id,
+    metrics.labeled_counter.browser_search_search_count AS search_count,
+    metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
+    metrics.labeled_counter.browser_search_in_content AS search_in_content,
+    metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
+    client_info.first_run_date,
+    ping_info.end_time,
+    ping_info.experiments,
+    metrics.counter.browser_total_uri_count,
+    client_info.locale,
+  FROM
+    org_mozilla_ios_focus.metrics AS org_mozilla_ios_focus_metrics
+),
+-- metrics for Klar iOS Glean release
+metrics_org_mozilla_ios_klar AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    normalized_country_code AS country,
+    'Klar iOS Glean' AS app_name,
+    'Klar' AS normalized_app_name,
+    client_info.app_display_version AS app_version,
+    'release' AS channel,
+    normalized_os AS os,
+    client_info.android_sdk_version AS os_version,
+    metrics.string.search_default_engine AS default_search_engine,
+    CAST(NULL AS STRING) AS default_search_engine_submission_url,
+    sample_id,
+    metrics.labeled_counter.browser_search_search_count AS search_count,
+    metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
+    metrics.labeled_counter.browser_search_in_content AS search_in_content,
+    metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
+    client_info.first_run_date,
+    ping_info.end_time,
+    ping_info.experiments,
+    metrics.counter.browser_total_uri_count,
+    client_info.locale,
+  FROM
+    org_mozilla_ios_klar.metrics AS org_mozilla_klar_metrics
+),
 fenix_baseline AS (
   SELECT
     *
@@ -542,6 +596,18 @@ android_klar_metrics AS (
   FROM
     metrics_org_mozilla_klar
 ),
+ios_focus_metrics AS (
+  SELECT
+    *
+  FROM
+    metrics_org_mozilla_ios_focus
+),
+ios_klar_metrics AS (
+  SELECT
+    *
+  FROM
+    metrics_org_mozilla_ios_klar
+),
 -- iOS organic counts are incorrect until version 34.0
 -- https://github.com/mozilla-mobile/firefox-ios/issues/8412
 ios_organic_filtered AS (
@@ -606,6 +672,16 @@ glean_metrics AS (
     *
   FROM
     android_klar_metrics
+  UNION ALL
+  SELECT
+    *
+  FROM
+    ios_focus_metrics
+  UNION ALL
+  SELECT
+    *
+  FROM
+    ios_klar_metrics
 ),
 glean_combined_searches AS (
   SELECT

@@ -10,17 +10,40 @@ WITH _current AS (
     -- client_id was an Active User as defined by
     -- https://docs.telemetry.mozilla.org/cookbooks/active_dau.html
     CAST(
-      scalar_parent_browser_engagement_total_uri_count_sum >= 1 AS INT64
+      COALESCE(
+        scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum,
+        scalar_parent_browser_engagement_total_uri_count_sum
+      ) >= 1 AS INT64
     ) AS days_visited_1_uri_bits,
     CAST(
-      scalar_parent_browser_engagement_total_uri_count_sum >= 5 AS INT64
+      COALESCE(
+        scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum,
+        scalar_parent_browser_engagement_total_uri_count_sum
+      ) >= 5 AS INT64
     ) AS days_visited_5_uri_bits,
     CAST(
-      scalar_parent_browser_engagement_total_uri_count_sum >= 10 AS INT64
+      COALESCE(
+        scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum,
+        scalar_parent_browser_engagement_total_uri_count_sum
+      ) >= 10 AS INT64
     ) AS days_visited_10_uri_bits,
     CAST(active_hours_sum >= 0.011 AS INT64) AS days_had_8_active_ticks_bits,
     CAST(devtools_toolbox_opened_count_sum > 0 AS INT64) AS days_opened_dev_tools_bits,
     CAST(active_hours_sum > 0 AS INT64) AS days_interacted_bits,
+    CAST(
+      scalar_parent_browser_engagement_total_uri_count_sum >= 1 AS INT64
+    ) AS days_visited_1_uri_normal_mode_bits,
+    -- This field is only available after version 84, see the definition in clients_daily_v6 view
+    CAST(
+      IF(
+        mozfun.norm.extract_version(app_display_version, 'major') < 84,
+        NULL,
+        scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum - COALESCE(
+          scalar_parent_browser_engagement_total_uri_count_sum,
+          0
+        )
+      ) >= 1 AS INT64
+    ) AS days_visited_1_uri_private_mode_bits,
     -- We only trust profile_date if it is within one week of the ping submission,
     -- so we ignore any value more than seven days old.
     udf.days_since_created_profile_as_28_bits(
@@ -51,6 +74,8 @@ _previous AS (
     days_had_8_active_ticks_bits,
     days_opened_dev_tools_bits,
     days_interacted_bits,
+    days_visited_1_uri_normal_mode_bits,
+    days_visited_1_uri_private_mode_bits,
     days_created_profile_bits,
     days_seen_in_experiment,
     * EXCEPT (
@@ -61,6 +86,8 @@ _previous AS (
       days_had_8_active_ticks_bits,
       days_opened_dev_tools_bits,
       days_interacted_bits,
+      days_visited_1_uri_normal_mode_bits,
+      days_visited_1_uri_private_mode_bits,
       days_created_profile_bits,
       days_seen_in_experiment,
       submission_date,
@@ -108,6 +135,14 @@ SELECT
       _previous.days_interacted_bits,
       _current.days_interacted_bits
     ) AS days_interacted_bits,
+    udf.combine_adjacent_days_28_bits(
+      _previous.days_visited_1_uri_normal_mode_bits,
+      _current.days_visited_1_uri_normal_mode_bits
+    ) AS days_visited_1_uri_normal_mode_bits,
+    udf.combine_adjacent_days_28_bits(
+      _previous.days_visited_1_uri_private_mode_bits,
+      _current.days_visited_1_uri_private_mode_bits
+    ) AS days_visited_1_uri_private_mode_bits,
     udf.coalesce_adjacent_days_28_bits(
       _previous.days_created_profile_bits,
       _current.days_created_profile_bits

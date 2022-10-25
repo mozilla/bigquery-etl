@@ -50,6 +50,7 @@ with DAG(
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
         parameters=["submission_date:DATE:{{ds}}"],
     )
 

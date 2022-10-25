@@ -35,10 +35,10 @@ WITH
   SELECT
     client_id,
     submission_date,
-    COALESCE(core.first_seen_date, baseline.first_seen_date) as first_seen_date,
-    sample_id
+    COALESCE(core.first_seen_date, baseline.first_seen_date) AS first_seen_date,
+    sample_id,
   FROM baseline
-  LEFT JOIN _core_clients_first_seen core
+  LEFT JOIN _core_clients_first_seen AS core
   USING (client_id)
 {% else %}
   SELECT * FROM baseline

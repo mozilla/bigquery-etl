@@ -13,7 +13,7 @@
       
       
       <link rel="icon" href="../../favicon.png">
-      <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.6">
+      <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.7">
     
     
       
@@ -1874,8 +1874,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#js_extract_string_map-udf" class="md-nav__link">
-    js_extract_string_map (UDF)
+  <a href="#mode_last-udf" class="md-nav__link">
+    mode_last (UDF)
   </a>
   
 </li>
@@ -1888,8 +1888,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mode_last-udf" class="md-nav__link">
-    mode_last (UDF)
+  <a href="#js_extract_string_map-udf" class="md-nav__link">
+    js_extract_string_map (UDF)
   </a>
   
 </li>
@@ -2193,8 +2193,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#js_extract_string_map-udf" class="md-nav__link">
-    js_extract_string_map (UDF)
+  <a href="#mode_last-udf" class="md-nav__link">
+    mode_last (UDF)
   </a>
   
 </li>
@@ -2207,8 +2207,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mode_last-udf" class="md-nav__link">
-    mode_last (UDF)
+  <a href="#js_extract_string_map-udf" class="md-nav__link">
+    js_extract_string_map (UDF)
   </a>
   
 </li>
@@ -2230,6 +2230,15 @@
 
 <h1 id="json">json</h1>
 <p>Functions for parsing Mozilla-specific JSON data types.</p>
+<h2 id="mode_last-udf">mode_last (UDF)</h2>
+<p>Returns the most frequently occuring element in an array of json-compatible elements. In the case of multiple values tied for the highest count, it returns the value that appears latest in the array. Nulls are ignored.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/json/mode_last">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/json/mode_last/metadata.yaml">Edit</a></p>
+<h2 id="extract_int_map-udf">extract_int_map (UDF)</h2>
+<p>Returns an array of key/value structs from a string representing a JSON map.
+Both keys and values are cast to integers.</p>
+<p>This is the format for the "values" field in the desktop telemetry histogram
+JSON representation.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/json/extract_int_map">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/json/extract_int_map/metadata.yaml">Edit</a></p>
 <h2 id="js_extract_string_map-udf">js_extract_string_map (UDF)</h2>
 <p>Returns an array of key/value structs from a string representing a JSON map.</p>
 <p>BigQuery Standard SQL JSON functions are insufficient to implement this
@@ -2237,15 +2246,6 @@ function, so JS is being used and it may not perform well with large or
 numerous inputs.</p>
 <p>Non-string non-null values are encoded as json.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/json/js_extract_string_map">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/json/js_extract_string_map/metadata.yaml">Edit</a></p>
-<h2 id="extract_int_map-udf">extract_int_map (UDF)</h2>
-<p>Returns an array of key/value structs from a string representing a JSON map.
-Both keys and values are cast to integers.</p>
-<p>This is the format for the "values" field in the desktop telemetry histogram
-JSON representation.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/json/extract_int_map">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/json/extract_int_map/metadata.yaml">Edit</a></p>
-<h2 id="mode_last-udf">mode_last (UDF)</h2>
-<p>Returns the most frequently occuring element in an array of json-compatible elements. In the case of multiple values tied for the highest count, it returns the value that appears latest in the array. Nulls are ignored.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/json/mode_last">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/json/mode_last/metadata.yaml">Edit</a></p>
 
 
 
@@ -2319,10 +2319,10 @@ JSON representation.</p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.5bf1dace.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.078830c0.min.js"></script>
+      <script src="../../assets/javascripts/bundle.8492ddcf.min.js"></script>
       
     
   </body>

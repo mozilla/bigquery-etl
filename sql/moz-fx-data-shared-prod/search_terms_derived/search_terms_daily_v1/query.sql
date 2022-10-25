@@ -9,7 +9,7 @@ WITH terminal_queries AS (
     sanitized.session_id
 )
 SELECT
-  datetime_trunc(timestamp, week) AS submission_week,
+  date(timestamp) AS submission_date,
   query,
   count(*) AS search_sessions
 FROM
@@ -17,6 +17,6 @@ FROM
 GROUP BY
   1,
   2
--- Threshold decision (not a public doc): https://docs.google.com/document/d/1xPiQP-72B4MtgdIZRbyYJcwlKh5pA9yLZ8gxC6rrwEs/edit#heading=h.ddfi2mqlhlyw
+-- Level 2 aggregation. See: https://wiki.mozilla.org/Data_Publishing
 HAVING
-  count(*) > 1
+  count(*) > 5000

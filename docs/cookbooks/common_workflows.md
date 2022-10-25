@@ -222,6 +222,17 @@ workgroup_access:
   - workgroup:mozilla-confidential
 ```
 
+## Adding a new Glean application
+
+To enable the generation of app-specific views and derived datasets for Glean pings, new Glean applications need to be explicitly and manually added to the [`ALLOWED_APPS` list of the glean_usage generator](https://github.com/mozilla/bigquery-etl/blob/2a2a14d9e1e7444034c93706a464346f29eaae30/sql_generators/glean_usage/__init__.py#L42).
+
+Queries for new Glean apps need to be generated and deployed manually:
+
+```
+> ./bqetl glean_usage generate
+> ./bqetl query schema deploy <glean-app-dataset-name>_derived.*
+```
+
 ## Publishing data
 
 See also the reference for [Public Data](../reference/public_data.md).

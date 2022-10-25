@@ -4,7 +4,7 @@ WITH terminal_queries AS (
   FROM
     `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3` sanitized
   WHERE
-    DATE(timestamp) > @submission_date - 7
+    DATE(timestamp) > date_sub(@submission_date, INTERVAL 7 day)
   GROUP BY
     sanitized.session_id
 ),
@@ -27,9 +27,6 @@ daily_queries_with_threshold AS (
         QUERY
       ORDER BY
         SUBMISSION_DATE ASC
-      ROWS BETWEEN
-        6 PRECEDING
-        AND CURRENT ROW
     ) AS search_sessions_in_last_7_days
   FROM
     DAILY_QUERIES

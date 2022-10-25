@@ -18,6 +18,23 @@ daily_events AS (
     telemetry_derived.clients_daily_event_v1
   WHERE
     submission_date = @submission_date
+),
+crashes_daily AS (
+  SELECT
+    submission_date,
+    sample_id,
+    client_id,
+    main_crash_count,
+    content_crash_count,
+    gpu_crash_count,
+    rdd_crash_count,
+    socket_crash_count,
+    utility_crash_count,
+    vr_crash_count,
+  FROM
+    telemetry.crashes_daily
+  WHERE
+    submission_date = @submission_date
 )
 SELECT
   *
@@ -29,6 +46,10 @@ USING
   (submission_date, sample_id, client_id)
 LEFT JOIN
   first_seen
+USING
+  (submission_date, sample_id, client_id)
+LEFT JOIN
+  crashes_daily
 USING
   (submission_date, sample_id, client_id)
 WHERE

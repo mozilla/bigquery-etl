@@ -91,9 +91,9 @@ with DAG(
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
-    search_terms_derived__search_terms_weekly__v1 = bigquery_etl_query(
-        task_id="search_terms_derived__search_terms_weekly__v1",
-        destination_table="search_terms_weekly_v1",
+    search_terms_derived__search_terms_daily__v1 = bigquery_etl_query(
+        task_id="search_terms_derived__search_terms_daily__v1",
+        destination_table="search_terms_daily_v1",
         dataset_id="search_terms_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ctroy@mozilla.com",
@@ -103,7 +103,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",
         ],
-        date_partition_parameter="submission_week",
+        date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )

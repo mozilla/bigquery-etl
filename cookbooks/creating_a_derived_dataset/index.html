@@ -2513,7 +2513,7 @@ GROUP BY
 <pre><code class="language-bash">./bqetl query validate &lt;dataset&gt;.&lt;table&gt;
 </code></pre>
 <p>For our example:</p>
-<pre><code class="language-bash">./bqetl query validate org_mozilla_mozregression_derived.mozregression_aggregates
+<pre><code class="language-bash">./bqetl query validate org_mozilla_mozregression_derived.mozregression_aggregates_v1
 </code></pre>
 <p>If there are no problems, you should see no output.</p>
 <h2 id="creating-the-table-schema">Creating the table schema</h2>
@@ -2561,7 +2561,7 @@ git push origin &lt;new_branch_name&gt;
 </code></pre>
 <p>And next is the workflow for our specific example:</p>
 <pre><code class="language-bash">git checkout -b mozregression-aggregates
-git add dags.yaml dags/bqetl_internal_tooling.py sql/moz-fx-data-shared-prod/telemetry/mozregression_aggregates sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/mozregression_aggregates_v1
+git add dags.yaml dags/bqetl_internal_tooling.py sql/moz-fx-data-shared-prod/org_mozilla_mozregression/mozregression_aggregates sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/mozregression_aggregates_v1
 git commit
 git push origin mozregression-aggregates
 </code></pre>

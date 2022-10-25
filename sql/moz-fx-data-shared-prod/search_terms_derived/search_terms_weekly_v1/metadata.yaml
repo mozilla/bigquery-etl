@@ -1,6 +1,6 @@
-friendly_name: Search Terms Daily
+friendly_name: Search Terms Weekly
 description: |-
-  Daily count of terminal search terms collected by Merino.
+  Weekly count of terminal search terms collected by Merino.
 owners:
   - ctroy@mozilla.com
   - rburwei@mozilla.com
@@ -12,7 +12,7 @@ labels:
   incremental: true
 bigquery:
   time_partitioning:
-    field: merino_date
+    field: submission_week
     type: day
     require_partition_filter: true
     expiration_days: null

@@ -64,7 +64,7 @@ WITH clients_histogram_aggregates_new AS
 clients_histogram_aggregates_partition AS
   (SELECT *
   FROM clients_histogram_aggregates_v1
-  WHERE submission_date = DATE_SUB('20221024', INTERVAL 1 DAY)
+  WHERE submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND sample_id >= @min_sample_id
     AND sample_id <= @max_sample_id),
 
@@ -110,7 +110,7 @@ merged AS
   ON new_data.join_key = old_data.join_key)
 
 SELECT
-  '20221024' AS submission_date,
+  @submission_date AS submission_date,
   sample_id,
   client_id,
   os,

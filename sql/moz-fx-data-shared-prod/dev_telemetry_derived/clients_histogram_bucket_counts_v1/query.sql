@@ -22,7 +22,7 @@ WITH filtered_data AS (
   CROSS JOIN
     UNNEST(histogram_aggregates)
   WHERE
-    submission_date = @submission_date
+    submission_date = '2022-10-24'
     AND first_bucket IS NOT NULL
     AND sample_id >= @min_sample_id
     AND sample_id <= @max_sample_id

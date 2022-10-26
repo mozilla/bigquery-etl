@@ -4,7 +4,7 @@ WITH filtered_date_channel AS (
   FROM
     clients_daily_histogram_aggregates_v1
   WHERE
-    submission_date = @submission_date
+    submission_date = '2022-10-24'
 ),
 filtered_aggregates AS (
   SELECT

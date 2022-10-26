@@ -110,7 +110,7 @@ merged AS
   ON new_data.join_key = old_data.join_key)
 
 SELECT
-  '2022-10-24' AS submission_date,
+  DATE('2022-10-24') AS submission_date,
   sample_id,
   client_id,
   os,

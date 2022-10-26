@@ -56,9 +56,11 @@ def main(submission_date, dst_table, project, tmp_project, dataset):
     query_text = sql_path.read_text()
 
     # Write to intermediate table to avoid partial writes to destination table
-    if tmp_project is None:
-        tmp_project = project
-    intermediate_table = f"{tmp_project}.analysis.glam_temp_clustered_query_{dst_table}"
+    # if tmp_project is None:
+    tmp_project = project
+    intermediate_table = (
+        f"{tmp_project}.analysis.dev_glam_temp_clustered_query_{dst_table}"
+    )
     print(f"Writing results to {intermediate_table}")
 
     for i, app_version in enumerate(app_versions):

@@ -28,14 +28,13 @@ def get_columns(client, project, dataset):
         result = client.query(sql).result()
         return [(dataset, row.table_name, row.column_name) for row in result]
     except Exception as e:
-        print(f"Error querying dataset {dataset}: {e}")
+        print(f"Error querying dataset {dataset}")
 
     return []
 
 
 def get_column_size_json(client, date, column):
     """Return the size of a specific date partition of the specified table."""
-    print(column)
     try:
         job_config = bigquery.QueryJobConfig(dry_run=True, use_query_cache=False)
         dataset_id, table_id, column_name = column
@@ -57,7 +56,6 @@ def get_column_size_json(client, date, column):
             "byte_size": size,
         }
     except Exception as e:
-        print(e)
         return None
 
 

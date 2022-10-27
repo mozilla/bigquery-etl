@@ -3,7 +3,7 @@ WITH submission_date_activity AS (
     client_id,
     submission_date AS activity_date
   FROM
-    telemetry_derived.unified_metrics_v1
+    telemetry.unified_metrics
   WHERE
     submission_date = @activity_date
     AND days_since_seen = 0

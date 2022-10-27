@@ -1,8 +1,11 @@
 friendly_name: Aggregation for Active Users
 description: |-
-  Active users aggregated by Mozilla product and business dimensions
-  (attribution details, channel, country, city, date, device model,
-  distribution_id, os details, segment)
+  This aggregates contains the metrics of daily, weekly and montly
+  active users, as well as new profile and search counts
+  aggregated by Mozilla product and business dimensions:
+  attribution parameters, channel, country, city, date, device model,
+  distribution_id, os details and segment.
+
   Proposal:
   https://docs.google.com/document/d/1qvWO49Lr_Z_WErh3I3058A3B1YuiuURx19K3aTdmejM/edit?usp=sharing
 owners:

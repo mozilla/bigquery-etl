@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3.8
 MAINTAINER Perry McManis <pmcmanis@mozilla.com>
 
 # https://github.com/mozilla-services/Dockerflow/blob/master/docs/building-container.md
@@ -22,6 +22,8 @@ RUN python3 -m pip install prophet --no-cache-dir
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
+
+RUN pip install git+https://github.com/Nixtla/statsforecast.git
 
 COPY . .
 

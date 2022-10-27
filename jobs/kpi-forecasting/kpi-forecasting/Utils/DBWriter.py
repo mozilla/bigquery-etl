@@ -1,5 +1,6 @@
 from datetime import date
 import json
+from typing import Optional
 
 import pandas as pd
 
@@ -7,8 +8,8 @@ from google.cloud import bigquery, client
 
 
 def write_predictions_to_bigquery(
-    predictions: pd.DataFrame, config: dict, client: client = None
-) -> None:
+    predictions: pd.DataFrame, config: dict, client: Optional[client.Client] = None
+):
     project = config["write_project"]
     if client is None:
         bq_client = bigquery.Client(project=project)
@@ -100,8 +101,8 @@ def write_predictions_to_bigquery(
 
 
 def write_confidence_intervals_to_bigquery(
-    confidences: pd.DataFrame, config: dict, client: client = None
-) -> None:
+    confidences: pd.DataFrame, config: dict, client: Optional[client.Client] = None
+):
     project = config["write_project"]
     if client is None:
         bq_client = bigquery.Client(project=project)

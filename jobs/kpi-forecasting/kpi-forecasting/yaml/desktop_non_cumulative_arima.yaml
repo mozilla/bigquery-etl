@@ -1,0 +1,19 @@
+---
+target: desktop
+query_name: "desktop_qdau.sql"
+dataset_project: "mozdata"
+forecast_variable: "QDAU"
+forecast_parameters:
+  changepoint_prior_scale: 0.05
+  changepoint_range: 0.8
+  seasonality_prior_scale: 0.01
+columns:
+- submission_date
+- QDAU
+# write_project: "moz-fx-data-shared-prod"
+# output_table: "telemetry_derived.kpi_automated_forecast_v1"
+# confidences_table: "telemetry_derived.kpi_automated_forecast_confidences_v1"
+write_project: "moz-fx-data-bq-data-science"
+output_table: "pmcmanis.arima_results"
+stop_date: "2023-12-31"
+confidences: "ds_month"

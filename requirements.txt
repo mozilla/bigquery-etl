@@ -1222,9 +1222,9 @@ types-pytz==2022.5.0.0 \
     --hash=sha256:0c163b15d3e598e6cc7074a99ca9ec72b25dc1b446acc133b827667af0b7b09a \
     --hash=sha256:a8e1fe6a1b270fbfaf2553b20ad0f1316707cc320e596da903bb17d7373fed2d
     # via -r requirements.in
-types-pyyaml==6.0.12 \
-    --hash=sha256:29228db9f82df4f1b7febee06bbfb601677882e98a3da98132e31c6874163e15 \
-    --hash=sha256:f6f350418125872f3f0409d96a62a5a5ceb45231af5cc07ee0034ec48a3c82fa
+types-pyyaml==6.0.12.1 \
+    --hash=sha256:70ccaafcf3fb404d57bffc1529fdd86a13e8b4f2cf9fc3ee81a6408ce0ad59d2 \
+    --hash=sha256:aaf5e51444c13bd34104695a89ad9c48412599a4f615d65a60e649109714f608
     # via -r requirements.in
 types-requests==2.28.11.2 \
     --hash=sha256:14941f8023a80b16441b3b46caffcbfce5265fd14555844d6029697824b5a2ef \

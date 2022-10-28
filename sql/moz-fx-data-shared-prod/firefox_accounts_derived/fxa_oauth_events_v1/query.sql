@@ -28,7 +28,7 @@ WITH base AS (
       ) AS jsonPayload
     )
   FROM
-    `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_oauth_20*`
+    `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_oauth_20*`  -- # TODO: this table does not seem to exist anymore, should this query be deprecated?
   WHERE
     _TABLE_SUFFIX = FORMAT_DATE('%y%m%d', @submission_date)
 )

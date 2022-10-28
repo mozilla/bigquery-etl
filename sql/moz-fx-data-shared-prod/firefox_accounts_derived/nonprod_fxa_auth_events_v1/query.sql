@@ -5,7 +5,7 @@ SELECT
         jsonPayload.* REPLACE (
           (
             SELECT AS STRUCT
-              jsonPayload.fields.* EXCEPT (device_id, user_id) REPLACE(
+              jsonPayload.fields.* EXCEPT (user_id, device_id, deviceid) REPLACE(
                 -- See https://bugzilla.mozilla.org/show_bug.cgi?id=1707571
                 CAST(NULL AS FLOAT64) AS emailverified,
                 CAST(NULL AS FLOAT64) AS isprimary,
@@ -13,7 +13,8 @@ SELECT
                 -- casting id as field type in source tables inconsistent
                 CAST(jsonPayload.fields.id AS STRING) AS id
               ),
-              TO_HEX(SHA256(jsonPayload.fields.user_id)) AS user_id
+              TO_HEX(SHA256(jsonPayload.fields.user_id)) AS user_id,
+              COALESCE(jsonPayload.fields.device_id, jsonPayload.fields.deviceid) AS device_id
           ) AS fields
         )
     ) AS jsonPayload

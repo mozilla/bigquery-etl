@@ -1,0 +1,50 @@
+---
+friendly_name: FxA device(_id) first seen by user, service combination
+
+description: |
+  Contains information when a device_id per
+  user and service combination was first seen by us.
+
+  Additional attributes get captured to provide insight into
+  what os and browser is used by the new device, as well as,
+  the device's entrypoint and utm information.
+
+  This information is static and represents as was at the time
+  (does not change).
+
+  Lowest granularity field: device_id
+
+  Notes:
+    - There are very few cases when a single flow_id
+      can contain multiple device_ids.
+    - utm fields contain very high levels of null values.
+
+  More information about fxa data can be found here:
+  https://docs.telemetry.mozilla.org/datasets/fxa.html
+
+owners:
+  - kignasiak@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_fxa_events
+  # We completely recreate this table every day;
+  # making it incremental is possible but nuanced since it windows over
+  # events that may cross the midnight boundary.
+  date_partition_parameter: null
+  parameters:
+    - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    field: first_seen_date
+    type: day
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+      - service
+      - os_name
+      - country
+references: {}

@@ -17,7 +17,7 @@ SELECT
     STRUCT('email_version' AS key, email_version AS value)
   ] AS extra,
   CAST([] AS ARRAY<STRUCT<key STRING, value STRING>>) AS experiments,
-  * EXCEPT (device_id),
+  *,
 FROM
   `moz-fx-data-shared-prod.firefox_accounts.fxa_content_auth_oauth_events`
 WHERE

@@ -336,23 +336,6 @@ with DAG(
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
-    x_accounts_derived__fxa_devices_first_seen_by_user_service__v1 = bigquery_etl_query(
-        task_id="x_accounts_derived__fxa_devices_first_seen_by_user_service__v1",
-        destination_table="fxa_devices_first_seen_by_user_service_v1",
-        dataset_id="firefox_accounts_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kignasiak@mozilla.com",
-        email=[
-            "dthorn@mozilla.com",
-            "kignasiak@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        task_concurrency=1,
-        parameters=["submission_date:DATE:{{ds}}"],
-    )
-
     firefox_accounts_derived__exact_mau28__v1.set_upstream(
         firefox_accounts_derived__fxa_users_last_seen__v1
     )
@@ -382,13 +365,5 @@ with DAG(
     )
 
     firefox_accounts_derived__fxa_users_services_daily__v1.set_upstream(
-        firefox_accounts_derived__fxa_content_events__v1
-    )
-
-    x_accounts_derived__fxa_devices_first_seen_by_user_service__v1.set_upstream(
-        firefox_accounts_derived__fxa_auth_events__v1
-    )
-
-    x_accounts_derived__fxa_devices_first_seen_by_user_service__v1.set_upstream(
         firefox_accounts_derived__fxa_content_events__v1
     )

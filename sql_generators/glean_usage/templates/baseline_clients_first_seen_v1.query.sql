@@ -76,17 +76,35 @@ _previous AS (
     AND first_seen_date < @submission_date
 )
 {% endif %}
-  --
-SELECT
-  IF(
-    _previous.client_id IS NULL
-    OR _previous.first_seen_date >= _current.first_seen_date,
-    _current,
+
+, _joined AS (
+  SELECT
+    IF(
+      _previous.client_id IS NULL
+      OR _previous.first_seen_date >= _current.first_seen_date,
+      _current,
+      _previous
+    ).*
+  FROM
+    _current
+  FULL JOIN
     _previous
-  ).*
-FROM
-  _current
-FULL JOIN
-  _previous
-USING
-  (client_id)
+  USING
+    (client_id)
+)
+
+-- added this as the result of bug#1788650
+SELECT
+  submission_date,
+  first_seen_date,
+  sample_id,
+  client_id
+FROM _joined
+WHERE
+  TRUE
+QUALIFY
+  IF(
+    COUNT(*) OVER (PARTITION BY client_id) > 1,
+    ERROR("duplicate client_id detected"),
+    TRUE
+  )

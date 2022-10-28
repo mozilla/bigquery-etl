@@ -31,7 +31,7 @@ WITH aggregated AS (
     SUM(uri_count) AS uri_count,
     SUM(active_hours_sum) AS active_hours
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.unified_metrics_v1`
+    `moz-fx-data-shared-prod.telemetry.unified_metrics`
   WHERE
     submission_date = @submission_date
   GROUP BY

@@ -3,7 +3,7 @@
 from typing import List, Optional
 
 import attr
-import cattr
+import cattrs
 from jinja2 import Environment, PackageLoader
 
 from bigquery_etl.query_scheduling import formatters
@@ -188,7 +188,7 @@ class Dag:
         if len(d.keys()) != 1:
             raise DagParseException(f"Invalid DAG configuration format in {d}")
 
-        converter = cattr.Converter()
+        converter = cattrs.BaseConverter()
         try:
             name = list(d.keys())[0]
             d[name]["tags"] = sorted(
@@ -249,7 +249,7 @@ class PublicDataJsonDag(Dag):
         if not task.public_json:
             raise ValueError(f"Task {task.task_name} not marked as public JSON.")
 
-        converter = cattr.Converter()
+        converter = cattrs.BaseConverter()
         task_dict = converter.unstructure(task)
 
         del task_dict["dataset"]

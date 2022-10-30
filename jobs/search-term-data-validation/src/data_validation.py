@@ -60,7 +60,7 @@ def calculate_data_validation_metrics(metadata_source, languages_source):
     ) AS languages
     ON metadata.started_at = languages.job_start_time
     WHERE status = 'SUCCESS'
-    ORDER BY finished_at DESC;
+    ORDER BY finished_at ASC;
     """
     client = bigquery.Client()
     query_job = client.query(SUCCESSFUL_SANITIZATION_JOB_RUN_METADATA)
@@ -142,7 +142,7 @@ def retrieve_data_validation_metrics(metrics_source):
     SELECT
         *
         FROM `{metrics_source_no_injection}` AS metadata
-    ORDER BY finished_at DESC;
+    ORDER BY finished_at ASC;
     """
     client = bigquery.Client()
     query_job = client.query(DATA_VALIDATION_METRICS_QUERY)

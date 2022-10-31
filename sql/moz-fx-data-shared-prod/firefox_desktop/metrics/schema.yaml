@@ -785,6 +785,32 @@ fields:
       mode: REPEATED
       name: pdfjs_buttons
       type: RECORD
+    - description: 'The result of trying to generate a DAP report.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: dap_report_generation_status
+      type: RECORD
+    - description: 'The result of trying to upload a report to the DAP server.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: dap_upload_status
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

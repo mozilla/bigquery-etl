@@ -15,7 +15,7 @@ WITH final_probe_extract AS (
       IF(agg_type = "percentiles", mozfun.glam.histogram_cast_json(aggregates), NULL)
     ) AS percentiles
   FROM
-    `moz-fx-data-shared-prod.telemetry.client_probe_counts`
+    `moz-fx-data-shared-prod.dev_telemetry_derived.client_probe_counts`
   WHERE
     channel = @channel
     AND app_version IS NOT NULL

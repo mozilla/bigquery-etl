@@ -10,7 +10,12 @@ from pathlib import Path
 from time import sleep
 
 from google.cloud import bigquery
-from bigquery_etl.util.glam_probe_utils import get_etl_excluded_probes_quickfix, get_most_used_probes, probe_is_recent_legacy
+
+from bigquery_etl.util.glam_probe_utils import (
+    get_etl_excluded_probes_quickfix,
+    get_most_used_probes,
+    probe_is_recent_legacy,
+)
 
 sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
 from bigquery_etl.format_sql.formatter import reformat
@@ -21,11 +26,14 @@ PROBE_INFO_SERVICE = (
 
 p = argparse.ArgumentParser()
 p.add_argument(
-    "--agg-type", type=str, help="One of histograms/keyed_histograms", required=True,
+    "--agg-type",
+    type=str,
+    help="One of histograms/keyed_histograms",
+    required=True,
 )
 p.add_argument(
     "--json-output",
-    action='store_true',
+    action="store_true",
     help="Output the result wrapped in json parseable as an XCOM",
 )
 p.add_argument(
@@ -80,7 +88,7 @@ def generate_sql(opts, additional_queries, windowed_clause, select_clause, json_
             FROM `moz-fx-data-shared-prod.telemetry_stable.main_v4`
             INNER JOIN valid_build_ids
             ON (application.build_id = build_id)
-            WHERE DATE(submission_timestamp) = @submission_date
+            WHERE DATE(submission_timestamp) BETWEEN DATE_SUB(@submission_date, INTERVAL 90 DAY) AND @submission_date
                 AND normalized_channel in (
                   "release", "beta", "nightly"
                 )
@@ -450,7 +458,10 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
                 continue
 
             processes = main_summary_histograms.setdefault(histogram["name"], set())
-            if processes_to_output is None or histograms_and_process["process"] in processes_to_output:
+            if (
+                processes_to_output is None
+                or histograms_and_process["process"] in processes_to_output
+            ):
                 processes.add(histograms_and_process["process"])
             main_summary_histograms[histogram["name"]] = processes
 
@@ -521,14 +532,16 @@ def main(argv, out=print):
     sql_string = ""
 
     if opts["agg_type"] in ("histograms", "keyed_histograms"):
-        probes_and_buckets = get_histogram_probes_and_buckets(opts["agg_type"], opts["processes"])
+        probes_and_buckets = get_histogram_probes_and_buckets(
+            opts["agg_type"], opts["processes"]
+        )
         sql_string = get_histogram_probes_sql_strings(
             probes_and_buckets, opts["agg_type"]
         )
     else:
         raise ValueError("agg-type must be one of histograms, keyed_histograms")
 
-    sleep(opts['wait_seconds'])
+    sleep(opts["wait_seconds"])
     out(
         reformat(
             generate_sql(

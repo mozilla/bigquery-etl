@@ -10,7 +10,11 @@ import urllib.request
 from pathlib import Path
 from time import sleep
 
-from bigquery_etl.util.glam_probe_utils import get_etl_excluded_probes_quickfix, get_most_used_probes, probe_is_recent_legacy
+from bigquery_etl.util.glam_probe_utils import (
+    get_etl_excluded_probes_quickfix,
+    get_most_used_probes,
+    probe_is_recent_legacy,
+)
 
 sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
 from bigquery_etl.format_sql.formatter import reformat
@@ -69,7 +73,7 @@ def generate_sql(
             FROM `moz-fx-data-shared-prod.telemetry_stable.main_v4`
             INNER JOIN valid_build_ids
             ON (application.build_id = build_id)
-            WHERE DATE(submission_timestamp) = @submission_date
+            WHERE DATE(submission_timestamp) BETWEEN DATE_SUB(@submission_date, INTERVAL 90 DAY) AND @submission_date
                 AND normalized_channel in (
                   "release", "beta", "nightly"
                 )
@@ -466,9 +470,9 @@ def get_scalar_probes(scalar_type):
                 [
                     snake_case(x.replace("scalar/", ""))
                     for x in data.keys()
-                    if x.startswith("scalar/")
-                    and probe_is_recent_legacy(data[x])
-                ] + most_used_probes
+                    if x.startswith("scalar/") and probe_is_recent_legacy(data[x])
+                ]
+                + most_used_probes
             )
             - excluded_probes
         )
@@ -492,6 +496,7 @@ def get_scalar_probes(scalar_type):
                 main_summary_boolean_record_scalars, scalar_probes
             ),
         }
+
 
 def main(argv, out=print):
     """Print a clients_daily_scalar_aggregates query to stdout."""

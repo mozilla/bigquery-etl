@@ -112,7 +112,7 @@ WITH flat_clients_scalar_aggregates AS (
   FROM
     clients_scalar_aggregates_v1
   WHERE
-    submission_date = @submission_date
+    submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 90 DAY) AND @submission_date
     AND (@app_version IS NULL OR app_version = @app_version)
 ),
 log_min_max AS (

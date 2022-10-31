@@ -2,6 +2,11 @@ friendly_name: Unified Metrics
 description: |-
   Unified view on common browser metrics across all products.
 
+  Note. The app name uses the suffix ` Glean` to differentiate
+  data from Legacy and Glean during the migration to use only
+  Glean. For this reason is important to query this table always
+  using the view, which retrieves the correct dataset.
+
   Proposal:
   https://docs.google.com/document/d/1s_9pmDXKjfFpvW31jqnWyaWOE9tmO9_88Jt7inGVGys
 owners:

@@ -112,6 +112,34 @@ WITH unioned_source AS (
     submission_date = @submission_date
     AND app_name = 'Focus'
     AND os = 'Android'
+  UNION ALL
+  SELECT
+    submission_date,
+    normalized_channel,
+    client_id,
+    sample_id,
+    days_since_seen,
+    days_seen_bits,
+    days_created_profile_bits,
+    durations,
+    normalized_os,
+    normalized_os_version,
+    locale,
+    city,
+    country,
+    app_display_version,
+    device_model,
+    first_seen_date,
+    submission_date = first_seen_date AS is_new_profile,
+    CAST(NULL AS INT64) AS uri_count,
+    CAST(NULL AS string) AS is_default_browser,
+    CAST(NULL AS string) AS distribution_id,
+    isp,
+    'Focus Android Glean' AS normalized_app_name
+  FROM
+    focus_android.clients_last_seen_joined
+  WHERE
+    submission_date = @submission_date
 ),
 unioned AS (
   SELECT

@@ -1082,8 +1082,8 @@ pytest-mypy==0.10.0 \
     --hash=sha256:83843dce75a7ce055efb264ff40dad2ecf7abd4e7bd5e5eda015261d11616abb \
     --hash=sha256:e74d632685f15a39c31c551a9d8cec4619e24bd396245a6335c5db0ec6d17b6f
     # via -r requirements.in
-pytest-pydocstyle==2.3.0 \
-    --hash=sha256:1f2d937349cfeb4965c530a0c0f2442b48c03299558db435b65549719510d32b
+pytest-pydocstyle==2.3.1 \
+    --hash=sha256:58228aef833dc4ed0a3a3216ebc8586f9798c7d0a98832eaf70a17269f773d4e
     # via -r requirements.in
 pytest-xdist==3.0.2 \
     --hash=sha256:688da9b814370e891ba5de650c9327d1a9d861721a524eb917e620eec3e90291 \

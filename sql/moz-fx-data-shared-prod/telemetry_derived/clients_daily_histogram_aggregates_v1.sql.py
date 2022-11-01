@@ -88,7 +88,7 @@ def generate_sql(opts, additional_queries, windowed_clause, select_clause, json_
             FROM `moz-fx-data-shared-prod.telemetry_stable.main_v4`
             INNER JOIN valid_build_ids
             ON (application.build_id = build_id)
-            WHERE DATE(submission_timestamp) BETWEEN DATE_SUB(@submission_date, INTERVAL 90 DAY) AND @submission_date
+            WHERE DATE(submission_timestamp) BETWEEN DATE_SUB(@submission_date, INTERVAL 10 DAY) AND @submission_date
                 AND normalized_channel in (
                   "release", "beta", "nightly"
                 )

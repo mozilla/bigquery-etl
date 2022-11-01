@@ -4,7 +4,7 @@ WITH filtered_date_channel AS (
   FROM
     clients_daily_histogram_aggregates_v1
   WHERE
-    submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 90 DAY) AND @submission_date
+    submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 10 DAY) AND @submission_date
 ),
 filtered_aggregates AS (
   SELECT

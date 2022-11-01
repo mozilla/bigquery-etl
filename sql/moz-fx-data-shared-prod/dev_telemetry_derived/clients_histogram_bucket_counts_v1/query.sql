@@ -22,7 +22,7 @@ WITH filtered_data AS (
   CROSS JOIN
     UNNEST(histogram_aggregates)
   WHERE
-    submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 90 DAY) AND @submission_date
+    submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 10 DAY) AND @submission_date
     AND first_bucket IS NOT NULL
     AND sample_id >= @min_sample_id
     AND sample_id <= @max_sample_id

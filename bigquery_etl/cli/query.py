@@ -1534,6 +1534,9 @@ def _create_table(
 
     metadata = Metadata.of_query_file(query_file_path)
 
+    new_table.description = metadata.description
+    new_table.friendly_name = metadata.friendly_name
+
     if metadata.bigquery and metadata.bigquery.time_partitioning:
         new_table.time_partitioning = bigquery.TimePartitioning(
             metadata.bigquery.time_partitioning.type.bigquery_type,

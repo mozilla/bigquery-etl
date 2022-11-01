@@ -5,8 +5,9 @@ SELECT
         jsonPayload.* REPLACE (
           (
             SELECT AS STRUCT
-              jsonPayload.fields.* EXCEPT (user_id),
-              TO_HEX(SHA256(jsonPayload.fields.user_id)) AS user_id
+              jsonPayload.fields.* EXCEPT (device_id, user_id),
+              TO_HEX(SHA256(jsonPayload.fields.user_id)) AS user_id,
+              TO_HEX(SHA256(jsonPayload.fields.device_id)) AS device_id
           ) AS fields
         )
     ) AS jsonPayload

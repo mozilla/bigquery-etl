@@ -10,7 +10,7 @@ WITH base AS (
           jsonPayload.* REPLACE (
             (
               SELECT AS STRUCT
-                jsonPayload.fields.* EXCEPT (user_id) REPLACE(
+                jsonPayload.fields.* EXCEPT (user_id, device_id, deviceid) REPLACE(
                   -- See https://bugzilla.mozilla.org/show_bug.cgi?id=1707571
                   CAST(NULL AS FLOAT64) AS emailverified,
                   CAST(NULL AS FLOAT64) AS isprimary,
@@ -18,7 +18,8 @@ WITH base AS (
                   CAST(NULL AS STRING) AS id,
                   CAST(NULL AS STRING) AS metricsoptoutat
                 ),
-                TO_HEX(SHA256(jsonPayload.fields.user_id)) AS user_id
+                TO_HEX(SHA256(jsonPayload.fields.user_id)) AS user_id,
+                TO_HEX(SHA256(COALESCE(jsonPayload.fields.device_id, jsonPayload.fields.deviceid)) AS device_id
             ) AS fields
           )
       ) AS jsonPayload

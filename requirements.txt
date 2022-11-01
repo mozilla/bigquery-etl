@@ -1074,9 +1074,9 @@ pytest-flake8==1.1.1 \
     --hash=sha256:ba4f243de3cb4c2486ed9e70752c80dd4b636f7ccb27d4eba763c35ed0cd316e \
     --hash=sha256:e0661a786f8cbf976c185f706fdaf5d6df0b1667c3bcff8e823ba263618627e7
     # via -r requirements.in
-pytest-isort==3.0.0 \
-    --hash=sha256:2d96a25a135d6fd084ac36878e7d54f26f27c6987c2c65f0d12809bffade9cb9 \
-    --hash=sha256:4fe4b26ead2af776730ec23f5870d7421f35aace22a41c4e938586ef4d8787cb
+pytest-isort==3.1.0 \
+    --hash=sha256:067801dc5e54a474330d074d521c815948ff6d5cf0ed3b9d057b78216851186c \
+    --hash=sha256:13e68d84b35d4f79d20d3d165f491bffc9e4b9509f420381a4186118c4454bd3
     # via -r requirements.in
 pytest-mypy==0.10.0 \
     --hash=sha256:83843dce75a7ce055efb264ff40dad2ecf7abd4e7bd5e5eda015261d11616abb \

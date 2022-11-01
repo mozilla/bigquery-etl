@@ -58,7 +58,7 @@ function generate_and_run_sql {
     fi
 
     run_query "clients_daily_${script_type}_aggregates_v1" \
-        true 0 99 "clients_daily_${probe_type}_aggregates_${table_name_suffix}v1" \
+        false 0 99 "clients_daily_${probe_type}_aggregates_${table_name_suffix}v1" \
         "$write_disposition --clustering_fields=app_version,channel --time_partitioning_field=submission_date" \
         "$(if [[ -n $windows_release_sample_percent ]]; then echo $windows_release_sample_percent; fi)"
 

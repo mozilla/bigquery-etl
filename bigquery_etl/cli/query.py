@@ -12,6 +12,7 @@ from functools import partial
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
 from tempfile import NamedTemporaryFile
+from typing import List
 
 import click
 import yaml
@@ -1462,7 +1463,7 @@ def deploy(
     client = bigquery.Client()
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
-    if query_files == []:
+    if not query_files:
         # run SQL generators if no matching query has been found
         ctx.invoke(
             generate_all,
@@ -1479,64 +1480,74 @@ def deploy(
         query_file_path = Path(query_file)
         existing_schema_path = query_file_path.parent / SCHEMA_FILE
 
-        if existing_schema_path.is_file():
-            click.echo(f"Deploy schema for {query_file}")
+        if not existing_schema_path.is_file():
+            click.echo(f"No schema file found for {query_file}")
+            continue
 
-            table_name = query_file_path.parent.name
-            dataset_name = query_file_path.parent.parent.name
-            project_name = query_file_path.parent.parent.parent.name
-            existing_schema = Schema.from_schema_file(existing_schema_path)
-            full_table_id = f"{project_name}.{dataset_name}.{table_name}"
+        click.echo(f"Deploying schema for {query_file}")
 
-            if not force:
-                query_schema = Schema.from_query_file(
-                    query_file_path,
-                    use_cloud_function=use_cloud_function,
-                    respect_skip=respect_dryrun_skip,
+        table_name = query_file_path.parent.name
+        dataset_name = query_file_path.parent.parent.name
+        project_name = query_file_path.parent.parent.parent.name
+        full_table_id = f"{project_name}.{dataset_name}.{table_name}"
+
+        existing_schema = Schema.from_schema_file(existing_schema_path)
+
+        if not force:
+            query_schema = Schema.from_query_file(
+                query_file_path,
+                use_cloud_function=use_cloud_function,
+                respect_skip=respect_dryrun_skip,
+            )
+            if not existing_schema.equal(query_schema):
+                click.echo(
+                    f"Query {query_file_path} does not match "
+                    f"schema in {existing_schema_path}. "
+                    f"To update the local schema file, "
+                    f"run `./bqetl query schema update "
+                    f"{dataset_name}.{table_name}`",
+                    err=True,
                 )
-                if not existing_schema.equal(query_schema):
-                    click.echo(
-                        f"Query {query_file_path} does not match "
-                        f"schema in {existing_schema_path}. "
-                        f"To update the local schema file, "
-                        f"run `./bqetl query schema update "
-                        f"{dataset_name}.{table_name}`",
-                        err=True,
-                    )
-                    sys.exit(1)
+                sys.exit(1)  # TODO: Should this be a continue?
 
-            tmp_schema_file = NamedTemporaryFile()
+        with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
             existing_schema.to_json_file(Path(tmp_schema_file.name))
             bigquery_schema = client.schema_from_json(tmp_schema_file.name)
 
-            try:
-                # destination table already exists, update schema
-                table = client.get_table(full_table_id)
-                table.schema = bigquery_schema
-                client.update_table(table, ["schema"])
-                click.echo(f"Schema updated for {full_table_id}")
-            except NotFound:
-                # no destination table, create new table based on schema and metadata
-                metadata = Metadata.of_query_file(query_file_path)
-                new_table = bigquery.Table(full_table_id, schema=bigquery_schema)
+        try:
+            # destination table already exists, update schema
+            table = client.get_table(full_table_id)
+            table.schema = bigquery_schema
+            client.update_table(table, ["schema"])
+            click.echo(f"Schema updated for {full_table_id}.")
+        except NotFound:
+            # no destination table, create new table based on schema and metadata
+            new_table = _create_table(full_table_id, bigquery_schema, query_file_path)
+            client.create_table(new_table)
+            click.echo(f"Destination table {full_table_id} created.")
 
-                if metadata.bigquery and metadata.bigquery.time_partitioning:
-                    new_table.time_partitioning = bigquery.TimePartitioning(
-                        metadata.bigquery.time_partitioning.type.bigquery_type,
-                        field=metadata.bigquery.time_partitioning.field,
-                        require_partition_filter=(
-                            metadata.bigquery.time_partitioning.require_partition_filter
-                        ),
-                        expiration_ms=metadata.bigquery.time_partitioning.expiration_ms,
-                    )
 
-                if metadata.bigquery and metadata.bigquery.clustering:
-                    new_table.clustering_fields = metadata.bigquery.clustering.fields
+def _create_table(
+    table_id: str, bigquery_schema: List[bigquery.SchemaField], query_file_path: Path
+) -> bigquery.Table:
+    new_table = bigquery.Table(table_id, schema=bigquery_schema)
 
-                client.create_table(new_table)
-                click.echo(f"Destination table {full_table_id} created.")
-        else:
-            click.echo(f"No schema file found for {query_file}")
+    metadata = Metadata.of_query_file(query_file_path)
+
+    if metadata.bigquery and metadata.bigquery.time_partitioning:
+        new_table.time_partitioning = bigquery.TimePartitioning(
+            metadata.bigquery.time_partitioning.type.bigquery_type,
+            field=metadata.bigquery.time_partitioning.field,
+            require_partition_filter=(
+                metadata.bigquery.time_partitioning.require_partition_filter
+            ),
+            expiration_ms=metadata.bigquery.time_partitioning.expiration_ms,
+        )
+
+    if metadata.bigquery and metadata.bigquery.clustering:
+        new_table.clustering_fields = metadata.bigquery.clustering.fields
+
+    return new_table
 
 
 def _validate_schema_from_path(

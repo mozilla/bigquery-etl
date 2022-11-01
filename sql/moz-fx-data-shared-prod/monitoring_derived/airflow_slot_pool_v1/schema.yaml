@@ -19,8 +19,3 @@ fields:
   name: slots
   type: STRING
   description: Number of slots available in the pool
-
-- mode: NULLABLE
-  name: is_deleted
-  type: BOOLEAN
-  description: Row deleted from the source table (Fivetran managed field)

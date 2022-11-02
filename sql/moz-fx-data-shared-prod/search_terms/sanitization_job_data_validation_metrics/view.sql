@@ -24,7 +24,7 @@ SELECT
   ) AS avg_words_all_search_terms,
   1 - SAFE_DIVIDE(languages.english_count, languages.all_languages_count) AS pct_terms_non_english
 FROM
-  `moz-fx-data-shared-prod.search_terms_derived.sanitization_job_metadata_v3` AS metadata
+  `moz-fx-data-shared-prod.search_terms_derived.sanitization_job_metadata_v2` AS metadata
 JOIN
   (
     SELECT

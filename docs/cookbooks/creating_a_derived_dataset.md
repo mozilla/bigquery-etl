@@ -147,7 +147,7 @@ Now that we've written our query, we can format it and validate it. Once that's 
 ```
 For our example:
 ```bash
-./bqetl query validate org_mozilla_mozregression_derived.mozregression_aggregates
+./bqetl query validate org_mozilla_mozregression_derived.mozregression_aggregates_v1
 ```
 If there are no problems, you should see no output.
 
@@ -235,7 +235,7 @@ And next is the workflow for our specific example:
 
 ```bash
 git checkout -b mozregression-aggregates
-git add dags.yaml dags/bqetl_internal_tooling.py sql/moz-fx-data-shared-prod/telemetry/mozregression_aggregates sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/mozregression_aggregates_v1
+git add dags.yaml dags/bqetl_internal_tooling.py sql/moz-fx-data-shared-prod/org_mozilla_mozregression/mozregression_aggregates sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/mozregression_aggregates_v1
 git commit
 git push origin mozregression-aggregates
 ```

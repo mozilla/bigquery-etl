@@ -7,7 +7,7 @@ import json
 import sys
 import time
 from argparse import ArgumentParser
-from typing import List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 import attr
 import cattrs
@@ -36,6 +36,7 @@ parser.add_argument("--dry_run", action="store_true")
 class Branch:
     slug: str
     ratio: int
+    value: Union[str, Dict[Any, Any]]
 
 
 @attr.s(auto_attribs=True)
@@ -64,6 +65,7 @@ class Variant:
     is_control: bool
     slug: str
     ratio: int
+    value: str
 
 
 @attr.s(auto_attribs=True)
@@ -99,7 +101,8 @@ class ExperimentV1:
     def to_experiment(self) -> "Experiment":
         """Convert to Experiment."""
         branches = [
-            Branch(slug=variant.slug, ratio=variant.ratio) for variant in self.variants
+            Branch(slug=variant.slug, ratio=variant.ratio, value=variant.value)
+            for variant in self.variants
         ]
         control_slug = None
 
@@ -149,6 +152,12 @@ class ExperimentV6:
                 num.replace("Z", "+00:00")
             ).astimezone(pytz.utc),
         )
+        converter.register_structure_hook(
+            Branch,
+            lambda b, _: Branch(
+                slug=b["slug"], ratio=b["ratio"], value=b["feature"]["value"]
+            ),
+        )
         return converter.structure(d, cls)
 
     def to_experiment(self) -> "Experiment":
@@ -158,8 +167,13 @@ class ExperimentV6:
             experimenter_slug=None,
             type="v6",
             status="Live"
-            if (self.endDate is None or (self.endDate
-            and self.endDate <= pytz.utc.localize(datetime.datetime.now())))
+            if (
+                self.endDate is None
+                or (
+                    self.endDate
+                    and self.endDate <= pytz.utc.localize(datetime.datetime.now())
+                )
+            )
             else "Complete",
             start_date=self.startDate,
             end_date=self.endDate,
@@ -240,6 +254,7 @@ def main():
             fields=[
                 bigquery.SchemaField("slug", "STRING"),
                 bigquery.SchemaField("ratio", "INTEGER"),
+                bigquery.SchemaField("value", "JSON"),
             ],
         ),
         bigquery.SchemaField("app_id", "STRING"),
@@ -247,7 +262,9 @@ def main():
         bigquery.SchemaField("channel", "STRING"),
     )
 
-    job_config = bigquery.LoadJobConfig(write_disposition="WRITE_TRUNCATE")
+    job_config = bigquery.LoadJobConfig(
+        write_disposition=bigquery.job.WriteDisposition.WRITE_TRUNCATE,
+    )
     job_config.schema = bq_schema
 
     converter = cattrs.BaseConverter()

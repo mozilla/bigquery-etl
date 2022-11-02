@@ -24,3 +24,11 @@ focus_ios:
   is_default_browser:
     # Placeholder for metric that is required for cross-app reporting
     sql: "LOGICAL_OR(CAST(NULL AS boolean))"
+focus_android:
+  uri_count:
+    # Placeholder for metric that is required for cross-app reporting
+    sql: "SUM(CAST(NULL AS int64))"
+    counter: true
+  is_default_browser:
+    # Placeholder for metric that is required for cross-app reporting
+    sql: "LOGICAL_OR(CAST(NULL AS boolean))"

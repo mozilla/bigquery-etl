@@ -1507,7 +1507,7 @@ def deploy(
                     f"{dataset_name}.{table_name}`",
                     err=True,
                 )
-                sys.exit(1)  # TODO: Should this be a continue?
+                sys.exit(1)
 
         with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
             existing_schema.to_json_file(Path(tmp_schema_file.name))
@@ -1520,7 +1520,7 @@ def deploy(
 
         table.schema = bigquery_schema
 
-        if table.created is None:
+        if not table.created:
             _attach_metadata(query_file_path, table)
             client.create_table(table)
             click.echo(f"Destination table {full_table_id} created.")
@@ -1530,6 +1530,7 @@ def deploy(
 
 
 def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
+    """Add metadata from query file's metadata.yaml to table object."""
     metadata = Metadata.of_query_file(query_file_path)
 
     table.description = metadata.description

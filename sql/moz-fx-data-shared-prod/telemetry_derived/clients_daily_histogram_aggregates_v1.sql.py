@@ -15,6 +15,7 @@ from bigquery_etl.util.glam_probe_utils import (
     get_etl_excluded_probes_quickfix,
     get_most_used_probes,
     probe_is_recent_legacy,
+    query_hot_list,
 )
 
 sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
@@ -88,7 +89,7 @@ def generate_sql(opts, additional_queries, windowed_clause, select_clause, json_
             FROM `moz-fx-data-shared-prod.telemetry_stable.main_v4`
             INNER JOIN valid_build_ids
             ON (application.build_id = build_id)
-            WHERE DATE(submission_timestamp) BETWEEN DATE_SUB(@submission_date, INTERVAL 10 DAY) AND @submission_date
+            WHERE DATE(submission_timestamp) BETWEEN DATE_SUB(@submission_date, INTERVAL 90 DAY) AND @submission_date
                 AND normalized_channel in (
                   "release", "beta", "nightly"
                 )
@@ -468,7 +469,7 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
     with urllib.request.urlopen(PROBE_INFO_SERVICE) as url:
         data = json.loads(gzip.decompress(url.read()).decode())
         excluded_probes = get_etl_excluded_probes_quickfix("desktop")
-        most_used_probes = get_most_used_probes()
+        # most_used_probes = get_most_used_probes()
 
         histogram_probes = []
         recent_probes = []
@@ -478,7 +479,7 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
                 histogram_probes.append(probe_name)
                 if probe_is_recent_legacy(data[x]):
                     recent_probes.append(probe_name)
-        allowed_probes = most_used_probes + recent_probes
+        allowed_probes = query_hot_list()  # most_used_probes + recent_probes
         bucket_details = {}
         relevant_probes = {
             histogram: {"processes": process}

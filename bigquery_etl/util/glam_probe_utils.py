@@ -2,11 +2,37 @@
 from datetime import date
 
 from dateutil.relativedelta import relativedelta
+from google.cloud import bigquery
 
 six_months = date.today() + relativedelta(months=+6)
 
 GLAM_USAGE_SERVICE = "https://glam.telemetry.mozilla.org/api/v1/usage/"
 RECENT_PROBE_DAYS = 90
+
+
+def query_hot_list():
+    """Query glam_probes_hot_list to use."""
+    project = "moz-fx-data-shared-prod"
+    client = bigquery.Client(project)
+    job = client.query(
+        """
+            SELECT
+            metrics
+            FROM
+                `dev_telemetry_derived.glam_probes_hot_list` h
+            INNER JOIN (
+            SELECT
+                MAX(date) AS max_date
+            FROM
+                `dev_telemetry_derived.glam_probes_hot_list`) m
+            ON
+            h.date = m.max_date
+        """
+    )
+    results = job.result()
+    for row in results:
+        hot_list = row.metrics  # Only one row expected according to the query above
+    return hot_list
 
 
 def get_etl_excluded_probes_quickfix(product):

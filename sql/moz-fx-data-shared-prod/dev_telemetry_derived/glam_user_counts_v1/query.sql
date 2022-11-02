@@ -6,7 +6,7 @@ WITH all_clients AS (
     app_build_id,
     channel
   FROM clients_scalar_aggregates_v1
-  WHERE submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 10 DAY) AND @submission_date
+  WHERE submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 90 DAY) AND @submission_date
 
   UNION ALL
 
@@ -17,7 +17,7 @@ WITH all_clients AS (
     app_build_id,
     channel
   FROM clients_histogram_aggregates_v1
-  WHERE submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 10 DAY) AND @submission_date
+  WHERE submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 90 DAY) AND @submission_date
 )
 
 SELECT

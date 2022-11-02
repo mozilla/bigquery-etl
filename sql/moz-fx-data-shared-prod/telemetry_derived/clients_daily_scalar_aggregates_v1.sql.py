@@ -14,6 +14,7 @@ from bigquery_etl.util.glam_probe_utils import (
     get_etl_excluded_probes_quickfix,
     get_most_used_probes,
     probe_is_recent_legacy,
+    query_hot_list,
 )
 
 sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
@@ -73,7 +74,7 @@ def generate_sql(
             FROM `moz-fx-data-shared-prod.telemetry_stable.main_v4`
             INNER JOIN valid_build_ids
             ON (application.build_id = build_id)
-            WHERE DATE(submission_timestamp) BETWEEN DATE_SUB(@submission_date, INTERVAL 10 DAY) AND @submission_date
+            WHERE DATE(submission_timestamp) BETWEEN DATE_SUB(@submission_date, INTERVAL 90 DAY) AND @submission_date
                 AND normalized_channel in (
                   "release", "beta", "nightly"
                 )
@@ -461,10 +462,12 @@ def get_scalar_probes(scalar_type):
     # and those that exist in main summary
     with urllib.request.urlopen(PROBE_INFO_SERVICE) as url:
         data = json.loads(gzip.decompress(url.read()).decode())
-        excluded_probes = get_etl_excluded_probes_quickfix("desktop")
-        most_used_probes = get_most_used_probes()
+        # excluded_probes = get_etl_excluded_probes_quickfix("desktop")
+        # most_used_probes = get_most_used_probes()
 
         scalar_probes = []
+        allowed_probes = query_hot_list()
+        """
         allowed_probes = (
             set(
                 [
@@ -476,6 +479,7 @@ def get_scalar_probes(scalar_type):
             )
             - excluded_probes
         )
+        """
 
         scalar_probes = set(
             [

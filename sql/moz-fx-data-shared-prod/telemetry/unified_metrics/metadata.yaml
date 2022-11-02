@@ -7,7 +7,7 @@ description: |-
   collected in Legavy Telemetry, until the migration to use only
   Glean is complete.
   For this reason is important to query this table always
-  using the view, which retrieves the correct dataset.
+  using the view.
 
   Proposal:
   https://docs.google.com/document/d/1s_9pmDXKjfFpvW31jqnWyaWOE9tmO9_88Jt7inGVGys

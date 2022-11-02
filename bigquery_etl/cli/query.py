@@ -12,7 +12,6 @@ from functools import partial
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from typing import List
 
 import click
 import yaml
@@ -1515,30 +1514,29 @@ def deploy(
             bigquery_schema = client.schema_from_json(tmp_schema_file.name)
 
         try:
-            # destination table already exists, update schema
             table = client.get_table(full_table_id)
-            table.schema = bigquery_schema
+        except NotFound:
+            table = bigquery.Table(full_table_id)
+
+        table.schema = bigquery_schema
+
+        if table.created is None:
+            _attach_metadata(query_file_path, table)
+            client.create_table(table)
+            click.echo(f"Destination table {full_table_id} created.")
+        else:
             client.update_table(table, ["schema"])
             click.echo(f"Schema updated for {full_table_id}.")
-        except NotFound:
-            # no destination table, create new table based on schema and metadata
-            new_table = _create_table(full_table_id, bigquery_schema, query_file_path)
-            client.create_table(new_table)
-            click.echo(f"Destination table {full_table_id} created.")
 
 
-def _create_table(
-    table_id: str, bigquery_schema: List[bigquery.SchemaField], query_file_path: Path
-) -> bigquery.Table:
-    new_table = bigquery.Table(table_id, schema=bigquery_schema)
-
+def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
     metadata = Metadata.of_query_file(query_file_path)
 
-    new_table.description = metadata.description
-    new_table.friendly_name = metadata.friendly_name
+    table.description = metadata.description
+    table.friendly_name = metadata.friendly_name
 
     if metadata.bigquery and metadata.bigquery.time_partitioning:
-        new_table.time_partitioning = bigquery.TimePartitioning(
+        table.time_partitioning = bigquery.TimePartitioning(
             metadata.bigquery.time_partitioning.type.bigquery_type,
             field=metadata.bigquery.time_partitioning.field,
             require_partition_filter=(
@@ -1548,9 +1546,10 @@ def _create_table(
         )
 
     if metadata.bigquery and metadata.bigquery.clustering:
-        new_table.clustering_fields = metadata.bigquery.clustering.fields
+        table.clustering_fields = metadata.bigquery.clustering.fields
 
-    return new_table
+    if metadata.labels:
+        table.labels = metadata.labels
 
 
 def _validate_schema_from_path(

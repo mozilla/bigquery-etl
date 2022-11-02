@@ -1,4 +1,4 @@
-# This file specifies metrics for metrics_clients_daily and
+#This file specifies metrics for metrics_clients_daily and
 # metrics_clients_last_seen tables per application.
 #
 # Metrics can't be removed from this file once they get propagated
@@ -12,23 +12,23 @@ fenix:
 firefox_ios:
   uri_count:
     # Placeholder for metric that is required for cross-app reporting
-    sql: "SUM(CAST(NULL AS int64))"
+    sql: "SUM(metrics.counter.tabs_normal_and_private_uri_count)"
     counter: true
   is_default_browser:
     sql: "LOGICAL_OR(metrics.counter.app_opened_as_default_browser > 0)"
 focus_ios:
   uri_count:
     # Placeholder for metric that is required for cross-app reporting
-    sql: "SUM(CAST(NULL AS int64))"
+    sql: "SUM(metrics.counter.browser_total_uri_count)"
     counter: true
   is_default_browser:
     # Placeholder for metric that is required for cross-app reporting
-    sql: "LOGICAL_OR(CAST(NULL AS boolean))"
+    sql: "LOGICAL_OR(metrics.counter.app_opened_as_default_browser > 0)"
 focus_android:
   uri_count:
     # Placeholder for metric that is required for cross-app reporting
-    sql: "SUM(CAST(NULL AS int64))"
+    sql: "SUM(metrics.counter.browser_total_uri_count)"
     counter: true
   is_default_browser:
     # Placeholder for metric that is required for cross-app reporting
-    sql: "LOGICAL_OR(CAST(NULL AS boolean))"
+    sql: "LOGICAL_OR(metrics.boolean.browser_is_default)"

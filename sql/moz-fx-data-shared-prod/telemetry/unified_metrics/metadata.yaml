@@ -4,7 +4,7 @@ description: |-
 
   Note. From Q4/2022 the app name includes the suffix ` Glean`
   to differentiate data collected via Glean from the data
-  collected in Legavy Telemetry, until the migration to use only
+  collected in Legacy Telemetry, until the migration to use only
   Glean is complete.
   For this reason is important to query this table always
   using the view.

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """clients_daily_scalar_aggregates query generator."""
 import argparse
-import gzip
 import json
 import subprocess
 import sys
@@ -461,7 +460,7 @@ def get_scalar_probes(scalar_type):
     # Find the intersection between relevant scalar probes
     # and those that exist in main summary
     with urllib.request.urlopen(PROBE_INFO_SERVICE) as url:
-        data = json.loads(gzip.decompress(url.read()).decode())
+        data = json.loads(url.read())
         # excluded_probes = get_etl_excluded_probes_quickfix("desktop")
         # most_used_probes = get_most_used_probes()
 
@@ -480,7 +479,6 @@ def get_scalar_probes(scalar_type):
             - excluded_probes
         )
         """
-
         scalar_probes = set(
             [
                 snake_case(x.replace("scalar/", ""))

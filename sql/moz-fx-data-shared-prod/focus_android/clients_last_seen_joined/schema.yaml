@@ -95,3 +95,9 @@ fields:
 - mode: NULLABLE
   name: days_sent_metrics_ping_bits
   type: INTEGER
+- mode: NULLABLE
+  name: uri_count
+  type: INTEGER
+- mode: NULLABLE
+  name: is_default_browser
+  type: BOOLEAN

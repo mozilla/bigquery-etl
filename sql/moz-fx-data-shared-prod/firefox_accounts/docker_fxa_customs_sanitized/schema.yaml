@@ -457,6 +457,9 @@ fields:
   - mode: NULLABLE
     name: message
     type: STRING
+  - mode: NULLABLE
+    name: blockreason
+    type: STRING
   mode: NULLABLE
   name: jsonPayload
   type: RECORD

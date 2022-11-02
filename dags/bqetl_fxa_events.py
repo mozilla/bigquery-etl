@@ -68,6 +68,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
     firefox_accounts_derived__docker_fxa_customs_sanitized__v1 = bigquery_etl_query(
@@ -83,6 +84,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
     firefox_accounts_derived__exact_mau28__v1 = bigquery_etl_query(

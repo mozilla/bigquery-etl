@@ -10,7 +10,8 @@ description: |-
   sanitized for use in model evaluation.
 
   Change notes from v1: column names
-  Backward-Compatible Change, November 3, 2022: Added total_search_terms_appearing_in_allow_list column
+  Backward-Compatible Change, November 3, 2022:
+    Added total_search_terms_appearing_in_allow_list column
 bigquery:
   {}
 workgroup_access:

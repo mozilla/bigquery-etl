@@ -1,4 +1,4 @@
-#This file specifies metrics for metrics_clients_daily and
+# This file specifies metrics for metrics_clients_daily and
 # metrics_clients_last_seen tables per application.
 #
 # Metrics can't be removed from this file once they get propagated

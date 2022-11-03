@@ -8,9 +8,9 @@ gitpython==3.1.29
 google-cloud-bigquery==3.2.0
 google-cloud-storage==2.5.0
 Jinja2==3.1.2
-jsonschema==4.16.0
+jsonschema==4.17.0
 markdown-include==0.7.0
-mkdocs==1.4.1
+mkdocs==1.4.2
 mkdocs-material==8.5.7
 mkdocs-awesome-pages-plugin==2.8.0
 mozilla-schema-generator==0.5.1

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """clients_daily_histogram_aggregates query generator."""
 import argparse
-import gzip
 import json
 import sys
 import textwrap
@@ -455,7 +454,7 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
             main_summary_histograms[histogram["name"]] = processes
 
     with urllib.request.urlopen(PROBE_INFO_SERVICE) as url:
-        data = json.loads(gzip.decompress(url.read()).decode())
+        data = json.loads(url.read())
         excluded_probes = probe_filters.get_etl_excluded_probes_quickfix("desktop")
         histogram_probes = {
             x.replace("histogram/", "").replace(".", "_").lower()

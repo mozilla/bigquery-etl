@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS
     contained_at integer,
     contained_numbers integer,
     contained_name integer,
+    total_search_terms_appearing_in_allow_list integer,
     total_search_terms_removed_by_sanitization_job integer,
     total_search_terms_analyzed integer,
     sum_chars_all_search_terms integer,

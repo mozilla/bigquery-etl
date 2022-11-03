@@ -9,8 +9,4 @@ labels:
 scheduling:
   dag_name: bqetl_ctxsvc_derived
 bigquery: null
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:contextual-services
 references: {}

@@ -9,7 +9,3 @@ labels:
 scheduling:
   dag_name: bqetl_ctxsvc_derived
   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
-workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:contextual-services

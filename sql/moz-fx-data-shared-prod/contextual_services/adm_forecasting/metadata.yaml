@@ -3,7 +3,3 @@ description: |-
   Data for AdM forecasts: Sponsored Tiles and Suggest.
 owners:
   - skahmann@mozilla.com
-workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:contextual-services

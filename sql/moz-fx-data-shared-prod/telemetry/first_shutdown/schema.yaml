@@ -799,6 +799,11 @@ fields:
         mode: NULLABLE
         name: is_windows_s_mode
         type: BOOLEAN
+      - description: The CPU name, e.g. 'Intel(R) Core(TM) i9-8950HK CPU @ 2.90GHz',
+          or `null` on failure. Desktop only.
+        mode: NULLABLE
+        name: name
+        type: STRING
       mode: NULLABLE
       name: cpu
       type: RECORD
@@ -5305,7 +5310,8 @@ fields:
       mode: NULLABLE
       name: memory_storage_sqlite
       type: STRING
-    - description: Total Memory Across All Processes (KB)
+    - description: Total Memory Across All Processes (KB) (inaccurate WRT shared memory.
+        See MemoryTelemetry.cpp)
       mode: NULLABLE
       name: memory_total
       type: STRING
@@ -31949,7 +31955,8 @@ fields:
           mode: NULLABLE
           name: low_memory_events_virtual
           type: STRING
-        - description: Total Memory Across All Processes (KB)
+        - description: Total Memory Across All Processes (KB) (inaccurate WRT shared
+            memory. See MemoryTelemetry.cpp)
           mode: NULLABLE
           name: memory_total
           type: STRING
@@ -43877,6 +43884,21 @@ fields:
             type: STRING
           mode: REPEATED
           name: network_response_end_parent_to_content_ms
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: The time between navigationStart and the first contentful
+              paint of a foreground http or https root content document, in milliseconds.
+              The contentful paint timestamp is taken during display list building
+              and does not include rasterization or compositing of that paint. Keyed
+              by TRR domain for DoH or 'Native' otherwise
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: dns_perf_first_contentful_paint_ms
           type: RECORD
         mode: NULLABLE
         name: keyed_histograms

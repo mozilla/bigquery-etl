@@ -5,8 +5,8 @@ SELECT
   "release" AS normalized_channel,
   COUNT(*) AS n_metrics_ping,
   1 AS days_sent_metrics_ping_bits,
-  SUM(CAST(NULL AS int64)) AS uri_count,
-  LOGICAL_OR(CAST(NULL AS boolean)) AS is_default_browser,
+  SUM(metrics.counter.browser_total_uri_count) AS uri_count,
+  LOGICAL_OR(metrics.counter.app_opened_as_default_browser > 0) AS is_default_browser,
 FROM
   `org_mozilla_ios_focus.metrics` AS m
 WHERE

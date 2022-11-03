@@ -612,6 +612,11 @@ fields:
         mode: NULLABLE
         name: is_windows_s_mode
         type: BOOLEAN
+      - description: The CPU name, e.g. 'Intel(R) Core(TM) i9-8950HK CPU @ 2.90GHz',
+          or `null` on failure. Desktop only.
+        mode: NULLABLE
+        name: name
+        type: STRING
       mode: NULLABLE
       name: cpu
       type: RECORD

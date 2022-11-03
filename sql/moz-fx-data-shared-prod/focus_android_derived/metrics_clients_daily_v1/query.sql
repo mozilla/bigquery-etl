@@ -5,8 +5,8 @@ SELECT
   "release" AS normalized_channel,
   COUNT(*) AS n_metrics_ping,
   1 AS days_sent_metrics_ping_bits,
-  SUM(CAST(NULL AS int64)) AS uri_count,
-  LOGICAL_OR(CAST(NULL AS boolean)) AS is_default_browser,
+  SUM(metrics.counter.browser_total_uri_count) AS uri_count,
+  LOGICAL_OR(metrics.boolean.browser_is_default) AS is_default_browser,
 FROM
   `org_mozilla_focus.metrics` AS m
 WHERE
@@ -24,8 +24,8 @@ SELECT
   "beta" AS normalized_channel,
   COUNT(*) AS n_metrics_ping,
   1 AS days_sent_metrics_ping_bits,
-  SUM(CAST(NULL AS int64)) AS uri_count,
-  LOGICAL_OR(CAST(NULL AS boolean)) AS is_default_browser,
+  SUM(metrics.counter.browser_total_uri_count) AS uri_count,
+  LOGICAL_OR(metrics.boolean.browser_is_default) AS is_default_browser,
 FROM
   `org_mozilla_focus_beta.metrics` AS m
 WHERE
@@ -43,8 +43,8 @@ SELECT
   "nightly" AS normalized_channel,
   COUNT(*) AS n_metrics_ping,
   1 AS days_sent_metrics_ping_bits,
-  SUM(CAST(NULL AS int64)) AS uri_count,
-  LOGICAL_OR(CAST(NULL AS boolean)) AS is_default_browser,
+  SUM(metrics.counter.browser_total_uri_count) AS uri_count,
+  LOGICAL_OR(metrics.boolean.browser_is_default) AS is_default_browser,
 FROM
   `org_mozilla_focus_nightly.metrics` AS m
 WHERE

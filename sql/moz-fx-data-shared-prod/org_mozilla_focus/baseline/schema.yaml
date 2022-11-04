@@ -226,6 +226,20 @@ fields:
       mode: NULLABLE
       name: glean_validation_metrics_ping_count
       type: INTEGER
+    - description: 'Records count of URIs visited by the user in the current session,
+
+        including page reloads.
+
+        It does not include background page requests and URIs from embedded pages
+
+        but may be incremented without user interaction by website scripts
+
+        that programmatically redirect to a new location.
+
+        '
+      mode: NULLABLE
+      name: browser_total_uri_count
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -326,6 +340,59 @@ fields:
       mode: REPEATED
       name: glean_validation_pings_submitted
       type: RECORD
+    - description: 'Records clicks of adverts on SERP pages.
+
+        The key format is `<provider-name>`.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: browser_search_ad_clicks
+      type: RECORD
+    - description: 'Records the type of interaction a user has on SERP pages.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: browser_search_in_content
+      type: RECORD
+    - description: 'The labels for this counter are `<search-engine-name>.<source>`.
+
+
+        If the search engine is bundled with Focus `search-engine-name` will be
+
+        the name of the search engine. If it''s a custom search engine (defined:
+
+        https://github.com/mozilla-mobile/fenix/issues/1607) the value will be
+
+        `custom`.
+
+
+        `source` will be: `action`, `suggestion`
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: browser_search_search_count
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD
@@ -365,6 +432,12 @@ fields:
         '
       mode: NULLABLE
       name: glean_baseline_locale
+      type: STRING
+    - description: 'A string containing the default search engine name.
+
+        '
+      mode: NULLABLE
+      name: browser_default_search_engine
       type: STRING
     mode: NULLABLE
     name: string

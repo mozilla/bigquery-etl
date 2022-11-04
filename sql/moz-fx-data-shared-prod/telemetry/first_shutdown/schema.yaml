@@ -5310,8 +5310,7 @@ fields:
       mode: NULLABLE
       name: memory_storage_sqlite
       type: STRING
-    - description: Total Memory Across All Processes (KB) (inaccurate WRT shared memory.
-        See MemoryTelemetry.cpp)
+    - description: Total Memory Across All Processes (KB)
       mode: NULLABLE
       name: memory_total
       type: STRING
@@ -31955,8 +31954,7 @@ fields:
           mode: NULLABLE
           name: low_memory_events_virtual
           type: STRING
-        - description: Total Memory Across All Processes (KB) (inaccurate WRT shared
-            memory. See MemoryTelemetry.cpp)
+        - description: Total Memory Across All Processes (KB)
           mode: NULLABLE
           name: memory_total
           type: STRING

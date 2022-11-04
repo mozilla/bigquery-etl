@@ -233,6 +233,30 @@ fields:
       mode: NULLABLE
       name: glean_baseline_locale
       type: STRING
+    - description: 'If the search engine is pre-loaded with Fenix this value
+
+        will be the search engine identifier. If it''s a custom search engine
+
+        (defined: https://github.com/mozilla-mobile/fenix/issues/1607) the
+
+        value will be "custom"
+
+        '
+      mode: NULLABLE
+      name: search_default_engine_code
+      type: STRING
+    - description: 'If the search engine is pre-loaded with Fenix this value
+
+        will be the search engine name. If it''s a custom search engine
+
+        (defined: https://github.com/mozilla-mobile/fenix/issues/1607) the
+
+        value will be "custom"
+
+        '
+      mode: NULLABLE
+      name: search_default_engine_name
+      type: STRING
     mode: NULLABLE
     name: string
     type: RECORD

@@ -20,6 +20,7 @@ TEST_PROJECT = "bigquery-etl-integration-test"
 MOZDATA = "mozdata"
 PIONEER_NONPROD = "moz-fx-data-pioneer-nonprod"
 PIONEER_PROD = "moz-fx-data-pioneer-prod"
+MOZ_FX_DATA_BACKFILL = "moz-fx-data-backfill"
 
 
 def is_valid_dir(ctx, param, value):
@@ -47,12 +48,18 @@ def is_authenticated():
 
 def is_valid_project(ctx, param, value):
     """Check if the provided project_id corresponds to an existing project."""
-    if value is None or value in [Path(p).name for p in project_dirs()] + [
-        TEST_PROJECT,
-        MOZDATA,
-        PIONEER_NONPROD,
-        PIONEER_PROD,
-    ]:
+    if (
+        value is None
+        or value
+        in [Path(p).name for p in project_dirs()]
+        + [
+            TEST_PROJECT,
+            MOZDATA,
+            PIONEER_NONPROD,
+            PIONEER_PROD,
+        ]
+        or value.startswith(MOZ_FX_DATA_BACKFILL)
+    ):
         return value
     raise click.BadParameter(f"Invalid project {value}")
 

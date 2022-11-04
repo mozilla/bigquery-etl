@@ -1519,14 +1519,24 @@ def deploy(
             table = bigquery.Table(full_table_id)
 
         table.schema = bigquery_schema
+        _attach_metadata(query_file_path, table)
 
         if not table.created:
-            _attach_metadata(query_file_path, table)
             client.create_table(table)
             click.echo(f"Destination table {full_table_id} created.")
         else:
-            client.update_table(table, ["schema"])
-            click.echo(f"Schema updated for {full_table_id}.")
+            client.update_table(
+                table,
+                [
+                    "schema",
+                    "friendly_name",
+                    "description",
+                    "time_partitioning",
+                    "clustering_fields",
+                    "labels",
+                ],
+            )
+            click.echo(f"Schema (and metadata) updated for {full_table_id}.")
 
 
 def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:

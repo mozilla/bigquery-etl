@@ -555,7 +555,9 @@ def _backfill_query(
     help="Dates excluded from backfill. Date format: yyyy-mm-dd",
     default=[],
 )
-@click.option("--dry_run/--no_dry_run", help="Dry run the backfill")
+@click.option(
+    "--dry_run/--no_dry_run", "--dry-run/--no-dry-run", help="Dry run the backfill"
+)
 @click.option(
     "--max_rows",
     "-n",
@@ -867,6 +869,7 @@ def _run_query(
 )
 @click.option(
     "--dry_run",
+    "--dry-run",
     is_flag=True,
     default=False,
     help="Print bytes that would be processed for each part and don't run queries",
@@ -1080,6 +1083,7 @@ def validate(
 @project_id_option()
 @click.option(
     "--dry_run/--no_dry_run",
+    "--dry-run/--no-dry-run",
     help="Dry run the initialization",
 )
 def initialize(name, sql_dir, project_id, dry_run):

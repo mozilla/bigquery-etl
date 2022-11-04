@@ -4,7 +4,6 @@ Accepts a glean ping_info struct as input and returns a modified struct that
 includes a few parsed or normalized variants of the input fields.
 
 */
-
 CREATE OR REPLACE FUNCTION norm.glean_ping_info(ping_info ANY TYPE) AS (
   (
     SELECT AS STRUCT

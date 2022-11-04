@@ -115,7 +115,7 @@ WITH unioned_source AS (
 ),
 unioned AS (
   SELECT
-    * REPLACE(
+    * REPLACE (
       -- Per bug 1757216 we need to exclude BrowserStack clients from KPIs,
       -- so we mark them with a separate app name here. We expect BrowserStack
       -- clients only on release channel of Fenix, so the only variant this is

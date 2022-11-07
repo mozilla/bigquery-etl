@@ -11,7 +11,7 @@ WITH combined AS (
     if(position < 1, NULL, position) as position,
     IF(request_id IS NULL, 'remote settings', 'merino') AS provider,
     match_type,
-    coalesce(
+    COALESCE(
       -- The first check is for Fx 103+, the last two checks are for Fx 102 and prior.
       improve_suggest_experience_checked
       OR request_id IS NOT NULL

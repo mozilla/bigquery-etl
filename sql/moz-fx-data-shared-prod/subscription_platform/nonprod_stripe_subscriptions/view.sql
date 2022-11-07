@@ -14,7 +14,9 @@ WITH subscriptions AS (
     -- current_period_end,
     -- current_period_start,
     canceled_at,
-    JSON_VALUE(metadata, "$.cancelled_for_customer_at") AS canceled_for_customer_at,
+    TIMESTAMP_SECONDS(
+      CAST(JSON_VALUE(metadata, "$.cancelled_for_customer_at") AS INT64)
+    ) AS canceled_for_customer_at,
     cancel_at,
     cancel_at_period_end,
     ended_at,

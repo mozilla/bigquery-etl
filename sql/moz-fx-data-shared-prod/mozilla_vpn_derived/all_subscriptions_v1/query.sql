@@ -114,7 +114,7 @@ apple_iap_subscriptions AS (
     apple_receipt.trial_period.start_time AS trial_start,
     apple_receipt.trial_period.end_time AS trial_end,
     CAST(NULL AS TIMESTAMP) AS canceled_at,
-    CAST(NULL AS STRING) AS canceled_for_customer_at,
+    CAST(NULL AS TIMESTAMP) AS canceled_for_customer_at,
     CAST(NULL AS TIMESTAMP) AS cancel_at,
     CAST(NULL AS BOOL) AS cancel_at_period_end,
     IF(
@@ -230,7 +230,7 @@ android_iap_periods AS (
     end_time,
     DIV(price_amount_micros, 10000) AS plan_amount,
     LOWER(price_currency_code) AS plan_currency,
-    STRING(user_cancellation_time) AS canceled_for_customer_at,
+    user_cancellation_time AS canceled_for_customer_at,
     package_name AS product_id,
     sku AS plan_id,
     LOWER(country_code) AS country,

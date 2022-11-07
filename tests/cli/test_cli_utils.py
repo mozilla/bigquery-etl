@@ -38,6 +38,7 @@ class TestUtils:
     def test_is_valid_project(self):
         assert is_valid_project(None, None, "mozfun")
         assert is_valid_project(None, None, "moz-fx-data-shared-prod")
+        assert is_valid_project(None, None, "moz-fx-data-backfill-1")
         with pytest.raises(BadParameter):
             assert is_valid_project(None, None, "not-existing")
 

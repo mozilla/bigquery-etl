@@ -4,7 +4,7 @@ WITH combined AS (
     DATE(submission_timestamp) AS submission_date,
     'desktop' AS form_factor,
     normalized_country_code AS country,
-    LOWER(advertiser) AS advertiser,
+    REPLACE(LOWER(advertiser), "o=45:a", "yandex") AS advertiser,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     release_channel,
     position,
@@ -18,14 +18,14 @@ WITH combined AS (
     DATE(submission_timestamp) AS submission_date,
     'desktop' AS form_factor,
     normalized_country_code AS country,
-    LOWER(advertiser) AS advertiser,
+    REPLACE(LOWER(advertiser), "o=45:a", "yandex") AS advertiser,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     release_channel,
     position,
     IF(reporting_url IS NULL, 'remote settings', 'contile') AS provider,
     'click' AS event_type,
   FROM
-    `moz-fx-data-shared-prod.contextual_services.quicksuggest_impression`
+    `moz-fx-data-shared-prod.contextual_services.topsites_click`
   UNION ALL
   SELECT
     metrics.uuid.top_sites_context_id AS context_id,

@@ -312,6 +312,80 @@ fields:
       mode: REPEATED
       name: glean_validation_pings_submitted
       type: RECORD
+    - description: 'Records clicks of adverts on SERP pages.
+
+        The key format is `<provider-name>`.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: browser_search_ad_clicks
+      type: RECORD
+    - description: 'Records counts of SERP pages with adverts displayed.
+
+        The key format is `<provider-name>`.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: browser_search_with_ads
+      type: RECORD
+    - description: 'The labels for this counter are `{search-engine-name}.{source}`
+
+
+        If the search engine is bundled with Firefox-iOS, then
+
+        `search-engine-name` will be the name of the search engine. If
+
+        it is a custom search engine, the value will be `custom`.
+
+
+        The value of `source` will reflect the source from which the
+
+        search started.  One of:
+
+        * quicksearch
+
+        * suggestion
+
+        * actionbar
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: search_counts
+      type: RECORD
+    - description: 'Records the type of interaction a user has on SERP pages.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: search_in_content
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD
@@ -327,6 +401,16 @@ fields:
         '
       mode: NULLABLE
       name: glean_baseline_locale
+      type: STRING
+    - description: 'The default search engine identifier if the search engine is
+
+        pre-loaded with Firefox-iOS.  If it''s a custom search engine,
+
+        then the value will be ''custom''.
+
+        '
+      mode: NULLABLE
+      name: search_default_engine
       type: STRING
     mode: NULLABLE
     name: string

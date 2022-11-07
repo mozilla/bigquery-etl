@@ -1600,8 +1600,11 @@ fields:
       mode: REPEATED
       name: inactive_tabs_tray_toggle_inactive_tab_tray
       type: RECORD
-    - description: "Records clicks of adverts on SERP pages.\nThe key format is \u2018\
-        <provider-name>\u2019.\n"
+    - description: 'Records clicks of adverts on SERP pages.
+
+        The key format is `<provider-name>`.
+
+        '
       fields:
       - mode: NULLABLE
         name: key
@@ -1612,8 +1615,11 @@ fields:
       mode: REPEATED
       name: browser_search_ad_clicks
       type: RECORD
-    - description: "Records counts of SERP pages with adverts displayed.\nThe key\
-        \ format is \u2018<provider-name>\u2019.\n"
+    - description: 'Records counts of SERP pages with adverts displayed.
+
+        The key format is `<provider-name>`.
+
+        '
       fields:
       - mode: NULLABLE
         name: key

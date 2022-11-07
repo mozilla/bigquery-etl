@@ -200,6 +200,7 @@ def range_check(
     latest_finished_at = max(validation_data["finished_at"])
 
     test_earliest_date = today - timedelta(days=test_window)
+
     comparison_earliest_date = test_earliest_date - timedelta(days=full_lookback_window)
 
     comparison_values = validation_data["finished_at"].apply(
@@ -327,33 +328,95 @@ def mean_check(
 def record_validation_results(val_df, destination_table):
     InputSet = namedtuple(
         "InputSet",
-        "name full_lookback_window test_window range_lower_bound range_upper_bound mean_lower_bound mean_upper_bound moving_average_window",
+        "name full_lookback_window range_test_window range_lower_bound range_upper_bound mean_test_window mean_lower_bound mean_upper_bound moving_average_window",
     )
     client = bigquery.Client()
     started_at = datetime.utcnow()
 
     for metric in [
-        InputSet("pct_sanitized_search_terms", 30, 7, 0.025, 0.975, 0.025, 0.975, 3),
-        InputSet("pct_sanitized_contained_at", 30, 7, 0.025, 0.975, 0.025, 0.975, 3),
         InputSet(
-            "pct_sanitized_contained_numbers", 30, 7, 0.025, 0.975, 0.025, 0.975, 3
-        ),
-        InputSet("pct_sanitized_contained_name", 30, 7, 0.025, 0.975, 0.025, 0.975, 3),
+            name="pct_sanitized_search_terms",
+            full_lookback_window=30,
+            range_test_window=7,
+            range_lower_bound=0.025,
+            range_upper_bound=0.975,
+            mean_test_window=7,
+            mean_lower_bound=0.025,
+            mean_upper_bound=0.975,
+            moving_average_window=3),
         InputSet(
-            "pct_terms_containing_us_census_surname",
-            30,
-            7,
-            0.025,
-            0.975,
-            0.025,
-            0.975,
-            3,
+            name="pct_sanitized_contained_at",
+            full_lookback_window=30,
+            range_test_window=7,
+            range_lower_bound=0.025,
+            range_upper_bound=0.975,
+            mean_test_window=7,
+            mean_lower_bound=0.025,
+            mean_upper_bound=0.975,
+            moving_average_window=3),
+        InputSet(
+            name="pct_sanitized_contained_numbers",
+            full_lookback_window=30,
+            range_test_window=7,
+            range_lower_bound=0.025,
+            range_upper_bound=0.975,
+            mean_test_window=7,
+            mean_lower_bound=0.025,
+            mean_upper_bound=0.975,
+            moving_average_window=3
         ),
         InputSet(
-            "pct_uppercase_chars_all_search_terms", 30, 7, 0.025, 0.975, 0.025, 0.975, 3
+            name="pct_sanitized_contained_name",
+            full_lookback_window=30,
+            range_test_window=7,
+            range_lower_bound=0.025,
+            range_upper_bound=0.975,
+            mean_test_window=7,
+            mean_lower_bound=0.025,
+            mean_upper_bound=0.975,
+            moving_average_window=3),
+        InputSet(
+            name="pct_terms_containing_us_census_surname",
+            full_lookback_window=30,
+            range_test_window=7,
+            range_lower_bound=0.025,
+            range_upper_bound=0.975,
+            mean_test_window=7,
+            mean_lower_bound=0.025,
+            mean_upper_bound=0.975,
+            moving_average_window=3,
         ),
-        InputSet("avg_words_all_search_terms", 30, 7, 0.025, 0.975, 0.025, 0.975, 3),
-        InputSet("pct_terms_non_english", 30, 7, 0.025, 0.975, 0.025, 0.975, 3),
+        InputSet(
+            name="pct_uppercase_chars_all_search_terms",
+            full_lookback_window=30,
+            range_test_window=7,
+            range_lower_bound=0.025,
+            range_upper_bound=0.975,
+            mean_test_window=7,
+            mean_lower_bound=0.025,
+            mean_upper_bound=0.975,
+            moving_average_window=3
+        ),
+        InputSet(
+            name="avg_words_all_search_terms",
+            full_lookback_window=30,
+            range_test_window=7,
+            range_lower_bound=0.025,
+            range_upper_bound=0.975,
+            mean_test_window=7,
+            mean_lower_bound=0.025,
+            mean_upper_bound=0.975,
+            moving_average_window=3),
+        InputSet(
+            name="pct_terms_non_english",
+            full_lookback_window=30,
+            range_test_window=7,
+            range_lower_bound=0.025,
+            range_upper_bound=0.975,
+            mean_test_window=7,
+            mean_lower_bound=0.025,
+            mean_upper_bound=0.975,
+            moving_average_window=3),
     ]:
         (
             finished_at,
@@ -366,7 +429,7 @@ def record_validation_results(val_df, destination_table):
             val_df,
             metric.name,
             metric.full_lookback_window,
-            metric.test_window,
+            metric.range_test_window,
             metric.range_lower_bound,
             metric.range_upper_bound,
         )
@@ -382,7 +445,7 @@ def record_validation_results(val_df, destination_table):
             val_df,
             metric.name,
             metric.full_lookback_window,
-            metric.test_window,
+            metric.mean_test_window,
             metric.moving_average_window,
             metric.mean_lower_bound,
             metric.mean_upper_bound,
@@ -406,7 +469,8 @@ def record_validation_results(val_df, destination_table):
                 "mean_test_vals": str(mean_test_vals),
                 "metric": metric.name,
                 "full_lookback_window_num_days": metric.full_lookback_window,
-                "test_window_num_days": metric.test_window,
+                "range_test_window_num_days": metric.range_test_window,
+                "mean_test_window_num_days": metric.mean_test_window,
                 "moving_average_window_num_days": metric.moving_average_window,
                 "range_percentile_lower_bound": metric.range_lower_bound,
                 "range_percentile_upper_bound": metric.range_upper_bound,

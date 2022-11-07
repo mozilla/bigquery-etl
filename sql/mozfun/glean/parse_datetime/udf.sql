@@ -11,9 +11,18 @@ RETURNS TIMESTAMP AS (
 
 -- Tests
 SELECT
-  assert.equals(TIMESTAMP '2000-01-02 03:04:05.123456', glean.parse_datetime('2000-01-02T03:04:05.123456789+00:00')),
-  assert.equals(TIMESTAMP '2000-01-02 03:04:05.123456', glean.parse_datetime('2000-01-02T03:04:05.123456+00:00')),
-  assert.equals(TIMESTAMP '2000-01-02 03:04:05.123', glean.parse_datetime('2000-01-02T03:04:05.123+00:00')),
+  assert.equals(
+    TIMESTAMP '2000-01-02 03:04:05.123456',
+    glean.parse_datetime('2000-01-02T03:04:05.123456789+00:00')
+  ),
+  assert.equals(
+    TIMESTAMP '2000-01-02 03:04:05.123456',
+    glean.parse_datetime('2000-01-02T03:04:05.123456+00:00')
+  ),
+  assert.equals(
+    TIMESTAMP '2000-01-02 03:04:05.123',
+    glean.parse_datetime('2000-01-02T03:04:05.123+00:00')
+  ),
   assert.equals(TIMESTAMP '2000-01-02 03:04:05', glean.parse_datetime('2000-01-02T03:04:05+00:00')),
   assert.equals(TIMESTAMP '2000-01-02 03:04:00', glean.parse_datetime('2000-01-02T03:04+00:00')),
   assert.equals(TIMESTAMP '2000-01-02 03:00:00', glean.parse_datetime('2000-01-02T03+00:00')),

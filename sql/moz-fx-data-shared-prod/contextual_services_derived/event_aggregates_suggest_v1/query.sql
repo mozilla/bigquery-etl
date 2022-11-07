@@ -7,8 +7,8 @@ WITH combined AS (
     LOWER(advertiser) AS advertiser,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     release_channel,
-    -- 1-based position
-    (position + 1) AS position,
+    -- 1-based position. position < 1 means position is unknown.
+    if(position < 1, NULL, position) as position,
     IF(request_id IS NULL, 'remote settings', 'merino') AS provider,
     match_type,
     coalesce(
@@ -30,8 +30,8 @@ WITH combined AS (
     LOWER(advertiser) AS advertiser,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     release_channel,
-    -- 1-based position
-    position,
+    -- 1-based position. position < 1 means position is unknown.
+    if(position < 1, NULL, position) as position,
     IF(request_id IS NULL, 'remote settings', 'merino') AS provider,
     match_type,
     coalesce(

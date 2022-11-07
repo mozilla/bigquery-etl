@@ -31,7 +31,7 @@ WITH combined AS (
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     release_channel,
     -- 1-based position
-    (position + 1) AS position,
+    position,
     IF(request_id IS NULL, 'remote settings', 'merino') AS provider,
     match_type,
     coalesce(

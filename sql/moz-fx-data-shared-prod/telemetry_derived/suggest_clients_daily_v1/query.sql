@@ -132,7 +132,6 @@ clients AS (
     locale,
     normalized_channel,
     normalized_os_version,
-    profile_age_in_days,
     sample_id,
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_daily`

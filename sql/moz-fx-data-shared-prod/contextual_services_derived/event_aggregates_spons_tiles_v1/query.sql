@@ -4,7 +4,7 @@ WITH combined AS (
     DATE(submission_timestamp) AS submission_date,
     'desktop' AS form_factor,
     normalized_country_code AS country,
-    lower(REPLACE(lower(advertiser), "o=45:a", "yandex")) AS advertiser,
+    REPLACE(LOWER(advertiser), "o=45:a", "yandex") AS advertiser,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     release_channel,
     position,

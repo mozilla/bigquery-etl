@@ -118,15 +118,15 @@ clients AS (
   SELECT
     submission_date,
     client_id,
-    COALESCE(CAST(
-      user_pref_browser_urlbar_quicksuggest_data_collection_enabled = "true" AS bool
-    ), FALSE) AS user_pref_data_collection_enabled,
-    COALESCE(CAST(
-      user_pref_browser_urlbar_susggest_quicksuggest_sponsored = "true" AS bool
-    ), FALSE) AS user_pref_sponsored_suggestions_enabled,
-   COALESCE( CAST(
-      user_pref_browser_urlbar_suggest_quicksuggest_nonsponsored = "true" AS bool
-   ), FALSE) AS user_pref_firefox_suggest_enabled,
+    COALESCE(
+      user_pref_browser_urlbar_quicksuggest_data_collection_enabled = "true"
+    , FALSE) AS user_pref_data_collection_enabled,
+    COALESCE(
+      user_pref_browser_urlbar_susggest_quicksuggest_sponsored = "true"
+    , FALSE) AS user_pref_sponsored_suggestions_enabled,
+    COALESCE(
+      user_pref_browser_urlbar_suggest_quicksuggest_nonsponsored = "true"
+    , FALSE) AS user_pref_firefox_suggest_enabled,
     browser_version_info,
     experiments,
     locale,

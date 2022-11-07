@@ -25,7 +25,7 @@ WITH combined AS (
     IF(reporting_url IS NULL, 'remote settings', 'contile') AS provider,
     'click' AS event_type,
   FROM
-    `moz-fx-data-shared-prod.contextual_services.quicksuggest_impression`
+    `moz-fx-data-shared-prod.contextual_services.topsites_click`
   UNION ALL
   SELECT
     metrics.uuid.top_sites_context_id AS context_id,

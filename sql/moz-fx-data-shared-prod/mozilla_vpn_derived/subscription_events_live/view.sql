@@ -111,7 +111,7 @@ SELECT
   THEN
     COALESCE(
       all_subscriptions.ended_reason,
-      IF(provider = "Apple Store", "Cancelled by IAP", "Payment Failed")
+      IF(all_subscriptions.provider = "Apple Store", "Cancelled by IAP", "Payment Failed")
     )
   END
   AS granular_event_type,

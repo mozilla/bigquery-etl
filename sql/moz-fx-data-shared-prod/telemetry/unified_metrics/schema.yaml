@@ -110,6 +110,9 @@ fields:
 - mode: NULLABLE
   name: days_created_profile_bits
   type: INTEGER
+- mode: NULLABLE
+  name: isp
+  type: STRING
 - fields:
   - mode: NULLABLE
     name: version

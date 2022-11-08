@@ -122,7 +122,8 @@ stripe_subscriptions AS (
   USING
     (fxa_uid)
   WHERE
-    product_name = "Mozilla VPN"
+    "guardian_vpn_1" IN UNNEST(stripe_subscriptions_history.product_capabilities)
+    OR "guardian_vpn_1" IN UNNEST(stripe_subscriptions_history.plan_capabilities)
 ),
 apple_iap_subscriptions AS (
   SELECT

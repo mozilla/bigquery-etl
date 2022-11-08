@@ -28,5 +28,17 @@
     "description": "The UNSD intermediate region name.",
     "type": "STRING",
     "mode": "REQUIRED"
+  },
+  {
+    "name": "pocket_available_on_newtab",
+    "description": "Whether Pocket is available on the newtab page in this country. Note that Pocket might only be available in certain locales/languages within a country.",
+    "type": "BOOL",
+    "mode": "REQUIRED"
+  },
+    {
+    "name": "mozilla_vpn_available",
+    "description": "Whether Mozilla VPN is available in this country.",
+    "type": "BOOL",
+    "mode": "REQUIRED"
   }
 ]

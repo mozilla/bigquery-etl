@@ -1,5 +1,4 @@
-[![CircleCI](https://circleci.com/gh/mozilla/bigquery-etl.svg?style=shield&circle-token=742fb1108f7e6e5a28c11d43b21f62605037f5a4)](https://circleci.com/gh/mozilla/bigquery-etl)
-
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/mozilla/bigquery-etl/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/mozilla/bigquery-etl/tree/main)
 # BigQuery ETL
 
 This repository contains Mozilla Data Team's:

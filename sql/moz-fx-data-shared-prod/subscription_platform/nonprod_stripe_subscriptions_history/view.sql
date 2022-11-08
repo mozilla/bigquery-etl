@@ -46,7 +46,7 @@ subscriptions_history_with_lead_plan_metadata AS (
 subscriptions_history_with_plan_ends AS (
   SELECT
     *,
-    -- A new `previous_plan_id` value means the previous row was the last row with that plan.
+    -- If the next row has a different `previous_plan_id` then this was the last row with that plan.
     IF(
       lead_previous_plan_id IS DISTINCT FROM previous_plan_id,
       STRUCT(lead_previous_plan_id AS plan_id, lead_plan_change_date AS plan_ended_at),

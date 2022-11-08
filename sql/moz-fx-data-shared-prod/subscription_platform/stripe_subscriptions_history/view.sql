@@ -109,10 +109,45 @@ subscriptions_history_with_plan_ids AS (
   USING
     (subscription_id)
 ),
+product_capabilities AS (
+  SELECT
+    products.id AS product_id,
+    ARRAY_AGG(DISTINCT TRIM(capability) IGNORE NULLS) AS capabilities
+  FROM
+    `moz-fx-data-bq-fivetran`.stripe.product AS products
+  JOIN
+    UNNEST(mozfun.json.js_extract_string_map(metadata)) AS metadata_items
+  ON
+    metadata_items.key LIKE 'capabilities%'
+  JOIN
+    UNNEST(SPLIT(metadata_items.value, ",")) AS capability
+  WHERE
+    TRIM(capability) != products.id
+  GROUP BY
+    product_id
+),
+plan_capabilities AS (
+  SELECT
+    plans.id AS plan_id,
+    ARRAY_AGG(DISTINCT TRIM(capability) IGNORE NULLS) AS capabilities
+  FROM
+    `moz-fx-data-bq-fivetran`.stripe.plan AS plans
+  JOIN
+    UNNEST(mozfun.json.js_extract_string_map(metadata)) AS metadata_items
+  ON
+    metadata_items.key LIKE 'capabilities%'
+  JOIN
+    UNNEST(SPLIT(metadata_items.value, ",")) AS capability
+  WHERE
+    TRIM(capability) != plans.product_id
+  GROUP BY
+    plan_id
+),
 plans AS (
   SELECT
     plans.id AS plan_id,
     plans.nickname AS plan_name,
+    plan_capabilities.capabilities AS plan_capabilities,
     plans.amount AS plan_amount,
     plans.billing_scheme AS billing_scheme,
     plans.currency AS plan_currency,
@@ -120,12 +155,21 @@ plans AS (
     plans.interval_count AS plan_interval_count,
     plans.product_id,
     products.name AS product_name,
+    product_capabilities.capabilities AS product_capabilities,
   FROM
     `moz-fx-data-bq-fivetran`.stripe.plan AS plans
   LEFT JOIN
     `moz-fx-data-bq-fivetran`.stripe.product AS products
   ON
     plans.product_id = products.id
+  LEFT JOIN
+    plan_capabilities
+  ON
+    plans.id = plan_capabilities.plan_id
+  LEFT JOIN
+    product_capabilities
+  USING
+    (product_id)
 ),
 customers AS (
   SELECT
@@ -268,10 +312,12 @@ SELECT
   subscriptions_history.status,
   plans.product_id,
   plans.product_name,
+  plans.product_capabilities,
   subscriptions_history.plan_id,
   subscriptions_history.plan_started_at,
   subscriptions_history.plan_ended_at,
   plans.plan_name,
+  plans.plan_capabilities,
   plans.plan_amount,
   plans.billing_scheme,
   plans.plan_currency,

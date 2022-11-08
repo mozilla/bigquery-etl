@@ -1563,6 +1563,9 @@ fields:
 - mode: NULLABLE
   name: user_pref_browser_newtabpage_enabled
   type: STRING
+- mode: NULLABLE
+  name: user_pref_app_shield_optoutstudies_enabled
+  type: STRING
 - fields:
   - mode: NULLABLE
     name: key

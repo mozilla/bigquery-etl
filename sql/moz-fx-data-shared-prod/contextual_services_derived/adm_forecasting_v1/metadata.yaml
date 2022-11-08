@@ -1,0 +1,16 @@
+friendly_name: AdM Forecasting
+description: |-
+  Data for AdM forecasts: Sponsored Tiles and Suggest.
+owners:
+- skahmann@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_ctxsvc_derived
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: true
+    expiration_days: null

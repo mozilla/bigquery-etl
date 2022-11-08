@@ -1,0 +1,5 @@
+friendly_name: AdM Forecasting
+description: |-
+  Data for AdM forecasts: Sponsored Tiles and Suggest.
+owners:
+  - skahmann@mozilla.com

@@ -269,7 +269,8 @@ class Task:
             self.version = query_file_re.group(4)
 
             if self.task_name is None:
-                self.task_name = f"{self.dataset}__{self.table}__{self.version}"
+                # limiting task name to allow longer dataset names
+                self.task_name = f"{self.dataset}__{self.table}__{self.version}"[-62:]
                 self.validate_task_name(None, self.task_name)
 
             if self.destination_table == DEFAULT_DESTINATION_TABLE_STR:

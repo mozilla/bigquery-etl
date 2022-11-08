@@ -1,0 +1,12 @@
+friendly_name: Contextual Services Event Aggregates for Suggest
+description: |-
+  Aggregated event counts for suggest
+owners:
+- rburwei@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_ctxsvc_derived
+bigquery: null
+references: {}

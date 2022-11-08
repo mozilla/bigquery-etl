@@ -11,3 +11,6 @@ LEFT JOIN
   `moz-fx-data-bq-fivetran.airflow_metadata_airflow_db.ab_user_role` AS user_role
 ON
   user.id = user_role.user_id
+WHERE
+  NOT user._fivetran_deleted
+  AND NOT user_role._fivetran_deleted

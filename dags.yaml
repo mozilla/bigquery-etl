@@ -819,3 +819,41 @@ bqetl_desktop_mobile_search_monthly:
   tags:
     - impact/tier_1
     - repo/bigquery-etl
+
+bqetl_domain_meta:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - wstuckey@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: wstuckey@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2022-10-13'
+  description: Domain metadata
+  schedule_interval: monthly
+  tags:
+    - impact/tier_2
+    - repo/bigquery-etl
+
+bqetl_sponsored_tiles_clients_daily:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - skahmann@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: skahmann@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2022-09-13'
+  description: daily run of sponsored tiles related fields
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl

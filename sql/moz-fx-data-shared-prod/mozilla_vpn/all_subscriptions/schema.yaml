@@ -146,3 +146,12 @@ fields:
 - mode: NULLABLE
   name: current_months_since_subscription_start
   type: INTEGER
+- mode: NULLABLE
+  name: original_subscription_id
+  type: STRING
+- mode: NULLABLE
+  name: subscription_start_reason
+  type: STRING
+- mode: NULLABLE
+  name: ended_reason
+  type: STRING

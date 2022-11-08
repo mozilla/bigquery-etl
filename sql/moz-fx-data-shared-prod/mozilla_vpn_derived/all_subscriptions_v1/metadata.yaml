@@ -22,4 +22,4 @@ references:
   - mozdata.mozilla_vpn.subscriptions
   - mozdata.mozilla_vpn.users
   - mozdata.static.third_party_standardized_country_names
-  - mozdata.subscription_platform.stripe_subscriptions
+  - mozdata.subscription_platform.stripe_subscriptions_history

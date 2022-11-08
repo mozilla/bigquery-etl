@@ -121,6 +121,8 @@ product_capabilities AS (
     metadata_items.key LIKE 'capabilities%'
   JOIN
     UNNEST(SPLIT(metadata_items.value, ",")) AS capability
+  WHERE
+    TRIM(capability) != products.id
   GROUP BY
     product_id
 ),
@@ -136,6 +138,8 @@ plan_capabilities AS (
     metadata_items.key LIKE 'capabilities%'
   JOIN
     UNNEST(SPLIT(metadata_items.value, ",")) AS capability
+  WHERE
+    TRIM(capability) != plans.product_id
   GROUP BY
     plan_id
 ),

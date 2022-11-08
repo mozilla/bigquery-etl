@@ -31,7 +31,7 @@
   },
   {
     "name": "pocket_available_on_newtab",
-    "description": "Whether Pocket is available on the newtab page in this country. Note that pocket might only be available in certain locales/languages within a country.zc",
+    "description": "Whether Pocket is available on the newtab page in this country. Note that Pocket might only be available in certain locales/languages within a country.",
     "type": "BOOL",
     "mode": "REQUIRED"
   },

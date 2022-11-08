@@ -112,15 +112,29 @@ ios_events AS (
 ),
 ios_clients AS (
   SELECT
-    date(submission_timestamp) AS submission_date,
-    client_info.client_id,
-    `mozfun.norm.browser_version_info`(client_info.app_display_version) AS browser_version_info,
-    mozfun.glean.legacy_compatible_experiments(ping_info.experiments) AS experiments,
-    normalized_country_code AS country,
-    client_info.locale,
-    normalized_channel,
-    normalized_os_version,
-    sample_id
+    ARRAY_AGG(DATE(submission_timestamp) ORDER BY submission_timestamp DESC)[
+      OFFSET(0)
+    ] AS submission_date,
+    client_info.client_id AS client_id,
+    ARRAY_AGG(client_info.app_display_version ORDER BY submission_timestamp DESC)[
+      OFFSET(0)
+    ] AS browser_version_info,
+    mozfun.map.mode_last(
+      ARRAY_CONCAT_AGG(
+        mozfun.glean.legacy_compatible_experiments(ping_info.experiments)
+        ORDER BY
+          submission_timestamp
+      )
+    ) AS experiments,
+    ARRAY_AGG(normalized_country_code ORDER BY submission_timestamp DESC)[OFFSET(0)] AS country,
+    ARRAY_AGG(client_info.locale ORDER BY submission_timestamp DESC)[OFFSET(0)] AS locale,
+    ARRAY_AGG(normalized_channel ORDER BY submission_timestamp DESC)[
+      OFFSET(0)
+    ] AS normalized_channel,
+    ARRAY_AGG(normalized_os_version ORDER BY submission_timestamp DESC)[
+      OFFSET(0)
+    ] AS normalized_os_version,
+    ARRAY_AGG(sample_id ORDER BY submission_timestamp DESC)[OFFSET(0)] AS sample_id
   FROM
     `moz-fx-data-shared-prod.firefox_ios.baseline`
   WHERE
@@ -128,6 +142,8 @@ ios_clients AS (
   -- iOS Sponsored Tiles is only available for the following clients:
     AND normalized_country_code IN UNNEST(["US"])
     AND `mozfun.norm.browser_version_info`(client_info.app_display_version).major_version >= 101
+  GROUP BY
+    client_info.client_id
 ),
 android_events AS (
   -- Android clicks and impressions
@@ -159,26 +175,45 @@ android_events AS (
 android_metrics AS (
   SELECT
     client_info.client_id,
-    DATE(submission_timestamp) AS submission_date,
-    metrics.boolean.customize_home_contile AS sponsored_tiles_enabled_at_startup,
+    ARRAY_AGG(DATE(submission_timestamp) ORDER BY submission_timestamp DESC)[
+      OFFSET(0)
+    ] AS submission_date,
+    ARRAY_AGG(metrics.boolean.customize_home_contile ORDER BY submission_timestamp DESC)[
+      OFFSET(0)
+    ] AS sponsored_tiles_enabled_at_startup
   FROM
     `mozdata.fenix.metrics`
   WHERE
     metrics.boolean.customize_home_contile IS NOT NULL
     AND DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    client_info.client_id
 ),
 android_clients AS (
   SELECT
-    date(submission_timestamp) AS submission_date,
-    client_info.client_id,
-    `mozfun.norm.browser_version_info`(client_info.app_display_version) AS browser_version_info,
-    mozfun.glean.legacy_compatible_experiments(ping_info.experiments) AS experiments,
-    normalized_country_code AS country,
-    client_info.locale,
-    normalized_channel,
-    normalized_os_version,
-    -- profile_age_in_days,
-    sample_id
+    ARRAY_AGG(DATE(submission_timestamp) ORDER BY submission_timestamp DESC)[
+      OFFSET(0)
+    ] AS submission_date,
+    client_info.client_id AS client_id,
+    ARRAY_AGG(client_info.app_display_version ORDER BY submission_timestamp DESC)[
+      OFFSET(0)
+    ] AS browser_version_info,
+    mozfun.map.mode_last(
+      ARRAY_CONCAT_AGG(
+        mozfun.glean.legacy_compatible_experiments(ping_info.experiments)
+        ORDER BY
+          submission_timestamp
+      )
+    ) AS experiments,
+    ARRAY_AGG(normalized_country_code ORDER BY submission_timestamp DESC)[OFFSET(0)] AS country,
+    ARRAY_AGG(client_info.locale ORDER BY submission_timestamp DESC)[OFFSET(0)] AS locale,
+    ARRAY_AGG(normalized_channel ORDER BY submission_timestamp DESC)[
+      OFFSET(0)
+    ] AS normalized_channel,
+    ARRAY_AGG(normalized_os_version ORDER BY submission_timestamp DESC)[
+      OFFSET(0)
+    ] AS normalized_os_version,
+    ARRAY_AGG(sample_id ORDER BY submission_timestamp DESC)[OFFSET(0)] AS sample_id
   FROM
     `moz-fx-data-shared-prod.fenix.baseline`
   WHERE
@@ -186,6 +221,8 @@ android_clients AS (
   -- Android Sponsored Tiles is only available for the following clients:
     AND normalized_country_code IN UNNEST(["US"])
     AND `mozfun.norm.browser_version_info`(client_info.app_display_version).major_version >= 100
+  GROUP BY
+    client_info.client_id
 )
 -- merge on measures by client
 -- desktop
@@ -202,8 +239,8 @@ SELECT
   normalized_os_version,
   profile_age_in_days,
   sample_id,
-  sponsored_tiles_click_count,
-  sponsored_tiles_impression_count,
+  COALESCE(sponsored_tiles_click_count, 0) AS sponsored_tiles_click_count,
+  COALESCE(sponsored_tiles_impression_count, 0) AS sponsored_tiles_impression_count,
   sponsored_tiles_dismissal_count,
   sponsored_tiles_disable_count,
   NULL AS sponsored_tiles_enabled_at_startup
@@ -224,7 +261,7 @@ SELECT
   "mobile" AS device,
   "iOS" AS os,
   client_id,
-  browser_version_info,
+  `mozfun.norm.browser_version_info`(browser_version_info) AS browser_version_info,
   experiments,
   country,
   locale,
@@ -262,7 +299,7 @@ SELECT
   "mobile" AS device,
   "Android" AS os,
   client_id,
-  browser_version_info,
+  `mozfun.norm.browser_version_info`(browser_version_info) AS browser_version_info,
   experiments,
   country,
   locale,

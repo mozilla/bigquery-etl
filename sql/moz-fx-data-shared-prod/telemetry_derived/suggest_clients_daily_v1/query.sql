@@ -123,7 +123,7 @@ clients AS (
       FALSE
     ) AS user_pref_data_collection_enabled,
     COALESCE(
-      user_pref_browser_urlbar_susggest_quicksuggest_sponsored = "true",
+      user_pref_browser_urlbar_suggest_quicksuggest_sponsored = "true",
       FALSE
     ) AS user_pref_sponsored_suggestions_enabled,
     COALESCE(

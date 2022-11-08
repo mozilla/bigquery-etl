@@ -9,6 +9,9 @@ fields:
   name: subscription_id
   type: STRING
 - mode: NULLABLE
+  name: original_subscription_id
+  type: STRING
+- mode: NULLABLE
   name: plan_id
   type: STRING
 - mode: NULLABLE
@@ -20,6 +23,9 @@ fields:
 - mode: NULLABLE
   name: subscription_start_date
   type: TIMESTAMP
+- mode: NULLABLE
+  name: subscription_start_reason
+  type: STRING
 - mode: NULLABLE
   name: created
   type: TIMESTAMP
@@ -44,6 +50,9 @@ fields:
 - mode: NULLABLE
   name: ended_at
   type: TIMESTAMP
+- mode: NULLABLE
+  name: ended_reason
+  type: STRING
 - mode: NULLABLE
   name: fxa_uid
   type: STRING
@@ -146,12 +155,3 @@ fields:
 - mode: NULLABLE
   name: current_months_since_subscription_start
   type: INTEGER
-- mode: NULLABLE
-  name: original_subscription_id
-  type: STRING
-- mode: NULLABLE
-  name: subscription_start_reason
-  type: STRING
-- mode: NULLABLE
-  name: ended_reason
-  type: STRING

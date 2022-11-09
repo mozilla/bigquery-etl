@@ -33770,6 +33770,12 @@ and to contain only one row per distinct <code>document_id</code> within a given
 <p><strong>Unified Metrics</strong></p>
 <p><code>telemetry.unified_metrics</code></p>
 <p>Unified view on common browser metrics across all products.</p>
+<p>Note. From Q4/2022 the app name includes the suffix <code>Glean</code>
+to differentiate data collected via Glean from the data
+collected in Legacy Telemetry, until the migration to use only
+Glean is complete.
+For this reason is important to query this table always
+using the view.</p>
 <p>Proposal:
 https://docs.google.com/document/d/1s_9pmDXKjfFpvW31jqnWyaWOE9tmO9_88Jt7inGVGys</p>
 <ul>

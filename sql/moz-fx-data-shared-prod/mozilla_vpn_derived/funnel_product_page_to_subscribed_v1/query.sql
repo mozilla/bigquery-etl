@@ -1,17 +1,22 @@
 WITH stripe_plans AS (
   SELECT
-    id AS plan_id,
-    product_id,
+    plans.id AS plan_id,
+    plans.product_id,
+    products.name AS product_name,
     mozfun.vpn.pricing_plan(
       provider => "Stripe",
-      amount => amount,
-      currency => currency,
-      `interval` => `interval`,
-      interval_count => interval_count
+      amount => plans.amount,
+      currency => plans.currency,
+      `interval` => plans.`interval`,
+      interval_count => plans.interval_count
     ) AS pricing_plan,
-    nickname AS plan_name,
+    plans.nickname AS plan_name,
   FROM
-    `moz-fx-data-bq-fivetran`.stripe.plan
+    `moz-fx-data-bq-fivetran`.stripe.plan AS plans
+  LEFT JOIN
+    `moz-fx-data-bq-fivetran`.stripe.product AS products
+  ON
+    plans.product_id = products.id
 ),
 events AS (
   SELECT
@@ -251,8 +256,9 @@ SELECT
   os_name,
   os_version,
   entrypoint,
-  plan_id,
   product_id,
+  product_name,
+  plan_id,
   pricing_plan,
   plan_name,
   promotion_code,

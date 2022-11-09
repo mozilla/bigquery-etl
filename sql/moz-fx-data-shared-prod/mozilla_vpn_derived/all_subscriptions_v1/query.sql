@@ -26,19 +26,45 @@ users AS (
   FROM
     mozdata.mozilla_vpn.users
 ),
+stripe_subscriptions_history AS (
+  SELECT
+    *,
+    CONCAT(
+      subscription_id,
+      COALESCE(
+        CONCAT(
+          "-",
+          NULLIF(ROW_NUMBER() OVER (PARTITION BY subscription_id ORDER BY valid_from), 1)
+        ),
+        ""
+      )
+    ) AS subscription_sequence_id
+  FROM
+    mozdata.subscription_platform.stripe_subscriptions_history
+  WHERE
+    -- Only include the current history records and the last history records for previous plans.
+    (valid_to IS NULL OR plan_ended_at IS NOT NULL)
+    AND status NOT IN ("incomplete", "incomplete_expired")
+),
 stripe_subscriptions AS (
   SELECT
     user_id,
     customer_id,
-    subscription_id,
+    subscription_sequence_id AS subscription_id,
+    IF(
+      subscription_sequence_id != subscription_id,
+      subscription_id,
+      NULL
+    ) AS original_subscription_id,
     plan_id,
     status,
-    event_timestamp,
+    synced_at AS event_timestamp,
     IF(
       (trial_end > TIMESTAMP(CURRENT_DATE) OR ended_at <= trial_end),
       NULL,
-      subscription_start_date
+      COALESCE(plan_started_at, subscription_start_date)
     ) AS subscription_start_date,
+    IF(plan_started_at IS NOT NULL, "Plan Change", NULL) AS subscription_start_reason,
     created,
     trial_start,
     trial_end,
@@ -46,7 +72,8 @@ stripe_subscriptions AS (
     canceled_for_customer_at,
     cancel_at,
     cancel_at_period_end,
-    IF(ended_at < TIMESTAMP(CURRENT_DATE), ended_at, NULL) AS ended_at,
+    COALESCE(plan_ended_at, IF(ended_at < TIMESTAMP(CURRENT_DATE), ended_at, NULL)) AS ended_at,
+    IF(plan_ended_at IS NOT NULL, "Plan Change", NULL) AS ended_reason,
     fxa_uid,
     country,
     country_name,
@@ -81,7 +108,7 @@ stripe_subscriptions AS (
     promotion_codes,
     promotion_discounts_amount,
   FROM
-    mozdata.subscription_platform.stripe_subscriptions
+    stripe_subscriptions_history
   LEFT JOIN
     standardized_country
   USING
@@ -95,13 +122,15 @@ stripe_subscriptions AS (
   USING
     (fxa_uid)
   WHERE
-    product_name = "Mozilla VPN"
+    "guardian_vpn_1" IN UNNEST(stripe_subscriptions_history.product_capabilities)
+    OR "guardian_vpn_1" IN UNNEST(stripe_subscriptions_history.plan_capabilities)
 ),
 apple_iap_subscriptions AS (
   SELECT
     user_id,
     CAST(user_id AS STRING) AS customer_id,
     CAST(id AS STRING) AS subscription_id,
+    CAST(NULL AS STRING) AS original_subscription_id,
     CAST(NULL AS STRING) AS plan_id,
     CAST(NULL AS STRING) AS status,
     updated_at AS event_timestamp,
@@ -110,6 +139,7 @@ apple_iap_subscriptions AS (
       apple_receipt.trial_period.end_time,
       apple_receipt.active_period.start_time
     ) AS subscription_start_date,
+    CAST(NULL AS STRING) AS subscription_start_reason,
     created_at AS created,
     apple_receipt.trial_period.start_time AS trial_start,
     apple_receipt.trial_period.end_time AS trial_end,
@@ -125,6 +155,7 @@ apple_iap_subscriptions AS (
       COALESCE(apple_receipt.active_period.end_time, apple_receipt.trial_period.end_time),
       NULL
     ) AS ended_at,
+    CAST(NULL AS STRING) AS ended_reason,
     fxa_uid,
     CAST(NULL AS STRING) AS country,
     CAST(NULL AS STRING) AS country_name,
@@ -223,6 +254,7 @@ android_iap_periods AS (
       document_id || "-" || active_dates_offset,
       document_id
     ) AS subscription_id,
+    IF(active_dates_offset > 0, document_id, NULL) AS original_subscription_id,
     fxa_uid,
     created,
     event_timestamp,
@@ -305,6 +337,7 @@ android_iap_subscriptions AS (
     users.user_id,
     periods.fxa_uid AS customer_id,
     periods.subscription_id,
+    periods.original_subscription_id,
     periods.plan_id,
     CAST(NULL AS STRING) AS status,
     periods.event_timestamp,
@@ -313,6 +346,7 @@ android_iap_subscriptions AS (
       NULL,
       COALESCE(trial_periods.end_time, periods.start_time)
     ) AS subscription_start_date,
+    CAST(NULL AS STRING) AS subscription_start_reason,
     periods.created,
     trial_periods.start_time AS trial_start,
     trial_periods.end_time AS trial_end,
@@ -326,6 +360,7 @@ android_iap_subscriptions AS (
       CAST(NULL AS TIMESTAMP),
       IF(periods.end_time < TIMESTAMP(CURRENT_DATE), periods.end_time, CAST(NULL AS TIMESTAMP))
     ) AS ended_at,
+    CAST(NULL AS STRING) AS ended_reason,
     periods.fxa_uid,
     periods.country,
     standardized_country.country_name,
@@ -406,7 +441,51 @@ vpn_subscriptions_with_end_date AS (
     vpn_subscriptions
 )
 SELECT
-  *,
+  * REPLACE (
+    CASE
+    WHEN
+      subscription_start_date IS NULL
+    THEN
+      NULL
+    WHEN
+      subscription_start_reason IS NOT NULL
+    THEN
+      subscription_start_reason
+    WHEN
+      trial_start IS NOT NULL
+    THEN
+      "Converted Trial"
+    WHEN
+      DATE(subscription_start_date) = DATE(customer_start_date)
+    THEN
+      "New"
+    ELSE
+      "Resurrected"
+    END
+    AS subscription_start_reason,
+    CASE
+    WHEN
+      ended_at IS NULL
+    THEN
+      NULL
+    WHEN
+      ended_reason IS NOT NULL
+    THEN
+      ended_reason
+    WHEN
+      provider = "Apple Store"
+    THEN
+      "Cancelled by IAP"
+    WHEN
+      canceled_for_customer_at IS NOT NULL
+      OR cancel_at_period_end
+    THEN
+      "Cancelled by Customer"
+    ELSE
+      "Payment Failed"
+    END
+    AS ended_reason
+  ),
   mozfun.norm.vpn_attribution(
     utm_campaign => utm_campaign,
     utm_content => utm_content,

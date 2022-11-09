@@ -15,6 +15,7 @@ from tempfile import NamedTemporaryFile
 
 import click
 import yaml
+from dateutil.rrule import MONTHLY, rrule
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
@@ -457,14 +458,22 @@ def _backfill_query(
     dry_run,
     no_partition,
     args,
+    partitioning_type,
     backfill_date,
 ):
     """Run a query backfill for a specific date."""
     project, dataset, table = extract_from_query_path(query_file_path)
 
+    match partitioning_type:
+        case PartitionType.DAY:
+            partition = backfill_date.strftime("%Y%m%d")
+        case PartitionType.MONTH:
+            partition = backfill_date.strftime("%Y%m")
+        case _:
+            raise ValueError(f"Unsupported partitioning type: {partitioning_type}")
+
     backfill_date = backfill_date.strftime("%Y-%m-%d")
     if backfill_date not in exclude:
-        partition = backfill_date.replace("-", "")
 
         if no_partition:
             destination_table = table
@@ -552,10 +561,13 @@ def _backfill_query(
 @click.option(
     "--exclude",
     "-x",
+    multiple=True,
     help="Dates excluded from backfill. Date format: yyyy-mm-dd",
     default=[],
 )
-@click.option("--dry_run/--no_dry_run", help="Dry run the backfill")
+@click.option(
+    "--dry_run/--no_dry_run", "--dry-run/--no-dry-run", help="Dry run the backfill"
+)
 @click.option(
     "--max_rows",
     "-n",
@@ -625,6 +637,41 @@ def backfill(
             date_partition_parameter = metadata.scheduling.get(
                 "date_partition_parameter", date_partition_parameter
             )
+
+            # For backwards compatibility assume partitioning type is day
+            # in case metadata is missing
+            if metadata.bigquery:
+                partitioning_type = metadata.bigquery.time_partitioning.type
+            else:
+                partitioning_type = PartitionType.DAY
+                click.echo(
+                    "Bigquery partitioning type not set. Using PartitionType.DAY"
+                )
+
+            match partitioning_type:
+                case PartitionType.DAY:
+                    dates = [
+                        start_date + timedelta(i)
+                        for i in range((end_date - start_date).days + 1)
+                    ]
+                case PartitionType.MONTH:
+                    dates = list(
+                        rrule(
+                            freq=MONTHLY,
+                            dtstart=start_date.replace(day=1),
+                            until=end_date,
+                        )
+                    )
+                    # Dates in excluded must be the first day of the month to match `dates`
+                    exclude = [
+                        date.fromisoformat(day).replace(day=1).strftime("%Y-%m-%d")
+                        for day in exclude
+                    ]
+                case _:
+                    raise ValueError(
+                        f"Unsupported partitioning type: {partitioning_type}"
+                    )
+
         except FileNotFoundError:
             click.echo(f"No metadata defined for {query_file_path}")
 
@@ -651,6 +698,7 @@ def backfill(
             dry_run,
             no_partition,
             ctx.args,
+            partitioning_type,
         )
 
         if not depends_on_past:
@@ -867,6 +915,7 @@ def _run_query(
 )
 @click.option(
     "--dry_run",
+    "--dry-run",
     is_flag=True,
     default=False,
     help="Print bytes that would be processed for each part and don't run queries",
@@ -1080,6 +1129,7 @@ def validate(
 @project_id_option()
 @click.option(
     "--dry_run/--no_dry_run",
+    "--dry-run/--no-dry-run",
     help="Dry run the initialization",
 )
 def initialize(name, sql_dir, project_id, dry_run):
@@ -1462,7 +1512,7 @@ def deploy(
     client = bigquery.Client()
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
-    if query_files == []:
+    if not query_files:
         # run SQL generators if no matching query has been found
         ctx.invoke(
             generate_all,
@@ -1479,64 +1529,88 @@ def deploy(
         query_file_path = Path(query_file)
         existing_schema_path = query_file_path.parent / SCHEMA_FILE
 
-        if existing_schema_path.is_file():
-            click.echo(f"Deploy schema for {query_file}")
+        if not existing_schema_path.is_file():
+            click.echo(f"No schema file found for {query_file}")
+            continue
 
-            table_name = query_file_path.parent.name
-            dataset_name = query_file_path.parent.parent.name
-            project_name = query_file_path.parent.parent.parent.name
-            existing_schema = Schema.from_schema_file(existing_schema_path)
-            full_table_id = f"{project_name}.{dataset_name}.{table_name}"
+        click.echo(f"Deploying schema for {query_file}")
 
-            if not force:
-                query_schema = Schema.from_query_file(
-                    query_file_path,
-                    use_cloud_function=use_cloud_function,
-                    respect_skip=respect_dryrun_skip,
+        table_name = query_file_path.parent.name
+        dataset_name = query_file_path.parent.parent.name
+        project_name = query_file_path.parent.parent.parent.name
+        full_table_id = f"{project_name}.{dataset_name}.{table_name}"
+
+        existing_schema = Schema.from_schema_file(existing_schema_path)
+
+        if not force:
+            query_schema = Schema.from_query_file(
+                query_file_path,
+                use_cloud_function=use_cloud_function,
+                respect_skip=respect_dryrun_skip,
+            )
+            if not existing_schema.equal(query_schema):
+                click.echo(
+                    f"Query {query_file_path} does not match "
+                    f"schema in {existing_schema_path}. "
+                    f"To update the local schema file, "
+                    f"run `./bqetl query schema update "
+                    f"{dataset_name}.{table_name}`",
+                    err=True,
                 )
-                if not existing_schema.equal(query_schema):
-                    click.echo(
-                        f"Query {query_file_path} does not match "
-                        f"schema in {existing_schema_path}. "
-                        f"To update the local schema file, "
-                        f"run `./bqetl query schema update "
-                        f"{dataset_name}.{table_name}`",
-                        err=True,
-                    )
-                    sys.exit(1)
+                sys.exit(1)
 
-            tmp_schema_file = NamedTemporaryFile()
+        with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
             existing_schema.to_json_file(Path(tmp_schema_file.name))
             bigquery_schema = client.schema_from_json(tmp_schema_file.name)
 
-            try:
-                # destination table already exists, update schema
-                table = client.get_table(full_table_id)
-                table.schema = bigquery_schema
-                client.update_table(table, ["schema"])
-                click.echo(f"Schema updated for {full_table_id}")
-            except NotFound:
-                # no destination table, create new table based on schema and metadata
-                metadata = Metadata.of_query_file(query_file_path)
-                new_table = bigquery.Table(full_table_id, schema=bigquery_schema)
+        try:
+            table = client.get_table(full_table_id)
+        except NotFound:
+            table = bigquery.Table(full_table_id)
 
-                if metadata.bigquery and metadata.bigquery.time_partitioning:
-                    new_table.time_partitioning = bigquery.TimePartitioning(
-                        metadata.bigquery.time_partitioning.type.bigquery_type,
-                        field=metadata.bigquery.time_partitioning.field,
-                        require_partition_filter=(
-                            metadata.bigquery.time_partitioning.require_partition_filter
-                        ),
-                        expiration_ms=metadata.bigquery.time_partitioning.expiration_ms,
-                    )
+        table.schema = bigquery_schema
+        _attach_metadata(query_file_path, table)
 
-                if metadata.bigquery and metadata.bigquery.clustering:
-                    new_table.clustering_fields = metadata.bigquery.clustering.fields
-
-                client.create_table(new_table)
-                click.echo(f"Destination table {full_table_id} created.")
+        if not table.created:
+            client.create_table(table)
+            click.echo(f"Destination table {full_table_id} created.")
         else:
-            click.echo(f"No schema file found for {query_file}")
+            client.update_table(
+                table,
+                [
+                    "schema",
+                    "friendly_name",
+                    "description",
+                    "time_partitioning",
+                    "clustering_fields",
+                    "labels",
+                ],
+            )
+            click.echo(f"Schema (and metadata) updated for {full_table_id}.")
+
+
+def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
+    """Add metadata from query file's metadata.yaml to table object."""
+    metadata = Metadata.of_query_file(query_file_path)
+
+    table.description = metadata.description
+    table.friendly_name = metadata.friendly_name
+
+    if metadata.bigquery and metadata.bigquery.time_partitioning:
+        table.time_partitioning = bigquery.TimePartitioning(
+            metadata.bigquery.time_partitioning.type.bigquery_type,
+            field=metadata.bigquery.time_partitioning.field,
+            require_partition_filter=(
+                metadata.bigquery.time_partitioning.require_partition_filter
+            ),
+            expiration_ms=metadata.bigquery.time_partitioning.expiration_ms,
+        )
+
+    if metadata.bigquery and metadata.bigquery.clustering:
+        table.clustering_fields = metadata.bigquery.clustering.fields
+
+    if metadata.labels:
+        table.labels = metadata.labels
 
 
 def _validate_schema_from_path(

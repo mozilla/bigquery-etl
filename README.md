@@ -1,5 +1,4 @@
-[![CircleCI](https://circleci.com/gh/mozilla/bigquery-etl.svg?style=shield&circle-token=742fb1108f7e6e5a28c11d43b21f62605037f5a4)](https://circleci.com/gh/mozilla/bigquery-etl)
-
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/mozilla/bigquery-etl/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/mozilla/bigquery-etl/tree/main)
 # BigQuery ETL
 
 This repository contains Mozilla Data Team's:
@@ -13,7 +12,7 @@ For more information, see [https://mozilla.github.io/bigquery-etl/](https://mozi
 
 ## Quick Start
 
-> Apple Silicon (M1) user requirement
+> :exclamation: Apple Silicon (M1) user requirement
 >
 > Enable [Rosetta mode](https://support.apple.com/en-ca/HT211861) for your terminal _**BEFORE**_ installing below tools using your terminal. See our [M1 Mac
 > Setup Guide](M1_MAC_SETUP.md) for more information

@@ -22,7 +22,7 @@ SELECT
   ANY_VALUE(os_version_major) AS os_version_major,
   ANY_VALUE(os_version_minor) AS os_version_minor,
 FROM
-  telemetry_derived.unified_metrics_v1
+  telemetry.unified_metrics
 WHERE
   submission_date = @cohort_date
   AND first_seen_date = @cohort_date

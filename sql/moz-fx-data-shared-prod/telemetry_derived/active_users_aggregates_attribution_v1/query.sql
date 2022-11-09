@@ -50,7 +50,7 @@ WITH baseline AS (
     uri_count,
     active_hours_sum
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.unified_metrics_v1`
+    `moz-fx-data-shared-prod.telemetry.unified_metrics`
   WHERE
     submission_date = @submission_date
 ),

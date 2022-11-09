@@ -626,6 +626,9 @@ clients_summary AS (
         ARRAY_AGG(IF(key = 'browser.newtabpage.enabled', value, NULL) IGNORE NULLS)[
           SAFE_OFFSET(0)
         ] AS user_pref_browser_newtabpage_enabled,
+        ARRAY_AGG(IF(key = 'app.shield.optoutstudies.enabled', value, NULL) IGNORE NULLS)[
+          SAFE_OFFSET(0)
+        ] AS user_pref_app_shield_optoutstudies_enabled,
       FROM
         UNNEST(environment.settings.user_prefs)
     ).*
@@ -1324,6 +1327,9 @@ aggregates AS (
     mozfun.stats.mode_last(
       ARRAY_AGG(user_pref_browser_newtabpage_enabled ORDER BY submission_timestamp)
     ) AS user_pref_browser_newtabpage_enabled,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(user_pref_app_shield_optoutstudies_enabled ORDER BY submission_timestamp)
+    ) AS user_pref_app_shield_optoutstudies_enabled,
     -- We use last seen value rather than mode_last for all Firefox Suggest-related
     -- pref values to ensure all values represent the same ping.
     ARRAY_AGG(user_pref_browser_urlbar_suggest_quicksuggest ORDER BY submission_timestamp DESC)[

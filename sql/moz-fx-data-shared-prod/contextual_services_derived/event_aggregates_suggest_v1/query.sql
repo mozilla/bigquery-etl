@@ -10,11 +10,12 @@ WITH combined AS (
     position,
     IF(request_id IS NULL, 'remote settings', 'merino') AS provider,
     match_type,
-    (
+    COALESCE(
       -- The first check is for Fx 103+, the last two checks are for Fx 102 and prior.
       improve_suggest_experience_checked
       OR request_id IS NOT NULL
-      OR scenario = 'online'
+      OR scenario = 'online',
+      FALSE
     ) AS suggest_data_sharing_enabled,
     'impression' AS event_type,
   FROM
@@ -31,11 +32,12 @@ WITH combined AS (
     position,
     IF(request_id IS NULL, 'remote settings', 'merino') AS provider,
     match_type,
-    (
+    COALESCE(
       -- The first check is for Fx 103+, the last two checks are for Fx 102 and prior.
       improve_suggest_experience_checked
       OR request_id IS NOT NULL
-      OR scenario = 'online'
+      OR scenario = 'online',
+      FALSE
     ) AS suggest_data_sharing_enabled,
     'click' AS event_type,
   FROM

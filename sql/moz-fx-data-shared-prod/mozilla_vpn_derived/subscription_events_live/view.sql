@@ -98,39 +98,21 @@ SELECT
   events.event_date,
   events.event_type,
   CASE
-  -- Trial events
   WHEN
     events.event_type IN ("New Trial", "Cancelled Trial")
   THEN
     events.event_type
-  -- "New" events
   WHEN
     events.event_type = "New"
   THEN
-    CASE
-    WHEN
-      all_subscriptions.trial_start IS NOT NULL
-    THEN
-      "Converted Trial"
-    WHEN
-      DATE(all_subscriptions.subscription_start_date) = DATE(all_subscriptions.customer_start_date)
-    THEN
-      "New"
-    ELSE
-      "Resurrected"
-    END
-  -- "Cancelled" events
+    all_subscriptions.subscription_start_reason
   WHEN
-    all_subscriptions.provider = "Apple Store"
+    events.event_type = "Cancelled"
   THEN
-    "Cancelled by IAP"
-  WHEN
-    all_subscriptions.canceled_for_customer_at IS NOT NULL
-    OR all_subscriptions.cancel_at_period_end
-  THEN
-    "Cancelled by Customer"
-  ELSE
-    "Payment Failed"
+    COALESCE(
+      all_subscriptions.ended_reason,
+      IF(all_subscriptions.provider = "Apple Store", "Cancelled by IAP", "Payment Failed")
+    )
   END
   AS granular_event_type,
   all_subscriptions.plan_id,

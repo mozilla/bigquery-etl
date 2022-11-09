@@ -5310,7 +5310,8 @@ fields:
       mode: NULLABLE
       name: memory_storage_sqlite
       type: STRING
-    - description: Total Memory Across All Processes (KB)
+    - description: Total Memory Across All Processes (KB) (inaccurate WRT shared memory.
+        See MemoryTelemetry.cpp)
       mode: NULLABLE
       name: memory_total
       type: STRING
@@ -31954,7 +31955,8 @@ fields:
           mode: NULLABLE
           name: low_memory_events_virtual
           type: STRING
-        - description: Total Memory Across All Processes (KB)
+        - description: Total Memory Across All Processes (KB) (inaccurate WRT shared
+            memory. See MemoryTelemetry.cpp)
           mode: NULLABLE
           name: memory_total
           type: STRING
@@ -51898,6 +51900,13 @@ fields:
             '
           mode: NULLABLE
           name: dom_midi_has_devices
+          type: BOOLEAN
+        - description: 'Boolean tracking if the user has an invert colors OS setting
+            enabled.
+
+            '
+          mode: NULLABLE
+          name: a11y_invert_colors
           type: BOOLEAN
         mode: NULLABLE
         name: scalars

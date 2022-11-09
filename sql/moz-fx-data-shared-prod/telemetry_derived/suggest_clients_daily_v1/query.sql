@@ -131,6 +131,7 @@ clients AS (
       FALSE
     ) AS user_pref_firefox_suggest_enabled,
     browser_version_info,
+    country,
     experiments,
     locale,
     normalized_channel,

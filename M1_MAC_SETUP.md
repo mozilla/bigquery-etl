@@ -14,6 +14,13 @@ Rosetta mode.
 
 For tips on maintaining parallel stacks of python and homebrew running with and without Rosetta, see blog posts from [Thinknum](https://medium.com/thinknum/how-to-install-python-under-rosetta-2-f98c0865e012) and [Sixty North](http://sixty-north.com/blog/pyenv-apple-silicon.html).
 
+> :exclamation: These instructions will install everything in Rosetta mode and
+> assume that you can do all your work in Rosetta mode.
+>
+> If you need to work with other repos outside of Rosetta mode (esp in Python)
+> these steps are probably not right for you -- ask in #data-help for advice on
+> getting set up
+
 1. Install Rosetta if you don't have it yet
 
    ```zsh

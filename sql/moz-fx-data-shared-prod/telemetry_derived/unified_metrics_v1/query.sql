@@ -143,7 +143,7 @@ WITH unioned_source AS (
 ),
 unioned AS (
   SELECT
-    * EXCEPT (isp) REPLACE(
+    * REPLACE (
       -- Per bug 1757216 we need to exclude BrowserStack clients from KPIs,
       -- so we mark them with a separate app name here. We expect BrowserStack
       -- clients only on release channel of Fenix, so the only variant this is
@@ -230,6 +230,7 @@ mobile_with_searches AS (
     unioned.days_created_profile_bits,
     DATE_DIFF(unioned.submission_date, unioned.first_seen_date, DAY) AS days_since_first_seen,
     unioned.device_model,
+    unioned.isp,
     unioned.is_new_profile,
     unioned.locale,
     unioned.first_seen_date,
@@ -286,6 +287,7 @@ desktop AS (
     days_created_profile_bits,
     days_since_first_seen,
     CAST(NULL AS string) AS device_model,
+    isp_name AS isp,
     submission_date = first_seen_date AS is_new_profile,
     locale,
     first_seen_date,

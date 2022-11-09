@@ -13,4 +13,5 @@ scheduling:
 references:
   query.sql:
   - moz-fx-data-bq-fivetran.stripe.plan
+  - moz-fx-data-bq-fivetran.stripe.product
   - mozdata.firefox_accounts.fxa_content_auth_stdout_events

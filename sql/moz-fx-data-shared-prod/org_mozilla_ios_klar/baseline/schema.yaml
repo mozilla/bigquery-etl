@@ -342,7 +342,11 @@ fields:
 
         `custom`.
 
-        `source` will be: `action`, `suggestion`.
+        `source` will be: `action`, `suggestion`, `widget`, `shortcut`, `topsite`
+
+        (depending on the source from which the search started). Also added the
+
+        `other` option for the source but it should never enter on this case.
 
         '
       fields:

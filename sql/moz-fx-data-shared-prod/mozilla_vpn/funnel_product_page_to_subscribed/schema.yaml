@@ -42,10 +42,13 @@ fields:
   name: entrypoint
   type: STRING
 - mode: NULLABLE
-  name: plan_id
+  name: product_id
   type: STRING
 - mode: NULLABLE
-  name: product_id
+  name: product_name
+  type: STRING
+- mode: NULLABLE
+  name: plan_id
   type: STRING
 - mode: NULLABLE
   name: pricing_plan

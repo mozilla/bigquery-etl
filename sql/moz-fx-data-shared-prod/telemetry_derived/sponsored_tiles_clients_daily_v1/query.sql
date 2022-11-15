@@ -16,9 +16,6 @@ WITH clicks_main AS (
         UNNEST(d.payload.processes.parent.keyed_scalars.contextual_services_topsites_click) e
       WHERE
         DATE(d.submission_timestamp) = @submission_date
-    --   AND d.normalized_country_code IN UNNEST(["AU", "BR", "CA", "DE", "ES", "FR", "GB", "IN", "IT", "JP", "MX", "US"])
-    -- AND `mozfun.norm.browser_version_info`(d.application.display_version).major_version >= 92
-    -- AND d.application.display_version NOT IN ('92', '92.','92.0','92.0.0')
     ) clicks_main
   GROUP BY
     1,
@@ -41,9 +38,6 @@ impressions_main AS (
         UNNEST(g.payload.processes.parent.keyed_scalars.contextual_services_topsites_impression) h
       WHERE
         DATE(g.submission_timestamp) = @submission_date
-      -- AND g.normalized_country_code IN UNNEST(["AU", "BR", "CA", "DE", "ES", "FR", "GB", "IN", "IT", "JP", "MX", "US"])
-      -- AND `mozfun.norm.browser_version_info`(g.application.display_version).major_version >= 92
-      -- AND g.application.display_version NOT IN ('92', '92.','92.0','92.0.0')
     ) impressions_main
   GROUP BY
     1,
@@ -68,9 +62,6 @@ desktop_activity_stream_events AS (
     `mozdata.activity_stream.events`
   WHERE
     date(submission_timestamp) = @submission_date
-    -- AND normalized_country_code IN UNNEST(["AU", "BR", "CA", "DE", "ES", "FR", "GB", "IN", "IT", "JP", "MX", "US"])
-    -- AND `mozfun.norm.browser_version_info`(metadata.user_agent.version).major_version >= 92
-    -- AND metadata.user_agent.version NOT IN ('92', '92.', '92.0', '92.0.0')
   GROUP BY
     1,
     2
@@ -98,8 +89,6 @@ ios_data AS (
     `mozdata.firefox_ios.events_unnested` events
   WHERE
     DATE(submission_timestamp) = @submission_date
-    -- AND normalized_country_code IN UNNEST(["US"])
-    -- AND `mozfun.norm.browser_version_info`(client_info.app_display_version).major_version >= 101
   GROUP BY
     1,
     2
@@ -127,8 +116,6 @@ android_events AS (
     `mozdata.fenix.events_unnested` events
   WHERE
     DATE(submission_timestamp) = @submission_date
-    -- AND normalized_country_code IN UNNEST(["US"])
-    -- AND `mozfun.norm.browser_version_info`(client_info.app_display_version).major_version >= 100
   GROUP BY
     1,
     2
@@ -148,8 +135,6 @@ android_metrics AS (
   WHERE
     metrics.boolean.customize_home_contile IS NOT NULL
     AND DATE(submission_timestamp) = @submission_date
-    -- AND normalized_country_code IN UNNEST(["US"])
-    -- AND `mozfun.norm.browser_version_info`(client_info.app_display_version).major_version >= 100
   GROUP BY
     client_info.client_id
 ),
@@ -214,10 +199,10 @@ SELECT
   is_new_profile,
   sample_id,
   experiments,
-  sponsored_tiles_click_count,
-  sponsored_tiles_impression_count,
-  sponsored_tiles_dismissal_count,
-  sponsored_tiles_disable_count,
+  COALESCE(sponsored_tiles_click_count, 0) AS sponsored_tiles_click_count,
+  COALESCE(sponsored_tiles_impression_count, 0) AS sponsored_tiles_impression_count,
+  COALESCE(sponsored_tiles_dismissal_count, 0) AS sponsored_tiles_dismissal_count,
+  COALESCE(sponsored_tiles_disable_count, 0) AS sponsored_tiles_disable_count,
   NULL AS sponsored_tiles_enabled_at_startup
 FROM
   (SELECT * FROM unified_metrics WHERE normalized_os NOT IN ("Android", "iOS")) desktop_unified
@@ -261,10 +246,10 @@ SELECT
   is_new_profile,
   sample_id,
   experiments,
-  sponsored_tiles_click_count,
-  sponsored_tiles_impression_count,
+  COALESCE(sponsored_tiles_click_count, 0) as sponsored_tiles_click_count,
+  COALESCE(sponsored_tiles_impression_count, 0) as sponsored_tiles_impression_count,
   NULL AS sponsored_tiles_dismissal_count,
-  sponsored_tiles_disable_count,
+  COALESCE(sponsored_tiles_disable_count, 0) as sponsored_tiles_disable_count,
   NULL AS sponsored_tiles_enabled_at_startup
 FROM
   (SELECT * FROM unified_metrics WHERE normalized_os = "iOS") ios_unified
@@ -310,10 +295,10 @@ SELECT
   is_new_profile,
   sample_id,
   experiments,
-  sponsored_tiles_click_count,
-  sponsored_tiles_impression_count,
+  COALESCE(sponsored_tiles_click_count, 0) as sponsored_tiles_click_count,
+  COALESCE(sponsored_tiles_impression_count, 0) as sponsored_tiles_impression_count,
   NULL AS sponsored_tiles_dismissal_count,
-  sponsored_tiles_disable_count,
+  COALESCE(sponsored_tiles_disable_count, 0) as sponsored_tiles_disable_count,
   sponsored_tiles_enabled_at_startup
 FROM
   (-- note unified_metrics drops known Android bots

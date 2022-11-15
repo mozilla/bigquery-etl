@@ -28,6 +28,9 @@ fields:
   name: entrypoint_variation
   type: STRING
 - mode: NULLABLE
+  name: product_name
+  type: STRING
+- mode: NULLABLE
   name: pricing_plan
   type: STRING
 - mode: NULLABLE

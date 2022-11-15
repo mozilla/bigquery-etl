@@ -19,7 +19,7 @@ WITH base AS (
                   CAST(NULL AS STRING) AS metricsoptoutat
                 ),
                 TO_HEX(SHA256(jsonPayload.fields.user_id)) AS user_id,
-                TO_HEX(SHA256(COALESCE(jsonPayload.fields.device_id, jsonPayload.fields.deviceid)) AS device_id
+                TO_HEX(SHA256(COALESCE(jsonPayload.fields.device_id, jsonPayload.fields.deviceid))) AS device_id
             ) AS fields
           )
       ) AS jsonPayload

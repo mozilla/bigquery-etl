@@ -811,6 +811,19 @@ fields:
       mode: REPEATED
       name: dap_upload_status
       type: RECORD
+    - description: 'Counts different type of link headers that are sent in early hint
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: netwerk_eh_link_type
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

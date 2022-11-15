@@ -2,6 +2,7 @@ SELECT
   timestamp,
   jsonPayload.fields.event,
   jsonPayload.fields.flow_id,
+  jsonPayload.fields.device_id,
   jsonPayload.fields.entrypoint,
   jsonPayload.fields.service,
   jsonPayload.fields.useragent,

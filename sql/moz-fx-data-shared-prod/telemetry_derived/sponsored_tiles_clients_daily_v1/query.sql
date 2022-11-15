@@ -120,24 +120,6 @@ android_events AS (
     1,
     2
 ),
-  -- Android enabled at start
-android_metrics AS (
-  SELECT
-    client_info.client_id,
-    ARRAY_AGG(date(submission_timestamp) ORDER BY submission_timestamp DESC)[
-      OFFSET(0)
-    ] AS submission_date,
-    ARRAY_AGG(metrics.boolean.customize_home_contile ORDER BY submission_timestamp DESC)[
-      OFFSET(0)
-    ] AS sponsored_tiles_enabled_at_startup
-  FROM
-    `mozdata.fenix.metrics`
-  WHERE
-    metrics.boolean.customize_home_contile IS NOT NULL
-    AND DATE(submission_timestamp) = @submission_date
-  GROUP BY
-    client_info.client_id
-),
 -- ----- CREATE MERGED DATASET
 unified_metrics AS (
   SELECT
@@ -202,8 +184,7 @@ SELECT
   COALESCE(sponsored_tiles_click_count, 0) AS sponsored_tiles_click_count,
   COALESCE(sponsored_tiles_impression_count, 0) AS sponsored_tiles_impression_count,
   COALESCE(sponsored_tiles_dismissal_count, 0) AS sponsored_tiles_dismissal_count,
-  COALESCE(sponsored_tiles_disable_count, 0) AS sponsored_tiles_disable_count,
-  NULL AS sponsored_tiles_enabled_at_startup
+  COALESCE(sponsored_tiles_disable_count, 0) AS sponsored_tiles_disable_count
 FROM
   (SELECT * FROM unified_metrics WHERE normalized_os NOT IN ("Android", "iOS")) desktop_unified
 LEFT JOIN
@@ -249,8 +230,7 @@ SELECT
   COALESCE(sponsored_tiles_click_count, 0) as sponsored_tiles_click_count,
   COALESCE(sponsored_tiles_impression_count, 0) as sponsored_tiles_impression_count,
   NULL AS sponsored_tiles_dismissal_count,
-  COALESCE(sponsored_tiles_disable_count, 0) as sponsored_tiles_disable_count,
-  NULL AS sponsored_tiles_enabled_at_startup
+  COALESCE(sponsored_tiles_disable_count, 0) as sponsored_tiles_disable_count
 FROM
   (SELECT * FROM unified_metrics WHERE normalized_os = "iOS") ios_unified
 LEFT JOIN
@@ -298,8 +278,7 @@ SELECT
   COALESCE(sponsored_tiles_click_count, 0) as sponsored_tiles_click_count,
   COALESCE(sponsored_tiles_impression_count, 0) as sponsored_tiles_impression_count,
   NULL AS sponsored_tiles_dismissal_count,
-  COALESCE(sponsored_tiles_disable_count, 0) as sponsored_tiles_disable_count,
-  sponsored_tiles_enabled_at_startup
+  COALESCE(sponsored_tiles_disable_count, 0) as sponsored_tiles_disable_count
 FROM
   (-- note unified_metrics drops known Android bots
     SELECT
@@ -313,60 +292,27 @@ LEFT JOIN
   android_events
 USING
   (submission_date, client_id)
-LEFT JOIN
-  android_metrics
-USING
-  (submission_date, client_id)
 -- add experiments data
 LEFT JOIN
   (
     SELECT
-      client_id,
-      submission_date,
-      mozfun.map.mode_last(ARRAY_CONCAT_AGG(experiments ORDER BY submission_date)) AS experiments
+      client_info.client_id AS client_id,
+      ARRAY_AGG(DATE(submission_timestamp) ORDER BY submission_timestamp DESC)[
+        OFFSET(0)
+      ] AS submission_date,
+      mozfun.map.mode_last(
+        ARRAY_CONCAT_AGG(
+          mozfun.glean.legacy_compatible_experiments(ping_info.experiments)
+          ORDER BY
+            submission_timestamp
+        )
+      ) AS experiments
     FROM
-      (
-        SELECT
-          client_info.client_id AS client_id,
-          ARRAY_AGG(DATE(submission_timestamp) ORDER BY submission_timestamp DESC)[
-            OFFSET(0)
-          ] AS submission_date,
-          mozfun.map.mode_last(
-            ARRAY_CONCAT_AGG(
-              mozfun.glean.legacy_compatible_experiments(ping_info.experiments)
-              ORDER BY
-                submission_timestamp
-            )
-          ) AS experiments
-        FROM
-          `mozdata.fenix.events_unnested`
-        WHERE
-          DATE(submission_timestamp) = @submission_date
-        GROUP BY
-          client_info.client_id
-        UNION ALL
-        SELECT
-          client_info.client_id AS client_id,
-          ARRAY_AGG(DATE(submission_timestamp) ORDER BY submission_timestamp DESC)[
-            OFFSET(0)
-          ] AS submission_date,
-          mozfun.map.mode_last(
-            ARRAY_CONCAT_AGG(
-              mozfun.glean.legacy_compatible_experiments(ping_info.experiments)
-              ORDER BY
-                submission_timestamp
-            )
-          ) AS experiments
-        FROM
-          `moz-fx-data-shared-prod.fenix.metrics`
-        WHERE
-          DATE(submission_timestamp) = @submission_date
-        GROUP BY
-          client_info.client_id
-      )
+      `mozdata.fenix.events_unnested`
+    WHERE
+      DATE(submission_timestamp) = @submission_date
     GROUP BY
-      client_id,
-      submission_date
-  ) merged_experiments
+      client_info.client_id
+  )
 USING
   (submission_date, client_id)

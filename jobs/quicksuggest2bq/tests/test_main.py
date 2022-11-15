@@ -19,6 +19,9 @@ SAMPLE_SUGGESTION = {
         "sample da",
         "sample dat",
     ],
+    "full_keywords": [
+        ("sample data", 3)
+    ],
 }
 
 SAMPLE_WIKIPEDIA_SUGGESTION = {
@@ -32,6 +35,9 @@ SAMPLE_WIKIPEDIA_SUGGESTION = {
         "wiki",
         "wikip",
         "wikipe",
+    ],
+    "full_keywords": [
+        ("wikipedia", 3)
     ],
 }
 
@@ -104,8 +110,16 @@ class TestMain:
     def test_suggestion_download(self, mocked_kinto_client):
         suggestions = list(download_suggestions(mocked_kinto_client))
         assert len(suggestions) == 2
-        assert suggestions[0] == KintoSuggestion(**SAMPLE_SUGGESTION)
-        assert suggestions[1] == KintoSuggestion(**SAMPLE_WIKIPEDIA_SUGGESTION)
+        assert suggestions[0].id == SAMPLE_SUGGESTION['id']
+        assert suggestions[1].id == SAMPLE_WIKIPEDIA_SUGGESTION['id']
+
+    def test_suggestion_full_keyword(self, mocked_kinto_client):
+        suggestions = list(download_suggestions(mocked_kinto_client))
+        assert len(suggestions) == 2
+        assert suggestions[0].full_keywords[0]['keyword'] == SAMPLE_SUGGESTION['full_keywords'][0][0]
+        assert suggestions[0].full_keywords[0]['count'] == SAMPLE_SUGGESTION['full_keywords'][0][1]
+        assert suggestions[1].full_keywords[0]['keyword'] == SAMPLE_WIKIPEDIA_SUGGESTION['full_keywords'][0][0]
+        assert suggestions[1].full_keywords[0]['count'] == SAMPLE_WIKIPEDIA_SUGGESTION['full_keywords'][0][1]
 
     def test_icon_records_not_downloaded(self, mocked_kinto_client_icon_only):
         suggestions = list(download_suggestions(mocked_kinto_client_icon_only))

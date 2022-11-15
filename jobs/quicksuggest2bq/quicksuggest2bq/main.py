@@ -86,7 +86,10 @@ def download_suggestions(client: kinto_http.Client) -> Iterator[KintoSuggestion]
         for suggestion_data in response.json():
             suggestion: Dict[str, Any] = {
                 **suggestion_data,
-                "full_keywords": [{"keyword": kw, "count": count} for kw, count in suggestion_data.get("full_keywords", [])],
+                "full_keywords": [
+                    {"keyword": kw, "count": count}
+                    for kw, count in suggestion_data.get("full_keywords", [])
+                ],
             }
             yield KintoSuggestion(**suggestion)
 
@@ -121,10 +124,15 @@ def store_suggestions(
             bigquery.SchemaField("impression_url", "STRING"),
             bigquery.SchemaField("id", "INTEGER"),
             bigquery.SchemaField("keywords", "STRING", "REPEATED"),
-            bigquery.SchemaField("full_keywords", "RECORD", mode="REPEATED", fields=[
-                bigquery.SchemaField("keyword", "STRING"),
-                bigquery.SchemaField("count", "INTEGER"),
-            ]),
+            bigquery.SchemaField(
+                "full_keywords",
+                "RECORD",
+                mode="REPEATED",
+                fields=[
+                    bigquery.SchemaField("keyword", "STRING"),
+                    bigquery.SchemaField("count", "INTEGER"),
+                ],
+            ),
             bigquery.SchemaField("title", "STRING"),
             bigquery.SchemaField("url", "STRING"),
         ],

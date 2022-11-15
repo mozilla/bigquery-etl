@@ -14,6 +14,7 @@ WITH content AS (
     jsonPayload.fields.user_id,
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
+    jsonPayload.fields.device_id,
     `timestamp`,
     receiveTimestamp,
   FROM
@@ -32,6 +33,7 @@ auth AS (
     jsonPayload.fields.user_id,
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
+    jsonPayload.fields.device_id,
     `timestamp`,
     receiveTimestamp,
   FROM
@@ -50,6 +52,7 @@ oauth AS (
     jsonPayload.fields.user_id,
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
+    CAST(NULL AS STRING) AS device_id,
     `timestamp`,
     receiveTimestamp,
   FROM

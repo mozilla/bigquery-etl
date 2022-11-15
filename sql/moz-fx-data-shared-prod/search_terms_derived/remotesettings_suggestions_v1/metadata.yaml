@@ -10,7 +10,8 @@ description: >
   It is located in a restricted dataset only because it is conceptually related
   to search terms data and used as input in search terms sanitization processes.
 owners:
-  - aplacitelli@mozilla.com
+  - wstuckey@mozilla.com
+  - ctroy@mozilla.com
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

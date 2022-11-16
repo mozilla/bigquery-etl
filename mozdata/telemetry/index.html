@@ -31339,11 +31339,6 @@ and to contain only one row per distinct <code>document_id</code> within a given
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
-        <td>os</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
         <td>client_id</td>
         <td></td>
         <td>String</td>
@@ -31353,11 +31348,6 @@ and to contain only one row per distinct <code>document_id</code> within a given
         <td></td>
         <td>Record</td>
         <td>Yes</td>
-    </tr><tr>
-        <td>experiments</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
     </tr><tr>
         <td>country</td>
         <td></td>
@@ -31374,20 +31364,25 @@ and to contain only one row per distinct <code>document_id</code> within a given
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
-        <td>normalized_os_version</td>
+        <td>normalized_os</td>
         <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
-        <td>profile_age_in_days</td>
+        <td>is_new_profile</td>
         <td></td>
-        <td>Integer</td>
+        <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
         <td></td>
         <td>Integer</td>
         <td>Yes</td>
+    </tr><tr>
+        <td>experiments</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
     </tr><tr>
         <td>sponsored_tiles_click_count</td>
         <td></td>
@@ -31407,11 +31402,6 @@ and to contain only one row per distinct <code>document_id</code> within a given
         <td>sponsored_tiles_disable_count</td>
         <td></td>
         <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sponsored_tiles_enabled_at_startup</td>
-        <td></td>
-        <td>Boolean</td>
         <td>Yes</td>
     </tr>
 </table>

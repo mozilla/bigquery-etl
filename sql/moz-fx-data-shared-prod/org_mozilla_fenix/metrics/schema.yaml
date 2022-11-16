@@ -576,6 +576,18 @@ fields:
       mode: NULLABLE
       name: metrics_default_wallpaper
       type: BOOLEAN
+    - description: 'True if marketing notifications are allowed, otherwise false.
+
+        '
+      mode: NULLABLE
+      name: events_marketing_notification_allowed
+      type: BOOLEAN
+    - description: 'True if notifications are allowed, otherwise false.
+
+        '
+      mode: NULLABLE
+      name: metrics_notifications_allowed
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD

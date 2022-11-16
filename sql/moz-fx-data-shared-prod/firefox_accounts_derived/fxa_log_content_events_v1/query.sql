@@ -8,7 +8,6 @@ WITH base AS (
     jsonPayload.country,
     jsonPayload.entrypoint,
     jsonPayload.flow_id,
-    jsonPayload.device_id,
     jsonPayload.region,
     jsonPayload.service,
     jsonPayload.utm_campaign,

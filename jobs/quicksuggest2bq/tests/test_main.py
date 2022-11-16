@@ -19,7 +19,7 @@ SAMPLE_SUGGESTION = {
         "sample da",
         "sample dat",
     ],
-    "full_keywords": [("sample data", 3)],
+    "full_keywords": [("sample data", 3), ("sample", 3)],
 }
 
 SAMPLE_WIKIPEDIA_SUGGESTION = {
@@ -112,6 +112,8 @@ class TestMain:
     def test_suggestion_full_keyword(self, mocked_kinto_client):
         suggestions = list(download_suggestions(mocked_kinto_client))
         assert len(suggestions) == 2
+        assert len(suggestions[0].full_keywords) == 2
+        assert len(suggestions[1].full_keywords) == 1
         assert (
             suggestions[0].full_keywords[0]["keyword"]
             == SAMPLE_SUGGESTION["full_keywords"][0][0]

@@ -68,15 +68,11 @@ def main():
     {args.project}.{args.destination_dataset}.{args.destination_table}${partition}
     """
 
-    # remove old partition in case of re-run
-    client = bigquery.Client(args.project)
-    client.delete_table(destination_table, not_found_ok=True)
-
     for project in args.source_projects:
         client = bigquery.Client(project)
         query = create_query(args.date, project)
         job_config = bigquery.QueryJobConfig(
-            destination=destination_table, write_disposition="WRITE_APPEND"
+            destination=destination_table, write_disposition="WRITE_TRUNCATE"
         )
         client.query(query, job_config=job_config).result()
 

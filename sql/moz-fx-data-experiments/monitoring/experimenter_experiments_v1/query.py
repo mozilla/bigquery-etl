@@ -34,6 +34,8 @@ parser.add_argument("--dry_run", action="store_true")
 
 @attr.s(auto_attribs=True)
 class Branch:
+    """Defines a branch."""
+
     slug: str
     ratio: int
     value: Union[str, Dict[Any, Any]]
@@ -41,6 +43,8 @@ class Branch:
 
 @attr.s(auto_attribs=True)
 class Experiment:
+    """Defines an Experiment."""
+
     experimenter_slug: Optional[str]
     normandy_slug: Optional[str]
     type: str
@@ -54,6 +58,7 @@ class Experiment:
     app_name: str
     app_id: str
     channel: str
+    targeting: str
 
 
 def _coerce_none_to_zero(x: Optional[int]) -> int:
@@ -62,6 +67,8 @@ def _coerce_none_to_zero(x: Optional[int]) -> int:
 
 @attr.s(auto_attribs=True)
 class Variant:
+    """Defines a Variant."""
+
     is_control: bool
     slug: str
     ratio: int
@@ -80,17 +87,20 @@ class ExperimentV1:
     variants: List[Variant]
     proposed_enrollment: Optional[int] = attr.ib(converter=_coerce_none_to_zero)
     firefox_channel: str
+    targeting: str
     normandy_slug: Optional[str] = None
     is_high_population: Optional[bool] = None
 
     @staticmethod
     def _unix_millis_to_datetime(num: Optional[float]) -> Optional[datetime.datetime]:
+        """Convert unix milliseconds to datetime."""
         if num is None:
             return None
         return datetime.datetime.fromtimestamp(num / 1e3, pytz.utc)
 
     @classmethod
     def from_dict(cls, d) -> "ExperimentV1":
+        """Load an experiment from dict."""
         converter = cattrs.BaseConverter()
         converter.register_structure_hook(
             datetime.datetime,
@@ -126,6 +136,7 @@ class ExperimentV1:
             app_name="firefox_desktop",
             app_id="firefox-desktop",
             channel=self.firefox_channel.lower(),
+            targeting=self.targeting,
         )
 
 
@@ -142,9 +153,11 @@ class ExperimentV6:
     appName: str
     appId: str
     channel: str
+    targeting: str
 
     @classmethod
     def from_dict(cls, d) -> "ExperimentV6":
+        """Load an experiment from dict."""
         converter = cattrs.BaseConverter()
         converter.register_structure_hook(
             datetime.datetime,
@@ -184,10 +197,12 @@ class ExperimentV6:
             app_name=self.appName,
             app_id=self.appId,
             channel=self.channel,
+            targeting=self.targeting,
         )
 
 
 def fetch(url):
+    """Fetch a url."""
     for _ in range(2):
         try:
             return requests.get(
@@ -230,6 +245,7 @@ def get_experiments() -> List[Experiment]:
 
 
 def main():
+    """Run."""
     args = parser.parse_args()
     experiments = get_experiments()
 
@@ -260,6 +276,7 @@ def main():
         bigquery.SchemaField("app_id", "STRING"),
         bigquery.SchemaField("app_name", "STRING"),
         bigquery.SchemaField("channel", "STRING"),
+        bigquery.SchemaField("targeting", "STRING"),
     )
 
     job_config = bigquery.LoadJobConfig(

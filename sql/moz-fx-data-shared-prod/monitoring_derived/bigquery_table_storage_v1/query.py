@@ -47,7 +47,7 @@ def create_query(date, source_project):
           (active_physical_bytes/POW(1024, 3) * 0.04)
           + ((long_term_physical_bytes/ POW(1024, 3)) * 0.02)
           AS physical_billing_cost_usd
-        FROM {source_project}.`region-us`.INFORMATION_SCHEMA.TABLE_STORAGE_TIMELINE
+        FROM {source_project}.`region-us`.INFORMATION_SCHEMA.TABLE_STORAGE
         WHERE
           DATE(timestamp) = '{date}'
         ORDER BY 1, 2, 3, 4, 5

@@ -87,7 +87,6 @@ class ExperimentV1:
     variants: List[Variant]
     proposed_enrollment: Optional[int] = attr.ib(converter=_coerce_none_to_zero)
     firefox_channel: str
-    targeting: str
     normandy_slug: Optional[str] = None
     is_high_population: Optional[bool] = None
 

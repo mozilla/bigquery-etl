@@ -2,7 +2,6 @@ SELECT
   timestamp,
   jsonPayload.fields.event,
   jsonPayload.fields.flow_id,
-  jsonPayload.fields.device_id,
   TO_HEX(SHA256(COALESCE(jsonPayload.fields.device_id, jsonPayload.fields.deviceid))) AS device_id,
   jsonPayload.fields.entrypoint,
   jsonPayload.fields.service,

@@ -24,16 +24,15 @@ def create_query(date, source_project):
     """Create query for a source project."""
     return f"""
         SELECT
-          "{source_project}" AS source_project,
           date('{date}') AS creation_date,
           table_catalog AS project_id,
           table_schema AS dataset_id,
           table_name AS table_id,
           table_type,
-          FROM {source_project}.`region-us`.INFORMATION_SCHEMA.TABLES
+          FROM `{source_project}.region-us.INFORMATION_SCHEMA.TABLES`
         WHERE
           DATE(creation_time) = '{date}'
-        ORDER BY source_project, creation_date, project_id, dataset_id, table_id, table_type
+        ORDER BY creation_date, project_id, dataset_id, table_id, table_type
     """
 
 

@@ -1,6 +1,6 @@
 ---
 - &suggest_base
-  submission_date: "2020-01-01"
+  submission_date: "2030-01-01"
   source: suggest
   provider: merino
   event_type: impression
@@ -20,7 +20,7 @@
   event_count: 1
   user_count: 1
 - &topsites_base
-  submission_date: "2020-01-01"
+  submission_date: "2030-01-01"
   source: topsites
   provider: contile
   event_type: impression
@@ -38,7 +38,7 @@
   event_count: 1
   user_count: 1
 - &base_mobile
-  submission_date: "2020-01-01"
+  submission_date: "2030-01-01"
   source: topsites
   provider: contile
   event_type: click

@@ -1902,20 +1902,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#browser_version_info-udf" class="md-nav__link">
-    browser_version_info (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#diff_months-udf" class="md-nav__link">
-    diff_months (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#extract_version-udf" class="md-nav__link">
     extract_version (UDF)
   </a>
@@ -1981,6 +1967,20 @@
         <li class="md-nav__item">
   <a href="#windows_version_info-udf" class="md-nav__link">
     windows_version_info (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#browser_version_info-udf" class="md-nav__link">
+    browser_version_info (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diff_months-udf" class="md-nav__link">
+    diff_months (UDF)
   </a>
   
 </li>
@@ -2256,20 +2256,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#browser_version_info-udf" class="md-nav__link">
-    browser_version_info (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#diff_months-udf" class="md-nav__link">
-    diff_months (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#extract_version-udf" class="md-nav__link">
     extract_version (UDF)
   </a>
@@ -2339,6 +2325,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#browser_version_info-udf" class="md-nav__link">
+    browser_version_info (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diff_months-udf" class="md-nav__link">
+    diff_months (UDF)
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2356,16 +2356,6 @@
 
 <h1 id="norm">norm</h1>
 <p>Functions for normalizing data.</p>
-<h2 id="browser_version_info-udf">browser_version_info (UDF)</h2>
-<p>Adds metadata related to the browser version in a struct.</p>
-<p>This is a temporary solution that allows browser version analysis.
-It should eventually be replaced with one or more browser version tables
-that serves as a source of truth for version releases.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/browser_version_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/browser_version_info/metadata.yaml">Edit</a></p>
-<h2 id="diff_months-udf">diff_months (UDF)</h2>
-<p>Determine the number of whole months after grace period between start and end. Month is dependent on timezone, so start and end must both be datetimes, or both be dates, in the correct timezone. Grace period can be used to account for billing delay, usually 1 day, and is counted after months. When inclusive is FALSE, start and end are not included in whole months.
-For example, diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-01', grace_period =&gt; INTERVAL 0 day, inclusive =&gt; FALSE) returns 1, because start plus two months plus grace period is not less than end. Changing inclusive to TRUE returns 2, because start plus two months plus grace period is less than or equal to end. diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-02 00:00:00.000001', grace_period =&gt; INTERVAL 1 DAY, inclusive =&gt; FALSE) returns 2, because start plus two months plus grace period is less than end.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/diff_months">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/diff_months/metadata.yaml">Edit</a></p>
 <h2 id="extract_version-udf">extract_version (UDF)</h2>
 <p>Extracts numeric version data from a version string like
 <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code>.</p>
@@ -2760,6 +2750,16 @@ of the operating system name.</p>
 <p>Requires os, os_version and windows_build_number.</p>
 <p>E.G. from windows_build_number &gt;= 22000 return Windows 11</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/windows_version_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/windows_version_info/metadata.yaml">Edit</a></p>
+<h2 id="browser_version_info-udf">browser_version_info (UDF)</h2>
+<p>Adds metadata related to the browser version in a struct.</p>
+<p>This is a temporary solution that allows browser version analysis.
+It should eventually be replaced with one or more browser version tables
+that serves as a source of truth for version releases.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/browser_version_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/browser_version_info/metadata.yaml">Edit</a></p>
+<h2 id="diff_months-udf">diff_months (UDF)</h2>
+<p>Determine the number of whole months after grace period between start and end. Month is dependent on timezone, so start and end must both be datetimes, or both be dates, in the correct timezone. Grace period can be used to account for billing delay, usually 1 day, and is counted after months. When inclusive is FALSE, start and end are not included in whole months.
+For example, diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-01', grace_period =&gt; INTERVAL 0 day, inclusive =&gt; FALSE) returns 1, because start plus two months plus grace period is not less than end. Changing inclusive to TRUE returns 2, because start plus two months plus grace period is less than or equal to end. diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-02 00:00:00.000001', grace_period =&gt; INTERVAL 1 DAY, inclusive =&gt; FALSE) returns 2, because start plus two months plus grace period is less than end.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/diff_months">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/diff_months/metadata.yaml">Edit</a></p>
 
 
 

@@ -186,7 +186,7 @@ class ExperimentV6:
                 self.endDate is None
                 or (
                     self.endDate
-                    and self.endDate <= pytz.utc.localize(datetime.datetime.now())
+                    and self.endDate > pytz.utc.localize(datetime.datetime.now())
                 )
             )
             else "Complete",

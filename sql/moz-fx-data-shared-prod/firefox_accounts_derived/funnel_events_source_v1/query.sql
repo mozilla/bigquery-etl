@@ -19,6 +19,6 @@ SELECT
   CAST([] AS ARRAY<STRUCT<key STRING, value STRING>>) AS experiments,
   *,
 FROM
-  `moz-fx-data-shared-prod`.firefox_accounts.fxa_content_auth_oauth_events
+  `moz-fx-data-shared-prod.firefox_accounts.fxa_content_auth_oauth_events`
 WHERE
   DATE(timestamp) = @submission_date

@@ -52,6 +52,7 @@ class Experiment:
     branches: List[Branch]
     start_date: Optional[datetime.datetime]
     end_date: Optional[datetime.datetime]
+    enrollment_end_date: Optional[datetime.datetime]
     proposed_enrollment: Optional[int]
     reference_branch: Optional[str]
     is_high_population: bool
@@ -128,6 +129,7 @@ class ExperimentV1:
             status=self.status,
             start_date=self.start_date,
             end_date=self.end_date,
+            enrollment_end_date=None,
             branches=branches,
             proposed_enrollment=self.proposed_enrollment,
             reference_branch=control_slug,
@@ -135,7 +137,7 @@ class ExperimentV1:
             app_name="firefox_desktop",
             app_id="firefox-desktop",
             channel=self.firefox_channel.lower(),
-            targeting=None,
+            targeting="",
         )
 
 
@@ -146,6 +148,7 @@ class ExperimentV6:
     slug: str  # Normandy slug
     startDate: Optional[datetime.datetime]
     endDate: Optional[datetime.datetime]
+    enrollmentEndDate: Optional[datetime.datetime]
     proposedEnrollment: int
     branches: List[Branch]
     referenceBranch: Optional[str]
@@ -189,6 +192,7 @@ class ExperimentV6:
             else "Complete",
             start_date=self.startDate,
             end_date=self.endDate,
+            enrollment_end_date=self.enrollmentEndDate,
             proposed_enrollment=self.proposedEnrollment,
             reference_branch=self.referenceBranch,
             is_high_population=False,
@@ -259,6 +263,7 @@ def main():
         bigquery.SchemaField("status", "STRING"),
         bigquery.SchemaField("start_date", "DATE"),
         bigquery.SchemaField("end_date", "DATE"),
+        bigquery.SchemaField("enrollment_end_date", "DATE"),
         bigquery.SchemaField("proposed_enrollment", "INTEGER"),
         bigquery.SchemaField("reference_branch", "STRING"),
         bigquery.SchemaField("is_high_population", "BOOL"),

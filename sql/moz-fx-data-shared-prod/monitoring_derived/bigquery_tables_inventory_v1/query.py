@@ -33,7 +33,7 @@ def create_query(date, source_project):
           FROM {source_project}.`region-us`.INFORMATION_SCHEMA.TABLES
         WHERE
           DATE(creation_time) = '{date}'
-        ORDER BY 1, 2, 3, 4, 5, 6
+        ORDER BY source_project, creation_date, project_id, dataset_id, table_id, table_type
     """
 
 

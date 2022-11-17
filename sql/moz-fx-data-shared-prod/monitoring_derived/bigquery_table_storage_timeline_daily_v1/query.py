@@ -54,8 +54,8 @@ def create_query(date, source_project):
         FROM {source_project}.`region-us`.INFORMATION_SCHEMA.TABLE_STORAGE_TIMELINE
         WHERE
           DATE(timestamp) = '{date}'
-        GROUP BY 1, 2, 3, 4, 5, 6, 7
-        ORDER BY 1, 2, 3, 4, 5, 6, 7
+        GROUP BY source_project, change_date, project_id, dataset_id, table_id, deleted, creation_date
+        ORDER BY source_project, change_date, project_id, dataset_id, table_id, deleted, creation_date
     """
 
 

@@ -56,19 +56,6 @@ with DAG(
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
-    wait_for_clients_last_seen_joined = ExternalTaskSensor(
-        task_id="wait_for_clients_last_seen_joined",
-        external_dag_id="copy_deduplicate",
-        external_task_id="clients_last_seen_joined",
-        execution_delta=datetime.timedelta(seconds=10800),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    sponsored_tiles_clients_daily_v1.set_upstream(wait_for_clients_last_seen_joined)
     wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
         external_dag_id="bqetl_main_summary",
@@ -83,4 +70,19 @@ with DAG(
 
     sponsored_tiles_clients_daily_v1.set_upstream(
         wait_for_telemetry_derived__clients_daily_joined__v1
+    )
+    wait_for_telemetry_derived__unified_metrics__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__unified_metrics__v1",
+        external_dag_id="bqetl_unified",
+        external_task_id="telemetry_derived__unified_metrics__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    sponsored_tiles_clients_daily_v1.set_upstream(
+        wait_for_telemetry_derived__unified_metrics__v1
     )

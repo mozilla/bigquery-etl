@@ -101,8 +101,8 @@ fields:
   name: normalized_os_version
   type: STRING
 - mode: NULLABLE
-  name: profile_age_in_days
-  type: INTEGER
-- mode: NULLABLE
   name: sample_id
   type: INTEGER
+- mode: NULLABLE
+  name: country
+  type: STRING

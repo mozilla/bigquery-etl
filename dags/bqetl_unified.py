@@ -116,6 +116,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_sponsored_tiles_clients_daily__wait_for_telemetry_derived__unified_metrics__v1",
+            external_dag_id="bqetl_sponsored_tiles_clients_daily",
+            external_task_id="wait_for_telemetry_derived__unified_metrics__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="kpi_forecasting__wait_for_unified_metrics",
             external_dag_id="kpi_forecasting",
             external_task_id="wait_for_unified_metrics",

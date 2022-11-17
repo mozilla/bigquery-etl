@@ -23,15 +23,11 @@ parser.add_argument("--destination_table", default="bigquery_table_storage_v1")
 def create_query(date, source_project):
     """Create query for a source project."""
     return f"""
-
-
         SELECT
-          "{source_project}" AS source_project,
-          DATE('{date}') AS change_date,
+          DATE('{date}') AS creation_date,
           project_id,
           table_schema AS dataset_id,
           table_name AS table_id,
-          DATE(creation_time) AS creation_date,
           total_rows,
           total_partitions,
           total_logical_bytes,
@@ -47,10 +43,10 @@ def create_query(date, source_project):
           (active_physical_bytes/POW(1024, 3) * 0.04)
           + ((long_term_physical_bytes/ POW(1024, 3)) * 0.02)
           AS physical_billing_cost_usd
-        FROM {source_project}.`region-us`.INFORMATION_SCHEMA.TABLE_STORAGE
+        FROM `{source_project}.region-us.INFORMATION_SCHEMA.TABLE_STORAGE`
         WHERE
-          DATE(timestamp) = '{date}'
-        ORDER BY source_project, change_date, project_id, dataset_id, table_id
+          DATE(creation_time) = '{date}'
+        ORDER BY creation_date, project_id, dataset_id, table_id
     """
 
 

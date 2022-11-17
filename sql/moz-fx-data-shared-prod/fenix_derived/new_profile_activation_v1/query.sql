@@ -42,13 +42,16 @@ client_search AS (
   USING
     (client_id)
   WHERE
-    submission_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY)
-    AND @submission_date
+    (
+      submission_date
+      BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY)
+      AND @submission_date
+    )
     AND normalized_app_name = 'Fenix'
-    AND DATE_DIFF(submission_date, first_seen_date, DAY)
-    BETWEEN 4
-    AND 7
+    AND (
+      DATE_DIFF(submission_date, first_seen_date, DAY)
+      BETWEEN 4 AND 7
+    )
   GROUP BY
     1
 ),
@@ -77,9 +80,11 @@ adjust_client AS (
   FROM
     `mozdata.fenix.first_session`
   WHERE
-    DATE(submission_timestamp)
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 6 DAY)
-    AND @submission_date
+    (
+      DATE(submission_timestamp)
+      BETWEEN DATE_SUB(@submission_date, INTERVAL 6 DAY)
+      AND @submission_date
+    )
     AND metrics.string.first_session_network IS NOT NULL
     AND metrics.string.first_session_network <> ''
   GROUP BY

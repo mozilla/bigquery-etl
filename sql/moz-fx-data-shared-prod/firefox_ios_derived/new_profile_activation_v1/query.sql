@@ -42,14 +42,17 @@ client_search AS (
   USING
     (client_id)
   WHERE
-    submission_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY)
-    AND @submission_date
+    (
+      submission_date
+      BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY)
+      AND @submission_date
+    )
     AND normalized_app_name = 'Fennec'
     AND os = 'iOS'
-    AND DATE_DIFF(submission_date, first_seen_date, DAY)
-    BETWEEN 4
-    AND 7
+    AND (
+      DATE_DIFF(submission_date, first_seen_date, DAY)
+      BETWEEN 4 AND 7
+    )
   GROUP BY
     1
 ),

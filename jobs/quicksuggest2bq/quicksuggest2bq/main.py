@@ -11,7 +11,15 @@ import requests
 from dataclasses import asdict, dataclass
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
-from typing import Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
+
+
+@dataclass
+class FullKeyword:
+    """Class that defines the record for a full keyword tuple"""
+
+    keyword: str
+    count: str
 
 
 @dataclass
@@ -32,6 +40,7 @@ class KintoSuggestion:
     # `click_url` and `impression_url` are both optional, they're currently only
     # used by suggestions from adMarketplace. Mozilla's in-house Wikipedia suggestions
     # do not provide those fields.
+    full_keywords: Optional[List[FullKeyword]] = None
     click_url: Optional[str] = None
     impression_url: Optional[str] = None
 
@@ -75,7 +84,14 @@ def download_suggestions(client: kinto_http.Client) -> Iterator[KintoSuggestion]
         # object contains a list of keywords. Load the suggestions into pydantic
         # model instances to discard all fields which we don't care about here.
         for suggestion_data in response.json():
-            yield KintoSuggestion(**suggestion_data)
+            suggestion: Dict[str, Any] = {
+                **suggestion_data,
+                "full_keywords": [
+                    {"keyword": kw, "count": count}
+                    for kw, count in suggestion_data.get("full_keywords", [])
+                ],
+            }
+            yield KintoSuggestion(**suggestion)
 
 
 def store_suggestions(
@@ -108,6 +124,15 @@ def store_suggestions(
             bigquery.SchemaField("impression_url", "STRING"),
             bigquery.SchemaField("id", "INTEGER"),
             bigquery.SchemaField("keywords", "STRING", "REPEATED"),
+            bigquery.SchemaField(
+                "full_keywords",
+                "RECORD",
+                mode="REPEATED",
+                fields=[
+                    bigquery.SchemaField("keyword", "STRING"),
+                    bigquery.SchemaField("count", "INTEGER"),
+                ],
+            ),
             bigquery.SchemaField("title", "STRING"),
             bigquery.SchemaField("url", "STRING"),
         ],

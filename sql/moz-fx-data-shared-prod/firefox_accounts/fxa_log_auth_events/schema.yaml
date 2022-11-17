@@ -35,3 +35,6 @@ fields:
 - mode: NULLABLE
   name: utm_term
   type: STRING
+- mode: NULLABLE
+  name: device_id
+  type: STRING

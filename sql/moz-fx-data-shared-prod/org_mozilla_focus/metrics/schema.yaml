@@ -1901,6 +1901,36 @@ fields:
     mode: NULLABLE
     name: timing_distribution
     type: RECORD
+  - fields:
+    - description: 'The pref value of the cookie banner service mode for normal windows.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: BOOLEAN
+      mode: REPEATED
+      name: cookie_banners_normal_window_service_mode
+      type: RECORD
+    - description: 'The pref value of the cookie banner service mode for private windows.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: BOOLEAN
+      mode: REPEATED
+      name: cookie_banners_private_window_service_mode
+      type: RECORD
+    mode: NULLABLE
+    name: labeled_boolean
+    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

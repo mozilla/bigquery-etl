@@ -135,7 +135,7 @@ class ExperimentV1:
             app_name="firefox_desktop",
             app_id="firefox-desktop",
             channel=self.firefox_channel.lower(),
-            targeting=self.targeting,
+            targeting=None,
         )
 
 

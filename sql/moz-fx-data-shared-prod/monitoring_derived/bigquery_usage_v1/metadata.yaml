@@ -8,3 +8,8 @@ labels:
 scheduling:
   dag_name: bqetl_monitoring
   arguments: ["--date", "{{ ds }}"]
+bigquery:
+  time_partitioning:
+    field: creation_date
+    type: day
+    require_partition_filter: true

@@ -25,10 +25,7 @@ parser.add_argument(
 def create_query(date, source_project):
     """Create query for a source project."""
     return f"""
-
-
         SELECT
-          "{source_project}" AS source_project,
           DATE('{date}') AS change_date,
           project_id,
           table_schema AS dataset_id,
@@ -51,11 +48,11 @@ def create_query(date, source_project):
           avg((active_physical_bytes/POW(1024, 3) * 0.04)
           + ((long_term_physical_bytes/ POW(1024, 3)) * 0.02))
           AS avg_physical_billing_cost_usd
-        FROM {source_project}.`region-us`.INFORMATION_SCHEMA.TABLE_STORAGE_TIMELINE
+        FROM `{source_project}.region-us.INFORMATION_SCHEMA.TABLE_STORAGE_TIMELINE`
         WHERE
           DATE(timestamp) = '{date}'
-        GROUP BY source_project, change_date, project_id, dataset_id, table_id, deleted, creation_date
-        ORDER BY source_project, change_date, project_id, dataset_id, table_id, deleted, creation_date
+        GROUP BY change_date, project_id, dataset_id, table_id, deleted, creation_date
+        ORDER BY change_date, project_id, dataset_id, table_id, deleted, creation_date
     """
 
 

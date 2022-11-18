@@ -7,7 +7,6 @@ from google.cloud import bigquery
 DEFAULT_PROJECTS = [
     "mozdata",
     "moz-fx-data-shared-prod",
-    "moz-fx-data-derived-datasets",
     "moz-fx-data-marketing-prod",
 ]
 
@@ -61,9 +60,7 @@ def main():
     args = parser.parse_args()
 
     partition = args.date.replace("-", "")
-    destination_table = f"""
-    {args.project}.{args.destination_dataset}.{args.destination_table}${partition}
-    """
+    destination_table = f"{args.project}.{args.destination_dataset}.{args.destination_table}${partition}"
 
     for project in args.source_projects:
         client = bigquery.Client(project)

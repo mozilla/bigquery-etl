@@ -160,7 +160,6 @@ class ExperimentV6:
     channel: str
     targeting: str
     bucketConfig: dict
-    targeted_percent: float
 
     @classmethod
     def from_dict(cls, d) -> "ExperimentV6":

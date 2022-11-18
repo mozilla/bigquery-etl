@@ -81,7 +81,7 @@ fields:
   description: Average number of physical bytes used by time travel
 
 - mode: NULLABLE
-  name: logical_billing_cost_usd
+  name: avg_logical_billing_cost_usd
   type: FLOAT
   description: Average costs for logical bytes billing in USD
 

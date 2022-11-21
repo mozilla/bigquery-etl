@@ -61,6 +61,7 @@ class Experiment:
     channel: str
     targeting: str
     targeted_percent: float
+    namespace: Optional[str]
 
 
 def _coerce_none_to_zero(x: Optional[int]) -> int:
@@ -141,6 +142,7 @@ class ExperimentV1:
             channel=self.firefox_channel.lower(),
             targeting="",
             targeted_percent=float(self.population_percent) / 100.0,
+            namespace=None,
         )
 
 
@@ -206,6 +208,7 @@ class ExperimentV6:
             channel=self.channel,
             targeting=self.targeting,
             targeted_percent=self.bucketConfig["count"] / self.bucketConfig["total"],
+            namespace=self.bucketConfig["namespace"],
         )
 
 
@@ -287,6 +290,7 @@ def main():
         bigquery.SchemaField("channel", "STRING"),
         bigquery.SchemaField("targeting", "STRING"),
         bigquery.SchemaField("targeted_percent", "FLOAT"),
+        bigquery.SchemaField("namespace", "STRING"),
     )
 
     job_config = bigquery.LoadJobConfig(

@@ -12,7 +12,7 @@ labels:
   incremental: true
 bigquery:
   time_partitioning:
-    field: merino_date
+    field: submission_date
     type: day
     require_partition_filter: true
     expiration_days: null

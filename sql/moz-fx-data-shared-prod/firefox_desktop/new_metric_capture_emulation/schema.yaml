@@ -358,6 +358,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_renderer_time
       type: RECORD

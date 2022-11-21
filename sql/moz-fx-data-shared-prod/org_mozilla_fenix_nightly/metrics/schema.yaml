@@ -2428,6 +2428,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: gfx_composite_time
       type: RECORD
@@ -2469,6 +2472,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: geckoview_page_load_time
       type: RECORD
@@ -2507,6 +2513,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: geckoview_startup_runtime
       type: RECORD
@@ -2548,6 +2557,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: gfx_checkerboard_duration
       type: RECORD
@@ -2593,6 +2605,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: gfx_checkerboard_potential_duration
       type: RECORD
@@ -2634,6 +2649,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: gfx_content_full_paint_time
       type: RECORD
@@ -2675,6 +2693,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: gfx_content_paint_time
       type: RECORD
@@ -2715,6 +2736,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: gfx_webrender_render_time
       type: RECORD
@@ -2755,6 +2779,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: gfx_webrender_scenebuild_time
       type: RECORD
@@ -2794,6 +2821,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: gfx_webrender_sceneswap_time
       type: RECORD
@@ -2834,6 +2864,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: gfx_webrender_framebuild_time
       type: RECORD
@@ -2872,6 +2905,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: geckoview_page_load_progress_time
       type: RECORD
@@ -2911,6 +2947,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: geckoview_page_reload_time
       type: RECORD
@@ -2951,6 +2990,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: gfx_status_framebuild_time
       type: RECORD
@@ -2990,6 +3032,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: gfx_status_sceneswap_time
       type: RECORD
@@ -3028,6 +3073,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: network_cache_hit_time
       type: RECORD
@@ -3067,6 +3115,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: network_dns_end
       type: RECORD
@@ -3106,6 +3157,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: network_dns_start
       type: RECORD
@@ -3145,6 +3199,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: network_first_from_cache
       type: RECORD
@@ -3183,6 +3240,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: network_font_download_end
       type: RECORD
@@ -3222,6 +3282,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: network_tcp_connection
       type: RECORD
@@ -3261,6 +3324,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: network_tls_handshake
       type: RECORD
@@ -3300,6 +3366,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_interaction_keypress_present_latency
       type: RECORD
@@ -3339,6 +3408,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_interaction_tab_switch_composite
       type: RECORD
@@ -3382,6 +3454,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_page_non_blank_paint
       type: RECORD
@@ -3420,6 +3495,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_page_total_content_page_load
       type: RECORD
@@ -3459,6 +3537,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_time_dom_complete
       type: RECORD
@@ -3498,6 +3579,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_time_dom_content_loaded_end
       type: RECORD
@@ -3537,6 +3621,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_time_dom_content_loaded_start
       type: RECORD
@@ -3576,6 +3663,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_time_dom_interactive
       type: RECORD
@@ -3615,6 +3705,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_time_load_event_end
       type: RECORD
@@ -3654,6 +3747,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_time_load_event_start
       type: RECORD
@@ -3693,6 +3789,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_time_response_start
       type: RECORD
@@ -3732,6 +3831,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: gfx_scroll_present_latency
       type: RECORD
@@ -3771,6 +3873,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: logins_store_read_query_time
       type: RECORD
@@ -3810,6 +3915,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: logins_store_unlock_time
       type: RECORD
@@ -3849,6 +3957,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: logins_store_write_query_time
       type: RECORD
@@ -3887,6 +3998,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: javascript_gc_total_time
       type: RECORD
@@ -3925,6 +4039,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: perf_awesomebar_bookmark_suggestions
       type: RECORD
@@ -3963,6 +4080,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: perf_awesomebar_clipboard_suggestions
       type: RECORD
@@ -4001,6 +4121,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: perf_awesomebar_history_suggestions
       type: RECORD
@@ -4039,6 +4162,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: perf_awesomebar_search_engine_suggestions
       type: RECORD
@@ -4077,6 +4203,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: perf_awesomebar_session_suggestions
       type: RECORD
@@ -4115,6 +4244,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: perf_awesomebar_shortcuts_suggestions
       type: RECORD
@@ -4153,6 +4285,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: perf_awesomebar_synced_tabs_suggestions
       type: RECORD
@@ -4191,6 +4326,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: geckoview_content_process_lifetime
       type: RECORD
@@ -4229,6 +4367,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: javascript_gc_compact_time
       type: RECORD
@@ -4267,6 +4408,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: javascript_gc_mark_roots_time
       type: RECORD
@@ -4305,6 +4449,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: javascript_gc_mark_time
       type: RECORD
@@ -4343,6 +4490,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: javascript_gc_minor_time
       type: RECORD
@@ -4381,6 +4531,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: javascript_gc_prepare_time
       type: RECORD
@@ -4419,6 +4572,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: javascript_gc_slice_time
       type: RECORD
@@ -4457,6 +4613,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: javascript_gc_sweep_time
       type: RECORD
@@ -4495,6 +4654,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: places_manager_read_query_time
       type: RECORD
@@ -4535,6 +4697,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: places_manager_scan_query_time
       type: RECORD
@@ -4573,6 +4738,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: places_manager_write_query_time
       type: RECORD
@@ -4618,6 +4786,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: storage_stats_query_stats_duration
       type: RECORD
@@ -4659,6 +4830,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_time_load_event_end_no_preload
       type: RECORD
@@ -4701,6 +4875,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_time_load_event_end_preload
       type: RECORD
@@ -4742,6 +4919,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_time_load_event_start_no_preload
       type: RECORD
@@ -4784,6 +4964,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_time_load_event_start_preload
       type: RECORD
@@ -4823,6 +5006,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: js_bytecode_caching_time
       type: RECORD
@@ -4862,6 +5048,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_pageload_dcl
       type: RECORD
@@ -4901,6 +5090,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_pageload_dcl_responsestart
       type: RECORD
@@ -4942,6 +5134,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_pageload_fcp
       type: RECORD
@@ -4983,6 +5178,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_pageload_fcp_responsestart
       type: RECORD
@@ -5022,6 +5220,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_pageload_load_time
       type: RECORD
@@ -5061,6 +5262,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_pageload_load_time_responsestart
       type: RECORD
@@ -5100,6 +5304,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_pageload_req_anim_frame_callback
       type: RECORD
@@ -5139,6 +5346,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_responsiveness_req_anim_frame_callback
       type: RECORD
@@ -5182,6 +5392,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: perf_startup_application_on_create
       type: RECORD
@@ -5220,6 +5433,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: perf_startup_home_activity_on_create
       type: RECORD
@@ -5261,6 +5477,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: engine_tab_kill_background_age
       type: RECORD
@@ -5302,6 +5521,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: engine_tab_kill_foreground_age
       type: RECORD
@@ -5341,6 +5563,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_interaction_mouseup_click_present_latency
       type: RECORD
@@ -5388,6 +5613,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: perf_startup_app_on_create_to_glean_init
       type: RECORD
@@ -5431,6 +5659,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: perf_startup_app_on_create_to_megazord_init
       type: RECORD
@@ -5478,6 +5709,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: perf_startup_app_on_create_to_setup_in_main
       type: RECORD
@@ -5516,6 +5750,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: perf_startup_base_bfragment_on_create_view
       type: RECORD
@@ -5554,6 +5791,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: perf_startup_base_bfragment_on_view_created
       type: RECORD
@@ -5602,6 +5842,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: perf_startup_home_activity_on_start
       type: RECORD
@@ -5640,6 +5883,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: perf_startup_home_fragment_on_create_view
       type: RECORD
@@ -5678,6 +5924,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: perf_startup_home_fragment_on_view_created
       type: RECORD
@@ -5749,6 +5998,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: perf_startup_cold_main_app_to_first_frame
       type: RECORD
@@ -5808,6 +6060,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: perf_startup_cold_unknwn_app_to_first_frame
       type: RECORD
@@ -5871,6 +6126,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: perf_startup_cold_view_app_to_first_frame
       type: RECORD
@@ -5909,6 +6167,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: javascript_pageload_baseline_compile_time
       type: RECORD
@@ -5947,6 +6208,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: javascript_pageload_delazification_time
       type: RECORD
@@ -5985,6 +6249,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: javascript_pageload_execution_time
       type: RECORD
@@ -6023,6 +6290,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: javascript_pageload_gc_time
       type: RECORD
@@ -6062,6 +6332,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: javascript_pageload_parse_time
       type: RECORD
@@ -6100,6 +6373,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: javascript_pageload_protect_time
       type: RECORD
@@ -6138,6 +6414,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: javascript_pageload_xdr_encode_time
       type: RECORD
@@ -6176,6 +6455,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_clone_deserialize_time
       type: RECORD
@@ -6216,6 +6498,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: fog_ipc_flush_durations
       type: RECORD
@@ -6254,6 +6539,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: paint_build_displaylist_time
       type: RECORD
@@ -6292,6 +6580,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_rasterize_glyphs_time
       type: RECORD
@@ -6331,6 +6622,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: recent_synced_tabs_recent_synced_tab_time_to_load
       type: RECORD
@@ -6369,6 +6663,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_framebuild_time
       type: RECORD
@@ -6407,6 +6704,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_scenebuild_time
       type: RECORD
@@ -6445,6 +6745,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_sceneswap_time
       type: RECORD
@@ -6483,6 +6786,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_rasterize_blobs_time
       type: RECORD
@@ -6522,6 +6828,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_gpu_wait_time
       type: RECORD
@@ -6560,6 +6869,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_renderer_time
       type: RECORD
@@ -6598,6 +6910,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_texture_cache_update_time
       type: RECORD
@@ -6637,6 +6952,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_time_to_frame_build
       type: RECORD
@@ -6676,6 +6994,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_time_to_render_start
       type: RECORD
@@ -6715,6 +7036,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_renderer_time_no_sc
       type: RECORD
@@ -6751,6 +7075,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: places_manager_run_maintenance_time
       type: RECORD
@@ -6790,8 +7117,167 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: network_open_to_transaction_pending
+      type: RECORD
+    - description: Time taken to execute `PRAGMA_CHECKPOINT` inside `run_maintenance()`
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: places_manager_run_maintenance_chk_pnt_time
+      type: RECORD
+    - description: Time taken to execute `PRAGMA optimize` inside `run_maintenance()`
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: places_manager_run_maintenance_optimize_time
+      type: RECORD
+    - description: Time taken to execute `prune_older_visits()` inside `run_maintenance()`
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: places_manager_run_maintenance_prune_time
+      type: RECORD
+    - description: Time taken to execute `VACUUM` inside `run_maintenance()`
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: places_manager_run_maintenance_vacuum_time
       type: RECORD
     mode: NULLABLE
     name: timing_distribution
@@ -6816,6 +7302,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: gfx_checkerboard_peak_pixel_count
       type: RECORD
@@ -6839,6 +7328,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: gfx_checkerboard_severity
       type: RECORD
@@ -6860,6 +7352,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: gfx_content_frame_time_from_paint
       type: RECORD
@@ -6882,6 +7377,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: gfx_content_frame_time_from_vsync
       type: RECORD
@@ -6904,6 +7402,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: gfx_content_frame_time_with_svg
       type: RECORD
@@ -6926,6 +7427,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: gfx_content_frame_time_without_resource_upload
       type: RECORD
@@ -6948,6 +7452,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: gfx_content_frame_time_without_upload
       type: RECORD
@@ -6971,6 +7478,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: geckoview_document_site_origins
       type: RECORD
@@ -6993,6 +7503,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: geckoview_per_document_site_origins
       type: RECORD
@@ -7014,6 +7527,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: js_baseline_compile_percentage
       type: RECORD
@@ -7035,6 +7551,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: js_delazification_percentage
       type: RECORD
@@ -7055,6 +7574,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: js_execution_percentage
       type: RECORD
@@ -7076,6 +7598,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: js_xdr_encode_percentage
       type: RECORD
@@ -7096,6 +7621,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_clone_deserialize_items
       type: RECORD
@@ -7136,6 +7664,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: search_terms_group_size_distribution
       type: RECORD
@@ -7157,6 +7688,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: power_battery_percentage_when_user_active
       type: RECORD
@@ -7251,6 +7785,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: glean_upload_discarded_exceeding_pings_size
       type: RECORD
@@ -7282,6 +7819,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: storage_stats_app_bytes
       type: RECORD
@@ -7306,6 +7846,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: storage_stats_cache_bytes
       type: RECORD
@@ -7334,6 +7877,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: storage_stats_data_dir_bytes
       type: RECORD
@@ -7357,6 +7903,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: glean_upload_pending_pings_directory_size
       type: RECORD
@@ -7377,6 +7926,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: glean_database_size
       type: RECORD
@@ -7397,6 +7949,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: performance_clone_deserialize_size
       type: RECORD
@@ -7418,6 +7973,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: fog_ipc_buffer_sizes
       type: RECORD
@@ -7438,6 +7996,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: places_manager_db_size_after_maintenance
       type: RECORD

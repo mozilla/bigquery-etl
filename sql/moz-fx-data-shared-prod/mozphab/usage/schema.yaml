@@ -334,6 +334,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: mozphab_submission_files_size
       type: RECORD

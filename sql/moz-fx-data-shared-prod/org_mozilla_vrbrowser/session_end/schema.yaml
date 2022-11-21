@@ -415,6 +415,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: windows_active_in_front_time
       type: RECORD
@@ -455,6 +458,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: windows_active_in_left_time
       type: RECORD
@@ -495,6 +501,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: windows_active_in_right_time
       type: RECORD
@@ -533,6 +542,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: windows_double_pri_window_opened_time
       type: RECORD
@@ -571,6 +583,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: windows_double_window_opened_time
       type: RECORD
@@ -609,6 +624,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: windows_single_pri_window_opened_time
       type: RECORD
@@ -647,6 +665,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: windows_single_window_opened_time
       type: RECORD
@@ -685,6 +706,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: windows_triple_pri_window_opened_time
       type: RECORD
@@ -723,6 +747,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: windows_triple_window_opened_time
       type: RECORD

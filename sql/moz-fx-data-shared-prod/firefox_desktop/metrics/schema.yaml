@@ -441,6 +441,12 @@ fields:
       mode: NULLABLE
       name: fog_ipc_shutdown_registration_failures
       type: INTEGER
+    - description: 'The number of PingCentre send failures.
+
+        '
+      mode: NULLABLE
+      name: ping_centre_send_failures
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -846,6 +852,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: glean_upload_discarded_exceeding_pings_size
       type: RECORD
@@ -869,6 +878,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: glean_upload_pending_pings_directory_size
       type: RECORD
@@ -889,6 +901,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: glean_database_size
       type: RECORD
@@ -910,6 +925,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: fog_ipc_buffer_sizes
       type: RECORD
@@ -1132,6 +1150,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: fog_ipc_flush_durations
       type: RECORD
@@ -1170,6 +1191,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: paint_build_displaylist_time
       type: RECORD
@@ -1208,6 +1232,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_rasterize_glyphs_time
       type: RECORD
@@ -1246,6 +1273,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_framebuild_time
       type: RECORD
@@ -1284,6 +1314,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_scenebuild_time
       type: RECORD
@@ -1322,6 +1355,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_sceneswap_time
       type: RECORD
@@ -1360,6 +1396,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_rasterize_blobs_time
       type: RECORD
@@ -1399,6 +1438,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_gpu_wait_time
       type: RECORD
@@ -1437,6 +1479,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_renderer_time
       type: RECORD
@@ -1475,6 +1520,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_texture_cache_update_time
       type: RECORD
@@ -1514,6 +1562,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_time_to_frame_build
       type: RECORD
@@ -1553,6 +1604,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_time_to_render_start
       type: RECORD
@@ -1592,6 +1646,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: wr_renderer_time_no_sc
       type: RECORD
@@ -1631,6 +1688,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: network_open_to_transaction_pending
       type: RECORD
@@ -1779,6 +1839,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: power_battery_percentage_when_user_active
       type: RECORD

@@ -525,6 +525,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: glean_upload_discarded_exceeding_pings_size
       type: RECORD
@@ -548,6 +551,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: glean_upload_pending_pings_directory_size
       type: RECORD
@@ -568,6 +574,9 @@ fields:
         mode: REPEATED
         name: values
         type: RECORD
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
       mode: NULLABLE
       name: glean_database_size
       type: RECORD

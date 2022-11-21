@@ -28,8 +28,7 @@ WITH fxa_auth_events AS (
   -- but should always be included for a complete raw event log.
 fxa_auth_bounce_events AS (
   SELECT
-    `timestamp`,
-    receiveTimestamp,
+    timestamp AS submission_timestamp,
     jsonPayload.fields.user_id,
     CAST(
       NULL AS STRING
@@ -48,8 +47,7 @@ fxa_auth_bounce_events AS (
 ),
 fxa_content_events AS (
   SELECT
-    `timestamp`,
-    receiveTimestamp,
+    timestamp AS submission_timestamp,
     jsonPayload.fields.user_id,
     jsonPayload.fields.country,
     jsonPayload.fields.language,
@@ -67,8 +65,7 @@ fxa_content_events AS (
 -- oauth events, see the note on top
 fxa_oauth_events AS (
   SELECT
-    `timestamp`,
-    receiveTimestamp,
+    timestamp AS submission_timestamp,
     jsonPayload.fields.user_id,
     CAST(NULL AS STRING) AS country,
     CAST(NULL AS STRING) AS language,

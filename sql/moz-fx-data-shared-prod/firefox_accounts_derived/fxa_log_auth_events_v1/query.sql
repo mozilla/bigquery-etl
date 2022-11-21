@@ -33,4 +33,4 @@ WHERE
       'sms.installFirefox.sent'
     )
   )
-  AND _TABLE_SUFFIX = FORMAT_DATE('%y%m%d', @submission_date)
+  AND DATE(`timestamp`) = @submission_date

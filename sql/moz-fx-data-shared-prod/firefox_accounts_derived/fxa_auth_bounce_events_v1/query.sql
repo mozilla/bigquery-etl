@@ -18,4 +18,4 @@ WHERE
   jsonPayload.type = 'amplitudeEvent'
   AND jsonPayload.fields.event_type IS NOT NULL
   AND jsonPayload.fields.user_id IS NOT NULL
-  AND _TABLE_SUFFIX = FORMAT_DATE('%y%m%d', @submission_date)
+  AND DATE(`timestamp`) = @submission_date

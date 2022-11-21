@@ -500,6 +500,9 @@ clients_summary AS (
     payload.processes.parent.keyed_scalars.browser_search_content_urlbar_handoff,
     payload.processes.parent.keyed_scalars.browser_search_withads_urlbar_handoff,
     payload.processes.parent.keyed_scalars.browser_search_adclicks_urlbar_handoff,
+    payload.processes.parent.keyed_scalars.browser_search_content_urlbar_persisted,
+    payload.processes.parent.keyed_scalars.browser_search_withads_urlbar_persisted,
+    payload.processes.parent.keyed_scalars.browser_search_adclicks_urlbar_persisted,
     payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click,
     payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression,
     payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help,
@@ -1155,7 +1158,8 @@ aggregates AS (
                 browser_search_adclicks_tabhistory,
                 browser_search_adclicks_reload,
                 browser_search_adclicks_unknown,
-                browser_search_adclicks_urlbar_handoff
+                browser_search_adclicks_urlbar_handoff,
+                browser_search_adclicks_urlbar_persisted
               )
             )
         )
@@ -1181,7 +1185,8 @@ aggregates AS (
                 browser_search_withads_tabhistory,
                 browser_search_withads_reload,
                 browser_search_withads_unknown,
-                browser_search_withads_urlbar_handoff
+                browser_search_withads_urlbar_handoff,
+                browser_search_withads_urlbar_persisted
               )
             )
         )
@@ -1287,6 +1292,9 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(browser_search_content_urlbar_handoff)),
       STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_urlbar_handoff)),
       STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar_handoff)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_urlbar_persisted)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_urlbar_persisted)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar_persisted)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help)),
@@ -1528,5 +1536,8 @@ SELECT
   map_sum_aggregates[OFFSET(89)].map AS contextual_services_topsites_click_sum,
   map_sum_aggregates[OFFSET(90)].map AS contextual_services_topsites_impression_sum,
   map_sum_aggregates[OFFSET(91)].map AS scalar_parent_browser_ui_interaction_content_context_sum,
+  map_sum_aggregates[OFFSET(92)].map AS search_content_urlbar_persisted_sum,
+  map_sum_aggregates[OFFSET(93)].map AS search_withads_urlbar_persisted_sum,
+  map_sum_aggregates[OFFSET(94)].map AS search_adclicks_urlbar_persisted_sum,
 FROM
   udf_aggregates

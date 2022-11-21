@@ -18,7 +18,6 @@ bigquery:
     expiration_days: null
   clustering:
     fields: []
-references: {}
 scheduling:
   dag_name: bqetl_search_terms_daily
   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']

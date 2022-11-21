@@ -29,7 +29,7 @@ daily_queries_with_threshold AS (
         SUBMISSION_DATE ASC
     ) AS search_sessions_in_last_7_days
   FROM
-    DAILY_QUERIES
+    daily_queries
 )
 SELECT
   * EXCEPT (search_sessions_in_last_7_days)

@@ -60,6 +60,7 @@ class Experiment:
     app_id: str
     channel: str
     targeting: str
+    targeted_percent: float
 
 
 def _coerce_none_to_zero(x: Optional[int]) -> int:
@@ -88,6 +89,7 @@ class ExperimentV1:
     variants: List[Variant]
     proposed_enrollment: Optional[int] = attr.ib(converter=_coerce_none_to_zero)
     firefox_channel: str
+    population_percent: float
     normandy_slug: Optional[str] = None
     is_high_population: Optional[bool] = None
 
@@ -138,6 +140,7 @@ class ExperimentV1:
             app_id="firefox-desktop",
             channel=self.firefox_channel.lower(),
             targeting="",
+            targeted_percent=float(self.population_percent) / 100.0,
         )
 
 
@@ -156,6 +159,7 @@ class ExperimentV6:
     appId: str
     channel: str
     targeting: str
+    bucketConfig: dict
 
     @classmethod
     def from_dict(cls, d) -> "ExperimentV6":
@@ -201,6 +205,7 @@ class ExperimentV6:
             app_id=self.appId,
             channel=self.channel,
             targeting=self.targeting,
+            targeted_percent=self.bucketConfig["count"] / self.bucketConfig["total"],
         )
 
 
@@ -281,6 +286,7 @@ def main():
         bigquery.SchemaField("app_name", "STRING"),
         bigquery.SchemaField("channel", "STRING"),
         bigquery.SchemaField("targeting", "STRING"),
+        bigquery.SchemaField("targeted_percent", "FLOAT"),
     )
 
     job_config = bigquery.LoadJobConfig(

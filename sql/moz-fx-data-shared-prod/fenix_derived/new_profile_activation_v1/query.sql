@@ -1,3 +1,9 @@
+-- This table implements the Mobile activation metric defined in June 2022
+-- Based on data from the first seven days since profile creation, we select
+-- clients with at least three days of use (first open plus two) and who
+-- perform a search on the later half of the week. As such, this table will
+-- always lag new profiles by seven days and the CTEs are filtered for
+-- corresponding periods.
 WITH client_first_seen AS (
   SELECT
     client_id,
@@ -12,24 +18,11 @@ WITH client_first_seen AS (
     locale,
     city,
     country,
-    MIN(first_seen_date) AS first_seen_date
+    first_seen_date
   FROM
     mozdata.fenix.baseline_clients_first_seen
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 6 DAY)
-  GROUP BY
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12
 ),
 client_search AS (
   SELECT
@@ -42,16 +35,8 @@ client_search AS (
   USING
     (client_id)
   WHERE
-    (
-      submission_date
-      BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY)
-      AND @submission_date
-    )
+    (submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY) AND @submission_date)
     AND normalized_app_name = 'Fenix'
-    AND (
-      DATE_DIFF(submission_date, first_seen_date, DAY)
-      BETWEEN 4 AND 7
-    )
   GROUP BY
     1
 ),

@@ -19,3 +19,13 @@ bigquery:
 scheduling:
   dag_name: bqetl_search_terms_daily
   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+- mode: NULLABLE
+  name: query
+  type: STRING
+- mode: NULLABLE
+  name: search_sessions
+  type: INTEGER

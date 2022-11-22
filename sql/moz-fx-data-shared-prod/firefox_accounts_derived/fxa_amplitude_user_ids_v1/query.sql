@@ -15,7 +15,7 @@ SELECT
     udf.hmac_sha256((SELECT * FROM hmac_key), CAST(jsonPayload.fields.user_id AS BYTES))
   ) AS user_id
 FROM
-  `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth_20*`
+  `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth`
 WHERE
   DATE(`timestamp`) = @submission_date
 UNION DISTINCT

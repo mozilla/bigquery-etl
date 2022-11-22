@@ -13,7 +13,7 @@ SELECT
     ) AS jsonPayload
   )
 FROM
-  `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth_bounces_20*`
+  `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth_bounces`
 WHERE
   jsonPayload.type = 'amplitudeEvent'
   AND jsonPayload.fields.event_type IS NOT NULL

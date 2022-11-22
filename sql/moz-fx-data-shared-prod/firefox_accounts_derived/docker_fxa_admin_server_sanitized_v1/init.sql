@@ -21,6 +21,6 @@ SELECT
     ) AS jsonPayload
   )
 FROM
-  `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_admin_server_20*`
+  `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_admin_server`
 WHERE
   DATE(`timestamp`) >= "2022-08-01"

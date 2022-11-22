@@ -1,0 +1,73 @@
+fields:
+- description: Date of when storage was last recalculated
+  mode: NULLABLE
+  name: change_date
+  type: DATE
+- description: The ID of the project that contains the dataset
+  mode: NULLABLE
+  name: project_id
+  type: STRING
+- description: The name of the dataset that contains the table
+  mode: NULLABLE
+  name: dataset_id
+  type: STRING
+- description: The name of the table
+  mode: NULLABLE
+  name: table_id
+  type: STRING
+- description: Indicates whether or not the table is deleted
+  mode: NULLABLE
+  name: deleted
+  type: BOOLEAN
+- description: The table's creation date
+  mode: NULLABLE
+  name: creation_date
+  type: DATE
+- description: The total number of changes
+  mode: NULLABLE
+  name: change_count
+  type: INTEGER
+- description: Average total number of rows in the table
+  mode: NULLABLE
+  name: avg_total_rows
+  type: FLOAT
+- description: Average total number of partitions in the table
+  mode: NULLABLE
+  name: avg_total_partitions
+  type: FLOAT
+- description: Average total number of logical bytes in the table
+  mode: NULLABLE
+  name: avg_total_logical_bytes
+  type: FLOAT
+- description: Average number of logical bytes less than 90 days old
+  mode: NULLABLE
+  name: avg_active_logical_bytes
+  type: FLOAT
+- description: Average number of logical bytes more than 90 days old
+  mode: NULLABLE
+  name: avg_long_term_logical_bytes
+  type: FLOAT
+- description: Average total number of physical bytes used for storage
+  mode: NULLABLE
+  name: avg_total_physical_bytes
+  type: FLOAT
+- description: Average number of physical bytes less than 90 days old
+  mode: NULLABLE
+  name: avg_active_physical_bytes
+  type: FLOAT
+- description: Average number of physical bytes more than 90 days old
+  mode: NULLABLE
+  name: avg_long_term_physical_bytes
+  type: FLOAT
+- description: Average number of physical bytes used by time travel
+  mode: NULLABLE
+  name: avg_time_travel_physical_bytes
+  type: FLOAT
+- description: Average costs for logical bytes billing in USD
+  mode: NULLABLE
+  name: avg_logical_billing_cost_usd
+  type: FLOAT
+- description: Average costs for physical bytes billing in USD
+  mode: NULLABLE
+  name: avg_physical_billing_cost_usd
+  type: FLOAT

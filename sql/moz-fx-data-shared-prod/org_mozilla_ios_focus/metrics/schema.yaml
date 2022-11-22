@@ -414,6 +414,12 @@ fields:
       mode: NULLABLE
       name: default_browser_onboarding_go_to_settings_pressed
       type: INTEGER
+    - description: 'Counts the number of times pdf view is opened in browser.
+
+        '
+      mode: NULLABLE
+      name: browser_pdf_viewer_used
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -709,6 +715,14 @@ fields:
         '
       mode: NULLABLE
       name: search_default_engine
+      type: STRING
+    - description: 'Records the name of the keyboard (custom or default) everytime
+
+        the keyboard appears on the screen.
+
+        '
+      mode: NULLABLE
+      name: app_keyboard_type
       type: STRING
     mode: NULLABLE
     name: string

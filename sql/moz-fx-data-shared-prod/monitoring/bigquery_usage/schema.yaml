@@ -1,0 +1,81 @@
+fields:
+- description: Project used for executing job
+  mode: NULLABLE
+  name: source_project
+  type: STRING
+- description: Job creation date
+  mode: NULLABLE
+  name: creation_date
+  type: DATE
+- description: ID of job
+  mode: NULLABLE
+  name: job_id
+  type: STRING
+- description: The type of the job
+  mode: NULLABLE
+  name: job_type
+  type: STRING
+- description: Running state of the job
+  mode: NULLABLE
+  name: state
+  type: STRING
+- description: The ID of the project referenced by the job
+  mode: NULLABLE
+  name: reference_project_id
+  type: STRING
+- description: The ID of the dataset referenced by the job
+  mode: NULLABLE
+  name: reference_dataset_id
+  type: STRING
+- description: The ID of the table referenced by the job
+  mode: NULLABLE
+  name: reference_table_id
+  type: STRING
+- description: The ID of the project containing the destination table
+  mode: NULLABLE
+  name: destination_project_id
+  type: STRING
+- description: The ID of the dataset containing the destination table
+  mode: NULLABLE
+  name: destination_dataset_id
+  type: STRING
+- description: The ID of the destination table
+  mode: NULLABLE
+  name: destination_table_id
+  type: STRING
+- description: Email address or service account of the user who ran the job
+  mode: NULLABLE
+  name: user_email
+  type: STRING
+- description: Email address of the user who ran the query
+  mode: NULLABLE
+  name: username
+  type: STRING
+- description: query id of the job
+  mode: NULLABLE
+  name: query_id
+  type: STRING
+- description: The time it took to run the job
+  mode: NULLABLE
+  name: task_duration
+  type: INTERVAL
+- description: Total terabytes processed by the job
+  mode: NULLABLE
+  name: total_terabytes_processed
+  type: FLOAT
+- description: Total cost of the job in USD
+  mode: NULLABLE
+  name: cost_usd
+  type: FLOAT
+- description: Specifies where the error occurred, if present
+  mode: NULLABLE
+  name: error_location
+  type: STRING
+- description: A short error code that summarizes the error
+  mode: NULLABLE
+  name: error_reason
+  type: STRING
+- description: A human-readable description of the error
+  mode: NULLABLE
+  name: error_message
+  type: STRING

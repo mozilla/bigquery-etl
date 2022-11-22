@@ -1,0 +1,21 @@
+fields:
+- description: The table's creation date
+  mode: NULLABLE
+  name: creation_date
+  type: DATE
+- description: The ID of the project that contains the dataset
+  mode: NULLABLE
+  name: project_id
+  type: STRING
+- description: The name of the dataset that contains the table or view
+  mode: NULLABLE
+  name: dataset_id
+  type: STRING
+- description: The name of the table or view
+  mode: NULLABLE
+  name: table_id
+  type: STRING
+- description: The table type
+  mode: NULLABLE
+  name: table_type
+  type: STRING

@@ -1526,7 +1526,7 @@ def deploy(
             click.echo(f"{query_file} dry runs are skipped. Cannot validate schemas.")
             continue
 
-        if str(query_file).endswith('.py'):
+        if str(query_file).endswith(".py"):
             click.echo(f" Cannot validate schemas for python file {query_file}")
             continue
 

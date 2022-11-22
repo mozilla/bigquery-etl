@@ -68,6 +68,11 @@ WHERE
   submission_date = @submission_date
   -- Filter out events associated with suspiciously active clients.
   AND NOT (user_event_count > 50 AND event_type = 'click')
+  AND IF(
+    DATE_DIFF(CURRENT_DATE(), @submission_date, DAY) > 30,
+    ERROR("Data older than 30 days has been removed"),
+    NULL
+  ) IS NULL
 GROUP BY
   submission_date,
   form_factor,

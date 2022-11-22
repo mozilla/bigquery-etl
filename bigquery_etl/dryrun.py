@@ -552,7 +552,7 @@ class DryRun:
         # delay import to prevent circular imports in 'bigquery_etl.schema'
         from .schema import SCHEMA_FILE, Schema
 
-        if self.skip() or basename(self.sqlfile) == "script.sql":
+        if self.skip() or basename(self.sqlfile) == "script.sql" or str(self.sqlfile).endswith('.py'):
             print(f"\t...Ignoring schema validation for {self.sqlfile}")
             return True
 

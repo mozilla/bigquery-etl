@@ -55,7 +55,7 @@ WITH per_build_client_day AS (
                 >[
       (
         '{{ metric }}',
-        CONCAT('histogram-', '{{ metric_type }}'),
+        CONCAT('histogram-', '{{ metric_kind }}'),
         '{{ process }}',
         {{ probe_location }},
         ( {{ first_bucket }}, {{ last_bucket }}, {{ num_buckets }})
@@ -126,10 +126,10 @@ aggregated AS (
     channel,
     metric,
     metric_type,
-    process,
     {% if is_keyed %}
-        key
+      key
     {% endif %}
+    process
 ),
 intermediate_histogram AS (SELECT
   sample_id,
@@ -266,10 +266,10 @@ bucket_counts AS (
     process,
     agg_type,
     aggregates,
-    os = 'Windows'
     -- If source table is main_1pct_v1 it's always sampled
+    -- os = 'Windows'
     --AND channel = 'release' AS sampled
-    AND TRUE AS sampled
+    TRUE AS sampled
   FROM
     pre_bucket_counts
   CROSS JOIN

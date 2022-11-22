@@ -27,7 +27,7 @@ WITH base AS (
       ) AS jsonPayload
     )
   FROM
-    `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth_20*`
+    `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth`
   WHERE
     DATE(`timestamp`) = @submission_date
 )

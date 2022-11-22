@@ -13,6 +13,6 @@ SELECT
     ) AS jsonPayload
   )
 FROM
-  `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_customs*`
+  `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_customs`
 WHERE
   DATE(`timestamp`) = "2020-01-01"

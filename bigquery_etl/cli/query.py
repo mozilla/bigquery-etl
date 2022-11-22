@@ -1526,10 +1526,6 @@ def deploy(
             click.echo(f"{query_file} dry runs are skipped. Cannot validate schemas.")
             continue
 
-        if str(query_file).endswith(".py"):
-            click.echo(f" Cannot validate schemas for python file {query_file}")
-            continue
-
         query_file_path = Path(query_file)
         existing_schema_path = query_file_path.parent / SCHEMA_FILE
 
@@ -1546,7 +1542,7 @@ def deploy(
 
         existing_schema = Schema.from_schema_file(existing_schema_path)
 
-        if not force:
+        if not force and not str(query_file_path).endswith('.py'):
             query_schema = Schema.from_query_file(
                 query_file_path,
                 use_cloud_function=use_cloud_function,

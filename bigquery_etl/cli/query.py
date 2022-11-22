@@ -1542,7 +1542,7 @@ def deploy(
 
         existing_schema = Schema.from_schema_file(existing_schema_path)
 
-        if not force and not str(query_file_path).endswith('.py'):
+        if not force and not str(query_file_path).endswith(".py"):
             query_schema = Schema.from_query_file(
                 query_file_path,
                 use_cloud_function=use_cloud_function,

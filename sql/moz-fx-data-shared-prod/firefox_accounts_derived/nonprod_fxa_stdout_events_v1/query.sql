@@ -13,7 +13,7 @@ SELECT
     ) AS jsonPayload
   )
 FROM
-  `moz-fx-fxa-nonprod-375e.fxa_stage_logs.stdout_20*`
+  `moz-fx-fxa-nonprod-375e.fxa_stage_logs.stdout`
 WHERE
   jsonPayload.type = 'amplitudeEvent'
   AND jsonPayload.fields.event_type IS NOT NULL

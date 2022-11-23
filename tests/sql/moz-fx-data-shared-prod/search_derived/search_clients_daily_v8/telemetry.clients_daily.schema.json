@@ -815,6 +815,23 @@
       }
     ],
     "mode": "REPEATED",
+    "name": "search_withads_urlbar_persisted_sum",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
     "name": "search_withads_urlbar_searchmode_sum",
     "type": "RECORD"
   },
@@ -988,7 +1005,7 @@
     "name": "search_adclicks_urlbar_sum",
     "type": "RECORD"
   },
-    {
+  {
     "fields": [
       {
         "mode": "NULLABLE",
@@ -1003,6 +1020,23 @@
     ],
     "mode": "REPEATED",
     "name": "search_adclicks_urlbar_handoff_sum",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "value",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "search_adclicks_urlbar_persisted_sum",
     "type": "RECORD"
   },
   {

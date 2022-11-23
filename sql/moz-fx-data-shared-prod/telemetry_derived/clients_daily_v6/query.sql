@@ -1292,9 +1292,6 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(browser_search_content_urlbar_handoff)),
       STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_urlbar_handoff)),
       STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar_handoff)),
-      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_urlbar_persisted)),
-      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_urlbar_persisted)),
-      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar_persisted)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help)),
@@ -1310,7 +1307,10 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_nonsponsored_bestmatch)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_topsites_click)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_topsites_impression)),
-      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_browser_ui_interaction_content_context))
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_browser_ui_interaction_content_context)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_urlbar_persisted)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_urlbar_persisted)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar_persisted))
     ] AS map_sum_aggregates,
     udf.search_counts_map_sum(ARRAY_CONCAT_AGG(search_counts)) AS search_counts,
     mozfun.stats.mode_last(

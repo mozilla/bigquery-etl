@@ -20143,6 +20143,30 @@ fields:
       mode: NULLABLE
       name: use_counter2_deprecated_moz_text_style_page
       type: STRING
+    - description: Whether a document used the CSS property container
+      mode: NULLABLE
+      name: use_counter2_css_property_container_document
+      type: STRING
+    - description: Whether a document used the CSS property container-name
+      mode: NULLABLE
+      name: use_counter2_css_property_container_name_document
+      type: STRING
+    - description: Whether a page used the CSS property container-name
+      mode: NULLABLE
+      name: use_counter2_css_property_container_name_page
+      type: STRING
+    - description: Whether a page used the CSS property container
+      mode: NULLABLE
+      name: use_counter2_css_property_container_page
+      type: STRING
+    - description: Whether a document used the CSS property container-type
+      mode: NULLABLE
+      name: use_counter2_css_property_container_type_document
+      type: STRING
+    - description: Whether a page used the CSS property container-type
+      mode: NULLABLE
+      name: use_counter2_css_property_container_type_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -41577,6 +41601,30 @@ fields:
         - description: Whether a page used MozTextStyle
           mode: NULLABLE
           name: use_counter2_deprecated_moz_text_style_page
+          type: STRING
+        - description: Whether a document used the CSS property container
+          mode: NULLABLE
+          name: use_counter2_css_property_container_document
+          type: STRING
+        - description: Whether a document used the CSS property container-name
+          mode: NULLABLE
+          name: use_counter2_css_property_container_name_document
+          type: STRING
+        - description: Whether a page used the CSS property container-name
+          mode: NULLABLE
+          name: use_counter2_css_property_container_name_page
+          type: STRING
+        - description: Whether a page used the CSS property container
+          mode: NULLABLE
+          name: use_counter2_css_property_container_page
+          type: STRING
+        - description: Whether a document used the CSS property container-type
+          mode: NULLABLE
+          name: use_counter2_css_property_container_type_document
+          type: STRING
+        - description: Whether a page used the CSS property container-type
+          mode: NULLABLE
+          name: use_counter2_css_property_container_type_page
           type: STRING
         mode: NULLABLE
         name: histograms

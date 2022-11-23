@@ -108,6 +108,7 @@ categorized_events AS (
     metrics.string.newtab_homepage_category,
     metrics.string.newtab_newtab_category,
     metrics.boolean.newtab_search_enabled,
+    metrics.uuid.legacy_telemetry_client_id,
     ping_info.experiments,
         -- ??? private_browsing_mode
         -- Partially unique visit attributes
@@ -121,72 +122,94 @@ categorized_events AS (
     submission_date
   FROM
     events_unnested
+),
+aggregated_newtab_activity AS (
+  SELECT
+    newtab_visit_id,
+    client_id,
+    submission_date,
+    search_engine,
+    search_access_point,
+    pocket_story_position,
+        -- topsite_advertiser_id,
+        -- topsite_position,
+    legacy_telemetry_client_id,
+    ANY_VALUE(experiments) AS experiments,
+    ANY_VALUE(default_private_search_engine) AS default_private_search_engine,
+    ANY_VALUE(default_search_engine) AS default_search_engine,
+    ANY_VALUE(normalized_os) AS os,
+    ANY_VALUE(normalized_os_version) AS os_version,
+    ANY_VALUE(normalized_country_code) AS country_code,
+    ANY_VALUE(normalized_channel) AS channel,
+    ANY_VALUE(app_display_version) AS browser_version,
+    "Firefox Desktop" AS browser_name,
+    ANY_VALUE(newtab_open_source) AS newtab_open_source,
+    ANY_VALUE(pocket_is_signed_in) AS pocket_is_signed_in,
+    ANY_VALUE(pocket_enabled) AS pocket_enabled,
+    ANY_VALUE(pocket_sponsored_stories_enabled) AS pocket_sponsored_stories_enabled,
+    ANY_VALUE(topsites_enabled) AS topsites_enabled,
+    ANY_VALUE(newtab_homepage_category) AS newtab_homepage_category,
+    ANY_VALUE(newtab_newtab_category) AS newtab_newtab_category,
+    ANY_VALUE(newtab_search_enabled) AS newtab_search_enabled,
+    MIN(newtab_visit_started_at) AS newtab_visit_started_at,
+    MIN(newtab_visit_ended_at) AS newtab_visit_ended_at,
+          -- Topsite
+    COUNTIF(is_topsite_click) AS topsite_clicks,
+    COUNTIF(is_sponsored_topsite_click) AS sponsored_topsite_clicks,
+    COUNTIF(is_topsite_impression) AS topsite_impressions,
+    COUNTIF(is_sponsored_topsite_impression) AS sponsored_topsite_impressions,
+          -- Search
+    COUNTIF(is_search_issued) AS searches,
+    COUNTIF(is_tagged_search_ad_click) AS tagged_search_ad_clicks,
+    COUNTIF(is_tagged_search_ad_impression) AS tagged_search_ad_impressions,
+    COUNTIF(is_follow_on_search_ad_click) AS follow_on_search_ad_clicks,
+    COUNTIF(is_follow_on_search_ad_impression) AS follow_on_search_ad_impressions,
+    COUNTIF(
+      is_tagged_search_ad_click
+      AND is_follow_on_search_ad_click
+    ) AS tagged_follow_on_search_ad_clicks,
+    COUNTIF(
+      is_tagged_search_ad_impression
+      AND is_follow_on_search_ad_impression
+    ) AS tagged_follow_on_search_ad_impressions,
+          -- Pocket
+    COUNTIF(is_pocket_impression) AS pocket_impressions,
+    COUNTIF(is_sponsored_pocket_impression) AS sponsored_pocket_impressions,
+    COUNTIF(is_organic_pocket_impression) AS organic_pocket_impressions,
+    COUNTIF(is_pocket_click) AS pocket_clicks,
+    COUNTIF(is_sponsored_pocket_click) AS sponsored_pocket_clicks,
+    COUNTIF(is_organic_pocket_click) AS organic_pocket_clicks,
+    COUNTIF(is_pocket_save) AS pocket_saves,
+    COUNTIF(is_sponsored_pocket_save) AS sponsored_pocket_saves,
+    COUNTIF(is_organic_pocket_save) AS organic_pocket_saves,
+  FROM
+    categorized_events
+  GROUP BY
+    newtab_visit_id,
+    client_id,
+    submission_date,
+    search_engine,
+    search_access_point,
+    pocket_story_position,
+    legacy_telemetry_client_id
+        -- topsite_advertiser_id,
+        -- topsite_position
+),
+client_profile_info AS (
+  SELECT
+    client_id AS legacy_telemetry_client_id,
+    is_new_profile,
+    activity_segment
+  FROM
+    telemetry_derived.unified_metrics_v1
+  WHERE
+    submission_date = @submission_date
 )
 SELECT
-  newtab_visit_id,
-  client_id,
-  submission_date,
-  search_engine,
-  search_access_point,
-  pocket_story_position,
-    -- topsite_advertiser_id,
-    -- topsite_position,
-  ANY_VALUE(experiments) AS experiments,
-  ANY_VALUE(default_private_search_engine) AS default_private_search_engine,
-  ANY_VALUE(default_search_engine) AS default_search_engine,
-  ANY_VALUE(normalized_os) AS os,
-  ANY_VALUE(normalized_os_version) AS os_version,
-  ANY_VALUE(normalized_country_code) AS country_code,
-  ANY_VALUE(normalized_channel) AS channel,
-  ANY_VALUE(app_display_version) AS browser_version,
-  "Firefox Desktop" AS browser_name,
-  ANY_VALUE(newtab_open_source) AS newtab_open_source,
-  ANY_VALUE(pocket_is_signed_in) AS pocket_is_signed_in,
-  ANY_VALUE(pocket_enabled) AS pocket_enabled,
-  ANY_VALUE(pocket_sponsored_stories_enabled) AS pocket_sponsored_stories_enabled,
-  ANY_VALUE(topsites_enabled) AS topsites_enabled,
-  ANY_VALUE(newtab_homepage_category) AS newtab_homepage_category,
-  ANY_VALUE(newtab_newtab_category) AS newtab_newtab_category,
-  ANY_VALUE(newtab_search_enabled) AS newtab_search_enabled,
-  MIN(newtab_visit_started_at) AS newtab_visit_started_at,
-  MIN(newtab_visit_ended_at) AS newtab_visit_ended_at,
-      -- Topsite
-  COUNTIF(is_topsite_click) AS topsite_clicks,
-  COUNTIF(is_sponsored_topsite_click) AS sponsored_topsite_clicks,
-  COUNTIF(is_topsite_impression) AS topsite_impressions,
-  COUNTIF(is_sponsored_topsite_impression) AS sponsored_topsite_impressions,
-      -- Search
-  COUNTIF(is_search_issued) AS searches,
-  COUNTIF(is_tagged_search_ad_click) AS tagged_search_ad_clicks,
-  COUNTIF(is_tagged_search_ad_impression) AS tagged_search_ad_impressions,
-  COUNTIF(is_follow_on_search_ad_click) AS follow_on_search_ad_clicks,
-  COUNTIF(is_follow_on_search_ad_impression) AS follow_on_search_ad_impressions,
-  COUNTIF(
-    is_tagged_search_ad_click
-    AND is_follow_on_search_ad_click
-  ) AS tagged_follow_on_search_ad_clicks,
-  COUNTIF(
-    is_tagged_search_ad_impression
-    AND is_follow_on_search_ad_impression
-  ) AS tagged_follow_on_search_ad_impressions,
-      -- Pocket
-  COUNTIF(is_pocket_impression) AS pocket_impressions,
-  COUNTIF(is_sponsored_pocket_impression) AS sponsored_pocket_impressions,
-  COUNTIF(is_organic_pocket_impression) AS organic_pocket_impressions,
-  COUNTIF(is_pocket_click) AS pocket_clicks,
-  COUNTIF(is_sponsored_pocket_click) AS sponsored_pocket_clicks,
-  COUNTIF(is_organic_pocket_click) AS organic_pocket_clicks,
-  COUNTIF(is_pocket_save) AS pocket_saves,
-  COUNTIF(is_sponsored_pocket_save) AS sponsored_pocket_saves,
-  COUNTIF(is_organic_pocket_save) AS organic_pocket_saves,
+  *
 FROM
-  categorized_events
-GROUP BY
-  newtab_visit_id,
-  client_id,
-  submission_date,
-  search_engine,
-  search_access_point,
-  pocket_story_position
-    -- topsite_advertiser_id,
-    -- topsite_position
+  aggregated_newtab_activity
+LEFT JOIN
+  client_profile_info
+USING
+  (legacy_telemetry_client_id)

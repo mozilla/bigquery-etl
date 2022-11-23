@@ -198,12 +198,13 @@ aggregated_newtab_activity AS (
 client_profile_info AS (
   SELECT
     client_id AS legacy_telemetry_client_id,
-    is_new_profile,
-    activity_segment
+    ANY_VALUE(is_new_profile) as is_new_profile,
+    ANY_VALUE(activity_segment) as activity_segment
   FROM
     telemetry_derived.unified_metrics_v1
   WHERE
-    submission_date = @submission_date
+    submission_date = DATE('2022-11-01')
+  GROUP BY client_id
 )
 SELECT
   *

@@ -203,7 +203,7 @@ client_profile_info AS (
   FROM
     telemetry_derived.unified_metrics_v1
   WHERE
-    submission_date = DATE('2022-11-01')
+    submission_date = @submission_date
   GROUP BY client_id
 )
 SELECT

@@ -22,9 +22,9 @@ SELECT
     ) AS jsonPayload
   )
 FROM
-  `moz-fx-fxa-nonprod-375e.fxa_stage_logs.docker_fxa_auth_20*`
+  `moz-fx-fxa-nonprod-375e.fxa_stage_logs.docker_fxa_auth`
 WHERE
   jsonPayload.type = 'amplitudeEvent'
   AND jsonPayload.fields.event_type IS NOT NULL
   AND jsonPayload.fields.user_id IS NOT NULL
-  AND PARSE_DATE('%y%m%d', _TABLE_SUFFIX) = DATE(@submission_date)
+  AND DATE(`timestamp`) = @submission_date

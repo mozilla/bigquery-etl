@@ -300,6 +300,30 @@ fields:
     mode: NULLABLE
     name: url2
     type: RECORD
+  - fields:
+    - description: 'The navigators ISO 3166 country name (not code) based on geo ip.
+
+        '
+      mode: NULLABLE
+      name: navigator_geo
+      type: STRING
+    - description: 'The subscription type of the user. can be one of
+
+        ''core'',''mdn_plus_5m'',''mdn_plus_5y'',''mdn_plus_10m'',''mdn_plus_10y''
+
+        '
+      mode: NULLABLE
+      name: navigator_subscription_type
+      type: STRING
+    - description: 'The navigators user agent.
+
+        '
+      mode: NULLABLE
+      name: navigator_user_agent
+      type: STRING
+    mode: NULLABLE
+    name: string
+    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

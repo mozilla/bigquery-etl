@@ -1993,6 +1993,22 @@ fields:
       mode: REPEATED
       name: netwerk_eh_link_type
       type: RECORD
+    - description: 'Given a matching cookie banner click rule, how often do we handle
+        or fail to handle cookie banners, labelled by reason. The ''success'' and
+        ''fail'' counters count the total numbers independently of the reason counters.
+        Counters are incremented after the content window has been destroyed.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: cookie_banners_click_result
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD
@@ -7752,6 +7768,48 @@ fields:
         type: RECORD
       mode: NULLABLE
       name: places_manager_run_maintenance_vacuum_time
+      type: RECORD
+    - description: 'Counts how long it takes to handle cookie banners successfully
+        from DOMContentLoaded until click.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: cookie_banners_click_handle_duration
       type: RECORD
     mode: NULLABLE
     name: timing_distribution

@@ -13,8 +13,8 @@ SELECT
     ) AS jsonPayload
   )
 FROM
-  `moz-fx-fxa-nonprod-375e.fxa_stage_logs.stdout_20*`
+  `moz-fx-fxa-nonprod-375e.fxa_stage_logs.stdout`
 WHERE
   jsonPayload.type = 'amplitudeEvent'
   AND jsonPayload.fields.event_type IS NOT NULL
-  AND _TABLE_SUFFIX = FORMAT_DATE('%y%m%d', @submission_date)
+  AND DATE(`timestamp`) = @submission_date

@@ -1776,15 +1776,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#to_dates-udf" class="md-nav__link">
-    to_dates (UDF)
+  <a href="#active_in_range-udf" class="md-nav__link">
+    active_in_range (UDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#active_in_range-udf" class="md-nav__link">
-    active_in_range (UDF)
+  <a href="#to_dates-udf" class="md-nav__link">
+    to_dates (UDF)
   </a>
   
 </li>
@@ -2235,15 +2235,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#to_dates-udf" class="md-nav__link">
-    to_dates (UDF)
+  <a href="#active_in_range-udf" class="md-nav__link">
+    active_in_range (UDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#active_in_range-udf" class="md-nav__link">
-    active_in_range (UDF)
+  <a href="#to_dates-udf" class="md-nav__link">
+    to_dates (UDF)
   </a>
   
 </li>
@@ -2315,11 +2315,6 @@ the individual bits.</p>
 <p>Return a nested struct providing booleans indicating whether a given client
 was active various time periods based on the passed bit pattern.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/retention">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/retention/metadata.yaml">Edit</a></p>
-<h2 id="to_dates-udf">to_dates (UDF)</h2>
-<p>Convert a bit pattern into an array of the dates is represents.</p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/to_dates">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/to_dates/metadata.yaml">Edit</a></p>
 <h2 id="active_in_range-udf">active_in_range (UDF)</h2>
 <p>Return a boolean indicating if any bits are set in the specified range
 of a bit pattern. The <code>start_offset</code> must be zero or a negative number
@@ -2329,6 +2324,11 @@ the number of bits to consider, counting right from the bit at
 <p>See detailed docs for the bits28 suite of functions:
 <a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/active_in_range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/active_in_range/metadata.yaml">Edit</a></p>
+<h2 id="to_dates-udf">to_dates (UDF)</h2>
+<p>Convert a bit pattern into an array of the dates is represents.</p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/to_dates">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/to_dates/metadata.yaml">Edit</a></p>
 <h2 id="range-udf">range (UDF)</h2>
 <p>Return an INT64 representing a range of bits from a source bit pattern.</p>
 <p>The start_offset must be zero or a negative number indicating an offset from

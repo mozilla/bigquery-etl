@@ -1,5 +1,4 @@
-[![CircleCI](https://circleci.com/gh/mozilla/bigquery-etl.svg?style=shield&circle-token=742fb1108f7e6e5a28c11d43b21f62605037f5a4)](https://circleci.com/gh/mozilla/bigquery-etl)
-
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/mozilla/bigquery-etl/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/mozilla/bigquery-etl/tree/main)
 # BigQuery ETL
 
 This repository contains Mozilla Data Team's:
@@ -13,9 +12,10 @@ For more information, see [https://mozilla.github.io/bigquery-etl/](https://mozi
 
 ## Quick Start
 
-> Apple Silicon (M1) user requirement
+> :exclamation: Apple Silicon (M1) user requirement
 >
-> Enable [Rosetta mode](https://support.apple.com/en-ca/HT211861) for your terminal _**BEFORE**_ installing below tools using your terminal. It'll save you a lot of headaches. For tips on maintaining parallel stacks of python and homebrew running with and without Rosetta, see blog posts from [Thinknum](https://medium.com/thinknum/how-to-install-python-under-rosetta-2-f98c0865e012) and [Sixty North](http://sixty-north.com/blog/pyenv-apple-silicon.html).
+> Enable [Rosetta mode](https://support.apple.com/en-ca/HT211861) for your terminal _**BEFORE**_ installing below tools using your terminal. See our [M1 Mac
+> Setup Guide](M1_MAC_SETUP.md) for more information
 
 ### Pre-requisites
 - **Pyenv** (optional) Recommended if you want to install different versions of python, see instructions [here](https://github.com/pyenv/pyenv#basic-github-checkout). After the installation of pyenv, make sure that your terminal app is [configured to run the shell as a login shell](https://github.com/pyenv/pyenv/wiki/MacOS-login-shell).

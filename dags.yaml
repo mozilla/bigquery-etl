@@ -857,3 +857,24 @@ bqetl_sponsored_tiles_clients_daily:
   tags:
     - impact/tier_3
     - repo/bigquery-etl
+
+bqetl_analytics_tables:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - lvargas@mozilla.com
+      - gkaberere@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: lvargas@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2022-12-01'
+  description: Scheduled queries for analytics tables.
+    engineering.
+  schedule_interval: 0 2 * * *
+  tags:
+    - impact/tier_1
+    - repo/bigquery-etl

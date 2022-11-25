@@ -1,0 +1,18 @@
+---
+friendly_name: FxA Users Services Devices Daily Events
+description: # TODO
+owners:
+  - kignasiak@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+# # Descheduled. Last run was 2021-01-23.
+# # See https://github.com/mozilla/bigquery-etl/issues/1713
+scheduling:
+  dag_name: bqetl_fxa_events
+  date_partition_parameter: submission_date
+
+# Other notes:
+# windows over events that may cross the midnight boundary.
+# TODO: maybe should mention this inside the query...

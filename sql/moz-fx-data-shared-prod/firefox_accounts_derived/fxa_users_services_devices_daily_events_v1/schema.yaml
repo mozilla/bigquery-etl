@@ -1,6 +1,12 @@
 fields:
 
 - mode: NULLABLE
+  name: timestmap
+  type: DATETIME
+  description: |
+    Datetime value when the event occurred.
+
+- mode: NULLABLE
   name: flow_id
   type: STRING
   description: |

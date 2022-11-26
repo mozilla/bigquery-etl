@@ -105,35 +105,28 @@ RETURNS ARRAY<
 );
 WITH per_build_client_day AS (
   SELECT
-    DATE(submission_timestamp) AS submission_date,
-    client_id,
-    normalized_os AS os,
-    CAST(SPLIT(application.version, '.')[OFFSET(0)] AS INT64) AS app_version,
-    application.build_id AS app_build_id,
-    normalized_channel as channel,
-    {% if source_table == 'telemetry_derived.main_1pct_v1' %}
-    -- If source table is main_1pct_v1 it's always sampled
-      TRUE AS sampled,
-    {% else %}
-    -- Normally we sample Windows+Release to 10%. But this is backfilling.
-    -- If you're using a different table to backfill from, please implement
-    -- 10% sampling for Windows+Release and switch the commented out code below:
-      -- os = 'Windows'
-      -- AND channel = 'release' AS sampled,
-      FALSE AS sampled,
-    {% endif %}
-    ARRAY<STRUCT<name STRING, process STRING,
-      {% if is_keyed %}
-          value ARRAY<STRUCT<key STRING, value INT64>>
-      {% else %}
-          value INT64
-      {% endif %}
-    >>[
-    (
-      '{{ metric }}',
-      '{{ process }}',
-      {{ probe_location }}
-    )
+        DATE(submission_timestamp) AS submission_date,
+        client_id,
+        normalized_os AS os,
+        CAST(SPLIT(application.version, '.')[OFFSET(0)] AS INT64) AS app_version,
+        application.build_id AS app_build_id,
+        normalized_channel as channel,
+        -- If source table is main_1pct_v1 it's always sampled
+        --normalized_os = 'Windows'
+        --AND normalized_channel = 'release' AS sampled,
+        TRUE AS sampled,
+        ARRAY<STRUCT<name STRING, process STRING,
+        {% if is_keyed %}
+            value ARRAY<STRUCT<key STRING, value INT64>>
+        {% else %}
+            value INT64
+        {% endif %}
+        >>[
+       (
+        '{{ metric }}',
+        '{{ process }}',
+        {{ probe_location }}
+      )
     ] AS metrics
    FROM   `{{ project }}.{{ source_table }}`
 
@@ -303,12 +296,7 @@ user_aggregates AS (
     app_version,
     IF(app_build_id = '*', NULL, app_build_id) AS app_build_id,
     channel,
-    {% if source_table == 'telemetry_derived.main_1pct_v1' %}
-      IF(MAX(sampled), 100, 1) AS user_count,
-    {% else %}
-      -- Not backfilling from main_1pct. Make sure Windows+Release is being sampled
-      IF(MAX(sampled), 10, 1) AS user_count,
-    {% endif %}
+    IF(MAX(sampled), 10, 1) AS user_count,
     `moz-fx-data-shared-prod`.udf.merge_scalar_user_data(ARRAY_CONCAT_AGG(scalar_aggregates)) AS scalar_aggregates
   FROM
     all_combos
@@ -332,17 +320,10 @@ bucketed_booleans AS (
     app_build_id,
     channel,
     user_count,
-    {% if source_table == 'telemetry_derived.main_1pct_v1' %}
     -- If source table is main_1pct_v1 it's always sampled
-      TRUE AS sampled,
-    {% else %}
-    -- Normally we sample Windows+Release to 10%. But this is backfilling.
-    -- If you're using a different table to backfill from, please implement
-    -- 10% sampling for Windows+Release and switch the commented out code below:
-      -- os = 'Windows'
-      -- AND channel = 'release' AS sampled,
-      FALSE AS sampled,
-    {% endif %}
+    -- os = 'Windows'
+    -- AND channel = 'release' AS sampled,
+    TRUE AS sampled,
     udf_boolean_buckets(scalar_aggregates) AS scalar_aggregates
   FROM
     user_aggregates
@@ -355,17 +336,10 @@ bucketed_scalars AS (
     app_build_id,
     channel,
     user_count,
-    {% if source_table == 'telemetry_derived.main_1pct_v1' %}
     -- If source table is main_1pct_v1 it's always sampled
-      TRUE AS sampled,
-    {% else %}
-    -- Normally we sample Windows+Release to 10%. But this is backfilling.
-    -- If you're using a different table to backfill from, please implement
-    -- 10% sampling for Windows+Release and switch the commented out code below:
-      -- os = 'Windows'
-      -- AND channel = 'release' AS sampled,
-      FALSE AS sampled,
-    {% endif %}
+    -- os = 'Windows'
+    -- AND channel = 'release' AS sampled,
+    TRUE AS sampled,
     metric,
     metric_type,
     key,
@@ -468,23 +442,23 @@ probe_counts AS (SELECT
     )
   END
   AS histogram
-FROM
-  clients_scalar_bucket_counts
-LEFT JOIN
-  buckets_by_metric
-USING
-  (metric, key)
-GROUP BY
-  os,
-  app_version,
-  app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  process,
-  client_agg_type,
-  agg_type
+  FROM
+    clients_scalar_bucket_counts
+  LEFT JOIN
+    buckets_by_metric
+  USING
+    (metric, key)
+  GROUP BY
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    metric_type,
+    key,
+    process,
+    client_agg_type,
+    agg_type
 ),
 percentiles AS (
   SELECT
@@ -518,24 +492,178 @@ percentiles AS (
     process,
     client_agg_type
 ),
-
-finalextract AS
-    (
-         SELECT  pc.app_version,
-    pc.os,
-    pc.app_build_id,
+scalars_data AS (
+  SELECT
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    scalar_aggregates
+  FROM
+    final_aggregates
+),
+scalars_num_samples AS (
+  SELECT
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    process,
+    key,
+    agg_type,
+    count(client_id) AS num_samples
+  FROM
+    final_aggregates,
+    UNNEST(scalar_aggregates)
+  GROUP BY
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    process,
+    key,
+    agg_type
+),
+sample_count AS (
+  SELECT
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    process,
+    key,
+    agg_type,
+    CASE
+    WHEN
+      agg_type IN ('count', 'true', 'false')
+    THEN
+      SUM(value)
+    ELSE
+      NULL
+    END
+    AS total_sample
+  FROM
+    scalars_data,
+    UNNEST(scalar_aggregates)
+  GROUP BY
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    process,
+    key,
+    agg_type
+  UNION ALL
+  SELECT
+    '*' AS os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    process,
+    key,
+    agg_type,
+    CASE
+    WHEN
+      agg_type IN ('count', 'true', 'false')
+    THEN
+      SUM(value)
+    ELSE
+      NULL
+    END
+    AS total_sample
+  FROM
+    scalars_data,
+    UNNEST(scalar_aggregates)
+  GROUP BY
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    process,
+    key,
+    agg_type
+  UNION ALL
+  SELECT
+    os,
+    app_version,
+    '*' AS app_build_id,
+    channel,
+    metric,
+    process,
+    key,
+    agg_type,
+    CASE
+    WHEN
+      agg_type IN ('count', 'true', 'false')
+    THEN
+      SUM(value)
+    ELSE
+      NULL
+    END
+    AS total_sample
+  FROM
+    scalars_data,
+    UNNEST(scalar_aggregates)
+  GROUP BY
+    os,
+    app_version,
+    channel,
+    metric,
+    process,
+    key,
+    agg_type
+  UNION ALL
+  SELECT
+    '*' AS os,
+    app_version,
+    '*' AS app_build_id,
+    channel,
+    metric,
+    process,
+    key,
+    agg_type,
+    CASE
+    WHEN
+      agg_type IN ('count', 'true', 'false')
+    THEN
+      SUM(value)
+    ELSE
+      NULL
+    END
+    AS total_sample
+  FROM
+    scalars_data,
+    UNNEST(scalar_aggregates)
+  GROUP BY
+    app_version,
+    channel,
+    metric,
+    process,
+    key,
+    agg_type
+),
+finalextract AS(
+  SELECT
+    pc.app_version,
+    COALESCE(pc.os, "*") AS os,
+    COALESCE(pc.app_build_id, "*") AS app_build_id,
     pc.process,
     pc.metric,
     pc.channel,
-    pc.key,
+    SUBSTR(REPLACE(pc.key, r"\x00", ""), 0, 200) AS key,
     pc.client_agg_type,
     pc.metric_type,
     pc.total_users,
     mozfun.glam.histogram_cast_json(histogram) AS histogram,
     mozfun.glam.map_from_array_offsets_precise(
-  [0.1, 1.0, 5.0, 25.0, 50.0, 75.0, 95.0, 99.0, 99.9],
-  percents) AS percentiles
-         FROM   probe_counts pc
+      [0.1, 1.0, 5.0, 25.0, 50.0, 75.0, 95.0, 99.0, 99.9],
+      percents) AS percentiles
+    FROM   probe_counts pc
     INNER JOIN percentiles per ON pc.app_version = per.app_version
     AND pc.os = per.os
     AND pc.channel = per.channel
@@ -545,8 +673,104 @@ finalextract AS
     AND pc.app_build_id = per.app_build_id
     AND pc.process = per.process
     AND pc.client_agg_type = per.client_agg_type
-    )
-
-  SELECT * replace(mozfun.glam.histogram_cast_json(percentiles) AS percentiles)
-  FROM   finalextract
-
+    WHERE
+      pc.app_version IS NOT NULL
+      AND pc.total_users > 375
+),
+final_sample_counts AS (
+  SELECT
+    sc1.os,
+    sc1.app_version,
+    sc1.app_build_id,
+    sc1.metric,
+    sc1.key,
+    sc1.process,
+    sc1.agg_type,
+    sc1.channel,
+    CASE
+      WHEN
+        sc1.agg_type IN ('max', 'min', 'sum', 'avg')
+        AND sc2.agg_type = 'count'
+      THEN
+        sc2.total_sample
+      ELSE
+        sc1.total_sample
+      END
+    AS total_sample,
+  FROM
+    sample_count sc1
+  INNER JOIN
+    sample_count sc2
+  ON
+    sc1.os = sc2.os
+    AND sc1.app_build_id = sc2.app_build_id
+    AND sc1.app_version = sc2.app_version
+    AND sc1.metric = sc2.metric
+    AND sc1.key = sc2.key
+    AND sc1.channel = sc2.channel
+    AND sc1.process = sc2.process
+)
+SELECT
+  fe.app_version,
+  fe.os,
+  fe.app_build_id,
+  fe.process,
+  fe.metric,
+  fe.key,
+  fe.client_agg_type,
+  fe.metric_type,
+  fe.channel,
+  total_users,
+  histogram,
+  mozfun.glam.histogram_cast_json(percentiles) AS percentiles,
+  CASE
+  WHEN
+    client_agg_type = ''
+  THEN
+    0
+  ELSE
+    total_sample
+  END
+  AS total_sample,
+  ns.num_samples,
+FROM
+  finalextract fe
+LEFT JOIN
+  final_sample_counts sc
+ON
+  sc.os = fe.os
+  AND sc.app_build_id = fe.app_build_id
+  AND sc.app_version = fe.app_version
+  AND sc.metric = fe.metric
+  AND sc.key = fe.key
+  AND sc.process = fe.process
+  AND sc.channel = fe.channel
+  AND total_sample IS NOT NULL
+  AND (sc.agg_type = fe.client_agg_type OR fe.client_agg_type = '')
+LEFT JOIN
+  scalars_num_samples ns
+ON
+  ns.os = fe.os
+  AND ns.app_build_id = fe.app_build_id
+  AND ns.app_version = fe.app_version
+  AND ns.metric = fe.metric
+  AND ns.key = fe.key
+  AND ns.process = fe.process
+  AND ns.channel = fe.channel
+  AND num_samples IS NOT NULL
+  AND (ns.agg_type = fe.client_agg_type OR fe.client_agg_type = '')
+GROUP BY
+  fe.app_version,
+  fe.os,
+  fe.app_build_id,
+  fe.process,
+  fe.metric,
+  fe.key,
+  fe.client_agg_type,
+  fe.metric_type,
+  fe.channel,
+  total_users,
+  total_sample,
+  num_samples,
+  histogram,
+  percentiles

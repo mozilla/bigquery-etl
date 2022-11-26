@@ -1,1 +1,30 @@
-echo "lorem ipsum good day!"
+#!/bin/bash
+
+set -ex
+
+
+echo "Updating probe hotlist..."
+
+src_project=${SRC_PROJECT:-moz-fx-data-shared-prod}
+src_dataset=${PROD_DATASET:-moz-fx-data-shared-prod}
+dst_dataset=${DATSET:-dev_telemetry_derived}
+sql_dir=${SQL_DIR:-sql}
+sql_dir=${sql_dir%/}
+
+gcloud config set project $src_project
+cd "$(dirname "$0")/../.."
+# ensure the sql directory exists
+query_dir=$sql_dir/$src_project/$dst_dataset/glam_hot_probe_backfill
+mkdir -p $query_dir
+
+# Generate queries
+queries=$(python3 bigquery_etl/glam/gen_hot_probe_backfill_queries.py \
+        --probe_name=${1} \
+        --process='all' \
+        --days=180 \
+        --query_folder_dest=${query_dir})
+
+echo $queries
+# Execute queries, load data to the tables that will be exported to GLAM
+
+

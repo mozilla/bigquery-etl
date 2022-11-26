@@ -266,10 +266,17 @@ bucket_counts AS (
     process,
     agg_type,
     aggregates,
+    {% if source_table == 'telemetry_derived.main_1pct_v1' %}
     -- If source table is main_1pct_v1 it's always sampled
-    -- os = 'Windows'
-    --AND channel = 'release' AS sampled
-    TRUE AS sampled
+      TRUE AS sampled
+    {% else %}
+    -- Normally we sample Windows+Release to 10%. But this is backfilling.
+    -- If you're using a different table to backfill from, please implement
+    -- 10% sampling for Windows+Release and switch the commented out code below:
+      -- os = 'Windows'
+      -- AND channel = 'release' AS sampled
+      FALSE AS sampled
+    {% endif %}
   FROM
     pre_bucket_counts
   CROSS JOIN
@@ -312,7 +319,12 @@ normalized_histograms AS (
     -- and in this case we treat them as Windows+Release users when fudging numbers
       mozfun.glam.histogram_normalized_sum(
         mozfun.map.sum(ARRAY_CONCAT_AGG(aggregates)),
-        IF(MAX(sampled), 10.0, 1.0)
+        {% if source_table == 'telemetry_derived.main_1pct_v1' %}
+          IF(MAX(sampled), 100.0, 1.0)
+        {% else %}
+          -- Not backfilling from main_1pct. Make sure Windows+Release is being sampled
+          IF(MAX(sampled), 10.0, 1.0)
+        {% endif %}
       ) AS aggregates
     )
   FROM

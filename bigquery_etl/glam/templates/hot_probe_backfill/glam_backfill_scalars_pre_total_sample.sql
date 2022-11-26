@@ -105,35 +105,28 @@ RETURNS ARRAY<
 );
 WITH per_build_client_day AS (
   SELECT
-    DATE(submission_timestamp) AS submission_date,
-    client_id,
-    normalized_os AS os,
-    CAST(SPLIT(application.version, '.')[OFFSET(0)] AS INT64) AS app_version,
-    application.build_id AS app_build_id,
-    normalized_channel as channel,
-    {% if source_table == 'telemetry_derived.main_1pct_v1' %}
-    -- If source table is main_1pct_v1 it's always sampled
-      TRUE AS sampled,
-    {% else %}
-    -- Normally we sample Windows+Release to 10%. But this is backfilling.
-    -- If you're using a different table to backfill from, please implement
-    -- 10% sampling for Windows+Release and switch the commented out code below:
-      -- os = 'Windows'
-      -- AND channel = 'release' AS sampled,
-      FALSE AS sampled,
-    {% endif %}
-    ARRAY<STRUCT<name STRING, process STRING,
-      {% if is_keyed %}
-          value ARRAY<STRUCT<key STRING, value INT64>>
-      {% else %}
-          value INT64
-      {% endif %}
-    >>[
-    (
-      '{{ metric }}',
-      '{{ process }}',
-      {{ probe_location }}
-    )
+        DATE(submission_timestamp) AS submission_date,
+        client_id,
+        normalized_os AS os,
+        CAST(SPLIT(application.version, '.')[OFFSET(0)] AS INT64) AS app_version,
+        application.build_id AS app_build_id,
+        normalized_channel as channel,
+        -- If source table is main_1pct_v1 it's always sampled
+        --normalized_os = 'Windows'
+        --AND normalized_channel = 'release' AS sampled,
+        TRUE AS sampled,
+        ARRAY<STRUCT<name STRING, process STRING,
+        {% if is_keyed %}
+            value ARRAY<STRUCT<key STRING, value INT64>>
+        {% else %}
+            value INT64
+        {% endif %}
+        >>[
+       (
+        '{{ metric }}',
+        '{{ process }}',
+        {{ probe_location }}
+      )
     ] AS metrics
    FROM   `{{ project }}.{{ source_table }}`
 
@@ -303,12 +296,7 @@ user_aggregates AS (
     app_version,
     IF(app_build_id = '*', NULL, app_build_id) AS app_build_id,
     channel,
-    {% if source_table == 'telemetry_derived.main_1pct_v1' %}
-      IF(MAX(sampled), 100, 1) AS user_count,
-    {% else %}
-      -- Not backfilling from main_1pct. Make sure Windows+Release is being sampled
-      IF(MAX(sampled), 10, 1) AS user_count,
-    {% endif %}
+    IF(MAX(sampled), 10, 1) AS user_count,
     `moz-fx-data-shared-prod`.udf.merge_scalar_user_data(ARRAY_CONCAT_AGG(scalar_aggregates)) AS scalar_aggregates
   FROM
     all_combos
@@ -332,17 +320,10 @@ bucketed_booleans AS (
     app_build_id,
     channel,
     user_count,
-    {% if source_table == 'telemetry_derived.main_1pct_v1' %}
     -- If source table is main_1pct_v1 it's always sampled
-      TRUE AS sampled,
-    {% else %}
-    -- Normally we sample Windows+Release to 10%. But this is backfilling.
-    -- If you're using a different table to backfill from, please implement
-    -- 10% sampling for Windows+Release and switch the commented out code below:
-      -- os = 'Windows'
-      -- AND channel = 'release' AS sampled,
-      FALSE AS sampled,
-    {% endif %}
+    -- os = 'Windows'
+    -- AND channel = 'release' AS sampled,
+    TRUE AS sampled,
     udf_boolean_buckets(scalar_aggregates) AS scalar_aggregates
   FROM
     user_aggregates
@@ -355,17 +336,10 @@ bucketed_scalars AS (
     app_build_id,
     channel,
     user_count,
-    {% if source_table == 'telemetry_derived.main_1pct_v1' %}
     -- If source table is main_1pct_v1 it's always sampled
-      TRUE AS sampled,
-    {% else %}
-    -- Normally we sample Windows+Release to 10%. But this is backfilling.
-    -- If you're using a different table to backfill from, please implement
-    -- 10% sampling for Windows+Release and switch the commented out code below:
-      -- os = 'Windows'
-      -- AND channel = 'release' AS sampled,
-      FALSE AS sampled,
-    {% endif %}
+    -- os = 'Windows'
+    -- AND channel = 'release' AS sampled,
+    TRUE AS sampled,
     metric,
     metric_type,
     key,

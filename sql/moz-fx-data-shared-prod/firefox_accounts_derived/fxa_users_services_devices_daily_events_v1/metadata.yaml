@@ -11,6 +11,16 @@ labels:
 scheduling:
   dag_name: bqetl_fxa_events
   date_partition_parameter: submission_date
+bigquery:
+  time_partitioning:
+    field: timestmap
+    type: day
+    require_partition_filter: true
+  clustering:
+    fields:
+      - service
+      - os_name
+      - country
 
 # Other notes:
 # windows over events that may cross the midnight boundary.

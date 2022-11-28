@@ -1257,6 +1257,96 @@ fields:
     - mode: REPEATED
       name: udp_newthree
       type: INTEGER
+    - mode: REPEATED
+      name: tcp_a_u
+      type: INTEGER
+    - mode: REPEATED
+      name: tcp_acd_u
+      type: INTEGER
+    - mode: REPEATED
+      name: tcp_ado_u
+      type: INTEGER
+    - mode: REPEATED
+      name: tcp_adocd_u
+      type: INTEGER
+    - mode: REPEATED
+      name: tcp_an
+      type: INTEGER
+    - mode: REPEATED
+      name: tcp_an_u
+      type: INTEGER
+    - mode: REPEATED
+      name: tcp_dnskey_u
+      type: INTEGER
+    - mode: REPEATED
+      name: tcp_ds
+      type: INTEGER
+    - mode: REPEATED
+      name: tcp_ds_u
+      type: INTEGER
+    - mode: REPEATED
+      name: tcp_https_u
+      type: INTEGER
+    - mode: REPEATED
+      name: tcp_newfour_u
+      type: INTEGER
+    - mode: REPEATED
+      name: tcp_newone_u
+      type: INTEGER
+    - mode: REPEATED
+      name: tcp_newthree_u
+      type: INTEGER
+    - mode: REPEATED
+      name: tcp_newtwo_u
+      type: INTEGER
+    - mode: REPEATED
+      name: tcp_smimea_u
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_a_u
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_acd_u
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_ado_u
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_adocd_u
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_an
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_an_u
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_dnskey_u
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_ds
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_ds_u
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_https_u
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_newfour_u
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_newone_u
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_newthree_u
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_newtwo_u
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_smimea_u
+      type: INTEGER
     mode: NULLABLE
     name: dns_data
     type: RECORD
@@ -1292,7 +1382,8 @@ fields:
     - mode: NULLABLE
       name: tcp_newtwo
       type: FLOAT
-    - mode: NULLABLE
+    - description: This property is deprecated and no longer used
+      mode: NULLABLE
       name: tcp_rrsig
       type: FLOAT
     - mode: NULLABLE
@@ -1321,7 +1412,8 @@ fields:
     - mode: NULLABLE
       name: udp_newtwo
       type: FLOAT
-    - mode: NULLABLE
+    - description: This property is deprecated and no longer used
+      mode: NULLABLE
       name: udp_rrsig
       type: FLOAT
     - mode: NULLABLE
@@ -1351,9 +1443,116 @@ fields:
     - mode: NULLABLE
       name: udp_newthree
       type: FLOAT
+    - mode: NULLABLE
+      name: tcp_a_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_acd_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_ado_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_adocd_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_an
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_an_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_dnskey_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_ds
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_ds_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_https_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_newfour_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_newone_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_newthree_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_newtwo_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_smimea_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_a_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_acd_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_ado_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_adocd_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_an
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_an_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_dnskey_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_ds
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_ds_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_https_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_newfour_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_newone_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_newthree_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_newtwo_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_smimea_u
+      type: FLOAT
     mode: NULLABLE
     name: dns_attempts
     type: RECORD
+  - fields:
+    - mode: NULLABLE
+      name: error_attempt
+      type: FLOAT
+    - mode: NULLABLE
+      name: error_rrtype
+      type: STRING
+    - mode: NULLABLE
+      name: reason
+      type: STRING
+    mode: REPEATED
+    name: dns_query_errors
+    type: RECORD
+  - description: Does the payload have errors any dns errors included?
+    mode: NULLABLE
+    name: has_errors
+    type: BOOLEAN
   mode: NULLABLE
   name: payload
   type: RECORD

@@ -6,7 +6,7 @@ description: |-
   OS and ISP details.
 
   This table should be accessed through the user-facing view
-  `telemetry.firefox_android_clients`.
+  `fenix.firefox_android_clients`.
 
   Proposal:
   https://docs.google.com/document/d/12bj4DhCybelqHVgOVq8KJlzgtbbUw3f68palNrv-gaM/.

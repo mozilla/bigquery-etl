@@ -31,7 +31,7 @@ fields:
   mode: NULLABLE
   name: device_model
   type: STRING
-- description: OS versino where the client was initially installed.
+- description: OS version where the client was initially installed.
   mode: NULLABLE
   name: os_version
   type: STRING

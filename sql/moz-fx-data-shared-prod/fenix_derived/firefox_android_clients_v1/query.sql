@@ -1,6 +1,4 @@
 -- Query first observations for Firefox Android Clients.
--- Proposal:
--- https://docs.google.com/document/d/12bj4DhCybelqHVgOVq8KJlzgtbbUw3f68palNrv-gaM/edit#
 CREATE TEMP FUNCTION get_first_not_null_value(
   existing_value STRING,
   existing_date DATE,
@@ -145,7 +143,7 @@ existing AS (
     metadata.adjust_network__source_ping_date,
     metadata.install_source__source_ping_date
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.firefox_android_clients_v1`
+    `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
     --Q/ In the scenario where a client is deleted and its first seen date is reprocessed --Do we want to keep history(current behavior) or delete too (filter out and load data agin for that submission_date). Consider changes in numbers and that clients deleted in days that are not reprocessed remain)
 ),
 -- Find earliest first_session ping per client.

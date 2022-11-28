@@ -1,6 +1,6 @@
 -- Initialization query first observations for Firefox Android Clients.
 CREATE OR REPLACE TABLE
-  `moz-fx-data-shared-prod.telemetry_derived.firefox_android_clients_v1`(
+  `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`(
     client_id STRING NOT NULL
     OPTIONS
       (description = "Unique ID for the client installation."),
@@ -76,11 +76,11 @@ CLUSTER BY
   install_source
 OPTIONS
   (
-    description = "First observations for Firefox Android clients retrieved from the earliest pings: baseline, first_session and metrics. The attributes stored in this table include the first attribution, device, OS version and ISP. This table should be accessed through the user-facing view `telemetry.firefox_android_clients`. Proposal: https://docs.google.com/document/d/12bj4DhCybelqHVgOVq8KJlzgtbbUw3f68palNrv-gaM/. For more details about attribution and campaign structure see https://help.adjust.com/en/article/tracker-urls#campaign-structure-parameters."
+    description = "First observations for Firefox Android clients retrieved from the earliest pings: baseline, first_session and metrics. The attributes stored in this table include the first attribution, device, OS version and ISP. This table should be accessed through the user-facing view `fenix.firefox_android_clients`. Proposal: https://docs.google.com/document/d/12bj4DhCybelqHVgOVq8KJlzgtbbUw3f68palNrv-gaM/. For more details about attribution and campaign structure see https://help.adjust.com/en/article/tracker-urls#campaign-structure-parameters."
   );
 
 INSERT
-  analysis.lvargas_firefox_android_clients_v1
+  `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
 WITH first_seen AS (
   SELECT
     client_id,

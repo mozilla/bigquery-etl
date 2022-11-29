@@ -447,6 +447,12 @@ fields:
       mode: NULLABLE
       name: ping_centre_send_failures
       type: INTEGER
+    - description: 'How many times PDF Viewer was used.
+
+        '
+      mode: NULLABLE
+      name: pdfjs_used
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -1902,6 +1908,29 @@ fields:
         type: INTEGER
       mode: NULLABLE
       name: power_battery_percentage_when_user_active
+      type: RECORD
+    - description: 'Time spent to display first page in PDF Viewer (ms).
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: pdfjs_time_to_view
       type: RECORD
     mode: NULLABLE
     name: custom_distribution

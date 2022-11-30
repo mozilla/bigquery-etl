@@ -1,0 +1,1 @@
+INSERT INTO `{{ dataset }}.glam_hotlist` VALUES (CURRENT_DATE(), {{ metrics }})

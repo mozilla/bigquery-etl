@@ -547,6 +547,7 @@ finalextract AS
     AND pc.client_agg_type = per.client_agg_type
     )
 
-  SELECT * replace(mozfun.glam.histogram_cast_json(percentiles) AS percentiles)
+  SELECT * replace(mozfun.glam.histogram_cast_json(percentiles) AS percentiles),
+  CURRENT_DATE() AS backfill_date
   FROM   finalextract
 

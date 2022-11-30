@@ -12,9 +12,8 @@ from google.cloud import bigquery
 
 from bigquery_etl.util.glam_probe_utils import (
     get_etl_excluded_probes_quickfix,
-    get_most_used_probes,
     probe_is_recent_legacy,
-    query_hot_list,
+    query_hotlist,
 )
 
 sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
@@ -455,7 +454,7 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
         data = json.loads(url.read())
         excluded_probes = get_etl_excluded_probes_quickfix("desktop")
         # most_used_probes = get_most_used_probes()
-
+        hotlist = query_hotlist()
         histogram_probes = []
         recent_probes = []
         for x in data.keys():
@@ -464,7 +463,7 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
                 histogram_probes.append(probe_name)
                 if probe_is_recent_legacy(data[x]):
                     recent_probes.append(probe_name)
-        allowed_probes = query_hot_list()  # most_used_probes + recent_probes
+        allowed_probes = hotlist + set(recent_probes)
         bucket_details = {}
         relevant_probes = {
             histogram: {"processes": process}

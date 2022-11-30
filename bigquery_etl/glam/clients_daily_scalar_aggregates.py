@@ -9,8 +9,8 @@ from jinja2 import Environment, PackageLoader
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.glam_probe_utils import (
     get_etl_excluded_probes_quickfix,
-    get_most_used_probes,
     probe_is_recent_glean,
+    query_hotlist,
 )
 
 from .utils import get_schema, ping_type_from_table
@@ -107,7 +107,7 @@ def get_scalar_metrics(
         metric_type: [] for metric_type in metric_type_set[scalar_type]
     }
     excluded_metrics = get_etl_excluded_probes_quickfix("fenix")
-    most_used_metrics = get_most_used_probes()
+    hotlist = query_hotlist()
 
     # Iterate over every element in the schema under the metrics section and
     # collect a list of metric names.
@@ -120,7 +120,7 @@ def get_scalar_metrics(
                 continue
             for field in metric_field["fields"]:
                 if (
-                    field["name"] in most_used_metrics
+                    field["name"] in hotlist
                     or probe_is_recent_glean(field["name"], product)
                 ) and field["name"] not in excluded_metrics:
                     scalars[metric_type].append(field["name"])

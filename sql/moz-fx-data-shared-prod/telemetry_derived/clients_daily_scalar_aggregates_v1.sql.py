@@ -11,9 +11,8 @@ from time import sleep
 
 from bigquery_etl.util.glam_probe_utils import (
     get_etl_excluded_probes_quickfix,
-    get_most_used_probes,
     probe_is_recent_legacy,
-    query_hot_list,
+    query_hotlist,
 )
 
 sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
@@ -457,12 +456,8 @@ def get_scalar_probes(scalar_type):
     # and those that exist in main summary
     with urllib.request.urlopen(PROBE_INFO_SERVICE) as url:
         data = json.loads(url.read())
-        # excluded_probes = get_etl_excluded_probes_quickfix("desktop")
-        # most_used_probes = get_most_used_probes()
-
-        scalar_probes = []
-        allowed_probes = query_hot_list()
-        """
+        excluded_probes = get_etl_excluded_probes_quickfix("desktop")
+        hotlist = query_hotlist()
         allowed_probes = (
             set(
                 [
@@ -470,11 +465,11 @@ def get_scalar_probes(scalar_type):
                     for x in data.keys()
                     if x.startswith("scalar/") and probe_is_recent_legacy(data[x])
                 ]
-                + most_used_probes
+                + hotlist
             )
             - excluded_probes
         )
-        """
+
         scalar_probes = set(
             [
                 snake_case(x.replace("scalar/", ""))

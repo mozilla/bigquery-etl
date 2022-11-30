@@ -462,6 +462,9 @@ GROUP BY
                 ('99.9', mozfun.glam.percentile(99.9, histogram, metric_type)) ] AS percentiles
          FROM   probe_counts
     )
-  SELECT * EXCEPT(first_bucket, last_bucket, num_buckets) replace(mozfun.glam.histogram_cast_json(percentiles) AS percentiles)
+  SELECT
+  * EXCEPT(first_bucket, last_bucket, num_buckets)
+  replace(mozfun.glam.histogram_cast_json(percentiles) AS percentiles),
+  CURRENT_DATE() AS backfill_date
   FROM   finalextract
 

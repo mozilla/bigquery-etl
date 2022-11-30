@@ -14,13 +14,13 @@ from .sql_test import (
     Table,
     coerce_result,
     dataset,
+    default_encoding,
     get_query_params,
     load,
     load_tables,
     load_views,
     print_and_test,
     read,
-    default_encoding,
 )
 
 expect_names = {f"expect.{ext}" for ext in ("yaml", "json", "ndjson")}

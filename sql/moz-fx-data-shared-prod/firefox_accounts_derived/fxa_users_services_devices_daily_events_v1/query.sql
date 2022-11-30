@@ -89,6 +89,8 @@ device_service_users_entries AS (
     event_type,
     country,
     `language`,
+    ua_version,
+    ua_browser,
   FROM
     fxa_events
   WHERE
@@ -98,7 +100,26 @@ device_service_users_entries AS (
     AND ((event_type IN ('fxa_login - complete', 'fxa_reg - complete') AND service IS NOT NULL))
 )
 SELECT
-  *
+  -- device_service_users_entries
+  device_service_users_entries.`timestamp`,
+  device_service_users_entries.user_id,
+  device_service_users_entries.service,
+  device_service_users_entries.device_id,
+  device_service_users_entries.os_name,
+  device_service_users_entries.flow_id,
+  device_service_users_entries.event_type,
+  device_service_users_entries.country,
+  device_service_users_entries.`language`,
+  device_service_users_entries.ua_version,
+  device_service_users_entries.ua_browser,
+  -- entrypoints
+  entrypoints.entrypoint,
+  -- utms
+  utms.utm_term,
+  utms.utm_medium,
+  utms.utm_source,
+  utms.utm_campaign,
+  utms.utm_content,
 FROM
   device_service_users_entries
 LEFT JOIN

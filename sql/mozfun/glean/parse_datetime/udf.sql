@@ -23,6 +23,7 @@ SELECT
     glean.parse_datetime('2000-01-02T03:04:05.123+00:00')
   ),
   assert.equals(TIMESTAMP '2000-01-02 03:04:05', glean.parse_datetime('2000-01-02T03:04:05+00:00')),
+  assert.equals(TIMESTAMP '2000-01-02 09:04:05', glean.parse_datetime('2000-01-02T03:04:05-06:00')),
   assert.equals(TIMESTAMP '2000-01-02 03:04:00', glean.parse_datetime('2000-01-02T03:04+00:00')),
   assert.equals(TIMESTAMP '2000-01-02 03:00:00', glean.parse_datetime('2000-01-02T03+00:00')),
   assert.equals(TIMESTAMP '2000-01-02 00:00:00', glean.parse_datetime('2000-01-02+00:00')),

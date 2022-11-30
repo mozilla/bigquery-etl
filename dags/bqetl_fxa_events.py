@@ -351,36 +351,6 @@ with DAG(
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
-    ounts_derived__fxa_users_services_devices_last_seen_events__v1 = bigquery_etl_query(
-        task_id="ounts_derived__fxa_users_services_devices_last_seen_events__v1",
-        destination_table="fxa_users_services_devices_last_seen_events_v1",
-        dataset_id="firefox_accounts_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kignasiak@mozilla.com",
-        email=[
-            "dthorn@mozilla.com",
-            "kignasiak@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    unts_derived__fxa_users_services_devices_first_seen_events__v1 = bigquery_etl_query(
-        task_id="unts_derived__fxa_users_services_devices_first_seen_events__v1",
-        destination_table="fxa_users_services_devices_first_seen_events_v1",
-        dataset_id="firefox_accounts_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kignasiak@mozilla.com",
-        email=[
-            "dthorn@mozilla.com",
-            "kignasiak@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     _accounts_derived__fxa_users_services_devices_daily_events__v1.set_upstream(
         firefox_accounts_derived__fxa_auth_events__v1
     )
@@ -419,12 +389,4 @@ with DAG(
 
     firefox_accounts_derived__fxa_users_services_daily__v1.set_upstream(
         firefox_accounts_derived__fxa_content_events__v1
-    )
-
-    ounts_derived__fxa_users_services_devices_last_seen_events__v1.set_upstream(
-        _accounts_derived__fxa_users_services_devices_daily_events__v1
-    )
-
-    unts_derived__fxa_users_services_devices_first_seen_events__v1.set_upstream(
-        _accounts_derived__fxa_users_services_devices_daily_events__v1
     )

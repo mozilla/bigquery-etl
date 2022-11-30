@@ -12,6 +12,8 @@ labels:
 scheduling:
   dag_name: bqetl_org_mozilla_firefox_derived
   depends_on_past: true
+  referenced_tables:
+  - ['moz-fx-data-shared-prod', 'org_mozilla_firefox', 'baseline_clients_daily_v1']
 bigquery:
   time_partitioning:
     field: submission_date
@@ -21,6 +23,3 @@ bigquery:
     fields:
     - sample_id
     - client_id
-schema:
-  derived_from:
-  - table: ['moz-fx-data-shared-prod', 'org_mozilla_firefox', 'baseline_clients_daily_v1']

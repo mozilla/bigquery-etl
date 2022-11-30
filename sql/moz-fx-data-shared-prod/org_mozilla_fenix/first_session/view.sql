@@ -5,7 +5,18 @@ AS
 SELECT
   * REPLACE (
     mozfun.norm.metadata(metadata) AS metadata,
-    mozfun.norm.glean_ping_info(ping_info) AS ping_info
+    mozfun.norm.glean_ping_info(ping_info) AS ping_info,
+    (
+      SELECT AS STRUCT
+        metrics.* REPLACE (
+          STRUCT(
+            mozfun.glean.parse_datetime(
+              metrics.datetime.first_session_timestamp
+            ) AS first_session_timestamp,
+            metrics.datetime.first_session_timestamp AS raw_first_session_timestamp
+          ) AS datetime
+        )
+    ) AS metrics
   )
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix_stable.first_session_v1`

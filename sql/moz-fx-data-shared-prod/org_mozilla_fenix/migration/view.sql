@@ -5,7 +5,18 @@ AS
 SELECT
   * REPLACE (
     mozfun.norm.metadata(metadata) AS metadata,
-    mozfun.norm.glean_ping_info(ping_info) AS ping_info
+    mozfun.norm.glean_ping_info(ping_info) AS ping_info,
+    (
+      SELECT AS STRUCT
+        metrics.* REPLACE (
+          STRUCT(
+            mozfun.glean.parse_datetime(
+              metrics.datetime.migration_telemetry_identifiers_fennec_profile_creation_date
+            ) AS migration_telemetry_identifiers_fennec_profile_creation_date,
+            metrics.datetime.migration_telemetry_identifiers_fennec_profile_creation_date AS raw_migration_telemetry_identifiers_fennec_profile_creation_date
+          ) AS datetime
+        )
+    ) AS metrics
   )
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix_stable.migration_v1`

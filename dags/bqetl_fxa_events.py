@@ -55,21 +55,6 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    _accounts_derived__fxa_users_services_devices_daily_events__v1 = bigquery_etl_query(
-        task_id="_accounts_derived__fxa_users_services_devices_daily_events__v1",
-        destination_table="fxa_users_services_devices_daily_events_v1",
-        dataset_id="firefox_accounts_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kignasiak@mozilla.com",
-        email=[
-            "dthorn@mozilla.com",
-            "kignasiak@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     docker_fxa_admin_server_v1 = bigquery_etl_query(
         task_id="docker_fxa_admin_server_v1",
         destination_table="docker_fxa_admin_server_sanitized_v1",
@@ -315,6 +300,21 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefox_accounts_derived__fxa_users_services_devices_daily__v1 = bigquery_etl_query(
+        task_id="firefox_accounts_derived__fxa_users_services_devices_daily__v1",
+        destination_table="fxa_users_services_devices_daily_v1",
+        dataset_id="firefox_accounts_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kignasiak@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "kignasiak@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefox_accounts_derived__nonprod_fxa_auth_events__v1 = bigquery_etl_query(
         task_id="firefox_accounts_derived__nonprod_fxa_auth_events__v1",
         destination_table="nonprod_fxa_auth_events_v1",
@@ -351,14 +351,6 @@ with DAG(
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
-    _accounts_derived__fxa_users_services_devices_daily_events__v1.set_upstream(
-        firefox_accounts_derived__fxa_auth_events__v1
-    )
-
-    _accounts_derived__fxa_users_services_devices_daily_events__v1.set_upstream(
-        firefox_accounts_derived__fxa_content_events__v1
-    )
-
     firefox_accounts_derived__exact_mau28__v1.set_upstream(
         firefox_accounts_derived__fxa_users_last_seen__v1
     )
@@ -388,5 +380,13 @@ with DAG(
     )
 
     firefox_accounts_derived__fxa_users_services_daily__v1.set_upstream(
+        firefox_accounts_derived__fxa_content_events__v1
+    )
+
+    firefox_accounts_derived__fxa_users_services_devices_daily__v1.set_upstream(
+        firefox_accounts_derived__fxa_auth_events__v1
+    )
+
+    firefox_accounts_derived__fxa_users_services_devices_daily__v1.set_upstream(
         firefox_accounts_derived__fxa_content_events__v1
     )

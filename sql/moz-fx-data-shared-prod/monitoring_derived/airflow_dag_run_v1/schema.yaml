@@ -34,8 +34,3 @@ fields:
   name: end_date
   type: TIMESTAMP
   description: When the DAG run finished
-
-- mode: NULLABLE
-  name: is_deleted
-  type: BOOLEAN
-  description: Row deleted from the source table (Fivetran managed field)

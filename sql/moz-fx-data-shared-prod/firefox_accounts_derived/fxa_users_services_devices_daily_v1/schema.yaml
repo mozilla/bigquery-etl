@@ -1,0 +1,114 @@
+fields:
+
+- mode: NULLABLE
+  name: timestamp
+  type: TIMESTAMP
+  description: |
+    Datetime value when the event occurred.
+
+- mode: NULLABLE
+  name: flow_id
+  type: STRING
+  description: |
+    The flow identifier. A randomly-generated opaque id.
+
+- mode: NULLABLE
+  name: event_type
+  type: STRING
+  description: |
+    Type of the FxA event recorded.
+
+- mode: NULLABLE
+  name: user_id
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: service
+  type: STRING
+  description: |
+    The service identifier. For Sync it may be empty or sync.
+    For OAuth reliers it is their hex client id.
+
+- mode: NULLABLE
+
+
+  name: device_id
+  type: STRING
+  description: |
+    The most granual field.
+    The id of the device record.
+    This does correlate back to a record the FxA user db.
+
+- mode: NULLABLE
+  name: os_name
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: language
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: ua_version
+  type: STRING
+  description: |
+    The user's browser version.
+
+- mode: NULLABLE
+  name: ua_browser
+  type: STRING
+  description: |
+    The user's web browser, e.g. 'Firefox' or 'Chrome'.
+
+- mode: NULLABLE
+  name: entrypoint
+  type: STRING
+  description: |
+    The entrypoint of the flow session.
+    Typically a UI touchpoint like "preferences".
+
+- mode: NULLABLE
+  name: utm_term
+  type: STRING
+  description: |
+    Marketing campaign search term
+    for the flow session.
+    Not stored if the DNT request header was 1.
+
+- mode: NULLABLE
+  name: utm_medium
+  type: STRING
+  description: |
+    Marketing campaign medium for the flow session.
+    Not stored if the DNT request header was 1.
+
+- mode: NULLABLE
+  name: utm_source
+  type: STRING
+  description: |
+    Marketing campaign source for
+    the flow session.
+    Not stored if the DNT request header was 1.
+
+- mode: NULLABLE
+  name: utm_campaign
+  type: STRING
+  description: |
+    Marketing campaign identifier
+    for the flow session.
+    Not stored if the DNT request header was 1.
+
+- mode: NULLABLE
+  name: utm_content
+  type: STRING
+  description: |
+    Marketing campaign content identifier
+    for the flow session.
+    Not stored if the DNT request header was 1.

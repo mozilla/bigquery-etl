@@ -49,8 +49,3 @@ fields:
   name: max_active_runs
   type: INTEGER
   description: Max number of active DAG runs allowed
-
-- mode: NULLABLE
-  name: is_deleted
-  type: BOOLEAN
-  description: Row deleted from the source table (Fivetran managed field)

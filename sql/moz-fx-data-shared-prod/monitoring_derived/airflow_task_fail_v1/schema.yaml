@@ -29,8 +29,3 @@ fields:
   name: end_date
   type: STRING
   description:
-
-- mode: NULLABLE
-  name: is_deleted
-  type: BOOLEAN
-  description: Row deleted from the source table (Fivetran managed field)

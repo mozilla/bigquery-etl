@@ -7833,12 +7833,12 @@ fields:
       mode: NULLABLE
       name: update_last_notify_interval_days_notify
       type: STRING
-    - description: 'Update: count of when getAppUpdateAutoEnabled from UpdateUtils.sys.mjs
+    - description: 'Update: count of when getAppUpdateAutoEnabled from UpdateUtils.jsm
         does not return the default value of true (true values are not submitted)'
       mode: NULLABLE
       name: update_not_pref_update_auto_external
       type: STRING
-    - description: 'Update: count of when getAppUpdateAutoEnabled from UpdateUtils.sys.mjs
+    - description: 'Update: count of when getAppUpdateAutoEnabled from UpdateUtils.jsm
         does not return the default value of true (true values are not submitted)'
       mode: NULLABLE
       name: update_not_pref_update_auto_notify
@@ -18778,7 +18778,7 @@ fields:
       mode: NULLABLE
       name: update_last_notify_interval_days_subsequent
       type: STRING
-    - description: 'Update: count of when getAppUpdateAutoEnabled from UpdateUtils.sys.mjs
+    - description: 'Update: count of when getAppUpdateAutoEnabled from UpdateUtils.jsm
         does not return the default value of true (true values are not submitted)'
       mode: NULLABLE
       name: update_not_pref_update_auto_subsequent
@@ -21648,10 +21648,11 @@ fields:
       - mode: NULLABLE
         name: key
         type: STRING
-      - description: 'Records search counts for search access points. The format is:
-          <engine-name>.<search-access-point>. For the urlbar when in search mode,
-          the format is <engine name>.urlbar-searchmode. For the urlbar when an internal
-          @engine shortcut is used, the format is: <engine-name>.alias.'
+      - description: 'Records search counts for search access points and in-content
+          searches. For search access points in general, the format is: <engine-name>.<search-access-point>
+          For the urlbar when in search mode, the format is <engine name>.urlbar-searchmode
+          For the urlbar when an internal @engine shortcut is used, the format is:
+          <engine-name>.alias For in-content searches, the format is <provider>.in-content:[sap|sap-follow-on|organic]:[code|none]'
         mode: NULLABLE
         name: value
         type: STRING
@@ -32225,12 +32226,12 @@ fields:
           mode: NULLABLE
           name: update_last_notify_interval_days_notify
           type: STRING
-        - description: 'Update: count of when getAppUpdateAutoEnabled from UpdateUtils.sys.mjs
+        - description: 'Update: count of when getAppUpdateAutoEnabled from UpdateUtils.jsm
             does not return the default value of true (true values are not submitted)'
           mode: NULLABLE
           name: update_not_pref_update_auto_external
           type: STRING
-        - description: 'Update: count of when getAppUpdateAutoEnabled from UpdateUtils.sys.mjs
+        - description: 'Update: count of when getAppUpdateAutoEnabled from UpdateUtils.jsm
             does not return the default value of true (true values are not submitted)'
           mode: NULLABLE
           name: update_not_pref_update_auto_notify
@@ -42781,10 +42782,11 @@ fields:
           - mode: NULLABLE
             name: key
             type: STRING
-          - description: 'Records search counts for search access points. The format
-              is: <engine-name>.<search-access-point>. For the urlbar when in search
-              mode, the format is <engine name>.urlbar-searchmode. For the urlbar
-              when an internal @engine shortcut is used, the format is: <engine-name>.alias.'
+          - description: 'Records search counts for search access points and in-content
+              searches. For search access points in general, the format is: <engine-name>.<search-access-point>
+              For the urlbar when in search mode, the format is <engine name>.urlbar-searchmode
+              For the urlbar when an internal @engine shortcut is used, the format
+              is: <engine-name>.alias For in-content searches, the format is <provider>.in-content:[sap|sap-follow-on|organic]:[code|none]'
             mode: NULLABLE
             name: value
             type: STRING
@@ -46013,7 +46015,7 @@ fields:
             type: STRING
           - description: 'Number of times a tooltip was shown, keyed by tooltip type.
               Currently supported types are "image", "font-family", "inactive-css",
-              "css-compatibility", "css-query-container" and "variable."
+              "css-compatibility" and "variable."
 
               '
             mode: NULLABLE
@@ -48290,7 +48292,7 @@ fields:
           - mode: NULLABLE
             name: key
             type: STRING
-          - description: 'Collection of javascript modules that created a Sqlite.sys.mjs
+          - description: 'Collection of javascript modules that created a Sqlite.jsm
               transaction taking too long and timing out. This can be used to identify
               and optimize those modules transactions.
 
@@ -51983,6 +51985,12 @@ fields:
             '
           mode: NULLABLE
           name: a11y_invert_colors
+          type: BOOLEAN
+        - description: 'Does the hardware support accurate display of HDR content
+
+            '
+          mode: NULLABLE
+          name: gfx_supports_hdr
           type: BOOLEAN
         mode: NULLABLE
         name: scalars

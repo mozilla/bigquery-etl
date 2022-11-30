@@ -2,7 +2,6 @@ CREATE OR REPLACE FUNCTION glean.parse_datetime(datetime_string STRING)
 RETURNS TIMESTAMP AS (
   COALESCE(
     SAFE.PARSE_TIMESTAMP('%FT%H:%M:%E*S%Ez', datetime_string),
-    SAFE.PARSE_TIMESTAMP('%FT%H:%M:%S%Ez', datetime_string),
     SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', datetime_string),
     SAFE.PARSE_TIMESTAMP('%FT%H%Ez', datetime_string),
     SAFE.PARSE_TIMESTAMP('%F%Ez', datetime_string)

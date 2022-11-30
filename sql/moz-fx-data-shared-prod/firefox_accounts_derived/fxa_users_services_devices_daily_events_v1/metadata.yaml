@@ -13,7 +13,7 @@ scheduling:
   date_partition_parameter: submission_date
 bigquery:
   time_partitioning:
-    field: timestmap
+    field: timestamp
     type: day
     require_partition_filter: true
   clustering:

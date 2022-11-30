@@ -1,8 +1,8 @@
 fields:
 
 - mode: NULLABLE
-  name: timestmap
-  type: DATETIME
+  name: timestamp
+  type: TIMESTAMP
   description: |
     Datetime value when the event occurred.
 
@@ -11,6 +11,12 @@ fields:
   type: STRING
   description: |
     The flow identifier. A randomly-generated opaque id.
+
+- mode: NULLABLE
+  name: event_type
+  type: STRING
+  description: |
+    Type of the FxA event recorded.
 
 - mode: NULLABLE
   name: user_id
@@ -25,6 +31,8 @@ fields:
     For OAuth reliers it is their hex client id.
 
 - mode: NULLABLE
+
+
   name: device_id
   type: STRING
   description: |
@@ -46,6 +54,18 @@ fields:
   name: language
   type: STRING
   description:
+
+- mode: NULLABLE
+  name: ua_version
+  type: STRING
+  description: |
+    The user's browser version.
+
+- mode: NULLABLE
+  name: ua_browser
+  type: STRING
+  description: |
+    The user's web browser, e.g. 'Firefox' or 'Chrome'.
 
 - mode: NULLABLE
   name: entrypoint
@@ -92,15 +112,3 @@ fields:
     Marketing campaign content identifier\
     for the flow session.\
     Not stored if the DNT request header was 1.
-
-- mode: NULLABLE
-  name: ua_version
-  type: STRING
-  description: |
-    The user's browser version.
-
-- mode: NULLABLE
-  name: ua_browser
-  type: STRING
-  description: |
-    The user's web browser, e.g. 'Firefox' or 'Chrome'.

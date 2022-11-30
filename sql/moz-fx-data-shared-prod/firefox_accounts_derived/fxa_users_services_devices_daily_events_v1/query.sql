@@ -102,12 +102,12 @@ device_service_users_entries AS (
 SELECT
   -- device_service_users_entries
   device_service_users_entries.`timestamp`,
+  device_service_users_entries.flow_id,
+  device_service_users_entries.event_type,
   device_service_users_entries.user_id,
   device_service_users_entries.service,
   device_service_users_entries.device_id,
   device_service_users_entries.os_name,
-  device_service_users_entries.flow_id,
-  device_service_users_entries.event_type,
   device_service_users_entries.country,
   device_service_users_entries.`language`,
   device_service_users_entries.ua_version,

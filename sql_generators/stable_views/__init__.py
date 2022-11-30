@@ -154,7 +154,7 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
             for metrics_datetime_field in metrics_field["fields"]
         ]:
             replacements += [
-                f"(SELECT AS STRUCT {metrics_source}.* REPLACE ((SELECT AS STRUCT "
+                f"(SELECT AS STRUCT {metrics_source}.* REPLACE (STRUCT("
                 + ", ".join(
                     field_select
                     for field in metrics_datetime_fields

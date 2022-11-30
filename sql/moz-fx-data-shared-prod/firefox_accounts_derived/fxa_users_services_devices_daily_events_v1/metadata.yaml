@@ -1,7 +1,18 @@
 ---
 
 friendly_name: FxA Users Services Devices Daily Events
-description: # TODO
+description: |
+  Contains entries for user, service, device combination observed
+  on daily basis. Only 'fxa_login - complete' and 'fxa_reg - complete'
+  events are considered.
+
+  This model also serves as the basis for:
+  - fxa_users_services_devices_first_seen_events_v1
+  - fxa_users_services_devices_last_seen_events_v1
+
+  For more info on FxA data check:
+  - https://docs.telemetry.mozilla.org/datasets/fxa.html
+  - https://mozilla.github.io/ecosystem-platform/
 owners:
   - kignasiak@mozilla.com
 labels:

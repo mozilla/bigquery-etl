@@ -23,6 +23,8 @@ WITH fxa_events AS (
     DATE(`timestamp`)
     BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND @submission_date
+    -- re-using the filter from users_services_daily_v1 for consistency across the models
+    -- at some point in the future we should re-evaluate this list
     AND event_type NOT IN ( --
       'fxa_email - bounced',
       'fxa_email - click',
@@ -37,7 +39,7 @@ WITH fxa_events AS (
       'mktg - email_sent',
       'sync - repair_success',
       'sync - repair_triggered'
-    ) -- TODO: is this exclusion list still accurate? Should we be excluding those? Should there be a different model for these? The reason for this exclusion should be documented.
+    )
 ),
 entrypoints AS (
   SELECT DISTINCT
@@ -46,6 +48,8 @@ entrypoints AS (
   FROM
     fxa_events
   WHERE
+    -- if both values are not set then the record
+    -- cannot be used for mapping
     flow_id IS NOT NULL
     AND entrypoint IS NOT NULL
   QUALIFY
@@ -89,7 +93,9 @@ device_service_users_entries AS (
     fxa_events
   WHERE
     DATE(`timestamp`) = @submission_date
-    -- AND ((event_type IN ('fxa_login - complete', 'fxa_reg - complete') AND service IS NOT NULL))  # TODO: we should probably not be filtering out for only login or registration events here? Otherwise, the name of the model should be adjusted. This filter is probably something we should apply when calculating first_seen_entry
+    -- Filtering out for these specific events to be consistent with the logic used by
+    -- fxa_users_daily_v1 and fxa_users_services_daily_v1
+    AND ((event_type IN ('fxa_login - complete', 'fxa_reg - complete') AND service IS NOT NULL))
 )
 SELECT
   *
@@ -104,9 +110,16 @@ LEFT JOIN
 USING
   (flow_id)
 WHERE
+  -- making sure the user is registered
   user_id IS NOT NULL
+  -- making sure there is a flow_id associated with this session
+  -- the current logic relies on this value being set to retrieve
+  -- its attributes correctly
   AND flow_id IS NOT NULL
+  -- if either service or device_id is null then the record
+  -- is useless for this model
   AND service IS NOT NULL
+  AND device_id IS NOT NULL
 QUALIFY
   ROW_NUMBER() OVER (
     PARTITION BY

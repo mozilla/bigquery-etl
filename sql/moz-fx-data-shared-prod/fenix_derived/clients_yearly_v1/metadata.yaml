@@ -1,0 +1,26 @@
+friendly_name: Clients Yearly
+description: |
+  Captures activity of each fenix client
+  in the past 365 days for each submission date.
+
+  Exposed to users as view `fenix.clients_yearly` and used
+  as the basis for LTV calculations.
+owners:
+- frank@mozilla.com
+labels:
+  schedule: daily
+scheduling:
+  dag_name: bqetl_org_mozilla_firefox_derived
+  depends_on_past: true
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: true
+  clustering:
+    fields:
+    - sample_id
+    - client_id
+schema:
+  derived_from:
+  - table: ['moz-fx-data-shared-prod', 'org_mozilla_firefox', 'baseline_clients_daily_v1']

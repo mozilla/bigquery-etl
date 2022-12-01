@@ -1,9 +1,9 @@
 # Windows Names, Versions, and Builds
 
 ### Summary
-This function is primarily designed to parse the field `os_version` in table `mozdata.default_browser_agent.default_browser` and is a part of the suite of functions: `get_windows_info`, `get_windows_name`, `get_windows_version_name`, `get_windows_version_number`, and `get_windows_build_number`. Though untested, the functions should also parse any generic Microsoft Windows OS versions.
+This function is primarily designed to parse the field `os_version` in table `mozdata.default_browser_agent.default_browser` and is a part of the suite of functions: `get_windows_info`, `get_windows_name`, `get_windows_version_name`, `get_windows_version_number`, and `get_windows_build_number`. Though untested, the functions should also parse any generic Microsoft Windows OS version strings.
 
-Given a valid `os_version` value, the functions return the name of the operating system, the version name, the version number, and the build number corresponding to the operating system.
+Given an input `os_version` string, the functions return the name of the operating system, the version name, the version number, and the build number corresponding to the operating system.
 
 As of November 2022, the expected valid values of `os_version` are either `x.y.z` or `w.x.y.z` where `w`, `x`, `y`, and `z` are integers.
 

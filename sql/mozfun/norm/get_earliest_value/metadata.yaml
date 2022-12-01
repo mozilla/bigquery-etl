@@ -1,6 +1,6 @@
 friendly_name: Get Earliest Value
 description: |
-  This UDF returns the earliest not-null value from a set of 3 values.
+  This UDF returns the earliest not-null value from a list of values and their dates.
 
   The order is not important as the function will return the first value
   that is not null and has the earliest timestamp.

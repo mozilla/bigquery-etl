@@ -25,52 +25,41 @@ RETURNS STRUCT<earliest_value STRING, earliest_date DATETIME> AS (
 -- Tests
 SELECT
   assert.equals(
-    STRUCT('metrics', DATETIME('2021-12-12T12:00:00')),
-    norm.get_earliest_value(
-      [
-        (STRUCT(CAST(NULL AS STRING), DATETIME('2022-01-01 11:00:00'))),
-        (STRUCT('first_session', DATETIME('2022-01-01 12:00:00'))),
-        (STRUCT('metrics', DATETIME('2021-12-12 12:00:00')))
-      ]
-    )
-  ),
-  assert.equals(
-    STRUCT(NULL, NULL),
+    STRUCT(
+      CAST('metrics' AS STRING) AS earliest_value,
+      DATETIME('2021-12-12T11:45:00') AS earliest_date
+    ),
     norm.get_earliest_value(
       [
         (STRUCT(CAST(NULL AS STRING), DATETIME('2022-01-01 12:00:00'))),
-        (STRUCT(CAST(NULL AS STRING), DATETIME('2022-01-01 12:00:00'))),
-        (STRUCT(CAST(NULL AS STRING), DATETIME('2021-12-12 12:00:00')))
+        (STRUCT(CAST('first_session' AS STRING), DATETIME('2022-01-01 11:55:00'))),
+        (STRUCT(CAST('metrics' AS STRING), DATETIME('2021-12-12 11:45:00')))
       ]
     )
   ),
   assert.equals(
-    STRUCT('metrics', DATETIME('2021-12-12 12:00:00')),
+    STRUCT(
+      CAST('existing' AS STRING) AS earliest_value,
+      DATETIME('2019-01-01T12:00:00') AS earliest_date
+    ),
     norm.get_earliest_value(
       [
-        (STRUCT(CAST(NULL AS STRING), DATETIME('2020-01-01 12:00:00'))),
-        (STRUCT('first_session', NULL)),
-        (STRUCT('metrics', DATETIME('2021-12-12 12:00:00')))
+        (STRUCT(CAST('existing' AS STRING), DATETIME('2019-01-01 12:00:00'))),
+        (STRUCT(CAST('metrics' AS STRING), NULL)),
+        (STRUCT(CAST('first_session' AS STRING), DATETIME('2021-12-12 12:00:00')))
       ]
     )
   ),
   assert.equals(
-    STRUCT('existing', DATETIME('2019-01-01 12:00:00')),
+    STRUCT(
+      CAST('first_session' AS STRING) AS earliest_value,
+      DATETIME('2022-12-12T11:45:00') AS earliest_date
+    ),
     norm.get_earliest_value(
       [
-        (STRUCT('existing', DATETIME('2019-01-01 12:00:00'))),
-        (STRUCT('metrics', NULL)),
-        (STRUCT('first_ping', DATETIME('2021-12-12 12:00:00')))
-      ]
-    )
-  ),
-  assert.equals(
-    STRUCT('metrics', DATETIME('2021-12-12T12:00:00')),
-    norm.get_earliest_value(
-      [
-        (STRUCT(CAST(NULL AS STRING), DATETIME('2022-01-01 12:00:00'))),
-        (STRUCT('first_session', DATETIME('2023-01-01 12:00:00'))),
-        (STRUCT('metrics', DATETIME('2021-12-12 12:00:00')))
+        (STRUCT(CAST(NULL AS STRING), DATETIME('2022-12-12 12:00:00'))),
+        (STRUCT(CAST('first_session' AS STRING), DATETIME('2022-12-12 11:45:00'))),
+        (STRUCT(CAST('metrics' AS STRING), DATETIME('2022-12-12 11:46:00')))
       ]
     )
   )

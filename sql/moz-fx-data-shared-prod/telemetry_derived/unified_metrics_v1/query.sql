@@ -470,6 +470,8 @@ exp_org_mozilla_focus_beta AS (
     `moz-fx-data-shared-prod.org_mozilla_focus_beta.baseline`
   CROSS JOIN
     UNNEST(ping_info.experiments) AS e
+  WHERE
+    DATE(submission_timestamp) = @submission_date
 ),
 exp_org_mozilla_ios_klar AS (
   SELECT DISTINCT
@@ -494,6 +496,8 @@ exp_org_mozilla_ios_focus AS (
     `moz-fx-data-shared-prod.org_mozilla_ios_focus.baseline`
   CROSS JOIN
     UNNEST(ping_info.experiments) AS e
+  WHERE
+    DATE(submission_timestamp) = @submission_date
 ),
 experiments_information AS (
   SELECT
@@ -581,10 +585,49 @@ unified_metrics_v1 AS (
 )
 SELECT
   um.*,
-  e.* EXCEPT (client_id, submission_date)
+  ARRAY_AGG((STRUCT(e.experiment_id AS key, e.branch))) AS experiments
 FROM
   unified_metrics_v1 um
 LEFT JOIN
   experiments_information e
 ON
   e.client_id = um.client_id
+GROUP BY
+  client_id,
+  sample_id,
+  activity_segment,
+  normalized_app_name,
+  app_version,
+  normalized_channel,
+  country,
+  city,
+  days_seen_bits,
+  days_created_profile_bits,
+  days_since_first_seen,
+  device_model,
+  isp,
+  is_new_profile,
+  locale,
+  first_seen_date,
+  days_since_seen,
+  normalized_os,
+  normalized_os_version,
+  os_version_major,
+  os_version_minor,
+  os_version_patch,
+  durations,
+  submission_date,
+  uri_count,
+  is_default_browser,
+  distribution_id,
+  attribution_content,
+  attribution_source,
+  attribution_medium,
+  attribution_campaign,
+  attribution_experiment,
+  attribution_variation,
+  ad_click,
+  organic_search_count,
+  search_count,
+  search_with_ads,
+  active_hours_sum

@@ -36,9 +36,6 @@ fields:
   name: country
   type: STRING
 - mode: NULLABLE
-  name: locale_1
-  type: STRING
-- mode: NULLABLE
   name: adjust_network
   type: STRING
 - mode: NULLABLE

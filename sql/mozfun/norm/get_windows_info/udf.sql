@@ -1,13 +1,13 @@
 CREATE OR REPLACE FUNCTION norm.get_windows_info(os_version STRING)
 RETURNS STRUCT<name STRING, version_name STRING, version_number DECIMAL, build_number INT64>
 LANGUAGE js AS r"""
-  windows_8_or_earlier_dict = {
+  const windows_8_or_earlier_dict = {
     0: {name: "Windows Vista", version_name: "6", version_number: 6.0},
     1: {name: "Windows 7", version_name: "7", version_number: 6.1},
     2: {name: "Windows 8", version_name: "8", version_number: 6.2},
     3: {name: "Windows 8.1", version_name: "8.1", version_number: 6.3},
   };
-  windows_10_or_later_dict = {
+  const windows_10_or_later_dict = {
     10240: {name: "Windows 10", version_name: "1507", version_number: 10240},
     10586: {name: "Windows 10", version_name: "1511", version_number: 10586},
     14393: {name: "Windows 10", version_name: "1607", version_number: 14393},

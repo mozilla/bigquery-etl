@@ -141,14 +141,15 @@ Deleting a field from an existing table schema should be done only when is total
 
 ## Adding a new mozfun UDF
 
-1. Run `./bqetl mozfun create <dataset>.<name> --udf`
-1. Navigate to the `udf.sql` file in `sql/mozfun/<dataset>/<name>/` and add UDF the definition and tests
-1. Run `./bqetl mozfun validate <dataset>.<name>` for formatting and running tests
-1. Open a PR
-1. PR gets reviewed and approved and merged
-1. To publish UDF immediately:
-    * Go to Airflow `mozfun` DAG and clear latest run
-    * Or else it will get published within a day when mozfun is executed next
+1. Run `./bqetl mozfun create <dataset>.<name> --udf`.
+2. Navigate to the `udf.sql` file in `sql/mozfun/<dataset>/<name>/` and add UDF the definition and tests.
+3. Run `./bqetl mozfun validate <dataset>.<name>` for formatting and running tests.
+   * Before running the tests, you need to [setup the access to the Google Cloud API](https://mozilla.github.io/bigquery-etl/cookbooks/testing/).
+4. Open a PR.
+5. PR gets reviewed and approved and merged.
+6. To publish UDF immediately:
+    * Go to Airflow `mozfun` DAG and clear latest run.
+    * Or else it will get published within a day when mozfun is executed next.
 
 ## Adding a new internal UDF
 

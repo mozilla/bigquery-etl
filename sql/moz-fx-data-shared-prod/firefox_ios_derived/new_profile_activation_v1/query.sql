@@ -68,7 +68,6 @@ SELECT
   locale,
   city,
   country,
-  locale,
   first_seen_date,
   submission_date,
   1 AS new_profile,

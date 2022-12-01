@@ -88,7 +88,6 @@ SELECT
   locale,
   city,
   country,
-  locale,
   COALESCE(adjust_network, 'Unknown') AS adjust_network,
   COALESCE(adjust_adgroup, 'Unknown') AS adjust_adgroup,
   COALESCE(adjust_campaign, 'Unknown') AS adjust_campaign,

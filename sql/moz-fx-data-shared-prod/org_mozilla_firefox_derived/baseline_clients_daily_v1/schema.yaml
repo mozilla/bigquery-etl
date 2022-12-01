@@ -1,4 +1,6 @@
-fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
 - mode: NULLABLE
   name: client_id
   type: STRING
@@ -6,25 +8,28 @@ fields:
   name: sample_id
   type: INTEGER
 - mode: NULLABLE
+  name: first_run_date
+  type: DATE
+- mode: NULLABLE
+  name: durations
+  type: INTEGER
+- mode: NULLABLE
+  name: days_seen_session_start_bits
+  type: INTEGER
+- mode: NULLABLE
+  name: days_seen_session_end_bits
+  type: INTEGER
+- mode: NULLABLE
   name: normalized_channel
   type: STRING
 - mode: NULLABLE
-  name: app_build
+  name: normalized_os
   type: STRING
 - mode: NULLABLE
-  name: app_channel
+  name: normalized_os_version
   type: STRING
 - mode: NULLABLE
-  name: app_display_version
-  type: STRING
-- mode: NULLABLE
-  name: device_manufacturer
-  type: STRING
-- mode: NULLABLE
-  name: device_model
-  type: STRING
-- mode: NULLABLE
-  name: isp
+  name: android_sdk_version
   type: STRING
 - mode: NULLABLE
   name: locale
@@ -36,26 +41,32 @@ fields:
   name: country
   type: STRING
 - mode: NULLABLE
-  name: adjust_network
+  name: app_build
   type: STRING
 - mode: NULLABLE
-  name: adjust_adgroup
+  name: app_channel
   type: STRING
 - mode: NULLABLE
-  name: adjust_campaign
+  name: app_display_version
   type: STRING
 - mode: NULLABLE
-  name: adjust_creative
+  name: architecture
+  type: STRING
+- mode: NULLABLE
+  name: device_manufacturer
+  type: STRING
+- mode: NULLABLE
+  name: device_model
+  type: STRING
+- mode: NULLABLE
+  name: telemetry_sdk_build
   type: STRING
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
 - mode: NULLABLE
-  name: submission_date
-  type: DATE
+  name: is_new_profile
+  type: BOOLEAN
 - mode: NULLABLE
-  name: new_profile
-  type: INTEGER
-- mode: NULLABLE
-  name: activated
-  type: INTEGER
+  name: isp
+  type: STRING

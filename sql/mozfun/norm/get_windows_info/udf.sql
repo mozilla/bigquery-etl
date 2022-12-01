@@ -104,42 +104,34 @@ SELECT
   assert.null(norm.get_windows_info("10.0.18363.4050523339")),
   assert.null(norm.get_windows_info("10.1.0.0")),
   assert.null(norm.get_windows_info("85456040.85456040.85456040.85456040")),
-
   assert.equals("Windows Vista", norm.get_windows_info("6.0.6002").name),
   assert.equals("6", norm.get_windows_info("6.0.6002").version_name),
   assert.equals(6.0, norm.get_windows_info("6.0.6002").version_number),
   assert.equals(6002, norm.get_windows_info("6.0.6002").build_number),
-
   assert.equals("Windows 7", norm.get_windows_info("6.1.7077").name),
   assert.equals("7", norm.get_windows_info("6.1.7077").version_name),
   assert.equals(6.1, norm.get_windows_info("6.1.7077").version_number),
   assert.equals(7077, norm.get_windows_info("6.1.7077").build_number),
-
   assert.equals("Windows 8", norm.get_windows_info("6.2.9200").name),
   assert.equals("8", norm.get_windows_info("6.2.9200").version_name),
   assert.equals(6.2, norm.get_windows_info("6.2.9200").version_number),
   assert.equals(9200, norm.get_windows_info("6.2.9200").build_number),
-
   assert.equals("Windows 8.1", norm.get_windows_info("6.3.9431").name),
   assert.equals("8.1", norm.get_windows_info("6.3.9431").version_name),
   assert.equals(6.3, norm.get_windows_info("6.3.9431").version_number),
   assert.equals(9431, norm.get_windows_info("6.3.9431").build_number),
-
   assert.equals("Windows 10", norm.get_windows_info("10.0.10240.17443").name),
   assert.equals("1507", norm.get_windows_info("10.0.10240.17443").version_name),
   assert.equals(10240, norm.get_windows_info("10.0.10240.17443").version_number),
   assert.equals(17443, norm.get_windows_info("10.0.10240.17443").build_number),
-
   assert.equals("Windows 10", norm.get_windows_info("10.0.20270.1").name),
   assert.equals("UNKNOWN", norm.get_windows_info("10.0.20270.1").version_name),
   assert.equals(20270, norm.get_windows_info("10.0.20270.1").version_number),
   assert.equals(1, norm.get_windows_info("10.0.20270.1").build_number),
-
   assert.equals("Windows 11", norm.get_windows_info("10.0.22621.819").name),
   assert.equals("22H2", norm.get_windows_info("10.0.22621.819").version_name),
   assert.equals(22621, norm.get_windows_info("10.0.22621.819").version_number),
   assert.equals(819, norm.get_windows_info("10.0.22621.819").build_number),
-
   assert.equals("Windows 11", norm.get_windows_info("10.0.25145.1011").name),
   assert.equals("UNKNOWN", norm.get_windows_info("10.0.25145.1011").version_name),
   assert.equals(25145, norm.get_windows_info("10.0.25145.1011").version_number),

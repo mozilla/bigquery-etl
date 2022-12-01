@@ -2579,14 +2579,15 @@ SELECT
 * If the column size exceeds the allowed limit, consider setting the field as NULL. See this <a href="https://github.com/mozilla/bigquery-etl/pull/2463">search_clients_daily_v8</a> PR for an example.</p>
 <h2 id="adding-a-new-mozfun-udf">Adding a new mozfun UDF</h2>
 <ol>
-<li>Run <code>./bqetl mozfun create &lt;dataset&gt;.&lt;name&gt; --udf</code></li>
-<li>Navigate to the <code>udf.sql</code> file in <code>sql/mozfun/&lt;dataset&gt;/&lt;name&gt;/</code> and add UDF the definition and tests</li>
-<li>Run <code>./bqetl mozfun validate &lt;dataset&gt;.&lt;name&gt;</code> for formatting and running tests</li>
-<li>Open a PR</li>
-<li>PR gets reviewed and approved and merged</li>
+<li>Run <code>./bqetl mozfun create &lt;dataset&gt;.&lt;name&gt; --udf</code>.</li>
+<li>Navigate to the <code>udf.sql</code> file in <code>sql/mozfun/&lt;dataset&gt;/&lt;name&gt;/</code> and add UDF the definition and tests.</li>
+<li>Run <code>./bqetl mozfun validate &lt;dataset&gt;.&lt;name&gt;</code> for formatting and running tests.</li>
+<li>Before running the tests, you need to <a href="https://mozilla.github.io/bigquery-etl/cookbooks/testing/">setup the access to the Google Cloud API</a>.</li>
+<li>Open a PR.</li>
+<li>PR gets reviewed, approved and merged.</li>
 <li>To publish UDF immediately:<ul>
-<li>Go to Airflow <code>mozfun</code> DAG and clear latest run</li>
-<li>Or else it will get published within a day when mozfun is executed next</li>
+<li>Go to Airflow <code>mozfun</code> DAG and clear latest run.</li>
+<li>Or else it will get published within a day when mozfun is executed next.</li>
 </ul>
 </li>
 </ol>
@@ -2595,7 +2596,10 @@ SELECT
 <ol>
 <li>Run <code>./bqetl routine create &lt;dataset&gt;.&lt;name&gt; --udf</code></li>
 <li>Navigate to the <code>udf.sql</code> in <code>sql/moz-fx-data-shared-prod/&lt;dataset&gt;/&lt;name&gt;/</code> file and add UDF definition and tests</li>
-<li>Run <code>./bqetl routine validate &lt;dataset&gt;.&lt;name&gt;</code> for formatting and running tests</li>
+<li>Run <code>./bqetl routine validate &lt;dataset&gt;.&lt;name&gt;</code> for formatting and running tests<ul>
+<li>Before running the tests, you need to <a href="https://mozilla.github.io/bigquery-etl/cookbooks/testing/">setup the access to the Google Cloud API</a>.</li>
+</ul>
+</li>
 <li>Open a PR</li>
 <li>PR gets reviewed and approved and merged</li>
 <li>To publish UDF immediately:<ul>

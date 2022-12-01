@@ -1,7 +1,6 @@
 CREATE OR REPLACE FUNCTION norm.get_windows_info(os_version STRING)
 RETURNS STRUCT<name STRING, version_name STRING, version_number INT64, build_number INT64>
-LANGUAGE js
-AS r"""
+LANGUAGE js AS r"""
   windows_8_or_earlier_dict = {
     0: {name: "Windows Vista", version_name: "6", version_number: 6.0},
     1: {name: "Windows 7", version_name: "7", version_number: 6.1},

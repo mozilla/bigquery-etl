@@ -1,0 +1,6 @@
+---
+friendly_name: Get Microsoft Windows OS information
+description: |
+  Exract the name, the version name, the version number, and the build number
+  corresponding to a Microsoft Windows operating system version string in the 
+  form of <number>.<number>.<number> or <number>.<number>.<number>.<number>.

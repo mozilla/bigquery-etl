@@ -1,47 +1,62 @@
-# Windows Name, Version, and Build Number
+# Windows Names, Versions, and Builds
 
 ### Summary
-This function is designed to parse the field `os_version` in table `mozdata.default_browser_agent.default_browser` and is intended to be used as part of the suite of functions `get_windows_name`, `get_windows_version`, and `get_windows_build_number`. 
+This function is primarily designed to parse the field `os_version` in table `mozdata.default_browser_agent.default_browser` and is a part of the suite of functions: `get_windows_info`, `get_windows_name`, `get_windows_version_name`, `get_windows_version_number`, and `get_windows_build_number`. Though untested, the functions should also parse any generic Microsoft Windows OS versions.
 
-As of November 2022, the expected valid values of `os_version` are either `x.y.z` or `w.x.y.z` where `w`, `x`, `y`, and `z` are integers. However, the database does contain other invalid values.
+Given a valid `os_version` value, the functions return the name of the operating system, the version name, the version number, and the build number corresponding to the operating system.
 
-As of November 22, the return values are based on [Windows 10 release information](https://learn.microsoft.com/en-us/windows/release-health/release-information) and [Windows 11 release information](https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information).
+As of November 2022, the expected valid values of `os_version` are either `x.y.z` or `w.x.y.z` where `w`, `x`, `y`, and `z` are integers.
 
-Note: Microsoft convention for build numbers for Windows 10 and 11 include two numbers. The first number is the version number and the second number uniquely identifies the build within the version. Example: `22621.900`. To simplify data processing and data analysis, `get_windows_build_number` returns the second unique identifier as an integer instead of returning the full build number as a string.
+As of November 2022, the return values for Windows 10 and Windows 11 are based on [Windows 10 release information](https://learn.microsoft.com/en-us/windows/release-health/release-information) and [Windows 11 release information](https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information). For 3-number versions, we assume the valid values of `z` in `x.y.z` are at most 5 digits in length. For 4-number versions, we assume the valid values of `z` in `w.x.y.z.` are at most 6 digits in length. The functions make an educated effort to handle Windows Vista, Windows 7, Windows 8, and Windows 8.1 information, but do not guarantee the return values are absolutely accurate. The functions assume the presence of undocumented non-release versions of Windows 10 and Windows 11, and will return an estimated name, version number, build number but not the version name. The functions do not handle other versions of Windows.
 
-### Example usage
+Note: Microsoft convention for build numbers for Windows 10 and 11 include two numbers. The first number is the version number and the second number uniquely identifies the build within the version, such as build number `22621.900` for version `22621`. To simplify data processing and data analysis, `get_windows_build` returns the second unique identifier as a number instead of returning the full build number as a string.
+
+### Example usages
+
+```sql
+SELECT
+	 `os_version`,
+	 mozfun.norm.get_windows_info(`os_version`)
+FROM `mozdata.default_browser_agent.default_browser`
+WHERE `submission_timestamp` > (CURRENT_TIMESTAMP() - INTERVAL 7 DAY) AND LEFT(document_id, 2) = '00'
+LIMIT 1000
+```
 
 ```sql
 SELECT
 	 `os_version`,
 	 mozfun.norm.get_windows_name(`os_version`),
-	 mozfun.norm.get_windows_version(`os_version`),
+	 mozfun.norm.get_windows_version_name(`os_version`),
+	 mozfun.norm.get_windows_version_number(`os_version`),
 	 mozfun.norm.get_windows_build_number(`os_version`)
 FROM `mozdata.default_browser_agent.default_browser`
-WHERE `submission_timestamp` > (CURRENT_TIMESTAMP() - INTERVAL 10 DAY)
+WHERE `submission_timestamp` > (CURRENT_TIMESTAMP() - INTERVAL 7 DAY) AND LEFT(document_id, 2) = '00'
+LIMIT 1000
 ```
 
 ### Mapping
-os_version       | windows_name  | windows_version | windows_build_number
----------------- | ------------- | --------------- | --------------------
-6.0.z            | Windows Vista | 6.0             | z
-6.1.z            | Windows 7     | 7.0             | z
-6.2.z            | Windows 8     | 8.0             | z
-6.3.z            | Windows 8.1   | 8.1             | z
-10.0.10240.z     | Windows 10    | 1507            | z
-10.0.10586.z     | Windows 10    | 1511            | z
-10.0.14393.z     | Windows 10    | 1607            | z
-10.0.15063.z     | Windows 10    | 1703            | z
-10.0.16299.z     | Windows 10    | 1709            | z
-10.0.17134.z     | Windows 10    | 1803            | z
-10.0.17763.z     | Windows 10    | 1809            | z
-10.0.18362.z     | Windows 10    | 1903            | z
-10.0.18363.z     | Windows 10    | 1909            | z
-10.0.19041.z     | Windows 10    | 2004            | z
-10.0.19042.z     | Windows 10    | 20H2            | z
-10.0.19043.z     | Windows 10    | 21H1            | z
-10.0.19044.z     | Windows 10    | 21H2            | z
-10.0.19045.z     | Windows 10    | 22H2            | z
-10.0.22000.z     | Windows 11    | 21H2            | z
-10.0.22621.z     | Windows 11    | 22H2            | z
-all other values | (null)        | (null)          | (null)
+os_version       | windows_name  | windows_version_name | windows_version_number | windows_build_number
+---------------- | ------------- | -------------------- | ---------------------- | --------------------
+6.0.z            | Windows Vista | 6.0                  | 6.0                    | z
+6.1.z            | Windows 7     | 7.0                  | 6.1                    | z
+6.2.z            | Windows 8     | 8.0                  | 6.2                    | z
+6.3.z            | Windows 8.1   | 8.1                  | 6.3                    | z
+10.0.10240.z     | Windows 10    | 1507                 | 10240                  | z
+10.0.10586.z     | Windows 10    | 1511                 | 10586                  | z
+10.0.14393.z     | Windows 10    | 1607                 | 14393                  | z
+10.0.15063.z     | Windows 10    | 1703                 | 15063                  | z
+10.0.16299.z     | Windows 10    | 1709                 | 16299                  | z
+10.0.17134.z     | Windows 10    | 1803                 | 17134                  | z
+10.0.17763.z     | Windows 10    | 1809                 | 17763                  | z
+10.0.18362.z     | Windows 10    | 1903                 | 18362                  | z
+10.0.18363.z     | Windows 10    | 1909                 | 18363                  | z
+10.0.19041.z     | Windows 10    | 2004                 | 19041                  | z
+10.0.19042.z     | Windows 10    | 20H2                 | 19042                  | z
+10.0.19043.z     | Windows 10    | 21H1                 | 19043                  | z
+10.0.19044.z     | Windows 10    | 21H2                 | 19044                  | z
+10.0.19045.z     | Windows 10    | 22H2                 | 19045                  | z
+10.0.y.z         | Windows 10    | UNKNOWN              | y                      | z
+10.0.22000.z     | Windows 11    | 21H2                 | 22000                  | z
+10.0.22621.z     | Windows 11    | 22H2                 | 22621                  | z
+10.0.y.z         | Windows 11    | UNKNOWN              | y                      | z
+all other values | (null)        | (null)               | (null)                 | (null)

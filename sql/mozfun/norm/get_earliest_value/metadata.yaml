@@ -1,10 +1,11 @@
 friendly_name: Get Earliest Value
 description: |
-  This UDF returns the earliest not-null value from a list of values and their dates.
+  This UDF returns the earliest not-null value from a list of values
+  and their corresponding timestamp.
 
-  The order is not important as the function will return the first value
+  The function will return the first value in the input array,
   that is not null and has the earliest timestamp.
 
-  Because there may be more than one value on the same date e.g. more than
-  one value reported by different pings on the same date, the dates
+  Because there may be more than one value on the same date e.g. more
+  than one value reported by different pings on the same date, the dates
   must be given as TIMESTAMPS and the values as STRING.

@@ -5,16 +5,7 @@ AS
 SELECT
   * REPLACE (
     mozfun.norm.metadata(metadata) AS metadata,
-    mozfun.norm.glean_ping_info(ping_info) AS ping_info,
-    (
-      SELECT AS STRUCT
-        metrics.* REPLACE (
-          STRUCT(
-            mozfun.glean.parse_datetime(metrics.datetime.page_viewed) AS page_viewed,
-            metrics.datetime.page_viewed AS raw_page_viewed
-          ) AS datetime
-        )
-    ) AS metrics
+    mozfun.norm.glean_ping_info(ping_info) AS ping_info
   )
 FROM
   `moz-fx-data-shared-prod.bedrock_stable.non_interaction_v1`

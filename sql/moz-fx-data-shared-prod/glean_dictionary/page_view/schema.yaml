@@ -226,9 +226,6 @@ fields:
         '
       mode: NULLABLE
       name: page_loaded
-      type: TIMESTAMP
-    - mode: NULLABLE
-      name: raw_page_loaded
       type: STRING
     mode: NULLABLE
     name: datetime

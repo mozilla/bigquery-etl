@@ -315,9 +315,6 @@ fields:
         '
       mode: NULLABLE
       name: usage_bad_date
-      type: TIMESTAMP
-    - mode: NULLABLE
-      name: raw_usage_bad_date
       type: STRING
     - description: 'The good date parameter used in a bisection, if present and specified
         as a date
@@ -325,9 +322,6 @@ fields:
         '
       mode: NULLABLE
       name: usage_good_date
-      type: TIMESTAMP
-    - mode: NULLABLE
-      name: raw_usage_good_date
       type: STRING
     - description: 'The launch parameter used when running a single build, if present
         and specified as a date
@@ -335,9 +329,6 @@ fields:
         '
       mode: NULLABLE
       name: usage_launch_date
-      type: TIMESTAMP
-    - mode: NULLABLE
-      name: raw_usage_launch_date
       type: STRING
     mode: NULLABLE
     name: datetime

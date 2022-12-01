@@ -340,9 +340,6 @@ fields:
         '
       mode: NULLABLE
       name: installation_timestamp
-      type: TIMESTAMP
-    - mode: NULLABLE
-      name: raw_installation_timestamp
       type: STRING
     mode: NULLABLE
     name: datetime

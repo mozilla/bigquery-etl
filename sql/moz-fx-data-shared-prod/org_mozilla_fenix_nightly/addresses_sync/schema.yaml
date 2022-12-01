@@ -240,18 +240,12 @@ fields:
         '
       mode: NULLABLE
       name: addresses_sync_finished_at
-      type: TIMESTAMP
-    - mode: NULLABLE
-      name: raw_addresses_sync_finished_at
       type: STRING
     - description: 'Records when the addresses sync started.
 
         '
       mode: NULLABLE
       name: addresses_sync_started_at
-      type: TIMESTAMP
-    - mode: NULLABLE
-      name: raw_addresses_sync_started_at
       type: STRING
     mode: NULLABLE
     name: datetime

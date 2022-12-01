@@ -511,9 +511,6 @@ fields:
         '
       mode: NULLABLE
       name: migration_telemetry_identifiers_fennec_profile_creation_date
-      type: TIMESTAMP
-    - mode: NULLABLE
-      name: raw_migration_telemetry_identifiers_fennec_profile_creation_date
       type: STRING
     mode: NULLABLE
     name: datetime

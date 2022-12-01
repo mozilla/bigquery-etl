@@ -593,9 +593,6 @@ fields:
         '
       mode: NULLABLE
       name: glean_validation_first_run_hour
-      type: TIMESTAMP
-    - mode: NULLABLE
-      name: raw_glean_validation_first_run_hour
       type: STRING
     mode: NULLABLE
     name: datetime

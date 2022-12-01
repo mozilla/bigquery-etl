@@ -240,18 +240,12 @@ fields:
         '
       mode: NULLABLE
       name: logins_sync_finished_at
-      type: TIMESTAMP
-    - mode: NULLABLE
-      name: raw_logins_sync_finished_at
       type: STRING
     - description: 'Records when the passwords sync started.
 
         '
       mode: NULLABLE
       name: logins_sync_started_at
-      type: TIMESTAMP
-    - mode: NULLABLE
-      name: raw_logins_sync_started_at
       type: STRING
     mode: NULLABLE
     name: datetime

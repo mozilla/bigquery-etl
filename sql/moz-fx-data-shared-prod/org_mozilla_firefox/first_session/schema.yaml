@@ -230,9 +230,6 @@ fields:
         '
       mode: NULLABLE
       name: first_session_timestamp
-      type: TIMESTAMP
-    - mode: NULLABLE
-      name: raw_first_session_timestamp
       type: STRING
     mode: NULLABLE
     name: datetime

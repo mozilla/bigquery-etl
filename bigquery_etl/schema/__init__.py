@@ -239,7 +239,6 @@ class Schema:
                         update=update,
                         add_missing_fields=add_missing_fields,
                         ignore_missing_fields=ignore_missing_fields,
-                        exclude=exclude,
                         attributes=attributes,
                     )
             else:

@@ -1,13 +1,13 @@
 # Windows Names, Versions, and Builds
 
 ### Summary
-This function is primarily designed to parse the field `os_version` in table `mozdata.default_browser_agent.default_browser` and is a part of the suite of functions: `get_windows_info`, `get_windows_name`, `get_windows_version_name`, `get_windows_version_number`, and `get_windows_build_number`. Though untested, the functions should also parse any generic Microsoft Windows OS version strings.
+This function is primarily designed to parse the field `os_version` in table `mozdata.default_browser_agent.default_browser`. Though untested, the function should also parse any generic Microsoft Windows OS version strings.
 
-Given an input `os_version` string, the functions return the name of the operating system, the version name, the version number, and the build number corresponding to the operating system.
+Given an input `os_version` string, the function returns the name of the operating system, the version name, the version number, and the build number corresponding to the operating system.
 
 As of November 2022, the expected valid values of `os_version` are either `x.y.z` or `w.x.y.z` where `w`, `x`, `y`, and `z` are integers.
 
-As of November 2022, the return values for Windows 10 and Windows 11 are based on [Windows 10 release information](https://learn.microsoft.com/en-us/windows/release-health/release-information) and [Windows 11 release information](https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information). For 3-number versions, we assume the valid values of `z` in `x.y.z` are at most 5 digits in length. For 4-number versions, we assume the valid values of `z` in `w.x.y.z.` are at most 6 digits in length. The functions make an educated effort to handle Windows Vista, Windows 7, Windows 8, and Windows 8.1 information, but do not guarantee the return values are absolutely accurate. The functions assume the presence of undocumented non-release versions of Windows 10 and Windows 11, and will return an estimated name, version number, build number but not the version name. The functions do not handle other versions of Windows.
+As of November 2022, the return values for Windows 10 and Windows 11 are based on [Windows 10 release information](https://learn.microsoft.com/en-us/windows/release-health/release-information) and [Windows 11 release information](https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information). For 3-number version strings, we assume the valid values of `z` in `x.y.z` are at most 5 digits in length. For 4-number version strings, we assume the valid values of `z` in `w.x.y.z.` are at most 6 digits in length. The functions make an educated effort to handle Windows Vista, Windows 7, Windows 8, and Windows 8.1 information, but do not guarantee the return values are absolutely accurate. The functions assume the presence of undocumented non-release versions of Windows 10 and Windows 11, and will return an estimated name, version number, build number but not the version name. The functions do not handle other versions of Windows.
 
 Note: Microsoft convention for build numbers for Windows 10 and 11 include two numbers. The first number is the version number and the second number uniquely identifies the build within the version, such as build number `22621.900` for version `22621`. To simplify data processing and data analysis, `get_windows_build` returns the second unique identifier as a number instead of returning the full build number as a string.
 
@@ -17,18 +17,6 @@ Note: Microsoft convention for build numbers for Windows 10 and 11 include two n
 SELECT
   `os_version`,
   mozfun.norm.get_windows_info(`os_version`)
-FROM `mozdata.default_browser_agent.default_browser`
-WHERE `submission_timestamp` > (CURRENT_TIMESTAMP() - INTERVAL 7 DAY) AND LEFT(document_id, 2) = '00'
-LIMIT 1000
-```
-
-```sql
-SELECT
-  `os_version`,
-  mozfun.norm.get_windows_name(`os_version`),
-  mozfun.norm.get_windows_version_name(`os_version`),
-  mozfun.norm.get_windows_version_number(`os_version`),
-  mozfun.norm.get_windows_build_number(`os_version`)
 FROM `mozdata.default_browser_agent.default_browser`
 WHERE `submission_timestamp` > (CURRENT_TIMESTAMP() - INTERVAL 7 DAY) AND LEFT(document_id, 2) = '00'
 LIMIT 1000

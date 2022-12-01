@@ -1,6 +1,6 @@
 friendly_name: Fenix
 description: |-
-  Views on data from fenix
+  Data related to Fenix (Firefox for Android)
 dataset_base_acl: view
 user_facing: true
 labels: {}

@@ -1450,6 +1450,16 @@ fields:
       mode: NULLABLE
       name: utility_process_sandboxing_kind
       type: STRING
+    - description: <string>, Set before attempting to load a font to help diagnose
+        crashes during loading.
+      mode: NULLABLE
+      name: font_name
+      type: STRING
+    - description: <string>, Comma-separated list of IPC actors name running on this
+        Utility process instance
+      mode: NULLABLE
+      name: utility_actors_name
+      type: STRING
     mode: NULLABLE
     name: metadata
     type: RECORD

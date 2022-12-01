@@ -1,29 +1,16 @@
 fields:
-
 - mode: NULLABLE
-  name: timestamp
+  name: last_seen_date
   type: TIMESTAMP
   description: |
-    Datetime value when the event occurred.
-
-- mode: NULLABLE
-  name: flow_id
-  type: STRING
-  description: |
-    The flow identifier. A randomly-generated opaque id.
-
-- mode: NULLABLE
-  name: event_type
-  type: STRING
-  description: |
-    Type of the FxA event recorded.
+    Timestamp when user last logged in.
 
 - mode: NULLABLE
   name: user_id
   type: STRING
   description: |
     36-char long hash randomly assigned when the account
-    is created.
+    is created
 
 - mode: NULLABLE
   name: service
@@ -32,8 +19,8 @@ fields:
     The service identifier. For Sync it may be empty or sync.
     For OAuth reliers it is their hex client id.
     Example: sync
-- mode: NULLABLE
 
+- mode: NULLABLE
   name: device_id
   type: STRING
   description: |
@@ -49,6 +36,18 @@ fields:
     E.g. Android
 
 - mode: NULLABLE
+  name: flow_id
+  type: STRING
+  description: |
+    The flow identifier. A randomly-generated opaque id.
+
+- mode: NULLABLE
+  name: event_type
+  type: STRING
+  description: |
+    Type of the FxA event recorded.
+
+- mode: NULLABLE
   name: country
   type: STRING
   description: |
@@ -57,20 +56,8 @@ fields:
 - mode: NULLABLE
   name: language
   type: STRING
-  description: |
+  description:
     Language settings used by the device.
-
-- mode: NULLABLE
-  name: ua_version
-  type: STRING
-  description: |
-    The user's browser version.
-
-- mode: NULLABLE
-  name: ua_browser
-  type: STRING
-  description: |
-    The user's web browser, e.g. 'Firefox' or 'Chrome'.
 
 - mode: NULLABLE
   name: entrypoint
@@ -117,3 +104,21 @@ fields:
     Marketing campaign content identifier
     for the flow session.
     Not stored if the DNT request header was 1.
+
+- mode: NULLABLE
+  name: ua_version
+  type: STRING
+  description: |
+    The user's browser version.
+
+- mode: NULLABLE
+  name: ua_browser
+  type: STRING
+  description: |
+    The user's web browser, e.g. 'Firefox' or 'Chrome'.
+
+- mode: NULLABLE
+  name: days_seen_bits
+  type: INTEGER
+  description: |
+    Represents specific device's activity over the last 28 days.

@@ -9,22 +9,22 @@ AS r"""
     3: {name: "Windows 8.1", version_name: "8.1", version_number: 6.3},
   };
   windows_10_or_later_dict = {
-	  10240: {name: "Windows 10", version_name: "1507", version_number: 10240},
-	  10586: {name: "Windows 10", version_name: "1511", version_number: 10586},
-	  14393: {name: "Windows 10", version_name: "1607", version_number: 14393},
-	  15063: {name: "Windows 10", version_name: "1703", version_number: 15063},
-	  16299: {name: "Windows 10", version_name: "1709", version_number: 16299},
-	  17134: {name: "Windows 10", version_name: "1803", version_number: 17134},
-	  17763: {name: "Windows 10", version_name: "1809", version_number: 17763},
-	  18362: {name: "Windows 10", version_name: "1903", version_number: 18362},
-	  18363: {name: "Windows 10", version_name: "1909", version_number: 18363},
-	  19041: {name: "Windows 10", version_name: "2004", version_number: 19041},
-	  19042: {name: "Windows 10", version_name: "20H2", version_number: 19042},
-	  19043: {name: "Windows 10", version_name: "21H1", version_number: 19043},
-	  19044: {name: "Windows 10", version_name: "21H2", version_number: 19044},
-	  19045: {name: "Windows 10", version_name: "22H2", version_number: 19045},
-	  22000: {name: "Windows 11", version_name: "21H2", version_number: 22000},
-	  22621: {name: "Windows 11", version_name: "22H2", version_number: 22621},
+    10240: {name: "Windows 10", version_name: "1507", version_number: 10240},
+    10586: {name: "Windows 10", version_name: "1511", version_number: 10586},
+    14393: {name: "Windows 10", version_name: "1607", version_number: 14393},
+    15063: {name: "Windows 10", version_name: "1703", version_number: 15063},
+    16299: {name: "Windows 10", version_name: "1709", version_number: 16299},
+    17134: {name: "Windows 10", version_name: "1803", version_number: 17134},
+    17763: {name: "Windows 10", version_name: "1809", version_number: 17763},
+    18362: {name: "Windows 10", version_name: "1903", version_number: 18362},
+    18363: {name: "Windows 10", version_name: "1909", version_number: 18363},
+    19041: {name: "Windows 10", version_name: "2004", version_number: 19041},
+    19042: {name: "Windows 10", version_name: "20H2", version_number: 19042},
+    19043: {name: "Windows 10", version_name: "21H1", version_number: 19043},
+    19044: {name: "Windows 10", version_name: "21H2", version_number: 19044},
+    19045: {name: "Windows 10", version_name: "22H2", version_number: 19045},
+    22000: {name: "Windows 11", version_name: "21H2", version_number: 22000},
+    22621: {name: "Windows 11", version_name: "22H2", version_number: 22621},
   };
 
   // Valid values of os_version contain either 3 or 4 dot-separated numbers
@@ -34,21 +34,21 @@ AS r"""
   // Parse values for 10.0.y.z where y is known and z is 5 digits or shorter.
   if (fields.length == 4) {
     const w = parseInt(fields[0]);
-  	if (w == 10) {
-  	  const x = parseInt(fields[1]);
-  	  if (x == 0) {
-  		  const z = parseInt(fields[3]);
+    if (w == 10) {
+      const x = parseInt(fields[1]);
+      if (x == 0) {
+        const z = parseInt(fields[3]);
         if (z < 100000) {
           const y = parseInt(fields[2]);
-      		if (y in windows_10_or_later_dict) {
-      		  const info = windows_10_or_later_dict[y];
-      			return {
-      				name: info["name"],
-      				version_name: info["version_name"],
-      				version_number: info["version_number"],
-      				build_number: z
-      			};
-      		} else {
+          if (y in windows_10_or_later_dict) {
+            const info = windows_10_or_later_dict[y];
+            return {
+              name: info["name"],
+              version_name: info["version_name"],
+              version_number: info["version_number"],
+              build_number: z
+            };
+          } else {
             if (y < 22000) {
               return {
                 name: "Windows 10",
@@ -71,7 +71,7 @@ AS r"""
     
   // Parse values for 6.y.z where y is known and z is 4 digits or shorter.
   } else if (fields.length == 3) {
-  	const x = parseInt(fields[0]);
+    const x = parseInt(fields[0]);
     if (x == 6) {
       const z = parseInt(fields[2]);
       if (z < 10000) {
@@ -79,10 +79,10 @@ AS r"""
         if (y in windows_8_or_earlier_dict) {
           const info = windows_8_or_earlier_dict[y];
           return {
-    				name: info["name"],
-    				version_name: info["version_name"],
-    				version_number: info["version_number"],
-    				build_number: z
+            name: info["name"],
+            version_name: info["version_name"],
+            version_number: info["version_number"],
+            build_number: z
           };
         }
       }

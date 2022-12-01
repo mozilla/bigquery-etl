@@ -30,7 +30,7 @@ AS r"""
   // Valid values of os_version contain either 3 or 4 dot-separated numbers
   // denoted as w.x.y.z or x.y.z below.
   const fields = os_version.split(".");
-  
+
   // Parse values for 10.0.y.z where y is known and z is 5 digits or shorter.
   if (fields.length == 4) {
     const w = parseInt(fields[0]);
@@ -68,7 +68,7 @@ AS r"""
         }
       }
     }
-    
+
   // Parse values for 6.y.z where y is known and z is 4 digits or shorter.
   } else if (fields.length == 3) {
     const x = parseInt(fields[0]);
@@ -104,7 +104,7 @@ SELECT
   assert.null(norm.get_windows_info("10.0.18363.4050523339")),
   assert.null(norm.get_windows_info("10.1.0.0")),
   assert.null(norm.get_windows_info("85456040.85456040.85456040.85456040")),
-  
+
   assert.equals("Windows Vista", norm.get_windows_info("6.0.6002").name),
   assert.equals("6", norm.get_windows_info("6.0.6002").version_name),
   assert.equals(6.0, norm.get_windows_info("6.0.6002").version_number),

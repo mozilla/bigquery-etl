@@ -90,6 +90,7 @@ class Schema:
         other: "Schema",
         exclude: Optional[List[str]] = None,
         add_missing_fields=True,
+        attributes: Optional[List[str]] = None,
     ):
         """Merge another schema into the schema."""
         self._traverse(
@@ -99,6 +100,7 @@ class Schema:
             update=True,
             exclude=exclude,
             add_missing_fields=add_missing_fields,
+            attributes=attributes,
         )
 
     def equal(self, other: "Schema") -> bool:
@@ -162,6 +164,7 @@ class Schema:
         add_missing_fields=True,
         ignore_missing_fields=False,
         exclude=None,
+        attributes=None,
     ):
         """Traverses two schemas for validation and optionally updates the first schema."""
         nodes = {n["name"]: Schema._node_with_mode(n) for n in columns}
@@ -178,6 +181,9 @@ class Schema:
             if node_name in nodes:
                 # node exists in schema, update attributes where necessary
                 for node_attr_key, node_attr_value in node.items():
+                    if attributes and node_attr_key not in attributes:
+                        continue
+
                     if node_attr_key == "type":
                         # sometimes types have multiple names (e.g. INT64 and INTEGER)
                         # make it consistent here
@@ -220,7 +226,7 @@ class Schema:
                             )
                         elif node_attr_key != "fields":
                             raise Exception(
-                                "Cannot merge schemas. Field attributes "
+                                f"Cannot merge schemas. {node_attr_key} attributes "
                                 f"for {prefix}.{field_path} are incompatible"
                             )
 
@@ -230,7 +236,11 @@ class Schema:
                         f"{prefix}.{field_path}",
                         nodes[node_name]["fields"],
                         node["fields"],
-                        update,
+                        update=update,
+                        add_missing_fields=add_missing_fields,
+                        ignore_missing_fields=ignore_missing_fields,
+                        exclude=exclude,
+                        attributes=attributes,
                     )
             else:
                 if update and add_missing_fields:

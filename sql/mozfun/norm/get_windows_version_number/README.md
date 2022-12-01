@@ -15,8 +15,8 @@ Note: Microsoft convention for build numbers for Windows 10 and 11 include two n
 
 ```sql
 SELECT
-	 `os_version`,
-	 mozfun.norm.get_windows_info(`os_version`)
+  `os_version`,
+  mozfun.norm.get_windows_info(`os_version`)
 FROM `mozdata.default_browser_agent.default_browser`
 WHERE `submission_timestamp` > (CURRENT_TIMESTAMP() - INTERVAL 7 DAY) AND LEFT(document_id, 2) = '00'
 LIMIT 1000
@@ -24,11 +24,11 @@ LIMIT 1000
 
 ```sql
 SELECT
-	 `os_version`,
-	 mozfun.norm.get_windows_name(`os_version`),
-	 mozfun.norm.get_windows_version_name(`os_version`),
-	 mozfun.norm.get_windows_version_number(`os_version`),
-	 mozfun.norm.get_windows_build_number(`os_version`)
+  `os_version`,
+  mozfun.norm.get_windows_name(`os_version`),
+  mozfun.norm.get_windows_version_name(`os_version`),
+  mozfun.norm.get_windows_version_number(`os_version`),
+  mozfun.norm.get_windows_build_number(`os_version`)
 FROM `mozdata.default_browser_agent.default_browser`
 WHERE `submission_timestamp` > (CURRENT_TIMESTAMP() - INTERVAL 7 DAY) AND LEFT(document_id, 2) = '00'
 LIMIT 1000

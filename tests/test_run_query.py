@@ -1,9 +1,8 @@
 import os
 from unittest.mock import patch
 
-from click.testing import CliRunner
-
 import yaml
+from click.testing import CliRunner
 
 from bigquery_etl.cli.query import run
 

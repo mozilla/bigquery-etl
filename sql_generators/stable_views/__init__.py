@@ -139,11 +139,34 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
             and schema.bq_table == "metrics_v1"
         ):
             # todo: use mozfun udfs
-            replacements += [
+            metrics_source = (
                 "mozdata.udf.normalize_fenix_metrics"
                 "(client_info.telemetry_sdk_build, metrics)"
-                " AS metrics"
+            )
+        else:
+            metrics_source = "metrics"
+        if metrics_datetime_fields := [
+            metrics_datetime_field["name"]
+            for field in schema.schema
+            if field["name"] == "metrics"
+            for metrics_field in field["fields"]
+            if metrics_field["name"] == "datetime"
+            for metrics_datetime_field in metrics_field["fields"]
+        ]:
+            replacements += [
+                f"(SELECT AS STRUCT {metrics_source}.* REPLACE (STRUCT("
+                + ", ".join(
+                    field_select
+                    for field in metrics_datetime_fields
+                    for field_select in (
+                        f"mozfun.glean.parse_datetime(metrics.datetime.{field}) AS {field}",
+                        f"metrics.datetime.{field} AS raw_{field}",
+                    )
+                )
+                + ") AS datetime)) AS metrics"
             ]
+        elif metrics_source != "metrics":
+            replacements += [f"{metrics_source} AS metrics"]
         if schema.bq_dataset_family == "firefox_desktop":
             # FOG does not provide an app_name, so we inject the one that
             # people already associate with desktop Firefox per bug 1672191.
@@ -181,7 +204,9 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
         view_schema = Schema.from_query_file(target_file, content=content)
 
         stable_table_schema = Schema.from_json({"fields": schema.schema})
-        view_schema.merge(stable_table_schema, add_missing_fields=False)
+        view_schema.merge(
+            stable_table_schema, attributes=["description"], add_missing_fields=False
+        )
         view_schema.to_yaml_file(target_dir / "schema.yaml")
     except Exception as e:
         print(f"Cannot generate schema.yaml for {target_file}: {e}")

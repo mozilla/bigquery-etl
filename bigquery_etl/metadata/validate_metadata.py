@@ -7,7 +7,7 @@ from argparse import ArgumentParser
 
 from ..util import standard_args
 from ..util.common import project_dirs
-from .parse_metadata import Metadata, DatasetMetadata
+from .parse_metadata import DatasetMetadata, Metadata
 
 parser = ArgumentParser(description=__doc__)
 

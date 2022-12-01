@@ -15,13 +15,13 @@ from ..cli.generate import generate
 from ..cli.query import query
 from ..cli.routine import mozfun, routine
 from ..cli.view import view
+from ..copy_deduplicate import copy_deduplicate
 from ..dependency import dependency
 from ..docs import docs_
 from ..glam.cli import glam
 from ..static import static_
 from ..stripe import stripe_
 from ..subplat.apple import apple
-from ..copy_deduplicate import copy_deduplicate
 
 
 def cli(prog_name=None):

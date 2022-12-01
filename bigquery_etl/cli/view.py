@@ -1,24 +1,24 @@
 """bigquery-etl CLI view command."""
-import click
 import functools
 import logging
 import re
 import string
 import sys
-
 from multiprocessing.pool import Pool, ThreadPool
 
-from ..view import View, broken_views
-from .dryrun import dryrun
+import click
+
 from ..cli.utils import (
-    sql_dir_option,
-    use_cloud_function_option,
     parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
     respect_dryrun_skip_option,
+    sql_dir_option,
+    use_cloud_function_option,
 )
-from ..metadata.parse_metadata import Metadata, METADATA_FILE
+from ..metadata.parse_metadata import METADATA_FILE, Metadata
+from ..view import View, broken_views
+from .dryrun import dryrun
 
 VIEW_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
 

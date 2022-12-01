@@ -1,6 +1,0 @@
----
-description: |
-  Parses a Glean datetime metric string value as a BigQuery timestamp.
-
-  See https://mozilla.github.io/glean/book/reference/metrics/datetime.html
-friendly_name: Parse Datetime

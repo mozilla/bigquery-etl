@@ -1,19 +1,18 @@
 """Represents a SQL view."""
 
-import attr
-import sqlparse
 import string
 import time
-
-from google.api_core.exceptions import BadRequest
-from google.cloud import bigquery
 from pathlib import Path
 
-from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.metadata.parse_metadata import DatasetMetadata, DATASET_METADATA_FILE
-from bigquery_etl.util import extract_from_query_path
-from bigquery_etl.schema import Schema
+import attr
+import sqlparse
+from google.api_core.exceptions import BadRequest
+from google.cloud import bigquery
 
+from bigquery_etl.format_sql.formatter import reformat
+from bigquery_etl.metadata.parse_metadata import DATASET_METADATA_FILE, DatasetMetadata
+from bigquery_etl.schema import Schema
+from bigquery_etl.util import extract_from_query_path
 
 # skip validation for these views
 SKIP_VALIDATION = {

@@ -5,11 +5,11 @@ import glob
 import os
 import re
 import sys
+from functools import partial
 from multiprocessing.pool import Pool
 from typing import Set
 
 import click
-from functools import partial
 from google.cloud import bigquery
 
 from ..cli.utils import is_authenticated

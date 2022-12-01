@@ -51,3 +51,17 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=True,
     )
+
+    wait_for_baseline_clients_first_seen = ExternalTaskSensor(
+        task_id="wait_for_baseline_clients_first_seen",
+        external_dag_id="copy_deduplicate",
+        external_task_id="baseline_clients_first_seen",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    fenix_derived__clients_yearly__v1.set_upstream(wait_for_baseline_clients_first_seen)

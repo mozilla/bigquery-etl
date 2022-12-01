@@ -1,4 +1,10 @@
 CREATE OR REPLACE FUNCTION iap.parse_apple_event(input STRING) AS (
+  -- WARNING: mozdata.subscription_platform.apple_subscriptions and
+  -- mozdata.subscription_platform.nonprod_apple_subscriptions require field order of
+  -- moz-fx-data-shared-prod.mozilla_vpn_derived.guardian_apple_events_v1 to exactly match:
+  --   legacy_subscription_id,
+  --   event_timestamp,
+  --   mozfun.iap.parse_apple_event(`data`).*,
   STRUCT(
     -- https://developer.apple.com/documentation/appstoreservernotifications/responsebodyv2decodedpayload
     JSON_VALUE(input, "$.autoRenewProductId") AS auto_renew_product_id,

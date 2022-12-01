@@ -142,7 +142,7 @@ apple_iap_subscriptions AS (
     CAST(NULL AS TIMESTAMP) AS canceled_at,
     CAST(NULL AS STRING) AS canceled_for_customer_at,
     CAST(NULL AS TIMESTAMP) AS cancel_at,
-    CAST(NULL AS BOOL) AS cancel_at_period_end,
+    subplat.cancel_at_period_end,
     IF(
       subplat.ended_at < TIMESTAMP(CURRENT_DATE),
       subplat.ended_at,
@@ -184,8 +184,8 @@ apple_iap_subscriptions AS (
   USING
     (fxa_uid)
   WHERE
-    product_id = "org.mozilla.ios.FirefoxVPN"
-    AND fxa_uid IS NOT NULL
+    subplat.product_id = "org.mozilla.ios.FirefoxVPN"
+    AND subplat.fxa_uid IS NOT NULL
 ),
 android_iap_events AS (
   SELECT

@@ -22,58 +22,72 @@ WITH legacy_subscriptions AS (
     subscriptions.provider = "APPLE"
 )
 SELECT
-  -- document_id must match legacy subscription_id to avoid backfilling active_subscription_ids
-  CAST(id AS STRING) AS legacy_subscription_id,
-  updated_at AS event_timestamp,
-  CAST(NULL AS STRING) AS auto_renew_product_id,
-  CAST(NULL AS STRING) AS auto_renew_status,
-  apple_receipt.receipt.bundle_id,
-  apple_receipt.environment,
-  (
-    SELECT
-      ANY_VALUE(expiration_intent)
-    FROM
-      UNNEST(apple_receipt.pending_renewal_info)
-  ) AS expiration_intent,
-  expires_date,
+  -- WARNING: mozdata.subscription_platform.apple_subscriptions and
+  -- mozdata.subscription_platform.nonprod_apple_subscriptions require field order of
+  -- moz-fx-data-shared-prod.mozilla_vpn_derived.guardian_apple_events_v1 to exactly match:
+  --   legacy_subscription_id,
+  --   event_timestamp,
+  --   mozfun.iap.parse_apple_event(`data`).*,
+  CAST(legacy_subscriptions.id AS STRING) AS legacy_subscription_id,
+  legacy_subscriptions.updated_at AS event_timestamp,
+  renewal_info.auto_renew_product_id,
+  renewal_info.auto_renew_status,
+  legacy_subscriptions.apple_receipt.receipt.bundle_id,
+  legacy_subscriptions.apple_receipt.environment,
+  renewal_info.expiration_intent,
+  receipt_info.expires_date,
   CAST(NULL AS STRING) AS form_of_payment,
   CAST(NULL AS TIMESTAMP) AS grace_period_expires_date,
-  in_app_ownership_type,
-  FALSE AS is_in_billing_retry,
+  receipt_info.in_app_ownership_type,
+  renewal_info.is_in_billing_retry_period = 1 AS is_in_billing_retry,
   CAST(NULL AS BOOL) AS is_upgraded,
   CAST(NULL AS STRING) AS latest_notification_subtype,
   CAST(NULL AS STRING) AS latest_notification_type,
-  offer_identifier,
-  offer_type,
-  original_purchase_date,
-  original_transaction_id,
-  product_id,
-  purchase_date,
-  revocation_date,
-  revocation_reason,
-  IF(is_active, 1, 2) AS status,
+  receipt_info.offer_identifier,
+  receipt_info.offer_type,
+  receipt_info.original_purchase_date,
+  receipt_info.original_transaction_id,
+  receipt_info.product_id,
+  receipt_info.purchase_date,
+  receipt_info.revocation_date,
+  receipt_info.revocation_reason,
+  CASE -- https://developer.apple.com/documentation/appstoreserverapi/status
+  WHEN
+    legacy_subscriptions.apple_receipt.receipt.request_date < receipt_info.expires_date
+  THEN
+    1
+  WHEN
+    renewal_info.is_in_billing_retry
+  THEN
+    3
+  ELSE
+    2
+  END
+  AS status,
   "Auto-Renewable Subscription" AS type,
-  fxa_uid AS user_id,
-  updated_at AS verified_at,
+  legacy_subscriptions.user_id,
+  legacy_subscriptions.apple_receipt.receipt.request_date AS verified_at,
 FROM
   legacy_subscriptions
 CROSS JOIN
   UNNEST(
     ARRAY(
       SELECT AS STRUCT
-        TIMESTAMP_MILLIS(original_purchase_date_ms) AS original_purchase_date,
         TIMESTAMP_MILLIS(expires_date_ms) AS expires_date,
         in_app_ownership_type,
-        IF(is_trial_period = "true", 1, NULL) AS offer_type,
         promotional_offer_id AS offer_identifier,
+        IF(is_trial_period = "true", 1, NULL) AS offer_type,
+        TIMESTAMP_MILLIS(original_purchase_date_ms) AS original_purchase_date,
+        original_transaction_id,
+        product_id,
         TIMESTAMP_MILLIS(purchase_date_ms) AS purchase_date,
         TIMESTAMP_MILLIS(cancellation_date_ms) AS revocation_date,
         cancellation_reason AS revocation_reason,
       FROM
         UNNEST(
           ARRAY_CONCAT(
-            COALESCE(apple_receipt.latest_receipt_info, []),
-            COALESCE(apple_receipt.receipt.in_app, [])
+            COALESCE(legacy_subscriptions.apple_receipt.latest_receipt_info, []),
+            COALESCE(legacy_subscriptions.apple_receipt.receipt.in_app, [])
           )
         )
       -- ZetaSQL requires QUALIFY to be used in conjunction with WHERE, GROUP BY, or HAVING.
@@ -82,4 +96,20 @@ CROSS JOIN
       QUALIFY
         1 = ROW_NUMBER() OVER (PARTITION BY is_trial_period ORDER BY expires_date_ms DESC)
     )
-  )
+  ) AS receipt_info
+LEFT JOIN
+  UNNEST(
+    ARRAY(
+      SELECT AS STRUCT
+        renewal_info.auto_renew_product_id,
+        renewal_info.auto_renew_status,
+        renewal_info.expiration_intent,
+        renewal_info.is_in_billing_retry_period = 1 AS is_in_billing_retry,
+      FROM
+        UNNEST(apple_receipt.pending_renewal_info) AS renewal_info
+      WHERE
+        receipt_info.original_transaction_id = renewal_info.original_transaction_id
+      LIMIT
+        1
+    )
+  ) AS renewal_info

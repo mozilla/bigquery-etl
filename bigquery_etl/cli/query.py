@@ -15,6 +15,7 @@ from tempfile import NamedTemporaryFile
 
 import click
 import yaml
+from dateutil.rrule import MONTHLY, rrule
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
@@ -457,14 +458,22 @@ def _backfill_query(
     dry_run,
     no_partition,
     args,
+    partitioning_type,
     backfill_date,
 ):
     """Run a query backfill for a specific date."""
     project, dataset, table = extract_from_query_path(query_file_path)
 
+    match partitioning_type:
+        case PartitionType.DAY:
+            partition = backfill_date.strftime("%Y%m%d")
+        case PartitionType.MONTH:
+            partition = backfill_date.strftime("%Y%m")
+        case _:
+            raise ValueError(f"Unsupported partitioning type: {partitioning_type}")
+
     backfill_date = backfill_date.strftime("%Y-%m-%d")
     if backfill_date not in exclude:
-        partition = backfill_date.replace("-", "")
 
         if no_partition:
             destination_table = table
@@ -552,10 +561,13 @@ def _backfill_query(
 @click.option(
     "--exclude",
     "-x",
+    multiple=True,
     help="Dates excluded from backfill. Date format: yyyy-mm-dd",
     default=[],
 )
-@click.option("--dry_run/--no_dry_run", help="Dry run the backfill")
+@click.option(
+    "--dry_run/--no_dry_run", "--dry-run/--no-dry-run", help="Dry run the backfill"
+)
 @click.option(
     "--max_rows",
     "-n",
@@ -625,6 +637,41 @@ def backfill(
             date_partition_parameter = metadata.scheduling.get(
                 "date_partition_parameter", date_partition_parameter
             )
+
+            # For backwards compatibility assume partitioning type is day
+            # in case metadata is missing
+            if metadata.bigquery:
+                partitioning_type = metadata.bigquery.time_partitioning.type
+            else:
+                partitioning_type = PartitionType.DAY
+                click.echo(
+                    "Bigquery partitioning type not set. Using PartitionType.DAY"
+                )
+
+            match partitioning_type:
+                case PartitionType.DAY:
+                    dates = [
+                        start_date + timedelta(i)
+                        for i in range((end_date - start_date).days + 1)
+                    ]
+                case PartitionType.MONTH:
+                    dates = list(
+                        rrule(
+                            freq=MONTHLY,
+                            dtstart=start_date.replace(day=1),
+                            until=end_date,
+                        )
+                    )
+                    # Dates in excluded must be the first day of the month to match `dates`
+                    exclude = [
+                        date.fromisoformat(day).replace(day=1).strftime("%Y-%m-%d")
+                        for day in exclude
+                    ]
+                case _:
+                    raise ValueError(
+                        f"Unsupported partitioning type: {partitioning_type}"
+                    )
+
         except FileNotFoundError:
             click.echo(f"No metadata defined for {query_file_path}")
 
@@ -651,6 +698,7 @@ def backfill(
             dry_run,
             no_partition,
             ctx.args,
+            partitioning_type,
         )
 
         if not depends_on_past:
@@ -867,6 +915,7 @@ def _run_query(
 )
 @click.option(
     "--dry_run",
+    "--dry-run",
     is_flag=True,
     default=False,
     help="Print bytes that would be processed for each part and don't run queries",
@@ -1080,6 +1129,7 @@ def validate(
 @project_id_option()
 @click.option(
     "--dry_run/--no_dry_run",
+    "--dry-run/--no-dry-run",
     help="Dry run the initialization",
 )
 def initialize(name, sql_dir, project_id, dry_run):
@@ -1492,7 +1542,7 @@ def deploy(
 
         existing_schema = Schema.from_schema_file(existing_schema_path)
 
-        if not force:
+        if not force and not str(query_file_path).endswith(".py"):
             query_schema = Schema.from_query_file(
                 query_file_path,
                 use_cloud_function=use_cloud_function,
@@ -1519,14 +1569,24 @@ def deploy(
             table = bigquery.Table(full_table_id)
 
         table.schema = bigquery_schema
+        _attach_metadata(query_file_path, table)
 
         if not table.created:
-            _attach_metadata(query_file_path, table)
             client.create_table(table)
             click.echo(f"Destination table {full_table_id} created.")
         else:
-            client.update_table(table, ["schema"])
-            click.echo(f"Schema updated for {full_table_id}.")
+            client.update_table(
+                table,
+                [
+                    "schema",
+                    "friendly_name",
+                    "description",
+                    "time_partitioning",
+                    "clustering_fields",
+                    "labels",
+                ],
+            )
+            click.echo(f"Schema (and metadata) updated for {full_table_id}.")
 
 
 def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:

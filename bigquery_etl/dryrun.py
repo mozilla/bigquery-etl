@@ -97,7 +97,9 @@ SKIP = {
     *glob.glob("sql/moz-fx-data-shared-prod/stripe_external/**/*.sql", recursive=True),
     *glob.glob("sql/moz-fx-cjms-*/**/*.sql", recursive=True),
     "sql/moz-fx-data-shared-prod/subscription_platform/stripe_subscriptions/view.sql",
+    "sql/moz-fx-data-shared-prod/subscription_platform/stripe_subscriptions_history/view.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/subscription_platform/nonprod_stripe_subscriptions/view.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/subscription_platform/nonprod_stripe_subscriptions_history/view.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/stripe/itemized_payout_reconciliation/view.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscription_ids_v1/query.sql",  # noqa E501
@@ -550,7 +552,11 @@ class DryRun:
         # delay import to prevent circular imports in 'bigquery_etl.schema'
         from .schema import SCHEMA_FILE, Schema
 
-        if self.skip() or basename(self.sqlfile) == "script.sql":
+        if (
+            self.skip()
+            or basename(self.sqlfile) == "script.sql"
+            or str(self.sqlfile).endswith(".py")
+        ):  # noqa E501
             print(f"\t...Ignoring schema validation for {self.sqlfile}")
             return True
 

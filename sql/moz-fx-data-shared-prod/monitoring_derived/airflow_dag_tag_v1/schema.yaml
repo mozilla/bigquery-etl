@@ -9,8 +9,3 @@ fields:
   name: tag_name
   type: STRING
   description: Airflow tag name
-
-- mode: NULLABLE
-  name: is_deleted
-  type: BOOLEAN
-  description: Row deleted from the source table (Fivetran managed field)

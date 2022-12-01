@@ -6,7 +6,6 @@ import re
 from argparse import Action
 from functools import partial
 
-
 from google.cloud import bigquery
 
 from bigquery_etl.util.common import TempDatasetReference

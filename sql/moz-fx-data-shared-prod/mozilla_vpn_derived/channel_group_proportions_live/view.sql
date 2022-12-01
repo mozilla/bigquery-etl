@@ -12,6 +12,7 @@ WITH stage_1 AS (
     utm_term,
     entrypoint_experiment,
     entrypoint_variation,
+    product_name,
     pricing_plan,
     provider,
     TO_JSON_STRING(promotion_codes) AS json_promotion_codes,
@@ -30,6 +31,7 @@ WITH stage_1 AS (
     utm_term,
     entrypoint_experiment,
     entrypoint_variation,
+    product_name,
     pricing_plan,
     provider,
     json_promotion_codes

@@ -3,7 +3,3 @@ description: |-
   Aggregated event and user counts for topsites and quicksuggest
 owners:
   - rburwei@mozilla.com
-workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:contextual-services

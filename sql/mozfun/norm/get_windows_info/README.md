@@ -11,7 +11,7 @@ As of November 2022, the return values for Windows 10 and Windows 11 are based o
 
 Note: Microsoft convention for build numbers for Windows 10 and 11 include two numbers. The first number is the version number and the second number uniquely identifies the build within the version, such as build number `22621.900` for version `22621`. To simplify data processing and data analysis, `get_windows_build` returns the second unique identifier as a number instead of returning the full build number as a string.
 
-### Example usages
+### Example usage
 
 ```sql
 SELECT

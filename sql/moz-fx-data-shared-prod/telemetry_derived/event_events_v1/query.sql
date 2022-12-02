@@ -59,3 +59,12 @@ WHERE
     BETWEEN 84
     AND 87
   )
+  AND
+  -- See https://bugzilla.mozilla.org/show_bug.cgi?id=1803833
+  NOT (
+    event_category = 'nimbus'
+    AND event_method = 'validationFailed'
+    AND mozfun.map.get_key(event_map_values, 'reason') = 'invalid-feature'
+    AND mozfun.map.get_key(event_map_values, 'feature') IN ('nimbus-qa-1', 'nimbus-qa-2')
+    AND mozfun.norm.truncate_version(app_version, 'major') <= 108
+  )

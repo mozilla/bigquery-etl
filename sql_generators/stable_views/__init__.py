@@ -181,7 +181,9 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
         view_schema = Schema.from_query_file(target_file, content=content)
 
         stable_table_schema = Schema.from_json({"fields": schema.schema})
-        view_schema.merge(stable_table_schema, add_missing_fields=False)
+        view_schema.merge(
+            stable_table_schema, attributes=["description"], add_missing_fields=False
+        )
         view_schema.to_yaml_file(target_dir / "schema.yaml")
     except Exception as e:
         print(f"Cannot generate schema.yaml for {target_file}: {e}")

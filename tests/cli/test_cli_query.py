@@ -4,12 +4,7 @@ import pytest
 import yaml
 from click.testing import CliRunner
 
-from bigquery_etl.cli.query import (
-    paths_matching_name_pattern,
-    create,
-    info,
-    schedule,
-)
+from bigquery_etl.cli.query import create, info, paths_matching_name_pattern, schedule
 
 
 class TestQuery:

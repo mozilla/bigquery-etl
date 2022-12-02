@@ -43,7 +43,7 @@ build_ids AS (
     1,
     2
   HAVING
-    COUNT(DISTINCT client_id) > 10
+    COUNT(DISTINCT client_id) > 0
 ),
 normalized_histograms AS (
   SELECT
@@ -100,11 +100,43 @@ distribution_metadata AS (
       [
         STRUCT(
           "custom_distribution" AS metric_type,
+          "power_battery_percentage_when_user_active" AS metric,
+          0 AS range_min,
+          100 AS range_max,
+          100 AS bucket_count,
+          "linear" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
           "search_terms_group_size_distribution" AS metric,
           1 AS range_min,
           4 AS range_max,
           5 AS bucket_count,
           "linear" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "js_execution_percentage" AS metric,
+          0 AS range_min,
+          100 AS range_max,
+          20 AS bucket_count,
+          "linear" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "js_baseline_compile_percentage" AS metric,
+          0 AS range_min,
+          100 AS range_max,
+          20 AS bucket_count,
+          "linear" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "gfx_content_frame_time_from_paint" AS metric,
+          1 AS range_min,
+          5000 AS range_max,
+          50 AS bucket_count,
+          "exponential" AS histogram_type
         ),
         STRUCT(
           "custom_distribution" AS metric_type,
@@ -116,33 +148,17 @@ distribution_metadata AS (
         ),
         STRUCT(
           "custom_distribution" AS metric_type,
-          "geckoview_per_document_site_origins" AS metric,
+          "js_delazification_percentage" AS metric,
           0 AS range_min,
           100 AS range_max,
-          50 AS bucket_count,
-          "exponential" AS histogram_type
+          20 AS bucket_count,
+          "linear" AS histogram_type
         ),
         STRUCT(
           "custom_distribution" AS metric_type,
-          "gfx_checkerboard_peak_pixel_count" AS metric,
+          "pdfjs_time_to_view" AS metric,
           1 AS range_min,
-          66355200 AS range_max,
-          50 AS bucket_count,
-          "exponential" AS histogram_type
-        ),
-        STRUCT(
-          "custom_distribution" AS metric_type,
-          "gfx_checkerboard_severity" AS metric,
-          1 AS range_min,
-          1073741824 AS range_max,
-          50 AS bucket_count,
-          "exponential" AS histogram_type
-        ),
-        STRUCT(
-          "custom_distribution" AS metric_type,
-          "gfx_content_frame_time_from_paint" AS metric,
-          1 AS range_min,
-          5000 AS range_max,
+          10000 AS range_max,
           50 AS bucket_count,
           "exponential" AS histogram_type
         ),
@@ -156,9 +172,25 @@ distribution_metadata AS (
         ),
         STRUCT(
           "custom_distribution" AS metric_type,
-          "gfx_content_frame_time_with_svg" AS metric,
+          "gfx_content_frame_time_without_upload" AS metric,
           1 AS range_min,
           5000 AS range_max,
+          50 AS bucket_count,
+          "exponential" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "gfx_checkerboard_severity" AS metric,
+          1 AS range_min,
+          1073741824 AS range_max,
+          50 AS bucket_count,
+          "exponential" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "geckoview_per_document_site_origins" AS metric,
+          0 AS range_min,
+          100 AS range_max,
           50 AS bucket_count,
           "exponential" AS histogram_type
         ),
@@ -172,43 +204,11 @@ distribution_metadata AS (
         ),
         STRUCT(
           "custom_distribution" AS metric_type,
-          "gfx_content_frame_time_without_upload" AS metric,
+          "gfx_checkerboard_peak_pixel_count" AS metric,
           1 AS range_min,
-          5000 AS range_max,
+          66355200 AS range_max,
           50 AS bucket_count,
           "exponential" AS histogram_type
-        ),
-        STRUCT(
-          "custom_distribution" AS metric_type,
-          "js_baseline_compile_percentage" AS metric,
-          0 AS range_min,
-          100 AS range_max,
-          20 AS bucket_count,
-          "linear" AS histogram_type
-        ),
-        STRUCT(
-          "custom_distribution" AS metric_type,
-          "js_delazification_percentage" AS metric,
-          0 AS range_min,
-          100 AS range_max,
-          20 AS bucket_count,
-          "linear" AS histogram_type
-        ),
-        STRUCT(
-          "custom_distribution" AS metric_type,
-          "js_execution_percentage" AS metric,
-          0 AS range_min,
-          100 AS range_max,
-          20 AS bucket_count,
-          "linear" AS histogram_type
-        ),
-        STRUCT(
-          "custom_distribution" AS metric_type,
-          "js_xdr_encode_percentage" AS metric,
-          0 AS range_min,
-          100 AS range_max,
-          20 AS bucket_count,
-          "linear" AS histogram_type
         ),
         STRUCT(
           "custom_distribution" AS metric_type,
@@ -217,6 +217,22 @@ distribution_metadata AS (
           2147483646 AS range_max,
           50 AS bucket_count,
           "exponential" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "gfx_content_frame_time_with_svg" AS metric,
+          1 AS range_min,
+          5000 AS range_max,
+          50 AS bucket_count,
+          "exponential" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "js_xdr_encode_percentage" AS metric,
+          0 AS range_min,
+          100 AS range_max,
+          20 AS bucket_count,
+          "linear" AS histogram_type
         )
       ]
     )

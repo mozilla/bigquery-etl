@@ -1347,6 +1347,30 @@ fields:
     - mode: REPEATED
       name: udp_smimea_u
       type: INTEGER
+    - mode: REPEATED
+      name: tcp_a_n
+      type: INTEGER
+    - mode: REPEATED
+      name: tcp_a_n_u
+      type: INTEGER
+    - mode: REPEATED
+      name: tcp_dnskeydo
+      type: INTEGER
+    - mode: REPEATED
+      name: tcp_dnskeydo_u
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_a_n
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_a_n_u
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_dnskeydo
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_dnskeydo_u
+      type: INTEGER
     mode: NULLABLE
     name: dns_data
     type: RECORD
@@ -1532,6 +1556,30 @@ fields:
       type: FLOAT
     - mode: NULLABLE
       name: udp_smimea_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_a_n
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_a_n_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_dnskeydo
+      type: FLOAT
+    - mode: NULLABLE
+      name: tcp_dnskeydo_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_a_n
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_a_n_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_dnskeydo
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_dnskeydo_u
       type: FLOAT
     mode: NULLABLE
     name: dns_attempts

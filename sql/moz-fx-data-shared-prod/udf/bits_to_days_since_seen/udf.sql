@@ -13,7 +13,6 @@ CREATE OR REPLACE FUNCTION
     WHERE BIT_COUNT(SUBSTR(b >> n, -1) & b'\x01') > 0));
 
 See also: bits_to_days_since_first_seen.sql
-*/
 CREATE OR REPLACE FUNCTION udf.bits_to_days_since_seen(b BYTES) AS (
   (
     WITH trailing AS (
@@ -29,6 +28,19 @@ CREATE OR REPLACE FUNCTION udf.bits_to_days_since_seen(b BYTES) AS (
       + udf.pos_of_trailing_set_bit(TO_CODE_POINTS(SUBSTR(tail, 1, 1))[OFFSET(0)])
     FROM
       trailing
+  )
+);
+
+*/
+-- Bug 1803786 - Temp fix for this function
+CREATE OR REPLACE FUNCTION udf.bits_to_days_since_seen(b BYTES) AS (
+  (
+    SELECT
+      MIN(n)
+    FROM
+      UNNEST(GENERATE_ARRAY(0, 364)) AS n
+    WHERE
+      BIT_COUNT(SUBSTR(b >> n, -1) & b'\x01') > 0
   )
 );
 

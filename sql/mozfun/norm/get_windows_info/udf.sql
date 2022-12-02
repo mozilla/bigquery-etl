@@ -30,14 +30,14 @@ LANGUAGE js AS r"""
   // denoted as w.x.y.z or x.y.z below.
   const fields = os_version.split(".");
 
-  // Parse values for 10.0.y.z where y is known and z is 5 digits or shorter.
+  // Parse values for 10.0.y.z where z is 5 digits or shorter.
   if (fields.length == 4) {
     const w = parseInt(fields[0]);
     if (w == 10) {
       const x = parseInt(fields[1]);
       if (x == 0) {
         const z = parseInt(fields[3]);
-        if (z < 100000) {
+        if (0 <= z && z < 100000) {
           const y = parseInt(fields[2]);
           if (y in windows_10_or_later_dict) {
             const info = windows_10_or_later_dict[y];
@@ -48,14 +48,14 @@ LANGUAGE js AS r"""
               build_number: z
             };
           } else {
-            if (y < 22000) {
+            if (0 <= y && y < 22000) {
               return {
                 name: "Windows 10",
                 version_name: "UNKNOWN",
                 version_number: y,
                 build_number: z,
               };
-            } else {
+            } else if (22000 <= y) {
               return {
                 name: "Windows 11",
                 version_name: "UNKNOWN",
@@ -73,7 +73,7 @@ LANGUAGE js AS r"""
     const x = parseInt(fields[0]);
     if (x == 6) {
       const z = parseInt(fields[2]);
-      if (z < 10000) {
+      if (0 <= z && z < 10000) {
         const y = parseInt(fields[1]);
         if (y in windows_8_or_earlier_dict) {
           const info = windows_8_or_earlier_dict[y];
@@ -97,10 +97,15 @@ SELECT
   assert.null(norm.get_windows_info("non.numeric.values")),
   assert.null(norm.get_windows_info("7")),
   assert.null(norm.get_windows_info("6.1")),
-  assert.null(norm.get_windows_info("4.10.67766446")),
+  assert.null(norm.get_windows_info("6.2.13600")),
+  assert.null(norm.get_windows_info("6.3.-5")),
+  assert.null(norm.get_windows_info("6.8.11")),
+  assert.null(norm.get_windows_info("6.10.67")),
   assert.null(norm.get_windows_info("8.3.8601")),
   assert.null(norm.get_windows_info("105.0.0")),
   assert.null(norm.get_windows_info("10.0.18363.4050523339")),
+  assert.null(norm.get_windows_info("10.0.0.-15")),
+  assert.null(norm.get_windows_info("10.0.-7.0")),
   assert.null(norm.get_windows_info("10.1.0.0")),
   assert.null(norm.get_windows_info("85456040.85456040.85456040.85456040")),
   assert.equals("Windows Vista", norm.get_windows_info("6.0.6002").name),

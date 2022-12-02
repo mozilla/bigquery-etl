@@ -15,14 +15,15 @@ TEST_BUCKET = "bigquery-etl-integration-test-bucket"
 pytest_plugins = [
     "bigquery_etl.pytest_plugin.sql",
     "bigquery_etl.pytest_plugin.routine",
-    "bigquery_etl.pytest_plugin.script_lint.black",
-    "bigquery_etl.pytest_plugin.script_lint.docstyle",
     "bigquery_etl.pytest_plugin.script_lint.flake8",
+    "bigquery_etl.pytest_plugin.script_lint.black",
     "bigquery_etl.pytest_plugin.script_lint.mypy",
+    "bigquery_etl.pytest_plugin.script_lint.docstyle",
 ]
 
 
 def pytest_collection_modifyitems(config, items):
+    """Collector for marking integration and java tests."""
     keywordexpr = config.option.keyword
     markexpr = config.option.markexpr
     if keywordexpr or markexpr:

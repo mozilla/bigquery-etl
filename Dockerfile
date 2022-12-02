@@ -12,7 +12,16 @@ WORKDIR /app
 # build typed-ast in separate stage because it requires gcc and libc-dev
 FROM base AS python-deps
 RUN apt-get update -qqy && apt-get install -qqy gcc libc-dev
-COPY requirements.txt ./
+
+# install poetry
+RUN pip install --no-cache-dir --quiet poetry
+
+# copy poetry files over
+COPY ./pyproject.toml ./poetry.lock ./
+
+# Just need the requirements.txt from Poetry
+RUN poetry export --no-interaction --output requirements.txt --without-hashes
+
 # use --no-deps to work around https://github.com/pypa/pip/issues/9644
 RUN pip install --no-deps -r requirements.txt
 

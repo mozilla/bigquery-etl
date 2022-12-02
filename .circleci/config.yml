@@ -18,7 +18,7 @@ executors:
 jobs:
   build:
     docker: &docker
-      - image: python:<< pipeline.parameters.python-version >>
+      - image: cimg/python:<< pipeline.parameters.python-version >>
     steps:
       - checkout
       - &restore_venv_cache
@@ -28,36 +28,34 @@ jobs:
             # patterns to restore cache
             - &python_cache_key
               # yamllint disable-line rule:line-length
-              python-<< pipeline.parameters.python-version >>-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-{{ checksum "requirements.txt" }}
+              python-<< pipeline.parameters.python-version >>-packages-v2-{{ .Branch }}-{{ checksum "poetry.lock" }}-{{ checksum "pyproject.toml" }}
             # yamllint disable-line rule:line-length
-            - python-<< pipeline.parameters.python-version >>-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-
+            - python-<< pipeline.parameters.python-version >>-packages-v2-{{ .Branch }}-{{ checksum "poetry.lock" }}-
             # yamllint disable-line rule:line-length
-            - python-<< pipeline.parameters.python-version >>-packages-v1-{{ .Branch }}-
-            - python-<< pipeline.parameters.python-version >>-packages-v1-main-
+            - python-<< pipeline.parameters.python-version >>-packages-v2-{{ .Branch }}-
+            - python-<< pipeline.parameters.python-version >>-packages-v2-main-
       - &build
         run:
           name: Build
           command: |
-            python3 -m venv venv/
-            venv/bin/pip install pip-tools --constraint requirements.in
-            venv/bin/pip-sync --pip-args=--no-deps
+            poetry install
       - run:
           name: Yamllint Test
-          command: PATH="venv/bin:$PATH" yamllint -c .yamllint.yaml .
+          command: poetry run yamllint -c .yamllint.yaml .
       - run:
-          name: PyTest with linters
+          name: PyTest with lint
           # integration and java tests are run in a separate `integration` step;
           # SQL and routine tests are split out into a separate `test-sql` test
           # since those tests take the longest to run and running those tests
           # in parallel speeds up CI
           command: |
-            PATH="venv/bin:$PATH" script/entrypoint --black --flake8 \
+            poetry run script/entrypoint --black --flake8 \
               --mypy-ignore-missing-imports --pydocstyle \
               -m "not (routine or sql or integration or java)" \
               -n 8
       - save_cache:
           paths:
-            - venv/
+            - /home/circleci/.cache/pypoetry/virtualenvs
           key: *python_cache_key
   verify-format-sql:
     docker: *docker
@@ -77,22 +75,17 @@ jobs:
       - run:
           name: Verify that SQL is correctly formatted
           command: |
-            PATH="venv/bin:$PATH" script/bqetl format --check \
+            poetry run bqetl format --check \
             $(git ls-tree -d HEAD --name-only)
   verify-requirements:
     docker: *docker
     steps:
       - checkout
       - run:
-          name: Verify that requirements.txt contains the right dependencies for
-            this python version
-          # use `--constraint` with `requirements.in` not `requirements.txt`
-          # because for pip>=20.3 "Constraints are only allowed to take the form
-          # of a package name and a version specifier"
+          name: Verify pyproject.toml and poetry.lock
           command: |
-            pip install pip-tools --constraint requirements.in
-            pip-compile --quiet --allow-unsafe --generate-hashes
-            git diff --exit-code -G '^ *[^# ]' -- requirements.txt
+            poetry check
+            poetry lock --check
   test-sql:
     docker: *docker
     steps:
@@ -108,7 +101,7 @@ jobs:
               echo "Cannot pass creds to forked PRs," \
                 "so skipping routine and SQL tests"
             else
-              PATH="venv/bin:$PATH" script/entrypoint -m "routine or sql" -n 8
+              poetry run script/entrypoint -m "routine or sql" -n 8
             fi
   dry-run-sql:
     docker: *docker
@@ -136,7 +129,7 @@ jobs:
               PATHS="$(git diff origin/main... --name-only --diff-filter=d -- sql)"
             fi
             echo $PATHS
-            PATH="venv/bin:$PATH" script/bqetl dryrun --validate-schemas $PATHS
+            poetry run bqetl dryrun --validate-schemas $PATHS
           # yamllint enable rule:line-length
   validate-metadata:
     docker: *docker
@@ -149,7 +142,7 @@ jobs:
       - run:
           name: Verify that metadata files are valid
           command: |
-            PATH="venv/bin:$PATH" script/bqetl query validate \
+            poetry run bqetl query validate \
               --respect-dryrun-skip
   integration:
     docker: *docker
@@ -179,15 +172,15 @@ jobs:
         run:
           name: Install maven and java and download dependencies
           command: |
-            apt update
-            apt install -y maven default-jdk-headless
+            sudo apt-get update
+            sudo apt-get install -y maven default-jdk-headless
             mvn package
-            venv/bin/pip-sync --pip-args=--no-deps requirements.txt
+            poetry install
       - run:
           name: PyTest Integration Test
           # yamllint disable rule:line-length
           command: |
-            PATH="venv/bin:$PATH" script/entrypoint -m 'integration or java' -n 8
+            poetry run script/entrypoint -m 'integration or java' -n 8
       - save_cache:
           paths:
             - ~/.m2
@@ -205,7 +198,7 @@ jobs:
       - run:
           name: Generate DAGs
           command: |
-            PATH="venv/bin:$PATH" script/bqetl dag generate
+            poetry run bqetl dag generate
             mv dags/ /tmp/workspace/generated-sql
       # this task is overwriting the content produced by generate-sql;
       # the behaviour here is additive, generated DAGs are just added to
@@ -271,12 +264,12 @@ jobs:
       - *java_deps
       - run:
           name: Generate DAGs
-          command: PATH="venv/bin:$PATH" script/bqetl dag generate
+          command: poetry run bqetl dag generate
       - run:
           name: Verify that DAGs were correctly generated and are up-to-date
           command: |
             git diff --exit-code
-            diff <(git ls-files dags/*.py) <(ls dags/*.py)
+            diff <(git ls-files dags/*.py | sort) <(ls -1 dags/*.py | sort)
   validate-docs:
     docker: *docker
     steps:
@@ -288,7 +281,7 @@ jobs:
       - run:
           name: Validate doc examples
           command: |
-            PATH="venv/bin:$PATH" script/bqetl routine validate --docs-only
+            poetry run bqetl routine validate --docs-only
   validate-views:
     docker: *docker
     steps:
@@ -301,7 +294,7 @@ jobs:
       - *copy_generated_sql
       - run:
           name: Validate views
-          command: PATH="venv/bin:$PATH" script/bqetl view validate
+          command: poetry run bqetl view validate
   docs:
     docker: *docker
     steps:
@@ -318,10 +311,10 @@ jobs:
           name: Build and deploy docs
           command: |
             rm -r sql/ && cp -r /tmp/workspace/generated-sql/sql sql/
-            PATH="venv/bin:$PATH" script/bqetl docs generate \
+            poetry run bqetl docs generate \
                --output_dir=generated_docs/
             cd generated_docs/
-            PATH="../venv/bin:$PATH" mkdocs gh-deploy \
+            poetry run mkdocs gh-deploy \
               -m "[ci skip] Deployed {sha} with MkDocs version: {version}"
   generate-sql:
     docker: *docker
@@ -337,10 +330,10 @@ jobs:
             mkdir -p /tmp/workspace/generated-sql
             cp -r sql/ /tmp/workspace/generated-sql/sql
             # Don't depend on dry run for PRs
-            PATH="venv/bin:$PATH" script/bqetl generate all \
+            poetry run bqetl generate all \
               --output-dir /tmp/workspace/generated-sql/sql/ \
               --target-project moz-fx-data-shared-prod
-            PATH="venv/bin:$PATH" script/bqetl dependency record \
+            poetry run bqetl dependency record \
               --skip-existing \
               "/tmp/workspace/generated-sql/sql/"
       - persist_to_workspace:
@@ -406,8 +399,8 @@ jobs:
       - run:
           name: Install rsync
           command: |
-            apt update
-            apt install -y rsync
+            sudo apt-get update
+            sudo apt-get install -y rsync
       - run:
           name: Pull down private SQL content
           command: |
@@ -422,10 +415,10 @@ jobs:
             mkdir -p /tmp/workspace/private-generated-sql
             cp -r sql/ /tmp/workspace/private-generated-sql/sql
             # Don't depend on dry run for PRs
-            PATH="venv/bin:$PATH" script/bqetl generate all \
+            poetry run bqetl generate all \
               --output-dir /tmp/workspace/private-generated-sql/sql/ \
               --target-project moz-fx-data-shared-prod
-            PATH="venv/bin:$PATH" script/bqetl dependency record \
+            poetry run bqetl dependency record \
               --skip-existing \
               "/tmp/workspace/private-generated-sql/sql/"
       - persist_to_workspace:
@@ -497,15 +490,15 @@ jobs:
               bigquery-etl-main
 
             cd bigquery-etl-main
-            pip install --no-deps -r requirements.txt
+            poetry install
             mvn package
-            ./script/bqetl generate all \
+            poetry run bqetl generate all \
               --target-project moz-fx-data-shared-prod
-            ./script/bqetl dependency record \
+            poetry run bqetl dependency record \
               --skip-existing \
               "sql/"
 
-            ./script/bqetl dag generate
+            poetry run bqetl dag generate
 
             cd ..
             diff -bur --no-dereference \
@@ -548,8 +541,8 @@ jobs:
           name: Manually trigger integration tests for fork
           # yamllint disable rule:line-length
           command: |
-            apt update
-            apt install jq -y
+            sudo apt-get update
+            sudo apt-get install jq -y
 
             CIRCLE_PR_BRANCH=`curl -s https://api.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pulls/${CIRCLE_PR_NUMBER} | jq -r '.head.label'`
 

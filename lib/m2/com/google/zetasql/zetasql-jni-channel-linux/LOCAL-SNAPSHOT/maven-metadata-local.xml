@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>com.google.zetasql</groupId>
+  <artifactId>zetasql-jni-channel-linux</artifactId>
+  <versioning>
+    <lastUpdated>20221130172809</lastUpdated>
+    <snapshot>
+      <localCopy>true</localCopy>
+    </snapshot>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>LOCAL-SNAPSHOT</value>
+        <updated>20221130172809</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>LOCAL-SNAPSHOT</value>
+        <updated>20221130172809</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+  <version>LOCAL-SNAPSHOT</version>
+</metadata>

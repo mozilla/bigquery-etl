@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  Copyright 2019 Google LLC
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.google.zetasql</groupId>
+  <artifactId>zetasql-client</artifactId>
+  <version>LOCAL-SNAPSHOT</version>
+  <name>Core Client</name>
+  <description>Analyzer Framework for SQL</description>
+  <url>https://github.com/google/zetasql</url>
+
+  <scm>
+    <url>http://github.com/google/zetasql/</url>
+    <connection>scm:git:git://github.com/google/zetasql.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/google/zetasql.git</developerConnection>
+  </scm>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <organization>Google, LLC.</organization>
+      <organizationUrl>http://www.google.com</organizationUrl>
+    </developer>
+  </developers>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>3.19.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java-util</artifactId>
+      <version>3.19.3</version>
+    </dependency>
+<dependency>
+  <groupId>com.google.zetasql</groupId>
+  <artifactId>zetasql-types</artifactId>
+  <version>${project.version}</version>
+</dependency>
+<dependency>
+  <groupId>com.google.android</groupId>
+  <artifactId>annotations</artifactId>
+  <version>4.1.1.4</version>
+</dependency>
+<dependency>
+  <groupId>com.google.api.grpc</groupId>
+  <artifactId>proto-google-common-protos</artifactId>
+  <version>2.0.1</version>
+</dependency>
+<dependency>
+  <groupId>com.google.code.findbugs</groupId>
+  <artifactId>jsr305</artifactId>
+  <version>3.0.2</version>
+</dependency>
+<dependency>
+  <groupId>com.google.code.gson</groupId>
+  <artifactId>gson</artifactId>
+  <version>2.8.9</version>
+</dependency>
+<dependency>
+  <groupId>com.google.errorprone</groupId>
+  <artifactId>error_prone_annotations</artifactId>
+  <version>2.11.0</version>
+</dependency>
+<dependency>
+  <groupId>com.google.guava</groupId>
+  <artifactId>guava</artifactId>
+  <version>31.0.1-jre</version>
+</dependency>
+<dependency>
+  <groupId>com.google.protobuf</groupId>
+  <artifactId>protobuf-java</artifactId>
+  <version>3.19.3</version>
+</dependency>
+<dependency>
+  <groupId>com.google.protobuf</groupId>
+  <artifactId>protobuf-javalite</artifactId>
+  <version>3.19.2</version>
+</dependency>
+<dependency>
+  <groupId>io.grpc</groupId>
+  <artifactId>grpc-api</artifactId>
+  <version>1.43.2</version>
+</dependency>
+<dependency>
+  <groupId>io.grpc</groupId>
+  <artifactId>grpc-context</artifactId>
+  <version>1.43.2</version>
+</dependency>
+<dependency>
+  <groupId>io.grpc</groupId>
+  <artifactId>grpc-core</artifactId>
+  <version>1.43.2</version>
+</dependency>
+<dependency>
+  <groupId>io.grpc</groupId>
+  <artifactId>grpc-protobuf-lite</artifactId>
+  <version>1.43.2</version>
+</dependency>
+<dependency>
+  <groupId>io.grpc</groupId>
+  <artifactId>grpc-stub</artifactId>
+  <version>1.43.2</version>
+</dependency>
+<dependency>
+  <groupId>io.netty</groupId>
+  <artifactId>netty-codec-http2</artifactId>
+  <version>4.1.63.Final</version>
+</dependency>
+<dependency>
+  <groupId>io.netty</groupId>
+  <artifactId>netty-handler-proxy</artifactId>
+  <version>4.1.63.Final</version>
+</dependency>
+<dependency>
+  <groupId>io.opencensus</groupId>
+  <artifactId>opencensus-api</artifactId>
+  <version>0.24.0</version>
+</dependency>
+<dependency>
+  <groupId>io.perfmark</groupId>
+  <artifactId>perfmark-api</artifactId>
+  <version>0.23.0</version>
+</dependency>
+<dependency>
+  <groupId>javax.annotation</groupId>
+  <artifactId>javax.annotation-api</artifactId>
+  <version>1.2</version>
+</dependency>
+<dependency>
+  <groupId>org.codehaus.mojo</groupId>
+  <artifactId>animal-sniffer-annotations</artifactId>
+  <version>1.19</version>
+</dependency>
+  </dependencies>
+</project>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.google.zetasql</groupId>
+  <artifactId>zetasql-jni-channel-linux</artifactId>
+  <versioning>
+    <versions>
+      <version>LOCAL-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20221130172809</lastUpdated>
+  </versioning>
+</metadata>

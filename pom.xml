@@ -17,6 +17,27 @@
                 <maven.compiler.release>8</maven.compiler.release>
             </properties>
         </profile>
+        <profile>
+          <id>mac-arm64</id>
+          <activation>
+            <os>
+              <arch>aarch64</arch>
+              <family>mac</family>
+            </os>
+          </activation>
+
+          <properties>
+            <zetasql.version>LOCAL-SNAPSHOT</zetasql.version>
+          </properties>
+
+          <repositories>
+            <repository>
+              <id>local-maven-repo</id>
+              <url>file://${basedir}/lib/m2/</url>
+            </repository>
+          </repositories>
+
+        </profile>
     </profiles>
 
     <properties>

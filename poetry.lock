@@ -1283,6 +1283,18 @@ flake8 = ">=4.0"
 pytest = ">=7.0"
 
 [[package]]
+name = "pytest-isort"
+version = "3.1.0"
+description = "py.test plugin to check import ordering using isort"
+category = "main"
+optional = false
+python-versions = ">=3.7,<4"
+
+[package.dependencies]
+isort = ">=4.0"
+pytest = ">=5.0"
+
+[[package]]
 name = "pytest-mypy"
 version = "0.10.2"
 description = "Mypy static type checker plugin for Pytest"
@@ -1646,7 +1658,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10,<3.11"
-content-hash = "bd1cb942d10c476d688e6a4b2ea4e5492ea627e1ffe9354731824e14d370f237"
+content-hash = "41dbfda03af67f0f8f74771335d615bdafc1aac1ed5128a4cb17f4b192297f17"
 
 [metadata.files]
 aiohttp = [
@@ -2735,6 +2747,10 @@ pytest-black = [
 pytest-flake8 = [
     {file = "pytest-flake8-1.1.1.tar.gz", hash = "sha256:ba4f243de3cb4c2486ed9e70752c80dd4b636f7ccb27d4eba763c35ed0cd316e"},
     {file = "pytest_flake8-1.1.1-py2.py3-none-any.whl", hash = "sha256:e0661a786f8cbf976c185f706fdaf5d6df0b1667c3bcff8e823ba263618627e7"},
+]
+pytest-isort = [
+    {file = "pytest_isort-3.1.0-py3-none-any.whl", hash = "sha256:13e68d84b35d4f79d20d3d165f491bffc9e4b9509f420381a4186118c4454bd3"},
+    {file = "pytest_isort-3.1.0.tar.gz", hash = "sha256:067801dc5e54a474330d074d521c815948ff6d5cf0ed3b9d057b78216851186c"},
 ]
 pytest-mypy = [
     {file = "pytest-mypy-0.10.2.tar.gz", hash = "sha256:efc89a9f54976995a39b98fd3672ccf958d03de8463dad0261aecc166a308b96"},

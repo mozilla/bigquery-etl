@@ -62,7 +62,7 @@ WHERE
   AND
   -- See https://bugzilla.mozilla.org/show_bug.cgi?id=1803833
   NOT (
-    event_category = 'nimbus'
+    event_category = 'normandy'
     AND event_method = 'validationFailed'
     AND mozfun.map.get_key(event_map_values, 'reason') = 'invalid-feature'
     AND mozfun.map.get_key(event_map_values, 'feature') IN ('nimbus-qa-1', 'nimbus-qa-2')

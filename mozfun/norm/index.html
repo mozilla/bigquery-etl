@@ -1902,13 +1902,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#metadata-udf" class="md-nav__link">
-    metadata (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#os-udf" class="md-nav__link">
     os (UDF)
   </a>
@@ -1930,8 +1923,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#vpn_attribution-udf" class="md-nav__link">
-    vpn_attribution (UDF)
+  <a href="#metadata-udf" class="md-nav__link">
+    metadata (UDF)
   </a>
   
 </li>
@@ -1958,6 +1951,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#vpn_attribution-udf" class="md-nav__link">
+    vpn_attribution (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#extract_version-udf" class="md-nav__link">
     extract_version (UDF)
   </a>
@@ -1965,8 +1965,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#get_windows_info-udf" class="md-nav__link">
-    get_windows_info (UDF)
+  <a href="#mapping" class="md-nav__link">
+    Mapping
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fenix_app_info-udf" class="md-nav__link">
+    fenix_app_info (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fenix_build_to_datetime-udf" class="md-nav__link">
+    fenix_build_to_datetime (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get_earliest_value-udf" class="md-nav__link">
+    get_earliest_value (UDF)
   </a>
   
 </li>
@@ -2242,13 +2263,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#metadata-udf" class="md-nav__link">
-    metadata (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#os-udf" class="md-nav__link">
     os (UDF)
   </a>
@@ -2270,8 +2284,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#vpn_attribution-udf" class="md-nav__link">
-    vpn_attribution (UDF)
+  <a href="#metadata-udf" class="md-nav__link">
+    metadata (UDF)
   </a>
   
 </li>
@@ -2298,6 +2312,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#vpn_attribution-udf" class="md-nav__link">
+    vpn_attribution (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#extract_version-udf" class="md-nav__link">
     extract_version (UDF)
   </a>
@@ -2305,8 +2326,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#get_windows_info-udf" class="md-nav__link">
-    get_windows_info (UDF)
+  <a href="#mapping" class="md-nav__link">
+    Mapping
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fenix_app_info-udf" class="md-nav__link">
+    fenix_app_info (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fenix_build_to_datetime-udf" class="md-nav__link">
+    fenix_build_to_datetime (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get_earliest_value-udf" class="md-nav__link">
+    get_earliest_value (UDF)
   </a>
   
 </li>
@@ -2328,9 +2370,6 @@
 
 <h1 id="norm">norm</h1>
 <p>Functions for normalizing data.</p>
-<h2 id="metadata-udf">metadata (UDF)</h2>
-<p>Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/metadata">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/metadata/metadata.yaml">Edit</a></p>
 <h2 id="os-udf">os (UDF)</h2>
 <p>Normalize an operating system string to one of the three major desktop
 platforms, one of the two major mobile platforms, or "Other".</p>
@@ -2344,9 +2383,9 @@ platforms, one of the two major mobile platforms, or "Other".</p>
 <h2 id="glean_ping_info-udf">glean_ping_info (UDF)</h2>
 <p>Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_ping_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_ping_info/metadata.yaml">Edit</a></p>
-<h2 id="vpn_attribution-udf">vpn_attribution (UDF)</h2>
-<p>Accepts vpn attribution fields as input and returns a struct of normalized fields.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/vpn_attribution">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/vpn_attribution/metadata.yaml">Edit</a></p>
+<h2 id="metadata-udf">metadata (UDF)</h2>
+<p>Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/metadata">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/metadata/metadata.yaml">Edit</a></p>
 <h2 id="windows_version_info-udf">windows_version_info (UDF)</h2>
 <p>Given an unnormalized set off Windows identifiers, return a friendly version
 of the operating system name.</p>
@@ -2593,6 +2632,9 @@ function, no matter what the arguments).</p>
 aggregate datasets or queries where there may be many different patch
 releases in the field.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/truncate_version">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/truncate_version/metadata.yaml">Edit</a></p>
+<h2 id="vpn_attribution-udf">vpn_attribution (UDF)</h2>
+<p>Accepts vpn attribution fields as input and returns a struct of normalized fields.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/vpn_attribution">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/vpn_attribution/metadata.yaml">Edit</a></p>
 <h2 id="extract_version-udf">extract_version (UDF)</h2>
 <p>Extracts numeric version data from a version string like
 <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code>.</p>
@@ -2635,42 +2677,32 @@ For example, diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-01', grace
 
 
 
-## get_earliest_value (UDF)
+## get_windows_info (UDF)
 
-This UDF returns the earliest not-null value from a list of values
-and their corresponding timestamp.
-
-The function will return the first value in the input array,
-that is not null and has the earliest timestamp.
-
-Because there may be more than one value on the same date e.g. more
-than one value reported by different pings on the same date, the dates
-must be given as TIMESTAMPS and the values as STRING.
+Exract the name, the version name, the version number, and the build number
+corresponding to a Microsoft Windows operating system version string in the
+form of &lt;number&gt;.&lt;number&gt;.&lt;number&gt; or &lt;number&gt;.&lt;number&gt;.&lt;number&gt;.&lt;number&gt;
+for most release versions of Windows after 2007.
 
 
-Usage:
+# Windows Names, Versions, and Builds
 
+## Summary
+This function is primarily designed to parse the field `os_version` in table `mozdata.default_browser_agent.default_browser`. Given a Microsoft Windows OS version string, the function returns the name of the operating system, the version name, the version number, and the build number corresponding to the operating system. As of November 2022, the parser can handle 99.89% of the `os_version` values collected in table `mozdata.default_browser_agent.default_browser`.
+
+### Status as of November 2022
+As of November 2022, the expected valid values of `os_version` are either `x.y.z` or `w.x.y.z` where `w`, `x`, `y`, and `z` are integers.
+
+As of November 2022, the return values for Windows 10 and Windows 11 are based on [Windows 10 release information](https://learn.microsoft.com/en-us/windows/release-health/release-information) and [Windows 11 release information](https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information). For 3-number version strings, the parser assumes the valid values of `z` in `x.y.z` are at most 5 digits in length. For 4-number version strings, the parser assumes the valid values of `z` in `w.x.y.z` are at most 6 digits in length. The function makes an educated effort to handle Windows Vista, Windows 7, Windows 8, and Windows 8.1 information, but does not guarantee the return values are absolutely accurate. The function assumes the presence of undocumented non-release versions of Windows 10 and Windows 11, and will return an estimated name, version number, build number but not the version name. The function does not handle other versions of Windows.
+
+As of November 2022, the parser currently handles just over 99.89% of data in the field `os_version` in table `mozdata.default_browser_agent.default_browser`.
+
+### Build number conventions
+Note: Microsoft convention for build numbers for Windows 10 and 11 include two numbers, such as build number `22621.900` for version `22621`. The first number repeats the version number and the second number uniquely identifies the build within the version. To simplify data processing and data analysis, this function returns the second unique identifier as an integer instead of returning the full build number as a string.
+
+## Example usage
 ```sql
 SELECT
-   mozfun.norm.get_earliest_value(ARRAY&lt;STRUCT&lt;value STRING, value_date DATETIME&gt;&gt;) AS &lt;alias&gt;
-</code></pre>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/get_earliest_value">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/get_earliest_value/metadata.yaml">Edit</a></p>
-<h2 id="get_windows_info-udf">get_windows_info (UDF)</h2>
-<p>Exract the name, the version name, the version number, and the build number
-corresponding to a Microsoft Windows operating system version string in the
-form of <number>.<number>.<number> or <number>.<number>.<number>.<number>
-for most release versions of Windows after 2007.</p>
-<h1 id="windows-names-versions-and-builds">Windows Names, Versions, and Builds</h1>
-<h2 id="summary">Summary</h2>
-<p>This function is primarily designed to parse the field <code>os_version</code> in table <code>mozdata.default_browser_agent.default_browser</code>. Given a Microsoft Windows OS version string, the function returns the name of the operating system, the version name, the version number, and the build number corresponding to the operating system. As of November 2022, the parser can handle 99.89% of the <code>os_version</code> values collected in table <code>mozdata.default_browser_agent.default_browser</code>.</p>
-<h3 id="status-as-of-november-2022">Status as of November 2022</h3>
-<p>As of November 2022, the expected valid values of <code>os_version</code> are either <code>x.y.z</code> or <code>w.x.y.z</code> where <code>w</code>, <code>x</code>, <code>y</code>, and <code>z</code> are integers.</p>
-<p>As of November 2022, the return values for Windows 10 and Windows 11 are based on <a href="https://learn.microsoft.com/en-us/windows/release-health/release-information">Windows 10 release information</a> and <a href="https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information">Windows 11 release information</a>. For 3-number version strings, the parser assumes the valid values of <code>z</code> in <code>x.y.z</code> are at most 5 digits in length. For 4-number version strings, the parser assumes the valid values of <code>z</code> in <code>w.x.y.z</code> are at most 6 digits in length. The function makes an educated effort to handle Windows Vista, Windows 7, Windows 8, and Windows 8.1 information, but does not guarantee the return values are absolutely accurate. The function assumes the presence of undocumented non-release versions of Windows 10 and Windows 11, and will return an estimated name, version number, build number but not the version name. The function does not handle other versions of Windows.</p>
-<p>As of November 2022, the parser currently handles just over 99.89% of data in the field <code>os_version</code> in table <code>mozdata.default_browser_agent.default_browser</code>.</p>
-<h3 id="build-number-conventions">Build number conventions</h3>
-<p>Note: Microsoft convention for build numbers for Windows 10 and 11 include two numbers, such as build number <code>22621.900</code> for version <code>22621</code>. The first number repeats the version number and the second number uniquely identifies the build within the version. To simplify data processing and data analysis, this function returns the second unique identifier as an integer instead of returning the full build number as a string.</p>
-<h2 id="example-usage">Example usage</h2>
-<pre><code class="language-sql">SELECT
   `os_version`,
   mozfun.norm.get_windows_info(`os_version`) AS windows_info
 FROM `mozdata.default_browser_agent.default_browser`
@@ -2958,6 +2990,19 @@ UTC midnight beginning 2014-12-28.</p>
 <p>After using this you may wish to <code>DATETIME_TRUNC(result, DAY)</code> for
 grouping by build date.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/fenix_build_to_datetime">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/fenix_build_to_datetime/metadata.yaml">Edit</a></p>
+<h2 id="get_earliest_value-udf">get_earliest_value (UDF)</h2>
+<p>This UDF returns the earliest not-null value from a list of values
+and their corresponding timestamp.</p>
+<p>The function will return the first value in the input array,
+that is not null and has the earliest timestamp.</p>
+<p>Because there may be more than one value on the same date e.g. more
+than one value reported by different pings on the same date, the dates
+must be given as TIMESTAMPS and the values as STRING.</p>
+<p>Usage:</p>
+<pre><code class="language-sql">SELECT
+   mozfun.norm.get_earliest_value(ARRAY&lt;STRUCT&lt;value STRING, value_date DATETIME&gt;&gt;) AS &lt;alias&gt;
+</code></pre>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/get_earliest_value">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/get_earliest_value/metadata.yaml">Edit</a></p>
 
 
 

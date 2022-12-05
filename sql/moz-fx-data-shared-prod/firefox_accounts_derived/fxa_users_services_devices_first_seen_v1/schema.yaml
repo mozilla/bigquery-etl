@@ -1,31 +1,25 @@
 fields:
 
 - mode: NULLABLE
-  name: timestamp
+  name: first_seen_date
   type: TIMESTAMP
   description: |
-    Datetime value when the event occurred.
+    Datetime value when the user, service, device_id
+    was seen for the first time.
 
 - mode: NULLABLE
   name: flow_id
   type: STRING
   description: |
-    The flow associated with the session.
+    The flow associated with the first seen session.
     The flow identifier is a hash value representing
     a registration and login sessions.
-
-- mode: NULLABLE
-  name: event_type
-  type: STRING
-  description: |
-    Type of the FxA event recorded.
 
 - mode: NULLABLE
   name: user_id
   type: STRING
   description: |
-    36-char long hash randomly assigned when the account
-    is created.
+    Unique identifier of a registered user.
 
 - mode: NULLABLE
   name: service
@@ -33,15 +27,24 @@ fields:
   description: |
     The service identifier. For Sync it may be empty or sync.
     For OAuth reliers it is their hex client id.
-    Example: sync
-- mode: NULLABLE
+    A service corresponds to a specific application,
+    for example: "sync".
 
+- mode: NULLABLE
   name: device_id
   type: STRING
   description: |
     The most granular field.
     The id of the device record.
     This does correlate back to a record the FxA user db.
+
+- mode: NULLABLE
+  name: event_type
+  type: STRING
+  description: |
+    Type of the FxA event recorded.
+    `fxa_login - complete' and 'fxa_reg - complete`
+    are the events used to create this table.
 
 - mode: NULLABLE
   name: os_name
@@ -63,22 +66,11 @@ fields:
     Language settings used by the device.
 
 - mode: NULLABLE
-  name: ua_version
-  type: STRING
-  description: |
-    The user's browser version.
-
-- mode: NULLABLE
-  name: ua_browser
-  type: STRING
-  description: |
-    The user's web browser, e.g. 'Firefox' or 'Chrome'.
-
-- mode: NULLABLE
   name: entrypoint
   type: STRING
   description: |
     The entrypoint of the flow session.
+    How a user begins their registration or login flow.
     Typically a UI touchpoint like "preferences".
 
 - mode: NULLABLE
@@ -119,3 +111,15 @@ fields:
     Marketing campaign content identifier
     for the flow session.
     Not stored if the DNT request header was 1.
+
+- mode: NULLABLE
+  name: ua_version
+  type: STRING
+  description: |
+    The user's browser version.
+
+- mode: NULLABLE
+  name: ua_browser
+  type: STRING
+  description: |
+    The user's web browser, e.g. 'Firefox' or 'Chrome'.

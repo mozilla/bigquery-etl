@@ -52,10 +52,10 @@ with DAG(
         depends_on_past=True,
     )
 
-    wait_for_baseline_clients_first_seen = ExternalTaskSensor(
-        task_id="wait_for_baseline_clients_first_seen",
+    wait_for_baseline_clients_daily = ExternalTaskSensor(
+        task_id="wait_for_baseline_clients_daily",
         external_dag_id="copy_deduplicate",
-        external_task_id="baseline_clients_first_seen",
+        external_task_id="baseline_clients_daily",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -64,4 +64,4 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    fenix_derived__clients_yearly__v1.set_upstream(wait_for_baseline_clients_first_seen)
+    fenix_derived__clients_yearly__v1.set_upstream(wait_for_baseline_clients_daily)

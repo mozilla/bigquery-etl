@@ -1,6 +1,7 @@
 """Build and use query dependency graphs."""
 
 import sys
+import sqlglot
 from itertools import groupby
 from pathlib import Path
 from subprocess import CalledProcessError
@@ -13,44 +14,17 @@ from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 
 stable_views = None
 
-try:
-    import jnius_config  # noqa: E402
-
-    if not jnius_config.vm_running:
-        # this has to run before jnius is imported the first time
-        target = Path(__file__).parent.parent / "target"
-        for path in target.glob("*.jar"):
-            jnius_config.add_classpath(path.resolve().as_posix())
-except ImportError:
-    # ignore so this module can be imported safely without java installed
-    pass
-
 
 def extract_table_references(sql: str) -> List[str]:
     """Return a list of tables referenced in the given SQL."""
-    # import jnius here so this module can be imported safely without java installed
-    import jnius  # noqa: E402
 
-    try:
-        ZetaSqlHelper = jnius.autoclass("com.mozilla.telemetry.ZetaSqlHelper")
-    except jnius.JavaException:
-        # replace jnius.JavaException because it's not available outside this function
-        raise ImportError(
-            "failed to import java class via jni, please build java dependencies "
-            "with: mvn package"
-        )
-    try:
-        result = ZetaSqlHelper.extractTableNamesFromStatement(sql)
-    except jnius.JavaException:
-        # Only use extractTableNamesFromScript when extractTableNamesFromStatement
-        # fails, because for scripts zetasql incorrectly includes CTE references from
-        # subquery expressions
-        try:
-            result = ZetaSqlHelper.extractTableNamesFromScript(sql)
-        except jnius.JavaException as e:
-            # replace jnius.JavaException because it's not available outside this function
-            raise ValueError(*e.args)
-    return [".".join(table.toArray()) for table in result.toArray()]
+    parsed = sqlglot.parse_one(sql, read="bigquery")
+
+    cte = set([cte.alias for cte in parsed.find_all(sqlglot.exp.CTE)])
+    tables = set([table.name for table in parsed.find_all(sqlglot.exp.Table)])
+    only_tables = tables - cte
+
+    return only_tables
 
 
 def extract_table_references_without_views(path: Path) -> Iterator[str]:

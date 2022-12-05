@@ -1,9 +1,9 @@
 fields:
 - mode: NULLABLE
-  name: last_seen_date
+  name: submission_date
   type: TIMESTAMP
   description: |
-    Timestamp when user last logged in.
+    Timestamp when the event was recorded.
 
 - mode: NULLABLE
   name: user_id
@@ -24,9 +24,9 @@ fields:
   name: device_id
   type: STRING
   description: |
-    The most granual field.
+    The most granular field.
     The id of the device record.
-    This does correlate back to a record the FxA user db.
+    This does correlate back to a record in the FxA user db.
 
 - mode: NULLABLE
   name: os_name
@@ -122,3 +122,5 @@ fields:
   type: INTEGER
   description: |
     Represents specific device's activity over the last 28 days.
+    The rightmost bit represents whether the user was active
+    in the current day.

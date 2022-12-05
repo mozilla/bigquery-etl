@@ -1,6 +1,6 @@
 WITH _current AS (
   SELECT
-    `timestamp` AS last_seen_date,
+    `timestamp` AS submission_date,
     user_id,
     service,
     device_id,
@@ -37,7 +37,7 @@ _previous AS (
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_devices_last_seen_v1`
   WHERE
-    DATE(last_seen_date) = DATE_SUB(@submission_date, INTERVAL 1 DAY)
+    DATE(submission_date) = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.
     AND udf.shift_28_bits_one_day(days_seen_bits) > 0
 ),
@@ -57,7 +57,7 @@ combined AS (
     (user_id, service, device_id)
 )
 SELECT
-  last_seen_date,
+  submission_date,
   user_id,
   service,
   device_id,
@@ -82,4 +82,4 @@ WHERE
   AND service IS NOT NULL
   AND device_id IS NOT NULL
 QUALIFY
-  ROW_NUMBER() OVER (PARTITION BY user_id, service, device_id ORDER BY `last_seen_date` DESC) = 1
+  ROW_NUMBER() OVER (PARTITION BY user_id, service, device_id ORDER BY `submission_date` DESC) = 1

@@ -10,7 +10,9 @@ fields:
   name: flow_id
   type: STRING
   description: |
-    The flow identifier. A randomly-generated opaque id.
+    The flow associated with the session.
+    The flow identifier is a hash value representing
+    a registration and login sessions.
 
 - mode: NULLABLE
   name: event_type
@@ -37,7 +39,7 @@ fields:
   name: device_id
   type: STRING
   description: |
-    The most granual field.
+    The most granular field.
     The id of the device record.
     This does correlate back to a record the FxA user db.
 

@@ -879,6 +879,146 @@ fields:
       mode: REPEATED
       name: power_cpu_time_per_tracker_type_ms
       type: RECORD
+    - description: 'How many times each IPC message type was received, Broken down
+        by process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: ipc_received_messages_content_background
+      type: RECORD
+    - description: 'How many times each IPC message type was received, Broken down
+        by process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: ipc_received_messages_content_foreground
+      type: RECORD
+    - description: 'How many times each IPC message type was received, Broken down
+        by process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: ipc_received_messages_gpu_process
+      type: RECORD
+    - description: 'How many times each IPC message type was received, Broken down
+        by process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: ipc_received_messages_parent_active
+      type: RECORD
+    - description: 'How many times each IPC message type was received, Broken down
+        by process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: ipc_received_messages_parent_inactive
+      type: RECORD
+    - description: 'How many times each IPC message type was sent. Broken down by
+        process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: ipc_sent_messages_content_background
+      type: RECORD
+    - description: 'How many times each IPC message type was sent. Broken down by
+        process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: ipc_sent_messages_content_foreground
+      type: RECORD
+    - description: 'How many times each IPC message type was sent. Broken down by
+        process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: ipc_sent_messages_gpu_process
+      type: RECORD
+    - description: 'How many times each IPC message type was sent. Broken down by
+        process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: ipc_sent_messages_parent_active
+      type: RECORD
+    - description: 'How many times each IPC message type was sent. Broken down by
+        process type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: ipc_sent_messages_parent_inactive
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

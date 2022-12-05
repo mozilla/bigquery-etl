@@ -38,9 +38,11 @@ def get_most_used_probes():
     """
     glam_usage_service = "https://glam.telemetry.mozilla.org/api/v1/usage/"
     from_date = (date.today() - relativedelta(months=3)).strftime("%Y%m%d")
+    q_params = (
+        f"fromDate={from_date}&fields=probe_name&actionType=PROBE_SEARCH&agg=count"
+    )
     url_req = Request(
-        f"{glam_usage_service}?fromDate={from_date}& \
-            fields=probe_name&actionType=PROBE_SEARCH&agg=count",
+        f"{glam_usage_service}?{q_params}",
         None,
         {},
     )

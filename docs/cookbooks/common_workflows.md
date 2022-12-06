@@ -124,7 +124,7 @@ The following is an example to update a new field in `telemetry_derived.clients_
    ```
    ./bqetl query schema deploy telemetry_derived.clients_daily_v6;
    ./bqetl query schema deploy telemetry_derived.clients_daily_joined_v1;
-   ./bqetl query schema deploy --force telemetry_derived.clients_last_seen_v1;
+   ./bqetl query schema deploy --force --ignore-dryrun-skip telemetry_derived.clients_last_seen_v1;
    ./bqetl query schema deploy telemetry_derived.clients_last_seen_joined_v1;
    ./bqetl query schema deploy --force telemetry_derived.clients_first_seen_v1;
    ```

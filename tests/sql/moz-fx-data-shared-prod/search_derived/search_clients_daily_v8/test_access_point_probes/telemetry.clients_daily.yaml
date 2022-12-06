@@ -83,6 +83,9 @@
   search_content_urlbar_handoff_sum:
     - key: 'engine5:tagged:code1'
       value: 11
+  search_content_urlbar_persisted_sum:
+    - key: 'engine5:tagged:code1'
+      value: 12
   # search with ads
   search_withads_urlbar_sum:
     - key: 'engine6:tagged'

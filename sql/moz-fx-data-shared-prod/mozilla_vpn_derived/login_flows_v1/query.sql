@@ -17,6 +17,7 @@ WITH base AS (
     firefox_accounts.fxa_content_auth_events
   WHERE
     IF(@date IS NULL, DATE(`timestamp`) < CURRENT_DATE, DATE(`timestamp`) = @date)
+    AND event_category IN ('fxa_content_event', 'fxa_auth_event')
     AND service = "guardian-vpn"
   GROUP BY
     flow_id

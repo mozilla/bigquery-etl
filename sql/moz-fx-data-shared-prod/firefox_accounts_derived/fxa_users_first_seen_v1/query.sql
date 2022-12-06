@@ -5,7 +5,13 @@ WITH _current AS (
   FROM
     firefox_accounts.fxa_all_events
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    DATE(`timestamp`) = @submission_date
+    AND event_category IN (
+      'fxa_auth_event',
+      'fxa_auth_bounce_event',
+      'fxa_content_event',
+      'fxa_oauth_event'
+    )
   GROUP BY
     user_id
 ),

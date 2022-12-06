@@ -15,7 +15,9 @@ WITH fxa_content_auth_stdout_events AS (
     utm_source,
     utm_term,
   FROM
-    mozdata.firefox_accounts.fxa_content_auth_stdout_events
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
+  WHERE
+    event_category IN ('fxa_content_event', 'fxa_auth_event', 'fxa_stdout_event')
 ),
 flows AS (
   SELECT
@@ -49,9 +51,10 @@ flows AS (
         1
     )[SAFE_OFFSET(0)] AS attribution,
   FROM
-    fxa_content_auth_stdout_events
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
     IF(@date IS NULL, partition_date < CURRENT_DATE, partition_date = @date)
+    AND event_category IN ('fxa_content_event', 'fxa_auth_event', 'fxa_stdout_event')
     AND flow_id IS NOT NULL
     AND (
       -- Service attribution was implemented for VPN FxA links on 2021-12-08, so past that date we

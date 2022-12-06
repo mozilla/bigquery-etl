@@ -51,7 +51,7 @@ with DAG(
     firefox_android_clients = bigquery_etl_query(
         task_id="firefox_android_clients",
         destination_table="firefox_android_clients_v1",
-        dataset_id="telemetry_derived",
+        dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
         email=[

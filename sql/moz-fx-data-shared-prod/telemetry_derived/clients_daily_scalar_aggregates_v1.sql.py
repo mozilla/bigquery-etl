@@ -458,25 +458,17 @@ def get_scalar_probes(scalar_type):
         data = json.loads(url.read())
         excluded_probes = get_etl_excluded_probes_quickfix("desktop")
         hotlist = query_hotlist()
-        allowed_probes = (
+        scalar_probes = (
             set(
                 [
                     snake_case(x.replace("scalar/", ""))
                     for x in data.keys()
-                    if x.startswith("scalar/") and probe_is_recent_legacy(data[x])
+                    if x.startswith("scalar/")
+                    and probe_is_recent_legacy(data[x])
+                    or snake_case(x.replace("scalar/", "")) in hotlist
                 ]
-                + hotlist
             )
             - excluded_probes
-        )
-
-        scalar_probes = set(
-            [
-                snake_case(x.replace("scalar/", ""))
-                for x in data.keys()
-                if x.startswith("scalar/")
-                and snake_case(x.replace("scalar/", "")) in allowed_probes
-            ]
         )
 
         return {

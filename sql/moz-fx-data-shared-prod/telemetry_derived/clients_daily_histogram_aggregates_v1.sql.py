@@ -10,6 +10,7 @@ from time import sleep
 
 from google.cloud import bigquery
 
+from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.glam_probe_utils import (
     get_etl_excluded_probes_quickfix,
     probe_is_recent_legacy,
@@ -17,7 +18,6 @@ from bigquery_etl.util.glam_probe_utils import (
 )
 
 sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
-from bigquery_etl.format_sql.formatter import reformat
 
 PROBE_INFO_SERVICE = (
     "https://probeinfo.telemetry.mozilla.org/firefox/all/main/all_probes"
@@ -463,7 +463,7 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
                 histogram_probes.append(probe_name)
                 if probe_is_recent_legacy(data[x]):
                     recent_probes.append(probe_name)
-        allowed_probes = hotlist + set(recent_probes)
+        allowed_probes = hotlist | set(recent_probes)
         bucket_details = {}
         relevant_probes = {
             histogram: {"processes": process}

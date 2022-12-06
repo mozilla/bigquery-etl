@@ -393,12 +393,20 @@ with DAG(
         firefox_accounts_derived__fxa_content_events__v1
     )
 
+    firefox_accounts_derived__fxa_users_daily__v1.set_upstream(
+        firefox_accounts_derived__fxa_stdout_events__v1
+    )
+
     firefox_accounts_derived__fxa_users_first_seen__v1.set_upstream(
         firefox_accounts_derived__fxa_auth_events__v1
     )
 
     firefox_accounts_derived__fxa_users_first_seen__v1.set_upstream(
         firefox_accounts_derived__fxa_content_events__v1
+    )
+
+    firefox_accounts_derived__fxa_users_first_seen__v1.set_upstream(
+        firefox_accounts_derived__fxa_stdout_events__v1
     )
 
     firefox_accounts_derived__fxa_users_last_seen__v1.set_upstream(

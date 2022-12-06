@@ -14,9 +14,10 @@ SELECT
       1
   )[SAFE_OFFSET(0)].*,
 FROM
-  mozdata.firefox_accounts.fxa_content_auth_stdout_events
+  `mozdata.firefox_accounts.fxa_all_events`
 WHERE
   DATE(`timestamp`) = @submission_date
+  AND event_category IN ('fxa_content_event', 'fxa_auth_event', 'fxa_stdout_event')
   AND flow_id IS NOT NULL
 GROUP BY
   submission_date,

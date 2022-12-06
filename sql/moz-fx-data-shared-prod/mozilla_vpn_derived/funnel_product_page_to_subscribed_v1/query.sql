@@ -23,7 +23,9 @@ events AS (
     *,
     DATE(`timestamp`) AS partition_date,
   FROM
-    mozdata.firefox_accounts.fxa_content_auth_stdout_events
+    `mozdata.firefox_accounts.fxa_all_events`
+  WHERE
+    event_category IN ('fxa_content_event', 'fxa_auth_event', 'fxa_stdout_event')
 ),
 flows AS (
   SELECT

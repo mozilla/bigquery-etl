@@ -47,6 +47,11 @@ class Schema:
             return cls(schema)
 
     @classmethod
+    def empty(cls):
+        """Create an empty schema."""
+        return cls({"fields": []})
+
+    @classmethod
     def from_json(cls, json_schema):
         """Create schema from JSON object."""
         return cls(json_schema)
@@ -93,15 +98,16 @@ class Schema:
         attributes: Optional[List[str]] = None,
     ):
         """Merge another schema into the schema."""
-        self._traverse(
-            "root",
-            self.schema["fields"],
-            other.schema["fields"],
-            update=True,
-            exclude=exclude,
-            add_missing_fields=add_missing_fields,
-            attributes=attributes,
-        )
+        if "fields" in other.schema and "fields" in self.schema:
+            self._traverse(
+                "root",
+                self.schema["fields"],
+                other.schema["fields"],
+                update=True,
+                exclude=exclude,
+                add_missing_fields=add_missing_fields,
+                attributes=attributes,
+            )
 
     def equal(self, other: "Schema") -> bool:
         """Compare to another schema."""

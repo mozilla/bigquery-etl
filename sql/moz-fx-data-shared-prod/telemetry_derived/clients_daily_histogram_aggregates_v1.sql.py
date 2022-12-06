@@ -69,7 +69,6 @@ def generate_sql(opts, additional_queries, windowed_clause, select_clause, json_
               values_entry.key
           )
         );
-
         WITH valid_build_ids AS (
             SELECT
               DISTINCT(build.build.id) AS build_id
@@ -84,17 +83,29 @@ def generate_sql(opts, additional_queries, windowed_clause, select_clause, json_
                 normalized_os as os,
                 application.build_id AS app_build_id,
                 normalized_channel AS channel
-            FROM `moz-fx-data-shared-prod.telemetry_derived.main_1pct_v1`
+            FROM `moz-fx-data-shared-prod.telemetry_stable.main_v4`
             INNER JOIN valid_build_ids
             ON (application.build_id = build_id)
-            WHERE DATE(submission_timestamp) BETWEEN DATE_SUB(@submission_date, INTERVAL 180 DAY) AND @submission_date
+            WHERE DATE(submission_timestamp) = @submission_date
                 AND normalized_channel in (
                   "release", "beta", "nightly"
                 )
                 AND client_id IS NOT NULL
         ),
+        sampled_data AS (
+          SELECT
+            *
+          FROM
+            filtered
+          WHERE
+            channel IN ("nightly", "beta")
+            OR (channel = "release" AND os != "Windows")
+            OR (
+                channel = "release" AND
+                os = "Windows" AND
+                MOD(sample_id, @sample_size) = 0)
+        ),
         {additional_queries}
-
         aggregated AS (
             {windowed_clause}
         )
@@ -166,8 +177,7 @@ def _get_keyed_histogram_sql(probes_and_buckets):
             >>[
               {probes_arr}
             ] as metrics
-          FROM filtered),
-
+          FROM sampled_data),
           flattened_metrics AS
             (SELECT
               submission_date,
@@ -354,7 +364,7 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
                 app_build_id,
                 channel,
                 {probes_string}
-            FROM filtered),
+            FROM sampled_data),
 
         filtered_aggregates AS (
           SELECT

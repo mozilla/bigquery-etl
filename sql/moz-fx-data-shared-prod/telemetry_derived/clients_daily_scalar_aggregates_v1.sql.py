@@ -69,23 +69,24 @@ def generate_sql(
                 normalized_os as os,
                 application.build_id AS app_build_id,
                 normalized_channel AS channel
-            FROM `moz-fx-data-shared-prod.telemetry_derived.main_1pct_v1`
+            FROM `moz-fx-data-shared-prod.telemetry_stable.main_v4`
             INNER JOIN valid_build_ids
             ON (application.build_id = build_id)
-            WHERE DATE(submission_timestamp) BETWEEN DATE_SUB(@submission_date, INTERVAL 180 DAY) AND @submission_date
+            WHERE DATE(submission_timestamp) = @submission_date
                 AND normalized_channel in (
                   "release", "beta", "nightly"
                 )
                 AND client_id IS NOT NULL),
-
         {additional_queries}
-
         sampled_data AS (
             SELECT *
             FROM {querying_table}
-            WHERE channel IN ("nightly", "beta", "release")
+            WHERE channel IN ("nightly", "beta")
+                OR (channel = "release" AND os != "Windows")
+                OR (channel = "release" AND
+                    os = "Windows" AND
+                    MOD(sample_id, @sample_size) = 0)
         ),
-
         -- Using `min` for when `agg_type` is `count` returns null when all rows are null
         aggregated AS (
             SELECT
@@ -107,7 +108,6 @@ def generate_sql(
                 app_build_id,
                 channel
                 {additional_partitions})
-
             {select_clause}
         """
     )

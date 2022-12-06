@@ -85,7 +85,6 @@ clients_histogram_aggregates_old AS
 
 merged AS
   (SELECT
-    new_data.submission_date AS submission_date,
     COALESCE(old_data.sample_id, new_data.sample_id) AS sample_id,
     COALESCE(old_data.client_id, new_data.client_id) AS client_id,
     COALESCE(old_data.os, new_data.os) AS os,
@@ -111,7 +110,7 @@ merged AS
   ON new_data.join_key = old_data.join_key)
 
 SELECT
-  submission_date,
+  @submission_date AS submission_date,
   sample_id,
   client_id,
   os,

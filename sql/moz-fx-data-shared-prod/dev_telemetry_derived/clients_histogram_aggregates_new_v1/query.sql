@@ -4,7 +4,7 @@ WITH filtered_date_channel AS (
   FROM
     clients_daily_histogram_aggregates_v1
   WHERE
-    submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 180 DAY) AND @submission_date
+    submission_date = @submission_date
 ),
 filtered_aggregates AS (
   SELECT
@@ -59,7 +59,6 @@ version_filtered_new AS (
 ),
 aggregated_histograms AS (
   SELECT
-    submission_date,
     client_id,
     os,
     app_version,
@@ -78,7 +77,6 @@ aggregated_histograms AS (
   FROM
     version_filtered_new
   GROUP BY
-    submission_date,
     client_id,
     os,
     app_version,
@@ -95,7 +93,6 @@ aggregated_histograms AS (
     latest_version
 )
 SELECT
-  submission_date,
   udf_js.sample_id(client_id) AS sample_id,
   client_id,
   os,
@@ -131,7 +128,6 @@ SELECT
 FROM
   aggregated_histograms
 GROUP BY
-  submission_date,
   client_id,
   os,
   app_version,

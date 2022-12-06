@@ -13,7 +13,7 @@ WITH histogram_data AS (
     dev_telemetry_derived.clients_histogram_aggregates_v1,
     UNNEST(histogram_aggregates) h1
   WHERE
-    submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 180 DAY) AND @submission_date
+    submission_date = @submission_date
 ),
 scalars_data AS (
   SELECT
@@ -25,7 +25,7 @@ scalars_data AS (
   FROM
     dev_telemetry_derived.clients_scalar_aggregates_v1
   WHERE
-    submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 180 DAY) AND @submission_date
+    submission_date = @submission_date
 )
 SELECT
   os,

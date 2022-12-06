@@ -23,7 +23,7 @@ scheduling:
     execution_delta: 1h
   - task_id: search_derived__mobile_search_clients_daily__v1
     dag_name: bqetl_mobile_search
-    execution_delta: 1h 
+    execution_delta: 1h
 bigquery:
   time_partitioning:
     field: submission_date

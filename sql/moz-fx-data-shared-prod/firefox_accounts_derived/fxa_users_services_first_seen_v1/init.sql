@@ -6,13 +6,21 @@ CLUSTER BY
   service,
   user_id
 AS
-WITH base AS (
+WITH fxa_content_auth_oauth AS (
+  SELECT
+    *
+  FROM
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
+  WHERE
+    event_category IN ('fxa_content_event', 'fxa_auth_event', 'fxa_oauth_event')
+),
+base AS (
   SELECT
     * REPLACE (
       IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service) AS service
     )
   FROM
-    firefox_accounts.fxa_content_auth_oauth_events
+    fxa_content_auth_oauth
 ),
   -- use a window function to look within each USER and SERVICE for the first value of service, os, and country.
   -- also, get the first value of flow_id for later use and create a boolean column that is true if the first instance of a service usage includes a registration.
@@ -114,7 +122,7 @@ flows AS (
   FROM
     first_services_g s
   INNER JOIN
-    firefox_accounts.fxa_content_auth_oauth_events AS f
+    fxa_content_auth_oauth AS f
   ON
     s.first_service_flow = f.flow_id
   WHERE

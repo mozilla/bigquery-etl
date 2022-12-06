@@ -34,7 +34,6 @@ CREATE TEMP FUNCTION udf_contains_registration(
   )
 );
 
-  --
 WITH base AS (
   SELECT
     * REPLACE (
@@ -43,9 +42,10 @@ WITH base AS (
       IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service) AS service
     )
   FROM
-    firefox_accounts.fxa_content_auth_oauth_events
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
-    user_id IS NOT NULL
+    event_category IN ('fxa_content_event', 'fxa_auth_event', 'fxa_oauth_event')
+    AND user_id IS NOT NULL
     AND event_type NOT IN ( --
       'fxa_email - bounced',
       'fxa_email - click',

@@ -18,11 +18,12 @@ WITH fxa_events AS (
     ua_version,
     ua_browser,
   FROM
-    `moz-fx-data-shared-prod.firefox_accounts.fxa_content_auth_oauth_events` -- TODO: this will need updated to fxa_all_events once unified
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
     DATE(`timestamp`)
     BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND @submission_date
+    AND event_category IN ('fxa_content_event', 'fxa_auth_event', 'fxa_oauth_event')
     -- re-using the filter from users_services_daily_v1 for consistency across the models
     -- at some point in the future we should re-evaluate this list
     AND event_type NOT IN ( --

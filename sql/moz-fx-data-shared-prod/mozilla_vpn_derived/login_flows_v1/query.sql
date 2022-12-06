@@ -14,7 +14,7 @@ WITH base AS (
     ) AS fxa_uids,
     LOGICAL_OR(event_type = "fxa_email_first - view") AS viewed_email_first_page,
   FROM
-    firefox_accounts.fxa_content_auth_events
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
     IF(@date IS NULL, DATE(`timestamp`) < CURRENT_DATE, DATE(`timestamp`) = @date)
     AND event_category IN ('fxa_content_event', 'fxa_auth_event')

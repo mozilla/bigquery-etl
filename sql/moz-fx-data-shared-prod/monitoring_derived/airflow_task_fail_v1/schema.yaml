@@ -1,31 +1,25 @@
 fields:
-
-- mode: NULLABLE
+- description: Airflow DAG id
+  mode: NULLABLE
   name: dag_id
   type: STRING
-  description: Airflow DAG id
-
-- mode: NULLABLE
+- description: Airflow task id
+  mode: NULLABLE
   name: task_id
   type: STRING
-  description: Airflow task id
-
-- mode: NULLABLE
+- description: Time elapsed since start until end of task's exeuction (seconds)
+  mode: NULLABLE
   name: duration
-  type: STRING
-  description: Time elapsed since start until end of task's exeuction (seconds)
-
-- mode: NULLABLE
+  type: INTEGER
+- description: null
+  mode: NULLABLE
   name: execution_date
-  type: STRING
-  description:
-
-- mode: NULLABLE
+  type: TIMESTAMP
+- description: null
+  mode: NULLABLE
   name: start_date
-  type: STRING
-  description:
-
-- mode: NULLABLE
+  type: TIMESTAMP
+- description: null
+  mode: NULLABLE
   name: end_date
-  type: STRING
-  description:
+  type: TIMESTAMP

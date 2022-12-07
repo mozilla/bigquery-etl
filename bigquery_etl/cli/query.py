@@ -9,6 +9,7 @@ import sys
 import tempfile
 from datetime import date, timedelta
 from functools import partial
+from graphlib import TopologicalSorter
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -1217,7 +1218,7 @@ def schema():
     default="analysis",
 )
 @use_cloud_function_option
-@respect_dryrun_skip_option(default=True)
+@respect_dryrun_skip_option(default=False)
 def update(
     name,
     sql_dir,
@@ -1234,11 +1235,37 @@ def update(
             "and check that the project is set correctly."
         )
         sys.exit(1)
-    query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    query_files = paths_matching_name_pattern(
+        name, sql_dir, project_id, files=["query.sql"]
+    )
     dependency_graph = get_dependency_graph([sql_dir], without_views=True)
     tmp_tables = {}
 
+    # order query files to make sure derived_from dependencies are resolved
+    query_file_graph = {}
     for query_file in query_files:
+        query_file_graph[query_file] = []
+        try:
+            metadata = Metadata.of_query_file(str(query_file))
+            if metadata and metadata.schema and metadata.schema.derived_from:
+                for derived_from in metadata.schema.derived_from:
+                    parent_queries = [
+                        query
+                        for query in paths_matching_name_pattern(
+                            ".".join(derived_from.table), sql_dir, project_id
+                        )
+                    ]
+
+                    if len(parent_queries) > 0:
+                        query_file_graph[query_file].append(parent_queries[0])
+
+        except FileNotFoundError:
+            query_file_graph[query_file] = []
+
+    ts = TopologicalSorter(query_file_graph)
+    query_files_ordered = ts.static_order()
+
+    for query_file in query_files_ordered:
         changed = _update_query_schema(
             query_file,
             sql_dir,
@@ -1353,16 +1380,20 @@ def _update_query_schema(
 
                 if existing_schema_path.is_file():
                     existing_schema = Schema.from_schema_file(existing_schema_path)
-                    existing_schema.merge(parent_schema, exclude=derived_from.exclude)
+                else:
+                    existing_schema = Schema.empty()
 
-                    # use temporary table
-                    tmp_identifier = (
-                        f"{project_name}.{tmp_dataset}.{table_name}_{random_str(12)}"
-                    )
-                    existing_schema.deploy(tmp_identifier)
-                    tmp_tables[
-                        f"{project_name}.{dataset_name}.{table_name}"
-                    ] = tmp_identifier
+                existing_schema.merge(parent_schema, exclude=derived_from.exclude)
+
+                # use temporary table
+                tmp_identifier = (
+                    f"{project_name}.{tmp_dataset}.{table_name}_{random_str(12)}"
+                )
+                existing_schema.deploy(tmp_identifier)
+                tmp_tables[
+                    f"{project_name}.{dataset_name}.{table_name}"
+                ] = tmp_identifier
+                existing_schema.to_yaml_file(existing_schema_path)
 
     # replace temporary table references
     sql_content = query_file_path.read_text()
@@ -1374,6 +1405,7 @@ def _update_query_schema(
                 sql_content = sql_content.replace(".".join(table_parts[i:]), tmp_table)
                 break
 
+    query_schema = None
     try:
         query_schema = Schema.from_query_file(
             query_file_path,
@@ -1382,15 +1414,16 @@ def _update_query_schema(
             respect_skip=respect_dryrun_skip,
         )
     except Exception:
-        click.echo(
-            click.style(
-                f"Cannot automatically update {query_file_path}. "
-                f"Please update {query_file_path / SCHEMA_FILE} manually.",
-                fg="red",
-            ),
-            err=True,
-        )
-        return
+        if not existing_schema_path.exists():
+            click.echo(
+                click.style(
+                    f"Cannot automatically update {query_file_path}. "
+                    f"Please update {query_file_path / SCHEMA_FILE} manually.",
+                    fg="red",
+                ),
+                err=True,
+            )
+            return
 
     # update bigquery metadata
     try:
@@ -1456,8 +1489,11 @@ def _update_query_schema(
     if existing_schema_path.is_file():
         existing_schema = Schema.from_schema_file(existing_schema_path)
         old_schema = copy.deepcopy(existing_schema)
-        existing_schema.merge(table_schema)
-        existing_schema.merge(query_schema)
+        if table_schema:
+            existing_schema.merge(table_schema)
+
+        if query_schema:
+            existing_schema.merge(query_schema)
         existing_schema.to_yaml_file(existing_schema_path)
         changed = not existing_schema.equal(old_schema)
     else:
@@ -1492,6 +1528,14 @@ def _update_query_schema(
 )
 @use_cloud_function_option
 @respect_dryrun_skip_option(default=True)
+@click.option(
+    "--skip-existing",
+    "--skip_existing",
+    help="Skip updating existing tables. "
+    + "This option ensures that only new tables get deployed.",
+    default=False,
+    is_flag=True,
+)
 @click.pass_context
 def deploy(
     ctx,
@@ -1501,6 +1545,7 @@ def deploy(
     force,
     use_cloud_function,
     respect_dryrun_skip,
+    skip_existing,
 ):
     """CLI command for deploying destination table schemas."""
     if not is_authenticated():
@@ -1542,7 +1587,7 @@ def deploy(
 
         existing_schema = Schema.from_schema_file(existing_schema_path)
 
-        if not force and not str(query_file_path).endswith(".py"):
+        if not force and str(query_file_path).endswith("query.sql"):
             query_schema = Schema.from_query_file(
                 query_file_path,
                 use_cloud_function=use_cloud_function,
@@ -1574,7 +1619,7 @@ def deploy(
         if not table.created:
             client.create_table(table)
             click.echo(f"Destination table {full_table_id} created.")
-        else:
+        elif not skip_existing:
             client.update_table(
                 table,
                 [

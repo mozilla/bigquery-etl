@@ -3,7 +3,7 @@
 import enum
 import os
 import re
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import attr
 import cattrs
@@ -114,6 +114,21 @@ class WorkgroupAccessMetadata:
     members: List[str]
 
 
+class ExternalDataFormat(enum.Enum):
+    """Represents the external types fo data that are supported to be integrated."""
+
+    GOOGLE_SHEET = "google_sheet"
+
+
+@attr.s(auto_attribs=True)
+class ExternalDataMetadata:
+    """Metadata for specifying external data."""
+
+    format: ExternalDataFormat
+    source_uri: str
+    options: Optional[Dict[str, Any]] = attr.ib(None)
+
+
 @attr.s(auto_attribs=True)
 class Metadata:
     """
@@ -132,6 +147,7 @@ class Metadata:
     schema: Optional[SchemaMetadata] = attr.ib(None)
     workgroup_access: Optional[List[WorkgroupAccessMetadata]] = attr.ib(None)
     references: Dict = attr.ib({})
+    external_data: Optional[ExternalDataMetadata] = attr.ib(None)
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -205,6 +221,7 @@ class Metadata:
         schema = None
         workgroup_access = None
         references = {}
+        external_data = None
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -252,6 +269,12 @@ class Metadata:
                 if "references" in metadata:
                     references = metadata["references"]
 
+                if "external_data" in metadata:
+                    converter = cattrs.BaseConverter()
+                    external_data = converter.structure(
+                        metadata["external_data"], ExternalDataMetadata
+                    )
+
                 return cls(
                     friendly_name,
                     description,
@@ -262,6 +285,7 @@ class Metadata:
                     schema,
                     workgroup_access,
                     references,
+                    external_data,
                 )
             except yaml.YAMLError as e:
                 raise e
@@ -296,6 +320,9 @@ class Metadata:
 
         if metadata_dict["workgroup_access"] is None:
             del metadata_dict["workgroup_access"]
+
+        if metadata_dict["external_data"] is None:
+            del metadata_dict["external_data"]
 
         file.write_text(
             yaml.dump(

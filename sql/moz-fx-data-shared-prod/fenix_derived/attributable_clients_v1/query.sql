@@ -11,6 +11,7 @@ WITH client_day AS (
     LOGICAL_OR(
       mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 107
     ) AS has_search_data,
+    SUM(sum_map_values(metrics.labeled_counter.browser_search_in_content)) AS searches,
     SUM(sum_map_values(metrics.labeled_counter.browser_search_with_ads)) AS searches_with_ads,
     SUM(sum_map_values(metrics.labeled_counter.browser_search_ad_clicks)) AS ad_clicks,
   FROM
@@ -26,6 +27,8 @@ searches AS (
   SELECT
     submission_date,
     client_id,
+    LOGICAL_OR(mozfun.norm.extract_version(app_version, 'major') < 107) AS has_search_data,
+    SUM(search_count) AS searches,
     SUM(search_with_ads) AS searches_with_ads,
     SUM(ad_click) AS ad_clicks
   FROM
@@ -46,7 +49,7 @@ first_seen AS (
   FROM
     mozdata.fenix.baseline_clients_first_seen
   WHERE
-    submission_date >= "2022-08-01"
+    submission_date >= "2021-01-01"
 ),
 adjust_client AS (
   SELECT
@@ -67,7 +70,7 @@ adjust_client AS (
   FROM
     `mozdata.fenix.first_session`
   WHERE
-    DATE(submission_timestamp) >= '2022-08-01'
+    DATE(submission_timestamp) >= "2021-01-01"
     AND metrics.string.first_session_network IS NOT NULL
     AND metrics.string.first_session_network != ''
   GROUP BY
@@ -84,19 +87,52 @@ SELECT
   adjust_campaign,
   adjust_creative,
   first_seen_date = submission_date AS is_new_profile,
-  IF(
-    client_day.has_search_data,
-    client_day.searches_with_ads,
+  CASE
+  WHEN
+    client_day.has_search_data
+  THEN
+    client_day.searches
+  WHEN
+    metrics_searches.has_search_data
+  THEN
+    metrics_searches.searches
+  ELSE
+    0
+  END
+  AS searches,
+  CASE
+  WHEN
+    client_day.has_search_data
+  THEN
+    client_day.searches_with_ads
+  WHEN
+    metrics_searches.has_search_data
+  THEN
     metrics_searches.searches_with_ads
-  ) AS searches_with_ads,
-  IF(client_day.has_search_data, client_day.ad_clicks, metrics_searches.ad_clicks) AS ad_clicks
+  ELSE
+    0
+  END
+  AS searches_with_ads,
+  CASE
+  WHEN
+    client_day.has_search_data
+  THEN
+    client_day.ad_clicks
+  WHEN
+    metrics_searches.has_search_data
+  THEN
+    metrics_searches.ad_clicks
+  ELSE
+    0
+  END
+  AS ad_clicks,
 FROM
   adjust_client
 JOIN
   client_day
 USING
   (client_id)
-LEFT JOIN
+FULL OUTER JOIN
   searches AS metrics_searches
 USING
   (client_id, submission_date)

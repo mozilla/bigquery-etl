@@ -1,3 +1,5 @@
+DECLARE first_date DATE DEFAULT "2021-01-01";
+
 CREATE TEMP FUNCTION sum_map_values(map ARRAY<STRUCT<key STRING, value INT64>>)
 RETURNS INT64 AS (
   (SELECT SUM(value) FROM UNNEST(map))
@@ -19,12 +21,13 @@ CLUSTER BY
         LOGICAL_OR(
           mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 107
         ) AS has_search_data,
+        SUM(sum_map_values(metrics.labeled_counter.browser_search_in_content)) AS searches,
         SUM(sum_map_values(metrics.labeled_counter.browser_search_with_ads)) AS searches_with_ads,
         SUM(sum_map_values(metrics.labeled_counter.browser_search_ad_clicks)) AS ad_clicks,
       FROM
         mozdata.fenix.baseline
       WHERE
-        DATE(submission_timestamp) >= "2022-08-01"
+        DATE(submission_timestamp) >= first_date
       GROUP BY
         submission_date,
         sample_id,
@@ -34,12 +37,14 @@ CLUSTER BY
       SELECT
         submission_date,
         client_id,
+        LOGICAL_OR(mozfun.norm.extract_version(app_version, 'major') < 107) AS has_search_data,
+        SUM(search_count) AS searches,
         SUM(search_with_ads) AS searches_with_ads,
         SUM(ad_click) AS ad_clicks
       FROM
         `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
       WHERE
-        submission_date >= '2022-08-01'
+        submission_date >= first_date
         AND normalized_app_name = 'Fenix'
         AND os = 'Android'
       GROUP BY
@@ -54,7 +59,7 @@ CLUSTER BY
       FROM
         mozdata.fenix.baseline_clients_first_seen
       WHERE
-        submission_date >= "2022-08-01"
+        submission_date >= first_date
     ),
     adjust_client AS (
       SELECT
@@ -75,7 +80,7 @@ CLUSTER BY
       FROM
         `mozdata.fenix.first_session`
       WHERE
-        DATE(submission_timestamp) >= '2022-08-01'
+        DATE(submission_timestamp) >= first_date
         AND metrics.string.first_session_network IS NOT NULL
         AND metrics.string.first_session_network != ''
       GROUP BY
@@ -92,19 +97,52 @@ CLUSTER BY
       adjust_campaign,
       adjust_creative,
       first_seen_date = submission_date AS is_new_profile,
-      IF(
-        client_day.has_search_data,
-        client_day.searches_with_ads,
+      CASE
+      WHEN
+        client_day.has_search_data
+      THEN
+        client_day.searches
+      WHEN
+        metrics_searches.has_search_data
+      THEN
+        metrics_searches.searches
+      ELSE
+        0
+      END
+      AS searches,
+      CASE
+      WHEN
+        client_day.has_search_data
+      THEN
+        client_day.searches_with_ads
+      WHEN
+        metrics_searches.has_search_data
+      THEN
         metrics_searches.searches_with_ads
-      ) AS searches_with_ads,
-      IF(client_day.has_search_data, client_day.ad_clicks, metrics_searches.ad_clicks) AS ad_clicks
+      ELSE
+        0
+      END
+      AS searches_with_ads,
+      CASE
+      WHEN
+        client_day.has_search_data
+      THEN
+        client_day.ad_clicks
+      WHEN
+        metrics_searches.has_search_data
+      THEN
+        metrics_searches.ad_clicks
+      ELSE
+        0
+      END
+      AS ad_clicks,
     FROM
       adjust_client
     JOIN
       client_day
     USING
       (client_id)
-    LEFT JOIN
+    FULL OUTER JOIN
       searches AS metrics_searches
     USING
       (client_id, submission_date)

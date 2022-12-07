@@ -585,7 +585,7 @@ unified_metrics_v1 AS (
 )
 SELECT
   um.*,
-  ARRAY_AGG((STRUCT(e.experiment_id AS key, e.branch))) AS experiments
+  ARRAY_AGG((STRUCT(e.experiment_id AS key, e.branch AS value))) AS experiments
 FROM
   unified_metrics_v1 um
 LEFT JOIN

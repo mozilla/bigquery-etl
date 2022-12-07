@@ -9,6 +9,7 @@ import sys
 import tempfile
 from datetime import date, timedelta
 from functools import partial
+from graphlib import TopologicalSorter
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -1241,15 +1242,13 @@ def update(
     tmp_tables = {}
 
     # order query files to make sure derived_from dependencies are resolved
-    query_files_ordered = []
-
-    while query_files:
-        n = query_files.pop(0)
+    query_file_graph = {}
+    for query_file in query_files:
+        query_file_graph[query_file] = []
         try:
-            metadata = Metadata.of_query_file(str(n))
+            metadata = Metadata.of_query_file(str(query_file))
             if metadata and metadata.schema and metadata.schema.derived_from:
                 for derived_from in metadata.schema.derived_from:
-                    resolved = True
                     parent_queries = [
                         query
                         for query in paths_matching_name_pattern(
@@ -1257,20 +1256,14 @@ def update(
                         )
                     ]
 
-                    if (
-                        len(parent_queries) == 0
-                        or parent_queries[0] not in query_files_ordered
-                    ):
-                        resolved = False
+                    if len(parent_queries) > 0:
+                        query_file_graph[query_file].append(parent_queries[0])
 
-                if resolved:
-                    query_files_ordered.append(n)
-                else:
-                    query_files.append(n)
-            else:
-                query_files_ordered.append(n)
         except FileNotFoundError:
-            query_files_ordered.append(n)
+            query_file_graph[query_file] = []
+
+    ts = TopologicalSorter(query_file_graph)
+    query_files_ordered = ts.static_order()
 
     for query_file in query_files_ordered:
         changed = _update_query_schema(
@@ -1538,7 +1531,8 @@ def _update_query_schema(
 @click.option(
     "--skip-existing",
     "--skip_existing",
-    help="Skip updating existing tables. This option ensures that only new tables get deployed.",
+    help="Skip updating existing tables. "
+    + "This option ensures that only new tables get deployed.",
     default=False,
     is_flag=True,
 )

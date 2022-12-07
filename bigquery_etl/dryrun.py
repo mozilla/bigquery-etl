@@ -348,6 +348,7 @@ class DryRun:
                 return json.load(r)
             else:
                 project = basename(dirname(dirname(dirname(self.sqlfile))))
+                self.client.project = project
                 job_config = bigquery.QueryJobConfig(
                     dry_run=True,
                     use_query_cache=False,

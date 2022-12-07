@@ -1556,7 +1556,7 @@ def deploy(
         sys.exit(1)
     client = bigquery.Client()
 
-    query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    query_files = paths_matching_name_pattern(name, sql_dir, project_id, ["query.*"])
     if not query_files:
         # run SQL generators if no matching query has been found
         ctx.invoke(
@@ -1564,7 +1564,9 @@ def deploy(
             output_dir=ctx.obj["TMP_DIR"],
             ignore=["derived_view_schemas", "stable_views"],
         )
-        query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
+        query_files = paths_matching_name_pattern(
+            name, ctx.obj["TMP_DIR"], project_id, ["query.*"]
+        )
 
     for query_file in query_files:
         if respect_dryrun_skip and str(query_file) in SKIP:

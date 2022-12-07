@@ -1,8 +1,8 @@
 ---
-friendly_name: Notes for monitoring distinct docids
+friendly_name: Notes for monitoring missing columns
 description: >
   This table is connected to a spreadsheet that contains notes about
-  incidents with distinct docids. The notes are displayed on Looker dashboards.
+  missing columns. The notes are displayed on Looker dashboards.
 owners:
   - ascholtz@mozilla.com
 labels:

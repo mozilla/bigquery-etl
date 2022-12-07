@@ -3290,6 +3290,92 @@ including views on <code>payload_bytes</code> tables</p>
 <h2 id="bigquery_table_storage"><a href="#bigquery_table_storage">bigquery_table_storage</a></h2>
 <p><code>monitoring.bigquery_table_storage</code></p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>creation_date</td>
+        <td>The table's creation date</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>project_id</td>
+        <td>The ID of the project that contains the dataset</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>dataset_id</td>
+        <td>The name of the dataset that contains the table</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>table_id</td>
+        <td>The name of the table</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>total_rows</td>
+        <td>The total number of rows in the table</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>total_partitions</td>
+        <td>The number of partitions present in the table</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>total_logical_bytes</td>
+        <td>Total number of logical bytes in the table</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>active_logical_bytes</td>
+        <td>Number of logical bytes less than 90 days old</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>long_term_logical_bytes</td>
+        <td>Number of logical bytes more than 90 days old</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>total_physical_bytes</td>
+        <td>Total number of physical bytes used for storage</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>active_physical_bytes</td>
+        <td>Number of physical bytes less than 90 days old</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>long_term_physical_bytes</td>
+        <td>Number of physical bytes more than 90 days old</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>time_travel_physical_bytes</td>
+        <td>Number of physical bytes used by time travel</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>logical_billing_cost_usd</td>
+        <td>Total costs for logical bytes billing</td>
+        <td>Float</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>physical_billing_cost_usd</td>
+        <td>Total costs for physical bytes billing</td>
+        <td>Float</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>

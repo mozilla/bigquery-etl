@@ -17,6 +17,7 @@ from ..cli.utils import (
     use_cloud_function_option,
 )
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
+from ..util.string_dag import StringDag
 from ..view import View, broken_views
 from .dryrun import dryrun
 
@@ -196,10 +197,23 @@ def publish(
 
     views = [View.from_file(f) for f in view_files]
     views = [v for v in views if not user_facing_only or v.is_user_facing]
+    views_by_id = {v.view_identifier: v for v in views}
+
+    dag = StringDag(
+        dependencies={
+            view.view_identifier: {
+                ref for ref in view.table_references if ref in views_by_id
+            }
+            for view in views
+        }
+    )
+    dag.validate()
 
     with ThreadPool(parallelism) as p:
-        publish_view = functools.partial(_publish_view, target_project, dry_run)
-        result = p.map(publish_view, views, chunksize=1)
+        publish_view = functools.partial(
+            _publish_view, target_project, dry_run, views_by_id
+        )
+        result = p.map(publish_view, [dag for _ in views], chunksize=1)
 
     if not all(result):
         sys.exit(1)
@@ -207,8 +221,10 @@ def publish(
     click.echo("All have been published.")
 
 
-def _publish_view(target_project, dry_run, view):
-    return view.publish(target_project, dry_run)
+def _publish_view(target_project, dry_run, views_by_id, dag):
+    with dag.get() as view_id:
+        view = views_by_id[view_id]
+        return view.publish(target_project, dry_run)
 
 
 @view.command(

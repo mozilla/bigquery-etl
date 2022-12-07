@@ -2,6 +2,7 @@
 
 import string
 import time
+from functools import cached_property
 from pathlib import Path
 
 import attr
@@ -148,11 +149,16 @@ class View:
             return True
         return self._valid_fully_qualified_references() and self._valid_view_naming()
 
-    def _valid_fully_qualified_references(self):
-        """Check that referenced tables and views are fully qualified."""
+    @cached_property
+    def table_references(self):
+        """List of table references in this view."""
         from bigquery_etl.dependency import extract_table_references
 
-        for table in extract_table_references(self.content):
+        return extract_table_references(self.content)
+
+    def _valid_fully_qualified_references(self):
+        """Check that referenced tables and views are fully qualified."""
+        for table in self.table_references:
             if len(table.split(".")) < 3:
                 print(f"{self.path} ERROR\n{table} missing project_id qualifier")
                 return False

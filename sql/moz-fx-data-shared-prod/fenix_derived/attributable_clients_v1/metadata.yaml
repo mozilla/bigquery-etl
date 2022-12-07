@@ -33,5 +33,4 @@ bigquery:
     fields:
     - adjust_network
     - adjust_campaign
-    - sample_id
-    - client_id
+    - country

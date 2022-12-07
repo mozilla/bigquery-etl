@@ -12,7 +12,7 @@ PARTITION BY
 CLUSTER BY
   adjust_network,
   adjust_campaign,
-  sample_id AS (
+  country AS (
     WITH client_day AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,

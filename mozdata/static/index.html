@@ -1551,6 +1551,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#data_incidents_v1" class="md-nav__link">
+    data_incidents_v1
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#fxa_amplitude_export_users_daily" class="md-nav__link">
     fxa_amplitude_export_users_daily
   </a>
@@ -1567,6 +1574,34 @@
         <li class="md-nav__item">
   <a href="#iana_tls_cipher_suites" class="md-nav__link">
     iana_tls_cipher_suites
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring_distinct_docids_notes_v1" class="md-nav__link">
+    monitoring_distinct_docids_notes_v1
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring_missing_columns_notes_v1" class="md-nav__link">
+    monitoring_missing_columns_notes_v1
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring_missing_document_namespaces_notes_v1" class="md-nav__link">
+    monitoring_missing_document_namespaces_notes_v1
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring_schema_errors_notes_v1" class="md-nav__link">
+    monitoring_schema_errors_notes_v1
   </a>
   
 </li>
@@ -2243,6 +2278,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#data_incidents_v1" class="md-nav__link">
+    data_incidents_v1
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#fxa_amplitude_export_users_daily" class="md-nav__link">
     fxa_amplitude_export_users_daily
   </a>
@@ -2259,6 +2301,34 @@
         <li class="md-nav__item">
   <a href="#iana_tls_cipher_suites" class="md-nav__link">
     iana_tls_cipher_suites
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring_distinct_docids_notes_v1" class="md-nav__link">
+    monitoring_distinct_docids_notes_v1
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring_missing_columns_notes_v1" class="md-nav__link">
+    monitoring_missing_columns_notes_v1
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring_missing_document_namespaces_notes_v1" class="md-nav__link">
+    monitoring_missing_document_namespaces_notes_v1
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring_schema_errors_notes_v1" class="md-nav__link">
+    monitoring_schema_errors_notes_v1
   </a>
   
 </li>
@@ -2401,6 +2471,66 @@ bqetl generate country_code_lookup
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/country_names_v1">Source Directory</a> </p>
 <hr />
+<h2 id="data_incidents_v1"><a href="#data_incidents_v1">data_incidents_v1</a></h2>
+<p><strong>Notes for data incidents</strong></p>
+<p><code>static.data_incidents_v1</code></p>
+<p>This table is connected to a spreadsheet that contains notes about data incidents. The notes are displayed on Looker dashboards.</p>
+<ul>
+<li>
+<p>Owners:</p>
+<ul>
+<li><a href="mailto:ascholtz@mozilla.com">ascholtz@mozilla.com</a></li>
+</ul>
+</li>
+</ul>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>start_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>end_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>incident</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>description</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>bug</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>product</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/data_incidents_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/data_incidents_v1/metadata.yaml">Metadata File</a> </p>
+<hr />
 <h2 id="fxa_amplitude_export_users_daily"><a href="#fxa_amplitude_export_users_daily">fxa_amplitude_export_users_daily</a></h2>
 <p><code>static.fxa_amplitude_export_users_daily</code></p>
 <table>
@@ -2520,6 +2650,246 @@ bqetl generate country_code_lookup
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/iana_tls_cipher_suites">Source Directory</a> </p>
+<hr />
+<h2 id="monitoring_distinct_docids_notes_v1"><a href="#monitoring_distinct_docids_notes_v1">monitoring_distinct_docids_notes_v1</a></h2>
+<p><strong>Notes for monitoring distinct docids</strong></p>
+<p><code>static.monitoring_distinct_docids_notes_v1</code></p>
+<p>This table is connected to a spreadsheet that contains notes about incidents with distinct docids. The notes are displayed on Looker dashboards.</p>
+<ul>
+<li>
+<p>Owners:</p>
+<ul>
+<li><a href="mailto:ascholtz@mozilla.com">ascholtz@mozilla.com</a></li>
+</ul>
+</li>
+</ul>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>start_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>end_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_namespace</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_type</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>notes</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>bug</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/monitoring_distinct_docids_notes_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/monitoring_distinct_docids_notes_v1/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="monitoring_missing_columns_notes_v1"><a href="#monitoring_missing_columns_notes_v1">monitoring_missing_columns_notes_v1</a></h2>
+<p><strong>Notes for monitoring missing columns</strong></p>
+<p><code>static.monitoring_missing_columns_notes_v1</code></p>
+<p>This table is connected to a spreadsheet that contains notes about missing columns. The notes are displayed on Looker dashboards.</p>
+<ul>
+<li>
+<p>Owners:</p>
+<ul>
+<li><a href="mailto:ascholtz@mozilla.com">ascholtz@mozilla.com</a></li>
+</ul>
+</li>
+</ul>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>start_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>end_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_namespace</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_type</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>path</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>notes</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>bug</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/monitoring_missing_columns_notes_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/monitoring_missing_columns_notes_v1/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="monitoring_missing_document_namespaces_notes_v1"><a href="#monitoring_missing_document_namespaces_notes_v1">monitoring_missing_document_namespaces_notes_v1</a></h2>
+<p><strong>Notes for monitoring missing document namespaces</strong></p>
+<p><code>static.monitoring_missing_document_namespaces_notes_v1</code></p>
+<p>This table is connected to a spreadsheet that contains notes about missing namespaces. The notes are displayed on Looker dashboards.</p>
+<ul>
+<li>
+<p>Owners:</p>
+<ul>
+<li><a href="mailto:ascholtz@mozilla.com">ascholtz@mozilla.com</a></li>
+</ul>
+</li>
+</ul>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>start_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>end_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_namespace</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_type</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>notes</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>bug</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/monitoring_missing_document_namespaces_notes_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/monitoring_missing_document_namespaces_notes_v1/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="monitoring_schema_errors_notes_v1"><a href="#monitoring_schema_errors_notes_v1">monitoring_schema_errors_notes_v1</a></h2>
+<p><strong>Notes for monitoring schema errors</strong></p>
+<p><code>static.monitoring_schema_errors_notes_v1</code></p>
+<p>This table is connected to a spreadsheet that contains notes about schema errors. The notes are displayed on Looker dashboards.</p>
+<ul>
+<li>
+<p>Owners:</p>
+<ul>
+<li><a href="mailto:ascholtz@mozilla.com">ascholtz@mozilla.com</a></li>
+</ul>
+</li>
+</ul>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>start_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>end_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_namespace</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_type</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>path</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>notes</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>bug</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/monitoring_schema_errors_notes_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static/monitoring_schema_errors_notes_v1/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="normal_distribution"><a href="#normal_distribution">normal_distribution</a></h2>
 <p><code>static.normal_distribution</code></p>

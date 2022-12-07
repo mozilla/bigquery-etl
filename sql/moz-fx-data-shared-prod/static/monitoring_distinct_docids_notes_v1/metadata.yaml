@@ -1,0 +1,14 @@
+---
+friendly_name: Notes for monitoring distinct docids
+description: >
+  This table is connected to a spreadsheet that contains notes about
+  incidents with distinct docids.
+owners:
+  - ascholtz@mozilla.com
+labels:
+  incremental: false
+external_data:
+  format: google_sheet
+  source_uri: https://docs.google.com/spreadsheets/d/1wMKyIyzp8yW7YpNz6hpFe0sHueeeLHdHr3p-1br2TbA
+  options:
+    skip_leading_rows: 2

@@ -16,16 +16,6 @@ from bigquery_etl.util import extract_from_query_path
 
 # skip validation for these views
 SKIP_VALIDATION = {
-    # not matching directory structure, but created before validation was enforced
-    "sql/moz-fx-data-shared-prod/stripe/subscription/view.sql",
-    "sql/moz-fx-data-shared-prod/stripe/product/view.sql",
-    "sql/moz-fx-data-shared-prod/stripe/plan/view.sql",
-    "sql/moz-fx-data-shared-prod/telemetry/client_probe_counts_v1/view.sql",
-    "sql/moz-fx-data-shared-prod/telemetry/clients_daily_histogram_aggregates_v1/view.sql",
-    "sql/moz-fx-data-shared-prod/telemetry/clients_scalar_aggregates_v1/view.sql",
-    "sql/moz-fx-data-shared-prod/telemetry/clients_daily_scalar_aggregates_v1/view.sql",
-    "sql/moz-fx-data-shared-prod/telemetry/clients_histogram_aggregates_v1/view.sql",
-    "sql/moz-fx-data-shared-prod/telemetry/clients_probe_processes/view.sql",
     # tests
     "sql/moz-fx-data-test-project/test/simple_view/view.sql",
     # Access Denied

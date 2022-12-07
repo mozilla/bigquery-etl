@@ -3023,7 +3023,7 @@ Options:
 --update_downstream: Update downstream dependencies. GCP authentication required.
 --tmp_dataset: GCP datasets for creating updated tables temporarily.
 --use_cloud_function: Use the Cloud Function for dry running SQL, if set to `True`. The Cloud Function can only access tables in shared-prod. If set to `False`, use active GCP credentials for the dry run.
---respect_dryrun_skip: Respect or ignore dry run SKIP configuration. Default is --ignore-dryrun-skip.
+--respect_dryrun_skip: Respect or ignore dry run SKIP configuration. Default is --respect-dryrun-skip.
 </code></pre>
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash">./bqetl query schema update telemetry_derived.clients_daily_v6

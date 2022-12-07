@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  fenix.marketing_attributable_metrics
+  `moz-fx-data-shared-prod`.fenix.marketing_attributable_metrics
 AS
 SELECT
   * EXCEPT (searches),

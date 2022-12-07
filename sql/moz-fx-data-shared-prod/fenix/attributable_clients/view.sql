@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  fenix.attributable_clients
+  `moz-fx-data-shared-prod`.fenix.attributable_clients
 AS
 SELECT
   *

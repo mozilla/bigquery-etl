@@ -30,17 +30,11 @@ fields:
   name: is_new_profile
   type: BOOLEAN
 - mode: NULLABLE
+  name: searches
+  type: INTEGER
+- mode: NULLABLE
   name: searches_with_ads
   type: INTEGER
 - mode: NULLABLE
   name: ad_clicks
-  type: INTEGER
-- mode: NULLABLE
-  name: dau
-  type: INTEGER
-- mode: NULLABLE
-  name: new_profiles
-  type: INTEGER
-- mode: NULLABLE
-  name: search_count
   type: INTEGER

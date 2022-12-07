@@ -1,51 +1,41 @@
 fields:
-
-- mode: NULLABLE
+- description: Airflow DAG id (<root_dag_id>.<subdag_id>)
+  mode: NULLABLE
   name: dag_id
   type: STRING
-  description: Airflow DAG id (<root_dag_id>.<subdag_id>)
-
-- mode: NULLABLE
+- description: Airflow Root DAG id
+  mode: NULLABLE
   name: root_dag_id
   type: STRING
-  description: Airflow Root DAG id
-
-- mode: NULLABLE
+- description: Airflow subdag id
+  mode: NULLABLE
   name: subdag_id
   type: STRING
-  description: Airflow subdag id
-
-- mode: NULLABLE
+- description: Indicates if this DAG is a subdag
+  mode: NULLABLE
   name: is_subdag
   type: BOOLEAN
-  description: Indicates if this DAG is a subdag
-
-- mode: NULLABLE
+- description: DAG owners (comma separated)
+  mode: NULLABLE
   name: owners
   type: STRING
-  description: DAG owners (comma separated)
-
-- mode: NULLABLE
+- description: Indicates if the DAG is active
+  mode: NULLABLE
   name: is_active
   type: BOOLEAN
-  description: Indicates if the DAG is active
-
-- mode: NULLABLE
+- description: Indicates if the DAG is currently paused
+  mode: NULLABLE
   name: is_paused
   type: BOOLEAN
-  description: Indicates if the DAG is currently paused
-
-- mode: NULLABLE
+- description: Indicates if DAG has concurrency limit set
+  mode: NULLABLE
   name: has_task_concurrency_limits
   type: BOOLEAN
-  description: Indicates if DAG has concurrency limit set
-
-- mode: NULLABLE
+- description: Cuncerrency settings for the DAG
+  mode: NULLABLE
   name: concurrency
   type: INTEGER
-  description: Cuncerrency settings for the DAG
-
-- mode: NULLABLE
+- description: Max number of active DAG runs allowed
+  mode: NULLABLE
   name: max_active_runs
   type: INTEGER
-  description: Max number of active DAG runs allowed

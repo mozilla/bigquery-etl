@@ -2,37 +2,25 @@
 WITH first_seen AS (
   SELECT
     client_id,
-    first_seen_date
+    first_seen_date,
+    country AS first_reported_country,
+    isp AS first_reported_isp,
+    DATETIME(first_run_date) AS first_run_datetime,
+    normalized_channel AS channel,
+    device_manufacturer,
+    device_model,
+    normalized_os_version AS os_version
   FROM
     `mozdata.fenix.baseline_clients_first_seen`
   WHERE
     submission_date = @submission_date
+    AND normalized_channel = 'release'
 ),
--- Find earliest first_session ping per client.
+-- Find earliest data per client from the first_session ping.
 first_session_ping AS (
   SELECT
     client_info.client_id AS client_id,
     MIN(SAFE.PARSE_DATETIME('%F', SUBSTR(client_info.first_run_date, 1, 10))) AS first_run_datetime,
-    ARRAY_AGG(normalized_country_code ORDER BY metrics.datetime.first_session_timestamp ASC)[
-      SAFE_OFFSET(0)
-    ] AS first_reported_country,
-    ARRAY_AGG(metadata.isp.name ORDER BY metrics.datetime.first_session_timestamp ASC)[
-      SAFE_OFFSET(0)
-    ] AS first_reported_isp,
-    ARRAY_AGG(normalized_channel ORDER BY metrics.datetime.first_session_timestamp ASC)[
-      SAFE_OFFSET(0)
-    ] AS channel,
-    ARRAY_AGG(
-      client_info.device_manufacturer
-      ORDER BY
-        metrics.datetime.first_session_timestamp ASC
-    )[SAFE_OFFSET(0)] AS device_manufacturer,
-    ARRAY_AGG(client_info.device_model ORDER BY metrics.datetime.first_session_timestamp ASC)[
-      SAFE_OFFSET(0)
-    ] AS device_model,
-    ARRAY_AGG(client_info.os_version ORDER BY metrics.datetime.first_session_timestamp ASC)[
-      SAFE_OFFSET(0)
-    ] AS os_version,
     ARRAY_AGG(
       metrics.string.first_session_campaign
       ORDER BY
@@ -60,80 +48,12 @@ first_session_ping AS (
     AND SAFE.PARSE_DATE('%F', SUBSTR(client_info.first_run_date, 1, 10)) >= DATE(
       submission_timestamp
     ) -- first_session ping received after the client is first seen.
-    AND ping_info.seq = 0  -- Pings are sent in sequence, this guarantees that the first one is returned.
+    AND ping_info.seq = 0 -- Pings are sent in sequence, this guarantees that the first one is returned.
   GROUP BY
     client_id
 ),
--- Find earliest metrics ping per client.
+-- Find earliest data per client from the metrics ping.
 metrics_ping AS (
-  -- Firefox Preview beta
-  SELECT
-    client_info.client_id AS client_id,
-    DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
-    ARRAY_AGG(metrics.string.metrics_adjust_network ORDER BY submission_timestamp ASC)[
-      SAFE_OFFSET(0)
-    ] AS adjust_network,
-    ARRAY_AGG(metrics.string.metrics_install_source ORDER BY submission_timestamp ASC)[
-      SAFE_OFFSET(0)
-    ] AS install_source
-  FROM
-    org_mozilla_fenix.metrics AS org_mozilla_fenix_metrics
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-  GROUP BY
-    client_id
-  UNION ALL
-  -- Firefox Preview nightly
-  SELECT
-    client_info.client_id AS client_id,
-    DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
-    ARRAY_AGG(metrics.string.metrics_adjust_network ORDER BY submission_timestamp ASC)[
-      SAFE_OFFSET(0)
-    ] AS adjust_network,
-    ARRAY_AGG(metrics.string.metrics_install_source ORDER BY submission_timestamp ASC)[
-      SAFE_OFFSET(0)
-    ] AS install_source
-  FROM
-    org_mozilla_fenix_nightly.metrics AS org_mozilla_fenix_metrics
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-  GROUP BY
-    client_id
-  UNION ALL
-  -- Fenix nightly
-  SELECT
-    client_info.client_id AS client_id,
-    DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
-    ARRAY_AGG(metrics.string.metrics_adjust_network ORDER BY submission_timestamp ASC)[
-      SAFE_OFFSET(0)
-    ] AS adjust_network,
-    ARRAY_AGG(metrics.string.metrics_install_source ORDER BY submission_timestamp ASC)[
-      SAFE_OFFSET(0)
-    ] AS install_source
-  FROM
-    org_mozilla_fennec_aurora.metrics AS org_mozilla_fennec_aurora_metrics
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-  GROUP BY
-    client_id
-  UNION ALL
-  -- Fenix beta
-  SELECT
-    client_info.client_id AS client_id,
-    DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
-    ARRAY_AGG(metrics.string.metrics_adjust_network ORDER BY submission_timestamp ASC)[
-      SAFE_OFFSET(0)
-    ] AS adjust_network,
-    ARRAY_AGG(metrics.string.metrics_install_source ORDER BY submission_timestamp ASC)[
-      SAFE_OFFSET(0)
-    ] AS install_source
-  FROM
-    org_mozilla_firefox_beta.metrics AS org_mozilla_firefox_beta_metrics
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-  GROUP BY
-    client_id
-  UNION ALL
   -- Fenix Release
   SELECT
     client_info.client_id AS client_id,
@@ -153,15 +73,15 @@ metrics_ping AS (
 ),
 _current AS (
   SELECT
-    first_seen.client_id,
-    first_seen.first_seen_date,
-    DATE(first_session.first_run_datetime) AS first_run_date,
-    first_session.first_reported_country AS first_reported_country,
-    first_session.first_reported_isp AS first_reported_isp,
-    first_session.channel AS channel,
-    first_session.device_manufacturer AS device_manufacturer,
-    first_session.device_model AS device_model,
-    first_session.os_version AS os_version,
+    first_seen.client_id AS client_id,
+    first_seen.first_seen_date AS first_seen_date,
+    DATE(first_seen.first_run_datetime) AS first_run_date,
+    first_seen.first_reported_country AS first_reported_country,
+    first_seen.first_reported_isp AS first_reported_isp,
+    first_seen.channel AS channel,
+    first_seen.device_manufacturer AS device_manufacturer,
+    first_seen.device_model AS device_model,
+    first_seen.os_version AS os_version,
     first_session.adjust_campaign AS adjust_campaign,
     first_session.adjust_ad_group AS adjust_ad_group,
     first_session.adjust_creative AS adjust_creative,
@@ -208,7 +128,15 @@ _current AS (
         NULL
       END
       AS adjust_network__source_ping,
-      'metrics' AS install_source__source_ping,
+      CASE
+      WHEN
+        metrics.install_source IS NOT NULL
+      THEN
+        'metrics'
+      ELSE
+        NULL
+      END
+      AS install_source__source_ping,
       mozfun.norm.get_earliest_value(
         [
           (STRUCT(CAST(first_session.adjust_network AS STRING), first_session.first_run_datetime)),
@@ -245,15 +173,12 @@ _previous AS (
 )
 SELECT
   IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
-    COALESCE(
-      _previous.device_manufacturer,
-      first_session.device_manufacturer
-    ) AS device_manufacturer,
-    COALESCE(_previous.device_model, first_session.device_model) AS device_model,
-    COALESCE(_previous.os_version, first_session.os_version) AS os_version,
-    COALESCE(_previous.adjust_campaign, first_session.adjust_campaign) AS adjust_campaign,
-    COALESCE(_previous.adjust_ad_group, first_session.adjust_ad_group) AS adjust_ad_group,
-    COALESCE(_previous.adjust_creative, first_session.adjust_creative) AS adjust_creative,
+    COALESCE(_previous.device_manufacturer, _current.device_manufacturer) AS device_manufacturer,
+    COALESCE(_previous.device_model, _current.device_model) AS device_model,
+    COALESCE(_previous.os_version, _current.os_version) AS os_version,
+    COALESCE(_previous.adjust_campaign, _current.adjust_campaign) AS adjust_campaign,
+    COALESCE(_previous.adjust_ad_group, _current.adjust_ad_group) AS adjust_ad_group,
+    COALESCE(_previous.adjust_creative, _current.adjust_creative) AS adjust_creative,
     mozfun.norm.get_earliest_value(
       [
         (
@@ -298,9 +223,9 @@ SELECT
         FALSE
       END
       AS reported_metrics_ping,
-      LEAST(
+      COALESCE(
         _previous.first_run_date,
-        DATE(first_session.first_run_datetime)
+        DATE(_current.metadata.min_first_session_ping_run_date)
       ) AS min_first_session_ping_run_date,
       CASE
         mozfun.norm.get_earliest_value(
@@ -329,7 +254,10 @@ SELECT
         _previous.metadata.adjust_network__source_ping
       END
       AS adjust_network__source_ping,
-      'metrics' AS install_source__source_ping,
+      COALESCE(
+        _previous.metadata.install_source__source_ping,
+        _current.metadata.install_source__source_ping
+      ) AS install_source__source_ping,
       mozfun.norm.get_earliest_value(
         [
           (
@@ -362,7 +290,7 @@ JOIN
 USING
   (client_id)
 LEFT JOIN
-  first_session_ping first_session
+  first_session_ping AS first_session
 USING
   (client_id)
 LEFT JOIN

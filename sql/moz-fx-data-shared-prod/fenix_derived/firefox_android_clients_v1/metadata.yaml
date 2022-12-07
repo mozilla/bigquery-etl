@@ -1,9 +1,9 @@
 friendly_name: Firefox Android Clients
 description: |-
-  First observations for Firefox Android clients retrieved from the earliest
-  pings: baseline, first_session and metrics.
-  The attributes stored in this table include the first attribution, device
-  OS and ISP details.
+  First observations for Firefox Android clients of channel Release,
+  retrieved from the earliest pings: baseline, first_session and metrics.
+  The attributes stored in this table include the first attribution,
+  device, OS and ISP details.
 
   This table should be accessed through the user-facing view
   `fenix.firefox_android_clients`.
@@ -33,7 +33,7 @@ bigquery:
   clustering:
     fields:
     - channel
-    - first_reported_country,
-    - adjust_network,
-    - install_source
+    - first_reported_country
+    - first_reported_isp
+    - device_model
 references: {}

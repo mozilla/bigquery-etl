@@ -1707,7 +1707,12 @@ def _deploy_external_data(
                 if metadata.external_data.format == ExternalDataFormat.GOOGLE_SHEET:
                     external_config = bigquery.ExternalConfig("GOOGLE_SHEETS")
                     external_config.source_uris = [metadata.external_data.source_uri]
-                    external_config.options = metadata.external_data.options
+                    external_config.ignore_unknown_values = True
+                    external_config.autodetect = False
+
+                    for key, v in metadata.external_data.options.items():
+                        setattr(external_config.options, key, v)
+
                     table.external_data_configuration = external_config
                     table = client.create_table(table)
                     click.echo(f"Destination table {full_table_id} created.")

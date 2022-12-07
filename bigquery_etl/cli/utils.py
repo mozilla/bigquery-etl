@@ -14,7 +14,7 @@ from bigquery_etl.util.common import TempDatasetReference, project_dirs
 
 QUERY_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
-    r"(?:query\.sql|part1\.sql|script\.sql|query\.py|view\.sql)$"
+    r"(?:query\.sql|part1\.sql|script\.sql|query\.py|view\.sql|metadata\.yaml)$"
 )
 TEST_PROJECT = "bigquery-etl-integration-test"
 MOZDATA = "mozdata"

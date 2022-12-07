@@ -11,7 +11,12 @@ from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
 from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.metadata.parse_metadata import DATASET_METADATA_FILE, DatasetMetadata
+from bigquery_etl.metadata.parse_metadata import (
+    DATASET_METADATA_FILE,
+    METADATA_FILE,
+    DatasetMetadata,
+    Metadata,
+)
 from bigquery_etl.schema import Schema
 from bigquery_etl.util import extract_from_query_path
 
@@ -104,6 +109,14 @@ class View:
     def is_user_facing(self):
         """Return whether the view is user-facing."""
         return not self.dataset.endswith(NON_USER_FACING_DATASET_SUFFIXES)
+
+    @cached_property
+    def metadata(self):
+        """Return the view metadata."""
+        path = Path(self.path).parent / METADATA_FILE
+        if not path.exists():
+            return None
+        return Metadata.from_file(path)
 
     @classmethod
     def create(cls, project, dataset, name, sql_dir, base_table=None):

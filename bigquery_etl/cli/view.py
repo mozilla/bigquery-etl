@@ -174,6 +174,12 @@ def _view_is_valid(view):
         " but not telemetry_derived)."
     ),
 )
+@click.option(
+    "--skip-authorized",
+    "--skip_authorized",
+    is_flag=True,
+    help="Don't publish views with labels: {authorized: true} in metadata.yaml",
+)
 def publish(
     name,
     sql_dir,
@@ -183,6 +189,7 @@ def publish(
     parallelism,
     dry_run,
     user_facing_only,
+    skip_authorized,
 ):
     """Publish views."""
     # set log level
@@ -196,7 +203,19 @@ def publish(
     )
 
     views = [View.from_file(f) for f in view_files]
-    views = [v for v in views if not user_facing_only or v.is_user_facing]
+    if user_facing_only:
+        views = [v for v in views if v.is_user_facing]
+    if skip_authorized:
+        views = [
+            v
+            for v in views
+            if not (
+                v.metadata
+                and v.metadata.labels
+                # labels with boolean true are translated to ""
+                and v.metadata.labels.get("authorized") == ""
+            )
+        ]
     views_by_id = {v.view_identifier: v for v in views}
 
     dag = StringDag(

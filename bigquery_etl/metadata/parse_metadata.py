@@ -125,7 +125,7 @@ class ExternalDataMetadata:
     """Metadata for specifying external data."""
 
     format: ExternalDataFormat
-    source_uri: str
+    source_uris: List[str]
     options: Optional[Dict[str, Any]] = attr.ib(None)
 
 

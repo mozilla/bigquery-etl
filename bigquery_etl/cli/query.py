@@ -1218,7 +1218,7 @@ def schema():
     default="analysis",
 )
 @use_cloud_function_option
-@respect_dryrun_skip_option(default=False)
+@respect_dryrun_skip_option(default=True)
 def update(
     name,
     sql_dir,
@@ -1578,8 +1578,6 @@ def deploy(
             click.echo(f"No schema file found for {query_file}")
             continue
 
-        click.echo(f"Deploying schema for {query_file}")
-
         table_name = query_file_path.parent.name
         dataset_name = query_file_path.parent.parent.name
         project_name = query_file_path.parent.parent.parent.name
@@ -1636,7 +1634,10 @@ def deploy(
 
 def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
     """Add metadata from query file's metadata.yaml to table object."""
-    metadata = Metadata.of_query_file(query_file_path)
+    try:
+        metadata = Metadata.of_query_file(query_file_path)
+    except FileNotFoundError:
+        return
 
     table.description = metadata.description
     table.friendly_name = metadata.friendly_name

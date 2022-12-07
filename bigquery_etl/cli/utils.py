@@ -79,7 +79,7 @@ def table_matches_patterns(pattern, invert, table):
     return matching != invert
 
 
-def paths_matching_name_pattern(pattern, sql_path, project_id, files=("*.sql")):
+def paths_matching_name_pattern(pattern, sql_path, project_id, files=["*.sql"]):
     """Return paths to queries matching the name pattern."""
     matching_files = []
 

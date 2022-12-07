@@ -6,20 +6,17 @@ fields:
   name: end_date
   type: DATE
 - mode: NULLABLE
-  name: document_namespace
+  name: incident
   type: STRING
 - mode: NULLABLE
-  name: document_type
-  type: STRING
-- mode: NULLABLE
-  name: document_version
-  type: STRING
-- mode: NULLABLE
-  name: path
-  type: STRING
-- mode: NULLABLE
-  name: notes
+  name: description
   type: STRING
 - mode: NULLABLE
   name: bug
+  type: STRING
+- mode: NULLABLE
+  name: product
+  type: STRING
+- mode: NULLABLE
+  name: version
   type: STRING

@@ -1711,7 +1711,7 @@ def _deploy_external_data(
         if not table.created:
             if metadata.external_data.format == ExternalDataFormat.GOOGLE_SHEET:
                 external_config = bigquery.ExternalConfig("GOOGLE_SHEETS")
-                external_config.source_uris = [metadata.external_data.source_uri]
+                external_config.source_uris = metadata.external_data.source_uris
                 external_config.ignore_unknown_values = True
                 external_config.autodetect = False
 

@@ -79,6 +79,12 @@ with DAG(
         "search_derived__mobile_search_clients_daily__v1_external"
     ) as search_derived__mobile_search_clients_daily__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_org_mozilla_firefox_derived__wait_for_search_derived__mobile_search_clients_daily__v1",
+            external_dag_id="bqetl_org_mozilla_firefox_derived",
+            external_task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_mobile_activation__wait_for_search_derived__mobile_search_clients_daily__v1",
             external_dag_id="bqetl_mobile_activation",
             external_task_id="wait_for_search_derived__mobile_search_clients_daily__v1",

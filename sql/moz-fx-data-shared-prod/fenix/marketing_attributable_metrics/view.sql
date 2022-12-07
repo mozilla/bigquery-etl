@@ -3,6 +3,8 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   * EXCEPT (searches),
+  1 AS dau,
+  IF(is_new_profile, 1, 0) AS new_profiles,
   searches AS search_count,
 FROM
   fenix.attributable_clients

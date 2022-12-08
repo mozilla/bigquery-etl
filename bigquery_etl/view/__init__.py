@@ -2,6 +2,7 @@
 
 import string
 import time
+from functools import cached_property
 from pathlib import Path
 
 import attr
@@ -10,7 +11,12 @@ from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
 from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.metadata.parse_metadata import DATASET_METADATA_FILE, DatasetMetadata
+from bigquery_etl.metadata.parse_metadata import (
+    DATASET_METADATA_FILE,
+    METADATA_FILE,
+    DatasetMetadata,
+    Metadata,
+)
 from bigquery_etl.schema import Schema
 from bigquery_etl.util import extract_from_query_path
 
@@ -104,6 +110,14 @@ class View:
         """Return whether the view is user-facing."""
         return not self.dataset.endswith(NON_USER_FACING_DATASET_SUFFIXES)
 
+    @cached_property
+    def metadata(self):
+        """Return the view metadata."""
+        path = Path(self.path).parent / METADATA_FILE
+        if not path.exists():
+            return None
+        return Metadata.from_file(path)
+
     @classmethod
     def create(cls, project, dataset, name, sql_dir, base_table=None):
         """
@@ -148,11 +162,16 @@ class View:
             return True
         return self._valid_fully_qualified_references() and self._valid_view_naming()
 
-    def _valid_fully_qualified_references(self):
-        """Check that referenced tables and views are fully qualified."""
+    @cached_property
+    def table_references(self):
+        """List of table references in this view."""
         from bigquery_etl.dependency import extract_table_references
 
-        for table in extract_table_references(self.content):
+        return extract_table_references(self.content)
+
+    def _valid_fully_qualified_references(self):
+        """Check that referenced tables and views are fully qualified."""
+        for table in self.table_references:
             if len(table.split(".")) < 3:
                 print(f"{self.path} ERROR\n{table} missing project_id qualifier")
                 return False

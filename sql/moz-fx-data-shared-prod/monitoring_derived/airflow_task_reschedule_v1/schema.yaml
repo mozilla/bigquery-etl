@@ -1,36 +1,29 @@
 fields:
-
-- mode: NULLABLE
+- description: Airflow DAG id
+  mode: NULLABLE
   name: dag_id
   type: STRING
-  description: Airflow DAG id
-
-- mode: NULLABLE
+- description: Airflow task id
+  mode: NULLABLE
   name: task_id
   type: STRING
-  description: Airflow task id
-
-- mode: NULLABLE
+- description: Execution date of the DAG Run instance
+  mode: NULLABLE
   name: execution_date
   type: TIMESTAMP
-  description: Execution date of the DAG Run instance
-
-- mode: NULLABLE
+- description: Datetime when task has been rescheduled
+  mode: NULLABLE
   name: reschedule_date
   type: TIMESTAMP
-  description: Datetime when task has been rescheduled
-
-- mode: NULLABLE
+- description: When the DAG run started
+  mode: NULLABLE
   name: start_date
   type: TIMESTAMP
-  description: When the DAG run started
-
-- mode: NULLABLE
+- description: When the DAG run finished
+  mode: NULLABLE
   name: end_date
   type: TIMESTAMP
-  description: When the DAG run finished
-
-- mode: NULLABLE
+- description: Time elapsed since start until end of task's exeuction (seconds)
+  mode: NULLABLE
   name: duration
-  type: STRING
-  description: Time elapsed since start until end of task's exeuction (seconds)
+  type: INTEGER

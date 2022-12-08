@@ -17,6 +17,7 @@ from ..cli.utils import (
     use_cloud_function_option,
 )
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
+from ..util.string_dag import StringDag
 from ..view import View, broken_views
 from .dryrun import dryrun
 
@@ -173,6 +174,12 @@ def _view_is_valid(view):
         " but not telemetry_derived)."
     ),
 )
+@click.option(
+    "--skip-authorized",
+    "--skip_authorized",
+    is_flag=True,
+    help="Don't publish views with labels: {authorized: true} in metadata.yaml",
+)
 def publish(
     name,
     sql_dir,
@@ -182,6 +189,7 @@ def publish(
     parallelism,
     dry_run,
     user_facing_only,
+    skip_authorized,
 ):
     """Publish views."""
     # set log level
@@ -195,11 +203,36 @@ def publish(
     )
 
     views = [View.from_file(f) for f in view_files]
-    views = [v for v in views if not user_facing_only or v.is_user_facing]
+    if user_facing_only:
+        views = [v for v in views if v.is_user_facing]
+    if skip_authorized:
+        views = [
+            v
+            for v in views
+            if not (
+                v.metadata
+                and v.metadata.labels
+                # labels with boolean true are translated to ""
+                and v.metadata.labels.get("authorized") == ""
+            )
+        ]
+    views_by_id = {v.view_identifier: v for v in views}
+
+    dag = StringDag(
+        dependencies={
+            view.view_identifier: {
+                ref for ref in view.table_references if ref in views_by_id
+            }
+            for view in views
+        }
+    )
+    dag.validate()
 
     with ThreadPool(parallelism) as p:
-        publish_view = functools.partial(_publish_view, target_project, dry_run)
-        result = p.map(publish_view, views, chunksize=1)
+        publish_view = functools.partial(
+            _publish_view, target_project, dry_run, views_by_id
+        )
+        result = p.map(publish_view, [dag for _ in views], chunksize=1)
 
     if not all(result):
         sys.exit(1)
@@ -207,8 +240,10 @@ def publish(
     click.echo("All have been published.")
 
 
-def _publish_view(target_project, dry_run, view):
-    return view.publish(target_project, dry_run)
+def _publish_view(target_project, dry_run, views_by_id, dag):
+    with dag.get() as view_id:
+        view = views_by_id[view_id]
+        return view.publish(target_project, dry_run)
 
 
 @view.command(

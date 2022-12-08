@@ -41,6 +41,17 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    fenix_derived__attributable_clients__v1 = bigquery_etl_query(
+        task_id="fenix_derived__attributable_clients__v1",
+        destination_table="attributable_clients_v1",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     fenix_derived__clients_yearly__v1 = bigquery_etl_query(
         task_id="fenix_derived__clients_yearly__v1",
         destination_table="clients_yearly_v1",
@@ -62,6 +73,25 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    fenix_derived__attributable_clients__v1.set_upstream(
+        wait_for_baseline_clients_daily
+    )
+    wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
+        external_dag_id="bqetl_mobile_search",
+        external_task_id="search_derived__mobile_search_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    fenix_derived__attributable_clients__v1.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v1
     )
 
     fenix_derived__clients_yearly__v1.set_upstream(wait_for_baseline_clients_daily)

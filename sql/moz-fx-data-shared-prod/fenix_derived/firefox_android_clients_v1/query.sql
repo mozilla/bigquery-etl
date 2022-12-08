@@ -22,26 +22,18 @@ first_session_ping AS (
   SELECT
     client_info.client_id AS client_id,
     MIN(SAFE.PARSE_DATETIME('%F', SUBSTR(client_info.first_run_date, 1, 10))) AS first_run_datetime,
-    ARRAY_AGG(
-      metrics.string.first_session_campaign
-      ORDER BY
-        submission_timestamp ASC
-    )[SAFE_OFFSET(0)] AS adjust_campaign,
-    ARRAY_AGG(
-      metrics.string.first_session_network
-      ORDER BY
-        submission_timestamp ASC
-    )[SAFE_OFFSET(0)] AS adjust_network,
-    ARRAY_AGG(
-      metrics.string.first_session_adgroup
-      ORDER BY
-        submission_timestamp ASC
-    )[SAFE_OFFSET(0)] AS adjust_ad_group,
-    ARRAY_AGG(
-      metrics.string.first_session_creative
-      ORDER BY
-        submission_timestamp ASC
-    )[SAFE_OFFSET(0)] AS adjust_creative
+    ARRAY_AGG(metrics.string.first_session_campaign ORDER BY submission_timestamp ASC)[
+      SAFE_OFFSET(0)
+    ] AS adjust_campaign,
+    ARRAY_AGG(metrics.string.first_session_network ORDER BY submission_timestamp ASC)[
+      SAFE_OFFSET(0)
+    ] AS adjust_network,
+    ARRAY_AGG(metrics.string.first_session_adgroup ORDER BY submission_timestamp ASC)[
+      SAFE_OFFSET(0)
+    ] AS adjust_ad_group,
+    ARRAY_AGG(metrics.string.first_session_creative ORDER BY submission_timestamp ASC)[
+      SAFE_OFFSET(0)
+    ] AS adjust_creative
   FROM
     `mozdata.fenix.first_session`
   WHERE

@@ -1,10 +1,11 @@
 """bigquery-etl CLI view command."""
-import functools
 import logging
 import re
 import string
 import sys
+from graphlib import TopologicalSorter
 from multiprocessing.pool import Pool, ThreadPool
+from traceback import print_exc
 
 import click
 
@@ -17,7 +18,6 @@ from ..cli.utils import (
     use_cloud_function_option,
 )
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
-from ..util.string_dag import StringDag
 from ..view import View, broken_views
 from .dryrun import dryrun
 
@@ -180,6 +180,11 @@ def _view_is_valid(view):
     is_flag=True,
     help="Don't publish views with labels: {authorized: true} in metadata.yaml",
 )
+@click.option(
+    "--force",
+    is_flag=True,
+    help="Publish views even if there are no changes to the view query",
+)
 def publish(
     name,
     sql_dir,
@@ -190,6 +195,7 @@ def publish(
     dry_run,
     user_facing_only,
     skip_authorized,
+    force,
 ):
     """Publish views."""
     # set log level
@@ -216,34 +222,34 @@ def publish(
                 and v.metadata.labels.get("authorized") == ""
             )
         ]
+    if not force:
+        # only views with changes
+        with ThreadPool(parallelism) as p:
+            changes = p.map(lambda v: v.has_changes(target_project), views, chunksize=1)
+        views = [v for v, has_changes in zip(views, changes) if has_changes]
     views_by_id = {v.view_identifier: v for v in views}
 
-    dag = StringDag(
-        dependencies={
-            view.view_identifier: {
-                ref for ref in view.table_references if ref in views_by_id
-            }
-            for view in views
+    view_id_graph = {
+        view.view_identifier: {
+            ref for ref in view.table_references if ref in views_by_id
         }
-    )
-    dag.validate()
+        for view in views
+    }
 
-    with ThreadPool(parallelism) as p:
-        publish_view = functools.partial(
-            _publish_view, target_project, dry_run, views_by_id
-        )
-        result = p.map(publish_view, [dag for _ in views], chunksize=1)
+    view_id_order = TopologicalSorter(view_id_graph).static_order()
+
+    result = []
+    for view_id in view_id_order:
+        try:
+            result.append(views_by_id[view_id].publish(target_project, dry_run))
+        except Exception:
+            print_exc()
+            result.append(False)
 
     if not all(result):
         sys.exit(1)
 
     click.echo("All have been published.")
-
-
-def _publish_view(target_project, dry_run, views_by_id, dag):
-    with dag.get() as view_id:
-        view = views_by_id[view_id]
-        return view.publish(target_project, dry_run)
 
 
 @view.command(

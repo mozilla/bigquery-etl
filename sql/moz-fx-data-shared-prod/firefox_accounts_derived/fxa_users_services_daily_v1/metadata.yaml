@@ -9,3 +9,4 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_fxa_events
+  date_partition_parameter: submission_date

@@ -40,6 +40,7 @@ from ..metadata.parse_metadata import (
     BigQueryMetadata,
     ClusteringMetadata,
     DatasetMetadata,
+    ExternalDataFormat,
     Metadata,
     PartitionMetadata,
     PartitionType,
@@ -1633,6 +1634,8 @@ def deploy(
             )
             click.echo(f"Schema (and metadata) updated for {full_table_id}.")
 
+    _deploy_external_data(name, sql_dir, project_id, skip_existing)
+
 
 def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
     """Add metadata from query file's metadata.yaml to table object."""
@@ -1659,6 +1662,80 @@ def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
 
     if metadata.labels:
         table.labels = metadata.labels
+
+
+def _deploy_external_data(
+    name,
+    sql_dir,
+    project_id,
+    skip_existing,
+) -> None:
+    """Publish external data tables."""
+    # whether a table should be created from external data is defined in the metadata
+    metadata_files = paths_matching_name_pattern(
+        name, sql_dir, project_id, ["metadata.yaml"]
+    )
+    client = bigquery.Client()
+    for metadata_file_path in metadata_files:
+        metadata = Metadata.from_file(metadata_file_path)
+        if not metadata.external_data:
+            # skip all tables that are not created from external data
+            continue
+
+        existing_schema_path = metadata_file_path.parent / SCHEMA_FILE
+
+        if not existing_schema_path.is_file():
+            # tables created from external data must specify a schema
+            click.echo(f"No schema file found for {metadata_file_path}")
+            continue
+
+        table_name = metadata_file_path.parent.name
+        dataset_name = metadata_file_path.parent.parent.name
+        project_name = metadata_file_path.parent.parent.parent.name
+        full_table_id = f"{project_name}.{dataset_name}.{table_name}"
+
+        existing_schema = Schema.from_schema_file(existing_schema_path)
+
+        try:
+            table = client.get_table(full_table_id)
+        except NotFound:
+            table = bigquery.Table(full_table_id)
+
+        with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
+            existing_schema.to_json_file(Path(tmp_schema_file.name))
+            bigquery_schema = client.schema_from_json(tmp_schema_file.name)
+
+        table.schema = bigquery_schema
+        _attach_metadata(metadata_file_path, table)
+
+        if not table.created:
+            if metadata.external_data.format == ExternalDataFormat.GOOGLE_SHEET:
+                external_config = bigquery.ExternalConfig("GOOGLE_SHEETS")
+                external_config.source_uris = metadata.external_data.source_uris
+                external_config.ignore_unknown_values = True
+                external_config.autodetect = False
+
+                for key, v in metadata.external_data.options.items():
+                    setattr(external_config.options, key, v)
+
+                table.external_data_configuration = external_config
+                table = client.create_table(table)
+                click.echo(f"Destination table {full_table_id} created.")
+            else:
+                click.echo(
+                    f"External data format {metadata.external_data.format} unsupported."
+                )
+        elif not skip_existing:
+            client.update_table(
+                table,
+                [
+                    "schema",
+                    "friendly_name",
+                    "description",
+                    "labels",
+                ],
+            )
+            click.echo(f"Schema (and metadata) updated for {full_table_id}.")
 
 
 def _validate_schema_from_path(

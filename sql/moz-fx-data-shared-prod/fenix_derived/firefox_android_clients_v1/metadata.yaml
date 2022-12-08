@@ -33,7 +33,7 @@ bigquery:
   clustering:
     fields:
     - channel
+    - sample_id
     - first_reported_country
-    - first_reported_isp
     - device_model
 references: {}

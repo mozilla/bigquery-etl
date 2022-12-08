@@ -2,6 +2,7 @@
 WITH first_seen AS (
   SELECT
     client_id,
+    sample_id,
     first_seen_date,
     country AS first_reported_country,
     isp AS first_reported_isp,
@@ -73,7 +74,8 @@ metrics_ping AS (
 ),
 _current AS (
   SELECT
-    first_seen.client_id AS client_id,
+    COALESCE(first_seen.client_id, first_session.client_id, metrics.client_id) AS client_id,
+    first_seen.sample_id AS sample_id,
     first_seen.first_seen_date AS first_seen_date,
     DATE(first_seen.first_run_datetime) AS first_run_date,
     first_seen.first_reported_country AS first_reported_country,
@@ -164,7 +166,7 @@ _current AS (
   USING
     (client_id)
 ),
---existing firefox_android_clients_v1
+--existing clients in firefox_android_clients_v1
 _previous AS (
   SELECT
     *
@@ -179,113 +181,42 @@ SELECT
     COALESCE(_previous.adjust_campaign, _current.adjust_campaign) AS adjust_campaign,
     COALESCE(_previous.adjust_ad_group, _current.adjust_ad_group) AS adjust_ad_group,
     COALESCE(_previous.adjust_creative, _current.adjust_creative) AS adjust_creative,
-    mozfun.norm.get_earliest_value(
-      [
-        (
-          STRUCT(
-            CAST(_previous.adjust_network AS STRING),
-            _previous.metadata.adjust_network__source_ping_datetime
-          )
-        ),
-        (STRUCT(CAST(first_session.adjust_network AS STRING), first_session.first_run_datetime)),
-        (STRUCT(CAST(metrics.adjust_network AS STRING), metrics.min_submission_datetime))
-      ]
-    ).earliest_value AS adjust_network,
-    mozfun.norm.get_earliest_value(
-      [
-        (
-          STRUCT(
-            CAST(_previous.install_source AS STRING),
-            _previous.metadata.install_source__source_ping_datetime
-          )
-        ),
-        (STRUCT(CAST(metrics.install_source AS STRING), metrics.min_submission_datetime))
-      ]
-    ).earliest_value AS install_source,
+    COALESCE(_previous.adjust_network, _current.adjust_network) AS adjust_network,
+    COALESCE(_previous.install_source, _current.install_source) AS install_source,
     STRUCT(
-      CASE
-      WHEN
-        _previous.metadata.reported_first_session_ping
-        OR first_session.client_id IS NOT NULL
-      THEN
-        TRUE
-      ELSE
-        FALSE
-      END
-      AS reported_first_session_ping,
-      CASE
-      WHEN
-        _previous.metadata.reported_metrics_ping
-        OR metrics.client_id IS NOT NULL
-      THEN
-        TRUE
-      ELSE
-        FALSE
-      END
-      AS reported_metrics_ping,
       COALESCE(
-        _previous.first_run_date,
-        DATE(_current.metadata.min_first_session_ping_run_date)
+        _previous.metadata.reported_first_session_ping,
+        _current.metadata.reported_first_session_ping
+      ) AS reported_first_session_ping,
+      COALESCE(
+        _previous.metadata.reported_metrics_ping,
+        _current.metadata.reported_metrics_ping
+      ) AS reported_metrics_ping,
+      COALESCE(
+        _previous.metadata.min_first_session_ping_run_date,
+        _current.metadata.min_first_session_ping_run_date
       ) AS min_first_session_ping_run_date,
-      CASE
-        mozfun.norm.get_earliest_value(
-          [
-            (
-              STRUCT(
-                CAST(_previous.adjust_network AS STRING),
-                _previous.metadata.adjust_network__source_ping_datetime
-              )
-            ),
-            (
-              STRUCT(CAST(first_session.adjust_network AS STRING), first_session.first_run_datetime)
-            ),
-            (STRUCT(CAST(metrics.adjust_network AS STRING), metrics.min_submission_datetime))
-          ]
-        )
-      WHEN
-        STRUCT(first_session.adjust_network, first_session.first_run_datetime)
-      THEN
-        'first_session'
-      WHEN
-        STRUCT(metrics.adjust_network, metrics.min_submission_datetime)
-      THEN
-        'metrics'
-      ELSE
-        _previous.metadata.adjust_network__source_ping
-      END
-      AS adjust_network__source_ping,
+      COALESCE(
+        _previous.metadata.adjust_network__source_ping,
+        _current.metadata.adjust_network__source_ping
+      ) AS adjust_network__source_ping,
       COALESCE(
         _previous.metadata.install_source__source_ping,
         _current.metadata.install_source__source_ping
       ) AS install_source__source_ping,
-      mozfun.norm.get_earliest_value(
-        [
-          (
-            STRUCT(
-              CAST(_previous.adjust_network AS STRING),
-              _previous.metadata.adjust_network__source_ping_datetime
-            )
-          ),
-          (STRUCT(CAST(first_session.adjust_network AS STRING), first_session.first_run_datetime)),
-          (STRUCT(CAST(metrics.adjust_network AS STRING), metrics.min_submission_datetime))
-        ]
-      ).earliest_date AS adjust_network__source_ping_datetime,
-      mozfun.norm.get_earliest_value(
-        [
-          (
-            STRUCT(
-              CAST(_previous.install_source AS STRING),
-              _previous.metadata.install_source__source_ping_datetime
-            )
-          ),
-          (STRUCT(CAST(metrics.install_source AS STRING), metrics.min_submission_datetime))
-        ]
-      ).earliest_date AS install_source__source_ping_datetime
+      COALESCE(
+        _previous.metadata.adjust_network__source_ping_datetime,
+        _current.metadata.adjust_network__source_ping_datetime
+      ) AS adjust_network__source_ping_datetime,
+      COALESCE(
+        _previous.metadata.install_source__source_ping_datetime,
+        _current.metadata.install_source__source_ping_datetime
+      ) AS install_source__source_ping_datetime
     ) AS metadata
   )
 FROM
   _current
-JOIN
+FULL OUTER JOIN
   _previous
 USING
   (client_id)

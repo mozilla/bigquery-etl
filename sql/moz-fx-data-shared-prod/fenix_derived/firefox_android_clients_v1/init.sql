@@ -4,6 +4,9 @@ CREATE OR REPLACE TABLE
     client_id STRING NOT NULL
     OPTIONS
       (description = "Unique ID for the client installation."),
+      sample_id INTEGER NOT NULL
+    OPTIONS
+      (description = "Sample ID to limit query results during an analysis."),
       first_seen_date DATE
     OPTIONS
       (description = "Date when the browser first reported a baseline ping."),
@@ -71,8 +74,8 @@ PARTITION BY
   first_seen_date
 CLUSTER BY
   channel,
+  sample_id,
   first_reported_country,
-  first_reported_isp,
   device_model
 OPTIONS
   (
@@ -84,6 +87,7 @@ INSERT
 WITH first_seen AS (
   SELECT
     client_id,
+    sample_id,
     first_seen_date,
     country AS first_reported_country,
     isp AS first_reported_isp,
@@ -103,26 +107,18 @@ first_session_ping AS (
   SELECT
     client_info.client_id AS client_id,
     MIN(SAFE.PARSE_DATETIME('%F', SUBSTR(client_info.first_run_date, 1, 10))) AS first_run_datetime,
-    ARRAY_AGG(
-      metrics.string.first_session_campaign
-      ORDER BY
-        metrics.datetime.first_session_timestamp ASC
-    )[SAFE_OFFSET(0)] AS adjust_campaign,
-    ARRAY_AGG(
-      metrics.string.first_session_network
-      ORDER BY
-        metrics.datetime.first_session_timestamp ASC
-    )[SAFE_OFFSET(0)] AS adjust_network,
-    ARRAY_AGG(
-      metrics.string.first_session_adgroup
-      ORDER BY
-        metrics.datetime.first_session_timestamp ASC
-    )[SAFE_OFFSET(0)] AS adjust_ad_group,
-    ARRAY_AGG(
-      metrics.string.first_session_creative
-      ORDER BY
-        metrics.datetime.first_session_timestamp ASC
-    )[SAFE_OFFSET(0)] AS adjust_creative
+    ARRAY_AGG(metrics.string.first_session_campaign ORDER BY submission_timestamp ASC)[
+      SAFE_OFFSET(0)
+    ] AS adjust_campaign,
+    ARRAY_AGG(metrics.string.first_session_network ORDER BY submission_timestamp ASC)[
+      SAFE_OFFSET(0)
+    ] AS adjust_network,
+    ARRAY_AGG(metrics.string.first_session_adgroup ORDER BY submission_timestamp ASC)[
+      SAFE_OFFSET(0)
+    ] AS adjust_ad_group,
+    ARRAY_AGG(metrics.string.first_session_creative ORDER BY submission_timestamp ASC)[
+      SAFE_OFFSET(0)
+    ] AS adjust_creative
   FROM
     `mozdata.fenix.first_session`
   WHERE
@@ -155,6 +151,7 @@ metrics_ping AS (
 )
 SELECT
   first_seen.client_id AS client_id,
+  first_seen.sample_id AS sample_id,
   first_seen.first_seen_date AS first_seen_date,
   DATE(first_seen.first_run_datetime) AS first_run_date,
   first_seen.first_reported_country AS first_reported_country,

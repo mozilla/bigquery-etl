@@ -2073,13 +2073,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#adding-a-new-glean-application" class="md-nav__link">
-    Adding a new Glean application
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#publishing-data" class="md-nav__link">
     Publishing data
   </a>
@@ -2385,13 +2378,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#adding-a-new-glean-application" class="md-nav__link">
-    Adding a new Glean application
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#publishing-data" class="md-nav__link">
     Publishing data
   </a>
@@ -2660,12 +2646,6 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-</code></pre>
-<h2 id="adding-a-new-glean-application">Adding a new Glean application</h2>
-<p>To enable the generation of app-specific views and derived datasets for Glean pings, new Glean applications need to be explicitly and manually added to the <a href="https://github.com/mozilla/bigquery-etl/blob/2a2a14d9e1e7444034c93706a464346f29eaae30/sql_generators/glean_usage/__init__.py#L42"><code>ALLOWED_APPS</code> list of the glean_usage generator</a>.</p>
-<p>Queries for new Glean apps need to be generated and deployed manually:</p>
-<pre><code>&gt; ./bqetl glean_usage generate
-&gt; ./bqetl query schema deploy &lt;glean-app-dataset-name&gt;_derived.*
 </code></pre>
 <h2 id="publishing-data">Publishing data</h2>
 <p>See also the reference for <a href="../../reference/public_data/">Public Data</a>.</p>

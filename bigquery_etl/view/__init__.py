@@ -257,10 +257,10 @@ class View:
 
         expected_view_query = CREATE_VIEW_PATTERN.sub(
             "", sqlparse.format(self.content, strip_comments=True), count=1
-        ).strip()
+        ).strip(";" + string.whitespace)
         actual_view_query = sqlparse.format(
             table.view_query, strip_comments=True
-        ).strip()
+        ).strip(";" + string.whitespace)
         if expected_view_query != actual_view_query:
             print(f"view {target_view_id} will change: query does not match")
             return True

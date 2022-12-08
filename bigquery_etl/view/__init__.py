@@ -1,16 +1,23 @@
 """Represents a SQL view."""
 
+import re
 import string
 import time
+from functools import cached_property
 from pathlib import Path
 
 import attr
 import sqlparse
-from google.api_core.exceptions import BadRequest
+from google.api_core.exceptions import BadRequest, NotFound
 from google.cloud import bigquery
 
 from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.metadata.parse_metadata import DATASET_METADATA_FILE, DatasetMetadata
+from bigquery_etl.metadata.parse_metadata import (
+    DATASET_METADATA_FILE,
+    METADATA_FILE,
+    DatasetMetadata,
+    Metadata,
+)
 from bigquery_etl.schema import Schema
 from bigquery_etl.util import extract_from_query_path
 
@@ -57,6 +64,11 @@ NON_USER_FACING_DATASET_SUFFIXES = (
     "glam_etl",
 )
 
+# Regex matching CREATE VIEW statement so it can be removed to get the view query
+CREATE_VIEW_PATTERN = re.compile(
+    r"CREATE\s+OR\s+REPLACE\s+VIEW\s+[^\s]+\s+AS", re.IGNORECASE
+)
+
 
 @attr.s(auto_attribs=True)
 class View:
@@ -93,6 +105,14 @@ class View:
     def is_user_facing(self):
         """Return whether the view is user-facing."""
         return not self.dataset.endswith(NON_USER_FACING_DATASET_SUFFIXES)
+
+    @cached_property
+    def metadata(self):
+        """Return the view metadata."""
+        path = Path(self.path).parent / METADATA_FILE
+        if not path.exists():
+            return None
+        return Metadata.from_file(path)
 
     @classmethod
     def create(cls, project, dataset, name, sql_dir, base_table=None):
@@ -138,11 +158,16 @@ class View:
             return True
         return self._valid_fully_qualified_references() and self._valid_view_naming()
 
-    def _valid_fully_qualified_references(self):
-        """Check that referenced tables and views are fully qualified."""
+    @cached_property
+    def table_references(self):
+        """List of table references in this view."""
         from bigquery_etl.dependency import extract_table_references
 
-        for table in extract_table_references(self.content):
+        return extract_table_references(self.content)
+
+    def _valid_fully_qualified_references(self):
+        """Check that referenced tables and views are fully qualified."""
+        for table in self.table_references:
             if len(table.split(".")) < 3:
                 print(f"{self.path} ERROR\n{table} missing project_id qualifier")
                 return False
@@ -187,6 +212,58 @@ class View:
             return False
         return True
 
+    def target_view_identifier(self, target_project=None):
+        """Return the view identifier after replacing project with target_project.
+
+        Result must be a fully-qualified BigQuery Standard SQL table identifier, which
+        is of the form f"{project_id}.{dataset_id}.{table_id}". dataset_id and table_id
+        may not contain "." or "`". Each component may be a backtick (`) quoted
+        identifier, or the whole thing may be a backtick quoted identifier, but not
+        both. Project IDs must contain 6-63 lowercase letters, digits, or dashes. Some
+        project IDs also include domain name separated by a colon. IDs must start with a
+        letter and may not end with a dash. For more information see also
+        https://github.com/mozilla/bigquery-etl/pull/1427#issuecomment-707376291
+        """
+        if target_project:
+            return self.view_identifier.replace(self.project, target_project, 1)
+        return self.view_identifier
+
+    def has_changes(self, target_project=None):
+        """Determine whether there are any changes that would be published."""
+        client = bigquery.Client()
+        target_view_id = self.target_view_identifier(target_project)
+        try:
+            table = client.get_table(target_view_id)
+        except NotFound:
+            print(f"view {target_view_id} will change: does not exist in BigQuery")
+            return True
+
+        expected_view_query = CREATE_VIEW_PATTERN.sub(
+            "", sqlparse.format(self.content, strip_comments=True), count=1
+        ).strip()
+        actual_view_query = sqlparse.format(
+            table.view_query, strip_comments=True
+        ).strip()
+        if expected_view_query != actual_view_query:
+            print(f"view {target_view_id} will change: query does not match")
+            return True
+
+        # check schema
+        schema_file = Path(self.path).parent / "schema.yaml"
+        if schema_file.is_file():
+            view_schema = Schema.from_schema_file(schema_file)
+            table_schema = Schema.from_json(
+                {"fields": [f.to_api_repr() for f in table.schema]}
+            )
+            if not view_schema.equal(table_schema):
+                print(f"view {target_view_id} will change: schema does not match")
+                return True
+
+        if self.metadata and self.metadata.labels != table.labels:
+            print(f"view {target_view_id} will change: labels do not match")
+            return True
+        return False
+
     def publish(self, target_project=None, dry_run=False):
         """
         Publish this view to BigQuery.
@@ -205,25 +282,13 @@ class View:
         ):
             client = bigquery.Client()
             sql = self.content
-            target_view = self.view_identifier
+            target_view = self.target_view_identifier(target_project)
 
             if target_project:
                 if self.project != "moz-fx-data-shared-prod":
                     print(f"Skipping {self.path} because --target-project is set")
                     return True
 
-                # target_view must be a fully-qualified BigQuery Standard SQL table
-                # identifier, which is of the form f"{project_id}.{dataset_id}.{table_id}".
-                # dataset_id and table_id may not contain "." or "`". Each component may be
-                # a backtick (`) quoted identifier, or the whole thing may be a backtick
-                # quoted identifier, but not both.
-                # Project IDs must contain 6-63 lowercase letters, digits, or dashes. Some
-                # project IDs also include domain name separated by a colon. IDs must start
-                # with a letter and may not end with a dash. For more information see also
-                # https://github.com/mozilla/bigquery-etl/pull/1427#issuecomment-707376291
-                target_view = self.view_identifier.replace(
-                    self.project, target_project, 1
-                )
                 # We only change the first occurrence, which is in the target view name.
                 sql = sql.replace(self.project, target_project, 1)
 
@@ -246,12 +311,24 @@ class View:
                         raise
 
                 try:
-                    view_schema = Schema.from_schema_file(
-                        Path(self.path).parent / "schema.yaml"
-                    )
-                    view_schema.deploy(target_view)
+                    schema_path = Path(self.path).parent / "schema.yaml"
+                    if schema_path.is_file():
+                        view_schema = Schema.from_schema_file(schema_path)
+                        view_schema.deploy(target_view)
                 except Exception as e:
                     print(f"Could not update field descriptions for {target_view}: {e}")
+
+                if self.metadata:
+                    table = client.get_table(self.view_identifier)
+                    if table.labels != self.metadata.labels:
+                        labels = self.metadata.labels.copy()
+                        for key in table.labels:
+                            if key not in labels:
+                                # To delete a label its value must be set to None
+                                labels[key] = None
+                        table.labels = labels
+                        client.update_table(table, ["labels"])
+
                 print(f"Published view {target_view}")
         else:
             print(f"Error publishing {self.path}. Invalid view definition.")

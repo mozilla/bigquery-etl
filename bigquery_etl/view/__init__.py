@@ -321,10 +321,10 @@ class View:
                         raise
 
                 try:
-                    view_schema = Schema.from_schema_file(
-                        Path(self.path).parent / "schema.yaml"
-                    )
-                    view_schema.deploy(target_view)
+                    schema_path = Path(self.path).parent / "schema.yaml"
+                    if schema_path.is_file():
+                        view_schema = Schema.from_schema_file(schema_path)
+                        view_schema.deploy(target_view)
                 except Exception as e:
                     print(f"Could not update field descriptions for {target_view}: {e}")
 

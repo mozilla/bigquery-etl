@@ -25,22 +25,22 @@ first_session_ping AS (
     ARRAY_AGG(
       metrics.string.first_session_campaign
       ORDER BY
-        metrics.datetime.first_session_timestamp ASC
+        submission_timestamp ASC
     )[SAFE_OFFSET(0)] AS adjust_campaign,
     ARRAY_AGG(
       metrics.string.first_session_network
       ORDER BY
-        metrics.datetime.first_session_timestamp ASC
+        submission_timestamp ASC
     )[SAFE_OFFSET(0)] AS adjust_network,
     ARRAY_AGG(
       metrics.string.first_session_adgroup
       ORDER BY
-        metrics.datetime.first_session_timestamp ASC
+        submission_timestamp ASC
     )[SAFE_OFFSET(0)] AS adjust_ad_group,
     ARRAY_AGG(
       metrics.string.first_session_creative
       ORDER BY
-        metrics.datetime.first_session_timestamp ASC
+        submission_timestamp ASC
     )[SAFE_OFFSET(0)] AS adjust_creative
   FROM
     `mozdata.fenix.first_session`

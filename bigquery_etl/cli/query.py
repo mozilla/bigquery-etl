@@ -1569,17 +1569,17 @@ def deploy(
             name, ctx.obj["TMP_DIR"], project_id, ["query.*"]
         )
 
-    for query_file in query_files:
+    def _deploy_from_query_file(query_file):
         if respect_dryrun_skip and str(query_file) in SKIP:
             click.echo(f"{query_file} dry runs are skipped. Cannot validate schemas.")
-            continue
+            return
 
         query_file_path = Path(query_file)
         existing_schema_path = query_file_path.parent / SCHEMA_FILE
 
         if not existing_schema_path.is_file():
             click.echo(f"No schema file found for {query_file}")
-            continue
+            return
 
         table_name = query_file_path.parent.name
         dataset_name = query_file_path.parent.parent.name
@@ -1634,6 +1634,9 @@ def deploy(
             )
             click.echo(f"Schema (and metadata) updated for {full_table_id}.")
 
+    with ThreadPool(1) as pool:
+        pool.map(_deploy_from_query_file, query_files)
+
     _deploy_external_data(name, sql_dir, project_id, skip_existing)
 
 
@@ -1676,18 +1679,19 @@ def _deploy_external_data(
         name, sql_dir, project_id, ["metadata.yaml"]
     )
     client = bigquery.Client()
-    for metadata_file_path in metadata_files:
+
+    def _deploy_external_data_from_metadata_file(metadata_file_path):
         metadata = Metadata.from_file(metadata_file_path)
         if not metadata.external_data:
             # skip all tables that are not created from external data
-            continue
+            return
 
         existing_schema_path = metadata_file_path.parent / SCHEMA_FILE
 
         if not existing_schema_path.is_file():
             # tables created from external data must specify a schema
             click.echo(f"No schema file found for {metadata_file_path}")
-            continue
+            return
 
         table_name = metadata_file_path.parent.name
         dataset_name = metadata_file_path.parent.parent.name
@@ -1736,6 +1740,9 @@ def _deploy_external_data(
                 ],
             )
             click.echo(f"Schema (and metadata) updated for {full_table_id}.")
+
+    with ThreadPool(8) as pool:
+        pool.map(_deploy_external_data_from_metadata_file, metadata_files)
 
 
 def _validate_schema_from_path(

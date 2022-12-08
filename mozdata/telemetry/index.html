@@ -1712,8 +1712,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#client_probe_counts_v1" class="md-nav__link">
-    client_probe_counts_v1
+  <a href="#client_probe_counts" class="md-nav__link">
+    client_probe_counts
   </a>
   
 </li>
@@ -1733,15 +1733,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#clients_daily_histogram_aggregates_v1" class="md-nav__link">
-    clients_daily_histogram_aggregates_v1
+  <a href="#clients_daily_histogram_aggregates" class="md-nav__link">
+    clients_daily_histogram_aggregates
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#clients_daily_scalar_aggregates_v1" class="md-nav__link">
-    clients_daily_scalar_aggregates_v1
+  <a href="#clients_daily_scalar_aggregates" class="md-nav__link">
+    clients_daily_scalar_aggregates
   </a>
   
 </li>
@@ -1761,8 +1761,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#clients_histogram_aggregates_v1" class="md-nav__link">
-    clients_histogram_aggregates_v1
+  <a href="#clients_histogram_aggregates" class="md-nav__link">
+    clients_histogram_aggregates
   </a>
   
 </li>
@@ -1789,8 +1789,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#clients_scalar_aggregates_v1" class="md-nav__link">
-    clients_scalar_aggregates_v1
+  <a href="#clients_scalar_aggregates" class="md-nav__link">
+    clients_scalar_aggregates
   </a>
   
 </li>
@@ -3699,8 +3699,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#client_probe_counts_v1" class="md-nav__link">
-    client_probe_counts_v1
+  <a href="#client_probe_counts" class="md-nav__link">
+    client_probe_counts
   </a>
   
 </li>
@@ -3720,15 +3720,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#clients_daily_histogram_aggregates_v1" class="md-nav__link">
-    clients_daily_histogram_aggregates_v1
+  <a href="#clients_daily_histogram_aggregates" class="md-nav__link">
+    clients_daily_histogram_aggregates
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#clients_daily_scalar_aggregates_v1" class="md-nav__link">
-    clients_daily_scalar_aggregates_v1
+  <a href="#clients_daily_scalar_aggregates" class="md-nav__link">
+    clients_daily_scalar_aggregates
   </a>
   
 </li>
@@ -3748,8 +3748,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#clients_histogram_aggregates_v1" class="md-nav__link">
-    clients_histogram_aggregates_v1
+  <a href="#clients_histogram_aggregates" class="md-nav__link">
+    clients_histogram_aggregates
   </a>
   
 </li>
@@ -3776,8 +3776,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#clients_scalar_aggregates_v1" class="md-nav__link">
-    clients_scalar_aggregates_v1
+  <a href="#clients_scalar_aggregates" class="md-nav__link">
+    clients_scalar_aggregates
   </a>
   
 </li>
@@ -6700,8 +6700,94 @@ and to contain only one row per distinct <code>document_id</code> within a given
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/certificate_checker">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/certificate_checker/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/certificate_checker/metadata.yaml">Metadata File</a> </p>
 <hr />
-<h2 id="client_probe_counts_v1"><a href="#client_probe_counts_v1">client_probe_counts_v1</a></h2>
-<p><code>telemetry.client_probe_counts_v1</code></p>
+<h2 id="client_probe_counts"><a href="#client_probe_counts">client_probe_counts</a></h2>
+<p><code>telemetry.client_probe_counts</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>os</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>app_version</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>app_build_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>channel</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metric</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metric_type</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>key</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>process</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_bucket</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>last_bucket</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>num_buckets</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_agg_type</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>agg_type</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>total_users</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>aggregates</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr>
+</table>
+
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -6728,7 +6814,7 @@ and to contain only one row per distinct <code>document_id</code> within a given
         </tr>
 </table>
 
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/client_probe_counts_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/client_probe_counts_v1/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/client_probe_counts_v1/metadata.yaml">Metadata File</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/client_probe_counts">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/client_probe_counts/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/client_probe_counts/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="client_probe_processes"><a href="#client_probe_processes">client_probe_processes</a></h2>
 <p><code>telemetry.client_probe_processes</code></p>
@@ -6800,8 +6886,8 @@ desktop client.</p>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_daily/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_daily/metadata.yaml">Metadata File</a> </p>
 <hr />
-<h2 id="clients_daily_histogram_aggregates_v1"><a href="#clients_daily_histogram_aggregates_v1">clients_daily_histogram_aggregates_v1</a></h2>
-<p><code>telemetry.clients_daily_histogram_aggregates_v1</code></p>
+<h2 id="clients_daily_histogram_aggregates"><a href="#clients_daily_histogram_aggregates">clients_daily_histogram_aggregates</a></h2>
+<p><code>telemetry.clients_daily_histogram_aggregates</code></p>
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -6816,10 +6902,10 @@ desktop client.</p>
         </tr>
 </table>
 
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_daily_histogram_aggregates_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_daily_histogram_aggregates_v1/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_daily_histogram_aggregates_v1/metadata.yaml">Metadata File</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_daily_histogram_aggregates">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_daily_histogram_aggregates/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_daily_histogram_aggregates/metadata.yaml">Metadata File</a> </p>
 <hr />
-<h2 id="clients_daily_scalar_aggregates_v1"><a href="#clients_daily_scalar_aggregates_v1">clients_daily_scalar_aggregates_v1</a></h2>
-<p><code>telemetry.clients_daily_scalar_aggregates_v1</code></p>
+<h2 id="clients_daily_scalar_aggregates"><a href="#clients_daily_scalar_aggregates">clients_daily_scalar_aggregates</a></h2>
+<p><code>telemetry.clients_daily_scalar_aggregates</code></p>
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -6834,7 +6920,7 @@ desktop client.</p>
         </tr>
 </table>
 
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_daily_scalar_aggregates_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_daily_scalar_aggregates_v1/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_daily_scalar_aggregates_v1/metadata.yaml">Metadata File</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_daily_scalar_aggregates">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_daily_scalar_aggregates/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_daily_scalar_aggregates/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="clients_daily_v6"><a href="#clients_daily_v6">clients_daily_v6</a></h2>
 <p><code>telemetry.clients_daily_v6</code></p>
@@ -10456,8 +10542,8 @@ directly only when you're investigating client activation questions.</p>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_first_seen">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_first_seen/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_first_seen/metadata.yaml">Metadata File</a> </p>
 <hr />
-<h2 id="clients_histogram_aggregates_v1"><a href="#clients_histogram_aggregates_v1">clients_histogram_aggregates_v1</a></h2>
-<p><code>telemetry.clients_histogram_aggregates_v1</code></p>
+<h2 id="clients_histogram_aggregates"><a href="#clients_histogram_aggregates">clients_histogram_aggregates</a></h2>
+<p><code>telemetry.clients_histogram_aggregates</code></p>
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -10472,7 +10558,7 @@ directly only when you're investigating client activation questions.</p>
         </tr>
 </table>
 
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_histogram_aggregates_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_histogram_aggregates_v1/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_histogram_aggregates_v1/metadata.yaml">Metadata File</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_histogram_aggregates">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_histogram_aggregates/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_histogram_aggregates/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="clients_last_seen"><a href="#clients_last_seen">clients_last_seen</a></h2>
 <p><strong>Clients Last Seen</strong></p>
@@ -12494,8 +12580,8 @@ article on docs.telemetry.mozilla.org for more detailed notes on usage.</p>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_probe_processes">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_probe_processes/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_probe_processes/metadata.yaml">Metadata File</a> </p>
 <hr />
-<h2 id="clients_scalar_aggregates_v1"><a href="#clients_scalar_aggregates_v1">clients_scalar_aggregates_v1</a></h2>
-<p><code>telemetry.clients_scalar_aggregates_v1</code></p>
+<h2 id="clients_scalar_aggregates"><a href="#clients_scalar_aggregates">clients_scalar_aggregates</a></h2>
+<p><code>telemetry.clients_scalar_aggregates</code></p>
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -12510,7 +12596,7 @@ article on docs.telemetry.mozilla.org for more detailed notes on usage.</p>
         </tr>
 </table>
 
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_scalar_aggregates_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_scalar_aggregates_v1/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_scalar_aggregates_v1/metadata.yaml">Metadata File</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_scalar_aggregates">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_scalar_aggregates/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/clients_scalar_aggregates/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="cohort_daily_statistics"><a href="#cohort_daily_statistics">cohort_daily_statistics</a></h2>
 <p><code>telemetry.cohort_daily_statistics</code></p>

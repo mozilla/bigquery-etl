@@ -157,11 +157,11 @@ _current AS (
     ) AS metadata
   FROM
     first_seen
-  LEFT JOIN
+  FULL OUTER JOIN
     first_session_ping first_session
   USING
     (client_id)
-  LEFT JOIN
+  FULL OUTER JOIN
     metrics_ping AS metrics
   USING
     (client_id)

@@ -34,7 +34,7 @@ GLEAN_TABLES = [
 # for
 # * regrets_reporter currently refers to two applications, skip the glean
 # one to avoid confusion: https://github.com/mozilla/bigquery-etl/issues/2499
-SKIP_APPS = ["mlhackweek_search", "regrets_reporter"]
+SKIP_APPS = ["mlhackweek_search", "regrets_reporter", "regrets_reporter_ucs"]
 
 @click.command()
 @click.option(
@@ -108,7 +108,7 @@ def generate(target_project, output_dir, parallelism, exclude, only, app_name):
     if app_name:
         app_info = {name: info for name, info in app_info.items() if name == app_name}
 
-    app_info = [info for name, info in app_info.items()]
+    app_info = [info for name, info in app_info.items() if name not in SKIP_APPS]
 
     # Prepare parameters so that generation of all Glean datasets can be done in parallel
 

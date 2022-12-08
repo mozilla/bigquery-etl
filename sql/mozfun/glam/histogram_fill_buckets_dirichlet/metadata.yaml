@@ -9,16 +9,16 @@ description: |
   k2:p2, ..., kK: pN} where the p's are proportions(and p1, p2, ... sum to 1)
   and Kis the number of buckets.
 
-  This is then the client's estimated density, and every client has been 
-  reduced to one row (i.e the client's histograms are reduced to this single 
+  This is then the client's estimated density, and every client has been
+  reduced to one row (i.e the client's histograms are reduced to this single
   one and normalized).
 
   Then add all of these across clients to get {k1: P1, k2:P2, ..., kK: PK}
   where P1 = sum(p1 across N clients) and P2 = sum(p2 across N clients).
 
-  Calculate the total number of buckets K, as well as the total number of 
+  Calculate the total number of buckets K, as well as the total number of
   profiles `N reporting`
-  
+
   Then our estimate for final density is:
   [{k1: ((P1 + 1/K) / (nreporting+1)), k2: ((P2 + 1/K) /(nreporting+1)), ... }
 friendly_name: Histogram fill buckets dirichlet

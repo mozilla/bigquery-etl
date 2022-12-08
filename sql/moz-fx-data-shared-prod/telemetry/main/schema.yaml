@@ -20167,6 +20167,22 @@ fields:
       mode: NULLABLE
       name: use_counter2_css_property_container_type_page
       type: STRING
+    - description: Whether a document used SVGFarthestViewportElement
+      mode: NULLABLE
+      name: use_counter2_deprecated_svg_farthest_viewport_element_document
+      type: STRING
+    - description: Whether a page used SVGFarthestViewportElement
+      mode: NULLABLE
+      name: use_counter2_deprecated_svg_farthest_viewport_element_page
+      type: STRING
+    - description: Whether a document used SVGNearestViewportElement
+      mode: NULLABLE
+      name: use_counter2_deprecated_svg_nearest_viewport_element_document
+      type: STRING
+    - description: Whether a page used SVGNearestViewportElement
+      mode: NULLABLE
+      name: use_counter2_deprecated_svg_nearest_viewport_element_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -41625,6 +41641,22 @@ fields:
         - description: Whether a page used the CSS property container-type
           mode: NULLABLE
           name: use_counter2_css_property_container_type_page
+          type: STRING
+        - description: Whether a document used SVGFarthestViewportElement
+          mode: NULLABLE
+          name: use_counter2_deprecated_svg_farthest_viewport_element_document
+          type: STRING
+        - description: Whether a page used SVGFarthestViewportElement
+          mode: NULLABLE
+          name: use_counter2_deprecated_svg_farthest_viewport_element_page
+          type: STRING
+        - description: Whether a document used SVGNearestViewportElement
+          mode: NULLABLE
+          name: use_counter2_deprecated_svg_nearest_viewport_element_document
+          type: STRING
+        - description: Whether a page used SVGNearestViewportElement
+          mode: NULLABLE
+          name: use_counter2_deprecated_svg_nearest_viewport_element_page
           type: STRING
         mode: NULLABLE
         name: histograms

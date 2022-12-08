@@ -1019,6 +1019,39 @@ fields:
       mode: REPEATED
       name: ipc_sent_messages_parent_inactive
       type: RECORD
+    - description: 'Counts the number of hit/miss of cookie banner rule lookups for
+        domain. We collect three types of counters, including counters for overall
+        rule lookup, counters for cookie rule lookup and counters for click rule lookup.
+        We also divide the counter by top-level loads and iframe loads. For each domain,
+        we will only collect once.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: cookie_banners_rule_lookup_by_domain
+      type: RECORD
+    - description: 'Counts the number of hit/miss of cookie banner rule lookups for
+        every load. We collect three types of counters, including counters for overall
+        rule lookup, counters for cookie rule lookup and counters for click rule lookup.
+        We also divide the counter by top-level loads and iframe loads.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: cookie_banners_rule_lookup_by_load
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

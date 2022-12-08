@@ -10,7 +10,9 @@ fields:
   name: flow_id
   type: STRING
   description: |
-    The flow identifier. A randomly-generated opaque id.
+    The flow associated with the session.
+    The flow identifier is a hash value representing
+    a registration and login sessions.
 
 - mode: NULLABLE
   name: event_type
@@ -21,7 +23,9 @@ fields:
 - mode: NULLABLE
   name: user_id
   type: STRING
-  description:
+  description: |
+    36-char long hash randomly assigned when the account
+    is created.
 
 - mode: NULLABLE
   name: service
@@ -29,31 +33,34 @@ fields:
   description: |
     The service identifier. For Sync it may be empty or sync.
     For OAuth reliers it is their hex client id.
-
+    Example: sync
 - mode: NULLABLE
-
 
   name: device_id
   type: STRING
   description: |
-    The most granual field.
+    The most granular field.
     The id of the device record.
     This does correlate back to a record the FxA user db.
 
 - mode: NULLABLE
   name: os_name
   type: STRING
-  description:
+  description: |
+    Name of the operating system the device was using.
+    E.g. Android
 
 - mode: NULLABLE
   name: country
   type: STRING
-  description:
+  description: |
+    2 char string representing the country where the device was located.
 
 - mode: NULLABLE
   name: language
   type: STRING
-  description:
+  description: |
+    Language settings used by the device.
 
 - mode: NULLABLE
   name: ua_version

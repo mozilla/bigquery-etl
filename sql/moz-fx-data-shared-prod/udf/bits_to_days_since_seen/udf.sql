@@ -5,7 +5,7 @@ last seen.
 If no bits are set, returns NULL, indicating we don't know.
 Otherwise the results are 0-indexed, meaning \x01 will return 0.
 
-Tests showed this being 5-10x faster than the simpler alternative:
+Tests showed this being 100-300x faster than the simpler alternative:
 CREATE OR REPLACE FUNCTION
   udf.bits_to_days_since_seen(b BYTES) AS ((
     SELECT MIN(n)
@@ -15,21 +15,10 @@ CREATE OR REPLACE FUNCTION
 See also: bits_to_days_since_first_seen.sql
 */
 CREATE OR REPLACE FUNCTION udf.bits_to_days_since_seen(b BYTES) AS (
-  (
-    WITH trailing AS (
-      -- Extract the first set byte with the trailing zeroes
-      -- LTRIM forces NULL for bytes with no set bits
-      SELECT
-        REGEXP_EXTRACT(LTRIM(b, b'\x00'), CAST('(.\x00*$)' AS BYTES)) AS tail
-    )
-    SELECT
-      -- Sum all trailing zeroes
-      (8 * (BYTE_LENGTH(tail) - 1))
-      -- Add the loc of the last set bit
-      + udf.pos_of_trailing_set_bit(TO_CODE_POINTS(SUBSTR(tail, 1, 1))[OFFSET(0)])
-    FROM
-      trailing
-  )
+   -- Number of trailing zero bytes
+  (8 * (BYTE_LENGTH(b) - BYTE_LENGTH(RTRIM(b, b'\x00'))))
+  -- Plus the index of the last set bit in the last set byte
+  + udf.pos_of_trailing_set_bit(TO_CODE_POINTS(b)[SAFE_ORDINAL(BYTE_LENGTH(RTRIM(b, b'\x00')))])
 );
 
 -- Tests
@@ -39,4 +28,36 @@ SELECT
   assert.equals(8, udf.bits_to_days_since_seen(b'\x01\x00')),
   assert.equals(NULL, udf.bits_to_days_since_seen(b'\x00\x00')),
   assert.equals(0, udf.bits_to_days_since_seen(b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03')),
-  assert.equals(76, udf.bits_to_days_since_seen(b'\xF0\x00\x00\x00\x00\x00\x00\x00\x00\x00'));
+  assert.equals(76, udf.bits_to_days_since_seen(b'\xF0\x00\x00\x00\x00\x00\x00\x00\x00\x00')),
+  assert.equals(
+    1,
+    udf.bits_to_days_since_seen(
+      FROM_HEX(
+        "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a"
+      )
+    )
+  ),
+  assert.equals(
+    9,
+    udf.bits_to_days_since_seen(
+      FROM_HEX(
+        "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a00"
+      )
+    )
+  ),
+  assert.equals(
+    17,
+    udf.bits_to_days_since_seen(
+      FROM_HEX(
+        "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a0000"
+      )
+    )
+  ),
+  assert.equals(
+    233,
+    udf.bits_to_days_since_seen(
+      FROM_HEX(
+        "000000000000000000000000000045100a0000000000000000000000000000000000000000000000000000000000"
+      )
+    )
+  ),

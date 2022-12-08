@@ -343,6 +343,22 @@ bqetl_org_mozilla_fenix_derived:
   tags:
     - impact/tier_1
 
+bqetl_org_mozilla_firefox_derived:
+  schedule_interval: 0 2 * * *
+  default_args:
+    depends_on_past: false
+    email:
+      - frank@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    owner: frank@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: "2022-11-30"
+  tags:
+    - impact/tier_1
+
 bqetl_google_analytics_derived:
   schedule_interval: 0 23 * * *
   description: |
@@ -856,4 +872,23 @@ bqetl_sponsored_tiles_clients_daily:
   schedule_interval: 0 4 * * *
   tags:
     - impact/tier_3
+    - repo/bigquery-etl
+
+bqetl_mobile_activation:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - vsabino@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: vsabino@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2021-01-01'
+  description: Queries related to the mobile activation metric used by Marketing
+  schedule_interval: daily
+  tags:
+    - impact/tier_1
     - repo/bigquery-etl

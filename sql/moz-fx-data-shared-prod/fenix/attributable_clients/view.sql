@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  fenix_derived.attributable_clients_v1
+  `moz-fx-data-shared-prod.fenix_derived.attributable_clients_v1`

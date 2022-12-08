@@ -33,7 +33,7 @@ WITH _current AS (
   --
 _previous AS (
   SELECT
-    * EXCEPT (submission_date)
+    * EXCEPT(submission_date)
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_devices_last_seen_v1`
   WHERE

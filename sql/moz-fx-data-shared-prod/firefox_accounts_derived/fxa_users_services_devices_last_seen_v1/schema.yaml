@@ -3,7 +3,6 @@ fields:
   name: submission_date
   type: DATE
   description: |
-    Timestamp when the event was recorded.
     Used for partitioning in BigQuery and
     represents the date partition processed
     by BQETL.

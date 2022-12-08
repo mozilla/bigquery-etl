@@ -4,16 +4,21 @@ description: |
 
   See: https://docs.google.com/document/d/1ipy1oFIKDvHr3R6Ku0goRjS11R1ZH1z2gygOGkSdqUg
 
+  To use this, you must first:
   Aggregate the histograms to the client level, to get a histogram {k1: p1,
-  k2:p2} where the p's are proportions(and p1, p2 sum to 1). This is then the
-  client's estimated density. So every client is reduced to one row (i.e the
-  client's histograms are reduced to this single density). How can we create a
-  final estimator for the histogram density?
+  k2:p2, ..., kK: pN} where the p's are proportions(and p1, p2, ... sum to 1)
+  and Kis the number of buckets.
 
-  For every client, compute the density i.e. {k1:p1, k2:p2 }. Add all of these
-  across clients to get {k1: P1, k2:P2} where P1 = sum(p1 across clients) and P2
-  = sum(p2 across clients). We also compute the number of buckets K (in this
-  example K=2) We also compute total number of profiles `nreporting`. Then our
-  estimate for final density is {k1: (P1+1/K) / (nreporting+1), k2:(P2+1/K) /
-  (nreporting+1)}
+  This is then the client's estimated density, and every client has been 
+  reduced to one row (i.e the client's histograms are reduced to this single 
+  one and normalized).
+
+  Then add all of these across clients to get {k1: P1, k2:P2, ..., kK: PK}
+  where P1 = sum(p1 across N clients) and P2 = sum(p2 across N clients).
+
+  Calculate the total number of buckets K, as well as the total number of 
+  profiles `N reporting`
+  
+  Then our estimate for final density is:
+  [{k1: ((P1 + 1/K) / (nreporting+1)), k2: ((P2 + 1/K) /(nreporting+1)), ... }
 friendly_name: Histogram fill buckets dirichlet

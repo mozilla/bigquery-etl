@@ -82,7 +82,8 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_update/view.sql",
+    *glob.glob("sql/moz-fx-data-shared-prod/regrets_reporter/**/view.sql", recursive=True),  # noqa E501
+    *glob.glob("sql/moz-fx-data-shared-prod/regrets_reporter_ucs/**/view.sql", recursive=True),  # noqa E501
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_v1/query.sql",
     "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_structured/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_stub_installer/view.sql",  # noqa E501

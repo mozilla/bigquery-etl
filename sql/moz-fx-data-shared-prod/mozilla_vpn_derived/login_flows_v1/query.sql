@@ -1,6 +1,6 @@
 WITH base AS (
   SELECT
-    flow_id,
+    JSON_VALUE(user_properties, "$.flow_id") AS flow_id,
     MIN(`timestamp`) AS flow_started,
     MIN(
       IF(event_type IN ("fxa_login - complete", "fxa_reg - complete"), `timestamp`, NULL)
@@ -25,7 +25,7 @@ WITH base AS (
   SELECT
     *
   FROM
-    login_flows_v1
+    `mozilla_vpn_derived.login_flows_v1`
 )
 SELECT
   flow_id,

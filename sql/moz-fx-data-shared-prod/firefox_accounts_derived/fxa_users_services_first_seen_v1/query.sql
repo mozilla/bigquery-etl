@@ -1,6 +1,8 @@
 WITH fxa_content_auth_oauth AS (
   SELECT
-    *
+    *,
+    JSON_VALUE(user_properties, "$.flow_id") AS flow_id,
+    JSON_VALUE(user_properties, "$.entrypoint") AS entrypoint,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
@@ -114,7 +116,7 @@ flows AS (
   FROM
     first_services_g s
   INNER JOIN
-    fxa_content_auth_oauth
+    fxa_content_auth_oauth AS f
   ON
     s.first_service_flow = f.flow_id
   WHERE

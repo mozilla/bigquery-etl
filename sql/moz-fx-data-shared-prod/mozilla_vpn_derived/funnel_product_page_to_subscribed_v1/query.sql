@@ -22,6 +22,20 @@ events AS (
   SELECT
     *,
     DATE(`timestamp`) AS partition_date,
+    JSON_VALUE(user_properties, "$.flow_id") AS flow_id,
+    JSON_VALUE(user_properties, "$.entrypoint") AS entrypoint,
+    JSON_VALUE(user_properties, "$.entrypoint_experiment") AS entrypoint_experiment,
+    JSON_VALUE(user_properties, "$.entrypoint_variation") AS entrypoint_variation,
+    JSON_VALUE(user_properties, "$.utm_term") AS utm_term,
+    JSON_VALUE(user_properties, "$.utm_source") AS utm_source,
+    JSON_VALUE(user_properties, "$.utm_medium") AS utm_medium,
+    JSON_VALUE(user_properties, "$.utm_campaign") AS utm_campaign,
+    JSON_VALUE(user_properties, "$.utm_content") AS utm_content,
+    JSON_VALUE(user_properties, "$.ua_version") AS ua_version,
+    JSON_VALUE(user_properties, "$.ua_browser") AS ua_browser,
+    JSON_VALUE(event_properties, "$.plan_id") AS plan_id,
+    JSON_VALUE(event_properties, "$.promotionCode") AS promotion_code,
+    JSON_VALUE(event_properties, "$.oauth_client_id") AS oauth_client_id,
   FROM
     `mozdata.firefox_accounts.fxa_all_events`
   WHERE

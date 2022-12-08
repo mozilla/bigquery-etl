@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  fxa_users_services_first_seen_v1
+  `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_first_seen_v1`
 PARTITION BY
   DATE(first_service_timestamp)
 CLUSTER BY
@@ -8,7 +8,9 @@ CLUSTER BY
 AS
 WITH fxa_content_auth_oauth AS (
   SELECT
-    *
+    *,
+    JSON_VALUE(user_properties, "$.flow_id") AS flow_id,
+    JSON_VALUE(user_properties, "$.entrypoint") AS entrypoint,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE

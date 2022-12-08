@@ -3,17 +3,17 @@ WITH fxa_content_auth_stdout_events AS (
     DATE(`timestamp`) AS partition_date,
     `timestamp`,
     service,
-    oauth_client_id,
     event_type,
-    flow_id,
     user_id,
-    entrypoint_experiment,
-    entrypoint_variation,
-    utm_campaign,
-    utm_content,
-    utm_medium,
-    utm_source,
-    utm_term,
+    JSON_VALUE(event_properties, "$.oauth_client_id") AS oauth_client_id,
+    JSON_VALUE(user_properties, "$.flow_id") AS flow_id,
+    JSON_VALUE(user_properties, "$.entrypoint_experiment") AS entrypoint_experiment,
+    JSON_VALUE(user_properties, "$.entrypoint_variation") AS entrypoint_variation,
+    JSON_VALUE(user_properties, "$.utm_term") AS utm_term,
+    JSON_VALUE(user_properties, "$.utm_source") AS utm_source,
+    JSON_VALUE(user_properties, "$.utm_medium") AS utm_medium,
+    JSON_VALUE(user_properties, "$.utm_campaign") AS utm_campaign,
+    JSON_VALUE(user_properties, "$.utm_content") AS utm_content,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
@@ -51,10 +51,9 @@ flows AS (
         1
     )[SAFE_OFFSET(0)] AS attribution,
   FROM
-    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
+    fxa_content_auth_stdout_events
   WHERE
     IF(@date IS NULL, partition_date < CURRENT_DATE, partition_date = @date)
-    AND event_category IN ('fxa_content_event', 'fxa_auth_event', 'fxa_stdout_event')
     AND flow_id IS NOT NULL
     AND (
       -- Service attribution was implemented for VPN FxA links on 2021-12-08, so past that date we
@@ -83,7 +82,7 @@ flows AS (
   SELECT
     *
   FROM
-    fxa_attribution_v1
+    `mozilla_vpn_derived.fxa_attribution_v1`
 )
 SELECT
   flow_id,

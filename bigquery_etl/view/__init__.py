@@ -296,7 +296,7 @@ class View:
             query_job = client.query(sql, job_config)
 
             if dry_run:
-                print(f"Validated definition of {self.view_identifier} in {self.path}")
+                print(f"Validated definition of {target_view} in {self.path}")
             else:
                 try:
                     query_job.result()
@@ -319,7 +319,7 @@ class View:
                     print(f"Could not update field descriptions for {target_view}: {e}")
 
                 if self.metadata:
-                    table = client.get_table(self.view_identifier)
+                    table = client.get_table(target_view)
                     if table.labels != self.metadata.labels:
                         labels = self.metadata.labels.copy()
                         for key in table.labels:

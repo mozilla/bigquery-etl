@@ -1482,7 +1482,11 @@ def _update_query_schema(
         pass
 
     table_schema = Schema.for_table(
-        project_name, dataset_name, table_name, partitioned_by
+        project_name,
+        dataset_name,
+        table_name,
+        partitioned_by,
+        use_cloud_function=use_cloud_function,
     )
 
     changed = True

@@ -20192,6 +20192,10 @@ fields:
       mode: NULLABLE
       name: use_counter2_deprecated_svg_nearest_viewport_element_page
       type: STRING
+    - description: The usage of a early hint preload request
+      mode: NULLABLE
+      name: eh_state_of_preload_request
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -43993,6 +43997,19 @@ fields:
             type: STRING
           mode: REPEATED
           name: dns_perf_first_contentful_paint_ms
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: The time from a top-level document's HTTP channel open to
+              the first byte of the reply is received (ms). Keyed by TRR domain for
+              DoH or 'Native' otherwise
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: dns_perf_first_byte_ms
           type: RECORD
         mode: NULLABLE
         name: keyed_histograms

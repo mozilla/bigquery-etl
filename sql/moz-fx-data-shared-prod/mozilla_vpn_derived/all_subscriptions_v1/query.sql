@@ -494,14 +494,7 @@ SELECT
     ELSE
       "Payment Failed"
     END
-    AS ended_reason,
-    CASE 
-    WHEN subscription_start_reason = "Plan Change"
-    THEN original_subscription_id
-    ELSE 
-      NULL
-    END
-    AS original_subscription_id
+    AS ended_reason
   ),
   mozfun.norm.vpn_attribution(
     utm_campaign => utm_campaign,

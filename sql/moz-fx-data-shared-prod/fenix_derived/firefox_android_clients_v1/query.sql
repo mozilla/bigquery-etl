@@ -4,6 +4,7 @@ WITH first_seen AS (
     client_id,
     sample_id,
     first_seen_date,
+    submission_date,
     country AS first_reported_country,
     isp AS first_reported_isp,
     DATETIME(first_run_date) AS first_run_datetime,
@@ -35,7 +36,7 @@ first_session_ping AS (
       SAFE_OFFSET(0)
     ] AS adjust_creative
   FROM
-    `mozdata.fenix.first_session`
+    `mozdata.fenix.first_session` AS fenix_first_session
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND SAFE.PARSE_DATE('%F', SUBSTR(client_info.first_run_date, 1, 10)) >= DATE(
@@ -61,6 +62,7 @@ metrics_ping AS (
     org_mozilla_firefox.metrics AS org_mozilla_firefox_metrics
   WHERE
     DATE(submission_timestamp) = @submission_date
+    AND ping_info.seq = 0
   GROUP BY
     client_id
 ),
@@ -69,6 +71,7 @@ _current AS (
     COALESCE(first_seen.client_id, first_session.client_id, metrics.client_id) AS client_id,
     first_seen.sample_id AS sample_id,
     first_seen.first_seen_date AS first_seen_date,
+    first_seen.submission_date AS submission_date,
     DATE(first_seen.first_run_datetime) AS first_run_date,
     first_seen.first_reported_country AS first_reported_country,
     first_seen.first_reported_isp AS first_reported_isp,

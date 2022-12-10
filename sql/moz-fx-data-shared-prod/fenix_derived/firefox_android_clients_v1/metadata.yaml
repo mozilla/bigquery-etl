@@ -8,6 +8,13 @@ description: |-
   This table should be accessed through the user-facing view
   `fenix.firefox_android_clients`.
 
+  For analysis purposes, use first_seen_date to query clients that
+  effectively appeared on that date. The submission_date indicates
+  when the server received the data.
+
+  The query for this table overwrites the whole table instead of writing to
+  a single partition, so manual backfills must use parameter --no_partition.
+
   Proposal:
   https://docs.google.com/document/d/12bj4DhCybelqHVgOVq8KJlzgtbbUw3f68palNrv-gaM/.
 
@@ -16,20 +23,28 @@ description: |-
 owners:
 - lvargas@mozilla.com
 labels:
-  incremental: true
   application: firefox_android
+  incremental: true
   schedule: daily
 scheduling:
   dag_name: bqetl_analytics_tables
   task_name: firefox_android_clients
+  depends_on_past: true
+  referenced_tables:
+  - - 'moz-fx-data-shared-prod'
+    - 'org_mozilla_firefox'
+    - 'baseline_clients_daily_v1'
+  depends_on:
+  - task_id: baseline_clients_daily
+    dag_name: copy_deduplicate
+    execution_delta: 1h
   parameters:
   - first_seen_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     field: first_seen_date
     type: day
-    require_partition_filter: true
-    expiration_days: null
+    require_partition_filter: false
   clustering:
     fields:
     - channel

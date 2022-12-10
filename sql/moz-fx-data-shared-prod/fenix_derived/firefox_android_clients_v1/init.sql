@@ -4,12 +4,15 @@ CREATE OR REPLACE TABLE
     client_id STRING NOT NULL
     OPTIONS
       (description = "Unique ID for the client installation."),
-      sample_id INTEGER NOT NULL
+      sample_id INTEGER
     OPTIONS
       (description = "Sample ID to limit query results during an analysis."),
+      submission_date DATE
+    OPTIONS
+      (description = "Date when the server first received a baseline ping for the client."),
       first_seen_date DATE
     OPTIONS
-      (description = "Date when the browser first reported a baseline ping."),
+      (description = "Date when the app first reported a baseline ping for the client."),
       first_run_date DATE
     OPTIONS
       (description = "Date when the browser first ran."),
@@ -89,6 +92,7 @@ WITH first_seen AS (
     client_id,
     sample_id,
     first_seen_date,
+    submission_date,
     country AS first_reported_country,
     isp AS first_reported_isp,
     DATETIME(first_run_date) AS first_run_datetime,
@@ -99,7 +103,7 @@ WITH first_seen AS (
   FROM
     `mozdata.fenix.baseline_clients_first_seen`
   WHERE
-    submission_date >= '2021-01-01'
+    submission_date >= '2019-01-01'
     AND normalized_channel = 'release'
 ),
 -- Find earliest data per client from the first_session ping.
@@ -120,9 +124,9 @@ first_session_ping AS (
       SAFE_OFFSET(0)
     ] AS adjust_creative
   FROM
-    `mozdata.fenix.first_session`
+    `mozdata.fenix.first_session` AS fenix_first_session
   WHERE
-    DATE(submission_timestamp) >= '2021-01-01'
+    DATE(submission_timestamp) >= '2019-01-01'
     AND SAFE.PARSE_DATE('%F', SUBSTR(client_info.first_run_date, 1, 10)) >= DATE(
       submission_timestamp
     ) -- first_session ping received after the client is first seen.
@@ -145,7 +149,8 @@ metrics_ping AS (
   FROM
     org_mozilla_firefox.metrics AS org_mozilla_firefox_metrics
   WHERE
-    DATE(submission_timestamp) >= '2021-01-01'
+    DATE(submission_timestamp) >= '2019-01-01'
+    AND ping_info.seq = 0
   GROUP BY
     client_id
 )
@@ -153,6 +158,7 @@ SELECT
   first_seen.client_id AS client_id,
   first_seen.sample_id AS sample_id,
   first_seen.first_seen_date AS first_seen_date,
+  first_seen.submission_date AS submission_date,
   DATE(first_seen.first_run_datetime) AS first_run_date,
   first_seen.first_reported_country AS first_reported_country,
   first_seen.first_reported_isp AS first_reported_isp,

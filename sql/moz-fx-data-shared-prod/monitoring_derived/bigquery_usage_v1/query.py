@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 
-"""Determine big query usage."""
+"""
+Determine big query usage.
+
+To read more on the source table, please visit:
+https://cloud.google.com/bigquery/docs/information-schema-jobs
+"""
 
 from argparse import ArgumentParser
 
@@ -60,7 +65,9 @@ def main():
     args = parser.parse_args()
 
     partition = args.date.replace("-", "")
-    destination_table = f"{args.project}.{args.destination_dataset}.{args.destination_table}${partition}"
+    destination_table = f"""
+            {args.project}.{args.destination_dataset}.{args.destination_table}${partition}
+    """
 
     # remove old partition in case of re-run
     client = bigquery.Client(args.project)

@@ -1,4 +1,9 @@
-"""Determine big query table storage timeline per day."""
+"""
+Determine big query table storage timeline per day.
+
+To read more on the source table, please visit:
+https://cloud.google.com/bigquery/docs/information-schema-table-storage-timeline
+"""
 
 from argparse import ArgumentParser
 
@@ -22,7 +27,7 @@ parser.add_argument(
 
 
 def create_query(date, source_project):
-    """Create query for a source project."""
+    """Create query for a source project.  1GB = POW(1024, 3) bytes."""
     return f"""
         SELECT
           DATE('{date}') AS change_date,
@@ -60,7 +65,9 @@ def main():
     args = parser.parse_args()
 
     partition = args.date.replace("-", "")
-    destination_table = f"{args.project}.{args.destination_dataset}.{args.destination_table}${partition}"
+    destination_table = f"""
+        {args.project}.{args.destination_dataset}.{args.destination_table}${partition}
+    """
 
     # remove old partition in case of re-run
     client = bigquery.Client(args.project)

@@ -1337,6 +1337,7 @@ def _update_query_schema(
         click.echo(f"{query_file} dry runs are skipped. Cannot update schemas.")
         return
 
+    tmp_tables = copy.copy(tmp_tables)
     query_file_path = Path(query_file)
     existing_schema_path = query_file_path.parent / SCHEMA_FILE
     project_name, dataset_name, table_name = extract_from_query_path(query_file_path)
@@ -1482,7 +1483,12 @@ def _update_query_schema(
         pass
 
     table_schema = Schema.for_table(
-        project_name, dataset_name, table_name, partitioned_by
+        project_name,
+        dataset_name,
+        table_name,
+        partitioned_by,
+        use_cloud_function=use_cloud_function,
+        respect_skip=respect_dryrun_skip,
     )
 
     changed = True

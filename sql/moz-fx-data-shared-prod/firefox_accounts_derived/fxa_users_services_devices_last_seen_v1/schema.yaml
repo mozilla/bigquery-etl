@@ -1,9 +1,20 @@
 fields:
 - mode: NULLABLE
   name: submission_date
+  type: DATE
+  description: |
+    Used for partitioning in BigQuery and
+    represents the date partition processed
+    by BQETL.
+
+- mode: NULLABLE
+  name: event_timestamp
   type: TIMESTAMP
   description: |
-    Timestamp when the event was recorded.
+    Timestamp when the last recorded event
+    took place. The date value for this field
+    can be older or the same in comparison
+    to submission_date.
 
 - mode: NULLABLE
   name: user_id

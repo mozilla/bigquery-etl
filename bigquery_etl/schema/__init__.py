@@ -57,7 +57,7 @@ class Schema:
         return cls(json_schema)
 
     @classmethod
-    def for_table(cls, project, dataset, table, partitioned_by=None):
+    def for_table(cls, project, dataset, table, partitioned_by=None, *args, **kwargs):
         """Get the schema for a BigQuery table."""
         query = f"SELECT * FROM `{project}.{dataset}.{table}`"
 
@@ -67,7 +67,10 @@ class Schema:
         try:
             return cls(
                 dryrun.DryRun(
-                    os.path.join(project, dataset, table, "query.sql"), query
+                    os.path.join(project, dataset, table, "query.sql"),
+                    query,
+                    *args,
+                    **kwargs,
                 ).get_schema()
             )
         except Exception as e:

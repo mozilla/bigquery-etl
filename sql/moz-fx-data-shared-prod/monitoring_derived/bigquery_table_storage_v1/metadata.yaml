@@ -1,5 +1,5 @@
 friendly_name: Bigquery Query Tables Storage
-description: Bigquery table storage size and costs, partitioned by day.
+description: Bigquery table storage size and costs.
 owners:
 - wichan@mozilla.com
 labels:
@@ -7,8 +7,3 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_monitoring
-  arguments: ["--date", "{{ ds }}"]
-bigquery:
-  time_partitioning:
-    field: creation_date
-    type: day

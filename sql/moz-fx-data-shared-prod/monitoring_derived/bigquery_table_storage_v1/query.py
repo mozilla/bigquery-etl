@@ -39,13 +39,7 @@ def create_query(source_project):
           total_physical_bytes,
           active_physical_bytes,
           long_term_physical_bytes,
-          time_travel_physical_bytes,
-          (active_logical_bytes/POW(1024, 3) * 0.02)
-          + ((long_term_logical_bytes/ POW(1024, 3)) * 0.01)
-          AS logical_billing_cost_usd,
-          (active_physical_bytes/POW(1024, 3) * 0.04)
-          + ((long_term_physical_bytes/ POW(1024, 3)) * 0.02)
-          AS physical_billing_cost_usd
+          time_travel_physical_bytes
         FROM `{source_project}.region-us.INFORMATION_SCHEMA.TABLE_STORAGE`
         ORDER BY creation_date, project_id, dataset_id, table_id
     """

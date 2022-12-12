@@ -64,13 +64,3 @@ fields:
   name: time_travel_physical_bytes
   type: INTEGER
   description: Number of compressed bytes for deleted or changed data
-
-- mode: NULLABLE
-  name: logical_billing_cost_usd
-  type: FLOAT
-  description: Total costs for uncompressed bytes billing
-
-- mode: NULLABLE
-  name: physical_billing_cost_usd
-  type: FLOAT
-  description: Total costs for compressed bytes billing

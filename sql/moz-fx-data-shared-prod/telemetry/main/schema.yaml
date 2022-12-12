@@ -20187,6 +20187,22 @@ fields:
       mode: NULLABLE
       name: eh_state_of_preload_request
       type: STRING
+    - description: Whether a document used U2FRegister
+      mode: NULLABLE
+      name: use_counter2_deprecated_u2f_register_document
+      type: STRING
+    - description: Whether a page used U2FRegister
+      mode: NULLABLE
+      name: use_counter2_deprecated_u2f_register_page
+      type: STRING
+    - description: Whether a document used U2FSign
+      mode: NULLABLE
+      name: use_counter2_deprecated_u2f_sign_document
+      type: STRING
+    - description: Whether a page used U2FSign
+      mode: NULLABLE
+      name: use_counter2_deprecated_u2f_sign_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -41662,6 +41678,22 @@ fields:
           mode: NULLABLE
           name: use_counter2_deprecated_svg_nearest_viewport_element_page
           type: STRING
+        - description: Whether a document used U2FRegister
+          mode: NULLABLE
+          name: use_counter2_deprecated_u2f_register_document
+          type: STRING
+        - description: Whether a page used U2FRegister
+          mode: NULLABLE
+          name: use_counter2_deprecated_u2f_register_page
+          type: STRING
+        - description: Whether a document used U2FSign
+          mode: NULLABLE
+          name: use_counter2_deprecated_u2f_sign_document
+          type: STRING
+        - description: Whether a page used U2FSign
+          mode: NULLABLE
+          name: use_counter2_deprecated_u2f_sign_page
+          type: STRING
         mode: NULLABLE
         name: histograms
         type: RECORD
@@ -49024,6 +49056,159 @@ fields:
             type: INTEGER
           mode: REPEATED
           name: browser_ui_interaction_unified_extensions_area
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'A keyed uint recording how many times the user has blocked/dismissed
+              sponsored Firefox Suggest dynamic wikipedia results in the urlbar. The
+              key is the 1-based index of each result.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: contextual_services_quicksuggest_block_dynamic_wikipedia
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'A keyed uint recording how many times the user has clicked
+              on Firefox Suggest dynamic wikipedia results in the urlbar (not including
+              the help button). The key is the 1-based index of each result.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: contextual_services_quicksuggest_click_dynamic_wikipedia
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'A keyed uint recording how many times the user has clicked
+              on non-sponsored Firefox Suggests (a.k.a. Quick Suggest) results in
+              the urlbar (not including the help button). The key is the 1-based index
+              of each result.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: contextual_services_quicksuggest_click_nonsponsored
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'A keyed uint recording how many times the user has clicked
+              on sponsored Firefox Suggests (a.k.a. Quick Suggest) results in the
+              urlbar (not including the help button). The key is the 1-based index
+              of each result.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: contextual_services_quicksuggest_click_sponsored
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'A keyed uint recording how many times the user has clicked
+              on the help button in sponsored Firefox Suggest dynamic wikipedia results
+              in the urlbar (not including the help button). The key is the 1-based
+              index of each result.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: contextual_services_quicksuggest_help_dynamic_wikipedia
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'A keyed uint recording how many times the user has clicked
+              on the help button in non-sponsored Firefox Suggests (a.k.a. Quick Suggest)
+              results in the urlbar. The key is the 1-based index of each result.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: contextual_services_quicksuggest_help_nonsponsored
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'A keyed uint recording how many times the user has clicked
+              on the help button in sponsored Firefox Suggests (a.k.a. Quick Suggest)
+              results in the urlbar. The key is the 1-based index of each result.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: contextual_services_quicksuggest_help_sponsored
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'A keyed uint recording how many times the user has viewed
+              sponsored Firefox Suggest dynamic wikipedia results in the urlbar. The
+              key is the 1-based index of each result.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: contextual_services_quicksuggest_impression_dynamic_wikipedia
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'A keyed uint recording how many times the user has viewed
+              non-sponsored Firefox Suggest (a.k.a. Quick Suggest) results in the
+              urlbar. The key is the 1-based index of each result.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: contextual_services_quicksuggest_impression_nonsponsored
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'A keyed uint recording how many times the user has viewed
+              sponsored Firefox Suggest (a.k.a. Quick Suggest) results in the urlbar.
+              The key is the 1-based index of each result.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: contextual_services_quicksuggest_impression_sponsored
           type: RECORD
         mode: NULLABLE
         name: keyed_scalars

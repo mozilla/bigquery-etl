@@ -28,49 +28,49 @@ fields:
 - mode: NULLABLE
   name: total_partitions
   type: INTEGER
-  description: The number of partitions present in the table
+  description: The total number of partitions present in the table
 
 - mode: NULLABLE
   name: total_logical_bytes
   type: INTEGER
-  description: Total number of logical bytes in the table
+  description: Total number of uncompressed bytes in the table
 
 - mode: NULLABLE
   name: active_logical_bytes
   type: INTEGER
-  description: Number of logical bytes less than 90 days old
+  description: Number of uncompressed bytes less than 90 days old
 
 - mode: NULLABLE
   name: long_term_logical_bytes
   type: INTEGER
-  description: Number of logical bytes more than 90 days old
+  description: Number of uncompressed bytes more than 90 days old
 
 - mode: NULLABLE
   name: total_physical_bytes
   type: INTEGER
-  description: Total number of physical bytes used for storage
+  description: Total number of compressed bytes used for storage
 
 - mode: NULLABLE
   name: active_physical_bytes
   type: INTEGER
-  description: Number of physical bytes less than 90 days old
+  description: Number of compressed bytes less than 90 days old
 
 - mode: NULLABLE
   name: long_term_physical_bytes
   type: INTEGER
-  description: Number of physical bytes more than 90 days old
+  description: Number of compressed bytes more than 90 days old
 
 - mode: NULLABLE
   name: time_travel_physical_bytes
   type: INTEGER
-  description: Number of physical bytes used by time travel
+  description: Number of compressed bytes for deleted or changed data
 
 - mode: NULLABLE
   name: logical_billing_cost_usd
   type: FLOAT
-  description: Total costs for logical bytes billing
+  description: Total costs for uncompressed bytes billing
 
 - mode: NULLABLE
   name: physical_billing_cost_usd
   type: FLOAT
-  description: Total costs for physical bytes billing
+  description: Total costs for compressed bytes billing

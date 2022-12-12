@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 
-"""Determine big query usage."""
+"""
+Determine BigQuery usage.
+
+To read more on the source table, please visit:
+https://cloud.google.com/bigquery/docs/information-schema-jobs
+"""
 
 from argparse import ArgumentParser
 

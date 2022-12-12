@@ -3,7 +3,7 @@ fields:
 - mode: NULLABLE
   name: change_date
   type: DATE
-  description: Date of when storage was last recalculated
+  description: Date of change to the data in the table.
 
 - mode: NULLABLE
   name: project_id
@@ -33,7 +33,7 @@ fields:
 - mode: NULLABLE
   name: change_count
   type: INTEGER
-  description: The total number of changes
+  description: The total number of changes to a table in one day
 
 - mode: NULLABLE
   name: avg_total_rows
@@ -48,44 +48,44 @@ fields:
 - mode: NULLABLE
   name: avg_total_logical_bytes
   type: FLOAT
-  description: Average total number of logical bytes in the table
+  description: Average total number of uncompressed bytes in the table
 
 - mode: NULLABLE
   name: avg_active_logical_bytes
   type: FLOAT
-  description: Average number of logical bytes less than 90 days old
+  description: Average number of uncompressed bytes less than 90 days old
 
 - mode: NULLABLE
   name: avg_long_term_logical_bytes
   type: FLOAT
-  description: Average number of logical bytes more than 90 days old
+  description: Average number of uncompressed bytes more than 90 days old
 
 - mode: NULLABLE
   name: avg_total_physical_bytes
   type: FLOAT
-  description: Average total number of physical bytes used for storage
+  description: Average total number of compressed  bytes used for storage
 
 - mode: NULLABLE
   name: avg_active_physical_bytes
   type: FLOAT
-  description: Average number of physical bytes less than 90 days old
+  description: Average number of compressed bytes less than 90 days old
 
 - mode: NULLABLE
   name: avg_long_term_physical_bytes
   type: FLOAT
-  description: Average number of physical bytes more than 90 days old
+  description: Average number of compressed bytes more than 90 days old
 
 - mode: NULLABLE
   name: avg_time_travel_physical_bytes
   type: FLOAT
-  description: Average number of physical bytes used by time travel
+  description: Average number of compressed bytes for deleted or changed data
 
 - mode: NULLABLE
   name: avg_logical_billing_cost_usd
   type: FLOAT
-  description: Average costs for logical bytes billing in USD
+  description: Average costs for uncompressed bytes billing in USD
 
 - mode: NULLABLE
   name: avg_physical_billing_cost_usd
   type: FLOAT
-  description: Average costs for physical bytes billing in USD
+  description: Average costs for compressed bytes billing in USD

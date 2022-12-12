@@ -39,7 +39,7 @@ SELECT
   CAST(NULL AS STRING) AS form_of_payment,
   CAST(NULL AS TIMESTAMP) AS grace_period_expires_date,
   receipt_info.in_app_ownership_type,
-  renewal_info.is_in_billing_retry_period = 1 AS is_in_billing_retry,
+  renewal_info.is_in_billing_retry,
   CAST(NULL AS BOOL) AS is_upgraded,
   CAST(NULL AS STRING) AS latest_notification_subtype,
   CAST(NULL AS STRING) AS latest_notification_type,
@@ -53,7 +53,9 @@ SELECT
   receipt_info.revocation_reason,
   CASE -- https://developer.apple.com/documentation/appstoreserverapi/status
   WHEN
-    legacy_subscriptions.apple_receipt.receipt.request_date < receipt_info.expires_date
+    TIMESTAMP_MILLIS(
+      legacy_subscriptions.apple_receipt.receipt.request_date_ms
+    ) < receipt_info.expires_date
   THEN
     1
   WHEN
@@ -66,7 +68,7 @@ SELECT
   AS status,
   "Auto-Renewable Subscription" AS type,
   legacy_subscriptions.user_id,
-  legacy_subscriptions.apple_receipt.receipt.request_date AS verified_at,
+  TIMESTAMP_MILLIS(legacy_subscriptions.apple_receipt.receipt.request_date_ms) AS verified_at,
 FROM
   legacy_subscriptions
 CROSS JOIN
@@ -82,7 +84,7 @@ CROSS JOIN
         product_id,
         TIMESTAMP_MILLIS(purchase_date_ms) AS purchase_date,
         TIMESTAMP_MILLIS(cancellation_date_ms) AS revocation_date,
-        cancellation_reason AS revocation_reason,
+        CAST(cancellation_reason AS INT64) AS revocation_reason,
       FROM
         UNNEST(
           ARRAY_CONCAT(
@@ -104,7 +106,7 @@ LEFT JOIN
         renewal_info.auto_renew_product_id,
         renewal_info.auto_renew_status,
         renewal_info.expiration_intent,
-        renewal_info.is_in_billing_retry_period = 1 AS is_in_billing_retry,
+        COALESCE(renewal_info.is_in_billing_retry_period = 1, FALSE) AS is_in_billing_retry,
       FROM
         UNNEST(apple_receipt.pending_renewal_info) AS renewal_info
       WHERE

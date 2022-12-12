@@ -92,7 +92,6 @@ apple_iap_period_aggregates AS (
         events.expiration_intent,
         events.is_in_billing_retry,
         events.grace_period_expires_date,
-        events.original_transaction_id,
         events.product_id,
         events.revocation_reason,
         events.status,
@@ -151,7 +150,30 @@ SELECT
   periods.subscription_id,
   NULLIF(periods.original_subscription_id, periods.subscription_id) AS original_subscription_id,
   periods.product_id AS plan_id,
-  CAST(periods.status AS STRING) AS status,
+  CASE
+    periods.status
+  WHEN
+    1
+  THEN
+    "active"
+  WHEN
+    2
+  THEN
+    "expired"
+  WHEN
+    3
+  THEN
+    "in billing retry period"
+  WHEN
+    4
+  THEN
+    "in billing grace period"
+  WHEN
+    5
+  THEN
+    "revoked"
+  END
+  AS status,
   periods.verified_at AS event_timestamp,
   IF(
     periods.end_time <= trial_periods.end_time,
@@ -211,9 +233,9 @@ SELECT
   periods.bundle_id AS product_id,
   periods.in_billing_grace_period,
   IF(
-    periods.in_billing_grace_period,
+    (periods.in_billing_grace_period AND periods.grace_period_expires_date > periods.end_time),
     periods.grace_period_expires_date - periods.end_time,
-    NULL
+    INTERVAL 0 DAY
   ) AS billing_grace_period,
   periods.promotion_codes,
 FROM

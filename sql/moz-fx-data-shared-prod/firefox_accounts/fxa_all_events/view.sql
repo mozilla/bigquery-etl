@@ -159,7 +159,7 @@ SELECT
   JSON_VALUE(user_properties, "$.sync_active_devices_day") AS sync_active_devices_day,
   JSON_VALUE(user_properties, "$.sync_active_devices_week") AS sync_active_devices_week,
   JSON_VALUE(user_properties, "$.sync_active_devices_month") AS sync_active_devices_month,
-  -- extracting event_properties
+  -- extract event properties
   JSON_VALUE(event_properties, "$.service") AS service,
   JSON_VALUE(event_properties, "$.email_type") AS email_type,
   JSON_VALUE(event_properties, "$.email_provider") AS email_provider,

@@ -59,7 +59,8 @@ fxa_content_events AS (
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_content_events_v1`
 ),
---
+-- TODO: fxa_oauth_events has been deprecated.
+-- This will be removed with another change.
 fxa_oauth_events AS (
   SELECT
     `timestamp`,
@@ -78,7 +79,7 @@ fxa_oauth_events AS (
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_oauth_events_v1`
 ),
-stdout AS (
+fxa_stdout_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
@@ -99,19 +100,19 @@ stdout AS (
 unioned AS (
   SELECT
     *,
-    'fxa_auth_event' AS event_category,
+    'auth' AS event_category,
   FROM
     fxa_auth_events
   UNION ALL
   SELECT
     *,
-    'fxa_auth_bounce_event' AS event_category,
+    'auth_bounce' AS event_category,
   FROM
     fxa_auth_bounce_events
   UNION ALL
   SELECT
     *,
-    'fxa_content_event' AS event_category,
+    'content' AS event_category,
   FROM
     fxa_content_events
   UNION ALL
@@ -119,15 +120,15 @@ unioned AS (
   -- This will be removed with another change.
   SELECT
     *,
-    'fxa_oauth_event' AS event_category,
+    'oauth' AS event_category,
   FROM
     fxa_oauth_events
   UNION ALL
   SELECT
     *,
-    'fxa_stdout_event' AS event_category,
+    'stdout' AS event_category,
   FROM
-    stdout
+    fxa_stdout_events
 )
 SELECT
   `timestamp`,

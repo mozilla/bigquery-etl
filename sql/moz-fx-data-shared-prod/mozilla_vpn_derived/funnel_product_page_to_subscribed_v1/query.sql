@@ -46,7 +46,7 @@ events AS (
   FROM
     `mozdata.firefox_accounts.fxa_all_events`
   WHERE
-    event_category IN ('fxa_content_event', 'fxa_auth_event', 'fxa_stdout_event')
+    event_category IN ('content', 'auth', 'stdout')
 ),
 flows AS (
   SELECT

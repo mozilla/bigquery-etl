@@ -1,5 +1,5 @@
 """
-Determine big query table storage.
+Determine BigQuery table storage.
 
 To read more on the source table, please visit:
 https://cloud.google.com/bigquery/docs/information-schema-table-storage

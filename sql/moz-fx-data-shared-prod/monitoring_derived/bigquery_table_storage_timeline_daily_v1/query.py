@@ -1,5 +1,5 @@
 """
-Determine big query table storage timeline per day.
+Determine BigQuery table storage timeline per day.
 
 To read more on the source table, please visit:
 https://cloud.google.com/bigquery/docs/information-schema-table-storage-timeline

@@ -1,0 +1,9 @@
+friendly_name: Bigquery Query Tables Last Modified Date
+description: The last modified date of big query tables.
+owners:
+- wichan@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_monitoring

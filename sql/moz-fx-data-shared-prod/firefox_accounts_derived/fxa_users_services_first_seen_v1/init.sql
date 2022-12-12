@@ -11,20 +11,11 @@ WITH fxa_content_auth_oauth AS (
     `timestamp`,
     user_id,
     IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service) AS service,
-    device_id,
     os_name,
     flow_id,
     event_type,
     country,
-    `language`,
     entrypoint,
-    utm_term,
-    utm_medium,
-    utm_source,
-    utm_campaign,
-    utm_content,
-    ua_version,
-    ua_browser,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE

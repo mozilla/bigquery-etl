@@ -137,7 +137,7 @@ SELECT
   user_id,
   device_id,
   country,
-  LANGUAGE,
+  `language`,
   app_version,
   os_name,
   os_version,

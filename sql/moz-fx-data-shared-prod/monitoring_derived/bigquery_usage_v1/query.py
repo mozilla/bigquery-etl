@@ -65,9 +65,7 @@ def main():
     args = parser.parse_args()
 
     partition = args.date.replace("-", "")
-    destination_table = f"""
-            {args.project}.{args.destination_dataset}.{args.destination_table}${partition}
-    """
+    destination_table = f"{args.project}.{args.destination_dataset}.{args.destination_table}${partition}"
 
     # remove old partition in case of re-run
     client = bigquery.Client(args.project)

@@ -150,7 +150,6 @@ metrics_ping AS (
     org_mozilla_firefox.metrics AS org_mozilla_firefox_metrics
   WHERE
     DATE(submission_timestamp) >= '2019-01-01'
-    AND ping_info.seq = 0
   GROUP BY
     client_id
 )

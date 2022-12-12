@@ -62,7 +62,6 @@ metrics_ping AS (
     org_mozilla_firefox.metrics AS org_mozilla_firefox_metrics
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND ping_info.seq = 0
   GROUP BY
     client_id
 ),
@@ -169,7 +168,16 @@ _previous AS (
     `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
 )
 SELECT
-  IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
+  IF(_previous.client_id IS NULL, _current, _previous).* REPLACE (
+    COALESCE(_previous.first_seen_date, _current.first_seen_date) AS first_seen_date,
+    COALESCE(_previous.submission_date, _current.submission_date) AS submission_date,
+    COALESCE(_previous.first_run_date, _current.first_run_date) AS first_run_date,
+    COALESCE(
+      _previous.first_reported_country,
+      _current.first_reported_country
+    ) AS first_reported_country,
+    COALESCE(_previous.first_reported_isp, _current.first_reported_isp) AS first_reported_isp,
+    COALESCE(_previous.channel, _current.channel) AS channel,
     COALESCE(_previous.device_manufacturer, _current.device_manufacturer) AS device_manufacturer,
     COALESCE(_previous.device_model, _current.device_model) AS device_model,
     COALESCE(_previous.os_version, _current.os_version) AS os_version,

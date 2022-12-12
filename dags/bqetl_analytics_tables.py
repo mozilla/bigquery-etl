@@ -59,7 +59,7 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter="submission_date",
+        date_partition_parameter="None",
         depends_on_past=True,
         parameters=["first_seen_date:DATE:{{ds}}"],
     )

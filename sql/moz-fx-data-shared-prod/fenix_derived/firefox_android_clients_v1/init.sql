@@ -110,6 +110,7 @@ WITH first_seen AS (
 first_session_ping AS (
   SELECT
     client_info.client_id AS client_id,
+    MIN(sample_id) AS sample_id,
     MIN(SAFE.PARSE_DATETIME('%F', SUBSTR(client_info.first_run_date, 1, 10))) AS first_run_datetime,
     ARRAY_AGG(metrics.string.first_session_campaign ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
@@ -139,6 +140,7 @@ metrics_ping AS (
   -- Fenix Release
   SELECT
     client_info.client_id AS client_id,
+    MIN(sample_id) AS sample_id,
     DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
     ARRAY_AGG(metrics.string.metrics_adjust_network ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
@@ -154,8 +156,8 @@ metrics_ping AS (
     client_id
 )
 SELECT
-  first_seen.client_id AS client_id,
-  first_seen.sample_id AS sample_id,
+  client_id,
+  COALESCE(first_seen.sample_id, first_session.sample_id, metrics.sample_id) AS sample_id,
   first_seen.first_seen_date AS first_seen_date,
   first_seen.submission_date AS submission_date,
   DATE(first_seen.first_run_datetime) AS first_run_date,
@@ -236,11 +238,11 @@ SELECT
   ) AS metadata
 FROM
   first_seen
-LEFT JOIN
-  first_session_ping AS first_session
+FULL OUTER JOIN
+  first_session_ping first_session
 USING
   (client_id)
-LEFT JOIN
+FULL OUTER JOIN
   metrics_ping AS metrics
 USING
   (client_id)

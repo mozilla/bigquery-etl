@@ -22,6 +22,7 @@ WITH first_seen AS (
 first_session_ping AS (
   SELECT
     client_info.client_id AS client_id,
+    MIN(sample_id) AS sample_id,
     MIN(SAFE.PARSE_DATETIME('%F', SUBSTR(client_info.first_run_date, 1, 10))) AS first_run_datetime,
     ARRAY_AGG(metrics.string.first_session_campaign ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
@@ -51,6 +52,7 @@ metrics_ping AS (
   -- Fenix Release
   SELECT
     client_info.client_id AS client_id,
+    MIN(sample_id) AS sample_id,
     DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
     ARRAY_AGG(metrics.string.metrics_adjust_network ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
@@ -67,8 +69,8 @@ metrics_ping AS (
 ),
 _current AS (
   SELECT
-    COALESCE(first_seen.client_id, first_session.client_id, metrics.client_id) AS client_id,
-    first_seen.sample_id AS sample_id,
+    client_id,
+    COALESCE(first_seen.sample_id, first_session.sample_id, metrics.sample_id) AS sample_id,
     first_seen.first_seen_date AS first_seen_date,
     first_seen.submission_date AS submission_date,
     DATE(first_seen.first_run_datetime) AS first_run_date,
@@ -168,55 +170,51 @@ _previous AS (
     `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
 )
 SELECT
-  IF(_previous.client_id IS NULL, _current, _previous).* REPLACE (
-    COALESCE(_previous.first_seen_date, _current.first_seen_date) AS first_seen_date,
-    COALESCE(_previous.submission_date, _current.submission_date) AS submission_date,
-    COALESCE(_previous.first_run_date, _current.first_run_date) AS first_run_date,
+  client_id,
+  COALESCE(_previous.sample_id, _current.sample_id) AS sample_id,
+  COALESCE(_previous.first_seen_date, _current.first_seen_date) AS first_seen_date,
+  COALESCE(_previous.submission_date, _current.submission_date) AS submission_date,
+  COALESCE(_previous.first_run_date, _current.first_run_date) AS first_run_date,
+  COALESCE(
+    _previous.first_reported_country,
+    _current.first_reported_country
+  ) AS first_reported_country,
+  COALESCE(_previous.first_reported_isp, _current.first_reported_isp) AS first_reported_isp,
+  COALESCE(_previous.channel, _current.channel) AS channel,
+  COALESCE(_previous.device_manufacturer, _current.device_manufacturer) AS device_manufacturer,
+  COALESCE(_previous.device_model, _current.device_model) AS device_model,
+  COALESCE(_previous.os_version, _current.os_version) AS os_version,
+  COALESCE(_previous.adjust_campaign, _current.adjust_campaign) AS adjust_campaign,
+  COALESCE(_previous.adjust_ad_group, _current.adjust_ad_group) AS adjust_ad_group,
+  COALESCE(_previous.adjust_creative, _current.adjust_creative) AS adjust_creative,
+  COALESCE(_previous.adjust_network, _current.adjust_network) AS adjust_network,
+  COALESCE(_previous.install_source, _current.install_source) AS install_source,
+  STRUCT(
+    _previous.metadata.reported_first_session_ping
+    OR _current.metadata.reported_first_session_ping AS reported_first_session_ping,
+    _previous.metadata.reported_metrics_ping
+    OR _current.metadata.reported_metrics_ping AS reported_metrics_ping,
     COALESCE(
-      _previous.first_reported_country,
-      _current.first_reported_country
-    ) AS first_reported_country,
-    COALESCE(_previous.first_reported_isp, _current.first_reported_isp) AS first_reported_isp,
-    COALESCE(_previous.channel, _current.channel) AS channel,
-    COALESCE(_previous.device_manufacturer, _current.device_manufacturer) AS device_manufacturer,
-    COALESCE(_previous.device_model, _current.device_model) AS device_model,
-    COALESCE(_previous.os_version, _current.os_version) AS os_version,
-    COALESCE(_previous.adjust_campaign, _current.adjust_campaign) AS adjust_campaign,
-    COALESCE(_previous.adjust_ad_group, _current.adjust_ad_group) AS adjust_ad_group,
-    COALESCE(_previous.adjust_creative, _current.adjust_creative) AS adjust_creative,
-    COALESCE(_previous.adjust_network, _current.adjust_network) AS adjust_network,
-    COALESCE(_previous.install_source, _current.install_source) AS install_source,
-    STRUCT(
-      COALESCE(
-        _previous.metadata.reported_first_session_ping,
-        _current.metadata.reported_first_session_ping
-      ) AS reported_first_session_ping,
-      COALESCE(
-        _previous.metadata.reported_metrics_ping,
-        _current.metadata.reported_metrics_ping
-      ) AS reported_metrics_ping,
-      COALESCE(
-        _previous.metadata.min_first_session_ping_run_date,
-        _current.metadata.min_first_session_ping_run_date
-      ) AS min_first_session_ping_run_date,
-      COALESCE(
-        _previous.metadata.adjust_network__source_ping,
-        _current.metadata.adjust_network__source_ping
-      ) AS adjust_network__source_ping,
-      COALESCE(
-        _previous.metadata.install_source__source_ping,
-        _current.metadata.install_source__source_ping
-      ) AS install_source__source_ping,
-      COALESCE(
-        _previous.metadata.adjust_network__source_ping_datetime,
-        _current.metadata.adjust_network__source_ping_datetime
-      ) AS adjust_network__source_ping_datetime,
-      COALESCE(
-        _previous.metadata.install_source__source_ping_datetime,
-        _current.metadata.install_source__source_ping_datetime
-      ) AS install_source__source_ping_datetime
-    ) AS metadata
-  )
+      _previous.metadata.min_first_session_ping_run_date,
+      _current.metadata.min_first_session_ping_run_date
+    ) AS min_first_session_ping_run_date,
+    COALESCE(
+      _previous.metadata.adjust_network__source_ping,
+      _current.metadata.adjust_network__source_ping
+    ) AS adjust_network__source_ping,
+    COALESCE(
+      _previous.metadata.install_source__source_ping,
+      _current.metadata.install_source__source_ping
+    ) AS install_source__source_ping,
+    COALESCE(
+      _previous.metadata.adjust_network__source_ping_datetime,
+      _current.metadata.adjust_network__source_ping_datetime
+    ) AS adjust_network__source_ping_datetime,
+    COALESCE(
+      _previous.metadata.install_source__source_ping_datetime,
+      _current.metadata.install_source__source_ping_datetime
+    ) AS install_source__source_ping_datetime
+  ) AS metadata
 FROM
   _current
 FULL OUTER JOIN

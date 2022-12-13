@@ -45,13 +45,7 @@ def create_query(date, source_project):
           avg(total_physical_bytes) AS avg_total_physical_bytes,
           avg(active_physical_bytes) AS avg_active_physical_bytes,
           avg(long_term_physical_bytes) AS avg_long_term_physical_bytes,
-          avg(time_travel_physical_bytes) AS avg_time_travel_physical_bytes,
-          avg((active_logical_bytes/POW(1024, 3) * 0.02)
-          + ((long_term_logical_bytes/ POW(1024, 3)) * 0.01))
-          AS avg_logical_billing_cost_usd,
-          avg((active_physical_bytes/POW(1024, 3) * 0.04)
-          + ((long_term_physical_bytes/ POW(1024, 3)) * 0.02))
-          AS avg_physical_billing_cost_usd
+          avg(time_travel_physical_bytes) AS avg_time_travel_physical_bytes
         FROM `{source_project}.region-us.INFORMATION_SCHEMA.TABLE_STORAGE_TIMELINE`
         WHERE
           DATE(timestamp) = '{date}'

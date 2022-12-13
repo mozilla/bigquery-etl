@@ -3561,6 +3561,42 @@ including views on <code>payload_bytes</code> tables</p>
 <h2 id="bigquery_tables_last_modified"><a href="#bigquery_tables_last_modified">bigquery_tables_last_modified</a></h2>
 <p><code>monitoring.bigquery_tables_last_modified</code></p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>project_id</td>
+        <td>The ID of the project that contains the dataset</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>dataset_id</td>
+        <td>The name of the dataset that contains the table or view</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>table_id</td>
+        <td>The name of the table or view</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>creation_date</td>
+        <td>The table's creation date</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>last_modified_date</td>
+        <td>The table's last modified date</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>

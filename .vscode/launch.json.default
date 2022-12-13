@@ -6,15 +6,23 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/venv/bin/bqetl",
-            "args": "${input:bqetl_args}",
+            "args": "${input:args}",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: current file",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "args": "${input:args}",
             "justMyCode": true
         }
     ],
     "inputs": [
         {
-            "id": "bqetl_args",
+            "id": "args",
             "type": "promptString",
-            "description": "bqetl args"
+            "description": "args"
         }
     ]
 }

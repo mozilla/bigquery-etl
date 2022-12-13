@@ -161,6 +161,7 @@ _current AS (
     metrics_ping AS metrics
   USING
     (client_id)
+  WHERE client_id IS NOT NULL
 ),
 --existing clients in firefox_android_clients_v1
 _previous AS (

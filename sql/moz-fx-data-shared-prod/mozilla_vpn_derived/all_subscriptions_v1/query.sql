@@ -354,7 +354,7 @@ android_iap_subscriptions AS (
       NULL,
       COALESCE(trial_periods.end_time, periods.start_time)
     ) AS subscription_start_date,
-     -- Until the upgrade event surfacing work, original_subscription_start_date is set to be NULL
+    -- Until the upgrade event surfacing work, original_subscription_start_date is set to be NULL
     CAST(NULL AS TIMESTAMP) AS original_subscription_start_date,
     CAST(NULL AS STRING) AS subscription_start_reason,
     periods.created,

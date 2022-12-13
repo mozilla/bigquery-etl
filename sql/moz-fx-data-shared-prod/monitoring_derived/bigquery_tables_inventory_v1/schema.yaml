@@ -24,3 +24,8 @@ fields:
   name: table_type
   type: STRING
   description: The table type
+
+- mode: NULLABLE
+  name: last_modified_date
+  type: DATE
+  description: The table's last modified date

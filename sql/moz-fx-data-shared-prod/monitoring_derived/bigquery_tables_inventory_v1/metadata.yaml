@@ -1,4 +1,4 @@
-friendly_name: Bigquery Query Tables Inventory
+friendly_name: Bigquery Tables Inventory
 description: Inventory of big query tables.
 owners:
 - wichan@mozilla.com

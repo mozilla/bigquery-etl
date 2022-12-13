@@ -3,11 +3,13 @@
 This approach is required because the order of columns is significant in order
 to be able to union two tables, even if the set of columns are the same."""
 
-import requests
-import json
-from bigquery_etl.format_sql.formatter import reformat
-from google.cloud import bigquery, exceptions
 import io
+import json
+
+import requests
+from google.cloud import bigquery, exceptions
+
+from bigquery_etl.format_sql.formatter import reformat
 
 
 def get_columns(schema):
@@ -32,7 +34,7 @@ def get_columns(schema):
     return sorted(res)
 
 
-def generate_query(columns, table):
+def generate_query(columns, table, replacements: dict[str, str] = None):
     """Generate a SQL query given column names.
 
     We construct a query that selects columns into nested structs. Naive
@@ -95,7 +97,7 @@ def generate_query(columns, table):
                 c = prev.pop()
                 acc = acc.rstrip(",")
                 acc += f") as {c},"
-        acc += f"{col},"
+        acc += (replacements.get(col, col) if replacements else col) + ","
         prev = split
     # clean up any columns
     if len(prev) > 1:
@@ -106,6 +108,7 @@ def generate_query(columns, table):
     acc = acc.rstrip(",")
 
     return reformat(f"select {acc} from `{table}`")
+
 
 def update_schema(bq, table_id, schema):
     """Update the schema and return the table"""
@@ -159,31 +162,22 @@ def main():
         ['"glean" as telemetry_system', *stripped],
         "mozdata.org_mozilla_ios_firefox.metrics",
     )
+    query_legacy_replacements = {
+        "submission_date": "DATE(_PARTITIONTIME) AS submission_date",
+        "metrics.datetime.glean_validation_first_run_hour": (
+            "mozfun.glean.parse_datetime(metrics.datetime.glean_validation_first_run_hour)"
+            " AS glean_validation_first_run_hour"
+        ),
+    }
     query_legacy_events = generate_query(
-        [
-            '"legacy" as telemetry_system',
-            *[
-                # replace submission date with _PARTITIONTIME
-                "DATE(_PARTITIONTIME) as submission_date"
-                if c == "submission_date"
-                else c
-                for c in stripped
-            ],
-        ],
+        ['"legacy" as telemetry_system', *stripped],
         legacy_core,
+        replacements=query_legacy_replacements,
     )
     query_legacy_core = generate_query(
-        [
-            '"legacy" as telemetry_system',
-            *[
-                # replace submission date with _PARTITIONTIME
-                "DATE(_PARTITIONTIME) as submission_date"
-                if c == "submission_date"
-                else c
-                for c in stripped
-            ],
-        ],
+        ['"legacy" as telemetry_system', *stripped],
         legacy_event,
+        replacements=query_legacy_replacements,
     )
 
     view_body = reformat(" UNION ALL ".join([query_glean, query_legacy_core, query_legacy_events]))

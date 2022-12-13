@@ -246,4 +246,5 @@ FULL OUTER JOIN
   metrics_ping AS metrics
 USING
   (client_id)
-WHERE client_id IS NOT NULL
+WHERE
+  client_id IS NOT NULL

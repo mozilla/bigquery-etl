@@ -169,12 +169,12 @@ def main():
             " AS glean_validation_first_run_hour"
         ),
     }
-    query_legacy_events = generate_query(
+    query_legacy_core = generate_query(
         ['"legacy" as telemetry_system', *stripped],
         legacy_core,
         replacements=query_legacy_replacements,
     )
-    query_legacy_core = generate_query(
+    query_legacy_events = generate_query(
         ['"legacy" as telemetry_system', *stripped],
         legacy_event,
         replacements=query_legacy_replacements,

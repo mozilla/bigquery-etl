@@ -39,7 +39,7 @@ def create_query(source_project):
           total_physical_bytes,
           active_physical_bytes,
           long_term_physical_bytes,
-          time_travel_physical_bytes
+          time_travel_physical_bytes,
         FROM `{source_project}.region-us.INFORMATION_SCHEMA.TABLE_STORAGE`
         ORDER BY creation_date, project_id, dataset_id, table_id
     """

@@ -44,8 +44,6 @@ def create_last_modified_tmp_table(project, tmp_table_name):
 
     for dataset in datasets:
 
-        print(f"processing results for dataset:  {dataset}")
-
         query = f"""
               SELECT
                 project_id,
@@ -58,10 +56,10 @@ def create_last_modified_tmp_table(project, tmp_table_name):
 
         try:
             job_config = bigquery.QueryJobConfig(
-                destination=tmp_table_name, write_disposition="WRITE_TRUNCATE"
+                destination=tmp_table_name, write_disposition="WRITE_APPEND"
             )
             client.query(query, job_config=job_config).result()
-            print(client.query(query, job_config=job_config).to_dataframe)
+
         except Exception as e:
             print(f"Error querying dataset {dataset.dataset_id}: {e}")
 

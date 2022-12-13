@@ -51,11 +51,3 @@ fields:
   mode: NULLABLE
   name: time_travel_physical_bytes
   type: INTEGER
-- description: Total costs for uncompressed bytes billing
-  mode: NULLABLE
-  name: logical_billing_cost_usd
-  type: FLOAT
-- description: Total costs for compressed bytes billing
-  mode: NULLABLE
-  name: physical_billing_cost_usd
-  type: FLOAT

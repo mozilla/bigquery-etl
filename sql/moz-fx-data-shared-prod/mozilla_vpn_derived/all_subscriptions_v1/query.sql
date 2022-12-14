@@ -64,6 +64,12 @@ stripe_subscriptions AS (
       NULL,
       COALESCE(plan_started_at, subscription_start_date)
     ) AS subscription_start_date,
+    --first subscription start date associated with the subscription id
+    IF(
+      (trial_end > TIMESTAMP(CURRENT_DATE) OR ended_at <= trial_end),
+      NULL,
+      subscription_start_date
+    ) AS original_subscription_start_date,
     IF(plan_started_at IS NOT NULL, "Plan Change", NULL) AS subscription_start_reason,
     created,
     trial_start,
@@ -139,6 +145,8 @@ apple_iap_subscriptions AS (
       apple_receipt.trial_period.end_time,
       apple_receipt.active_period.start_time
     ) AS subscription_start_date,
+    -- Until the upgrade event surfacing work, original_subscription_start_date is set to be NULL
+    CAST(NULL AS TIMESTAMP) AS original_subscription_start_date,
     CAST(NULL AS STRING) AS subscription_start_reason,
     created_at AS created,
     apple_receipt.trial_period.start_time AS trial_start,
@@ -346,6 +354,8 @@ android_iap_subscriptions AS (
       NULL,
       COALESCE(trial_periods.end_time, periods.start_time)
     ) AS subscription_start_date,
+    -- Until the upgrade event surfacing work, original_subscription_start_date is set to be NULL
+    CAST(NULL AS TIMESTAMP) AS original_subscription_start_date,
     CAST(NULL AS STRING) AS subscription_start_reason,
     periods.created,
     trial_periods.start_time AS trial_start,
@@ -499,10 +509,28 @@ SELECT
     inclusive => FALSE
   ) AS months_retained,
   mozfun.norm.diff_months(
+    start => DATETIME(
+      COALESCE(original_subscription_start_date, subscription_start_date),
+      plan_interval_timezone
+    ),
+    `end` => DATETIME(end_date, plan_interval_timezone),
+    grace_period => billing_grace_period,
+    inclusive => FALSE
+  ) AS original_subscription_months_retained,
+  mozfun.norm.diff_months(
     start => DATETIME(subscription_start_date, plan_interval_timezone),
     `end` => DATETIME(TIMESTAMP(CURRENT_DATE), plan_interval_timezone),
     grace_period => billing_grace_period,
     inclusive => FALSE
   ) AS current_months_since_subscription_start,
+  mozfun.norm.diff_months(
+    start => DATETIME(
+      COALESCE(original_subscription_start_date, subscription_start_date),
+      plan_interval_timezone
+    ),
+    `end` => DATETIME(TIMESTAMP(CURRENT_DATE), plan_interval_timezone),
+    grace_period => billing_grace_period,
+    inclusive => FALSE
+  ) AS current_months_since_original_subscription_start,
 FROM
   vpn_subscriptions_with_end_date

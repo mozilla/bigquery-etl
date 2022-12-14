@@ -136,3 +136,16 @@ LEFT JOIN
         1
     )
   ) AS renewal_info
+-- zetasql requires QUALIFY to be used in conjunction with WHERE, GROUP BY, or HAVING
+WHERE
+  TRUE
+QUALIFY
+  -- Before the migration to subplat, it appears that we had Apple subscribers that have over time,
+  -- setup new Firefox Accounts, on new devices, to use their existing subscription.
+  -- https://docs.google.com/document/d/1tV6ej-5_W7gJsXK20jkLpEntuTWrk3olqG0rfPm2E_4
+  -- For impacted subscriptions, only subscription id and user id are expected to be different, plus
+  -- the impact user id has on attribution. When this happens, select the newest subscription.
+  legacy_subscriptions.id = MAX(legacy_subscriptions.id) OVER (
+    PARTITION BY
+      latest_original_transaction_id
+  )

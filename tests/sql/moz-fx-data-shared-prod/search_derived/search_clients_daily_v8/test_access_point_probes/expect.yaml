@@ -103,6 +103,11 @@
   engine: engine5
   source: 'in-content:tagged:code1.urlbar_handoff'
   tagged_sap: 11
+- <<: *base
+  client_id: b
+  engine: engine5
+  source: 'in-content:tagged:code1.urlbar_persisted'
+  tagged_sap: 12
 # search with ads
 - <<: *base
   client_id: b

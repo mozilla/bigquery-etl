@@ -108,6 +108,9 @@ def histogram_bucket_counts(**kwargs):
     metric_attributes_list = ["metric", "metric_type", "key", "agg_type"]
     fixed_attributes = ["app_version", "channel"]
     cubed_attributes = [x for x in attributes_list if x not in fixed_attributes]
+    custom_dist_metadata = set()
+    for product_name in ["fenix", "firefox-desktop"]:
+        custom_dist_metadata.update(get_custom_distribution_metadata(product_name))
     return dict(
         attributes_list=attributes_list,
         attributes=",".join(attributes_list),
@@ -115,7 +118,7 @@ def histogram_bucket_counts(**kwargs):
         attribute_combinations=compute_datacube_groupings(cubed_attributes),
         metric_attributes_list=metric_attributes_list,
         metric_attributes=",".join(metric_attributes_list),
-        custom_distribution_metadata_list=get_custom_distribution_metadata("fenix"),
+        custom_distribution_metadata_list=custom_dist_metadata,
         **kwargs,
     )
 

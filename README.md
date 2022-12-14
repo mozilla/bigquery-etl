@@ -57,6 +57,7 @@ venv/bin/pip-sync --pip-args=--no-deps requirements.txt <(echo mozilla-bigquery-
 Finally, if you are using Visual Studio Code, you may also wish to use our recommended defaults:
 ```bash
 cp .vscode/settings.json.default .vscode/settings.json
+cp .vscode/launch.json.default .vscode/launch.json
 ```
 
 And you should now be set up to start working in the repo! The easiest way to do this is for many tasks is to use [`bqetl`](https://mozilla.github.io/bigquery-etl/bqetl/). You may also want to read up on [common workflows](https://mozilla.github.io/bigquery-etl/cookbooks/common_workflows/).

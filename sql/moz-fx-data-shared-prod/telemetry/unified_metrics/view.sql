@@ -8,3 +8,4 @@ FROM
   `moz-fx-data-shared-prod.telemetry_derived.unified_metrics_v1`
 WHERE
   normalized_app_name != 'Focus Android Glean'
+  AND normalized_app_name != 'Focus Android Glean BrowserStack'

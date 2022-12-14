@@ -1,0 +1,28 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "bqetl",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/venv/bin/bqetl",
+            "args": "${input:args}",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: current file",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "args": "${input:args}",
+            "justMyCode": true
+        }
+    ],
+    "inputs": [
+        {
+            "id": "args",
+            "type": "promptString",
+            "description": "args"
+        }
+    ]
+}

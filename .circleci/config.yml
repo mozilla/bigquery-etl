@@ -52,7 +52,7 @@ jobs:
           # in parallel speeds up CI
           command: |
             PATH="venv/bin:$PATH" script/entrypoint --black --flake8 \
-              --mypy-ignore-missing-imports --pydocstyle \
+              --isort --mypy-ignore-missing-imports --pydocstyle \
               -m "not (routine or sql or integration or java)" \
               -n 8
       - save_cache:

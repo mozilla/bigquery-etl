@@ -34,6 +34,8 @@ parser.add_argument("--dry_run", action="store_true")
 
 @attr.s(auto_attribs=True)
 class Branch:
+    """Defines a branch."""
+
     slug: str
     ratio: int
     value: Union[str, Dict[Any, Any]]
@@ -41,6 +43,8 @@ class Branch:
 
 @attr.s(auto_attribs=True)
 class Experiment:
+    """Defines an Experiment."""
+
     experimenter_slug: Optional[str]
     normandy_slug: Optional[str]
     type: str
@@ -48,12 +52,16 @@ class Experiment:
     branches: List[Branch]
     start_date: Optional[datetime.datetime]
     end_date: Optional[datetime.datetime]
+    enrollment_end_date: Optional[datetime.datetime]
     proposed_enrollment: Optional[int]
     reference_branch: Optional[str]
     is_high_population: bool
     app_name: str
     app_id: str
     channel: str
+    targeting: str
+    targeted_percent: float
+    namespace: Optional[str]
 
 
 def _coerce_none_to_zero(x: Optional[int]) -> int:
@@ -62,6 +70,8 @@ def _coerce_none_to_zero(x: Optional[int]) -> int:
 
 @attr.s(auto_attribs=True)
 class Variant:
+    """Defines a Variant."""
+
     is_control: bool
     slug: str
     ratio: int
@@ -80,17 +90,20 @@ class ExperimentV1:
     variants: List[Variant]
     proposed_enrollment: Optional[int] = attr.ib(converter=_coerce_none_to_zero)
     firefox_channel: str
+    population_percent: float
     normandy_slug: Optional[str] = None
     is_high_population: Optional[bool] = None
 
     @staticmethod
     def _unix_millis_to_datetime(num: Optional[float]) -> Optional[datetime.datetime]:
+        """Convert unix milliseconds to datetime."""
         if num is None:
             return None
         return datetime.datetime.fromtimestamp(num / 1e3, pytz.utc)
 
     @classmethod
     def from_dict(cls, d) -> "ExperimentV1":
+        """Load an experiment from dict."""
         converter = cattrs.BaseConverter()
         converter.register_structure_hook(
             datetime.datetime,
@@ -119,6 +132,7 @@ class ExperimentV1:
             status=self.status,
             start_date=self.start_date,
             end_date=self.end_date,
+            enrollment_end_date=None,
             branches=branches,
             proposed_enrollment=self.proposed_enrollment,
             reference_branch=control_slug,
@@ -126,6 +140,9 @@ class ExperimentV1:
             app_name="firefox_desktop",
             app_id="firefox-desktop",
             channel=self.firefox_channel.lower(),
+            targeting="",
+            targeted_percent=float(self.population_percent) / 100.0,
+            namespace=None,
         )
 
 
@@ -136,15 +153,19 @@ class ExperimentV6:
     slug: str  # Normandy slug
     startDate: Optional[datetime.datetime]
     endDate: Optional[datetime.datetime]
+    enrollmentEndDate: Optional[datetime.datetime]
     proposedEnrollment: int
     branches: List[Branch]
     referenceBranch: Optional[str]
     appName: str
     appId: str
     channel: str
+    targeting: str
+    bucketConfig: dict
 
     @classmethod
     def from_dict(cls, d) -> "ExperimentV6":
+        """Load an experiment from dict."""
         converter = cattrs.BaseConverter()
         converter.register_structure_hook(
             datetime.datetime,
@@ -171,12 +192,13 @@ class ExperimentV6:
                 self.endDate is None
                 or (
                     self.endDate
-                    and self.endDate <= pytz.utc.localize(datetime.datetime.now())
+                    and self.endDate > pytz.utc.localize(datetime.datetime.now())
                 )
             )
             else "Complete",
             start_date=self.startDate,
             end_date=self.endDate,
+            enrollment_end_date=self.enrollmentEndDate,
             proposed_enrollment=self.proposedEnrollment,
             reference_branch=self.referenceBranch,
             is_high_population=False,
@@ -184,10 +206,14 @@ class ExperimentV6:
             app_name=self.appName,
             app_id=self.appId,
             channel=self.channel,
+            targeting=self.targeting,
+            targeted_percent=self.bucketConfig["count"] / self.bucketConfig["total"],
+            namespace=self.bucketConfig["namespace"],
         )
 
 
 def fetch(url):
+    """Fetch a url."""
     for _ in range(2):
         try:
             return requests.get(
@@ -230,6 +256,7 @@ def get_experiments() -> List[Experiment]:
 
 
 def main():
+    """Run."""
     args = parser.parse_args()
     experiments = get_experiments()
 
@@ -244,6 +271,7 @@ def main():
         bigquery.SchemaField("status", "STRING"),
         bigquery.SchemaField("start_date", "DATE"),
         bigquery.SchemaField("end_date", "DATE"),
+        bigquery.SchemaField("enrollment_end_date", "DATE"),
         bigquery.SchemaField("proposed_enrollment", "INTEGER"),
         bigquery.SchemaField("reference_branch", "STRING"),
         bigquery.SchemaField("is_high_population", "BOOL"),
@@ -260,6 +288,9 @@ def main():
         bigquery.SchemaField("app_id", "STRING"),
         bigquery.SchemaField("app_name", "STRING"),
         bigquery.SchemaField("channel", "STRING"),
+        bigquery.SchemaField("targeting", "STRING"),
+        bigquery.SchemaField("targeted_percent", "FLOAT"),
+        bigquery.SchemaField("namespace", "STRING"),
     )
 
     job_config = bigquery.LoadJobConfig(

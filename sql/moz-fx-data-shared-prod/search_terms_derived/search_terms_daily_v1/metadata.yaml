@@ -1,0 +1,21 @@
+friendly_name: Search Terms Daily
+description: |-
+  Daily count of terminal search terms collected by Merino.
+owners:
+  - ctroy@mozilla.com
+  - rburwei@mozilla.com
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:search-terms/aggregated
+labels:
+  incremental: true
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: true
+    expiration_days: null
+scheduling:
+  dag_name: bqetl_search_terms_daily
+  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']

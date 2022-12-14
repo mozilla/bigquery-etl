@@ -124,7 +124,7 @@ The following is an example to update a new field in `telemetry_derived.clients_
    ```
    ./bqetl query schema deploy telemetry_derived.clients_daily_v6;
    ./bqetl query schema deploy telemetry_derived.clients_daily_joined_v1;
-   ./bqetl query schema deploy --force telemetry_derived.clients_last_seen_v1;
+   ./bqetl query schema deploy --force --ignore-dryrun-skip telemetry_derived.clients_last_seen_v1;
    ./bqetl query schema deploy telemetry_derived.clients_last_seen_joined_v1;
    ./bqetl query schema deploy --force telemetry_derived.clients_first_seen_v1;
    ```
@@ -141,25 +141,27 @@ Deleting a field from an existing table schema should be done only when is total
 
 ## Adding a new mozfun UDF
 
-1. Run `./bqetl mozfun create <dataset>.<name> --udf`
-1. Navigate to the `udf.sql` file in `sql/mozfun/<dataset>/<name>/` and add UDF the definition and tests
-1. Run `./bqetl mozfun validate <dataset>.<name>` for formatting and running tests
-1. Open a PR
-1. PR gets reviewed and approved and merged
-1. To publish UDF immediately:
-    * Go to Airflow `mozfun` DAG and clear latest run
-    * Or else it will get published within a day when mozfun is executed next
+1. Run `./bqetl mozfun create <dataset>.<name> --udf`.
+2. Navigate to the `udf.sql` file in `sql/mozfun/<dataset>/<name>/` and add UDF the definition and tests.
+3. Run `./bqetl mozfun validate <dataset>.<name>` for formatting and running tests.
+   * Before running the tests, you need to [setup the access to the Google Cloud API](https://mozilla.github.io/bigquery-etl/cookbooks/testing/).
+4. Open a PR.
+5. PR gets reviewed, approved and merged.
+6. To publish UDF immediately:
+    * Go to Airflow `mozfun` DAG and clear latest run.
+    * Or else it will get published within a day when mozfun is executed next.
 
 ## Adding a new internal UDF
 
 Internal UDFs are usually only used by specific queries. If your UDF might be useful to others consider publishing it as a `mozfun` UDF.
 
 1. Run `./bqetl routine create <dataset>.<name> --udf`
-1. Navigate to the `udf.sql` in `sql/moz-fx-data-shared-prod/<dataset>/<name>/` file and add UDF definition and tests
-1. Run `./bqetl routine validate <dataset>.<name>` for formatting and running tests
-1. Open a PR
-1. PR gets reviewed and approved and merged
-1. To publish UDF immediately:
+2. Navigate to the `udf.sql` in `sql/moz-fx-data-shared-prod/<dataset>/<name>/` file and add UDF definition and tests
+3. Run `./bqetl routine validate <dataset>.<name>` for formatting and running tests
+    * Before running the tests, you need to [setup the access to the Google Cloud API](https://mozilla.github.io/bigquery-etl/cookbooks/testing/).
+5. Open a PR
+6. PR gets reviewed and approved and merged
+7. To publish UDF immediately:
     * Run `./bqetl routine publish`
     * Or else it will take a day until UDF gets published automatically
 
@@ -220,17 +222,6 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-```
-
-## Adding a new Glean application
-
-To enable the generation of app-specific views and derived datasets for Glean pings, new Glean applications need to be explicitly and manually added to the [`ALLOWED_APPS` list of the glean_usage generator](https://github.com/mozilla/bigquery-etl/blob/2a2a14d9e1e7444034c93706a464346f29eaae30/sql_generators/glean_usage/__init__.py#L42).
-
-Queries for new Glean apps need to be generated and deployed manually:
-
-```
-> ./bqetl glean_usage generate
-> ./bqetl query schema deploy <glean-app-dataset-name>_derived.*
 ```
 
 ## Publishing data

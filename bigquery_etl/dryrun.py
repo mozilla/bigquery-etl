@@ -351,6 +351,7 @@ class DryRun:
                 return json.load(r)
             else:
                 project = basename(dirname(dirname(dirname(self.sqlfile))))
+                self.client.project = project
                 job_config = bigquery.QueryJobConfig(
                     dry_run=True,
                     use_query_cache=False,
@@ -555,7 +556,11 @@ class DryRun:
         # delay import to prevent circular imports in 'bigquery_etl.schema'
         from .schema import SCHEMA_FILE, Schema
 
-        if self.skip() or basename(self.sqlfile) == "script.sql":
+        if (
+            self.skip()
+            or basename(self.sqlfile) == "script.sql"
+            or str(self.sqlfile).endswith(".py")
+        ):  # noqa E501
             print(f"\t...Ignoring schema validation for {self.sqlfile}")
             return True
 

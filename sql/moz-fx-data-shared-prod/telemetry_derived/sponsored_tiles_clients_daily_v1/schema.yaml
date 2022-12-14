@@ -6,9 +6,6 @@ fields:
   name: device
   type: STRING
 - mode: NULLABLE
-  name: os
-  type: STRING
-- mode: NULLABLE
   name: client_id
   type: STRING
 - fields:
@@ -30,16 +27,6 @@ fields:
   mode: NULLABLE
   name: browser_version_info
   type: RECORD
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - mode: NULLABLE
-    name: value
-    type: STRING
-  mode: REPEATED
-  name: experiments
-  type: RECORD
 - mode: NULLABLE
   name: country
   type: STRING
@@ -50,14 +37,24 @@ fields:
   name: normalized_channel
   type: STRING
 - mode: NULLABLE
-  name: normalized_os_version
+  name: normalized_os
   type: STRING
 - mode: NULLABLE
-  name: profile_age_in_days
-  type: INTEGER
+  name: is_new_profile
+  type: BOOLEAN
 - mode: NULLABLE
   name: sample_id
   type: INTEGER
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: STRING
+  mode: REPEATED
+  name: experiments
+  type: RECORD
 - mode: NULLABLE
   name: sponsored_tiles_click_count
   type: INTEGER
@@ -70,6 +67,3 @@ fields:
 - mode: NULLABLE
   name: sponsored_tiles_disable_count
   type: INTEGER
-- mode: NULLABLE
-  name: sponsored_tiles_enabled_at_startup
-  type: BOOLEAN

@@ -1,0 +1,10 @@
+friendly_name: Fenix
+description: |-
+  Data related to Fenix (Firefox for Android)
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

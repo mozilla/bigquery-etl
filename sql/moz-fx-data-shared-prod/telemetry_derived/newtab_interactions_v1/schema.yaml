@@ -152,3 +152,12 @@ fields:
 - mode: NULLABLE
   name: newtab_search_enabled
   type: BOOLEAN
+- mode: NULLABLE
+  name: legacy_telemetry_client_id
+  type: STRING
+- mode: NULLABLE
+  name: is_new_profile
+  type: BOOLEAN
+- mode: NULLABLE
+  name: activity_segment
+  type: STRING

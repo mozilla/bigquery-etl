@@ -22,7 +22,6 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry/first_shutdown_summary_v4/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/focus_android_events_v1/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/lockwise_mobile_events_v1/view.sql",
-    "sql/moz-fx-data-shared-prod/telemetry/origin_content_blocking/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/rocket_android_events_v1/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/simpleprophet_forecasts/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/smoot_usage_day_0/view.sql",

@@ -28,6 +28,7 @@ TEMPLATES_PATH = FILE_PATH / "templates"
 def generate(target_project, output_dir):
     """Generate a CSV that maps country aliases to a country code."""
     target_path = Path(f"{output_dir}/{target_project}/static/country_names_v1/")
+    target_path.mkdir(parents=True, exist_ok=True)
 
     env = Environment(loader=FileSystemLoader(TEMPLATES_PATH))
     csv_template = env.get_template("data.csv")

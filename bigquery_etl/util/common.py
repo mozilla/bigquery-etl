@@ -5,12 +5,11 @@ import random
 import re
 import string
 import warnings
-from typing import List
 from pathlib import Path
+from typing import List
 from uuid import uuid4
 
 from google.cloud import bigquery
-
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.format_sql.formatter import reformat

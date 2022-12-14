@@ -47,12 +47,17 @@ class Schema:
             return cls(schema)
 
     @classmethod
+    def empty(cls):
+        """Create an empty schema."""
+        return cls({"fields": []})
+
+    @classmethod
     def from_json(cls, json_schema):
         """Create schema from JSON object."""
         return cls(json_schema)
 
     @classmethod
-    def for_table(cls, project, dataset, table, partitioned_by=None):
+    def for_table(cls, project, dataset, table, partitioned_by=None, *args, **kwargs):
         """Get the schema for a BigQuery table."""
         query = f"SELECT * FROM `{project}.{dataset}.{table}`"
 
@@ -62,7 +67,10 @@ class Schema:
         try:
             return cls(
                 dryrun.DryRun(
-                    os.path.join(project, dataset, table, "query.sql"), query
+                    os.path.join(project, dataset, table, "query.sql"),
+                    query,
+                    *args,
+                    **kwargs,
                 ).get_schema()
             )
         except Exception as e:
@@ -90,16 +98,19 @@ class Schema:
         other: "Schema",
         exclude: Optional[List[str]] = None,
         add_missing_fields=True,
+        attributes: Optional[List[str]] = None,
     ):
         """Merge another schema into the schema."""
-        self._traverse(
-            "root",
-            self.schema["fields"],
-            other.schema["fields"],
-            update=True,
-            exclude=exclude,
-            add_missing_fields=add_missing_fields,
-        )
+        if "fields" in other.schema and "fields" in self.schema:
+            self._traverse(
+                "root",
+                self.schema["fields"],
+                other.schema["fields"],
+                update=True,
+                exclude=exclude,
+                add_missing_fields=add_missing_fields,
+                attributes=attributes,
+            )
 
     def equal(self, other: "Schema") -> bool:
         """Compare to another schema."""
@@ -162,6 +173,7 @@ class Schema:
         add_missing_fields=True,
         ignore_missing_fields=False,
         exclude=None,
+        attributes=None,
     ):
         """Traverses two schemas for validation and optionally updates the first schema."""
         nodes = {n["name"]: Schema._node_with_mode(n) for n in columns}
@@ -178,6 +190,9 @@ class Schema:
             if node_name in nodes:
                 # node exists in schema, update attributes where necessary
                 for node_attr_key, node_attr_value in node.items():
+                    if attributes and node_attr_key not in attributes:
+                        continue
+
                     if node_attr_key == "type":
                         # sometimes types have multiple names (e.g. INT64 and INTEGER)
                         # make it consistent here
@@ -220,7 +235,7 @@ class Schema:
                             )
                         elif node_attr_key != "fields":
                             raise Exception(
-                                "Cannot merge schemas. Field attributes "
+                                f"Cannot merge schemas. {node_attr_key} attributes "
                                 f"for {prefix}.{field_path} are incompatible"
                             )
 
@@ -230,7 +245,10 @@ class Schema:
                         f"{prefix}.{field_path}",
                         nodes[node_name]["fields"],
                         node["fields"],
-                        update,
+                        update=update,
+                        add_missing_fields=add_missing_fields,
+                        ignore_missing_fields=ignore_missing_fields,
+                        attributes=attributes,
                     )
             else:
                 if update and add_missing_fields:

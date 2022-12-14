@@ -46,13 +46,14 @@ with DAG(
 
     telemetry_derived__newtab_interactions__v1 = bigquery_etl_query(
         task_id="telemetry_derived__newtab_interactions__v1",
-        destination_table="newtab_interactions_v1",
+        destination_table='newtab_interactions_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="anicholson@mozilla.com",
         email=["anicholson@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
@@ -69,4 +70,19 @@ with DAG(
 
     telemetry_derived__newtab_interactions__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+    wait_for_telemetry_derived__unified_metrics__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__unified_metrics__v1",
+        external_dag_id="bqetl_unified",
+        external_task_id="telemetry_derived__unified_metrics__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=75600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__newtab_interactions__v1.set_upstream(
+        wait_for_telemetry_derived__unified_metrics__v1
     )

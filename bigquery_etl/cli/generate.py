@@ -1,10 +1,11 @@
 """bigquery-etl CLI generate command."""
-from bigquery_etl.cli.utils import is_valid_project
-import click
-from pathlib import Path
 import importlib.util
 from inspect import getmembers
+from pathlib import Path
 
+import click
+
+from bigquery_etl.cli.utils import is_valid_project
 
 SQL_GENERATORS_DIR = "sql_generators"
 GENERATE_COMMAND = "generate"

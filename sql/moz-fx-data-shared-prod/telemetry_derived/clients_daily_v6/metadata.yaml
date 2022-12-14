@@ -32,6 +32,7 @@ bigquery:
     field: submission_date
     type: day
     require_partition_filter: true
+    expiration_days: null
   clustering:
     fields:
     - normalized_channel
@@ -40,3 +41,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:cloudops-managed/poucave
+references: {}

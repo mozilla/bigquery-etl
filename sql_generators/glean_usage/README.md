@@ -15,15 +15,7 @@ Depending on the specific query, queries get generated for per-`app_id` datasets
 
 For example, for datasets related to Fenix this means that for each `app_id` (=`org_mozilla_firefox`, `org_mozilla_fenix_nightly`, `org_mozilla_fennec_aurora`, `org_mozilla_firefox_beta`, `org_mozilla_fenix`) queries are generated writing their results to tables in the associated dataset. Additionally queries will write results to the app dataset `fenix` which will essentially `UNION` the results of the per-`app_id` datasets.
 
-## Adding Glean Apps
-
-In order for queries to get generated, a Glean app needs to be added manually to the [`ALLOWED_APPS` list](https://github.com/mozilla/bigquery-etl/blob/2a2a14d9e1e7444034c93706a464346f29eaae30/sql_generators/glean_usage/__init__.py#L42).
-Queries for new Glean apps need to be generated and deployed manually:
-
-```
-> ./bqetl glean_usage generate
-> ./bqetl query schema deploy <glean-app-dataset-name>_derived.*
-```
+Tables for new Glean apps are generated automatically during nightly table deployment runs.
 
 ## Adding Queries
 

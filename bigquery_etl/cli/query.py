@@ -9,9 +9,11 @@ import sys
 import tempfile
 from datetime import date, timedelta
 from functools import partial
+from graphlib import TopologicalSorter
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
 from tempfile import NamedTemporaryFile
+from traceback import print_exc
 
 import click
 import yaml
@@ -39,6 +41,7 @@ from ..metadata.parse_metadata import (
     BigQueryMetadata,
     ClusteringMetadata,
     DatasetMetadata,
+    ExternalDataFormat,
     Metadata,
     PartitionMetadata,
     PartitionType,
@@ -1234,55 +1237,86 @@ def update(
             "and check that the project is set correctly."
         )
         sys.exit(1)
-    query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    query_files = paths_matching_name_pattern(
+        name, sql_dir, project_id, files=["query.sql"]
+    )
     dependency_graph = get_dependency_graph([sql_dir], without_views=True)
     tmp_tables = {}
 
+    # order query files to make sure derived_from dependencies are resolved
+    query_file_graph = {}
     for query_file in query_files:
-        changed = _update_query_schema(
-            query_file,
-            sql_dir,
-            project_id,
-            tmp_dataset,
-            tmp_tables,
-            use_cloud_function,
-            respect_dryrun_skip,
-        )
+        query_file_graph[query_file] = []
+        try:
+            metadata = Metadata.of_query_file(str(query_file))
+            if metadata and metadata.schema and metadata.schema.derived_from:
+                for derived_from in metadata.schema.derived_from:
+                    parent_queries = [
+                        query
+                        for query in paths_matching_name_pattern(
+                            ".".join(derived_from.table), sql_dir, project_id
+                        )
+                    ]
 
-        if update_downstream:
-            # update downstream dependencies
-            if changed:
-                if not is_authenticated():
-                    click.echo(
-                        "Cannot update downstream dependencies."
-                        "Authentication to GCP required. Run `gcloud auth login` "
-                        "and check that the project is set correctly."
-                    )
-                    sys.exit(1)
+                    if len(parent_queries) > 0:
+                        query_file_graph[query_file].append(parent_queries[0])
 
-                project, dataset, table = extract_from_query_path(query_file)
-                identifier = f"{project}.{dataset}.{table}"
-                tmp_identifier = f"{project}.{tmp_dataset}.{table}_{random_str(12)}"
+        except FileNotFoundError:
+            query_file_graph[query_file] = []
 
-                # create temporary table with updated schema
-                if identifier not in tmp_tables:
-                    schema = Schema.from_schema_file(query_file.parent / SCHEMA_FILE)
-                    schema.deploy(tmp_identifier)
-                    tmp_tables[identifier] = tmp_identifier
+    ts = TopologicalSorter(query_file_graph)
+    query_files_ordered = ts.static_order()
 
-                # get downstream dependencies that will be updated in the next iteration
-                dependencies = [
-                    p
-                    for k, refs in dependency_graph.items()
-                    for p in paths_matching_name_pattern(
-                        k, sql_dir, project_id, files=("query.sql",)
-                    )
-                    if identifier in refs
-                ]
+    for query_file in query_files_ordered:
+        try:
+            changed = _update_query_schema(
+                query_file,
+                sql_dir,
+                project_id,
+                tmp_dataset,
+                tmp_tables,
+                use_cloud_function,
+                respect_dryrun_skip,
+            )
 
-                for d in dependencies:
-                    click.echo(f"Update downstream dependency schema for {d}")
-                    query_files.append(d)
+            if update_downstream:
+                # update downstream dependencies
+                if changed:
+                    if not is_authenticated():
+                        click.echo(
+                            "Cannot update downstream dependencies."
+                            "Authentication to GCP required. Run `gcloud auth login` "
+                            "and check that the project is set correctly."
+                        )
+                        sys.exit(1)
+
+                    project, dataset, table = extract_from_query_path(query_file)
+                    identifier = f"{project}.{dataset}.{table}"
+                    tmp_identifier = f"{project}.{tmp_dataset}.{table}_{random_str(12)}"
+
+                    # create temporary table with updated schema
+                    if identifier not in tmp_tables:
+                        schema = Schema.from_schema_file(
+                            query_file.parent / SCHEMA_FILE
+                        )
+                        schema.deploy(tmp_identifier)
+                        tmp_tables[identifier] = tmp_identifier
+
+                    # get downstream dependencies that will be updated in the next iteration
+                    dependencies = [
+                        p
+                        for k, refs in dependency_graph.items()
+                        for p in paths_matching_name_pattern(
+                            k, sql_dir, project_id, files=("query.sql",)
+                        )
+                        if identifier in refs
+                    ]
+
+                    for d in dependencies:
+                        click.echo(f"Update downstream dependency schema for {d}")
+                        query_files.append(d)
+        except Exception:
+            print_exc()
 
     if len(tmp_tables) > 0:
         client = bigquery.Client()
@@ -1309,6 +1343,7 @@ def _update_query_schema(
         click.echo(f"{query_file} dry runs are skipped. Cannot update schemas.")
         return
 
+    tmp_tables = copy.copy(tmp_tables)
     query_file_path = Path(query_file)
     existing_schema_path = query_file_path.parent / SCHEMA_FILE
     project_name, dataset_name, table_name = extract_from_query_path(query_file_path)
@@ -1353,16 +1388,20 @@ def _update_query_schema(
 
                 if existing_schema_path.is_file():
                     existing_schema = Schema.from_schema_file(existing_schema_path)
-                    existing_schema.merge(parent_schema, exclude=derived_from.exclude)
+                else:
+                    existing_schema = Schema.empty()
 
-                    # use temporary table
-                    tmp_identifier = (
-                        f"{project_name}.{tmp_dataset}.{table_name}_{random_str(12)}"
-                    )
-                    existing_schema.deploy(tmp_identifier)
-                    tmp_tables[
-                        f"{project_name}.{dataset_name}.{table_name}"
-                    ] = tmp_identifier
+                existing_schema.merge(parent_schema, exclude=derived_from.exclude)
+
+                # use temporary table
+                tmp_identifier = (
+                    f"{project_name}.{tmp_dataset}.{table_name}_{random_str(12)}"
+                )
+                existing_schema.deploy(tmp_identifier)
+                tmp_tables[
+                    f"{project_name}.{dataset_name}.{table_name}"
+                ] = tmp_identifier
+                existing_schema.to_yaml_file(existing_schema_path)
 
     # replace temporary table references
     sql_content = query_file_path.read_text()
@@ -1374,6 +1413,7 @@ def _update_query_schema(
                 sql_content = sql_content.replace(".".join(table_parts[i:]), tmp_table)
                 break
 
+    query_schema = None
     try:
         query_schema = Schema.from_query_file(
             query_file_path,
@@ -1382,15 +1422,16 @@ def _update_query_schema(
             respect_skip=respect_dryrun_skip,
         )
     except Exception:
-        click.echo(
-            click.style(
-                f"Cannot automatically update {query_file_path}. "
-                f"Please update {query_file_path / SCHEMA_FILE} manually.",
-                fg="red",
-            ),
-            err=True,
-        )
-        return
+        if not existing_schema_path.exists():
+            click.echo(
+                click.style(
+                    f"Cannot automatically update {query_file_path}. "
+                    f"Please update {query_file_path / SCHEMA_FILE} manually.",
+                    fg="red",
+                ),
+                err=True,
+            )
+            return
 
     # update bigquery metadata
     try:
@@ -1448,7 +1489,12 @@ def _update_query_schema(
         pass
 
     table_schema = Schema.for_table(
-        project_name, dataset_name, table_name, partitioned_by
+        project_name,
+        dataset_name,
+        table_name,
+        partitioned_by,
+        use_cloud_function=use_cloud_function,
+        respect_skip=respect_dryrun_skip,
     )
 
     changed = True
@@ -1456,8 +1502,11 @@ def _update_query_schema(
     if existing_schema_path.is_file():
         existing_schema = Schema.from_schema_file(existing_schema_path)
         old_schema = copy.deepcopy(existing_schema)
-        existing_schema.merge(table_schema)
-        existing_schema.merge(query_schema)
+        if table_schema:
+            existing_schema.merge(table_schema)
+
+        if query_schema:
+            existing_schema.merge(query_schema)
         existing_schema.to_yaml_file(existing_schema_path)
         changed = not existing_schema.equal(old_schema)
     else:
@@ -1492,6 +1541,14 @@ def _update_query_schema(
 )
 @use_cloud_function_option
 @respect_dryrun_skip_option(default=True)
+@click.option(
+    "--skip-existing",
+    "--skip_existing",
+    help="Skip updating existing tables. "
+    + "This option ensures that only new tables get deployed.",
+    default=False,
+    is_flag=True,
+)
 @click.pass_context
 def deploy(
     ctx,
@@ -1501,6 +1558,7 @@ def deploy(
     force,
     use_cloud_function,
     respect_dryrun_skip,
+    skip_existing,
 ):
     """CLI command for deploying destination table schemas."""
     if not is_authenticated():
@@ -1511,7 +1569,7 @@ def deploy(
         sys.exit(1)
     client = bigquery.Client()
 
-    query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    query_files = paths_matching_name_pattern(name, sql_dir, project_id, ["query.*"])
     if not query_files:
         # run SQL generators if no matching query has been found
         ctx.invoke(
@@ -1519,8 +1577,11 @@ def deploy(
             output_dir=ctx.obj["TMP_DIR"],
             ignore=["derived_view_schemas", "stable_views"],
         )
-        query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
+        query_files = paths_matching_name_pattern(
+            name, ctx.obj["TMP_DIR"], project_id, ["query.*"]
+        )
 
+    failed_deploys = []
     for query_file in query_files:
         if respect_dryrun_skip and str(query_file) in SKIP:
             click.echo(f"{query_file} dry runs are skipped. Cannot validate schemas.")
@@ -1533,65 +1594,83 @@ def deploy(
             click.echo(f"No schema file found for {query_file}")
             continue
 
-        click.echo(f"Deploying schema for {query_file}")
-
-        table_name = query_file_path.parent.name
-        dataset_name = query_file_path.parent.parent.name
-        project_name = query_file_path.parent.parent.parent.name
-        full_table_id = f"{project_name}.{dataset_name}.{table_name}"
-
-        existing_schema = Schema.from_schema_file(existing_schema_path)
-
-        if not force:
-            query_schema = Schema.from_query_file(
-                query_file_path,
-                use_cloud_function=use_cloud_function,
-                respect_skip=respect_dryrun_skip,
-            )
-            if not existing_schema.equal(query_schema):
-                click.echo(
-                    f"Query {query_file_path} does not match "
-                    f"schema in {existing_schema_path}. "
-                    f"To update the local schema file, "
-                    f"run `./bqetl query schema update "
-                    f"{dataset_name}.{table_name}`",
-                    err=True,
-                )
-                sys.exit(1)
-
-        with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
-            existing_schema.to_json_file(Path(tmp_schema_file.name))
-            bigquery_schema = client.schema_from_json(tmp_schema_file.name)
-
         try:
-            table = client.get_table(full_table_id)
-        except NotFound:
-            table = bigquery.Table(full_table_id)
+            table_name = query_file_path.parent.name
+            dataset_name = query_file_path.parent.parent.name
+            project_name = query_file_path.parent.parent.parent.name
+            full_table_id = f"{project_name}.{dataset_name}.{table_name}"
 
-        table.schema = bigquery_schema
-        _attach_metadata(query_file_path, table)
+            existing_schema = Schema.from_schema_file(existing_schema_path)
 
-        if not table.created:
-            client.create_table(table)
-            click.echo(f"Destination table {full_table_id} created.")
-        else:
-            client.update_table(
-                table,
-                [
-                    "schema",
-                    "friendly_name",
-                    "description",
-                    "time_partitioning",
-                    "clustering_fields",
-                    "labels",
-                ],
-            )
-            click.echo(f"Schema (and metadata) updated for {full_table_id}.")
+            if not force and str(query_file_path).endswith("query.sql"):
+                query_schema = Schema.from_query_file(
+                    query_file_path,
+                    use_cloud_function=use_cloud_function,
+                    respect_skip=respect_dryrun_skip,
+                )
+                if not existing_schema.equal(query_schema):
+                    click.echo(
+                        f"Query {query_file_path} does not match "
+                        f"schema in {existing_schema_path}. "
+                        f"To update the local schema file, "
+                        f"run `./bqetl query schema update "
+                        f"{dataset_name}.{table_name}`",
+                        err=True,
+                    )
+                    sys.exit(1)
+
+            with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
+                existing_schema.to_json_file(Path(tmp_schema_file.name))
+                bigquery_schema = client.schema_from_json(tmp_schema_file.name)
+
+            try:
+                table = client.get_table(full_table_id)
+            except NotFound:
+                table = bigquery.Table(full_table_id)
+
+            table.schema = bigquery_schema
+            _attach_metadata(query_file_path, table)
+
+            if not table.created:
+                client.create_table(table)
+                click.echo(f"Destination table {full_table_id} created.")
+            elif not skip_existing:
+                client.update_table(
+                    table,
+                    [
+                        "schema",
+                        "friendly_name",
+                        "description",
+                        "time_partitioning",
+                        "clustering_fields",
+                        "labels",
+                    ],
+                )
+                click.echo(f"Schema (and metadata) updated for {full_table_id}.")
+        except Exception:
+            print_exc()
+            failed_deploys.append(query_file)
+
+    failed_external_deploys = _deploy_external_data(
+        name, sql_dir, project_id, skip_existing
+    )
+    failed_deploys += failed_external_deploys
+
+    if len(failed_deploys) > 0:
+        click.echo("The following tables could not be deployed:")
+        for failed_deploy in failed_deploys:
+            click.echo(failed_deploy)
+        sys.exit(1)
+
+    click.echo("All tables have been deployed.")
 
 
 def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
     """Add metadata from query file's metadata.yaml to table object."""
-    metadata = Metadata.of_query_file(query_file_path)
+    try:
+        metadata = Metadata.of_query_file(query_file_path)
+    except FileNotFoundError:
+        return
 
     table.description = metadata.description
     table.friendly_name = metadata.friendly_name
@@ -1611,6 +1690,87 @@ def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
 
     if metadata.labels:
         table.labels = metadata.labels
+
+
+def _deploy_external_data(
+    name,
+    sql_dir,
+    project_id,
+    skip_existing,
+) -> list:
+    """Publish external data tables."""
+    # whether a table should be created from external data is defined in the metadata
+    metadata_files = paths_matching_name_pattern(
+        name, sql_dir, project_id, ["metadata.yaml"]
+    )
+    client = bigquery.Client()
+    failed_deploys = []
+    for metadata_file_path in metadata_files:
+        metadata = Metadata.from_file(metadata_file_path)
+        if not metadata.external_data:
+            # skip all tables that are not created from external data
+            continue
+
+        existing_schema_path = metadata_file_path.parent / SCHEMA_FILE
+
+        if not existing_schema_path.is_file():
+            # tables created from external data must specify a schema
+            click.echo(f"No schema file found for {metadata_file_path}")
+            continue
+
+        try:
+            table_name = metadata_file_path.parent.name
+            dataset_name = metadata_file_path.parent.parent.name
+            project_name = metadata_file_path.parent.parent.parent.name
+            full_table_id = f"{project_name}.{dataset_name}.{table_name}"
+
+            existing_schema = Schema.from_schema_file(existing_schema_path)
+
+            try:
+                table = client.get_table(full_table_id)
+            except NotFound:
+                table = bigquery.Table(full_table_id)
+
+            with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
+                existing_schema.to_json_file(Path(tmp_schema_file.name))
+                bigquery_schema = client.schema_from_json(tmp_schema_file.name)
+
+            table.schema = bigquery_schema
+            _attach_metadata(metadata_file_path, table)
+
+            if not table.created:
+                if metadata.external_data.format == ExternalDataFormat.GOOGLE_SHEET:
+                    external_config = bigquery.ExternalConfig("GOOGLE_SHEETS")
+                    external_config.source_uris = metadata.external_data.source_uris
+                    external_config.ignore_unknown_values = True
+                    external_config.autodetect = False
+
+                    for key, v in metadata.external_data.options.items():
+                        setattr(external_config.options, key, v)
+
+                    table.external_data_configuration = external_config
+                    table = client.create_table(table)
+                    click.echo(f"Destination table {full_table_id} created.")
+                else:
+                    click.echo(
+                        f"External data format {metadata.external_data.format} unsupported."
+                    )
+            elif not skip_existing:
+                client.update_table(
+                    table,
+                    [
+                        "schema",
+                        "friendly_name",
+                        "description",
+                        "labels",
+                    ],
+                )
+                click.echo(f"Schema (and metadata) updated for {full_table_id}.")
+        except Exception:
+            print_exc()
+            failed_deploys.append(metadata_file_path)
+
+    return failed_deploys
 
 
 def _validate_schema_from_path(

@@ -380,7 +380,6 @@ SEARCH_IGNORE_TABLES |= {
 SEARCH_IGNORE_FIELDS = {
     # id is the source for document_id in these tables
     ("firefox_launcher_process_stable.launcher_process_failure_v1", ID),
-    ("telemetry_derived.origin_content_blocking", ID),
     ("telemetry_stable.anonymous_v4", ID),
     ("telemetry_stable.optout_v4", ID),
     ("telemetry_stable.pre_account_v4", ID),

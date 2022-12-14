@@ -20203,6 +20203,19 @@ fields:
       mode: NULLABLE
       name: use_counter2_deprecated_u2f_sign_page
       type: STRING
+    - description: Cumulative no. of search filters applied performed before selecting
+        a link.
+      mode: NULLABLE
+      name: places_searchbar_cumulative_filter_count
+      type: STRING
+    - description: Cumulative no. of searches performed before selecting a link.
+      mode: NULLABLE
+      name: places_searchbar_cumulative_searches
+      type: STRING
+    - description: The type of search filters used for the sidebar search.
+      mode: NULLABLE
+      name: places_searchbar_filter_type
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -41694,6 +41707,11 @@ fields:
           mode: NULLABLE
           name: use_counter2_deprecated_u2f_sign_page
           type: STRING
+        - description: Counts how long it takes to handle cookie banners successfully
+            from DOMContentLoaded until click.
+          mode: NULLABLE
+          name: cookie_banners_click_handle_duration_ms
+          type: STRING
         mode: NULLABLE
         name: histograms
         type: RECORD
@@ -44300,6 +44318,23 @@ fields:
             type: INTEGER
           mode: REPEATED
           name: power_wakeups_per_process_type
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'Given a matching cookie banner click rule, how often do
+              we handle or fail to handle cookie banners, labelled by reason. The
+              ''success'' and ''fail'' counters count the total numbers independently
+              of the reason counters. Counters are incremented after the content window
+              has been destroyed.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: cookie_banners_click_result
           type: RECORD
         mode: NULLABLE
         name: keyed_scalars
@@ -49209,6 +49244,68 @@ fields:
             type: INTEGER
           mode: REPEATED
           name: contextual_services_quicksuggest_impression_sponsored
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'The pref value of the cookie banner service mode for normal
+              windows.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: BOOLEAN
+          mode: REPEATED
+          name: cookie_banners_normal_window_service_mode
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'The pref value of the cookie banner service mode for private
+              windows.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: BOOLEAN
+          mode: REPEATED
+          name: cookie_banners_private_window_service_mode
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'Counts the number of hit/miss of cookie banner rule lookups
+              for domain. We collect three types of counters, including counters for
+              overall rule lookup, counters for cookie rule lookup and counters for
+              click rule lookup. We also divide the counter by top-level loads and
+              iframe loads. For each domain, we will only collect once.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: cookie_banners_rule_lookup_by_domain
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'Counts the number of hit/miss of cookie banner rule lookups
+              for every load. We collect three types of counters, including counters
+              for overall rule lookup, counters for cookie rule lookup and counters
+              for click rule lookup. We also divide the counter by top-level loads
+              and iframe loads.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: cookie_banners_rule_lookup_by_load
           type: RECORD
         mode: NULLABLE
         name: keyed_scalars

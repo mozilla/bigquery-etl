@@ -3,7 +3,6 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   * EXCEPT (adjust_network, install_source),
-  adjust_network,
   CASE
   WHEN
     adjust_network IS NULL
@@ -37,6 +36,6 @@ SELECT
   ELSE
     install_source
   END
-  AS install_source
+  AS install_source,
 FROM
   `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`

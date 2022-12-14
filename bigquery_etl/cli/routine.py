@@ -444,7 +444,7 @@ def publish(ctx, name, project_id, dependency_dir, gcs_bucket, gcs_path, dry_run
         sys.exit(1)
 
     click.echo(f"Publish routines to {project_id}")
-    # NOTE: there will only publish to a single project
+    # NOTE: this will only publish to a single project
     for target in project_dirs(project_id):
         publish_routines.publish(
             target,

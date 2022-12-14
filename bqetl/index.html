@@ -3278,7 +3278,7 @@ Options:
 <h4 id="publish"><code>publish</code></h4>
 <p>Publish routines to BigQuery. Requires service account access.</p>
 <p><strong>Usage</strong></p>
-<pre><code class="language-bash">$ ./bqetl routine publish [OPTIONS] [path]
+<pre><code class="language-bash">$ ./bqetl routine publish [OPTIONS] [name]
 
 Options:
 
@@ -3286,10 +3286,15 @@ Options:
 --dependency_dir: The directory JavaScript dependency files for UDFs are stored.
 --gcs_bucket: The GCS bucket where dependency files are uploaded to.
 --gcs_path: The GCS path in the bucket where dependency files are uploaded to.
+--dry_run: Dry run publishing udfs.
 </code></pre>
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash"># Publish all routines
     ./bqetl routine publish
+
+
+    # Publish selected routines
+    ./bqetl routine validate udf.*
 </code></pre>
 <h4 id="rename"><code>rename</code></h4>
 <p>Rename routine or routine dataset. Replaces all usages in queries with
@@ -3376,7 +3381,7 @@ Options:
 <p>Publish mozfun routines. This command is used
 by Airflow only.</p>
 <p><strong>Usage</strong></p>
-<pre><code class="language-bash">$ ./bqetl mozfun publish [OPTIONS] [path]
+<pre><code class="language-bash">$ ./bqetl mozfun publish [OPTIONS] [name]
 
 Options:
 
@@ -3384,6 +3389,7 @@ Options:
 --dependency_dir: The directory JavaScript dependency files for UDFs are stored.
 --gcs_bucket: The GCS bucket where dependency files are uploaded to.
 --gcs_path: The GCS path in the bucket where dependency files are uploaded to.
+--dry_run: Dry run publishing udfs.
 </code></pre>
 <h4 id="rename_1"><code>rename</code></h4>
 <p>Rename mozfun routine or mozfun routine dataset.

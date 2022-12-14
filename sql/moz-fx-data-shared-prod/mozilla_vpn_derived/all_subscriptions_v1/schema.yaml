@@ -26,9 +26,6 @@ fields:
 - name: subscription_start_date
   type: TIMESTAMP
   mode: NULLABLE
-- name: original_subscription_start_date
-  type: TIMESTAMP
-  mode: NULLABLE
 - name: subscription_start_reason
   type: STRING
   mode: NULLABLE
@@ -155,12 +152,6 @@ fields:
 - name: months_retained
   type: INTEGER
   mode: NULLABLE
-- name: original_subscription_months_retained
-  type: INTEGER
-  mode: NULLABLE
 - name: current_months_since_subscription_start
-  type: INTEGER
-  mode: NULLABLE
-- name: current_months_since_original_subscription_start
   type: INTEGER
   mode: NULLABLE

@@ -4076,6 +4076,102 @@ for the release channel of the Glean application "Firefox for Android"
 <h2 id="firefox_android_clients"><a href="#firefox_android_clients">firefox_android_clients</a></h2>
 <p><code>fenix.firefox_android_clients</code></p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>client_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_seen_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_run_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_reported_country</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_reported_isp</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>channel</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>device_manufacturer</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>device_model</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>adjust_campaign</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>adjust_ad_group</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>adjust_creative</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>adjust_network</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>install_source</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>

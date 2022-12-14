@@ -9,9 +9,7 @@ WITH apple_iap_events AS (
     `timestamp` AS event_timestamp,
     mozfun.iap.parse_apple_event(`data`).*,
   FROM
-    -- `moz-fx-fxa-prod-0712.firestore_export.iap_app_store_purchases_raw_changelog`
-    -- Table does not yet exist in prod, so use a placeholder
-    UNNEST(ARRAY<STRUCT<document_id STRING, `timestamp` TIMESTAMP, `data` STRING>>[])
+    `moz-fx-fxa-prod-0712.firestore_export.iap_app_store_purchases_raw_changelog`
   UNION ALL
   SELECT
     CAST(NULL AS STRING) AS document_id,

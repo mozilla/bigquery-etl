@@ -121,10 +121,10 @@ LEFT JOIN
   UNNEST(
     ARRAY(
       SELECT AS STRUCT
-        renewal_info.auto_renew_product_id,
-        renewal_info.auto_renew_status,
-        renewal_info.expiration_intent,
-        COALESCE(renewal_info.is_in_billing_retry_period = 1, FALSE) AS is_in_billing_retry,
+        auto_renew_product_id,
+        auto_renew_status,
+        expiration_intent,
+        COALESCE(is_in_billing_retry_period = 1, FALSE) AS is_in_billing_retry,
       FROM
         UNNEST(apple_receipt.pending_renewal_info)
         WITH OFFSET AS _offset

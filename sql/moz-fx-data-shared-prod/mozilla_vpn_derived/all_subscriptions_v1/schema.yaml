@@ -152,15 +152,15 @@ fields:
 - name: website_channel_group
   type: STRING
   mode: NULLABLE
-- name: plan_months_retained
+- name: months_retained
   type: INTEGER
   mode: NULLABLE
-- name: subscription_months_retained
-  type: INTEGER
-  mode: NULLABLE
-- name: current_months_since_plan_start
+- name: original_subscription_months_retained
   type: INTEGER
   mode: NULLABLE
 - name: current_months_since_subscription_start
+  type: INTEGER
+  mode: NULLABLE
+- name: current_months_since_original_subscription_start
   type: INTEGER
   mode: NULLABLE

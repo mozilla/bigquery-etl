@@ -507,7 +507,7 @@ SELECT
     `end` => DATETIME(end_date, plan_interval_timezone),
     grace_period => billing_grace_period,
     inclusive => FALSE
-  ) AS plan_months_retained,
+  ) AS months_retained,
   mozfun.norm.diff_months(
     start => DATETIME(
       COALESCE(original_subscription_start_date, subscription_start_date),
@@ -516,13 +516,13 @@ SELECT
     `end` => DATETIME(end_date, plan_interval_timezone),
     grace_period => billing_grace_period,
     inclusive => FALSE
-  ) AS subscription_months_retained,
+  ) AS original_subscription_months_retained,
   mozfun.norm.diff_months(
     start => DATETIME(subscription_start_date, plan_interval_timezone),
     `end` => DATETIME(TIMESTAMP(CURRENT_DATE), plan_interval_timezone),
     grace_period => billing_grace_period,
     inclusive => FALSE
-  ) AS current_months_since_plan_start,
+  ) AS current_months_since_subscription_start,
   mozfun.norm.diff_months(
     start => DATETIME(
       COALESCE(original_subscription_start_date, subscription_start_date),
@@ -531,6 +531,6 @@ SELECT
     `end` => DATETIME(TIMESTAMP(CURRENT_DATE), plan_interval_timezone),
     grace_period => billing_grace_period,
     inclusive => FALSE
-  ) AS current_months_since_subscription_start,
+  ) AS current_months_since_origianl_subscription_start,
 FROM
   vpn_subscriptions_with_end_date

@@ -1,4 +1,9 @@
-"""Get big query tables inventory."""
+"""
+Get BigQuery tables inventory.
+
+To read more on the source table, please visit:
+https://cloud.google.com/bigquery/docs/information-schema-tables
+"""
 
 from argparse import ArgumentParser
 

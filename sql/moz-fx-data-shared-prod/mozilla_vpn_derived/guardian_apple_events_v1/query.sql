@@ -46,7 +46,7 @@ SELECT
   receipt_info.offer_identifier,
   receipt_info.offer_type,
   receipt_info.original_purchase_date,
-  receipt_info.original_transaction_id,
+  latest_original_transaction_id AS original_transaction_id,
   receipt_info.product_id,
   receipt_info.purchase_date,
   receipt_info.revocation_date,
@@ -74,13 +74,25 @@ FROM
 CROSS JOIN
   UNNEST(
     ARRAY(
+      SELECT
+        original_transaction_id
+      FROM
+        UNNEST(legacy_subscriptions.apple_receipt.latest_receipt_info)
+      ORDER BY
+        original_purchase_date_ms DESC
+      LIMIT
+        1
+    )
+  ) AS latest_original_transaction_id
+CROSS JOIN
+  UNNEST(
+    ARRAY(
       SELECT AS STRUCT
         TIMESTAMP_MILLIS(expires_date_ms) AS expires_date,
         in_app_ownership_type,
         promotional_offer_id AS offer_identifier,
         IF(is_trial_period = "true", 1, NULL) AS offer_type,
         TIMESTAMP_MILLIS(original_purchase_date_ms) AS original_purchase_date,
-        original_transaction_id,
         product_id,
         TIMESTAMP_MILLIS(purchase_date_ms) AS purchase_date,
         TIMESTAMP_MILLIS(cancellation_date_ms) AS revocation_date,
@@ -88,15 +100,21 @@ CROSS JOIN
       FROM
         UNNEST(
           ARRAY_CONCAT(
-            COALESCE(legacy_subscriptions.apple_receipt.latest_receipt_info, []),
-            COALESCE(legacy_subscriptions.apple_receipt.receipt.in_app, [])
+            COALESCE(legacy_subscriptions.apple_receipt.receipt.in_app, []),
+            COALESCE(legacy_subscriptions.apple_receipt.latest_receipt_info, [])
           )
         )
-      -- ZetaSQL requires QUALIFY to be used in conjunction with WHERE, GROUP BY, or HAVING.
+        WITH OFFSET AS _offset
       WHERE
-        TRUE
+        latest_original_transaction_id = original_transaction_id
       QUALIFY
-        1 = ROW_NUMBER() OVER (PARTITION BY is_trial_period ORDER BY expires_date_ms DESC)
+        1 = ROW_NUMBER() OVER (
+          PARTITION BY
+            is_trial_period
+          ORDER BY
+            expires_date_ms DESC,
+            _offset DESC
+        )
     )
   ) AS receipt_info
 LEFT JOIN
@@ -108,9 +126,12 @@ LEFT JOIN
         renewal_info.expiration_intent,
         COALESCE(renewal_info.is_in_billing_retry_period = 1, FALSE) AS is_in_billing_retry,
       FROM
-        UNNEST(apple_receipt.pending_renewal_info) AS renewal_info
+        UNNEST(apple_receipt.pending_renewal_info)
+        WITH OFFSET AS _offset
       WHERE
-        receipt_info.original_transaction_id = renewal_info.original_transaction_id
+        latest_original_transaction_id = original_transaction_id
+      ORDER BY
+        _offset DESC
       LIMIT
         1
     )

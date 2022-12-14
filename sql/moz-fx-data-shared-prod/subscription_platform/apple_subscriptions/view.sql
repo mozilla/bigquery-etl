@@ -106,7 +106,7 @@ apple_iap_period_aggregates AS (
     )[OFFSET(0)].*,
   FROM
     apple_iap_periods AS periods
-  LEFT JOIN
+  JOIN
     apple_iap_events AS events
   ON
     periods.original_transaction_id = events.original_transaction_id

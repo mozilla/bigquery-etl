@@ -531,6 +531,6 @@ SELECT
     `end` => DATETIME(TIMESTAMP(CURRENT_DATE), plan_interval_timezone),
     grace_period => billing_grace_period,
     inclusive => FALSE
-  ) AS current_months_since_origianl_subscription_start,
+  ) AS current_months_since_original_subscription_start,
 FROM
   vpn_subscriptions_with_end_date

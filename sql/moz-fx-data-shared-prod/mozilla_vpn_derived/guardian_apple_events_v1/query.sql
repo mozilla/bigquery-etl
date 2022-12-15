@@ -53,6 +53,10 @@ SELECT
   receipt_info.revocation_reason,
   CASE -- https://developer.apple.com/documentation/appstoreserverapi/status
   WHEN
+    receipt_info.source = "receipt.in_app"
+  THEN
+    1 -- subscription was active for the values in this receipt
+  WHEN
     TIMESTAMP_MILLIS(
       legacy_subscriptions.apple_receipt.receipt.request_date_ms
     ) < receipt_info.expires_date
@@ -68,7 +72,11 @@ SELECT
   AS status,
   "Auto-Renewable Subscription" AS type,
   legacy_subscriptions.user_id,
-  TIMESTAMP_MILLIS(legacy_subscriptions.apple_receipt.receipt.request_date_ms) AS verified_at,
+  IF(
+    receipt_info.source = "receipt.in_app",
+    receipt_info.purchase_date,
+    TIMESTAMP_MILLIS(legacy_subscriptions.apple_receipt.receipt.request_date_ms)
+  ) AS verified_at,
 FROM
   legacy_subscriptions
 CROSS JOIN
@@ -88,6 +96,7 @@ CROSS JOIN
   UNNEST(
     ARRAY(
       SELECT AS STRUCT
+        source,
         TIMESTAMP_MILLIS(expires_date_ms) AS expires_date,
         in_app_ownership_type,
         promotional_offer_id AS offer_identifier,
@@ -99,12 +108,22 @@ CROSS JOIN
         CAST(cancellation_reason AS INT64) AS revocation_reason,
       FROM
         UNNEST(
-          ARRAY_CONCAT(
-            COALESCE(legacy_subscriptions.apple_receipt.receipt.in_app, []),
-            COALESCE(legacy_subscriptions.apple_receipt.latest_receipt_info, [])
-          )
+          [
+            -- in order by priority
+            STRUCT(
+              "latest_receipt_info" AS source,
+              legacy_subscriptions.apple_receipt.latest_receipt_info AS receipts
+            ),
+            STRUCT(
+              "receipt.in_app" AS source,
+              legacy_subscriptions.apple_receipt.receipt.in_app AS receipts
+            )
+          ]
         )
-        WITH OFFSET AS _offset
+        WITH OFFSET AS _source_offset
+      CROSS JOIN
+        UNNEST(COALESCE(receipts, []))
+        WITH OFFSET AS _receipts_offset
       WHERE
         latest_original_transaction_id = original_transaction_id
       QUALIFY
@@ -112,8 +131,8 @@ CROSS JOIN
           PARTITION BY
             is_trial_period
           ORDER BY
-            expires_date_ms DESC,
-            _offset DESC
+            _source_offset,
+            _receipts_offset
         )
     )
   ) AS receipt_info

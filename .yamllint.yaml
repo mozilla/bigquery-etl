@@ -12,5 +12,6 @@ rules:
 ignore: |
   .git/
   venv/
+  .venv/
   bigquery_etl/events_daily/
   sql_generators/

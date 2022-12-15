@@ -9,6 +9,9 @@ parameters:
   python-version:
     type: string
     default: '3.10'
+  cache-version:
+    type: string
+    default: '3'
 
 executors:
   ubuntu-machine-executor:
@@ -28,12 +31,13 @@ jobs:
             # patterns to restore cache
             - &python_cache_key
               # yamllint disable-line rule:line-length
-              python-<< pipeline.parameters.python-version >>-packages-v2-{{ .Branch }}-{{ checksum "poetry.lock" }}-{{ checksum "pyproject.toml" }}
+              python-<< pipeline.parameters.python-version >>-packages-v<< pipeline.parameters.cache-version >>-{{ .Branch }}-{{ checksum "poetry.lock" }}-{{ checksum "pyproject.toml" }}
             # yamllint disable-line rule:line-length
-            - python-<< pipeline.parameters.python-version >>-packages-v2-{{ .Branch }}-{{ checksum "poetry.lock" }}-
+            - python-<< pipeline.parameters.python-version >>-packages-v<< pipeline.parameters.cache-version >>-{{ .Branch }}-{{ checksum "poetry.lock" }}-
             # yamllint disable-line rule:line-length
-            - python-<< pipeline.parameters.python-version >>-packages-v2-{{ .Branch }}-
-            - python-<< pipeline.parameters.python-version >>-packages-v2-main-
+            - python-<< pipeline.parameters.python-version >>-packages-v<< pipeline.parameters.cache-version >>-{{ .Branch }}-
+            # yamllint disable-line rule:line-length
+            - python-<< pipeline.parameters.python-version >>-packages-v<< pipeline.parameters.cache-version >>-main-
       - &build
         run:
           name: Build

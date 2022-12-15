@@ -725,6 +725,9 @@ with DAG(
     mozilla_vpn_derived__login_flows__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_content_events__v1
     )
+    mozilla_vpn_derived__login_flows__v1.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_stdout_events__v1
+    )
 
     mozilla_vpn_derived__subscription_events__v1.set_upstream(
         mozilla_vpn_derived__active_subscription_ids__v1

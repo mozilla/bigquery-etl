@@ -45753,6 +45753,13 @@ fields:
           mode: NULLABLE
           name: power_total_thread_wakeups
           type: INTEGER
+        - description: 'Number of skipped composites, happening when rendering is
+            too slow to keep up with content.
+
+            '
+          mode: NULLABLE
+          name: gfx_skipped_composites
+          type: INTEGER
         mode: NULLABLE
         name: scalars
         type: RECORD
@@ -52312,6 +52319,13 @@ fields:
           mode: NULLABLE
           name: gfx_supports_hdr
           type: BOOLEAN
+        - description: 'Number of skipped composites, happening when rendering is
+            too slow to keep up with content.
+
+            '
+          mode: NULLABLE
+          name: gfx_skipped_composites
+          type: INTEGER
         mode: NULLABLE
         name: scalars
         type: RECORD

@@ -35,7 +35,7 @@ CREATE TEMP FUNCTION udf_contains_registration(x ANY TYPE) AS (
 
 WITH windowed AS (
   SELECT
-    DATE(submission_timestamp) AS submission_date,
+    DATE(`timestamp`) AS submission_date,
     user_id,
     ROW_NUMBER() OVER w1_unframed AS _n,
     udf.mode_last(ARRAY_AGG(country) OVER w1) AS country,
@@ -49,9 +49,10 @@ WITH windowed AS (
       NOT (event_type = 'fxa_rp - engage' AND service = 'fx-monitor')
     ) OVER w1 = 0 AS monitor_only
   FROM
-    firefox_accounts.fxa_all_events
+    `firefox_accounts.fxa_all_events`
   WHERE
-    user_id IS NOT NULL
+    event_category IN ('auth', 'auth_bounce', 'content', 'oauth')
+    AND user_id IS NOT NULL
     AND event_type NOT IN ( --
       'fxa_email - bounced',
       'fxa_email - click',
@@ -68,14 +69,14 @@ WITH windowed AS (
       'sync - repair_triggered'
     )
     -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULL
-    AND (@submission_date IS NULL OR @submission_date = DATE(submission_timestamp))
+    AND (@submission_date IS NULL OR @submission_date = DATE(`timestamp`))
   WINDOW
     w1 AS (
       PARTITION BY
         user_id,
-        DATE(submission_timestamp)
+        DATE(`timestamp`)
       ORDER BY
-        submission_timestamp --
+        `timestamp` --
       ROWS BETWEEN
         UNBOUNDED PRECEDING
         AND UNBOUNDED FOLLOWING
@@ -84,9 +85,9 @@ WITH windowed AS (
     w1_unframed AS (
       PARTITION BY
         user_id,
-        DATE(submission_timestamp)
+        DATE(`timestamp`)
       ORDER BY
-        submission_timestamp
+        `timestamp`
     )
 )
 SELECT

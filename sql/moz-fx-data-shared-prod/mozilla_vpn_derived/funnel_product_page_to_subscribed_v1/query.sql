@@ -20,10 +20,33 @@ WITH stripe_plans AS (
 ),
 events AS (
   SELECT
-    *,
     DATE(`timestamp`) AS partition_date,
+    `timestamp`,
+    flow_id,
+    entrypoint,
+    entrypoint_experiment,
+    entrypoint_variation,
+    utm_term,
+    utm_source,
+    utm_medium,
+    utm_campaign,
+    utm_content,
+    ua_version,
+    ua_browser,
+    plan_id,
+    promotion_code,
+    oauth_client_id,
+    event_type,
+    os_name,
+    os_version,
+    country,
+    user_id,
+    service,
+    product_id,
   FROM
-    mozdata.firefox_accounts.fxa_content_auth_stdout_events
+    `mozdata.firefox_accounts.fxa_all_events`
+  WHERE
+    event_category IN ('content', 'auth', 'stdout')
 ),
 flows AS (
   SELECT

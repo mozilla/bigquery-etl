@@ -1,18 +1,25 @@
 CREATE OR REPLACE TABLE
-  fxa_users_services_first_seen_v1
+  `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_first_seen_v1`
 PARTITION BY
   DATE(first_service_timestamp)
 CLUSTER BY
   service,
   user_id
 AS
-WITH base AS (
+WITH fxa_content_auth_oauth AS (
   SELECT
-    * REPLACE (
-      IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service) AS service
-    )
+    `timestamp`,
+    user_id,
+    IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service) AS service,
+    os_name,
+    flow_id,
+    event_type,
+    country,
+    entrypoint,
   FROM
-    firefox_accounts.fxa_content_auth_oauth_events
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
+  WHERE
+    event_category IN ('content', 'auth', 'oauth')
 ),
   -- use a window function to look within each USER and SERVICE for the first value of service, os, and country.
   -- also, get the first value of flow_id for later use and create a boolean column that is true if the first instance of a service usage includes a registration.
@@ -29,7 +36,7 @@ first_services AS (
     udf.mode_last(ARRAY_AGG(flow_id) OVER w1_reversed) AS first_service_flow,
     LOGICAL_OR(IFNULL(event_type = 'fxa_reg - complete', FALSE)) OVER w1_reversed AS did_register
   FROM
-    base
+    fxa_content_auth_oauth
   WHERE
     (
       (event_type IN ('fxa_login - complete', 'fxa_reg - complete') AND service IS NOT NULL)
@@ -114,7 +121,7 @@ flows AS (
   FROM
     first_services_g s
   INNER JOIN
-    firefox_accounts.fxa_content_auth_oauth_events AS f
+    fxa_content_auth_oauth AS f
   ON
     s.first_service_flow = f.flow_id
   WHERE

@@ -230,6 +230,13 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
         )
 
+        ExternalTaskMarker(
+            task_id="bqetl_event_rollup__wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
+            external_dag_id="bqetl_event_rollup",
+            external_task_id="wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
+        )
+
         firefox_accounts_derived__fxa_stdout_events__v1_external.set_upstream(
             firefox_accounts_derived__fxa_stdout_events__v1
         )
@@ -393,12 +400,20 @@ with DAG(
         firefox_accounts_derived__fxa_content_events__v1
     )
 
+    firefox_accounts_derived__fxa_users_daily__v1.set_upstream(
+        firefox_accounts_derived__fxa_stdout_events__v1
+    )
+
     firefox_accounts_derived__fxa_users_first_seen__v1.set_upstream(
         firefox_accounts_derived__fxa_auth_events__v1
     )
 
     firefox_accounts_derived__fxa_users_first_seen__v1.set_upstream(
         firefox_accounts_derived__fxa_content_events__v1
+    )
+
+    firefox_accounts_derived__fxa_users_first_seen__v1.set_upstream(
+        firefox_accounts_derived__fxa_stdout_events__v1
     )
 
     firefox_accounts_derived__fxa_users_last_seen__v1.set_upstream(
@@ -413,12 +428,20 @@ with DAG(
         firefox_accounts_derived__fxa_content_events__v1
     )
 
+    firefox_accounts_derived__fxa_users_services_daily__v1.set_upstream(
+        firefox_accounts_derived__fxa_stdout_events__v1
+    )
+
     firefox_accounts_derived__fxa_users_services_devices_daily__v1.set_upstream(
         firefox_accounts_derived__fxa_auth_events__v1
     )
 
     firefox_accounts_derived__fxa_users_services_devices_daily__v1.set_upstream(
         firefox_accounts_derived__fxa_content_events__v1
+    )
+
+    firefox_accounts_derived__fxa_users_services_devices_daily__v1.set_upstream(
+        firefox_accounts_derived__fxa_stdout_events__v1
     )
 
     fox_accounts_derived__fxa_users_services_devices_last_seen__v1.set_upstream(

@@ -18,7 +18,7 @@ WITH fxa_events AS (
     ua_version,
     ua_browser,
   FROM
-    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
+    `firefox_accounts.fxa_all_events`
   WHERE
     DATE(`timestamp`)
     BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY)

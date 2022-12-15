@@ -22,6 +22,7 @@ WITH apple_iap_events AS (
 apple_iap_times AS (
   SELECT
     original_transaction_id,
+    user_id,
     ARRAY_CONCAT(
       -- original_purchase_date does not change
       [MIN(original_purchase_date)],
@@ -39,11 +40,13 @@ apple_iap_times AS (
   FROM
     apple_iap_events
   GROUP BY
-    original_transaction_id
+    original_transaction_id,
+    user_id
 ),
 apple_iap_periods AS (
   SELECT
     original_transaction_id,
+    user_id,
     start_time,
     end_time,
     period_offset,
@@ -75,6 +78,7 @@ apple_iap_periods AS (
 apple_iap_period_aggregates AS (
   SELECT
     periods.original_transaction_id,
+    periods.user_id,
     periods.start_time,
     periods.end_time,
     periods.period_offset,
@@ -83,7 +87,6 @@ apple_iap_period_aggregates AS (
       periods.original_transaction_id
     ) AS original_subscription_id,
     MIN(events.original_purchase_date) AS original_purchase_date,
-    MAX(events.user_id) AS fxa_uid,
     ARRAY_AGG(DISTINCT events.offer_identifier IGNORE NULLS) AS promotion_codes,
     ARRAY_AGG(
       STRUCT(
@@ -108,10 +111,12 @@ apple_iap_period_aggregates AS (
     apple_iap_events AS events
   ON
     periods.original_transaction_id = events.original_transaction_id
+    AND periods.user_id = events.user_id
     AND periods.start_time <= events.purchase_date
     AND periods.end_time > events.purchase_date
   GROUP BY
     periods.original_transaction_id,
+    periods.user_id,
     periods.start_time,
     periods.end_time,
     periods.period_offset
@@ -135,6 +140,7 @@ apple_iap_enhanced_period_aggregates AS (
 apple_iap_trial_periods AS (
   SELECT
     original_transaction_id,
+    user_id,
     purchase_date AS start_time,
     expires_date AS end_time,
   FROM
@@ -142,10 +148,10 @@ apple_iap_trial_periods AS (
   WHERE
     offer_type = 1
   QUALIFY
-    1 = ROW_NUMBER() OVER (PARTITION BY original_transaction_id ORDER BY expires_date DESC)
+    1 = ROW_NUMBER() OVER (PARTITION BY original_transaction_id, user_id ORDER BY expires_date DESC)
 )
 SELECT
-  periods.fxa_uid AS customer_id,
+  periods.user_id AS customer_id,
   periods.subscription_id,
   NULLIF(periods.original_subscription_id, periods.subscription_id) AS original_subscription_id,
   periods.product_id AS plan_id,
@@ -208,7 +214,7 @@ SELECT
     "Refund"
   END
   AS ended_reason,
-  periods.fxa_uid,
+  periods.user_id AS fxa_uid,
   "Apple Store" AS provider,
   (
     CASE

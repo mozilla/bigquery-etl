@@ -42,7 +42,7 @@ jobs:
         run:
           name: Build
           command: |
-            poetry install
+            poetry install -vvv
       - run:
           name: Yamllint Test
           command: poetry run yamllint -c .yamllint.yaml .

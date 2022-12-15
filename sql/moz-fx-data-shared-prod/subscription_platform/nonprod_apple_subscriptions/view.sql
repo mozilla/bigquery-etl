@@ -136,14 +136,13 @@ apple_iap_trial_periods AS (
   SELECT
     original_transaction_id,
     purchase_date AS start_time,
-    MAX(expires_date) AS end_time,
+    expires_date AS end_time,
   FROM
     apple_iap_events
   WHERE
     offer_type = 1
-  GROUP BY
-    original_transaction_id,
-    purchase_date
+  QUALIFY
+    1 = ROW_NUMBER() OVER (PARTITION BY original_transaction_id ORDER BY expires_date DESC)
 )
 SELECT
   periods.fxa_uid AS customer_id,
@@ -243,4 +242,4 @@ FROM
 LEFT JOIN
   apple_iap_trial_periods AS trial_periods
 USING
-  (original_transaction_id, start_time)
+  (original_transaction_id)

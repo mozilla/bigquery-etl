@@ -132,7 +132,7 @@ CROSS JOIN
             is_trial_period
           ORDER BY
             _source_offset,
-            _receipts_offset
+            expires_date_ms DESC
         )
     )
   ) AS receipt_info

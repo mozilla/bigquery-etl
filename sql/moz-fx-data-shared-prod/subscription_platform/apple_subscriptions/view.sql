@@ -248,4 +248,4 @@ FROM
 LEFT JOIN
   apple_iap_trial_periods AS trial_periods
 USING
-  (original_transaction_id)
+  (original_transaction_id, user_id)

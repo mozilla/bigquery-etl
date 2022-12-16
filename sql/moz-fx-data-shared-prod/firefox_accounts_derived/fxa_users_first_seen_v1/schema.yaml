@@ -1,0 +1,17 @@
+fields:
+
+- mode: NULLABLE
+  name: user_id
+  type: STRING
+  description: |
+    A 36 char long hash value representing
+    User ID (registered user).
+
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: |
+    Represents when a specific user_id was
+    observed using fxa events for the first
+    time.
+    Also, used for partitioning the table.

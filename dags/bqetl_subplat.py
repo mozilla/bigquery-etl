@@ -269,6 +269,18 @@ with DAG(
         parameters=["date:DATE:{{ds}}"],
     )
 
+    mozilla_vpn_derived__guardian_apple_events__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_derived__guardian_apple_events__v1",
+        destination_table="guardian_apple_events_v1",
+        dataset_id="mozilla_vpn_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     mozilla_vpn_derived__login_flows__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__login_flows__v1",
         destination_table="login_flows_v1",
@@ -523,7 +535,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=[
-            "external_database_query:STRING:SELECT * FROM devices WHERE DATE(updated_at) = DATE '{{ds}}'"
+            "external_database_query:STRING: SELECT\n  id,\n  user_id,\n  name,\n  mullvad_id,\n  pubkey,\n  ipv4_address,\n  ipv6_address,\n  created_at,\n  updated_at,\n  uid,\n  platform,\n  useragent,\n  unique_id\nFROM devices WHERE DATE(updated_at) = DATE '{{ds}}'"
         ],
     )
 
@@ -537,7 +549,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=[
-            "external_database_query:STRING:SELECT * FROM subscriptions WHERE DATE(updated_at) = DATE '{{ds}}'"
+            "external_database_query:STRING: SELECT\n  id,\n  user_id,\n  is_active,\n  mullvad_token,\n  mullvad_account_created_at,\n  mullvad_account_expiration_date,\n  ended_at,\n  created_at,\n  updated_at,\n  type,\n  fxa_last_changed_at,\n  provider,\n  provider_product_id,\n  provider_original_purchase_token,\n  provider_receipt_raw,\n  provider_receipt_json,\n  provider_expiration_date,\n  fxa_migration_note\nFROM subscriptions WHERE DATE(updated_at) = DATE '{{ds}}'"
         ],
     )
 
@@ -551,7 +563,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=[
-            "external_database_query:STRING:SELECT * FROM users WHERE DATE(updated_at) = DATE '{{ds}}'"
+            "external_database_query:STRING: SELECT\n  id,\n  email,\n  fxa_uid,\n  fxa_access_token,\n  fxa_refresh_token,\n  fxa_profile_json,\n  created_at,\n  updated_at,\n  display_name,\n  avatar\nFROM users WHERE DATE(updated_at) = DATE '{{ds}}'"
         ],
     )
 
@@ -657,7 +669,7 @@ with DAG(
     )
 
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
-        mozilla_vpn_derived__subscriptions__v1
+        mozilla_vpn_derived__guardian_apple_events__v1
     )
 
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
@@ -717,6 +729,14 @@ with DAG(
     )
     mozilla_vpn_derived__fxa_attribution__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_stdout_events__v1
+    )
+
+    mozilla_vpn_derived__guardian_apple_events__v1.set_upstream(
+        mozilla_vpn_external__subscriptions__v1
+    )
+
+    mozilla_vpn_derived__guardian_apple_events__v1.set_upstream(
+        mozilla_vpn_external__users__v1
     )
 
     mozilla_vpn_derived__login_flows__v1.set_upstream(

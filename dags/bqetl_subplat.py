@@ -269,6 +269,18 @@ with DAG(
         parameters=["date:DATE:{{ds}}"],
     )
 
+    mozilla_vpn_derived__guardian_apple_events__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_derived__guardian_apple_events__v1",
+        destination_table="guardian_apple_events_v1",
+        dataset_id="mozilla_vpn_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     mozilla_vpn_derived__login_flows__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__login_flows__v1",
         destination_table="login_flows_v1",
@@ -657,7 +669,7 @@ with DAG(
     )
 
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
-        mozilla_vpn_derived__subscriptions__v1
+        mozilla_vpn_derived__guardian_apple_events__v1
     )
 
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
@@ -717,6 +729,14 @@ with DAG(
     )
     mozilla_vpn_derived__fxa_attribution__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_stdout_events__v1
+    )
+
+    mozilla_vpn_derived__guardian_apple_events__v1.set_upstream(
+        mozilla_vpn_external__subscriptions__v1
+    )
+
+    mozilla_vpn_derived__guardian_apple_events__v1.set_upstream(
+        mozilla_vpn_external__users__v1
     )
 
     mozilla_vpn_derived__login_flows__v1.set_upstream(

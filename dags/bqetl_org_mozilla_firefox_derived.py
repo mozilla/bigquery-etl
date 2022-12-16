@@ -82,7 +82,7 @@ with DAG(
         task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
         external_dag_id="bqetl_mobile_search",
         external_task_id="search_derived__mobile_search_clients_daily__v1",
-        execution_delta=datetime.timedelta(seconds=3600),
+        execution_delta=datetime.timedelta(0),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,

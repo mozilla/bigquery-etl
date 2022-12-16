@@ -15,7 +15,8 @@ Built from bigquery-etl repo, [`dags/bqetl_campaign_cost_breakdowns.py`](https:/
 
 #### Description
 
-Derived tables on top of fenix installation and DOU metrics, as well as Google ads campaign data.
+Derived tables on top of fenix installation and DOU metrics,
+as well as Google ads campaign data.
 
 #### Owner
 

@@ -1,20 +1,20 @@
 WITH _current AS (
-  SELECT
+  SELECT DISTINCT
     user_id,
-    ARRAY_AGG(DISTINCT service IGNORE NULLS) AS services_used,
+    -- TOOD: should this should be dropped? We have fxa_users_services_first_seen to answer this kind of question.
+    -- ARRAY_AGG(DISTINCT service IGNORE NULLS) AS services_used,ß
   FROM
-    firefox_accounts.fxa_all_events
+    -- fxa_users_daily already filters out for the following events:
+    -- event_category IN ('auth', 'auth_bounce', 'content', 'oauth')
+    `firefox_accounts.fxa_users_daily`
   WHERE
-    DATE(`timestamp`) = @submission_date
-    AND event_category IN ('auth', 'auth_bounce', 'content', 'oauth')
-  GROUP BY
-    user_id
+    submission_date = @submission_date
 ),
 _previous AS (
-  SELECT
-    *
+  SELECT DISTINCT
+    user_id
   FROM
-    firefox_accounts_derived.fxa_users_first_seen_v1
+    `firefox_accounts.fxa_users_first_seen`
   WHERE
     -- In reprocessing scenarios, we must always backfill from the first affected date
     -- all the way to the present; to enforce that, we explicitly drop any data after
@@ -23,22 +23,8 @@ _previous AS (
 )
 SELECT
   user_id,
-  COALESCE(_previous.first_seen_date, @submission_date) AS first_seen_date,
-  ARRAY(
-    SELECT DISTINCT
-      service
-    FROM
-      UNNEST(
-        ARRAY_CONCAT(COALESCE(_previous.services_used, []), COALESCE(_current.services_used, []))
-      ) AS service
-    WHERE
-      service IS NOT NULL
-    ORDER BY
-      service
-  ) AS services_used,
+  DATE(@submission_date) AS first_seen_date,
 FROM
-  _previous
-FULL OUTER JOIN
   _current
-USING
-  (user_id)
+WHERE
+  user_id NOT IN (SELECT user_id FROM _previous)

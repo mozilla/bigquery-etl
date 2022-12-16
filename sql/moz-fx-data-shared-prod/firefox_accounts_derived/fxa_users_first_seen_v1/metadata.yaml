@@ -1,9 +1,8 @@
 friendly_name: FxA Users First Seen
 description: |-
-  Stores the first date we saw each user_id, and the services
-  they've used over the history of the user.
+  Stores the first date we saw each user_id.
 owners:
-- frank@mozilla.com
+- kignasiak@mozilla.com
 labels:
   application: firefox_accounts
   incremental: true
@@ -13,17 +12,9 @@ scheduling:
   start_date: '2021-07-09'
   priority: 80
   depends_on_past: true
-  # This query updates the entire existing table every day rather than appending
-  # a new partition, so we need to disable date_partition_parameter and instead
-  # pass submission_date as a generic param.
-  date_partition_parameter: null
-  parameters:
-  - submission_date:DATE:{{ds}}
+  date_partition_parameter: submission_date
 bigquery:
   time_partitioning:
     type: day
     field: first_seen_date
     require_partition_filter: false
-  clustering:
-    fields:
-    - user_id

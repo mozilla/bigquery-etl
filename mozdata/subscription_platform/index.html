@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#nonprod_stripe_subscriptions" class="md-skip">
+        <a href="#apple_subscriptions" class="md-skip">
           Skip to content
         </a>
       
@@ -1565,6 +1565,20 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#apple_subscriptions" class="md-nav__link">
+    apple_subscriptions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nonprod_apple_subscriptions" class="md-nav__link">
+    nonprod_apple_subscriptions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#nonprod_stripe_subscriptions" class="md-nav__link">
     nonprod_stripe_subscriptions
   </a>
@@ -2194,6 +2208,20 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#apple_subscriptions" class="md-nav__link">
+    apple_subscriptions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nonprod_apple_subscriptions" class="md-nav__link">
+    nonprod_apple_subscriptions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#nonprod_stripe_subscriptions" class="md-nav__link">
     nonprod_stripe_subscriptions
   </a>
@@ -2241,6 +2269,50 @@
 <p>Combined subscription information from multiple products
 and payment platforms; see bug 1703340</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/subscription_platform">Source Directory</a></p>
+<h2 id="apple_subscriptions"><a href="#apple_subscriptions">apple_subscriptions</a></h2>
+<p><code>subscription_platform.apple_subscriptions</code></p>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn_derived>mozilla_vpn_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn_derived/guardian_apple_events_v1>guardian_apple_events_v1</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-fxa-prod-0712>moz-fx-fxa-prod-0712</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-fxa-prod-0712/firestore_export>firestore_export</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-fxa-prod-0712/firestore_export/iap_app_store_purchases_raw_changelog>iap_app_store_purchases_raw_changelog</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/subscription_platform/apple_subscriptions">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/subscription_platform/apple_subscriptions/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/subscription_platform/apple_subscriptions/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="nonprod_apple_subscriptions"><a href="#nonprod_apple_subscriptions">nonprod_apple_subscriptions</a></h2>
+<p><code>subscription_platform.nonprod_apple_subscriptions</code></p>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn_derived>mozilla_vpn_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn_derived/guardian_apple_events_v1>guardian_apple_events_v1</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-fxa-nonprod-375e>moz-fx-fxa-nonprod-375e</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-fxa-nonprod-375e/firestore_export>firestore_export</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-fxa-nonprod-375e/firestore_export/iap_app_store_purchases_raw_changelog>iap_app_store_purchases_raw_changelog</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/subscription_platform/nonprod_apple_subscriptions">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/subscription_platform/nonprod_apple_subscriptions/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/subscription_platform/nonprod_apple_subscriptions/metadata.yaml">Metadata File</a> </p>
+<hr />
 <h2 id="nonprod_stripe_subscriptions"><a href="#nonprod_stripe_subscriptions">nonprod_stripe_subscriptions</a></h2>
 <p><code>subscription_platform.nonprod_stripe_subscriptions</code></p>
 <table>

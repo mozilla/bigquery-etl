@@ -246,8 +246,12 @@ with DAG(
         destination_table="fxa_users_daily_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kignasiak@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "kignasiak@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

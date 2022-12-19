@@ -348,6 +348,13 @@ fields:
       mode: NULLABLE
       name: activation_activation_id
       type: STRING
+    - description: 'Sets the legacy client ID as part of the deletion-reqest and other
+        pings.
+
+        '
+      mode: NULLABLE
+      name: legacy_ids_client_id
+      type: STRING
     mode: NULLABLE
     name: uuid
     type: RECORD

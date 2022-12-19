@@ -495,6 +495,17 @@ fields:
     mode: REPEATED
     name: text
     type: RECORD
+  - fields:
+    - description: 'Sets the legacy client ID as part of the deletion-reqest and other
+        pings.
+
+        '
+      mode: NULLABLE
+      name: legacy_ids_client_id
+      type: STRING
+    mode: NULLABLE
+    name: uuid
+    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

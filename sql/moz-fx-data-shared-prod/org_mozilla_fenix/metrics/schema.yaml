@@ -1074,6 +1074,25 @@ fields:
       mode: NULLABLE
       name: addresses_updated
       type: INTEGER
+    - description: 'The number of RTCRtpSenders created.
+
+        '
+      mode: NULLABLE
+      name: rtcrtpsender_count
+      type: INTEGER
+    - description: 'The number of RTCRtpSenders created that use the compatibility
+        mode for setParameters.
+
+        '
+      mode: NULLABLE
+      name: rtcrtpsender_count_setparameters_compat
+      type: INTEGER
+    - description: 'How many times PDF Viewer was used.
+
+        '
+      mode: NULLABLE
+      name: pdfjs_used
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -2222,6 +2241,33 @@ fields:
       mode: REPEATED
       name: cookie_banners_rule_lookup_by_load
       type: RECORD
+    - description: 'Counts the number of times some actions are executed in the PDF
+        viewer.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: pdfjs_buttons
+      type: RECORD
+    - description: 'Counts the number of times some PDF editing features are used.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: pdfjs_editing
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD
@@ -3029,6 +3075,29 @@ fields:
         type: INTEGER
       mode: NULLABLE
       name: power_battery_percentage_when_user_active
+      type: RECORD
+    - description: 'Time spent to display first page in PDF Viewer (ms).
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: pdfjs_time_to_view
       type: RECORD
     mode: NULLABLE
     name: custom_distribution
@@ -8443,6 +8512,204 @@ fields:
       type: RECORD
     mode: NULLABLE
     name: labeled_boolean
+    type: RECORD
+  - fields:
+    - description: 'The proportion of RTCRtpSenders that have thrown an error at least
+        once about a setParameters call that attempted to change the number of encodings.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: denominator
+        type: INTEGER
+      - mode: NULLABLE
+        name: numerator
+        type: INTEGER
+      mode: NULLABLE
+      name: rtcrtpsender_setparameters_fail_length_changed
+      type: RECORD
+    - description: 'The proportion of RTCRtpSenders configured with the setParameters
+        compat mode that have thrown an error at least once about a setParameters
+        call that had no encodings (we do not measure this against the general population
+        of RTCRtpSenders, since without the compat mode this failure is never observed,
+        because it fails the length change check).
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: denominator
+        type: INTEGER
+      - mode: NULLABLE
+        name: numerator
+        type: INTEGER
+      mode: NULLABLE
+      name: rtcrtpsender_setparameters_fail_no_encodings
+      type: RECORD
+    - description: 'The proportion of RTCRtpSenders that have thrown an error at least
+        once about a setParameters call because [[LastReturnedParameters]] was not
+        set. (ie; there was not a recent enough call to getParameters)
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: denominator
+        type: INTEGER
+      - mode: NULLABLE
+        name: numerator
+        type: INTEGER
+      mode: NULLABLE
+      name: rtcrtpsender_setparameters_fail_no_getparameters
+      type: RECORD
+    - description: 'The proportion of RTCRtpSenders that have thrown an error at least
+        once about a setParameters call that did not set the transactionId field.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: denominator
+        type: INTEGER
+      - mode: NULLABLE
+        name: numerator
+        type: INTEGER
+      mode: NULLABLE
+      name: rtcrtpsender_setparameters_fail_no_transactionid
+      type: RECORD
+    - description: 'The proportion of RTCRtpSenders that have thrown an error at least
+        once about a setParameters call that had no encodings.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: denominator
+        type: INTEGER
+      - mode: NULLABLE
+        name: numerator
+        type: INTEGER
+      mode: NULLABLE
+      name: rtcrtpsender_setparameters_fail_other
+      type: RECORD
+    - description: 'The proportion of RTCRtpSenders that have thrown an error at least
+        once about a setParameters call that attempted to change the rid on an encoding
+        (note that we only check this if the encoding count did not change, see fail_length_changed).
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: denominator
+        type: INTEGER
+      - mode: NULLABLE
+        name: numerator
+        type: INTEGER
+      mode: NULLABLE
+      name: rtcrtpsender_setparameters_fail_rid_changed
+      type: RECORD
+    - description: 'The proportion of RTCRtpSenders that have thrown an error at least
+        once about a setParameters call that used a stale transaction id.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: denominator
+        type: INTEGER
+      - mode: NULLABLE
+        name: numerator
+        type: INTEGER
+      mode: NULLABLE
+      name: rtcrtpsender_setparameters_fail_stale_transactionid
+      type: RECORD
+    - description: 'The proportion of RTCRtpSenders configured with the setParameters
+        compat mode that have warned at least once about a setParameters call that
+        attempted to change the number of encodings.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: denominator
+        type: INTEGER
+      - mode: NULLABLE
+        name: numerator
+        type: INTEGER
+      mode: NULLABLE
+      name: rtcrtpsender_setparameters_warn_length_changed
+      type: RECORD
+    - description: 'The proportion of RTCRtpSenders configured with the setParameters
+        compat mode that have warned at least once about a setParameters call because
+        [[LastReturnedParameters]] was not set.  (ie; there was not a recent enough
+        call to getParameters)
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: denominator
+        type: INTEGER
+      - mode: NULLABLE
+        name: numerator
+        type: INTEGER
+      mode: NULLABLE
+      name: rtcrtpsender_setparameters_warn_no_getparameters
+      type: RECORD
+    - description: 'The proportion of RTCRtpSenders configured with the setParameters
+        compat mode that have warned at least once about a setParameters call that
+        did not set the transactionId field.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: denominator
+        type: INTEGER
+      - mode: NULLABLE
+        name: numerator
+        type: INTEGER
+      mode: NULLABLE
+      name: rtcrtpsender_setparameters_warn_no_transactionid
+      type: RECORD
+    - description: 'The proportion of RTCRtpSenders configured with the setParameters
+        compat mode that have warned at least once about a setParameters call that
+        attempted to change the rid on an encoding (note that we only check this if
+        the encoding count did not change, see warn_length_changed).
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: denominator
+        type: INTEGER
+      - mode: NULLABLE
+        name: numerator
+        type: INTEGER
+      mode: NULLABLE
+      name: rtcrtpsender_setparameters_warn_rid_changed
+      type: RECORD
+    - description: 'The proportion of RTCRtpSenders configured with the setParameters
+        compat mode that have warned at least once about a setParameters call that
+        used a stale transaction id.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: denominator
+        type: INTEGER
+      - mode: NULLABLE
+        name: numerator
+        type: INTEGER
+      mode: NULLABLE
+      name: rtcrtpsender_setparameters_warn_stale_transactionid
+      type: RECORD
+    - description: 'The proportion of RTCRtpSenders that were created by an addTransceivers
+        call that was passed a sendEncodings.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: denominator
+        type: INTEGER
+      - mode: NULLABLE
+        name: numerator
+        type: INTEGER
+      mode: NULLABLE
+      name: rtcrtpsender_used_sendencodings
+      type: RECORD
+    mode: NULLABLE
+    name: rate
     type: RECORD
   mode: NULLABLE
   name: metrics

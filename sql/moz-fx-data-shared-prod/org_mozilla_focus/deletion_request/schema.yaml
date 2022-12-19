@@ -329,7 +329,8 @@ fields:
     name: url
     type: RECORD
   - fields:
-    - description: 'Sets the legacy client ID as part of the deletion-reqest ping.
+    - description: 'Sets the legacy client ID as part of the deletion-reqest and other
+        pings.
 
         '
       mode: NULLABLE

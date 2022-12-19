@@ -61,8 +61,7 @@ adjust_client AS (
   FROM
     mozdata.fenix.firefox_android_clients
   WHERE
-    adjust_network IS NOT NULL
-    AND adjust_network != ''
+    adjust_network != 'Unknown'
 )
 SELECT
   submission_date,

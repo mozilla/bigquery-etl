@@ -17,7 +17,7 @@ WITH _current AS (
       IF(submission_date < '2019-11-25', TRUE, monitor_only IS FALSE) AS INT64
     ) AS days_seen_no_monitor_bits
   FROM
-    `firefox_accounts.fxa_users_daily`
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_users_daily`
   WHERE
     submission_date = @submission_date
 ),
@@ -31,7 +31,7 @@ _previous AS (
       ) AS days_seen_no_monitor_bits
     )
   FROM
-    `firefox_accounts_derived.fxa_users_last_seen_v1`
+    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_last_seen_v1`
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.

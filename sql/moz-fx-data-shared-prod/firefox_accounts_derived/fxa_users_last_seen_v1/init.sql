@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  `firefox_accounts_derived.fxa_users_last_seen_v1`
+  `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_last_seen_v1`
 PARTITION BY
   submission_date
 CLUSTER BY

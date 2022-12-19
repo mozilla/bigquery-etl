@@ -41,9 +41,9 @@ references:
   - moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1
   - mozdata.fenix.baseline
   - mozdata.fenix.baseline_clients_first_seen
-  - mozdata.fenix.first_session
+  - mozdata.fenix.firefox_android_clients
   query.sql:
   - moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1
   - mozdata.fenix.baseline
   - mozdata.fenix.baseline_clients_first_seen
-  - mozdata.fenix.first_session
+  - mozdata.fenix.firefox_android_clients

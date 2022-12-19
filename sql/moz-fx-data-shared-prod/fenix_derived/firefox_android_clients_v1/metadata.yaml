@@ -40,7 +40,7 @@ scheduling:
     dag_name: copy_deduplicate
     execution_delta: 1h
   parameters:
-  - first_seen_date:DATE:{{ds}}
+  - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     field: first_seen_date

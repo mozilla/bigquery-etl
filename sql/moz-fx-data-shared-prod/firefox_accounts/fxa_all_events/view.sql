@@ -1,3 +1,8 @@
+-- NOTE regarding oauth events:
+-- oauth events have been merged into the auth table.
+-- However, the oauth events table still contains around
+-- 162 days of data from 2019H2 hence why it's still available
+-- via this view.
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
 AS
@@ -59,8 +64,7 @@ fxa_content_events AS (
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_content_events_v1`
 ),
--- TODO: fxa_oauth_events has been deprecated.
--- This will be removed with another change.
+-- oauth events, see the note on top
 fxa_oauth_events AS (
   SELECT
     `timestamp`,
@@ -116,8 +120,7 @@ unioned AS (
   FROM
     fxa_content_events
   UNION ALL
-  -- TODO: fxa_oauth_events has been deprecated.
-  -- This will be removed with another change.
+  -- oauth events, see the note on top
   SELECT
     *,
     'oauth' AS event_category,

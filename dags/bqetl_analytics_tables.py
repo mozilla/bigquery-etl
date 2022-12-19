@@ -61,7 +61,7 @@ with DAG(
         ],
         date_partition_parameter="None",
         depends_on_past=True,
-        parameters=["first_seen_date:DATE:{{ds}}"],
+        parameters=["submission_date:DATE:{{ds}}"],
     )
 
     wait_for_baseline_clients_daily = ExternalTaskSensor(

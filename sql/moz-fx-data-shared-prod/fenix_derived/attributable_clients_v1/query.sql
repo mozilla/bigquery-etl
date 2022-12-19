@@ -55,7 +55,7 @@ adjust_client AS (
   SELECT
     client_id,
     adjust_network,
-    adjust_adgroup,
+    adjust_ad_group AS adjust_adgroup,
     adjust_campaign,
     adjust_creative,
   FROM

@@ -63,28 +63,16 @@ CLUSTER BY
     ),
     adjust_client AS (
       SELECT
-        client_info.client_id AS client_id,
-        ARRAY_AGG(metrics.string.first_session_network ORDER BY submission_timestamp)[
-          SAFE_OFFSET(0)
-        ] AS adjust_network,
-        ARRAY_AGG(metrics.string.first_session_adgroup ORDER BY submission_timestamp)[
-          SAFE_OFFSET(0)
-        ] AS adjust_adgroup,
-        ARRAY_AGG(metrics.string.first_session_campaign ORDER BY submission_timestamp)[
-          SAFE_OFFSET(0)
-        ] AS adjust_campaign,
-        ARRAY_AGG(metrics.string.first_session_creative ORDER BY submission_timestamp)[
-          SAFE_OFFSET(0)
-        ] AS adjust_creative,
-        MIN(DATE(submission_timestamp)) AS first_session_date
+        client_id,
+        adjust_network,
+        adjust_adgroup,
+        adjust_campaign,
+        adjust_creative,
       FROM
-        `mozdata.fenix.first_session`
+        mozdata.fenix.firefox_android_clients
       WHERE
-        DATE(submission_timestamp) >= first_date
-        AND metrics.string.first_session_network IS NOT NULL
-        AND metrics.string.first_session_network != ''
-      GROUP BY
-        client_id
+        adjust_network IS NOT NULL
+        AND adjust_network != ''
     )
     SELECT
       submission_date,

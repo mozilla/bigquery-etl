@@ -6,10 +6,10 @@ fields:
   name: sample_id
   type: INTEGER
 - mode: NULLABLE
-  name: submission_date
+  name: first_seen_date
   type: DATE
 - mode: NULLABLE
-  name: first_seen_date
+  name: submission_date
   type: DATE
 - mode: NULLABLE
   name: first_run_date

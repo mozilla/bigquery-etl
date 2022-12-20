@@ -1196,6 +1196,36 @@ fields:
       mode: NULLABLE
       name: page_action_menu_view_history_panel
       type: INTEGER
+    - description: 'Counts the number of times a user taps Customize Homepage
+
+        in the app menu
+
+        '
+      mode: NULLABLE
+      name: app_menu_customize_homepage
+      type: INTEGER
+    - description: 'Counts the number of times a user taps Help in the app menu
+
+        '
+      mode: NULLABLE
+      name: app_menu_help
+      type: INTEGER
+    - description: 'Counts the number of times a user taps in the menu toolbar
+
+        on the homepage
+
+        '
+      mode: NULLABLE
+      name: app_menu_homepage_menu
+      type: INTEGER
+    - description: 'Counts the number of times a user taps in the menu toolbar
+
+        from a website
+
+        '
+      mode: NULLABLE
+      name: app_menu_site_menu
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

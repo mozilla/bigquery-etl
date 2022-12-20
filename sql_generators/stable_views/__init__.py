@@ -197,19 +197,26 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
         with metadata_file.open("w") as f:
             f.write(metadata_content)
 
-    # get view schema with descriptions
-    try:
-        content = VIEW_CREATE_REGEX.sub("", target_file.read_text())
-        content += " WHERE DATE(submission_timestamp) = '2020-01-01'"
-        view_schema = Schema.from_query_file(target_file, content=content)
+    if schema.user_facing_view not in {
+        # skip main and its clones because their large schema causes frequent API
+        # failures when trying to update the view schema
+        "telemetry.main",
+        "telemetry.first_shutdown",
+        "telemetry.saved_session",
+    }:
+        # get view schema with descriptions
+        try:
+            content = VIEW_CREATE_REGEX.sub("", target_file.read_text())
+            content += " WHERE DATE(submission_timestamp) = '2020-01-01'"
+            view_schema = Schema.from_query_file(target_file, content=content)
 
-        stable_table_schema = Schema.from_json({"fields": schema.schema})
-        view_schema.merge(
-            stable_table_schema, attributes=["description"], add_missing_fields=False
-        )
-        view_schema.to_yaml_file(target_dir / "schema.yaml")
-    except Exception as e:
-        print(f"Cannot generate schema.yaml for {target_file}: {e}")
+            stable_table_schema = Schema.from_json({"fields": schema.schema})
+            view_schema.merge(
+                stable_table_schema, attributes=["description"], add_missing_fields=False
+            )
+            view_schema.to_yaml_file(target_dir / "schema.yaml")
+        except Exception as e:
+            print(f"Cannot generate schema.yaml for {target_file}: {e}")
 
 
 @click.command("generate")

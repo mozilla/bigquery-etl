@@ -112,6 +112,14 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
         r"CREATE OR REPLACE VIEW\n\s*[^\s]+\s*\nAS", re.IGNORECASE
     )
 
+    SKIP_VIEW_SCHEMA = {
+        # skip main and its clones because their large schema causes frequent API
+        # failures when trying to update the view schema
+        "telemetry.main",
+        "telemetry.first_shutdown",
+        "telemetry.saved_session",
+    }
+
     target_dir = (
         sql_dir
         / target_project
@@ -197,13 +205,7 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
         with metadata_file.open("w") as f:
             f.write(metadata_content)
 
-    if schema.user_facing_view not in {
-        # skip main and its clones because their large schema causes frequent API
-        # failures when trying to update the view schema
-        "telemetry.main",
-        "telemetry.first_shutdown",
-        "telemetry.saved_session",
-    }:
+    if schema.user_facing_view not in SKIP_VIEW_SCHEMA:
         # get view schema with descriptions
         try:
             content = VIEW_CREATE_REGEX.sub("", target_file.read_text())

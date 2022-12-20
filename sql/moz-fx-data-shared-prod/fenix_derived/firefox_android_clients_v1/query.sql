@@ -209,14 +209,38 @@ SELECT
     OR _current.metadata.reported_first_session_ping AS reported_first_session_ping,
     _previous.metadata.reported_metrics_ping
     OR _current.metadata.reported_metrics_ping AS reported_metrics_ping,
-    COALESCE(
-      _previous.metadata.min_first_session_ping_run_date,
-      _current.metadata.min_first_session_ping_run_date
-    ) AS min_first_session_ping_run_date,
-    COALESCE(
-      _previous.metadata.min_metrics_ping_submission_date,
-      _current.metadata.min_metrics_ping_submission_date
-    ) AS min_metrics_ping_submission_date,
+    CASE
+    WHEN
+      _previous.metadata.min_first_session_ping_run_date IS NOT NULL
+      AND _current.metadata.min_first_session_ping_run_date IS NOT NULL
+    THEN
+      LEAST(
+        _previous.metadata.min_first_session_ping_run_date,
+        _current.metadata.min_first_session_ping_run_date
+      )
+    ELSE
+      COALESCE(
+        _previous.metadata.min_first_session_ping_run_date,
+        _current.metadata.min_first_session_ping_run_date
+      )
+    END
+    AS min_first_session_ping_run_date,
+    CASE
+    WHEN
+      _previous.metadata.min_metrics_ping_submission_date IS NOT NULL
+      AND _current.metadata.min_metrics_ping_submission_date IS NOT NULL
+    THEN
+      LEAST(
+        _previous.metadata.min_metrics_ping_submission_date,
+        _current.metadata.min_metrics_ping_submission_date
+      )
+    ELSE
+      COALESCE(
+        _previous.metadata.min_metrics_ping_submission_date,
+        _current.metadata.min_metrics_ping_submission_date
+      )
+    END
+    AS min_metrics_ping_submission_date,
     COALESCE(
       _previous.metadata.adjust_network__source_ping,
       _current.metadata.adjust_network__source_ping

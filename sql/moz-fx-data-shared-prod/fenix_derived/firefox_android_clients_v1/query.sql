@@ -264,11 +264,3 @@ FULL OUTER JOIN
   _previous
 USING
   (client_id)
-LEFT JOIN
-  first_session_ping AS first_session
-USING
-  (client_id)
-LEFT JOIN
-  metrics_ping AS metrics
-USING
-  (client_id)

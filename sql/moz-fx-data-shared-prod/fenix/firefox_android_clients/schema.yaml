@@ -6,10 +6,10 @@ fields:
   name: sample_id
   type: INTEGER
 - mode: NULLABLE
-  name: first_seen_date
+  name: submission_date
   type: DATE
 - mode: NULLABLE
-  name: submission_date
+  name: first_seen_date
   type: DATE
 - mode: NULLABLE
   name: first_run_date
@@ -50,6 +50,9 @@ fields:
     type: BOOLEAN
   - mode: NULLABLE
     name: min_first_session_ping_run_date
+    type: DATE
+  - mode: NULLABLE
+    name: min_metrics_ping_submission_date
     type: DATE
   - mode: NULLABLE
     name: adjust_network__source_ping

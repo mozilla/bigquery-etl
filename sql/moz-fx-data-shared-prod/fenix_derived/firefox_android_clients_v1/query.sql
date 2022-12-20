@@ -24,25 +24,22 @@ first_session_ping AS (
     client_info.client_id AS client_id,
     MIN(sample_id) AS sample_id,
     MIN(SAFE.PARSE_DATETIME('%F', SUBSTR(client_info.first_run_date, 1, 10))) AS first_run_datetime,
-    ARRAY_AGG(metrics.string.first_session_campaign ORDER BY submission_timestamp ASC)[
+    ARRAY_AGG(metrics.string.first_session_campaign IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
     ] AS adjust_campaign,
-    ARRAY_AGG(metrics.string.first_session_network ORDER BY submission_timestamp ASC)[
+    ARRAY_AGG(metrics.string.first_session_network IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
     ] AS adjust_network,
-    ARRAY_AGG(metrics.string.first_session_adgroup ORDER BY submission_timestamp ASC)[
+    ARRAY_AGG(metrics.string.first_session_adgroup IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
     ] AS adjust_ad_group,
-    ARRAY_AGG(metrics.string.first_session_creative ORDER BY submission_timestamp ASC)[
+    ARRAY_AGG(metrics.string.first_session_creative IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
     ] AS adjust_creative
   FROM
     `mozdata.fenix.first_session` AS fenix_first_session
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND SAFE.PARSE_DATE('%F', SUBSTR(client_info.first_run_date, 1, 10)) >= DATE(
-      submission_timestamp
-    ) -- first_session ping received after the client is first seen.
     AND ping_info.seq = 0 -- Pings are sent in sequence, this guarantees that the first one is returned.
   GROUP BY
     client_id
@@ -54,10 +51,25 @@ metrics_ping AS (
     client_info.client_id AS client_id,
     MIN(sample_id) AS sample_id,
     DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
-    ARRAY_AGG(metrics.string.metrics_adjust_network ORDER BY submission_timestamp ASC)[
+    ARRAY_AGG(
+      metrics.string.metrics_adjust_campaign IGNORE NULLS
+      ORDER BY
+        submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS adjust_campaign,
+    ARRAY_AGG(metrics.string.metrics_adjust_network IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
     ] AS adjust_network,
-    ARRAY_AGG(metrics.string.metrics_install_source ORDER BY submission_timestamp ASC)[
+    ARRAY_AGG(
+      metrics.string.metrics_adjust_ad_group IGNORE NULLS
+      ORDER BY
+        submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS adjust_ad_group,
+    ARRAY_AGG(
+      metrics.string.metrics_adjust_creative IGNORE NULLS
+      ORDER BY
+        submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS adjust_creative,
+    ARRAY_AGG(metrics.string.metrics_install_source IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
     ] AS install_source
   FROM
@@ -80,9 +92,9 @@ _current AS (
     first_seen.device_manufacturer AS device_manufacturer,
     first_seen.device_model AS device_model,
     first_seen.os_version AS os_version,
-    first_session.adjust_campaign AS adjust_campaign,
-    first_session.adjust_ad_group AS adjust_ad_group,
-    first_session.adjust_creative AS adjust_creative,
+    COALESCE(first_session.adjust_campaign, metrics.adjust_campaign) AS adjust_campaign,
+    COALESCE(first_session.adjust_ad_group, metrics.adjust_ad_group) AS adjust_ad_group,
+    COALESCE(first_session.adjust_creative, metrics.adjust_creative) AS adjust_creative,
     COALESCE(first_session.adjust_network, metrics.adjust_network) AS adjust_network,
     metrics.install_source AS install_source,
     STRUCT(
@@ -105,6 +117,7 @@ _current AS (
       END
       AS reported_metrics_ping,
       DATE(first_session.first_run_datetime) AS min_first_session_ping_run_date,
+      DATE(metrics.min_submission_datetime) AS min_metrics_ping_submission_date,
       CASE
         mozfun.norm.get_earliest_value(
           [
@@ -196,10 +209,38 @@ SELECT
     OR _current.metadata.reported_first_session_ping AS reported_first_session_ping,
     _previous.metadata.reported_metrics_ping
     OR _current.metadata.reported_metrics_ping AS reported_metrics_ping,
-    COALESCE(
-      _previous.metadata.min_first_session_ping_run_date,
-      _current.metadata.min_first_session_ping_run_date
-    ) AS min_first_session_ping_run_date,
+    CASE
+    WHEN
+      _previous.metadata.min_first_session_ping_run_date IS NOT NULL
+      AND _current.metadata.min_first_session_ping_run_date IS NOT NULL
+    THEN
+      LEAST(
+        _previous.metadata.min_first_session_ping_run_date,
+        _current.metadata.min_first_session_ping_run_date
+      )
+    ELSE
+      COALESCE(
+        _previous.metadata.min_first_session_ping_run_date,
+        _current.metadata.min_first_session_ping_run_date
+      )
+    END
+    AS min_first_session_ping_run_date,
+    CASE
+    WHEN
+      _previous.metadata.min_metrics_ping_submission_date IS NOT NULL
+      AND _current.metadata.min_metrics_ping_submission_date IS NOT NULL
+    THEN
+      LEAST(
+        _previous.metadata.min_metrics_ping_submission_date,
+        _current.metadata.min_metrics_ping_submission_date
+      )
+    ELSE
+      COALESCE(
+        _previous.metadata.min_metrics_ping_submission_date,
+        _current.metadata.min_metrics_ping_submission_date
+      )
+    END
+    AS min_metrics_ping_submission_date,
     COALESCE(
       _previous.metadata.adjust_network__source_ping,
       _current.metadata.adjust_network__source_ping
@@ -221,13 +262,5 @@ FROM
   _current
 FULL OUTER JOIN
   _previous
-USING
-  (client_id)
-LEFT JOIN
-  first_session_ping AS first_session
-USING
-  (client_id)
-LEFT JOIN
-  metrics_ping AS metrics
 USING
   (client_id)

@@ -24,16 +24,16 @@ first_session_ping AS (
     client_info.client_id AS client_id,
     MIN(sample_id) AS sample_id,
     MIN(SAFE.PARSE_DATETIME('%F', SUBSTR(client_info.first_run_date, 1, 10))) AS first_run_datetime,
-    ARRAY_AGG(metrics.string.first_session_campaign ORDER BY submission_timestamp ASC)[
+    ARRAY_AGG(metrics.string.first_session_campaign IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
     ] AS adjust_campaign,
-    ARRAY_AGG(metrics.string.first_session_network ORDER BY submission_timestamp ASC)[
+    ARRAY_AGG(metrics.string.first_session_network IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
     ] AS adjust_network,
-    ARRAY_AGG(metrics.string.first_session_adgroup ORDER BY submission_timestamp ASC)[
+    ARRAY_AGG(metrics.string.first_session_adgroup IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
     ] AS adjust_ad_group,
-    ARRAY_AGG(metrics.string.first_session_creative ORDER BY submission_timestamp ASC)[
+    ARRAY_AGG(metrics.string.first_session_creative IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
     ] AS adjust_creative
   FROM
@@ -51,19 +51,25 @@ metrics_ping AS (
     client_info.client_id AS client_id,
     MIN(sample_id) AS sample_id,
     DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
-    ARRAY_AGG(metrics.string.metrics_adjust_campaign ORDER BY submission_timestamp ASC)[
-      SAFE_OFFSET(0)
-    ] AS adjust_campaign,
-    ARRAY_AGG(metrics.string.metrics_adjust_network ORDER BY submission_timestamp ASC)[
+    ARRAY_AGG(
+      metrics.string.metrics_adjust_campaign IGNORE NULLS
+      ORDER BY
+        submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS adjust_campaign,
+    ARRAY_AGG(metrics.string.metrics_adjust_network IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
     ] AS adjust_network,
-    ARRAY_AGG(metrics.string.metrics_adjust_ad_group ORDER BY submission_timestamp ASC)[
-      SAFE_OFFSET(0)
-    ] AS adjust_ad_group,
-    ARRAY_AGG(metrics.string.metrics_adjust_creative ORDER BY submission_timestamp ASC)[
-      SAFE_OFFSET(0)
-    ] AS adjust_creative,
-    ARRAY_AGG(metrics.string.metrics_install_source ORDER BY submission_timestamp ASC)[
+    ARRAY_AGG(
+      metrics.string.metrics_adjust_ad_group IGNORE NULLS
+      ORDER BY
+        submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS adjust_ad_group,
+    ARRAY_AGG(
+      metrics.string.metrics_adjust_creative IGNORE NULLS
+      ORDER BY
+        submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS adjust_creative,
+    ARRAY_AGG(metrics.string.metrics_install_source IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
     ] AS install_source
   FROM

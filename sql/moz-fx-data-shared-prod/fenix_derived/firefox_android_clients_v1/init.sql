@@ -59,6 +59,9 @@ CREATE OR REPLACE TABLE
           min_first_session_ping_run_date DATE
         OPTIONS
           (description = "Date of first run in the earliest first_session ping reported."),
+          min_metrics_ping_submission_date DATE
+        OPTIONS
+          (description = "Date when the first reported metrics ping is received by the server."),
           adjust_network__source_ping STRING
         OPTIONS
           (description = "Name of the ping that reported the first adjust_network value."),
@@ -198,6 +201,7 @@ SELECT
     END
     AS reported_metrics_ping,
     DATE(first_session.first_run_datetime) AS min_first_session_ping_run_date,
+    DATE(metrics.min_submission_datetime) AS min_metrics_ping_submission_date,
     CASE
       mozfun.norm.get_earliest_value(
         [

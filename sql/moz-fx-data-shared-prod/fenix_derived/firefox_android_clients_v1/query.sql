@@ -111,6 +111,7 @@ _current AS (
       END
       AS reported_metrics_ping,
       DATE(first_session.first_run_datetime) AS min_first_session_ping_run_date,
+      DATE(metrics.min_submission_datetime) AS min_metrics_ping_submission_date,
       CASE
         mozfun.norm.get_earliest_value(
           [
@@ -206,6 +207,10 @@ SELECT
       _previous.metadata.min_first_session_ping_run_date,
       _current.metadata.min_first_session_ping_run_date
     ) AS min_first_session_ping_run_date,
+    COALESCE(
+      _previous.metadata.min_metrics_ping_submission_date,
+      _current.metadata.min_metrics_ping_submission_date
+    ) AS min_metrics_ping_submission_date,
     COALESCE(
       _previous.metadata.adjust_network__source_ping,
       _current.metadata.adjust_network__source_ping

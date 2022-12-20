@@ -2,7 +2,12 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.fenix.firefox_android_clients`
 AS
 SELECT
-  * EXCEPT (adjust_network, install_source),
+  COALESCE(
+    first_seen_date,
+    metadata.min_first_session_ping_run_date,
+    metadata.min_metrics_ping_submission_date
+  ) AS first_seen_date,
+  * EXCEPT (first_seen_date, adjust_network, install_source),
   CASE
   WHEN
     adjust_network IS NULL

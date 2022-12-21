@@ -131,6 +131,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/init.sql",
     "sql/moz-fx-data-shared-prod/relay_derived/subscriptions_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/fenix_derived/google_ads_campaign_cost_breakdowns_v1/query.sql",
     *glob.glob("sql/moz-fx-data-shared-prod/search_terms*/**/*.sql", recursive=True),
     "sql/moz-fx-data-bq-performance/release_criteria/dashboard_health_v1/query.sql",
     "sql/moz-fx-data-bq-performance/release_criteria/rc_flattened_test_data_v1/query.sql",

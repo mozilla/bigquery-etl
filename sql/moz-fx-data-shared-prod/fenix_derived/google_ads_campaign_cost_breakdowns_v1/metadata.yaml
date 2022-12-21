@@ -28,4 +28,3 @@ scheduling:
     - task_id: fenix_derived__attributable_clients__v1
       dag_name: bqetl_org_mozilla_firefox_derived
       execution_delta: 1h
-

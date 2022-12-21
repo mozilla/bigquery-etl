@@ -2,27 +2,27 @@ WITH campaigns AS (
   SELECT DISTINCT
     id,
     name,
-    FORMAT("%s (%s)", name, CAST(id AS string)) AS felix_compatible_campaign_name
+    FORMAT("%s (%s)", name, CAST(id AS string)) AS fenix_compatible_campaign_name
   FROM
     `moz-fx-data-bq-fivetran`.google_ads.campaign_history
 ),
 install_dou_metrics AS (
   SELECT
     fenix_marketing_metrics.adjust_campaign AS fenix_marketing_metrics_adjust_campaign,
-    fenix_marketing_metrics.cohort_date AS date,
+    fenix_marketing_metrics.submission_date AS date,
     COALESCE(SUM(fenix_marketing_metrics.new_profiles), 0) AS new_profiles_sum,
     COALESCE(SUM(fenix_marketing_metrics.dau), 0) AS dau_sum
   FROM
     `moz-fx-data-shared-prod.fenix.marketing_attributable_metrics` AS fenix_marketing_metrics
   GROUP BY
-    1,
-    2
+    fenix_marketing_metrics_adjust_campaign,
+    date
 )
 SELECT
   campaigns.name AS campaign_name,
   stats.date AS date,
   -- Total spend per-campaign
-  stats.cost_micros / 1000000.0 AS campaign_spend_in_cents,
+  stats.cost_micros AS campaign_spend_in_microcents,
   -- Impressions and clicks over time for each campaign (clicks of our ads)
   impressions AS ad_impressions,
   install_dou_metrics.new_profiles_sum AS installs,
@@ -69,7 +69,7 @@ JOIN
 ON
   (stats.date = install_dou_metrics.date)
   AND (
-    campaigns.felix_compatible_campaign_name = install_dou_metrics.fenix_marketing_metrics_adjust_campaign
+    campaigns.fenix_compatible_campaign_name = install_dou_metrics.fenix_marketing_metrics_adjust_campaign
   )
 ORDER BY
   campaign_name,

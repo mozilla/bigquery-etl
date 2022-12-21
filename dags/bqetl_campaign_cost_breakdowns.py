@@ -41,7 +41,7 @@ default_args = {
     "retries": 2,
 }
 
-tags = ["impact/tier_1", "repo/bigquery-etl"]
+tags = ["impact/tier_2", "repo/bigquery-etl"]
 
 with DAG(
     "bqetl_campaign_cost_breakdowns",

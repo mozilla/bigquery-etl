@@ -953,5 +953,5 @@ bqetl_campaign_cost_breakdowns:
     as well as Google ads campaign data.
   schedule_interval: 0 3 * * *
   tags:
-    - impact/tier_1
+    - impact/tier_2
     - repo/bigquery-etl

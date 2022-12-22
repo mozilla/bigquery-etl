@@ -464,7 +464,11 @@ GROUP BY
     )
   SELECT
   * EXCEPT(first_bucket, last_bucket, num_buckets)
-  replace(mozfun.glam.histogram_cast_json(percentiles) AS percentiles),
+  REPLACE (
+      mozfun.glam.histogram_cast_json(histogram) AS histogram,
+      COALESCE(os, '*') AS os,
+      COALESCE(app_build_id, '*') AS app_build_id
+      ),
   CURRENT_DATE() AS backfill_date
   FROM   finalextract
 

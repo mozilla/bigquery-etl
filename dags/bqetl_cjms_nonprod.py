@@ -8,8 +8,8 @@ import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
-from operators.backport.fivetran.operator import FivetranOperator
-from operators.backport.fivetran.sensor import FivetranSensor
+from fivetran_provider.operators.fivetran import FivetranOperator
+from fivetran_provider.sensors.fivetran import FivetranSensor
 
 docs = """
 ### bqetl_cjms_nonprod
@@ -98,6 +98,7 @@ with DAG(
         connector_id="{{ var.value.fivetran_stripe_nonprod_connector_id }}",
         task_id="fivetran_stripe_nonprod_sensor",
         poke_interval=5,
+        xcom="{{ task_instance.xcom_pull('fivetran_stripe_nonprod_task') }}",
     )
 
     fivetran_stripe_nonprod_sync_wait.set_upstream(fivetran_stripe_nonprod_sync_start)

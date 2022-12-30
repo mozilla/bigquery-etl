@@ -1,0 +1,10 @@
+friendly_name: Firefox Relay Derived
+description: |-
+  Derived data related to the Firefox Relay service
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

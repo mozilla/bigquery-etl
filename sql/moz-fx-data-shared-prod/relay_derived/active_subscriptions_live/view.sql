@@ -1,13 +1,13 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.relay_derived.active_subscriptions_live`
 AS
-WITH
-  subscriptions AS (
+WITH subscriptions AS (
   SELECT
     *,
     TO_JSON_STRING(promotion_codes) AS json_promotion_codes
   FROM
-    mozdata.relay.subscriptions)
+    mozdata.relay.subscriptions
+)
 SELECT
   active_subscription_ids.active_date,
   subscriptions.plan_id,

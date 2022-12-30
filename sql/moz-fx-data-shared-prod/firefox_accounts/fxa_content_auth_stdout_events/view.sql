@@ -1,3 +1,26 @@
+-----
+--- ** DEPRECATION NOTICE **
+---
+--- There is currently an ongoing effort to deprecate this view
+--- please use `firefox_accounts.fxa_all_events` view instead
+--- in new queries.
+---
+--- Please filter on `event_category` field to limit your results
+--- to events coming only from a specific fxa server like so:
+--- WHERE event_category IN ('auth', 'stdout', ...)
+--- Options include:
+---   content
+---   auth
+---   stdout
+---   oauth -- this has been deprecated and merged into fxa_auth_event
+---   auth_bounce
+--- to replicate results of this view use:
+--- WHERE event_category IN (
+---  'content',
+---  'auth',
+--   'stdout'
+--- )
+-----
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_accounts.fxa_content_auth_stdout_events`
 AS

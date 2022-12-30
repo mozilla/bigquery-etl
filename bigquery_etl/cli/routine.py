@@ -403,9 +403,13 @@ Examples:
     \b
     # Publish all routines
     ./bqetl routine publish
+
+    \b
+    # Publish selected routines
+    ./bqetl routine validate udf.*
     """,
 )
-@click.argument("path", type=click.Path(file_okay=False), required=False)
+@click.argument("name", required=False)
 @project_id_option
 @click.option(
     "--dependency-dir",
@@ -425,8 +429,11 @@ Examples:
     default=DEFAULT_GCS_PATH,
     help="The GCS path in the bucket where dependency files are uploaded to.",
 )
+@click.option(
+    "--dry_run/--no_dry_run", "--dry-run/--no-dry-run", help="Dry run publishing udfs."
+)
 @click.pass_context
-def publish(ctx, path, project_id, dependency_dir, gcs_bucket, gcs_path):
+def publish(ctx, name, project_id, dependency_dir, gcs_bucket, gcs_path, dry_run):
     """Publish routines."""
     project_id = get_project_id(ctx, project_id)
 
@@ -436,19 +443,20 @@ def publish(ctx, path, project_id, dependency_dir, gcs_bucket, gcs_path):
         click.echo("User needs to be authenticated to publish routines.", err=True)
         sys.exit(1)
 
-    if path and is_valid_dir(ctx, None, path):
-        click.echo(f"Publish routines to {project_id}")
-        # NOTE: there will only publish to a single project
-        for target in project_dirs(project_id):
-            publish_routines.publish(
-                target,
-                project_id,
-                dependency_dir,
-                gcs_bucket,
-                gcs_path,
-                public,
-            )
-            click.echo(f"Published routines to {project_id}")
+    click.echo(f"Publish routines to {project_id}")
+    # NOTE: this will only publish to a single project
+    for target in project_dirs(project_id):
+        publish_routines.publish(
+            target,
+            project_id,
+            dependency_dir,
+            gcs_bucket,
+            gcs_path,
+            public,
+            pattern=name,
+            dry_run=dry_run,
+        )
+        click.echo(f"Published routines to {project_id}")
 
 
 mozfun.add_command(copy.copy(publish))

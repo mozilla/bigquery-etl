@@ -14,9 +14,10 @@ WITH base AS (
     ) AS fxa_uids,
     LOGICAL_OR(event_type = "fxa_email_first - view") AS viewed_email_first_page,
   FROM
-    firefox_accounts.fxa_content_auth_events
+    mozdata.firefox_accounts.fxa_all_events
   WHERE
     IF(@date IS NULL, DATE(`timestamp`) < CURRENT_DATE, DATE(`timestamp`) = @date)
+    AND event_category IN ('content', 'auth')
     AND service = "guardian-vpn"
   GROUP BY
     flow_id
@@ -24,7 +25,7 @@ WITH base AS (
   SELECT
     *
   FROM
-    login_flows_v1
+    `mozilla_vpn_derived.login_flows_v1`
 )
 SELECT
   flow_id,

@@ -118,6 +118,7 @@ SELECT
   subscriptions.plan_id,
   subscriptions.status,
   subscriptions.country,
+  subscriptions.country_name,
   subscriptions.provider,
   subscriptions.plan_amount,
   subscriptions.plan_currency,

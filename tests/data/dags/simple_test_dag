@@ -65,7 +65,7 @@ with DAG(
     fivetran_import_1_sync_wait = FivetranSensor(
         connector_id="{{ var.value.fivetran_import_1_connector_id }}",
         task_id="fivetran_import_1_sensor",
-        poke_interval=5,
+        poke_interval=30,
         xcom="{{ task_instance.xcom_pull('fivetran_import_1_task') }}",
         on_retry_callback=retry_tasks_callback,
         params={'retry_tasks': ['fivetran_import_1_task']},
@@ -83,7 +83,7 @@ with DAG(
     fivetran_import_2_sync_wait = FivetranSensor(
         connector_id="{{ var.value.fivetran_import_2_connector_id }}",
         task_id="fivetran_import_2_sensor",
-        poke_interval=5,
+        poke_interval=30,
         xcom="{{ task_instance.xcom_pull('fivetran_import_2_task') }}",
         on_retry_callback=retry_tasks_callback,
         params={'retry_tasks': ['fivetran_import_2_task']},

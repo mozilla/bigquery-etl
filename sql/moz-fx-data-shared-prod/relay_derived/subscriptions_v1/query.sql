@@ -25,7 +25,7 @@ stripe_subscriptions_history AS (
     (valid_to IS NULL OR plan_ended_at IS NOT NULL)
     AND status NOT IN ("incomplete", "incomplete_expired")
 ),
-stripe_subscriptions AS (
+relay_subscriptions AS (
   SELECT
     -- user_id,
     customer_id,
@@ -59,7 +59,7 @@ stripe_subscriptions AS (
     cancel_at_period_end,
     COALESCE(plan_ended_at, IF(ended_at < TIMESTAMP(CURRENT_DATE), ended_at, NULL)) AS ended_at,
     IF(plan_ended_at IS NOT NULL, "Plan Change", NULL) AS ended_reason,
-    -- fxa_uid,
+    fxa_uid,
     country,
     country_name,
     -- user_registration_date,
@@ -107,7 +107,10 @@ stripe_subscriptions AS (
   -- USING
   --   (fxa_uid)
   WHERE
-    (product_name = "Relay Premium" OR product_name = "Mozilla VPN & Firefox Relay")
+    (
+      "premium-relay" IN UNNEST(stripe_subscriptions_history.product_capabilities)
+      OR "premium-relay" IN UNNEST(stripe_subscriptions_history.plan_capabilities)
+    )
 ),
 relay_subscriptions_with_end_date AS (
   SELECT

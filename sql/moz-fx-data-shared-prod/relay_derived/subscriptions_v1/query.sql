@@ -1,11 +1,11 @@
-WITH standardized_country AS ( -- CTE for all_subscriptions
+WITH standardized_country AS (
   SELECT
     raw_country AS country,
     standardized_country AS country_name,
   FROM
     mozdata.static.third_party_standardized_country_names
 ),
-stripe_subscriptions_history AS (-- CTE for all_subscriptions
+stripe_subscriptions_history AS (
   SELECT
     *,
     CONCAT(
@@ -25,7 +25,7 @@ stripe_subscriptions_history AS (-- CTE for all_subscriptions
     (valid_to IS NULL OR plan_ended_at IS NOT NULL)
     AND status NOT IN ("incomplete", "incomplete_expired")
 ),
-stripe_subscriptions AS (-- CTE for all_subscriptions
+stripe_subscriptions AS (
   SELECT
     -- user_id,
     customer_id,
@@ -109,7 +109,7 @@ stripe_subscriptions AS (-- CTE for all_subscriptions
   WHERE
     (product_name = "Relay Premium" OR product_name = "Mozilla VPN & Firefox Relay")
 ),
-relay_subscriptions_with_end_date AS (-- CTE for all_subscriptions
+relay_subscriptions_with_end_date AS (
   SELECT
     *,
     IF(

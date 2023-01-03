@@ -22,7 +22,7 @@ SELECT
   campaigns.name AS campaign_name,
   stats.date AS date,
   -- Total spend per-campaign
-  stats.cost_micros AS campaign_spend_in_microcents,
+  stats.cost_micros AS campaign_spend_in_micros,
   -- Impressions and clicks over time for each campaign (clicks of our ads)
   impressions AS ad_impressions,
   install_dou_metrics.new_profiles_sum AS installs,
@@ -37,8 +37,8 @@ SELECT
   ELSE
     stats.cost_micros / install_dou_metrics.new_profiles_sum
   END
-  AS cost_per_install_microcents,
-  -- Cost per-DOU for each campaign ($/DOU)
+  AS cost_per_install_micros,
+  -- Cost per-DOU for each campaign (microunits of local currency/DOU)
   CASE
   WHEN
     install_dou_metrics.dau_sum = 0
@@ -47,8 +47,8 @@ SELECT
   ELSE
     stats.cost_micros / install_dou_metrics.dau_sum
   END
-  AS cost_per_dou_microcents,
-  -- Cost per-Ad Click for each campaign ($/Ad Clicks)
+  AS cost_per_dou_micros,
+  -- Cost per-Ad Click for each campaign (microunits of local currency/Ad Clicks)
   CASE
   WHEN
     clicks = 0
@@ -57,7 +57,7 @@ SELECT
   ELSE
     stats.cost_micros / clicks
   END
-  AS cost_per_click_microcents
+  AS cost_per_click_micros
 FROM
   `moz-fx-data-bq-fivetran`.google_ads.campaign_stats AS stats
 JOIN

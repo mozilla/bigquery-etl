@@ -11,6 +11,7 @@ SELECT
   CAST(NULL AS STRING) AS campaign_name,
   CAST(NULL AS FLOAT64) AS campaign_spend_in_cents,
   CAST(NULL AS INT64) AS ad_impressions,
+  CAST(NULL AS INT64) AS ad_conversions,
   CAST(NULL AS INT64) AS installs,
   CAST(NULL AS INT64) AS dous,
   CAST(NULL AS INT64) AS revenue_generating_ad_clicks,

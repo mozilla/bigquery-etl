@@ -29,6 +29,7 @@ SELECT
   impressions AS ad_impressions,
   install_dou_metrics.new_profiles_sum AS installs,
   install_dou_metrics.dau_sum AS dous,
+  conversions as ad_conversions,
   clicks AS revenue_generating_ad_clicks,
   -- Cost per-install for each campaign ($/new profiles)
   CASE

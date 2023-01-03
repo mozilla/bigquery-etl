@@ -14,6 +14,8 @@ install_dou_metrics AS (
     COALESCE(SUM(fenix_marketing_metrics.dau), 0) AS dau_sum
   FROM
     `moz-fx-data-shared-prod.fenix.marketing_attributable_metrics` AS fenix_marketing_metrics
+  WHERE
+    adjust_network = "Google Ads ACI"
   GROUP BY
     fenix_marketing_metrics_adjust_campaign,
     date

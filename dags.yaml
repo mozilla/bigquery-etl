@@ -938,8 +938,7 @@ bqetl_campaign_cost_breakdowns:
     depends_on_past: false
     email:
       - ctroy@mozilla.com
-      - wstuckey@mozilla.com
-      - rburwei@mozilla.com
+      - frank@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true

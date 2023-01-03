@@ -13,7 +13,7 @@ SELECT
   CAST(NULL AS INT64) AS ad_impressions,
   CAST(NULL AS INT64) AS installs,
   CAST(NULL AS INT64) AS dous,
-  CAST(NULL AS INT64) AS ad_clicks,
+  CAST(NULL AS INT64) AS revenue_generating_ad_clicks,
   CAST(NULL AS FLOAT64) AS cost_per_install_micros,
   CAST(NULL AS FLOAT64) AS cost_per_dou_micros,
   CAST(NULL AS FLOAT64) AS cost_per_click_micros

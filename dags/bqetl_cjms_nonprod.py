@@ -10,6 +10,7 @@ from utils.gcp import bigquery_etl_query, gke_command
 
 from fivetran_provider.operators.fivetran import FivetranOperator
 from fivetran_provider.sensors.fivetran import FivetranSensor
+from utils.callbacks import retry_tasks_callback
 
 docs = """
 ### bqetl_cjms_nonprod
@@ -99,6 +100,8 @@ with DAG(
         task_id="fivetran_stripe_nonprod_sensor",
         poke_interval=5,
         xcom="{{ task_instance.xcom_pull('fivetran_stripe_nonprod_task') }}",
+        on_retry_callback=retry_tasks_callback,
+        params={"retry_tasks": ["fivetran_stripe_nonprod_task"]},
     )
 
     fivetran_stripe_nonprod_sync_wait.set_upstream(fivetran_stripe_nonprod_sync_start)

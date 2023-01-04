@@ -14,6 +14,7 @@ from utils.gcp import bigquery_etl_query, gke_command
 {% set ns.uses_fivetran = True -%}
 from fivetran_provider.operators.fivetran import FivetranOperator
 from fivetran_provider.sensors.fivetran import FivetranSensor
+from utils.callbacks import retry_tasks_callback
 {% endif -%}
 {% endfor -%}
 
@@ -219,6 +220,8 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         task_id='{{ fivetran_task.task_id }}_sensor',
         poke_interval=5,
         xcom="{% raw %}{{{% endraw %} task_instance.xcom_pull('{{ fivetran_task.task_id }}_task') {% raw %}}}{% endraw %}",
+        on_retry_callback=retry_tasks_callback,
+        params={'retry_tasks': ['{{ fivetran_task.task_id }}_task']},
     )
 
     {{ fivetran_task.task_id }}_sync_wait.set_upstream({{ fivetran_task.task_id }}_sync_start)

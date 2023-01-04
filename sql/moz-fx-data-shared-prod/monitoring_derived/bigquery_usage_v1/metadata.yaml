@@ -1,5 +1,5 @@
-friendly_name: Bigquery Query Usage
-description: Big query usage, partitioned by day.
+friendly_name: BigQuery Query Usage
+description: BigQuery usage, partitioned by day.
 owners:
 - wichan@mozilla.com
 labels:

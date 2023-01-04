@@ -16,6 +16,7 @@ DEFAULT_PROJECTS = [
 ]
 
 parser = ArgumentParser(description=__doc__)
+parser.add_argument("--date", required=True)  # expect string with format yyyy-mm-dd
 parser.add_argument("--project", default="moz-fx-data-shared-prod")
 # projects queries were run from that access table
 parser.add_argument("--source_projects", nargs="+", default=DEFAULT_PROJECTS)
@@ -64,12 +65,13 @@ def create_last_modified_tmp_table(project, tmp_table_name):
             print(f"Error querying dataset {dataset.dataset_id}: {e}")
 
 
-def create_query(source_project, tmp_table_name):
+def create_query(date, source_project, tmp_table_name):
     """Create query for a source project."""
     return f"""
         SELECT *
         FROM
             (SELECT
+              DATE('{date}') AS submission_date,
               DATE(creation_time) AS creation_date,
               table_catalog AS project_id,
               table_schema AS dataset_id,
@@ -87,11 +89,11 @@ def main():
     """Run query for each source project."""
     args = parser.parse_args()
 
+    partition = args.date.replace("-", "")
+
     tmp_table_name = f"{args.project}.{args.destination_dataset}.{args.tmp_table}"
 
-    destination_table = (
-        f"{args.project}.{args.destination_dataset}.{args.destination_table}"
-    )
+    destination_table = f"{args.project}.{args.destination_dataset}.{args.destination_table}${partition}"
 
     # remove old table in case of re-run
     client = bigquery.Client(args.project)
@@ -102,7 +104,7 @@ def main():
         create_last_modified_tmp_table(project, tmp_table_name)
 
         client = bigquery.Client(project)
-        query = create_query(project, tmp_table_name)
+        query = create_query(args.date, project, tmp_table_name)
         job_config = bigquery.QueryJobConfig(
             destination=destination_table, write_disposition="WRITE_APPEND"
         )

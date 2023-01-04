@@ -643,7 +643,7 @@ with DAG(
     fivetran_stripe_sync_wait = FivetranSensor(
         connector_id="{{ var.value.fivetran_stripe_connector_id }}",
         task_id="fivetran_stripe_sensor",
-        poke_interval=5,
+        poke_interval=30,
         xcom="{{ task_instance.xcom_pull('fivetran_stripe_task') }}",
         on_retry_callback=retry_tasks_callback,
         params={"retry_tasks": ["fivetran_stripe_task"]},

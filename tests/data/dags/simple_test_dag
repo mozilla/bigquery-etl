@@ -68,7 +68,7 @@ with DAG(
         poke_interval=5,
         xcom="{{ task_instance.xcom_pull('fivetran_import_1_task') }}",
         on_retry_callback=retry_tasks_callback,
-        params={'retry_tasks': ['fivetran_import_1_task']},
+        params={"retry_tasks": ["fivetran_import_1_task"]},
     )
 
     fivetran_import_1_sync_wait.set_upstream(fivetran_import_1_sync_start)
@@ -86,7 +86,7 @@ with DAG(
         poke_interval=5,
         xcom="{{ task_instance.xcom_pull('fivetran_import_2_task') }}",
         on_retry_callback=retry_tasks_callback,
-        params={'retry_tasks': ['fivetran_import_2_task']},
+        params={"retry_tasks": ["fivetran_import_2_task"]},
     )
 
     fivetran_import_2_sync_wait.set_upstream(fivetran_import_2_sync_start)

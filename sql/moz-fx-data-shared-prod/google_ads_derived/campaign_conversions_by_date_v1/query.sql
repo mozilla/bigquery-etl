@@ -26,6 +26,3 @@ GROUP BY
   date,
   campaigns.name,
   campaign_id
-ORDER BY
-  date DESC,
-  campaigns.name

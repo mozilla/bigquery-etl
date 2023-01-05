@@ -928,8 +928,8 @@ bqetl_fivetran_google_ads:
     retry_delay: 30m
     start_date: '2023-01-01'
   description: Queries for Google Ads data
-      coming from Fivetran. The sources are
-      udpated hourly.
+      coming from Fivetran. Fivetran
+      updates these tables every hour.
   schedule_interval: 0 2 * * *
   tags:
     - impact/tier_2

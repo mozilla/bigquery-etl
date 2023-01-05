@@ -15,7 +15,7 @@ Built from bigquery-etl repo, [`dags/bqetl_fivetran_google_ads.py`](https://gith
 
 #### Description
 
-Queries for Google Ads data coming from Fivetran. The sources are udpated hourly.
+Queries for Google Ads data coming from Fivetran. Fivetran updates these tables every hour.
 #### Owner
 
 frank@mozilla.com

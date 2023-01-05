@@ -71,17 +71,17 @@ def create_query(date, source_project, tmp_table_name):
         SELECT *
         FROM
             (SELECT
-              DATE('{date}') AS submission_date,
-              DATE(creation_time) AS creation_date,
-              table_catalog AS project_id,
-              table_schema AS dataset_id,
-              table_name AS table_id,
-              table_type,
-              FROM `{source_project}.region-us.INFORMATION_SCHEMA.TABLES`
-              )
+            DATE('{date}') AS submission_date,
+            DATE(creation_time) AS creation_date,
+            table_catalog AS project_id,
+            table_schema AS dataset_id,
+            table_name AS table_id,
+            table_type,
+            FROM `{source_project}.region-us.INFORMATION_SCHEMA.TABLES`
+            )
         LEFT JOIN {tmp_table_name}
         USING (project_id, dataset_id, table_id, creation_date)
-        ORDER BY creation_date, project_id, dataset_id, table_id, table_type
+        ORDER BY submission_date, project_id, dataset_id, table_id, table_type
     """
 
 

@@ -1068,13 +1068,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bigquery_tables_last_modified" class="md-nav__link">
-    bigquery_tables_last_modified
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#bigquery_usage" class="md-nav__link">
     bigquery_usage
   </a>
@@ -2544,13 +2537,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bigquery_tables_last_modified" class="md-nav__link">
-    bigquery_tables_last_modified
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#bigquery_usage" class="md-nav__link">
     bigquery_usage
   </a>
@@ -3529,6 +3515,11 @@ including views on <code>payload_bytes</code> tables</p>
         <th>Nullable</th>
     </tr>
 <tr>
+        <td>submission_date</td>
+        <td>The date when data was captured</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>creation_date</td>
         <td>The table's creation date</td>
         <td>Date</td>
@@ -3553,55 +3544,6 @@ including views on <code>payload_bytes</code> tables</p>
         <td>The table type</td>
         <td>String</td>
         <td>Yes</td>
-    </tr>
-</table>
-
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring_derived>monitoring_derived</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_tables_inventory_v1>bigquery_tables_inventory_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/bigquery_tables_inventory">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/bigquery_tables_inventory/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/bigquery_tables_inventory/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="bigquery_tables_last_modified"><a href="#bigquery_tables_last_modified">bigquery_tables_last_modified</a></h2>
-<p><code>monitoring.bigquery_tables_last_modified</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>project_id</td>
-        <td>The ID of the project that contains the dataset</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>dataset_id</td>
-        <td>The name of the dataset that contains the table or view</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>table_id</td>
-        <td>The name of the table or view</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>creation_date</td>
-        <td>The table's creation date</td>
-        <td>Date</td>
-        <td>Yes</td>
     </tr><tr>
         <td>last_modified_date</td>
         <td>The table's last modified date</td>
@@ -3620,11 +3562,11 @@ including views on <code>payload_bytes</code> tables</p>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring_derived>monitoring_derived</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_tables_last_modified_v1>bigquery_tables_last_modified_v1</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_tables_inventory_v1>bigquery_tables_inventory_v1</a></td>
         </tr>
 </table>
 
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/bigquery_tables_last_modified">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/bigquery_tables_last_modified/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/bigquery_tables_last_modified/metadata.yaml">Metadata File</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/bigquery_tables_inventory">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/bigquery_tables_inventory/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/bigquery_tables_inventory/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="bigquery_usage"><a href="#bigquery_usage">bigquery_usage</a></h2>
 <p><code>monitoring.bigquery_usage</code></p>

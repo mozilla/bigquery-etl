@@ -1,0 +1,10 @@
+friendly_name: Google Ads Derived
+description: |-
+  Tables for data coming from Google Ads through Fivetran.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

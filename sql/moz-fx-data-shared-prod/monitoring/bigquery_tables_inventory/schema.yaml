@@ -1,4 +1,8 @@
 fields:
+- description: The date when data was captured
+  mode: NULLABLE
+  name: submission_date
+  type: DATE
 - description: The table's creation date
   mode: NULLABLE
   name: creation_date
@@ -19,3 +23,7 @@ fields:
   mode: NULLABLE
   name: table_type
   type: STRING
+- description: The table's last modified date
+  mode: NULLABLE
+  name: last_modified_date
+  type: DATE

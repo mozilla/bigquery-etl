@@ -349,6 +349,17 @@ fields:
       mode: NULLABLE
       name: metrics_search_widget_installed
       type: BOOLEAN
+    - description: 'True if notifications are allowed from OS settings, otherwise
+        false.
+
+        Prior to Android 13, notifications were allowed by default;
+
+        starting with Android 13,the user must explicitly grant the permission.
+
+        '
+      mode: NULLABLE
+      name: notifications_permission_granted
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD

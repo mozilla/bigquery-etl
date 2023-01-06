@@ -1371,6 +1371,12 @@ fields:
     - mode: REPEATED
       name: udp_dnskeydo_u
       type: INTEGER
+    - mode: REPEATED
+      name: webext_a
+      type: STRING
+    - mode: REPEATED
+      name: webext_a_u
+      type: STRING
     mode: NULLABLE
     name: dns_data
     type: RECORD
@@ -1416,8 +1422,7 @@ fields:
     - mode: NULLABLE
       name: udp_a
       type: FLOAT
-    - description: Number of attempted dns.resolve() calls made using a domain name
-        we control
+    - description: Deprecated
       mode: NULLABLE
       name: udp_a_web_ext
       type: FLOAT
@@ -1581,6 +1586,12 @@ fields:
     - mode: NULLABLE
       name: udp_dnskeydo_u
       type: FLOAT
+    - mode: NULLABLE
+      name: webext_a
+      type: FLOAT
+    - mode: NULLABLE
+      name: webext_a_u
+      type: FLOAT
     mode: NULLABLE
     name: dns_attempts
     type: RECORD
@@ -1601,6 +1612,14 @@ fields:
     mode: NULLABLE
     name: has_errors
     type: BOOLEAN
+  - description: The version of the add-on
+    mode: NULLABLE
+    name: addon_version
+    type: STRING
+  - description: The apex domain for the study
+    mode: NULLABLE
+    name: apex_domain
+    type: STRING
   mode: NULLABLE
   name: payload
   type: RECORD

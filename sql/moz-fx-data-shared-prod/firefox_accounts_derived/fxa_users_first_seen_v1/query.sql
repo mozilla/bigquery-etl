@@ -1,11 +1,9 @@
 WITH _current AS (
   SELECT DISTINCT
     user_id,
-    -- TOOD: should this should be dropped? We have fxa_users_services_first_seen to answer this kind of question.
-    -- ARRAY_AGG(DISTINCT service IGNORE NULLS) AS services_used,ß
+    -- ARRAY_AGG(DISTINCT service IGNORE NULLS) AS services_used, # TODO: create an alternative agg model
+    --   for high-level user aggregated information for quick user overview.
   FROM
-    -- fxa_users_daily already filters out for the following events:
-    -- event_category IN ('auth', 'auth_bounce', 'content', 'oauth')
     `firefox_accounts.fxa_users_daily`
   WHERE
     submission_date = @submission_date

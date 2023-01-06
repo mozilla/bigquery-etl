@@ -2629,7 +2629,8 @@ SELECT
 <h2 id="creating-a-new-bigquery-dataset">Creating a new BigQuery Dataset</h2>
 <p>To provision a new BigQuery dataset for holding tables, you'll need to
 create a <code>dataset_metadata.yaml</code> which will cause the dataset to be
-automatically deployed a few hours after merging. Changes to existing
+automatically deployed <a href="https://docs.telemetry.mozilla.org/concepts/pipeline/artifact_deployment.html#dataset-deployment">after merging</a>.
+Changes to existing
 datasets may trigger manual operator approval (such as changing access policies).
 For more on access controls, see
 <a href="https://mana.mozilla.org/wiki/display/DOPS/Data+Access+Workgroups">Data Access Workgroups</a>

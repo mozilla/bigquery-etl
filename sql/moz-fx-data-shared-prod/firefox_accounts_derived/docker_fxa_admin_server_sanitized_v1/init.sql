@@ -1,6 +1,6 @@
 -- Query for creating firefox_accounts_derived.docker_fxa_admin_server_sanitized_v1
 CREATE OR REPLACE TABLE
-  firefox_accounts_derived.docker_fxa_admin_server_sanitized_v1
+  `firefox_accounts_derived.docker_fxa_admin_server_sanitized_v1`
 PARTITION BY
   date
 AS
@@ -21,6 +21,6 @@ SELECT
     ) AS jsonPayload
   )
 FROM
-  `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_admin_server_20*`
+  `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_admin_server`
 WHERE
-  PARSE_DATE('%y%m%d', _TABLE_SUFFIX) >= DATE("2022-08-01")
+  DATE(`timestamp`) >= "2022-08-01"

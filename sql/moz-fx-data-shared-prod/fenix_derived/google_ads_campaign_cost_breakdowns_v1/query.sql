@@ -19,6 +19,17 @@ install_dou_metrics AS (
   GROUP BY
     fenix_marketing_metrics_adjust_campaign,
     date
+),
+stats AS (
+  SELECT
+    id,
+    date,
+    SUM(cost_micros) as cost_micros,
+    SUM(impressions) as impressions,
+    SUM(conversions) as conversions,
+    SUM(clicks) AS marketing_ad_clicks
+  FROM `moz-fx-data-bq-fivetran`.google_ads.campaign_stats AS stats
+  GROUP BY id, date
 )
 SELECT
   campaigns.name AS campaign_name,
@@ -26,11 +37,11 @@ SELECT
   -- Total spend per-campaign
   stats.cost_micros AS campaign_spend_in_micros,
   -- Impressions and clicks over time for each campaign (clicks of our ads)
-  impressions AS ad_impressions,
+  stats.impressions AS ad_impressions,
   install_dou_metrics.new_profiles_sum AS installs,
   install_dou_metrics.dau_sum AS dous,
-  conversions as ad_conversions,
-  clicks AS revenue_generating_ad_clicks,
+  stats.conversions as ad_conversions,
+  stats.marketing_ad_clicks AS marketing_ad_clicks,
   -- Cost per-install for each campaign ($/new profiles)
   CASE
   WHEN
@@ -54,15 +65,15 @@ SELECT
   -- Cost per-Ad Click for each campaign (microunits of local currency/Ad Clicks)
   CASE
   WHEN
-    clicks = 0
+    marketing_ad_clicks = 0
   THEN
     0
   ELSE
-    stats.cost_micros / clicks
+    stats.cost_micros / marketing_ad_clicks
   END
   AS cost_per_click_micros
 FROM
-  `moz-fx-data-bq-fivetran`.google_ads.campaign_stats AS stats
+  stats
 JOIN
   campaigns
 USING

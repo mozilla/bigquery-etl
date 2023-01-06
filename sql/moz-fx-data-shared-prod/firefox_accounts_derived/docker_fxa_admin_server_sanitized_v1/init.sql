@@ -1,6 +1,6 @@
 -- Query for creating firefox_accounts_derived.docker_fxa_admin_server_sanitized_v1
 CREATE OR REPLACE TABLE
-  firefox_accounts_derived.docker_fxa_admin_server_sanitized_v1
+  `firefox_accounts_derived.docker_fxa_admin_server_sanitized_v1`
 PARTITION BY
   date
 AS

@@ -14,7 +14,7 @@ base_events AS (
   SELECT
     *
   FROM
-    `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth_20*`
+    `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth`
   WHERE
     -- @submission_date is PDT, so we need two days of UTC-based
     -- data. We assume that we run immediately at the end of
@@ -22,8 +22,8 @@ base_events AS (
     -- submission date.
     -- See https://console.cloud.google.com/bigquery?sq=768515352537:e63d2d2faa85431dbf0e5440021af837
     (
-      _TABLE_SUFFIX = FORMAT_DATE('%y%m%d', @submission_date)
-      OR _TABLE_SUFFIX = FORMAT_DATE('%y%m%d', DATE_ADD(@submission_date, INTERVAL 1 DAY))
+      DATE(`timestamp`) = @submission_date
+      OR DATE(`timestamp`) = DATE_ADD(@submission_date, INTERVAL 1 DAY)
     )
     AND DATE(`timestamp`, "America/Los_Angeles") = @submission_date
     AND jsonPayload.fields.event_type IN (

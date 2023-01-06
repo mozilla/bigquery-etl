@@ -12,7 +12,8 @@ scheduling:
   start_date: '2021-07-09'
   priority: 80
   depends_on_past: true
-  date_partition_parameter: submission_date
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]
 bigquery:
   time_partitioning:
     type: day

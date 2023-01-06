@@ -267,8 +267,9 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         start_date=datetime.datetime(2021, 7, 9, 0, 0),
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
         priority_weight=80,
     )
 

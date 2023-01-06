@@ -25,6 +25,7 @@ default_args = {
     "end_date": None,
     "email": [
         "telemetry-alerts@mozilla.com",
+        "cmorales@mozilla.com",
         "anicholson@mozilla.com",
         "akomar@mozilla.com",
     ],
@@ -53,6 +54,7 @@ with DAG(
         owner="akomar@mozilla.com",
         email=[
             "akomar@mozilla.com",
+            "cmorales@mozilla.com",
             "anicholson@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -68,6 +70,7 @@ with DAG(
         owner="akomar@mozilla.com",
         email=[
             "akomar@mozilla.com",
+            "cmorales@mozilla.com",
             "anicholson@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -117,6 +120,7 @@ with DAG(
         owner="akomar@mozilla.com",
         email=[
             "akomar@mozilla.com",
+            "cmorales@mozilla.com",
             "anicholson@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],

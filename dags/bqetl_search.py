@@ -14,7 +14,7 @@ docs = """
 Built from bigquery-etl repo, [`dags/bqetl_search.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_search.py)
 
 #### Owner
-
+cmorales@mozilla.com
 anicholson@mozilla.com
 """
 
@@ -53,6 +53,7 @@ with DAG(
         owner="akomar@mozilla.com",
         email=[
             "akomar@mozilla.com",
+            "cmorales@mozilla.com",
             "anicholson@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -82,6 +83,7 @@ with DAG(
         owner="akomar@mozilla.com",
         email=[
             "akomar@mozilla.com",
+            "cmorales@mozilla.com",
             "anicholson@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -125,6 +127,7 @@ with DAG(
         owner="akomar@mozilla.com",
         email=[
             "akomar@mozilla.com",
+            "cmorales@mozilla.com",
             "anicholson@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -154,6 +157,7 @@ with DAG(
         owner="jklukas@mozilla.com",
         email=[
             "akomar@mozilla.com",
+            "cmorales@mozilla.com",
             "anicholson@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",

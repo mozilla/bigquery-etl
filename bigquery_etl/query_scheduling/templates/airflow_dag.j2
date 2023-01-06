@@ -14,13 +14,14 @@ from utils.gcp import bigquery_etl_query, gke_command
 {% set ns.uses_fivetran = True -%}
 from fivetran_provider.operators.fivetran import FivetranOperator
 from fivetran_provider.sensors.fivetran import FivetranSensor
+from utils.callbacks import retry_tasks_callback
 {% endif -%}
 {% endfor -%}
 
 docs = """
 ### {{ name }}
 
-Built from bigquery-etl repo, [`dags/{{ name }}.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/{{ name }}.py)
+Built from {{ repo }} repo, [`dags/{{ name }}.py`](https://github.com/mozilla/{{ repo }}/blob/main/dags/{{ name }}.py)
 
 {% if description != "" -%}
 #### Description
@@ -217,8 +218,10 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     {{ fivetran_task.task_id }}_sync_wait = FivetranSensor(
         connector_id='{% raw %}{{ var.value.{% endraw %}{{ fivetran_task.task_id }}{% raw %}_connector_id }}{% endraw %}',
         task_id='{{ fivetran_task.task_id }}_sensor',
-        poke_interval=5,
+        poke_interval=30,
         xcom="{% raw %}{{{% endraw %} task_instance.xcom_pull('{{ fivetran_task.task_id }}_task') {% raw %}}}{% endraw %}",
+        on_retry_callback=retry_tasks_callback,
+        params={'retry_tasks': ['{{ fivetran_task.task_id }}_task']},
     )
 
     {{ fivetran_task.task_id }}_sync_wait.set_upstream({{ fivetran_task.task_id }}_sync_start)

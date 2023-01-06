@@ -246,8 +246,12 @@ with DAG(
         destination_table="fxa_users_daily_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kignasiak@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "kignasiak@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -275,8 +279,12 @@ with DAG(
         destination_table="fxa_users_last_seen_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kignasiak@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "kignasiak@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         start_date=datetime.datetime(2019, 4, 23, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=True,
@@ -414,10 +422,6 @@ with DAG(
 
     firefox_accounts_derived__fxa_users_first_seen__v1.set_upstream(
         firefox_accounts_derived__fxa_stdout_events__v1
-    )
-
-    firefox_accounts_derived__fxa_users_last_seen__v1.set_upstream(
-        firefox_accounts_derived__fxa_users_daily__v1
     )
 
     firefox_accounts_derived__fxa_users_services_daily__v1.set_upstream(

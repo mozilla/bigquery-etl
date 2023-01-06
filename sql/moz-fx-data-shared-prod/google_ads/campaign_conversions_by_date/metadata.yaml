@@ -1,0 +1,8 @@
+friendly_name: Campaign Conversions By Date
+description: |-
+  Number of conversions and installs by campaign & date.
+owners:
+- frank@mozilla.com
+labels: {}
+bigquery: null
+references: {}

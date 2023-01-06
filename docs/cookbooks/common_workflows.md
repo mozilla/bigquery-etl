@@ -187,7 +187,8 @@ The same steps as creating a new UDF apply for creating stored procedures, excep
 
 To provision a new BigQuery dataset for holding tables, you'll need to
 create a `dataset_metadata.yaml` which will cause the dataset to be
-automatically deployed a few hours after merging. Changes to existing
+automatically deployed [after merging](https://docs.telemetry.mozilla.org/concepts/pipeline/artifact_deployment.html#dataset-deployment).
+Changes to existing
 datasets may trigger manual operator approval (such as changing access policies).
 For more on access controls, see
 [Data Access Workgroups](https://mana.mozilla.org/wiki/display/DOPS/Data+Access+Workgroups)

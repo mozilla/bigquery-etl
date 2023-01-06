@@ -10,6 +10,7 @@ from utils.gcp import bigquery_etl_query, gke_command
 
 from fivetran_provider.operators.fivetran import FivetranOperator
 from fivetran_provider.sensors.fivetran import FivetranSensor
+from utils.callbacks import retry_tasks_callback
 
 docs = """
 ### bqetl_test_dag
@@ -64,8 +65,10 @@ with DAG(
     fivetran_import_1_sync_wait = FivetranSensor(
         connector_id="{{ var.value.fivetran_import_1_connector_id }}",
         task_id="fivetran_import_1_sensor",
-        poke_interval=5,
+        poke_interval=30,
         xcom="{{ task_instance.xcom_pull('fivetran_import_1_task') }}",
+        on_retry_callback=retry_tasks_callback,
+        params={"retry_tasks": ["fivetran_import_1_task"]},
     )
 
     fivetran_import_1_sync_wait.set_upstream(fivetran_import_1_sync_start)
@@ -80,8 +83,10 @@ with DAG(
     fivetran_import_2_sync_wait = FivetranSensor(
         connector_id="{{ var.value.fivetran_import_2_connector_id }}",
         task_id="fivetran_import_2_sensor",
-        poke_interval=5,
+        poke_interval=30,
         xcom="{{ task_instance.xcom_pull('fivetran_import_2_task') }}",
+        on_retry_callback=retry_tasks_callback,
+        params={"retry_tasks": ["fivetran_import_2_task"]},
     )
 
     fivetran_import_2_sync_wait.set_upstream(fivetran_import_2_sync_start)

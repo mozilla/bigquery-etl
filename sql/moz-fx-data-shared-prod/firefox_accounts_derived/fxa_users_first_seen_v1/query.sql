@@ -7,6 +7,8 @@ WITH _current AS (
     `firefox_accounts.fxa_users_daily`
   WHERE
     submission_date = @submission_date
+    -- ensuring we only process rows where user_id is provided
+    AND user_id IS NOT NULL
 ),
 _previous AS (
   SELECT DISTINCT
@@ -18,11 +20,18 @@ _previous AS (
     -- all the way to the present; to enforce that, we explicitly drop any data after
     -- the target @submission_date
     first_seen_date < @submission_date
+    -- it appears we have a user_id will null value exist inside fxa_users_first_seen
+    -- excluding it here to avoid it being recreated for each new submission_date
+    AND user_id IS NOT NULL
 )
 SELECT
   user_id,
   DATE(@submission_date) AS first_seen_date,
 FROM
   _current
+FULL OUTER JOIN
+  _previous
+USING
+  (user_id)
 WHERE
-  user_id NOT IN (SELECT user_id FROM _previous)
+  _previous.user_id IS NULL

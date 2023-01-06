@@ -122,7 +122,7 @@ relay_subscriptions_with_end_date AS (
     ) AS customer_start_date,
     COALESCE(ended_at, TIMESTAMP(CURRENT_DATE)) AS end_date,
   FROM
-    stripe_subscriptions
+    relay_subscriptions
 )
 SELECT
   * REPLACE (

@@ -11,7 +11,8 @@ install_dou_metrics AS (
     fenix_marketing_metrics.adjust_campaign AS fenix_marketing_metrics_adjust_campaign,
     fenix_marketing_metrics.submission_date AS date,
     COALESCE(SUM(fenix_marketing_metrics.new_profiles), 0) AS new_profiles_sum,
-    COALESCE(SUM(fenix_marketing_metrics.dau), 0) AS dau_sum
+    COALESCE(SUM(fenix_marketing_metrics.dau), 0) AS dau_sum,
+    COALESCE(SUM(fenix_marketing_metrics.ad_clicks), 0) AS revenue_generating_ad_clicks_sum,
   FROM
     `moz-fx-data-shared-prod.fenix.marketing_attributable_metrics` AS fenix_marketing_metrics
   WHERE
@@ -42,6 +43,7 @@ SELECT
   install_dou_metrics.dau_sum AS dous,
   stats.conversions as ad_conversions,
   stats.marketing_ad_clicks AS marketing_ad_clicks,
+  install_dou_metrics.revenue_generating_ad_clicks_sum AS revenue_generating_ad_clicks,
   -- Cost per-install for each campaign ($/new profiles)
   CASE
   WHEN
@@ -71,7 +73,16 @@ SELECT
   ELSE
     stats.cost_micros / marketing_ad_clicks
   END
-  AS cost_per_click_micros
+  AS cost_per_marketing_ad_click_micros,
+  CASE
+  WHEN
+    revenue_generating_ad_clicks_sum = 0
+  THEN
+    0
+  ELSE
+    stats.cost_micros / revenue_generating_ad_clicks_sum
+  END
+  AS cost_per_revenue_generating_ad_click_micros
 FROM
   stats
 JOIN

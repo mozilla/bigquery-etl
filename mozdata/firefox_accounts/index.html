@@ -3479,6 +3479,109 @@ and to contain only one row per distinct <code>document_id</code> within a given
 <h2 id="fxa_users_last_seen"><a href="#fxa_users_last_seen">fxa_users_last_seen</a></h2>
 <p><code>firefox_accounts.fxa_users_last_seen</code></p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>days_since_seen</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>days_since_seen_in_tier1_country</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>days_since_registered</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>days_since_seen_no_monitor</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_date</td>
+        <td>Corresponds to ETL processing date.
+Also, used for partitioning the table.
+</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>days_seen_bits</td>
+        <td>No. of days since the user had activity event.
+</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>days_seen_in_tier1_country_bits</td>
+        <td>No. of days since seen_in_tier1_country was last True.
+</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>days_registered_bits</td>
+        <td>No. of days since registration event.
+</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>user_id</td>
+        <td>A 36 char long hash value representing
+User ID (registered user).
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>country</td>
+        <td>User's country where activity took place.
+See: UDF mozdata.stats.mode_last for more
+info on how the function operates.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>language</td>
+        <td>Most recently used language.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>app_version</td>
+        <td>Mozilla app version most recently used,
+follows format: major.minor.patch (e.g. 99.3.3).
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>os_name</td>
+        <td>OS on which the app was most recently running.
+For example: Android.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>os_version</td>
+        <td>Version of the OS the device was most recently using.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>days_seen_no_monitor_bits</td>
+        <td>No. of days since monitor flag was last True.
+</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>

@@ -17,9 +17,6 @@ fields:
 - name: event_timestamp
   type: TIMESTAMP
   mode: NULLABLE
-- name: customer_start_date
-  type: TIMESTAMP
-  mode: NULLABLE
 - name: subscription_start_date
   type: TIMESTAMP
   mode: NULLABLE
@@ -53,8 +50,8 @@ fields:
 - name: ended_reason
   type: STRING
   mode: NULLABLE
-- name: end_date
-  type: TIMESTAMP
+- name: fxa_uid
+  type: STRING
   mode: NULLABLE
 - name: country
   type: STRING
@@ -91,12 +88,18 @@ fields:
   mode: NULLABLE
 - name: billing_grace_period
   type: INTERVAL
-  mode: REPEATED
+  mode: NULLABLE
 - name: promotion_codes
   type: STRING
-  mode: NULLABLE
+  mode: REPEATED
 - name: promotion_discounts_amount
   type: INTEGER
+  mode: NULLABLE
+- name: customer_start_date
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: end_date
+  type: TIMESTAMP
   mode: NULLABLE
 - name: months_retained
   type: INTEGER

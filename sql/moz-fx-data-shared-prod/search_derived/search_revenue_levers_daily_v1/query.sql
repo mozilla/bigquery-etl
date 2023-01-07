@@ -4,7 +4,7 @@ desktop_data_google AS (
   SELECT
     submission_date,
     IF(lower(channel) LIKE '%esr%', 'esr', 'personal') AS channel,
-    IF(country != 'US', 'US', 'RoW') AS country,
+    IF(country = 'US', 'US', 'RoW') AS country,
     count(DISTINCT client_id) AS dou,
     count(
       DISTINCT IF(sap > 0 AND normalized_engine = 'Google', client_id, NULL)

@@ -69,10 +69,10 @@ desktop_data_ddg AS (
     # in-content probes not available for addon so these metrics although being here will be zero
     count(DISTINCT IF(engine = 'ddg-addon' AND sap > 0, client_id, NULL)) AS ddgaddon_adou,
     sum(IF(engine IN ('ddg-addon'), sap, 0)) AS ddgaddon_sap,
-    sum(IF(engine IN ('ddg', 'duckduckgo'), tagged_sap, 0)) AS ddgaddon_tagged_sap,
-    sum(IF(engine IN ('ddg', 'duckduckgo'), tagged_sap, 0)) AS ddgaddon_tagged_follow_on,
-    sum(IF(engine IN ('ddg', 'duckduckgo'), search_with_ads, 0)) AS ddgaddon_search_with_ads,
-    sum(IF(engine IN ('ddg', 'duckduckgo'), ad_click, 0)) AS ddgaddon_adclick
+    sum(IF(engine IN ('ddg-addon'), tagged_sap, 0)) AS ddgaddon_tagged_sap,
+    sum(IF(engine IN ('ddg-addon'), tagged_sap, 0)) AS ddgaddon_tagged_follow_on,
+    sum(IF(engine IN ('ddg-addon'), search_with_ads, 0)) AS ddgaddon_search_with_ads,
+    sum(IF(engine IN ('ddg-addon'), ad_click, 0)) AS ddgaddon_adclick
   FROM
     `mozdata.search.search_clients_engines_sources_daily`
   WHERE

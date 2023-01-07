@@ -214,31 +214,18 @@ mobile_data_ddg AS (
 # combine all desktop and mobile together
 SELECT
   submission_date,
-  partner,
-  device,
-  channel,
+  "Google" AS partner,
   country,
+  'desktop' AS device,
+  channel,
   dou,
-  adou,
+  dou_engaged_w_sap,
   sap,
+  tagged_sap,
+  tagged_follow_on,
   ad_click
 FROM
-  (
-    SELECT
-      submission_date,
-      "Google" AS partner,
-      country,
-      'desktop' AS device,
-      channel,
-      dou,
-      dou_engaged_w_sap,
-      sap,
-      tagged_sap,
-      tagged_follow_on,
-      ad_click
-    FROM
-      desktop_data_google
-  )
+  desktop_data_google
 UNION ALL
   (
     SELECT

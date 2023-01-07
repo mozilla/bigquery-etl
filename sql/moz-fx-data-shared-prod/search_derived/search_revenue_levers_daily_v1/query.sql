@@ -185,7 +185,7 @@ mobile_data_bing AS (
     bing_sap AS sap,
     bing_tagged_sap AS tagged_sap,
     bing_tagged_follow_on AS tagged_follow_on,
-    bing_serach_with_ads AS search_with_ads,
+    bing_search_with_ads AS search_with_ads,
     bing_ad_click AS ad_click
   FROM
     mobile_search_data_bing_ddg

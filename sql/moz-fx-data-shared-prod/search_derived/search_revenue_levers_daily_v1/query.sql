@@ -132,13 +132,13 @@ mobile_data_google AS (
   SELECT
     submission_date,
     country,
-    sum(IF(country = 'US', US_dou_eligible_google, RoW_dou_eligible_google)) AS dou,
-    sum(dou_engaged_w_sap) AS dou_engaged_w_sap,
-    sum(sap) AS sap,
-    sum(tagged_sap) AS tagged_sap,
-    sum(tagged_follow_on) AS tagged_follow_on,
-    sum(search_with_ads) AS search_with_ads,
-    sum(ad_click) AS ad_click
+    IF(country = 'US', US_dou_eligible_google, RoW_dou_eligible_google) AS dou,
+    dou_engaged_w_sap,
+    sap,
+    tagged_sap,
+    tagged_follow_on,
+    search_with_ads,
+    ad_click
   FROM
     mobile_search_data_google
   INNER JOIN

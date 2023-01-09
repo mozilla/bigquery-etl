@@ -324,7 +324,7 @@ daily_mobile_clients AS (
         AND country IN UNNEST(["US"])
         AND normalized_channel = "release"
         -- AND sample_id = 1
-        AND (submission_date BETWEEN "2022-05-18" AND "2022-10-03")
+        AND (submission_date BETWEEN "2022-05-10" AND "2022-10-03")
         AND (
           (normalized_app_name = "Fenix" AND submission_date BETWEEN "2022-05-10" AND "2022-09-19")
           OR (

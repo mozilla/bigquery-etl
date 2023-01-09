@@ -129,4 +129,4 @@ AS
 SELECT
   ERROR(
     'VIEW DEPRECATED - This view will be completely deleted after 1st of February 2023, please use `fxa_all_events` with filter on `event_category` instead. See DENG-582 for more info.'
-  )
+  ) AS error_message

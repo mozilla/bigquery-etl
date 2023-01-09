@@ -109,7 +109,9 @@ relay_subscriptions AS (
   WHERE
     (
       "premium-relay" IN UNNEST(stripe_subscriptions_history.product_capabilities)
+      OR "relay-phones" IN UNNEST(stripe_subscriptions_history.product_capabilities)
       OR "premium-relay" IN UNNEST(stripe_subscriptions_history.plan_capabilities)
+      OR "relay-phones" IN UNNEST(stripe_subscriptions_history.plan_capabilities)
     )
 ),
 relay_subscriptions_with_end_date AS (

@@ -27,9 +27,9 @@ WITH base AS (
       ) AS jsonPayload
     )
   FROM
-    `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth_20*`
+    `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth`
   WHERE
-    _TABLE_SUFFIX = FORMAT_DATE('%y%m%d', @submission_date)
+    DATE(`timestamp`) = @submission_date
 )
   --
 SELECT

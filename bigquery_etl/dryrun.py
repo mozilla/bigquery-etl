@@ -79,6 +79,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_auth_events_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_content_events_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_stdout_events_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v1/query.sql",  # noqa E501
@@ -170,6 +171,10 @@ SKIP = {
         "sql/moz-fx-data-shared-prod/monitoring_derived/airflow_*/*.sql",
         recursive=True,
     ),  # noqa E501
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/google_ads_derived/**/*.sql",
+        recursive=True,
+    ),
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501

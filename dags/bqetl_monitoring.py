@@ -112,19 +112,7 @@ with DAG(
             "python",
             "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_tables_inventory_v1/query.py",
         ]
-        + [],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="wichan@mozilla.com",
-        email=["ascholtz@mozilla.com", "wichan@mozilla.com"],
-    )
-
-    monitoring_derived__bigquery_tables_last_modified__v1 = gke_command(
-        task_id="monitoring_derived__bigquery_tables_last_modified__v1",
-        command=[
-            "python",
-            "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_tables_last_modified_v1/query.py",
-        ]
-        + [],
+        + ["--date", "{{ ds }}"],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="wichan@mozilla.com",
         email=["ascholtz@mozilla.com", "wichan@mozilla.com"],

@@ -24,7 +24,6 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_accounts.fxa_content_auth_oauth_events`
 AS
-  --
 WITH content AS (
   SELECT
     jsonPayload.logger,
@@ -126,3 +125,7 @@ SELECT
   JSON_VALUE(event_properties, "$.email_version") AS email_version,
 FROM
   unioned
+WHERE
+  ERROR(
+    'VIEW DEPRECATED - This view will be completely deleted after 9th of February 2023, please use `fxa_all_events` with filter on `event_category` instead. See DENG-582 for more info.'
+  )

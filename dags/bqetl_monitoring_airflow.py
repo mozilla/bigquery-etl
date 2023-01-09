@@ -8,8 +8,9 @@ import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
-from operators.backport.fivetran.operator import FivetranOperator
-from operators.backport.fivetran.sensor import FivetranSensor
+from fivetran_provider.operators.fivetran import FivetranOperator
+from fivetran_provider.sensors.fivetran import FivetranSensor
+from utils.callbacks import retry_tasks_callback
 
 docs = """
 ### bqetl_monitoring_airflow
@@ -141,7 +142,10 @@ with DAG(
     fivetran_airflow_metadata_import_sync_wait = FivetranSensor(
         connector_id="{{ var.value.fivetran_airflow_metadata_import_connector_id }}",
         task_id="fivetran_airflow_metadata_import_sensor",
-        poke_interval=5,
+        poke_interval=30,
+        xcom="{{ task_instance.xcom_pull('fivetran_airflow_metadata_import_task') }}",
+        on_retry_callback=retry_tasks_callback,
+        params={"retry_tasks": ["fivetran_airflow_metadata_import_task"]},
     )
 
     fivetran_airflow_metadata_import_sync_wait.set_upstream(

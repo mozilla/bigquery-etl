@@ -1,10 +1,33 @@
 WITH campaigns AS (
-  SELECT DISTINCT
+  SELECT
+    CAST(start_date AS DATE) AS start_date,
+    CAST(end_date AS DATE) AS end_date,
     id,
-    name,
-    FORMAT("%s (%s)", name, CAST(id AS string)) AS fenix_compatible_campaign_name
+    name
   FROM
     `moz-fx-data-bq-fivetran`.google_ads.campaign_history
+),
+campaigns_with_persisted_ids as(
+  SELECT
+    date,
+    campaigns.name as name,
+    campaigns.id as id,
+    FORMAT("%s (%s)", campaigns.name, CAST(campaigns.id AS string)) AS fenix_compatible_campaign_name,
+    SUM(biddable_app_install_conversions) AS installs,
+    SUM(biddable_app_post_install_conversions) AS conversions,
+  FROM
+    `moz-fx-data-bq-fivetran`.google_ads.campaign_conversions_by_date
+  JOIN
+    campaigns
+  ON
+    campaign_conversions_by_date.campaign_id = campaigns.id
+    AND campaign_conversions_by_date.date
+    BETWEEN campaigns.start_date
+    AND campaigns.end_date
+  GROUP BY
+    date,
+    campaigns.name,
+    id
 ),
 install_dou_metrics AS (
   SELECT
@@ -33,7 +56,7 @@ stats AS (
   GROUP BY id, date
 )
 SELECT
-  campaigns.name AS campaign_name,
+  campaigns_with_persisted_ids.name AS campaign_name,
   stats.date AS date,
   -- Total spend per-campaign
   stats.cost_micros AS campaign_spend_in_micros,
@@ -86,7 +109,7 @@ SELECT
 FROM
   stats
 JOIN
-  campaigns
+  campaigns_with_persisted_ids
 USING
   (id)
 JOIN
@@ -94,7 +117,7 @@ JOIN
 ON
   (stats.date = install_dou_metrics.date)
   AND (
-    campaigns.fenix_compatible_campaign_name = install_dou_metrics.fenix_marketing_metrics_adjust_campaign
+    campaigns_with_persisted_ids.fenix_compatible_campaign_name = install_dou_metrics.fenix_marketing_metrics_adjust_campaign
   )
 ORDER BY
   campaign_name,

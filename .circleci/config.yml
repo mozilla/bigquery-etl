@@ -313,7 +313,7 @@ jobs:
       - *java_deps
       - *attach_generated_sql
       - add_ssh_keys:
-          fingerprints: "ab:b5:f7:55:92:0a:72:c4:63:0e:57:be:cd:66:32:53"
+          fingerprints: "38:49:5e:71:1d:b7:14:84:45:08:8a:4c:6b:67:4e:4d"
       - run:
           name: Build and deploy docs
           command: |
@@ -352,7 +352,7 @@ jobs:
     steps:
       - *attach_generated_sql
       - add_ssh_keys:
-          fingerprints: "ab:b5:f7:55:92:0a:72:c4:63:0e:57:be:cd:66:32:53"
+          fingerprints: "38:49:5e:71:1d:b7:14:84:45:08:8a:4c:6b:67:4e:4d"
       - run:
           name: Push to generated-sql branch
           command: |

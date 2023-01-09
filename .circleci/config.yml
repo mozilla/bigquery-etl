@@ -402,7 +402,7 @@ jobs:
       - *java_deps
       - add_ssh_keys:
           # deploy key to private-bigquery-etl
-          fingerprints: "cf:d6:25:9a:ee:26:66:39:c8:cc:48:f6:bb:3e:34:68"
+          fingerprints: "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
       - run:
           name: Install rsync
           command: |
@@ -437,7 +437,7 @@ jobs:
     steps:
       - *attach_generated_sql
       - add_ssh_keys:
-          fingerprints: "cf:d6:25:9a:ee:26:66:39:c8:cc:48:f6:bb:3e:34:68"
+          fingerprints: "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
       - run:
           name: Push to private-generated-sql branch
           # yamllint disable rule:line-length

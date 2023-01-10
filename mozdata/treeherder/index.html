@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#classified" class="md-skip">
+        <a href="#deletion_request" class="md-skip">
           Skip to content
         </a>
       
@@ -1493,6 +1493,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../relay/" class="md-nav__link">
+        Firefox Relay
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../search/" class="md-nav__link">
         Search
       </a>
@@ -1605,13 +1619,6 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#classified" class="md-nav__link">
-    classified
-  </a>
-  
-</li>
       
         <li class="md-nav__item">
   <a href="#deletion_request" class="md-nav__link">
@@ -2222,13 +2229,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#classified" class="md-nav__link">
-    classified
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#deletion_request" class="md-nav__link">
     deletion_request
   </a>
@@ -2268,32 +2268,6 @@
 
 <p>User-facing views related to document namespace treeherder; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/treeherder</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/treeherder">Source Directory</a></p>
-<h2 id="classified"><a href="#classified">classified</a></h2>
-<p><strong>Historical Pings for <code>treeherder/classified</code></strong></p>
-<p><code>treeherder.classified</code></p>
-<p>A historical view of pings sent for the
-<code>treeherder/classified</code>
-document type.</p>
-<p>This view is guaranteed to contain only complete days
-(per <code>submission_timestamp</code>)
-and to contain only one row per distinct <code>document_id</code> within a given date.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/treeherder_stable>treeherder_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/treeherder_stable/classified_v1>classified_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/treeherder/classified">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/treeherder/classified/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/treeherder/classified/metadata.yaml">Metadata File</a> </p>
-<hr />
 <h2 id="deletion_request"><a href="#deletion_request">deletion_request</a></h2>
 <p><strong>Historical Pings for <code>treeherder/deletion-request</code></strong></p>
 <p><code>treeherder.deletion_request</code></p>

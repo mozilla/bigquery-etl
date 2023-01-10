@@ -7,64 +7,62 @@ WITH campaigns AS (
   FROM
     `moz-fx-data-bq-fivetran`.google_ads.campaign_history
 ),
-campaigns_with_persisted_ids
-AS
-  (
-    SELECT
-      date,
-      campaigns.name AS name,
-      campaigns.id AS id,
-      FORMAT(
-        "%s (%s)",
-        campaigns.name,
-        CAST(campaigns.id AS string)
-        -- Fenix identifies campaigns in the format <name> (<id>)
-      ) AS fenix_compatible_campaign_name,
-      SUM(biddable_app_install_conversions) AS installs,
-      SUM(biddable_app_post_install_conversions) AS conversions,
-    FROM
-      `moz-fx-data-bq-fivetran`.google_ads.campaign_conversions_by_date
-    JOIN
-      campaigns
-    ON
-      campaign_conversions_by_date.campaign_id = campaigns.id
-      AND campaign_conversions_by_date.date
-      BETWEEN campaigns.start_date
-      AND campaigns.end_date
-    GROUP BY
-      date,
+campaigns_with_persisted_ids AS (
+  SELECT
+    date,
+    campaigns.name AS name,
+    campaigns.id AS id,
+    FORMAT(
+      "%s (%s)",
       campaigns.name,
-      id
-  ),
-  install_dou_metrics AS (
-    SELECT
-      fenix_marketing_metrics.adjust_campaign AS fenix_marketing_metrics_adjust_campaign,
-      fenix_marketing_metrics.submission_date AS date,
-      COALESCE(SUM(fenix_marketing_metrics.new_profiles), 0) AS new_profiles_sum,
-      COALESCE(SUM(fenix_marketing_metrics.dau), 0) AS dau_sum,
-      COALESCE(SUM(fenix_marketing_metrics.ad_clicks), 0) AS revenue_generating_ad_clicks_sum,
-    FROM
-      `moz-fx-data-shared-prod.fenix.marketing_attributable_metrics` AS fenix_marketing_metrics
-    WHERE
-      adjust_network = "Google Ads ACI"
-    GROUP BY
-      fenix_marketing_metrics_adjust_campaign,
-      date
-  ),
-  stats AS (
-    SELECT
-      id,
-      date,
-      SUM(cost_micros) AS cost_micros,
-      SUM(impressions) AS impressions,
-      SUM(conversions) AS conversions,
-      SUM(clicks) AS marketing_ad_clicks
-    FROM
-      `moz-fx-data-bq-fivetran`.google_ads.campaign_stats AS stats
-    GROUP BY
-      id,
-      date
-  )
+      CAST(campaigns.id AS string)
+        -- Fenix identifies campaigns in the format <name> (<id>)
+    ) AS fenix_compatible_campaign_name,
+    SUM(biddable_app_install_conversions) AS installs,
+    SUM(biddable_app_post_install_conversions) AS conversions,
+  FROM
+    `moz-fx-data-bq-fivetran`.google_ads.campaign_conversions_by_date
+  JOIN
+    campaigns
+  ON
+    campaign_conversions_by_date.campaign_id = campaigns.id
+    AND campaign_conversions_by_date.date
+    BETWEEN campaigns.start_date
+    AND campaigns.end_date
+  GROUP BY
+    date,
+    campaigns.name,
+    id
+),
+install_dou_metrics AS (
+  SELECT
+    fenix_marketing_metrics.adjust_campaign AS fenix_marketing_metrics_adjust_campaign,
+    fenix_marketing_metrics.submission_date AS date,
+    COALESCE(SUM(fenix_marketing_metrics.new_profiles), 0) AS new_profiles_sum,
+    COALESCE(SUM(fenix_marketing_metrics.dau), 0) AS dau_sum,
+    COALESCE(SUM(fenix_marketing_metrics.ad_clicks), 0) AS revenue_generating_ad_clicks_sum,
+  FROM
+    `moz-fx-data-shared-prod.fenix.marketing_attributable_metrics` AS fenix_marketing_metrics
+  WHERE
+    adjust_network = "Google Ads ACI"
+  GROUP BY
+    fenix_marketing_metrics_adjust_campaign,
+    date
+),
+stats AS (
+  SELECT
+    id,
+    date,
+    SUM(cost_micros) AS cost_micros,
+    SUM(impressions) AS impressions,
+    SUM(conversions) AS conversions,
+    SUM(clicks) AS marketing_ad_clicks
+  FROM
+    `moz-fx-data-bq-fivetran`.google_ads.campaign_stats AS stats
+  GROUP BY
+    id,
+    date
+)
 SELECT
   campaigns_with_persisted_ids.name AS campaign_name,
   stats.date AS date,

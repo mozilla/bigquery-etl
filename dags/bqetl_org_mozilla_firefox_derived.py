@@ -52,6 +52,20 @@ with DAG(
         depends_on_past=False,
     )
 
+    with TaskGroup(
+        "fenix_derived__attributable_clients__v1_external"
+    ) as fenix_derived__attributable_clients__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_campaign_cost_breakdowns__wait_for_fenix_derived__attributable_clients__v1",
+            external_dag_id="bqetl_campaign_cost_breakdowns",
+            external_task_id="wait_for_fenix_derived__attributable_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        fenix_derived__attributable_clients__v1_external.set_upstream(
+            fenix_derived__attributable_clients__v1
+        )
+
     fenix_derived__clients_yearly__v1 = bigquery_etl_query(
         task_id="fenix_derived__clients_yearly__v1",
         destination_table="clients_yearly_v1",

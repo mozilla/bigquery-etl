@@ -28,12 +28,7 @@ default_args = {
     "owner": "ctroy@mozilla.com",
     "start_date": datetime.datetime(2021, 9, 20, 0, 0),
     "end_date": None,
-    "email": [
-        "ctroy@mozilla.com",
-        "wstuckey@mozilla.com",
-        "rburwei@mozilla.com",
-        "telemetry-alerts@mozilla.com",
-    ],
+    "email": ["ctroy@mozilla.com", "frank@mozilla.com", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -50,6 +45,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     fenix_derived__google_ads_campaign_cost_breakdowns__v1 = bigquery_etl_query(
         task_id="fenix_derived__google_ads_campaign_cost_breakdowns__v1",
         destination_table="google_ads_campaign_cost_breakdowns_v1",
@@ -58,11 +54,25 @@ with DAG(
         owner="ctroy@mozilla.com",
         email=[
             "ctroy@mozilla.com",
-            "rburwei@mozilla.com",
+            "frank@mozilla.com",
             "telemetry-alerts@mozilla.com",
-            "wstuckey@mozilla.com",
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+    )
+
+    wait_for_fenix_derived__attributable_clients__v1 = ExternalTaskSensor(
+        task_id="wait_for_fenix_derived__attributable_clients__v1",
+        external_dag_id="bqetl_org_mozilla_firefox_derived",
+        external_task_id="fenix_derived__attributable_clients__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    fenix_derived__google_ads_campaign_cost_breakdowns__v1.set_upstream(
+        wait_for_fenix_derived__attributable_clients__v1
     )

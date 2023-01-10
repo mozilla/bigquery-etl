@@ -18,6 +18,7 @@ AS
         "%s (%s)",
         campaigns.name,
         CAST(campaigns.id AS string)
+        -- Fenix identifies campaigns in the format <name> (<id>)
       ) AS fenix_compatible_campaign_name,
       SUM(biddable_app_install_conversions) AS installs,
       SUM(biddable_app_post_install_conversions) AS conversions,

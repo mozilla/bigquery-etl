@@ -5,7 +5,7 @@ SELECT
   active_date,
   subscription_id,
 FROM
-  mozdata.relay.subscriptions
+  `moz-fx-data-shared-prod`.relay.subscriptions
 CROSS JOIN
   UNNEST(
     GENERATE_DATE_ARRAY(
@@ -15,4 +15,4 @@ CROSS JOIN
   ) AS active_date
 WHERE
   subscription_start_date IS NOT NULL
-  AND DATE(subscription_start_date) < (SELECT DATE(MAX(end_date)) FROM mozdata.relay.subscriptions)
+  AND DATE(subscription_start_date) < (SELECT DATE(MAX(end_date)) FROM `moz-fx-data-shared-prod`.relay.subscriptions)

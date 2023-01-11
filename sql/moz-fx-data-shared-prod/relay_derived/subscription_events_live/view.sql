@@ -140,6 +140,7 @@ GROUP BY
   granular_event_type,
   plan_id,
   country,
+  country_name,
   provider,
   plan_amount,
   plan_currency,

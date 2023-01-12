@@ -21,7 +21,7 @@ scheduling:
   parameters: ["submission_date:DATE:{{ds}}"]
 bigquery:
   time_partitioning:
-    field: submission_month
     type: month
+    field: submission_month
     require_partition_filter: true
   clustering: null

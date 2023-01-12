@@ -11,8 +11,8 @@ scheduling:
   dag_name: bqetl_experiments_daily
 bigquery:
   time_partitioning:
-    field: window_start
     type: day
+    field: window_start
     require_partition_filter: false
   clustering:
     fields:

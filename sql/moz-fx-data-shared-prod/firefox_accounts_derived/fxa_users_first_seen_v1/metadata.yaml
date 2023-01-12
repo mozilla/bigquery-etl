@@ -21,8 +21,8 @@ scheduling:
   - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
-    field: first_seen_date
     type: day
+    field: first_seen_date
     require_partition_filter: false
   clustering:
     fields:

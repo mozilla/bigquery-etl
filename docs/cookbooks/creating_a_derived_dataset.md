@@ -58,8 +58,8 @@ owners:
   - wlachance@mozilla.com
 bigquery:
   time_partitioning:
-    field: date
     type: day
+    field: date
     require_partition_filter: true
     expiration_days: null
   clustering:
@@ -91,8 +91,8 @@ owners:
   - wlachance@mozilla.com
 bigquery:
   time_partitioning:
-    field: date
     type: day
+    field: date
     require_partition_filter: true
     expiration_days: null
   clustering:

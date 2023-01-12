@@ -119,7 +119,7 @@ FROM
 JOIN
   campaigns_with_persisted_ids
 USING
-  (id)
+  (date, id)
 JOIN
   install_dou_metrics
 ON

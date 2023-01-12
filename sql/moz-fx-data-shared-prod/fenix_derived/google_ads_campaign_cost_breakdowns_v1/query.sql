@@ -2,11 +2,11 @@ WITH campaigns_with_persisted_ids AS (
   SELECT
     date,
     campaign_name AS name,
-    id,
+    campaign_id AS id,
     FORMAT(
       "%s (%s)",
-      campaigns.name,
-      CAST(campaigns.id AS string)
+      campaign_name,
+      CAST(campaign_id AS string)
         -- Fenix identifies campaigns in the format <name> (<id>)
     ) AS fenix_compatible_campaign_name,
     SUM(biddable_app_install_conversions) AS installs,
@@ -15,7 +15,8 @@ WITH campaigns_with_persisted_ids AS (
     `moz-fx-data-bq-fivetran`.google_ads.campaign_conversions_by_date
   JOIN
     `moz-fx-data-shared-prod`.google_ads_derived.campaign_names_map_v1
-    USING (campaign_id)
+  USING
+    (campaign_id)
   GROUP BY
     date,
     campaign_name,

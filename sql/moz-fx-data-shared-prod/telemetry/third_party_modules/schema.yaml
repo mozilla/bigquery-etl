@@ -1324,6 +1324,9 @@ fields:
   - mode: NULLABLE
     name: struct_version
     type: INTEGER
+  - mode: REPEATED
+    name: blocked_modules
+    type: STRING
   mode: NULLABLE
   name: payload
   type: RECORD

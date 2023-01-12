@@ -76,8 +76,8 @@ scheduling:
     - health_v4
 bigquery:
   time_partitioning:
-    field: datetime
     type: day
+    field: datetime
     require_partition_filter: null
   clustering:
     fields:

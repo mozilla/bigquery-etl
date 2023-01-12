@@ -16,8 +16,8 @@ scheduling:
   date_partition_parameter: activity_date
 bigquery:
   time_partitioning:
-    field: activity_date
     type: day
+    field: activity_date
     require_partition_filter: true
   clustering:
     fields:

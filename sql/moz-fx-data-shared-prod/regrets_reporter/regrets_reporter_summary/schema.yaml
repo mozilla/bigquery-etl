@@ -1,25 +1,28 @@
 fields:
 - mode: NULLABLE
-  name: cohort_date
+  name: dau
+  type: INTEGER
+- mode: NULLABLE
+  name: wau
+  type: INTEGER
+- mode: NULLABLE
+  name: new_users
+  type: INTEGER
+- mode: NULLABLE
+  name: date
   type: DATE
 - mode: NULLABLE
-  name: product
+  name: experiment_arm
   type: STRING
 - mode: NULLABLE
-  name: app_version
-  type: STRING
-- mode: NULLABLE
-  name: os
-  type: STRING
-- mode: NULLABLE
-  name: normalized_channel
+  name: ui_arm
   type: STRING
 - mode: NULLABLE
   name: country
   type: STRING
 - mode: NULLABLE
-  name: new_profiles
-  type: INTEGER
+  name: browser
+  type: STRING
 - mode: NULLABLE
-  name: day_2_7_activated
+  name: activities
   type: INTEGER

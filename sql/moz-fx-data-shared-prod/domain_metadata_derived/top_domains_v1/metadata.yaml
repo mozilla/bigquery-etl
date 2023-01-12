@@ -13,8 +13,8 @@ labels:
 
 bigquery:
   time_partitioning:
-    field: submission_date
     type: month
+    field: submission_date
     require_partition_filter: true
 
 scheduling:

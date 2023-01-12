@@ -7,3 +7,14 @@ owners:
   - ascholtz@mozilla.com
 scheduling:
   dag_name: bqetl_google_analytics_derived
+bigquery:
+  time_partitioning:
+    field: date
+    type: day
+    require_partition_filter: false
+  clustering:
+    fields:
+      - page_name
+      - event_category
+      - event_action
+      - event_label

@@ -12,3 +12,8 @@ scheduling:
   # delayed 7 days, and this needs an additional day of delay for cancel events.
   date_partition_offset: -8
   date_partition_parameter: date
+bigquery:
+  time_partitioning:
+    field: event_date
+    type: day
+    require_partition_filter: false

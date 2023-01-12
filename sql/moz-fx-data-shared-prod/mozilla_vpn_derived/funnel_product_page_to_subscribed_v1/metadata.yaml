@@ -8,3 +8,8 @@ labels:
 scheduling:
   dag_name: bqetl_subplat
   date_partition_parameter: date
+bigquery:
+  time_partitioning:
+    field: partition_date
+    type: day
+    require_partition_filter: false

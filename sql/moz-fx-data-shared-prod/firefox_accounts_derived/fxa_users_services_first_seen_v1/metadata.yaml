@@ -15,3 +15,12 @@ labels:
 #   # making it incremental is possible but nuanced since it windows over
 #   # events that may cross the midnight boundary.
 #   date_partition_parameter: null
+bigquery:
+  time_partitioning:
+    field: first_service_timestamp
+    type: day
+    require_partition_filter: false
+  clustering:
+    fields:
+      - service
+      - user_id

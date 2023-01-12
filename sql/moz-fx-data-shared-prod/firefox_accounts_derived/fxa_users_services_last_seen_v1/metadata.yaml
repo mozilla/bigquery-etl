@@ -14,3 +14,12 @@ labels:
 #   dag_name: bqetl_fxa_events
 #   depends_on_past: true
 #   start_date: '2019-10-08'
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: false
+  clustering:
+    fields:
+      - service
+      - user_id

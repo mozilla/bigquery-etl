@@ -13,4 +13,8 @@ scheduling:
   dag_name: bqetl_event_rollup
   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
   task_name: funnel_events_source__v1
-bigquery: null
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: false

@@ -12,3 +12,8 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_org_mozilla_fenix_derived
+bigquery:
+  time_partitioning:
+    field: null
+    type: day
+    require_partition_filter: false

@@ -15,3 +15,8 @@ labels:
 #   dag_name: bqetl_fxa_events
 #   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
 #   referenced_tables: []
+bigquery:
+  time_partitioning:
+    field: timestamp
+    type: day
+    require_partition_filter: false

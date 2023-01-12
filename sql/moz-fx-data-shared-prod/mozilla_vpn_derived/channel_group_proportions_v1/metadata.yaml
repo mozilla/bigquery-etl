@@ -12,3 +12,8 @@ scheduling:
   # delay aggregates by 7 days, to ensure data is complete
   date_partition_offset: -7
   date_partition_parameter: date
+bigquery:
+  time_partitioning:
+    field: subscription_start_date
+    type: day
+    require_partition_filter: false

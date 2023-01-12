@@ -23,3 +23,8 @@ scheduling:
       "--destination_table",
       "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_lifecycle_28d_desktop_v1",
     ]
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: false

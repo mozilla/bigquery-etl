@@ -14,3 +14,13 @@ owners:
 scheduling:
   dag_name: bqetl_search_dashboard
   depends_on_past: false
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: false
+  clustering:
+    fields:
+    - country
+    - product
+    - normalized_engine

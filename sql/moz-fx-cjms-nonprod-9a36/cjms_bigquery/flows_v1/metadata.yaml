@@ -25,3 +25,8 @@ scheduling:
     # explicit query file path is necessary because the destination table
     # includes a partition identifier that is not in the path
     sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/flows_v1/query.sql
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: false

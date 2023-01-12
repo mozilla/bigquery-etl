@@ -10,3 +10,12 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_gud
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: false
+  clustering:
+    fields:
+      - usage
+      - id_bucket

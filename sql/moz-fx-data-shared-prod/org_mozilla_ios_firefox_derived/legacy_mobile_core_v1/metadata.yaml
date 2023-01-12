@@ -4,3 +4,8 @@ labels:
   incremental: true
 owners:
   - amiyaguchi@mozilla.com
+bigquery:
+  time_partitioning:
+    field: null
+    type: day
+    require_partition_filter: false

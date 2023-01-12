@@ -4,3 +4,12 @@ owners:
 - ascholtz@mozilla.com
 scheduling:
   dag_name: bqetl_experiments_daily
+bigquery:
+  time_partitioning:
+    field: window_start
+    type: day
+    require_partition_filter: false
+  clustering:
+    fields:
+    - experiment
+    - branch

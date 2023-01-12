@@ -11,3 +11,14 @@ scheduling:
   referenced_tables:
     - ["moz-fx-data-marketing-prod", "ga_derived", "blogs_goals_v1"]
     - ["moz-fx-data-marketing-prod", "ga_derived", "blogs_sessions_v1"]
+bigquery:
+  time_partitioning:
+    field: date
+    type: day
+    require_partition_filter: false
+  clustering:
+    fields:
+      - cleaned_landing_page
+      - browser
+      - blog
+      - subblog

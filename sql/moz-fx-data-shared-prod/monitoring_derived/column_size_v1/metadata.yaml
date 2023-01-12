@@ -10,3 +10,8 @@ scheduling:
   arguments: ["--date", "{{ ds }}"]
   referenced_tables:
     - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v4']
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: false

@@ -14,6 +14,6 @@ scheduling:
   date_partition_parameter: date
 bigquery:
   time_partitioning:
-    field: event_date
     type: day
+    field: event_date
     require_partition_filter: false

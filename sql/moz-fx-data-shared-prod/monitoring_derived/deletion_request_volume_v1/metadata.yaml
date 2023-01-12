@@ -20,6 +20,6 @@ scheduling:
        'payload_bytes_decoded_telemetry']
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: false

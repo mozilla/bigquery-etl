@@ -13,8 +13,8 @@ scheduling:
     - ["moz-fx-data-marketing-prod", "ga_derived", "blogs_sessions_v1"]
 bigquery:
   time_partitioning:
-    field: date
     type: day
+    field: date
     require_partition_filter: false
   clustering:
     fields:

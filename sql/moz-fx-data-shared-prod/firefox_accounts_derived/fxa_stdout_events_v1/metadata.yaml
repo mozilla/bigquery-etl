@@ -12,6 +12,6 @@ scheduling:
   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
 bigquery:
   time_partitioning:
-    field: timestamp
     type: day
+    field: timestamp
     require_partition_filter: false

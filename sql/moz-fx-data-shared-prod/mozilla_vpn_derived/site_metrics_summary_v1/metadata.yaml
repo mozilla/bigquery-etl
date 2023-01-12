@@ -16,8 +16,8 @@ scheduling:
       - site_metrics_empty_check_v1
 bigquery:
   time_partitioning:
-    field: date
     type: day
+    field: date
     require_partition_filter: false
   clustering:
     fields:

@@ -17,8 +17,8 @@ labels:
 #   date_partition_parameter: null
 bigquery:
   time_partitioning:
-    field: first_service_timestamp
     type: day
+    field: first_service_timestamp
     require_partition_filter: false
   clustering:
     fields:

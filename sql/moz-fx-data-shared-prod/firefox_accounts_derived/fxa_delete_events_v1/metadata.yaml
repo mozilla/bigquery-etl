@@ -18,6 +18,6 @@ scheduling:
   referenced_tables: []
 bigquery:
   time_partitioning:
-    field: submission_timestamp
     type: day
+    field: submission_timestamp
     require_partition_filter: false

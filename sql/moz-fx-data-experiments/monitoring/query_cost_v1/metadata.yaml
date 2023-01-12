@@ -9,6 +9,6 @@ scheduling:
   referenced_tables: [['region-us', 'INFORMATION_SCHEMA', 'JOBS_BY_PROJECT']]
 bigquery:
   time_partitioning:
-    field: submission_timestamp
     type: day
+    field: submission_timestamp
     require_partition_filter: false

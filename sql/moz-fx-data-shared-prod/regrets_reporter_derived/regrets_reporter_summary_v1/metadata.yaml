@@ -22,8 +22,8 @@ scheduling:
                        'main_events_v1']]
 bigquery:
   time_partitioning:
-    field: date
     type: day
+    field: date
     require_partition_filter: true
   clustering:
     fields:

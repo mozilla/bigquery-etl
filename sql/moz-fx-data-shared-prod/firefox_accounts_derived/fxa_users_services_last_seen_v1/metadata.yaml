@@ -16,8 +16,8 @@ labels:
 #   start_date: '2019-10-08'
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: false
   clustering:
     fields:

@@ -27,6 +27,6 @@ scheduling:
     sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/flows_v1/query.sql
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: false

@@ -10,8 +10,8 @@ scheduling:
   task_name: sponsored_tiles_clients_daily_v1
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: true
     expiration_days: null
   clustering:

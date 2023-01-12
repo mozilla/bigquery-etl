@@ -17,6 +17,6 @@ labels:
 #   referenced_tables: []
 bigquery:
   time_partitioning:
-    field: timestamp
     type: day
+    field: timestamp
     require_partition_filter: false

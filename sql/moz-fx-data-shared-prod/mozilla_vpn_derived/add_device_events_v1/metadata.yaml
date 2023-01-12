@@ -10,6 +10,6 @@ scheduling:
   dag_name: bqetl_subplat
 bigquery:
   time_partitioning:
-    field: timestamp
     type: day
+    field: timestamp
     require_partition_filter: false

@@ -21,8 +21,8 @@ scheduling:
   email_on_retry: false
 bigquery:
   time_partitioning:
-    field: automatic_payout_effective_at
     type: day
+    field: automatic_payout_effective_at
     require_partition_filter: false
   clustering:
     fields:

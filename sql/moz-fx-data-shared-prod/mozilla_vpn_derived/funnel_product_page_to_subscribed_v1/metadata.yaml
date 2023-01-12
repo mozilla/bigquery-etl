@@ -10,6 +10,6 @@ scheduling:
   date_partition_parameter: date
 bigquery:
   time_partitioning:
-    field: partition_date
     type: day
+    field: partition_date
     require_partition_filter: false

@@ -14,8 +14,8 @@ workgroup_access:
       - workgroup:search-terms/aggregated
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: true
 scheduling:
   dag_name: bqetl_search_terms_daily

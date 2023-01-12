@@ -17,6 +17,6 @@ scheduling:
     - ['moz-fx-data-shared-prod', '*_derived', '*']
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: false

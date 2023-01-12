@@ -15,6 +15,6 @@ scheduling:
   task_name: funnel_events_source__v1
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: false

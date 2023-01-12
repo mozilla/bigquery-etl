@@ -9,8 +9,8 @@ scheduling:
   dag_name: bqetl_google_analytics_derived
 bigquery:
   time_partitioning:
-    field: date
     type: day
+    field: date
     require_partition_filter: false
   clustering:
     fields:

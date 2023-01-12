@@ -21,8 +21,8 @@ scheduling:
 
 bigquery:
   time_partitioning:
-    field: last_modified_date
     type: day
+    field: last_modified_date
     require_partition_filter: false
   clustering:
     fields:

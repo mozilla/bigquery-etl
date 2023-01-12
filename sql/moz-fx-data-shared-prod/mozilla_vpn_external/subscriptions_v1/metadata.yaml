@@ -47,3 +47,8 @@ scheduling:
       FROM subscriptions
       WHERE DATE(updated_at) = DATE '{{ds}}'
   referenced_tables: []
+bigquery:
+  time_partitioning:
+    type: day
+    field: updated_at
+    require_partition_filter: false

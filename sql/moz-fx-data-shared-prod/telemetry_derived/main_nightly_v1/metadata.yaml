@@ -31,3 +31,13 @@ scheduling:
   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
   referenced_tables: [['moz-fx-data-shared-prod', 'telemetry_stable',
                        'main_v4']]
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: true
+    expiration_days: 180
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id

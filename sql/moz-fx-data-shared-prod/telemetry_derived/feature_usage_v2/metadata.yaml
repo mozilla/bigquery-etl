@@ -17,8 +17,8 @@ scheduling:
   dag_name: bqetl_feature_usage
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: false
     expiration_days: null
   clustering: null

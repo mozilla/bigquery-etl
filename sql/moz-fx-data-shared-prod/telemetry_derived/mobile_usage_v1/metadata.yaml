@@ -29,3 +29,8 @@ scheduling:
   - task_id: wait_for_mobile_usage
     dag_name: kpi_forecasting
     execution_delta: 1h
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false

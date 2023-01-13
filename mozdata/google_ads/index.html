@@ -829,6 +829,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#campaign_names_map" class="md-nav__link">
+    campaign_names_map
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2221,6 +2228,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#campaign_names_map" class="md-nav__link">
+    campaign_names_map
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2266,7 +2280,7 @@
         <td>Date</td>
         <td>Yes</td>
     </tr><tr>
-        <td>name</td>
+        <td>campaign_name</td>
         <td></td>
         <td>String</td>
         <td>Yes</td>
@@ -2303,6 +2317,50 @@
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/google_ads/campaign_conversions_by_date">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/google_ads/campaign_conversions_by_date/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/google_ads/campaign_conversions_by_date/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="campaign_names_map"><a href="#campaign_names_map">campaign_names_map</a></h2>
+<p><code>google_ads.campaign_names_map</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>campaign_id</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>campaign_name</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>is_most_recent_record</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/google_ads_derived>google_ads_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/google_ads_derived/campaign_names_map_v1>campaign_names_map_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/google_ads/campaign_names_map">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/google_ads/campaign_names_map/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/google_ads/campaign_names_map/metadata.yaml">Metadata File</a> </p>
 <hr />
 
 

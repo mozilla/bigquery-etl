@@ -1,28 +1,24 @@
-WITH campaigns AS (
+WITH conversion_counts AS (
   SELECT
-    CAST(start_date AS DATE) AS start_date,
-    CAST(end_date AS DATE) AS end_date,
-    id AS campaign_id,
-    name,
+    date,
+    campaign_id,
+    SUM(biddable_app_install_conversions) AS installs,
+    SUM(biddable_app_post_install_conversions) AS conversions,
   FROM
-    `moz-fx-data-bq-fivetran`.google_ads.campaign_history
+    `moz-fx-data-bq-fivetran`.google_ads.campaign_conversions_by_date
+  GROUP BY
+    date,
+    campaign_id
 )
 SELECT
   date,
-  campaigns.name,
-  campaigns.campaign_id,
-  SUM(biddable_app_install_conversions) AS installs,
-  SUM(biddable_app_post_install_conversions) AS conversions,
+  campaign_name,
+  campaign_id,
+  installs,
+  conversions,
 FROM
-  `moz-fx-data-bq-fivetran`.google_ads.campaign_conversions_by_date
+  conversion_counts
 JOIN
-  campaigns
-ON
-  campaign_conversions_by_date.campaign_id = campaigns.campaign_id
-  AND campaign_conversions_by_date.date
-  BETWEEN campaigns.start_date
-  AND campaigns.end_date
-GROUP BY
-  date,
-  campaigns.name,
-  campaign_id
+  `moz-fx-data-shared-prod`.google_ads_derived.campaign_names_map_v1
+USING
+  (campaign_id)

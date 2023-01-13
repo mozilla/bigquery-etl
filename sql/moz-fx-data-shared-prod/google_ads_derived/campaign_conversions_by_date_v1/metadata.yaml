@@ -9,6 +9,7 @@ owners:
 scheduling:
   dag_name: bqetl_fivetran_google_ads
   depends_on_past: false
+  date_partition_parameter: null
 labels:
   incremental: false
 bigquery:

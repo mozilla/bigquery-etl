@@ -12,3 +12,7 @@ description: |-
     - normalized_channel
 owners:
   - akomar@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    require_partition_filter: false

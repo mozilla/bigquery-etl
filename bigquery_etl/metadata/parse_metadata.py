@@ -57,8 +57,8 @@ class PartitionType(enum.Enum):
 class PartitionMetadata:
     """Metadata for defining BigQuery table partitions."""
 
-    field: str
     type: PartitionType
+    field: Optional[str] = attr.ib(None)
     require_partition_filter: bool = attr.ib(True)
     expiration_days: Optional[float] = attr.ib(None)
 

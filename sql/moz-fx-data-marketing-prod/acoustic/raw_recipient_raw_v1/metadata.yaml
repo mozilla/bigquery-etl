@@ -37,6 +37,11 @@ scheduling:
 
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: false
+  clustering:
+    fields:
+      - event_type
+      - recipient_type
+      - body_type

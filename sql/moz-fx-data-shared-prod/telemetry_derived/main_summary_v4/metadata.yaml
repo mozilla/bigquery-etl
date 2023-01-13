@@ -25,3 +25,12 @@ scheduling:
     - task_id: wait_for_main_summary
       dag_name: parquet_export
       execution_delta: 1h
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - normalized_channel
+      - sample_id

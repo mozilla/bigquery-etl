@@ -3,7 +3,7 @@ fields:
   name: date
   type: DATE
 - mode: NULLABLE
-  name: name
+  name: campaign_name
   type: STRING
 - mode: NULLABLE
   name: campaign_id

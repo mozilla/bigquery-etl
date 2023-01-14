@@ -21,8 +21,8 @@ scheduling:
   start_date: '2019-04-23'
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: true
     expiration_days: null
   clustering:

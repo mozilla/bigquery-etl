@@ -76,7 +76,7 @@ def extract_table_references_without_views(path: Path) -> Iterator[str]:
             while len(parts) < 3:
                 parts = (ref_base.name, *parts)
                 ref_base = ref_base.parent
-            if parts[:-2] == ("moz-fx-data-shared-prod",):
+            if parts[:-2] in (("moz-fx-data-shared-prod",), ("mozdata",)):
                 if stable_views is None:
                     # lazy read stable views
                     stable_views = {

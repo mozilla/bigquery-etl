@@ -9,12 +9,30 @@ ARG PYTHON_VERSION=3.10
 FROM --platform=linux/amd64 python:${PYTHON_VERSION}-slim-buster AS base
 WORKDIR /app
 
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONFAULTHANDLER=1 \
+    PYSETUP_PATH="/opt/pysetup" \
+    VENV_PATH="/opt/pysetup/.venv" \
+    POETRY_HOME="/opt/poetry" \
+    POETRY_VIRTUALENVS_IN_PROJECT=true \
+    POETRY_NO_INTERACTION=1
+
+ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
+
 # build typed-ast in separate stage because it requires gcc and libc-dev
 FROM base AS python-deps
-RUN apt-get update -qqy && apt-get install -qqy gcc libc-dev
-COPY requirements.txt ./
-# use --no-deps to work around https://github.com/pypa/pip/issues/9644
-RUN pip install --no-deps -r requirements.txt
+
+ARG POETRY_VERSION=1.3.1
+
+WORKDIR $PYSETUP_PATH
+
+RUN apt-get update -qqy && apt-get install -qqy gcc libc-dev curl
+
+COPY . .
+
+# install poetry
+RUN curl -sSL https://install.python-poetry.org | python - --version $POETRY_VERSION&&\
+    poetry install -vvv --only main
 
 # download java dependencies in separate stage because it requires maven
 FROM base AS java-deps
@@ -31,8 +49,7 @@ COPY --from=google/cloud-sdk:alpine /google-cloud-sdk /google-cloud-sdk
 ENV PATH /google-cloud-sdk/bin:$PATH
 COPY --from=java-deps /app/target/dependency /app/target/dependency
 COPY --from=java-deps /app/target/*.jar /app/target/
-COPY --from=python-deps /usr/local /usr/local
+COPY --from=python-deps $VENV_PATH $VENV_PATH
 COPY .bigqueryrc /root/
 COPY . .
-RUN pip install .
 ENTRYPOINT ["/app/script/entrypoint"]

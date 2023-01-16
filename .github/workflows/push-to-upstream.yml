@@ -1,6 +1,7 @@
 # Workflow manually triggered to push fork to upstream
 name: Push to upstream
 
+# yamllint disable-line rule:truthy
 on:
   workflow_dispatch:
     inputs:

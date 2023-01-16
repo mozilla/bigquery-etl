@@ -1,3 +1,4 @@
 [flake8]
 max-line-length = 160
 ignore = E203, W503
+exclude = dags,sql

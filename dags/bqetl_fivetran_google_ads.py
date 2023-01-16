@@ -63,8 +63,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",
         email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     google_ads_derived__campaign_conversions_by_date__v1.set_upstream(

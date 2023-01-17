@@ -1,0 +1,10 @@
+friendly_name: Fivetran Costs - Incremental Mar
+description: |-
+  Incremental Mar populated from Fivetran Logs
+owners:
+- lschiestl@mozilla.com
+labels: {}
+scheduling:
+  dag_name: bqetl_fivetran_costs
+bigquery: null
+references: {}

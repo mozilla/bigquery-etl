@@ -1,0 +1,13 @@
+fields:
+- mode: NULLABLE
+  name: destination_id
+  type: STRING
+- mode: NULLABLE
+  name: credits_spent
+  type: INTEGER
+- mode: NULLABLE
+  name: doallars_spent
+  type: FLOAT
+- mode: NULLABLE
+  name: measured_month
+  type: DATE

@@ -206,7 +206,7 @@ jobs:
           name: Generate DAGs
           command: |
             PATH="venv/bin:$PATH" script/bqetl dag generate
-            cp -R dags/ /tmp/workspace/generated-sql
+            cp -R dags /tmp/workspace/generated-sql
       - run:
           name: Verify that DAGs were correctly generated and are up-to-date
           command: |

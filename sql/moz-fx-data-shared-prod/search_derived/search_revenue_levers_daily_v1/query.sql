@@ -1,14 +1,14 @@
 WITH
-## Google Desktop (search + DOU)
+## Google Desktop (search + DAU)
 desktop_data_google AS (
   SELECT
     submission_date,
     IF(lower(channel) LIKE '%esr%', 'esr', 'personal') AS channel,
     IF(country = 'US', 'US', 'RoW') AS country,
-    count(DISTINCT client_id) AS dou,
+    count(DISTINCT client_id) AS dau,
     count(
       DISTINCT IF(sap > 0 AND normalized_engine = 'Google', client_id, NULL)
-    ) AS dou_engaged_w_sap,
+    ) AS dau_engaged_w_sap,
     sum(IF(normalized_engine = 'Google', sap, 0)) AS sap,
     sum(IF(normalized_engine = 'Google', tagged_sap, 0)) AS tagged_sap,
     sum(IF(normalized_engine = 'Google', tagged_follow_on, 0)) AS tagged_follow_on,
@@ -32,10 +32,10 @@ desktop_data_google AS (
 desktop_data_bing AS (
   SELECT
     submission_date,
-    count(DISTINCT client_id) AS dou,
+    count(DISTINCT client_id) AS dau,
     count(
       DISTINCT IF(sap > 0 AND normalized_engine = 'Bing', client_id, NULL)
-    ) AS dou_engaged_w_sap,
+    ) AS dau_engaged_w_sap,
     sum(IF(normalized_engine = 'Bing', sap, 0)) AS sap,
     sum(IF(normalized_engine = 'Bing', tagged_sap, 0)) AS tagged_sap,
     sum(IF(normalized_engine = 'Bing', tagged_follow_on, 0)) AS tagged_follow_on,
@@ -59,15 +59,15 @@ desktop_data_bing AS (
 desktop_data_ddg AS (
   SELECT
     submission_date,
-    count(DISTINCT client_id) AS dou,
-    count(DISTINCT IF((engine) IN ("ddg", 'duckduckgo') AND sap > 0, client_id, NULL)) AS ddg_adou,
+    count(DISTINCT client_id) AS dau,
+    count(DISTINCT IF((engine) IN ("ddg", 'duckduckgo') AND sap > 0, client_id, NULL)) AS ddg_adau,
     sum(IF(engine IN ('ddg', 'duckduckgo'), sap, 0)) AS ddg_sap,
     sum(IF(engine IN ('ddg', 'duckduckgo'), tagged_sap, 0)) AS ddg_tagged_sap,
     sum(IF(engine IN ('ddg', 'duckduckgo'), tagged_sap, 0)) AS ddg_tagged_follow_on,
     sum(IF(engine IN ('ddg', 'duckduckgo'), search_with_ads, 0)) AS ddg_search_with_ads,
     sum(IF(engine IN ('ddg', 'duckduckgo'), ad_click, 0)) AS ddg_adclick,
     # in-content probes not available for addon so these metrics although being here will be zero
-    count(DISTINCT IF(engine = 'ddg-addon' AND sap > 0, client_id, NULL)) AS ddgaddon_adou,
+    count(DISTINCT IF(engine = 'ddg-addon' AND sap > 0, client_id, NULL)) AS ddgaddon_adau,
     sum(IF(engine IN ('ddg-addon'), sap, 0)) AS ddgaddon_sap,
     sum(IF(engine IN ('ddg-addon'), tagged_sap, 0)) AS ddgaddon_tagged_sap,
     sum(IF(engine IN ('ddg-addon'), tagged_sap, 0)) AS ddgaddon_tagged_follow_on,
@@ -86,30 +86,30 @@ desktop_data_ddg AS (
     2,
     3
 ),
-## Grab Mobile Eligible DOU
-mobile_dou_data AS (
+## Grab Mobile Eligible DAU
+mobile_dau_data AS (
   SELECT
     submission_date,
     sum(
       IF(country NOT IN ("US", "RU", "UA", "BY", "TR", "KZ", "CN"), dau, 0)
-    ) AS RoW_dou_eligible_google,
-    sum(IF(country = 'US', dau, 0)) AS US_dou_eligible_google,
-    sum(dau) AS dou
+    ) AS RoW_dau_eligible_google,
+    sum(IF(country = 'US', dau, 0)) AS US_dau_eligible_google,
+    sum(dau) AS dau
   FROM
     `mozdata.telemetry.active_users_aggregates_device`
   WHERE
     submission_date = @submission_date
     AND app_name IN ('Fenix', 'Firefox iOS', 'Focus Android', 'Focus Android')
 ),
-## Google Mobile (search only - as mobile search metrics is based on metrics ping, while DOU should be based on main ping on Mobile, also see here also see https://mozilla-hub.atlassian.net/browse/RS-575)
+## Google Mobile (search only - as mobile search metrics is based on metrics ping, while DAU should be based on main ping on Mobile, also see here also see https://mozilla-hub.atlassian.net/browse/RS-575)
 mobile_search_data_google AS (
   SELECT
     submission_date,
     IF(country = 'US', 'US', 'RoW') AS country,
-    # count(distinct client_id) as dou, --should avoid as mentioned in above
+    # count(distinct client_id) as dau, --should avoid as mentioned in above
     count(
       DISTINCT IF(sap > 0 AND normalized_engine = 'Google', client_id, NULL)
-    ) AS dou_engaged_w_sap,
+    ) AS dau_engaged_w_sap,
     sum(IF(normalized_engine = 'Google', sap, 0)) AS sap,
     sum(IF(normalized_engine = 'Google', tagged_sap, 0)) AS tagged_sap,
     sum(IF(normalized_engine = 'Google', tagged_follow_on, 0)) AS tagged_follow_on,
@@ -132,8 +132,8 @@ mobile_data_google AS (
   SELECT
     submission_date,
     country,
-    IF(country = 'US', US_dou_eligible_google, RoW_dou_eligible_google) AS dou,
-    dou_engaged_w_sap,
+    IF(country = 'US', US_dau_eligible_google, RoW_dau_eligible_google) AS dau,
+    dau_engaged_w_sap,
     sap,
     tagged_sap,
     tagged_follow_on,
@@ -142,21 +142,21 @@ mobile_data_google AS (
   FROM
     mobile_search_data_google
   INNER JOIN
-    mobile_dou_data
+    mobile_dau_data
   USING
     (submission_date)
 ),
-## Bing & DDG Mobile (search only - as mobile search metrics is based on metrics ping, while DOU should be based on main ping on Mobile, also see here also see https://mozilla-hub.atlassian.net/browse/RS-575)
+## Bing & DDG Mobile (search only - as mobile search metrics is based on metrics ping, while DAU should be based on main ping on Mobile, also see here also see https://mozilla-hub.atlassian.net/browse/RS-575)
 mobile_search_data_bing_ddg AS (
   SELECT
     submission_date,
-    # count(distinct client_id) as dou, --should avoid as mentioned in above
+    # count(distinct client_id) as dau, --should avoid as mentioned in above
     count(
       DISTINCT IF(sap > 0 AND normalized_engine = 'Bing', client_id, NULL)
-    ) AS bing_dou_engaged_w_sap,
+    ) AS bing_dau_engaged_w_sap,
     count(
       DISTINCT IF(sap > 0 AND normalized_engine = 'DuckDuckGo', client_id, NULL)
-    ) AS ddg_dou_engaged_w_sap,
+    ) AS ddg_dau_engaged_w_sap,
     sum(IF(normalized_engine = 'Bing', sap, 0)) AS bing_sap,
     sum(IF(normalized_engine = 'Bing', tagged_sap, 0)) AS bing_tagged_sap,
     sum(IF(normalized_engine = 'Bing', tagged_follow_on, 0)) AS bing_tagged_follow_on,
@@ -180,8 +180,8 @@ mobile_search_data_bing_ddg AS (
 mobile_data_bing AS (
   SELECT
     submission_date,
-    dou,
-    bing_dou_engaged_w_sap AS dou_engaged_w_sap,
+    dau,
+    bing_dau_engaged_w_sap AS dau_engaged_w_sap,
     bing_sap AS sap,
     bing_tagged_sap AS tagged_sap,
     bing_tagged_follow_on AS tagged_follow_on,
@@ -190,15 +190,15 @@ mobile_data_bing AS (
   FROM
     mobile_search_data_bing_ddg
   INNER JOIN
-    mobile_dou_data
+    mobile_dau_data
   USING
     (submission_date)
 ),
 mobile_data_ddg AS (
   SELECT
     submission_date,
-    dou,
-    ddg_dou_engaged_w_sap AS dou_engaged_w_sap,
+    dau,
+    ddg_dau_engaged_w_sap AS dau_engaged_w_sap,
     ddg_sap AS sap,
     ddg_tagged_sap AS tagged_sap,
     ddg_tagged_follow_on AS tagged_follow_on,
@@ -207,7 +207,7 @@ mobile_data_ddg AS (
   FROM
     mobile_search_data_bing_ddg
   INNER JOIN
-    mobile_dou_data
+    mobile_dau_data
   USING
     (submission_date)
 ),
@@ -218,8 +218,8 @@ SELECT
   country,
   'desktop' AS device,
   channel,
-  dou,
-  dou_engaged_w_sap,
+  dau,
+  dau_engaged_w_sap,
   sap,
   tagged_sap,
   tagged_follow_on,
@@ -234,8 +234,8 @@ UNION ALL
       'global' AS country,
       'desktop' AS device,
       NULL AS channel,
-      dou,
-      dou_engaged_w_sap,
+      dau,
+      dau_engaged_w_sap,
       sap,
       tagged_sap,
       tagged_follow_on,
@@ -251,8 +251,8 @@ UNION ALL
       'global' AS country,
       'desktop' AS device,
       NULL AS channel,
-      dou,
-      ddg_dou_engaged_w_sap AS dou_engaged_w_sap,
+      dau,
+      ddg_dau_engaged_w_sap AS dau_engaged_w_sap,
       ddg_sap AS sap,
       ddg_tagged_sap AS tagged_sap,
       ddg_tagged_follow_on AS tagged_follow_on,
@@ -268,8 +268,8 @@ UNION ALL
       'global' AS country,
       'extension' AS device,
       NULL AS channel,
-      dou,
-      ddgaddon_dou_engaged_w_sap AS dou_engaged_w_sap,
+      dau,
+      ddgaddon_dau_engaged_w_sap AS dau_engaged_w_sap,
       ddgaddon_sap AS sap,
       ddgaddon_tagged_sap AS tagged_sap,
       ddgaddon_tagged_follow_on AS tagged_follow_on,
@@ -285,8 +285,8 @@ UNION ALL
       'mobile' AS device,
       NULL AS channel,
       country,
-      dou,
-      dou_engaged_w_sap,
+      dau,
+      dau_engaged_w_sap,
       sap,
       tagged_sap,
       tagged_follow_on,
@@ -302,8 +302,8 @@ UNION ALL
       'mobile' AS device,
       NULL AS channel,
       country,
-      dou,
-      dou_engaged_w_sap,
+      dau,
+      dau_engaged_w_sap,
       sap,
       tagged_sap,
       tagged_follow_on,
@@ -319,8 +319,8 @@ UNION ALL
       'mobile' AS device,
       NULL AS channel,
       country,
-      dou,
-      dou_engaged_w_sap,
+      dau,
+      dau_engaged_w_sap,
       sap,
       tagged_sap,
       tagged_follow_on,

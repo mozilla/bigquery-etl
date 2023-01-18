@@ -173,6 +173,17 @@ def respect_dryrun_skip_option(default=True):
     )
 
 
+def no_dryrun_option(default=False):
+    """Generate a skip_dryrun option."""
+    return click.option(
+        "--no-dryrun",
+        "--no_dryrun",
+        help="Skip running dryrun. " f"Default is {default}.",
+        default=default,
+        is_flag=True,
+    )
+
+
 def temp_dataset_option(default="moz-fx-data-shared-prod.tmp"):
     """Generate a temp-dataset option."""
     return click.option(

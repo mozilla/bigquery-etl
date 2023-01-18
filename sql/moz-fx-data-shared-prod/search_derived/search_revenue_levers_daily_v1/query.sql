@@ -47,9 +47,7 @@ desktop_data_bing AS (
     submission_date = @submission_date
     AND distribution_id NOT LIKE '%acer%'
   GROUP BY
-    1,
-    2,
-    3
+    1
   ORDER BY
     1,
     2,
@@ -65,22 +63,20 @@ desktop_data_ddg AS (
     sum(IF(engine IN ('ddg', 'duckduckgo'), tagged_sap, 0)) AS ddg_tagged_sap,
     sum(IF(engine IN ('ddg', 'duckduckgo'), tagged_sap, 0)) AS ddg_tagged_follow_on,
     sum(IF(engine IN ('ddg', 'duckduckgo'), search_with_ads, 0)) AS ddg_search_with_ads,
-    sum(IF(engine IN ('ddg', 'duckduckgo'), ad_click, 0)) AS ddg_adclick,
+    sum(IF(engine IN ('ddg', 'duckduckgo'), ad_click, 0)) AS ddg_ad_click,
     # in-content probes not available for addon so these metrics although being here will be zero
     count(DISTINCT IF(engine = 'ddg-addon' AND sap > 0, client_id, NULL)) AS ddgaddon_adau,
     sum(IF(engine IN ('ddg-addon'), sap, 0)) AS ddgaddon_sap,
     sum(IF(engine IN ('ddg-addon'), tagged_sap, 0)) AS ddgaddon_tagged_sap,
     sum(IF(engine IN ('ddg-addon'), tagged_sap, 0)) AS ddgaddon_tagged_follow_on,
     sum(IF(engine IN ('ddg-addon'), search_with_ads, 0)) AS ddgaddon_search_with_ads,
-    sum(IF(engine IN ('ddg-addon'), ad_click, 0)) AS ddgaddon_adclick
+    sum(IF(engine IN ('ddg-addon'), ad_click, 0)) AS ddgaddon_ad_click
   FROM
     `mozdata.search.search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
   GROUP BY
-    1,
-    2,
-    3
+    1
   ORDER BY
     1,
     2,
@@ -100,6 +96,7 @@ mobile_dau_data AS (
   WHERE
     submission_date = @submission_date
     AND app_name IN ('Fenix', 'Firefox iOS', 'Focus Android', 'Focus Android')
+  GROUP BY 1
 ),
 ## Google Mobile (search only - as mobile search metrics is based on metrics ping, while DAU should be based on main ping on Mobile, also see here also see https://mozilla-hub.atlassian.net/browse/RS-575)
 mobile_search_data_google AS (
@@ -150,6 +147,7 @@ mobile_data_google AS (
 mobile_search_data_bing_ddg AS (
   SELECT
     submission_date,
+    country,
     # count(distinct client_id) as dau, --should avoid as mentioned in above
     count(
       DISTINCT IF(sap > 0 AND normalized_engine = 'Bing', client_id, NULL)
@@ -161,7 +159,7 @@ mobile_search_data_bing_ddg AS (
     sum(IF(normalized_engine = 'Bing', tagged_sap, 0)) AS bing_tagged_sap,
     sum(IF(normalized_engine = 'Bing', tagged_follow_on, 0)) AS bing_tagged_follow_on,
     sum(IF(normalized_engine = 'Bing', search_with_ads, 0)) AS bing_search_with_ads,
-    sum(IF(normalized_engine = 'Bing', ad_click, 0)) AS bing_bing_ad_click,
+    sum(IF(normalized_engine = 'Bing', ad_click, 0)) AS bing_ad_click,
     sum(IF(normalized_engine = 'DuckDuckGo', sap, 0)) AS ddg_sap,
     sum(IF(normalized_engine = 'DuckDuckGo', tagged_sap, 0)) AS ddg_tagged_sap,
     sum(IF(normalized_engine = 'DuckDuckGo', tagged_follow_on, 0)) AS ddg_tagged_follow_on,
@@ -173,13 +171,16 @@ mobile_search_data_bing_ddg AS (
     submission_date = @submission_date
     AND app_name IN ("Focus", "Fenix", "Fennec")
   GROUP BY
-    1
+    1,
+    2
   ORDER BY
-    1
+    1,
+    2
 ),
 mobile_data_bing AS (
   SELECT
     submission_date,
+    country,
     dau,
     bing_dau_engaged_w_sap AS dau_engaged_w_sap,
     bing_sap AS sap,
@@ -197,12 +198,13 @@ mobile_data_bing AS (
 mobile_data_ddg AS (
   SELECT
     submission_date,
+    country,
     dau,
     ddg_dau_engaged_w_sap AS dau_engaged_w_sap,
     ddg_sap AS sap,
     ddg_tagged_sap AS tagged_sap,
     ddg_tagged_follow_on AS tagged_follow_on,
-    ddg_serach_with_ads AS search_with_ads,
+    ddg_search_with_ads AS search_with_ads,
     ddg_ad_click AS ad_click
   FROM
     mobile_search_data_bing_ddg
@@ -210,7 +212,7 @@ mobile_data_ddg AS (
     mobile_dau_data
   USING
     (submission_date)
-),
+)
 # combine all desktop and mobile together
 SELECT
   submission_date,
@@ -252,7 +254,7 @@ UNION ALL
       'desktop' AS device,
       NULL AS channel,
       dau,
-      ddg_dau_engaged_w_sap AS dau_engaged_w_sap,
+      ddg_adau AS dau_engaged_w_sap,
       ddg_sap AS sap,
       ddg_tagged_sap AS tagged_sap,
       ddg_tagged_follow_on AS tagged_follow_on,
@@ -269,7 +271,7 @@ UNION ALL
       'extension' AS device,
       NULL AS channel,
       dau,
-      ddgaddon_dau_engaged_w_sap AS dau_engaged_w_sap,
+      ddgaddon_adau AS dau_engaged_w_sap,
       ddgaddon_sap AS sap,
       ddgaddon_tagged_sap AS tagged_sap,
       ddgaddon_tagged_follow_on AS tagged_follow_on,

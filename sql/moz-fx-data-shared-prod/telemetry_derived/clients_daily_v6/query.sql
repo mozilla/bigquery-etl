@@ -90,7 +90,9 @@ WITH base AS (
             STRUCT(payload.keyed_histograms.fx_migration_history_quantity, "safari"),
             STRUCT(payload.keyed_histograms.fx_migration_logins_quantity, "chrome"),
             STRUCT(payload.keyed_histograms.fx_migration_logins_quantity, "chromium-edge"),
-            STRUCT(payload.keyed_histograms.fx_migration_logins_quantity, "safari")
+            STRUCT(payload.keyed_histograms.fx_migration_logins_quantity, "safari"),
+            STRUCT(payload.keyed_histograms.media_play_time_ms, 'A'),
+            STRUCT(payload.keyed_histograms.media_play_time_ms, 'V')
           ]
         )
     ) AS hist_key_sums,
@@ -273,6 +275,8 @@ clients_summary AS (
     hist_key_sums[OFFSET(20)] AS logins_migrations_quantity_chrome,
     hist_key_sums[OFFSET(21)] AS logins_migrations_quantity_edge,
     hist_key_sums[OFFSET(22)] AS logins_migrations_quantity_safari,
+    hist_key_sums[OFFSET(23)] AS media_play_time_ms_audio,
+    hist_key_sums[OFFSET(24)] AS media_play_time_ms_video,
     (
       SELECT
         version
@@ -1403,6 +1407,8 @@ aggregates AS (
     SUM(logins_migrations_quantity_edge) AS logins_migrations_quantity_edge,
     SUM(logins_migrations_quantity_safari) AS logins_migrations_quantity_safari,
     SUM(logins_migrations_quantity_all) AS logins_migrations_quantity_all,
+    SUM(media_play_time_ms_audio) AS media_play_time_ms_audio_sum,
+    SUM(media_play_time_ms_video) AS media_play_time_ms_video_sum,
   FROM
     clients_summary
   GROUP BY

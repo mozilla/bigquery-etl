@@ -8,6 +8,10 @@ import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command
 
+from fivetran_provider.operators.fivetran import FivetranOperator
+from fivetran_provider.sensors.fivetran import FivetranSensor
+from utils.callbacks import retry_tasks_callback
+
 docs = """
 ### bqetl_fivetran_costs
 
@@ -15,7 +19,8 @@ Built from bigquery-etl repo, [`dags/bqetl_fivetran_costs.py`](https://github.co
 
 #### Description
 
-Fivetran Logs
+Derived tables for analysing the Fivetran Costs. Data coming from Fivetran.
+
 #### Owner
 
 lschiestl@mozilla.com
@@ -34,12 +39,12 @@ default_args = {
     "retries": 2,
 }
 
-tags = ["repo/bigquery-etl"]
+tags = ["impact/tier_3", "repo/bigquery-etl"]
 
 with DAG(
     "bqetl_fivetran_costs",
     default_args=default_args,
-    schedule_interval="0 2 * * *",
+    schedule_interval="0 5 * * *",
     doc_md=docs,
     tags=tags,
 ) as dag:
@@ -51,8 +56,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="lschiestl@mozilla.com",
         email=["lschiestl@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     fivetran_costs_derived__incremental_mar__v1 = bigquery_etl_query(
@@ -62,8 +68,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="lschiestl@mozilla.com",
         email=["lschiestl@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     fivetran_costs_derived__monthly_cost__v1 = bigquery_etl_query(
@@ -73,6 +80,31 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="lschiestl@mozilla.com",
         email=["lschiestl@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
+
+    fivetran_log_prod_sync_start = FivetranOperator(
+        connector_id="{{ var.value.fivetran_log_prod_connector_id }}",
+        task_id="fivetran_log_prod_task",
+    )
+
+    fivetran_log_prod_sync_wait = FivetranSensor(
+        connector_id="{{ var.value.fivetran_log_prod_connector_id }}",
+        task_id="fivetran_log_prod_sensor",
+        poke_interval=30,
+        xcom="{{ task_instance.xcom_pull('fivetran_log_prod_task') }}",
+        on_retry_callback=retry_tasks_callback,
+        params={"retry_tasks": ["fivetran_log_prod_task"]},
+    )
+
+    fivetran_log_prod_sync_wait.set_upstream(fivetran_log_prod_sync_start)
+
+    fivetran_costs_derived__destination__v1.set_upstream(fivetran_log_prod_sync_wait)
+
+    fivetran_costs_derived__incremental_mar__v1.set_upstream(
+        fivetran_log_prod_sync_wait
+    )
+
+    fivetran_costs_derived__monthly_cost__v1.set_upstream(fivetran_log_prod_sync_wait)

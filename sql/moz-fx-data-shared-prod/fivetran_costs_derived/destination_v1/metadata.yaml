@@ -6,5 +6,8 @@ owners:
 labels: {}
 scheduling:
   dag_name: bqetl_fivetran_costs
+  date_partition_parameter: null
+  depends_on_fivetran:
+  - task_id: fivetran_log_prod
 bigquery: null
 references: {}

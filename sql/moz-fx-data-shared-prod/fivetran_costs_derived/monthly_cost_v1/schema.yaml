@@ -3,11 +3,11 @@ fields:
   name: destination_id
   type: STRING
 - mode: NULLABLE
+  name: measured_month
+  type: DATE
+- mode: NULLABLE
   name: credits_spent
   type: INTEGER
 - mode: NULLABLE
-  name: doallars_spent
+  name: dollars_spent
   type: FLOAT
-- mode: NULLABLE
-  name: measured_month
-  type: DATE

@@ -2106,3 +2106,9 @@ fields:
 - mode: NULLABLE
   name: vr_crash_count
   type: INTEGER
+- mode: NULLABLE
+  name: media_play_time_ms_audio_sum
+  type: INTEGER
+- mode: NULLABLE
+  name: media_play_time_ms_video_sum
+  type: INTEGER

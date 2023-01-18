@@ -1810,3 +1810,9 @@ fields:
   mode: REPEATED
   name: search_adclicks_urlbar_persisted_sum
   type: RECORD
+- mode: NULLABLE
+  name: media_play_time_ms_audio_sum
+  type: INTEGER
+- mode: NULLABLE
+  name: media_play_time_ms_video_sum
+  type: INTEGER

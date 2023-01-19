@@ -1,6 +1,6 @@
-friendly_name: Destination
+friendly_name: Destinations
 description: |-
-  Destination Table for Fivetran Costs
+  Destinations Table for Fivetran Costs.
 owners:
 - lschiestl@mozilla.com
 labels: {}

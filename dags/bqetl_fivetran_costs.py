@@ -49,9 +49,9 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    fivetran_costs_derived__destination__v1 = bigquery_etl_query(
-        task_id="fivetran_costs_derived__destination__v1",
-        destination_table="destination_v1",
+    fivetran_costs_derived__destinations__v1 = bigquery_etl_query(
+        task_id="fivetran_costs_derived__destinations__v1",
+        destination_table="destinations_v1",
         dataset_id="fivetran_costs_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lschiestl@mozilla.com",
@@ -73,9 +73,21 @@ with DAG(
         task_concurrency=1,
     )
 
-    fivetran_costs_derived__monthly_cost__v1 = bigquery_etl_query(
-        task_id="fivetran_costs_derived__monthly_cost__v1",
-        destination_table="monthly_cost_v1",
+    fivetran_costs_derived__monthly_connector_costs__v1 = bigquery_etl_query(
+        task_id="fivetran_costs_derived__monthly_connector_costs__v1",
+        destination_table="monthly_connector_costs_v1",
+        dataset_id="fivetran_costs_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="lschiestl@mozilla.com",
+        email=["lschiestl@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    fivetran_costs_derived__monthly_costs__v1 = bigquery_etl_query(
+        task_id="fivetran_costs_derived__monthly_costs__v1",
+        destination_table="monthly_costs_v1",
         dataset_id="fivetran_costs_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lschiestl@mozilla.com",
@@ -101,10 +113,25 @@ with DAG(
 
     fivetran_log_prod_sync_wait.set_upstream(fivetran_log_prod_sync_start)
 
-    fivetran_costs_derived__destination__v1.set_upstream(fivetran_log_prod_sync_wait)
+    fivetran_costs_derived__destinations__v1.set_upstream(fivetran_log_prod_sync_wait)
 
     fivetran_costs_derived__incremental_mar__v1.set_upstream(
         fivetran_log_prod_sync_wait
     )
 
-    fivetran_costs_derived__monthly_cost__v1.set_upstream(fivetran_log_prod_sync_wait)
+    fivetran_costs_derived__monthly_connector_costs__v1.set_upstream(
+        fivetran_costs_derived__destinations__v1
+    )
+
+    fivetran_costs_derived__monthly_connector_costs__v1.set_upstream(
+        fivetran_costs_derived__incremental_mar__v1
+    )
+
+    fivetran_costs_derived__monthly_connector_costs__v1.set_upstream(
+        fivetran_costs_derived__monthly_costs__v1
+    )
+    fivetran_costs_derived__monthly_connector_costs__v1.set_upstream(
+        fivetran_log_prod_sync_wait
+    )
+
+    fivetran_costs_derived__monthly_costs__v1.set_upstream(fivetran_log_prod_sync_wait)

@@ -2,24 +2,40 @@ fields:
 - mode: NULLABLE
   name: measured_date
   type: DATE
+  description: |
+    Date of when the active row measurment was made.
 - mode: NULLABLE
   name: measured_month
   type: DATE
+  description: |
+    Month of when the active row measurement was made.
 - mode: NULLABLE
   name: destination_id
   type: STRING
+  description: |
+    Foreign key referencing the destination whose table is being measured.
 - mode: NULLABLE
   name: connector_name
   type: STRING
+  description: |
+    The name of the connector being measured.
 - mode: NULLABLE
   name: table_name
   type: STRING
+  description: |
+    The name of the table whose active rows were measured.
 - mode: NULLABLE
   name: paid_active_rows
   type: INTEGER
+  description: |
+    The number of new distinct primary keys on the current day synced for the connector that where paid for.
 - mode: NULLABLE
   name: free_active_rows
   type: INTEGER
+  description: |
+    The number of new distinct primary keys on the current day synced for the connector without any costs (initial sync, free connectors, ...)
 - mode: NULLABLE
   name: total_active_rows
   type: INTEGER
+  description: |
+    The number of new distinct primary keys on the current day synced for the connector.

@@ -16,6 +16,24 @@ WITH todays_metrics AS (
     normalized_app_name AS app_name,
     normalized_channel AS channel,
     normalized_os AS os,
+    CASE
+    WHEN
+      normalized_os LIKE '%Darwin%'
+    THEN "Mac OS"
+    WHEN
+      normalized_os LIKE '%Windows%'
+      OR normalized_os LIKE 'WINNT%'
+    THEN "Windows"
+    WHEN
+      normalized_os LIKE '%Linux%'
+      OR normalized_os LIKE '%BSD%'
+      OR normalized_os LIKE '%SunOS%'
+      OR normalized_os LIKE '%Solaris%'
+    THEN "Linux"
+    ELSE
+      "Other"
+    END
+    AS os_grouped,
     normalized_os_version AS os_version,
     os_version_major,
     os_version_minor,
@@ -92,6 +110,7 @@ GROUP BY
   app_name,
   channel,
   os,
+  os_grouped,
   os_version,
   os_version_major,
   os_version_minor,

@@ -229,104 +229,92 @@ SELECT
 FROM
   desktop_data_google
 UNION ALL
-  (
-    SELECT
-      submission_date,
-      "Bing" AS partner,
-      'global' AS country,
-      'desktop' AS device,
-      NULL AS channel,
-      dau,
-      dau_engaged_w_sap,
-      sap,
-      tagged_sap,
-      tagged_follow_on,
-      ad_click
-    FROM
-      desktop_data_bing
-  )
+SELECT
+  submission_date,
+  "Bing" AS partner,
+  'global' AS country,
+  'desktop' AS device,
+  NULL AS channel,
+  dau,
+  dau_engaged_w_sap,
+  sap,
+  tagged_sap,
+  tagged_follow_on,
+  ad_click
+FROM
+  desktop_data_bing
 UNION ALL
-  (
-    SELECT
-      submission_date,
-      "DuckDuckGo" AS partner,
-      'global' AS country,
-      'desktop' AS device,
-      NULL AS channel,
-      dau,
-      ddg_adau AS dau_engaged_w_sap,
-      ddg_sap AS sap,
-      ddg_tagged_sap AS tagged_sap,
-      ddg_tagged_follow_on AS tagged_follow_on,
-      ddg_ad_click AS ad_click
-    FROM
-      desktop_data_ddg
-  )
+SELECT
+  submission_date,
+  "DuckDuckGo" AS partner,
+  'global' AS country,
+  'desktop' AS device,
+  NULL AS channel,
+  dau,
+  ddg_adau AS dau_engaged_w_sap,
+  ddg_sap AS sap,
+  ddg_tagged_sap AS tagged_sap,
+  ddg_tagged_follow_on AS tagged_follow_on,
+  ddg_ad_click AS ad_click
+FROM
+  desktop_data_ddg
 UNION ALL
-  (
-    SELECT
-      submission_date,
-      "DuckDuckGo" AS partner,
-      'global' AS country,
-      'extension' AS device,
-      NULL AS channel,
-      dau,
-      ddgaddon_adau AS dau_engaged_w_sap,
-      ddgaddon_sap AS sap,
-      ddgaddon_tagged_sap AS tagged_sap,
-      ddgaddon_tagged_follow_on AS tagged_follow_on,
-      ddgaddon_ad_click AS ad_click
-    FROM
-      desktop_data_ddg
-  )
+SELECT
+  submission_date,
+  "DuckDuckGo" AS partner,
+  'global' AS country,
+  'extension' AS device,
+  NULL AS channel,
+  dau,
+  ddgaddon_adau AS dau_engaged_w_sap,
+  ddgaddon_sap AS sap,
+  ddgaddon_tagged_sap AS tagged_sap,
+  ddgaddon_tagged_follow_on AS tagged_follow_on,
+  ddgaddon_ad_click AS ad_click
+FROM
+  desktop_data_ddg
 UNION ALL
-  (
-    SELECT
-      submission_date,
-      'Google' AS partner,
-      'mobile' AS device,
-      NULL AS channel,
-      country,
-      dau,
-      dau_engaged_w_sap,
-      sap,
-      tagged_sap,
-      tagged_follow_on,
-      ad_click
-    FROM
-      mobile_data_google
-  )
+SELECT
+  submission_date,
+  'Google' AS partner,
+  'mobile' AS device,
+  NULL AS channel,
+  country,
+  dau,
+  dau_engaged_w_sap,
+  sap,
+  tagged_sap,
+  tagged_follow_on,
+  ad_click
+FROM
+  mobile_data_google
 UNION ALL
-  (
-    SELECT
-      submission_date,
-      'Bing' AS partner,
-      'mobile' AS device,
-      NULL AS channel,
-      country,
-      dau,
-      dau_engaged_w_sap,
-      sap,
-      tagged_sap,
-      tagged_follow_on,
-      ad_click
-    FROM
-      mobile_data_bing
-  )
+SELECT
+  submission_date,
+  'Bing' AS partner,
+  'mobile' AS device,
+  NULL AS channel,
+  country,
+  dau,
+  dau_engaged_w_sap,
+  sap,
+  tagged_sap,
+  tagged_follow_on,
+  ad_click
+FROM
+  mobile_data_bing
 UNION ALL
-  (
-    SELECT
-      submission_date,
-      'DuckDuckGo' AS partner,
-      'mobile' AS device,
-      NULL AS channel,
-      country,
-      dau,
-      dau_engaged_w_sap,
-      sap,
-      tagged_sap,
-      tagged_follow_on,
-      ad_click
-    FROM
-      mobile_data_ddg
-  )
+SELECT
+  submission_date,
+  'DuckDuckGo' AS partner,
+  'mobile' AS device,
+  NULL AS channel,
+  country,
+  dau,
+  dau_engaged_w_sap,
+  sap,
+  tagged_sap,
+  tagged_follow_on,
+  ad_click
+FROM
+  mobile_data_ddg

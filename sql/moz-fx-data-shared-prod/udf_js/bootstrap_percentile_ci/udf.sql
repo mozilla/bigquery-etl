@@ -23,7 +23,7 @@ RETURNS ARRAY<STRUCT<
     upper FLOAT64,
     parameter STRING
 >> DETERMINISTIC
-LANGUAGE js OPTIONS ( library=['gs://moz-data-science-bochocki-bucket/bq_udf_library/qbinom.js'])
+LANGUAGE js OPTIONS ( library=['gs://moz-fx-data-circleci-tests-bigquery-etl/bq_udf_library/qbinom.js'])
 AS
 """
   function numericSort(arr) {

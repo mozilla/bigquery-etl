@@ -14048,6 +14048,15 @@ fields:
     - mode: NULLABLE
       name: fx_urlbar_zero_prefix_dwell_time_ms
       type: STRING
+    - mode: NULLABLE
+      name: use_counter2_css_property_page_orientation_document
+      type: STRING
+    - mode: NULLABLE
+      name: use_counter2_css_property_page_orientation_page
+      type: STRING
+    - mode: NULLABLE
+      name: fx_session_restore_collect_session_history_ms
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -16636,6 +16645,26 @@ fields:
         type: STRING
       mode: REPEATED
       name: autofill_profile_num_uses
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: orb_javascript_validation_ms
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: orb_receive_data_for_validation_ms
       type: RECORD
     mode: NULLABLE
     name: keyed_histograms
@@ -29171,6 +29200,12 @@ fields:
         - mode: NULLABLE
           name: cookie_banners_click_handle_duration_ms
           type: STRING
+        - mode: NULLABLE
+          name: use_counter2_css_property_page_orientation_document
+          type: STRING
+        - mode: NULLABLE
+          name: use_counter2_css_property_page_orientation_page
+          type: STRING
         mode: NULLABLE
         name: histograms
         type: RECORD
@@ -35799,6 +35834,12 @@ fields:
           type: INTEGER
         - mode: NULLABLE
           name: urlbar_zeroprefix_exposure
+          type: INTEGER
+        - mode: NULLABLE
+          name: opaque_response_blocking_cross_origin_opaque_response_count
+          type: INTEGER
+        - mode: NULLABLE
+          name: opaque_response_blocking_javascript_validation_count
           type: INTEGER
         mode: NULLABLE
         name: scalars

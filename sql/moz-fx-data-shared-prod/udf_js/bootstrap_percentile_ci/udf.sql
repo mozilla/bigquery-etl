@@ -30,6 +30,10 @@ AS
     arr.sort(function(a, b) {return a - b;});
   }
 
+  function histogramSort(histogram) {
+    histogram.sort(function(a, b) {return parseFloat(a.key) - parseFloat(b.key);});
+  }
+
   function validatePercentile(percentile) {
     if (percentile < 0 || percentile > 100) {
       throw "percentile must be a value between 0 and 100";
@@ -39,9 +43,9 @@ AS
   function getQuantileSamples(percentile, histogram, n_samples) {
     validatePercentile(percentile);
 
-    /* expand the histogram */
+    /* sort and expand the histogram */
+    histogramSort(histogram);
     var full_histogram = histogram.map(bin => Array(bin.value).fill(parseFloat(bin.key))).reduce((prev, curr) => prev.concat(curr));
-    numericSort(full_histogram);
 
     /* sample the quantile of interest */
     var output = [];

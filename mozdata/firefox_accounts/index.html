@@ -3911,6 +3911,141 @@ For example: Android.
 <h2 id="fxa_users_services_devices_first_seen"><a href="#fxa_users_services_devices_first_seen">fxa_users_services_devices_first_seen</a></h2>
 <p><code>firefox_accounts.fxa_users_services_devices_first_seen</code></p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>flow_id</td>
+        <td>The flow associated with the first seen session.
+The flow identifier is a hash value representing
+a registration and login sessions.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>user_id</td>
+        <td>Unique identifier of a registered user.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>service</td>
+        <td>The service identifier. For Sync it may be empty or sync.
+For OAuth reliers it is their hex client id.
+A service corresponds to a specific application,
+for example: "sync".
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>device_id</td>
+        <td>The most granular field.
+The id of the device record.
+This does correlate back to a record the FxA user db.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>os_name</td>
+        <td>Name of the operating system the device was using.
+E.g. Android
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>country</td>
+        <td>2 char string representing the country where the device was located.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>language</td>
+        <td>Language settings used by the device.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>entrypoint</td>
+        <td>The entrypoint of the flow session.
+How a user begins their registration or login flow.
+Typically a UI touchpoint like "preferences".
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_seen_date</td>
+        <td>Datetime value when the user, service, device_id
+was seen for the first time.
+</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>utm_term</td>
+        <td>Marketing campaign search term
+for the flow session.
+Not stored if the DNT request header was 1.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>utm_medium</td>
+        <td>Marketing campaign medium for the flow session.
+Not stored if the DNT request header was 1.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>utm_source</td>
+        <td>Marketing campaign source for
+the flow session.
+Not stored if the DNT request header was 1.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>utm_campaign</td>
+        <td>Marketing campaign identifier
+for the flow session.
+Not stored if the DNT request header was 1.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>utm_content</td>
+        <td>Marketing campaign content identifier
+for the flow session.
+Not stored if the DNT request header was 1.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ua_version</td>
+        <td>The user's browser version.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ua_browser</td>
+        <td>The user's web browser, e.g. 'Firefox' or 'Chrome'.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>event_type</td>
+        <td>Type of the FxA event recorded.
+`fxa_login - complete' and 'fxa_reg - complete`
+are the events used to create this table.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>

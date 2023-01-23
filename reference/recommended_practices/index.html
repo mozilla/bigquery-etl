@@ -2325,6 +2325,8 @@
 <li>Should read from <code>*_stable</code> tables instead of including custom deduplication</li>
 <li>Should use the earliest row for each <code>document_id</code> by <code>submission_timestamp</code>
     where filtering duplicates is necessary</li>
+<li>Should not refer to views in the <code>mozdata</code> project which are duplicates of views in another project
+  (commonly <code>moz-fx-data-shared-prod</code>). Refer to the original view instead.</li>
 <li>Should escape identifiers that match keywords, even if they aren't <a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/lexical#reserved-keywords">reserved keywords</a></li>
 </ul>
 <h2 id="query-metadata">Query Metadata</h2>
@@ -2360,6 +2362,8 @@ labels:
 <li>Should default to using the <code>moz-fx-data-shared-prod</code> project;
     the <code>scripts/publish_views</code> tooling can handle parsing the definitions to publish
     to other projects such as <code>derived-datasets</code></li>
+<li>Should not refer to views in the <code>mozdata</code> project which are duplicates of views in another project
+  (commonly <code>moz-fx-data-shared-prod</code>). Refer to the original view instead.</li>
 </ul>
 <h2 id="udfs">UDFs</h2>
 <ul>

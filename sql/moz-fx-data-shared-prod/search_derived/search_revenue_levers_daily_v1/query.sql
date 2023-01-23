@@ -53,12 +53,6 @@ GROUP BY
   3,
   4,
   5
-ORDER BY
-  1,
-  2,
-  3,
-  4,
-  5
 
 UNION ALL
 
@@ -67,7 +61,7 @@ SELECT
   submission_date,
   normalized_engine AS partner,
   'mobile' AS device,
-  NULL AS channel,,
+  CAST(NULL AS STRING) AS channel,
   CASE
     WHEN normalized_engine = 'Google' THEN IF(country = 'US', 'US', 'RoW')
     ELSE 'global'
@@ -101,9 +95,13 @@ GROUP BY
   1,
   2,
   3,
-  4
+  4,
+  5,
+  6
+
 ORDER BY
   1,
   2,
   3,
-  4
+  4,
+  5

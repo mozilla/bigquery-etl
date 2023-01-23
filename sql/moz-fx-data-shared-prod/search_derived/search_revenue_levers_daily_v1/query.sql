@@ -10,7 +10,7 @@ mobile_dau_data AS (
     SUM(IF(country = 'US', dau, 0)) AS US_dau_eligible_google,
     SUM(dau) AS dau
   FROM
-    `mozdata.telemetry.active_users_aggregates_device`
+    `moz-fx-data-shared-prod.telemetry.active_users_aggregates_device`
   WHERE
     submission_date = @submission_date
     AND app_name IN ('Fenix', 'Firefox iOS', 'Focus Android', 'Focus Android')
@@ -40,7 +40,7 @@ SELECT
   SUM(tagged_follow_on) AS tagged_follow_on,
   SUM(search_with_ads) AS search_with_ads,
   SUM(ad_click) AS ad_click
-FROM `mozdata.search.search_clients_engines_sources_daily`
+FROM `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
 WHERE submission_date = @submission_date
 AND (
   (normalized_engine = 'Google' AND country NOT IN ("RU", "UA", "TR", "BY", "KZ", "CN"))
@@ -78,7 +78,7 @@ SELECT
   SUM(search_with_ads) AS search_with_ads,
   SUM(ad_click) AS ad_click
 FROM
-  `mozdata.search.mobile_search_clients_engines_sources_daily`
+  `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
 INNER JOIN
   mobile_dau_data
 USING

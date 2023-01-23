@@ -6,13 +6,13 @@ WITH subscriptions AS (
     *,
     TO_JSON_STRING(promotion_codes) AS json_promotion_codes
   FROM
-    mozdata.relay.subscriptions
+    `moz-fx-data-shared-prod`.relay.subscriptions
 ),
 max_active_date AS (
   SELECT AS VALUE
     MAX(active_date)
   FROM
-    mozdata.relay.active_subscription_ids
+    `moz-fx-data-shared-prod`.relay.active_subscription_ids
 ),
 trials AS (
   SELECT
@@ -48,7 +48,7 @@ new_events AS (
     subscription_id,
     "New" AS event_type,
   FROM
-    mozdata.relay.active_subscription_ids
+    `moz-fx-data-shared-prod`.relay.active_subscription_ids
   WHERE
     TRUE -- zetasql requires QUALIFY to be used in conjunction with WHERE, GROUP BY, or HAVING
   QUALIFY
@@ -62,7 +62,7 @@ cancelled_events AS (
     subscription_id,
     "Cancelled" AS event_type,
   FROM
-    mozdata.relay.active_subscription_ids
+    `moz-fx-data-shared-prod`.relay.active_subscription_ids
   CROSS JOIN
     max_active_date
   WHERE

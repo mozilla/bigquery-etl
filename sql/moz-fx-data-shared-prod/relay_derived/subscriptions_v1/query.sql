@@ -3,7 +3,7 @@ WITH standardized_country AS (
     raw_country AS country,
     standardized_country AS country_name,
   FROM
-    mozdata.static.third_party_standardized_country_names
+    `moz-fx-data-shared-prod`.static.third_party_standardized_country_names
 ),
 stripe_subscriptions_history AS (
   SELECT
@@ -19,7 +19,7 @@ stripe_subscriptions_history AS (
       )
     ) AS subscription_sequence_id
   FROM
-    `mozdata.subscription_platform.stripe_subscriptions_history`
+    `moz-fx-data-shared-prod.subscription_platform.stripe_subscriptions_history`
   WHERE
     -- Only include the current history records and the last history records for previous plans.
     (valid_to IS NULL OR plan_ended_at IS NOT NULL)

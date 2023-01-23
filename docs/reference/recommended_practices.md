@@ -29,6 +29,8 @@
 - Should read from `*_stable` tables instead of including custom deduplication
   - Should use the earliest row for each `document_id` by `submission_timestamp`
     where filtering duplicates is necessary
+- Should not refer to views in the `mozdata` project which are duplicates of views in another project
+  (commonly `moz-fx-data-shared-prod`). Refer to the original view instead.
 - Should escape identifiers that match keywords, even if they aren't [reserved keywords]
 
 [spark-bigquery-connector]: https://github.com/GoogleCloudPlatform/spark-bigquery-connector/issues/5
@@ -69,6 +71,8 @@ labels:
   - Should default to using the `moz-fx-data-shared-prod` project;
     the `scripts/publish_views` tooling can handle parsing the definitions to publish
     to other projects such as `derived-datasets`
+- Should not refer to views in the `mozdata` project which are duplicates of views in another project
+  (commonly `moz-fx-data-shared-prod`). Refer to the original view instead.
 
 ## UDFs
 

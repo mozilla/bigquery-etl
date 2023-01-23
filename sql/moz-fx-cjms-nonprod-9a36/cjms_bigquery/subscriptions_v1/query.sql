@@ -44,7 +44,7 @@ attributed_flows AS (
   FROM
     aic_flows
   JOIN
-    mozdata.subscription_platform.nonprod_stripe_subscriptions
+    `moz-fx-data-shared-prod`.subscription_platform.nonprod_stripe_subscriptions
   ON
     aic_flows.fxa_uid = nonprod_stripe_subscriptions.fxa_uid
     AND aic_flows.flow_started < nonprod_stripe_subscriptions.created
@@ -129,7 +129,7 @@ percent_discounts AS (
   FROM
     initial_discounts AS discounts
   JOIN
-    mozdata.subscription_platform.nonprod_stripe_subscriptions AS subscriptions
+    `moz-fx-data-shared-prod`.subscription_platform.nonprod_stripe_subscriptions AS subscriptions
   USING
     (subscription_id)
   WHERE
@@ -158,7 +158,7 @@ SELECT
 FROM
   attributed_subs
 JOIN
-  mozdata.subscription_platform.nonprod_stripe_subscriptions
+  `moz-fx-data-shared-prod`.subscription_platform.nonprod_stripe_subscriptions
 USING
   (subscription_id)
 LEFT JOIN

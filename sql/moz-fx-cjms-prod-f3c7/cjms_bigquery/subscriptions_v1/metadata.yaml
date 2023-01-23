@@ -22,4 +22,4 @@ references:
   - moz-fx-data-bq-fivetran.stripe.invoice
   - moz-fx-data-bq-fivetran.stripe.invoice_discount
   - moz-fx-data-bq-fivetran.stripe.promotion_code
-  - mozdata.subscription_platform.stripe_subscriptions
+  - moz-fx-data-shared-prod.subscription_platform.stripe_subscriptions

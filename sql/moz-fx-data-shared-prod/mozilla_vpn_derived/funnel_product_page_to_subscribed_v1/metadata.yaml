@@ -19,4 +19,4 @@ references:
   query.sql:
   - moz-fx-data-bq-fivetran.stripe.plan
   - moz-fx-data-bq-fivetran.stripe.product
-  - mozdata.firefox_accounts.fxa_all_events
+  - moz-fx-data-shared-prod.firefox_accounts.fxa_all_events

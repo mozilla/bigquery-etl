@@ -15,7 +15,7 @@ WITH client_day AS (
     SUM(sum_map_values(metrics.labeled_counter.browser_search_with_ads)) AS searches_with_ads,
     SUM(sum_map_values(metrics.labeled_counter.browser_search_ad_clicks)) AS ad_clicks,
   FROM
-    mozdata.fenix.baseline
+    `moz-fx-data-shared-prod`.fenix.baseline
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -47,7 +47,7 @@ first_seen AS (
     country,
     first_seen_date
   FROM
-    mozdata.fenix.baseline_clients_first_seen
+    `moz-fx-data-shared-prod`.fenix.baseline_clients_first_seen
   WHERE
     submission_date >= "2021-01-01"
 ),
@@ -59,7 +59,7 @@ adjust_client AS (
     adjust_campaign,
     adjust_creative,
   FROM
-    mozdata.fenix.firefox_android_clients
+    `moz-fx-data-shared-prod`.fenix.firefox_android_clients
   WHERE
     adjust_network != 'Unknown'
 )

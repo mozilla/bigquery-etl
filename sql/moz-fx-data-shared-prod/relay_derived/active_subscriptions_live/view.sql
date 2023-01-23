@@ -6,7 +6,7 @@ WITH subscriptions AS (
     *,
     TO_JSON_STRING(promotion_codes) AS json_promotion_codes
   FROM
-    mozdata.relay.subscriptions
+    `moz-fx-data-shared-prod`.relay.subscriptions
 )
 SELECT
   active_subscription_ids.active_date,
@@ -27,7 +27,7 @@ SELECT
 FROM
   subscriptions
 JOIN
-  mozdata.relay.active_subscription_ids
+  `moz-fx-data-shared-prod`.relay.active_subscription_ids
 USING
   (subscription_id)
 GROUP BY

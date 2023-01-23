@@ -60,7 +60,7 @@ meta_recent AS (
 unnested AS (
   SELECT
     * EXCEPT (events),
-    mozdata.udf.deanonymize_event(event).*
+    `moz-fx-data-shared-prod`.udf.deanonymize_event(event).*
   FROM
     extracted,
     UNNEST(events) AS event

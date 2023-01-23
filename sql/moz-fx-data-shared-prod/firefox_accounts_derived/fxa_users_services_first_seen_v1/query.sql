@@ -1,143 +1,95 @@
-WITH fxa_content_auth_oauth AS (
+-- contains_qualified_fxa_activity_event
+-- Expects an array of event_types and service name
+-- Iterates and checks if an event_type, service combination
+-- should be considered when determining if this is the first
+-- time it has been observed.
+-- Example usage:
+-- contains_qualified_fxa_activity_event(['fxa_activity'], NULL),  # returns TRUE
+-- contains_qualified_fxa_activity_event(['fxa_activity'], 'firefox-ios'),  # returns TRUE
+-- contains_qualified_fxa_activity_event(['fxa_login - complete'], NULL),  # returns FALSE
+-- contains_qualified_fxa_activity_event(['fxa_login - complete'], 'firefox-ios'),  # returns TRUE
+CREATE TEMP FUNCTION contains_qualified_fxa_activity_event(events ANY TYPE, `service` ANY TYPE) AS (
+  EXISTS(
+    SELECT
+      event_type
+    FROM
+      UNNEST(events) AS event_type
+    WHERE
+      (event_type IN ('fxa_login - complete', 'fxa_reg - complete') AND `service` IS NOT NULL)
+      OR (event_type LIKE 'fxa_activity%')
+  )
+);
+
+WITH fxa_users_services_daily_events AS (
   SELECT
+    submission_date,
     `timestamp`,
-    user_id,
-    IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service) AS service,
-    os_name,
     flow_id,
-    event_type,
+    user_id,
+    `service`,
+    app_version,
+    os_name,
+    os_version,
     country,
     entrypoint,
+    `language`,
+    ua_version,
+    ua_browser,
+    utm_term,
+    utm_medium,
+    utm_source,
+    utm_campaign,
+    utm_content,
+    registered,
   FROM
-    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_users_services_daily`
   WHERE
-    event_category IN ('content', 'auth', 'oauth')
-),
-  -- use a window function to look within each USER and SERVICE for the first value of service, os, and country.
-  -- also, get the first value of flow_id for later use and create a boolean column that is true if the first instance of a service usage includes a registration.
-  -- [kimmy] the variable first_service_timestamp_last is named so because it is actually the last timestamp recorder in the user's first flow,
-  -- NOT the first timestamp in their first flow.
-  -- it's used later on to order by service, so i'm keeping it here and just renaming it.
-first_services AS (
-  SELECT
-    ROW_NUMBER() OVER w1_unframed AS _n,
-    user_id,
-    service,
-      -- using mode_last with w1_reversed to get mode_first
-    udf.mode_last(ARRAY_AGG(`timestamp`) OVER w1_reversed) AS first_service_timestamp_last,
-    udf.mode_last(ARRAY_AGG(flow_id) OVER w1_reversed) AS first_service_flow,
-    LOGICAL_OR(IFNULL(event_type = 'fxa_reg - complete', FALSE)) OVER w1_reversed AS did_register
-  FROM
-    fxa_content_auth_oauth
-  WHERE
-    (
-      (event_type IN ('fxa_login - complete', 'fxa_reg - complete') AND service IS NOT NULL)
-      OR (event_type LIKE 'fxa_activity%')
-    )
-    AND DATE(`timestamp`) >= '2019-03-01'
+    submission_date = @submission_date
     AND user_id IS NOT NULL
-  WINDOW
-    -- We must provide a window with `ORDER BY timestamp DESC` so that udf.mode_last actually aggregates mode first.
-    w1_reversed AS (
-      PARTITION BY
-        user_id,
-        service
-      ORDER BY
-        `timestamp` DESC
-      ROWS BETWEEN
-        UNBOUNDED PRECEDING
-        AND UNBOUNDED FOLLOWING
-    ),
-    -- We must provide a modified window for ROW_NUMBER which cannot accept a frame clause.
-    w1_unframed AS (
-      PARTITION BY
-        user_id,
-        service
-      ORDER BY
-        `timestamp`
-    )
+    AND `service` IS NOT NULL
+    AND contains_qualified_fxa_activity_event(service_events, `service`)
 ),
-  -- we need this next section because `did_register` will be BOTH true and false within the flows that the user registered on.
-  -- this dedupes the rows from above and sets did_register to true only on flows that included a registration
-  -- I've verified that `date(first_service_timestamp), count(distinct user_id) where did_register = true group by 1`  matches the counts of registrations per day in amplitude.
-first_services_g AS (
+existing_entries AS (
   SELECT
-    * EXCEPT (_n)
+    user_id,
+    `service`,
   FROM
-    first_services
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_users_services_first_seen`
   WHERE
-    _n = 1
-),
-  -- sadly, `entrypoint` is null on registration complete and login complete events.
-  -- this means we have to use first_service_flow to join back on the original source table's flow_id,
-  -- and take the first occurrence of `entrypoint` within the flow that the user first appeared in the service on.
-flows AS (
-  SELECT DISTINCT
-    s.first_service_flow,
-    FIRST_VALUE(f.entrypoint) OVER (
-      PARTITION BY
-        f.flow_id
-      ORDER BY
-        f.`timestamp`
-      ROWS BETWEEN
-        UNBOUNDED PRECEDING
-        AND UNBOUNDED FOLLOWING
-    ) AS first_service_entrypoint,
-    FIRST_VALUE(f.timestamp) OVER (
-      PARTITION BY
-        f.flow_id
-      ORDER BY
-        f.`timestamp`
-      ROWS BETWEEN
-        UNBOUNDED PRECEDING
-        AND UNBOUNDED FOLLOWING
-    ) AS first_service_timestamp,
-    FIRST_VALUE(f.country) OVER (
-      PARTITION BY
-        f.flow_id
-      ORDER BY
-        f.`timestamp`
-      ROWS BETWEEN
-        UNBOUNDED PRECEDING
-        AND UNBOUNDED FOLLOWING
-    ) AS first_service_country,
-    FIRST_VALUE(f.os_name) OVER (
-      PARTITION BY
-        f.flow_id
-      ORDER BY
-        f.`timestamp`
-      ROWS BETWEEN
-        UNBOUNDED PRECEDING
-        AND UNBOUNDED FOLLOWING
-    ) AS first_service_os
-  FROM
-    first_services_g s
-  INNER JOIN
-    fxa_content_auth_oauth AS f
-  ON
-    s.first_service_flow = f.flow_id
-  WHERE
-    f.entrypoint IS NOT NULL
-    AND s.first_service_flow IS NOT NULL
-    AND DATE(f.`timestamp`) >= '2019-03-01'
+    DATE(first_service_timestamp) < @submission_date
 )
-  -- finally take the entrypoint data and join it back on the other information (os, country etc).
-  -- also, add a row number that indicates the order in which the user signed up for their services.
 SELECT
-  s.user_id,
-  s.service,
-  s.first_service_flow,
-  s.did_register,
-  f.first_service_entrypoint AS entrypoint,
-  f.first_service_timestamp,
-  f.first_service_country,
-  f.first_service_os,
-  ROW_NUMBER() OVER (PARTITION BY s.user_id ORDER BY first_service_timestamp_last) AS service_number
+  new_records.`timestamp` AS first_service_timestamp,
+  new_records.flow_id AS first_service_flow,
+  new_records.user_id,
+  new_records.`service`,
+  new_records.registered AS did_register,
+  new_records.os_name AS first_service_os,
+  new_records.os_version,
+  new_records.app_version,
+  new_records.country AS first_service_country,
+  new_records.entrypoint,
+  new_records.`language`,
+  new_records.ua_version,
+  new_records.ua_browser,
+  new_records.utm_term,
+  new_records.utm_medium,
+  new_records.utm_source,
+  new_records.utm_campaign,
+  new_records.utm_content,
+  -- ROW_NUMBER() OVER (
+  --   PARTITION BY
+  --     new_records.user_id
+  --   ORDER BY
+  --     new_records.`timestamp`
+  -- ) AS service_number -- TODO: what is this field? Is this needed and how is it used?
+  NULL AS service_number,
 FROM
-  first_services_g s
-LEFT JOIN
-  flows f
+  fxa_users_services_daily_events AS new_records
+FULL OUTER JOIN
+  existing_entries
 USING
-  (first_service_flow)
+  (user_id, `service`)
 WHERE
-  first_service_flow IS NOT NULL
+  existing_entries.user_id IS NULL
+  AND existing_entries.`service` IS NULL

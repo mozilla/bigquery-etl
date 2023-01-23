@@ -1,20 +1,23 @@
 ---
 friendly_name: FxA Users Services First Seen
-description: Usage aggregations describing when each FxA user was first seen
+description: |
+  Usage aggregations describing when an FxA user
+  was seen for the first time using an FxA service.
 owners:
-  - dthorn@mozilla.com
+  - kignasiak@mozilla.com
 labels:
   application: fxa
   incremental: true
   schedule: daily
-# # Descheduled. Last run was 2021-01-23.
-# # See https://github.com/mozilla/bigquery-etl/issues/1713
-# scheduling:
-#   dag_name: bqetl_fxa_events
-#   # We completely recreate this table every day;
-#   # making it incremental is possible but nuanced since it windows over
-#   # events that may cross the midnight boundary.
-#   date_partition_parameter: null
+scheduling:
+  dag_name: bqetl_fxa_events
+  date_partition_parameter: submission_date
+  referenced_tables:
+    - [
+      'moz-fx-data-shared-prod',
+      'firefox_accounts',
+      'fxa_users_services_daily'
+    ]
 bigquery:
   time_partitioning:
     type: day
@@ -23,4 +26,6 @@ bigquery:
   clustering:
     fields:
       - service
+      - country
+      - os_name
       - user_id

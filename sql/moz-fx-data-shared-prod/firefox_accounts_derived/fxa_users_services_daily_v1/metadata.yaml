@@ -2,7 +2,7 @@
 friendly_name: FxA Users Services Daily
 description: Usage aggregations per FxA user per FxA service per day
 owners:
-  - dthorn@mozilla.com
+  - kignasiak@mozilla.com
 labels:
   application: fxa
   incremental: true
@@ -10,12 +10,21 @@ labels:
 scheduling:
   dag_name: bqetl_fxa_events
   date_partition_parameter: submission_date
+  referenced_tables:
+    - [
+      'moz-fx-data-shared-prod',
+      'firefox_accounts',
+      'fxa_all_events'
+    ]
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
+
   clustering:
     fields:
       - service
+      - country
+      - os_name
       - user_id

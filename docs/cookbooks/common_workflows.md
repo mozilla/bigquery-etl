@@ -121,7 +121,7 @@ The following is an example to update a new field in `telemetry_derived.clients_
     * [x] The `dry-run-sql` task fails.
 1. PR is reviewed and approved.
 1. Deploy schema changes by running:
-   ```
+   ```bash
    ./bqetl query schema deploy telemetry_derived.clients_daily_v6;
    ./bqetl query schema deploy telemetry_derived.clients_daily_joined_v1;
    ./bqetl query schema deploy --force --ignore-dryrun-skip telemetry_derived.clients_last_seen_v1;

@@ -24,6 +24,8 @@ google_analytics:
 
 markdown_extensions:
   - mdx_truly_sane_lists
+  - pymdownx.highlight
+  - pymdownx.superfences
 plugins:
   - search
   - awesome-pages

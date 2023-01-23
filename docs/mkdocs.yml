@@ -22,6 +22,8 @@ google_analytics:
   - UA-104326577-3
   - auto
 
+markdown_extensions:
+  - mdx_truly_sane_lists
 plugins:
   - search
   - awesome-pages

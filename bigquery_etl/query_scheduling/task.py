@@ -18,6 +18,7 @@ from bigquery_etl.query_scheduling.utils import (
     is_schedule_interval,
     is_timedelta_string,
     is_valid_dag_name,
+    is_valid_trigger_rule,
     schedule_interval_delta,
 )
 
@@ -182,6 +183,8 @@ class Task:
     # manually specified upstream dependencies
     depends_on: List[TaskRef] = attr.ib([])
     depends_on_fivetran: List[FivetranTask] = attr.ib([])
+    # task trigger rule, used to override default of "all_success"
+    trigger_rule: Optional[str] = attr.ib(None)
     # manually specified downstream depdencies
     external_downstream_tasks: List[TaskRef] = attr.ib([])
     # automatically determined upstream and downstream dependencies
@@ -249,6 +252,15 @@ class Task:
                     f"Invalid task name {value}. "
                     + "The task name has to be 1 to 62 characters long."
                 )
+
+    @trigger_rule.validator
+    def validate_trigger_rule(self, attribute, value):
+        """Check that trigger_rule is a valid option."""
+        if value is not None and not is_valid_trigger_rule(value):
+            raise ValueError(
+                f"Invalid trigger rule {value}. "
+                "See https://airflow.apache.org/docs/apache-airflow/1.10.3/concepts.html#trigger-rules for list of trigger rules"
+            )
 
     @retry_delay.validator
     def validate_retry_delay(self, attribute, value):

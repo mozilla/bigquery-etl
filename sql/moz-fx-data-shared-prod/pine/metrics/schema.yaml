@@ -258,6 +258,12 @@ fields:
       mode: NULLABLE
       name: glean_error_preinit_tasks_timeout
       type: BOOLEAN
+    - description: 'Tracks the value of the cookiebanners.service.detectOnly pref.
+
+        '
+      mode: NULLABLE
+      name: cookie_banners_service_detect_only
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD

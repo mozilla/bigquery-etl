@@ -360,6 +360,12 @@ fields:
       mode: NULLABLE
       name: notifications_permission_granted
       type: BOOLEAN
+    - description: 'Tracks the value of the cookiebanners.service.detectOnly pref.
+
+        '
+      mode: NULLABLE
+      name: cookie_banners_service_detect_only
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD

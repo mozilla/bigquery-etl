@@ -258,6 +258,12 @@ fields:
       mode: NULLABLE
       name: gifft_validation_main_ping_assembling
       type: BOOLEAN
+    - description: 'Tracks the value of the cookiebanners.service.detectOnly pref.
+
+        '
+      mode: NULLABLE
+      name: cookie_banners_service_detect_only
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD

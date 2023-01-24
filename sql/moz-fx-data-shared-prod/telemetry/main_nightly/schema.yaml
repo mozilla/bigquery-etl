@@ -35838,6 +35838,9 @@ fields:
         - mode: NULLABLE
           name: opaque_response_blocking_javascript_validation_count
           type: INTEGER
+        - mode: NULLABLE
+          name: cookie_banners_service_detect_only
+          type: BOOLEAN
         mode: NULLABLE
         name: scalars
         type: RECORD

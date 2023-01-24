@@ -588,6 +588,12 @@ fields:
       mode: NULLABLE
       name: metrics_notifications_allowed
       type: BOOLEAN
+    - description: 'Tracks the value of the cookiebanners.service.detectOnly pref.
+
+        '
+      mode: NULLABLE
+      name: cookie_banners_service_detect_only
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD

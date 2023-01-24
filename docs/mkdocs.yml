@@ -22,6 +22,11 @@ google_analytics:
   - UA-104326577-3
   - auto
 
+markdown_extensions:
+  - mdx_truly_sane_lists
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.tasklist
 plugins:
   - search
   - awesome-pages

@@ -3,6 +3,6 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   *,
-  `mozfun.norm.os`(os) AS normalized_os
+  `mozfun.norm.os`(os) AS os_grouped
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.active_users_aggregates_v1`

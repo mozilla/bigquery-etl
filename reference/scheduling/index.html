@@ -2197,18 +2197,18 @@
 <h1 id="scheduling-queries-in-airflow">Scheduling Queries in Airflow</h1>
 <ul>
 <li>bigquery-etl has tooling to automatically generate Airflow DAGs for scheduling queries</li>
-<li>To be scheduled, a query must be assigned to a DAG that is specified in <code>dags.yaml</code></li>
+<li>To be scheduled, a query must be assigned to a DAG that is specified in <code>dags.yaml</code><ul>
 <li>New DAGs can be configured in <code>dags.yaml</code>, e.g., by adding the following:
-  <code>yaml
-  bqetl_ssl_ratios: # name of the DAG; must start with bqetl_
-    schedule_interval: 0 2 * * * # query schedule
-    description: The DAG schedules SSL ratios queries.
-    default_args:
-      owner: example@mozilla.com
-      start_date: "2020-04-05" # YYYY-MM-DD
-      email: ["example@mozilla.com"]
-      retries: 2 # number of retries if the query execution fails
-      retry_delay: 30m</code></li>
+<div class="highlight"><pre><span></span><code><span class="nt">bqetl_ssl_ratios</span><span class="p">:</span><span class="w"> </span><span class="c1"># name of the DAG; must start with bqetl_</span><span class="w"></span>
+<span class="w">  </span><span class="nt">schedule_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0 2 * * *</span><span class="w"> </span><span class="c1"># query schedule</span><span class="w"></span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">The DAG schedules SSL ratios queries.</span><span class="w"></span>
+<span class="w">  </span><span class="nt">default_args</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example@mozilla.com</span><span class="w"></span>
+<span class="w">    </span><span class="nt">start_date</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;2020-04-05&quot;</span><span class="w"> </span><span class="c1"># YYYY-MM-DD</span><span class="w"></span>
+<span class="w">    </span><span class="nt">email</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;example@mozilla.com&quot;</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w">    </span><span class="nt">retries</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"> </span><span class="c1"># number of retries if the query execution fails</span><span class="w"></span>
+<span class="w">    </span><span class="nt">retry_delay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30m</span><span class="w"></span>
+</code></pre></div></li>
 <li>All DAG names need to have <code>bqetl_</code> as prefix.</li>
 <li><code>schedule_interval</code> is either defined as a <a href="https://en.wikipedia.org/wiki/Cron">CRON expression</a> or alternatively as one of the following <a href="https://airflow.readthedocs.io/en/latest/dag-run.html">CRON presets</a>: <code>once</code>, <code>hourly</code>, <code>daily</code>, <code>weekly</code>, <code>monthly</code></li>
 <li><code>start_date</code> defines the first date for which the query should be executed<ul>
@@ -2216,13 +2216,15 @@
 </ul>
 </li>
 <li><code>email</code> lists email addresses alerts should be sent to in case of failures when running the query</li>
+</ul>
+</li>
 <li>Alternatively, new DAGs can also be created via the <code>bqetl</code> CLI by running <code>bqetl dag create bqetl_ssl_ratios --schedule_interval='0 2 * * *' --owner="example@mozilla.com" --start_date="2020-04-05" --description="This DAG generates SSL ratios."</code></li>
 <li>To schedule a specific query, add a <code>metadata.yaml</code> file that includes a <code>scheduling</code> section, for example:
-  <code>yaml
-  friendly_name: SSL ratios
-  # ... more metadata, see Query Metadata section above
-  scheduling:
-    dag_name: bqetl_ssl_ratios</code></li>
+  <div class="highlight"><pre><span></span><code><span class="nt">friendly_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SSL ratios</span><span class="w"></span>
+<span class="c1"># ... more metadata, see Query Metadata section above</span><span class="w"></span>
+<span class="nt">scheduling</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">dag_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bqetl_ssl_ratios</span><span class="w"></span>
+</code></pre></div><ul>
 <li>Additional scheduling options:<ul>
 <li><code>depends_on_past</code> keeps query from getting executed if the previous schedule for the query hasn't succeeded</li>
 <li><code>date_partition_parameter</code> - by default set to <code>submission_date</code>; can be set to <code>null</code> if query doesn't write to a partitioned table</li>
@@ -2231,41 +2233,46 @@
 <li><code>referenced_tables</code> - manually curated list of tables the query depends on; used to speed up the DAG generation process or to specify tables that the dry run doesn't have permissions to access, e. g. <code>[['telemetry_stable', 'main_v4']]</code></li>
 <li><code>multipart</code> indicates whether a query is split over multiple files <code>part1.sql</code>, <code>part2.sql</code>, ...</li>
 <li><code>depends_on</code> defines external dependencies in telemetry-airflow that are not detected automatically:
-```yaml
-depends_on:</li>
-<li>task_id: external_task
-    dag_name: external_dag
-    execution_delta: 1h
-```</li>
+<div class="highlight"><pre><span></span><code><span class="nt">depends_on</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">task_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">external_task</span><span class="w"></span>
+<span class="w">    </span><span class="nt">dag_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">external_dag</span><span class="w"></span>
+<span class="w">    </span><span class="nt">execution_delta</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1h</span><span class="w"></span>
+</code></pre></div><ul>
 <li><code>task_id</code>: name of task query depends on</li>
 <li><code>dag_name</code>: name of the DAG the external task is part of</li>
 <li><code>execution_delta</code>: time difference between the <code>schedule_intervals</code> of the external DAG and the DAG the query is part of</li>
+</ul>
+</li>
 <li><code>destination_table</code>: The table to write to. If unspecified, defaults to the query destination; if None, no destination table is used (the query is simply run as-is). Note that if no destination table is specified, you will need to specify the <code>submission_date</code> parameter manually</li>
 <li><code>external_downstream_tasks</code> defines external downstream dependencies for which <a href="https://airflow.apache.org/docs/apache-airflow/stable/howto/operator/external_task_sensor.html#externaltaskmarker"><code>ExternalTaskMarker</code>s</a> will be added to the generated DAG. These task markers ensure that when the task is cleared for triggering a rerun, all downstream tasks are automatically cleared as well.
-```yaml
-external_downstream_tasks:</li>
-<li>task_id: external_downstream_task
-    dag_name: external_dag
-    execution_delta: 1h
-```</li>
+<div class="highlight"><pre><span></span><code><span class="nt">external_downstream_tasks</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">task_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">external_downstream_task</span><span class="w"></span>
+<span class="w">    </span><span class="nt">dag_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">external_dag</span><span class="w"></span>
+<span class="w">    </span><span class="nt">execution_delta</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1h</span><span class="w"></span>
+</code></pre></div></li>
+</ul>
+</li>
 </ul>
 </li>
 <li>Queries can also be scheduled using the <code>bqetl</code> CLI: <code>./bqetl query schedule path/to/query_v1 --dag bqetl_ssl_ratios</code></li>
-<li>To generate all Airflow DAGs run <code>./bqetl dag generate</code></li>
+<li>To generate all Airflow DAGs run <code>./bqetl dag generate</code><ul>
 <li>Generated DAGs are located in the <code>dags/</code> directory</li>
 <li>Dependencies between queries scheduled in bigquery-etl and dependencies to stable tables are detected automatically</li>
-<li>Specific DAGs can be generated by running <code>./bqetl dag generate bqetl_ssl_ratios</code></li>
-<li>Generated DAGs will be automatically detected and scheduled by Airflow</li>
-<li>It might take up to 10 minutes for new DAGs and updates to show up in the Airflow UI</li>
-<li>To generate tasks for importing data from Fivetran that an ETL task depends on add:
-  ```yaml
-  depends_on_fivetran:<ul>
-<li>task_id: fivetran_import_1</li>
-<li>task_id: another_fivetran_import
-  ```</li>
 </ul>
 </li>
+<li>Specific DAGs can be generated by running <code>./bqetl dag generate bqetl_ssl_ratios</code></li>
+<li>Generated DAGs will be automatically detected and scheduled by Airflow<ul>
+<li>It might take up to 10 minutes for new DAGs and updates to show up in the Airflow UI</li>
+</ul>
+</li>
+<li>To generate tasks for importing data from Fivetran that an ETL task depends on add:
+  <div class="highlight"><pre><span></span><code><span class="nt">depends_on_fivetran</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">task_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fivetran_import_1</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">task_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">another_fivetran_import</span><span class="w"></span>
+</code></pre></div><ul>
 <li>The Fivetran connector ID needs to be set as a variable <code>&lt;task_id&gt;_connector_id</code> in the Airflow admin interface for each import task</li>
+</ul>
+</li>
 </ul>
 
 

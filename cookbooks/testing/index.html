@@ -2298,30 +2298,30 @@
 
 <h1 id="how-to-run-tests">How to Run Tests</h1>
 <p>This repository uses <code>pytest</code>:</p>
-<pre><code># create a venv
+<div class="highlight"><pre><span></span><code><span class="c1"># create a venv</span>
 python3.10 -m venv venv/
 
-# install pip-tools for managing dependencies
+<span class="c1"># install pip-tools for managing dependencies</span>
 ./venv/bin/pip install pip-tools -c requirements.in
 
-# install python dependencies with pip-sync (provided by pip-tools)
-./venv/bin/pip-sync --pip-args=--no-deps requirements.txt
+<span class="c1"># install python dependencies with pip-sync (provided by pip-tools)</span>
+./venv/bin/pip-sync --pip-args<span class="o">=</span>--no-deps requirements.txt
 
-# build java dependencies with maven
+<span class="c1"># build java dependencies with maven</span>
 mvn package
 
-# run pytest with all linters and 8 workers in parallel
-./venv/bin/pytest --black --flake8 --isort --mypy-ignore-missing-imports --pydocstyle -n 8
+<span class="c1"># run pytest with all linters and 8 workers in parallel</span>
+./venv/bin/pytest --black --flake8 --isort --mypy-ignore-missing-imports --pydocstyle -n <span class="m">8</span>
 
-# use -k to selectively run a set of tests that matches the expression `udf`
+<span class="c1"># use -k to selectively run a set of tests that matches the expression `udf`</span>
 ./venv/bin/pytest -k udf
 
-# run integration tests with 4 workers in parallel
-gcloud auth application-default login # or set GOOGLE_APPLICATION_CREDENTIALS
-export GOOGLE_PROJECT_ID=bigquery-etl-integration-test
-gcloud config set project $GOOGLE_PROJECT_ID
-./venv/bin/pytest -m integration -n 4
-</code></pre>
+<span class="c1"># run integration tests with 4 workers in parallel</span>
+gcloud auth application-default login <span class="c1"># or set GOOGLE_APPLICATION_CREDENTIALS</span>
+<span class="nb">export</span> <span class="nv">GOOGLE_PROJECT_ID</span><span class="o">=</span>bigquery-etl-integration-test
+gcloud config <span class="nb">set</span> project <span class="nv">$GOOGLE_PROJECT_ID</span>
+./venv/bin/pytest -m integration -n <span class="m">4</span>
+</code></pre></div>
 <p>To provide <a href="https://cloud.google.com/docs/authentication/getting-started">authentication credentials for the Google Cloud API</a> the <code>GOOGLE_APPLICATION_CREDENTIALS</code> environment variable must be set to the file path of the JSON file that contains the service account key.
 See <a href="https://docs.telemetry.mozilla.org/cookbooks/bigquery.html#gcp-bigquery-api-access">Mozilla BigQuery API Access instructions</a> to request credentials if you don't already have them.</p>
 <h2 id="how-to-configure-a-udf-test">How to Configure a UDF Test</h2>
@@ -2335,119 +2335,139 @@ query parameters and should not reference any tables. Each test that is
 expected to fail must be preceded by a comment like <code>#xfail</code>, similar to a <a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/enabling-standard-sql#sql-prefix">SQL
 dialect prefix</a> in the BigQuery Cloud Console.</p>
 <p>For example:</p>
-<pre><code class="language-sql">CREATE TEMP FUNCTION udf_example(option INT64) AS (
-  CASE
-  WHEN option &gt; 0 then TRUE
-  WHEN option = 0 then FALSE
-  ELSE ERROR(&quot;invalid option&quot;)
-  END
-);
--- Tests
-SELECT
-  assert_true(udf_example(1)),
-  assert_false(udf_example(0));
-#xfail
-SELECT
-  udf_example(-1);
-#xfail
-SELECT
-  udf_example(NULL);
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="n">TEMP</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">udf_example</span><span class="p">(</span><span class="k">option</span><span class="w"> </span><span class="n">INT64</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="k">CASE</span><span class="w"></span>
+<span class="w">  </span><span class="k">WHEN</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="k">TRUE</span><span class="w"></span>
+<span class="w">  </span><span class="k">WHEN</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="k">FALSE</span><span class="w"></span>
+<span class="w">  </span><span class="k">ELSE</span><span class="w"> </span><span class="n">ERROR</span><span class="p">(</span><span class="ss">&quot;invalid option&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="k">END</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+<span class="c1">-- Tests</span>
+<span class="k">SELECT</span><span class="w"></span>
+<span class="w">  </span><span class="n">assert_true</span><span class="p">(</span><span class="n">udf_example</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span><span class="w"></span>
+<span class="w">  </span><span class="n">assert_false</span><span class="p">(</span><span class="n">udf_example</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span><span class="w"></span>
+<span class="o">#</span><span class="n">xfail</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"></span>
+<span class="w">  </span><span class="n">udf_example</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="o">#</span><span class="n">xfail</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"></span>
+<span class="w">  </span><span class="n">udf_example</span><span class="p">(</span><span class="k">NULL</span><span class="p">);</span><span class="w"></span>
+</code></pre></div>
 <h2 id="how-to-configure-a-generated-test">How to Configure a Generated Test</h2>
 <ol>
 <li>Make a directory for test resources named <code>tests/{dataset}/{table}/{test_name}/</code>,
-   e.g. <code>tests/telemetry_derived/clients_last_seen_raw_v1/test_single_day</code></li>
+   e.g. <code>tests/telemetry_derived/clients_last_seen_raw_v1/test_single_day</code><ul>
 <li><code>table</code> must match a directory named like <code>{dataset}/{table}</code>, e.g.
-     <code>telemetry_derived/clients_last_seen_v1</code></li>
+   <code>telemetry_derived/clients_last_seen_v1</code></li>
 <li><code>test_name</code> should start with <code>test_</code>, e.g. <code>test_single_day</code></li>
 <li>If <code>test_name</code> is <code>test_init</code> or <code>test_script</code>, then the query will run <code>init.sql</code>
-     or <code>script.sql</code> respectively; otherwise, the test will run <code>query.sql</code></li>
-<li>Add <code>.yaml</code> files for input tables, e.g. <code>clients_daily_v6.yaml</code></li>
+   or <code>script.sql</code> respectively; otherwise, the test will run <code>query.sql</code></li>
+</ul>
+</li>
+<li>Add <code>.yaml</code> files for input tables, e.g. <code>clients_daily_v6.yaml</code><ul>
 <li>Include the dataset prefix if it's set in the tested query,
-     e.g. <code>analysis.clients_last_seen_v1.yaml</code><ul>
+   e.g. <code>analysis.clients_last_seen_v1.yaml</code><ul>
 <li>This will result in the dataset prefix being removed from the query,
    e.g. <code>query = query.replace("analysis.clients_last_seen_v1", "clients_last_seen_v1")</code></li>
 </ul>
 </li>
-<li>Add <code>.sql</code> files for input view queries, e.g. <code>main_summary_v4.sql</code></li>
+</ul>
+</li>
+<li>Add <code>.sql</code> files for input view queries, e.g. <code>main_summary_v4.sql</code><ul>
 <li><strong><em>Don't</em></strong> include a <code>CREATE ... AS</code> clause</li>
 <li>Fully qualify table names as <code>`{project}.{dataset}.table`</code></li>
 <li>Include the dataset prefix if it's set in the tested query,
-     e.g. <code>telemetry.main_summary_v4.sql</code><ul>
+   e.g. <code>telemetry.main_summary_v4.sql</code><ul>
 <li>This will result in the dataset prefix being removed from the query,
    e.g. <code>query = query.replace("telemetry.main_summary_v4", "main_summary_v4")</code></li>
 </ul>
 </li>
-<li>Add <code>expect.yaml</code> to validate the result</li>
+</ul>
+</li>
+<li>Add <code>expect.yaml</code> to validate the result<ul>
 <li><code>DATE</code> and <code>DATETIME</code> type columns in the result are coerced to strings
-     using <code>.isoformat()</code></li>
+   using <code>.isoformat()</code></li>
 <li>Columns named <code>generated_time</code> are removed from the result before
-     comparing to <code>expect</code> because they should not be static</li>
+   comparing to <code>expect</code> because they should not be static</li>
+</ul>
+</li>
 <li>Optionally add <code>.schema.json</code> files for input table schemas to the table directory, e.g.
    <code>tests/telemetry_derived/clients_last_seen_raw_v1/clients_daily_v6.schema.json</code>.
    These tables will be available for every test in the suite.</li>
-<li>Optionally add <code>query_params.yaml</code> to define query parameters</li>
+<li>Optionally add <code>query_params.yaml</code> to define query parameters<ul>
 <li><code>query_params</code> must be a list</li>
+</ul>
+</li>
 </ol>
 <h2 id="init-tests">Init Tests</h2>
 <p>Tests of <code>init.sql</code> statements are supported, similarly to other generated tests.
 Simply name the test <code>test_init</code>. The other guidelines still apply.</p>
 <p><em>Note</em>: Init SQL statements must contain a create statement with the dataset
 and table name, like so:</p>
-<pre><code>CREATE OR REPLACE TABLE
-  dataset.table_v1
-AS
-...
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"></span>
+<span class="w">  </span><span class="n">dataset</span><span class="p">.</span><span class="n">table_v1</span><span class="w"></span>
+<span class="k">AS</span><span class="w"></span>
+<span class="p">...</span><span class="w"></span>
+</code></pre></div>
 <h2 id="additional-guidelines-and-options">Additional Guidelines and Options</h2>
 <ul>
 <li>If the destination table is also an input table then <code>generated_time</code> should
   be a required <code>DATETIME</code> field to ensure minimal validation</li>
-<li>Input table files</li>
+<li>Input table files<ul>
 <li>All of the formats supported by <code>bq load</code> are supported</li>
 <li><code>yaml</code> and <code>json</code> format are supported and must contain an array of rows
-    which are converted in memory to <code>ndjson</code> before loading</li>
+  which are converted in memory to <code>ndjson</code> before loading</li>
 <li>Preferred formats are <code>yaml</code> for readability or <code>ndjson</code> for compatiblity
-    with <code>bq load</code></li>
-<li><code>expect.yaml</code></li>
+  with <code>bq load</code></li>
+</ul>
+</li>
+<li><code>expect.yaml</code><ul>
 <li>File extensions <code>yaml</code>, <code>json</code> and <code>ndjson</code> are supported</li>
 <li>Preferred formats are <code>yaml</code> for readability or <code>ndjson</code> for compatiblity
-    with <code>bq load</code></li>
-<li>Schema files</li>
+  with <code>bq load</code></li>
+</ul>
+</li>
+<li>Schema files<ul>
 <li>Setting the description of a top level field to <code>time_partitioning_field</code>
-    will cause the table to use it for time partitioning</li>
+  will cause the table to use it for time partitioning</li>
 <li>File extensions <code>yaml</code>, <code>json</code> and <code>ndjson</code> are supported</li>
 <li>Preferred formats are <code>yaml</code> for readability or <code>json</code> for compatiblity
-    with <code>bq load</code></li>
-<li>Query parameters</li>
+  with <code>bq load</code></li>
+</ul>
+</li>
+<li>Query parameters<ul>
 <li>Scalar query params should be defined as a dict with keys <code>name</code>, <code>type</code> or
-    <code>type_</code>, and <code>value</code></li>
+  <code>type_</code>, and <code>value</code></li>
 <li><code>query_parameters.yaml</code> may be used instead of <code>query_params.yaml</code>, but
-    they are mutually exclusive</li>
+  they are mutually exclusive</li>
 <li>File extensions <code>yaml</code>, <code>json</code> and <code>ndjson</code> are supported</li>
 <li>Preferred format is <code>yaml</code> for readability</li>
+</ul>
+</li>
 </ul>
 <h2 id="how-to-run-circleci-locally">How to Run CircleCI Locally</h2>
 <ul>
 <li>Install the <a href="https://circleci.com/docs/2.0/local-cli/">CircleCI Local CI</a></li>
-<li>Download GCP <a href="https://cloud.google.com/iam/docs/service-accounts">service account</a> keys</li>
+<li>Download GCP <a href="https://cloud.google.com/iam/docs/service-accounts">service account</a> keys<ul>
 <li>Integration tests will only successfully run with service account keys
-    that belong to the <code>circleci</code> service account in the <code>biguqery-etl-integration-test</code> project</li>
+  that belong to the <code>circleci</code> service account in the <code>biguqery-etl-integration-test</code> project</li>
+</ul>
+</li>
 <li>Run <code>circleci build</code> and set required environment variables <code>GOOGLE_PROJECT_ID</code> and
   <code>GCLOUD_SERVICE_KEY</code>:</li>
 </ul>
-<pre><code>gcloud_service_key=`cat /path/to/key_file.json`
+<div class="highlight"><pre><span></span><code><span class="nv">gcloud_service_key</span><span class="o">=</span><span class="sb">`</span>cat /path/to/key_file.json<span class="sb">`</span>
 
-# to run a specific job, e.g. integration:
-circleci build --job integration \
-  --env GOOGLE_PROJECT_ID=bigquery-etl-integration-test \
-  --env GCLOUD_SERVICE_KEY=$gcloud_service_key
+<span class="c1"># to run a specific job, e.g. integration:</span>
+circleci build --job integration <span class="se">\</span>
+  --env <span class="nv">GOOGLE_PROJECT_ID</span><span class="o">=</span>bigquery-etl-integration-test <span class="se">\</span>
+  --env <span class="nv">GCLOUD_SERVICE_KEY</span><span class="o">=</span><span class="nv">$gcloud_service_key</span>
 
-# to run all jobs
-circleci build \
-  --env GOOGLE_PROJECT_ID=bigquery-etl-integration-test \
-  --env GCLOUD_SERVICE_KEY=$gcloud_service_key
-</code></pre>
+<span class="c1"># to run all jobs</span>
+circleci build <span class="se">\</span>
+  --env <span class="nv">GOOGLE_PROJECT_ID</span><span class="o">=</span>bigquery-etl-integration-test <span class="se">\</span>
+  --env <span class="nv">GCLOUD_SERVICE_KEY</span><span class="o">=</span><span class="nv">$gcloud_service_key</span>
+</code></pre></div>
 
 
 

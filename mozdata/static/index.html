@@ -2431,12 +2431,12 @@ names are inferred from the first line of the CSV and are assumed to be strings.
 <code>description.txt</code> defines the table description in BigQuery.</p>
 <p>These should be published to all active projects used for production
 ETL and analysis:</p>
-<pre><code># Generate data.csv for country_names
+<div class="highlight"><pre><span></span><code># Generate data.csv for country_names
 bqetl generate country_code_lookup
 
 ./bqetl static publish --project-id mozdata
 ./bqetl static publish --project-id moz-fx-data-shared-prod
-</code></pre>
+</code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/static">Source Directory</a></p>
 <h2 id="country_codes_v1"><a href="#country_codes_v1">country_codes_v1</a></h2>
 <p><code>static.country_codes_v1</code></p>
@@ -2518,11 +2518,7 @@ bqetl generate country_code_lookup
 <p><code>static.data_incidents_v1</code></p>
 <p>This table is connected to a spreadsheet that contains notes about data incidents. The notes are displayed on Looker dashboards.</p>
 <ul>
-<li>
-<p>Owners:</p>
-<ul>
-<li><a href="mailto:ascholtz@mozilla.com">ascholtz@mozilla.com</a></li>
-</ul>
+<li>Owners:<p>- <a href="mailto:ascholtz@mozilla.com">ascholtz@mozilla.com</a></p>
 </li>
 </ul>
 <table>
@@ -2698,11 +2694,7 @@ bqetl generate country_code_lookup
 <p><code>static.monitoring_distinct_docids_notes_v1</code></p>
 <p>This table is connected to a spreadsheet that contains notes about incidents with distinct docids. The notes are displayed on Looker dashboards.</p>
 <ul>
-<li>
-<p>Owners:</p>
-<ul>
-<li><a href="mailto:ascholtz@mozilla.com">ascholtz@mozilla.com</a></li>
-</ul>
+<li>Owners:<p>- <a href="mailto:ascholtz@mozilla.com">ascholtz@mozilla.com</a></p>
 </li>
 </ul>
 <table>
@@ -2753,11 +2745,7 @@ bqetl generate country_code_lookup
 <p><code>static.monitoring_missing_columns_notes_v1</code></p>
 <p>This table is connected to a spreadsheet that contains notes about missing columns. The notes are displayed on Looker dashboards.</p>
 <ul>
-<li>
-<p>Owners:</p>
-<ul>
-<li><a href="mailto:ascholtz@mozilla.com">ascholtz@mozilla.com</a></li>
-</ul>
+<li>Owners:<p>- <a href="mailto:ascholtz@mozilla.com">ascholtz@mozilla.com</a></p>
 </li>
 </ul>
 <table>
@@ -2818,11 +2806,7 @@ bqetl generate country_code_lookup
 <p><code>static.monitoring_missing_document_namespaces_notes_v1</code></p>
 <p>This table is connected to a spreadsheet that contains notes about missing namespaces. The notes are displayed on Looker dashboards.</p>
 <ul>
-<li>
-<p>Owners:</p>
-<ul>
-<li><a href="mailto:ascholtz@mozilla.com">ascholtz@mozilla.com</a></li>
-</ul>
+<li>Owners:<p>- <a href="mailto:ascholtz@mozilla.com">ascholtz@mozilla.com</a></p>
 </li>
 </ul>
 <table>
@@ -2878,11 +2862,7 @@ bqetl generate country_code_lookup
 <p><code>static.monitoring_schema_errors_notes_v1</code></p>
 <p>This table is connected to a spreadsheet that contains notes about schema errors. The notes are displayed on Looker dashboards.</p>
 <ul>
-<li>
-<p>Owners:</p>
-<ul>
-<li><a href="mailto:ascholtz@mozilla.com">ascholtz@mozilla.com</a></li>
-</ul>
+<li>Owners:<p>- <a href="mailto:ascholtz@mozilla.com">ascholtz@mozilla.com</a></p>
 </li>
 </ul>
 <table>

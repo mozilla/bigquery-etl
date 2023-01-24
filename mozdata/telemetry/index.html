@@ -7219,11 +7219,7 @@ desktop client.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <p>See also: <code>clients_last_seen</code>, <code>clients_first_seen</code></p>
 <ul>
-<li>
-<p>Owners:</p>
-<ul>
-<li><a href="mailto:dthorn@mozilla.com">dthorn@mozilla.com</a></li>
-</ul>
+<li>Owners:<p>- <a href="mailto:dthorn@mozilla.com">dthorn@mozilla.com</a></p>
 </li>
 </ul>
 <table>
@@ -9129,11 +9125,7 @@ directly only when you're investigating client activation questions.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <p>See also: <code>clients_daily</code>, <code>clients_last_seen</code></p>
 <ul>
-<li>
-<p>Owners:</p>
-<ul>
-<li><a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a></li>
-</ul>
+<li>Owners:<p>- <a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a></p>
 </li>
 </ul>
 <table>
@@ -10955,11 +10947,7 @@ article on docs.telemetry.mozilla.org for more detailed notes on usage.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <p>See also: <code>clients_daily</code>, <code>clients_first_seen</code></p>
 <ul>
-<li>
-<p>Owners:</p>
-<ul>
-<li><a href="mailto:dthorn@mozilla.com">dthorn@mozilla.com</a></li>
-</ul>
+<li>Owners:<p>- <a href="mailto:dthorn@mozilla.com">dthorn@mozilla.com</a></p>
 </li>
 </ul>
 <table>
@@ -14537,16 +14525,8 @@ and to contain only one row per distinct <code>document_id</code> within a given
 <p><code>telemetry.desktop_retention_1_week</code></p>
 <p>Among profiles that were active at least once in the week starting on the specified day (days 0 through 6), whether each profile is active during the following week (days 7 through 13). This based on https://docs.telemetry.mozilla.org/cookbooks/retention.html#1-week-retention for the usage criterion "Any Firefox Activity" on Firefox (Desktop)</p>
 <ul>
-<li>
-<p>Owners:</p>
-<ul>
-<li>
-<p><a href="mailto:dthorn@mozilla.com">dthorn@mozilla.com</a></p>
-</li>
-<li>
-<p><a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a></p>
-</li>
-</ul>
+<li>Owners:<p>- <a href="mailto:dthorn@mozilla.com">dthorn@mozilla.com</a></p>
+<p>- <a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a></p>
 </li>
 </ul>
 <table>
@@ -25351,27 +25331,23 @@ where we consider a profile new on the day it first sends a <code>main</code> pi
 or filtered to only your target population.</p>
 <p>Example query to see CDOU and new profiles over time for the Windows
 population:</p>
-<pre><code>SELECT
+<div class="highlight"><pre><span></span><code>SELECT
   submission_date,
   os,
   SUM(cdou) AS cdou,
   SUM(new_profiles) AS new_profiles
 FROM mozdata.telemetry.firefox_desktop_usage_2021
-WHERE os = 'Windows'
+WHERE os = &#39;Windows&#39;
 GROUP BY submission_date
 ORDER BY submission_date
-</code></pre>
+</code></pre></div>
 <p>Note that some amount of the upstream data in <code>clients_last_seen</code> will be
 deleted over time in response to user-initiated deletion requests, but the
 aggregates in this view (which are no longer client-level) will remain stable.
 Expect to see slightly higher results from this table compared to queries on
 client-level tables. The underlying table was initially created on 2021-02-19.</p>
 <ul>
-<li>
-<p>Owners:</p>
-<ul>
-<li><a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a></li>
-</ul>
+<li>Owners:<p>- <a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a></p>
 </li>
 </ul>
 <table>
@@ -27059,11 +27035,7 @@ down to a 0.01% sample. Like sample_id, it ranges from 0 to 99.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code>, <code>subsample_id</code></p>
 <p>See also: <code>main_nightly</code></p>
 <ul>
-<li>
-<p>Owners:</p>
-<ul>
-<li><a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a></li>
-</ul>
+<li>Owners:<p>- <a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a></p>
 </li>
 </ul>
 <table>
@@ -27209,11 +27181,7 @@ scan through.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <p>See also: <code>main_nightly</code></p>
 <ul>
-<li>
-<p>Owners:</p>
-<ul>
-<li><a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a></li>
-</ul>
+<li>Owners:<p>- <a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a></p>
 </li>
 </ul>
 <table>
@@ -31444,15 +31412,15 @@ Contains data back to 2017 for year-over-year comparisons.</p>
 <p>Queries should generally be <code>SUM</code> of the <code>cdou</code>, <code>dau</code>,
 <code>wau</code>, or <code>mau</code> fields, grouped by any dimensions you want to compare
 or filtered to only your target population.</p>
-<p>Example query to see CDOU over time for Firefox for iOS:</p>
-<pre><code>SELECT
+<p>Example query to see CDOU over time for Firefox for iOS:
+<div class="highlight"><pre><span></span><code>SELECT
   submission_date,
   SUM(cdou) AS cdou
 FROM mozdata.telemetry.mobile_usage_2021
-WHERE app_name = 'firefox_ios'
+WHERE app_name = &#39;firefox_ios&#39;
 GROUP BY submission_date
 ORDER BY submission_date
-</code></pre>
+</code></pre></div></p>
 <p>Note that some amount of the upstream data in <code>nondesktop_clients_last_seen</code>
 will be deleted over time in response to user-initiated deletion requests,
 but the aggregates in this view (which are no longer client-level) will
@@ -31460,11 +31428,7 @@ remain stable.
 Expect to see slightly higher results from this table compared to queries on
 client-level tables.</p>
 <ul>
-<li>
-<p>Owners:</p>
-<ul>
-<li><a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a></li>
-</ul>
+<li>Owners:<p>- <a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a></p>
 </li>
 </ul>
 <table>
@@ -32872,11 +32836,7 @@ https://product-details.mozilla.org/1.0/firefox.json</p>
 <p>For more context, see
 https://wiki.mozilla.org/Release_Management/Product_details</p>
 <ul>
-<li>
-<p>Owners:</p>
-<ul>
-<li><a href="mailto:ascholtz@mozilla.com">ascholtz@mozilla.com</a></li>
-</ul>
+<li>Owners:<p>- <a href="mailto:ascholtz@mozilla.com">ascholtz@mozilla.com</a></p>
 </li>
 </ul>
 <table>
@@ -36533,11 +36493,7 @@ using the view.</p>
 <p>Proposal:
 https://docs.google.com/document/d/1s_9pmDXKjfFpvW31jqnWyaWOE9tmO9_88Jt7inGVGys</p>
 <ul>
-<li>
-<p>Owners:</p>
-<ul>
-<li><a href="mailto:loines@mozilla.com">loines@mozilla.com</a></li>
-</ul>
+<li>Owners:<p>- <a href="mailto:loines@mozilla.com">loines@mozilla.com</a></p>
 </li>
 </ul>
 <table>

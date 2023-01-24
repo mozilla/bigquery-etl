@@ -2199,11 +2199,13 @@
 on <code>docs.telemetry.mozilla.org</code>.</p>
 <ul>
 <li>To make query results publicly available, the <code>public_bigquery</code> flag must be set in
-  <code>metadata.yaml</code></li>
+  <code>metadata.yaml</code><ul>
 <li>Tables will get published in the <code>mozilla-public-data</code> GCP project which is accessible
-    by everyone, also external users</li>
+  by everyone, also external users</li>
+</ul>
+</li>
 <li>To make query results publicly available as JSON, <code>public_json</code> flag must be set in
-  <code>metadata.yaml</code></li>
+  <code>metadata.yaml</code><ul>
 <li>Data will be accessible under https://public-data.telemetry.mozilla.org<ul>
 <li>A list of all available datasets is published under https://public-data.telemetry.mozilla.org/all-datasets.json</li>
 </ul>
@@ -2211,10 +2213,16 @@ on <code>docs.telemetry.mozilla.org</code>.</p>
 <li>For example: https://public-data.telemetry.mozilla.org/api/v1/tables/telemetry_derived/ssl_ratios/v1/files/000000000000.json</li>
 <li>Output JSON files have a maximum size of 1GB, data can be split up into multiple files (<code>000000000000.json</code>, <code>000000000001.json</code>, ...)</li>
 <li><code>incremental_export</code> controls how data should be exported as JSON:<ul>
-<li><code>false</code>: all data of the source table gets exported to a single location</li>
+<li><code>false</code>: all data of the source table gets exported to a single location<ul>
 <li>https://public-data.telemetry.mozilla.org/api/v1/tables/telemetry_derived/ssl_ratios/v1/files/000000000000.json</li>
-<li><code>true</code>: only data that matches the <code>submission_date</code> parameter is exported as JSON to a separate directory for this date</li>
+</ul>
+</li>
+<li><code>true</code>: only data that matches the <code>submission_date</code> parameter is exported as JSON to a separate directory for this date<ul>
 <li>https://public-data.telemetry.mozilla.org/api/v1/tables/telemetry_derived/ssl_ratios/v1/files/2020-03-15/000000000000.json</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li>For each dataset, a <code>metadata.json</code> gets published listing all available files, for example: https://public-data.telemetry.mozilla.org/api/v1/tables/telemetry_derived/ssl_ratios/v1/files/metadata.json</li>

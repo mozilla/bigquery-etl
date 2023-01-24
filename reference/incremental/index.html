@@ -2269,13 +2269,17 @@
 </ul>
 <h2 id="properties">Properties</h2>
 <ul>
-<li>Must accept a date via <code>@submission_date</code> query parameter</li>
+<li>Must accept a date via <code>@submission_date</code> query parameter<ul>
 <li>Must output a column named <code>submission_date</code> matching the query parameter</li>
-<li>Must produce similar results when run multiple times</li>
+</ul>
+</li>
+<li>Must produce similar results when run multiple times<ul>
 <li>Should produce identical results when run multiple times</li>
-<li>May depend on the previous partition</li>
+</ul>
+</li>
+<li>May depend on the previous partition<ul>
 <li>If using previous partition, must include an <code>init.sql</code> query to initialize the
-    table, e.g. <code>sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/init.sql</code></li>
+  table, e.g. <code>sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/init.sql</code></li>
 <li>Should be impacted by values from a finite number of preceding partitions<ul>
 <li>This allows for backfilling in chunks instead of serially for all time
   and limiting backfills to a certain number of days following updated data</li>
@@ -2283,6 +2287,8 @@
   period and the last day will be the same whether or not the partition
   preceding the first day was missing because values are only impacted by
   27 preceding days</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

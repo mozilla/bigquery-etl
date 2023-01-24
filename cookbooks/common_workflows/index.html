@@ -2468,9 +2468,11 @@
 <h2 id="adding-a-new-scheduled-query">Adding a new scheduled query</h2>
 <p>The <a href="https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/">Creating derived datasets tutorial</a> provides a more detailed guide on creating scheduled queries.</p>
 <ol>
-<li>Run <code>./bqetl query create &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code></li>
+<li>Run <code>./bqetl query create &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code><ol>
 <li>Specify the desired destination dataset and table name for <code>&lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code></li>
 <li>Directories and files are generated automatically</li>
+</ol>
+</li>
 <li>Open <code>query.sql</code> file that has been created in <code>sql/moz-fx-data-shared-prod/&lt;dataset&gt;/&lt;table&gt;_&lt;version&gt;/</code> to write the query</li>
 <li>[Optional] Run <code>./bqetl query schema update &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code> to generate the <code>schema.yaml</code> file<ul>
 <li>Optionally add column descriptions to <code>schema.yaml</code></li>
@@ -2524,31 +2526,31 @@ query, use <code>./bqetl format</code> to apply formatting rules.</p>
 <p>Directories and files passed as arguments to <code>./bqetl format</code> will be
 formatted in place, with directories recursively searched for files with a
 <code>.sql</code> extension, e.g.:</p>
-<pre><code class="language-bash">$ echo 'SELECT 1,2,3' &gt; test.sql
+<div class="highlight"><pre><span></span><code>$ <span class="nb">echo</span> <span class="s1">&#39;SELECT 1,2,3&#39;</span> &gt; test.sql
 $ ./bqetl format test.sql
 modified test.sql
-1 file(s) modified
+<span class="m">1</span> file<span class="o">(</span>s<span class="o">)</span> modified
 $ cat test.sql
 SELECT
-  1,
-  2,
-  3
-</code></pre>
+  <span class="m">1</span>,
+  <span class="m">2</span>,
+  <span class="m">3</span>
+</code></pre></div>
 <p>If no arguments are specified the script will read from stdin and write to
 stdout, e.g.:</p>
-<pre><code class="language-bash">$ echo 'SELECT 1,2,3' | ./bqetl format
+<div class="highlight"><pre><span></span><code>$ <span class="nb">echo</span> <span class="s1">&#39;SELECT 1,2,3&#39;</span> <span class="p">|</span> ./bqetl format
 SELECT
-  1,
-  2,
-  3
-</code></pre>
+  <span class="m">1</span>,
+  <span class="m">2</span>,
+  <span class="m">3</span>
+</code></pre></div>
 <p>To turn off sql formatting for a block of SQL, wrap it in <code>format:off</code> and
 <code>format:on</code> comments, like this:</p>
-<pre><code class="language-sql">SELECT
-  -- format:off
-  submission_date, sample_id, client_id
-  -- format:on
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"></span>
+<span class="w">  </span><span class="c1">-- format:off</span>
+<span class="w">  </span><span class="n">submission_date</span><span class="p">,</span><span class="w"> </span><span class="n">sample_id</span><span class="p">,</span><span class="w"> </span><span class="n">client_id</span><span class="w"></span>
+<span class="w">  </span><span class="c1">-- format:on</span>
+</code></pre></div>
 <h2 id="add-a-new-field-to-a-table-schema">Add a new field to a table schema</h2>
 <p>Adding a new field to a table schema also means that the field has to propagate to several downstream tables, which makes it a more complex case.</p>
 <ol>
@@ -2563,16 +2565,20 @@ SELECT
 </li>
 </ul>
 </li>
-<li>Run <code>./bqetl query schema update &lt;dataset&gt;.&lt;table&gt; --update_downstream</code> to make local schema.yaml updates and update schemas of downstream dependencies.</li>
-<li>[x] This requires <a href="https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#bigquery-access-request">GCP access</a>.</li>
-<li>[x] <code>--update_downstream</code> is optional as it takes longer. It is recommended when you know that there are downstream dependencies whose <code>schema.yaml</code> need to be updated, in which case, the update will happen automatically.</li>
-<li>[x] <code>--force</code> should only be used in very specific cases, particularly the <code>clients_last_seen</code> tables. It skips some checks that would otherwise catch some error scenarios.</li>
+<li>Run <code>./bqetl query schema update &lt;dataset&gt;.&lt;table&gt; --update_downstream</code> to make local schema.yaml updates and update schemas of downstream dependencies.<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked/> This requires <a href="https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#bigquery-access-request">GCP access</a>.</li>
+<li class="task-list-item"><input type="checkbox" disabled checked/> <code>--update_downstream</code> is optional as it takes longer. It is recommended when you know that there are downstream dependencies whose <code>schema.yaml</code> need to be updated, in which case, the update will happen automatically.</li>
+<li class="task-list-item"><input type="checkbox" disabled checked/> <code>--force</code> should only be used in very specific cases, particularly the <code>clients_last_seen</code> tables. It skips some checks that would otherwise catch some error scenarios.</li>
+</ul>
+</li>
 <li>Open a new PR with these changes.</li>
 <li>The dry-run-sql task is expected to fail at this point due to mismatch with deployed schemas!</li>
 <li>PR reviewed and approved.</li>
 <li>Deploy schema changes by running: <code>./bqetl query schema deploy &lt;dataset&gt;.&lt;table&gt;;</code></li>
-<li>Find and run again the <a href="https://app.circleci.com/pipelines/github/mozilla/bigquery-etl?">CI pipeline</a> for the PR.</li>
-<li>[x] Make sure all dry runs are successful.</li>
+<li>Find and run again the <a href="https://app.circleci.com/pipelines/github/mozilla/bigquery-etl?">CI pipeline</a> for the PR.<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked/> Make sure all dry runs are successful.</li>
+</ul>
+</li>
 <li>Merge pull-request.</li>
 </ol>
 <p>The following is an example to update a new field in <code>telemetry_derived.clients_daily_v6</code></p>
@@ -2581,23 +2587,26 @@ SELECT
 <li>Open the <code>clients_daily_v6</code> <code>query.sql</code> file and add new field definitions.</li>
 <li>Run <code>./bqetl format sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/query.sql</code></li>
 <li>Run <code>./bqetl query validate telemetry_derived.clients_daily_v6</code>.</li>
-<li>Run <code>./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream</code>.<ul>
-<li>[x] <code>schema.yaml</code> files of downstream dependencies, like <code>clients_last_seen_v1</code> are updated.</li>
+<li>Run <code>./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream</code>.<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked/> <code>schema.yaml</code> files of downstream dependencies, like <code>clients_last_seen_v1</code> are updated.</li>
 </ul>
 </li>
-<li>Open a PR with these changes.<ul>
-<li>[x] The <code>dry-run-sql</code> task fails.</li>
+<li>Open a PR with these changes.<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked/> The <code>dry-run-sql</code> task fails.</li>
 </ul>
 </li>
 <li>PR is reviewed and approved.</li>
 <li>Deploy schema changes by running:
-   <code>./bqetl query schema deploy telemetry_derived.clients_daily_v6;
-   ./bqetl query schema deploy telemetry_derived.clients_daily_joined_v1;
-   ./bqetl query schema deploy --force --ignore-dryrun-skip telemetry_derived.clients_last_seen_v1;
-   ./bqetl query schema deploy telemetry_derived.clients_last_seen_joined_v1;
-   ./bqetl query schema deploy --force telemetry_derived.clients_first_seen_v1;</code></li>
-<li>Rerun CI pipeline</li>
-<li>[x] All tests pass</li>
+   <div class="highlight"><pre><span></span><code>./bqetl query schema deploy telemetry_derived.clients_daily_v6<span class="p">;</span>
+./bqetl query schema deploy telemetry_derived.clients_daily_joined_v1<span class="p">;</span>
+./bqetl query schema deploy --force --ignore-dryrun-skip telemetry_derived.clients_last_seen_v1<span class="p">;</span>
+./bqetl query schema deploy telemetry_derived.clients_last_seen_joined_v1<span class="p">;</span>
+./bqetl query schema deploy --force telemetry_derived.clients_first_seen_v1<span class="p">;</span>
+</code></pre></div></li>
+<li>Rerun CI pipeline<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked/> All tests pass</li>
+</ul>
+</li>
 <li>Merge pull-request.</li>
 </ol>
 <h2 id="remove-a-field-from-a-table-schema">Remove a field from a table schema</h2>
@@ -2609,8 +2618,10 @@ SELECT
 <ol>
 <li>Run <code>./bqetl mozfun create &lt;dataset&gt;.&lt;name&gt; --udf</code>.</li>
 <li>Navigate to the <code>udf.sql</code> file in <code>sql/mozfun/&lt;dataset&gt;/&lt;name&gt;/</code> and add UDF the definition and tests.</li>
-<li>Run <code>./bqetl mozfun validate &lt;dataset&gt;.&lt;name&gt;</code> for formatting and running tests.</li>
+<li>Run <code>./bqetl mozfun validate &lt;dataset&gt;.&lt;name&gt;</code> for formatting and running tests.<ul>
 <li>Before running the tests, you need to <a href="https://mozilla.github.io/bigquery-etl/cookbooks/testing/">setup the access to the Google Cloud API</a>.</li>
+</ul>
+</li>
 <li>Open a PR.</li>
 <li>PR gets reviewed, approved and merged.</li>
 <li>To publish UDF immediately:<ul>
@@ -2667,29 +2678,29 @@ in Mana.</p>
 <code>dataset_metadata.yaml</code> file if the query name contains a dataset that
 is not yet defined.</p>
 <p>See example with commentary for <code>telemetry_derived</code>:</p>
-<pre><code class="language-yaml">friendly_name: Telemetry Derived
-description: |-
-  Derived data based on pings from legacy Firefox telemetry, plus many other
-  general-purpose derived tables
-labels: {}
+<div class="highlight"><pre><span></span><code><span class="nt">friendly_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Telemetry Derived</span><span class="w"></span>
+<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|-</span><span class="w"></span>
+<span class="w">  </span><span class="no">Derived data based on pings from legacy Firefox telemetry, plus many other</span><span class="w"></span>
+<span class="w">  </span><span class="no">general-purpose derived tables</span><span class="w"></span>
+<span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span><span class="w"></span>
 
-# Base ACL should can be:
-#   &quot;derived&quot; for `_derived` datasets that contain concrete tables
-#   &quot;view&quot; for user-facing datasets containing virtual views
-dataset_base_acl: derived
+<span class="c1"># Base ACL should can be:</span><span class="w"></span>
+<span class="c1">#   &quot;derived&quot; for `_derived` datasets that contain concrete tables</span><span class="w"></span>
+<span class="c1">#   &quot;view&quot; for user-facing datasets containing virtual views</span><span class="w"></span>
+<span class="nt">dataset_base_acl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">derived</span><span class="w"></span>
 
-# Datasets with user-facing set to true will be created both in shared-prod
-# and in mozdata; this should be false for all `_derived` datasets
-user_facing: false
+<span class="c1"># Datasets with user-facing set to true will be created both in shared-prod</span><span class="w"></span>
+<span class="c1"># and in mozdata; this should be false for all `_derived` datasets</span><span class="w"></span>
+<span class="nt">user_facing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
 
-# Most datasets can have mozilla-confidential access like below, but some
-# datasets will be defined with more restricted access or with additional
-# access for services; see &quot;Data Access Workgroups&quot; link above.
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
-</code></pre>
+<span class="c1"># Most datasets can have mozilla-confidential access like below, but some</span><span class="w"></span>
+<span class="c1"># datasets will be defined with more restricted access or with additional</span><span class="w"></span>
+<span class="c1"># access for services; see &quot;Data Access Workgroups&quot; link above.</span><span class="w"></span>
+<span class="nt">workgroup_access</span><span class="p">:</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">roles/bigquery.dataViewer</span><span class="w"></span>
+<span class="w">  </span><span class="nt">members</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workgroup:mozilla-confidential</span><span class="w"></span>
+</code></pre></div>
 <h2 id="publishing-data">Publishing data</h2>
 <p>See also the reference for <a href="../../reference/public_data/">Public Data</a>.</p>
 <ol>
@@ -2714,25 +2725,25 @@ the requirements and then add any meta-dependencies into constraints.
 Constraints are discovered by installing requirements into a fresh virtual
 environment. A dependency should be added to either <code>requirements.txt</code> or
 <code>constraints.txt</code>, but not both.</p>
-<pre><code class="language-bash"># Create a python virtual environment (not necessary if you have already
-# run `./bqetl bootstrap`)
+<div class="highlight"><pre><span></span><code><span class="c1"># Create a python virtual environment (not necessary if you have already</span>
+<span class="c1"># run `./bqetl bootstrap`)</span>
 python3 -m venv venv/
 
-# Activate the virtual environment
-source venv/bin/activate
+<span class="c1"># Activate the virtual environment</span>
+<span class="nb">source</span> venv/bin/activate
 
-# If not installed:
+<span class="c1"># If not installed:</span>
 pip install pip-tools --constraint requirements.in
 
-# Add the dependency to requirements.in e.g. Jinja2.
-echo Jinja2==2.11.1 &gt;&gt; requirements.in
+<span class="c1"># Add the dependency to requirements.in e.g. Jinja2.</span>
+<span class="nb">echo</span> <span class="nv">Jinja2</span><span class="o">==</span><span class="m">2</span>.11.1 &gt;&gt; requirements.in
 
-# Compile hashes for new dependencies.
+<span class="c1"># Compile hashes for new dependencies.</span>
 pip-compile --generate-hashes requirements.in
 
-# Deactivate the python virtual environment.
+<span class="c1"># Deactivate the python virtual environment.</span>
 deactivate
-</code></pre>
+</code></pre></div>
 <h2 id="making-a-pull-request-from-a-fork">Making a pull request from a fork</h2>
 <p>When opening a pull-request to merge a fork, the <code>manual-trigger-required-for-fork</code> CI task will
 fail and some integration test tasks will be skipped. A user with repository write permissions

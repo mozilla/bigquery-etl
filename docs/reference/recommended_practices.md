@@ -131,7 +131,7 @@ labels:
   Errors normally appear in the parent job and may or may not include the dataset and
   table names, therefore it is important to check for errors in the jobs ran on that date.
   Here is a query you may use for this purpose:
-  ```
+  ```sql
   SELECT
     job_id,
     user_email,

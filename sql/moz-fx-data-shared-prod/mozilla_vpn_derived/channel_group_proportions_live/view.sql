@@ -18,7 +18,7 @@ WITH stage_1 AS (
     TO_JSON_STRING(promotion_codes) AS json_promotion_codes,
     SUM(`count`) AS new_subscriptions,
   FROM
-    mozdata.mozilla_vpn.subscription_events
+    `moz-fx-data-shared-prod`.mozilla_vpn.subscription_events
   WHERE
     event_type = "New"
   GROUP BY

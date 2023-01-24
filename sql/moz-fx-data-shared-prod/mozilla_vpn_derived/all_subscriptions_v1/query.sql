@@ -3,7 +3,7 @@ WITH standardized_country AS (
     raw_country AS country,
     standardized_country AS country_name,
   FROM
-    mozdata.static.third_party_standardized_country_names
+    `moz-fx-data-shared-prod`.static.third_party_standardized_country_names
 ),
 attribution AS (
   SELECT
@@ -24,7 +24,7 @@ users AS (
     fxa_uid,
     created_at AS user_registration_date,
   FROM
-    mozdata.mozilla_vpn.users
+    `moz-fx-data-shared-prod`.mozilla_vpn.users
 ),
 stripe_subscriptions_history AS (
   SELECT
@@ -40,7 +40,7 @@ stripe_subscriptions_history AS (
       )
     ) AS subscription_sequence_id
   FROM
-    mozdata.subscription_platform.stripe_subscriptions_history
+    `moz-fx-data-shared-prod`.subscription_platform.stripe_subscriptions_history
   WHERE
     -- Only include the current history records and the last history records for previous plans.
     (valid_to IS NULL OR plan_ended_at IS NOT NULL)
@@ -182,7 +182,7 @@ apple_iap_subscriptions AS (
     subplat.promotion_codes,
     CAST(NULL AS INT64) AS promotion_discounts_amount,
   FROM
-    mozdata.subscription_platform.apple_subscriptions AS subplat
+    `moz-fx-data-shared-prod`.subscription_platform.apple_subscriptions AS subplat
   LEFT JOIN
     users
   USING

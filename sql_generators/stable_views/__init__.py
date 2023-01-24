@@ -148,7 +148,7 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
         ):
             # todo: use mozfun udfs
             metrics_source = (
-                "mozdata.udf.normalize_fenix_metrics"
+                "`moz-fx-data-shared-prod`.udf.normalize_fenix_metrics"
                 "(client_info.telemetry_sdk_build, metrics)"
             )
         else:
@@ -182,7 +182,7 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
                 "'Firefox' AS normalized_app_name",
             ]
     elif schema.schema_id.startswith("moz://mozilla.org/schemas/main/ping/"):
-        replacements += ["mozdata.udf.normalize_main_payload(payload) AS payload"]
+        replacements += ["`moz-fx-data-shared-prod`.udf.normalize_main_payload(payload) AS payload"]
     replacements_str = ",\n    ".join(replacements)
     full_sql = reformat(
         VIEW_QUERY_TEMPLATE.format(

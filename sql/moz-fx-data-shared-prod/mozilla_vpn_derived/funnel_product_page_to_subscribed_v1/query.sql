@@ -44,7 +44,7 @@ events AS (
     service,
     product_id,
   FROM
-    `mozdata.firefox_accounts.fxa_all_events`
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
     event_category IN ('content', 'auth', 'stdout')
 ),

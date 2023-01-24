@@ -20,7 +20,7 @@ WITH client_first_seen AS (
     country,
     first_seen_date
   FROM
-    mozdata.fenix.baseline_clients_first_seen
+    `moz-fx-data-shared-prod`.fenix.baseline_clients_first_seen
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 6 DAY)
 ),
@@ -48,7 +48,7 @@ dou AS (
       mozfun.bits28.to_dates(mozfun.bits28.range(days_seen_bits, -5, 6), submission_date)
     ) AS days_2_7,
   FROM
-    `mozdata.fenix.baseline_clients_last_seen`
+    `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen`
   WHERE
     submission_date = @submission_date
     AND date_diff(submission_date, first_seen_date, DAY) = 6
@@ -63,7 +63,7 @@ adjust_client AS (
     ARRAY_AGG(metrics.string.first_session_creative)[SAFE_OFFSET(0)] AS adjust_creative,
     MIN(DATE(submission_timestamp)) AS first_session_date
   FROM
-    `mozdata.fenix.first_session`
+    `moz-fx-data-shared-prod.fenix.first_session`
   WHERE
     (
       DATE(submission_timestamp)

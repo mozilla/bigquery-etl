@@ -7,7 +7,7 @@ WITH crashes AS (
       "ShutDownKill"
     ) AS is_shutdown_kill,
   FROM
-    mozdata.telemetry.crash
+    `moz-fx-data-shared-prod`.telemetry.crash
   WHERE
     DATE(submission_timestamp) = @submission_date
 )

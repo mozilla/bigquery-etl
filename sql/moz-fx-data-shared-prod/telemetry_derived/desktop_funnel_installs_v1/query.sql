@@ -30,7 +30,7 @@ SELECT
 FROM
   firefox_installer.install
 LEFT JOIN
-  mozdata.static.country_codes_v1 country_codes
+  `moz-fx-data-shared-prod`.static.country_codes_v1 country_codes
 ON
   (country_codes.code = normalized_country_code)
 WHERE

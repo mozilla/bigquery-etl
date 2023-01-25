@@ -17,14 +17,14 @@ fields:
 - mode: NULLABLE
   name: attribution_variation
   type: STRING
-- mode: NULLABLE
+- description: The type of source of a client installation
+  mode: NULLABLE
   name: adjust_network
   type: STRING
-  description: The type of source of a client installation
-- mode: NULLABLE
+- description: The source of a client installation
+  mode: NULLABLE
   name: install_source
   type: STRING
-  description: The source of a client installation
 - mode: NULLABLE
   name: city
   type: STRING
@@ -76,3 +76,6 @@ fields:
 - mode: NULLABLE
   name: attributed
   type: BOOLEAN
+- mode: NULLABLE
+  name: qdau
+  type: INTEGER

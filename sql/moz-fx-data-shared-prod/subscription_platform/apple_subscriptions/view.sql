@@ -81,7 +81,7 @@ apple_iap_period_aggregates AS (
     periods.start_time,
     periods.end_time,
     periods.period_offset,
-    periods.original_transaction_id,
+    periods.original_transaction_id AS original_subscription_id,
     MIN(events.original_purchase_date) AS original_purchase_date,
     ARRAY_AGG(DISTINCT events.offer_identifier IGNORE NULLS) AS promotion_codes,
     ARRAY_AGG(

@@ -74,3 +74,6 @@ fields:
 - mode: NULLABLE
   name: active_hours
   type: FLOAT
+- mode: NULLABLE
+  name: os_grouped
+  type: STRING

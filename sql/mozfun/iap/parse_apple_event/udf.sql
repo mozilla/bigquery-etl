@@ -2,7 +2,6 @@ CREATE OR REPLACE FUNCTION iap.parse_apple_event(input STRING) AS (
   -- WARNING: subscription_platform.apple_subscriptions and
   -- subscription_platform.nonprod_apple_subscriptions require field order of
   -- mozilla_vpn_derived.guardian_apple_events_v1 to exactly match:
-  --   legacy_subscription_id,
   --   event_timestamp,
   --   mozfun.iap.parse_apple_event(`data`).*,
   STRUCT(

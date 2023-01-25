@@ -284,6 +284,58 @@ fields:
     mode: NULLABLE
     name: labeled_counter
     type: RECORD
+  - fields:
+    - description: 'If true, the crash occurred during process startup.
+
+        '
+      mode: NULLABLE
+      name: crash_startup
+      type: BOOLEAN
+    mode: NULLABLE
+    name: boolean
+    type: RECORD
+  - fields:
+    - description: 'The time at which the crash occurred.
+
+        '
+      mode: NULLABLE
+      name: crash_time
+      type: TIMESTAMP
+    - mode: NULLABLE
+      name: raw_crash_time
+      type: STRING
+    mode: NULLABLE
+    name: datetime
+    type: RECORD
+  - fields:
+    - description: 'The type of process that experienced a crash. See the full list
+        of options [here](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/crash-ping.html#process-types).
+
+        '
+      mode: NULLABLE
+      name: crash_process_type
+      type: STRING
+    mode: NULLABLE
+    name: string
+    type: RECORD
+  - fields:
+    - description: 'The application uptime. This is equivalent to the legacy crash
+        ping''s `UptimeTS` field.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: NULLABLE
+      name: crash_uptime
+      type: RECORD
+    mode: NULLABLE
+    name: timespan
+    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

@@ -14,3 +14,15 @@ fields:
 - mode: NULLABLE
   name: did_register
   type: BOOLEAN
+- mode: NULLABLE
+  name: entrypoint
+  type: STRING
+- mode: NULLABLE
+  name: first_service_country
+  type: STRING
+- mode: NULLABLE
+  name: first_service_os
+  type: STRING
+- mode: NULLABLE
+  name: service_number
+  type: INTEGER

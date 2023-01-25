@@ -1,5 +1,5 @@
-description: Aggregated metrics per page on www.mozilla.org
-friendly_name: WWW Site Page Metrics
+description: This table aggregates the traffic to WNP pages and the number of bounces
+friendly_name: WNP hits and bounces
 labels:
   incremental: true
   schedule: daily
@@ -16,3 +16,4 @@ bigquery:
     fields:
       - country
       - locale
+      - version

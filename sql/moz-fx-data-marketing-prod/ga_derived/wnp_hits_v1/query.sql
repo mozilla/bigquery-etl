@@ -16,7 +16,7 @@ WITH wnp_visits AS (
   CROSS JOIN
     UNNEST(hits) AS hit
   WHERE
-    _TABLE_SUFFIX >= FORMAT_DATE('%Y%m%d', '2021-01-01')
+    _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
     AND hit.page.pagePath LIKE '%whatsnew%'
     AND hit.type = 'PAGE'
 ),

@@ -1,0 +1,16 @@
+---
+- &base
+  destination_id: prod_destination_id
+  measured_month: "2023-01-01"
+  credits_spent: 3
+  dollars_spent: 14.40
+- <<: *base
+  destination_id: dev_destination_id
+  measured_month: 2023-01-01
+  credits_spent: 32
+  dollars_spent: 10.23
+- <<: *base
+  destination_id: dev_destination_id
+  measured_month: 2022-12-01
+  credits_spent: null
+  dollars_spent: 5.0

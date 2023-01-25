@@ -1698,7 +1698,11 @@ def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
         table.clustering_fields = metadata.bigquery.clustering.fields
 
     if metadata.labels:
-        table.labels = metadata.labels
+        table.labels = {
+            key: value
+            for key, value in metadata.labels.items()
+            if isinstance(value, str)
+        }
 
 
 def _deploy_external_data(

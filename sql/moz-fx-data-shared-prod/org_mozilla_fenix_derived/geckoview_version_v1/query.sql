@@ -30,7 +30,7 @@ transformed AS (
     app_build,
     geckoview_version,
     -- Truncate to the hour, since older builds give minute resolution.
-    datetime_TRUNC(mozfun.norm.fenix_build_to_datetime(app_build), HOUR) AS build_hour
+    DATETIME_TRUNC(mozfun.norm.fenix_build_to_datetime(app_build), HOUR) AS build_hour
   FROM
     extracted
   WHERE
@@ -79,7 +79,7 @@ enumerated_build_hours AS (
   -- margin that we'll use so we fill in null values for the rolling average
   -- of number of rows.
   SELECT
-    datetime(`timestamp`) AS build_hour
+    DATETIME(`timestamp`) AS build_hour
   FROM
     UNNEST(
       GENERATE_TIMESTAMP_ARRAY(
@@ -97,7 +97,7 @@ estimated_version AS (
     build_hour,
     -- Versions are expected to be monotonically increasing. We use the major
     -- version for integer comparisons when the version hits 100.
-    MAX(CAST(split(geckoview_version, ".")[offset(0)] AS INT64)) OVER (
+    MAX(CAST(SPLIT(geckoview_version, ".")[OFFSET(0)] AS INT64)) OVER (
       ORDER BY
         build_hour ASC
       ROWS BETWEEN

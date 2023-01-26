@@ -28,16 +28,16 @@ SELECT
   AS geo,
   CASE
   WHEN
-    substr(locale, 0, 2) IN ('en', 'de', 'es', 'fr', 'ru', 'zh', 'pt', 'pl', 'ja', 'it')
+    SUBSTR(locale, 0, 2) IN ('en', 'de', 'es', 'fr', 'ru', 'zh', 'pt', 'pl', 'ja', 'it')
   THEN
-    substr(locale, 0, 2)
+    SUBSTR(locale, 0, 2)
   ELSE
     'others'
   END
   AS locale,
   normalized_engine AS engine,
   mozfun.norm.os(os) AS os,
-  SPLIT(app_version, '.')[offset(0)] AS app_version,
+  SPLIT(app_version, '.')[OFFSET(0)] AS app_version,
   SUM(
     client_count
   ) AS dcc, # be careful of double counting for client_id with 1+ engine on the same day

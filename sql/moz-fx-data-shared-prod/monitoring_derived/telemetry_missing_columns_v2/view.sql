@@ -69,8 +69,8 @@ transformed AS (
 ),
 min_max AS (
   SELECT
-    min(day) AS min_day,
-    max(day) AS max_day
+    MIN(day) AS min_day,
+    MAX(day) AS max_day
   FROM
     transformed
 ),

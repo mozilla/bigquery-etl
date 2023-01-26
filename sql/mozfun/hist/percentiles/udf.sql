@@ -45,7 +45,7 @@ SELECT
                 SELECT
                   STRUCT(v AS key, 1 AS value)
                 FROM
-                  UNNEST(generate_array(1, 100)) AS v
+                  UNNEST(GENERATE_ARRAY(1, 100)) AS v
               ) AS values
             ),
             [.1, .5, .9]

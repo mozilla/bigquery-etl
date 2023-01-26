@@ -80,9 +80,9 @@ SELECT
     `mozfun.map.extract_keyed_scalar_sum`(
       scalar_parent_urlbar_picked_visiturl_sum
     ) AS scalar_parent_urlbar_picked_visiturl_sum,
-    -- `mozfun.map.extract_keyed_scalar_sum`(
-    --   contextual_services_quicksuggest_block_dynamic_wikipedia_sum
-    -- ) AS contextual_services_quicksuggest_block_dynamic_wikipedia_sum,
+    `mozfun.map.extract_keyed_scalar_sum`(
+      contextual_services_quicksuggest_block_dynamic_wikipedia_sum
+    ) AS contextual_services_quicksuggest_block_dynamic_wikipedia_sum,
     `mozfun.map.extract_keyed_scalar_sum`(
       contextual_services_quicksuggest_block_nonsponsored_sum
     ) AS contextual_services_quicksuggest_block_nonsponsored_sum,
@@ -95,63 +95,63 @@ SELECT
     `mozfun.map.extract_keyed_scalar_sum`(
       contextual_services_quicksuggest_block_sponsored_bestmatch_sum
     ) AS contextual_services_quicksuggest_block_sponsored_bestmatch_sum,
-    -- `mozfun.map.extract_keyed_scalar_sum`(
-    --   contextual_services_quicksuggest_block_weather_sum
-    -- ) AS contextual_services_quicksuggest_block_weather_sum,
-    -- `mozfun.map.extract_keyed_scalar_sum`(
-    --   contextual_services_quicksuggest_click_dynamic_wikipedia_sum
-    -- ) AS contextual_services_quicksuggest_click_dynamic_wikipedia_sum,
-    -- `mozfun.map.extract_keyed_scalar_sum`(
-    --   contextual_services_quicksuggest_click_nonsponsored_sum
-    -- ) AS contextual_services_quicksuggest_click_nonsponsored_sum,
+    `mozfun.map.extract_keyed_scalar_sum`(
+      contextual_services_quicksuggest_block_weather_sum
+    ) AS contextual_services_quicksuggest_block_weather_sum,
+    `mozfun.map.extract_keyed_scalar_sum`(
+      contextual_services_quicksuggest_click_dynamic_wikipedia_sum
+    ) AS contextual_services_quicksuggest_click_dynamic_wikipedia_sum,
+    `mozfun.map.extract_keyed_scalar_sum`(
+      contextual_services_quicksuggest_click_nonsponsored_sum
+    ) AS contextual_services_quicksuggest_click_nonsponsored_sum,
     `mozfun.map.extract_keyed_scalar_sum`(
       contextual_services_quicksuggest_click_nonsponsored_bestmatch_sum
     ) AS contextual_services_quicksuggest_click_nonsponsored_bestmatch_sum,
-    -- `mozfun.map.extract_keyed_scalar_sum`(
-    --   contextual_services_quicksuggest_click_sponsored_sum
-    -- ) AS contextual_services_quicksuggest_click_sponsored_sum,
+    `mozfun.map.extract_keyed_scalar_sum`(
+      contextual_services_quicksuggest_click_sponsored_sum
+    ) AS contextual_services_quicksuggest_click_sponsored_sum,
     `mozfun.map.extract_keyed_scalar_sum`(
       contextual_services_quicksuggest_click_sponsored_bestmatch_sum
     ) AS contextual_services_quicksuggest_click_sponsored_bestmatch_sum,
-    -- `mozfun.map.extract_keyed_scalar_sum`(
-    --   contextual_services_quicksuggest_click_weather_sum
-    -- ) AS contextual_services_quicksuggest_click_weather_sum,
-    -- `mozfun.map.extract_keyed_scalar_sum`(
-    --   contextual_services_quicksuggest_help_dynamic_wikipedia_sum
-    -- ) AS contextual_services_quicksuggest_help_dynamic_wikipedia_sum,
-    -- `mozfun.map.extract_keyed_scalar_sum`(
-    --   contextual_services_quicksuggest_help_nonsponsored_sum
-    -- ) AS contextual_services_quicksuggest_help_nonsponsored_sum,
+    `mozfun.map.extract_keyed_scalar_sum`(
+      contextual_services_quicksuggest_click_weather_sum
+    ) AS contextual_services_quicksuggest_click_weather_sum,
+    `mozfun.map.extract_keyed_scalar_sum`(
+      contextual_services_quicksuggest_help_dynamic_wikipedia_sum
+    ) AS contextual_services_quicksuggest_help_dynamic_wikipedia_sum,
+    `mozfun.map.extract_keyed_scalar_sum`(
+      contextual_services_quicksuggest_help_nonsponsored_sum
+    ) AS contextual_services_quicksuggest_help_nonsponsored_sum,
     `mozfun.map.extract_keyed_scalar_sum`(
       contextual_services_quicksuggest_help_nonsponsored_bestmatch_sum
     ) AS contextual_services_quicksuggest_help_nonsponsored_bestmatch_sum,
-    -- `mozfun.map.extract_keyed_scalar_sum`(
-    --   contextual_services_quicksuggest_help_sponsored_sum
-    -- ) AS contextual_services_quicksuggest_help_sponsored_sum,
+    `mozfun.map.extract_keyed_scalar_sum`(
+      contextual_services_quicksuggest_help_sponsored_sum
+    ) AS contextual_services_quicksuggest_help_sponsored_sum,
     `mozfun.map.extract_keyed_scalar_sum`(
       contextual_services_quicksuggest_help_sponsored_bestmatch_sum
     ) AS contextual_services_quicksuggest_help_sponsored_bestmatch_sum,
-    -- `mozfun.map.extract_keyed_scalar_sum`(
-    --   contextual_services_quicksuggest_help_weather_sum
-    -- ) AS contextual_services_quicksuggest_help_weather_sum,
-    -- `mozfun.map.extract_keyed_scalar_sum`(
-    --   contextual_services_quicksuggest_impression_dynamic_wikipedia_sum
-    -- ) AS contextual_services_quicksuggest_impression_dynamic_wikipedia_sum,
-    -- `mozfun.map.extract_keyed_scalar_sum`(
-    --   contextual_services_quicksuggest_impression_nonsponsored_sum
-    -- ) AS contextual_services_quicksuggest_impression_nonsponsored_sum,
+    `mozfun.map.extract_keyed_scalar_sum`(
+      contextual_services_quicksuggest_help_weather_sum
+    ) AS contextual_services_quicksuggest_help_weather_sum,
+    `mozfun.map.extract_keyed_scalar_sum`(
+      contextual_services_quicksuggest_impression_dynamic_wikipedia_sum
+    ) AS contextual_services_quicksuggest_impression_dynamic_wikipedia_sum,
+    `mozfun.map.extract_keyed_scalar_sum`(
+      contextual_services_quicksuggest_impression_nonsponsored_sum
+    ) AS contextual_services_quicksuggest_impression_nonsponsored_sum,
     `mozfun.map.extract_keyed_scalar_sum`(
       contextual_services_quicksuggest_impression_nonsponsored_bestmatch_sum
     ) AS contextual_services_quicksuggest_impression_nonsponsored_bestmatch_sum,
-    -- `mozfun.map.extract_keyed_scalar_sum`(
-    --   contextual_services_quicksuggest_impression_sponsored_sum
-    -- ) AS contextual_services_quicksuggest_impression_sponsored_sum,
+    `mozfun.map.extract_keyed_scalar_sum`(
+      contextual_services_quicksuggest_impression_sponsored_sum
+    ) AS contextual_services_quicksuggest_impression_sponsored_sum,
     `mozfun.map.extract_keyed_scalar_sum`(
       contextual_services_quicksuggest_impression_sponsored_bestmatch_sum
     ) AS contextual_services_quicksuggest_impression_sponsored_bestmatch_sum,
-    -- `mozfun.map.extract_keyed_scalar_sum`(
-    --   contextual_services_quicksuggest_impression_weather_sum
-    -- ) AS contextual_services_quicksuggest_impression_weather_sum,
+    `mozfun.map.extract_keyed_scalar_sum`(
+      contextual_services_quicksuggest_impression_weather_sum
+    ) AS contextual_services_quicksuggest_impression_weather_sum,
     (
       SELECT
         SUM(value)
@@ -167,7 +167,7 @@ SELECT
         UNNEST(contextual_services_topsites_impression_sum)
       WHERE
         key LIKE "newtab%"
-    ) AS contextual_services_topsites_impression_sum,
+    ) AS contextual_services_topsites_impression_sum
   ),
   `mozfun.norm.browser_version_info`(app_version) AS browser_version_info,
   COALESCE(

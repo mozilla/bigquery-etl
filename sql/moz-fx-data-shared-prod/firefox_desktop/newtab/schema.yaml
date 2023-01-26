@@ -75,6 +75,11 @@ fields:
     mode: NULLABLE
     name: telemetry_sdk_build
     type: STRING
+  - description: The optional Windows build number, reported by Windows (e.g. 22000)
+      and not set for other platforms
+    mode: NULLABLE
+    name: windows_build_number
+    type: INTEGER
   mode: NULLABLE
   name: client_info
   type: RECORD

@@ -1548,12 +1548,6 @@ udf_aggregates AS (
 )
 SELECT
   * EXCEPT (map_sum_aggregates),
-  (
-    SELECT
-      SUM(value)
-    FROM
-      UNNEST(map_sum_aggregates[OFFSET(90)].map)
-  ) AS contextual_services_topsites_impressions,
   -- CAUTION: the order of fields here must match the order defined in
   -- map_sum_aggregates above and offsets must increment on each line.
   map_sum_aggregates[OFFSET(0)].map AS scalar_parent_telemetry_event_counts_sum,

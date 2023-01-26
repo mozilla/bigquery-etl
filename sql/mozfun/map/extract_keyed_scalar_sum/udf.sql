@@ -7,7 +7,15 @@ RETURNS INT64 AS (
 
 SELECT
   assert.true(
-    map.extract_keyed_scalar_sum(
-      [STRUCT("a" AS key, 1 AS value), STRUCT("b" AS key, 2 AS value)]
-    ) = 3
-  )
+     map.extract_keyed_scalar_sum([
+        STRUCT(
+          "a" AS key,
+          1 AS value
+        ),
+        STRUCT(
+          "b" AS key,
+          2 AS value
+        )
+    ])
+    = 3
+   )

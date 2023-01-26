@@ -20,23 +20,6 @@ CREATE TEMP FUNCTION udf_contains_tier1_country(
   )
 );
 
-  --
-  -- This UDF is also only applicable in the context of this query.
-CREATE TEMP FUNCTION udf_contains_registration(
-  x ANY TYPE
-) AS ( --
-  EXISTS(
-    SELECT
-      event_type
-    FROM
-      UNNEST(x) AS event_type
-    WHERE
-      event_type IN ( --
-        'fxa_reg - complete'
-      )
-  )
-);
-
 WITH fxa_events AS (
   SELECT
     `timestamp`,
@@ -91,57 +74,94 @@ WITH fxa_events AS (
       'sync - repair_triggered'
     )
 ),
-entrypoints AS (
-  SELECT DISTINCT
+flow_entrypoints AS (
+  SELECT
     flow_id,
-    entrypoint
-  FROM
-    fxa_events
-  WHERE
-    -- if both values are not set then the record
-    -- cannot be used for mapping
-    flow_id IS NOT NULL
-    AND entrypoint IS NOT NULL
-  -- getting the first entrypoint only the value
-  -- for a flow_id
-  QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY flow_id ORDER BY `timestamp` ASC) = 1
-),
-utms AS (
-  SELECT DISTINCT
-    flow_id,
-    FIRST_VALUE(utm_term IGNORE NULLS) OVER (_window) AS utm_term,
-    FIRST_VALUE(utm_medium IGNORE NULLS) OVER (_window) AS utm_medium,
-    FIRST_VALUE(utm_source IGNORE NULLS) OVER (_window) AS utm_source,
-    FIRST_VALUE(utm_campaign IGNORE NULLS) OVER (_window) AS utm_campaign,
-    FIRST_VALUE(utm_content IGNORE NULLS) OVER (_window) AS utm_content,
-  FROM
-    fxa_events
-  WHERE
-    flow_id IS NOT NULL
-  -- Need to do this dedup, as otherwise we
-  QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY flow_id ORDER BY `timestamp` ASC) = 1
-  WINDOW
-    _window AS (
-      PARTITION BY
-        flow_id
-        -- , DATE(`timestamp`)
+    ARRAY_AGG(
+      -- if logic here so that we have an entry for
+      -- flow_id even if no entrypoint is found.
+      IF(entrypoint IS NOT NULL, STRUCT(`timestamp`, entrypoint), NULL) IGNORE NULLS
       ORDER BY
-        `timestamp` ASC
-      ROWS
-        UNBOUNDED PRECEDING
-    )
+        `timestamp`
+      LIMIT
+        1
+    )[SAFE_OFFSET(0)] AS flow_entrypoint_info
+  FROM
+    fxa_events
+  WHERE
+    flow_id IS NOT NULL
+  GROUP BY
+    flow_id
+),
+user_service_flow_entrypoints AS (
+  SELECT
+    user_id,
+    service,
+    ARRAY_AGG(
+      STRUCT(
+        flow_id,
+        flow_entrypoint_info.`timestamp`,
+        flow_entrypoint_info.entrypoint
+      ) IGNORE NULLS
+      ORDER BY
+        `timestamp`
+      LIMIT
+        1
+    )[SAFE_OFFSET(0)] AS flow_entrypoint_info,
+  FROM
+    fxa_events
+  JOIN
+    flow_entrypoints
+  USING
+    (flow_id)
+  GROUP BY
+    user_id,
+    service
+),
+flow_utms AS (
+  SELECT
+    flow_id,
+    ARRAY_AGG(
+      IF(
+        utm_campaign IS NOT NULL
+        OR utm_content IS NOT NULL
+        OR utm_medium IS NOT NULL
+        OR utm_source IS NOT NULL
+        OR utm_term IS NOT NULL,
+        STRUCT(utm_campaign, utm_content, utm_medium, utm_source, utm_term),
+        NULL
+      ) IGNORE NULLS
+      ORDER BY
+        `timestamp`
+      LIMIT
+        1
+    )[SAFE_OFFSET(0)] AS utm_info,
+  FROM
+    fxa_events
+  WHERE
+    flow_id IS NOT NULL
+  GROUP BY
+    flow_id
+),
+user_service_flow_utms AS (
+  SELECT
+    user_id,
+    service,
+    ARRAY_AGG(utm_info IGNORE NULLS ORDER BY `timestamp` LIMIT 1)[SAFE_OFFSET(0)] AS utm_info,
+  FROM
+    fxa_events
+  JOIN
+    flow_utms
+  USING
+    (flow_id)
+  GROUP BY
+    user_id,
+    service
 ),
 windowed AS (
   SELECT
-    `timestamp`,
     user_id,
     `service`,
-    -- TODO: should we replace the array agg with FIRST_VALUE()
-    -- over window with WINDOW OVER ROWS BETWEEM UNBOUNDED PRECEDING AND CURRENT ROW?
-    -- seems we save around 8 seconds in execution time and around 10mins in slot time consumed
-    udf.mode_last(ARRAY_AGG(flow_id) OVER w1_reversed) AS flow_id,
     udf.mode_last(ARRAY_AGG(country) OVER w1) AS country,
     udf.mode_last(ARRAY_AGG(`language`) OVER w1) AS `language`,
     udf.mode_last(ARRAY_AGG(app_version) OVER w1) AS app_version,
@@ -150,8 +170,8 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(ua_version) OVER w1) AS ua_version,
     udf.mode_last(ARRAY_AGG(ua_browser) OVER w1) AS ua_browser,
     udf_contains_tier1_country(ARRAY_AGG(country) OVER w1) AS seen_in_tier1_country,
-    udf_contains_registration(ARRAY_AGG(event_type) OVER w1) AS registered,
-    ARRAY_AGG(event_type) OVER w1_reversed AS service_events,
+    LOGICAL_OR(event_type = 'fxa_reg - complete') OVER w1 AS registered,
+    ARRAY_AGG(event_type) OVER w1 AS service_events,
   FROM
     fxa_events
   WHERE
@@ -159,20 +179,9 @@ windowed AS (
     AND user_id IS NOT NULL
     AND `service` IS NOT NULL
   QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY user_id, service, DATE(`timestamp`) ORDER BY `timestamp`) = 1
+    ROW_NUMBER() OVER (PARTITION BY user_id, `service`, DATE(`timestamp`) ORDER BY `timestamp`) = 1
   WINDOW
     w1 AS (
-      PARTITION BY
-        user_id,
-        `service`,
-        DATE(`timestamp`)
-      ORDER BY
-        `timestamp`
-      ROWS BETWEEN
-        UNBOUNDED PRECEDING
-        AND UNBOUNDED FOLLOWING
-    ),
-    w1_reversed AS (
       PARTITION BY
         user_id,
         `service`,
@@ -185,11 +194,9 @@ windowed AS (
     )
 )
 SELECT
-  DATE(windowed.`timestamp`) AS submission_date,
-  windowed.`timestamp`,
+  DATE(@submission_date) AS submission_date,
   windowed.user_id,
   windowed.`service`,
-  windowed.flow_id,
   windowed.country,
   windowed.`language`,
   windowed.app_version,
@@ -201,24 +208,30 @@ SELECT
   windowed.registered,
   -- needed for first_seen logic
   windowed.service_events,
+  -- info about first user/service flow observed
+  -- on a specific day. Needed for first_seen logic
+  STRUCT(
   -- flow entrypoints
-  entrypoints.entrypoint,
-  -- flow utms
-  utms.utm_term,
-  utms.utm_medium,
-  utms.utm_source,
-  utms.utm_campaign,
-  utms.utm_content,
+    user_service_flow_entrypoints.flow_entrypoint_info.flow_id,
+    user_service_flow_entrypoints.flow_entrypoint_info.`timestamp`,
+    user_service_flow_entrypoints.flow_entrypoint_info.entrypoint,
+    -- flow utms
+    user_service_flow_utms.utm_info.utm_term,
+    user_service_flow_utms.utm_info.utm_medium,
+    user_service_flow_utms.utm_info.utm_source,
+    user_service_flow_utms.utm_info.utm_campaign,
+    user_service_flow_utms.utm_info.utm_content
+  ) AS first_daily_service_flow_info,
 FROM
   windowed
 LEFT JOIN
-  entrypoints
+  user_service_flow_entrypoints
 USING
-  (flow_id)
+  (user_id, `service`)
 LEFT JOIN
-  utms
+  user_service_flow_utms
 USING
-  (flow_id)
+  (user_id, `service`)
 WHERE
   user_id IS NOT NULL
   AND `service` IS NOT NULL

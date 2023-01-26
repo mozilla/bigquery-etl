@@ -1,5 +1,4 @@
 WITH
-
 -- Google Desktop (search + DAU)
 desktop_data_google AS (
   SELECT
@@ -29,7 +28,6 @@ desktop_data_google AS (
     2,
     3
 ),
-
 -- Bing Desktop (non-Acer)
 desktop_data_bing AS (
   SELECT
@@ -53,20 +51,23 @@ desktop_data_bing AS (
   ORDER BY
     1
 ),
-
 -- DDG Desktop + Extension
 desktop_data_ddg AS (
   SELECT
     submission_date,
     count(DISTINCT client_id) AS dau,
-    count(DISTINCT IF((engine) IN ('ddg', 'duckduckgo') AND sap > 0, client_id, NULL)) AS ddg_dau_engaged_w_sap,
+    count(
+      DISTINCT IF((engine) IN ('ddg', 'duckduckgo') AND sap > 0, client_id, NULL)
+    ) AS ddg_dau_engaged_w_sap,
     sum(IF(engine IN ('ddg', 'duckduckgo'), sap, 0)) AS ddg_sap,
     sum(IF(engine IN ('ddg', 'duckduckgo'), tagged_sap, 0)) AS ddg_tagged_sap,
     sum(IF(engine IN ('ddg', 'duckduckgo'), tagged_sap, 0)) AS ddg_tagged_follow_on,
     sum(IF(engine IN ('ddg', 'duckduckgo'), search_with_ads, 0)) AS ddg_search_with_ads,
     sum(IF(engine IN ('ddg', 'duckduckgo'), ad_click, 0)) AS ddg_ad_click,
     -- in-content probes not available for addon so these metrics although being here will be zero
-    count(DISTINCT IF(engine = 'ddg-addon' AND sap > 0, client_id, NULL)) AS ddgaddon_dau_engaged_w_sap,
+    count(
+      DISTINCT IF(engine = 'ddg-addon' AND sap > 0, client_id, NULL)
+    ) AS ddgaddon_dau_engaged_w_sap,
     sum(IF(engine IN ('ddg-addon'), sap, 0)) AS ddgaddon_sap,
     sum(IF(engine IN ('ddg-addon'), tagged_sap, 0)) AS ddgaddon_tagged_sap,
     sum(IF(engine IN ('ddg-addon'), tagged_sap, 0)) AS ddgaddon_tagged_follow_on,
@@ -81,7 +82,6 @@ desktop_data_ddg AS (
   ORDER BY
     1
 ),
-
 -- Grab Mobile Eligible DAU
 mobile_dau_data AS (
   SELECT
@@ -96,9 +96,9 @@ mobile_dau_data AS (
   WHERE
     submission_date = @submission_date
     AND app_name IN ('Fenix', 'Firefox iOS', 'Focus Android', 'Focus Android')
-  GROUP BY 1
+  GROUP BY
+    1
 ),
-
 -- Google Mobile (search only - as mobile search metrics is based on metrics
 -- ping, while DAU should be based on main ping on Mobile, also see here also
 -- see https://mozilla-hub.atlassian.net/browse/RS-575)
@@ -135,7 +135,6 @@ mobile_data_google AS (
     2,
     3
 ),
-
 -- Bing & DDG Mobile (search only - as mobile search metrics is based on
 -- metrics ping, while DAU should be based on main ping on Mobile, also see
 -- here also see https://mozilla-hub.atlassian.net/browse/RS-575)
@@ -176,7 +175,6 @@ mobile_data_bing_ddg AS (
     1,
     2
 )
-
 -- combine all desktop and mobile together
 SELECT
   submission_date,
@@ -192,9 +190,7 @@ SELECT
   ad_click
 FROM
   desktop_data_google
-
 UNION ALL
-
 SELECT
   submission_date,
   'Bing' AS partner,
@@ -209,9 +205,7 @@ SELECT
   ad_click
 FROM
   desktop_data_bing
-
 UNION ALL
-
 SELECT
   submission_date,
   'DuckDuckGo' AS partner,
@@ -226,9 +220,7 @@ SELECT
   ddg_ad_click AS ad_click
 FROM
   desktop_data_ddg
-
 UNION ALL
-
 SELECT
   submission_date,
   'DuckDuckGo' AS partner,
@@ -243,9 +235,7 @@ SELECT
   ddgaddon_ad_click AS ad_click
 FROM
   desktop_data_ddg
-
 UNION ALL
-
 SELECT
   submission_date,
   'Google' AS partner,
@@ -260,9 +250,7 @@ SELECT
   ad_click
 FROM
   mobile_data_google
-
 UNION ALL
-
 SELECT
   submission_date,
   'Bing' AS partner,
@@ -277,9 +265,7 @@ SELECT
   bing_ad_click
 FROM
   mobile_data_bing_ddg
-
 UNION ALL
-
 SELECT
   submission_date,
   'DuckDuckGo' AS partner,

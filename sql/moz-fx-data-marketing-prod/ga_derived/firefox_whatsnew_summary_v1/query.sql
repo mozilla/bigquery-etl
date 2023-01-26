@@ -21,6 +21,7 @@ bounce_flagging AS (
     CASE
     WHEN
       hit_number = first_interaction
+      AND bounces = 1
     THEN
       1
     ELSE
@@ -29,8 +30,6 @@ bounce_flagging AS (
     AS bounce_flag
   FROM
     wnp_visits
-  WHERE
-    bounces = 1
 )
 SELECT
   date,

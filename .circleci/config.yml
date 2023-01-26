@@ -598,12 +598,12 @@ workflows:
       - generate-dags:
           requires:
             - generate-sql
-      - docs:
-          requires:
-            - generate-sql
-          filters:
-            branches:
-              only: main
+      # - docs:
+      #     requires:
+      #       - generate-sql
+      #     filters:
+      #       branches:
+      #         only: main
       - push-generated-sql:
           requires:
             - validate-dags

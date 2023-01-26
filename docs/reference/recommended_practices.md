@@ -59,6 +59,8 @@ labels:
   incremental_export: false # non-incremental JSON export writes all data to a single location
 ```
 
+- only labels where value types are eithers integers or strings are published, all other values types are being skipped
+
 ## Views
 
 - Should be defined in files named as `sql/<project>/<dataset>/<table>/view.sql` e.g.

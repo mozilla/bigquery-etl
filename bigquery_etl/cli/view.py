@@ -11,6 +11,7 @@ from traceback import print_exc
 import click
 
 from ..cli.utils import (
+    no_dryrun_option,
     parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
@@ -98,6 +99,7 @@ def create(name, sql_dir, project_id, owner):
 )
 @parallelism_option
 @respect_dryrun_skip_option()
+@no_dryrun_option(default=False)
 @click.pass_context
 def validate(
     ctx,
@@ -108,6 +110,7 @@ def validate(
     validate_schemas,
     parallelism,
     respect_dryrun_skip,
+    no_dryrun,
 ):
     """Validate the view definition."""
     view_files = paths_matching_name_pattern(
@@ -121,14 +124,17 @@ def validate(
         sys.exit(1)
 
     # dryrun views
-    ctx.invoke(
-        dryrun,
-        paths=[str(f) for f in view_files],
-        use_cloud_function=use_cloud_function,
-        project=project_id,
-        validate_schemas=validate_schemas,
-        respect_skip=respect_dryrun_skip,
-    )
+    if not no_dryrun:
+        ctx.invoke(
+            dryrun,
+            paths=[str(f) for f in view_files],
+            use_cloud_function=use_cloud_function,
+            project=project_id,
+            validate_schemas=validate_schemas,
+            respect_skip=respect_dryrun_skip,
+        )
+    else:
+        click.echo("Dry run skipped for view files.")
 
     click.echo("All views are valid.")
 

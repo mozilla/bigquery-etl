@@ -1,10 +1,17 @@
 import os
+import types
 
 import pytest
 import yaml
 from click.testing import CliRunner
 
-from bigquery_etl.cli.query import create, info, paths_matching_name_pattern, schedule
+from bigquery_etl.cli.query import (
+    _attach_metadata,
+    create,
+    info,
+    paths_matching_name_pattern,
+    schedule,
+)
 
 
 class TestQuery:
@@ -377,3 +384,37 @@ class TestQuery:
                 )
                 == 1
             )
+
+    def test_attach_metadata_labels(self, runner):
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "scheduling": {"dag_name": "bqetl_test"},
+                "labels": {"test": 123, "foo": "abc", "review_bugs": [1234, 1254]},
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(metadata_conf))
+
+            table = types.SimpleNamespace()
+            _attach_metadata(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql",
+                table,
+            )
+
+            assert "test" in table.labels
+            assert table.labels["test"] == "123"
+            assert "foo" in table.labels
+            assert table.labels["foo"] == "abc"
+            assert "review_bugs" not in table.labels

@@ -117,6 +117,7 @@ class Dag:
     default_args: DagDefaultArgs
     tasks: List[Task] = attr.ib([])
     description: str = attr.ib("")
+    repo: str = attr.ib("bigquery-etl")
     tags: List[str] = attr.ib([])
 
     @name.validator
@@ -193,7 +194,7 @@ class Dag:
             name = list(d.keys())[0]
             tags: set[str] = set(d[name].get("tags", []))
             if not any(tag.startswith("repo/") for tag in tags):
-                tags.add("repo/bigquery-etl")
+                tags.add("repo/" + d[name].get("repo", "bigquery-etl"))
             d[name]["tags"] = sorted(tags)
 
             if name == PUBLIC_DATA_JSON_DAG:

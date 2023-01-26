@@ -51,3 +51,8 @@ scheduling:
       "TZS",
       "UAH",
     ]
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false

@@ -104,7 +104,7 @@ WITH first_seen AS (
     device_model,
     normalized_os_version AS os_version
   FROM
-    `mozdata.fenix.baseline_clients_first_seen`
+    `moz-fx-data-shared-prod.fenix.baseline_clients_first_seen`
   WHERE
     submission_date >= '2019-01-01'
     AND normalized_channel = 'release'
@@ -128,7 +128,7 @@ first_session_ping AS (
       SAFE_OFFSET(0)
     ] AS adjust_creative
   FROM
-    `mozdata.fenix.first_session` AS fenix_first_session
+    `moz-fx-data-shared-prod.fenix.first_session` AS fenix_first_session
   WHERE
     DATE(submission_timestamp) >= '2019-01-01'
     AND ping_info.seq = 0 -- Pings are sent in sequence, this guarantees that the first one is returned.

@@ -1,11 +1,23 @@
 ---
 friendly_name: FxA Users Daily
-description: Usage aggregations per FxA user per day
+description: |
+  Usage aggregations per FxA user per day.
+  Only the following category of events is used for building this models:
+  event_category IN ('auth', 'auth_bounce', 'content', 'oauth')
+  Partitioned by submission_date and clustered by user_id.
 owners:
-  - dthorn@mozilla.com
+  - kignasiak@mozilla.com
 labels:
   application: fxa
   incremental: true
   schedule: daily
 scheduling:
   dag_name: bqetl_fxa_events
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+  clustering:
+    fields:
+      - user_id

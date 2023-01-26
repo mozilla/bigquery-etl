@@ -13,24 +13,24 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
    1. Directories and files are generated automatically
 1. Open `query.sql` file that has been created in `sql/moz-fx-data-shared-prod/<dataset>/<table>_<version>/` to write the query
 1. [Optional] Run `./bqetl query schema update <dataset>.<table>_<version>` to generate the `schema.yaml` file
-    * Optionally add column descriptions to `schema.yaml`
+   * Optionally add column descriptions to `schema.yaml`
 1. Open the `metadata.yaml` file in `sql/moz-fx-data-shared-prod/<dataset>/<table>_<version>/`
-    * Add a description of the query
-    * Add BigQuery information such as table partitioning or clustering
-        * See [clients_daily_v6](https://github.com/mozilla/bigquery-etl/blob/main/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/metadata.yaml) for reference
+   * Add a description of the query
+   * Add BigQuery information such as table partitioning or clustering
+     * See [clients_daily_v6](https://github.com/mozilla/bigquery-etl/blob/main/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/metadata.yaml) for reference
 1. Run `./bqetl query validate <dataset>.<table>_<version>` to dry run and format the query
 1. To schedule the query, first select a DAG from the `./bqetl dag info` list or create a new DAG `./bqetl dag create <bqetl_new_dag>`
 1. Run `./bqetl query schedule <dataset>.<table>_<version> --dag <bqetl_dag>` to schedule the query
 1. Run `./bqetl dag generate <bqetl_dag>` to update the DAG file
 1. Create a pull request
-    * CI fails since table doesn't exist yet
+   * CI fails since table doesn't exist yet
 1. PR gets reviewed and eventually approved
 1. Create destination table: `./bqetl query schema deploy` (requires a `schema.yaml` file to be present)
-     * This step needs to be performed by a data engineer as it requires DE credentials.
+   * This step needs to be performed by a data engineer as it requires DE credentials.
 1. Merge pull-request
 1. Backfill data
-     * Option 1: via Airflow interface
-     * Option 2: `./bqetl query backfill --project-id <project id> <dataset>.<table>_<version>`
+   * Option 1: via Airflow interface
+   * Option 2: `./bqetl query backfill --project-id <project id> <dataset>.<table>_<version>`
 
 ## Update an existing query
 
@@ -39,7 +39,7 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
 1. If the query scheduling metadata has changed, run `./bqetl dag generate <bqetl_dag>` to update the DAG file
 1. If the query adds new columns, run `./bqetl query schema update <dataset>.<table>_<version>` to make local `schema.yaml` updates
 1. Open PR with changes
-    * CI can fail if schema updates haven't been propagated to destination tables, for example when adding new fields
+   * CI can fail if schema updates haven't been propagated to destination tables, for example when adding new fields
 1. PR reviewed and approved
 1. Deploy schema changes by running `./bqetl query schema deploy <dataset>.<table>_<version>`
 1. Merge pull-request
@@ -92,10 +92,10 @@ Adding a new field to a table schema also means that the field has to propagate 
 1. Open the `query.sql` file inside the `<dataset>.<table>` location and add the new definitions for the field.
 1. Run `./bqetl format <path to the query>` to format the query. Alternatively, run `./bqetl format $(git ls-tree -d HEAD --name-only)` validate the format of all queries that have been modified.
 1. Run `./bqetl query validate <dataset>.<table>` to dry run the query.
-    * For data scientists (and anyone without `jobs.create` permissions in `moz-fx-data-shared-prod`), run:
-        * (a) `gcloud auth login --update-adc   # to authenticate to GCP`
-        * (b) `gcloud config set project mozdata    # to set the project`
-        * (c) `./bqetl query validate --use-cloud-function=false --project-id=mozdata <full path to the query file>`
+   * For data scientists (and anyone without `jobs.create` permissions in `moz-fx-data-shared-prod`), run:
+     * (a) `gcloud auth login --update-adc   # to authenticate to GCP`
+     * (b) `gcloud config set project mozdata    # to set the project`
+     * (c) `./bqetl query validate --use-cloud-function=false --project-id=mozdata <full path to the query file>`
 1. Run `./bqetl query schema update <dataset>.<table> --update_downstream` to make local schema.yaml updates and update schemas of downstream dependencies.
    * [x] This requires [GCP access](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#bigquery-access-request).
    * [x] `--update_downstream` is optional as it takes longer. It is recommended when you know that there are downstream dependencies whose `schema.yaml` need to be updated, in which case, the update will happen automatically.
@@ -116,12 +116,12 @@ The following is an example to update a new field in `telemetry_derived.clients_
 1. Run `./bqetl format sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/query.sql`
 1. Run `./bqetl query validate telemetry_derived.clients_daily_v6`.
 1. Run `./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream`.
-    * [x] `schema.yaml` files of downstream dependencies, like `clients_last_seen_v1` are updated.
+   * [x] `schema.yaml` files of downstream dependencies, like `clients_last_seen_v1` are updated.
 1. Open a PR with these changes.
-    * [x] The `dry-run-sql` task fails.
+   * [x] The `dry-run-sql` task fails.
 1. PR is reviewed and approved.
 1. Deploy schema changes by running:
-   ```
+   ```bash
    ./bqetl query schema deploy telemetry_derived.clients_daily_v6;
    ./bqetl query schema deploy telemetry_derived.clients_daily_joined_v1;
    ./bqetl query schema deploy --force --ignore-dryrun-skip telemetry_derived.clients_last_seen_v1;
@@ -148,8 +148,8 @@ Deleting a field from an existing table schema should be done only when is total
 4. Open a PR.
 5. PR gets reviewed, approved and merged.
 6. To publish UDF immediately:
-    * Go to Airflow `mozfun` DAG and clear latest run.
-    * Or else it will get published within a day when mozfun is executed next.
+   * Go to Airflow `mozfun` DAG and clear latest run.
+   * Or else it will get published within a day when mozfun is executed next.
 
 ## Adding a new internal UDF
 
@@ -158,12 +158,12 @@ Internal UDFs are usually only used by specific queries. If your UDF might be us
 1. Run `./bqetl routine create <dataset>.<name> --udf`
 2. Navigate to the `udf.sql` in `sql/moz-fx-data-shared-prod/<dataset>/<name>/` file and add UDF definition and tests
 3. Run `./bqetl routine validate <dataset>.<name>` for formatting and running tests
-    * Before running the tests, you need to [setup the access to the Google Cloud API](https://mozilla.github.io/bigquery-etl/cookbooks/testing/).
+   * Before running the tests, you need to [setup the access to the Google Cloud API](https://mozilla.github.io/bigquery-etl/cookbooks/testing/).
 5. Open a PR
 6. PR gets reviewed and approved and merged
 7. To publish UDF immediately:
-    * Run `./bqetl routine publish`
-    * Or else it will take a day until UDF gets published automatically
+   * Run `./bqetl routine publish`
+   * Or else it will take a day until UDF gets published automatically
 
 ## Adding a stored procedure
 
@@ -179,7 +179,7 @@ The same steps as creating a new UDF apply for creating stored procedures, excep
 ## Renaming an existing UDF
 
 1. Run `./bqetl mozfun rename <dataset>.<name> <new_dataset>.<new_name>`
-    * References in queries to the UDF are automatically updated
+   * References in queries to the UDF are automatically updated
 1. Open a PR
 1. PR gets reviews, approved and merged
 
@@ -187,7 +187,8 @@ The same steps as creating a new UDF apply for creating stored procedures, excep
 
 To provision a new BigQuery dataset for holding tables, you'll need to
 create a `dataset_metadata.yaml` which will cause the dataset to be
-automatically deployed a few hours after merging. Changes to existing
+automatically deployed [after merging](https://docs.telemetry.mozilla.org/concepts/pipeline/artifact_deployment.html#dataset-deployment).
+Changes to existing
 datasets may trigger manual operator approval (such as changing access policies).
 For more on access controls, see
 [Data Access Workgroups](https://mana.mozilla.org/wiki/display/DOPS/Data+Access+Workgroups)
@@ -230,14 +231,14 @@ See also the reference for [Public Data](../reference/public_data.md).
 
 1. Get a data review by following the [data publishing process](https://wiki.mozilla.org/Data_Publishing#Dataset_Publishing_Process_2)
 1. Update the `metadata.yaml` file of the query to be published
-    * Set `public_bigquery: true` and optionally `public_json: true`
-    * Specify the `review_bugs`
+   * Set `public_bigquery: true` and optionally `public_json: true`
+   * Specify the `review_bugs`
 1. If an internal dataset already exists, move it to `mozilla-public-data`
 1. If an `init.sql` file exists for the query, change the destination project for the created table to `mozilla-public-data`
 1. Run `./bqetl dag generate bqetl_public_public_data_json` to update the DAG
 1. Open a PR
 1. PR gets reviewed, approved and merged
-    * Once, ETL is running a view will get automatically published to `moz-fx-data-shared-prod` referencing the public dataset
+   * Once, ETL is running a view will get automatically published to `moz-fx-data-shared-prod` referencing the public dataset
 
 ## Adding new Python requirements
 

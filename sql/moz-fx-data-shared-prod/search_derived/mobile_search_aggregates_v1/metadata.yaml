@@ -9,3 +9,8 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_mobile_search
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true

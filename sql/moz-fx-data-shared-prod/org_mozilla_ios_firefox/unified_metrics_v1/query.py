@@ -160,7 +160,7 @@ def main():
     stripped = [c.split()[0].lstrip("root.") for c in column_summary]
     query_glean = generate_query(
         ['"glean" as telemetry_system', *stripped],
-        "mozdata.org_mozilla_ios_firefox.metrics",
+        "moz-fx-data-shared-prod.org_mozilla_ios_firefox.metrics",
     )
     query_legacy_replacements = {
         "submission_date": "DATE(_PARTITIONTIME) AS submission_date",

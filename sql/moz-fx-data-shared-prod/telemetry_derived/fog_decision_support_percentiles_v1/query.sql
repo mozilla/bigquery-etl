@@ -16,7 +16,7 @@ WITH metrics_base AS (
       SECOND
     ) AS client_submission_latency,
   FROM
-    `mozdata.firefox_desktop.metrics`
+    `moz-fx-data-shared-prod.firefox_desktop.metrics`
   WHERE
     normalized_channel IN ('nightly', 'beta', 'release')
     AND DATE(submission_timestamp) = @submission_date
@@ -111,7 +111,7 @@ baseline_base AS (
       SECOND
     ) AS client_submission_latency,
   FROM
-    `mozdata.firefox_desktop.baseline`
+    `moz-fx-data-shared-prod.firefox_desktop.baseline`
   WHERE
     normalized_channel IN ('nightly', 'beta', 'release')
     AND DATE(submission_timestamp) = @submission_date

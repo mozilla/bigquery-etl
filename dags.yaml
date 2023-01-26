@@ -913,7 +913,6 @@ bqetl_analytics_tables:
   tags:
     - impact/tier_1
     - repo/bigquery-etl
-
 bqetl_fivetran_google_ads:
   default_args:
     depends_on_past: false
@@ -931,6 +930,27 @@ bqetl_fivetran_google_ads:
       coming from Fivetran. Fivetran
       updates these tables every hour.
   schedule_interval: 0 2 * * *
+  tags:
+    - impact/tier_2
+    - repo/bigquery-etl
+bqetl_campaign_cost_breakdowns:
+  default_args:
+    depends_on_past: false
+    email:
+      - ctroy@mozilla.com
+      - frank@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: ctroy@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2021-09-20'
+  description: |
+    Derived tables on top of fenix installation and DOU metrics,
+    as well as Google ads campaign data.
+  schedule_interval: 0 3 * * *
   tags:
     - impact/tier_2
     - repo/bigquery-etl

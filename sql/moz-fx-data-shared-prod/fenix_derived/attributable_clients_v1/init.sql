@@ -25,7 +25,7 @@ CLUSTER BY
         SUM(sum_map_values(metrics.labeled_counter.browser_search_with_ads)) AS searches_with_ads,
         SUM(sum_map_values(metrics.labeled_counter.browser_search_ad_clicks)) AS ad_clicks,
       FROM
-        mozdata.fenix.baseline
+        `moz-fx-data-shared-prod`.fenix.baseline
       WHERE
         DATE(submission_timestamp) >= first_date
       GROUP BY
@@ -57,7 +57,7 @@ CLUSTER BY
         country,
         first_seen_date
       FROM
-        mozdata.fenix.baseline_clients_first_seen
+        `moz-fx-data-shared-prod`.fenix.baseline_clients_first_seen
       WHERE
         submission_date >= first_date
     ),
@@ -69,7 +69,7 @@ CLUSTER BY
         adjust_campaign,
         adjust_creative,
       FROM
-        mozdata.fenix.firefox_android_clients
+        `moz-fx-data-shared-prod`.fenix.firefox_android_clients
       WHERE
         adjust_network != 'Unknown'
     )

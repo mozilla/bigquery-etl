@@ -23,7 +23,6 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_accounts.fxa_content_auth_events`
 AS
-  --
 WITH content AS (
   SELECT
     jsonPayload.logger,
@@ -101,3 +100,12 @@ SELECT
   JSON_VALUE(event_properties, "$.email_version") AS email_version,
 FROM
   unioned
+-- Commented out for now, to restore FxA Looker dashboards
+-- Once dashboards have been migrated to use fxa_all_events view
+-- this will be uncommented to see if we can pick up any other usage
+-- of this view.
+-- See DENG-582 for more info.
+-- WHERE
+--   ERROR(
+--     'VIEW DEPRECATED - This view will be completely deleted after 9th of February 2023, please use `fxa_all_events` with filter on `event_category` instead. See DENG-582 for more info.'
+--   )

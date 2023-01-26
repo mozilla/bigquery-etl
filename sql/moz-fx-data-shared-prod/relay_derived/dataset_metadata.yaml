@@ -1,6 +1,6 @@
-friendly_name: Looker Derived
+friendly_name: Firefox Relay Derived
 description: |-
-  Cache tables populated and used by Looker
+  Derived data related to the Firefox Relay service
 dataset_base_acl: derived
 user_facing: false
 labels: {}
@@ -8,6 +8,3 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-- role: roles/bigquery.dataEditor
-  members:
-  - workgroup:dataops-managed/looker

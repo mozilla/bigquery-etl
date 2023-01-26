@@ -247,12 +247,12 @@ class GleanTable:
             )
             view = f"{project_id}.{target_dataset}.{target_view_name}"
 
-            if output_dir:
-                write_dataset_metadata(output_dir, view)
-
             if not (referenced_table_exists(sql)):
                 logging.info("Skipping view for table which doesn't exist:" f" {view}")
                 return
+
+            if output_dir:
+                write_dataset_metadata(output_dir, view)
 
             if output_dir:
                 write_sql(output_dir, view, "view.sql", sql, skip_existing=True)

@@ -2,7 +2,7 @@
 
 This repository uses `pytest`:
 
-```
+```bash
 # create a venv
 python3.10 -m venv venv/
 
@@ -108,7 +108,7 @@ Simply name the test `test_init`. The other guidelines still apply.
 _Note_: Init SQL statements must contain a create statement with the dataset
 and table name, like so:
 
-```
+```sql
 CREATE OR REPLACE TABLE
   dataset.table_v1
 AS
@@ -152,7 +152,7 @@ AS
 - Run `circleci build` and set required environment variables `GOOGLE_PROJECT_ID` and
   `GCLOUD_SERVICE_KEY`:
 
-```
+```bash
 gcloud_service_key=`cat /path/to/key_file.json`
 
 # to run a specific job, e.g. integration:

@@ -15,7 +15,7 @@ CREATE TEMP FUNCTION contains_qualified_fxa_activity_event(events ANY TYPE, `ser
     FROM
       UNNEST(events) AS event_type
     WHERE
-      (event_type IN ('fxa_login - complete', 'fxa_reg - complete') AND `service` IS NOT NULL)
+      event_type IN ('fxa_login - complete', 'fxa_reg - complete')
       OR (event_type LIKE 'fxa_activity%')
   )
 );

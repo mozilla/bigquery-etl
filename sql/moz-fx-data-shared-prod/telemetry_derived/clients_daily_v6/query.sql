@@ -507,30 +507,19 @@ clients_summary AS (
     payload.processes.parent.keyed_scalars.browser_search_content_urlbar_persisted,
     payload.processes.parent.keyed_scalars.browser_search_withads_urlbar_persisted,
     payload.processes.parent.keyed_scalars.browser_search_adclicks_urlbar_persisted,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_block_dynamic_wikipedia,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help_nonsponsored_bestmatch,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help_sponsored_bestmatch,
     payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_block_nonsponsored,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_block_nonsponsored_bestmatch,
     payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_block_sponsored,
     payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_block_sponsored_bestmatch,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_block_weather,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click_dynamic_wikipedia,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click_nonsponsored,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click_nonsponsored_bestmatch,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click_sponsored,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_block_nonsponsored_bestmatch,
     payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click_sponsored_bestmatch,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click_weather,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help_dynamic_wikipedia,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help_nonsponsored,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help_nonsponsored_bestmatch,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help_sponsored,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help_sponsored_bestmatch,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help_weather,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression_dynamic_wikipedia,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression_nonsponsored,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression_nonsponsored_bestmatch,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression_sponsored,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click_nonsponsored_bestmatch,
     payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression_sponsored_bestmatch,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression_weather,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression_nonsponsored_bestmatch,
     payload.processes.parent.keyed_scalars.contextual_services_topsites_click,
     payload.processes.parent.keyed_scalars.contextual_services_topsites_impression,
     payload.processes.parent.keyed_scalars.a11y_theme,
@@ -1226,150 +1215,6 @@ aggregates AS (
     SUM(
       scalar_parent_urlbar_impression_autofill_url
     ) AS scalar_parent_urlbar_impression_autofill_url_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_autofill
-    ) AS scalar_parent_urlbar_picked_autofill_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_autofill_about
-    ) AS scalar_parent_urlbar_picked_autofill_about_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_autofill_adaptive
-    ) AS scalar_parent_urlbar_picked_autofill_adaptive_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_autofill_origin
-    ) AS scalar_parent_urlbar_picked_autofill_origin_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_autofill_other
-    ) AS scalar_parent_urlbar_picked_autofill_other_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_autofill_preloaded
-    ) AS scalar_parent_urlbar_picked_autofill_preloaded_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_autofill_url
-    ) AS scalar_parent_urlbar_picked_autofill_url_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_bookmark
-    ) AS scalar_parent_urlbar_picked_bookmark_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_dynamic
-    ) AS scalar_parent_urlbar_picked_dynamic_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_extension
-    ) AS scalar_parent_urlbar_picked_extension_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_formhistory
-    ) AS scalar_parent_urlbar_picked_formhistory_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_history
-    ) AS scalar_parent_urlbar_picked_history_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_keyword
-    ) AS scalar_parent_urlbar_picked_keyword_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_remotetab
-    ) AS scalar_parent_urlbar_picked_remotetab_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_searchengine
-    ) AS scalar_parent_urlbar_picked_searchengine_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_searchsuggestion
-    ) AS scalar_parent_urlbar_picked_searchsuggestion_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_switchtab
-    ) AS scalar_parent_urlbar_picked_switchtab_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_tabtosearch
-    ) AS scalar_parent_urlbar_picked_tabtosearch_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_tip
-    ) AS scalar_parent_urlbar_picked_tip_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_topsite
-    ) AS scalar_parent_urlbar_picked_topsite_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_unknown
-    ) AS scalar_parent_urlbar_picked_unknown_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      scalar_parent_urlbar_picked_visiturl
-    ) AS scalar_parent_urlbar_picked_visiturl_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_block_dynamic_wikipedia
-    ) AS contextual_services_quicksuggest_block_dynamic_wikipedia_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_block_nonsponsored
-    ) AS contextual_services_quicksuggest_block_nonsponsored_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_block_nonsponsored_bestmatch
-    ) AS contextual_services_quicksuggest_block_nonsponsored_bestmatch_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_block_sponsored
-    ) AS contextual_services_quicksuggest_block_sponsored_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_block_sponsored_bestmatch
-    ) AS contextual_services_quicksuggest_block_sponsored_bestmatch_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_block_weather
-    ) AS contextual_services_quicksuggest_block_weather_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_click_dynamic_wikipedia
-    ) AS contextual_services_quicksuggest_click_dynamic_wikipedia_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_click_nonsponsored
-    ) AS contextual_services_quicksuggest_click_nonsponsored_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_click_nonsponsored_bestmatch
-    ) AS contextual_services_quicksuggest_click_nonsponsored_bestmatch_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_click_sponsored
-    ) AS contextual_services_quicksuggest_click_sponsored_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_click_sponsored_bestmatch
-    ) AS contextual_services_quicksuggest_click_sponsored_bestmatch_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_click_weather
-    ) AS contextual_services_quicksuggest_click_weather_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_help_dynamic_wikipedia
-    ) AS contextual_services_quicksuggest_help_dynamic_wikipedia_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_help_nonsponsored
-    ) AS contextual_services_quicksuggest_help_nonsponsored_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_help_nonsponsored_bestmatch
-    ) AS contextual_services_quicksuggest_help_nonsponsored_bestmatch_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_help_sponsored
-    ) AS contextual_services_quicksuggest_help_sponsored_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_help_sponsored_bestmatch
-    ) AS contextual_services_quicksuggest_help_sponsored_bestmatch_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_help_weather
-    ) AS contextual_services_quicksuggest_help_weather_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_impression_dynamic_wikipedia
-    ) AS contextual_services_quicksuggest_impression_dynamic_wikipedia_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_impression_nonsponsored
-    ) AS contextual_services_quicksuggest_impression_nonsponsored_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_impression_nonsponsored_bestmatch
-    ) AS contextual_services_quicksuggest_impression_nonsponsored_bestmatch_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_impression_sponsored
-    ) AS contextual_services_quicksuggest_impression_sponsored_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_impression_sponsored_bestmatch
-    ) AS contextual_services_quicksuggest_impression_sponsored_bestmatch_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_quicksuggest_impression_weather
-    ) AS contextual_services_quicksuggest_impression_weather_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_topsites_click
-    ) AS contextual_services_topsites_click_sum,
-    mozfun.map.extract_keyed_scalar_sum(
-      contextual_services_topsites_impression
-    ) AS contextual_services_topsites_impression_sum,
     -- We batch multiple fields into an array here in order to share a single
     -- UDF invocation in the udf_aggregates CTE below which keeps query
     -- complexity down; order of fields here is important, as we pull these out
@@ -1391,6 +1236,28 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_touchbar)),
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_typed)),
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_browser_ui_interaction_preferences_pane_home)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_about)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_adaptive)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_origin)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_other)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_preloaded)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_url)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_bookmark)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_dynamic)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_extension)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_formhistory)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_history)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_keyword)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_remotetab)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_searchengine)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_searchsuggestion)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_switchtab)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_tabtosearch)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_tip)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_topsite)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_unknown)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_visiturl)),
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_browser_search_with_ads)),
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_browser_search_ad_clicks)),
       STRUCT(ARRAY_CONCAT_AGG(browser_search_content_urlbar)),
@@ -1429,6 +1296,21 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(browser_search_content_urlbar_handoff)),
       STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_urlbar_handoff)),
       STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar_handoff)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_nonsponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_sponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_nonsponsored)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_sponsored)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_sponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_nonsponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_sponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_nonsponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_sponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_nonsponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_topsites_click)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_topsites_impression)),
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_browser_ui_interaction_content_context)),
       STRUCT(ARRAY_CONCAT_AGG(browser_search_content_urlbar_persisted)),
       STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_urlbar_persisted)),
@@ -1568,47 +1450,100 @@ SELECT
   map_sum_aggregates[
     OFFSET(15)
   ].map AS scalar_parent_browser_ui_interaction_preferences_pane_home_sum,
-  map_sum_aggregates[OFFSET(16)].map AS search_with_ads,
-  map_sum_aggregates[OFFSET(17)].map AS ad_clicks,
-  map_sum_aggregates[OFFSET(18)].map AS search_content_urlbar_sum,
-  map_sum_aggregates[OFFSET(19)].map AS search_content_urlbar_searchmode_sum,
-  map_sum_aggregates[OFFSET(20)].map AS search_content_contextmenu_sum,
-  map_sum_aggregates[OFFSET(21)].map AS search_content_about_home_sum,
-  map_sum_aggregates[OFFSET(22)].map AS search_content_about_newtab_sum,
-  map_sum_aggregates[OFFSET(23)].map AS search_content_searchbar_sum,
-  map_sum_aggregates[OFFSET(24)].map AS search_content_system_sum,
-  map_sum_aggregates[OFFSET(25)].map AS search_content_webextension_sum,
-  map_sum_aggregates[OFFSET(26)].map AS search_content_tabhistory_sum,
-  map_sum_aggregates[OFFSET(27)].map AS search_content_reload_sum,
-  map_sum_aggregates[OFFSET(28)].map AS search_content_unknown_sum,
-  map_sum_aggregates[OFFSET(29)].map AS search_withads_urlbar_sum,
-  map_sum_aggregates[OFFSET(30)].map AS search_withads_urlbar_searchmode_sum,
-  map_sum_aggregates[OFFSET(31)].map AS search_withads_contextmenu_sum,
-  map_sum_aggregates[OFFSET(32)].map AS search_withads_about_home_sum,
-  map_sum_aggregates[OFFSET(33)].map AS search_withads_about_newtab_sum,
-  map_sum_aggregates[OFFSET(34)].map AS search_withads_searchbar_sum,
-  map_sum_aggregates[OFFSET(35)].map AS search_withads_system_sum,
-  map_sum_aggregates[OFFSET(36)].map AS search_withads_webextension_sum,
-  map_sum_aggregates[OFFSET(37)].map AS search_withads_tabhistory_sum,
-  map_sum_aggregates[OFFSET(38)].map AS search_withads_reload_sum,
-  map_sum_aggregates[OFFSET(39)].map AS search_withads_unknown_sum,
-  map_sum_aggregates[OFFSET(40)].map AS search_adclicks_urlbar_sum,
-  map_sum_aggregates[OFFSET(41)].map AS search_adclicks_urlbar_searchmode_sum,
-  map_sum_aggregates[OFFSET(42)].map AS search_adclicks_contextmenu_sum,
-  map_sum_aggregates[OFFSET(43)].map AS search_adclicks_about_home_sum,
-  map_sum_aggregates[OFFSET(44)].map AS search_adclicks_about_newtab_sum,
-  map_sum_aggregates[OFFSET(45)].map AS search_adclicks_searchbar_sum,
-  map_sum_aggregates[OFFSET(46)].map AS search_adclicks_system_sum,
-  map_sum_aggregates[OFFSET(47)].map AS search_adclicks_webextension_sum,
-  map_sum_aggregates[OFFSET(48)].map AS search_adclicks_tabhistory_sum,
-  map_sum_aggregates[OFFSET(49)].map AS search_adclicks_reload_sum,
-  map_sum_aggregates[OFFSET(50)].map AS search_adclicks_unknown_sum,
-  map_sum_aggregates[OFFSET(51)].map AS search_content_urlbar_handoff_sum,
-  map_sum_aggregates[OFFSET(52)].map AS search_withads_urlbar_handoff_sum,
-  map_sum_aggregates[OFFSET(53)].map AS search_adclicks_urlbar_handoff_sum,
-  map_sum_aggregates[OFFSET(54)].map AS scalar_parent_browser_ui_interaction_content_context_sum,
-  map_sum_aggregates[OFFSET(55)].map AS search_content_urlbar_persisted_sum,
-  map_sum_aggregates[OFFSET(56)].map AS search_withads_urlbar_persisted_sum,
-  map_sum_aggregates[OFFSET(57)].map AS search_adclicks_urlbar_persisted_sum,
+  map_sum_aggregates[OFFSET(16)].map AS scalar_parent_urlbar_picked_autofill_sum,
+  map_sum_aggregates[OFFSET(17)].map AS scalar_parent_urlbar_picked_autofill_about_sum,
+  map_sum_aggregates[OFFSET(18)].map AS scalar_parent_urlbar_picked_autofill_adaptive_sum,
+  map_sum_aggregates[OFFSET(19)].map AS scalar_parent_urlbar_picked_autofill_origin_sum,
+  map_sum_aggregates[OFFSET(20)].map AS scalar_parent_urlbar_picked_autofill_other_sum,
+  map_sum_aggregates[OFFSET(21)].map AS scalar_parent_urlbar_picked_autofill_preloaded_sum,
+  map_sum_aggregates[OFFSET(22)].map AS scalar_parent_urlbar_picked_autofill_url_sum,
+  map_sum_aggregates[OFFSET(23)].map AS scalar_parent_urlbar_picked_bookmark_sum,
+  map_sum_aggregates[OFFSET(24)].map AS scalar_parent_urlbar_picked_dynamic_sum,
+  map_sum_aggregates[OFFSET(25)].map AS scalar_parent_urlbar_picked_extension_sum,
+  map_sum_aggregates[OFFSET(26)].map AS scalar_parent_urlbar_picked_formhistory_sum,
+  map_sum_aggregates[OFFSET(27)].map AS scalar_parent_urlbar_picked_history_sum,
+  map_sum_aggregates[OFFSET(28)].map AS scalar_parent_urlbar_picked_keyword_sum,
+  map_sum_aggregates[OFFSET(29)].map AS scalar_parent_urlbar_picked_remotetab_sum,
+  map_sum_aggregates[OFFSET(30)].map AS scalar_parent_urlbar_picked_searchengine_sum,
+  map_sum_aggregates[OFFSET(31)].map AS scalar_parent_urlbar_picked_searchsuggestion_sum,
+  map_sum_aggregates[OFFSET(32)].map AS scalar_parent_urlbar_picked_switchtab_sum,
+  map_sum_aggregates[OFFSET(33)].map AS scalar_parent_urlbar_picked_tabtosearch_sum,
+  map_sum_aggregates[OFFSET(34)].map AS scalar_parent_urlbar_picked_tip_sum,
+  map_sum_aggregates[OFFSET(35)].map AS scalar_parent_urlbar_picked_topsite_sum,
+  map_sum_aggregates[OFFSET(36)].map AS scalar_parent_urlbar_picked_unknown_sum,
+  map_sum_aggregates[OFFSET(37)].map AS scalar_parent_urlbar_picked_visiturl_sum,
+  map_sum_aggregates[OFFSET(38)].map AS search_with_ads,
+  map_sum_aggregates[OFFSET(39)].map AS ad_clicks,
+  map_sum_aggregates[OFFSET(40)].map AS search_content_urlbar_sum,
+  map_sum_aggregates[OFFSET(41)].map AS search_content_urlbar_searchmode_sum,
+  map_sum_aggregates[OFFSET(42)].map AS search_content_contextmenu_sum,
+  map_sum_aggregates[OFFSET(43)].map AS search_content_about_home_sum,
+  map_sum_aggregates[OFFSET(44)].map AS search_content_about_newtab_sum,
+  map_sum_aggregates[OFFSET(45)].map AS search_content_searchbar_sum,
+  map_sum_aggregates[OFFSET(46)].map AS search_content_system_sum,
+  map_sum_aggregates[OFFSET(47)].map AS search_content_webextension_sum,
+  map_sum_aggregates[OFFSET(48)].map AS search_content_tabhistory_sum,
+  map_sum_aggregates[OFFSET(49)].map AS search_content_reload_sum,
+  map_sum_aggregates[OFFSET(50)].map AS search_content_unknown_sum,
+  map_sum_aggregates[OFFSET(51)].map AS search_withads_urlbar_sum,
+  map_sum_aggregates[OFFSET(52)].map AS search_withads_urlbar_searchmode_sum,
+  map_sum_aggregates[OFFSET(53)].map AS search_withads_contextmenu_sum,
+  map_sum_aggregates[OFFSET(54)].map AS search_withads_about_home_sum,
+  map_sum_aggregates[OFFSET(55)].map AS search_withads_about_newtab_sum,
+  map_sum_aggregates[OFFSET(56)].map AS search_withads_searchbar_sum,
+  map_sum_aggregates[OFFSET(57)].map AS search_withads_system_sum,
+  map_sum_aggregates[OFFSET(58)].map AS search_withads_webextension_sum,
+  map_sum_aggregates[OFFSET(59)].map AS search_withads_tabhistory_sum,
+  map_sum_aggregates[OFFSET(60)].map AS search_withads_reload_sum,
+  map_sum_aggregates[OFFSET(61)].map AS search_withads_unknown_sum,
+  map_sum_aggregates[OFFSET(62)].map AS search_adclicks_urlbar_sum,
+  map_sum_aggregates[OFFSET(63)].map AS search_adclicks_urlbar_searchmode_sum,
+  map_sum_aggregates[OFFSET(64)].map AS search_adclicks_contextmenu_sum,
+  map_sum_aggregates[OFFSET(65)].map AS search_adclicks_about_home_sum,
+  map_sum_aggregates[OFFSET(66)].map AS search_adclicks_about_newtab_sum,
+  map_sum_aggregates[OFFSET(67)].map AS search_adclicks_searchbar_sum,
+  map_sum_aggregates[OFFSET(68)].map AS search_adclicks_system_sum,
+  map_sum_aggregates[OFFSET(69)].map AS search_adclicks_webextension_sum,
+  map_sum_aggregates[OFFSET(70)].map AS search_adclicks_tabhistory_sum,
+  map_sum_aggregates[OFFSET(71)].map AS search_adclicks_reload_sum,
+  map_sum_aggregates[OFFSET(72)].map AS search_adclicks_unknown_sum,
+  map_sum_aggregates[OFFSET(73)].map AS search_content_urlbar_handoff_sum,
+  map_sum_aggregates[OFFSET(74)].map AS search_withads_urlbar_handoff_sum,
+  map_sum_aggregates[OFFSET(75)].map AS search_adclicks_urlbar_handoff_sum,
+  map_sum_aggregates[OFFSET(76)].map AS contextual_services_quicksuggest_click_sum,
+  map_sum_aggregates[OFFSET(77)].map AS contextual_services_quicksuggest_impression_sum,
+  map_sum_aggregates[OFFSET(78)].map AS contextual_services_quicksuggest_help_sum,
+  map_sum_aggregates[
+    OFFSET(79)
+  ].map AS contextual_services_quicksuggest_help_nonsponsored_bestmatch_sum,
+  map_sum_aggregates[
+    OFFSET(80)
+  ].map AS contextual_services_quicksuggest_help_sponsored_bestmatch_sum,
+  map_sum_aggregates[OFFSET(81)].map AS contextual_services_quicksuggest_block_nonsponsored_sum,
+  map_sum_aggregates[OFFSET(82)].map AS contextual_services_quicksuggest_block_sponsored_sum,
+  map_sum_aggregates[
+    OFFSET(83)
+  ].map AS contextual_services_quicksuggest_block_sponsored_bestmatch_sum,
+  map_sum_aggregates[
+    OFFSET(84)
+  ].map AS contextual_services_quicksuggest_block_nonsponsored_bestmatch_sum,
+  map_sum_aggregates[
+    OFFSET(85)
+  ].map AS contextual_services_quicksuggest_click_sponsored_bestmatch_sum,
+  map_sum_aggregates[
+    OFFSET(86)
+  ].map AS contextual_services_quicksuggest_click_nonsponsored_bestmatch_sum,
+  map_sum_aggregates[
+    OFFSET(87)
+  ].map AS contextual_services_quicksuggest_impression_sponsored_bestmatch_sum,
+  map_sum_aggregates[
+    OFFSET(88)
+  ].map AS contextual_services_quicksuggest_impression_nonsponsored_bestmatch_sum,
+  map_sum_aggregates[OFFSET(89)].map AS contextual_services_topsites_click_sum,
+  map_sum_aggregates[OFFSET(90)].map AS contextual_services_topsites_impression_sum,
+  map_sum_aggregates[OFFSET(91)].map AS scalar_parent_browser_ui_interaction_content_context_sum,
+  map_sum_aggregates[OFFSET(92)].map AS search_content_urlbar_persisted_sum,
+  map_sum_aggregates[OFFSET(93)].map AS search_withads_urlbar_persisted_sum,
+  map_sum_aggregates[OFFSET(94)].map AS search_adclicks_urlbar_persisted_sum,
 FROM
   udf_aggregates

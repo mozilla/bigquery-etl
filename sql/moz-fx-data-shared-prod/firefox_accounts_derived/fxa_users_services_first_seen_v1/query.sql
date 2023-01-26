@@ -23,30 +23,21 @@ CREATE TEMP FUNCTION contains_qualified_fxa_activity_event(events ANY TYPE, `ser
 WITH fxa_users_services_daily_events AS (
   SELECT
     submission_date,
-    `timestamp`,
-    flow_id,
     user_id,
     `service`,
     app_version,
     os_name,
     os_version,
     country,
-    entrypoint,
     `language`,
     ua_version,
     ua_browser,
-    utm_term,
-    utm_medium,
-    utm_source,
-    utm_campaign,
-    utm_content,
+    first_daily_service_flow_info,
     registered,
   FROM
-    `moz-fx-data-shared-prod.firefox_accounts.fxa_users_services_daily`
+    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_daily_v1`
   WHERE
     submission_date = @submission_date
-    AND user_id IS NOT NULL
-    AND `service` IS NOT NULL
     AND contains_qualified_fxa_activity_event(service_events, `service`)
 ),
 existing_entries AS (
@@ -59,24 +50,25 @@ existing_entries AS (
     DATE(first_service_timestamp) < @submission_date
 )
 SELECT
-  new_records.`timestamp` AS first_service_timestamp,
-  new_records.flow_id AS first_service_flow,
   new_records.user_id,
   new_records.`service`,
   new_records.registered AS did_register,
-  new_records.os_name AS first_service_os,
-  new_records.os_version,
-  new_records.app_version,
+  new_records.`timestamp` AS first_service_timestamp,
+  new_records.os_name AS first_service_os_name,
+  new_records.os_version AS first_service_os_version,
+  new_records.app_version AS first_service_app_version,
   new_records.country AS first_service_country,
-  new_records.entrypoint,
-  new_records.`language`,
-  new_records.ua_version,
-  new_records.ua_browser,
-  new_records.utm_term,
-  new_records.utm_medium,
-  new_records.utm_source,
-  new_records.utm_campaign,
-  new_records.utm_content,
+  new_records.`language` AS first_service_language,
+  new_records.ua_version AS first_service_ua_version,
+  new_records.ua_browser AS first_service_ua_browser,
+  new_records.first_daily_service_flow_info.flow_id AS first_service_flow,
+  new_records.first_daily_service_flow_info.flow_timestamp AS first_service_flow_timestamp,
+  new_records.first_daily_service_flow_info.entrypoint AS first_service_flow_entrypoint,
+  new_records.first_daily_service_flow_info.utm_term AS first_service_flow_utm_term,
+  new_records.first_daily_service_flow_info.utm_medium AS first_service_flow_utm_medium,
+  new_records.first_daily_service_flow_info.utm_source AS first_service_flow_utm_source,
+  new_records.first_daily_service_flow_info.utm_campaign AS first_service_flow_utm_campaign,
+  new_records.first_daily_service_flow_info.utm_content AS first_service_flow_utm_content,
   -- ROW_NUMBER() OVER (
   --   PARTITION BY
   --     new_records.user_id

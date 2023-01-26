@@ -98,11 +98,7 @@ user_service_flow_entrypoints AS (
     user_id,
     service,
     ARRAY_AGG(
-      STRUCT(
-        flow_id,
-        flow_entrypoint_info.`timestamp`,
-        flow_entrypoint_info.entrypoint
-      ) IGNORE NULLS
+      flow_entrypoint_info IGNORE NULLS
       ORDER BY
         `timestamp`
       LIMIT
@@ -160,6 +156,7 @@ user_service_flow_utms AS (
 ),
 windowed AS (
   SELECT
+    `timestamp`,
     user_id,
     `service`,
     udf.mode_last(ARRAY_AGG(country) OVER w1) AS country,
@@ -197,6 +194,7 @@ SELECT
   DATE(@submission_date) AS submission_date,
   windowed.user_id,
   windowed.`service`,
+  windowed.`timestamp`,
   windowed.country,
   windowed.`language`,
   windowed.app_version,
@@ -213,7 +211,7 @@ SELECT
   STRUCT(
   -- flow entrypoints
     user_service_flow_entrypoints.flow_entrypoint_info.flow_id,
-    user_service_flow_entrypoints.flow_entrypoint_info.`timestamp`,
+    user_service_flow_entrypoints.flow_entrypoint_info.`timestamp` AS flow_timestamp,
     user_service_flow_entrypoints.flow_entrypoint_info.entrypoint,
     -- flow utms
     user_service_flow_utms.utm_info.utm_term,

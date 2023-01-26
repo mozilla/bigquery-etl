@@ -15,8 +15,8 @@ scheduling:
   referenced_tables:
     - [
       'moz-fx-data-shared-prod',
-      'firefox_accounts',
-      'fxa_users_services_daily'
+      'firefox_accounts_derived',
+      'fxa_users_services_daily_v1'
     ]
 bigquery:
   time_partitioning:
@@ -26,6 +26,5 @@ bigquery:
   clustering:
     fields:
       - service
-      - country
-      - os_name
-      - user_id
+      - first_service_country
+      - first_service_os_name

@@ -1,21 +1,6 @@
 fields:
 
 - mode: NULLABLE
-  name: first_service_timestamp
-  type: TIMESTAMP
-  description: |
-    Timestamp value of when the associated
-    flow session started.
-
-- mode: NULLABLE
-  name: first_service_flow
-  type: STRING
-  description: |
-    The flow associated with the session.
-    The flow identifier is a hash value representing
-    a registration and login sessions.
-
-- mode: NULLABLE
   name: user_id
   type: STRING
   description: |
@@ -39,20 +24,27 @@ fields:
     event on the specific submission_date.
 
 - mode: NULLABLE
-  name: first_service_os
+  name: first_service_timestamp
+  type: TIMESTAMP
+  description: |
+    Timestamp value corresponding to the very first record
+    matching the user_id/service combination.
+
+- mode: NULLABLE
+  name: first_service_os_name
   type: STRING
   description: |
     Name of the operating system the device was using.
     E.g. Android
 
 - mode: NULLABLE
-  name: os_version
+  name: first_service_os_version
   type: STRING
   description: |
     Version of the OS the device was using.
 
 - mode: NULLABLE
-  name: app_version
+  name: first_service_app_version
   type: STRING
   description: |
     Mozilla app version,
@@ -65,47 +57,63 @@ fields:
     2 char string representing the country where the device was located.
 
 - mode: NULLABLE
-  name: entrypoint
+  name: first_service_language
+  type: STRING
+  description: |
+    Language settings used by the device.
+
+- mode: NULLABLE
+  name: first_service_ua_version
+  type: STRING
+  description: |
+    The user's browser version.
+
+- mode: NULLABLE
+  name: first_service_ua_browser
+  type: STRING
+  description: |
+    The user's web browser, e.g. 'Firefox' or 'Chrome'.
+
+- mode: NULLABLE
+  name: first_service_flow
+  type: STRING
+  description: |
+    The flow identifier is a hash value representing
+    the very first registration or login session
+    for the specific user_id/service combination.
+
+- mode: NULLABLE
+  name: first_service_flow_timestamp
+  type: TIMESTAMP
+  description: |
+    The flow identifier is a hash value representing
+    the very first registration or login session
+    for the specific user_id/service combination.
+
+- mode: NULLABLE
+  name: first_service_flow_entrypoint
   type: STRING
   description: |
     The entrypoint of the flow session.
     Typically a UI touchpoint like "preferences".
 
 - mode: NULLABLE
-  name: language
-  type: STRING
-  description: |
-    Language settings used by the device.
-
-- mode: NULLABLE
-  name: ua_version
-  type: STRING
-  description: |
-    The user's browser version.
-
-- mode: NULLABLE
-  name: ua_browser
-  type: STRING
-  description: |
-    The user's web browser, e.g. 'Firefox' or 'Chrome'.
-
-- mode: NULLABLE
-  name: utm_term
+  name: first_service_flow_utm_term
   type: STRING
   description: |
     Marketing campaign search term
-    for the flow session.
+    for the the first flow session.
     Not stored if the DNT request header was 1.
 
 - mode: NULLABLE
-  name: utm_medium
+  name: first_service_flow_utm_medium
   type: STRING
   description: |
-    Marketing campaign medium for the flow session.
+    Marketing campaign medium for the the first flow session.
     Not stored if the DNT request header was 1.
 
 - mode: NULLABLE
-  name: utm_source
+  name: first_service_flow_utm_source
   type: STRING
   description: |
     Marketing campaign source for
@@ -113,17 +121,17 @@ fields:
     Not stored if the DNT request header was 1.
 
 - mode: NULLABLE
-  name: utm_campaign
+  name: first_service_flow_utm_campaign
   type: STRING
   description: |
     Marketing campaign identifier
-    for the flow session.
+    for the the first flow session.
     Not stored if the DNT request header was 1.
 
 - mode: NULLABLE
-  name: utm_content
+  name: first_service_flow_utm_content
   type: STRING
   description: |
     Marketing campaign content identifier
-    for the flow session.
+    for the the first flow session.
     Not stored if the DNT request header was 1.

@@ -1364,21 +1364,11 @@ aggregates AS (
     mozfun.map.extract_keyed_scalar_sum(
       contextual_services_quicksuggest_impression_weather
     ) AS contextual_services_quicksuggest_impression_weather_sum,
-    (
-      SELECT
-        SUM(value)
-      FROM
-        UNNEST(payload.processes.parent.keyed_scalars.contextual_services_topsites_click)
-      WHERE
-        key LIKE "newtab%"
+    mozfun.map.extract_keyed_scalar_sum(
+      contextual_services_topsites_click
     ) AS contextual_services_topsites_click_sum,
-    (
-      SELECT
-        SUM(value)
-      FROM
-        UNNEST(payload.processes.parent.keyed_scalars.contextual_services_topsites_impression)
-      WHERE
-        key LIKE "newtab%"
+    mozfun.map.extract_keyed_scalar_sum(
+      contextual_services_topsites_impression
     ) AS contextual_services_topsites_impression_sum,
     -- We batch multiple fields into an array here in order to share a single
     -- UDF invocation in the udf_aggregates CTE below which keeps query
@@ -1558,6 +1548,12 @@ udf_aggregates AS (
 )
 SELECT
   * EXCEPT (map_sum_aggregates),
+  (
+    SELECT
+      SUM(value)
+    FROM
+      UNNEST(map_sum_aggregates[OFFSET(90)].map)
+  ) AS contextual_services_topsites_impressions,
   -- CAUTION: the order of fields here must match the order defined in
   -- map_sum_aggregates above and offsets must increment on each line.
   map_sum_aggregates[OFFSET(0)].map AS scalar_parent_telemetry_event_counts_sum,

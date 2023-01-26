@@ -45,6 +45,7 @@ desktop_data_bing AS (
     `mozdata.search.search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
+    AND (distribution_id IS NULL OR distribution_id NOT LIKE '%acer%')
     AND client_id NOT IN (SELECT client_id FROM `mozdata.analysis.acer_cohort`)
   GROUP BY
     1
@@ -61,7 +62,7 @@ desktop_data_ddg AS (
     ) AS ddg_dau_engaged_w_sap,
     sum(IF(engine IN ('ddg', 'duckduckgo'), sap, 0)) AS ddg_sap,
     sum(IF(engine IN ('ddg', 'duckduckgo'), tagged_sap, 0)) AS ddg_tagged_sap,
-    sum(IF(engine IN ('ddg', 'duckduckgo'), tagged_sap, 0)) AS ddg_tagged_follow_on,
+    sum(IF(engine IN ('ddg', 'duckduckgo'), tagged_follow_on, 0)) AS ddg_tagged_follow_on,
     sum(IF(engine IN ('ddg', 'duckduckgo'), search_with_ads, 0)) AS ddg_search_with_ads,
     sum(IF(engine IN ('ddg', 'duckduckgo'), ad_click, 0)) AS ddg_ad_click,
     -- in-content probes not available for addon so these metrics although being here will be zero
@@ -70,7 +71,7 @@ desktop_data_ddg AS (
     ) AS ddgaddon_dau_engaged_w_sap,
     sum(IF(engine IN ('ddg-addon'), sap, 0)) AS ddgaddon_sap,
     sum(IF(engine IN ('ddg-addon'), tagged_sap, 0)) AS ddgaddon_tagged_sap,
-    sum(IF(engine IN ('ddg-addon'), tagged_sap, 0)) AS ddgaddon_tagged_follow_on,
+    sum(IF(engine IN ('ddg-addon'), tagged_follow_on, 0)) AS ddgaddon_tagged_follow_on,
     sum(IF(engine IN ('ddg-addon'), search_with_ads, 0)) AS ddgaddon_search_with_ads,
     sum(IF(engine IN ('ddg-addon'), ad_click, 0)) AS ddgaddon_ad_click
   FROM

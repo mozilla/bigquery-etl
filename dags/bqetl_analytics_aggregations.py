@@ -80,6 +80,20 @@ with DAG(
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
+    with TaskGroup(
+        "active_users_aggregates_device_v1_external"
+    ) as active_users_aggregates_device_v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_search_dashboard__wait_for_active_users_aggregates_device_v1",
+            external_dag_id="bqetl_search_dashboard",
+            external_task_id="wait_for_active_users_aggregates_device_v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
+        )
+
+        active_users_aggregates_device_v1_external.set_upstream(
+            active_users_aggregates_device_v1
+        )
+
     active_users_aggregates_v1 = bigquery_etl_query(
         task_id="active_users_aggregates_v1",
         destination_table='active_users_aggregates_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',

@@ -20,13 +20,13 @@ desktop_data_google AS (
     submission_date = @submission_date
     AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN')
   GROUP BY
-    1,
-    2,
-    3
+    submission_date,
+    channel,
+    country
   ORDER BY
-    1,
-    2,
-    3
+    submission_date,
+    channel,
+    country
 ),
 -- Bing Desktop (non-Acer)
 desktop_data_bing AS (
@@ -48,9 +48,9 @@ desktop_data_bing AS (
     AND (distribution_id IS NULL OR distribution_id NOT LIKE '%acer%')
     AND client_id NOT IN (SELECT client_id FROM `mozdata.analysis.acer_cohort`)
   GROUP BY
-    1
+    submission_date
   ORDER BY
-    1
+    submission_date
 ),
 -- DDG Desktop + Extension
 desktop_data_ddg AS (
@@ -79,9 +79,9 @@ desktop_data_ddg AS (
   WHERE
     submission_date = @submission_date
   GROUP BY
-    1
+    submission_date
   ORDER BY
-    1
+    submission_date
 ),
 -- Grab Mobile Eligible DAU
 mobile_dau_data AS (
@@ -98,7 +98,7 @@ mobile_dau_data AS (
     submission_date = @submission_date
     AND app_name IN ('Fenix', 'Firefox iOS', 'Focus Android', 'Focus Android')
   GROUP BY
-    1
+    submission_date
 ),
 -- Google Mobile (search only - as mobile search metrics is based on metrics
 -- ping, while DAU should be based on main ping on Mobile, also see here also
@@ -128,13 +128,13 @@ mobile_data_google AS (
     AND country NOT IN ('RU', 'UA', 'BY', 'TR', 'KZ', 'CN')
     AND app_name IN ('Focus', 'Fenix', 'Fennec')
   GROUP BY
-    1,
-    2,
-    3
+    submission_date,
+    country,
+    dau
   ORDER BY
-    1,
-    2,
-    3
+    submission_date,
+    country,
+    dau
 ),
 -- Bing & DDG Mobile (search only - as mobile search metrics is based on
 -- metrics ping, while DAU should be based on main ping on Mobile, also see
@@ -170,11 +170,11 @@ mobile_data_bing_ddg AS (
     submission_date = @submission_date
     AND app_name IN ('Focus', 'Fenix', 'Fennec')
   GROUP BY
-    1,
-    2
+    submission_date,
+    dau
   ORDER BY
-    1,
-    2
+    submission_date,
+    dau
 )
 -- combine all desktop and mobile together
 SELECT

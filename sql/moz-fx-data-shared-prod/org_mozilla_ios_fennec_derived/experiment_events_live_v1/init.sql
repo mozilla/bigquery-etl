@@ -17,8 +17,8 @@ IF
     SELECT
       submission_timestamp AS `timestamp`,
       event.category AS `type`,
-      CAST(event.extra[safe_offset(i)].value AS STRING) AS branch,
-      CAST(event.extra[safe_offset(j)].value AS STRING) AS experiment,
+      CAST(event.extra[SAFE_OFFSET(i)].value AS STRING) AS branch,
+      CAST(event.extra[SAFE_OFFSET(j)].value AS STRING) AS experiment,
       event.name AS event_method
     FROM
       all_events,
@@ -30,11 +30,11 @@ IF
       UNNEST(GENERATE_ARRAY(0, 51)) AS j
     WHERE
       event.category = 'nimbus_events'
-      AND CAST(event.extra[safe_offset(i)].key AS STRING) = 'branch'
-      AND CAST(event.extra[safe_offset(j)].key AS STRING) = 'experiment'
+      AND CAST(event.extra[SAFE_OFFSET(i)].key AS STRING) = 'branch'
+      AND CAST(event.extra[SAFE_OFFSET(j)].key AS STRING) = 'experiment'
   )
   SELECT
-    date(`timestamp`) AS submission_date,
+    DATE(`timestamp`) AS submission_date,
     `type`,
     experiment,
     branch,

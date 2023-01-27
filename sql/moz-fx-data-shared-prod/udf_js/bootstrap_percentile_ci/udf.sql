@@ -46,24 +46,24 @@ AS
     histogramSort(histogram);
 
     /* calculate the cumulative number of elements in the histogram */
-    var count = 0;
-    histogram.forEach(function (bin, i) {
-        count += histogram[i].value;
-        histogram[i].count = count;
-    });
+    var total = 0;
+    for (var bin of histogram) {
+        total += bin.value;
+        bin.cumulative_sum = total;
+    };
 
     var samples = [];
     /* sample the quantile of interest */
     for (var i = 0; i < n_samples; i++) {
-      var sample = qbinom(Math.random(), count, parseFloat(percentile) / 100);
-      var target = Math.min(sample, count);
-
-      if (target in samples) {
-        samples[target].value += 1;
+      /* draw a random variable from the binomial distribution */
+      var x = qbinom(Math.random(), total, parseFloat(percentile) / 100);
+      if (x in samples) {
+        samples[x].value += 1;
       } else {
-        for (const x of histogram) {
-          if (x.count >= target) {
-            samples[target] = {'key': x.key, 'value': 1};
+        /* find the histogram bin associated with the sample */
+        for (const bin of histogram) {
+          if (bin.cumulative_sum >= x) {
+            samples[x] = {'key': bin.key, 'value': 1};
             break;
           }
         };

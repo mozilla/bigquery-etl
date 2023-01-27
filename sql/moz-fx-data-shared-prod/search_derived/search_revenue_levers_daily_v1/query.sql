@@ -3,17 +3,17 @@ WITH
 desktop_data_google AS (
   SELECT
     submission_date,
-    IF(lower(channel) LIKE '%esr%', 'esr', 'personal') AS channel,
+    IF(LOWER(channel) LIKE '%esr%', 'esr', 'personal') AS channel,
     IF(country = 'US', 'US', 'RoW') AS country,
-    count(DISTINCT client_id) AS dau,
-    count(
+    COUNT(DISTINCT client_id) AS dau,
+    COUNT(
       DISTINCT IF(sap > 0 AND normalized_engine = 'Google', client_id, NULL)
     ) AS dau_engaged_w_sap,
-    sum(IF(normalized_engine = 'Google', sap, 0)) AS sap,
-    sum(IF(normalized_engine = 'Google', tagged_sap, 0)) AS tagged_sap,
-    sum(IF(normalized_engine = 'Google', tagged_follow_on, 0)) AS tagged_follow_on,
-    sum(IF(normalized_engine = 'Google', search_with_ads, 0)) AS search_with_ads,
-    sum(IF(normalized_engine = 'Google', ad_click, 0)) AS ad_click
+    SUM(IF(normalized_engine = 'Google', sap, 0)) AS sap,
+    SUM(IF(normalized_engine = 'Google', tagged_sap, 0)) AS tagged_sap,
+    SUM(IF(normalized_engine = 'Google', tagged_follow_on, 0)) AS tagged_follow_on,
+    SUM(IF(normalized_engine = 'Google', search_with_ads, 0)) AS search_with_ads,
+    SUM(IF(normalized_engine = 'Google', ad_click, 0)) AS ad_click
   FROM
     `mozdata.search.search_clients_engines_sources_daily`
   WHERE
@@ -32,15 +32,15 @@ desktop_data_google AS (
 desktop_data_bing AS (
   SELECT
     submission_date,
-    count(DISTINCT client_id) AS dau,
-    count(
+    COUNT(DISTINCT client_id) AS dau,
+    COUNT(
       DISTINCT IF(sap > 0 AND normalized_engine = 'Bing', client_id, NULL)
     ) AS dau_engaged_w_sap,
-    sum(IF(normalized_engine = 'Bing', sap, 0)) AS sap,
-    sum(IF(normalized_engine = 'Bing', tagged_sap, 0)) AS tagged_sap,
-    sum(IF(normalized_engine = 'Bing', tagged_follow_on, 0)) AS tagged_follow_on,
-    sum(IF(normalized_engine = 'Bing', search_with_ads, 0)) AS search_with_ads,
-    sum(IF(normalized_engine = 'Bing', ad_click, 0)) AS ad_click
+    SUM(IF(normalized_engine = 'Bing', sap, 0)) AS sap,
+    SUM(IF(normalized_engine = 'Bing', tagged_sap, 0)) AS tagged_sap,
+    SUM(IF(normalized_engine = 'Bing', tagged_follow_on, 0)) AS tagged_follow_on,
+    SUM(IF(normalized_engine = 'Bing', search_with_ads, 0)) AS search_with_ads,
+    SUM(IF(normalized_engine = 'Bing', ad_click, 0)) AS ad_click
   FROM
     `mozdata.search.search_clients_engines_sources_daily`
   WHERE
@@ -56,24 +56,24 @@ desktop_data_bing AS (
 desktop_data_ddg AS (
   SELECT
     submission_date,
-    count(DISTINCT client_id) AS dau,
-    count(
+    COUNT(DISTINCT client_id) AS dau,
+    COUNT(
       DISTINCT IF((engine) IN ('ddg', 'duckduckgo') AND sap > 0, client_id, NULL)
     ) AS ddg_dau_engaged_w_sap,
-    sum(IF(engine IN ('ddg', 'duckduckgo'), sap, 0)) AS ddg_sap,
-    sum(IF(engine IN ('ddg', 'duckduckgo'), tagged_sap, 0)) AS ddg_tagged_sap,
-    sum(IF(engine IN ('ddg', 'duckduckgo'), tagged_follow_on, 0)) AS ddg_tagged_follow_on,
-    sum(IF(engine IN ('ddg', 'duckduckgo'), search_with_ads, 0)) AS ddg_search_with_ads,
-    sum(IF(engine IN ('ddg', 'duckduckgo'), ad_click, 0)) AS ddg_ad_click,
+    SUM(IF(engine IN ('ddg', 'duckduckgo'), sap, 0)) AS ddg_sap,
+    SUM(IF(engine IN ('ddg', 'duckduckgo'), tagged_sap, 0)) AS ddg_tagged_sap,
+    SUM(IF(engine IN ('ddg', 'duckduckgo'), tagged_follow_on, 0)) AS ddg_tagged_follow_on,
+    SUM(IF(engine IN ('ddg', 'duckduckgo'), search_with_ads, 0)) AS ddg_search_with_ads,
+    SUM(IF(engine IN ('ddg', 'duckduckgo'), ad_click, 0)) AS ddg_ad_click,
     -- in-content probes not available for addon so these metrics although being here will be zero
-    count(
+    COUNT(
       DISTINCT IF(engine = 'ddg-addon' AND sap > 0, client_id, NULL)
     ) AS ddgaddon_dau_engaged_w_sap,
-    sum(IF(engine IN ('ddg-addon'), sap, 0)) AS ddgaddon_sap,
-    sum(IF(engine IN ('ddg-addon'), tagged_sap, 0)) AS ddgaddon_tagged_sap,
-    sum(IF(engine IN ('ddg-addon'), tagged_follow_on, 0)) AS ddgaddon_tagged_follow_on,
-    sum(IF(engine IN ('ddg-addon'), search_with_ads, 0)) AS ddgaddon_search_with_ads,
-    sum(IF(engine IN ('ddg-addon'), ad_click, 0)) AS ddgaddon_ad_click
+    SUM(IF(engine IN ('ddg-addon'), sap, 0)) AS ddgaddon_sap,
+    SUM(IF(engine IN ('ddg-addon'), tagged_sap, 0)) AS ddgaddon_tagged_sap,
+    SUM(IF(engine IN ('ddg-addon'), tagged_follow_on, 0)) AS ddgaddon_tagged_follow_on,
+    SUM(IF(engine IN ('ddg-addon'), search_with_ads, 0)) AS ddgaddon_search_with_ads,
+    SUM(IF(engine IN ('ddg-addon'), ad_click, 0)) AS ddgaddon_ad_click
   FROM
     `mozdata.search.search_clients_engines_sources_daily`
   WHERE
@@ -87,11 +87,11 @@ desktop_data_ddg AS (
 mobile_dau_data AS (
   SELECT
     submission_date,
-    sum(
+    SUM(
       IF(country NOT IN ('US', 'RU', 'UA', 'BY', 'TR', 'KZ', 'CN'), dau, 0)
     ) AS RoW_dau_eligible_google,
-    sum(IF(country = 'US', dau, 0)) AS US_dau_eligible_google,
-    sum(dau) AS dau
+    SUM(IF(country = 'US', dau, 0)) AS US_dau_eligible_google,
+    SUM(dau) AS dau
   FROM
     `mozdata.telemetry.active_users_aggregates_device`
   WHERE
@@ -108,14 +108,14 @@ mobile_data_google AS (
     submission_date,
     IF(country = 'US', 'US', 'RoW') AS country,
     IF(country = 'US', dau.US_dau_eligible_google, dau.RoW_dau_eligible_google) AS dau,
-    count(
+    COUNT(
       DISTINCT IF(sap > 0 AND normalized_engine = 'Google', client_id, NULL)
     ) AS dau_engaged_w_sap,
-    sum(IF(normalized_engine = 'Google', sap, 0)) AS sap,
-    sum(IF(normalized_engine = 'Google', tagged_sap, 0)) AS tagged_sap,
-    sum(IF(normalized_engine = 'Google', tagged_follow_on, 0)) AS tagged_follow_on,
-    sum(IF(normalized_engine = 'Google', search_with_ads, 0)) AS search_with_ads,
-    sum(IF(normalized_engine = 'Google', ad_click, 0)) AS ad_click
+    SUM(IF(normalized_engine = 'Google', sap, 0)) AS sap,
+    SUM(IF(normalized_engine = 'Google', tagged_sap, 0)) AS tagged_sap,
+    SUM(IF(normalized_engine = 'Google', tagged_follow_on, 0)) AS tagged_follow_on,
+    SUM(IF(normalized_engine = 'Google', search_with_ads, 0)) AS search_with_ads,
+    SUM(IF(normalized_engine = 'Google', ad_click, 0)) AS ad_click
   FROM
     `mozdata.search.mobile_search_clients_engines_sources_daily`
   INNER JOIN
@@ -143,22 +143,22 @@ mobile_data_bing_ddg AS (
     submission_date,
     -- count(distinct client_id) as dau, --should avoid as mentioned in above
     dau.dau,
-    count(
+    COUNT(
       DISTINCT IF(sap > 0 AND normalized_engine = 'Bing', client_id, NULL)
     ) AS bing_dau_engaged_w_sap,
-    count(
+    COUNT(
       DISTINCT IF(sap > 0 AND normalized_engine = 'DuckDuckGo', client_id, NULL)
     ) AS ddg_dau_engaged_w_sap,
-    sum(IF(normalized_engine = 'Bing', sap, 0)) AS bing_sap,
-    sum(IF(normalized_engine = 'Bing', tagged_sap, 0)) AS bing_tagged_sap,
-    sum(IF(normalized_engine = 'Bing', tagged_follow_on, 0)) AS bing_tagged_follow_on,
-    sum(IF(normalized_engine = 'Bing', search_with_ads, 0)) AS bing_search_with_ads,
-    sum(IF(normalized_engine = 'Bing', ad_click, 0)) AS bing_ad_click,
-    sum(IF(normalized_engine = 'DuckDuckGo', sap, 0)) AS ddg_sap,
-    sum(IF(normalized_engine = 'DuckDuckGo', tagged_sap, 0)) AS ddg_tagged_sap,
-    sum(IF(normalized_engine = 'DuckDuckGo', tagged_follow_on, 0)) AS ddg_tagged_follow_on,
-    sum(IF(normalized_engine = 'DuckDuckGo', search_with_ads, 0)) AS ddg_search_with_ads,
-    sum(IF(normalized_engine = 'DuckDuckGo', ad_click, 0)) AS ddg_ad_click
+    SUM(IF(normalized_engine = 'Bing', sap, 0)) AS bing_sap,
+    SUM(IF(normalized_engine = 'Bing', tagged_sap, 0)) AS bing_tagged_sap,
+    SUM(IF(normalized_engine = 'Bing', tagged_follow_on, 0)) AS bing_tagged_follow_on,
+    SUM(IF(normalized_engine = 'Bing', search_with_ads, 0)) AS bing_search_with_ads,
+    SUM(IF(normalized_engine = 'Bing', ad_click, 0)) AS bing_ad_click,
+    SUM(IF(normalized_engine = 'DuckDuckGo', sap, 0)) AS ddg_sap,
+    SUM(IF(normalized_engine = 'DuckDuckGo', tagged_sap, 0)) AS ddg_tagged_sap,
+    SUM(IF(normalized_engine = 'DuckDuckGo', tagged_follow_on, 0)) AS ddg_tagged_follow_on,
+    SUM(IF(normalized_engine = 'DuckDuckGo', search_with_ads, 0)) AS ddg_search_with_ads,
+    SUM(IF(normalized_engine = 'DuckDuckGo', ad_click, 0)) AS ddg_ad_click
   FROM
     `mozdata.search.mobile_search_clients_engines_sources_daily`
   INNER JOIN

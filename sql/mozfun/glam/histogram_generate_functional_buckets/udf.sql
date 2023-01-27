@@ -17,12 +17,12 @@ AS
 
   let buckets = new Set([0]);
   for (let index = 0; index < sample_to_bucket_index(range_max); index++) {
-    
+
     // Avoid re-using the exponent due to floating point issues when carrying
     // the `pow` operation e.g. `let exponent = ...; Math.pow(exponent, index)`.
     let bucket = Math.floor(Math.pow(log_base, index/buckets_per_magnitude));
 
-    // NOTE: the sample_to_bucket_index implementation overshoots the true index, 
+    // NOTE: the sample_to_bucket_index implementation overshoots the true index,
     // so we break out early if we hit the max bucket range.
     if (bucket > range_max) {
       break;
@@ -54,7 +54,7 @@ SELECT
     10,
     (
       SELECT
-        count(*)
+        COUNT(*)
       FROM
         UNNEST(
           [440871, 460390, 571740, 597053, 623487, 651091, 679917, 710019, 741455, 774282]

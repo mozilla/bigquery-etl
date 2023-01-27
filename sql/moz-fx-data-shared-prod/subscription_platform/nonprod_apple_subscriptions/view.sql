@@ -5,7 +5,6 @@ WITH apple_iap_events AS (
   SELECT
     document_id,
     -- WARNING: field order from here must exactly match guardian_apple_events_v1
-    CAST(NULL AS STRING) AS legacy_subscription_id,
     `timestamp` AS event_timestamp,
     mozfun.iap.parse_apple_event(`data`).*,
   FROM
@@ -82,10 +81,7 @@ apple_iap_period_aggregates AS (
     periods.start_time,
     periods.end_time,
     periods.period_offset,
-    COALESCE(
-      MAX(events.legacy_subscription_id),
-      periods.original_transaction_id
-    ) AS original_subscription_id,
+    periods.original_transaction_id AS original_subscription_id,
     MIN(events.original_purchase_date) AS original_purchase_date,
     ARRAY_AGG(DISTINCT events.offer_identifier IGNORE NULLS) AS promotion_codes,
     ARRAY_AGG(

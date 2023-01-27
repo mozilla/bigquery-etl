@@ -27,8 +27,8 @@ WITH shredder AS (
         -- job metadata over 28 days old is not queried
         job_created <= TIMESTAMP_SUB(CURRENT_TIMESTAMP, INTERVAL 28 DAY) AS job_too_old,
         job_created,
-        SPLIT(job_id, ":")[offset(0)] AS project_id,
-        SPLIT(job_id, ".")[offset(1)] AS job_id
+        SPLIT(job_id, ":")[OFFSET(0)] AS project_id,
+        SPLIT(job_id, ".")[OFFSET(1)] AS job_id
       )
       ORDER BY
         job_created DESC

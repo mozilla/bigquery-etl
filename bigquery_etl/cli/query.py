@@ -1697,8 +1697,14 @@ def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
     if metadata.bigquery and metadata.bigquery.clustering:
         table.clustering_fields = metadata.bigquery.clustering.fields
 
+    # BigQuery only allows for string type labels with specific requirements to be published:
+    # https://cloud.google.com/bigquery/docs/labels-intro#requirements
     if metadata.labels:
-        table.labels = metadata.labels
+        table.labels = {
+            key: value
+            for key, value in metadata.labels.items()
+            if isinstance(value, str)
+        }
 
 
 def _deploy_external_data(

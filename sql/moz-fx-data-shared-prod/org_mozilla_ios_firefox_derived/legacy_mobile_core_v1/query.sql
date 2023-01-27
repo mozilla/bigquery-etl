@@ -51,7 +51,7 @@ rest_grouped AS (
     submission_date,
     client_id,
     ANY_VALUE(document_id) AS document_id,
-    min(submission_timestamp) AS submission_timestamp,
+    MIN(submission_timestamp) AS submission_timestamp,
     mozfun.stats.mode_last(ARRAY_AGG(default_search)) AS string_search_default_engine,
     mozfun.stats.mode_last(ARRAY_AGG(default_mail_client)) AS string_preferences_mail_client,
     mozfun.stats.mode_last(
@@ -59,7 +59,7 @@ rest_grouped AS (
     ) AS string_preferences_new_tab_experience,
     -- NOTE: that we cannot recover the average count because we are summing this up into one ping. An
     -- average might be more desirable, but it doesn't quite match the metric name.
-    sum(open_tab_count) AS counter_tabs_cumulative_count
+    SUM(open_tab_count) AS counter_tabs_cumulative_count
   FROM
     extracted
   GROUP BY

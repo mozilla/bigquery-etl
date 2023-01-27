@@ -342,7 +342,11 @@ class View:
                         if key not in labels:
                             # To delete a label its value must be set to None
                             labels[key] = None
-                    table.labels = labels
+                    table.labels = {
+                        key: value
+                        for key, value in labels.items()
+                        if isinstance(value, str)
+                    }
                     client.update_table(table, ["labels"])
 
                 print(f"Published view {target_view}")

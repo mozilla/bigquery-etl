@@ -7,7 +7,6 @@ https://developer.apple.com/documentation/appstoreservernotifications/responsebo
 */
 WITH legacy_subscriptions AS (
   SELECT
-    subscriptions.id,
     users.fxa_uid AS user_id,
     subscriptions.is_active,
     subscriptions.updated_at,
@@ -19,16 +18,18 @@ WITH legacy_subscriptions AS (
   ON
     (subscriptions.user_id = users.id)
   WHERE
-    subscriptions.provider = "APPLE"
+    -- Subscriptions migrated to fxa no longer have subscriptions.provider = "APPLE"
+    subscriptions.provider_receipt_json IS NOT NULL
+    AND JSON_VALUE(provider_receipt_json, "$.receipt.bundle_id") = "org.mozilla.ios.FirefoxVPN"
+    -- Exclude duplicate subscriptions rejected by FxA migration
+    AND subscriptions.provider IS DISTINCT FROM "FXANOMIGRATE"
 )
 SELECT
   -- WARNING: subscription_platform.apple_subscriptions and
   -- subscription_platform.nonprod_apple_subscriptions require field order of
   -- mozilla_vpn_derived.guardian_apple_events_v1 to exactly match:
-  --   legacy_subscription_id,
   --   event_timestamp,
   --   mozfun.iap.parse_apple_event(`data`).*,
-  CAST(legacy_subscriptions.id AS STRING) AS legacy_subscription_id,
   legacy_subscriptions.updated_at AS event_timestamp,
   renewal_info.auto_renew_product_id,
   renewal_info.auto_renew_status,

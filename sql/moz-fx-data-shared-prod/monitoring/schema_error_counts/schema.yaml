@@ -23,3 +23,7 @@ fields:
 - mode: NULLABLE
   name: error_count
   type: INTEGER
+- description: concatenated error messages, limited to 300 characters
+  mode: NULLABLE
+  name: sample_error_messages
+  type: STRING

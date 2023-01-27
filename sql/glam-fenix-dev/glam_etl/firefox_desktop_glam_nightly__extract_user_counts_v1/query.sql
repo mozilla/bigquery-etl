@@ -18,7 +18,7 @@ WITH deduped AS (
 SELECT
   channel,
   app_version,
-  coalesce(ping_type, "*") AS ping_type,
+  COALESCE(ping_type, "*") AS ping_type,
   COALESCE(app_build_id, "*") AS app_build_id,
   IF(
     app_build_id = "*",

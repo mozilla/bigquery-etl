@@ -19,7 +19,7 @@ CREATE TEMP FUNCTION sum_values(x ARRAY<STRUCT<key INT64, value INT64>>) AS (
   (
     WITH a AS (
       SELECT
-        IF(array_length(x) > 0, 1, 0) AS isPres1
+        IF(ARRAY_LENGTH(x) > 0, 1, 0) AS isPres1
     ),
     b AS (
       SELECT
@@ -32,7 +32,7 @@ CREATE TEMP FUNCTION sum_values(x ARRAY<STRUCT<key INT64, value INT64>>) AS (
         key > 0
     )
     SELECT
-      coalesce(isPres1 * t, 0)
+      COALESCE(isPres1 * t, 0)
     FROM
       a,
       b
@@ -46,11 +46,11 @@ CREATE TEMP FUNCTION empty(x ARRAY<STRUCT<key INT64, value INT64>>) AS (
   (
     WITH a AS (
       SELECT
-        IF(array_length(x) = 0, 1, 0) AS isEmpty1
+        IF(ARRAY_LENGTH(x) = 0, 1, 0) AS isEmpty1
     ),
     b AS (
       SELECT
-        IF(max(value) = 0, 1, 0) isEmpty2
+        IF(MAX(value) = 0, 1, 0) isEmpty2
       FROM
         UNNEST(x)
     ),
@@ -114,25 +114,25 @@ health_data_sample AS (
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS datetime,
     client_id,
     SUM(
-      coalesce(
+      COALESCE(
         SAFE_CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.undefined') AS INT64),
         0
       )
     ) AS e_undefined,
     SUM(
-      coalesce(
+      COALESCE(
         SAFE_CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.timeout') AS INT64),
         0
       )
     ) AS e_timeout,
     SUM(
-      coalesce(
+      COALESCE(
         SAFE_CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.abort') AS INT64),
         0
       )
     ) AS e_abort,
     SUM(
-      coalesce(
+      COALESCE(
         SAFE_CAST(
           JSON_EXTRACT(additional_properties, '$.payload.sendFailure.eUnreachable') AS INT64
         ),
@@ -140,7 +140,7 @@ health_data_sample AS (
       )
     ) AS e_unreachable,
     SUM(
-      coalesce(
+      COALESCE(
         SAFE_CAST(
           JSON_EXTRACT(additional_properties, '$.payload.sendFailure.eTerminated') AS INT64
         ),
@@ -148,7 +148,7 @@ health_data_sample AS (
       )
     ) AS e_terminated,
     SUM(
-      coalesce(
+      COALESCE(
         SAFE_CAST(
           JSON_EXTRACT(additional_properties, '$.payload.sendFailure.eChannelOpen') AS INT64
         ),
@@ -158,7 +158,7 @@ health_data_sample AS (
   FROM
     telemetry.health
   WHERE
-    date(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     1,
     2,
@@ -246,7 +246,7 @@ dns_success_time AS (
     country,
     city,
     time_slot AS datetime,
-    exp(sum(log(key) * count) / sum(count)) AS value
+    EXP(SUM(LOG(key) * count) / SUM(count)) AS value
   FROM
     (
       SELECT
@@ -255,7 +255,7 @@ dns_success_time AS (
         client_id,
         time_slot,
         key,
-        sum(LEAST(2147483648, value)) AS count
+        SUM(LEAST(2147483648, value)) AS count
       FROM
         histogram_data_sample
       CROSS JOIN
@@ -330,7 +330,7 @@ dns_failure_time AS (
     country,
     city,
     time_slot AS datetime,
-    exp(sum(log(key) * count) / sum(count)) AS value
+    EXP(SUM(LOG(key) * count) / SUM(count)) AS value
   FROM
     dns_failure_src
   WHERE
@@ -348,7 +348,7 @@ dns_failure_counts AS (
     country,
     city,
     time_slot AS datetime,
-    avg(count) AS value
+    AVG(count) AS value
   FROM
     (
       SELECT
@@ -356,7 +356,7 @@ dns_failure_counts AS (
         city,
         client_id,
         time_slot,
-        sum(count) AS count
+        SUM(count) AS count
       FROM
         dns_failure_src
       GROUP BY
@@ -436,7 +436,7 @@ tls_handshake_time AS (
     country,
     city,
     time_slot AS datetime,
-    exp(sum(log(key) * count) / sum(count)) AS value
+    EXP(SUM(LOG(key) * count) / SUM(count)) AS value
   FROM
     (
       SELECT

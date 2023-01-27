@@ -47,7 +47,7 @@ impressions_main AS (
 desktop_activity_stream_events AS (
   SELECT
     client_id,
-    date(submission_timestamp) AS submission_date,
+    DATE(submission_timestamp) AS submission_date,
     COUNTIF(
       event = 'BLOCK'
       AND value LIKE '%spoc%'
@@ -61,7 +61,7 @@ desktop_activity_stream_events AS (
   FROM
     `moz-fx-data-shared-prod.activity_stream.events`
   WHERE
-    date(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     1,
     2

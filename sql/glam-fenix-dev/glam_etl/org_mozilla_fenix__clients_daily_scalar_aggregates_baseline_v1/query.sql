@@ -33,7 +33,7 @@ unlabeled_metrics AS (
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.events_total_uri_count AS INT64))
+        AVG(CAST(metrics.counter.events_total_uri_count AS INT64))
       ),
       (
         'events_total_uri_count',
@@ -47,28 +47,28 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.events_total_uri_count AS INT64))
+        MAX(CAST(metrics.counter.events_total_uri_count AS INT64))
       ),
       (
         'events_total_uri_count',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.events_total_uri_count AS INT64))
+        MIN(CAST(metrics.counter.events_total_uri_count AS INT64))
       ),
       (
         'events_total_uri_count',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.events_total_uri_count AS INT64))
+        SUM(CAST(metrics.counter.events_total_uri_count AS INT64))
       ),
       (
         'glean_baseline_duration',
         'timespan',
         '',
         'avg',
-        avg(CAST(metrics.timespan.glean_baseline_duration.value AS INT64))
+        AVG(CAST(metrics.timespan.glean_baseline_duration.value AS INT64))
       ),
       (
         'glean_baseline_duration',
@@ -82,28 +82,28 @@ unlabeled_metrics AS (
         'timespan',
         '',
         'max',
-        max(CAST(metrics.timespan.glean_baseline_duration.value AS INT64))
+        MAX(CAST(metrics.timespan.glean_baseline_duration.value AS INT64))
       ),
       (
         'glean_baseline_duration',
         'timespan',
         '',
         'min',
-        min(CAST(metrics.timespan.glean_baseline_duration.value AS INT64))
+        MIN(CAST(metrics.timespan.glean_baseline_duration.value AS INT64))
       ),
       (
         'glean_baseline_duration',
         'timespan',
         '',
         'sum',
-        sum(CAST(metrics.timespan.glean_baseline_duration.value AS INT64))
+        SUM(CAST(metrics.timespan.glean_baseline_duration.value AS INT64))
       ),
       (
         'glean_validation_metrics_ping_count',
         'counter',
         '',
         'avg',
-        avg(CAST(metrics.counter.glean_validation_metrics_ping_count AS INT64))
+        AVG(CAST(metrics.counter.glean_validation_metrics_ping_count AS INT64))
       ),
       (
         'glean_validation_metrics_ping_count',
@@ -117,21 +117,21 @@ unlabeled_metrics AS (
         'counter',
         '',
         'max',
-        max(CAST(metrics.counter.glean_validation_metrics_ping_count AS INT64))
+        MAX(CAST(metrics.counter.glean_validation_metrics_ping_count AS INT64))
       ),
       (
         'glean_validation_metrics_ping_count',
         'counter',
         '',
         'min',
-        min(CAST(metrics.counter.glean_validation_metrics_ping_count AS INT64))
+        MIN(CAST(metrics.counter.glean_validation_metrics_ping_count AS INT64))
       ),
       (
         'glean_validation_metrics_ping_count',
         'counter',
         '',
         'sum',
-        sum(CAST(metrics.counter.glean_validation_metrics_ping_count AS INT64))
+        SUM(CAST(metrics.counter.glean_validation_metrics_ping_count AS INT64))
       )
     ] AS scalar_aggregates
   FROM

@@ -29,8 +29,8 @@ JOIN
   (
     SELECT
       job_start_time,
-      max(CASE WHEN language_code = 'en' THEN search_term_count END) english_count,
-      sum(search_term_count) AS all_languages_count,
+      MAX(CASE WHEN language_code = 'en' THEN search_term_count END) english_count,
+      SUM(search_term_count) AS all_languages_count,
     FROM
       `moz-fx-data-shared-prod.search_terms.sanitization_job_languages`
     GROUP BY

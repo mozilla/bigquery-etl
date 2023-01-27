@@ -119,7 +119,7 @@ aggregated AS (
 meta_ranked AS (
   SELECT
     t AS metadata,
-    row_number() OVER (
+    ROW_NUMBER() OVER (
       PARTITION BY
         client_id,
         submission_date
@@ -138,8 +138,8 @@ meta AS (
     _n = 1
 )
 SELECT
-  coalesce(t1.submission_timestamp, t2.submission_timestamp) AS submission_timestamp,
-  coalesce(t1.document_id, t2.document_id) AS document_id,
+  COALESCE(t1.submission_timestamp, t2.submission_timestamp) AS submission_timestamp,
+  COALESCE(t1.document_id, t2.document_id) AS document_id,
   (SELECT AS STRUCT metadata.* EXCEPT (uri)) AS metadata,
   normalized_app_name,
   normalized_channel,

@@ -73,8 +73,8 @@ WITH unioned AS (
 extracted AS (
   SELECT
     * EXCEPT (client_id, document_id),
-    lower(client_id) AS client_id,
-    lower(document_id) AS document_id,
+    LOWER(client_id) AS client_id,
+    LOWER(document_id) AS document_id,
     DATE(submission_timestamp) AS submission_date,
   FROM
     unioned
@@ -98,7 +98,7 @@ extracted_meta AS (
 meta_ranked AS (
   SELECT
     t AS metadata,
-    row_number() OVER (
+    ROW_NUMBER() OVER (
       PARTITION BY
         client_id,
         submission_date
@@ -152,7 +152,7 @@ rest_grouped AS (
     ) AS string_preferences_new_tab_experience,
     -- NOTE: that we cannot recover the average count because we are summing this up into one ping. An
     -- average might be more desirable, but it doesn't quite match the metric name.
-    sum(open_tab_count) AS counter_tabs_cumulative_count
+    SUM(open_tab_count) AS counter_tabs_cumulative_count
   FROM
     extracted
   GROUP BY

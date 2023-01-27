@@ -51,7 +51,7 @@ dou AS (
     `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen`
   WHERE
     submission_date = @submission_date
-    AND date_diff(submission_date, first_seen_date, DAY) = 6
+    AND DATE_DIFF(submission_date, first_seen_date, DAY) = 6
     AND normalized_channel = 'release'
 ),
 adjust_client AS (
@@ -95,7 +95,7 @@ SELECT
   first_seen_date,
   submission_date,
   1 AS new_profile,
-  CAST(days_2_7 > 1 AND coalesce(search_count, 0) > 0 AS integer) AS activated
+  CAST(days_2_7 > 1 AND COALESCE(search_count, 0) > 0 AS integer) AS activated
 FROM
   dou
 INNER JOIN

@@ -25,7 +25,8 @@ SELECT
       client_info.os AS os,
       client_info.os_version AS os_version,
       client_info.telemetry_sdk_build AS telemetry_sdk_build,
-      client_info.build_date AS build_date
+      client_info.build_date AS build_date,
+      NULL AS windows_build_number -- will never exist on Android
     ) AS client_info,
     (
       SELECT AS STRUCT

@@ -101,8 +101,8 @@ mobile_dau_data AS (
     submission_date
 ),
 -- Google Mobile (search only - as mobile search metrics is based on metrics
--- ping, while DAU should be based on main ping on Mobile, also see here also
--- see https://mozilla-hub.atlassian.net/browse/RS-575)
+-- ping, while DAU should be based on main ping on Mobile, see also
+-- https://mozilla-hub.atlassian.net/browse/RS-575)
 mobile_data_google AS (
   SELECT
     submission_date,

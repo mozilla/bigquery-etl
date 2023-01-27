@@ -55,16 +55,14 @@ AS
     var samples = [];
     /* sample the quantile of interest */
     for (var i = 0; i < n_samples; i++) {
-      sample = qbinom(Math.random(), count, parseFloat(percentile) / 100);
+      var sample = qbinom(Math.random(), count, parseFloat(percentile) / 100);
       var target = Math.min(sample, count);
 
       if (target in samples) {
         samples[target].value += 1;
       } else {
-        var target_key = histogram[0].key;
         for (const x of histogram) {
-          target_bin = x.key;
-          if (x.count >= sample) {
+          if (x.count >= target) {
             samples[target] = {'key': x.key, 'value': 1};
             break;
           }
@@ -76,7 +74,7 @@ AS
     histogramSort(samples);
 
     /* expand the output */
-    output = samples.map(bin => Array(bin.value).fill(parseFloat(bin.key))).reduce((prev, curr) => prev.concat(curr));
+    var output = samples.map(bin => Array(bin.value).fill(parseFloat(bin.key))).reduce((prev, curr) => prev.concat(curr));
 
     return output;
   }

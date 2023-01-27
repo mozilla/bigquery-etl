@@ -26,10 +26,6 @@ RETURNS ARRAY<STRUCT<
 LANGUAGE js OPTIONS ( library=['gs://moz-fx-data-circleci-tests-bigquery-etl/bq_udf_library/qbinom.js'])
 AS
 """
-  function numericSort(arr) {
-    arr.sort(function(a, b) {return a - b;});
-  }
-
   function histogramSort(histogram) {
     histogram.sort(function(a, b) {return parseFloat(a.key) - parseFloat(b.key);});
   }
@@ -41,26 +37,54 @@ AS
   }
   
   function getQuantileSamples(percentile, histogram, n_samples) {
+    /*
+    Returns a sorted array of quantile samples from a `histogram` at a target `percentile`.
+    */
     validatePercentile(percentile);
 
-    /* sort and expand the histogram */
+    /* ensure the histogram is sorted */
     histogramSort(histogram);
-    var full_histogram = histogram.map(bin => Array(bin.value).fill(parseFloat(bin.key))).reduce((prev, curr) => prev.concat(curr));
 
+    /* calculate the cumulative number of elements in the histogram */
+    var count = 0;
+    histogram.forEach(function (bin, i) {
+        count += histogram[i].value;
+        histogram[i].count = count;
+    });
+
+    var samples = [];
     /* sample the quantile of interest */
-    var output = [];
-    var index = null;
-    const size = full_histogram.length - 1;
     for (var i = 0; i < n_samples; i++) {
-      index = qbinom(Math.random(), size, parseFloat(percentile) / 100);
-      output.push(full_histogram[index]);
+      sample = qbinom(Math.random(), size, parseFloat(percentile) / 100);
+      var target = Math.min(sample, count);
+
+      if (target in output) {
+        samples[target].value += 1;
+      } else {
+        var target_key = histogram[0].key;
+        for (const x of histogram) {
+          target_bin = x.key;
+          if (x.count >= sample) {
+            samples[target] = {'key': x.key, 'value': 1};
+            break;
+          }
+        };
+      }
     }
 
-    numericSort(output);
+    /* ensure the histogram is sorted */
+    histogramSort(samples);
+
+    /* expand the output */
+    output = samples.map(bin => Array(bin.value).fill(parseFloat(bin.key))).reduce((prev, curr) => prev.concat(curr));
+
     return output;
   }
 
   function getPercentileBin(percentile, quantile_samples) {
+    /* 
+    Returns the target `percentile` from a sorted array of samples.
+    */
     validatePercentile(percentile);
     const size = quantile_samples.length;
     if (size == 0) {
@@ -73,9 +97,14 @@ AS
   }
 
   function binToValue(bin_value, histogram, location) {
+    /* 
+    Returns the estimated value of a `location` inside a histogram bin,
+    where `location` is between 0 (left edge) and 1 (right edge).
+    */
     if (location < 0 || location > 1) {
       throw "location must be a value between 0 and 1";
     }
+
     const size = histogram.length;
     if (size == 0) {
       return null;
@@ -107,9 +136,9 @@ AS
     var results = [];
     for (var i = 0; i < percentiles.length; i++) {
       percentile = percentiles[i];
-      var lower = null;
-      var upper = null;
-      var point = null;
+      var lower = null;  /* left edge of lower estimate bin */
+      var point = null;  /* center of point estimate bin */
+      var upper = null;  /* right edge of upper estimate bin */
       
       if (!histogram.values || !histogram ) {
         continue;

@@ -66,14 +66,14 @@ SELECT
   `time`,
   experiment,
   branch,
-  sum(cumulative_population) AS value
+  SUM(cumulative_population) AS value
 FROM
   (
     SELECT
       window_start AS `time`,
       branch,
       experiment,
-      min(`cumulative_enroll_count`) - min(`cumulative_unenroll_count`) - min(
+      MIN(`cumulative_enroll_count`) - MIN(`cumulative_unenroll_count`) - MIN(
         `cumulative_graduate_count`
       ) AS cumulative_population
     FROM

@@ -437,7 +437,7 @@ SELECT
 FROM
   all_events
 WHERE
-  date(submission_timestamp) = @submission_date
+  DATE(submission_timestamp) = @submission_date
 GROUP BY
   experiment,
   branch,

@@ -2,104 +2,104 @@ WITH events AS (
   SELECT
     submission_date,
     client_id,
-    countif(
+    COUNTIF(
       event_category = "contextservices.quicksuggest"
       AND event_method = "engagement"
       AND event_object = "block"
       AND mozfun.map.get_key(event_map_values, 'suggestion_type') = "nonsponsored"
     ) AS block_nonsponsored_count,
-    countif(
+    COUNTIF(
       event_category = "contextservices.quicksuggest"
       AND event_method = "engagement"
       AND event_object = "block"
       AND mozfun.map.get_key(event_map_values, 'suggestion_type') = "sponsored"
     ) AS block_sponsored_count,
-    countif(
+    COUNTIF(
       event_category = "contextservices.quicksuggest"
       AND event_method = "engagement"
       AND event_object = "block"
       AND mozfun.map.get_key(event_map_values, 'suggestion_type') = "nonsponsored"
       AND mozfun.map.get_key(event_map_values, 'match_type') = "best-match"
     ) AS block_nonsponsored_bestmatch_count,
-    countif(
+    COUNTIF(
       event_category = "contextservices.quicksuggest"
       AND event_method = "engagement"
       AND event_object = "block"
       AND mozfun.map.get_key(event_map_values, 'suggestion_type') = "sponsored"
       AND mozfun.map.get_key(event_map_values, 'match_type') = "best-match"
     ) AS block_sponsored_bestmatch_count,
-    countif(
+    COUNTIF(
       event_category = "contextservices.quicksuggest"
       AND event_method = "engagement"
       AND event_object = "click"
       AND mozfun.map.get_key(event_map_values, 'suggestion_type') = "nonsponsored"
     ) AS click_nonsponsored_count,
-    countif(
+    COUNTIF(
       event_category = "contextservices.quicksuggest"
       AND event_method = "engagement"
       AND event_object = "click"
       AND mozfun.map.get_key(event_map_values, 'suggestion_type') = "sponsored"
     ) AS click_sponsored_count,
-    countif(
+    COUNTIF(
       event_category = "contextservices.quicksuggest"
       AND event_method = "engagement"
       AND event_object = "click"
       AND mozfun.map.get_key(event_map_values, 'suggestion_type') = "nonsponsored"
       AND mozfun.map.get_key(event_map_values, 'match_type') = "best-match"
     ) AS click_nonsponsored_bestmatch_count,
-    countif(
+    COUNTIF(
       event_category = "contextservices.quicksuggest"
       AND event_method = "engagement"
       AND event_object = "click"
       AND mozfun.map.get_key(event_map_values, 'suggestion_type') = "sponsored"
       AND mozfun.map.get_key(event_map_values, 'match_type') = "best-match"
     ) AS click_sponsored_bestmatch_count,
-    countif(
+    COUNTIF(
       event_category = "contextservices.quicksuggest"
       AND event_method = "engagement"
       AND event_object = "help"
       AND mozfun.map.get_key(event_map_values, 'suggestion_type') = "nonsponsored"
     ) AS help_nonsponsored_count,
-    countif(
+    COUNTIF(
       event_category = "contextservices.quicksuggest"
       AND event_method = "engagement"
       AND event_object = "help"
       AND mozfun.map.get_key(event_map_values, 'suggestion_type') = "sponsored"
     ) AS help_sponsored_count,
-    countif(
+    COUNTIF(
       event_category = "contextservices.quicksuggest"
       AND event_method = "engagement"
       AND event_object = "help"
       AND mozfun.map.get_key(event_map_values, 'suggestion_type') = "nonsponsored"
       AND mozfun.map.get_key(event_map_values, 'match_type') = "best-match"
     ) AS help_nonsponsored_bestmatch_count,
-    countif(
+    COUNTIF(
       event_category = "contextservices.quicksuggest"
       AND event_method = "engagement"
       AND event_object = "help"
       AND mozfun.map.get_key(event_map_values, 'suggestion_type') = "sponsored"
       AND mozfun.map.get_key(event_map_values, 'match_type') = "best-match"
     ) AS help_sponsored_bestmatch_count,
-    countif(
+    COUNTIF(
       event_category = "contextservices.quicksuggest"
       AND event_method = "engagement"
       AND event_object = "impression_only"
       AND mozfun.map.get_key(event_map_values, 'suggestion_type') = "nonsponsored"
     ) AS impression_nonsponsored_count,
-    countif(
+    COUNTIF(
       event_category = "contextservices.quicksuggest"
       AND event_method = "engagement"
       AND event_object = "impression_only"
       AND mozfun.map.get_key(event_map_values, 'suggestion_type') = "sponsored"
     ) AS impression_sponsored_count,
-    countif(
+    COUNTIF(
       event_category = "contextservices.quicksuggest"
       AND event_method = "engagement"
       AND event_object = "impression_only"
       AND mozfun.map.get_key(event_map_values, 'suggestion_type') = "nonsponsored"
       AND mozfun.map.get_key(event_map_values, 'match_type') = "best-match"
     ) AS impression_nonsponsored_bestmatch_count,
-    countif(
+    COUNTIF(
       event_category = "contextservices.quicksuggest"
       AND event_method = "engagement"
       AND event_object = "impression_only"

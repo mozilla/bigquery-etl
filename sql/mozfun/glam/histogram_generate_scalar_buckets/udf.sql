@@ -17,8 +17,8 @@ AS
 ''';
 
 SELECT
-  assert.array_equals([1, 2, 4, 8], glam.histogram_generate_scalar_buckets(0, log(16, 2), 4)),
+  assert.array_equals([1, 2, 4, 8], glam.histogram_generate_scalar_buckets(0, LOG(16, 2), 4)),
   assert.array_equals(
     [1, 1.9, 3.62, 6.9, 13.13],
-    glam.histogram_generate_scalar_buckets(0, log(25, 2), 5)
+    glam.histogram_generate_scalar_buckets(0, LOG(25, 2), 5)
   )

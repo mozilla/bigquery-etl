@@ -9,7 +9,7 @@ WITH extracted AS (
   FROM
     monitoring.payload_bytes_error_all
   WHERE
-    date(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = @submission_date
     AND exception_class = 'org.everit.json.schema.ValidationException'
 ),
 count_errors AS (

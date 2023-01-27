@@ -107,7 +107,6 @@ mobile_data_google AS (
   SELECT
     submission_date,
     IF(country = 'US', 'US', 'RoW') AS country,
-    -- count(distinct client_id) as dau, --should avoid as mentioned in above
     IF(country = 'US', dau.US_dau_eligible_google, dau.RoW_dau_eligible_google) AS dau,
     count(
       DISTINCT IF(sap > 0 AND normalized_engine = 'Google', client_id, NULL)
@@ -137,8 +136,8 @@ mobile_data_google AS (
     dau
 ),
 -- Bing & DDG Mobile (search only - as mobile search metrics is based on
--- metrics ping, while DAU should be based on main ping on Mobile, also see
--- here also see https://mozilla-hub.atlassian.net/browse/RS-575)
+-- metrics ping, while DAU should be based on main ping on Mobile, see also
+-- https://mozilla-hub.atlassian.net/browse/RS-575)
 mobile_data_bing_ddg AS (
   SELECT
     submission_date,

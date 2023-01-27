@@ -8,6 +8,7 @@ from .tokenizer import (
     BlockEndKeyword,
     BlockKeyword,
     BlockStartKeyword,
+    BuiltInFunctionIdentifier,
     ClosingBracket,
     Comment,
     ExpressionSeparator,
@@ -97,9 +98,13 @@ def simple_format(tokens, indent="  "):
         ):
             yield Whitespace(" ")
 
-        # uppercase keywords and replace contained whitespace with single spaces
-        if isinstance(token, ReservedKeyword) and can_format:
-            token = replace(token, value=re.sub(r"\s+", " ", token.value.upper()))
+        if can_format:
+            # uppercase keywords and replace contained whitespace with single spaces
+            if isinstance(token, ReservedKeyword):
+                token = replace(token, value=re.sub(r"\s+", " ", token.value.upper()))
+            # uppercase built-in function names
+            elif isinstance(token, BuiltInFunctionIdentifier):
+                token = replace(token, value=token.value.upper())
 
         yield token
 

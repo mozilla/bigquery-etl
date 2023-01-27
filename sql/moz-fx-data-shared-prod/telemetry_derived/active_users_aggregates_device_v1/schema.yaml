@@ -74,6 +74,7 @@ fields:
 - mode: NULLABLE
   name: active_hours
   type: FLOAT
-- mode: NULLABLE
+- description: Count of qualified clients sending a main ping on a given day
+  mode: NULLABLE
   name: qdau
   type: INTEGER

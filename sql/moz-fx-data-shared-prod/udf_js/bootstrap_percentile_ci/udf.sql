@@ -55,10 +55,10 @@ AS
     var samples = [];
     /* sample the quantile of interest */
     for (var i = 0; i < n_samples; i++) {
-      sample = qbinom(Math.random(), size, parseFloat(percentile) / 100);
+      sample = qbinom(Math.random(), count, parseFloat(percentile) / 100);
       var target = Math.min(sample, count);
 
-      if (target in output) {
+      if (target in samples) {
         samples[target].value += 1;
       } else {
         var target_key = histogram[0].key;

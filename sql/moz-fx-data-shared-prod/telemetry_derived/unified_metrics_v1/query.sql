@@ -321,7 +321,14 @@ desktop AS (
     first_seen_date,
     days_since_seen,
     os AS normalized_os,
-    normalized_os_version,
+    CASE
+    WHEN
+        os LIKE 'Windows%'
+        OR os LIKE 'WINNT%'
+    THEN `mozfun.norm.windows_version_info`(os, normalized_os_version, windows_build_number)
+    ELSE normalized_os_version
+    END
+    AS normalized_os_version,
     COALESCE(
       CAST(NULLIF(SPLIT(normalized_os_version, ".")[SAFE_OFFSET(0)], "") AS INTEGER),
       0

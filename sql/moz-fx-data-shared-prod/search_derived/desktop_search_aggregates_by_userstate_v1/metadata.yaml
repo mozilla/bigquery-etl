@@ -5,6 +5,7 @@ description: |-
   and whether the user searched or not.
   Originally created for the search report dashboard.
 owners:
+- cmorales@mozilla.com
 - xluo@mozilla.com
 labels:
   incremental: true

@@ -25,9 +25,9 @@ default_args = {
     "end_date": None,
     "email": [
         "telemetry-alerts@mozilla.com",
-        "cmorales@mozilla.com",
         "anicholson@mozilla.com",
         "akomar@mozilla.com",
+        "cmorales@mozilla.com",
     ],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=300),
@@ -54,8 +54,8 @@ with DAG(
         owner="akomar@mozilla.com",
         email=[
             "akomar@mozilla.com",
-            "cmorales@mozilla.com",
             "anicholson@mozilla.com",
+            "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
@@ -70,8 +70,8 @@ with DAG(
         owner="akomar@mozilla.com",
         email=[
             "akomar@mozilla.com",
-            "cmorales@mozilla.com",
             "anicholson@mozilla.com",
+            "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
@@ -120,8 +120,8 @@ with DAG(
         owner="akomar@mozilla.com",
         email=[
             "akomar@mozilla.com",
-            "cmorales@mozilla.com",
             "anicholson@mozilla.com",
+            "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",

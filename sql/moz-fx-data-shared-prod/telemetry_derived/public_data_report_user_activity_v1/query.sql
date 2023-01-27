@@ -90,7 +90,7 @@ avg_daily_usage_by_user AS (
   SELECT
     client_id,
     country_name,
-    avg(subsession_hours_sum) AS avg_hours_usage_daily_per_user,
+    AVG(subsession_hours_sum) AS avg_hours_usage_daily_per_user,
     week_start
   FROM
     sample
@@ -106,7 +106,7 @@ avg_daily_usage_by_user AS (
 daily_usage AS (
   SELECT
     country_name,
-    avg(avg_hours_usage_daily_per_user) AS avg_hours_usage_daily,
+    AVG(avg_hours_usage_daily_per_user) AS avg_hours_usage_daily,
     week_start
   FROM
     avg_daily_usage_by_user
@@ -120,7 +120,7 @@ intensity AS (
     country_name,
     SAFE_DIVIDE(
       SUM(`moz-fx-data-shared-prod.udf.bitcount_lowest_7`(days_seen_bits)),
-      count(*)
+      COUNT(*)
     ) AS intensity
   FROM
     sample
@@ -154,7 +154,7 @@ active_clients_weekly AS (
     country_name,
     client_id,
     `mozfun.norm.truncate_version`(app_version, "major") AS major_version,
-    date_sub(submission_date, INTERVAL days_since_seen DAY) AS last_day_seen,
+    DATE_SUB(submission_date, INTERVAL days_since_seen DAY) AS last_day_seen,
     week_start
   FROM
     sample
@@ -179,7 +179,7 @@ active_clients_with_latest_releases AS (
     client_id,
     country_name,
     major_version,
-    max(latest_major_version) AS latest_major_version,
+    MAX(latest_major_version) AS latest_major_version,
     week_start
   FROM
     active_clients_weekly
@@ -198,7 +198,7 @@ active_clients_with_latest_releases AS (
 latest_version_ratio AS (
   SELECT
     country_name,
-    SAFE_DIVIDE(COUNTIF(major_version = latest_major_version), count(*)) AS latest_version_ratio,
+    SAFE_DIVIDE(COUNTIF(major_version = latest_major_version), COUNT(*)) AS latest_version_ratio,
     week_start
   FROM
     active_clients_with_latest_releases

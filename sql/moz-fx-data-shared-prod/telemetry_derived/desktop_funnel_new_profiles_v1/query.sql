@@ -8,7 +8,7 @@ WITH pop AS (
     normalized_os AS os,
     environment.settings.attribution.source AS attribution_source,
     environment.partner.distribution_id AS distribution_id,
-    coalesce(environment.settings.attribution.ua, '') AS attribution_ua,
+    COALESCE(environment.settings.attribution.ua, '') AS attribution_ua,
     DATE(submission_timestamp) AS date
   FROM
     telemetry.new_profile
@@ -25,7 +25,7 @@ SELECT
   distribution_id,
   attribution_ua,
   country_codes.name AS country_name,
-  count(client_id) AS new_profiles
+  COUNT(client_id) AS new_profiles
 FROM
   pop
 LEFT JOIN

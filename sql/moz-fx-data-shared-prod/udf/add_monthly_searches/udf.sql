@@ -72,8 +72,8 @@ WITH previous_examples AS (
       STRUCT(
         "google" AS key,
         STRUCT(
-          generate_array(11, 0, -1) AS total_searches,
-          generate_array(12, 1, -1) AS tagged_searches,
+          GENERATE_ARRAY(11, 0, -1) AS total_searches,
+          GENERATE_ARRAY(12, 1, -1) AS tagged_searches,
           udf.zeroed_array(12) AS search_with_ads,
           udf.zeroed_array(12) AS ad_click
         ) AS value

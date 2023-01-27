@@ -9,7 +9,7 @@ WITH pop AS (
     mozfun.norm.truncate_version(normalized_os_version, "minor") AS os_version,
     environment.settings.attribution.source AS attribution_source,
     environment.partner.distribution_id AS distribution_id,
-    coalesce(environment.settings.attribution.ua, '') AS attribution_ua,
+    COALESCE(environment.settings.attribution.ua, '') AS attribution_ua,
     DATE(submission_timestamp) AS date
   FROM
     telemetry.new_profile
@@ -51,12 +51,12 @@ client_conditions AS (
     attribution_source,
     distribution_id,
     attribution_ua,
-    coalesce(udf.bitcount_lowest_7(days_seen_bits), 0) >= 5 AS activated
+    COALESCE(udf.bitcount_lowest_7(days_seen_bits), 0) >= 5 AS activated
   FROM
     dist_pop_with_days_seen
 )
 SELECT
-  date(@submission_date) AS submission_date,
+  DATE(@submission_date) AS submission_date,
   country_codes.name AS country_name,
   channel,
   build_id,
@@ -65,7 +65,7 @@ SELECT
   attribution_source,
   distribution_id,
   attribution_ua,
-  count(*) AS num_activated
+  COUNT(*) AS num_activated
 FROM
   client_conditions
 LEFT JOIN

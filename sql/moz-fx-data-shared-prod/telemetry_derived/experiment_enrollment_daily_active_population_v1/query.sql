@@ -1,5 +1,5 @@
 SELECT
-  CAST(date_add(submission_date, INTERVAL 1 day) AS timestamp) AS time,
+  CAST(DATE_ADD(submission_date, INTERVAL 1 day) AS timestamp) AS time,
   experiment_id AS experiment,
   branch,
   SUM(active_clients) AS value

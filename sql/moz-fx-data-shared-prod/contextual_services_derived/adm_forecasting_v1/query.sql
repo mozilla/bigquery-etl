@@ -23,8 +23,8 @@ WITH client_counts AS (
       END
     ) AS device,
     submission_date,
-    count(*) AS total_clients,
-    count(
+    COUNT(*) AS total_clients,
+    COUNT(
       CASE
   -- FIREFOX DESKTOP ELIGIBILITY REQUIREMENTS
       WHEN
@@ -358,7 +358,7 @@ mobile_population AS (
     submission_date,
     country,
     "mobile" AS device,
-    count(*) AS clients
+    COUNT(*) AS clients
   FROM
     daily_mobile_clients
   GROUP BY

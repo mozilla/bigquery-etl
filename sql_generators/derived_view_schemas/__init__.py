@@ -38,9 +38,17 @@ def _generate_view_schema(sql_dir, view_directory):
         if not view_file.exists():
             return
 
-        view_references = extract_table_references(view_file.read_text())
-        if len(view_references) != 1:
-            return
+
+
+        try:
+            view_references = extract_table_references(view_file.read_text())
+            if len(view_references) != 1:
+                return
+        except Exception as e:
+            print(f"extract from: {view_file}") 
+            print(view_file.read_text())
+            print(e)
+    
 
         target_project = view_dir.parent.parent.name
         target_dataset = view_dir.parent.name

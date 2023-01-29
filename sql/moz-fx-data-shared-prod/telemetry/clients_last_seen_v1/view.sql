@@ -98,8 +98,7 @@ SELECT
     WHEN BIT_COUNT(days_visited_1_uri_bits) >= 21
       THEN 'core_user'
     ELSE 'other'
-  END
-  AS activity_segments_v1,
+  END AS activity_segments_v1,
   (
     days_since_first_seen = 6
     -- 0x7F = mozfun.bits28.from_string('0000000000000000000001111111')

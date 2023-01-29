@@ -66,8 +66,7 @@ aggregated AS (
             WHEN string_value LIKE "home-panel%"
               THEN ("home-panel", value)
             ELSE NULL
-          END
-          ,
+          END,
           NULL
         ) IGNORE NULLS
       ),

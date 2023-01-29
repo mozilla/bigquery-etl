@@ -47,8 +47,7 @@ SELECT DISTINCT
       THEN 'missing_rc'
     WHEN recent_tests.task_group_id IS NULL
       THEN 'invalid_rc'
-  END
-  AS reason,
+  END AS reason,
 FROM
   distinct_rc
 FULL OUTER JOIN

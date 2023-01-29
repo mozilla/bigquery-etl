@@ -238,8 +238,7 @@ mobile_with_searches AS (
       WHEN BIT_COUNT(days_seen_bits) >= 21
         THEN 'core_user'
       ELSE 'other'
-    END
-    AS activity_segment,
+    END AS activity_segment,
     unioned.normalized_app_name,
     unioned.app_display_version AS app_version,
     unioned.normalized_channel,

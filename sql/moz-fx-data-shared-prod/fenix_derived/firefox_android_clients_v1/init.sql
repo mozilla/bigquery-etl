@@ -192,14 +192,12 @@ SELECT
       WHEN first_session.client_id IS NULL
         THEN FALSE
       ELSE TRUE
-    END
-    AS reported_first_session_ping,
+    END AS reported_first_session_ping,
     CASE
       WHEN metrics.client_id IS NULL
         THEN FALSE
       ELSE TRUE
-    END
-    AS reported_metrics_ping,
+    END AS reported_metrics_ping,
     DATE(first_session.first_run_datetime) AS min_first_session_ping_run_date,
     DATE(metrics.min_submission_datetime) AS min_metrics_ping_submission_date,
     CASE
@@ -214,14 +212,12 @@ SELECT
       WHEN STRUCT(metrics.adjust_network, metrics.min_submission_datetime)
         THEN 'metrics'
       ELSE NULL
-    END
-    AS adjust_network__source_ping,
+    END AS adjust_network__source_ping,
     CASE
       WHEN metrics.install_source IS NOT NULL
         THEN 'metrics'
       ELSE NULL
-    END
-    AS install_source__source_ping,
+    END AS install_source__source_ping,
     mozfun.norm.get_earliest_value(
       [
         (STRUCT(CAST(first_session.adjust_network AS STRING), first_session.first_run_datetime)),
@@ -232,8 +228,7 @@ SELECT
       WHEN metrics.install_source IS NOT NULL
         THEN metrics.min_submission_datetime
       ELSE NULL
-    END
-    AS install_source__source_ping_datetime
+    END AS install_source__source_ping_datetime
   ) AS metadata
 FROM
   first_seen

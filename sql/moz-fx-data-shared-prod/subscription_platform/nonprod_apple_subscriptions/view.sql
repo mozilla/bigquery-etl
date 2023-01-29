@@ -163,8 +163,7 @@ SELECT
       THEN "in billing grace period"
     WHEN 5
       THEN "revoked"
-  END
-  AS status,
+  END AS status,
   periods.verified_at AS event_timestamp,
   IF(
     periods.end_time <= trial_periods.end_time,
@@ -188,8 +187,7 @@ SELECT
       THEN "Product Unavailable at Renewal"
     WHEN periods.revocation_reason IS NOT NULL
       THEN "Refund"
-  END
-  AS ended_reason,
+  END AS ended_reason,
   periods.user_id AS fxa_uid,
   "Apple Store" AS provider,
   (

@@ -107,8 +107,7 @@ SELECT
           subscriptions.ended_reason,
           IF(subscriptions.provider = "Apple Store", "Cancelled by IAP", "Payment Failed")
         )
-  END
-  AS granular_event_type,
+  END AS granular_event_type,
   subscriptions.plan_id,
   subscriptions.country,
   subscriptions.country_name,

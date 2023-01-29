@@ -18,8 +18,7 @@ SELECT
       AND os = 'iOS'
       THEN 'Focus iOS'
     ELSE 'Other'
-  END
-  AS product,
+  END AS product,
   normalized_engine,
   COUNT(DISTINCT client_id) AS clients,
   COUNT(

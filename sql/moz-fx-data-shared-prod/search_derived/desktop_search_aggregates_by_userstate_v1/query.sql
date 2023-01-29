@@ -5,16 +5,14 @@ SELECT
     WHEN country IN ('US', 'DE', 'FR', 'GB', 'CA')
       THEN country
     ELSE 'non-Tier1'
-  END
-  AS geo,
+  END AS geo,
   CASE
     WHEN is_regular_user_v3
       THEN 'regular'
     WHEN is_new_or_resurrected_v3
       THEN 'new_or_resurrected'
     ELSE 'irregular' -- originally use 'other', but suggested to use 'irregular'
-  END
-  AS user_state,
+  END AS user_state,
   COUNT(client_id) AS client_count,
   COUNTIF(search_count_all > 0) AS search_client_count,
   SUM(search_count_all) AS sap,

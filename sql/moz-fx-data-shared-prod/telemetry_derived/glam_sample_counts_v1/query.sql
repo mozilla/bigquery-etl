@@ -128,8 +128,7 @@ SELECT
     WHEN agg_type IN ('count', 'true', 'false')
       THEN SUM(value)
     ELSE NULL
-  END
-  AS total_sample
+  END AS total_sample
 FROM
   scalars_data,
   UNNEST(scalar_aggregates)
@@ -156,8 +155,7 @@ SELECT
     WHEN agg_type IN ('count', 'true', 'false')
       THEN SUM(value)
     ELSE NULL
-  END
-  AS total_sample
+  END AS total_sample
 FROM
   scalars_data,
   UNNEST(scalar_aggregates) s1
@@ -183,8 +181,7 @@ SELECT
     WHEN agg_type IN ('count', 'true', 'false')
       THEN SUM(value)
     ELSE NULL
-  END
-  AS total_sample
+  END AS total_sample
 FROM
   scalars_data,
   UNNEST(scalar_aggregates)
@@ -210,8 +207,7 @@ SELECT
     WHEN agg_type IN ('count', 'true', 'false')
       THEN SUM(value)
     ELSE NULL
-  END
-  AS total_sample
+  END AS total_sample
 FROM
   scalars_data,
   UNNEST(scalar_aggregates)

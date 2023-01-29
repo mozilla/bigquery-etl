@@ -138,8 +138,7 @@ SELECT
       WHEN DATE(subscription_start_date) = DATE(customer_start_date)
         THEN "New"
       ELSE "Resurrected"
-    END
-    AS subscription_start_reason,
+    END AS subscription_start_reason,
     CASE
       WHEN ended_at IS NULL
         THEN NULL
@@ -149,8 +148,7 @@ SELECT
         OR cancel_at_period_end
         THEN "Cancelled by Customer"
       ELSE "Payment Failed"
-    END
-    AS ended_reason
+    END AS ended_reason
   ),
   mozfun.norm.diff_months(
     start => DATETIME(subscription_start_date, plan_interval_timezone),

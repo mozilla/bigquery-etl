@@ -46,8 +46,7 @@ glam_sample_counts AS (
         AND fsc2.agg_type = 'count'
         THEN fsc2.total_sample
       ELSE fsc1.total_sample
-    END
-    AS total_sample
+    END AS total_sample
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.glam_sample_counts_v1` fsc1
   INNER JOIN
@@ -79,8 +78,7 @@ SELECT
     WHEN client_agg_type = ''
       THEN 0
     ELSE total_sample
-  END
-  AS total_sample
+  END AS total_sample
 FROM
   final_probe_extract cp
 LEFT JOIN

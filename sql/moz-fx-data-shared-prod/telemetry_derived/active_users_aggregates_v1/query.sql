@@ -42,8 +42,7 @@ todays_metrics_enriched AS (
         AND languages.language_name IS NULL
         THEN 'Other'
       ELSE languages.language_name
-    END
-    AS language_name,
+    END AS language_name,
   FROM
     todays_metrics
   LEFT JOIN

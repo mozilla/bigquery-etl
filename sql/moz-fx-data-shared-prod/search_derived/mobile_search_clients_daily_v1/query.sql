@@ -704,8 +704,7 @@ glean_flattened_searches AS (
       -- otherwise key is engine
           SPLIT(search.key, '.')[SAFE_OFFSET(0)]
       ELSE NULL
-    END
-    AS engine,
+    END AS engine,
     CASE
       WHEN search.search_type = 'sap'
         THEN normalize_fenix_search_key(search.key)[SAFE_OFFSET(1)]
@@ -726,8 +725,7 @@ glean_flattened_searches AS (
             search.search_type
           )
       ELSE search.search_type
-    END
-    AS source,
+    END AS source,
     search.value AS search_count,
     UNIX_DATE(udf.parse_iso8601_date(first_run_date)) AS profile_creation_date,
     SAFE.DATE_DIFF(
@@ -793,8 +791,7 @@ combined_search_clients AS (
         OR search_type = 'sap'
         THEN search_type
       ELSE 'unknown'
-    END
-    AS search_type,
+    END AS search_type,
     search_count,
     country,
     locale,

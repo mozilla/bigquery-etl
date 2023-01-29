@@ -44,8 +44,7 @@ WITH client_searches AS (
           WHEN engine LIKE '%mazon%'
             THEN 'amazon'
           ELSE 'other'
-        END
-        AS engine,
+        END AS engine,
         SUM(COALESCE(sap, 0)) AS sap,
         SUM(COALESCE(tagged_sap)) AS tagged_sap,
         SUM(COALESCE(tagged_follow_on)) AS tagged_follow_on,

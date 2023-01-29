@@ -21,8 +21,7 @@ SELECT
       THEN 2
     WHEN channel = "release"
       THEN 3
-  END
-  AS channel,
+  END AS channel,
   app_version,
   COALESCE(app_build_id, "*") AS app_build_id,
   COALESCE(os, "*") AS os,

@@ -27,8 +27,7 @@ RETURNS ARRAY<INT64> AS (
           WHEN metric_type = 'custom_distribution_linear'
             THEN mozfun.glam.histogram_generate_linear_buckets(range_min, range_max, bucket_count)
           ELSE []
-        END
-        AS arr
+        END AS arr
     )
     SELECT
       ARRAY_AGG(CAST(item AS INT64))

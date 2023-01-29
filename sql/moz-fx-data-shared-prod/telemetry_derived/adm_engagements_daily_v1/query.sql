@@ -60,20 +60,17 @@ WITH topsites_temp AS (
       WHEN contains_phase_2_experiment(experiments)
         THEN udf.get_key(event_map_values, 'source')
       ELSE event_object
-    END
-    AS placement,
+    END AS placement,
     CASE
       WHEN contains_phase_2_experiment(experiments)
         THEN udf.get_key(event_map_values, 'partner')
       ELSE event_string_value
-    END
-    AS partner,
+    END AS partner,
     CASE
       WHEN contains_phase_2_experiment(experiments)
         THEN event_object
       ELSE event_method
-    END
-    AS interaction,
+    END AS interaction,
     SPLIT(app_version, '.')[OFFSET(0)] AS version,
     normalized_channel,
     CASE
@@ -84,8 +81,7 @@ WITH topsites_temp AS (
       WHEN contains_rollout_experiment(experiments)
         THEN 'rollout'
       ELSE NULL
-    END
-    AS phase
+    END AS phase
   FROM
     telemetry.events
   WHERE
@@ -112,8 +108,7 @@ searchmode_temp AS (
       WHEN contains_rollout_experiment(experiments)
         THEN 'rollout'
       ELSE NULL
-    END
-    AS phase
+    END AS phase
   FROM
     search.search_clients_engines_sources_daily
   WHERE

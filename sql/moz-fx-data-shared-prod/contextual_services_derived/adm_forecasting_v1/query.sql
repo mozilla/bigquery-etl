@@ -103,8 +103,7 @@ tiles_percentages AS (
       WHEN form_factor = "phone"
         THEN "mobile"
       ELSE "desktop"
-    END
-    AS device,
+    END AS device,
     SUM(CASE WHEN advertiser = "amazon" THEN user_count ELSE 0 END) / NULLIF(
       SUM(user_count),
       0
@@ -139,8 +138,7 @@ suggest_percentages AS (
       WHEN form_factor = "phone"
         THEN "mobile"
       ELSE "desktop"
-    END
-    AS device,
+    END AS device,
     NULL AS p_amazon,
     NULL AS p_other,
     SUM(CASE WHEN advertiser = "amazon" THEN user_count ELSE 0 END) AS amazon_dou,
@@ -373,8 +371,7 @@ clicks AS (
       WHEN form_factor = "phone"
         THEN "mobile"
       ELSE "desktop"
-    END
-    AS device,
+    END AS device,
     COALESCE(SUM(CASE WHEN advertiser = "amazon" THEN event_count ELSE 0 END), 0) AS amazon_clicks,
     COALESCE(
       SUM(
@@ -408,8 +405,7 @@ clicks AS (
       WHEN form_factor = "phone"
         THEN "mobile"
       ELSE "desktop"
-    END
-    AS device,
+    END AS device,
     COALESCE(SUM(CASE WHEN advertiser = "amazon" THEN event_count ELSE 0 END), 0) AS amazon_clicks,
     COALESCE(
       SUM(CASE WHEN advertiser NOT IN UNNEST(["amazon", "wikipedia"]) THEN event_count ELSE 0 END),

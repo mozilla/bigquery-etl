@@ -14,8 +14,7 @@ WITH combined AS (
       WHEN request_id IS NULL
         THEN 'remote settings'
       ELSE 'merino'
-    END
-    AS provider,
+    END AS provider,
     match_type,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     (
@@ -42,8 +41,7 @@ WITH combined AS (
       WHEN request_id IS NULL
         THEN 'remote settings'
       ELSE 'merino'
-    END
-    AS provider,
+    END AS provider,
     match_type,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     (
@@ -70,8 +68,7 @@ WITH combined AS (
       WHEN reporting_url IS NULL
         THEN 'remote settings'
       ELSE 'contile'
-    END
-    AS provider,
+    END AS provider,
     -- `match_type` is only available for `quicksuggest_*` tables
     NULL AS match_type,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
@@ -95,8 +92,7 @@ WITH combined AS (
       WHEN reporting_url IS NULL
         THEN 'remote settings'
       ELSE 'contile'
-    END
-    AS provider,
+    END AS provider,
     -- `match_type` is only available for `quicksuggest_*` tables
     NULL AS match_type,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,

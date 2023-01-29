@@ -21,14 +21,12 @@ SELECT
       )
       THEN country
     ELSE 'others'
-  END
-  AS geo,
+  END AS geo,
   CASE
     WHEN SUBSTR(locale, 0, 2) IN ('en', 'de', 'es', 'fr', 'ru', 'zh', 'pt', 'pl', 'ja', 'it')
       THEN SUBSTR(locale, 0, 2)
     ELSE 'others'
-  END
-  AS locale,
+  END AS locale,
   normalized_engine AS engine,
   mozfun.norm.os(os) AS os,
   SPLIT(app_version, '.')[OFFSET(0)] AS app_version,

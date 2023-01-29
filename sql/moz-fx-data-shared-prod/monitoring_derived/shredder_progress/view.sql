@@ -10,8 +10,7 @@ WITH shredder AS (
       WHEN target = "moz-fx-data-shared-prod.telemetry_derived.main_summary_v4"
         THEN "telemetry_main_summary"
       ELSE "all"
-    END
-    AS airflow_task_id,
+    END AS airflow_task_id,
     target,
     end_date,
     -- oldest table size

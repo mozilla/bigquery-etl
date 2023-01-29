@@ -19,15 +19,13 @@ RETURNS ARRAY<
           WHEN 'true'
             THEN value
           ELSE 0
-        END
-        AS bool_true,
+        END AS bool_true,
         CASE
           agg_type
           WHEN 'false'
             THEN value
           ELSE 0
-        END
-        AS bool_false
+        END AS bool_false
       FROM
         UNNEST(scalar_aggs)
       WHERE
@@ -62,8 +60,7 @@ RETURNS ARRAY<
           WHEN bool_true = 0
             AND bool_false > 0
             THEN "never"
-        END
-        AS bucket
+        END AS bucket
       FROM
         summed_bools
       WHERE

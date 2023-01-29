@@ -62,8 +62,7 @@ SELECT
     WHEN renewal_info.is_in_billing_retry
       THEN 3
     ELSE 2
-  END
-  AS status,
+  END AS status,
   "Auto-Renewable Subscription" AS type,
   legacy_subscriptions.user_id,
   IF(

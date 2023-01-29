@@ -112,8 +112,7 @@ augmented AS (
             WHEN STARTS_WITH(element.source, 'search-with-ads:')
               THEN 'search-with-ads'
             ELSE 'unknown'
-          END
-          AS type
+          END AS type
         FROM
           UNNEST(search_counts) AS element
         WHERE
@@ -134,8 +133,7 @@ augmented AS (
             WHEN REGEXP_CONTAINS(key, ':organic:')
               THEN 'organic'
             ELSE 'unknown'
-          END
-          AS type
+          END AS type
         FROM
           UNNEST(in_content_with_sap)
       ),

@@ -78,8 +78,7 @@ kurtosis_parts AS (
       WHEN 'sum'
         THEN SUM(subtest_replicate) OVER (replicate_window)
       ELSE ERROR(CONCAT('Unknown replicate aggregator: ', rc_replicate_aggregator))
-    END
-    AS rc_subtest_value,
+    END AS rc_subtest_value,
     AVG(subtest_replicate) OVER (replicate_window) AS rc_replicate_mean,
     STDDEV_SAMP(subtest_replicate) OVER (replicate_window) AS rc_replicate_stddev,
     COUNT(subtest_replicate) OVER (replicate_window) AS rc_replicate_count,
@@ -160,8 +159,7 @@ tests AS (
       WHEN 'sum'
         THEN SUM(rc_subtest_value) OVER (subtest_window)
       ELSE ERROR(CONCAT('Unknown subtest aggregator: ', rc_subtest_aggregator))
-    END
-    AS rc_test_value,
+    END AS rc_test_value,
     AVG(rc_replicate_mean) OVER (subtest_window) AS rc_subtest_mean,
     SQRT(
       SUM(POWER(rc_replicate_stddev, 2)) OVER (subtest_window)
@@ -221,8 +219,7 @@ rc_tests AS (
       WHEN 'sum'
         THEN SUM(rc_test_value) OVER (test_window)
       ELSE ERROR(CONCAT('Unknown subtest aggregator: ', rc_subtest_aggregator))
-    END
-    AS rc_value,
+    END AS rc_value,
     AVG(rc_subtest_mean) OVER (test_window) AS rc_test_mean,
     SQRT(
       SUM(POWER(rc_propagated_error, 2)) OVER (test_window)
@@ -334,15 +331,13 @@ build_targets AS (
                 rc_test_name
               )
             )
-      END
-      AS app_name,
+      END AS app_name,
       CASE
         WHEN rc_target_type = 'absolute'
           THEN rc_target_value
         WHEN rc_target_type = 'relative'
           THEN rc_target_value * rc_value
-      END
-      AS rc_value
+      END AS rc_value
     )
   FROM
     rc_tests_with_tested_version

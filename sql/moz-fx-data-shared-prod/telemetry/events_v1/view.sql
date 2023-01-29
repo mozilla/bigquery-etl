@@ -39,8 +39,7 @@ WITH parquet_events AS (
         WHEN doc_type = 'main'
           THEN SAFE.TIMESTAMP_MICROS(CAST(`timestamp` / 1000 AS INT64))
         ELSE SAFE.TIMESTAMP_SECONDS(`timestamp`)
-      END
-      AS `timestamp`,
+      END AS `timestamp`,
       SAFE.TIMESTAMP_MILLIS(session_start_time) AS session_start_time
     ),
     CAST(NULL AS STRING) AS build_id,

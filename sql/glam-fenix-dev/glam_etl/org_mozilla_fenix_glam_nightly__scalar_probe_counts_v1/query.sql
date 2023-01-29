@@ -27,8 +27,7 @@ SELECT
           )
       WHEN metric_type IN ("boolean")
         THEN ['always', 'never', 'sometimes']
-    END
-    ,
+    END,
     SUM(count)
   ) AS aggregates
 FROM

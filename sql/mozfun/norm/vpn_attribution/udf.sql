@@ -23,8 +23,7 @@ RETURNS STRUCT<
         OR utm_source != "(direct)"
         THEN "Website"
       ELSE "Unknown"
-    END
-    AS normalized_acquisition_channel,
+    END AS normalized_acquisition_channel,
     COALESCE(utm_campaign, "(not set)") AS normalized_campaign,
     COALESCE(utm_content, "(not set)") AS normalized_content,
     COALESCE(utm_medium, "(none)") AS normalized_medium,
@@ -44,8 +43,7 @@ RETURNS STRUCT<
         OR utm_source LIKE "mozilla.org-whatsnew%"
         THEN "Marketing Owned Media Channels"
       ELSE "Unpaid Channels"
-    END
-    AS website_channel_group
+    END AS website_channel_group
   )
 );
 

@@ -16,8 +16,7 @@ WITH with_hits AS (
       WHEN hits.isEntrance IS NOT NULL
         THEN 1
       ELSE 0
-    END
-    AS entrance,
+    END AS entrance,
     SPLIT(hits.page.pagePathLevel1, '/')[SAFE_OFFSET(1)] AS blog,
     SPLIT(hits.page.pagePathLevel2, '/')[SAFE_OFFSET(1)] AS page_path_level2
   FROM
@@ -74,8 +73,7 @@ sessions_intermediate AS (
         )
         THEN LOWER(blog)
       ELSE 'other'
-    END
-    AS blog,
+    END AS blog,
     CASE
       WHEN blog = "firefox"
         AND page_path_level2 IN ('ru', 'pt-br', 'pl', 'it', 'id', 'fr', 'es', 'de')
@@ -100,8 +98,7 @@ sessions_intermediate AS (
         AND page_path_level2 IN ('de', 'fr')
         THEN page_path_level2
       ELSE "Main"
-    END
-    AS subblog,
+    END AS subblog,
     ROW_NUMBER() OVER (
       PARTITION BY
         visit_identifier

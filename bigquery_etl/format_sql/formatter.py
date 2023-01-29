@@ -67,13 +67,11 @@ def simple_format(tokens, indent="  "):
             while indent_types and indent_types.pop() is not BlockKeyword:
                 pass
             prev_was_statement_separator = False
-        elif isinstance(token, CaseSubclause) and token.value.upper() in (
-            "WHEN",
-            "ELSE",
-        ):
-            # Have WHEN and ELSE clauses within CASE indented one level more than CASE.
-            while indent_types and indent_types[-1] is not BlockKeyword:
-                indent_types.pop()
+        elif isinstance(token, CaseSubclause):
+            if token.value.upper() in ("WHEN", "ELSE"):
+                # Have WHEN and ELSE clauses indented one level more than CASE.
+                while indent_types and indent_types[-1] is not BlockKeyword:
+                    indent_types.pop()
         elif isinstance(token, (AliasSeparator, ExpressionSeparator)):
             if prev_was_block_end:
                 require_newline_before_next_token = False

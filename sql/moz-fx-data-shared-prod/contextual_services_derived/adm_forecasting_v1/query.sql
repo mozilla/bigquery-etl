@@ -24,7 +24,7 @@ WITH client_counts AS (
   -- FIREFOX DESKTOP ELIGIBILITY REQUIREMENTS
         WHEN normalized_app_name = "Firefox Desktop"
           AND (
-        -- desktop tiles default on
+            -- desktop tiles default on
             (
               submission_date >= "2021-09-07"
               AND browser_version_info.major_version > 92
@@ -33,7 +33,7 @@ WITH client_counts AS (
               )
             )
             OR
-        -- Japan desktop now default on
+            -- Japan desktop now default on
             (
               submission_date >= "2022-01-25"
               AND browser_version_info.major_version > 92

@@ -694,26 +694,23 @@ glean_flattened_searches AS (
       WHEN search.search_type = 'sap'
         THEN normalize_fenix_search_key(search.key)[SAFE_OFFSET(0)]
       WHEN search.search_type = 'in-content'
-        THEN
-      -- key format is engine.in-content.type.code
-          SPLIT(search.key, '.')[SAFE_OFFSET(0)]
+        -- key format is engine.in-content.type.code
+        THEN SPLIT(search.key, '.')[SAFE_OFFSET(0)]
       WHEN search.search_type = 'ad-click'
         OR search.search_type = 'search-with-ads'
-        THEN
-      -- ad-click key format is engine.in-content.type.code for builds starting 2021-03-16
-      -- otherwise key is engine
-          SPLIT(search.key, '.')[SAFE_OFFSET(0)]
+        -- ad-click key format is engine.in-content.type.code for builds starting 2021-03-16
+        -- otherwise key is engine
+        THEN SPLIT(search.key, '.')[SAFE_OFFSET(0)]
       ELSE NULL
     END AS engine,
     CASE
       WHEN search.search_type = 'sap'
         THEN normalize_fenix_search_key(search.key)[SAFE_OFFSET(1)]
       WHEN search.search_type = 'in-content'
-        THEN
-      -- Drop engine from search key to get source
-      -- Key should look like `engine.in-content.sap.code` with possible
-      -- additional period-separated segments (e.g. .ts for top sites)
-          IF(
+        -- Drop engine from search key to get source
+        -- Key should look like `engine.in-content.sap.code` with possible
+        -- additional period-separated segments (e.g. .ts for top sites)
+        THEN IF(
             STRPOS(search.key, '.') IN (0, LENGTH(search.key)),
             NULL,
             SUBSTR(search.key, STRPOS(search.key, '.') + 1)

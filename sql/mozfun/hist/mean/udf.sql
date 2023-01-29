@@ -17,8 +17,8 @@ CREATE OR REPLACE FUNCTION hist.mean(histogram ANY TYPE) AS (
           histogram.sum / (
             SELECT
               SUM(
-              -- Truncate pathological values that are beyond the documented limits per
-              -- https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/collection/histograms.html#histogram-values
+                -- Truncate pathological values that are beyond the documented limits per
+                -- https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/collection/histograms.html#histogram-values
                 LEAST(2147483648, value)
               )
             FROM

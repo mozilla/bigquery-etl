@@ -271,9 +271,8 @@ android_iap_periods AS (
         WHEN CONTAINS_SUBSTR(sku, ".12_month_subscription")
           THEN ("year", 1)
         WHEN CONTAINS_SUBSTR(sku, ".1_day_subscription")
-          THEN
-        -- only used for testing
-            ("day", 1)
+          -- only used for testing
+          THEN ("day", 1)
       END
     ).*,
     (

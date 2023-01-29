@@ -11,13 +11,11 @@ RETURNS ARRAY<INT64> AS (
       SELECT
         CASE
           WHEN metric_type = 'timing_distribution'
-            THEN
-          -- https://mozilla.github.io/glean/book/user/metrics/timing_distribution.html
-              mozfun.glam.histogram_generate_functional_buckets(2, 8, range_max)
+            -- https://mozilla.github.io/glean/book/user/metrics/timing_distribution.html
+            THEN mozfun.glam.histogram_generate_functional_buckets(2, 8, range_max)
           WHEN metric_type = 'memory_distribution'
-            THEN
-          -- https://mozilla.github.io/glean/book/user/metrics/memory_distribution.html
-              mozfun.glam.histogram_generate_functional_buckets(2, 16, range_max)
+            -- https://mozilla.github.io/glean/book/user/metrics/memory_distribution.html
+            THEN mozfun.glam.histogram_generate_functional_buckets(2, 16, range_max)
           WHEN metric_type = 'custom_distribution_exponential'
             THEN mozfun.glam.histogram_generate_exponential_buckets(
                 range_min,

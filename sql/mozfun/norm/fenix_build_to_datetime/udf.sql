@@ -3,10 +3,9 @@ CREATE OR REPLACE FUNCTION norm.fenix_build_to_datetime(app_build STRING) AS (
     WHEN LENGTH(app_build) = 8
       AND SUBSTR(app_build, 5, 2) < "24"
       AND SUBSTR(app_build, 7, 2) < "60"
-      THEN
-    -- Ideally, we would use PARSE_DATETIME, but that doesn't support
-    -- day of year (%j) or the custom single-character year used here.
-        DATETIME_ADD(
+      -- Ideally, we would use PARSE_DATETIME, but that doesn't support
+      -- day of year (%j) or the custom single-character year used here.
+      THEN DATETIME_ADD(
           DATETIME(
             2018 + SAFE_CAST(
               SUBSTR(app_build, 1, 1) AS INT64
@@ -24,9 +23,9 @@ CREATE OR REPLACE FUNCTION norm.fenix_build_to_datetime(app_build STRING) AS (
           DATETIME '2014-12-28 00:00:00',
           INTERVAL(
             SAFE_CAST(app_build AS INT64)
-        -- We shift left and then right again to erase all but the 20 rightmost bits
+            -- We shift left and then right again to erase all but the 20 rightmost bits
             << (64 - 20) >> (64 - 20)
-        -- We then shift right to erase the last 3 bits, leaving just the 17 representing time
+            -- We then shift right to erase the last 3 bits, leaving just the 17 representing time
             >> 3
           ) HOUR
         )

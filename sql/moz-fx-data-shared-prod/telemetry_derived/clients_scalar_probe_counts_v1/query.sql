@@ -30,24 +30,16 @@ RETURNS ARRAY<
         agg_type,
         CASE
           agg_type
-        WHEN
-          'true'
-        THEN
-          value
-        ELSE
-          0
-        END
-        AS bool_true,
+          WHEN 'true'
+            THEN value
+          ELSE 0
+        END AS bool_true,
         CASE
           agg_type
-        WHEN
-          'false'
-        THEN
-          value
-        ELSE
-          0
-        END
-        AS bool_false
+          WHEN 'false'
+            THEN value
+          ELSE 0
+        END AS bool_false
       FROM
         UNNEST(scalar_aggs)
       WHERE
@@ -74,23 +66,16 @@ RETURNS ARRAY<
       SELECT
         * EXCEPT (bool_true, bool_false),
         CASE
-        WHEN
-          bool_true > 0
-          AND bool_false > 0
-        THEN
-          "sometimes"
-        WHEN
-          bool_true > 0
-          AND bool_false = 0
-        THEN
-          "always"
-        WHEN
-          bool_true = 0
-          AND bool_false > 0
-        THEN
-          "never"
-        END
-        AS bucket
+          WHEN bool_true > 0
+            AND bool_false > 0
+            THEN "sometimes"
+          WHEN bool_true > 0
+            AND bool_false = 0
+            THEN "always"
+          WHEN bool_true = 0
+            AND bool_false > 0
+            THEN "never"
+        END AS bucket
       FROM
         summed_bools
       WHERE
@@ -205,20 +190,13 @@ build_ids AS (
     -- Filter out builds having less than 0.5% of WAU
     -- for context see https://github.com/mozilla/glam/issues/1575#issuecomment-946880387
     CASE
-    WHEN
-      channel = 'release'
-    THEN
-      SUM(user_count) > 625000
-    WHEN
-      channel = 'beta'
-    THEN
-      SUM(user_count) > 9000
-    WHEN
-      channel = 'nightly'
-    THEN
-      SUM(user_count) > 375
-    ELSE
-      SUM(user_count) > 100
+      WHEN channel = 'release'
+        THEN SUM(user_count) > 625000
+      WHEN channel = 'beta'
+        THEN SUM(user_count) > 9000
+      WHEN channel = 'nightly'
+        THEN SUM(user_count) > 375
+      ELSE SUM(user_count) > 100
     END
 ),
 bucketed_booleans AS (
@@ -336,24 +314,19 @@ SELECT
   agg_type,
   SUM(user_count) AS total_users,
   CASE
-  WHEN
-    metric_type = 'scalar'
-    OR metric_type = 'keyed-scalar'
-  THEN
-    mozfun.glam.histogram_fill_buckets(
-      ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, user_count)),
-      ANY_VALUE(buckets)
-    )
-  WHEN
-    metric_type = 'boolean'
-    OR metric_type = 'keyed-scalar-boolean'
-  THEN
-    mozfun.glam.histogram_fill_buckets(
-      ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, user_count)),
-      ['always', 'never', 'sometimes']
-    )
-  END
-  AS aggregates
+    WHEN metric_type = 'scalar'
+      OR metric_type = 'keyed-scalar'
+      THEN mozfun.glam.histogram_fill_buckets(
+          ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, user_count)),
+          ANY_VALUE(buckets)
+        )
+    WHEN metric_type = 'boolean'
+      OR metric_type = 'keyed-scalar-boolean'
+      THEN mozfun.glam.histogram_fill_buckets(
+          ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, user_count)),
+          ['always', 'never', 'sometimes']
+        )
+  END AS aggregates
 FROM
   clients_scalar_bucket_counts
 LEFT JOIN

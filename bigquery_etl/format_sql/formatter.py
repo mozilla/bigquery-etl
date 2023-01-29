@@ -9,6 +9,7 @@ from .tokenizer import (
     BlockKeyword,
     BlockStartKeyword,
     BuiltInFunctionIdentifier,
+    CaseSubclause,
     ClosingBracket,
     Comment,
     ExpressionSeparator,
@@ -65,6 +66,13 @@ def simple_format(tokens, indent="  "):
             while indent_types and indent_types.pop() is not BlockKeyword:
                 pass
             prev_was_statement_separator = False
+        elif isinstance(token, CaseSubclause) and token.value.upper() in (
+            "WHEN",
+            "ELSE",
+        ):
+            # Have WHEN and ELSE clauses within CASE indented one level more than CASE.
+            while indent_types and indent_types[-1] is not BlockKeyword:
+                indent_types.pop()
 
         # yield whitespace
         if not can_format or isinstance(token, StatementSeparator) or first_token:
@@ -137,7 +145,7 @@ def simple_format(tokens, indent="  "):
         elif isinstance(token, BlockStartKeyword):
             # increase indent
             indent_types.append(BlockKeyword)
-        elif isinstance(token, (TopLevelKeyword, OpeningBracket)):
+        elif isinstance(token, (TopLevelKeyword, OpeningBracket, CaseSubclause)):
             # increase indent
             indent_types.append(type(token))
         elif isinstance(token, StatementSeparator):
@@ -266,6 +274,7 @@ def inline_block_format(tokens, max_line_length=100):
             pending_lines = 0
             pending = []
             last_token_was_opening_bracket = line.ends_with_opening_bracket
+            open_brackets = 1
             index += 1  # start on the next line
             for line in lines[index:]:
                 if not line.can_format:
@@ -281,7 +290,9 @@ def inline_block_format(tokens, max_line_length=100):
                 line_length += line.inline_length
                 if line_length > max_line_length:
                     break
-                if line.indent_level <= indent_level:
+                if line.starts_with_closing_bracket:
+                    open_brackets -= 1
+                if open_brackets == 0:
                     # flush pending and handle next block if present
                     yield from pending
                     skip_lines += pending_lines
@@ -290,6 +301,8 @@ def inline_block_format(tokens, max_line_length=100):
                         pending = []
                     else:
                         break
+                if line.ends_with_opening_bracket:
+                    open_brackets += 1
                 last_token_was_opening_bracket = line.ends_with_opening_bracket
 
 

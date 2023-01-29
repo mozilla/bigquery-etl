@@ -34,6 +34,7 @@ def simple_format(tokens, indent="  "):
     require_newline_before_next_token = False
     allow_space_before_next_bracket = False
     allow_space_before_next_token = False
+    prev_was_block_end = False
     prev_was_statement_separator = False
     prev_was_unary_operator = False
     next_operator_is_unary = True
@@ -73,6 +74,9 @@ def simple_format(tokens, indent="  "):
             # Have WHEN and ELSE clauses within CASE indented one level more than CASE.
             while indent_types and indent_types[-1] is not BlockKeyword:
                 indent_types.pop()
+        elif isinstance(token, (AliasSeparator, ExpressionSeparator)):
+            if prev_was_block_end:
+                require_newline_before_next_token = False
 
         # yield whitespace
         if not can_format or isinstance(token, StatementSeparator) or first_token:
@@ -129,6 +133,7 @@ def simple_format(tokens, indent="  "):
             ),
         )
         allow_space_before_next_token = not isinstance(token, FieldAccessOperator)
+        prev_was_block_end = isinstance(token, BlockEndKeyword)
         prev_was_statement_separator = isinstance(token, StatementSeparator)
         prev_was_unary_operator = next_operator_is_unary and isinstance(token, Operator)
         if not isinstance(token, Comment):

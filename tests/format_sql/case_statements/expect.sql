@@ -15,10 +15,7 @@ SELECT
           "firefox_desktop" AS app_name,
           "Firefox" AS product,
           "Firefox for Desktop" AS canonical_app_name,
-          "Firefox for Desktop" AS canonical_name,
-          TRUE AS contributes_to_2019_kpi,
-          TRUE AS contributes_to_2020_kpi,
-          TRUE AS contributes_to_2021_kpi
+          "Firefox for Desktop" AS canonical_name
         )
   END AS case_2,
   IF(
@@ -30,4 +27,9 @@ SELECT
         THEN ("home-panel", value)
     END,
     NULL
-  ) AS case_3
+  ) AS case_3,
+  CASE
+    WHEN flag
+      THEN STRUCT(1 AS case_4a, 2 AS case_4b)
+    ELSE STRUCT(3 AS case_4a, 4 AS case_4b)
+  END.*

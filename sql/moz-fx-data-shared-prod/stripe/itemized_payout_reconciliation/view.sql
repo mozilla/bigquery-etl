@@ -73,7 +73,6 @@ SELECT
       AND REGEXP_CONTAINS(postal_code, "^008[0-9]{2}(-?[0-9]{4})?$")
       THEN STRUCT("VI" AS card_country, NULL AS state)
     ELSE STRUCT(card_country, state)
-  END
-  .*,
+  END.*,
 FROM
   enriched

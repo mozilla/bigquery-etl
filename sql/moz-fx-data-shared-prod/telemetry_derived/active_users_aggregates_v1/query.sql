@@ -38,13 +38,10 @@ todays_metrics_enriched AS (
   SELECT
     todays_metrics.* EXCEPT (locale),
     CASE
-    WHEN
-      locale IS NOT NULL
-      AND languages.language_name IS NULL
-    THEN
-      'Other'
-    ELSE
-      languages.language_name
+      WHEN locale IS NOT NULL
+        AND languages.language_name IS NULL
+        THEN 'Other'
+      ELSE languages.language_name
     END
     AS language_name,
   FROM

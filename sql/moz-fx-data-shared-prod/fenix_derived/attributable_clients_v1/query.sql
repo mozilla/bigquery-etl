@@ -75,42 +75,27 @@ SELECT
   adjust_creative,
   first_seen_date = submission_date AS is_new_profile,
   CASE
-  WHEN
-    client_day.has_search_data
-  THEN
-    client_day.searches
-  WHEN
-    metrics_searches.has_search_data
-  THEN
-    metrics_searches.searches
-  ELSE
-    0
+    WHEN client_day.has_search_data
+      THEN client_day.searches
+    WHEN metrics_searches.has_search_data
+      THEN metrics_searches.searches
+    ELSE 0
   END
   AS searches,
   CASE
-  WHEN
-    client_day.has_search_data
-  THEN
-    client_day.searches_with_ads
-  WHEN
-    metrics_searches.has_search_data
-  THEN
-    metrics_searches.searches_with_ads
-  ELSE
-    0
+    WHEN client_day.has_search_data
+      THEN client_day.searches_with_ads
+    WHEN metrics_searches.has_search_data
+      THEN metrics_searches.searches_with_ads
+    ELSE 0
   END
   AS searches_with_ads,
   CASE
-  WHEN
-    client_day.has_search_data
-  THEN
-    client_day.ad_clicks
-  WHEN
-    metrics_searches.has_search_data
-  THEN
-    metrics_searches.ad_clicks
-  ELSE
-    0
+    WHEN client_day.has_search_data
+      THEN client_day.ad_clicks
+    WHEN metrics_searches.has_search_data
+      THEN metrics_searches.ad_clicks
+    ELSE 0
   END
   AS ad_clicks,
 FROM

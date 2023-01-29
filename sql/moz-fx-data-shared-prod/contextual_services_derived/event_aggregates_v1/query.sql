@@ -11,12 +11,9 @@ WITH combined AS (
     release_channel,
     position,
     CASE
-    WHEN
-      request_id IS NULL
-    THEN
-      'remote settings'
-    ELSE
-      'merino'
+      WHEN request_id IS NULL
+        THEN 'remote settings'
+      ELSE 'merino'
     END
     AS provider,
     match_type,
@@ -42,12 +39,9 @@ WITH combined AS (
     release_channel,
     position,
     CASE
-    WHEN
-      request_id IS NULL
-    THEN
-      'remote settings'
-    ELSE
-      'merino'
+      WHEN request_id IS NULL
+        THEN 'remote settings'
+      ELSE 'merino'
     END
     AS provider,
     match_type,
@@ -73,12 +67,9 @@ WITH combined AS (
     release_channel,
     position,
     CASE
-    WHEN
-      reporting_url IS NULL
-    THEN
-      'remote settings'
-    ELSE
-      'contile'
+      WHEN reporting_url IS NULL
+        THEN 'remote settings'
+      ELSE 'contile'
     END
     AS provider,
     -- `match_type` is only available for `quicksuggest_*` tables
@@ -101,12 +92,9 @@ WITH combined AS (
     release_channel,
     position,
     CASE
-    WHEN
-      reporting_url IS NULL
-    THEN
-      'remote settings'
-    ELSE
-      'contile'
+      WHEN reporting_url IS NULL
+        THEN 'remote settings'
+      ELSE 'contile'
     END
     AS provider,
     -- `match_type` is only available for `quicksuggest_*` tables

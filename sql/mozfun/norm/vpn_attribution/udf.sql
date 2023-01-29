@@ -15,19 +15,14 @@ RETURNS STRUCT<
   STRUCT(
       -- normalized_acquisition_channel
     CASE
-    WHEN
-      utm_source = "firefox-browser"
-    THEN
-      "Website: Firefox Browser"
-    WHEN
-      utm_campaign != "(not set)"
-      OR utm_content != "(not set)"
-      OR utm_medium != "(none)"
-      OR utm_source != "(direct)"
-    THEN
-      "Website"
-    ELSE
-      "Unknown"
+      WHEN utm_source = "firefox-browser"
+        THEN "Website: Firefox Browser"
+      WHEN utm_campaign != "(not set)"
+        OR utm_content != "(not set)"
+        OR utm_medium != "(none)"
+        OR utm_source != "(direct)"
+        THEN "Website"
+      ELSE "Unknown"
     END
     AS normalized_acquisition_channel,
     COALESCE(utm_campaign, "(not set)") AS normalized_campaign,
@@ -36,26 +31,19 @@ RETURNS STRUCT<
     COALESCE(utm_source, "(direct)") AS normalized_source,
       -- website_channel_group
     CASE
-    WHEN
-      utm_source = "firefox-browser"
-    THEN
-      "Owned In-Product Channels"
-    WHEN
-      utm_medium IN ("banner", "cpc", "display", "paidsearch", "ppc", "affiliate", "cpm")
-    THEN
-      "Paid Channels"
-    WHEN
-      utm_medium IN ("email", "snippet")
-      OR utm_source IN (
-        "leanplum-push-notification",
-        "www.mozilla.org-whatsnew",
-        "www.mozilla.org-welcome"
-      )
-      OR utm_source LIKE "mozilla.org-whatsnew%"
-    THEN
-      "Marketing Owned Media Channels"
-    ELSE
-      "Unpaid Channels"
+      WHEN utm_source = "firefox-browser"
+        THEN "Owned In-Product Channels"
+      WHEN utm_medium IN ("banner", "cpc", "display", "paidsearch", "ppc", "affiliate", "cpm")
+        THEN "Paid Channels"
+      WHEN utm_medium IN ("email", "snippet")
+        OR utm_source IN (
+          "leanplum-push-notification",
+          "www.mozilla.org-whatsnew",
+          "www.mozilla.org-welcome"
+        )
+        OR utm_source LIKE "mozilla.org-whatsnew%"
+        THEN "Marketing Owned Media Channels"
+      ELSE "Unpaid Channels"
     END
     AS website_channel_group
   )

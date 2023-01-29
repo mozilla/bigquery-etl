@@ -15,18 +15,12 @@ WITH deduped AS (
 )
 SELECT
   CASE
-  WHEN
-    channel = "nightly"
-  THEN
-    1
-  WHEN
-    channel = "beta"
-  THEN
-    2
-  WHEN
-    channel = "release"
-  THEN
-    3
+    WHEN channel = "nightly"
+      THEN 1
+    WHEN channel = "beta"
+      THEN 2
+    WHEN channel = "release"
+      THEN 3
   END
   AS channel,
   app_version,

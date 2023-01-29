@@ -2,20 +2,17 @@
 CREATE TEMP FUNCTION normalize_adjust_network(key STRING) AS (
   (
     CASE
-    WHEN
-      key NOT IN (
-        '',
-        'Organic',
-        'Google Organic Search',
-        'Untrusted Devices',
-        'Product Marketing (Owned media)',
-        'Google Ads ACI'
-      )
-      AND key IS NOT NULL
-    THEN
-      'Other'
-    ELSE
-      key
+      WHEN key NOT IN (
+          '',
+          'Organic',
+          'Google Organic Search',
+          'Untrusted Devices',
+          'Product Marketing (Owned media)',
+          'Google Ads ACI'
+        )
+        AND key IS NOT NULL
+        THEN 'Other'
+      ELSE key
     END
   )
 );

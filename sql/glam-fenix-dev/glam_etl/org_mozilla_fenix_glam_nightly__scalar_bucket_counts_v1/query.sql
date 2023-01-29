@@ -16,22 +16,16 @@ RETURNS ARRAY<
         agg_type,
         CASE
           agg_type
-        WHEN
-          'true'
-        THEN
-          value
-        ELSE
-          0
+          WHEN 'true'
+            THEN value
+          ELSE 0
         END
         AS bool_true,
         CASE
           agg_type
-        WHEN
-          'false'
-        THEN
-          value
-        ELSE
-          0
+          WHEN 'false'
+            THEN value
+          ELSE 0
         END
         AS bool_false
       FROM
@@ -59,21 +53,15 @@ RETURNS ARRAY<
       SELECT
         * EXCEPT (bool_true, bool_false),
         CASE
-        WHEN
-          bool_true > 0
-          AND bool_false > 0
-        THEN
-          "sometimes"
-        WHEN
-          bool_true > 0
-          AND bool_false = 0
-        THEN
-          "always"
-        WHEN
-          bool_true = 0
-          AND bool_false > 0
-        THEN
-          "never"
+          WHEN bool_true > 0
+            AND bool_false > 0
+            THEN "sometimes"
+          WHEN bool_true > 0
+            AND bool_false = 0
+            THEN "always"
+          WHEN bool_true = 0
+            AND bool_false > 0
+            THEN "never"
         END
         AS bucket
       FROM

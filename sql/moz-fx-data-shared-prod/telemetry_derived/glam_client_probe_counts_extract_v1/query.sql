@@ -42,13 +42,10 @@ glam_sample_counts AS (
     fsc1.process,
     fsc1.agg_type,
     CASE
-    WHEN
-      fsc1.agg_type IN ('max', 'min', 'sum', 'avg')
-      AND fsc2.agg_type = 'count'
-    THEN
-      fsc2.total_sample
-    ELSE
-      fsc1.total_sample
+      WHEN fsc1.agg_type IN ('max', 'min', 'sum', 'avg')
+        AND fsc2.agg_type = 'count'
+        THEN fsc2.total_sample
+      ELSE fsc1.total_sample
     END
     AS total_sample
   FROM
@@ -79,12 +76,9 @@ SELECT
   histogram,
   percentiles,
   CASE
-  WHEN
-    client_agg_type = ''
-  THEN
-    0
-  ELSE
-    total_sample
+    WHEN client_agg_type = ''
+      THEN 0
+    ELSE total_sample
   END
   AS total_sample
 FROM

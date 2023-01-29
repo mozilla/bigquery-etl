@@ -129,42 +129,26 @@ relay_subscriptions_with_end_date AS (
 SELECT
   * REPLACE (
     CASE
-    WHEN
-      subscription_start_date IS NULL
-    THEN
-      NULL
-    WHEN
-      subscription_start_reason IS NOT NULL
-    THEN
-      subscription_start_reason
-    WHEN
-      trial_start IS NOT NULL
-    THEN
-      "Converted Trial"
-    WHEN
-      DATE(subscription_start_date) = DATE(customer_start_date)
-    THEN
-      "New"
-    ELSE
-      "Resurrected"
+      WHEN subscription_start_date IS NULL
+        THEN NULL
+      WHEN subscription_start_reason IS NOT NULL
+        THEN subscription_start_reason
+      WHEN trial_start IS NOT NULL
+        THEN "Converted Trial"
+      WHEN DATE(subscription_start_date) = DATE(customer_start_date)
+        THEN "New"
+      ELSE "Resurrected"
     END
     AS subscription_start_reason,
     CASE
-    WHEN
-      ended_at IS NULL
-    THEN
-      NULL
-    WHEN
-      ended_reason IS NOT NULL
-    THEN
-      ended_reason
-    WHEN
-      canceled_for_customer_at IS NOT NULL
-      OR cancel_at_period_end
-    THEN
-      "Cancelled by Customer"
-    ELSE
-      "Payment Failed"
+      WHEN ended_at IS NULL
+        THEN NULL
+      WHEN ended_reason IS NOT NULL
+        THEN ended_reason
+      WHEN canceled_for_customer_at IS NOT NULL
+        OR cancel_at_period_end
+        THEN "Cancelled by Customer"
+      ELSE "Payment Failed"
     END
     AS ended_reason
   ),

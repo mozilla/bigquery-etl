@@ -2,25 +2,17 @@
 SELECT
   submission_date,
   CASE
-  WHEN
-    country IN ('US', 'DE', 'FR', 'GB', 'CA')
-  THEN
-    country
-  ELSE
-    'non-Tier1'
+    WHEN country IN ('US', 'DE', 'FR', 'GB', 'CA')
+      THEN country
+    ELSE 'non-Tier1'
   END
   AS geo,
   CASE
-  WHEN
-    is_regular_user_v3
-  THEN
-    'regular'
-  WHEN
-    is_new_or_resurrected_v3
-  THEN
-    'new_or_resurrected'
-  ELSE
-    'irregular' -- originally use 'other', but suggested to use 'irregular'
+    WHEN is_regular_user_v3
+      THEN 'regular'
+    WHEN is_new_or_resurrected_v3
+      THEN 'new_or_resurrected'
+    ELSE 'irregular' -- originally use 'other', but suggested to use 'irregular'
   END
   AS user_state,
   COUNT(client_id) AS client_count,

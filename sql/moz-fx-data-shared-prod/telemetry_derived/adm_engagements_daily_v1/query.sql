@@ -57,49 +57,33 @@ WITH topsites_temp AS (
     country,
     -- for phase 2, the events were structured differently. info contained in map
     CASE
-    WHEN
-      contains_phase_2_experiment(experiments)
-    THEN
-      udf.get_key(event_map_values, 'source')
-    ELSE
-      event_object
+      WHEN contains_phase_2_experiment(experiments)
+        THEN udf.get_key(event_map_values, 'source')
+      ELSE event_object
     END
     AS placement,
     CASE
-    WHEN
-      contains_phase_2_experiment(experiments)
-    THEN
-      udf.get_key(event_map_values, 'partner')
-    ELSE
-      event_string_value
+      WHEN contains_phase_2_experiment(experiments)
+        THEN udf.get_key(event_map_values, 'partner')
+      ELSE event_string_value
     END
     AS partner,
     CASE
-    WHEN
-      contains_phase_2_experiment(experiments)
-    THEN
-      event_object
-    ELSE
-      event_method
+      WHEN contains_phase_2_experiment(experiments)
+        THEN event_object
+      ELSE event_method
     END
     AS interaction,
     SPLIT(app_version, '.')[OFFSET(0)] AS version,
     normalized_channel,
     CASE
-    WHEN
-      contains_phase_2_experiment(experiments)
-    THEN
-      'phase2'
-    WHEN
-      contains_phase_3_experiment(experiments)
-    THEN
-      'phase3'
-    WHEN
-      contains_rollout_experiment(experiments)
-    THEN
-      'rollout'
-    ELSE
-      NULL
+      WHEN contains_phase_2_experiment(experiments)
+        THEN 'phase2'
+      WHEN contains_phase_3_experiment(experiments)
+        THEN 'phase3'
+      WHEN contains_rollout_experiment(experiments)
+        THEN 'rollout'
+      ELSE NULL
     END
     AS phase
   FROM
@@ -121,20 +105,13 @@ searchmode_temp AS (
     SPLIT(app_version, '.')[OFFSET(0)] AS version,
     channel AS normalized_channel,
     CASE
-    WHEN
-      contains_phase_2_experiment(experiments)
-    THEN
-      'phase2'
-    WHEN
-      contains_phase_3_experiment(experiments)
-    THEN
-      'phase3'
-    WHEN
-      contains_rollout_experiment(experiments)
-    THEN
-      'rollout'
-    ELSE
-      NULL
+      WHEN contains_phase_2_experiment(experiments)
+        THEN 'phase2'
+      WHEN contains_phase_3_experiment(experiments)
+        THEN 'phase3'
+      WHEN contains_rollout_experiment(experiments)
+        THEN 'rollout'
+      ELSE NULL
     END
     AS phase
   FROM

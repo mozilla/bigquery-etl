@@ -53,22 +53,15 @@ SELECT
   receipt_info.revocation_date,
   receipt_info.revocation_reason,
   CASE -- https://developer.apple.com/documentation/appstoreserverapi/status
-  WHEN
-    receipt_info.source = "receipt.in_app"
-  THEN
-    1 -- subscription was active for the values in this receipt
-  WHEN
-    TIMESTAMP_MILLIS(
-      legacy_subscriptions.apple_receipt.receipt.request_date_ms
-    ) < receipt_info.expires_date
-  THEN
-    1
-  WHEN
-    renewal_info.is_in_billing_retry
-  THEN
-    3
-  ELSE
-    2
+    WHEN receipt_info.source = "receipt.in_app"
+      THEN 1 -- subscription was active for the values in this receipt
+    WHEN TIMESTAMP_MILLIS(
+        legacy_subscriptions.apple_receipt.receipt.request_date_ms
+      ) < receipt_info.expires_date
+      THEN 1
+    WHEN renewal_info.is_in_billing_retry
+      THEN 3
+    ELSE 2
   END
   AS status,
   "Auto-Renewable Subscription" AS type,

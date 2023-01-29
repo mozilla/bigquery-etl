@@ -56,42 +56,28 @@ kurtosis_parts AS (
     * EXCEPT (subtest_replicate),
     CASE
       rc_replicate_aggregator
-    WHEN
-      'use_existing'
-    THEN
-      subtest_value
-    WHEN
-      'mean'
-    THEN
-      AVG(subtest_replicate) OVER (replicate_window)
-    WHEN
-      'median'
-    THEN
-      PERCENTILE_CONT(subtest_replicate, 0.5) OVER (replicate_window)
-    WHEN
-      'geomean'
-    THEN
+      WHEN 'use_existing'
+        THEN subtest_value
+      WHEN 'mean'
+        THEN AVG(subtest_replicate) OVER (replicate_window)
+      WHEN 'median'
+        THEN PERCENTILE_CONT(subtest_replicate, 0.5) OVER (replicate_window)
+      WHEN 'geomean'
+        THEN
         -- Adding 1 to the replicate value then subtracting 1 from the result ensures that a value is always returned.
         -- Maintaining here to be consistent with how the perf test framework calculates geomean: https://searchfox.org/mozilla-central/source/testing/talos/talos/filter.py#174
-      EXP(
-        AVG(LN(IF(rc_replicate_aggregator = 'geomean', subtest_replicate + 1, NULL))) OVER (
-          replicate_window
-        )
-      ) - 1
-    WHEN
-      'max'
-    THEN
-      MAX(subtest_replicate) OVER (replicate_window)
-    WHEN
-      'min'
-    THEN
-      MIN(subtest_replicate) OVER (replicate_window)
-    WHEN
-      'sum'
-    THEN
-      SUM(subtest_replicate) OVER (replicate_window)
-    ELSE
-      ERROR(CONCAT('Unknown replicate aggregator: ', rc_replicate_aggregator))
+          EXP(
+            AVG(LN(IF(rc_replicate_aggregator = 'geomean', subtest_replicate + 1, NULL))) OVER (
+              replicate_window
+            )
+          ) - 1
+      WHEN 'max'
+        THEN MAX(subtest_replicate) OVER (replicate_window)
+      WHEN 'min'
+        THEN MIN(subtest_replicate) OVER (replicate_window)
+      WHEN 'sum'
+        THEN SUM(subtest_replicate) OVER (replicate_window)
+      ELSE ERROR(CONCAT('Unknown replicate aggregator: ', rc_replicate_aggregator))
     END
     AS rc_subtest_value,
     AVG(subtest_replicate) OVER (replicate_window) AS rc_replicate_mean,
@@ -152,42 +138,28 @@ tests AS (
     ),
     CASE
       rc_subtest_aggregator
-    WHEN
-      'use_existing'
-    THEN
-      rc_subtest_value
-    WHEN
-      'mean'
-    THEN
-      AVG(rc_subtest_value) OVER (subtest_window)
-    WHEN
-      'median'
-    THEN
-      PERCENTILE_CONT(rc_subtest_value, 0.5) OVER (subtest_window)
-    WHEN
-      'geomean'
-    THEN
+      WHEN 'use_existing'
+        THEN rc_subtest_value
+      WHEN 'mean'
+        THEN AVG(rc_subtest_value) OVER (subtest_window)
+      WHEN 'median'
+        THEN PERCENTILE_CONT(rc_subtest_value, 0.5) OVER (subtest_window)
+      WHEN 'geomean'
+        THEN
       -- Adding 1 to the subtest value then subtracting 1 from the result ensures that a value is always returned.
       -- Maintaining here to be consistent with how the perf test framework calculates geomean: https://searchfox.org/mozilla-central/source/testing/talos/talos/filter.py#174
-      EXP(
-        AVG(LN(IF(rc_subtest_aggregator = 'geomean', rc_subtest_value + 1, NULL))) OVER (
-          subtest_window
-        )
-      ) - 1
-    WHEN
-      'max'
-    THEN
-      MAX(rc_subtest_value) OVER (subtest_window)
-    WHEN
-      'min'
-    THEN
-      MIN(rc_subtest_value) OVER (subtest_window)
-    WHEN
-      'sum'
-    THEN
-      SUM(rc_subtest_value) OVER (subtest_window)
-    ELSE
-      ERROR(CONCAT('Unknown subtest aggregator: ', rc_subtest_aggregator))
+          EXP(
+            AVG(LN(IF(rc_subtest_aggregator = 'geomean', rc_subtest_value + 1, NULL))) OVER (
+              subtest_window
+            )
+          ) - 1
+      WHEN 'max'
+        THEN MAX(rc_subtest_value) OVER (subtest_window)
+      WHEN 'min'
+        THEN MIN(rc_subtest_value) OVER (subtest_window)
+      WHEN 'sum'
+        THEN SUM(rc_subtest_value) OVER (subtest_window)
+      ELSE ERROR(CONCAT('Unknown subtest aggregator: ', rc_subtest_aggregator))
     END
     AS rc_test_value,
     AVG(rc_replicate_mean) OVER (subtest_window) AS rc_subtest_mean,
@@ -230,40 +202,25 @@ rc_tests AS (
     ),
     CASE
       rc_subtest_aggregator
-    WHEN
-      'use_existing'
-    THEN
-      rc_test_value
-    WHEN
-      'mean'
-    THEN
-      AVG(rc_test_value) OVER (test_window)
-    WHEN
-      'median'
-    THEN
-      PERCENTILE_CONT(rc_test_value, 0.5) OVER (test_window)
+      WHEN 'use_existing'
+        THEN rc_test_value
+      WHEN 'mean'
+        THEN AVG(rc_test_value) OVER (test_window)
+      WHEN 'median'
+        THEN PERCENTILE_CONT(rc_test_value, 0.5) OVER (test_window)
       -- Adding 1 to the subtest value then subtracting 1 from the result ensures that a value is always returned.
       -- Maintaining here to be consistent with how the perf test framework calculates geomean: https://searchfox.org/mozilla-central/source/testing/talos/talos/filter.py#174
-    WHEN
-      'geomean'
-    THEN
-      EXP(
-        AVG(LN(IF(rc_test_aggregator = 'geomean', rc_test_value + 1, NULL))) OVER (test_window)
-      ) - 1
-    WHEN
-      'max'
-    THEN
-      MAX(rc_test_value) OVER (test_window)
-    WHEN
-      'min'
-    THEN
-      MIN(rc_test_value) OVER (test_window)
-    WHEN
-      'sum'
-    THEN
-      SUM(rc_test_value) OVER (test_window)
-    ELSE
-      ERROR(CONCAT('Unknown subtest aggregator: ', rc_subtest_aggregator))
+      WHEN 'geomean'
+        THEN EXP(
+            AVG(LN(IF(rc_test_aggregator = 'geomean', rc_test_value + 1, NULL))) OVER (test_window)
+          ) - 1
+      WHEN 'max'
+        THEN MAX(rc_test_value) OVER (test_window)
+      WHEN 'min'
+        THEN MIN(rc_test_value) OVER (test_window)
+      WHEN 'sum'
+        THEN SUM(rc_test_value) OVER (test_window)
+      ELSE ERROR(CONCAT('Unknown subtest aggregator: ', rc_subtest_aggregator))
     END
     AS rc_value,
     AVG(rc_subtest_mean) OVER (test_window) AS rc_test_mean,
@@ -361,39 +318,29 @@ build_targets AS (
   SELECT
     * REPLACE (
       CASE
-      WHEN
-        rc_target_type = 'absolute'
-      THEN
-        'target'
-      WHEN
-        rc_target_type = 'relative'
-        AND rc_target_app IS NOT NULL
-      THEN
-        CONCAT('target (vs ', rc_target_app, ')')
-      WHEN
-        rc_target_type = 'relative'
-        AND rc_target_app IS NULL
-      THEN
-        ERROR(
-          CONCAT(
-            'Relative target with null rc_target_app: ',
-            platform,
-            framework,
-            project,
-            rc_test_name
-          )
-        )
+        WHEN rc_target_type = 'absolute'
+          THEN 'target'
+        WHEN rc_target_type = 'relative'
+          AND rc_target_app IS NOT NULL
+          THEN CONCAT('target (vs ', rc_target_app, ')')
+        WHEN rc_target_type = 'relative'
+          AND rc_target_app IS NULL
+          THEN ERROR(
+              CONCAT(
+                'Relative target with null rc_target_app: ',
+                platform,
+                framework,
+                project,
+                rc_test_name
+              )
+            )
       END
       AS app_name,
       CASE
-      WHEN
-        rc_target_type = 'absolute'
-      THEN
-        rc_target_value
-      WHEN
-        rc_target_type = 'relative'
-      THEN
-        rc_target_value * rc_value
+        WHEN rc_target_type = 'absolute'
+          THEN rc_target_value
+        WHEN rc_target_type = 'relative'
+          THEN rc_target_value * rc_value
       END
       AS rc_value
     )

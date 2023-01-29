@@ -8,18 +8,13 @@ WITH client_counts AS (
   -- want qualified desktop clients, any mobile clients
     (
       CASE
-      WHEN
-        normalized_app_name = "Firefox Desktop"
-        AND active_hours_sum > 0
-        AND uri_count > 0
-      THEN
-        'desktop'
-      WHEN
-        normalized_app_name != "Firefox Desktop"
-      THEN
-        'mobile'
-      ELSE
-        NULL
+        WHEN normalized_app_name = "Firefox Desktop"
+          AND active_hours_sum > 0
+          AND uri_count > 0
+          THEN 'desktop'
+        WHEN normalized_app_name != "Firefox Desktop"
+          THEN 'mobile'
+        ELSE NULL
       END
     ) AS device,
     submission_date,
@@ -27,43 +22,36 @@ WITH client_counts AS (
     COUNT(
       CASE
   -- FIREFOX DESKTOP ELIGIBILITY REQUIREMENTS
-      WHEN
-        normalized_app_name = "Firefox Desktop"
-        AND (
+        WHEN normalized_app_name = "Firefox Desktop"
+          AND (
         -- desktop tiles default on
-          (
-            submission_date >= "2021-09-07"
-            AND browser_version_info.major_version > 92
-            AND country IN UNNEST(
-              ["AU", "BR", "CA", "DE", "ES", "FR", "GB", "IN", "IT", "MX", "US"]
+            (
+              submission_date >= "2021-09-07"
+              AND browser_version_info.major_version > 92
+              AND country IN UNNEST(
+                ["AU", "BR", "CA", "DE", "ES", "FR", "GB", "IN", "IT", "MX", "US"]
+              )
+            )
+            OR
+        -- Japan desktop now default on
+            (
+              submission_date >= "2022-01-25"
+              AND browser_version_info.major_version > 92
+              AND country = "JP"
             )
           )
-          OR
-        -- Japan desktop now default on
-          (
-            submission_date >= "2022-01-25"
-            AND browser_version_info.major_version > 92
-            AND country = "JP"
-          )
-        )
-      THEN
-        1
+          THEN 1
   -- ANDROID ELIGIBLITY REQUIREMENTS
-      WHEN
-        normalized_app_name != "Firefox Desktop"
-        AND normalized_os = "Android"
-        AND browser_version_info.major_version > 100
-      THEN
-        1
+        WHEN normalized_app_name != "Firefox Desktop"
+          AND normalized_os = "Android"
+          AND browser_version_info.major_version > 100
+          THEN 1
   -- iOS ELIGIBLITY REQUIREMENTS
-      WHEN
-        normalized_app_name != "Firefox Desktop"
-        AND normalized_os = "iOS"
-        AND browser_version_info.major_version > 101
-      THEN
-        1
-      ELSE
-        NULL
+        WHEN normalized_app_name != "Firefox Desktop"
+          AND normalized_os = "iOS"
+          AND browser_version_info.major_version > 101
+          THEN 1
+        ELSE NULL
       END
     ) AS eligible_clients
   FROM
@@ -112,12 +100,9 @@ tiles_percentages AS (
     submission_date,
     country,
     CASE
-    WHEN
-      form_factor = "phone"
-    THEN
-      "mobile"
-    ELSE
-      "desktop"
+      WHEN form_factor = "phone"
+        THEN "mobile"
+      ELSE "desktop"
     END
     AS device,
     SUM(CASE WHEN advertiser = "amazon" THEN user_count ELSE 0 END) / NULLIF(
@@ -126,12 +111,9 @@ tiles_percentages AS (
     ) AS p_amazon,
     SUM(
       CASE
-      WHEN
-        advertiser NOT IN UNNEST(["amazon", "o=45:a", "yandex"])
-      THEN
-        user_count
-      ELSE
-        0
+        WHEN advertiser NOT IN UNNEST(["amazon", "o=45:a", "yandex"])
+          THEN user_count
+        ELSE 0
       END
     ) / NULLIF(SUM(user_count), 0) AS p_other
   FROM
@@ -154,12 +136,9 @@ suggest_percentages AS (
     submission_date,
     country,
     CASE
-    WHEN
-      form_factor = "phone"
-    THEN
-      "mobile"
-    ELSE
-      "desktop"
+      WHEN form_factor = "phone"
+        THEN "mobile"
+      ELSE "desktop"
     END
     AS device,
     NULL AS p_amazon,
@@ -167,12 +146,9 @@ suggest_percentages AS (
     SUM(CASE WHEN advertiser = "amazon" THEN user_count ELSE 0 END) AS amazon_dou,
     SUM(
       CASE
-      WHEN
-        advertiser NOT IN UNNEST(["amazon", "wikipedia"])
-      THEN
-        user_count
-      ELSE
-        0
+        WHEN advertiser NOT IN UNNEST(["amazon", "wikipedia"])
+          THEN user_count
+        ELSE 0
       END
     ) AS other_dou,
   FROM
@@ -394,24 +370,18 @@ clicks AS (
     submission_date,
     country,
     CASE
-    WHEN
-      form_factor = "phone"
-    THEN
-      "mobile"
-    ELSE
-      "desktop"
+      WHEN form_factor = "phone"
+        THEN "mobile"
+      ELSE "desktop"
     END
     AS device,
     COALESCE(SUM(CASE WHEN advertiser = "amazon" THEN event_count ELSE 0 END), 0) AS amazon_clicks,
     COALESCE(
       SUM(
         CASE
-        WHEN
-          advertiser NOT IN UNNEST(["amazon", "o=45:a", "yandex"])
-        THEN
-          event_count
-        ELSE
-          0
+          WHEN advertiser NOT IN UNNEST(["amazon", "o=45:a", "yandex"])
+            THEN event_count
+          ELSE 0
         END
       ),
       0
@@ -435,12 +405,9 @@ clicks AS (
     submission_date,
     country,
     CASE
-    WHEN
-      form_factor = "phone"
-    THEN
-      "mobile"
-    ELSE
-      "desktop"
+      WHEN form_factor = "phone"
+        THEN "mobile"
+      ELSE "desktop"
     END
     AS device,
     COALESCE(SUM(CASE WHEN advertiser = "amazon" THEN event_count ELSE 0 END), 0) AS amazon_clicks,
@@ -477,22 +444,16 @@ SELECT
   (CASE WHEN product = "sponsored_tiles" THEN pe.p_other ELSE NULL END) AS p_other,
   (
     CASE
-    WHEN
-      product = "sponsored_tiles"
-    THEN
-      COALESCE(population.clients * pe.p_amazon, 0)
-    ELSE
-      suggest_percentages.amazon_dou
+      WHEN product = "sponsored_tiles"
+        THEN COALESCE(population.clients * pe.p_amazon, 0)
+      ELSE suggest_percentages.amazon_dou
     END
   ) AS amazon_clients,
   (
     CASE
-    WHEN
-      product = "sponsored_tiles"
-    THEN
-      COALESCE(population.clients * pe.p_other, 0)
-    ELSE
-      suggest_percentages.other_dou
+      WHEN product = "sponsored_tiles"
+        THEN COALESCE(population.clients * pe.p_other, 0)
+      ELSE suggest_percentages.other_dou
     END
   ) AS other_clients,
     -- clicks are directly tagged with advertiser
@@ -501,22 +462,16 @@ SELECT
     -- clicks per client-day-of-use
   (
     CASE
-    WHEN
-      product = "sponsored_tiles"
-    THEN
-      c.amazon_clicks / NULLIF((population.clients * pe.p_amazon), 0)
-    ELSE
-      c.amazon_clicks / NULLIF(suggest_percentages.amazon_dou, 0)
+      WHEN product = "sponsored_tiles"
+        THEN c.amazon_clicks / NULLIF((population.clients * pe.p_amazon), 0)
+      ELSE c.amazon_clicks / NULLIF(suggest_percentages.amazon_dou, 0)
     END
   ) AS amazon_clicks_per_client,
   (
     CASE
-    WHEN
-      product = "sponsored_tiles"
-    THEN
-      c.other_clicks / NULLIF((population.clients * pe.p_other), 0)
-    ELSE
-      c.other_clicks / NULLIF(suggest_percentages.other_dou, 0)
+      WHEN product = "sponsored_tiles"
+        THEN c.other_clicks / NULLIF((population.clients * pe.p_other), 0)
+      ELSE c.other_clicks / NULLIF(suggest_percentages.other_dou, 0)
     END
   ) AS other_clicks_per_client
 FROM

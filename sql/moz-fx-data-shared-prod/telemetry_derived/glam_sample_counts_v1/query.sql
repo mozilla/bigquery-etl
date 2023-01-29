@@ -125,12 +125,9 @@ SELECT
   key,
   agg_type,
   CASE
-  WHEN
-    agg_type IN ('count', 'true', 'false')
-  THEN
-    SUM(value)
-  ELSE
-    NULL
+    WHEN agg_type IN ('count', 'true', 'false')
+      THEN SUM(value)
+    ELSE NULL
   END
   AS total_sample
 FROM
@@ -156,12 +153,9 @@ SELECT
   key,
   agg_type,
   CASE
-  WHEN
-    agg_type IN ('count', 'true', 'false')
-  THEN
-    SUM(value)
-  ELSE
-    NULL
+    WHEN agg_type IN ('count', 'true', 'false')
+      THEN SUM(value)
+    ELSE NULL
   END
   AS total_sample
 FROM
@@ -186,12 +180,9 @@ SELECT
   key,
   agg_type,
   CASE
-  WHEN
-    agg_type IN ('count', 'true', 'false')
-  THEN
-    SUM(value)
-  ELSE
-    NULL
+    WHEN agg_type IN ('count', 'true', 'false')
+      THEN SUM(value)
+    ELSE NULL
   END
   AS total_sample
 FROM
@@ -216,12 +207,9 @@ SELECT
   key,
   agg_type,
   CASE
-  WHEN
-    agg_type IN ('count', 'true', 'false')
-  THEN
-    SUM(value)
-  ELSE
-    NULL
+    WHEN agg_type IN ('count', 'true', 'false')
+      THEN SUM(value)
+    ELSE NULL
   END
   AS total_sample
 FROM

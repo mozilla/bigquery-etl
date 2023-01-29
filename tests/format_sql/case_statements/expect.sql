@@ -1,0 +1,33 @@
+SELECT
+  CASE
+    WHEN bool_true > 0
+      AND bool_false = 0
+      THEN "always"
+    WHEN bool_true = 0
+      AND bool_false > 0
+      THEN "never"
+    ELSE "sometimes"
+  END AS case_1,
+  CASE
+    WHEN legacy_app_name LIKE "Firefox"
+      AND normalized_os LIKE "%"
+      THEN STRUCT(
+          "firefox_desktop" AS app_name,
+          "Firefox" AS product,
+          "Firefox for Desktop" AS canonical_app_name,
+          "Firefox for Desktop" AS canonical_name,
+          TRUE AS contributes_to_2019_kpi,
+          TRUE AS contributes_to_2020_kpi,
+          TRUE AS contributes_to_2021_kpi
+        )
+  END AS case_2,
+  IF(
+    object = "bookmarks-panel",
+    CASE
+      WHEN string_value = "app-menu"
+        THEN ("app-menu", value)
+      WHEN string_value LIKE "home-panel%"
+        THEN ("home-panel", value)
+    END,
+    NULL
+  ) AS case_3

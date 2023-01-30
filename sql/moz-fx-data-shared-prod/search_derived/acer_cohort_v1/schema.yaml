@@ -1,0 +1,4 @@
+fields:
+  - mode: REQUIRED
+    name: client_id
+    type: STRING

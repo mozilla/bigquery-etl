@@ -1,0 +1,11 @@
+friendly_name: Acer Cohort
+description: |-
+  Table of client_ids that used an Acer distribution in late 2022
+owners:
+  - cmorales@mozilla.com
+labels:
+  incremental: true
+bigquery:
+  clustering:
+    fields: []
+references: {}

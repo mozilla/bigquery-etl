@@ -39,4 +39,3 @@
 - <<: *dollars_base
   measured_month: 2022-12-01
   dollars_spent: 1200
-  

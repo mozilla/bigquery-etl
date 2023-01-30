@@ -18,7 +18,6 @@
   paid_active_rows: 10
   free_active_rows: 0
   total_active_rows: 10
-
 - &prod_base
   measured_date: "2023-01-03"
   measured_month: "2023-01-01"

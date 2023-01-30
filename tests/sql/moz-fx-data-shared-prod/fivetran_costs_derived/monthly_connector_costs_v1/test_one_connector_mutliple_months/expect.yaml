@@ -52,7 +52,7 @@
   total_active_rows: 90
   percentage_of_total_paid_mar: 100.0
   cost_in_usd: 900
-- <<: *dollars_base 
+- <<: *dollars_base
   measured_month: 2022-10-01
   paid_active_rows: 100
   total_active_rows: 100
@@ -67,4 +67,3 @@
   paid_active_rows: 120
   total_active_rows: 120
   cost_in_usd: 1200
-  

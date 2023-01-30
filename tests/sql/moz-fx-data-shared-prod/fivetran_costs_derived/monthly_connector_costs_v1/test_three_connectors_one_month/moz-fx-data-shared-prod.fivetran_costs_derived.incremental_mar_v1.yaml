@@ -6,10 +6,10 @@
   paid_active_rows: 10
   free_active_rows: 0
   total_active_rows: 10
-- <<: *con_1_base 
+- <<: *con_1_base
   paid_active_rows: 20
   total_active_rows: 20
-- <<: *con_1_base 
+- <<: *con_1_base
   paid_active_rows: 0
   free_active_rows: 10
   total_active_rows: 10
@@ -23,7 +23,7 @@
 - <<: *con_2_base
   paid_active_rows: 20
   total_active_rows: 20
-- &con_3_base 
+- &con_3_base
   destination_id: dev_destination_id
   measured_month: 2023-01-01
   connector_name: connector_3
@@ -33,4 +33,3 @@
 - <<: *con_3_base
   free_active_rows: 30
   total_active_rows: 30
-  

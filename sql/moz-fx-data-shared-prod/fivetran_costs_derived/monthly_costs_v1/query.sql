@@ -30,8 +30,14 @@ monthly_costs_credits AS (
 ),
 monthly_costs AS (
   SELECT
-    COALESCE(monthly_costs_credits.destination_id, monthly_costs_dollars.destination_id) AS destination_id,
-    COALESCE(monthly_costs_credits.measured_month, monthly_costs_dollars.measured_month) AS measured_month,
+    COALESCE(
+      monthly_costs_credits.destination_id,
+      monthly_costs_dollars.destination_id
+    ) AS destination_id,
+    COALESCE(
+      monthly_costs_credits.measured_month,
+      monthly_costs_dollars.measured_month
+    ) AS measured_month,
     monthly_costs_credits.credits_spent,
     monthly_costs_dollars.dollars_spent
   FROM

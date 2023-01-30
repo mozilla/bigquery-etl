@@ -323,10 +323,12 @@ desktop AS (
     os AS normalized_os,
     CASE
     WHEN
-        os LIKE 'Windows%'
-        OR os LIKE 'WINNT%'
-    THEN `mozfun.norm.windows_version_info`(os, normalized_os_version, windows_build_number)
-    ELSE normalized_os_version
+      os LIKE 'Windows%'
+      OR os LIKE 'WINNT%'
+    THEN
+      `mozfun.norm.windows_version_info`(os, normalized_os_version, windows_build_number)
+    ELSE
+      normalized_os_version
     END
     AS normalized_os_version,
     COALESCE(

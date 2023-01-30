@@ -120,21 +120,6 @@ with DAG(
         depends_on_past=False,
     )
 
-    ga_derived__wnp_hits__v1 = bigquery_etl_query(
-        task_id="ga_derived__wnp_hits__v1",
-        destination_table="wnp_hits_v1",
-        dataset_id="ga_derived",
-        project_id="moz-fx-data-marketing-prod",
-        owner="rbaffourawuah@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "rbaffourawuah@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     ga_derived__www_site_downloads__v1 = bigquery_etl_query(
         task_id="ga_derived__www_site_downloads__v1",
         destination_table="www_site_downloads_v1",

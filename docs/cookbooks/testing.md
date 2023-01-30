@@ -21,6 +21,9 @@ mvn package
 # use -k to selectively run a set of tests that matches the expression `udf`
 ./venv/bin/pytest -k udf
 
+# narrow down testpaths for quicker turnaround when selecting a single test
+./venv/bin/pytest -o "testpaths=tests/sql" -k mobile_search_aggregates_v1
+
 # run integration tests with 4 workers in parallel
 gcloud auth application-default login # or set GOOGLE_APPLICATION_CREDENTIALS
 export GOOGLE_PROJECT_ID=bigquery-etl-integration-test

@@ -11,7 +11,7 @@ WITH clicks_main AS (
         DATE(d.submission_timestamp) AS submission_date,
         e.value AS sponsored_tiles_click_count
       FROM
-        `mozdata.telemetry.main` d
+        `moz-fx-data-shared-prod.telemetry.main` d
       CROSS JOIN
         UNNEST(d.payload.processes.parent.keyed_scalars.contextual_services_topsites_click) e
       WHERE
@@ -33,7 +33,7 @@ impressions_main AS (
         DATE(g.submission_timestamp) AS submission_date,
         h.value AS sponsored_tiles_impression_count
       FROM
-        `mozdata.telemetry.main` g
+        `moz-fx-data-shared-prod.telemetry.main` g
       CROSS JOIN
         UNNEST(g.payload.processes.parent.keyed_scalars.contextual_services_topsites_impression) h
       WHERE
@@ -47,7 +47,7 @@ impressions_main AS (
 desktop_activity_stream_events AS (
   SELECT
     client_id,
-    date(submission_timestamp) AS submission_date,
+    DATE(submission_timestamp) AS submission_date,
     COUNTIF(
       event = 'BLOCK'
       AND value LIKE '%spoc%'
@@ -59,9 +59,9 @@ desktop_activity_stream_events AS (
       AND value LIKE '%false%'
     ) AS sponsored_tiles_disable_count
   FROM
-    `mozdata.activity_stream.events`
+    `moz-fx-data-shared-prod.activity_stream.events`
   WHERE
-    date(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     1,
     2
@@ -86,7 +86,7 @@ ios_data AS (
       AND `mozfun.map.get_key`(event_extra, 'changed_to') = 'false'
     ) AS sponsored_tiles_disable_count
   FROM
-    `mozdata.firefox_ios.events_unnested` events
+    `moz-fx-data-shared-prod.firefox_ios.events_unnested` events
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -113,7 +113,7 @@ android_events AS (
       AND `mozfun.map.get_key`(event_extra, 'enabled') = 'false'
     ) AS sponsored_tiles_disable_count
   FROM
-    `mozdata.fenix.events_unnested` events
+    `moz-fx-data-shared-prod.fenix.events_unnested` events
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -142,7 +142,7 @@ unified_metrics AS (
     is_new_profile,
     sample_id
   FROM
-    `mozdata.telemetry.unified_metrics`
+    `moz-fx-data-shared-prod.telemetry.unified_metrics`
   WHERE
     `mozfun`.bits28.active_in_range(days_seen_bits, 0, 1)
     AND submission_date = @submission_date
@@ -253,7 +253,7 @@ LEFT JOIN
         )
       ) AS experiments
     FROM
-      `mozdata.firefox_ios.events_unnested`
+      `moz-fx-data-shared-prod.firefox_ios.events_unnested`
     WHERE
       DATE(submission_timestamp) = @submission_date
     GROUP BY
@@ -308,7 +308,7 @@ LEFT JOIN
         )
       ) AS experiments
     FROM
-      `mozdata.fenix.events_unnested`
+      `moz-fx-data-shared-prod.fenix.events_unnested`
     WHERE
       DATE(submission_timestamp) = @submission_date
     GROUP BY

@@ -37,34 +37,34 @@ health_data_sample AS (
     DATE(SAFE_CAST(creation_date AS TIMESTAMP)) AS date,
     client_id,
     SUM(
-      coalesce(
+      COALESCE(
         CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.undefined') AS INT64),
         0
       )
     ) AS eUndefined,
     SUM(
-      coalesce(
+      COALESCE(
         CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.timeout') AS INT64),
         0
       )
     ) AS eTimeOut,
     SUM(
-      coalesce(CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.abort') AS INT64), 0)
+      COALESCE(CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.abort') AS INT64), 0)
     ) AS eAbort,
     SUM(
-      coalesce(
+      COALESCE(
         CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.eUnreachable') AS INT64),
         0
       )
     ) AS eUnreachable,
     SUM(
-      coalesce(
+      COALESCE(
         CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.eTerminated') AS INT64),
         0
       )
     ) AS eTerminated,
     SUM(
-      coalesce(
+      COALESCE(
         CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.eChannelOpen') AS INT64),
         0
       )
@@ -72,8 +72,8 @@ health_data_sample AS (
   FROM
     telemetry.health
   WHERE
-    date(submission_timestamp) >= '2020-01-01'
-    AND date(submission_timestamp) <= '2020-03-31'
+    DATE(submission_timestamp) >= '2020-01-01'
+    AND DATE(submission_timestamp) <= '2020-03-31'
     AND normalized_country_code = 'IT'
   GROUP BY
     1,
@@ -140,14 +140,14 @@ histogram_data_sample AS (
 dns_success_time AS (
   SELECT
     time_slot AS date,
-    exp(sum(log(key) * count) / sum(count)) AS value
+    EXP(SUM(LOG(key) * count) / SUM(count)) AS value
   FROM
     (
       SELECT
         client_id,
         time_slot,
         key,
-        sum(value) AS count
+        SUM(value) AS count
       FROM
         histogram_data_sample
       CROSS JOIN
@@ -162,7 +162,7 @@ dns_success_time AS (
   GROUP BY
     1
   HAVING
-    count(DISTINCT(client_id)) > 5000
+    COUNT(DISTINCT(client_id)) > 5000
 ),
 -- A shared source for the DNS_FAIL histogram
 dns_failure_src AS (
@@ -170,7 +170,7 @@ dns_failure_src AS (
     client_id,
     time_slot,
     key,
-    sum(value) AS count
+    SUM(value) AS count
   FROM
     histogram_data_sample
   CROSS JOIN
@@ -184,7 +184,7 @@ dns_failure_src AS (
 dns_failure_time AS (
   SELECT
     time_slot AS date,
-    exp(sum(log(key) * count) / sum(count)) AS value
+    EXP(SUM(LOG(key) * count) / SUM(count)) AS value
   FROM
     dns_failure_src
   WHERE
@@ -192,19 +192,19 @@ dns_failure_time AS (
   GROUP BY
     1
   HAVING
-    count(DISTINCT(client_id)) > 5000
+    COUNT(DISTINCT(client_id)) > 5000
 ),
 -- DNS_FAIL counts
 dns_failure_counts AS (
   SELECT
     time_slot AS date,
-    avg(count) AS value
+    AVG(count) AS value
   FROM
     (
       SELECT
         client_id,
         time_slot,
-        sum(count) AS count
+        SUM(count) AS count
       FROM
         dns_failure_src
       GROUP BY
@@ -214,20 +214,20 @@ dns_failure_counts AS (
   GROUP BY
     time_slot
   HAVING
-    count(DISTINCT(client_id)) > 5000
+    COUNT(DISTINCT(client_id)) > 5000
 ),
 -- TLS_HANDSHAKE histogram
 tls_handshake_time AS (
   SELECT
     time_slot AS date,
-    exp(sum(log(key) * count) / sum(count)) AS value
+    EXP(SUM(LOG(key) * count) / SUM(count)) AS value
   FROM
     (
       SELECT
         client_id,
         time_slot,
         key,
-        sum(value) AS count
+        SUM(value) AS count
       FROM
         histogram_data_sample
       CROSS JOIN
@@ -242,7 +242,7 @@ tls_handshake_time AS (
   GROUP BY
     1
   HAVING
-    count(DISTINCT(client_id)) > 5000
+    COUNT(DISTINCT(client_id)) > 5000
 )
 SELECT
   DAUs.date AS date,

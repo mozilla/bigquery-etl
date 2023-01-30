@@ -41,7 +41,7 @@ IF
       )
   )
   SELECT
-    date(`timestamp`) AS submission_date,
+    DATE(`timestamp`) AS submission_date,
     `type`,
     experiment,
     branch,

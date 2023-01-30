@@ -91,7 +91,7 @@ jobs:
           # of a package name and a version specifier"
           command: |
             pip install pip-tools --constraint requirements.in
-            pip-compile --quiet --allow-unsafe --generate-hashes
+            pip-compile --quiet --generate-hashes --unsafe-package=
             git diff --exit-code -G '^ *[^# ]' -- requirements.txt
   test-sql:
     docker: *docker
@@ -206,7 +206,12 @@ jobs:
           name: Generate DAGs
           command: |
             PATH="venv/bin:$PATH" script/bqetl dag generate
-            mv dags/ /tmp/workspace/generated-sql
+            cp -R dags /tmp/workspace/generated-sql
+      - run:
+          name: Verify that DAGs were correctly generated and are up-to-date
+          command: |
+            git diff --exit-code dags/
+            diff <(git ls-files dags/*.py) <(ls dags/*.py)
       # this task is overwriting the content produced by generate-sql;
       # the behaviour here is additive, generated DAGs are just added to
       # the generated-sql output
@@ -260,23 +265,6 @@ jobs:
           command: |
             cd telemetry-airflow
             bash bin/test-parse
-  verify-dags-up-to-date:
-    # todo: remove this step once we rely on generate-dags completely
-    docker: *docker
-    steps:
-      - checkout
-      - *restore_venv_cache
-      - *build
-      - *restore_mvn_cache
-      - *java_deps
-      - run:
-          name: Generate DAGs
-          command: PATH="venv/bin:$PATH" script/bqetl dag generate
-      - run:
-          name: Verify that DAGs were correctly generated and are up-to-date
-          command: |
-            git diff --exit-code
-            diff <(git ls-files dags/*.py) <(ls dags/*.py)
   validate-docs:
     docker: *docker
     steps:
@@ -588,7 +576,6 @@ workflows:
       - validate-dags:
           requires:
             - generate-dags
-      - verify-dags-up-to-date
       - validate-docs:
           requires:
             - generate-sql
@@ -611,12 +598,12 @@ workflows:
       - generate-dags:
           requires:
             - generate-sql
-      - docs:
-          requires:
-            - generate-sql
-          filters:
-            branches:
-              only: main
+      # - docs:
+      #     requires:
+      #       - generate-sql
+      #     filters:
+      #       branches:
+      #         only: main
       - push-generated-sql:
           requires:
             - validate-dags

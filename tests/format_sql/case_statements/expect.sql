@@ -32,4 +32,12 @@ SELECT
     WHEN flag
       THEN STRUCT(1 AS case_4a, 2 AS case_4b)
     ELSE STRUCT(3 AS case_4a, 4 AS case_4b)
-  END.*
+  END.*,
+  CASE
+    status
+    WHEN 1
+      THEN "active"
+    WHEN 2
+      THEN "expired"
+    ELSE "unknown"
+  END AS case_5

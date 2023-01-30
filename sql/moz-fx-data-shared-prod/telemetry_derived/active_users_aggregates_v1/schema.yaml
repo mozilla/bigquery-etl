@@ -83,7 +83,8 @@ fields:
 - mode: NULLABLE
   name: language_name
   type: STRING
-- description: Count of qualified clients sending a main ping on a given day
+- description: Count of Fx Desktop qualified clients sending a main ping on a given
+    day
   mode: NULLABLE
-  name: qdau
+  name: qdau_desktop
   type: INTEGER

@@ -81,8 +81,6 @@ HASH;
 
 HAVING;
 
-IFNULL;
-
 IF();
 
 IGNORE;

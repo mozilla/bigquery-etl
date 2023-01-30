@@ -6,7 +6,7 @@ IF
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
   SELECT
-    date(submission_timestamp) AS submission_date,
+    DATE(submission_timestamp) AS submission_date,
     experiment.key AS experiment,
     experiment.value.branch AS branch,
     TIMESTAMP_ADD(

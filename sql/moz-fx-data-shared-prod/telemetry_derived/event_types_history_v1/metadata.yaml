@@ -7,6 +7,7 @@ description: >
   and record them in a table.
   This table stores all of history, partitioned by
   submission_date.
+  Deprecated per https://bugzilla.mozilla.org/show_bug.cgi?id=1805722#c10
 owners:
   - wlachance@mozilla.com
   - akomar@mozilla.com
@@ -14,9 +15,10 @@ labels:
   application: telemetry
   incremental: true
   schedule: daily
-scheduling:
-  dag_name: bqetl_event_rollup
-  depends_on_past: true
+# see https://bugzilla.mozilla.org/show_bug.cgi?id=1805722#c10
+#scheduling:
+#  dag_name: bqetl_event_rollup
+#  depends_on_past: true
 bigquery:
   time_partitioning:
     type: day

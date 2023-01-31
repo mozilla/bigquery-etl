@@ -19,7 +19,7 @@ Built from bigquery-etl repo, [`dags/bqetl_fivetran_costs.py`](https://github.co
 
 #### Description
 
-Derived tables for analysing the Fivetran Costs. Data coming from Fivetran.
+Derived tables for analyzing the Fivetran Costs. Data coming from Fivetran.
 
 #### Owner
 

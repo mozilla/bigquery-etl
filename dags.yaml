@@ -407,6 +407,9 @@ bqetl_monitoring_airflow:
 
 bqetl_event_rollup:
   schedule_interval: 0 3 * * *
+  description: |
+    Desktop tables (`telemetry_derived.events_daily_v1` and upstream) are deprecated and paused
+    (have their scheduling metadata commented out) per https://bugzilla.mozilla.org/show_bug.cgi?id=1805722#c10
   default_args:
     owner: wlachance@mozilla.com
     start_date: "2020-11-03"

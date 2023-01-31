@@ -35,3 +35,4 @@ bigquery:
     - city
     - app_name
     - attribution_medium
+references: {}

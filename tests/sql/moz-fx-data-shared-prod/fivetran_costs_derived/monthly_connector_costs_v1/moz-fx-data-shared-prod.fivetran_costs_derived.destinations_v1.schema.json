@@ -1,0 +1,12 @@
+[
+    {
+        "type": "STRING",
+        "name": "destination_id",
+        "mode": "NULLABLE"
+    },
+    {
+        "type": "STRING",
+        "name": "destination_name",
+        "mode": "NULLABLE"
+    }
+]

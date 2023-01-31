@@ -63,7 +63,7 @@ SELECT
       client_id,
       NULL
     )
-  ) AS qdau,
+  ) AS qdau_desktop,
   COUNT(DISTINCT IF(submission_date = first_seen_date, client_id, NULL)) AS new_profiles,
   SUM(ad_click) AS ad_clicks,
   SUM(organic_search_count) AS organic_search_count,

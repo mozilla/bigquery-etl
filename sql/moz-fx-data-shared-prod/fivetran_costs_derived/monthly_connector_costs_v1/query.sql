@@ -42,14 +42,14 @@ monthly_connector_ratios AS (
     connector_mar.paid_active_rows,
     connector_mar.free_active_rows,
     connector_mar.total_active_rows,
-    ROUND(
-      connector_mar.paid_active_rows / NULLIF(destinations_total_mar.paid_active_rows, 0),
-      2
+    connector_mar.paid_active_rows / NULLIF(
+      destinations_total_mar.paid_active_rows,
+      0
     ) AS ratio_destination_paid_active_rows,
-    ROUND(
-      connector_mar.paid_active_rows / NULLIF(total_mar.paid_active_rows, 0),
-      2
-    ) AS ratio_total_active_rows
+    connector_mar.paid_active_rows / NULLIF(
+      total_mar.paid_active_rows,
+      0
+    ) AS ratio_total_paid_active_rows
   FROM
     connector_mar
   LEFT JOIN
@@ -69,8 +69,14 @@ monthly_connector_costs AS (
     monthly_connector_ratios.paid_active_rows,
     monthly_connector_ratios.free_active_rows,
     monthly_connector_ratios.total_active_rows,
-    monthly_connector_ratios.ratio_destination_paid_active_rows * 100 AS percentage_of_destination_paid_active_rows,
-    monthly_connector_ratios.ratio_total_active_rows * 100 AS percentage_of_total_paid_active_rows,
+    ROUND(
+      monthly_connector_ratios.ratio_destination_paid_active_rows * 100,
+      2
+    ) AS percentage_of_destination_paid_active_rows,
+    ROUND(
+      monthly_connector_ratios.ratio_total_paid_active_rows * 100,
+      2
+    ) AS percentage_of_total_paid_active_rows,
     ROUND(
       monthly_connector_ratios.ratio_destination_paid_active_rows * monthly_costs.dollars_spent,
       2

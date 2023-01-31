@@ -15,7 +15,7 @@ desktop_data_google AS (
     SUM(IF(normalized_engine = 'Google', search_with_ads, 0)) AS search_with_ads,
     SUM(IF(normalized_engine = 'Google', ad_click, 0)) AS ad_click
   FROM
-    `mozdata.search.search_clients_engines_sources_daily`
+    `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
     AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN')
@@ -42,11 +42,11 @@ desktop_data_bing AS (
     SUM(IF(normalized_engine = 'Bing', search_with_ads, 0)) AS search_with_ads,
     SUM(IF(normalized_engine = 'Bing', ad_click, 0)) AS ad_click
   FROM
-    `mozdata.search.search_clients_engines_sources_daily`
+    `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
     AND (distribution_id IS NULL OR distribution_id NOT LIKE '%acer%')
-    AND client_id NOT IN (SELECT client_id FROM `mozdata.analysis.acer_cohort`)
+    AND client_id NOT IN (SELECT client_id FROM `moz-fx-data-shared-prod.search.acer_cohort`)
   GROUP BY
     submission_date
   ORDER BY
@@ -75,7 +75,7 @@ desktop_data_ddg AS (
     SUM(IF(engine IN ('ddg-addon'), search_with_ads, 0)) AS ddgaddon_search_with_ads,
     SUM(IF(engine IN ('ddg-addon'), ad_click, 0)) AS ddgaddon_ad_click
   FROM
-    `mozdata.search.search_clients_engines_sources_daily`
+    `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
   GROUP BY
@@ -93,7 +93,7 @@ mobile_dau_data AS (
     SUM(IF(country = 'US', dau, 0)) AS US_dau_eligible_google,
     SUM(dau) AS dau
   FROM
-    `mozdata.telemetry.active_users_aggregates_device`
+    `moz-fx-data-shared-prod.telemetry.active_users_aggregates_device`
   WHERE
     submission_date = @submission_date
     AND app_name IN ('Fenix', 'Firefox iOS', 'Focus Android', 'Focus Android')
@@ -117,7 +117,7 @@ mobile_data_google AS (
     SUM(IF(normalized_engine = 'Google', search_with_ads, 0)) AS search_with_ads,
     SUM(IF(normalized_engine = 'Google', ad_click, 0)) AS ad_click
   FROM
-    `mozdata.search.mobile_search_clients_engines_sources_daily`
+    `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
   INNER JOIN
     mobile_dau_data dau
   USING
@@ -159,7 +159,7 @@ mobile_data_bing_ddg AS (
     SUM(IF(normalized_engine = 'DuckDuckGo', search_with_ads, 0)) AS ddg_search_with_ads,
     SUM(IF(normalized_engine = 'DuckDuckGo', ad_click, 0)) AS ddg_ad_click
   FROM
-    `mozdata.search.mobile_search_clients_engines_sources_daily`
+    `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
   INNER JOIN
     mobile_dau_data dau
   USING

@@ -74,8 +74,8 @@ fields:
 - mode: NULLABLE
   name: active_hours
   type: FLOAT
-- description: Count of Desktop qualified clients sending a main ping on a given
-    day. For mobile DAU = QDAU.
+- description: Count of distinct, qualified Desktop clients that we received a main
+    ping from on a given day. In mobile DAU = QDAU.
   mode: NULLABLE
   name: qdau_desktop
   type: INTEGER

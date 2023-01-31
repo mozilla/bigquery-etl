@@ -141,7 +141,6 @@ mobile_data_google AS (
 mobile_data_bing_ddg AS (
   SELECT
     submission_date,
-    -- count(distinct client_id) as dau, --should avoid as mentioned in above
     dau.dau,
     COUNT(
       DISTINCT IF(sap > 0 AND normalized_engine = 'Bing', client_id, NULL)

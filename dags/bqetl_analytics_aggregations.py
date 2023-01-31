@@ -113,10 +113,11 @@ with DAG(
         parameters=["activity_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
+    wait_for_firefox_android_clients = ExternalTaskSensor(
+        task_id="wait_for_firefox_android_clients",
+        external_dag_id="bqetl_analytics_tables",
+        external_task_id="firefox_android_clients",
+        execution_delta=datetime.timedelta(days=-1, seconds=82800),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -124,7 +125,9 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    active_users_aggregates_attribution_v1.set_upstream(wait_for_copy_deduplicate_all)
+    active_users_aggregates_attribution_v1.set_upstream(
+        wait_for_firefox_android_clients
+    )
     wait_for_telemetry_derived__unified_metrics__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__unified_metrics__v1",
         external_dag_id="bqetl_unified",

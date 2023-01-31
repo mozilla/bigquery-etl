@@ -968,7 +968,7 @@ bqetl_fivetran_costs:
     retry_delay: 30m
     start_date: '2023-01-18'
   description: |
-    Derived tables for analysing the Fivetran Costs. Data coming from Fivetran.
+    Derived tables for analyzing the Fivetran Costs. Data coming from Fivetran.
   repo: bigquery-etl
   schedule_interval: 0 5 * * *
   tags:

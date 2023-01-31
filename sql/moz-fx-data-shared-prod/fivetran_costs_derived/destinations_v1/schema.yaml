@@ -13,7 +13,7 @@ fields:
   name: account_id
   type: STRING
   description: |
-    Foreign key referencing the fivetran account associated with the destination.
+    Foreign key referencing the Fivetran account associated with the destination.
 - mode: NULLABLE
   name: created_at
   type: TIMESTAMP

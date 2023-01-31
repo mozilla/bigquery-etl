@@ -28,7 +28,7 @@ fields:
   name: paid_active_rows
   type: INTEGER
   description: |
-    The number of new distinct primary keys on the current day synced for the connector that where paid for.
+    The number of new distinct primary keys on the current day synced for the connector that were paid for.
 - mode: NULLABLE
   name: free_active_rows
   type: INTEGER

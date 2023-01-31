@@ -1,6 +1,6 @@
 friendly_name: Fivetran Costs
 description: |-
-  Analyse the costs for Fivetran connectors.
+  Analyze the costs for Fivetran connectors.
 dataset_base_acl: view
 user_facing: true
 labels: {}

@@ -3,7 +3,7 @@ fields:
   name: destination_name
   type: STRING
   description: |
-    Name of the fivetran destination as it appears in the UI.
+    Name of the Fivetran destination as it appears in the UI.
 - mode: NULLABLE
   name: measured_month
   type: DATE
@@ -13,7 +13,7 @@ fields:
   name: connector_name
   type: STRING
   description: |
-    Name of the fivetran connector billed.
+    Name of the Fivetran connector billed.
 - mode: NULLABLE
   name: paid_active_rows
   type: INTEGER
@@ -30,17 +30,22 @@ fields:
   description: |
     Total number of active rows, billed and free for that connector in that month.
 - mode: NULLABLE
-  name: percentage_of_total_paid_mar
+  name: percentage_of_destination_paid_active_rows
   type: FLOAT
   description: |
     Percentage of paid active rows for that connector compared to the total amount of paid active rows for the destination for that month.
+- mode: NULLABLE
+  name: percentage_of_total_active_rows
+  type: FLOAT
+  description: |
+    Percentage of paid active rows for that connector compared to the total amount of paid active rows over all destinations for that month.
 - mode: NULLABLE
   name: cost_in_usd
   type: FLOAT
   description: |
     Costs for that connector for that month in USD
 - mode: NULLABLE
-  name: cost_in_credit
+  name: cost_in_credits
   type: FLOAT
   description: |
-    Costs for that connector for that month in fivetran credits
+    Costs for that connector for that month in Fivetran credits

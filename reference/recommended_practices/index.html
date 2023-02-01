@@ -747,6 +747,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../../mozdata/fivetran_costs/" class="md-nav__link">
+        Fivetran Costs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../mozdata/focus_android/" class="md-nav__link">
         Focus Android
       </a>
@@ -2356,6 +2370,9 @@
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1414839</span><span class="w"> </span><span class="c1"># Bugzilla bug ID of data review</span><span class="w"></span>
 <span class="w">  </span><span class="nt">incremental_export</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># non-incremental JSON export writes all data to a single location</span><span class="w"></span>
 </code></pre></div>
+<ul>
+<li>only labels where value types are eithers integers or strings are published, all other values types are being skipped</li>
+</ul>
 <h2 id="views">Views</h2>
 <ul>
 <li>Should be defined in files named as <code>sql/&lt;project&gt;/&lt;dataset&gt;/&lt;table&gt;/view.sql</code> e.g.

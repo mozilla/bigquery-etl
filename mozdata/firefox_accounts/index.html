@@ -935,6 +935,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../fivetran_costs/" class="md-nav__link">
+        Fivetran Costs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../focus_android/" class="md-nav__link">
         Focus Android
       </a>
@@ -3943,9 +3957,15 @@ for example: "sync".
         <td>Yes</td>
     </tr><tr>
         <td>device_id</td>
-        <td>The most granular field.
-The id of the device record.
-This does correlate back to a record the FxA user db.
+        <td>This DOES NOT correspond to a physical device! Everytime a user logs out and back
+in will have a different value for device_id. This should be treated more like
+a session identified (in our case, session does not expire).
+There are two ways in which device_id field value gets populated/generated:
+1. If the current flow session does not have a device_id associated with it we set
+it to the device_id/deviceId value found inside urlParams object.
+2. If during the above process we find urlParams object to not have this attribute set,
+then we use uuid.v4() to generate a new unique value and assign it to deviceId flow session.
+_devide_id generation: https://github.com/mozilla/fxa/blob/main/packages/fxa-content-server/app/scripts/models/flow.js#L61-L69_
 </td>
         <td>String</td>
         <td>Yes</td>

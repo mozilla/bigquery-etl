@@ -747,6 +747,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../../mozdata/fivetran_costs/" class="md-nav__link">
+        Fivetran Costs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../mozdata/focus_android/" class="md-nav__link">
         Focus Android
       </a>
@@ -2316,6 +2330,9 @@ mvn package
 <span class="c1"># use -k to selectively run a set of tests that matches the expression `udf`</span>
 ./venv/bin/pytest -k udf
 
+<span class="c1"># narrow down testpaths for quicker turnaround when selecting a single test</span>
+./venv/bin/pytest -o <span class="s2">&quot;testpaths=tests/sql&quot;</span> -k mobile_search_aggregates_v1
+
 <span class="c1"># run integration tests with 4 workers in parallel</span>
 gcloud auth application-default login <span class="c1"># or set GOOGLE_APPLICATION_CREDENTIALS</span>
 <span class="nb">export</span> <span class="nv">GOOGLE_PROJECT_ID</span><span class="o">=</span>bigquery-etl-integration-test
@@ -2354,51 +2371,41 @@ dialect prefix</a> in the BigQuery Cloud Console.</p>
 <span class="w">  </span><span class="n">udf_example</span><span class="p">(</span><span class="k">NULL</span><span class="p">);</span><span class="w"></span>
 </code></pre></div>
 <h2 id="how-to-configure-a-generated-test">How to Configure a Generated Test</h2>
-<ol>
-<li>Make a directory for test resources named <code>tests/{dataset}/{table}/{test_name}/</code>,
-   e.g. <code>tests/telemetry_derived/clients_last_seen_raw_v1/test_single_day</code><ul>
-<li><code>table</code> must match a directory named like <code>{dataset}/{table}</code>, e.g.
-   <code>telemetry_derived/clients_last_seen_v1</code></li>
-<li><code>test_name</code> should start with <code>test_</code>, e.g. <code>test_single_day</code></li>
-<li>If <code>test_name</code> is <code>test_init</code> or <code>test_script</code>, then the query will run <code>init.sql</code>
-   or <code>script.sql</code> respectively; otherwise, the test will run <code>query.sql</code></li>
-</ul>
-</li>
-<li>Add <code>.yaml</code> files for input tables, e.g. <code>clients_daily_v6.yaml</code><ul>
-<li>Include the dataset prefix if it's set in the tested query,
-   e.g. <code>analysis.clients_last_seen_v1.yaml</code><ul>
-<li>This will result in the dataset prefix being removed from the query,
-   e.g. <code>query = query.replace("analysis.clients_last_seen_v1", "clients_last_seen_v1")</code></li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Add <code>.sql</code> files for input view queries, e.g. <code>main_summary_v4.sql</code><ul>
-<li><strong><em>Don't</em></strong> include a <code>CREATE ... AS</code> clause</li>
-<li>Fully qualify table names as <code>`{project}.{dataset}.table`</code></li>
-<li>Include the dataset prefix if it's set in the tested query,
-   e.g. <code>telemetry.main_summary_v4.sql</code><ul>
-<li>This will result in the dataset prefix being removed from the query,
-   e.g. <code>query = query.replace("telemetry.main_summary_v4", "main_summary_v4")</code></li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Add <code>expect.yaml</code> to validate the result<ul>
-<li><code>DATE</code> and <code>DATETIME</code> type columns in the result are coerced to strings
-   using <code>.isoformat()</code></li>
-<li>Columns named <code>generated_time</code> are removed from the result before
-   comparing to <code>expect</code> because they should not be static</li>
-</ul>
-</li>
-<li>Optionally add <code>.schema.json</code> files for input table schemas to the table directory, e.g.
-   <code>tests/telemetry_derived/clients_last_seen_raw_v1/clients_daily_v6.schema.json</code>.
-   These tables will be available for every test in the suite.</li>
-<li>Optionally add <code>query_params.yaml</code> to define query parameters<ul>
-<li><code>query_params</code> must be a list</li>
-</ul>
-</li>
-</ol>
+<p>Queries are tested by running the <code>query.sql</code> with test-input tables and comparing the result to an expected table.
+1. Make a directory for test resources named <code>tests/sql/{project}/{dataset}/{table}/{test_name}/</code>,
+   e.g. <code>tests/sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_raw_v1/test_single_day</code>
+   - <code>table</code> must match a directory named like <code>{dataset}/{table}</code>, e.g.
+     <code>telemetry_derived/clients_last_seen_v1</code>
+   - <code>test_name</code> should start with <code>test_</code>, e.g. <code>test_single_day</code>
+   - If <code>test_name</code> is <code>test_init</code> or <code>test_script</code>, then the query will run <code>init.sql</code>
+     or <code>script.sql</code> respectively; otherwise, the test will run <code>query.sql</code>
+1. Add <code>.yaml</code> files for input tables, e.g. <code>clients_daily_v6.yaml</code>
+   - Include the dataset prefix if it's set in the tested query,
+     e.g. <code>analysis.clients_last_seen_v1.yaml</code>
+   - Include the project prefix if it's set in the tested query,
+     e.g. <code>moz-fx-other-data.new_dataset.table_1.yaml</code>
+     - This will result in the dataset prefix being removed from the query,
+       e.g. <code>query = query.replace("analysis.clients_last_seen_v1", "clients_last_seen_v1")</code>
+1. Add <code>.sql</code> files for input view queries, e.g. <code>main_summary_v4.sql</code>
+   - <strong><em>Don't</em></strong> include a <code>CREATE ... AS</code> clause
+   - Fully qualify table names as <code>`{project}.{dataset}.table`</code>
+   - Include the dataset prefix if it's set in the tested query,
+     e.g. <code>telemetry.main_summary_v4.sql</code>
+     - This will result in the dataset prefix being removed from the query,
+       e.g. <code>query = query.replace("telemetry.main_summary_v4", "main_summary_v4")</code>
+1. Add <code>expect.yaml</code> to validate the result
+   - <code>DATE</code> and <code>DATETIME</code> type columns in the result are coerced to strings
+     using <code>.isoformat()</code>
+   - Columns named <code>generated_time</code> are removed from the result before
+     comparing to <code>expect</code> because they should not be static
+   - <code>NULL</code> values should be omitted in <code>expect.yaml</code>. If a column is expected to be <code>NULL</code> don't add it to <code>expect.yaml</code>.
+     (Be careful with spreading previous rows (<code>-&lt;&lt;: *base</code>) here)
+1. Optionally add <code>.schema.json</code> files for input table schemas to the table directory, e.g.
+   <code>tests/sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_raw_v1/clients_daily_v6.schema.json</code>.
+   These tables will be available for every test in the suite.
+   The <code>schema.json</code> file need to match the table name in the <code>query.sql</code> file. If it has project and dataset listed there, the schema file also needs project and dataset.
+1. Optionally add <code>query_params.yaml</code> to define query parameters
+   - <code>query_params</code> must be a list</p>
 <h2 id="init-tests">Init Tests</h2>
 <p>Tests of <code>init.sql</code> statements are supported, similarly to other generated tests.
 Simply name the test <code>test_init</code>. The other guidelines still apply.</p>

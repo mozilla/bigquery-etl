@@ -17,7 +17,7 @@
     
     
       
-        <title>Internet Outages - BigQuery ETL</title>
+        <title>Fivetran Costs - BigQuery ETL</title>
       
     
     
@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#global_outages_v1" class="md-skip">
+        <a href="#monthly_connector_costs" class="md-skip">
           Skip to content
         </a>
       
@@ -103,7 +103,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Internet Outages
+              Fivetran Costs
             
           </span>
         </div>
@@ -749,11 +749,48 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../fivetran_costs/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Fivetran Costs
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Fivetran Costs
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#monthly_connector_costs" class="md-nav__link">
+    monthly_connector_costs
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -819,48 +856,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Internet Outages
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../internet_outages/" class="md-nav__link">
         Internet Outages
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#global_outages_v1" class="md-nav__link">
-    global_outages_v1
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2229,8 +2229,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#global_outages_v1" class="md-nav__link">
-    global_outages_v1
+  <a href="#monthly_connector_costs" class="md-nav__link">
+    monthly_connector_costs
   </a>
   
 </li>
@@ -2250,70 +2250,12 @@
                   
 
 
-  <h1>Internet Outages</h1>
+  <h1>Fivetran Costs</h1>
 
-<p>Derived data useful for detecting regional internet outages,
-shared with some trusted external partners.</p>
-<p>See https://docs.google.com/document/d/15HvdPS3UwGhAir6HyWHDLDRaxUFycx4jagJ_ZrHr9D8/edit</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/internet_outages">Source Directory</a></p>
-<h2 id="global_outages_v1"><a href="#global_outages_v1">global_outages_v1</a></h2>
-<p><strong>Internet Outages</strong></p>
-<p><code>internet_outages.global_outages_v1</code></p>
-<p>This contains a set aggregated metrics that correlate to internet
-outages for different countries in the world.</p>
-<p>The dataset contains the following fields:
-  - <code>country</code>: the Country code of the client.
-  - <code>city</code>: the City name (only for cities with a population &gt;= 15000,
-  'unknown' otherwise).
-  - <code>datetime</code>: the date and the time (truncated to hour) the data was
-  submitted by the client.
-  - <code>proportion_undefined</code>: the proportion of users who failed to send
-  telemetry for a reason that was not listed in the other cases.
-  - <code>proportion_timeout</code>: the proportion of users that had their connection
-  timeout while uploading telemetry
-  (<a href="https://searchfox.org/mozilla-central/rev/fa2df28a49883612bd7af4dacd80cdfedcccd2f6/toolkit/components/telemetry/app/TelemetrySend.jsm#81">after 90s, in Firefox Desktop</a>).
-  - <code>proportion_abort</code>: the proportion of users that had their connection
-  terminated by the client (for example, terminating open connections before
-  shutting down).
-  - <code>proportion_unreachable</code>: the proportion of users that failed to upload
-  telemetry because the server was not reachable (e.g. because the host was
-  not reachable, proxy problems or OS waking up after a suspension).
-  - <code>proportion_terminated</code>: the proportion of users that had their connection
-  terminated internally by the networking code.
-  - <code>proportion_channel_open</code>: the proportion of users for which the upload
-  request was terminated immediately, by the client, because of a Necko
-  internal error.
-  - <code>avg_dns_success_time</code>: the average time it takes for a successful DNS
-  resolution, in milliseconds.
-  - <code>missing_dns_success</code>: counts how many sessions did not report the
-  <code>DNS_LOOKUP_TIME</code> histogram.
-  - <code>avg_dns_failure_time</code>: the average time it takes for an unsuccessful DNS
-  resolution, in milliseconds.
-  - <code>missing_dns_failure</code>: counts how many sessions did not report the
-  <code>DNS_FAILED_LOOKUP_TIME</code> histogram.
-  - <code>count_dns_failure</code>: the average count of unsuccessful DNS resolutions
-  reported.
-  - <code>ssl_error_prop</code>: the proportion of users that reported an error through
-  the <code>SSL_CERT_VERIFICATION_ERRORS</code> histogram.
-  - <code>avg_tls_handshake_time</code>: the average time after the TCP SYN to ready
-  for HTTP, in milliseconds.</p>
-<p>Caveats with the data:
-As with any observational data, there are many caveats and interpretation must
-be done carefully. Below is a list of issues we have considered, but it is not
-exhaustive.
-  - Firefox users are not representative of the general population in their
-  region.
-  - Users can experience multiple types of failures and so the proportions
-  are not summable. For example, if 2.4% of clients had a timeout and 2.6% of
-  clients had eUnreachable that doesn't necessarily mean that 5.0% of clients
-  had a timeout or a eUnreachable
-  - Geographical data is based on IPGeo databases. These databases are
-  imperfect, so some activity may be attributed to the wrong location.
-  Further, proxy and VPN usage can create geo-attribution errors.</p>
-<ul>
-<li>Owners:<p>- <a href="mailto:aplacitelli@mozilla.com">aplacitelli@mozilla.com</a></p>
-</li>
-</ul>
+<p>Analyze the costs for Fivetran connectors.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs">Source Directory</a></p>
+<h2 id="monthly_connector_costs"><a href="#monthly_connector_costs">monthly_connector_costs</a></h2>
+<p><code>fivetran_costs.monthly_connector_costs</code></p>
 <table>
 <caption>Schema</caption>
     <tr>
@@ -2323,89 +2265,88 @@ exhaustive.
         <th>Nullable</th>
     </tr>
 <tr>
-        <td>country</td>
-        <td></td>
+        <td>destination_name</td>
+        <td>Name of the Fivetran destination as it appears in the UI.
+</td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
-        <td>city</td>
-        <td></td>
+        <td>measured_month</td>
+        <td>Month of the usage measurement.
+</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>connector_name</td>
+        <td>Name of the Fivetran connector billed.
+</td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
-        <td>datetime</td>
-        <td></td>
-        <td>Timestamp</td>
+        <td>paid_active_rows</td>
+        <td>Number of active rows billed for that connector in that month.
+</td>
+        <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
-        <td>proportion_undefined</td>
+        <td>free_active_rows</td>
+        <td>Number of free active rows for that connector in that month.
+</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>total_active_rows</td>
+        <td>Total number of active rows, billed and free for that connector in that month.
+</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>percentage_of_destination_paid_active_rows</td>
+        <td>Percentage of paid active rows for that connector compared to the total amount of paid active rows for the destination for that month.
+</td>
+        <td>Float</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>percentage_of_total_active_rows</td>
         <td></td>
         <td>Float</td>
         <td>Yes</td>
     </tr><tr>
-        <td>proportion_timeout</td>
-        <td></td>
+        <td>cost_in_usd</td>
+        <td>Costs for that connector for that month in USD
+</td>
         <td>Float</td>
         <td>Yes</td>
     </tr><tr>
-        <td>proportion_abort</td>
-        <td></td>
+        <td>cost_in_credits</td>
+        <td>Costs for that connector for that month in Fivetran credits
+</td>
         <td>Float</td>
         <td>Yes</td>
     </tr><tr>
-        <td>proportion_unreachable</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>proportion_terminated</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>proportion_channel_open</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>avg_dns_success_time</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>missing_dns_success</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>avg_dns_failure_time</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>missing_dns_failure</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>count_dns_failure</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ssl_error_prop</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>avg_tls_handshake_time</td>
-        <td></td>
+        <td>percentage_of_total_paid_active_rows</td>
+        <td>Percentage of paid active rows for that connector compared to the total amount of paid active rows over all destinations for that month.
+</td>
         <td>Float</td>
         <td>Yes</td>
     </tr>
 </table>
 
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/internet_outages/global_outages_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/internet_outages/global_outages_v1/metadata.yaml">Metadata File</a> </p>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs_derived>fivetran_costs_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs_derived/monthly_connector_costs_v1>monthly_connector_costs_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs/monthly_connector_costs">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs/monthly_connector_costs/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs/monthly_connector_costs/metadata.yaml">Metadata File</a> </p>
 <hr />
 
 
@@ -2427,7 +2368,7 @@ exhaustive.
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../google_ads/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Google_ads" rel="prev">
+        <a href="../firefox_translations/" class="md-footer__link md-footer__link--prev" aria-label="Previous: firefox-translations" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -2436,20 +2377,20 @@ exhaustive.
               <span class="md-footer__direction">
                 Previous
               </span>
-              Google_ads
+              firefox-translations
             </div>
           </div>
         </a>
       
       
         
-        <a href="../klar_android/" class="md-footer__link md-footer__link--next" aria-label="Next: Klar Android" rel="next">
+        <a href="../focus_android/" class="md-footer__link md-footer__link--next" aria-label="Next: Focus Android" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Klar Android
+              Focus Android
             </div>
           </div>
           <div class="md-footer__button md-icon">

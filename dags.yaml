@@ -81,6 +81,7 @@ bqetl_mobile_search:
       - "telemetry-alerts@mozilla.com"
       - "anicholson@mozilla.com"
       - "akomar@mozilla.com"
+      - "cmorales@mozilla.com"
     retries: 1
     retry_delay: 5m
   tags:
@@ -206,6 +207,7 @@ bqetl_search:
       - "telemetry-alerts@mozilla.com"
       - "anicholson@mozilla.com"
       - "akomar@mozilla.com"
+      - "cmorales@mozilla.com"
     retries: 2
     retry_delay: 30m
   tags:

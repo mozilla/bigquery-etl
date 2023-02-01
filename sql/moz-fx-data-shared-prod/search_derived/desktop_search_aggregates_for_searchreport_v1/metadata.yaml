@@ -8,6 +8,7 @@ labels:
   incremental: true
   schedule: daily
 owners:
+- cmorales@mozilla.com
 - xluo@mozilla.com
 scheduling:
   dag_name: bqetl_search_dashboard

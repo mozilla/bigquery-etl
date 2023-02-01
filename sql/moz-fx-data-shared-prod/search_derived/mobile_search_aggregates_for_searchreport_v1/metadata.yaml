@@ -9,6 +9,7 @@ labels:
   incremental: true
   schedule: daily
 owners:
+- cmorales@mozilla.com
 - mmccorquodale@mozilla.com
 - xluo@mozilla.com
 scheduling:

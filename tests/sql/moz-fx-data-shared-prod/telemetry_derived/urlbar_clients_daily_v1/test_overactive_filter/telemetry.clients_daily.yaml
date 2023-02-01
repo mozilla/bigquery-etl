@@ -12,9 +12,24 @@
   user_pref_browser_widget_in_navbar: true
   user_pref_browser_urlbar_suggest_searches: true
   user_pref_browser_urlbar_show_search_suggestions_first: true
-  scalar_parent_urlbar_picked_autofill_sum:
+  scalar_parent_urlbar_picked_autofill_about_sum:
+    - key: "0"
+      value: 1
+  scalar_parent_urlbar_picked_autofill_adaptive_sum:
+    - key: "0"
+      value: 2
+  scalar_parent_urlbar_picked_autofill_origin_sum:
+    - key: "0"
+      value: 3
+  scalar_parent_urlbar_picked_autofill_other_sum:
+    - key: "0"
+      value: 4
+  scalar_parent_urlbar_picked_autofill_preloaded_sum:
     - key: "0"
       value: 5
+  scalar_parent_urlbar_picked_autofill_url_sum:
+    - key: "0"
+      value: 6
   scalar_parent_urlbar_picked_bookmark_sum:
     - key: "0"
       value: 5
@@ -41,7 +56,7 @@
       value: "experiment_value"
 - <<: *base
   client_id: "client_2"
-  scalar_parent_urlbar_picked_autofill_sum:
+  scalar_parent_urlbar_picked_autofill_about_sum:
     - key: "0"
       value: 6
     - key: "1"

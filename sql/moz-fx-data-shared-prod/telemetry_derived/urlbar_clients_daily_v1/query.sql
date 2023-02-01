@@ -63,6 +63,42 @@ WITH combined_urlbar_picked AS (
         transform_scalar_metric_sum_columns(scalar_parent_urlbar_picked_autofill_sum) AS position
       ),
       STRUCT(
+        "autofill_about" AS type,
+        transform_scalar_metric_sum_columns(
+          scalar_parent_urlbar_picked_autofill_about_sum
+        ) AS position
+      ),
+      STRUCT(
+        "autofill_adaptive" AS type,
+        transform_scalar_metric_sum_columns(
+          scalar_parent_urlbar_picked_autofill_adaptive_sum
+        ) AS position
+      ),
+      STRUCT(
+        "autofill_origin" AS type,
+        transform_scalar_metric_sum_columns(
+          scalar_parent_urlbar_picked_autofill_origin_sum
+        ) AS position
+      ),
+      STRUCT(
+        "autofill_other" AS type,
+        transform_scalar_metric_sum_columns(
+          scalar_parent_urlbar_picked_autofill_other_sum
+        ) AS position
+      ),
+      STRUCT(
+        "autofill_preloaded" AS type,
+        transform_scalar_metric_sum_columns(
+          scalar_parent_urlbar_picked_autofill_preloaded_sum
+        ) AS position
+      ),
+      STRUCT(
+        "autofill_url" AS type,
+        transform_scalar_metric_sum_columns(
+          scalar_parent_urlbar_picked_autofill_url_sum
+        ) AS position
+      ),
+      STRUCT(
         "bookmark" AS type,
         transform_scalar_metric_sum_columns(scalar_parent_urlbar_picked_bookmark_sum) AS position
       ),

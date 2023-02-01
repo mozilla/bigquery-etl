@@ -2327,9 +2327,9 @@
 <h2 id="baseline"><a href="#baseline">baseline</a></h2>
 <p><strong>App-specific view for Glean ping "baseline"</strong></p>
 <p><code>mozilla_vpn_android.baseline</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Mozilla VPN (Android)"
-(moz-fx-data-shared-prod.org_mozilla_firefox_vpn.baseline).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Mozilla VPN (Android)"
+(org_mozilla_firefox_vpn.baseline).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -2341,7 +2341,7 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2351,7 +2351,7 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2371,22 +2371,22 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2401,12 +2401,12 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -2431,9 +2431,9 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
 <h2 id="deletion_request"><a href="#deletion_request">deletion_request</a></h2>
 <p><strong>App-specific view for Glean ping "deletion-request"</strong></p>
 <p><code>mozilla_vpn_android.deletion_request</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Mozilla VPN (Android)"
-(moz-fx-data-shared-prod.org_mozilla_firefox_vpn.deletion_request).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Mozilla VPN (Android)"
+(org_mozilla_firefox_vpn.deletion_request).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -2445,7 +2445,7 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2455,7 +2455,7 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2475,22 +2475,22 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2505,12 +2505,12 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -2535,9 +2535,9 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
 <h2 id="events"><a href="#events">events</a></h2>
 <p><strong>App-specific view for Glean ping "events"</strong></p>
 <p><code>mozilla_vpn_android.events</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Mozilla VPN (Android)"
-(moz-fx-data-shared-prod.org_mozilla_firefox_vpn.events).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Mozilla VPN (Android)"
+(org_mozilla_firefox_vpn.events).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -2549,7 +2549,7 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2559,7 +2559,7 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2579,22 +2579,22 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2609,12 +2609,12 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -2639,9 +2639,9 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
 <h2 id="main"><a href="#main">main</a></h2>
 <p><strong>App-specific view for Glean ping "main"</strong></p>
 <p><code>mozilla_vpn_android.main</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Mozilla VPN (Android)"
-(moz-fx-data-shared-prod.org_mozilla_firefox_vpn.main).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Mozilla VPN (Android)"
+(org_mozilla_firefox_vpn.main).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -2653,7 +2653,7 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2663,7 +2663,7 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2683,22 +2683,22 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2713,12 +2713,12 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -2743,9 +2743,9 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
 <h2 id="metrics"><a href="#metrics">metrics</a></h2>
 <p><strong>App-specific view for Glean ping "metrics"</strong></p>
 <p><code>mozilla_vpn_android.metrics</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Mozilla VPN (Android)"
-(moz-fx-data-shared-prod.org_mozilla_firefox_vpn.metrics).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Mozilla VPN (Android)"
+(org_mozilla_firefox_vpn.metrics).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -2757,7 +2757,7 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2767,7 +2767,7 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2787,22 +2787,22 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2817,12 +2817,12 @@ for the release channel of the Glean application "Mozilla VPN (Android)"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>

@@ -2509,9 +2509,9 @@
 <h2 id="addresses_sync"><a href="#addresses_sync">addresses_sync</a></h2>
 <p><strong>App-specific view for Glean ping "addresses-sync"</strong></p>
 <p><code>firefox_reality.addresses_sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox Reality"
-(moz-fx-data-shared-prod.org_mozilla_vrbrowser.addresses_sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Reality"
+(org_mozilla_vrbrowser.addresses_sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -2523,7 +2523,7 @@ for the release channel of the Glean application "Firefox Reality"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2533,7 +2533,7 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2553,22 +2553,22 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2583,12 +2583,12 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -2613,9 +2613,9 @@ for the release channel of the Glean application "Firefox Reality"
 <h2 id="baseline"><a href="#baseline">baseline</a></h2>
 <p><strong>App-specific view for Glean ping "baseline"</strong></p>
 <p><code>firefox_reality.baseline</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox Reality"
-(moz-fx-data-shared-prod.org_mozilla_vrbrowser.baseline).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Reality"
+(org_mozilla_vrbrowser.baseline).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -2627,7 +2627,7 @@ for the release channel of the Glean application "Firefox Reality"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2637,7 +2637,7 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2657,22 +2657,22 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2687,12 +2687,12 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -2771,9 +2771,9 @@ for the release channel of the Glean application "Firefox Reality"
 <h2 id="bookmarks_sync"><a href="#bookmarks_sync">bookmarks_sync</a></h2>
 <p><strong>App-specific view for Glean ping "bookmarks-sync"</strong></p>
 <p><code>firefox_reality.bookmarks_sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox Reality"
-(moz-fx-data-shared-prod.org_mozilla_vrbrowser.bookmarks_sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Reality"
+(org_mozilla_vrbrowser.bookmarks_sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -2785,7 +2785,7 @@ for the release channel of the Glean application "Firefox Reality"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2795,7 +2795,7 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2815,22 +2815,22 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2845,12 +2845,12 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3064,9 +3064,9 @@ for the release channel of the Glean application "Firefox Reality"
 <h2 id="creditcards_sync"><a href="#creditcards_sync">creditcards_sync</a></h2>
 <p><strong>App-specific view for Glean ping "creditcards-sync"</strong></p>
 <p><code>firefox_reality.creditcards_sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox Reality"
-(moz-fx-data-shared-prod.org_mozilla_vrbrowser.creditcards_sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Reality"
+(org_mozilla_vrbrowser.creditcards_sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3078,7 +3078,7 @@ for the release channel of the Glean application "Firefox Reality"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3088,7 +3088,7 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3108,22 +3108,22 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3138,12 +3138,12 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3168,9 +3168,9 @@ for the release channel of the Glean application "Firefox Reality"
 <h2 id="deletion_request"><a href="#deletion_request">deletion_request</a></h2>
 <p><strong>App-specific view for Glean ping "deletion-request"</strong></p>
 <p><code>firefox_reality.deletion_request</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox Reality"
-(moz-fx-data-shared-prod.org_mozilla_vrbrowser.deletion_request).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Reality"
+(org_mozilla_vrbrowser.deletion_request).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3182,7 +3182,7 @@ for the release channel of the Glean application "Firefox Reality"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3192,7 +3192,7 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3212,22 +3212,22 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3242,12 +3242,12 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3272,9 +3272,9 @@ for the release channel of the Glean application "Firefox Reality"
 <h2 id="events"><a href="#events">events</a></h2>
 <p><strong>App-specific view for Glean ping "events"</strong></p>
 <p><code>firefox_reality.events</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox Reality"
-(moz-fx-data-shared-prod.org_mozilla_vrbrowser.events).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Reality"
+(org_mozilla_vrbrowser.events).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3286,7 +3286,7 @@ for the release channel of the Glean application "Firefox Reality"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3296,7 +3296,7 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3316,22 +3316,22 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3346,12 +3346,12 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3394,9 +3394,9 @@ for the release channel of the Glean application "Firefox Reality"
 <h2 id="history_sync"><a href="#history_sync">history_sync</a></h2>
 <p><strong>App-specific view for Glean ping "history-sync"</strong></p>
 <p><code>firefox_reality.history_sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox Reality"
-(moz-fx-data-shared-prod.org_mozilla_vrbrowser.history_sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Reality"
+(org_mozilla_vrbrowser.history_sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3408,7 +3408,7 @@ for the release channel of the Glean application "Firefox Reality"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3418,7 +3418,7 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3438,22 +3438,22 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3468,12 +3468,12 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3498,9 +3498,9 @@ for the release channel of the Glean application "Firefox Reality"
 <h2 id="logins_sync"><a href="#logins_sync">logins_sync</a></h2>
 <p><strong>App-specific view for Glean ping "logins-sync"</strong></p>
 <p><code>firefox_reality.logins_sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox Reality"
-(moz-fx-data-shared-prod.org_mozilla_vrbrowser.logins_sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Reality"
+(org_mozilla_vrbrowser.logins_sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3512,7 +3512,7 @@ for the release channel of the Glean application "Firefox Reality"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3522,7 +3522,7 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3542,22 +3542,22 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3572,12 +3572,12 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3602,9 +3602,9 @@ for the release channel of the Glean application "Firefox Reality"
 <h2 id="metrics"><a href="#metrics">metrics</a></h2>
 <p><strong>App-specific view for Glean ping "metrics"</strong></p>
 <p><code>firefox_reality.metrics</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox Reality"
-(moz-fx-data-shared-prod.org_mozilla_vrbrowser.metrics).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Reality"
+(org_mozilla_vrbrowser.metrics).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3616,7 +3616,7 @@ for the release channel of the Glean application "Firefox Reality"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3626,7 +3626,7 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3646,22 +3646,22 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3676,12 +3676,12 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3824,9 +3824,9 @@ for the release channel of the Glean application "Firefox Reality"
 <h2 id="session_end"><a href="#session_end">session_end</a></h2>
 <p><strong>App-specific view for Glean ping "session-end"</strong></p>
 <p><code>firefox_reality.session_end</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox Reality"
-(moz-fx-data-shared-prod.org_mozilla_vrbrowser.session_end).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Reality"
+(org_mozilla_vrbrowser.session_end).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3838,7 +3838,7 @@ for the release channel of the Glean application "Firefox Reality"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3848,7 +3848,7 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3868,22 +3868,22 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3898,12 +3898,12 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3928,9 +3928,9 @@ for the release channel of the Glean application "Firefox Reality"
 <h2 id="sync"><a href="#sync">sync</a></h2>
 <p><strong>App-specific view for Glean ping "sync"</strong></p>
 <p><code>firefox_reality.sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox Reality"
-(moz-fx-data-shared-prod.org_mozilla_vrbrowser.sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Reality"
+(org_mozilla_vrbrowser.sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3942,7 +3942,7 @@ for the release channel of the Glean application "Firefox Reality"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3952,7 +3952,7 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3972,22 +3972,22 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -4002,12 +4002,12 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -4032,9 +4032,9 @@ for the release channel of the Glean application "Firefox Reality"
 <h2 id="tabs_sync"><a href="#tabs_sync">tabs_sync</a></h2>
 <p><strong>App-specific view for Glean ping "tabs-sync"</strong></p>
 <p><code>firefox_reality.tabs_sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox Reality"
-(moz-fx-data-shared-prod.org_mozilla_vrbrowser.tabs_sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Reality"
+(org_mozilla_vrbrowser.tabs_sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -4046,7 +4046,7 @@ for the release channel of the Glean application "Firefox Reality"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -4056,7 +4056,7 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -4076,22 +4076,22 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -4106,12 +4106,12 @@ for the release channel of the Glean application "Firefox Reality"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>

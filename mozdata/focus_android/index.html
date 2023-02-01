@@ -2453,9 +2453,9 @@
 <h2 id="activation"><a href="#activation">activation</a></h2>
 <p><strong>App-specific view for Glean ping "activation"</strong></p>
 <p><code>focus_android.activation</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox Focus for Android"
-(moz-fx-data-shared-prod.org_mozilla_focus.activation).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Focus for Android"
+(org_mozilla_focus.activation, org_mozilla_focus_beta.activation, org_mozilla_focus_nightly.activation).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -2467,7 +2467,7 @@ for the release channel of the Glean application "Firefox Focus for Android"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2477,7 +2477,7 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2497,22 +2497,22 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2527,12 +2527,12 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -2549,6 +2549,14 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus>org_mozilla_focus</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus/activation>activation</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_beta>org_mozilla_focus_beta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_beta/activation>activation</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_nightly>org_mozilla_focus_nightly</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_nightly/activation>activation</a></td>
         </tr>
 </table>
 
@@ -2557,9 +2565,9 @@ for the release channel of the Glean application "Firefox Focus for Android"
 <h2 id="baseline"><a href="#baseline">baseline</a></h2>
 <p><strong>App-specific view for Glean ping "baseline"</strong></p>
 <p><code>focus_android.baseline</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox Focus for Android"
-(moz-fx-data-shared-prod.org_mozilla_focus.baseline).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Focus for Android"
+(org_mozilla_focus.baseline, org_mozilla_focus_beta.baseline, org_mozilla_focus_nightly.baseline).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -2571,7 +2579,7 @@ for the release channel of the Glean application "Firefox Focus for Android"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2581,7 +2589,7 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2601,22 +2609,22 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2631,12 +2639,12 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -2653,6 +2661,14 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus>org_mozilla_focus</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus/baseline>baseline</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_beta>org_mozilla_focus_beta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_beta/baseline>baseline</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_nightly>org_mozilla_focus_nightly</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_nightly/baseline>baseline</a></td>
         </tr>
 </table>
 
@@ -2938,9 +2954,9 @@ for the release channel of the Glean application "Firefox Focus for Android"
 <h2 id="crash"><a href="#crash">crash</a></h2>
 <p><strong>App-specific view for Glean ping "crash"</strong></p>
 <p><code>focus_android.crash</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox Focus for Android"
-(moz-fx-data-shared-prod.org_mozilla_focus.crash).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Focus for Android"
+(org_mozilla_focus.crash, org_mozilla_focus_beta.crash, org_mozilla_focus_nightly.crash).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -2952,7 +2968,7 @@ for the release channel of the Glean application "Firefox Focus for Android"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2962,7 +2978,7 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2982,22 +2998,22 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3012,12 +3028,12 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3034,6 +3050,14 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus>org_mozilla_focus</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus/crash>crash</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_beta>org_mozilla_focus_beta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_beta/crash>crash</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_nightly>org_mozilla_focus_nightly</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_nightly/crash>crash</a></td>
         </tr>
 </table>
 
@@ -3042,9 +3066,9 @@ for the release channel of the Glean application "Firefox Focus for Android"
 <h2 id="deletion_request"><a href="#deletion_request">deletion_request</a></h2>
 <p><strong>App-specific view for Glean ping "deletion-request"</strong></p>
 <p><code>focus_android.deletion_request</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox Focus for Android"
-(moz-fx-data-shared-prod.org_mozilla_focus.deletion_request).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Focus for Android"
+(org_mozilla_focus.deletion_request, org_mozilla_focus_beta.deletion_request, org_mozilla_focus_nightly.deletion_request).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3056,7 +3080,7 @@ for the release channel of the Glean application "Firefox Focus for Android"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3066,7 +3090,7 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3086,22 +3110,22 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3116,12 +3140,12 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3138,6 +3162,14 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus>org_mozilla_focus</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus/deletion_request>deletion_request</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_beta>org_mozilla_focus_beta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_beta/deletion_request>deletion_request</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_nightly>org_mozilla_focus_nightly</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_nightly/deletion_request>deletion_request</a></td>
         </tr>
 </table>
 
@@ -3146,9 +3178,9 @@ for the release channel of the Glean application "Firefox Focus for Android"
 <h2 id="events"><a href="#events">events</a></h2>
 <p><strong>App-specific view for Glean ping "events"</strong></p>
 <p><code>focus_android.events</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox Focus for Android"
-(moz-fx-data-shared-prod.org_mozilla_focus.events).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Focus for Android"
+(org_mozilla_focus.events, org_mozilla_focus_beta.events, org_mozilla_focus_nightly.events).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3160,7 +3192,7 @@ for the release channel of the Glean application "Firefox Focus for Android"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3170,7 +3202,7 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3190,22 +3222,22 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3220,12 +3252,12 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3242,6 +3274,14 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus>org_mozilla_focus</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus/events>events</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_beta>org_mozilla_focus_beta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_beta/events>events</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_nightly>org_mozilla_focus_nightly</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_nightly/events>events</a></td>
         </tr>
 </table>
 
@@ -3276,9 +3316,9 @@ for the release channel of the Glean application "Firefox Focus for Android"
 <h2 id="fog_validation"><a href="#fog_validation">fog_validation</a></h2>
 <p><strong>App-specific view for Glean ping "fog-validation"</strong></p>
 <p><code>focus_android.fog_validation</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox Focus for Android"
-(moz-fx-data-shared-prod.org_mozilla_focus.fog_validation).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Focus for Android"
+(org_mozilla_focus.fog_validation, org_mozilla_focus_beta.fog_validation, org_mozilla_focus_nightly.fog_validation).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3290,7 +3330,7 @@ for the release channel of the Glean application "Firefox Focus for Android"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3300,7 +3340,7 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3320,22 +3360,22 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3350,12 +3390,12 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3372,6 +3412,14 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus>org_mozilla_focus</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus/fog_validation>fog_validation</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_beta>org_mozilla_focus_beta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_beta/fog_validation>fog_validation</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_nightly>org_mozilla_focus_nightly</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_nightly/fog_validation>fog_validation</a></td>
         </tr>
 </table>
 
@@ -3380,9 +3428,9 @@ for the release channel of the Glean application "Firefox Focus for Android"
 <h2 id="metrics"><a href="#metrics">metrics</a></h2>
 <p><strong>App-specific view for Glean ping "metrics"</strong></p>
 <p><code>focus_android.metrics</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox Focus for Android"
-(moz-fx-data-shared-prod.org_mozilla_focus.metrics).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Focus for Android"
+(org_mozilla_focus.metrics, org_mozilla_focus_beta.metrics, org_mozilla_focus_nightly.metrics).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3394,7 +3442,7 @@ for the release channel of the Glean application "Firefox Focus for Android"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3404,7 +3452,7 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3424,22 +3472,22 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3454,12 +3502,12 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3476,6 +3524,14 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus>org_mozilla_focus</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus/metrics>metrics</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_beta>org_mozilla_focus_beta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_beta/metrics>metrics</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_nightly>org_mozilla_focus_nightly</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_nightly/metrics>metrics</a></td>
         </tr>
 </table>
 
@@ -3622,9 +3678,9 @@ for the release channel of the Glean application "Firefox Focus for Android"
 <h2 id="pageload"><a href="#pageload">pageload</a></h2>
 <p><strong>App-specific view for Glean ping "pageload"</strong></p>
 <p><code>focus_android.pageload</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox Focus for Android"
-(moz-fx-data-shared-prod.org_mozilla_focus.pageload).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Focus for Android"
+(org_mozilla_focus.pageload, org_mozilla_focus_beta.pageload, org_mozilla_focus_nightly.pageload).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3636,7 +3692,7 @@ for the release channel of the Glean application "Firefox Focus for Android"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3646,7 +3702,7 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3666,22 +3722,22 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3696,12 +3752,12 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3718,6 +3774,14 @@ for the release channel of the Glean application "Firefox Focus for Android"
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus>org_mozilla_focus</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus/pageload>pageload</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_beta>org_mozilla_focus_beta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_beta/pageload>pageload</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_nightly>org_mozilla_focus_nightly</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_focus_nightly/pageload>pageload</a></td>
         </tr>
 </table>
 

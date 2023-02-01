@@ -2537,9 +2537,9 @@
 <h2 id="baseline"><a href="#baseline">baseline</a></h2>
 <p><strong>App-specific view for Glean ping "baseline"</strong></p>
 <p><code>firefox_ios.baseline</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox for iOS"
-(moz-fx-data-shared-prod.org_mozilla_ios_firefox.baseline).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox for iOS"
+(org_mozilla_ios_firefox.baseline, org_mozilla_ios_firefoxbeta.baseline, org_mozilla_ios_fennec.baseline).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -2551,7 +2551,7 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2561,7 +2561,7 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2581,22 +2581,22 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2611,12 +2611,12 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -2631,8 +2631,16 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec>org_mozilla_ios_fennec</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/baseline>baseline</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox>org_mozilla_ios_firefox</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/baseline>baseline</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta>org_mozilla_ios_firefoxbeta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta/baseline>baseline</a></td>
         </tr>
 </table>
 
@@ -2918,9 +2926,9 @@ for the release channel of the Glean application "Firefox for iOS"
 <h2 id="deletion_request"><a href="#deletion_request">deletion_request</a></h2>
 <p><strong>App-specific view for Glean ping "deletion-request"</strong></p>
 <p><code>firefox_ios.deletion_request</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox for iOS"
-(moz-fx-data-shared-prod.org_mozilla_ios_firefox.deletion_request).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox for iOS"
+(org_mozilla_ios_firefox.deletion_request, org_mozilla_ios_firefoxbeta.deletion_request, org_mozilla_ios_fennec.deletion_request).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -2932,7 +2940,7 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2942,7 +2950,7 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2962,22 +2970,22 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2992,12 +3000,12 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3012,8 +3020,16 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec>org_mozilla_ios_fennec</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/deletion_request>deletion_request</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox>org_mozilla_ios_firefox</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/deletion_request>deletion_request</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta>org_mozilla_ios_firefoxbeta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta/deletion_request>deletion_request</a></td>
         </tr>
 </table>
 
@@ -3022,9 +3038,9 @@ for the release channel of the Glean application "Firefox for iOS"
 <h2 id="events"><a href="#events">events</a></h2>
 <p><strong>App-specific view for Glean ping "events"</strong></p>
 <p><code>firefox_ios.events</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox for iOS"
-(moz-fx-data-shared-prod.org_mozilla_ios_firefox.events).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox for iOS"
+(org_mozilla_ios_firefox.events, org_mozilla_ios_firefoxbeta.events, org_mozilla_ios_fennec.events).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3036,7 +3052,7 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3046,7 +3062,7 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3066,22 +3082,22 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3096,12 +3112,12 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3116,8 +3132,16 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec>org_mozilla_ios_fennec</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/events>events</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox>org_mozilla_ios_firefox</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/events>events</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta>org_mozilla_ios_firefoxbeta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta/events>events</a></td>
         </tr>
 </table>
 
@@ -3152,9 +3176,9 @@ for the release channel of the Glean application "Firefox for iOS"
 <h2 id="first_session"><a href="#first_session">first_session</a></h2>
 <p><strong>App-specific view for Glean ping "first-session"</strong></p>
 <p><code>firefox_ios.first_session</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox for iOS"
-(moz-fx-data-shared-prod.org_mozilla_ios_firefox.first_session).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox for iOS"
+(org_mozilla_ios_firefox.first_session, org_mozilla_ios_firefoxbeta.first_session, org_mozilla_ios_fennec.first_session).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3166,7 +3190,7 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3176,7 +3200,7 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3196,22 +3220,22 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3226,12 +3250,12 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3246,8 +3270,16 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec>org_mozilla_ios_fennec</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/first_session>first_session</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox>org_mozilla_ios_firefox</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/first_session>first_session</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta>org_mozilla_ios_firefoxbeta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta/first_session>first_session</a></td>
         </tr>
 </table>
 
@@ -3256,9 +3288,9 @@ for the release channel of the Glean application "Firefox for iOS"
 <h2 id="metrics"><a href="#metrics">metrics</a></h2>
 <p><strong>App-specific view for Glean ping "metrics"</strong></p>
 <p><code>firefox_ios.metrics</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox for iOS"
-(moz-fx-data-shared-prod.org_mozilla_ios_firefox.metrics).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox for iOS"
+(org_mozilla_ios_firefox.metrics, org_mozilla_ios_firefoxbeta.metrics, org_mozilla_ios_fennec.metrics).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3270,7 +3302,7 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3280,7 +3312,7 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3300,22 +3332,22 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3330,12 +3362,12 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3350,8 +3382,16 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec>org_mozilla_ios_fennec</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/metrics>metrics</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox>org_mozilla_ios_firefox</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/metrics>metrics</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta>org_mozilla_ios_firefoxbeta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta/metrics>metrics</a></td>
         </tr>
 </table>
 
@@ -3607,9 +3647,9 @@ for the release channel of the Glean application "Firefox for iOS"
 <h2 id="temp_bookmarks_sync"><a href="#temp_bookmarks_sync">temp_bookmarks_sync</a></h2>
 <p><strong>App-specific view for Glean ping "temp-bookmarks-sync"</strong></p>
 <p><code>firefox_ios.temp_bookmarks_sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox for iOS"
-(moz-fx-data-shared-prod.org_mozilla_ios_firefox.temp_bookmarks_sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox for iOS"
+(org_mozilla_ios_firefox.temp_bookmarks_sync, org_mozilla_ios_firefoxbeta.temp_bookmarks_sync, org_mozilla_ios_fennec.temp_bookmarks_sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3621,7 +3661,7 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3631,7 +3671,7 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3651,22 +3691,22 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3681,12 +3721,12 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3701,8 +3741,16 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec>org_mozilla_ios_fennec</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_bookmarks_sync>temp_bookmarks_sync</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox>org_mozilla_ios_firefox</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/temp_bookmarks_sync>temp_bookmarks_sync</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta>org_mozilla_ios_firefoxbeta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta/temp_bookmarks_sync>temp_bookmarks_sync</a></td>
         </tr>
 </table>
 
@@ -3711,9 +3759,9 @@ for the release channel of the Glean application "Firefox for iOS"
 <h2 id="temp_clients_sync"><a href="#temp_clients_sync">temp_clients_sync</a></h2>
 <p><strong>App-specific view for Glean ping "temp-clients-sync"</strong></p>
 <p><code>firefox_ios.temp_clients_sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox for iOS"
-(moz-fx-data-shared-prod.org_mozilla_ios_firefox.temp_clients_sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox for iOS"
+(org_mozilla_ios_firefox.temp_clients_sync, org_mozilla_ios_firefoxbeta.temp_clients_sync, org_mozilla_ios_fennec.temp_clients_sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3725,7 +3773,7 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3735,7 +3783,7 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3755,22 +3803,22 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3785,12 +3833,12 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3805,8 +3853,16 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec>org_mozilla_ios_fennec</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_clients_sync>temp_clients_sync</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox>org_mozilla_ios_firefox</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/temp_clients_sync>temp_clients_sync</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta>org_mozilla_ios_firefoxbeta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta/temp_clients_sync>temp_clients_sync</a></td>
         </tr>
 </table>
 
@@ -3815,9 +3871,9 @@ for the release channel of the Glean application "Firefox for iOS"
 <h2 id="temp_history_sync"><a href="#temp_history_sync">temp_history_sync</a></h2>
 <p><strong>App-specific view for Glean ping "temp-history-sync"</strong></p>
 <p><code>firefox_ios.temp_history_sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox for iOS"
-(moz-fx-data-shared-prod.org_mozilla_ios_firefox.temp_history_sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox for iOS"
+(org_mozilla_ios_firefox.temp_history_sync, org_mozilla_ios_firefoxbeta.temp_history_sync, org_mozilla_ios_fennec.temp_history_sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3829,7 +3885,7 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3839,7 +3895,7 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3859,22 +3915,22 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3889,12 +3945,12 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3909,8 +3965,16 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec>org_mozilla_ios_fennec</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_history_sync>temp_history_sync</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox>org_mozilla_ios_firefox</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/temp_history_sync>temp_history_sync</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta>org_mozilla_ios_firefoxbeta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta/temp_history_sync>temp_history_sync</a></td>
         </tr>
 </table>
 
@@ -3919,9 +3983,9 @@ for the release channel of the Glean application "Firefox for iOS"
 <h2 id="temp_logins_sync"><a href="#temp_logins_sync">temp_logins_sync</a></h2>
 <p><strong>App-specific view for Glean ping "temp-logins-sync"</strong></p>
 <p><code>firefox_ios.temp_logins_sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox for iOS"
-(moz-fx-data-shared-prod.org_mozilla_ios_firefox.temp_logins_sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox for iOS"
+(org_mozilla_ios_firefox.temp_logins_sync, org_mozilla_ios_firefoxbeta.temp_logins_sync, org_mozilla_ios_fennec.temp_logins_sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3933,7 +3997,7 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3943,7 +4007,7 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3963,22 +4027,22 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3993,12 +4057,12 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -4013,8 +4077,16 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec>org_mozilla_ios_fennec</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_logins_sync>temp_logins_sync</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox>org_mozilla_ios_firefox</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/temp_logins_sync>temp_logins_sync</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta>org_mozilla_ios_firefoxbeta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta/temp_logins_sync>temp_logins_sync</a></td>
         </tr>
 </table>
 
@@ -4023,9 +4095,9 @@ for the release channel of the Glean application "Firefox for iOS"
 <h2 id="temp_rust_tabs_sync"><a href="#temp_rust_tabs_sync">temp_rust_tabs_sync</a></h2>
 <p><strong>App-specific view for Glean ping "temp-rust-tabs-sync"</strong></p>
 <p><code>firefox_ios.temp_rust_tabs_sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox for iOS"
-(moz-fx-data-shared-prod.org_mozilla_ios_firefox.temp_rust_tabs_sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox for iOS"
+(org_mozilla_ios_firefox.temp_rust_tabs_sync, org_mozilla_ios_firefoxbeta.temp_rust_tabs_sync, org_mozilla_ios_fennec.temp_rust_tabs_sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -4037,7 +4109,7 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -4047,7 +4119,7 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -4067,22 +4139,22 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -4097,12 +4169,12 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -4117,8 +4189,16 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec>org_mozilla_ios_fennec</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_rust_tabs_sync>temp_rust_tabs_sync</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox>org_mozilla_ios_firefox</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/temp_rust_tabs_sync>temp_rust_tabs_sync</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta>org_mozilla_ios_firefoxbeta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta/temp_rust_tabs_sync>temp_rust_tabs_sync</a></td>
         </tr>
 </table>
 
@@ -4127,9 +4207,9 @@ for the release channel of the Glean application "Firefox for iOS"
 <h2 id="temp_sync"><a href="#temp_sync">temp_sync</a></h2>
 <p><strong>App-specific view for Glean ping "temp-sync"</strong></p>
 <p><code>firefox_ios.temp_sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox for iOS"
-(moz-fx-data-shared-prod.org_mozilla_ios_firefox.temp_sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox for iOS"
+(org_mozilla_ios_firefox.temp_sync, org_mozilla_ios_firefoxbeta.temp_sync, org_mozilla_ios_fennec.temp_sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -4141,7 +4221,7 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -4151,7 +4231,7 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -4171,22 +4251,22 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -4201,12 +4281,12 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -4221,8 +4301,16 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec>org_mozilla_ios_fennec</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_sync>temp_sync</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox>org_mozilla_ios_firefox</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/temp_sync>temp_sync</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta>org_mozilla_ios_firefoxbeta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta/temp_sync>temp_sync</a></td>
         </tr>
 </table>
 
@@ -4231,9 +4319,9 @@ for the release channel of the Glean application "Firefox for iOS"
 <h2 id="temp_tabs_sync"><a href="#temp_tabs_sync">temp_tabs_sync</a></h2>
 <p><strong>App-specific view for Glean ping "temp-tabs-sync"</strong></p>
 <p><code>firefox_ios.temp_tabs_sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox for iOS"
-(moz-fx-data-shared-prod.org_mozilla_ios_firefox.temp_tabs_sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox for iOS"
+(org_mozilla_ios_firefox.temp_tabs_sync, org_mozilla_ios_firefoxbeta.temp_tabs_sync, org_mozilla_ios_fennec.temp_tabs_sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -4245,7 +4333,7 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -4255,7 +4343,7 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -4275,22 +4363,22 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -4305,12 +4393,12 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -4325,8 +4413,16 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec>org_mozilla_ios_fennec</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/temp_tabs_sync>temp_tabs_sync</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox>org_mozilla_ios_firefox</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/temp_tabs_sync>temp_tabs_sync</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta>org_mozilla_ios_firefoxbeta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta/temp_tabs_sync>temp_tabs_sync</a></td>
         </tr>
 </table>
 
@@ -4335,9 +4431,9 @@ for the release channel of the Glean application "Firefox for iOS"
 <h2 id="topsites_impression"><a href="#topsites_impression">topsites_impression</a></h2>
 <p><strong>App-specific view for Glean ping "topsites-impression"</strong></p>
 <p><code>firefox_ios.topsites_impression</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Firefox for iOS"
-(moz-fx-data-shared-prod.org_mozilla_ios_firefox.topsites_impression).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox for iOS"
+(org_mozilla_ios_firefox.topsites_impression, org_mozilla_ios_firefoxbeta.topsites_impression, org_mozilla_ios_fennec.topsites_impression).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -4349,7 +4445,7 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -4359,7 +4455,7 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -4379,22 +4475,22 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -4409,12 +4505,12 @@ for the release channel of the Glean application "Firefox for iOS"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -4429,8 +4525,16 @@ for the release channel of the Glean application "Firefox for iOS"
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec>org_mozilla_ios_fennec</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec/topsites_impression>topsites_impression</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox>org_mozilla_ios_firefox</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/topsites_impression>topsites_impression</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta>org_mozilla_ios_firefoxbeta</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta/topsites_impression>topsites_impression</a></td>
         </tr>
 </table>
 

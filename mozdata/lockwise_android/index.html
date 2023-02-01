@@ -2495,9 +2495,9 @@
 <h2 id="addresses_sync"><a href="#addresses_sync">addresses_sync</a></h2>
 <p><strong>App-specific view for Glean ping "addresses-sync"</strong></p>
 <p><code>lockwise_android.addresses_sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Lockwise for Android"
-(moz-fx-data-shared-prod.mozilla_lockbox.addresses_sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Lockwise for Android"
+(mozilla_lockbox.addresses_sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -2509,7 +2509,7 @@ for the release channel of the Glean application "Lockwise for Android"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2519,7 +2519,7 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2539,22 +2539,22 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2569,12 +2569,12 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -2599,9 +2599,9 @@ for the release channel of the Glean application "Lockwise for Android"
 <h2 id="baseline"><a href="#baseline">baseline</a></h2>
 <p><strong>App-specific view for Glean ping "baseline"</strong></p>
 <p><code>lockwise_android.baseline</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Lockwise for Android"
-(moz-fx-data-shared-prod.mozilla_lockbox.baseline).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Lockwise for Android"
+(mozilla_lockbox.baseline).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -2613,7 +2613,7 @@ for the release channel of the Glean application "Lockwise for Android"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2623,7 +2623,7 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2643,22 +2643,22 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2673,12 +2673,12 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -2757,9 +2757,9 @@ for the release channel of the Glean application "Lockwise for Android"
 <h2 id="bookmarks_sync"><a href="#bookmarks_sync">bookmarks_sync</a></h2>
 <p><strong>App-specific view for Glean ping "bookmarks-sync"</strong></p>
 <p><code>lockwise_android.bookmarks_sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Lockwise for Android"
-(moz-fx-data-shared-prod.mozilla_lockbox.bookmarks_sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Lockwise for Android"
+(mozilla_lockbox.bookmarks_sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -2771,7 +2771,7 @@ for the release channel of the Glean application "Lockwise for Android"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2781,7 +2781,7 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2801,22 +2801,22 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -2831,12 +2831,12 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3050,9 +3050,9 @@ for the release channel of the Glean application "Lockwise for Android"
 <h2 id="creditcards_sync"><a href="#creditcards_sync">creditcards_sync</a></h2>
 <p><strong>App-specific view for Glean ping "creditcards-sync"</strong></p>
 <p><code>lockwise_android.creditcards_sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Lockwise for Android"
-(moz-fx-data-shared-prod.mozilla_lockbox.creditcards_sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Lockwise for Android"
+(mozilla_lockbox.creditcards_sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3064,7 +3064,7 @@ for the release channel of the Glean application "Lockwise for Android"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3074,7 +3074,7 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3094,22 +3094,22 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3124,12 +3124,12 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3154,9 +3154,9 @@ for the release channel of the Glean application "Lockwise for Android"
 <h2 id="deletion_request"><a href="#deletion_request">deletion_request</a></h2>
 <p><strong>App-specific view for Glean ping "deletion-request"</strong></p>
 <p><code>lockwise_android.deletion_request</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Lockwise for Android"
-(moz-fx-data-shared-prod.mozilla_lockbox.deletion_request).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Lockwise for Android"
+(mozilla_lockbox.deletion_request).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3168,7 +3168,7 @@ for the release channel of the Glean application "Lockwise for Android"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3178,7 +3178,7 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3198,22 +3198,22 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3228,12 +3228,12 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3258,9 +3258,9 @@ for the release channel of the Glean application "Lockwise for Android"
 <h2 id="events"><a href="#events">events</a></h2>
 <p><strong>App-specific view for Glean ping "events"</strong></p>
 <p><code>lockwise_android.events</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Lockwise for Android"
-(moz-fx-data-shared-prod.mozilla_lockbox.events).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Lockwise for Android"
+(mozilla_lockbox.events).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3272,7 +3272,7 @@ for the release channel of the Glean application "Lockwise for Android"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3282,7 +3282,7 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3302,22 +3302,22 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3332,12 +3332,12 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3380,9 +3380,9 @@ for the release channel of the Glean application "Lockwise for Android"
 <h2 id="history_sync"><a href="#history_sync">history_sync</a></h2>
 <p><strong>App-specific view for Glean ping "history-sync"</strong></p>
 <p><code>lockwise_android.history_sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Lockwise for Android"
-(moz-fx-data-shared-prod.mozilla_lockbox.history_sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Lockwise for Android"
+(mozilla_lockbox.history_sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3394,7 +3394,7 @@ for the release channel of the Glean application "Lockwise for Android"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3404,7 +3404,7 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3424,22 +3424,22 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3454,12 +3454,12 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3484,9 +3484,9 @@ for the release channel of the Glean application "Lockwise for Android"
 <h2 id="logins_sync"><a href="#logins_sync">logins_sync</a></h2>
 <p><strong>App-specific view for Glean ping "logins-sync"</strong></p>
 <p><code>lockwise_android.logins_sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Lockwise for Android"
-(moz-fx-data-shared-prod.mozilla_lockbox.logins_sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Lockwise for Android"
+(mozilla_lockbox.logins_sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3498,7 +3498,7 @@ for the release channel of the Glean application "Lockwise for Android"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3508,7 +3508,7 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3528,22 +3528,22 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3558,12 +3558,12 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3588,9 +3588,9 @@ for the release channel of the Glean application "Lockwise for Android"
 <h2 id="metrics"><a href="#metrics">metrics</a></h2>
 <p><strong>App-specific view for Glean ping "metrics"</strong></p>
 <p><code>lockwise_android.metrics</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Lockwise for Android"
-(moz-fx-data-shared-prod.mozilla_lockbox.metrics).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Lockwise for Android"
+(mozilla_lockbox.metrics).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3602,7 +3602,7 @@ for the release channel of the Glean application "Lockwise for Android"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3612,7 +3612,7 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3632,22 +3632,22 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3662,12 +3662,12 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3810,9 +3810,9 @@ for the release channel of the Glean application "Lockwise for Android"
 <h2 id="sync"><a href="#sync">sync</a></h2>
 <p><strong>App-specific view for Glean ping "sync"</strong></p>
 <p><code>lockwise_android.sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Lockwise for Android"
-(moz-fx-data-shared-prod.mozilla_lockbox.sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Lockwise for Android"
+(mozilla_lockbox.sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3824,7 +3824,7 @@ for the release channel of the Glean application "Lockwise for Android"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3834,7 +3834,7 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3854,22 +3854,22 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3884,12 +3884,12 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>
@@ -3914,9 +3914,9 @@ for the release channel of the Glean application "Lockwise for Android"
 <h2 id="tabs_sync"><a href="#tabs_sync">tabs_sync</a></h2>
 <p><strong>App-specific view for Glean ping "tabs-sync"</strong></p>
 <p><code>lockwise_android.tabs_sync</code></p>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application "Lockwise for Android"
-(moz-fx-data-shared-prod.mozilla_lockbox.tabs_sync).</p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Lockwise for Android"
+(mozilla_lockbox.tabs_sync).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3928,7 +3928,7 @@ for the release channel of the Glean application "Lockwise for Android"
     </tr>
 <tr>
         <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3938,7 +3938,7 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3958,22 +3958,22 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
+        <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -3988,12 +3988,12 @@ for the release channel of the Glean application "Lockwise for Android"
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
+        <td></td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
+        <td></td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr>

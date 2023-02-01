@@ -20,9 +20,43 @@ CREATE TEMP FUNCTION add_access_point(
   ARRAY(SELECT AS STRUCT CONCAT(key, '.', access_point) AS key, value, FROM UNNEST(entries))
 );
 
-WITH combined_access_point AS (
+-- List of Ad Blocking Addons
+WITH adblocker_addons AS (
+  SELECT
+    addon_id,
+    addon_name
+  FROM
+    `moz-fx-data-shared-prod.telemetry.addon_names`
+  WHERE
+    LOWER(addon_name) LIKE "%block%"
+    AND occurrences > 10000
+),
+clients_with_adblocker_addons AS (
+  SELECT
+    client_id,
+    submission_date,
+    TRUE AS has_adblocker_addon
+  FROM
+    telemetry.clients_daily
+  CROSS JOIN
+    UNNEST(active_addons) a
+  INNER JOIN
+    adblocker_addons
+  USING
+    (addon_id)
+  WHERE
+    submission_date = @submission_date
+    AND a.user_disabled = FALSE
+    AND a.app_disabled = FALSE
+    AND a.blocklisted = FALSE
+  GROUP BY
+    client_id,
+    submission_date
+),
+combined_access_point AS (
   SELECT
     *,
+    COALESCE(has_adblocker_addon, FALSE) AS has_adblocker_addon,
     ARRAY_CONCAT(
       add_access_point(search_content_urlbar_sum, 'urlbar'),
       add_access_point(search_content_urlbar_persisted_sum, 'urlbar_persisted'),
@@ -70,6 +104,10 @@ WITH combined_access_point AS (
     ) AS ad_clicks_with_sap,
   FROM
     telemetry.clients_daily
+  LEFT JOIN
+    clients_with_adblocker_addons
+  USING
+    (client_id, submission_date)
 ),
 augmented AS (
   SELECT
@@ -215,6 +253,7 @@ counted AS (
     source,
     country,
     get_search_addon_version(active_addons) AS addon_version,
+    has_adblocker_addon,
     app_version,
     distribution_id,
     locale,

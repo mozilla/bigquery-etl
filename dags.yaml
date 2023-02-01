@@ -778,7 +778,7 @@ bqetl_analytics_aggregations:
     It provides data to build growth, search and usage metrics, as well
     as acquisition and retention KPIs, in a model that facilitates
     reporting in Looker.
-  schedule_interval: 0 1 * * *
+  schedule_interval: 30 3 * * *
   tags:
     - impact/tier_1
 

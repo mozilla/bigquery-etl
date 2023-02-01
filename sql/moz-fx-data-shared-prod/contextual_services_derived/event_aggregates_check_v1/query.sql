@@ -4,7 +4,7 @@ WITH dates AS (
     date,
     table_name
   FROM
-    UNNEST(GENERATE_DATE_ARRAY('2021-05-01', '@submission_date', INTERVAL 1 DAY)) AS date,
+    UNNEST(GENERATE_DATE_ARRAY('2021-05-01', @submission_date, INTERVAL 1 DAY)) AS date,
     UNNEST(
       ['event_aggregates_v1', 'event_aggregates_spons_tiles_v1', 'event_aggregates_suggest_v1']
     ) AS table_name

@@ -16,6 +16,6 @@ fields:
     Total credits used by the destination for the given month. Only used until September 2022 when Fivetran switched to USD.
 - mode: NULLABLE
   name: dollars_spent
-  type: NUMERIC
+  type: BIGNUMERIC
   description: |
     Total USD used by the destination for the given month. Since September 2022 Fivetran gives the costs in USD.

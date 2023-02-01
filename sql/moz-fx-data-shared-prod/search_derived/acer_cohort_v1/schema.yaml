@@ -1,4 +1,4 @@
 fields:
-  - mode: REQUIRED
-    name: client_id
-    type: STRING
+- mode: NULLABLE
+  name: client_id
+  type: STRING

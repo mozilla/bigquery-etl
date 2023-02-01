@@ -2,10 +2,10 @@
 CREATE OR REPLACE VIEW
   `{{ target_view }}`
 AS
-{% for dataset in datasets -%}
+{% for query in queries -%}
 {% if not loop.first -%}
 UNION ALL
 {% endif -%}
-SELECT {{ dataset.select_expression }}
-FROM `{{ project_id }}.{{ dataset.dataset }}.{{ dataset.table }}`
+SELECT {{ query.select_expression }}
+FROM `{{ project_id }}.{{ query.dataset }}.{{ query.table }}`
 {% endfor %}

@@ -23,9 +23,9 @@ VIEW_METADATA_TEMPLATE = """\
 ---
 friendly_name: App-specific view for Glean ping "{ping_name}"
 description: |-
-  This is a pointer to the view that UNIONs the stable ping tables
+  This a view that UNIONs the stable ping tables
   across all channels of the Glean application "{app_name}"
-  ({underlying_view_id}).
+  ({app_channels}).
 
   It is used by Looker.
 """
@@ -72,8 +72,6 @@ class GleanAppPingViews(GleanTable):
         p = GleanPing(repo)
         # generate views for all available pings
         for ping_name in p.get_pings():
-            release_only = False  # flag indicating that view only generated for release channel due to schema incompatibilites
-
             view_name = ping_name.replace("-", "_")
             full_view_id = f"moz-fx-data-shared-prod.{target_dataset}.{view_name}"
 
@@ -84,80 +82,62 @@ class GleanAppPingViews(GleanTable):
             cached_schemas = {}
 
             # iterate through app_info to get all channels
-            for app in app_info:
-                app_dataset = app["document_namespace"].replace("-", "_")
+            for channel in app_info:
+                channel_dataset = channel["document_namespace"].replace("-", "_")
                 schema = Schema.for_table(
                     "moz-fx-data-shared-prod",
-                    app_dataset,
+                    channel_dataset,
                     view_name,
                     partitioned_by="submission_timestamp",
                 )
-                cached_schemas[app_dataset] = schema
+                cached_schemas[channel_dataset] = schema
 
                 try:
-                    unioned_schema.merge(schema, add_missing_fields=True)
+                    unioned_schema.merge(schema, add_missing_fields=True, ignore_incompatible_fields=True)
                 except Exception as e:
                     # if schema incompatibilities are detected, then only generate for release channel
                     print(
-                        f"Cannot UNION 'moz-fx-data-shared-prod.{app_dataset}.{view_name}': {e}"
+                        f"Cannot UNION 'moz-fx-data-shared-prod.{channel_dataset}.{view_name}': {e}"
                     )
-                    print("Generate view only for release channel.")
-
-                    app_dataset = release_app["document_namespace"].replace("-", "_")
-                    unioned_schema = Schema.for_table(
-                        "moz-fx-data-shared-prod",
-                        app_dataset,
-                        view_name,
-                        partitioned_by="submission_timestamp",
-                    )
-                    cached_schemas[app_dataset] = schema
-                    release_only = True
 
                     break
 
             # generate the SELECT expression used for UNIONing the stable tables;
             # fields that are not part of a table, but exist in others, are set to NULL
-            datasets = []
-            for app in app_info if not release_only else [release_app]:
-                app_dataset = app["document_namespace"].replace("-", "_")
+            queries = []
+            for app in app_info:
+                channel_dataset = app["document_namespace"].replace("-", "_")
 
-                if app_dataset not in cached_schemas or cached_schemas[app_dataset].schema["fields"] == []:
+                if channel_dataset not in cached_schemas or cached_schemas[channel_dataset].schema["fields"] == []:
                     # check for empty schemas (e.g. restricted ones) and skip for now
+                    print(f"Cannot get schema for `{channel_dataset}.{view_name}`; Skipping")
                     continue
 
                 # compare table schema with unioned schema to determine fields that need to be NULL
                 select_expression = self._generate_select_expression(
-                    unioned_schema.schema["fields"], cached_schemas[app_dataset].schema["fields"]
+                    unioned_schema.schema["fields"], cached_schemas[channel_dataset].schema["fields"]
                 )
 
-                datasets.append(
+                queries.append(
                     dict(
                         select_expression=select_expression,
-                        dataset=app_dataset,
+                        dataset=channel_dataset,
                         table=view_name,
                     )
                 )
 
-            if datasets == []:
+            if queries == []:
                 # nothing to render
                 continue
 
             # render view SQL
             render_kwargs = dict(
-                project_id=project_id, target_view=full_view_id, datasets=datasets
+                project_id=project_id, target_view=full_view_id, queries=queries
             )
             rendered_view = reformat(view_template.render(**render_kwargs))
 
             # write generated SQL files to destination folders
             if output_dir:
-                underlying_view_id = ".".join(
-                    [
-                        "moz-fx-data-shared-prod",
-                        repo["app_id"].replace("-", "_"),
-                        view_name,
-                    ]
-                )
-
                 write_sql(
                     output_dir,
                     full_view_id,
@@ -166,6 +146,8 @@ class GleanAppPingViews(GleanTable):
                     skip_existing=True,
                 )
 
+                app_channels = [f"{channel['dataset']}.{view_name}" for channel in queries]
+
                 write_sql(
                     output_dir,
                     full_view_id,
@@ -173,7 +155,7 @@ class GleanAppPingViews(GleanTable):
                     VIEW_METADATA_TEMPLATE.format(
                         ping_name=ping_name,
                         app_name=release_app["canonical_app_name"],
-                        underlying_view_id=underlying_view_id,
+                        app_channels=", ".join(app_channels),
                     ),
                     skip_existing=True,
                 )
@@ -189,26 +171,20 @@ class GleanAppPingViews(GleanTable):
 
         Any fields that are missing in the app_schema are set to NULL.
         """
-        select_expr = ""
+        select_expr = []
         unioned_schema_nodes = {n["name"]: n for n in unioned_schema_nodes}
         app_schema_nodes = {n["name"]: n for n in app_schema_nodes}
-        first = True
 
         # iterate through fields
         for node_name, node in unioned_schema_nodes.items():
             dtype = node["type"]
-
-            if first:
-                first = False
-            else:
-                select_expr += ", "
 
             if node_name in app_schema_nodes:
                 # field exists in app schema
 
                 if node == app_schema_nodes[node_name]:
                     # field (and all nested fields) are identical, so just query it
-                    select_expr += f"{'.'.join(path + [node_name])}"
+                    select_expr.append(f"{'.'.join(path + [node_name])}")
                 else:
                     # fields, and/or nested fields are not identical
                     if dtype == "RECORD":
@@ -216,26 +192,27 @@ class GleanAppPingViews(GleanTable):
 
                         if node.get("mode", None) == "REPEATED":
                             # unnest repeated record
-                            select_expr += f"""
-                                (
-                                    SELECT ARRAY_AGG(
+                            select_expr.append(f"""
+                                ARRAY_AGG(
+                                    (   SELECT
                                         STRUCT(
                                             {self._generate_select_expression(node['fields'], app_schema_nodes[node_name]['fields'], path + [node_name])}
                                         )
+                                        FROM UNNEST({node_name}) AS {node_name}
                                     )
                                 ) AS {node_name}
-                            """
+                            """)
                         else:
                             # select struct fields
-                            select_expr += f"""
+                            select_expr.append(f"""
                                 STRUCT(
                                     {self._generate_select_expression(node['fields'], app_schema_nodes[node_name]['fields'], path + [node_name])}
                                 ) AS {node_name}
-                            """
+                            """)
                     else:
-                        select_expr += f"NULL AS {node_name}"
+                        select_expr.append(f"NULL AS {node_name}")
             else:
                 # field doesn't exist in app schema, set to NULL
-                select_expr += f"NULL AS {node_name}"
+                select_expr.append(f"NULL AS {node_name}")
 
-        return select_expr
+        return ", ".join(select_expr)

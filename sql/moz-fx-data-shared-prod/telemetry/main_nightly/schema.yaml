@@ -14054,6 +14054,24 @@ fields:
     - mode: NULLABLE
       name: fx_session_restore_collect_session_history_ms
       type: STRING
+    - mode: NULLABLE
+      name: use_counter2_css_property_font_synthesis_small_caps_document
+      type: STRING
+    - mode: NULLABLE
+      name: use_counter2_css_property_font_synthesis_small_caps_page
+      type: STRING
+    - mode: NULLABLE
+      name: use_counter2_css_property_font_synthesis_style_document
+      type: STRING
+    - mode: NULLABLE
+      name: use_counter2_css_property_font_synthesis_style_page
+      type: STRING
+    - mode: NULLABLE
+      name: use_counter2_css_property_font_synthesis_weight_document
+      type: STRING
+    - mode: NULLABLE
+      name: use_counter2_css_property_font_synthesis_weight_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -29202,6 +29220,24 @@ fields:
           type: STRING
         - mode: NULLABLE
           name: use_counter2_css_property_page_orientation_page
+          type: STRING
+        - mode: NULLABLE
+          name: use_counter2_css_property_font_synthesis_small_caps_document
+          type: STRING
+        - mode: NULLABLE
+          name: use_counter2_css_property_font_synthesis_small_caps_page
+          type: STRING
+        - mode: NULLABLE
+          name: use_counter2_css_property_font_synthesis_style_document
+          type: STRING
+        - mode: NULLABLE
+          name: use_counter2_css_property_font_synthesis_style_page
+          type: STRING
+        - mode: NULLABLE
+          name: use_counter2_css_property_font_synthesis_weight_document
+          type: STRING
+        - mode: NULLABLE
+          name: use_counter2_css_property_font_synthesis_weight_page
           type: STRING
         mode: NULLABLE
         name: histograms

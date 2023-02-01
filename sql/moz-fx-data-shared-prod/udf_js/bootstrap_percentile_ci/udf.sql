@@ -30,6 +30,10 @@ AS
     histogram.sort(function(a, b) {return parseFloat(a.key) - parseFloat(b.key);});
   }
 
+  function histogramIsNonZero(histogram) {
+    return histogram.some(bin => parseFloat(bin.value) > 0.0);
+  }
+
   function validatePercentile(percentile) {
     if (percentile < 0 || percentile > 100) {
       throw "percentile must be a value between 0 and 100";
@@ -49,20 +53,26 @@ AS
     var total = 0;
     for (var bin of histogram) {
         total += bin.value;
-        bin.cumulative_sum = total;
+        if ( bin.value > 0 ) {
+          /* include this non-empty bin when drawing samples */
+          bin.cumulative_sum = total;
+        } else {
+          /* ignore this empty bin when drawing samples */
+          bin.cumulative_sum = -1;
+        }
     };
 
     var samples = [];
     /* sample the quantile of interest */
-    for (var i = 0; i < n_samples; i++) {
+    for ( var i = 0; i < n_samples; i++ ) {
       /* draw a random variable from the binomial distribution */
       var x = qbinom(Math.random(), total, parseFloat(percentile) / 100);
-      if (x in samples) {
+      if ( x in samples ) {
         samples[x].value += 1;
       } else {
         /* find the histogram bin associated with the sample */
-        for (const bin of histogram) {
-          if (bin.cumulative_sum >= x) {
+        for ( const bin of histogram ) {
+          if ( bin.cumulative_sum >= x ) {
             samples[x] = {'key': bin.key, 'value': 1};
             break;
           }
@@ -85,7 +95,7 @@ AS
     */
     validatePercentile(percentile);
     const size = quantile_samples.length;
-    if (size == 0) {
+    if ( size == 0 ) {
       return null;
     }
 
@@ -109,7 +119,7 @@ AS
     }
 
     var index = null;
-    histogram.forEach(function (bin, i) {
+    histogram.forEach( function (bin, i) {
       if (bin.key === bin_value) {
         index = i;
       }
@@ -123,24 +133,21 @@ AS
 
   function getPercentilesWithCI(percentiles, histogram, metric) {
     
-    if (!percentiles.length) {
+    if ( !percentiles.length ) {
       throw "percentiles must be a non-empty array of integers";
     }
 
-    if (histogram.values.some(bin => isNaN(bin.key) || isNaN(bin.value) || (bin.key === null) || (bin.value === null))) {
+    if ( histogram.values.some(bin => isNaN(bin.key) || isNaN(bin.value) || (bin.key === null) || (bin.value === null)) ) {
       throw "histogram can only contain non-null numeric values";
     }
 
     var results = [];
-    for (var i = 0; i < percentiles.length; i++) {
-      percentile = percentiles[i];
+    for (const percentile of percentiles) {
       var lower = null;  /* left edge of lower estimate bin */
       var point = null;  /* center of point estimate bin */
       var upper = null;  /* right edge of upper estimate bin */
       
-      if (!histogram.values || !histogram ) {
-        continue;
-      } else {
+      if ( histogram.values && histogram && histogramIsNonZero(histogram.values) ) {
         var quantile_samples = getQuantileSamples(percentile, histogram.values, 10000);
         lower = binToValue(getPercentileBin( 5, quantile_samples), histogram.values, 0.0);
         point = binToValue(getPercentileBin(50, quantile_samples), histogram.values, 0.5);
@@ -179,6 +186,12 @@ WITH test_data AS (
 
   STRUCT([
     STRUCT( 0.0 AS key,  0.0 AS value),
+    STRUCT( 1.0 AS key,  0.0 AS value),
+    STRUCT( 2.0 AS key,  0.0 AS value)
+  ] AS values) AS all_zero,
+
+  STRUCT([
+    STRUCT( 0.0 AS key,  0.0 AS value),
     STRUCT( 1.0 AS key, 10.0 AS value),
     STRUCT( 2.0 AS key,  0.0 AS value)
   ] AS values) AS one_bin,
@@ -194,6 +207,14 @@ WITH test_data AS (
     STRUCT( 2.5 AS key,  1.0 AS value),
     STRUCT( 3.5 AS key,  0.0 AS value)
   ] AS values) AS seven_bin
+),
+
+all_zero_percentiles AS (
+  SELECT udf_js.bootstrap_percentile_ci([5, 25, 50, 75, 95], all_zero, metric_name) AS output FROM test_data
+),
+
+all_zero_results AS (
+  SELECT output.* FROM all_zero_percentiles, UNNEST(output) AS output
 ),
 
 one_bin_percentiles AS (
@@ -214,6 +235,13 @@ seven_bin_results AS (
 
 -- valid outputs
 SELECT
+assert.equals('test', (SELECT DISTINCT metric FROM all_zero_results)),
+assert.equals('percentile', (SELECT DISTINCT statistic FROM all_zero_results)),
+assert.array_equals((SELECT ['5', '25', '50', '75', '95']), (SELECT ARRAY(SELECT parameter FROM all_zero_results))),
+assert.array_equals((SELECT [NULL, NULL, NULL, NULL, NULL]), (SELECT ARRAY(SELECT lower FROM all_zero_results))),
+assert.array_equals((SELECT [NULL, NULL, NULL, NULL, NULL]), (SELECT ARRAY(SELECT point FROM all_zero_results))),
+assert.array_equals((SELECT [NULL, NULL, NULL, NULL, NULL]), (SELECT ARRAY(SELECT upper FROM all_zero_results))),
+
 assert.equals('test', (SELECT DISTINCT metric FROM one_bin_results)),
 assert.equals('percentile', (SELECT DISTINCT statistic FROM one_bin_results)),
 assert.array_equals((SELECT ['5', '25', '50', '75', '95']), (SELECT ARRAY(SELECT parameter FROM one_bin_results))),

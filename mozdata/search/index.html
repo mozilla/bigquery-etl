@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#desktop_mobile_search_clients_monthly" class="md-skip">
+        <a href="#acer_cohort" class="md-skip">
           Skip to content
         </a>
       
@@ -1551,6 +1551,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#acer_cohort" class="md-nav__link">
+    acer_cohort
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#desktop_mobile_search_clients_monthly" class="md-nav__link">
     desktop_mobile_search_clients_monthly
   </a>
@@ -1630,6 +1637,13 @@
         <li class="md-nav__item">
   <a href="#search_clients_last_seen_v1" class="md-nav__link">
     search_clients_last_seen_v1
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#search_revenue_levers_daily" class="md-nav__link">
+    search_revenue_levers_daily
   </a>
   
 </li>
@@ -2313,6 +2327,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#acer_cohort" class="md-nav__link">
+    acer_cohort
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#desktop_mobile_search_clients_monthly" class="md-nav__link">
     desktop_mobile_search_clients_monthly
   </a>
@@ -2397,6 +2418,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#search_revenue_levers_daily" class="md-nav__link">
+    search_revenue_levers_daily
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#search_rfm" class="md-nav__link">
     search_rfm
   </a>
@@ -2422,6 +2450,40 @@
 
 <p>Views related to client search counts</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search">Source Directory</a></p>
+<h2 id="acer_cohort"><a href="#acer_cohort">acer_cohort</a></h2>
+<p><code>search.acer_cohort</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>client_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_derived>search_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1>acer_cohort_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/acer_cohort">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/acer_cohort/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/acer_cohort/metadata.yaml">Metadata File</a> </p>
+<hr />
 <h2 id="desktop_mobile_search_clients_monthly"><a href="#desktop_mobile_search_clients_monthly">desktop_mobile_search_clients_monthly</a></h2>
 <p><code>search.desktop_mobile_search_clients_monthly</code></p>
 <table>
@@ -4111,6 +4173,24 @@ in the past 365 days for each submission date.</p>
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/search_clients_last_seen_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/search_clients_last_seen_v1/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/search_clients_last_seen_v1/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="search_revenue_levers_daily"><a href="#search_revenue_levers_daily">search_revenue_levers_daily</a></h2>
+<p><code>search.search_revenue_levers_daily</code></p>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_derived>search_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_derived/search_revenue_levers_daily_v1>search_revenue_levers_daily_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/search_revenue_levers_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/search_revenue_levers_daily/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/search_revenue_levers_daily/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="search_rfm"><a href="#search_rfm">search_rfm</a></h2>
 <p><code>search.search_rfm</code></p>

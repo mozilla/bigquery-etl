@@ -39,7 +39,7 @@ WITH combined_urlbar_picked AS (
     experiments,
     app_version,
     normalized_channel,
-    country,
+    IFNULL(country, '??') AS country,
     locale,
     user_pref_browser_search_region AS search_region,
     SAFE_CAST(user_pref_browser_search_suggest_enabled AS BOOL) AS suggest_enabled,
@@ -128,7 +128,7 @@ WITH combined_urlbar_picked AS (
       )
     ] AS urlbar_picked_by_type_by_position
   FROM
-    telemetry.clients_daily
+    `telemetry_derived.clients_daily_joined_v1`
   WHERE
     submission_date = @submission_date
 ),

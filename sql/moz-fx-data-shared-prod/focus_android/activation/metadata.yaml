@@ -2,9 +2,9 @@
 ---
 friendly_name: App-specific view for Glean ping "activation"
 description: |-
-  This is a pointer to the main view to the stable ping table
-  for the release channel of the Glean application "Firefox Focus for Android"
-  (moz-fx-data-shared-prod.org_mozilla_focus.activation).
+  This a view that UNIONs the stable ping tables
+  across all channels of the Glean application "Firefox Focus for Android"
+  (org_mozilla_focus.activation, org_mozilla_focus_beta.activation, org_mozilla_focus_nightly.activation).
 
   It is used by Looker.
 
@@ -13,3 +13,5 @@ description: |-
 references:
   view.sql:
   - moz-fx-data-shared-prod.org_mozilla_focus.activation
+  - moz-fx-data-shared-prod.org_mozilla_focus_beta.activation
+  - moz-fx-data-shared-prod.org_mozilla_focus_nightly.activation

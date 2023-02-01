@@ -2,9 +2,9 @@
 ---
 friendly_name: App-specific view for Glean ping "pageload"
 description: |-
-  This is a pointer to the main view to the stable ping table
-  for the release channel of the Glean application "Firefox Focus for Android"
-  (moz-fx-data-shared-prod.org_mozilla_focus.pageload).
+  This a view that UNIONs the stable ping tables
+  across all channels of the Glean application "Firefox Focus for Android"
+  (org_mozilla_focus.pageload, org_mozilla_focus_beta.pageload, org_mozilla_focus_nightly.pageload).
 
   It is used by Looker.
 
@@ -13,3 +13,5 @@ description: |-
 references:
   view.sql:
   - moz-fx-data-shared-prod.org_mozilla_focus.pageload
+  - moz-fx-data-shared-prod.org_mozilla_focus_beta.pageload
+  - moz-fx-data-shared-prod.org_mozilla_focus_nightly.pageload

@@ -24,3 +24,4 @@ scheduling:
     'contextual_services_derived',
     'event_aggregates_v1'
   ]
+  parameters: ['submission_date:DATE:{{ds}}']

@@ -8,6 +8,7 @@ For views that have incomaptible schemas (e.g due to fields having mismatching
 types), the view is only generated for the release channel.
 """
 import os
+from copy import deepcopy
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
@@ -90,7 +91,7 @@ class GleanAppPingViews(GleanTable):
                     view_name,
                     partitioned_by="submission_timestamp",
                 )
-                cached_schemas[channel_dataset] = schema
+                cached_schemas[channel_dataset] = deepcopy(schema)
 
                 try:
                     unioned_schema.merge(schema, add_missing_fields=True, ignore_incompatible_fields=True)
@@ -210,9 +211,23 @@ class GleanAppPingViews(GleanTable):
                                 ) AS {node_name}
                             """)
                     else:
-                        select_expr.append(f"NULL AS {node_name}")
+                        if node.get("mode", None) == "REPEATED":
+                            select_expr.append(f"SAFE_CAST(NULL AS ARRAY<{dtype}>) AS {node_name}")
+                        else:
+                            select_expr.append(f"SAFE_CAST(NULL AS {dtype}) AS {node_name}")
             else:
-                # field doesn't exist in app schema, set to NULL
-                select_expr.append(f"NULL AS {node_name}")
+                if dtype == "RECORD":
+                    # unwrap missing struct - workaround to prevent type incompatibilities; NULL is always INT in STRUCT
+                    select_expr.append(f"""
+                        STRUCT(
+                            {self._generate_select_expression(node['fields'], {}, path + [node_name])}
+                        ) AS {node_name}
+                    """)
+                else:
+                    # field doesn't exist in app schema, set to NULL
+                    if node.get("mode", None) == "REPEATED":
+                        select_expr.append(f"SAFE_CAST(NULL AS ARRAY<{dtype}>) AS {node_name}")
+                    else:
+                        select_expr.append(f"SAFE_CAST(NULL AS {dtype}) AS {node_name}")
 
         return ", ".join(select_expr)

@@ -193,13 +193,13 @@ class GleanAppPingViews(GleanTable):
                         if node.get("mode", None) == "REPEATED":
                             # unnest repeated record
                             select_expr.append(f"""
-                                ARRAY_AGG(
-                                    (   SELECT
+                                (
+                                    SELECT ARRAY_AGG(
                                         STRUCT(
-                                            {self._generate_select_expression(node['fields'], app_schema_nodes[node_name]['fields'], path + [node_name])}
+                                            {self._generate_select_expression(node['fields'], app_schema_nodes[node_name]['fields'], [node_name])}
                                         )
-                                        FROM UNNEST({node_name}) AS {node_name}
                                     )
+                                    FROM UNNEST({'.'.join(path + [node_name])}) AS {node_name}
                                 ) AS {node_name}
                             """)
                         else:

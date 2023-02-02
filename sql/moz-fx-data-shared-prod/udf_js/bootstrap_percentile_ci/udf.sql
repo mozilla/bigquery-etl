@@ -9,23 +9,26 @@ See:
 Users must specify an array of percentiles of interest as the first parameter and a
 histogram struct as the second.
 */
-
 CREATE OR REPLACE FUNCTION udf_js.bootstrap_percentile_ci(
   percentiles ARRAY<INT64>,
-  histogram STRUCT<values ARRAY<STRUCT<key FLOAT64, value FLOAT64>>>,
+  histogram STRUCT<VALUES ARRAY<STRUCT<key FLOAT64, value FLOAT64>>>,
   metric STRING
 )
-RETURNS ARRAY<STRUCT<
+RETURNS ARRAY<
+  STRUCT<
     metric STRING,
     statistic STRING,
     point FLOAT64,
     lower FLOAT64,
     upper FLOAT64,
     parameter STRING
->> DETERMINISTIC
-LANGUAGE js OPTIONS ( library=['gs://moz-fx-data-circleci-tests-bigquery-etl/bq_udf_library/qbinom.js'])
+  >
+> DETERMINISTIC
+LANGUAGE js
+OPTIONS
+  (library = ['gs://moz-fx-data-circleci-tests-bigquery-etl/qbinom.js'])
 AS
-"""
+  """
   function histogramSort(histogram) {
     histogram.sort(function(a, b) {return parseFloat(a.key) - parseFloat(b.key);});
   }
@@ -170,102 +173,174 @@ AS
 
 -- Tests
 WITH test_data AS (
-  SELECT 'test' AS metric_name,
-
-  STRUCT([
-    STRUCT(0.0 AS key,  0.0 AS value),
-    STRUCT(1.0 AS key, NULL AS value),
-    STRUCT(2.0 AS key,  0.0 AS value)
-  ] AS values) AS null_value,
-
-  STRUCT([
-    STRUCT( 0.0 AS key,  0.0 AS value),
-    STRUCT(NULL AS key, 10.0 AS value),
-    STRUCT( 2.0 AS key,  0.0 AS value)
-  ] AS values) AS null_key,
-
-  STRUCT([
-    STRUCT( 0.0 AS key,  0.0 AS value),
-    STRUCT( 1.0 AS key,  0.0 AS value),
-    STRUCT( 2.0 AS key,  0.0 AS value)
-  ] AS values) AS all_zero,
-
-  STRUCT([
-    STRUCT( 0.0 AS key,  0.0 AS value),
-    STRUCT( 1.0 AS key, 10.0 AS value),
-    STRUCT( 2.0 AS key,  0.0 AS value)
-  ] AS values) AS one_bin,
-
-  STRUCT([
-    STRUCT(-4.5 AS key,  0.0 AS value),
-    STRUCT(-3.5 AS key,  1.0 AS value),
-    STRUCT(-2.5 AS key, 12.0 AS value),
-    STRUCT(-1.5 AS key, 22.0 AS value),
-    STRUCT(-0.5 AS key, 30.0 AS value),
-    STRUCT( 0.5 AS key, 22.0 AS value),
-    STRUCT( 1.5 AS key, 12.0 AS value),
-    STRUCT( 2.5 AS key,  1.0 AS value),
-    STRUCT( 3.5 AS key,  0.0 AS value)
-  ] AS values) AS seven_bin
+  SELECT
+    'test' AS metric_name,
+    STRUCT(
+      [
+        STRUCT(0.0 AS key, 0.0 AS value),
+        STRUCT(1.0 AS key, NULL AS value),
+        STRUCT(2.0 AS key, 0.0 AS value)
+      ] AS values
+    ) AS null_value,
+    STRUCT(
+      [
+        STRUCT(0.0 AS key, 0.0 AS value),
+        STRUCT(NULL AS key, 10.0 AS value),
+        STRUCT(2.0 AS key, 0.0 AS value)
+      ] AS values
+    ) AS null_key,
+    STRUCT(
+      [
+        STRUCT(0.0 AS key, 0.0 AS value),
+        STRUCT(1.0 AS key, 0.0 AS value),
+        STRUCT(2.0 AS key, 0.0 AS value)
+      ] AS values
+    ) AS all_zero,
+    STRUCT(
+      [
+        STRUCT(0.0 AS key, 0.0 AS value),
+        STRUCT(1.0 AS key, 10.0 AS value),
+        STRUCT(2.0 AS key, 0.0 AS value)
+      ] AS values
+    ) AS one_bin,
+    STRUCT(
+      [
+        STRUCT(-4.5 AS key, 0.0 AS value),
+        STRUCT(-3.5 AS key, 1.0 AS value),
+        STRUCT(-2.5 AS key, 12.0 AS value),
+        STRUCT(-1.5 AS key, 22.0 AS value),
+        STRUCT(-0.5 AS key, 30.0 AS value),
+        STRUCT(0.5 AS key, 22.0 AS value),
+        STRUCT(1.5 AS key, 12.0 AS value),
+        STRUCT(2.5 AS key, 1.0 AS value),
+        STRUCT(3.5 AS key, 0.0 AS value)
+      ] AS values
+    ) AS seven_bin
 ),
-
 all_zero_percentiles AS (
-  SELECT udf_js.bootstrap_percentile_ci([5, 25, 50, 75, 95], all_zero, metric_name) AS output FROM test_data
+  SELECT
+    udf_js.bootstrap_percentile_ci([5, 25, 50, 75, 95], all_zero, metric_name) AS output
+  FROM
+    test_data
 ),
-
 all_zero_results AS (
-  SELECT output.* FROM all_zero_percentiles, UNNEST(output) AS output
+  SELECT
+    output.*
+  FROM
+    all_zero_percentiles,
+    UNNEST(output) AS output
 ),
-
 one_bin_percentiles AS (
-  SELECT udf_js.bootstrap_percentile_ci([5, 25, 50, 75, 95], one_bin, metric_name) AS output FROM test_data
+  SELECT
+    udf_js.bootstrap_percentile_ci([5, 25, 50, 75, 95], one_bin, metric_name) AS output
+  FROM
+    test_data
 ),
-
 one_bin_results AS (
-  SELECT output.* FROM one_bin_percentiles, UNNEST(output) AS output
+  SELECT
+    output.*
+  FROM
+    one_bin_percentiles,
+    UNNEST(output) AS output
 ),
-
 seven_bin_percentiles AS (
-  SELECT udf_js.bootstrap_percentile_ci([5, 25, 50, 75, 95], seven_bin, metric_name) AS output FROM test_data
+  SELECT
+    udf_js.bootstrap_percentile_ci([5, 25, 50, 75, 95], seven_bin, metric_name) AS output
+  FROM
+    test_data
 ),
-
 seven_bin_results AS (
-  SELECT output.* FROM seven_bin_percentiles, UNNEST(output) AS output
+  SELECT
+    output.*
+  FROM
+    seven_bin_percentiles,
+    UNNEST(output) AS output
 )
-
 -- valid outputs
 SELECT
-assert.equals('test', (SELECT DISTINCT metric FROM all_zero_results)),
-assert.equals('percentile', (SELECT DISTINCT statistic FROM all_zero_results)),
-assert.array_equals((SELECT ['5', '25', '50', '75', '95']), (SELECT ARRAY(SELECT parameter FROM all_zero_results))),
-assert.array_equals((SELECT [NULL, NULL, NULL, NULL, NULL]), (SELECT ARRAY(SELECT lower FROM all_zero_results))),
-assert.array_equals((SELECT [NULL, NULL, NULL, NULL, NULL]), (SELECT ARRAY(SELECT point FROM all_zero_results))),
-assert.array_equals((SELECT [NULL, NULL, NULL, NULL, NULL]), (SELECT ARRAY(SELECT upper FROM all_zero_results))),
-
-assert.equals('test', (SELECT DISTINCT metric FROM one_bin_results)),
-assert.equals('percentile', (SELECT DISTINCT statistic FROM one_bin_results)),
-assert.array_equals((SELECT ['5', '25', '50', '75', '95']), (SELECT ARRAY(SELECT parameter FROM one_bin_results))),
-assert.array_equals((SELECT [1.0, 1.0, 1.0, 1.0, 1.0]), (SELECT ARRAY(SELECT lower FROM one_bin_results))),
-assert.array_equals((SELECT [1.5, 1.5, 1.5, 1.5, 1.5]), (SELECT ARRAY(SELECT point FROM one_bin_results))),
-assert.array_equals((SELECT [2.0, 2.0, 2.0, 2.0, 2.0]), (SELECT ARRAY(SELECT upper FROM one_bin_results))),
-
-assert.equals('test', (SELECT DISTINCT metric FROM seven_bin_results)),
-assert.equals('percentile', (SELECT DISTINCT statistic FROM seven_bin_results)),
-assert.array_equals((SELECT ['5', '25', '50', '75', '95']), (SELECT ARRAY(SELECT parameter FROM seven_bin_results))),
-assert.array_equals((SELECT [-2.5, -1.5, -0.5, 0.5, 1.5]), (SELECT ARRAY(SELECT lower FROM seven_bin_results))),
-assert.array_equals((SELECT [-2.0, -1.0,  0.0, 1.0, 2.0]), (SELECT ARRAY(SELECT point FROM seven_bin_results))),
-assert.array_equals((SELECT [-1.5, -0.5,  0.5, 1.5, 2.5]), (SELECT ARRAY(SELECT upper FROM seven_bin_results)));
+  assert.equals('test', (SELECT DISTINCT metric FROM all_zero_results)),
+  assert.equals('percentile', (SELECT DISTINCT statistic FROM all_zero_results)),
+  assert.array_equals(
+    (SELECT ['5', '25', '50', '75', '95']),
+    (SELECT ARRAY(SELECT parameter FROM all_zero_results))
+  ),
+  assert.array_equals(
+    (SELECT [NULL, NULL, NULL, NULL, NULL]),
+    (SELECT ARRAY(SELECT lower FROM all_zero_results))
+  ),
+  assert.array_equals(
+    (SELECT [NULL, NULL, NULL, NULL, NULL]),
+    (SELECT ARRAY(SELECT point FROM all_zero_results))
+  ),
+  assert.array_equals(
+    (SELECT [NULL, NULL, NULL, NULL, NULL]),
+    (SELECT ARRAY(SELECT upper FROM all_zero_results))
+  ),
+  assert.equals('test', (SELECT DISTINCT metric FROM one_bin_results)),
+  assert.equals('percentile', (SELECT DISTINCT statistic FROM one_bin_results)),
+  assert.array_equals(
+    (SELECT ['5', '25', '50', '75', '95']),
+    (SELECT ARRAY(SELECT parameter FROM one_bin_results))
+  ),
+  assert.array_equals(
+    (SELECT [1.0, 1.0, 1.0, 1.0, 1.0]),
+    (SELECT ARRAY(SELECT lower FROM one_bin_results))
+  ),
+  assert.array_equals(
+    (SELECT [1.5, 1.5, 1.5, 1.5, 1.5]),
+    (SELECT ARRAY(SELECT point FROM one_bin_results))
+  ),
+  assert.array_equals(
+    (SELECT [2.0, 2.0, 2.0, 2.0, 2.0]),
+    (SELECT ARRAY(SELECT upper FROM one_bin_results))
+  ),
+  assert.equals('test', (SELECT DISTINCT metric FROM seven_bin_results)),
+  assert.equals('percentile', (SELECT DISTINCT statistic FROM seven_bin_results)),
+  assert.array_equals(
+    (SELECT ['5', '25', '50', '75', '95']),
+    (SELECT ARRAY(SELECT parameter FROM seven_bin_results))
+  ),
+  assert.array_equals(
+    (SELECT [-2.5, -1.5, -0.5, 0.5, 1.5]),
+    (SELECT ARRAY(SELECT lower FROM seven_bin_results))
+  ),
+  assert.array_equals(
+    (SELECT [-2.0, -1.0, 0.0, 1.0, 2.0]),
+    (SELECT ARRAY(SELECT point FROM seven_bin_results))
+  ),
+  assert.array_equals(
+    (SELECT [-1.5, -0.5, 0.5, 1.5, 2.5]),
+    (SELECT ARRAY(SELECT upper FROM seven_bin_results))
+  );
 
 -- bad percentile arguments
 #xfail
-SELECT udf_js.bootstrap_percentile_ci(   [], one_bin_histogram, metric_name) FROM test_data;
+SELECT
+  udf_js.bootstrap_percentile_ci([], one_bin_histogram, metric_name)
+FROM
+  test_data;
+
 #xfail
-SELECT udf_js.bootstrap_percentile_ci([-10], one_bin_histogram, metric_name) FROM test_data;
+SELECT
+  udf_js.bootstrap_percentile_ci([-10], one_bin_histogram, metric_name)
+FROM
+  test_data;
+
 #xfail
-SELECT udf_js.bootstrap_percentile_ci([110], one_bin_histogram, metric_name) FROM test_data;
+SELECT
+  udf_js.bootstrap_percentile_ci([110], one_bin_histogram, metric_name)
+FROM
+  test_data;
 
 -- malformed histograms
 #xfail
-SELECT udf_js.bootstrap_percentile_ci([50], null_value_histogram, metric_name) FROM test_data;
+SELECT
+  udf_js.bootstrap_percentile_ci([50], null_value_histogram, metric_name)
+FROM
+  test_data;
+
 #xfail
-SELECT udf_js.bootstrap_percentile_ci([50], null_key_histogram, metric_name) FROM test_data;
+SELECT
+  udf_js.bootstrap_percentile_ci([50], null_key_histogram, metric_name)
+FROM
+  test_data;

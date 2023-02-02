@@ -159,7 +159,7 @@ with DAG(
         task_id="wait_for_active_users_aggregates_device_v1",
         external_dag_id="bqetl_analytics_aggregations",
         external_task_id="active_users_aggregates_device_v1",
-        execution_delta=datetime.timedelta(seconds=10800),
+        execution_delta=datetime.timedelta(seconds=1800),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,

@@ -41,7 +41,7 @@ def _generate_view_schema(sql_dir, view_directory):
         view_references = extract_table_references(view_file.read_text())
         if len(view_references) != 1:
             return
-
+    
         target_project = view_dir.parent.parent.name
         target_dataset = view_dir.parent.name
 

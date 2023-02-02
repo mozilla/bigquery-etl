@@ -5,6 +5,7 @@ description: |-
 owners:
 - akomar@mozilla.com
 - anicholson@mozilla.com
+- cmorales@mozilla.com
 labels:
   schedule: daily
 scheduling:

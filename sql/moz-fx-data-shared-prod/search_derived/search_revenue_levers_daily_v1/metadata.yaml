@@ -1,0 +1,19 @@
+friendly_name: Search Revenue Levers Daily
+description: |-
+  Daily metrics identified as search revenue levers, including eligible DOU,
+  DOU_engaged_w_sap, sap, tagged_sap, tagged_follow_on, search_with_ads, and ad_clicks.
+owners:
+  - xluo@mozilla.com
+  - cmorales@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_search_dashboard
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: true
+    expiration_days: null
+  clustering: null
+references: {}

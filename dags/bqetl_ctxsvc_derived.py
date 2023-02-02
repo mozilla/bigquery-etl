@@ -95,6 +95,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
         sql_file_path="sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_check_v1/query.sql",
     )
 

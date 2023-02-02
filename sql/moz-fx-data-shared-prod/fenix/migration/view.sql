@@ -8,21 +8,66 @@ SELECT
   client_info,
   document_id,
   events,
-  metadata,
-  metrics,
+  STRUCT(
+    metadata.geo,
+    STRUCT(
+      metadata.header.date,
+      metadata.header.dnt,
+      metadata.header.x_debug_id,
+      metadata.header.x_pingsender_version,
+      metadata.header.x_source_tags,
+      metadata.header.x_telemetry_agent,
+      metadata.header.x_foxsec_ip_reputation,
+      metadata.header.x_lb_tags,
+      SAFE_CAST(NULL AS TIMESTAMP) AS parsed_date,
+      SAFE_CAST(NULL AS ARRAY<STRING>) AS parsed_x_source_tags,
+      STRUCT(
+        SAFE_CAST(NULL AS STRING) AS tls_version,
+        SAFE_CAST(NULL AS STRING) AS tls_cipher_hex
+      ) AS parsed_x_lb_tags
+    ) AS header,
+    metadata.user_agent,
+    metadata.isp
+  ) AS metadata,
+  STRUCT(
+    metrics.boolean,
+    metrics.counter,
+    STRUCT(
+      metrics.datetime.migration_telemetry_identifiers_fennec_profile_creation_date,
+      SAFE_CAST(NULL AS STRING) AS raw_migration_telemetry_identifiers_fennec_profile_creation_date
+    ) AS datetime,
+    metrics.labeled_counter,
+    metrics.labeled_string,
+    metrics.string,
+    metrics.timespan,
+    metrics.uuid,
+    metrics.jwe,
+    metrics.labeled_rate,
+    metrics.url,
+    metrics.text
+  ) AS metrics,
   normalized_app_name,
   normalized_channel,
   normalized_country_code,
   normalized_os,
   normalized_os_version,
-  ping_info,
+  STRUCT(
+    ping_info.end_time,
+    ping_info.experiments,
+    ping_info.ping_type,
+    ping_info.reason,
+    ping_info.seq,
+    ping_info.start_time,
+    SAFE_CAST(NULL AS TIMESTAMP) AS parsed_start_time,
+    SAFE_CAST(NULL AS TIMESTAMP) AS parsed_end_time
+  ) AS ping_info,
   sample_id,
   submission_timestamp
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox.migration`
 UNION ALL
 SELECT
-  NULL AS submission_date,
+  SAFE_CAST(NULL AS DATE) AS submission_date,
   additional_properties,
   client_info,
   document_id,
@@ -32,7 +77,7 @@ SELECT
     metrics.boolean,
     metrics.counter,
     STRUCT(
-      NULL AS migration_telemetry_identifiers_fennec_profile_creation_date,
+      SAFE_CAST(NULL AS STRING) AS migration_telemetry_identifiers_fennec_profile_creation_date,
       metrics.datetime.raw_migration_telemetry_identifiers_fennec_profile_creation_date
     ) AS datetime,
     metrics.labeled_counter,
@@ -57,7 +102,7 @@ FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_beta.migration`
 UNION ALL
 SELECT
-  NULL AS submission_date,
+  SAFE_CAST(NULL AS DATE) AS submission_date,
   additional_properties,
   client_info,
   document_id,
@@ -67,7 +112,7 @@ SELECT
     metrics.boolean,
     metrics.counter,
     STRUCT(
-      NULL AS migration_telemetry_identifiers_fennec_profile_creation_date,
+      SAFE_CAST(NULL AS STRING) AS migration_telemetry_identifiers_fennec_profile_creation_date,
       metrics.datetime.raw_migration_telemetry_identifiers_fennec_profile_creation_date
     ) AS datetime,
     metrics.labeled_counter,
@@ -92,7 +137,7 @@ FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix.migration`
 UNION ALL
 SELECT
-  NULL AS submission_date,
+  SAFE_CAST(NULL AS DATE) AS submission_date,
   additional_properties,
   client_info,
   document_id,
@@ -102,7 +147,7 @@ SELECT
     metrics.boolean,
     metrics.counter,
     STRUCT(
-      NULL AS migration_telemetry_identifiers_fennec_profile_creation_date,
+      SAFE_CAST(NULL AS STRING) AS migration_telemetry_identifiers_fennec_profile_creation_date,
       metrics.datetime.raw_migration_telemetry_identifiers_fennec_profile_creation_date
     ) AS datetime,
     metrics.labeled_counter,
@@ -127,7 +172,7 @@ FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.migration`
 UNION ALL
 SELECT
-  NULL AS submission_date,
+  SAFE_CAST(NULL AS DATE) AS submission_date,
   additional_properties,
   client_info,
   document_id,
@@ -137,7 +182,7 @@ SELECT
     metrics.boolean,
     metrics.counter,
     STRUCT(
-      NULL AS migration_telemetry_identifiers_fennec_profile_creation_date,
+      SAFE_CAST(NULL AS STRING) AS migration_telemetry_identifiers_fennec_profile_creation_date,
       metrics.datetime.raw_migration_telemetry_identifiers_fennec_profile_creation_date
     ) AS datetime,
     metrics.labeled_counter,

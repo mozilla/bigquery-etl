@@ -5,6 +5,8 @@ SELECT
   "release" AS normalized_channel,
   COUNT(*) AS n_metrics_ping,
   1 AS days_sent_metrics_ping_bits,
+  SUM(metrics.counter.browser_total_uri_count) AS uri_count,
+  LOGICAL_OR(metrics.counter.app_opened_as_default_browser > 0) AS is_default_browser,
 FROM
   `org_mozilla_ios_klar.metrics` AS m
 WHERE

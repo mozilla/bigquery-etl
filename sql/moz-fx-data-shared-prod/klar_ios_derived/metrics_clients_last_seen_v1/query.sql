@@ -25,6 +25,8 @@ SELECT
     _previous.days_sent_metrics_ping_bits,
     _current.days_sent_metrics_ping_bits
   ) AS days_sent_metrics_ping_bits,
+  COALESCE(_current.uri_count, _previous.uri_count) AS uri_count,
+  COALESCE(_current.is_default_browser, _previous.is_default_browser) AS is_default_browser,
 FROM
   _previous
 FULL JOIN

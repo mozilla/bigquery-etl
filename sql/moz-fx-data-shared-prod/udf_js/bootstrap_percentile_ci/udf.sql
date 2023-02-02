@@ -264,18 +264,9 @@ SELECT
     (SELECT ['5', '25', '50', '75', '95']),
     (SELECT ARRAY(SELECT parameter FROM all_zero_results))
   ),
-  assert.array_equals(
-    (SELECT [NULL, NULL, NULL, NULL, NULL]),
-    (SELECT ARRAY(SELECT lower FROM all_zero_results))
-  ),
-  assert.array_equals(
-    (SELECT [NULL, NULL, NULL, NULL, NULL]),
-    (SELECT ARRAY(SELECT point FROM all_zero_results))
-  ),
-  assert.array_equals(
-    (SELECT [NULL, NULL, NULL, NULL, NULL]),
-    (SELECT ARRAY(SELECT upper FROM all_zero_results))
-  ),
+  assert.null((SELECT ARRAY(SELECT lower FROM all_zero_results WHERE lower IS NOT NULL))),
+  assert.null((SELECT ARRAY(SELECT point FROM all_zero_results WHERE point IS NOT NULL))),
+  assert.null((SELECT ARRAY(SELECT upper FROM all_zero_results WHERE upper IS NOT NULL))),
   assert.equals('test', (SELECT DISTINCT metric FROM one_bin_results)),
   assert.equals('percentile', (SELECT DISTINCT statistic FROM one_bin_results)),
   assert.array_equals(
@@ -316,31 +307,31 @@ SELECT
 -- bad percentile arguments
 #xfail
 SELECT
-  udf_js.bootstrap_percentile_ci([], one_bin_histogram, metric_name)
+  udf_js.bootstrap_percentile_ci([], one_bin, metric_name)
 FROM
   test_data;
 
 #xfail
 SELECT
-  udf_js.bootstrap_percentile_ci([-10], one_bin_histogram, metric_name)
+  udf_js.bootstrap_percentile_ci([-10], one_bin, metric_name)
 FROM
   test_data;
 
 #xfail
 SELECT
-  udf_js.bootstrap_percentile_ci([110], one_bin_histogram, metric_name)
+  udf_js.bootstrap_percentile_ci([110], one_bin, metric_name)
 FROM
   test_data;
 
 -- malformed histograms
 #xfail
 SELECT
-  udf_js.bootstrap_percentile_ci([50], null_value_histogram, metric_name)
+  udf_js.bootstrap_percentile_ci([50], null_value, metric_name)
 FROM
   test_data;
 
 #xfail
 SELECT
-  udf_js.bootstrap_percentile_ci([50], null_key_histogram, metric_name)
+  udf_js.bootstrap_percentile_ci([50], null_key, metric_name)
 FROM
   test_data;

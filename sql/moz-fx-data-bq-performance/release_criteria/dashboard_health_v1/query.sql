@@ -41,20 +41,13 @@ SELECT DISTINCT
   COALESCE(distinct_rc.test_extra_options, recent_tests.test_extra_options) AS test_extra_options,
   COALESCE(distinct_rc.subtest_name, recent_tests.subtest_name) AS subtest_name,
   CASE
-  WHEN
-    distinct_rc.defined_criteria > 1
-  THEN
-    'duplicate_rc'
-  WHEN
-    distinct_rc.rc_test_name IS NULL
-  THEN
-    'missing_rc'
-  WHEN
-    recent_tests.task_group_id IS NULL
-  THEN
-    'invalid_rc'
-  END
-  AS reason,
+    WHEN distinct_rc.defined_criteria > 1
+      THEN 'duplicate_rc'
+    WHEN distinct_rc.rc_test_name IS NULL
+      THEN 'missing_rc'
+    WHEN recent_tests.task_group_id IS NULL
+      THEN 'invalid_rc'
+  END AS reason,
 FROM
   distinct_rc
 FULL OUTER JOIN

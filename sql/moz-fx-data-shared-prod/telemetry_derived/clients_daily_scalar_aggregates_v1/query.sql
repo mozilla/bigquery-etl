@@ -79,12 +79,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.a11y_indicator_acted_on = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.a11y_indicator_acted_on = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -96,12 +93,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.a11y_indicator_acted_on = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.a11y_indicator_acted_on = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -1147,12 +1141,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.browser_searchinit_engines_cache_corrupted = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.browser_searchinit_engines_cache_corrupted = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -1164,12 +1155,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.browser_searchinit_engines_cache_corrupted = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.browser_searchinit_engines_cache_corrupted = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -1393,12 +1381,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.browser_session_restore_tabbar_restore_available = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.browser_session_restore_tabbar_restore_available = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -1410,12 +1395,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.browser_session_restore_tabbar_restore_available = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.browser_session_restore_tabbar_restore_available = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -1427,12 +1409,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.browser_session_restore_tabbar_restore_clicked = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.browser_session_restore_tabbar_restore_clicked = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -1444,12 +1423,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.browser_session_restore_tabbar_restore_clicked = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.browser_session_restore_tabbar_restore_clicked = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -1651,12 +1627,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.browser_startup_slow_startup_notification_disabled = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.browser_startup_slow_startup_notification_disabled = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -1668,12 +1641,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.browser_startup_slow_startup_notification_disabled = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.browser_startup_slow_startup_notification_disabled = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -1685,12 +1655,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.browser_startup_slow_startup_notified = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.browser_startup_slow_startup_notified = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -1702,12 +1669,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.browser_startup_slow_startup_notified = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.browser_startup_slow_startup_notified = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -1719,12 +1683,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.browser_startup_too_new_for_notification = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.browser_startup_too_new_for_notification = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -1736,12 +1697,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.browser_startup_too_new_for_notification = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.browser_startup_too_new_for_notification = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -2045,12 +2003,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.contentblocking_cryptomining_blocking_enabled = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.contentblocking_cryptomining_blocking_enabled = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -2062,12 +2017,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.contentblocking_cryptomining_blocking_enabled = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.contentblocking_cryptomining_blocking_enabled = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -2079,12 +2031,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.contentblocking_enabled = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.contentblocking_enabled = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -2096,12 +2045,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.contentblocking_enabled = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.contentblocking_enabled = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -2153,12 +2099,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.contentblocking_fastblock_enabled = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.contentblocking_fastblock_enabled = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -2170,12 +2113,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.contentblocking_fastblock_enabled = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.contentblocking_fastblock_enabled = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -2187,12 +2127,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.contentblocking_fingerprinting_blocking_enabled = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.contentblocking_fingerprinting_blocking_enabled = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -2204,12 +2141,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.contentblocking_fingerprinting_blocking_enabled = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.contentblocking_fingerprinting_blocking_enabled = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -2265,12 +2199,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.corroborate_omnijar_corrupted = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.corroborate_omnijar_corrupted = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -2282,12 +2213,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.corroborate_omnijar_corrupted = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.corroborate_omnijar_corrupted = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -2299,12 +2227,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.corroborate_omnijar_mismatch = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.corroborate_omnijar_mismatch = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -2316,12 +2241,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.corroborate_omnijar_mismatch = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.corroborate_omnijar_mismatch = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -2333,12 +2255,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.corroborate_system_addons_corrupted = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.corroborate_system_addons_corrupted = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -2350,12 +2269,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.corroborate_system_addons_corrupted = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.corroborate_system_addons_corrupted = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -3675,12 +3591,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.devtools_onboarding_is_devtools_user = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.devtools_onboarding_is_devtools_user = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -3692,12 +3605,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.devtools_onboarding_is_devtools_user = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.devtools_onboarding_is_devtools_user = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -3857,12 +3767,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.devtools_shadowdom_reveal_link_clicked = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.devtools_shadowdom_reveal_link_clicked = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -3874,12 +3781,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.devtools_shadowdom_reveal_link_clicked = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.devtools_shadowdom_reveal_link_clicked = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -3891,12 +3795,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.devtools_shadowdom_shadow_root_displayed = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.devtools_shadowdom_shadow_root_displayed = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -3908,12 +3809,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.devtools_shadowdom_shadow_root_displayed = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.devtools_shadowdom_shadow_root_displayed = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -3925,12 +3823,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.devtools_shadowdom_shadow_root_expanded = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.devtools_shadowdom_shadow_root_expanded = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -3942,12 +3837,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.devtools_shadowdom_shadow_root_expanded = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.devtools_shadowdom_shadow_root_expanded = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -4425,12 +4317,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.dom_parentprocess_private_window_used = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.dom_parentprocess_private_window_used = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -4442,12 +4331,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.dom_parentprocess_private_window_used = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.dom_parentprocess_private_window_used = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -4459,12 +4345,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.content.scalars.encoding_override_used = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.content.scalars.encoding_override_used = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -4476,12 +4359,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.content.scalars.encoding_override_used = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.content.scalars.encoding_override_used = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -4493,12 +4373,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.encoding_override_used = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.encoding_override_used = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -4510,12 +4387,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.encoding_override_used = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.encoding_override_used = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -4685,12 +4559,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.formautofill_availability = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.formautofill_availability = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -4702,12 +4573,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.formautofill_availability = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.formautofill_availability = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -5271,12 +5139,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.content.scalars.images_webp_content_observed = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.content.scalars.images_webp_content_observed = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -5288,12 +5153,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.content.scalars.images_webp_content_observed = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.content.scalars.images_webp_content_observed = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -5305,12 +5167,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.images_webp_content_observed = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.images_webp_content_observed = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -5322,12 +5181,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.images_webp_content_observed = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.images_webp_content_observed = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -5339,12 +5195,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.content.scalars.images_webp_probe_observed = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.content.scalars.images_webp_probe_observed = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -5356,12 +5209,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.content.scalars.images_webp_probe_observed = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.content.scalars.images_webp_probe_observed = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -5373,12 +5223,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.images_webp_probe_observed = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.images_webp_probe_observed = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -5390,12 +5237,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.images_webp_probe_observed = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.images_webp_probe_observed = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -5569,12 +5413,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.content.scalars.media_autoplay_default_blocked = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.content.scalars.media_autoplay_default_blocked = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -5586,12 +5427,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.content.scalars.media_autoplay_default_blocked = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.content.scalars.media_autoplay_default_blocked = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -5603,12 +5441,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.media_autoplay_default_blocked = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.media_autoplay_default_blocked = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -5620,12 +5455,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.media_autoplay_default_blocked = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.media_autoplay_default_blocked = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -6951,12 +6783,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.os_environment_is_admin_without_uac = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.os_environment_is_admin_without_uac = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -6968,12 +6797,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.os_environment_is_admin_without_uac = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.os_environment_is_admin_without_uac = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -7265,12 +7091,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.preferences_created_new_user_prefs_file = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.preferences_created_new_user_prefs_file = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -7282,12 +7105,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.preferences_created_new_user_prefs_file = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.preferences_created_new_user_prefs_file = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -7299,12 +7119,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.preferences_prefs_file_was_invalid = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.preferences_prefs_file_was_invalid = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -7316,12 +7133,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.preferences_prefs_file_was_invalid = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.preferences_prefs_file_was_invalid = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -7333,12 +7147,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.preferences_prevent_accessibility_services = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.preferences_prevent_accessibility_services = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -7350,12 +7161,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.preferences_prevent_accessibility_services = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.preferences_prevent_accessibility_services = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -7367,12 +7175,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.preferences_read_user_js = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.preferences_read_user_js = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -7384,12 +7189,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.preferences_read_user_js = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.preferences_read_user_js = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -8225,12 +8027,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.telemetry_data_upload_optin = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.telemetry_data_upload_optin = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -8242,12 +8041,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.telemetry_data_upload_optin = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.telemetry_data_upload_optin = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -8715,12 +8511,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.telemetry_os_shutting_down = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.telemetry_os_shutting_down = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -8732,12 +8525,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.telemetry_os_shutting_down = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.telemetry_os_shutting_down = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -9287,12 +9077,9 @@ aggregated AS (
         'false',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.update_fix_permissions_attempted = FALSE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.update_fix_permissions_attempted = FALSE
+              THEN 1
+            ELSE 0
           END
         )
       ),
@@ -9304,12 +9091,9 @@ aggregated AS (
         'true',
         SUM(
           CASE
-          WHEN
-            payload.processes.parent.scalars.update_fix_permissions_attempted = TRUE
-          THEN
-            1
-          ELSE
-            0
+            WHEN payload.processes.parent.scalars.update_fix_permissions_attempted = TRUE
+              THEN 1
+            ELSE 0
           END
         )
       ),

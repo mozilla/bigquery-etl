@@ -7,28 +7,17 @@ Buckets small Bing countries into "other".
 CREATE OR REPLACE FUNCTION udf.map_revenue_country(engine STRING, country STRING) AS (
   CASE
     engine
-  WHEN
-    'Google'
-  THEN
-    IF(country = 'US', 'US', 'ROW')
-  WHEN
-    'Bing'
-  THEN
-    IF(country IN ('US', 'DE', 'UK', 'FR', 'CA'), country, 'Other')
-  WHEN
-    'Other'
-  THEN
-    country
-  WHEN
-    'DuckDuckGo'
-  THEN
-    country
-  WHEN
-    'Yandex'
-  THEN
-    country
-  ELSE
-    NULL
+    WHEN 'Google'
+      THEN IF(country = 'US', 'US', 'ROW')
+    WHEN 'Bing'
+      THEN IF(country IN ('US', 'DE', 'UK', 'FR', 'CA'), country, 'Other')
+    WHEN 'Other'
+      THEN country
+    WHEN 'DuckDuckGo'
+      THEN country
+    WHEN 'Yandex'
+      THEN country
+    ELSE NULL
   END
 );
 

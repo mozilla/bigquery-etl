@@ -125,14 +125,10 @@ SELECT
   key,
   agg_type,
   CASE
-  WHEN
-    agg_type IN ('count', 'true', 'false')
-  THEN
-    SUM(value)
-  ELSE
-    NULL
-  END
-  AS total_sample
+    WHEN agg_type IN ('count', 'true', 'false')
+      THEN SUM(value)
+    ELSE NULL
+  END AS total_sample
 FROM
   scalars_data,
   UNNEST(scalar_aggregates)
@@ -156,14 +152,10 @@ SELECT
   key,
   agg_type,
   CASE
-  WHEN
-    agg_type IN ('count', 'true', 'false')
-  THEN
-    SUM(value)
-  ELSE
-    NULL
-  END
-  AS total_sample
+    WHEN agg_type IN ('count', 'true', 'false')
+      THEN SUM(value)
+    ELSE NULL
+  END AS total_sample
 FROM
   scalars_data,
   UNNEST(scalar_aggregates) s1
@@ -186,14 +178,10 @@ SELECT
   key,
   agg_type,
   CASE
-  WHEN
-    agg_type IN ('count', 'true', 'false')
-  THEN
-    SUM(value)
-  ELSE
-    NULL
-  END
-  AS total_sample
+    WHEN agg_type IN ('count', 'true', 'false')
+      THEN SUM(value)
+    ELSE NULL
+  END AS total_sample
 FROM
   scalars_data,
   UNNEST(scalar_aggregates)
@@ -216,14 +204,10 @@ SELECT
   key,
   agg_type,
   CASE
-  WHEN
-    agg_type IN ('count', 'true', 'false')
-  THEN
-    SUM(value)
-  ELSE
-    NULL
-  END
-  AS total_sample
+    WHEN agg_type IN ('count', 'true', 'false')
+      THEN SUM(value)
+    ELSE NULL
+  END AS total_sample
 FROM
   scalars_data,
   UNNEST(scalar_aggregates)

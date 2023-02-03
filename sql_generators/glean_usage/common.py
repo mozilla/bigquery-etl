@@ -147,7 +147,9 @@ class GleanTable:
         self.per_app_enabled = True
         self.cross_channel_template = "cross_channel.view.sql"
 
-    def generate_per_app_id(self, project_id, baseline_table, output_dir=None):
+    def generate_per_app_id(
+        self, project_id, baseline_table, output_dir=None, use_cloud_function=True
+    ):
         """Generate the baseline table query per app_id."""
         if not self.per_app_id_enabled:
             return
@@ -208,7 +210,9 @@ class GleanTable:
 
             write_dataset_metadata(output_dir, view)
 
-    def generate_per_app(self, project_id, app_info, output_dir=None):
+    def generate_per_app(
+        self, project_id, app_info, output_dir=None, use_cloud_function=True
+    ):
         """Generate the baseline table query per app_name."""
         if not self.per_app_enabled:
             return

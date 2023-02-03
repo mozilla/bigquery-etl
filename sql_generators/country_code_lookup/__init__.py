@@ -7,6 +7,8 @@ import click
 import yaml
 from jinja2 import Environment, FileSystemLoader
 
+from bigquery_etl.cli.utils import use_cloud_function_option
+
 FILE_PATH = Path(os.path.dirname(__file__))
 TEMPLATES_PATH = FILE_PATH / "templates"
 
@@ -25,7 +27,8 @@ TEMPLATES_PATH = FILE_PATH / "templates"
     default=Path("sql"),
     type=click.Path(file_okay=False),
 )
-def generate(target_project, output_dir):
+@use_cloud_function_option
+def generate(target_project, output_dir, use_cloud_function):
     """Generate a CSV that maps country aliases to a country code."""
     target_path = Path(f"{output_dir}/{target_project}/static/country_names_v1/")
     target_path.mkdir(parents=True, exist_ok=True)

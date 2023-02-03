@@ -17,7 +17,9 @@ class BaselineClientsFirstSeenTable(GleanTable):
         self.no_init = False
         self.custom_render_kwargs = {}
 
-    def generate_per_app_id(self, project_id, baseline_table, output_dir=None):
+    def generate_per_app_id(
+        self, project_id, baseline_table, output_dir=None, use_cloud_function=True
+    ):
         """Generate per-app_id datasets."""
         self.custom_render_kwargs = dict(
             # do not match on org_mozilla_firefoxreality

@@ -15,20 +15,13 @@ WITH deduped AS (
 )
 SELECT
   CASE
-  WHEN
-    channel = "nightly"
-  THEN
-    1
-  WHEN
-    channel = "beta"
-  THEN
-    2
-  WHEN
-    channel = "release"
-  THEN
-    3
-  END
-  AS channel,
+    WHEN channel = "nightly"
+      THEN 1
+    WHEN channel = "beta"
+      THEN 2
+    WHEN channel = "release"
+      THEN 3
+  END AS channel,
   app_version,
   COALESCE(app_build_id, "*") AS app_build_id,
   COALESCE(os, "*") AS os,

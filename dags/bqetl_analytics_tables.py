@@ -64,6 +64,18 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
+    with TaskGroup(
+        "firefox_android_clients_external"
+    ) as firefox_android_clients_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_firefox_android_clients",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_firefox_android_clients",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
+        )
+
+        firefox_android_clients_external.set_upstream(firefox_android_clients)
+
     wait_for_baseline_clients_daily = ExternalTaskSensor(
         task_id="wait_for_baseline_clients_daily",
         external_dag_id="copy_deduplicate",

@@ -27,6 +27,7 @@ default_args = {
         "telemetry-alerts@mozilla.com",
         "anicholson@mozilla.com",
         "akomar@mozilla.com",
+        "cmorales@mozilla.com",
     ],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
@@ -54,6 +55,7 @@ with DAG(
         email=[
             "akomar@mozilla.com",
             "anicholson@mozilla.com",
+            "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
@@ -83,6 +85,7 @@ with DAG(
         email=[
             "akomar@mozilla.com",
             "anicholson@mozilla.com",
+            "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
@@ -92,6 +95,13 @@ with DAG(
     with TaskGroup(
         "search_derived__search_clients_daily__v8_external"
     ) as search_derived__search_clients_daily__v8_external:
+        ExternalTaskMarker(
+            task_id="bqetl_search_dashboard__wait_for_search_derived__search_clients_daily__v8",
+            external_dag_id="bqetl_search_dashboard",
+            external_task_id="wait_for_search_derived__search_clients_daily__v8",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
         ExternalTaskMarker(
             task_id="bqetl_addons__wait_for_search_derived__search_clients_daily__v8",
             external_dag_id="bqetl_addons",
@@ -126,6 +136,7 @@ with DAG(
         email=[
             "akomar@mozilla.com",
             "anicholson@mozilla.com",
+            "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
@@ -155,6 +166,7 @@ with DAG(
         email=[
             "akomar@mozilla.com",
             "anicholson@mozilla.com",
+            "cmorales@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],

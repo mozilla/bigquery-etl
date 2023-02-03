@@ -159,8 +159,8 @@ WITH unioned_source AS (
     device_model,
     first_seen_date,
     submission_date = first_seen_date AS is_new_profile,
-    NULL AS uri_count,
-    NULL AS is_default_browser,
+    uri_count,
+    is_default_browser,
     CAST(NULL AS string) AS distribution_id,
     isp,
     'Klar iOS' AS normalized_app_name

@@ -43,11 +43,10 @@ tags = ["impact/tier_1", "repo/bigquery-etl"]
 with DAG(
     "bqetl_analytics_aggregations",
     default_args=default_args,
-    schedule_interval="0 1 * * *",
+    schedule_interval="30 3 * * *",
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     active_users_aggregates_attribution_v1 = bigquery_etl_query(
         task_id="active_users_aggregates_attribution_v1",
         destination_table='active_users_aggregates_attribution_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
@@ -87,7 +86,7 @@ with DAG(
             task_id="bqetl_search_dashboard__wait_for_active_users_aggregates_device_v1",
             external_dag_id="bqetl_search_dashboard",
             external_task_id="wait_for_active_users_aggregates_device_v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=84600)).isoformat() }}",
         )
 
         active_users_aggregates_device_v1_external.set_upstream(
@@ -131,7 +130,7 @@ with DAG(
         task_id="wait_for_firefox_android_clients",
         external_dag_id="bqetl_analytics_tables",
         external_task_id="firefox_android_clients",
-        execution_delta=datetime.timedelta(days=-1, seconds=82800),
+        execution_delta=datetime.timedelta(seconds=5400),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -146,7 +145,7 @@ with DAG(
         task_id="wait_for_telemetry_derived__unified_metrics__v1",
         external_dag_id="bqetl_unified",
         external_task_id="telemetry_derived__unified_metrics__v1",
-        execution_delta=datetime.timedelta(days=-1, seconds=79200),
+        execution_delta=datetime.timedelta(seconds=1800),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -170,7 +169,7 @@ with DAG(
         task_id="wait_for_telemetry_derived__rolling_cohorts__v1",
         external_dag_id="bqetl_unified",
         external_task_id="telemetry_derived__rolling_cohorts__v1",
-        execution_delta=datetime.timedelta(days=-1, seconds=79200),
+        execution_delta=datetime.timedelta(seconds=1800),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,

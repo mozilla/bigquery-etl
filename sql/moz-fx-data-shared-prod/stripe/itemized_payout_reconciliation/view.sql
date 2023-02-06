@@ -60,27 +60,19 @@ enriched AS (
 SELECT
   * EXCEPT (card_country, state),
   CASE
-  -- american samoa
-  WHEN
-    card_country = "US"
-    AND REGEXP_CONTAINS(postal_code, "^96799(-?[0-9]{4})?$")
-  THEN
-    STRUCT("AS" AS card_country, NULL AS state)
-  -- puerto rico
-  WHEN
-    card_country = "US"
-    AND REGEXP_CONTAINS(postal_code, "^00[679][0-9]{2}(-?[0-9]{4})?$")
-  THEN
-    STRUCT("PR" AS card_country, NULL AS state)
-  -- virgin islands
-  WHEN
-    card_country = "US"
-    AND REGEXP_CONTAINS(postal_code, "^008[0-9]{2}(-?[0-9]{4})?$")
-  THEN
-    STRUCT("VI" AS card_country, NULL AS state)
-  ELSE
-    STRUCT(card_country, state)
-  END
-  .*,
+    -- american samoa
+    WHEN card_country = "US"
+      AND REGEXP_CONTAINS(postal_code, "^96799(-?[0-9]{4})?$")
+      THEN STRUCT("AS" AS card_country, NULL AS state)
+    -- puerto rico
+    WHEN card_country = "US"
+      AND REGEXP_CONTAINS(postal_code, "^00[679][0-9]{2}(-?[0-9]{4})?$")
+      THEN STRUCT("PR" AS card_country, NULL AS state)
+    -- virgin islands
+    WHEN card_country = "US"
+      AND REGEXP_CONTAINS(postal_code, "^008[0-9]{2}(-?[0-9]{4})?$")
+      THEN STRUCT("VI" AS card_country, NULL AS state)
+    ELSE STRUCT(card_country, state)
+  END.*,
 FROM
   enriched

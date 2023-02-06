@@ -47,7 +47,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     amo_dev__amo_stats_dau__v2 = bigquery_etl_query(
         task_id="amo_dev__amo_stats_dau__v2",
         destination_table="amo_stats_dau_v2",

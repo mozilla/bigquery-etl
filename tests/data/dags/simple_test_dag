@@ -44,7 +44,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     test__non_incremental_query__v1 = bigquery_etl_query(
         task_id="test__non_incremental_query__v1",
         destination_table="non_incremental_query_v1",

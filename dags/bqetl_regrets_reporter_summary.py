@@ -43,7 +43,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     regrets_reporter_summary__v1 = bigquery_etl_query(
         task_id="regrets_reporter_summary__v1",
         destination_table="regrets_reporter_summary_v1",

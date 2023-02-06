@@ -40,7 +40,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     search_derived__desktop_search_aggregates_by_userstate__v1 = bigquery_etl_query(
         task_id="search_derived__desktop_search_aggregates_by_userstate__v1",
         destination_table="desktop_search_aggregates_by_userstate_v1",
@@ -159,7 +158,7 @@ with DAG(
         task_id="wait_for_active_users_aggregates_device_v1",
         external_dag_id="bqetl_analytics_aggregations",
         external_task_id="active_users_aggregates_device_v1",
-        execution_delta=datetime.timedelta(seconds=10800),
+        execution_delta=datetime.timedelta(seconds=1800),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,

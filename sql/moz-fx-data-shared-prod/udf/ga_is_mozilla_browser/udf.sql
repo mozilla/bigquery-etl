@@ -6,13 +6,10 @@ Determine if a browser in a Google Analytics data is one produced by Mozilla
 CREATE OR REPLACE FUNCTION udf.ga_is_mozilla_browser(browser STRING)
 RETURNS BOOLEAN AS (
   CASE
-  WHEN
-    browser = 'Firefox'
-    OR browser = 'Mozilla'
-  THEN
-    TRUE
-  ELSE
-    FALSE
+    WHEN browser = 'Firefox'
+      OR browser = 'Mozilla'
+      THEN TRUE
+    ELSE FALSE
   END
 );
 

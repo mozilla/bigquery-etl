@@ -8,6 +8,7 @@ For views that have incomaptible schemas (e.g due to fields having mismatching
 types), the view is only generated for the release channel.
 """
 import os
+from copy import deepcopy
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
@@ -43,7 +44,9 @@ class GleanAppPingViews(GleanTable):
         self.per_app_id_enabled = False
         self.per_app_enabled = True
 
-    def generate_per_app(self, project_id, app_info, output_dir=None):
+    def generate_per_app(
+        self, project_id, app_info, output_dir=None, use_cloud_function=True
+    ):
         """
         Generate per-app ping views across channels.
 
@@ -89,11 +92,14 @@ class GleanAppPingViews(GleanTable):
                     channel_dataset,
                     view_name,
                     partitioned_by="submission_timestamp",
+                    use_cloud_function=use_cloud_function,
                 )
-                cached_schemas[channel_dataset] = schema
+                cached_schemas[channel_dataset] = deepcopy(schema)
 
                 try:
-                    unioned_schema.merge(schema, add_missing_fields=True, ignore_incompatible_fields=True)
+                    unioned_schema.merge(
+                        schema, add_missing_fields=True, ignore_incompatible_fields=True
+                    )
                 except Exception as e:
                     # if schema incompatibilities are detected, then only generate for release channel
                     print(
@@ -108,14 +114,20 @@ class GleanAppPingViews(GleanTable):
             for app in app_info:
                 channel_dataset = app["document_namespace"].replace("-", "_")
 
-                if channel_dataset not in cached_schemas or cached_schemas[channel_dataset].schema["fields"] == []:
+                if (
+                    channel_dataset not in cached_schemas
+                    or cached_schemas[channel_dataset].schema["fields"] == []
+                ):
                     # check for empty schemas (e.g. restricted ones) and skip for now
-                    print(f"Cannot get schema for `{channel_dataset}.{view_name}`; Skipping")
+                    print(
+                        f"Cannot get schema for `{channel_dataset}.{view_name}`; Skipping"
+                    )
                     continue
 
                 # compare table schema with unioned schema to determine fields that need to be NULL
                 select_expression = self._generate_select_expression(
-                    unioned_schema.schema["fields"], cached_schemas[channel_dataset].schema["fields"]
+                    unioned_schema.schema["fields"],
+                    cached_schemas[channel_dataset].schema["fields"],
                 )
 
                 queries.append(
@@ -146,7 +158,9 @@ class GleanAppPingViews(GleanTable):
                     skip_existing=True,
                 )
 
-                app_channels = [f"{channel['dataset']}.{view_name}" for channel in queries]
+                app_channels = [
+                    f"{channel['dataset']}.{view_name}" for channel in queries
+                ]
 
                 write_sql(
                     output_dir,
@@ -192,27 +206,53 @@ class GleanAppPingViews(GleanTable):
 
                         if node.get("mode", None) == "REPEATED":
                             # unnest repeated record
-                            select_expr.append(f"""
-                                (
-                                    SELECT ARRAY_AGG(
-                                        STRUCT(
-                                            {self._generate_select_expression(node['fields'], app_schema_nodes[node_name]['fields'], [node_name])}
+                            select_expr.append(
+                                f"""
+                                    (
+                                        SELECT ARRAY_AGG(
+                                            STRUCT(
+                                                {self._generate_select_expression(node['fields'], app_schema_nodes[node_name]['fields'], [node_name])}
+                                            )
                                         )
-                                    )
-                                    FROM UNNEST({'.'.join(path + [node_name])}) AS {node_name}
-                                ) AS {node_name}
-                            """)
+                                        FROM UNNEST({'.'.join(path + [node_name])}) AS {node_name}
+                                    ) AS {node_name}
+                                """
+                            )
                         else:
                             # select struct fields
-                            select_expr.append(f"""
-                                STRUCT(
-                                    {self._generate_select_expression(node['fields'], app_schema_nodes[node_name]['fields'], path + [node_name])}
-                                ) AS {node_name}
-                            """)
+                            select_expr.append(
+                                f"""
+                                    STRUCT(
+                                        {self._generate_select_expression(node['fields'], app_schema_nodes[node_name]['fields'], path + [node_name])}
+                                    ) AS {node_name}
+                                """
+                            )
                     else:
-                        select_expr.append(f"NULL AS {node_name}")
+                        if node.get("mode", None) == "REPEATED":
+                            select_expr.append(
+                                f"SAFE_CAST(NULL AS ARRAY<{dtype}>) AS {node_name}"
+                            )
+                        else:
+                            select_expr.append(
+                                f"SAFE_CAST(NULL AS {dtype}) AS {node_name}"
+                            )
             else:
-                # field doesn't exist in app schema, set to NULL
-                select_expr.append(f"NULL AS {node_name}")
+                if dtype == "RECORD":
+                    # unwrap missing struct - workaround to prevent type incompatibilities; NULL is always INT in STRUCT
+                    select_expr.append(
+                        f"""
+                            STRUCT(
+                                {self._generate_select_expression(node['fields'], {}, path + [node_name])}
+                            ) AS {node_name}
+                        """
+                    )
+                else:
+                    # field doesn't exist in app schema, set to NULL
+                    if node.get("mode", None) == "REPEATED":
+                        select_expr.append(
+                            f"SAFE_CAST(NULL AS ARRAY<{dtype}>) AS {node_name}"
+                        )
+                    else:
+                        select_expr.append(f"SAFE_CAST(NULL AS {dtype}) AS {node_name}")
 
         return ", ".join(select_expr)

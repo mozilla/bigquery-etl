@@ -12,60 +12,51 @@ RETURNS STRUCT<
   contributes_to_2021_kpi BOOLEAN
 > AS (
   CASE
-  WHEN
-    legacy_app_name LIKE "Focus iOS Baseline"
-    AND normalized_os LIKE "iOS"
-  THEN
-    STRUCT(
-      "focus_ios" AS app_name,
-      "Focus iOS Baseline" AS product,
-      "Focus iOS" AS canonical_app_name,
-      "Focus iOS Baseline" AS canonical_name,
-      TRUE AS contributes_to_2019_kpi,
-      TRUE AS contributes_to_2020_kpi,
-      TRUE AS contributes_to_2021_kpi
-    )
-  WHEN
-    legacy_app_name LIKE "Focus Android Baseline"
-    AND normalized_os LIKE "Android"
-  THEN
-    STRUCT(
-      "focus_android" AS app_name,
-      "Focus Android Baseline" AS product,
-      "Focus Android" AS canonical_app_name,
-      "Focus Android Baseline" AS canonical_name,
-      TRUE AS contributes_to_2019_kpi,
-      TRUE AS contributes_to_2020_kpi,
-      TRUE AS contributes_to_2021_kpi
-    )
-  WHEN
-    legacy_app_name LIKE "Klar Android Baseline"
-    AND normalized_os LIKE "Android"
-  THEN
-    STRUCT(
-      "klar_android" AS app_name,
-      "Klar Android Baseline" AS product,
-      "Klar Android" AS canonical_app_name,
-      "Klar Android Baseline" AS canonical_name,
-      FALSE AS contributes_to_2019_kpi,
-      FALSE AS contributes_to_2020_kpi,
-      FALSE AS contributes_to_2021_kpi
-    )
-  WHEN
-    legacy_app_name LIKE "Klar iOS Baseline"
-    AND normalized_os LIKE "iOS"
-  THEN
-    STRUCT(
-      "klar_ios" AS app_name,
-      "Klar iOS Baseline" AS product,
-      "Klar iOS" AS canonical_app_name,
-      "Klar iOS Baseline" AS canonical_name,
-      FALSE AS contributes_to_2019_kpi,
-      FALSE AS contributes_to_2020_kpi,
-      FALSE AS contributes_to_2021_kpi
-    )
-  ELSE
-    mozfun.norm.product_info(legacy_app_name, normalized_os)
+    WHEN legacy_app_name LIKE "Focus iOS Baseline"
+      AND normalized_os LIKE "iOS"
+      THEN STRUCT(
+          "focus_ios" AS app_name,
+          "Focus iOS Baseline" AS product,
+          "Focus iOS" AS canonical_app_name,
+          "Focus iOS Baseline" AS canonical_name,
+          TRUE AS contributes_to_2019_kpi,
+          TRUE AS contributes_to_2020_kpi,
+          TRUE AS contributes_to_2021_kpi
+        )
+    WHEN legacy_app_name LIKE "Focus Android Baseline"
+      AND normalized_os LIKE "Android"
+      THEN STRUCT(
+          "focus_android" AS app_name,
+          "Focus Android Baseline" AS product,
+          "Focus Android" AS canonical_app_name,
+          "Focus Android Baseline" AS canonical_name,
+          TRUE AS contributes_to_2019_kpi,
+          TRUE AS contributes_to_2020_kpi,
+          TRUE AS contributes_to_2021_kpi
+        )
+    WHEN legacy_app_name LIKE "Klar Android Baseline"
+      AND normalized_os LIKE "Android"
+      THEN STRUCT(
+          "klar_android" AS app_name,
+          "Klar Android Baseline" AS product,
+          "Klar Android" AS canonical_app_name,
+          "Klar Android Baseline" AS canonical_name,
+          FALSE AS contributes_to_2019_kpi,
+          FALSE AS contributes_to_2020_kpi,
+          FALSE AS contributes_to_2021_kpi
+        )
+    WHEN legacy_app_name LIKE "Klar iOS Baseline"
+      AND normalized_os LIKE "iOS"
+      THEN STRUCT(
+          "klar_ios" AS app_name,
+          "Klar iOS Baseline" AS product,
+          "Klar iOS" AS canonical_app_name,
+          "Klar iOS Baseline" AS canonical_name,
+          FALSE AS contributes_to_2019_kpi,
+          FALSE AS contributes_to_2020_kpi,
+          FALSE AS contributes_to_2021_kpi
+        )
+    ELSE mozfun.norm.product_info(legacy_app_name, normalized_os)
   END
 );
 

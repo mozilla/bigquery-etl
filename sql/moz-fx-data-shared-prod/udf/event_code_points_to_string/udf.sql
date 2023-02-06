@@ -6,28 +6,19 @@ CREATE OR REPLACE FUNCTION udf.event_code_points_to_string(code_points ANY TYPE)
       ARRAY(
         SELECT
           CASE
-          WHEN
-            i IS NULL
-          THEN
-            NULL
+            WHEN i IS NULL
+              THEN NULL
             -- Skip invalid chars
             -- https://en.wikibooks.org/wiki/Unicode/Character_reference/D000-DFFF#endnote_SURROGATE
-          WHEN
-            i >= 55294
-          THEN
-            i + 2 + 2048
+            WHEN i >= 55294
+              THEN i + 2 + 2048
             -- Skip commas
-          WHEN
-            i >= 43
-          THEN
-            i + 2
+            WHEN i >= 43
+              THEN i + 2
             -- Skip double quote
-          WHEN
-            i >= 34
-          THEN
-            i + 1
-          ELSE
-            i
+            WHEN i >= 34
+              THEN i + 1
+            ELSE i
           END
         FROM
           UNNEST(code_points) AS i

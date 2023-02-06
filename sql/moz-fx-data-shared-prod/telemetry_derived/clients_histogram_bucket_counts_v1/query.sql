@@ -57,20 +57,13 @@ build_ids AS (
     -- Filter out builds having less than 0.5% of WAU
     -- for context see https://github.com/mozilla/glam/issues/1575#issuecomment-946880387
     CASE
-    WHEN
-      channel = 'release'
-    THEN
-      COUNT(DISTINCT client_id) > 625000
-    WHEN
-      channel = 'beta'
-    THEN
-      COUNT(DISTINCT client_id) > 9000
-    WHEN
-      channel = 'nightly'
-    THEN
-      COUNT(DISTINCT client_id) > 375
-    ELSE
-      COUNT(DISTINCT client_id) > 100
+      WHEN channel = 'release'
+        THEN COUNT(DISTINCT client_id) > 625000
+      WHEN channel = 'beta'
+        THEN COUNT(DISTINCT client_id) > 9000
+      WHEN channel = 'nightly'
+        THEN COUNT(DISTINCT client_id) > 375
+      ELSE COUNT(DISTINCT client_id) > 100
     END
 ),
 all_combos AS (

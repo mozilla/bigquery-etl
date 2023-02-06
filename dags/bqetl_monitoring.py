@@ -45,7 +45,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     monitoring_derived__average_ping_sizes__v1 = gke_command(
         task_id="monitoring_derived__average_ping_sizes__v1",
         command=[

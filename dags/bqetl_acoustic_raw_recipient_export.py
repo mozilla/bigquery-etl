@@ -46,7 +46,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     acoustic__raw_recipient__v1 = bigquery_etl_query(
         task_id="acoustic__raw_recipient__v1",
         destination_table="raw_recipient_v1",

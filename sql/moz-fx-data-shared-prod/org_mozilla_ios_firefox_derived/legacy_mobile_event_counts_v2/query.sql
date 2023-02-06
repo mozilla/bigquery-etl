@@ -110,18 +110,12 @@ aggregated AS (
         IF(
           object = "bookmarks-panel",
           CASE
-          WHEN
-            string_value = "app-menu"
-          THEN
-            ("app-menu", value)
-          WHEN
-            string_value LIKE "home-panel%"
-          THEN
-            ("home-panel", value)
-          ELSE
-            NULL
-          END
-          ,
+            WHEN string_value = "app-menu"
+              THEN ("app-menu", value)
+            WHEN string_value LIKE "home-panel%"
+              THEN ("home-panel", value)
+            ELSE NULL
+          END,
           NULL
         ) IGNORE NULLS
       ),

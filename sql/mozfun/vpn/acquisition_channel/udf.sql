@@ -6,21 +6,16 @@ CREATE OR REPLACE FUNCTION vpn.acquisition_channel(
 )
 RETURNS STRING AS (
   CASE
-  WHEN
-    utm_source = "firefox-browser"
-  THEN
-    "Website: Firefox Browser"
-  WHEN
-    vpn.normalize_utm_parameters(utm_campaign, utm_content, utm_medium, utm_source) = (
-      "(not set)",
-      "(not set)",
-      "(none)",
-      "(direct)"
-    )
-  THEN
-    "Unknown"
-  ELSE
-    "Website"
+    WHEN utm_source = "firefox-browser"
+      THEN "Website: Firefox Browser"
+    WHEN vpn.normalize_utm_parameters(utm_campaign, utm_content, utm_medium, utm_source) = (
+        "(not set)",
+        "(not set)",
+        "(none)",
+        "(direct)"
+      )
+      THEN "Unknown"
+    ELSE "Website"
   END
 );
 

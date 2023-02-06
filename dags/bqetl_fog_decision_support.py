@@ -43,7 +43,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     fog_decision_support_v1 = bigquery_etl_query(
         task_id="fog_decision_support_v1",
         destination_table="fog_decision_support_percentiles_v1",

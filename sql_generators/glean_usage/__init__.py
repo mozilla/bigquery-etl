@@ -5,7 +5,11 @@ from pathlib import Path
 import click
 from pathos.multiprocessing import ProcessingPool
 
-from bigquery_etl.cli.utils import is_valid_project, table_matches_patterns
+from bigquery_etl.cli.utils import (
+    is_valid_project,
+    table_matches_patterns,
+    use_cloud_function_option,
+)
 from sql_generators.glean_usage import (
     baseline_clients_daily,
     baseline_clients_first_seen,
@@ -35,6 +39,7 @@ GLEAN_TABLES = [
 # * regrets_reporter currently refers to two applications, skip the glean
 # one to avoid confusion: https://github.com/mozilla/bigquery-etl/issues/2499
 SKIP_APPS = ["mlhackweek_search", "regrets_reporter", "regrets_reporter_ucs"]
+
 
 @click.command()
 @click.option(
@@ -73,7 +78,10 @@ SKIP_APPS = ["mlhackweek_search", "regrets_reporter", "regrets_reporter_ucs"]
     "--app-name",
     help="App to generate per-app dataset metadata and union views for.",
 )
-def generate(target_project, output_dir, parallelism, exclude, only, app_name):
+@use_cloud_function_option
+def generate(
+    target_project, output_dir, parallelism, exclude, only, app_name, use_cloud_function
+):
     """Generate per-app_id queries and views, and per-app dataset metadata and union views.
 
     Note that a file won't be generated if a corresponding file is already present
@@ -120,6 +128,7 @@ def generate(target_project, output_dir, parallelism, exclude, only, app_name):
                 table.generate_per_app_id,
                 target_project,
                 output_dir=output_dir,
+                use_cloud_function=use_cloud_function,
             ),
             baseline_table,
         )
@@ -131,7 +140,12 @@ def generate(target_project, output_dir, parallelism, exclude, only, app_name):
     # and app_info
     generate_per_app = [
         (
-            partial(table.generate_per_app, target_project, output_dir=output_dir),
+            partial(
+                table.generate_per_app,
+                target_project,
+                output_dir=output_dir,
+                use_cloud_function=use_cloud_function,
+            ),
             info,
         )
         for info in app_info

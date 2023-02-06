@@ -40,7 +40,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     test__python_script_query__v1 = gke_command(
         task_id="test__python_script_query__v1",
         command=[

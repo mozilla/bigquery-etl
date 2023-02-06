@@ -48,7 +48,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     fivetran_costs_derived__destinations__v1 = bigquery_etl_query(
         task_id="fivetran_costs_derived__destinations__v1",
         destination_table="destinations_v1",

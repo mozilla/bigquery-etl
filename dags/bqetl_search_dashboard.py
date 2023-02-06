@@ -40,7 +40,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     search_derived__desktop_search_aggregates_by_userstate__v1 = bigquery_etl_query(
         task_id="search_derived__desktop_search_aggregates_by_userstate__v1",
         destination_table="desktop_search_aggregates_by_userstate_v1",

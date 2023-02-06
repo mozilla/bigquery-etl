@@ -91,7 +91,7 @@ jobs:
           # of a package name and a version specifier"
           command: |
             pip install pip-tools --constraint requirements.in
-            pip-compile --quiet --generate-hashes --unsafe-package=
+            pip-compile --allow-unsafe --generate-hashes --quiet
             git diff --exit-code -G '^ *[^# ]' -- requirements.txt
   test-sql:
     docker: *docker

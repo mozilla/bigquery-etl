@@ -1135,6 +1135,36 @@ fields:
       mode: REPEATED
       name: pdfjs_editing
       type: RECORD
+    - description: 'The number of PingCentre send failures,
+
+        broken down by structured ingestion namespace.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: ping_centre_send_failures_by_namespace
+      type: RECORD
+    - description: 'The number of PingCentre send successes,
+
+        broken down by structured ingestion namespace.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: ping_centre_send_successes_by_namespace
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

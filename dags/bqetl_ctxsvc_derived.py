@@ -47,7 +47,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     contextual_services_derived__adm_forecasting__v1 = bigquery_etl_query(
         task_id="contextual_services_derived__adm_forecasting__v1",
         destination_table='adm_forecasting_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',

@@ -2849,31 +2849,31 @@
 <p>Follow the <a href="https://github.com/mozilla/bigquery-etl#quick-start">Quick Start</a> to set up bigquery-etl and the bqetl CLI.</p>
 <h2 id="commands">Commands</h2>
 <p>To list all available commands in the bqetl CLI:</p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl
 
-Usage: bqetl <span class="o">[</span>OPTIONS<span class="o">]</span> COMMAND <span class="o">[</span>ARGS<span class="o">]</span>...
+Usage:<span class="w"> </span>bqetl<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
 
-  CLI tools <span class="k">for</span> working with bigquery-etl.
+<span class="w">  </span>CLI<span class="w"> </span>tools<span class="w"> </span><span class="k">for</span><span class="w"> </span>working<span class="w"> </span>with<span class="w"> </span>bigquery-etl.
 
 Options:
-  --version  Show the version and exit.
-  --help     Show this message and exit.
+<span class="w">  </span>--version<span class="w">  </span>Show<span class="w"> </span>the<span class="w"> </span>version<span class="w"> </span>and<span class="w"> </span>exit.
+<span class="w">  </span>--help<span class="w">     </span>Show<span class="w"> </span>this<span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span>exit.
 
 Commands:
-  alchemer    Commands <span class="k">for</span> importing alchemer data.
-  dag         Commands <span class="k">for</span> managing DAGs.
-  dependency  Build and use query dependency graphs.
-  dryrun      Dry run SQL.
-  format      Format SQL.
-  glam        Tools <span class="k">for</span> GLAM ETL.
-  mozfun      Commands <span class="k">for</span> managing mozfun routines.
-  query       Commands <span class="k">for</span> managing queries.
-  routine     Commands <span class="k">for</span> managing routines.
-  stripe      Commands <span class="k">for</span> Stripe ETL.
-  view        Commands <span class="k">for</span> managing views.
+<span class="w">  </span>alchemer<span class="w">    </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>importing<span class="w"> </span>alchemer<span class="w"> </span>data.
+<span class="w">  </span>dag<span class="w">         </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>managing<span class="w"> </span>DAGs.
+<span class="w">  </span>dependency<span class="w">  </span>Build<span class="w"> </span>and<span class="w"> </span>use<span class="w"> </span>query<span class="w"> </span>dependency<span class="w"> </span>graphs.
+<span class="w">  </span>dryrun<span class="w">      </span>Dry<span class="w"> </span>run<span class="w"> </span>SQL.
+<span class="w">  </span>format<span class="w">      </span>Format<span class="w"> </span>SQL.
+<span class="w">  </span>glam<span class="w">        </span>Tools<span class="w"> </span><span class="k">for</span><span class="w"> </span>GLAM<span class="w"> </span>ETL.
+<span class="w">  </span>mozfun<span class="w">      </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>managing<span class="w"> </span>mozfun<span class="w"> </span>routines.
+<span class="w">  </span>query<span class="w">       </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>managing<span class="w"> </span>queries.
+<span class="w">  </span>routine<span class="w">     </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>managing<span class="w"> </span>routines.
+<span class="w">  </span>stripe<span class="w">      </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>Stripe<span class="w"> </span>ETL.
+<span class="w">  </span>view<span class="w">        </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>managing<span class="w"> </span>views.
 </code></pre></div>
 <p>See help for any command:</p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl <span class="o">[</span>command<span class="o">]</span> --help
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span><span class="o">[</span>command<span class="o">]</span><span class="w"> </span>--help
 </code></pre></div>
 <!--- Documentation for comments is generated via ./bqetl docs generate -->
 <h3 id="query"><code>query</code></h3>
@@ -2885,185 +2885,185 @@ Commands:
     default is <code>moz-fx-data-shared-prod</code>. Views are automatically generated
     in the publicly facing dataset.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl query create <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>create<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---sql_dir: Path to directory which contains queries.
---project_id: GCP project ID
---owner: Owner of the query <span class="o">(</span>email address<span class="o">)</span>
---init: Create an init.sql file to initialize the table
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--owner:<span class="w"> </span>Owner<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>query<span class="w"> </span><span class="o">(</span>email<span class="w"> </span>address<span class="o">)</span>
+--init:<span class="w"> </span>Create<span class="w"> </span>an<span class="w"> </span>init.sql<span class="w"> </span>file<span class="w"> </span>to<span class="w"> </span>initialize<span class="w"> </span>the<span class="w"> </span>table
 </code></pre></div>
 <p><strong>Examples</strong></p>
-<div class="highlight"><pre><span></span><code>./bqetl query create telemetry_derived.deviations_v1 <span class="se">\</span>
-      --owner<span class="o">=</span>example@mozilla.com
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>create<span class="w"> </span>telemetry_derived.deviations_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--owner<span class="o">=</span>example@mozilla.com
 
 
-    <span class="c1"># The query version gets autocompleted to v1. Queries are created in the</span>
-    <span class="c1"># _derived dataset and accompanying views in the public dataset.</span>
-    ./bqetl query create telemetry.deviations --owner<span class="o">=</span>example@mozilla.com
+<span class="w">    </span><span class="c1"># The query version gets autocompleted to v1. Queries are created in the</span>
+<span class="w">    </span><span class="c1"># _derived dataset and accompanying views in the public dataset.</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>create<span class="w"> </span>telemetry.deviations<span class="w"> </span>--owner<span class="o">=</span>example@mozilla.com
 </code></pre></div>
 <h4 id="schedule"><code>schedule</code></h4>
 <p>Schedule an existing query</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl query schedule <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>schedule<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---sql_dir: Path to directory which contains queries.
---project_id: GCP project ID
---dag: Name of the DAG the query should be scheduled under. To see available DAGs run <span class="sb">`</span>bqetl dag info<span class="sb">`</span>. To create a new DAG run <span class="sb">`</span>bqetl dag create<span class="sb">`</span>.
---depends_on_past: Only execute query <span class="k">if</span> previous scheduled run succeeded.
---task_name: Custom name <span class="k">for</span> the Airflow task. By default the task name is a combination of the dataset and table name.
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--dag:<span class="w"> </span>Name<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>DAG<span class="w"> </span>the<span class="w"> </span>query<span class="w"> </span>should<span class="w"> </span>be<span class="w"> </span>scheduled<span class="w"> </span>under.<span class="w"> </span>To<span class="w"> </span>see<span class="w"> </span>available<span class="w"> </span>DAGs<span class="w"> </span>run<span class="w"> </span><span class="sb">`</span>bqetl<span class="w"> </span>dag<span class="w"> </span>info<span class="sb">`</span>.<span class="w"> </span>To<span class="w"> </span>create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>DAG<span class="w"> </span>run<span class="w"> </span><span class="sb">`</span>bqetl<span class="w"> </span>dag<span class="w"> </span>create<span class="sb">`</span>.
+--depends_on_past:<span class="w"> </span>Only<span class="w"> </span>execute<span class="w"> </span>query<span class="w"> </span><span class="k">if</span><span class="w"> </span>previous<span class="w"> </span>scheduled<span class="w"> </span>run<span class="w"> </span>succeeded.
+--task_name:<span class="w"> </span>Custom<span class="w"> </span>name<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>Airflow<span class="w"> </span>task.<span class="w"> </span>By<span class="w"> </span>default<span class="w"> </span>the<span class="w"> </span>task<span class="w"> </span>name<span class="w"> </span>is<span class="w"> </span>a<span class="w"> </span>combination<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>dataset<span class="w"> </span>and<span class="w"> </span>table<span class="w"> </span>name.
 </code></pre></div>
 <p><strong>Examples</strong></p>
-<div class="highlight"><pre><span></span><code>./bqetl query schedule telemetry_derived.deviations_v1 <span class="se">\</span>
-      --dag<span class="o">=</span>bqetl_deviations
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schedule<span class="w"> </span>telemetry_derived.deviations_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--dag<span class="o">=</span>bqetl_deviations
 
 
-    <span class="c1"># Set a specific name for the task</span>
-    ./bqetl query schedule telemetry_derived.deviations_v1 <span class="se">\</span>
-      --dag<span class="o">=</span>bqetl_deviations <span class="se">\</span>
-      --task-name<span class="o">=</span>deviations
+<span class="w">    </span><span class="c1"># Set a specific name for the task</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>schedule<span class="w"> </span>telemetry_derived.deviations_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--dag<span class="o">=</span>bqetl_deviations<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--task-name<span class="o">=</span>deviations
 </code></pre></div>
 <h4 id="info"><code>info</code></h4>
 <p>Get information about all or specific queries.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl query info <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>info<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---sql_dir: Path to directory which contains queries.
---project_id: GCP project ID
---cost: Include information about query costs
---last_updated: Include timestamps when destination tables were last updated
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--cost:<span class="w"> </span>Include<span class="w"> </span>information<span class="w"> </span>about<span class="w"> </span>query<span class="w"> </span>costs
+--last_updated:<span class="w"> </span>Include<span class="w"> </span>timestamps<span class="w"> </span>when<span class="w"> </span>destination<span class="w"> </span>tables<span class="w"> </span>were<span class="w"> </span>last<span class="w"> </span>updated
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Get info for specific queries</span>
-    ./bqetl query info telemetry_derived.*
+<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>info<span class="w"> </span>telemetry_derived.*
 
 
-    <span class="c1"># Get cost and last update timestamp information</span>
-    ./bqetl query info telemetry_derived.clients_daily_v6 <span class="se">\</span>
-      --cost --last_updated
+<span class="w">    </span><span class="c1"># Get cost and last update timestamp information</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>info<span class="w"> </span>telemetry_derived.clients_daily_v6<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--cost<span class="w"> </span>--last_updated
 </code></pre></div>
 <h4 id="backfill"><code>backfill</code></h4>
 <p>Run a backfill for a query. Additional parameters will get passed to bq.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl query backfill <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---sql_dir: Path to directory which contains queries.
---project_id: GCP project ID
---start_date: First date to be backfilled
---end_date: Last date to be backfilled
---exclude: Dates excluded from backfill. Date format: yyyy-mm-dd
---dry_run: Dry run the backfill
---max_rows: How many rows to <span class="k">return</span> <span class="k">in</span> the result
---parallelism: How many threads to run backfill <span class="k">in</span> parallel
---no_partition: Disable writing results to a partition. Overwrites entire destination table.
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--start_date:<span class="w"> </span>First<span class="w"> </span>date<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>backfilled
+--end_date:<span class="w"> </span>Last<span class="w"> </span>date<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>backfilled
+--exclude:<span class="w"> </span>Dates<span class="w"> </span>excluded<span class="w"> </span>from<span class="w"> </span>backfill.<span class="w"> </span>Date<span class="w"> </span>format:<span class="w"> </span>yyyy-mm-dd
+--dry_run:<span class="w"> </span>Dry<span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>backfill
+--max_rows:<span class="w"> </span>How<span class="w"> </span>many<span class="w"> </span>rows<span class="w"> </span>to<span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>result
+--parallelism:<span class="w"> </span>How<span class="w"> </span>many<span class="w"> </span>threads<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>backfill<span class="w"> </span><span class="k">in</span><span class="w"> </span>parallel
+--no_partition:<span class="w"> </span>Disable<span class="w"> </span>writing<span class="w"> </span>results<span class="w"> </span>to<span class="w"> </span>a<span class="w"> </span>partition.<span class="w"> </span>Overwrites<span class="w"> </span>entire<span class="w"> </span>destination<span class="w"> </span>table.
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Backfill for specific date range</span>
-    <span class="c1"># second comment line</span>
-    ./bqetl query backfill telemetry_derived.ssl_ratios_v1 <span class="se">\</span>
-      --start_date<span class="o">=</span><span class="m">2021</span>-03-01 <span class="se">\</span>
-      --end_date<span class="o">=</span><span class="m">2021</span>-03-31
+<span class="w">    </span><span class="c1"># second comment line</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span>telemetry_derived.ssl_ratios_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--start_date<span class="o">=</span><span class="m">2021</span>-03-01<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--end_date<span class="o">=</span><span class="m">2021</span>-03-31
 
 
-    <span class="c1"># Dryrun backfill for specific date range and exclude date</span>
-    ./bqetl query backfill telemetry_derived.ssl_ratios_v1 <span class="se">\</span>
-      --start_date<span class="o">=</span><span class="m">2021</span>-03-01 <span class="se">\</span>
-      --end_date<span class="o">=</span><span class="m">2021</span>-03-31 <span class="se">\</span>
-      --exclude<span class="o">=</span><span class="m">2021</span>-03-03 <span class="se">\</span>
-      --dry_run
+<span class="w">    </span><span class="c1"># Dryrun backfill for specific date range and exclude date</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span>telemetry_derived.ssl_ratios_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--start_date<span class="o">=</span><span class="m">2021</span>-03-01<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--end_date<span class="o">=</span><span class="m">2021</span>-03-31<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--exclude<span class="o">=</span><span class="m">2021</span>-03-03<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--dry_run
 </code></pre></div>
 <h4 id="run"><code>run</code></h4>
 <p>Run a query. Additional parameters will get passed to bq.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl query run <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>run<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---sql_dir: Path to directory which contains queries.
---project_id: GCP project ID
---public_project_id: Project with publicly accessible data
---destination_table: Destination table name results are written to. If not set, determines destination table based on query.
---dataset_id: Destination dataset results are written to. If not set, determines destination dataset based on query.
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--public_project_id:<span class="w"> </span>Project<span class="w"> </span>with<span class="w"> </span>publicly<span class="w"> </span>accessible<span class="w"> </span>data
+--destination_table:<span class="w"> </span>Destination<span class="w"> </span>table<span class="w"> </span>name<span class="w"> </span>results<span class="w"> </span>are<span class="w"> </span>written<span class="w"> </span>to.<span class="w"> </span>If<span class="w"> </span>not<span class="w"> </span>set,<span class="w"> </span>determines<span class="w"> </span>destination<span class="w"> </span>table<span class="w"> </span>based<span class="w"> </span>on<span class="w"> </span>query.
+--dataset_id:<span class="w"> </span>Destination<span class="w"> </span>dataset<span class="w"> </span>results<span class="w"> </span>are<span class="w"> </span>written<span class="w"> </span>to.<span class="w"> </span>If<span class="w"> </span>not<span class="w"> </span>set,<span class="w"> </span>determines<span class="w"> </span>destination<span class="w"> </span>dataset<span class="w"> </span>based<span class="w"> </span>on<span class="w"> </span>query.
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Backfill for specific date range</span>
-    <span class="c1"># second comment line</span>
-    ./bqetl query run telemetry_derived.ssl_ratios_v1
+<span class="w">    </span><span class="c1"># second comment line</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>run<span class="w"> </span>telemetry_derived.ssl_ratios_v1
 
 
-    <span class="c1"># Run a query file</span>
-    ./bqetl query run /path/to/query.sql
+<span class="w">    </span><span class="c1"># Run a query file</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>run<span class="w"> </span>/path/to/query.sql
 </code></pre></div>
 <h4 id="run-multipart"><code>run-multipart</code></h4>
 <p>Run a multipart query.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl query run-multipart <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>query_dir<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>run-multipart<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>query_dir<span class="o">]</span>
 
 Options:
 
---using: comma separated list of join columns to use when combining results
---parallelism: Maximum number of queries to execute concurrently
---dataset_id: Default dataset, <span class="k">if</span> not specified all tables must be qualified with dataset
---project_id: GCP project ID
---temp_dataset: Dataset where intermediate query results will be temporarily stored, formatted as PROJECT_ID.DATASET_ID
---destination_table: table where combined results will be written
---time_partitioning_field: <span class="nb">time</span> partition field on the destination table
---clustering_fields: comma separated list of clustering fields on the destination table
---dry_run: Print bytes that would be processed <span class="k">for</span> each part and don<span class="err">&#39;</span>t run queries
---parameters: query parameter<span class="o">(</span>s<span class="o">)</span> to pass when running parts
---priority: Priority <span class="k">for</span> BigQuery query jobs<span class="p">;</span> BATCH priority will significantly slow down queries <span class="k">if</span> reserved slots are not enabled <span class="k">for</span> the billing project<span class="p">;</span> defaults to INTERACTIVE
---schema_update_options: Optional options <span class="k">for</span> updating the schema.
+--using:<span class="w"> </span>comma<span class="w"> </span>separated<span class="w"> </span>list<span class="w"> </span>of<span class="w"> </span>join<span class="w"> </span>columns<span class="w"> </span>to<span class="w"> </span>use<span class="w"> </span>when<span class="w"> </span>combining<span class="w"> </span>results
+--parallelism:<span class="w"> </span>Maximum<span class="w"> </span>number<span class="w"> </span>of<span class="w"> </span>queries<span class="w"> </span>to<span class="w"> </span>execute<span class="w"> </span>concurrently
+--dataset_id:<span class="w"> </span>Default<span class="w"> </span>dataset,<span class="w"> </span><span class="k">if</span><span class="w"> </span>not<span class="w"> </span>specified<span class="w"> </span>all<span class="w"> </span>tables<span class="w"> </span>must<span class="w"> </span>be<span class="w"> </span>qualified<span class="w"> </span>with<span class="w"> </span>dataset
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--temp_dataset:<span class="w"> </span>Dataset<span class="w"> </span>where<span class="w"> </span>intermediate<span class="w"> </span>query<span class="w"> </span>results<span class="w"> </span>will<span class="w"> </span>be<span class="w"> </span>temporarily<span class="w"> </span>stored,<span class="w"> </span>formatted<span class="w"> </span>as<span class="w"> </span>PROJECT_ID.DATASET_ID
+--destination_table:<span class="w"> </span>table<span class="w"> </span>where<span class="w"> </span>combined<span class="w"> </span>results<span class="w"> </span>will<span class="w"> </span>be<span class="w"> </span>written
+--time_partitioning_field:<span class="w"> </span><span class="nb">time</span><span class="w"> </span>partition<span class="w"> </span>field<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>destination<span class="w"> </span>table
+--clustering_fields:<span class="w"> </span>comma<span class="w"> </span>separated<span class="w"> </span>list<span class="w"> </span>of<span class="w"> </span>clustering<span class="w"> </span>fields<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>destination<span class="w"> </span>table
+--dry_run:<span class="w"> </span>Print<span class="w"> </span>bytes<span class="w"> </span>that<span class="w"> </span>would<span class="w"> </span>be<span class="w"> </span>processed<span class="w"> </span><span class="k">for</span><span class="w"> </span>each<span class="w"> </span>part<span class="w"> </span>and<span class="w"> </span>don<span class="err">&#39;</span>t<span class="w"> </span>run<span class="w"> </span>queries
+--parameters:<span class="w"> </span>query<span class="w"> </span>parameter<span class="o">(</span>s<span class="o">)</span><span class="w"> </span>to<span class="w"> </span>pass<span class="w"> </span>when<span class="w"> </span>running<span class="w"> </span>parts
+--priority:<span class="w"> </span>Priority<span class="w"> </span><span class="k">for</span><span class="w"> </span>BigQuery<span class="w"> </span>query<span class="w"> </span>jobs<span class="p">;</span><span class="w"> </span>BATCH<span class="w"> </span>priority<span class="w"> </span>will<span class="w"> </span>significantly<span class="w"> </span>slow<span class="w"> </span>down<span class="w"> </span>queries<span class="w"> </span><span class="k">if</span><span class="w"> </span>reserved<span class="w"> </span>slots<span class="w"> </span>are<span class="w"> </span>not<span class="w"> </span>enabled<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>billing<span class="w"> </span>project<span class="p">;</span><span class="w"> </span>defaults<span class="w"> </span>to<span class="w"> </span>INTERACTIVE
+--schema_update_options:<span class="w"> </span>Optional<span class="w"> </span>options<span class="w"> </span><span class="k">for</span><span class="w"> </span>updating<span class="w"> </span>the<span class="w"> </span>schema.
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Run a multipart query</span>
-    ./bqetl query run_multipart /path/to/query.sql
+<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>run_multipart<span class="w"> </span>/path/to/query.sql
 </code></pre></div>
 <h4 id="validate"><code>validate</code></h4>
 <p>Validate a query.
     Checks formatting, scheduling information and dry runs the query.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl query validate <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>validate<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---sql_dir: Path to directory which contains queries.
---project_id: GCP project ID
---use_cloud_function: Use the Cloud Function <span class="k">for</span> dry running SQL, <span class="k">if</span> <span class="nb">set</span> to <span class="sb">`</span>True<span class="sb">`</span>. The Cloud Function can only access tables <span class="k">in</span> shared-prod. If <span class="nb">set</span> to <span class="sb">`</span>False<span class="sb">`</span>, use active GCP credentials <span class="k">for</span> the dry run.
---validate_schemas: Require dry run schema to match destination table and file <span class="k">if</span> present.
---respect_dryrun_skip: Respect or ignore dry run SKIP configuration. Default is --ignore-dryrun-skip.
---no_dryrun: Skip running dryrun. Default is False.
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--use_cloud_function:<span class="w"> </span>Use<span class="w"> </span>the<span class="w"> </span>Cloud<span class="w"> </span>Function<span class="w"> </span><span class="k">for</span><span class="w"> </span>dry<span class="w"> </span>running<span class="w"> </span>SQL,<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>True<span class="sb">`</span>.<span class="w"> </span>The<span class="w"> </span>Cloud<span class="w"> </span>Function<span class="w"> </span>can<span class="w"> </span>only<span class="w"> </span>access<span class="w"> </span>tables<span class="w"> </span><span class="k">in</span><span class="w"> </span>shared-prod.<span class="w"> </span>If<span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>False<span class="sb">`</span>,<span class="w"> </span>use<span class="w"> </span>active<span class="w"> </span>GCP<span class="w"> </span>credentials<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>dry<span class="w"> </span>run.
+--validate_schemas:<span class="w"> </span>Require<span class="w"> </span>dry<span class="w"> </span>run<span class="w"> </span>schema<span class="w"> </span>to<span class="w"> </span>match<span class="w"> </span>destination<span class="w"> </span>table<span class="w"> </span>and<span class="w"> </span>file<span class="w"> </span><span class="k">if</span><span class="w"> </span>present.
+--respect_dryrun_skip:<span class="w"> </span>Respect<span class="w"> </span>or<span class="w"> </span>ignore<span class="w"> </span>dry<span class="w"> </span>run<span class="w"> </span>SKIP<span class="w"> </span>configuration.<span class="w"> </span>Default<span class="w"> </span>is<span class="w"> </span>--ignore-dryrun-skip.
+--no_dryrun:<span class="w"> </span>Skip<span class="w"> </span>running<span class="w"> </span>dryrun.<span class="w"> </span>Default<span class="w"> </span>is<span class="w"> </span>False.
 </code></pre></div>
 <p><strong>Examples</strong></p>
-<div class="highlight"><pre><span></span><code>./bqetl query validate telemetry_derived.clients_daily_v6
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>validate<span class="w"> </span>telemetry_derived.clients_daily_v6
 
 
-    <span class="c1"># Validate query not in shared-prod</span>
-    ./bqetl query validate <span class="se">\</span>
-      --use_cloud_function<span class="o">=</span><span class="nb">false</span> <span class="se">\</span>
-      --project_id<span class="o">=</span>moz-fx-data-marketing-prod <span class="se">\</span>
-      ga_derived.blogs_goals_v1
+<span class="w">    </span><span class="c1"># Validate query not in shared-prod</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>validate<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--use_cloud_function<span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--project_id<span class="o">=</span>moz-fx-data-marketing-prod<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>ga_derived.blogs_goals_v1
 </code></pre></div>
 <h4 id="initialize"><code>initialize</code></h4>
 <p>Create and initialize the destination table for the query.
     Only for queries that have an <code>init.sql</code> file.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl query initialize <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>initialize<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---sql_dir: Path to directory which contains queries.
---project_id: GCP project ID
---dry_run: Dry run the initialization
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--dry_run:<span class="w"> </span>Dry<span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>initialization
 </code></pre></div>
 <p><strong>Examples</strong></p>
-<div class="highlight"><pre><span></span><code>./bqetl query initialize telemetry_derived.ssl_ratios_v1
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>initialize<span class="w"> </span>telemetry_derived.ssl_ratios_v1
 </code></pre></div>
 <h4 id="schema"><code>schema</code></h4>
 <p>Commands for managing query schemas.</p>
@@ -3071,160 +3071,160 @@ Options:
 <p>Update the query schema based on the destination table schema and the query schema.
     If no schema.yaml file exists for a query, one will be created.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl query schema update <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>update<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---sql_dir: Path to directory which contains queries.
---project_id: GCP project ID
---update_downstream: Update downstream dependencies. GCP authentication required.
---tmp_dataset: GCP datasets <span class="k">for</span> creating updated tables temporarily.
---use_cloud_function: Use the Cloud Function <span class="k">for</span> dry running SQL, <span class="k">if</span> <span class="nb">set</span> to <span class="sb">`</span>True<span class="sb">`</span>. The Cloud Function can only access tables <span class="k">in</span> shared-prod. If <span class="nb">set</span> to <span class="sb">`</span>False<span class="sb">`</span>, use active GCP credentials <span class="k">for</span> the dry run.
---respect_dryrun_skip: Respect or ignore dry run SKIP configuration. Default is --respect-dryrun-skip.
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--update_downstream:<span class="w"> </span>Update<span class="w"> </span>downstream<span class="w"> </span>dependencies.<span class="w"> </span>GCP<span class="w"> </span>authentication<span class="w"> </span>required.
+--tmp_dataset:<span class="w"> </span>GCP<span class="w"> </span>datasets<span class="w"> </span><span class="k">for</span><span class="w"> </span>creating<span class="w"> </span>updated<span class="w"> </span>tables<span class="w"> </span>temporarily.
+--use_cloud_function:<span class="w"> </span>Use<span class="w"> </span>the<span class="w"> </span>Cloud<span class="w"> </span>Function<span class="w"> </span><span class="k">for</span><span class="w"> </span>dry<span class="w"> </span>running<span class="w"> </span>SQL,<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>True<span class="sb">`</span>.<span class="w"> </span>The<span class="w"> </span>Cloud<span class="w"> </span>Function<span class="w"> </span>can<span class="w"> </span>only<span class="w"> </span>access<span class="w"> </span>tables<span class="w"> </span><span class="k">in</span><span class="w"> </span>shared-prod.<span class="w"> </span>If<span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>False<span class="sb">`</span>,<span class="w"> </span>use<span class="w"> </span>active<span class="w"> </span>GCP<span class="w"> </span>credentials<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>dry<span class="w"> </span>run.
+--respect_dryrun_skip:<span class="w"> </span>Respect<span class="w"> </span>or<span class="w"> </span>ignore<span class="w"> </span>dry<span class="w"> </span>run<span class="w"> </span>SKIP<span class="w"> </span>configuration.<span class="w"> </span>Default<span class="w"> </span>is<span class="w"> </span>--respect-dryrun-skip.
 </code></pre></div>
 <p><strong>Examples</strong></p>
-<div class="highlight"><pre><span></span><code>./bqetl query schema update telemetry_derived.clients_daily_v6
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>update<span class="w"> </span>telemetry_derived.clients_daily_v6
 
-    <span class="c1"># Update schema including downstream dependencies (requires GCP)</span>
-    ./bqetl query schema update telemetry_derived.clients_daily_v6 --update-downstream
+<span class="w">    </span><span class="c1"># Update schema including downstream dependencies (requires GCP)</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>update<span class="w"> </span>telemetry_derived.clients_daily_v6<span class="w"> </span>--update-downstream
 </code></pre></div>
 <h5 id="deploy"><code>deploy</code></h5>
 <p>Deploy the query schema.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl query schema deploy <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>deploy<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---sql_dir: Path to directory which contains queries.
---project_id: GCP project ID
---force: Deploy the schema file without validating that it matches the query
---use_cloud_function: Use the Cloud Function <span class="k">for</span> dry running SQL, <span class="k">if</span> <span class="nb">set</span> to <span class="sb">`</span>True<span class="sb">`</span>. The Cloud Function can only access tables <span class="k">in</span> shared-prod. If <span class="nb">set</span> to <span class="sb">`</span>False<span class="sb">`</span>, use active GCP credentials <span class="k">for</span> the dry run.
---respect_dryrun_skip: Respect or ignore dry run SKIP configuration. Default is --respect-dryrun-skip.
---skip_existing: Skip updating existing tables. This option ensures that only new tables get deployed.
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--force:<span class="w"> </span>Deploy<span class="w"> </span>the<span class="w"> </span>schema<span class="w"> </span>file<span class="w"> </span>without<span class="w"> </span>validating<span class="w"> </span>that<span class="w"> </span>it<span class="w"> </span>matches<span class="w"> </span>the<span class="w"> </span>query
+--use_cloud_function:<span class="w"> </span>Use<span class="w"> </span>the<span class="w"> </span>Cloud<span class="w"> </span>Function<span class="w"> </span><span class="k">for</span><span class="w"> </span>dry<span class="w"> </span>running<span class="w"> </span>SQL,<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>True<span class="sb">`</span>.<span class="w"> </span>The<span class="w"> </span>Cloud<span class="w"> </span>Function<span class="w"> </span>can<span class="w"> </span>only<span class="w"> </span>access<span class="w"> </span>tables<span class="w"> </span><span class="k">in</span><span class="w"> </span>shared-prod.<span class="w"> </span>If<span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>False<span class="sb">`</span>,<span class="w"> </span>use<span class="w"> </span>active<span class="w"> </span>GCP<span class="w"> </span>credentials<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>dry<span class="w"> </span>run.
+--respect_dryrun_skip:<span class="w"> </span>Respect<span class="w"> </span>or<span class="w"> </span>ignore<span class="w"> </span>dry<span class="w"> </span>run<span class="w"> </span>SKIP<span class="w"> </span>configuration.<span class="w"> </span>Default<span class="w"> </span>is<span class="w"> </span>--respect-dryrun-skip.
+--skip_existing:<span class="w"> </span>Skip<span class="w"> </span>updating<span class="w"> </span>existing<span class="w"> </span>tables.<span class="w"> </span>This<span class="w"> </span>option<span class="w"> </span>ensures<span class="w"> </span>that<span class="w"> </span>only<span class="w"> </span>new<span class="w"> </span>tables<span class="w"> </span>get<span class="w"> </span>deployed.
 </code></pre></div>
 <p><strong>Examples</strong></p>
-<div class="highlight"><pre><span></span><code>./bqetl query schema deploy telemetry_derived.clients_daily_v6
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>deploy<span class="w"> </span>telemetry_derived.clients_daily_v6
 </code></pre></div>
 <h5 id="validate_1"><code>validate</code></h5>
 <p>Validate the query schema</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl query schema validate <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>validate<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---sql_dir: Path to directory which contains queries.
---project_id: GCP project ID
---use_cloud_function: Use the Cloud Function <span class="k">for</span> dry running SQL, <span class="k">if</span> <span class="nb">set</span> to <span class="sb">`</span>True<span class="sb">`</span>. The Cloud Function can only access tables <span class="k">in</span> shared-prod. If <span class="nb">set</span> to <span class="sb">`</span>False<span class="sb">`</span>, use active GCP credentials <span class="k">for</span> the dry run.
---respect_dryrun_skip: Respect or ignore dry run SKIP configuration. Default is --respect-dryrun-skip.
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--use_cloud_function:<span class="w"> </span>Use<span class="w"> </span>the<span class="w"> </span>Cloud<span class="w"> </span>Function<span class="w"> </span><span class="k">for</span><span class="w"> </span>dry<span class="w"> </span>running<span class="w"> </span>SQL,<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>True<span class="sb">`</span>.<span class="w"> </span>The<span class="w"> </span>Cloud<span class="w"> </span>Function<span class="w"> </span>can<span class="w"> </span>only<span class="w"> </span>access<span class="w"> </span>tables<span class="w"> </span><span class="k">in</span><span class="w"> </span>shared-prod.<span class="w"> </span>If<span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>False<span class="sb">`</span>,<span class="w"> </span>use<span class="w"> </span>active<span class="w"> </span>GCP<span class="w"> </span>credentials<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>dry<span class="w"> </span>run.
+--respect_dryrun_skip:<span class="w"> </span>Respect<span class="w"> </span>or<span class="w"> </span>ignore<span class="w"> </span>dry<span class="w"> </span>run<span class="w"> </span>SKIP<span class="w"> </span>configuration.<span class="w"> </span>Default<span class="w"> </span>is<span class="w"> </span>--respect-dryrun-skip.
 </code></pre></div>
 <p><strong>Examples</strong></p>
-<div class="highlight"><pre><span></span><code>./bqetl query schema validate telemetry_derived.clients_daily_v6
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>validate<span class="w"> </span>telemetry_derived.clients_daily_v6
 </code></pre></div>
 <h3 id="dag"><code>dag</code></h3>
 <p>Commands for managing DAGs.</p>
 <h4 id="info_1"><code>info</code></h4>
 <p>Get information about available DAGs.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl dag info <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>info<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---dags_config: Path to dags.yaml config file
---with_tasks: Include scheduled tasks
+--dags_config:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>dags.yaml<span class="w"> </span>config<span class="w"> </span>file
+--with_tasks:<span class="w"> </span>Include<span class="w"> </span>scheduled<span class="w"> </span>tasks
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Get information about all available DAGs</span>
-    ./bqetl dag info
+<span class="w">    </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>info
 
-    <span class="c1"># Get information about a specific DAG</span>
-    ./bqetl dag info bqetl_ssl_ratios
+<span class="w">    </span><span class="c1"># Get information about a specific DAG</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>info<span class="w"> </span>bqetl_ssl_ratios
 
-    <span class="c1"># Get information about a specific DAG including scheduled tasks</span>
-    ./bqetl dag info --with_tasks bqetl_ssl_ratios
+<span class="w">    </span><span class="c1"># Get information about a specific DAG including scheduled tasks</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>info<span class="w"> </span>--with_tasks<span class="w"> </span>bqetl_ssl_ratios
 </code></pre></div>
 <h4 id="create_1"><code>create</code></h4>
 <p>Create a new DAG with name bqetl_<dag_name>, for example: bqetl_search
     When creating new DAGs, the DAG name must have a <code>bqetl_</code> prefix.
     Created DAGs are added to the <code>dags.yaml</code> file.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl dag create <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>create<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---dags_config: Path to dags.yaml config file
---schedule_interval: Schedule interval of the new DAG. Schedule intervals can be either <span class="k">in</span> CRON format or one of: once, hourly, daily, weekly, monthly, yearly or a timedelta <span class="o">[]</span>d<span class="o">[]</span>h<span class="o">[]</span>m
---owner: Email address of the DAG owner
---description: Description <span class="k">for</span> DAG
---tag: Tag to use <span class="k">for</span> the DAG
---start_date: First date <span class="k">for</span> which scheduled queries should be executed
---email: Email addresses that Airflow will send alerts to
---retries: Number of retries Airflow will attempt <span class="k">in</span> <span class="k">case</span> of failures
---retry_delay: Time period Airflow will <span class="nb">wait</span> after failures before running failed tasks again
+--dags_config:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>dags.yaml<span class="w"> </span>config<span class="w"> </span>file
+--schedule_interval:<span class="w"> </span>Schedule<span class="w"> </span>interval<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>new<span class="w"> </span>DAG.<span class="w"> </span>Schedule<span class="w"> </span>intervals<span class="w"> </span>can<span class="w"> </span>be<span class="w"> </span>either<span class="w"> </span><span class="k">in</span><span class="w"> </span>CRON<span class="w"> </span>format<span class="w"> </span>or<span class="w"> </span>one<span class="w"> </span>of:<span class="w"> </span>once,<span class="w"> </span>hourly,<span class="w"> </span>daily,<span class="w"> </span>weekly,<span class="w"> </span>monthly,<span class="w"> </span>yearly<span class="w"> </span>or<span class="w"> </span>a<span class="w"> </span>timedelta<span class="w"> </span><span class="o">[]</span>d<span class="o">[]</span>h<span class="o">[]</span>m
+--owner:<span class="w"> </span>Email<span class="w"> </span>address<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>DAG<span class="w"> </span>owner
+--description:<span class="w"> </span>Description<span class="w"> </span><span class="k">for</span><span class="w"> </span>DAG
+--tag:<span class="w"> </span>Tag<span class="w"> </span>to<span class="w"> </span>use<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>DAG
+--start_date:<span class="w"> </span>First<span class="w"> </span>date<span class="w"> </span><span class="k">for</span><span class="w"> </span>which<span class="w"> </span>scheduled<span class="w"> </span>queries<span class="w"> </span>should<span class="w"> </span>be<span class="w"> </span>executed
+--email:<span class="w"> </span>Email<span class="w"> </span>addresses<span class="w"> </span>that<span class="w"> </span>Airflow<span class="w"> </span>will<span class="w"> </span>send<span class="w"> </span>alerts<span class="w"> </span>to
+--retries:<span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>retries<span class="w"> </span>Airflow<span class="w"> </span>will<span class="w"> </span>attempt<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">case</span><span class="w"> </span>of<span class="w"> </span>failures
+--retry_delay:<span class="w"> </span>Time<span class="w"> </span>period<span class="w"> </span>Airflow<span class="w"> </span>will<span class="w"> </span><span class="nb">wait</span><span class="w"> </span>after<span class="w"> </span>failures<span class="w"> </span>before<span class="w"> </span>running<span class="w"> </span>failed<span class="w"> </span>tasks<span class="w"> </span>again
 </code></pre></div>
 <p><strong>Examples</strong></p>
-<div class="highlight"><pre><span></span><code>./bqetl dag create bqetl_core <span class="se">\</span>
-    --schedule-interval<span class="o">=</span><span class="s2">&quot;0 2 * * *&quot;</span> <span class="se">\</span>
-    --owner<span class="o">=</span>example@mozilla.com <span class="se">\</span>
-    --description<span class="o">=</span><span class="s2">&quot;Tables derived from `core` pings sent by mobile applications.&quot;</span> <span class="se">\</span>
-    --tag<span class="o">=</span>impact/tier_1 <span class="se">\</span>
-    --start-date<span class="o">=</span><span class="m">2019</span>-07-25
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>dag<span class="w"> </span>create<span class="w"> </span>bqetl_core<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--schedule-interval<span class="o">=</span><span class="s2">&quot;0 2 * * *&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--owner<span class="o">=</span>example@mozilla.com<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--description<span class="o">=</span><span class="s2">&quot;Tables derived from `core` pings sent by mobile applications.&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--tag<span class="o">=</span>impact/tier_1<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--start-date<span class="o">=</span><span class="m">2019</span>-07-25
 
 
-    <span class="c1"># Create DAG and overwrite default settings</span>
-    ./bqetl dag create bqetl_ssl_ratios --schedule-interval<span class="o">=</span><span class="s2">&quot;0 2 * * *&quot;</span> <span class="se">\</span>
-    --owner<span class="o">=</span>example@mozilla.com <span class="se">\</span>
-    --description<span class="o">=</span><span class="s2">&quot;The DAG schedules SSL ratios queries.&quot;</span> <span class="se">\</span>
-    --tag<span class="o">=</span>impact/tier_1 <span class="se">\</span>
-    --start-date<span class="o">=</span><span class="m">2019</span>-07-20 <span class="se">\</span>
-    --email<span class="o">=</span>example2@mozilla.com <span class="se">\</span>
-    --email<span class="o">=</span>example3@mozilla.com <span class="se">\</span>
-    --retries<span class="o">=</span><span class="m">2</span> <span class="se">\</span>
-    --retry_delay<span class="o">=</span>30m
+<span class="w">    </span><span class="c1"># Create DAG and overwrite default settings</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>create<span class="w"> </span>bqetl_ssl_ratios<span class="w"> </span>--schedule-interval<span class="o">=</span><span class="s2">&quot;0 2 * * *&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--owner<span class="o">=</span>example@mozilla.com<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--description<span class="o">=</span><span class="s2">&quot;The DAG schedules SSL ratios queries.&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--tag<span class="o">=</span>impact/tier_1<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--start-date<span class="o">=</span><span class="m">2019</span>-07-20<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--email<span class="o">=</span>example2@mozilla.com<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--email<span class="o">=</span>example3@mozilla.com<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--retries<span class="o">=</span><span class="m">2</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--retry_delay<span class="o">=</span>30m
 </code></pre></div>
 <h4 id="generate"><code>generate</code></h4>
 <p>Generate Airflow DAGs from DAG definitions. Requires Java.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl dag generate <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>generate<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---dags_config: Path to dags.yaml config file
---output_dir: Path directory with generated DAGs
+--dags_config:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>dags.yaml<span class="w"> </span>config<span class="w"> </span>file
+--output_dir:<span class="w"> </span>Path<span class="w"> </span>directory<span class="w"> </span>with<span class="w"> </span>generated<span class="w"> </span>DAGs
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Generate all DAGs</span>
-    ./bqetl dag generate
+<span class="w">    </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>generate
 
-    <span class="c1"># Generate a specific DAG</span>
-    ./bqetl dag generate bqetl_ssl_ratios
+<span class="w">    </span><span class="c1"># Generate a specific DAG</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>generate<span class="w"> </span>bqetl_ssl_ratios
 </code></pre></div>
 <h4 id="remove"><code>remove</code></h4>
 <p>Remove a DAG.
     This will also remove the scheduling information from the queries that were scheduled
     as part of the DAG.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl dag remove <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>remove<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---dags_config: Path to dags.yaml config file
---output_dir: Path directory with generated DAGs
+--dags_config:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>dags.yaml<span class="w"> </span>config<span class="w"> </span>file
+--output_dir:<span class="w"> </span>Path<span class="w"> </span>directory<span class="w"> </span>with<span class="w"> </span>generated<span class="w"> </span>DAGs
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Remove a specific DAG</span>
-    ./bqetl dag remove bqetl_vrbrowser
+<span class="w">    </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>remove<span class="w"> </span>bqetl_vrbrowser
 </code></pre></div>
 <h3 id="dependency"><code>dependency</code></h3>
 <p>Build and use query dependency graphs.</p>
 <h4 id="show"><code>show</code></h4>
 <p>Show table references in sql files. Requires Java.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl dependency show <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>paths<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>dependency<span class="w"> </span>show<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>paths<span class="o">]</span>
 </code></pre></div>
 <h4 id="record"><code>record</code></h4>
 <p>Record table references in metadata. Fails if metadata already contains references section. Requires Java.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl dependency record <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>paths<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>dependency<span class="w"> </span>record<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>paths<span class="o">]</span>
 </code></pre></div>
 <h3 id="dryrun"><code>dryrun</code></h3>
 <p>Dry run SQL.
@@ -3233,36 +3233,36 @@ Options:
         <code>--use-cloud-function=false</code> and ensure that the command line has access to a
         GCP service account.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl dryrun <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>paths<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>dryrun<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>paths<span class="o">]</span>
 
 Options:
 
---use_cloud_function: Use the Cloud Function <span class="k">for</span> dry running SQL, <span class="k">if</span> <span class="nb">set</span> to <span class="sb">`</span>True<span class="sb">`</span>. The Cloud Function can only access tables <span class="k">in</span> shared-prod. If <span class="nb">set</span> to <span class="sb">`</span>False<span class="sb">`</span>, use active GCP credentials <span class="k">for</span> the dry run.
---validate_schemas: Require dry run schema to match destination table and file <span class="k">if</span> present.
---respect_skip: Respect or ignore query SKIP configuration. Default is --respect-skip.
---project: GCP project to perform dry run <span class="k">in</span> when --use_cloud_function<span class="o">=</span>False
+--use_cloud_function:<span class="w"> </span>Use<span class="w"> </span>the<span class="w"> </span>Cloud<span class="w"> </span>Function<span class="w"> </span><span class="k">for</span><span class="w"> </span>dry<span class="w"> </span>running<span class="w"> </span>SQL,<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>True<span class="sb">`</span>.<span class="w"> </span>The<span class="w"> </span>Cloud<span class="w"> </span>Function<span class="w"> </span>can<span class="w"> </span>only<span class="w"> </span>access<span class="w"> </span>tables<span class="w"> </span><span class="k">in</span><span class="w"> </span>shared-prod.<span class="w"> </span>If<span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>False<span class="sb">`</span>,<span class="w"> </span>use<span class="w"> </span>active<span class="w"> </span>GCP<span class="w"> </span>credentials<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>dry<span class="w"> </span>run.
+--validate_schemas:<span class="w"> </span>Require<span class="w"> </span>dry<span class="w"> </span>run<span class="w"> </span>schema<span class="w"> </span>to<span class="w"> </span>match<span class="w"> </span>destination<span class="w"> </span>table<span class="w"> </span>and<span class="w"> </span>file<span class="w"> </span><span class="k">if</span><span class="w"> </span>present.
+--respect_skip:<span class="w"> </span>Respect<span class="w"> </span>or<span class="w"> </span>ignore<span class="w"> </span>query<span class="w"> </span>SKIP<span class="w"> </span>configuration.<span class="w"> </span>Default<span class="w"> </span>is<span class="w"> </span>--respect-skip.
+--project:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>to<span class="w"> </span>perform<span class="w"> </span>dry<span class="w"> </span>run<span class="w"> </span><span class="k">in</span><span class="w"> </span>when<span class="w"> </span>--use_cloud_function<span class="o">=</span>False
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code>Examples:
-    ./bqetl dryrun sql/moz-fx-data-shared-prod/telemetry_derived/
+<span class="w">    </span>./bqetl<span class="w"> </span>dryrun<span class="w"> </span>sql/moz-fx-data-shared-prod/telemetry_derived/
 
-    <span class="c1"># Dry run SQL with tables that are not in shared prod</span>
-    ./bqetl dryrun --use-cloud-function<span class="o">=</span><span class="nb">false</span> sql/moz-fx-data-marketing-prod/
+<span class="w">    </span><span class="c1"># Dry run SQL with tables that are not in shared prod</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>dryrun<span class="w"> </span>--use-cloud-function<span class="o">=</span><span class="nb">false</span><span class="w"> </span>sql/moz-fx-data-marketing-prod/
 </code></pre></div>
 <h3 id="format"><code>format</code></h3>
 <p>Format SQL files.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl format <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>paths<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>format<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>paths<span class="o">]</span>
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Format a specific file</span>
-    ./bqetl format sql/moz-fx-data-shared-prod/telemetry/core/view.sql
+<span class="w">    </span>./bqetl<span class="w"> </span>format<span class="w"> </span>sql/moz-fx-data-shared-prod/telemetry/core/view.sql
 
-    <span class="c1"># Format all SQL files in `sql/`</span>
-    ./bqetl format sql
+<span class="w">    </span><span class="c1"># Format all SQL files in `sql/`</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>format<span class="w"> </span>sql
 
-    <span class="c1"># Format standard in (will write to standard out)</span>
-    <span class="nb">echo</span> <span class="s1">&#39;SELECT 1,2,3&#39;</span> <span class="p">|</span> ./bqetl format
+<span class="w">    </span><span class="c1"># Format standard in (will write to standard out)</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;SELECT 1,2,3&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>./bqetl<span class="w"> </span>format
 </code></pre></div>
 <h3 id="routine"><code>routine</code></h3>
 <p>Commands for managing routines for internal use.</p>
@@ -3270,104 +3270,104 @@ Options:
 <p>Create a new routine. Specify whether the routine is a UDF or
     stored procedure by adding a --udf or --stored_prodecure flag.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl routine create <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>create<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---sql_dir: Path to directory which contains queries.
---project_id: GCP project ID
---udf: Create a new UDF
---stored_procedure: Create a new stored procedure
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--udf:<span class="w"> </span>Create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>UDF
+--stored_procedure:<span class="w"> </span>Create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>stored<span class="w"> </span>procedure
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Create a UDF</span>
-    ./bqetl routine create --udf udf.array_slice
+<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>create<span class="w"> </span>--udf<span class="w"> </span>udf.array_slice
 
 
-    <span class="c1"># Create a stored procedure</span>
-    ./bqetl routine create --stored_procedure udf.events_daily
+<span class="w">    </span><span class="c1"># Create a stored procedure</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>create<span class="w"> </span>--stored_procedure<span class="w"> </span>udf.events_daily
 
 
-    <span class="c1"># Create a UDF in a project other than shared-prod</span>
-    ./bqetl routine create --udf udf.active_last_week --project<span class="o">=</span>moz-fx-data-marketing-prod
+<span class="w">    </span><span class="c1"># Create a UDF in a project other than shared-prod</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>create<span class="w"> </span>--udf<span class="w"> </span>udf.active_last_week<span class="w"> </span>--project<span class="o">=</span>moz-fx-data-marketing-prod
 </code></pre></div>
 <h4 id="info_2"><code>info</code></h4>
 <p>Get routine information.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl routine info <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>info<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---sql_dir: Path to directory which contains queries.
---project_id: GCP project ID
---usages: Show routine usages
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--usages:<span class="w"> </span>Show<span class="w"> </span>routine<span class="w"> </span>usages
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Get information about all internal routines in a specific dataset</span>
-    ./bqetl routine info udf.*
+<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>info<span class="w"> </span>udf.*
 
 
-    <span class="c1"># Get usage information of specific routine</span>
-    ./bqetl routine info --usages udf.get_key
+<span class="w">    </span><span class="c1"># Get usage information of specific routine</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>info<span class="w"> </span>--usages<span class="w"> </span>udf.get_key
 </code></pre></div>
 <h4 id="validate_2"><code>validate</code></h4>
 <p>Validate formatting of routines and run tests.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl routine validate <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>validate<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---sql_dir: Path to directory which contains queries.
---project_id: GCP project ID
---docs_only: Only validate docs.
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--docs_only:<span class="w"> </span>Only<span class="w"> </span>validate<span class="w"> </span>docs.
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Validate all routines</span>
-    ./bqetl routine validate
+<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>validate
 
 
-    <span class="c1"># Validate selected routines</span>
-    ./bqetl routine validate udf.*
+<span class="w">    </span><span class="c1"># Validate selected routines</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>validate<span class="w"> </span>udf.*
 </code></pre></div>
 <h4 id="publish"><code>publish</code></h4>
 <p>Publish routines to BigQuery. Requires service account access.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl routine publish <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>publish<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---project_id: GCP project ID
---dependency_dir: The directory JavaScript dependency files <span class="k">for</span> UDFs are stored.
---gcs_bucket: The GCS bucket where dependency files are uploaded to.
---gcs_path: The GCS path <span class="k">in</span> the bucket where dependency files are uploaded to.
---dry_run: Dry run publishing udfs.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--dependency_dir:<span class="w"> </span>The<span class="w"> </span>directory<span class="w"> </span>JavaScript<span class="w"> </span>dependency<span class="w"> </span>files<span class="w"> </span><span class="k">for</span><span class="w"> </span>UDFs<span class="w"> </span>are<span class="w"> </span>stored.
+--gcs_bucket:<span class="w"> </span>The<span class="w"> </span>GCS<span class="w"> </span>bucket<span class="w"> </span>where<span class="w"> </span>dependency<span class="w"> </span>files<span class="w"> </span>are<span class="w"> </span>uploaded<span class="w"> </span>to.
+--gcs_path:<span class="w"> </span>The<span class="w"> </span>GCS<span class="w"> </span>path<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>bucket<span class="w"> </span>where<span class="w"> </span>dependency<span class="w"> </span>files<span class="w"> </span>are<span class="w"> </span>uploaded<span class="w"> </span>to.
+--dry_run:<span class="w"> </span>Dry<span class="w"> </span>run<span class="w"> </span>publishing<span class="w"> </span>udfs.
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Publish all routines</span>
-    ./bqetl routine publish
+<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>publish
 
 
-    <span class="c1"># Publish selected routines</span>
-    ./bqetl routine validate udf.*
+<span class="w">    </span><span class="c1"># Publish selected routines</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>validate<span class="w"> </span>udf.*
 </code></pre></div>
 <h4 id="rename"><code>rename</code></h4>
 <p>Rename routine or routine dataset. Replaces all usages in queries with
     the new name.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl routine rename <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span> <span class="o">[</span>new_name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>rename<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span><span class="w"> </span><span class="o">[</span>new_name<span class="o">]</span>
 
 Options:
 
---sql_dir: Path to directory which contains queries.
---project_id: GCP project ID
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Rename routine</span>
-    ./bqetl routine rename udf.array_slice udf.list_slice
+<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>rename<span class="w"> </span>udf.array_slice<span class="w"> </span>udf.list_slice
 
 
-    <span class="c1"># Rename routine matching a specific pattern</span>
-    ./bqetl routine rename udf.array_* udf.list_*
+<span class="w">    </span><span class="c1"># Rename routine matching a specific pattern</span>
+<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>rename<span class="w"> </span>udf.array_*<span class="w"> </span>udf.list_*
 </code></pre></div>
 <h3 id="mozfun"><code>mozfun</code></h3>
 <p>Commands for managing public mozfun routines.</p>
@@ -3376,97 +3376,97 @@ Options:
 stored procedure by adding a --udf or --stored_prodecure flag. UDFs
 are added to the <code>mozfun</code> project.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl mozfun create <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>mozfun<span class="w"> </span>create<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---sql_dir: Path to directory which contains queries.
---project_id: GCP project ID
---udf: Create a new UDF
---stored_procedure: Create a new stored procedure
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--udf:<span class="w"> </span>Create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>UDF
+--stored_procedure:<span class="w"> </span>Create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>stored<span class="w"> </span>procedure
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Create a UDF</span>
-./bqetl mozfun create --udf bytes.zero_right
+./bqetl<span class="w"> </span>mozfun<span class="w"> </span>create<span class="w"> </span>--udf<span class="w"> </span>bytes.zero_right
 
 
 <span class="c1"># Create a stored procedure</span>
-./bqetl mozfun create --stored_procedure event_analysis.events_daily
+./bqetl<span class="w"> </span>mozfun<span class="w"> </span>create<span class="w"> </span>--stored_procedure<span class="w"> </span>event_analysis.events_daily
 </code></pre></div>
 <h4 id="info_3"><code>info</code></h4>
 <p>Get mozfun routine information.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl mozfun info <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>mozfun<span class="w"> </span>info<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---sql_dir: Path to directory which contains queries.
---project_id: GCP project ID
---usages: Show routine usages
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--usages:<span class="w"> </span>Show<span class="w"> </span>routine<span class="w"> </span>usages
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Get information about all internal routines in a specific dataset</span>
-./bqetl mozfun info hist.*
+./bqetl<span class="w"> </span>mozfun<span class="w"> </span>info<span class="w"> </span>hist.*
 
 
 <span class="c1"># Get usage information of specific routine</span>
-./bqetl mozfun info --usages hist.mean
+./bqetl<span class="w"> </span>mozfun<span class="w"> </span>info<span class="w"> </span>--usages<span class="w"> </span>hist.mean
 </code></pre></div>
 <h4 id="validate_3"><code>validate</code></h4>
 <p>Validate formatting of mozfun routines and run tests.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl mozfun validate <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>mozfun<span class="w"> </span>validate<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---sql_dir: Path to directory which contains queries.
---project_id: GCP project ID
---docs_only: Only validate docs.
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--docs_only:<span class="w"> </span>Only<span class="w"> </span>validate<span class="w"> </span>docs.
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Validate all routines</span>
-./bqetl mozfun validate
+./bqetl<span class="w"> </span>mozfun<span class="w"> </span>validate
 
 
 <span class="c1"># Validate selected routines</span>
-./bqetl mozfun validate hist.*
+./bqetl<span class="w"> </span>mozfun<span class="w"> </span>validate<span class="w"> </span>hist.*
 </code></pre></div>
 <h4 id="publish_1"><code>publish</code></h4>
 <p>Publish mozfun routines. This command is used
 by Airflow only.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl mozfun publish <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>mozfun<span class="w"> </span>publish<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
 Options:
 
---project_id: GCP project ID
---dependency_dir: The directory JavaScript dependency files <span class="k">for</span> UDFs are stored.
---gcs_bucket: The GCS bucket where dependency files are uploaded to.
---gcs_path: The GCS path <span class="k">in</span> the bucket where dependency files are uploaded to.
---dry_run: Dry run publishing udfs.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--dependency_dir:<span class="w"> </span>The<span class="w"> </span>directory<span class="w"> </span>JavaScript<span class="w"> </span>dependency<span class="w"> </span>files<span class="w"> </span><span class="k">for</span><span class="w"> </span>UDFs<span class="w"> </span>are<span class="w"> </span>stored.
+--gcs_bucket:<span class="w"> </span>The<span class="w"> </span>GCS<span class="w"> </span>bucket<span class="w"> </span>where<span class="w"> </span>dependency<span class="w"> </span>files<span class="w"> </span>are<span class="w"> </span>uploaded<span class="w"> </span>to.
+--gcs_path:<span class="w"> </span>The<span class="w"> </span>GCS<span class="w"> </span>path<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>bucket<span class="w"> </span>where<span class="w"> </span>dependency<span class="w"> </span>files<span class="w"> </span>are<span class="w"> </span>uploaded<span class="w"> </span>to.
+--dry_run:<span class="w"> </span>Dry<span class="w"> </span>run<span class="w"> </span>publishing<span class="w"> </span>udfs.
 </code></pre></div>
 <h4 id="rename_1"><code>rename</code></h4>
 <p>Rename mozfun routine or mozfun routine dataset.
 Replaces all usages in queries with the new name.</p>
 <p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$ ./bqetl mozfun rename <span class="o">[</span>OPTIONS<span class="o">]</span> <span class="o">[</span>name<span class="o">]</span> <span class="o">[</span>new_name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>mozfun<span class="w"> </span>rename<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span><span class="w"> </span><span class="o">[</span>new_name<span class="o">]</span>
 
 Options:
 
---sql_dir: Path to directory which contains queries.
---project_id: GCP project ID
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Rename routine</span>
-./bqetl mozfun rename hist.extract hist.ext
+./bqetl<span class="w"> </span>mozfun<span class="w"> </span>rename<span class="w"> </span>hist.extract<span class="w"> </span>hist.ext
 
 
 <span class="c1"># Rename routine matching a specific pattern</span>
-./bqetl mozfun rename *.array_* *.list_*
+./bqetl<span class="w"> </span>mozfun<span class="w"> </span>rename<span class="w"> </span>*.array_*<span class="w"> </span>*.list_*
 
 
 <span class="c1"># Rename routine dataset</span>
-./bqetl mozfun rename hist.* histogram.*
+./bqetl<span class="w"> </span>mozfun<span class="w"> </span>rename<span class="w"> </span>hist.*<span class="w"> </span>histogram.*
 </code></pre></div>
 
 

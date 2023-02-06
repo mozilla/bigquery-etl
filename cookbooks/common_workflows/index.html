@@ -2540,29 +2540,29 @@ query, use <code>./bqetl format</code> to apply formatting rules.</p>
 <p>Directories and files passed as arguments to <code>./bqetl format</code> will be
 formatted in place, with directories recursively searched for files with a
 <code>.sql</code> extension, e.g.:</p>
-<div class="highlight"><pre><span></span><code>$ <span class="nb">echo</span> <span class="s1">&#39;SELECT 1,2,3&#39;</span> &gt; test.sql
-$ ./bqetl format test.sql
-modified test.sql
-<span class="m">1</span> file<span class="o">(</span>s<span class="o">)</span> modified
-$ cat test.sql
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;SELECT 1,2,3&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>test.sql
+$<span class="w"> </span>./bqetl<span class="w"> </span>format<span class="w"> </span>test.sql
+modified<span class="w"> </span>test.sql
+<span class="m">1</span><span class="w"> </span>file<span class="o">(</span>s<span class="o">)</span><span class="w"> </span>modified
+$<span class="w"> </span>cat<span class="w"> </span>test.sql
 SELECT
-  <span class="m">1</span>,
-  <span class="m">2</span>,
-  <span class="m">3</span>
+<span class="w">  </span><span class="m">1</span>,
+<span class="w">  </span><span class="m">2</span>,
+<span class="w">  </span><span class="m">3</span>
 </code></pre></div>
 <p>If no arguments are specified the script will read from stdin and write to
 stdout, e.g.:</p>
-<div class="highlight"><pre><span></span><code>$ <span class="nb">echo</span> <span class="s1">&#39;SELECT 1,2,3&#39;</span> <span class="p">|</span> ./bqetl format
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;SELECT 1,2,3&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>./bqetl<span class="w"> </span>format
 SELECT
-  <span class="m">1</span>,
-  <span class="m">2</span>,
-  <span class="m">3</span>
+<span class="w">  </span><span class="m">1</span>,
+<span class="w">  </span><span class="m">2</span>,
+<span class="w">  </span><span class="m">3</span>
 </code></pre></div>
 <p>To turn off sql formatting for a block of SQL, wrap it in <code>format:off</code> and
 <code>format:on</code> comments, like this:</p>
-<div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
 <span class="w">  </span><span class="c1">-- format:off</span>
-<span class="w">  </span><span class="n">submission_date</span><span class="p">,</span><span class="w"> </span><span class="n">sample_id</span><span class="p">,</span><span class="w"> </span><span class="n">client_id</span><span class="w"></span>
+<span class="w">  </span><span class="n">submission_date</span><span class="p">,</span><span class="w"> </span><span class="n">sample_id</span><span class="p">,</span><span class="w"> </span><span class="n">client_id</span>
 <span class="w">  </span><span class="c1">-- format:on</span>
 </code></pre></div>
 <h2 id="add-a-new-field-to-a-table-schema">Add a new field to a table schema</h2>
@@ -2611,11 +2611,11 @@ SELECT
 </li>
 <li>PR is reviewed and approved.</li>
 <li>Deploy schema changes by running:
-   <div class="highlight"><pre><span></span><code>./bqetl query schema deploy telemetry_derived.clients_daily_v6<span class="p">;</span>
-./bqetl query schema deploy telemetry_derived.clients_daily_joined_v1<span class="p">;</span>
-./bqetl query schema deploy --force --ignore-dryrun-skip telemetry_derived.clients_last_seen_v1<span class="p">;</span>
-./bqetl query schema deploy telemetry_derived.clients_last_seen_joined_v1<span class="p">;</span>
-./bqetl query schema deploy --force telemetry_derived.clients_first_seen_v1<span class="p">;</span>
+   <div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>deploy<span class="w"> </span>telemetry_derived.clients_daily_v6<span class="p">;</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>deploy<span class="w"> </span>telemetry_derived.clients_daily_joined_v1<span class="p">;</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>deploy<span class="w"> </span>--force<span class="w"> </span>--ignore-dryrun-skip<span class="w"> </span>telemetry_derived.clients_last_seen_v1<span class="p">;</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>deploy<span class="w"> </span>telemetry_derived.clients_last_seen_joined_v1<span class="p">;</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>deploy<span class="w"> </span>--force<span class="w"> </span>telemetry_derived.clients_first_seen_v1<span class="p">;</span>
 </code></pre></div></li>
 <li>Rerun CI pipeline<ul class="task-list">
 <li class="task-list-item"><input type="checkbox" disabled checked/> All tests pass</li>
@@ -2692,28 +2692,28 @@ in Mana.</p>
 <code>dataset_metadata.yaml</code> file if the query name contains a dataset that
 is not yet defined.</p>
 <p>See example with commentary for <code>telemetry_derived</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">friendly_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Telemetry Derived</span><span class="w"></span>
-<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|-</span><span class="w"></span>
-<span class="w">  </span><span class="no">Derived data based on pings from legacy Firefox telemetry, plus many other</span><span class="w"></span>
-<span class="w">  </span><span class="no">general-purpose derived tables</span><span class="w"></span>
-<span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">friendly_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Telemetry Derived</span>
+<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|-</span>
+<span class="w">  </span><span class="no">Derived data based on pings from legacy Firefox telemetry, plus many other</span>
+<span class="w">  </span><span class="no">general-purpose derived tables</span>
+<span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
 
-<span class="c1"># Base ACL should can be:</span><span class="w"></span>
-<span class="c1">#   &quot;derived&quot; for `_derived` datasets that contain concrete tables</span><span class="w"></span>
-<span class="c1">#   &quot;view&quot; for user-facing datasets containing virtual views</span><span class="w"></span>
-<span class="nt">dataset_base_acl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">derived</span><span class="w"></span>
+<span class="c1"># Base ACL should can be:</span>
+<span class="c1">#   &quot;derived&quot; for `_derived` datasets that contain concrete tables</span>
+<span class="c1">#   &quot;view&quot; for user-facing datasets containing virtual views</span>
+<span class="nt">dataset_base_acl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">derived</span>
 
-<span class="c1"># Datasets with user-facing set to true will be created both in shared-prod</span><span class="w"></span>
-<span class="c1"># and in mozdata; this should be false for all `_derived` datasets</span><span class="w"></span>
-<span class="nt">user_facing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+<span class="c1"># Datasets with user-facing set to true will be created both in shared-prod</span>
+<span class="c1"># and in mozdata; this should be false for all `_derived` datasets</span>
+<span class="nt">user_facing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 
-<span class="c1"># Most datasets can have mozilla-confidential access like below, but some</span><span class="w"></span>
-<span class="c1"># datasets will be defined with more restricted access or with additional</span><span class="w"></span>
-<span class="c1"># access for services; see &quot;Data Access Workgroups&quot; link above.</span><span class="w"></span>
-<span class="nt">workgroup_access</span><span class="p">:</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">roles/bigquery.dataViewer</span><span class="w"></span>
-<span class="w">  </span><span class="nt">members</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workgroup:mozilla-confidential</span><span class="w"></span>
+<span class="c1"># Most datasets can have mozilla-confidential access like below, but some</span>
+<span class="c1"># datasets will be defined with more restricted access or with additional</span>
+<span class="c1"># access for services; see &quot;Data Access Workgroups&quot; link above.</span>
+<span class="nt">workgroup_access</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">roles/bigquery.dataViewer</span>
+<span class="w">  </span><span class="nt">members</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workgroup:mozilla-confidential</span>
 </code></pre></div>
 <h2 id="publishing-data">Publishing data</h2>
 <p>See also the reference for <a href="../../reference/public_data/">Public Data</a>.</p>
@@ -2741,19 +2741,19 @@ environment. A dependency should be added to either <code>requirements.txt</code
 <code>constraints.txt</code>, but not both.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Create a python virtual environment (not necessary if you have already</span>
 <span class="c1"># run `./bqetl bootstrap`)</span>
-python3 -m venv venv/
+python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv/
 
 <span class="c1"># Activate the virtual environment</span>
-<span class="nb">source</span> venv/bin/activate
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate
 
 <span class="c1"># If not installed:</span>
-pip install pip-tools --constraint requirements.in
+pip<span class="w"> </span>install<span class="w"> </span>pip-tools<span class="w"> </span>--constraint<span class="w"> </span>requirements.in
 
 <span class="c1"># Add the dependency to requirements.in e.g. Jinja2.</span>
-<span class="nb">echo</span> <span class="nv">Jinja2</span><span class="o">==</span><span class="m">2</span>.11.1 &gt;&gt; requirements.in
+<span class="nb">echo</span><span class="w"> </span><span class="nv">Jinja2</span><span class="o">==</span><span class="m">2</span>.11.1<span class="w"> </span>&gt;&gt;<span class="w"> </span>requirements.in
 
 <span class="c1"># Compile hashes for new dependencies.</span>
-pip-compile --generate-hashes requirements.in
+pip-compile<span class="w"> </span>--generate-hashes<span class="w"> </span>requirements.in
 
 <span class="c1"># Deactivate the python virtual environment.</span>
 deactivate

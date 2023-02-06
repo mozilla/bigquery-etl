@@ -2477,10 +2477,10 @@
 <p>The first step is to create a query file and decide on the name of your derived dataset. In this case, we'll name it <code>org_mozilla_mozregression_derived.mozregression_aggregates</code>.</p>
 <p>The <code>org_mozilla_mozregression_derived</code> part represents a <a href="https://cloud.google.com/bigquery/docs/datasets-intro">BigQuery dataset</a>, which is essentially a container of tables. By convention, we use the <code>_derived</code> postfix to hold derived tables like this one.</p>
 <p>Run:
-<div class="highlight"><pre><span></span><code>./bqetl query create &lt;dataset&gt;.&lt;table_name&gt;
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>create<span class="w"> </span>&lt;dataset&gt;.&lt;table_name&gt;
 </code></pre></div>
 In our example:</p>
-<div class="highlight"><pre><span></span><code>./bqetl query create org_mozilla_mozregression_derived.mozregression_aggregates
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>create<span class="w"> </span>org_mozilla_mozregression_derived.mozregression_aggregates
 </code></pre></div>
 <p>This command does two things:</p>
 <ul>
@@ -2491,117 +2491,117 @@ In our example:</p>
 <h2 id="fill-out-the-yaml">Fill out the YAML</h2>
 <p>The next step is to modify the generated <code>metadata.yaml</code> and <code>query.sql</code> sections with specific information.</p>
 <p>Let's look at what the <code>metadata.yaml</code> file for our example looks like. Make sure to adapt this file for your own dataset.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">friendly_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mozregression aggregates</span><span class="w"></span>
-<span class="nt">description</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">Aggregated metrics of mozregression usage</span><span class="w"></span>
-<span class="nt">labels</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">incremental</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="nt">owners</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wlachance@mozilla.com</span><span class="w"></span>
-<span class="nt">bigquery</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">time_partitioning</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">day</span><span class="w"></span>
-<span class="w">    </span><span class="nt">field</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">date</span><span class="w"></span>
-<span class="w">    </span><span class="nt">require_partition_filter</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">    </span><span class="nt">expiration_days</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"></span>
-<span class="w">  </span><span class="nt">clustering</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">fields</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app_used</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">os</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">friendly_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mozregression aggregates</span>
+<span class="nt">description</span><span class="p">:</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">Aggregated metrics of mozregression usage</span>
+<span class="nt">labels</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">incremental</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">owners</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wlachance@mozilla.com</span>
+<span class="nt">bigquery</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">time_partitioning</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">day</span>
+<span class="w">    </span><span class="nt">field</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">date</span>
+<span class="w">    </span><span class="nt">require_partition_filter</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">expiration_days</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">  </span><span class="nt">clustering</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">fields</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app_used</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">os</span>
 </code></pre></div>
 <p>Most of the fields are self-explanatory. <code>incremental</code> means that the table is updated incrementally, e.g. a new partition gets added/updated to the destination table whenever the query is run. For non-incremental queries the entire destination is overwritten when the query is executed.</p>
 <p><a href="https://docs.telemetry.mozilla.org/cookbooks/bigquery/optimization.html">For big datasets make sure to include optimization strategies</a>. Our aggregation is small so it is only for illustration purposes that we are including a partition by the <code>date</code> field and a clustering on <code>app_used</code> and <code>os</code>.</p>
 <h4 id="the-yaml-file-structure-for-a-public-dataset">The YAML file structure for a public dataset</h4>
 <p>Setting the dataset as public means that it will be both in Mozilla's public BigQuery project and a world-accessible JSON endpoint, and is a process that requires a data review.
 The required labels are: <code>public_json</code>, <code>public_bigquery</code> and <code>review_bugs</code> which refers to the Bugzilla bug where opening this data set up to the public was approved: we'll get to that in a subsequent section.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">friendly_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mozregression aggregates</span><span class="w"></span>
-<span class="nt">description</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">Aggregated metrics of mozregression usage</span><span class="w"></span>
-<span class="nt">labels</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">incremental</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">  </span><span class="nt">public_json</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">  </span><span class="nt">public_bigquery</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">  </span><span class="nt">review_bugs</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1691105</span><span class="w"></span>
-<span class="nt">owners</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wlachance@mozilla.com</span><span class="w"></span>
-<span class="nt">bigquery</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">time_partitioning</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">day</span><span class="w"></span>
-<span class="w">    </span><span class="nt">field</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">date</span><span class="w"></span>
-<span class="w">    </span><span class="nt">require_partition_filter</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">    </span><span class="nt">expiration_days</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"></span>
-<span class="w">  </span><span class="nt">clustering</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">fields</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app_used</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">os</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">friendly_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mozregression aggregates</span>
+<span class="nt">description</span><span class="p">:</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">Aggregated metrics of mozregression usage</span>
+<span class="nt">labels</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">incremental</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">public_json</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">public_bigquery</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">review_bugs</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1691105</span>
+<span class="nt">owners</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wlachance@mozilla.com</span>
+<span class="nt">bigquery</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">time_partitioning</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">day</span>
+<span class="w">    </span><span class="nt">field</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">date</span>
+<span class="w">    </span><span class="nt">require_partition_filter</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">expiration_days</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">  </span><span class="nt">clustering</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">fields</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app_used</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">os</span>
 </code></pre></div>
 <h2 id="fill-out-the-query">Fill out the query</h2>
 <p>Now that we've filled out the metadata, we can look into creating a query. In many ways, this is similar to creating a SQL query to run on BigQuery in other contexts (e.g. on sql.telemetry.mozilla.org or the BigQuery console)-- the key difference is that we use a <code>@submission_date</code> parameter so that the query can be run on a <em>day's worth</em> of data to update the underlying table incrementally.</p>
 <p>Test your query and add it to the <code>query.sql</code> file.</p>
 <p>In our example, the query is tested in <code>sql.telemetry.mozilla.org</code>, and the <code>query.sql</code> file looks like this:</p>
-<div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"></span>
-<span class="w">  </span><span class="nb">DATE</span><span class="p">(</span><span class="n">submission_timestamp</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="nb">date</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">client_info</span><span class="p">.</span><span class="n">app_display_version</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">mozregression_version</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">metrics</span><span class="p">.</span><span class="n">string</span><span class="p">.</span><span class="n">usage_variant</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">mozregression_variant</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">metrics</span><span class="p">.</span><span class="n">string</span><span class="p">.</span><span class="n">usage_app</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">app_used</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">normalized_os</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">os</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">truncate_version</span><span class="p">(</span><span class="n">normalized_os_version</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;minor&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">os_version</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="k">count</span><span class="p">(</span><span class="k">DISTINCT</span><span class="p">(</span><span class="n">client_info</span><span class="p">.</span><span class="n">client_id</span><span class="p">))</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">distinct_clients</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total_uses</span><span class="w"></span>
-<span class="k">FROM</span><span class="w"></span>
-<span class="w">  </span><span class="o">`</span><span class="n">moz</span><span class="o">-</span><span class="n">fx</span><span class="o">-</span><span class="k">data</span><span class="o">-</span><span class="n">shared</span><span class="o">-</span><span class="n">prod</span><span class="o">`</span><span class="p">.</span><span class="n">org_mozilla_mozregression</span><span class="p">.</span><span class="k">usage</span><span class="w"></span>
-<span class="k">WHERE</span><span class="w"></span>
-<span class="w">  </span><span class="nb">DATE</span><span class="p">(</span><span class="n">submission_timestamp</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">@</span><span class="n">submission_date</span><span class="w"></span>
-<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">client_info</span><span class="p">.</span><span class="n">app_display_version</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%.dev%&#39;</span><span class="w"></span>
-<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"></span>
-<span class="w">  </span><span class="nb">date</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">mozregression_version</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">mozregression_variant</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">app_used</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">os</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">os_version</span><span class="p">;</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">  </span><span class="nb">DATE</span><span class="p">(</span><span class="n">submission_timestamp</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="nb">date</span><span class="p">,</span>
+<span class="w">  </span><span class="n">client_info</span><span class="p">.</span><span class="n">app_display_version</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">mozregression_version</span><span class="p">,</span>
+<span class="w">  </span><span class="n">metrics</span><span class="p">.</span><span class="n">string</span><span class="p">.</span><span class="n">usage_variant</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">mozregression_variant</span><span class="p">,</span>
+<span class="w">  </span><span class="n">metrics</span><span class="p">.</span><span class="n">string</span><span class="p">.</span><span class="n">usage_app</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">app_used</span><span class="p">,</span>
+<span class="w">  </span><span class="n">normalized_os</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">os</span><span class="p">,</span>
+<span class="w">  </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">truncate_version</span><span class="p">(</span><span class="n">normalized_os_version</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;minor&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">os_version</span><span class="p">,</span>
+<span class="w">  </span><span class="k">count</span><span class="p">(</span><span class="k">DISTINCT</span><span class="p">(</span><span class="n">client_info</span><span class="p">.</span><span class="n">client_id</span><span class="p">))</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">distinct_clients</span><span class="p">,</span>
+<span class="w">  </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total_uses</span>
+<span class="k">FROM</span>
+<span class="w">  </span><span class="o">`</span><span class="n">moz</span><span class="o">-</span><span class="n">fx</span><span class="o">-</span><span class="k">data</span><span class="o">-</span><span class="n">shared</span><span class="o">-</span><span class="n">prod</span><span class="o">`</span><span class="p">.</span><span class="n">org_mozilla_mozregression</span><span class="p">.</span><span class="k">usage</span>
+<span class="k">WHERE</span>
+<span class="w">  </span><span class="nb">DATE</span><span class="p">(</span><span class="n">submission_timestamp</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">@</span><span class="n">submission_date</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">client_info</span><span class="p">.</span><span class="n">app_display_version</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%.dev%&#39;</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span>
+<span class="w">  </span><span class="nb">date</span><span class="p">,</span>
+<span class="w">  </span><span class="n">mozregression_version</span><span class="p">,</span>
+<span class="w">  </span><span class="n">mozregression_variant</span><span class="p">,</span>
+<span class="w">  </span><span class="n">app_used</span><span class="p">,</span>
+<span class="w">  </span><span class="n">os</span><span class="p">,</span>
+<span class="w">  </span><span class="n">os_version</span><span class="p">;</span>
 </code></pre></div>
 <p>We use the <code>truncate_version</code> UDF to omit the patch level for MacOS and Linux, which should both reduce the size of the dataset as well as make it more difficult to identify individual clients in an aggregated dataset.</p>
 <p>We also have a short clause (<code>client_info.app_display_version NOT LIKE '%.dev%'</code>) to omit developer versions from the aggregates: this makes sure we're not including people developing or testing mozregression itself in our results.</p>
 <h2 id="formatting-and-validating-the-query">Formatting and validating the query</h2>
 <p>Now that we've written our query, we can format it and validate it. Once that's done, we run:</p>
-<p><div class="highlight"><pre><span></span><code>./bqetl query validate &lt;dataset&gt;.&lt;table&gt;
+<p><div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>validate<span class="w"> </span>&lt;dataset&gt;.&lt;table&gt;
 </code></pre></div>
 For our example:
-<div class="highlight"><pre><span></span><code>./bqetl query validate org_mozilla_mozregression_derived.mozregression_aggregates_v1
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>validate<span class="w"> </span>org_mozilla_mozregression_derived.mozregression_aggregates_v1
 </code></pre></div>
 If there are no problems, you should see no output.</p>
 <h2 id="creating-the-table-schema">Creating the table schema</h2>
 <p>Use bqetl to set up the schema that will be used to create the table.</p>
 <p>Review the schema.YAML generated as an output of the following command, and make sure all data types are set correctly and according to the data expected from the query.</p>
-<div class="highlight"><pre><span></span><code>./bqetl query schema update &lt;dataset&gt;.&lt;table&gt;<span class="sb">`</span>
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>update<span class="w"> </span>&lt;dataset&gt;.&lt;table&gt;<span class="sb">`</span>
 </code></pre></div>
 <p>For our example:
-<div class="highlight"><pre><span></span><code>./bqetl query schema update org_mozilla_mozregression_derived.mozregression_aggregates_v1
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>update<span class="w"> </span>org_mozilla_mozregression_derived.mozregression_aggregates_v1
 </code></pre></div></p>
 <h2 id="creating-a-dag">Creating a DAG</h2>
 <p>BigQuery-ETL has some facilities in it to automatically add your query to <a href="https://github.com/mozilla/telemetry-airflow">telemetry-airflow</a> (our instance of Airflow).</p>
 <p>Before scheduling your query, you'll need to find an <a href="https://airflow.apache.org/docs/apache-airflow/stable/concepts.html#dags">Airflow DAG</a> to run it off of. In some cases, one may already exist that makes sense to use for your dataset -- look in <code>dags.yaml</code> at the root or run <code>./bqetl dag info</code>. In this particular case, there's no DAG that really makes sense -- so we'll create a new one:</p>
-<div class="highlight"><pre><span></span><code>./bqetl dag create &lt;dag_name&gt; --schedule-interval <span class="s2">&quot;0 4 * * *&quot;</span> --owner &lt;email_for_notifications&gt; --description <span class="s2">&quot;Add a clear description of the DAG here&quot;</span> --start-date &lt;YYYY-MM-DD&gt; --tag impact/&lt;tier&gt;
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>dag<span class="w"> </span>create<span class="w"> </span>&lt;dag_name&gt;<span class="w"> </span>--schedule-interval<span class="w"> </span><span class="s2">&quot;0 4 * * *&quot;</span><span class="w"> </span>--owner<span class="w"> </span>&lt;email_for_notifications&gt;<span class="w"> </span>--description<span class="w"> </span><span class="s2">&quot;Add a clear description of the DAG here&quot;</span><span class="w"> </span>--start-date<span class="w"> </span>&lt;YYYY-MM-DD&gt;<span class="w"> </span>--tag<span class="w"> </span>impact/&lt;tier&gt;
 </code></pre></div>
 <p>For our example, the starting date is <code>2020-06-01</code> and we use a schedule interval of <code>0 4 \* \* \*</code> (4am UTC daily) instead of "daily" (12am UTC daily) to make sure this isn't competing for slots with desktop and mobile product ETL.</p>
 <p>The <code>--tag impact/tier3</code> parameter specifies that this DAG is considered "tier 3". For a list of valid tags and their descriptions see <a href="../../reference/airflow_tags/">Airflow Tags</a>.</p>
-<div class="highlight"><pre><span></span><code>./bqetl dag create bqetl_internal_tooling --schedule-interval <span class="s2">&quot;0 4 * * *&quot;</span> --owner wlachance@mozilla.com --description <span class="s2">&quot;This DAG schedules queries for populating queries related to Mozilla&#39;s internal developer tooling (e.g. mozregression).&quot;</span> --start-date <span class="m">2020</span>-06-01 --tag impact/tier_3
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>dag<span class="w"> </span>create<span class="w"> </span>bqetl_internal_tooling<span class="w"> </span>--schedule-interval<span class="w"> </span><span class="s2">&quot;0 4 * * *&quot;</span><span class="w"> </span>--owner<span class="w"> </span>wlachance@mozilla.com<span class="w"> </span>--description<span class="w"> </span><span class="s2">&quot;This DAG schedules queries for populating queries related to Mozilla&#39;s internal developer tooling (e.g. mozregression).&quot;</span><span class="w"> </span>--start-date<span class="w"> </span><span class="m">2020</span>-06-01<span class="w"> </span>--tag<span class="w"> </span>impact/tier_3
 </code></pre></div>
 <h2 id="scheduling-your-query">Scheduling your query</h2>
 <p>Once again, you access this functionality via the <code>bqetl</code> tool:</p>
-<div class="highlight"><pre><span></span><code>./bqetl query schedule &lt;dataset&gt;.&lt;table&gt; --dag &lt;dag_name&gt; --task-name &lt;task_name&gt;
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schedule<span class="w"> </span>&lt;dataset&gt;.&lt;table&gt;<span class="w"> </span>--dag<span class="w"> </span>&lt;dag_name&gt;<span class="w"> </span>--task-name<span class="w"> </span>&lt;task_name&gt;
 </code></pre></div>
 <p>Here is the command for our example. Notice the name of the table as created with the suffix _v1.
-<div class="highlight"><pre><span></span><code>./bqetl query schedule org_mozilla_mozregression_derived.mozregression_aggregates_v1 --dag bqetl_internal_tooling --task-name mozregression_aggregates__v1
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schedule<span class="w"> </span>org_mozilla_mozregression_derived.mozregression_aggregates_v1<span class="w"> </span>--dag<span class="w"> </span>bqetl_internal_tooling<span class="w"> </span>--task-name<span class="w"> </span>mozregression_aggregates__v1
 </code></pre></div></p>
 <p>Note that we are scheduling the generation of the underlying <em>table</em> which is <code>org_mozilla_mozregression_derived.mozregression_aggregates_v1</code> rather than the view.</p>
 <p>After doing this, you will also want to generate the actual airflow configuration which telemetry-airflow will pick up. Run:</p>
-<div class="highlight"><pre><span></span><code>./bqetl dag generate &lt;dag_name&gt;
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>dag<span class="w"> </span>generate<span class="w"> </span>&lt;dag_name&gt;
 </code></pre></div>
 <p>For this example:
-<div class="highlight"><pre><span></span><code>./bqetl dag generate bqetl_internal_tooling
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>dag<span class="w"> </span>generate<span class="w"> </span>bqetl_internal_tooling
 </code></pre></div></p>
 <p>This may take a while, as it currently does a dry run through every query defined in bigquery-etl.</p>
 <h2 id="get-data-review">Get Data Review</h2>
@@ -2610,16 +2610,16 @@ If there are no problems, you should see no output.</p>
 <p>The dataset we're using in this example is very simple and straightforward and does not have any particularly sensitive data, so the data review is very simple. You can see the full details in <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1691105">bug 1691105</a>.</p>
 <h2 id="create-a-pull-request">Create a Pull Request</h2>
 <p>Now is a good time to create a pull request with your changes to GitHub. This is the usual git workflow:</p>
-<div class="highlight"><pre><span></span><code>git checkout -b &lt;new_branch_name&gt;
-git add dags.yaml dags/&lt;dag_name&gt;.py sql/moz-fx-data-shared-prod/telemetry/&lt;view&gt; sql/moz-fx-data-shared-prod/&lt;dataset&gt;/&lt;table&gt;
-git commit
-git push origin &lt;new_branch_name&gt;
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>&lt;new_branch_name&gt;
+git<span class="w"> </span>add<span class="w"> </span>dags.yaml<span class="w"> </span>dags/&lt;dag_name&gt;.py<span class="w"> </span>sql/moz-fx-data-shared-prod/telemetry/&lt;view&gt;<span class="w"> </span>sql/moz-fx-data-shared-prod/&lt;dataset&gt;/&lt;table&gt;
+git<span class="w"> </span>commit
+git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>&lt;new_branch_name&gt;
 </code></pre></div>
 <p>And next is the workflow for our specific example:</p>
-<div class="highlight"><pre><span></span><code>git checkout -b mozregression-aggregates
-git add dags.yaml dags/bqetl_internal_tooling.py sql/moz-fx-data-shared-prod/org_mozilla_mozregression/mozregression_aggregates sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/mozregression_aggregates_v1
-git commit
-git push origin mozregression-aggregates
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>mozregression-aggregates
+git<span class="w"> </span>add<span class="w"> </span>dags.yaml<span class="w"> </span>dags/bqetl_internal_tooling.py<span class="w"> </span>sql/moz-fx-data-shared-prod/org_mozilla_mozregression/mozregression_aggregates<span class="w"> </span>sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/mozregression_aggregates_v1
+git<span class="w"> </span>commit
+git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>mozregression-aggregates
 </code></pre></div>
 <p>Then create your pull request, either from the GitHub web interface or the command line, per your preference.</p>
 <p><strong>Note</strong> At this point, the CI is expected to fail because the schema does not exist yet in BigQuery. This will be handled in the next step.</p>
@@ -2627,17 +2627,17 @@ git push origin mozregression-aggregates
 <p>Speaking of forks, note that if you're making this pull request from a fork, many jobs will currently fail due to lack of credentials. In fact, even if you're pushing to the origin, you'll get failures because the table is not yet created. That brings us to the next step, but before going further it's generally best to get someone to review your work: at this point we have more than enough for people to provide good feedback on.</p>
 <h2 id="creating-an-initial-table">Creating an initial table</h2>
 <p>Once the PR has been approved, deploy the schema to bqetl using this command:</p>
-<div class="highlight"><pre><span></span><code>./bqetl query schema deploy &lt;schema&gt;.&lt;table&gt;
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>deploy<span class="w"> </span>&lt;schema&gt;.&lt;table&gt;
 </code></pre></div>
 <p>For our example:
-<div class="highlight"><pre><span></span><code>./bqetl query schema deploy org_mozilla_mozregression_derived.mozregression_aggregates_v1
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>deploy<span class="w"> </span>org_mozilla_mozregression_derived.mozregression_aggregates_v1
 </code></pre></div></p>
 <h2 id="backfilling-the-dataset">Backfilling the dataset</h2>
 <p>It is recommended to use the <a href="https://mozilla.github.io/bigquery-etl/bqetl/#backfill">bqetl backfill command</a> in order to load the data in your new table, and set specific dates for large sets of data, as well as following the <a href="https://mozilla.github.io/bigquery-etl/reference/recommended_practices/#backfills">recommended practices</a>.</p>
-<div class="highlight"><pre><span></span><code>bqetl query backfill &lt;dataset&gt;.&lt;table&gt; --project_id<span class="o">=</span>moz-fx-data-shared-prod -s &lt;YYYY-MM-DD&gt; -e &lt;YYYY-MM-DD&gt; -n <span class="m">0</span>
+<div class="highlight"><pre><span></span><code>bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span>&lt;dataset&gt;.&lt;table&gt;<span class="w"> </span>--project_id<span class="o">=</span>moz-fx-data-shared-prod<span class="w"> </span>-s<span class="w"> </span>&lt;YYYY-MM-DD&gt;<span class="w"> </span>-e<span class="w"> </span>&lt;YYYY-MM-DD&gt;<span class="w"> </span>-n<span class="w"> </span><span class="m">0</span>
 </code></pre></div>
 <p>For our example:
-<div class="highlight"><pre><span></span><code>./bqetl query backfill org_mozilla_mozregression_derived.mozregression_aggregates_v1 --s <span class="m">2020</span>-04-01 --e <span class="m">2021</span>-02-01
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span>org_mozilla_mozregression_derived.mozregression_aggregates_v1<span class="w"> </span>--s<span class="w"> </span><span class="m">2020</span>-04-01<span class="w"> </span>--e<span class="w"> </span><span class="m">2021</span>-02-01
 </code></pre></div></p>
 <p><strong>Note</strong>. Alternatively, you can trigger the Airflow DAG to backfill the data. In this case, it is recommended to talk to someone in in Data Engineering or Data SRE to trigger the DAG.</p>
 <h2 id="completing-the-pull-request">Completing the Pull Request</h2>

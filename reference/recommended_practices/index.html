@@ -2354,21 +2354,21 @@
 <li>For each query, a <code>metadata.yaml</code> file should be created in the same directory</li>
 <li>This file contains a description, owners and labels. As an example:</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="nt">friendly_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SSL Ratios</span><span class="w"></span>
-<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span><span class="w"></span>
-<span class="w">  </span><span class="no">Percentages of page loads Firefox users have performed that were</span><span class="w"></span>
-<span class="w">  </span><span class="no">conducted over SSL broken down by country.</span><span class="w"></span>
-<span class="nt">owners</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example@mozilla.com</span><span class="w"></span>
-<span class="nt">labels</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">application</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">firefox</span><span class="w"></span>
-<span class="w">  </span><span class="nt">incremental</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># incremental queries add data to existing tables</span><span class="w"></span>
-<span class="w">  </span><span class="nt">schedule</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">daily</span><span class="w"> </span><span class="c1"># scheduled in Airflow to run daily</span><span class="w"></span>
-<span class="w">  </span><span class="nt">public_json</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">  </span><span class="nt">public_bigquery</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">  </span><span class="nt">review_bugs</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1414839</span><span class="w"> </span><span class="c1"># Bugzilla bug ID of data review</span><span class="w"></span>
-<span class="w">  </span><span class="nt">incremental_export</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># non-incremental JSON export writes all data to a single location</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">friendly_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SSL Ratios</span>
+<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
+<span class="w">  </span><span class="no">Percentages of page loads Firefox users have performed that were</span>
+<span class="w">  </span><span class="no">conducted over SSL broken down by country.</span>
+<span class="nt">owners</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example@mozilla.com</span>
+<span class="nt">labels</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">application</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">firefox</span>
+<span class="w">  </span><span class="nt">incremental</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># incremental queries add data to existing tables</span>
+<span class="w">  </span><span class="nt">schedule</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">daily</span><span class="w"> </span><span class="c1"># scheduled in Airflow to run daily</span>
+<span class="w">  </span><span class="nt">public_json</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">public_bigquery</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">review_bugs</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1414839</span><span class="w"> </span><span class="c1"># Bugzilla bug ID of data review</span>
+<span class="w">  </span><span class="nt">incremental_export</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># non-incremental JSON export writes all data to a single location</span>
 </code></pre></div>
 <ul>
 <li>only labels where value types are eithers integers or strings are published, all other values types are being skipped</li>
@@ -2469,23 +2469,23 @@
   Errors normally appear in the parent job and may or may not include the dataset and
   table names, therefore it is important to check for errors in the jobs ran on that date.
   Here is a query you may use for this purpose:
-  <div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"></span>
-<span class="w">  </span><span class="n">job_id</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">user_email</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">parent_job_id</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">creation_time</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">destination_table</span><span class="p">.</span><span class="n">dataset_id</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">destination_table</span><span class="p">.</span><span class="n">table_id</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">task_duration</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">total_bytes_processed</span><span class="o">/</span><span class="p">(</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">gigabytes_processed</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="k">state</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">error_result</span><span class="p">.</span><span class="k">location</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">error_location</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">error_result</span><span class="p">.</span><span class="n">reason</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">error_reason</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">error_result</span><span class="p">.</span><span class="n">message</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">error_message</span><span class="p">,</span><span class="w"></span>
-<span class="k">FROM</span><span class="w"> </span><span class="o">`</span><span class="n">moz</span><span class="o">-</span><span class="n">fx</span><span class="o">-</span><span class="k">data</span><span class="o">-</span><span class="n">shared</span><span class="o">-</span><span class="n">prod</span><span class="o">`</span><span class="p">.</span><span class="o">`</span><span class="n">region</span><span class="o">-</span><span class="n">us</span><span class="o">`</span><span class="p">.</span><span class="n">INFORMATION_SCHEMA</span><span class="p">.</span><span class="n">JOBS_BY_PROJECT</span><span class="w"></span>
-<span class="k">WHERE</span><span class="w"> </span><span class="nb">DATE</span><span class="p">(</span><span class="n">creation_time</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="s1">&#39;YYYY-MM-DD&#39;</span><span class="o">&gt;</span><span class="w"></span>
-<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">user_email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="s1">&#39;user@mozilla.com&#39;</span><span class="o">&gt;</span><span class="w"></span>
-<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">creation_time</span><span class="w"> </span><span class="k">DESC</span><span class="w"></span>
+  <div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">  </span><span class="n">job_id</span><span class="p">,</span>
+<span class="w">  </span><span class="n">user_email</span><span class="p">,</span>
+<span class="w">  </span><span class="n">parent_job_id</span><span class="p">,</span>
+<span class="w">  </span><span class="n">creation_time</span><span class="p">,</span>
+<span class="w">  </span><span class="n">destination_table</span><span class="p">.</span><span class="n">dataset_id</span><span class="p">,</span>
+<span class="w">  </span><span class="n">destination_table</span><span class="p">.</span><span class="n">table_id</span><span class="p">,</span>
+<span class="w">  </span><span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">task_duration</span><span class="p">,</span>
+<span class="w">  </span><span class="n">total_bytes_processed</span><span class="o">/</span><span class="p">(</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">gigabytes_processed</span><span class="p">,</span>
+<span class="w">  </span><span class="k">state</span><span class="p">,</span>
+<span class="w">  </span><span class="n">error_result</span><span class="p">.</span><span class="k">location</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">error_location</span><span class="p">,</span>
+<span class="w">  </span><span class="n">error_result</span><span class="p">.</span><span class="n">reason</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">error_reason</span><span class="p">,</span>
+<span class="w">  </span><span class="n">error_result</span><span class="p">.</span><span class="n">message</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">error_message</span><span class="p">,</span>
+<span class="k">FROM</span><span class="w"> </span><span class="o">`</span><span class="n">moz</span><span class="o">-</span><span class="n">fx</span><span class="o">-</span><span class="k">data</span><span class="o">-</span><span class="n">shared</span><span class="o">-</span><span class="n">prod</span><span class="o">`</span><span class="p">.</span><span class="o">`</span><span class="n">region</span><span class="o">-</span><span class="n">us</span><span class="o">`</span><span class="p">.</span><span class="n">INFORMATION_SCHEMA</span><span class="p">.</span><span class="n">JOBS_BY_PROJECT</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="nb">DATE</span><span class="p">(</span><span class="n">creation_time</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="s1">&#39;YYYY-MM-DD&#39;</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">user_email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="s1">&#39;user@mozilla.com&#39;</span><span class="o">&gt;</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">creation_time</span><span class="w"> </span><span class="k">DESC</span>
 </code></pre></div></li>
 </ul>
 

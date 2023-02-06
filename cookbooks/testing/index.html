@@ -2313,31 +2313,31 @@
 <h1 id="how-to-run-tests">How to Run Tests</h1>
 <p>This repository uses <code>pytest</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># create a venv</span>
-python3.10 -m venv venv/
+python3.10<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv/
 
 <span class="c1"># install pip-tools for managing dependencies</span>
-./venv/bin/pip install pip-tools -c requirements.in
+./venv/bin/pip<span class="w"> </span>install<span class="w"> </span>pip-tools<span class="w"> </span>-c<span class="w"> </span>requirements.in
 
 <span class="c1"># install python dependencies with pip-sync (provided by pip-tools)</span>
-./venv/bin/pip-sync --pip-args<span class="o">=</span>--no-deps requirements.txt
+./venv/bin/pip-sync<span class="w"> </span>--pip-args<span class="o">=</span>--no-deps<span class="w"> </span>requirements.txt
 
 <span class="c1"># build java dependencies with maven</span>
-mvn package
+mvn<span class="w"> </span>package
 
 <span class="c1"># run pytest with all linters and 8 workers in parallel</span>
-./venv/bin/pytest --black --flake8 --isort --mypy-ignore-missing-imports --pydocstyle -n <span class="m">8</span>
+./venv/bin/pytest<span class="w"> </span>--black<span class="w"> </span>--flake8<span class="w"> </span>--isort<span class="w"> </span>--mypy-ignore-missing-imports<span class="w"> </span>--pydocstyle<span class="w"> </span>-n<span class="w"> </span><span class="m">8</span>
 
 <span class="c1"># use -k to selectively run a set of tests that matches the expression `udf`</span>
-./venv/bin/pytest -k udf
+./venv/bin/pytest<span class="w"> </span>-k<span class="w"> </span>udf
 
 <span class="c1"># narrow down testpaths for quicker turnaround when selecting a single test</span>
-./venv/bin/pytest -o <span class="s2">&quot;testpaths=tests/sql&quot;</span> -k mobile_search_aggregates_v1
+./venv/bin/pytest<span class="w"> </span>-o<span class="w"> </span><span class="s2">&quot;testpaths=tests/sql&quot;</span><span class="w"> </span>-k<span class="w"> </span>mobile_search_aggregates_v1
 
 <span class="c1"># run integration tests with 4 workers in parallel</span>
-gcloud auth application-default login <span class="c1"># or set GOOGLE_APPLICATION_CREDENTIALS</span>
-<span class="nb">export</span> <span class="nv">GOOGLE_PROJECT_ID</span><span class="o">=</span>bigquery-etl-integration-test
-gcloud config <span class="nb">set</span> project <span class="nv">$GOOGLE_PROJECT_ID</span>
-./venv/bin/pytest -m integration -n <span class="m">4</span>
+gcloud<span class="w"> </span>auth<span class="w"> </span>application-default<span class="w"> </span>login<span class="w"> </span><span class="c1"># or set GOOGLE_APPLICATION_CREDENTIALS</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">GOOGLE_PROJECT_ID</span><span class="o">=</span>bigquery-etl-integration-test
+gcloud<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>project<span class="w"> </span><span class="nv">$GOOGLE_PROJECT_ID</span>
+./venv/bin/pytest<span class="w"> </span>-m<span class="w"> </span>integration<span class="w"> </span>-n<span class="w"> </span><span class="m">4</span>
 </code></pre></div>
 <p>To provide <a href="https://cloud.google.com/docs/authentication/getting-started">authentication credentials for the Google Cloud API</a> the <code>GOOGLE_APPLICATION_CREDENTIALS</code> environment variable must be set to the file path of the JSON file that contains the service account key.
 See <a href="https://docs.telemetry.mozilla.org/cookbooks/bigquery.html#gcp-bigquery-api-access">Mozilla BigQuery API Access instructions</a> to request credentials if you don't already have them.</p>
@@ -2352,23 +2352,23 @@ query parameters and should not reference any tables. Each test that is
 expected to fail must be preceded by a comment like <code>#xfail</code>, similar to a <a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/enabling-standard-sql#sql-prefix">SQL
 dialect prefix</a> in the BigQuery Cloud Console.</p>
 <p>For example:</p>
-<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="n">TEMP</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">udf_example</span><span class="p">(</span><span class="k">option</span><span class="w"> </span><span class="n">INT64</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
-<span class="w">  </span><span class="k">CASE</span><span class="w"></span>
-<span class="w">  </span><span class="k">WHEN</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="k">TRUE</span><span class="w"></span>
-<span class="w">  </span><span class="k">WHEN</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="k">FALSE</span><span class="w"></span>
-<span class="w">  </span><span class="k">ELSE</span><span class="w"> </span><span class="n">ERROR</span><span class="p">(</span><span class="ss">&quot;invalid option&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">  </span><span class="k">END</span><span class="w"></span>
-<span class="p">);</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="n">TEMP</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">udf_example</span><span class="p">(</span><span class="k">option</span><span class="w"> </span><span class="n">INT64</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="k">CASE</span>
+<span class="w">  </span><span class="k">WHEN</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="k">TRUE</span>
+<span class="w">  </span><span class="k">WHEN</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="k">FALSE</span>
+<span class="w">  </span><span class="k">ELSE</span><span class="w"> </span><span class="n">ERROR</span><span class="p">(</span><span class="ss">&quot;invalid option&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="k">END</span>
+<span class="p">);</span>
 <span class="c1">-- Tests</span>
-<span class="k">SELECT</span><span class="w"></span>
-<span class="w">  </span><span class="n">assert_true</span><span class="p">(</span><span class="n">udf_example</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span><span class="w"></span>
-<span class="w">  </span><span class="n">assert_false</span><span class="p">(</span><span class="n">udf_example</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span><span class="w"></span>
-<span class="o">#</span><span class="n">xfail</span><span class="w"></span>
-<span class="k">SELECT</span><span class="w"></span>
-<span class="w">  </span><span class="n">udf_example</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
-<span class="o">#</span><span class="n">xfail</span><span class="w"></span>
-<span class="k">SELECT</span><span class="w"></span>
-<span class="w">  </span><span class="n">udf_example</span><span class="p">(</span><span class="k">NULL</span><span class="p">);</span><span class="w"></span>
+<span class="k">SELECT</span>
+<span class="w">  </span><span class="n">assert_true</span><span class="p">(</span><span class="n">udf_example</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">assert_false</span><span class="p">(</span><span class="n">udf_example</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+<span class="o">#</span><span class="n">xfail</span>
+<span class="k">SELECT</span>
+<span class="w">  </span><span class="n">udf_example</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+<span class="o">#</span><span class="n">xfail</span>
+<span class="k">SELECT</span>
+<span class="w">  </span><span class="n">udf_example</span><span class="p">(</span><span class="k">NULL</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="how-to-configure-a-generated-test">How to Configure a Generated Test</h2>
 <p>Queries are tested by running the <code>query.sql</code> with test-input tables and comparing the result to an expected table.
@@ -2411,10 +2411,10 @@ dialect prefix</a> in the BigQuery Cloud Console.</p>
 Simply name the test <code>test_init</code>. The other guidelines still apply.</p>
 <p><em>Note</em>: Init SQL statements must contain a create statement with the dataset
 and table name, like so:</p>
-<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"></span>
-<span class="w">  </span><span class="n">dataset</span><span class="p">.</span><span class="n">table_v1</span><span class="w"></span>
-<span class="k">AS</span><span class="w"></span>
-<span class="p">...</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">TABLE</span>
+<span class="w">  </span><span class="n">dataset</span><span class="p">.</span><span class="n">table_v1</span>
+<span class="k">AS</span>
+<span class="p">...</span>
 </code></pre></div>
 <h2 id="additional-guidelines-and-options">Additional Guidelines and Options</h2>
 <ul>
@@ -2463,17 +2463,17 @@ and table name, like so:</p>
 <li>Run <code>circleci build</code> and set required environment variables <code>GOOGLE_PROJECT_ID</code> and
   <code>GCLOUD_SERVICE_KEY</code>:</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="nv">gcloud_service_key</span><span class="o">=</span><span class="sb">`</span>cat /path/to/key_file.json<span class="sb">`</span>
+<div class="highlight"><pre><span></span><code><span class="nv">gcloud_service_key</span><span class="o">=</span><span class="sb">`</span>cat<span class="w"> </span>/path/to/key_file.json<span class="sb">`</span>
 
 <span class="c1"># to run a specific job, e.g. integration:</span>
-circleci build --job integration <span class="se">\</span>
-  --env <span class="nv">GOOGLE_PROJECT_ID</span><span class="o">=</span>bigquery-etl-integration-test <span class="se">\</span>
-  --env <span class="nv">GCLOUD_SERVICE_KEY</span><span class="o">=</span><span class="nv">$gcloud_service_key</span>
+circleci<span class="w"> </span>build<span class="w"> </span>--job<span class="w"> </span>integration<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--env<span class="w"> </span><span class="nv">GOOGLE_PROJECT_ID</span><span class="o">=</span>bigquery-etl-integration-test<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--env<span class="w"> </span><span class="nv">GCLOUD_SERVICE_KEY</span><span class="o">=</span><span class="nv">$gcloud_service_key</span>
 
 <span class="c1"># to run all jobs</span>
-circleci build <span class="se">\</span>
-  --env <span class="nv">GOOGLE_PROJECT_ID</span><span class="o">=</span>bigquery-etl-integration-test <span class="se">\</span>
-  --env <span class="nv">GCLOUD_SERVICE_KEY</span><span class="o">=</span><span class="nv">$gcloud_service_key</span>
+circleci<span class="w"> </span>build<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--env<span class="w"> </span><span class="nv">GOOGLE_PROJECT_ID</span><span class="o">=</span>bigquery-etl-integration-test<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--env<span class="w"> </span><span class="nv">GCLOUD_SERVICE_KEY</span><span class="o">=</span><span class="nv">$gcloud_service_key</span>
 </code></pre></div>
 
 

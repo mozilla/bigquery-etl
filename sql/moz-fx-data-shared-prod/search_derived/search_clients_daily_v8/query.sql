@@ -46,9 +46,9 @@ clients_with_adblocker_addons AS (
     (addon_id)
   WHERE
     submission_date = @submission_date
-    AND a.user_disabled = FALSE
-    AND a.app_disabled = FALSE
-    AND a.blocklisted = FALSE
+    AND NOT a.user_disabled
+    AND NOT a.app_disabled
+    AND NOT a.blocklisted
   GROUP BY
     client_id,
     submission_date

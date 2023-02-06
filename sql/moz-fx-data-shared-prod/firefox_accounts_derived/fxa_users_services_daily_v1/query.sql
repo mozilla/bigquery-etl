@@ -1,6 +1,3 @@
--- Should this be a persisted UDF? tier1_country
--- definition probably does not change between
--- specific queries.
 CREATE TEMP FUNCTION udf_contains_tier1_country(
   x ANY TYPE
 ) AS ( --
@@ -48,13 +45,13 @@ WITH fxa_events AS (
     utm_campaign,
     utm_content,
   FROM
-    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
+    `firefox_accounts.fxa_all_events`
   WHERE
-    DATE(`timestamp`)
     -- 2 day time window used to make sure we can get user session attribution information
     -- which will not always be available in the same partition as active user activity
     -- ('fxa_login - complete', 'fxa_reg - complete').
     -- this includes fields such as entrypoint, utm's etc.
+    DATE(`timestamp`)
     BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND @submission_date
     AND event_category IN ('content', 'auth', 'oauth')
@@ -80,7 +77,7 @@ flow_entrypoints AS (
     ARRAY_AGG(
       -- if logic here so that we have an entry for
       -- flow_id even if no entrypoint is found.
-      IF(entrypoint IS NOT NULL, STRUCT(`timestamp`, entrypoint), NULL) IGNORE NULLS
+      IF(entrypoint IS NOT NULL, STRUCT(flow_id, `timestamp`, entrypoint), NULL) IGNORE NULLS
       ORDER BY
         `timestamp`
       LIMIT
@@ -96,14 +93,10 @@ flow_entrypoints AS (
 user_service_flow_entrypoints AS (
   SELECT
     user_id,
-    service,
-    ARRAY_AGG(
-      flow_entrypoint_info IGNORE NULLS
-      ORDER BY
-        `timestamp`
-      LIMIT
-        1
-    )[SAFE_OFFSET(0)] AS flow_entrypoint_info,
+    `service`,
+    ARRAY_AGG(flow_entrypoint_info IGNORE NULLS ORDER BY `timestamp` LIMIT 1)[
+      SAFE_OFFSET(0)
+    ] AS flow_entrypoint_info,
   FROM
     fxa_events
   JOIN
@@ -112,7 +105,7 @@ user_service_flow_entrypoints AS (
     (flow_id)
   GROUP BY
     user_id,
-    service
+    `service`
 ),
 flow_utms AS (
   SELECT
@@ -139,10 +132,10 @@ flow_utms AS (
   GROUP BY
     flow_id
 ),
-user_service_flow_utms AS (
+user_service_utms AS (
   SELECT
     user_id,
-    service,
+    `service`,
     ARRAY_AGG(utm_info IGNORE NULLS ORDER BY `timestamp` LIMIT 1)[SAFE_OFFSET(0)] AS utm_info,
   FROM
     fxa_events
@@ -152,7 +145,7 @@ user_service_flow_utms AS (
     (flow_id)
   GROUP BY
     user_id,
-    service
+    `service`
 ),
 windowed AS (
   SELECT
@@ -208,18 +201,10 @@ SELECT
   windowed.service_events,
   -- info about first user/service flow observed
   -- on a specific day. Needed for first_seen logic
-  STRUCT(
   -- flow entrypoints
-    user_service_flow_entrypoints.flow_entrypoint_info.flow_id,
-    user_service_flow_entrypoints.flow_entrypoint_info.`timestamp` AS flow_timestamp,
-    user_service_flow_entrypoints.flow_entrypoint_info.entrypoint,
-    -- flow utms
-    user_service_flow_utms.utm_info.utm_term,
-    user_service_flow_utms.utm_info.utm_medium,
-    user_service_flow_utms.utm_info.utm_source,
-    user_service_flow_utms.utm_info.utm_campaign,
-    user_service_flow_utms.utm_info.utm_content
-  ) AS first_daily_service_flow_info,
+  user_service_flow_entrypoints.flow_entrypoint_info AS user_service_first_daily_flow_info,
+  -- flow utms
+  user_service_utms.utm_info AS user_service_utm_info,
 FROM
   windowed
 LEFT JOIN
@@ -227,7 +212,7 @@ LEFT JOIN
 USING
   (user_id, `service`)
 LEFT JOIN
-  user_service_flow_utms
+  user_service_utms
 USING
   (user_id, `service`)
 WHERE

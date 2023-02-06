@@ -12,12 +12,6 @@ labels:
 scheduling:
   dag_name: bqetl_fxa_events
   date_partition_parameter: submission_date
-  referenced_tables:
-    - [
-      'moz-fx-data-shared-prod',
-      'firefox_accounts_derived',
-      'fxa_users_services_daily_v1'
-    ]
 bigquery:
   time_partitioning:
     type: day

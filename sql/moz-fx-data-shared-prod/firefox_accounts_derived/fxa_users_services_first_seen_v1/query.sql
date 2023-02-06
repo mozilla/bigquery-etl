@@ -32,10 +32,11 @@ WITH fxa_users_services_daily_events AS (
     `language`,
     ua_version,
     ua_browser,
-    first_daily_service_flow_info,
+    user_service_first_daily_flow_info,
+    user_service_utm_info,
     registered,
   FROM
-    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_daily_v1`
+    `firefox_accounts_derived.fxa_users_services_daily_v1`
   WHERE
     submission_date = @submission_date
     AND contains_qualified_fxa_activity_event(service_events, `service`)
@@ -45,7 +46,7 @@ existing_entries AS (
     user_id,
     `service`,
   FROM
-    `moz-fx-data-shared-prod.firefox_accounts.fxa_users_services_first_seen`
+    `firefox_accounts_derived.fxa_users_services_first_seen_v1`
   WHERE
     DATE(first_service_timestamp) < @submission_date
 )
@@ -61,14 +62,14 @@ SELECT
   new_records.`language` AS first_service_language,
   new_records.ua_version AS first_service_ua_version,
   new_records.ua_browser AS first_service_ua_browser,
-  new_records.first_daily_service_flow_info.flow_id AS first_service_flow,
-  new_records.first_daily_service_flow_info.flow_timestamp AS first_service_flow_timestamp,
-  new_records.first_daily_service_flow_info.entrypoint AS first_service_flow_entrypoint,
-  new_records.first_daily_service_flow_info.utm_term AS first_service_flow_utm_term,
-  new_records.first_daily_service_flow_info.utm_medium AS first_service_flow_utm_medium,
-  new_records.first_daily_service_flow_info.utm_source AS first_service_flow_utm_source,
-  new_records.first_daily_service_flow_info.utm_campaign AS first_service_flow_utm_campaign,
-  new_records.first_daily_service_flow_info.utm_content AS first_service_flow_utm_content,
+  new_records.first_daily_user_service_flow_info.flow_id AS first_service_flow,
+  new_records.first_daily_user_service_flow_info.flow_timestamp AS first_service_flow_timestamp,
+  new_records.first_daily_user_service_flow_info.entrypoint AS first_service_flow_entrypoint,
+  new_records.user_service_utm_info.utm_term AS first_service_flow_utm_term,
+  new_records.user_service_utm_info.utm_medium AS first_service_flow_utm_medium,
+  new_records.user_service_utm_info.utm_source AS first_service_flow_utm_source,
+  new_records.user_service_utm_info.utm_campaign AS first_service_flow_utm_campaign,
+  new_records.user_service_utm_info.utm_content AS first_service_flow_utm_content,
   -- ROW_NUMBER() OVER (
   --   PARTITION BY
   --     new_records.user_id

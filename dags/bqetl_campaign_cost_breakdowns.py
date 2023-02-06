@@ -45,7 +45,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     fenix_derived__google_ads_campaign_cost_breakdowns__v1 = bigquery_etl_query(
         task_id="fenix_derived__google_ads_campaign_cost_breakdowns__v1",
         destination_table="google_ads_campaign_cost_breakdowns_v1",

@@ -174,7 +174,7 @@ class Dag:
         return {name: d}
 
     @classmethod
-    def from_dict(cls, d):
+    def from_dict(cls: type, d: dict):
         """
         Parse the DAG configuration from a dict and create a new Dag instance.
 

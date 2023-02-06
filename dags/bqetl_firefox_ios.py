@@ -43,7 +43,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     org_mozilla_ios_firefox__unified_metrics__v1 = gke_command(
         task_id="org_mozilla_ios_firefox__unified_metrics__v1",
         command=[

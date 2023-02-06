@@ -43,7 +43,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     domain_metadata_derived__top_domains__v1 = bigquery_etl_query(
         task_id="domain_metadata_derived__top_domains__v1",
         destination_table="top_domains_v1",

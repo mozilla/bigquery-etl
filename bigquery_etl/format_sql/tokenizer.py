@@ -3,6 +3,7 @@
 import re
 import sys
 from dataclasses import dataclass, field
+from typing import Iterator
 
 # These words get their own line followed by increased indent
 TOP_LEVEL_KEYWORDS = [
@@ -841,7 +842,7 @@ BIGQUERY_TOKEN_PRIORITY = [
 ]
 
 
-def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY):
+def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY) -> Iterator[Token]:
     """Split query into a series of tokens."""
     open_blocks: list[BlockStartKeyword] = []
     open_angle_brackets = 0

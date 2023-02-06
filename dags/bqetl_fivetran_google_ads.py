@@ -43,7 +43,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     google_ads_derived__campaign_conversions_by_date__v1 = bigquery_etl_query(
         task_id="google_ads_derived__campaign_conversions_by_date__v1",
         destination_table="campaign_conversions_by_date_v1",

@@ -91,7 +91,7 @@ jobs:
           # of a package name and a version specifier"
           command: |
             pip install pip-tools --constraint requirements.in
-            pip-compile --quiet --generate-hashes --unsafe-package=
+            pip-compile --allow-unsafe --generate-hashes --quiet
             git diff --exit-code -G '^ *[^# ]' -- requirements.txt
   test-sql:
     docker: *docker
@@ -598,12 +598,12 @@ workflows:
       - generate-dags:
           requires:
             - generate-sql
-      # - docs:
-      #     requires:
-      #       - generate-sql
-      #     filters:
-      #       branches:
-      #         only: main
+      - docs:
+          requires:
+            - generate-sql
+          filters:
+            branches:
+              only: main
       - push-generated-sql:
           requires:
             - validate-dags

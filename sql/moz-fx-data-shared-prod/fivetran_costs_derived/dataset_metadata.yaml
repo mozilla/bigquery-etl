@@ -1,0 +1,10 @@
+friendly_name: Fivetran Costs Derived
+description: |-
+  Derived Tables for Fivetran Costs populated from Fivetran Logs. Destinations Fivetran_Prod and Fivetran_Dev
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

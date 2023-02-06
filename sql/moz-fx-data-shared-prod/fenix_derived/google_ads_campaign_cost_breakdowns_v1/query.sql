@@ -65,43 +65,27 @@ SELECT
   install_dou_metrics.revenue_generating_ad_clicks_sum AS revenue_generating_ad_clicks,
   -- Cost per-install for each campaign ($/new profiles)
   CASE
-  WHEN
-    install_dou_metrics.new_profiles_sum = 0
-  THEN
-    0
-  ELSE
-    stats.cost_micros / install_dou_metrics.new_profiles_sum
-  END
-  AS cost_per_install_micros,
+    WHEN install_dou_metrics.new_profiles_sum = 0
+      THEN 0
+    ELSE stats.cost_micros / install_dou_metrics.new_profiles_sum
+  END AS cost_per_install_micros,
   -- Cost per-DOU for each campaign (microunits of local currency/DOU)
   CASE
-  WHEN
-    install_dou_metrics.dau_sum = 0
-  THEN
-    0
-  ELSE
-    stats.cost_micros / install_dou_metrics.dau_sum
-  END
-  AS cost_per_dou_micros,
+    WHEN install_dou_metrics.dau_sum = 0
+      THEN 0
+    ELSE stats.cost_micros / install_dou_metrics.dau_sum
+  END AS cost_per_dou_micros,
   -- Cost per-Ad Click for each campaign (microunits of local currency/Ad Clicks)
   CASE
-  WHEN
-    marketing_ad_clicks = 0
-  THEN
-    0
-  ELSE
-    stats.cost_micros / marketing_ad_clicks
-  END
-  AS cost_per_marketing_ad_click_micros,
+    WHEN marketing_ad_clicks = 0
+      THEN 0
+    ELSE stats.cost_micros / marketing_ad_clicks
+  END AS cost_per_marketing_ad_click_micros,
   CASE
-  WHEN
-    revenue_generating_ad_clicks_sum = 0
-  THEN
-    0
-  ELSE
-    stats.cost_micros / revenue_generating_ad_clicks_sum
-  END
-  AS cost_per_revenue_generating_ad_click_micros
+    WHEN revenue_generating_ad_clicks_sum = 0
+      THEN 0
+    ELSE stats.cost_micros / revenue_generating_ad_clicks_sum
+  END AS cost_per_revenue_generating_ad_click_micros
 FROM
   stats
 JOIN

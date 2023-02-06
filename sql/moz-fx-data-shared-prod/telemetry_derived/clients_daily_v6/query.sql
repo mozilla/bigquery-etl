@@ -244,7 +244,8 @@ clients_summary AS (
         environment.settings.attribution.campaign,
         environment.settings.attribution.content,
         environment.settings.attribution.experiment,
-        environment.settings.attribution.variation
+        environment.settings.attribution.variation,
+        environment.settings.attribution.dltoken
       ),
       NULL
     ) AS attribution,
@@ -507,19 +508,33 @@ clients_summary AS (
     payload.processes.parent.keyed_scalars.browser_search_content_urlbar_persisted,
     payload.processes.parent.keyed_scalars.browser_search_withads_urlbar_persisted,
     payload.processes.parent.keyed_scalars.browser_search_adclicks_urlbar_persisted,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help_nonsponsored_bestmatch,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help_sponsored_bestmatch,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_block_dynamic_wikipedia,
     payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_block_nonsponsored,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_block_nonsponsored_bestmatch,
     payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_block_sponsored,
     payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_block_sponsored_bestmatch,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_block_nonsponsored_bestmatch,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click_sponsored_bestmatch,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_block_weather,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click_dynamic_wikipedia,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click_nonsponsored,
     payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click_nonsponsored_bestmatch,
-    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression_sponsored_bestmatch,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click_sponsored,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click_sponsored_bestmatch,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click_weather,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help_dynamic_wikipedia,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help_nonsponsored,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help_nonsponsored_bestmatch,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help_sponsored,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help_sponsored_bestmatch,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help_weather,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression_dynamic_wikipedia,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression_nonsponsored,
     payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression_nonsponsored_bestmatch,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression_sponsored,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression_sponsored_bestmatch,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression_weather,
     payload.processes.parent.keyed_scalars.contextual_services_topsites_click,
     payload.processes.parent.keyed_scalars.contextual_services_topsites_impression,
     payload.processes.parent.keyed_scalars.a11y_theme,
@@ -1296,19 +1311,33 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(browser_search_content_urlbar_handoff)),
       STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_urlbar_handoff)),
       STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar_handoff)),
-      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click)),
-      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression)),
-      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help)),
-      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_nonsponsored_bestmatch)),
-      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_sponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_dynamic_wikipedia)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_nonsponsored)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_nonsponsored_bestmatch)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_sponsored)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_sponsored_bestmatch)),
-      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_nonsponsored_bestmatch)),
-      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_sponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_weather)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_dynamic_wikipedia)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_nonsponsored)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_nonsponsored_bestmatch)),
-      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_sponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_sponsored)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_sponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_weather)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_dynamic_wikipedia)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_nonsponsored)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_nonsponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_sponsored)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_sponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_weather)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_dynamic_wikipedia)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_nonsponsored)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_nonsponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_sponsored)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_sponsored_bestmatch)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_weather)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_topsites_click)),
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_topsites_impression)),
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_browser_ui_interaction_content_context)),
@@ -1510,40 +1539,62 @@ SELECT
   map_sum_aggregates[OFFSET(73)].map AS search_content_urlbar_handoff_sum,
   map_sum_aggregates[OFFSET(74)].map AS search_withads_urlbar_handoff_sum,
   map_sum_aggregates[OFFSET(75)].map AS search_adclicks_urlbar_handoff_sum,
-  map_sum_aggregates[OFFSET(76)].map AS contextual_services_quicksuggest_click_sum,
-  map_sum_aggregates[OFFSET(77)].map AS contextual_services_quicksuggest_impression_sum,
-  map_sum_aggregates[OFFSET(78)].map AS contextual_services_quicksuggest_help_sum,
   map_sum_aggregates[
-    OFFSET(79)
-  ].map AS contextual_services_quicksuggest_help_nonsponsored_bestmatch_sum,
+    OFFSET(76)
+  ].map AS contextual_services_quicksuggest_block_dynamic_wikipedia_sum,
+  map_sum_aggregates[OFFSET(77)].map AS contextual_services_quicksuggest_block_nonsponsored_sum,
+  map_sum_aggregates[
+    OFFSET(78)
+  ].map AS contextual_services_quicksuggest_block_nonsponsored_bestmatch_sum,
+  map_sum_aggregates[OFFSET(79)].map AS contextual_services_quicksuggest_block_sponsored_sum,
   map_sum_aggregates[
     OFFSET(80)
-  ].map AS contextual_services_quicksuggest_help_sponsored_bestmatch_sum,
-  map_sum_aggregates[OFFSET(81)].map AS contextual_services_quicksuggest_block_nonsponsored_sum,
-  map_sum_aggregates[OFFSET(82)].map AS contextual_services_quicksuggest_block_sponsored_sum,
+  ].map AS contextual_services_quicksuggest_block_sponsored_bestmatch_sum,
+  map_sum_aggregates[OFFSET(81)].map AS contextual_services_quicksuggest_block_weather_sum,
+  map_sum_aggregates[OFFSET(82)].map AS contextual_services_quicksuggest_click_sum,
   map_sum_aggregates[
     OFFSET(83)
-  ].map AS contextual_services_quicksuggest_block_sponsored_bestmatch_sum,
-  map_sum_aggregates[
-    OFFSET(84)
-  ].map AS contextual_services_quicksuggest_block_nonsponsored_bestmatch_sum,
+  ].map AS contextual_services_quicksuggest_click_dynamic_wikipedia_sum,
+  map_sum_aggregates[OFFSET(84)].map AS contextual_services_quicksuggest_click_nonsponsored_sum,
   map_sum_aggregates[
     OFFSET(85)
-  ].map AS contextual_services_quicksuggest_click_sponsored_bestmatch_sum,
-  map_sum_aggregates[
-    OFFSET(86)
   ].map AS contextual_services_quicksuggest_click_nonsponsored_bestmatch_sum,
+  map_sum_aggregates[OFFSET(86)].map AS contextual_services_quicksuggest_click_sponsored_sum,
   map_sum_aggregates[
     OFFSET(87)
-  ].map AS contextual_services_quicksuggest_impression_sponsored_bestmatch_sum,
+  ].map AS contextual_services_quicksuggest_click_sponsored_bestmatch_sum,
+  map_sum_aggregates[OFFSET(88)].map AS contextual_services_quicksuggest_click_weather_sum,
+  map_sum_aggregates[OFFSET(89)].map AS contextual_services_quicksuggest_help_sum,
+  map_sum_aggregates[OFFSET(90)].map AS contextual_services_quicksuggest_help_dynamic_wikipedia_sum,
+  map_sum_aggregates[OFFSET(91)].map AS contextual_services_quicksuggest_help_nonsponsored_sum,
   map_sum_aggregates[
-    OFFSET(88)
+    OFFSET(92)
+  ].map AS contextual_services_quicksuggest_help_nonsponsored_bestmatch_sum,
+  map_sum_aggregates[OFFSET(93)].map AS contextual_services_quicksuggest_help_sponsored_sum,
+  map_sum_aggregates[
+    OFFSET(94)
+  ].map AS contextual_services_quicksuggest_help_sponsored_bestmatch_sum,
+  map_sum_aggregates[OFFSET(95)].map AS contextual_services_quicksuggest_help_weather_sum,
+  map_sum_aggregates[OFFSET(96)].map AS contextual_services_quicksuggest_impression_sum,
+  map_sum_aggregates[
+    OFFSET(97)
+  ].map AS contextual_services_quicksuggest_impression_dynamic_wikipedia_sum,
+  map_sum_aggregates[
+    OFFSET(98)
+  ].map AS contextual_services_quicksuggest_impression_nonsponsored_sum,
+  map_sum_aggregates[
+    OFFSET(99)
   ].map AS contextual_services_quicksuggest_impression_nonsponsored_bestmatch_sum,
-  map_sum_aggregates[OFFSET(89)].map AS contextual_services_topsites_click_sum,
-  map_sum_aggregates[OFFSET(90)].map AS contextual_services_topsites_impression_sum,
-  map_sum_aggregates[OFFSET(91)].map AS scalar_parent_browser_ui_interaction_content_context_sum,
-  map_sum_aggregates[OFFSET(92)].map AS search_content_urlbar_persisted_sum,
-  map_sum_aggregates[OFFSET(93)].map AS search_withads_urlbar_persisted_sum,
-  map_sum_aggregates[OFFSET(94)].map AS search_adclicks_urlbar_persisted_sum,
+  map_sum_aggregates[OFFSET(100)].map AS contextual_services_quicksuggest_impression_sponsored_sum,
+  map_sum_aggregates[
+    OFFSET(101)
+  ].map AS contextual_services_quicksuggest_impression_sponsored_bestmatch_sum,
+  map_sum_aggregates[OFFSET(102)].map AS contextual_services_quicksuggest_impression_weather_sum,
+  map_sum_aggregates[OFFSET(103)].map AS contextual_services_topsites_click_sum,
+  map_sum_aggregates[OFFSET(104)].map AS contextual_services_topsites_impression_sum,
+  map_sum_aggregates[OFFSET(105)].map AS scalar_parent_browser_ui_interaction_content_context_sum,
+  map_sum_aggregates[OFFSET(106)].map AS search_content_urlbar_persisted_sum,
+  map_sum_aggregates[OFFSET(107)].map AS search_withads_urlbar_persisted_sum,
+  map_sum_aggregates[OFFSET(108)].map AS search_adclicks_urlbar_persisted_sum,
 FROM
   udf_aggregates

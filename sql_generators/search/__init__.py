@@ -15,6 +15,7 @@ from typing import List
 import click
 from jinja2 import Environment, FileSystemLoader
 
+from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
 
 # fmt: off
@@ -71,7 +72,8 @@ def union_statements(statements: List[str]):
     help="GCP project ID",
     default="moz-fx-data-shared-prod",
 )
-def generate(output_dir, target_project):
+@use_cloud_function_option
+def generate(output_dir, target_project, use_cloud_function):
     """Generate mobile search clients daily query and print to stdout."""
     base_dir = Path(__file__).parent
 
@@ -166,16 +168,10 @@ def generate(output_dir, target_project):
     )
 
     ios_focus_combined_metrics = union_statements(
-        [
-            f"SELECT * FROM metrics_{namespace}"
-            for namespace, _, _ in FOCUS_iOS_TUPLES
-        ]
+        [f"SELECT * FROM metrics_{namespace}" for namespace, _, _ in FOCUS_iOS_TUPLES]
     )
     ios_klar_combined_metrics = union_statements(
-        [
-            f"SELECT * FROM metrics_{namespace}"
-            for namespace, _, _ in KLAR_iOS_TUPLES
-        ]
+        [f"SELECT * FROM metrics_{namespace}" for namespace, _, _ in KLAR_iOS_TUPLES]
     )
 
     search_query = search_query_template.render(

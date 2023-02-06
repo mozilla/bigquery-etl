@@ -1,20 +1,13 @@
 CREATE OR REPLACE FUNCTION norm.extract_version(version_string STRING, extraction_level STRING)
 RETURNS NUMERIC AS (
   CASE
-  WHEN
-    extraction_level = "patch"
-  THEN
-    CAST(REGEXP_EXTRACT(version_string, r"^[0-9]+[.][0-9]+[.]([0-9]+).*") AS NUMERIC)
-  WHEN
-    extraction_level = "minor"
-  THEN
-    CAST(REGEXP_EXTRACT(version_string, r"^[0-9]+[.]([0-9]+).*") AS NUMERIC)
-  WHEN
-    extraction_level = "major"
-  THEN
-    CAST(REGEXP_EXTRACT(version_string, r"^([0-9]+).*") AS NUMERIC)
-  ELSE
-    NULL
+    WHEN extraction_level = "patch"
+      THEN CAST(REGEXP_EXTRACT(version_string, r"^[0-9]+[.][0-9]+[.]([0-9]+).*") AS NUMERIC)
+    WHEN extraction_level = "minor"
+      THEN CAST(REGEXP_EXTRACT(version_string, r"^[0-9]+[.]([0-9]+).*") AS NUMERIC)
+    WHEN extraction_level = "major"
+      THEN CAST(REGEXP_EXTRACT(version_string, r"^([0-9]+).*") AS NUMERIC)
+    ELSE NULL
   END
 );
 

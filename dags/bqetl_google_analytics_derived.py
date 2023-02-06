@@ -47,7 +47,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     ga_derived__blogs_daily_summary__v1 = bigquery_etl_query(
         task_id="ga_derived__blogs_daily_summary__v1",
         destination_table="blogs_daily_summary_v1",

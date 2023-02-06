@@ -45,7 +45,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     firefox_accounts_derived__event_types__v1 = bigquery_etl_query(
         task_id="firefox_accounts_derived__event_types__v1",
         destination_table="event_types_v1",

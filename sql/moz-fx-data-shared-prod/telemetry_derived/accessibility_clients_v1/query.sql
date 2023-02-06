@@ -32,50 +32,38 @@ SELECT
   COUNT(
     DISTINCT
     CASE
-    WHEN
-      consumer = 0
-      OR instantiator = 'nvda.exe'
-    THEN
-      client_id
-    ELSE
-      NULL
+      WHEN consumer = 0
+        OR instantiator = 'nvda.exe'
+        THEN client_id
+      ELSE NULL
     END
   ) AS nvda,
   COUNT(
     DISTINCT
     CASE
-    WHEN
-      consumer = 1
-      OR instantiator = 'jfw.exe'
-    THEN
-      client_id
-    ELSE
-      NULL
+      WHEN consumer = 1
+        OR instantiator = 'jfw.exe'
+        THEN client_id
+      ELSE NULL
     END
   ) AS jaws,
   COUNT(DISTINCT CASE WHEN consumer = 2 THEN client_id ELSE NULL END) AS oldjaws,
   COUNT(
     DISTINCT
     CASE
-    WHEN
-      consumer = 3
-      OR UPPER(instantiator) LIKE UPPER('%WindowEyes%')
-    THEN
-      client_id
-    ELSE
-      NULL
+      WHEN consumer = 3
+        OR UPPER(instantiator) LIKE UPPER('%WindowEyes%')
+        THEN client_id
+      ELSE NULL
     END
   ) AS we,
   COUNT(
     DISTINCT
     CASE
-    WHEN
-      consumer = 4
-      OR instantiator = 'Snova.exe'
-    THEN
-      client_id
-    ELSE
-      NULL
+      WHEN consumer = 4
+        OR instantiator = 'Snova.exe'
+        THEN client_id
+      ELSE NULL
     END
   ) AS dolphin,
   COUNT(DISTINCT CASE WHEN consumer = 5 THEN client_id ELSE NULL END) AS serotek,
@@ -83,13 +71,10 @@ SELECT
   COUNT(
     DISTINCT
     CASE
-    WHEN
-      consumer = 7
-      OR instantiator = 'Zt.exe'
-    THEN
-      client_id
-    ELSE
-      NULL
+      WHEN consumer = 7
+        OR instantiator = 'Zt.exe'
+        THEN client_id
+      ELSE NULL
     END
   ) AS zoomtext,
   COUNT(DISTINCT CASE WHEN consumer = 8 THEN client_id ELSE NULL END) AS kazaguru,
@@ -102,34 +87,25 @@ SELECT
   COUNT(
     DISTINCT
     CASE
-    WHEN
-      instantiator = 'osk.exe'
-    THEN
-      client_id
-    ELSE
-      NULL
+      WHEN instantiator = 'osk.exe'
+        THEN client_id
+      ELSE NULL
     END
   ) AS on_screen_keyboard,
   COUNT(
     DISTINCT
     CASE
-    WHEN
-      instantiator = 'sapisvr.exe'
-    THEN
-      client_id
-    ELSE
-      NULL
+      WHEN instantiator = 'sapisvr.exe'
+        THEN client_id
+      ELSE NULL
     END
   ) AS speech_recognition,
   COUNT(
     DISTINCT
     CASE
-    WHEN
-      instantiator = 'TabTip.exe'
-    THEN
-      client_id
-    ELSE
-      NULL
+      WHEN instantiator = 'TabTip.exe'
+        THEN client_id
+      ELSE NULL
     END
   ) AS touch_keyboard_and_handwriting_panel,
   COUNT(DISTINCT CASE WHEN instantiator = 'VoiceOver' THEN client_id ELSE NULL END) AS voice_over,

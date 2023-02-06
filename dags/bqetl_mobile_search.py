@@ -27,6 +27,7 @@ default_args = {
         "telemetry-alerts@mozilla.com",
         "anicholson@mozilla.com",
         "akomar@mozilla.com",
+        "cmorales@mozilla.com",
     ],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=300),
@@ -44,7 +45,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     search_derived__mobile_search_aggregates__v1 = bigquery_etl_query(
         task_id="search_derived__mobile_search_aggregates__v1",
         destination_table="mobile_search_aggregates_v1",
@@ -54,6 +54,7 @@ with DAG(
         email=[
             "akomar@mozilla.com",
             "anicholson@mozilla.com",
+            "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
@@ -69,6 +70,7 @@ with DAG(
         email=[
             "akomar@mozilla.com",
             "anicholson@mozilla.com",
+            "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
@@ -118,6 +120,7 @@ with DAG(
         email=[
             "akomar@mozilla.com",
             "anicholson@mozilla.com",
+            "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",

@@ -3,6 +3,7 @@
 import re
 import sys
 from dataclasses import dataclass, field
+from typing import Iterator
 
 # These words get their own line followed by increased indent
 TOP_LEVEL_KEYWORDS = [
@@ -645,9 +646,7 @@ class BlockEndKeyword(BlockKeyword):
 class BlockMiddleKeyword(BlockStartKeyword, BlockEndKeyword):
     """Keyword that ends one indented block and starts another."""
 
-    pattern = _keyword_pattern(
-        ["BEGIN", "EXCEPTION WHEN ERROR THEN", "ELSEIF", "ELSE", "THEN", "DO", "WHEN"]
-    )
+    pattern = _keyword_pattern(["BEGIN", "EXCEPTION WHEN ERROR THEN", "ELSEIF", "DO"])
 
 
 class AliasSeparator(SpaceBeforeBracketKeyword):
@@ -673,6 +672,18 @@ class TopLevelKeyword(NewlineKeyword):
     """Keyword that should get its own line followed by increased indent."""
 
     pattern = _keyword_pattern(TOP_LEVEL_KEYWORDS)
+
+
+class CaseSubclause(NewlineKeyword):
+    """Subclause within a CASE."""
+
+    pattern = _keyword_pattern(["WHEN"])
+
+
+class MaybeCaseSubclause(ReservedKeyword):
+    """Keyword that needs context to determine whether it is for a CASE or an IF."""
+
+    pattern = _keyword_pattern(["THEN", "ELSE"])
 
 
 class AngleBracketKeyword(ReservedKeyword):
@@ -803,6 +814,8 @@ BIGQUERY_TOKEN_PRIORITY = [
     LineComment,
     BlockComment,
     Whitespace,
+    MaybeCaseSubclause,
+    CaseSubclause,
     BlockMiddleKeyword,
     BlockStartKeyword,
     BlockEndKeyword,
@@ -829,8 +842,9 @@ BIGQUERY_TOKEN_PRIORITY = [
 ]
 
 
-def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY):
+def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY) -> Iterator[Token]:
     """Split query into a series of tokens."""
+    open_blocks: list[BlockStartKeyword] = []
     open_angle_brackets = 0
     angle_bracket_is_operator = True
     reserved_keyword_is_identifier = False
@@ -841,7 +855,12 @@ def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY):
                 continue
             token = token_type(match.group())
             # handle stateful matches
-            if isinstance(token, MaybeOpeningAngleBracket):
+            if isinstance(token, MaybeCaseSubclause):
+                if open_blocks and open_blocks[-1].value.upper() == "CASE":
+                    token = CaseSubclause(token.value)
+                else:
+                    token = BlockMiddleKeyword(token.value)
+            elif isinstance(token, MaybeOpeningAngleBracket):
                 if angle_bracket_is_operator:
                     continue  # prevent matching operator as opening bracket
                 token = OpeningBracket(token.value)
@@ -861,6 +880,10 @@ def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY):
             length = len(token.value)
             query = query[length:]
             # update stateful conditions for next token
+            if isinstance(token, BlockEndKeyword) and open_blocks:
+                open_blocks.pop()
+            if isinstance(token, BlockStartKeyword):
+                open_blocks.append(token)
             if not isinstance(token, (Comment, Whitespace)):
                 # angle brackets are operators unless already in angle bracket
                 # block or preceded by an AngleBracketKeyword

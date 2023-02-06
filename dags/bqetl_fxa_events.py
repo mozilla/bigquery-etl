@@ -54,7 +54,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     docker_fxa_admin_server_v1 = bigquery_etl_query(
         task_id="docker_fxa_admin_server_v1",
         destination_table="docker_fxa_admin_server_sanitized_v1",
@@ -422,6 +421,10 @@ with DAG(
 
     firefox_accounts_derived__fxa_users_first_seen__v1.set_upstream(
         firefox_accounts_derived__fxa_stdout_events__v1
+    )
+
+    firefox_accounts_derived__fxa_users_last_seen__v1.set_upstream(
+        firefox_accounts_derived__fxa_users_daily__v1
     )
 
     firefox_accounts_derived__fxa_users_services_daily__v1.set_upstream(

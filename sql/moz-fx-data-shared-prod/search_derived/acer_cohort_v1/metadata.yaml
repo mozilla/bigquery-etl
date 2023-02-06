@@ -1,0 +1,9 @@
+friendly_name: Acer Cohort
+description: |-
+  Table of client_ids that have been seen with an Acer distribution
+  This is a table that was created once, in January 2023, and will not change
+  in the future
+owners:
+  - cmorales@mozilla.com
+bigquery:
+references: {}

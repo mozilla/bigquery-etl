@@ -46,7 +46,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     telemetry_derived__addon_aggregates__v2 = bigquery_etl_query(
         task_id="telemetry_derived__addon_aggregates__v2",
         destination_table="addon_aggregates_v2",

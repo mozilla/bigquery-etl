@@ -25,6 +25,7 @@ WITH base AS (
     environment.profile.creation_date AS profile_creation_date,
     environment.settings.is_default_browser,
     environment.settings.attribution.source AS attribution_source,
+    environment.settings.attribution.dltoken AS attribution_dltoken,
     environment.system.is_wow64 AS system_is_wow64,
     environment.system.memory_mb AS system_memory_mb,
     metadata.geo.city

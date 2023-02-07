@@ -102,12 +102,12 @@ fields:
     combination. Ordered in ASC occurance order.
 
 - mode: NULLABLE
-  name: first_daily_service_flow_info
+  name: user_service_first_daily_flow_info
   type: RECORD
   description: |
     Contains the first flow_id observed for the specific
     user / service combination each day along with
-    the flow's entrypoint and its utm information.
+    the flow's entrypoint.
   fields:
   - mode: NULLABLE
     name: flow_id
@@ -119,7 +119,7 @@ fields:
       a registration and login sessions.
 
   - mode: NULLABLE
-    name: flow_timestamp
+    name: timestamp
     type: TIMESTAMP
     description: |
       Timestamp of when we we saw the first record
@@ -132,6 +132,13 @@ fields:
       The entrypoint of the flow session.
       Typically a UI touchpoint like "preferences".
 
+- mode: NULLABLE
+  name: user_service_utm_info
+  type: RECORD
+  description: |
+    Contains utm information for the specific
+    user / service combination for each day.
+  fields:
   - mode: NULLABLE
     name: utm_term
     type: STRING

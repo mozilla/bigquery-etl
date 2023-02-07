@@ -7,8 +7,5 @@ labels: {}
 scheduling:
   dag_name: bqetl_fivetran_costs
   date_partition_parameter: null
-  depends_on_fivetran:
-  - task_id: fivetran_log_prod
-  - task_id: fivetran_log_dev
 bigquery: null
 references: {}

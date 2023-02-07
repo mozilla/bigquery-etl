@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_ios.temp_sync`
 AS
 SELECT
+  "org_mozilla_ios_firefox" AS normalized_app_id,
   additional_properties,
   client_info,
   document_id,
@@ -21,6 +22,7 @@ FROM
   `moz-fx-data-shared-prod.org_mozilla_ios_firefox.temp_sync`
 UNION ALL
 SELECT
+  "org_mozilla_ios_firefoxbeta" AS normalized_app_id,
   additional_properties,
   client_info,
   document_id,
@@ -39,6 +41,7 @@ FROM
   `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.temp_sync`
 UNION ALL
 SELECT
+  "org_mozilla_ios_fennec" AS normalized_app_id,
   additional_properties,
   client_info,
   document_id,

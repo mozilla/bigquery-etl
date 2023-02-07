@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_fire_tv.events`
 AS
 SELECT
+  "org_mozilla_tv_firefox" AS normalized_app_id,
   additional_properties,
   client_info,
   document_id,

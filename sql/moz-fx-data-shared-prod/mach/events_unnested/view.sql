@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.mach.events_unnested`
 AS
 SELECT
+  "mozilla_mach" AS normalized_app_id,
   e.* EXCEPT (events, metrics) REPLACE(
     -- Order of some fields differs between tables; we're verbose here for compatibility
     STRUCT(
@@ -53,7 +54,7 @@ SELECT
   event.timestamp AS event_timestamp,
   event.category AS event_category,
   event.name AS event_name,
-  event.extra AS event_extra,
+  event.extra AS event_extra
 FROM
   `moz-fx-data-shared-prod.mozilla_mach.events` AS e
 CROSS JOIN

@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.focus_android.crash`
 AS
 SELECT
+  "org_mozilla_focus" AS normalized_app_id,
   additional_properties,
   client_info,
   document_id,
@@ -21,6 +22,7 @@ FROM
   `moz-fx-data-shared-prod.org_mozilla_focus.crash`
 UNION ALL
 SELECT
+  "org_mozilla_focus_beta" AS normalized_app_id,
   additional_properties,
   client_info,
   document_id,
@@ -39,6 +41,7 @@ FROM
   `moz-fx-data-shared-prod.org_mozilla_focus_beta.crash`
 UNION ALL
 SELECT
+  "org_mozilla_focus_nightly" AS normalized_app_id,
   additional_properties,
   client_info,
   document_id,

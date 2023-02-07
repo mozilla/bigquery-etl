@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.lockwise_android.creditcards_sync`
 AS
 SELECT
+  "mozilla_lockbox" AS normalized_app_id,
   additional_properties,
   client_info,
   document_id,

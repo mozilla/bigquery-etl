@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.focus_android.activation`
 AS
 SELECT
+  "org_mozilla_focus" AS normalized_app_id,
   additional_properties,
   client_info,
   document_id,
@@ -21,6 +22,7 @@ FROM
   `moz-fx-data-shared-prod.org_mozilla_focus.activation`
 UNION ALL
 SELECT
+  "org_mozilla_focus_beta" AS normalized_app_id,
   additional_properties,
   client_info,
   document_id,
@@ -46,6 +48,7 @@ FROM
   `moz-fx-data-shared-prod.org_mozilla_focus_beta.activation`
 UNION ALL
 SELECT
+  "org_mozilla_focus_nightly" AS normalized_app_id,
   additional_properties,
   client_info,
   document_id,

@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_echo_show.deletion_request`
 AS
 SELECT
+  "org_mozilla_connect_firefox" AS normalized_app_id,
   additional_properties,
   client_info,
   document_id,

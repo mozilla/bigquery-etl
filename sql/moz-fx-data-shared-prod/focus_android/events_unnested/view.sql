@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.focus_android.events_unnested`
 AS
 SELECT
+  "org_mozilla_focus" AS normalized_app_id,
   e.* EXCEPT (events, metrics) REPLACE(
     "release" AS normalized_channel,
     -- Order of some fields differs between tables; we're verbose here for compatibility
@@ -54,13 +55,14 @@ SELECT
   event.timestamp AS event_timestamp,
   event.category AS event_category,
   event.name AS event_name,
-  event.extra AS event_extra,
+  event.extra AS event_extra
 FROM
   `moz-fx-data-shared-prod.org_mozilla_focus.events` AS e
 CROSS JOIN
   UNNEST(e.events) AS event
 UNION ALL
 SELECT
+  "org_mozilla_focus_beta" AS normalized_app_id,
   e.* EXCEPT (events, metrics) REPLACE(
     "beta" AS normalized_channel,
     -- Order of some fields differs between tables; we're verbose here for compatibility
@@ -112,13 +114,14 @@ SELECT
   event.timestamp AS event_timestamp,
   event.category AS event_category,
   event.name AS event_name,
-  event.extra AS event_extra,
+  event.extra AS event_extra
 FROM
   `moz-fx-data-shared-prod.org_mozilla_focus_beta.events` AS e
 CROSS JOIN
   UNNEST(e.events) AS event
 UNION ALL
 SELECT
+  "org_mozilla_focus_nightly" AS normalized_app_id,
   e.* EXCEPT (events, metrics) REPLACE(
     "nightly" AS normalized_channel,
     -- Order of some fields differs between tables; we're verbose here for compatibility
@@ -170,7 +173,7 @@ SELECT
   event.timestamp AS event_timestamp,
   event.category AS event_category,
   event.name AS event_name,
-  event.extra AS event_extra,
+  event.extra AS event_extra
 FROM
   `moz-fx-data-shared-prod.org_mozilla_focus_nightly.events` AS e
 CROSS JOIN

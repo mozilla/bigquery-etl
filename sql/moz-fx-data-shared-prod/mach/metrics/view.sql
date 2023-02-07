@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.mach.metrics`
 AS
 SELECT
+  "mozilla_mach" AS normalized_app_id,
   additional_properties,
   client_info,
   document_id,

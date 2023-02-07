@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.fenix.migration`
 AS
 SELECT
+  "org_mozilla_firefox" AS normalized_app_id,
   submission_date,
   additional_properties,
   client_info,
@@ -67,6 +68,7 @@ FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox.migration`
 UNION ALL
 SELECT
+  "org_mozilla_firefox_beta" AS normalized_app_id,
   SAFE_CAST(NULL AS DATE) AS submission_date,
   additional_properties,
   client_info,
@@ -102,6 +104,7 @@ FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_beta.migration`
 UNION ALL
 SELECT
+  "org_mozilla_fenix" AS normalized_app_id,
   SAFE_CAST(NULL AS DATE) AS submission_date,
   additional_properties,
   client_info,
@@ -137,6 +140,7 @@ FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix.migration`
 UNION ALL
 SELECT
+  "org_mozilla_fenix_nightly" AS normalized_app_id,
   SAFE_CAST(NULL AS DATE) AS submission_date,
   additional_properties,
   client_info,
@@ -172,6 +176,7 @@ FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.migration`
 UNION ALL
 SELECT
+  "org_mozilla_fennec_aurora" AS normalized_app_id,
   SAFE_CAST(NULL AS DATE) AS submission_date,
   additional_properties,
   client_info,

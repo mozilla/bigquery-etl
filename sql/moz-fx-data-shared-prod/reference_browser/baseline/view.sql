@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.reference_browser.baseline`
 AS
 SELECT
+  "org_mozilla_reference_browser" AS normalized_app_id,
   additional_properties,
   client_info,
   document_id,

@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_ios.topsites_impression`
 AS
 SELECT
+  "org_mozilla_ios_firefox" AS normalized_app_id,
   additional_properties,
   client_info,
   document_id,
@@ -21,6 +22,7 @@ FROM
   `moz-fx-data-shared-prod.org_mozilla_ios_firefox.topsites_impression`
 UNION ALL
 SELECT
+  "org_mozilla_ios_firefoxbeta" AS normalized_app_id,
   additional_properties,
   client_info,
   document_id,
@@ -39,6 +41,7 @@ FROM
   `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.topsites_impression`
 UNION ALL
 SELECT
+  "org_mozilla_ios_fennec" AS normalized_app_id,
   additional_properties,
   client_info,
   document_id,

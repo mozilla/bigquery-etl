@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.klar_ios.deletion_request`
 AS
 SELECT
+  "org_mozilla_ios_klar" AS normalized_app_id,
   additional_properties,
   client_info,
   document_id,

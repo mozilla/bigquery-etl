@@ -34619,6 +34619,16 @@ fields:
           mode: REPEATED
           name: contextual_services_quicksuggest_impression_weather
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: quickaction_impression
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD
@@ -35879,6 +35889,9 @@ fields:
           type: INTEGER
         - mode: NULLABLE
           name: cookie_banners_service_detect_only
+          type: BOOLEAN
+        - mode: NULLABLE
+          name: startup_is_restored_by_macos
           type: BOOLEAN
         mode: NULLABLE
         name: scalars

@@ -48,6 +48,19 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
+    fivetran_costs_derived__daily_active_rows__v1 = bigquery_etl_query(
+        task_id="fivetran_costs_derived__daily_active_rows__v1",
+        destination_table="daily_active_rows_v1",
+        dataset_id="fivetran_costs_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="lschiestl@mozilla.com",
+        email=["lschiestl@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     fivetran_costs_derived__destinations__v1 = bigquery_etl_query(
         task_id="fivetran_costs_derived__destinations__v1",
         destination_table="destinations_v1",
@@ -96,6 +109,13 @@ with DAG(
         task_concurrency=1,
     )
 
+    fivetran_costs_derived__daily_active_rows__v1.set_upstream(
+        fivetran_costs_derived__destinations__v1
+    )
+
+    fivetran_costs_derived__daily_active_rows__v1.set_upstream(
+        fivetran_costs_derived__incremental_mar__v1
+    )
     fivetran_log_prod_sync_start = FivetranOperator(
         connector_id="{{ var.value.fivetran_log_prod_connector_id }}",
         task_id="fivetran_log_prod_task",
@@ -112,7 +132,9 @@ with DAG(
 
     fivetran_log_prod_sync_wait.set_upstream(fivetran_log_prod_sync_start)
 
-    fivetran_costs_derived__destinations__v1.set_upstream(fivetran_log_prod_sync_wait)
+    fivetran_costs_derived__daily_active_rows__v1.set_upstream(
+        fivetran_log_prod_sync_wait
+    )
 
     fivetran_log_dev_sync_start = FivetranOperator(
         connector_id="{{ var.value.fivetran_log_dev_connector_id }}",
@@ -129,6 +151,12 @@ with DAG(
     )
 
     fivetran_log_dev_sync_wait.set_upstream(fivetran_log_dev_sync_start)
+
+    fivetran_costs_derived__daily_active_rows__v1.set_upstream(
+        fivetran_log_dev_sync_wait
+    )
+
+    fivetran_costs_derived__destinations__v1.set_upstream(fivetran_log_prod_sync_wait)
 
     fivetran_costs_derived__destinations__v1.set_upstream(fivetran_log_dev_sync_wait)
 

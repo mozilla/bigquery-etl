@@ -57,6 +57,8 @@ entrypoints AS (
     -- cannot be used for mapping
     flow_id IS NOT NULL
     AND entrypoint IS NOT NULL
+  -- in case we find multiple entrypoints for a single flow_id
+  -- we only keep the first one
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY flow_id ORDER BY `timestamp` ASC) = 1
 ),

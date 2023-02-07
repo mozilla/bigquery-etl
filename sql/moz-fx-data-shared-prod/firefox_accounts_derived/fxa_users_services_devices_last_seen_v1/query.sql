@@ -22,7 +22,7 @@ WITH _current AS (
     -- rightmost bit represents whether the user was active in the current day.
     CAST(TRUE AS INT64) AS days_seen_bits,
   FROM
-    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_devices_daily_v1`
+    `firefox_accounts_derived.fxa_users_services_devices_daily_v1`
   WHERE
     DATE(`timestamp`) = @submission_date
     -- Making sure we only use login or registration complete events
@@ -35,7 +35,7 @@ _previous AS (
   SELECT
     * EXCEPT (submission_date)
   FROM
-    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_devices_last_seen_v1`
+    `firefox_accounts_derived.fxa_users_services_devices_last_seen_v1`
   WHERE
     DATE(submission_date) = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.

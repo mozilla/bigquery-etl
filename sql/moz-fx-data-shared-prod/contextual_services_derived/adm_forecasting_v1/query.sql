@@ -437,7 +437,7 @@ clicks AS (
   FROM
     contextual_services.event_aggregates
   WHERE
-    submission_Date >= "2021-09-07"
+    submission_date >= "2021-09-07"
     AND release_channel = "release"
     AND event_type = "click"
     AND source = "topsites"
@@ -469,7 +469,7 @@ clicks AS (
   FROM
     contextual_services.event_aggregates
   WHERE
-    submission_Date >= "2022-06-07"
+    submission_date >= "2022-06-07"
     AND release_channel = "release"
     AND event_type = "click"
     AND source = "suggest"

@@ -40,30 +40,26 @@ WITH client_counts AS (
               AND country = "JP"
             )
           )
+          THEN 1
 -- ANDROID ELIGIBLITY REQUIREMENTS
-      WHEN
-        normalized_app_name != "Firefox Desktop"
-        AND normalized_os = "Android"
-        AND browser_version_info.major_version > 100
-        AND (
-          (country IN UNNEST(["US"]) AND submission_date >= "2022-05-10")
-          OR (country IN UNNEST(["DE"]) AND submission_date >= "2022-12-05")
-        )
-      THEN
-        1
+        WHEN normalized_app_name != "Firefox Desktop"
+          AND normalized_os = "Android"
+          AND browser_version_info.major_version > 100
+          AND (
+            (country IN UNNEST(["US"]) AND submission_date >= "2022-05-10")
+            OR (country IN UNNEST(["DE"]) AND submission_date >= "2022-12-05")
+          )
+          THEN 1
   -- iOS ELIGIBLITY REQUIREMENTS
-      WHEN
-        normalized_app_name != "Firefox Desktop"
-        AND normalized_os = "iOS"
-        AND browser_version_info.major_version > 101
-        AND (
-          (country IN UNNEST(["US"]) AND submission_date >= "2022-06-07")
-          OR (country IN UNNEST(["DE"]) AND submission_date >= "2022-12-05")
-        )
-      THEN
-        1
-      ELSE
-        NULL
+        WHEN normalized_app_name != "Firefox Desktop"
+          AND normalized_os = "iOS"
+          AND browser_version_info.major_version > 101
+          AND (
+            (country IN UNNEST(["US"]) AND submission_date >= "2022-06-07")
+            OR (country IN UNNEST(["DE"]) AND submission_date >= "2022-12-05")
+          )
+          THEN 1
+        ELSE NULL
       END
     ) AS eligible_clients
   FROM

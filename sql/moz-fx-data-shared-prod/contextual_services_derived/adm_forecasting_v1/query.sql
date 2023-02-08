@@ -473,7 +473,7 @@ clicks AS (
     AND release_channel = "release"
     AND event_type = "click"
     AND source = "suggest"
-    AND country IN UNNEST(["US", "DE"])
+    AND country IN UNNEST(["US"])
   GROUP BY
     product,
     submission_date,

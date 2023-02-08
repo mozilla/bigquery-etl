@@ -1,6 +1,6 @@
-friendly_name: Monthly Connector Costs
+friendly_name: Daily Active Rows
 description: |-
-  Monthly Costs per Fivetran Connector
+  Daily active rows per Fivetran Connector
 owners:
 - lschiestl@mozilla.com
 labels: {}

@@ -1,0 +1,291 @@
+"""bigquery-etl CLI stage commands."""
+
+import re
+import shutil
+import tempfile
+from datetime import datetime
+from pathlib import Path
+
+import click
+from google.cloud import bigquery
+
+from ..cli.query import deploy as deploy_query_schema
+from ..cli.query import update as update_query_schema
+from ..cli.routine import publish as publish_routine
+from ..cli.utils import QUERY_FILE_RE, paths_matching_name_pattern, sql_dir_option
+from ..cli.view import publish as publish_view
+from ..routine.parse_routine import (
+    UDF_FILE,
+    RawRoutine,
+    accumulate_dependencies,
+    read_routine_dir,
+)
+
+VIEW_FILE = "view.sql"
+
+
+@click.group(help="Commands for managing stage deploys")
+def stage():
+    """Create the CLI group for the stage command."""
+    pass
+
+
+@stage.command(
+    help="""
+        Deploy artifacts to the configured stage project. The order of deployment is:
+        UDFs, views, tables.
+
+    Examples:
+    ./bqetl stage deploy sql/moz-fx-data-shared-prod/telemetry_derived/
+    """
+)
+@click.argument(
+    "paths",
+    nargs=-1,
+)
+@click.option(
+    "--project-id",
+    "--project_id",
+    help="GCP project to deploy artifacts to",
+    default="bigquery-etl-integration-test",
+)
+@sql_dir_option
+@click.option(
+    "--dataset-suffix",
+    "--dataset_suffix",
+    help="Suffix appended to the deployed dataset",
+)
+@click.option(
+    "--update-references",
+    "--update_references",
+    default=True,
+    help="Update references to deployed artifacts with project and dataset artifacts have been deployed to.",
+)
+@click.option(
+    "--copy-sql-to-tmp-dir",
+    "--copy_sql_to_tmp_dir",
+    help="Copy existing SQL from the sql_dir to a temporary directory and apply updates there.",
+    default=False,
+    is_flag=True,
+)
+@click.pass_context
+def deploy(
+    ctx,
+    paths,
+    project_id,
+    sql_dir,
+    dataset_suffix,
+    update_references,
+    copy_sql_to_tmp_dir,
+):
+    """Deploy provided artifacts to destination project."""
+    if copy_sql_to_tmp_dir:
+        # copy SQL to a temporary directory
+        tmp_dir = Path(tempfile.mkdtemp())
+        tmp_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(sql_dir, tmp_dir)
+        sql_dir = tmp_dir / sql_dir.name
+
+    artifact_files = []
+
+    # get SQL files for artifacts that are to be deployed
+    for path in paths:
+        artifact_files += paths_matching_name_pattern(
+            path, sql_dir, None, files=["*.sql", "*.py"]
+        )
+
+    # determine UDF dependencies
+    raw_routines = read_routine_dir()
+    udf_files = [file for file in artifact_files if file.name == UDF_FILE]
+    for udf_file in udf_files:
+        # all referenced UDFs need to be deployed in the same stage project due to access restrictions
+        raw_routine = RawRoutine.from_file(udf_file)
+        udfs_to_publish = accumulate_dependencies([], raw_routines, raw_routine.name)
+
+        for dependency in udfs_to_publish:
+            dataset, name = dependency.split(".")
+            file_path = (
+                raw_routine.filepath.parent.parent.parent / dataset / name / UDF_FILE
+            )
+            if file_path not in artifact_files:
+                artifact_files.append(file_path)
+
+    # update references of all deployed artifacts
+    # references needs to be set to the stage project and the new dataset identifier
+    if update_references:
+        replace_references = []
+        for artifact_file in artifact_files:
+            name = artifact_file.parent.name
+            original_dataset = artifact_file.parent.parent.name
+            deployed_dataset = original_dataset
+            if dataset_suffix:
+                deployed_dataset += f"_{dataset_suffix}"
+            original_project = artifact_file.parent.parent.parent.name
+            deployed_project = project_id
+
+            # replace partially qualified references (like "telemetry.main")
+            replace_references.append(
+                (
+                    re.compile(
+                        rf"(?<!\.)`?{original_dataset}`?\.{name}(?![a-zA-Z0-9_])`?"
+                    ),
+                    f"`{deployed_project}`.{deployed_dataset}.{name}",
+                )
+            )
+            # replace fully qualified references (like "moz-fx-data-shared-prod.telemetry.main")
+            replace_references.append(
+                (
+                    rf"(?<![a-zA-Z0-9_])`?{original_project}`?\.{original_dataset}`?\.{name}(?![a-zA-Z0-9_])`?",
+                    f"`{deployed_project}`.{deployed_dataset}.{name}",
+                )
+            )
+
+        for path in Path(sql_dir).rglob("*.sql"):
+            # apply substitutions
+            if path.is_file():
+                sql = path.read_text()
+
+                for ref in replace_references:
+                    sql = re.sub(ref[0], ref[1], sql)
+
+                path.write_text(sql)
+
+    updated_artifact_files = []
+    # copy updated files locally to a folder representing the stage env project
+    for artifact_file in artifact_files:
+        dataset = artifact_file.parent.parent.name
+        name = artifact_file.parent.name
+
+        if dataset_suffix:
+            dataset = f"{dataset}_{dataset_suffix}"
+
+        new_artifact_path = Path(sql_dir) / project_id / dataset / name
+        new_artifact_path.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(artifact_file.parent, new_artifact_path, dirs_exist_ok=True)
+        updated_artifact_files.append(new_artifact_path / artifact_file.name)
+
+    # deploy UDFs
+    udf_files = [file for file in updated_artifact_files if file.name == UDF_FILE]
+
+    for udf_file in udf_files:
+        name = udf_file.parent.name
+        dataset = udf_file.parent.parent.name
+        create_dataset_if_not_exists(
+            project_id=project_id, dataset=dataset, suffix=dataset_suffix
+        )
+
+    ctx.invoke(publish_routine, name=None, project_id=project_id, dry_run=False)
+
+    # deploy table schemas
+    query_files = [
+        file
+        for file in updated_artifact_files
+        if QUERY_FILE_RE.match(str(file)) and file.name != VIEW_FILE
+    ]
+
+    for query_file in query_files:
+        dataset = query_file.parent.parent.name
+        create_dataset_if_not_exists(
+            project_id=project_id, dataset=dataset, suffix=dataset_suffix
+        )
+        ctx.invoke(
+            update_query_schema,
+            name=str(query_file),
+            sql_dir=sql_dir,
+            project_id=project_id,
+            respect_dryrun_skip=False,
+        )
+        ctx.invoke(
+            deploy_query_schema,
+            name=str(query_file),
+            sql_dir=sql_dir,
+            project_id=project_id,
+            force=True,
+            respect_dryrun_skip=False,
+            skip_external_data=True,
+        )
+
+    # deploy views
+    view_files = [file for file in updated_artifact_files if file.name == VIEW_FILE]
+
+    for view_file in view_files:
+        name = view_file.parent.name
+        dataset = view_file.parent.parent.name
+        create_dataset_if_not_exists(
+            project_id=project_id, dataset=dataset, suffix=dataset_suffix
+        )
+
+    ctx.invoke(
+        publish_view,
+        name=None,
+        sql_dir=sql_dir,
+        project_id=project_id,
+        dry_run=False,
+        skip_authorized=True,
+        force=True,
+    )
+
+
+def create_dataset_if_not_exists(project_id, dataset, suffix=None):
+    """Create a temporary dataset if not already exists."""
+    client = bigquery.Client(project_id)
+    dataset = bigquery.Dataset(f"{project_id}.{dataset}")
+    dataset.location = "US"
+    dataset = client.create_dataset(dataset, exists_ok=True)
+    dataset.default_table_expiration_ms = 24 * 60 * 60 * 1000  # ms
+
+    # mark dataset as expired 1 hour from now; can be removed by CI
+    expiration = int((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() * 1000)
+    dataset.labels = {"expires_on": expiration}
+    if suffix:
+        dataset.labels["suffix"] = suffix
+
+    dataset = client.update_dataset(dataset, ["default_table_expiration_ms", "labels"])
+
+
+@stage.command(
+    help="""
+        Remove deployed artifacts from stage environment
+
+    Examples:
+    ./bqetl deploy clean
+    """
+)
+@click.option(
+    "--project-id",
+    "--project_id",
+    help="GCP project to deploy artifacts to",
+    default="bigquery-etl-integration-test",
+)
+@click.option(
+    "--dataset-suffix",
+    "--dataset_suffix",
+    help="Suffix appended to the deployed dataset",
+)
+@click.option(
+    "--delete-expired",
+    "--delete_expired",
+    help="Remove datasets that have expired",
+    default=True,
+    is_flag=True,
+)
+def clean(project_id, dataset_suffix, delete_expired):
+    """Reset the stage environment."""
+    client = bigquery.Client(project_id)
+    datasets = list(client.list_datasets())
+    current_timestamp = int(
+        (datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() * 1000
+    )
+
+    for dataset in datasets:
+        if dataset.labels:
+            # remove datasets that either match the suffix or are expired
+            for label, value in dataset.labels.items():
+                if (
+                    dataset_suffix and label == "suffix" and value == dataset_suffix
+                ) or (
+                    delete_expired
+                    and label == "expires_on"
+                    and int(value) < current_timestamp
+                ):
+                    client.delete_dataset(dataset)

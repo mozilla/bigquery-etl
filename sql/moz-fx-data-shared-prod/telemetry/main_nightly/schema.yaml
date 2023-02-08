@@ -14072,6 +14072,9 @@ fields:
     - mode: NULLABLE
       name: use_counter2_css_property_font_synthesis_weight_page
       type: STRING
+    - mode: NULLABLE
+      name: network_cookie_unicode_byte
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD

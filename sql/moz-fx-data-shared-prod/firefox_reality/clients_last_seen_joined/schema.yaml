@@ -95,3 +95,6 @@ fields:
 - mode: NULLABLE
   name: isp
   type: STRING
+- mode: NULLABLE
+  name: normalized_app_id
+  type: STRING

@@ -1,0 +1,10 @@
+friendly_name: Firefox Desktop Background Tasks Derived
+description: |-
+  Derived data for firefox_desktop_background_tasks_derived
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

@@ -17,7 +17,7 @@
     
     
       
-        <title>regrets-reporter - BigQuery ETL</title>
+        <title>Firefox Desktop Background Tasks - BigQuery ETL</title>
       
     
     
@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#regrets_reporter_summary" class="md-skip">
+        <a href="#clients_last_seen_joined" class="md-skip">
           Skip to content
         </a>
       
@@ -103,7 +103,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              regrets-reporter
+              Firefox Desktop Background Tasks
             
           </span>
         </div>
@@ -623,11 +623,62 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../firefox_desktop_background_tasks/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Firefox Desktop Background Tasks
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Firefox Desktop Background Tasks
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#clients_last_seen_joined" class="md-nav__link">
+    clients_last_seen_joined
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metrics_clients_daily" class="md-nav__link">
+    metrics_clients_daily
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metrics_clients_last_seen" class="md-nav__link">
+    metrics_clients_last_seen
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1491,55 +1542,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          regrets-reporter
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../regrets_reporter/" class="md-nav__link">
         regrets-reporter
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#regrets_reporter_summary" class="md-nav__link">
-    regrets_reporter_summary
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#regrets_reporter_update" class="md-nav__link">
-    regrets_reporter_update
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2250,15 +2257,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#regrets_reporter_summary" class="md-nav__link">
-    regrets_reporter_summary
+  <a href="#clients_last_seen_joined" class="md-nav__link">
+    clients_last_seen_joined
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#regrets_reporter_update" class="md-nav__link">
-    regrets_reporter_update
+  <a href="#metrics_clients_daily" class="md-nav__link">
+    metrics_clients_daily
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metrics_clients_last_seen" class="md-nav__link">
+    metrics_clients_last_seen
   </a>
   
 </li>
@@ -2278,75 +2292,12 @@
                   
 
 
-  <h1>regrets-reporter</h1>
+  <h1>Firefox Desktop Background Tasks</h1>
 
-<p>User-facing views related to document namespace regrets-reporter; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/regrets-reporter</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter">Source Directory</a></p>
-<h2 id="regrets_reporter_summary"><a href="#regrets_reporter_summary">regrets_reporter_summary</a></h2>
-<p><strong>Regrets Reporter Summary - view</strong></p>
-<p><code>regrets_reporter.regrets_reporter_summary</code></p>
-<p>Measure usage of the regrets reporter addon
-See https://github.com/mozilla/bigquery-etl/issues/2572</p>
-<ul>
-<li>Owners:<p>- <a href="mailto:kignasiak@mozilla.com">kignasiak@mozilla.com</a></p>
-</li>
-</ul>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>dau</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>wau</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>new_users</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>date</td>
-        <td></td>
-        <td>Date</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>experiment_arm</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ui_arm</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>country</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>browser</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>activities</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
+<p>Views on data from firefox_desktop_background_tasks</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks">Source Directory</a></p>
+<h2 id="clients_last_seen_joined"><a href="#clients_last_seen_joined">clients_last_seen_joined</a></h2>
+<p><code>firefox_desktop_background_tasks.clients_last_seen_joined</code></p>
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -2356,15 +2307,15 @@ See https://github.com/mozilla/bigquery-etl/issues/2572</p>
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_derived>regrets_reporter_derived</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_derived/regrets_reporter_summary_v1>regrets_reporter_summary_v1</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks_derived>firefox_desktop_background_tasks_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks_derived/clients_last_seen_joined_v1>clients_last_seen_joined_v1</a></td>
         </tr>
 </table>
 
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_summary">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_summary/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_summary/metadata.yaml">Metadata File</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks/clients_last_seen_joined">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks/clients_last_seen_joined/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks/clients_last_seen_joined/metadata.yaml">Metadata File</a> </p>
 <hr />
-<h2 id="regrets_reporter_update"><a href="#regrets_reporter_update">regrets_reporter_update</a></h2>
-<p><code>regrets_reporter.regrets_reporter_update</code></p>
+<h2 id="metrics_clients_daily"><a href="#metrics_clients_daily">metrics_clients_daily</a></h2>
+<p><code>firefox_desktop_background_tasks.metrics_clients_daily</code></p>
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -2374,12 +2325,30 @@ See https://github.com/mozilla/bigquery-etl/issues/2572</p>
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_stable>regrets_reporter_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_stable/regrets_reporter_update_v1>regrets_reporter_update_v1</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks_derived>firefox_desktop_background_tasks_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks_derived/metrics_clients_daily_v1>metrics_clients_daily_v1</a></td>
         </tr>
 </table>
 
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_update">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_update/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_update/metadata.yaml">Metadata File</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks/metrics_clients_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks/metrics_clients_daily/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks/metrics_clients_daily/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="metrics_clients_last_seen"><a href="#metrics_clients_last_seen">metrics_clients_last_seen</a></h2>
+<p><code>firefox_desktop_background_tasks.metrics_clients_last_seen</code></p>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks_derived>firefox_desktop_background_tasks_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks_derived/metrics_clients_last_seen_v1>metrics_clients_last_seen_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks/metrics_clients_last_seen">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks/metrics_clients_last_seen/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks/metrics_clients_last_seen/metadata.yaml">Metadata File</a> </p>
 <hr />
 
 
@@ -2401,7 +2370,7 @@ See https://github.com/mozilla/bigquery-etl/issues/2572</p>
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../reference_browser/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Reference Browser" rel="prev">
+        <a href="../firefox_desktop/" class="md-footer__link md-footer__link--prev" aria-label="Previous: firefox-desktop" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -2410,20 +2379,20 @@ See https://github.com/mozilla/bigquery-etl/issues/2572</p>
               <span class="md-footer__direction">
                 Previous
               </span>
-              Reference Browser
+              firefox-desktop
             </div>
           </div>
         </a>
       
       
         
-        <a href="../regrets_reporter_ucs/" class="md-footer__link md-footer__link--next" aria-label="Next: regrets-reporter-ucs" rel="next">
+        <a href="../firefox_desktop_background_update/" class="md-footer__link md-footer__link--next" aria-label="Next: firefox-desktop-background-update" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              regrets-reporter-ucs
+              firefox-desktop-background-update
             </div>
           </div>
           <div class="md-footer__button md-icon">

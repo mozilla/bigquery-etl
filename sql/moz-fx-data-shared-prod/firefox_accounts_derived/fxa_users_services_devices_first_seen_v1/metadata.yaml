@@ -17,16 +17,10 @@ scheduling:
   dag_name: bqetl_fxa_events
   depends_on_past: true
   date_partition_parameter: submission_date
-  referenced_tables:
-    - [
-      'moz-fx-data-shared-prod',
-      'firefox_accounts_derived',
-      'fxa_users_services_devices_daily_v1'
-    ]
 bigquery:
   time_partitioning:
-    field: first_seen_date
     type: day
+    field: first_seen_date
     require_partition_filter: true
   clustering:
     fields:

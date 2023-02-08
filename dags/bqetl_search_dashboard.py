@@ -40,15 +40,15 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     search_derived__desktop_search_aggregates_by_userstate__v1 = bigquery_etl_query(
         task_id="search_derived__desktop_search_aggregates_by_userstate__v1",
         destination_table="desktop_search_aggregates_by_userstate_v1",
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="xluo@mozilla.com",
+        owner="cmorales@mozilla.com",
         email=[
             "akomar@mozilla.com",
+            "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "xluo@mozilla.com",
         ],
@@ -61,9 +61,10 @@ with DAG(
         destination_table="desktop_search_aggregates_for_searchreport_v1",
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="xluo@mozilla.com",
+        owner="cmorales@mozilla.com",
         email=[
             "akomar@mozilla.com",
+            "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "xluo@mozilla.com",
         ],
@@ -76,15 +77,33 @@ with DAG(
         destination_table="mobile_search_aggregates_for_searchreport_v1",
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="mmccorquodale@mozilla.com",
+        owner="cmorales@mozilla.com",
         email=[
             "akomar@mozilla.com",
+            "cmorales@mozilla.com",
             "mmccorquodale@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "xluo@mozilla.com",
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    search_derived__search_revenue_levers_daily__v1 = bigquery_etl_query(
+        task_id="search_derived__search_revenue_levers_daily__v1",
+        destination_table='search_revenue_levers_daily_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="search_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="xluo@mozilla.com",
+        email=[
+            "akomar@mozilla.com",
+            "cmorales@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "xluo@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
@@ -133,4 +152,38 @@ with DAG(
 
     search_derived__mobile_search_aggregates_for_searchreport__v1.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
+    )
+
+    wait_for_active_users_aggregates_device_v1 = ExternalTaskSensor(
+        task_id="wait_for_active_users_aggregates_device_v1",
+        external_dag_id="bqetl_analytics_aggregations",
+        external_task_id="active_users_aggregates_device_v1",
+        execution_delta=datetime.timedelta(seconds=1800),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_active_users_aggregates_device_v1
+    )
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v1
+    )
+    wait_for_search_derived__search_clients_daily__v8 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__search_clients_daily__v8",
+        external_dag_id="bqetl_search",
+        external_task_id="search_derived__search_clients_daily__v8",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_search_derived__search_clients_daily__v8
     )

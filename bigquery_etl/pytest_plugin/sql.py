@@ -2,7 +2,6 @@
 
 import json
 import os.path
-from typing import Dict
 
 import pytest
 from google.api_core.exceptions import BadRequest
@@ -97,8 +96,8 @@ class SqlTest(pytest.Item, pytest.File):
 
         expect = load(self.fspath.strpath, "expect")
 
-        tables: Dict[str, Table] = {}
-        views: Dict[str, str] = {}
+        tables = {}
+        views = {}
 
         # generate tables for files with a supported table extension
         for resource in next(os.walk(self.fspath))[2]:

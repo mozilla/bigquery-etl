@@ -8,7 +8,16 @@ description: |
   Exposed to users as `search.mobile_search_clients_engines_sources_daily`.
 owners:
   - akomar@mozilla.com
+  - cmorales@mozilla.com
 labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_mobile_search
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - sample_id

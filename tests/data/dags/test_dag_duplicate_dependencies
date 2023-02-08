@@ -40,7 +40,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     test__no_metadata_query__v1 = bigquery_etl_query(
         task_id="test__no_metadata_query__v1",
         destination_table='no_metadata_query_v1${{ macros.ds_format(macros.ds_add(ds, -2), "%Y-%m-%d", "%Y%m%d") }}',

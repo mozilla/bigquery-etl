@@ -4,16 +4,11 @@ CREATE TEMP FUNCTION bucket_manufacturer(manufacturer STRING) AS (
 
 CREATE TEMP FUNCTION bucket_country(country STRING) AS (
   CASE
-  WHEN
-    country IN ('US', 'CA', 'DE', 'FR', 'GB')
-  THEN
-    [country, 'tier-1']
-  WHEN
-    country IN ('IN', 'CN', 'IR', 'BR', 'IE', 'ID')
-  THEN
-    [country, 'non-tier-1']
-  ELSE
-    ['non-tier-1']
+    WHEN country IN ('US', 'CA', 'DE', 'FR', 'GB')
+      THEN [country, 'tier-1']
+    WHEN country IN ('IN', 'CN', 'IR', 'BR', 'IE', 'ID')
+      THEN [country, 'non-tier-1']
+    ELSE ['non-tier-1']
   END
 );
 

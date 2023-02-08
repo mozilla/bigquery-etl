@@ -3,7 +3,7 @@ WITH standardized_country AS (
     raw_country AS country,
     standardized_country AS country_name,
   FROM
-    mozdata.static.third_party_standardized_country_names
+    `moz-fx-data-shared-prod`.static.third_party_standardized_country_names
 ),
 attribution AS (
   SELECT
@@ -24,7 +24,7 @@ users AS (
     fxa_uid,
     created_at AS user_registration_date,
   FROM
-    mozdata.mozilla_vpn.users
+    `moz-fx-data-shared-prod`.mozilla_vpn.users
 ),
 stripe_subscriptions_history AS (
   SELECT
@@ -40,7 +40,7 @@ stripe_subscriptions_history AS (
       )
     ) AS subscription_sequence_id
   FROM
-    mozdata.subscription_platform.stripe_subscriptions_history
+    `moz-fx-data-shared-prod`.subscription_platform.stripe_subscriptions_history
   WHERE
     -- Only include the current history records and the last history records for previous plans.
     (valid_to IS NULL OR plan_ended_at IS NOT NULL)
@@ -182,7 +182,7 @@ apple_iap_subscriptions AS (
     subplat.promotion_codes,
     CAST(NULL AS INT64) AS promotion_discounts_amount,
   FROM
-    mozdata.subscription_platform.apple_subscriptions AS subplat
+    `moz-fx-data-shared-prod`.subscription_platform.apple_subscriptions AS subplat
   LEFT JOIN
     users
   USING
@@ -263,24 +263,16 @@ android_iap_periods AS (
     LOWER(country_code) AS country,
     (
       CASE
-      WHEN
-        CONTAINS_SUBSTR(sku, ".1_month_subscription")
-        OR CONTAINS_SUBSTR(sku, ".monthly")
-      THEN
-        STRUCT("month" AS plan_interval, 1 AS plan_interval_count)
-      WHEN
-        CONTAINS_SUBSTR(sku, ".6_month_subscription")
-      THEN
-        ("month", 6)
-      WHEN
-        CONTAINS_SUBSTR(sku, ".12_month_subscription")
-      THEN
-        ("year", 1)
-      WHEN
-        CONTAINS_SUBSTR(sku, ".1_day_subscription")
-      THEN
-        -- only used for testing
-        ("day", 1)
+        WHEN CONTAINS_SUBSTR(sku, ".1_month_subscription")
+          OR CONTAINS_SUBSTR(sku, ".monthly")
+          THEN STRUCT("month" AS plan_interval, 1 AS plan_interval_count)
+        WHEN CONTAINS_SUBSTR(sku, ".6_month_subscription")
+          THEN ("month", 6)
+        WHEN CONTAINS_SUBSTR(sku, ".12_month_subscription")
+          THEN ("year", 1)
+        WHEN CONTAINS_SUBSTR(sku, ".1_day_subscription")
+          -- only used for testing
+          THEN ("day", 1)
       END
     ).*,
     (
@@ -440,48 +432,28 @@ vpn_subscriptions_with_end_date AS (
 SELECT
   * REPLACE (
     CASE
-    WHEN
-      subscription_start_date IS NULL
-    THEN
-      NULL
-    WHEN
-      subscription_start_reason IS NOT NULL
-    THEN
-      subscription_start_reason
-    WHEN
-      trial_start IS NOT NULL
-    THEN
-      "Converted Trial"
-    WHEN
-      DATE(subscription_start_date) = DATE(customer_start_date)
-    THEN
-      "New"
-    ELSE
-      "Resurrected"
-    END
-    AS subscription_start_reason,
+      WHEN subscription_start_date IS NULL
+        THEN NULL
+      WHEN subscription_start_reason IS NOT NULL
+        THEN subscription_start_reason
+      WHEN trial_start IS NOT NULL
+        THEN "Converted Trial"
+      WHEN DATE(subscription_start_date) = DATE(customer_start_date)
+        THEN "New"
+      ELSE "Resurrected"
+    END AS subscription_start_reason,
     CASE
-    WHEN
-      ended_at IS NULL
-    THEN
-      NULL
-    WHEN
-      ended_reason IS NOT NULL
-    THEN
-      ended_reason
-    WHEN
-      provider = "Apple Store"
-    THEN
-      "Cancelled by IAP"
-    WHEN
-      canceled_for_customer_at IS NOT NULL
-      OR cancel_at_period_end
-    THEN
-      "Cancelled by Customer"
-    ELSE
-      "Payment Failed"
-    END
-    AS ended_reason
+      WHEN ended_at IS NULL
+        THEN NULL
+      WHEN ended_reason IS NOT NULL
+        THEN ended_reason
+      WHEN provider = "Apple Store"
+        THEN "Cancelled by IAP"
+      WHEN canceled_for_customer_at IS NOT NULL
+        OR cancel_at_period_end
+        THEN "Cancelled by Customer"
+      ELSE "Payment Failed"
+    END AS ended_reason
   ),
   mozfun.norm.vpn_attribution(
     utm_campaign => utm_campaign,

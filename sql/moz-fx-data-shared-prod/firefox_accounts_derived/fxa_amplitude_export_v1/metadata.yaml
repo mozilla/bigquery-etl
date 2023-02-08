@@ -9,3 +9,11 @@ labels:
   application: fxa
   incremental: true
   schedule: daily
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date_pacific
+    require_partition_filter: false
+  clustering:
+    fields:
+      - user_id

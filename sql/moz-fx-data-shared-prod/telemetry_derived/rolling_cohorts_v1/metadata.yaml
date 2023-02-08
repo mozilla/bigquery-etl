@@ -18,8 +18,8 @@ scheduling:
   date_partition_parameter: cohort_date
 bigquery:
   time_partitioning:
-    field: cohort_date
     type: day
+    field: cohort_date
     require_partition_filter: true
   clustering:
     fields:

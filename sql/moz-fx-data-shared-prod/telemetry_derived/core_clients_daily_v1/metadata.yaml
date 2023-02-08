@@ -11,3 +11,13 @@ labels:
 scheduling:
   dag_name: bqetl_core
   priority: 75
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+  clustering:
+    fields:
+      - is_new_profile
+      - app_name
+      - os

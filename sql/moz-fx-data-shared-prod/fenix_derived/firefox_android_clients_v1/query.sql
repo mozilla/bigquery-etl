@@ -13,7 +13,7 @@ WITH first_seen AS (
     device_model,
     normalized_os_version AS os_version
   FROM
-    `mozdata.fenix.baseline_clients_first_seen`
+    `moz-fx-data-shared-prod.fenix.baseline_clients_first_seen`
   WHERE
     submission_date = @submission_date
     AND normalized_channel = 'release'
@@ -37,7 +37,7 @@ first_session_ping AS (
       SAFE_OFFSET(0)
     ] AS adjust_creative
   FROM
-    `mozdata.fenix.first_session` AS fenix_first_session
+    `moz-fx-data-shared-prod.fenix.first_session` AS fenix_first_session
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND ping_info.seq = 0 -- Pings are sent in sequence, this guarantees that the first one is returned.
@@ -99,23 +99,15 @@ _current AS (
     metrics.install_source AS install_source,
     STRUCT(
       CASE
-      WHEN
-        first_session.client_id IS NULL
-      THEN
-        FALSE
-      ELSE
-        TRUE
-      END
-      AS reported_first_session_ping,
+        WHEN first_session.client_id IS NULL
+          THEN FALSE
+        ELSE TRUE
+      END AS reported_first_session_ping,
       CASE
-      WHEN
-        metrics.client_id IS NULL
-      THEN
-        FALSE
-      ELSE
-        TRUE
-      END
-      AS reported_metrics_ping,
+        WHEN metrics.client_id IS NULL
+          THEN FALSE
+        ELSE TRUE
+      END AS reported_metrics_ping,
       DATE(first_session.first_run_datetime) AS min_first_session_ping_run_date,
       DATE(metrics.min_submission_datetime) AS min_metrics_ping_submission_date,
       CASE
@@ -127,27 +119,17 @@ _current AS (
             (STRUCT(CAST(metrics.adjust_network AS STRING), metrics.min_submission_datetime))
           ]
         )
-      WHEN
-        STRUCT(first_session.adjust_network, first_session.first_run_datetime)
-      THEN
-        'first_session'
-      WHEN
-        STRUCT(metrics.adjust_network, metrics.min_submission_datetime)
-      THEN
-        'metrics'
-      ELSE
-        NULL
-      END
-      AS adjust_network__source_ping,
+        WHEN STRUCT(first_session.adjust_network, first_session.first_run_datetime)
+          THEN 'first_session'
+        WHEN STRUCT(metrics.adjust_network, metrics.min_submission_datetime)
+          THEN 'metrics'
+        ELSE NULL
+      END AS adjust_network__source_ping,
       CASE
-      WHEN
-        metrics.install_source IS NOT NULL
-      THEN
-        'metrics'
-      ELSE
-        NULL
-      END
-      AS install_source__source_ping,
+        WHEN metrics.install_source IS NOT NULL
+          THEN 'metrics'
+        ELSE NULL
+      END AS install_source__source_ping,
       mozfun.norm.get_earliest_value(
         [
           (STRUCT(CAST(first_session.adjust_network AS STRING), first_session.first_run_datetime)),
@@ -155,14 +137,10 @@ _current AS (
         ]
       ).earliest_date AS adjust_network__source_ping_datetime,
       CASE
-      WHEN
-        metrics.install_source IS NOT NULL
-      THEN
-        metrics.min_submission_datetime
-      ELSE
-        NULL
-      END
-      AS install_source__source_ping_datetime
+        WHEN metrics.install_source IS NOT NULL
+          THEN metrics.min_submission_datetime
+        ELSE NULL
+      END AS install_source__source_ping_datetime
     ) AS metadata
   FROM
     first_seen
@@ -210,37 +188,29 @@ SELECT
     _previous.metadata.reported_metrics_ping
     OR _current.metadata.reported_metrics_ping AS reported_metrics_ping,
     CASE
-    WHEN
-      _previous.metadata.min_first_session_ping_run_date IS NOT NULL
-      AND _current.metadata.min_first_session_ping_run_date IS NOT NULL
-    THEN
-      LEAST(
-        _previous.metadata.min_first_session_ping_run_date,
-        _current.metadata.min_first_session_ping_run_date
-      )
-    ELSE
-      COALESCE(
-        _previous.metadata.min_first_session_ping_run_date,
-        _current.metadata.min_first_session_ping_run_date
-      )
-    END
-    AS min_first_session_ping_run_date,
+      WHEN _previous.metadata.min_first_session_ping_run_date IS NOT NULL
+        AND _current.metadata.min_first_session_ping_run_date IS NOT NULL
+        THEN LEAST(
+            _previous.metadata.min_first_session_ping_run_date,
+            _current.metadata.min_first_session_ping_run_date
+          )
+      ELSE COALESCE(
+          _previous.metadata.min_first_session_ping_run_date,
+          _current.metadata.min_first_session_ping_run_date
+        )
+    END AS min_first_session_ping_run_date,
     CASE
-    WHEN
-      _previous.metadata.min_metrics_ping_submission_date IS NOT NULL
-      AND _current.metadata.min_metrics_ping_submission_date IS NOT NULL
-    THEN
-      LEAST(
-        _previous.metadata.min_metrics_ping_submission_date,
-        _current.metadata.min_metrics_ping_submission_date
-      )
-    ELSE
-      COALESCE(
-        _previous.metadata.min_metrics_ping_submission_date,
-        _current.metadata.min_metrics_ping_submission_date
-      )
-    END
-    AS min_metrics_ping_submission_date,
+      WHEN _previous.metadata.min_metrics_ping_submission_date IS NOT NULL
+        AND _current.metadata.min_metrics_ping_submission_date IS NOT NULL
+        THEN LEAST(
+            _previous.metadata.min_metrics_ping_submission_date,
+            _current.metadata.min_metrics_ping_submission_date
+          )
+      ELSE COALESCE(
+          _previous.metadata.min_metrics_ping_submission_date,
+          _current.metadata.min_metrics_ping_submission_date
+        )
+    END AS min_metrics_ping_submission_date,
     COALESCE(
       _previous.metadata.adjust_network__source_ping,
       _current.metadata.adjust_network__source_ping

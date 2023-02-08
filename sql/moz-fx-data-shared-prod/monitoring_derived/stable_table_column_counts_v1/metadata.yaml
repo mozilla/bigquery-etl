@@ -15,6 +15,6 @@ scheduling:
   parameters: ["submission_date:DATE:{{ds}}"]
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: false

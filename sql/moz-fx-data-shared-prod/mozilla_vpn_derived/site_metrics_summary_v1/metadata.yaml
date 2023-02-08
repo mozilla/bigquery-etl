@@ -14,3 +14,11 @@ scheduling:
     - - moz-fx-data-shared-prod
       - mozilla_vpn_derived
       - site_metrics_empty_check_v1
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+  clustering:
+    fields:
+      - site

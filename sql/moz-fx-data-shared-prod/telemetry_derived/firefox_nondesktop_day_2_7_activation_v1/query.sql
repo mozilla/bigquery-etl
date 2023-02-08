@@ -1,7 +1,7 @@
 SELECT
   submission_date,
   product,
-  SPLIT(app_version, '.')[offset(0)] AS app_version,
+  SPLIT(app_version, '.')[OFFSET(0)] AS app_version,
   os,
   normalized_channel,
   country,

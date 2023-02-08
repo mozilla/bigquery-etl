@@ -17,6 +17,7 @@ from pathlib import Path
 import click
 from pathos.multiprocessing import ProcessingPool
 
+from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.schema.stable_table_schema import SchemaFile, get_stable_table_schemas
 
 VIEW_QUERY_TEMPLATE = """\
@@ -148,7 +149,7 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
         ):
             # todo: use mozfun udfs
             metrics_source = (
-                "mozdata.udf.normalize_fenix_metrics"
+                "`moz-fx-data-shared-prod`.udf.normalize_fenix_metrics"
                 "(client_info.telemetry_sdk_build, metrics)"
             )
         else:
@@ -182,7 +183,9 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
                 "'Firefox' AS normalized_app_name",
             ]
     elif schema.schema_id.startswith("moz://mozilla.org/schemas/main/ping/"):
-        replacements += ["mozdata.udf.normalize_main_payload(payload) AS payload"]
+        replacements += [
+            "`moz-fx-data-shared-prod`.udf.normalize_main_payload(payload) AS payload"
+        ]
     replacements_str = ",\n    ".join(replacements)
     full_sql = reformat(
         VIEW_QUERY_TEMPLATE.format(
@@ -214,7 +217,9 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
 
             stable_table_schema = Schema.from_json({"fields": schema.schema})
             view_schema.merge(
-                stable_table_schema, attributes=["description"], add_missing_fields=False
+                stable_table_schema,
+                attributes=["description"],
+                add_missing_fields=False,
             )
             view_schema.to_yaml_file(target_dir / "schema.yaml")
         except Exception as e:
@@ -251,7 +256,8 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
     default=20,
     type=int,
 )
-def generate(target_project, output_dir, log_level, parallelism):
+@use_cloud_function_option
+def generate(target_project, output_dir, log_level, parallelism, use_cloud_function):
     """
     Generate view definitions.
 

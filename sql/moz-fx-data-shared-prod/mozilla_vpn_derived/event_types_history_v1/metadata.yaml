@@ -17,3 +17,12 @@ labels:
 scheduling:
   dag_name: bqetl_event_rollup
   depends_on_past: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+  clustering:
+    fields:
+      - category
+      - event

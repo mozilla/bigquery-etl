@@ -50,6 +50,6 @@ SELECT
   assert.array_equals(udf.array_11_zeroes_then(5), res[OFFSET(0)].value.tagged_searches),
   assert.array_equals(udf.array_11_zeroes_then(0), res[OFFSET(0)].value.search_with_ads),
   assert.array_equals(udf.array_11_zeroes_then(0), res[OFFSET(0)].value.ad_click),
-  assert.equals(array_length(res), 1)
+  assert.equals(ARRAY_LENGTH(res), 1)
 FROM
   output;

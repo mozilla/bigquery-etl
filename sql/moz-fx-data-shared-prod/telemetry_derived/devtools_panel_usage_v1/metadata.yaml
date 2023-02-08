@@ -11,7 +11,7 @@ scheduling:
   start_date: '2019-11-25'
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: null
   clustering: null

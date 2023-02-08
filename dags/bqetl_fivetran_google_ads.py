@@ -43,7 +43,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     google_ads_derived__campaign_conversions_by_date__v1 = bigquery_etl_query(
         task_id="google_ads_derived__campaign_conversions_by_date__v1",
         destination_table="campaign_conversions_by_date_v1",
@@ -51,6 +50,23 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",
         email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    google_ads_derived__campaign_names_map__v1 = bigquery_etl_query(
+        task_id="google_ads_derived__campaign_names_map__v1",
+        destination_table="campaign_names_map_v1",
+        dataset_id="google_ads_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    google_ads_derived__campaign_conversions_by_date__v1.set_upstream(
+        google_ads_derived__campaign_names_map__v1
     )

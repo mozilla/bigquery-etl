@@ -8,31 +8,26 @@ https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/
 */
 CREATE OR REPLACE FUNCTION hist.mean(histogram ANY TYPE) AS (
   CASE
-  WHEN
-    histogram.sum < 0
-  THEN
-    NULL
-  WHEN
-    histogram.sum = 0
-  THEN
-    0
-  ELSE
-    SAFE_CAST(
-      TRUNC(
-        histogram.sum / (
-          SELECT
-            SUM(
-              -- Truncate pathological values that are beyond the documented limits per
-              -- https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/collection/histograms.html#histogram-values
-              LEAST(2147483648, value)
-            )
-          FROM
-            UNNEST(histogram.values)
-          WHERE
-            value > 0
-        )
-      ) AS INT64
-    )
+    WHEN histogram.sum < 0
+      THEN NULL
+    WHEN histogram.sum = 0
+      THEN 0
+    ELSE SAFE_CAST(
+        TRUNC(
+          histogram.sum / (
+            SELECT
+              SUM(
+                -- Truncate pathological values that are beyond the documented limits per
+                -- https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/collection/histograms.html#histogram-values
+                LEAST(2147483648, value)
+              )
+            FROM
+              UNNEST(histogram.values)
+            WHERE
+              value > 0
+          )
+        ) AS INT64
+      )
   END
 );
 

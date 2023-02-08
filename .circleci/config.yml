@@ -91,7 +91,7 @@ jobs:
           # of a package name and a version specifier"
           command: |
             pip install pip-tools --constraint requirements.in
-            pip-compile --quiet --allow-unsafe --generate-hashes
+            pip-compile --allow-unsafe --generate-hashes --quiet
             git diff --exit-code -G '^ *[^# ]' -- requirements.txt
   test-sql:
     docker: *docker
@@ -206,7 +206,12 @@ jobs:
           name: Generate DAGs
           command: |
             PATH="venv/bin:$PATH" script/bqetl dag generate
-            mv dags/ /tmp/workspace/generated-sql
+            cp -R dags /tmp/workspace/generated-sql
+      - run:
+          name: Verify that DAGs were correctly generated and are up-to-date
+          command: |
+            git diff --exit-code dags/
+            diff <(git ls-files dags/*.py) <(ls dags/*.py)
       # this task is overwriting the content produced by generate-sql;
       # the behaviour here is additive, generated DAGs are just added to
       # the generated-sql output
@@ -260,23 +265,6 @@ jobs:
           command: |
             cd telemetry-airflow
             bash bin/test-parse
-  verify-dags-up-to-date:
-    # todo: remove this step once we rely on generate-dags completely
-    docker: *docker
-    steps:
-      - checkout
-      - *restore_venv_cache
-      - *build
-      - *restore_mvn_cache
-      - *java_deps
-      - run:
-          name: Generate DAGs
-          command: PATH="venv/bin:$PATH" script/bqetl dag generate
-      - run:
-          name: Verify that DAGs were correctly generated and are up-to-date
-          command: |
-            git diff --exit-code
-            diff <(git ls-files dags/*.py) <(ls dags/*.py)
   validate-docs:
     docker: *docker
     steps:
@@ -313,7 +301,7 @@ jobs:
       - *java_deps
       - *attach_generated_sql
       - add_ssh_keys:
-          fingerprints: "ab:b5:f7:55:92:0a:72:c4:63:0e:57:be:cd:66:32:53"
+          fingerprints: "38:49:5e:71:1d:b7:14:84:45:08:8a:4c:6b:67:4e:4d"
       - run:
           name: Build and deploy docs
           command: |
@@ -352,7 +340,7 @@ jobs:
     steps:
       - *attach_generated_sql
       - add_ssh_keys:
-          fingerprints: "ab:b5:f7:55:92:0a:72:c4:63:0e:57:be:cd:66:32:53"
+          fingerprints: "38:49:5e:71:1d:b7:14:84:45:08:8a:4c:6b:67:4e:4d"
       - run:
           name: Push to generated-sql branch
           command: |
@@ -402,7 +390,7 @@ jobs:
       - *java_deps
       - add_ssh_keys:
           # deploy key to private-bigquery-etl
-          fingerprints: "cf:d6:25:9a:ee:26:66:39:c8:cc:48:f6:bb:3e:34:68"
+          fingerprints: "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
       - run:
           name: Install rsync
           command: |
@@ -437,7 +425,7 @@ jobs:
     steps:
       - *attach_generated_sql
       - add_ssh_keys:
-          fingerprints: "cf:d6:25:9a:ee:26:66:39:c8:cc:48:f6:bb:3e:34:68"
+          fingerprints: "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
       - run:
           name: Push to private-generated-sql branch
           # yamllint disable rule:line-length
@@ -588,7 +576,6 @@ workflows:
       - validate-dags:
           requires:
             - generate-dags
-      - verify-dags-up-to-date
       - validate-docs:
           requires:
             - generate-sql

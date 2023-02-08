@@ -25,6 +25,7 @@ from ..cli.format import format
 from ..cli.utils import (
     is_authenticated,
     is_valid_project,
+    no_dryrun_option,
     paths_matching_name_pattern,
     project_id_option,
     respect_dryrun_skip_option,
@@ -477,7 +478,6 @@ def _backfill_query(
 
     backfill_date = backfill_date.strftime("%Y-%m-%d")
     if backfill_date not in exclude:
-
         if no_partition:
             destination_table = table
         else:
@@ -1085,6 +1085,7 @@ def _run_part(
     default=False,
 )
 @respect_dryrun_skip_option(default=False)
+@no_dryrun_option(default=False)
 @click.pass_context
 def validate(
     ctx,
@@ -1094,6 +1095,7 @@ def validate(
     use_cloud_function,
     validate_schemas,
     respect_dryrun_skip,
+    no_dryrun,
 ):
     """Validate queries by dry running, formatting and checking scheduling configs."""
     if name is None:
@@ -1103,16 +1105,22 @@ def validate(
     dataset_dirs = set()
     for query in query_files:
         ctx.invoke(format, paths=[str(query)])
-        ctx.invoke(
-            dryrun,
-            paths=[str(query)],
-            use_cloud_function=use_cloud_function,
-            project=project_id,
-            validate_schemas=validate_schemas,
-            respect_skip=respect_dryrun_skip,
-        )
+
+        if not no_dryrun:
+            ctx.invoke(
+                dryrun,
+                paths=[str(query)],
+                use_cloud_function=use_cloud_function,
+                project=project_id,
+                validate_schemas=validate_schemas,
+                respect_skip=respect_dryrun_skip,
+            )
+
         validate_metadata.validate(query.parent)
         dataset_dirs.add(query.parent.parent)
+
+    if no_dryrun:
+        click.echo("Dry run skipped for query files.")
 
     for dataset_dir in dataset_dirs:
         validate_metadata.validate_datasets(dataset_dir)
@@ -1688,8 +1696,14 @@ def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
     if metadata.bigquery and metadata.bigquery.clustering:
         table.clustering_fields = metadata.bigquery.clustering.fields
 
+    # BigQuery only allows for string type labels with specific requirements to be published:
+    # https://cloud.google.com/bigquery/docs/labels-intro#requirements
     if metadata.labels:
-        table.labels = metadata.labels
+        table.labels = {
+            key: value
+            for key, value in metadata.labels.items()
+            if isinstance(value, str)
+        }
 
 
 def _deploy_external_data(

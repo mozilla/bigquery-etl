@@ -7,7 +7,6 @@ https://developer.apple.com/documentation/appstoreservernotifications/responsebo
 */
 WITH legacy_subscriptions AS (
   SELECT
-    subscriptions.id,
     users.fxa_uid AS user_id,
     subscriptions.is_active,
     subscriptions.updated_at,
@@ -19,16 +18,18 @@ WITH legacy_subscriptions AS (
   ON
     (subscriptions.user_id = users.id)
   WHERE
-    subscriptions.provider = "APPLE"
+    -- Subscriptions migrated to fxa no longer have subscriptions.provider = "APPLE"
+    subscriptions.provider_receipt_json IS NOT NULL
+    AND JSON_VALUE(provider_receipt_json, "$.receipt.bundle_id") = "org.mozilla.ios.FirefoxVPN"
+    -- Exclude duplicate subscriptions rejected by FxA migration
+    AND subscriptions.provider IS DISTINCT FROM "FXANOMIGRATE"
 )
 SELECT
-  -- WARNING: mozdata.subscription_platform.apple_subscriptions and
-  -- mozdata.subscription_platform.nonprod_apple_subscriptions require field order of
-  -- moz-fx-data-shared-prod.mozilla_vpn_derived.guardian_apple_events_v1 to exactly match:
-  --   legacy_subscription_id,
+  -- WARNING: subscription_platform.apple_subscriptions and
+  -- subscription_platform.nonprod_apple_subscriptions require field order of
+  -- mozilla_vpn_derived.guardian_apple_events_v1 to exactly match:
   --   event_timestamp,
   --   mozfun.iap.parse_apple_event(`data`).*,
-  CAST(legacy_subscriptions.id AS STRING) AS legacy_subscription_id,
   legacy_subscriptions.updated_at AS event_timestamp,
   renewal_info.auto_renew_product_id,
   renewal_info.auto_renew_status,
@@ -52,24 +53,16 @@ SELECT
   receipt_info.revocation_date,
   receipt_info.revocation_reason,
   CASE -- https://developer.apple.com/documentation/appstoreserverapi/status
-  WHEN
-    receipt_info.source = "receipt.in_app"
-  THEN
-    1 -- subscription was active for the values in this receipt
-  WHEN
-    TIMESTAMP_MILLIS(
-      legacy_subscriptions.apple_receipt.receipt.request_date_ms
-    ) < receipt_info.expires_date
-  THEN
-    1
-  WHEN
-    renewal_info.is_in_billing_retry
-  THEN
-    3
-  ELSE
-    2
-  END
-  AS status,
+    WHEN receipt_info.source = "receipt.in_app"
+      THEN 1 -- subscription was active for the values in this receipt
+    WHEN TIMESTAMP_MILLIS(
+        legacy_subscriptions.apple_receipt.receipt.request_date_ms
+      ) < receipt_info.expires_date
+      THEN 1
+    WHEN renewal_info.is_in_billing_retry
+      THEN 3
+    ELSE 2
+  END AS status,
   "Auto-Renewable Subscription" AS type,
   legacy_subscriptions.user_id,
   IF(

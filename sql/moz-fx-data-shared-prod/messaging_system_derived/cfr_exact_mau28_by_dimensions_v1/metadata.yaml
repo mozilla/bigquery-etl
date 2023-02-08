@@ -8,3 +8,8 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_messaging_system
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false

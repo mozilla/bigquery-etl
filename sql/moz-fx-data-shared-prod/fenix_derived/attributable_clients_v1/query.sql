@@ -15,7 +15,7 @@ WITH client_day AS (
     SUM(sum_map_values(metrics.labeled_counter.browser_search_with_ads)) AS searches_with_ads,
     SUM(sum_map_values(metrics.labeled_counter.browser_search_ad_clicks)) AS ad_clicks,
   FROM
-    mozdata.fenix.baseline
+    `moz-fx-data-shared-prod`.fenix.baseline
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -47,7 +47,7 @@ first_seen AS (
     country,
     first_seen_date
   FROM
-    mozdata.fenix.baseline_clients_first_seen
+    `moz-fx-data-shared-prod`.fenix.baseline_clients_first_seen
   WHERE
     submission_date >= "2021-01-01"
 ),
@@ -59,7 +59,7 @@ adjust_client AS (
     adjust_campaign,
     adjust_creative,
   FROM
-    mozdata.fenix.firefox_android_clients
+    `moz-fx-data-shared-prod`.fenix.firefox_android_clients
   WHERE
     adjust_network != 'Unknown'
 )
@@ -75,44 +75,26 @@ SELECT
   adjust_creative,
   first_seen_date = submission_date AS is_new_profile,
   CASE
-  WHEN
-    client_day.has_search_data
-  THEN
-    client_day.searches
-  WHEN
-    metrics_searches.has_search_data
-  THEN
-    metrics_searches.searches
-  ELSE
-    0
-  END
-  AS searches,
+    WHEN client_day.has_search_data
+      THEN client_day.searches
+    WHEN metrics_searches.has_search_data
+      THEN metrics_searches.searches
+    ELSE 0
+  END AS searches,
   CASE
-  WHEN
-    client_day.has_search_data
-  THEN
-    client_day.searches_with_ads
-  WHEN
-    metrics_searches.has_search_data
-  THEN
-    metrics_searches.searches_with_ads
-  ELSE
-    0
-  END
-  AS searches_with_ads,
+    WHEN client_day.has_search_data
+      THEN client_day.searches_with_ads
+    WHEN metrics_searches.has_search_data
+      THEN metrics_searches.searches_with_ads
+    ELSE 0
+  END AS searches_with_ads,
   CASE
-  WHEN
-    client_day.has_search_data
-  THEN
-    client_day.ad_clicks
-  WHEN
-    metrics_searches.has_search_data
-  THEN
-    metrics_searches.ad_clicks
-  ELSE
-    0
-  END
-  AS ad_clicks,
+    WHEN client_day.has_search_data
+      THEN client_day.ad_clicks
+    WHEN metrics_searches.has_search_data
+      THEN metrics_searches.ad_clicks
+    ELSE 0
+  END AS ad_clicks,
 FROM
   adjust_client
 JOIN

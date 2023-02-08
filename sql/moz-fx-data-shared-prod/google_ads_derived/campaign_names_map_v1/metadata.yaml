@@ -1,0 +1,11 @@
+friendly_name: Campaign Names Map
+description: |-
+  A mapping from campaign_id to campaign_name for google_ads campaigns.
+owners:
+- frank@mozilla.com
+labels:
+  incremental: false
+scheduling:
+  dag_name: bqetl_fivetran_google_ads
+  depends_on_past: false
+  date_partition_parameter: null

@@ -4,7 +4,7 @@ RETURNS INT64 AS (
   (
     WITH total_counts AS (
       SELECT
-        sum(a.value) AS total_count
+        SUM(a.value) AS total_count
       FROM
         UNNEST(mozfun.hist.extract(histogram).values) AS a
     )

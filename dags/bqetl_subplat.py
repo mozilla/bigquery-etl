@@ -62,7 +62,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     cjms_bigquery__flows__v1 = bigquery_etl_query(
         task_id="cjms_bigquery__flows__v1",
         destination_table="flows_v1",
@@ -568,6 +567,54 @@ with DAG(
         ],
     )
 
+    relay_derived__active_subscription_ids__v1 = bigquery_etl_query(
+        task_id="relay_derived__active_subscription_ids__v1",
+        destination_table='active_subscription_ids_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="relay_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
+    )
+
+    relay_derived__active_subscriptions__v1 = bigquery_etl_query(
+        task_id="relay_derived__active_subscriptions__v1",
+        destination_table='active_subscriptions_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="relay_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
+    )
+
+    relay_derived__subscription_events__v1 = bigquery_etl_query(
+        task_id="relay_derived__subscription_events__v1",
+        destination_table='subscription_events_v1${{ macros.ds_format(macros.ds_add(ds, -8), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="relay_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["date:DATE:{{macros.ds_add(ds, -8)}}"],
+    )
+
+    relay_derived__subscriptions__v1 = bigquery_etl_query(
+        task_id="relay_derived__subscriptions__v1",
+        destination_table="subscriptions_v1",
+        dataset_id="relay_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     stripe_external__itemized_payout_reconciliation__v5 = gke_command(
         task_id="stripe_external__itemized_payout_reconciliation__v5",
         command=[
@@ -766,3 +813,25 @@ with DAG(
     )
 
     mozilla_vpn_derived__users__v1.set_upstream(mozilla_vpn_external__users__v1)
+
+    relay_derived__active_subscription_ids__v1.set_upstream(
+        relay_derived__subscriptions__v1
+    )
+
+    relay_derived__active_subscriptions__v1.set_upstream(
+        relay_derived__active_subscription_ids__v1
+    )
+
+    relay_derived__active_subscriptions__v1.set_upstream(
+        relay_derived__subscriptions__v1
+    )
+
+    relay_derived__subscription_events__v1.set_upstream(
+        relay_derived__active_subscription_ids__v1
+    )
+
+    relay_derived__subscription_events__v1.set_upstream(
+        relay_derived__subscriptions__v1
+    )
+
+    relay_derived__subscriptions__v1.set_upstream(fivetran_stripe_sync_wait)

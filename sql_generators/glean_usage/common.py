@@ -104,7 +104,14 @@ def table_names_from_baseline(baseline_table, include_project_id=True):
 def referenced_table_exists(view_sql):
     """Dry run the given view SQL to see if its referent exists."""
     dryrun = DryRun("foo/bar/view.sql", content=view_sql)
-    return 404 not in [e.get("code") for e in dryrun.errors()]
+    # 403 is returned if referenced dataset doesn't exist; we need to check that the 403 is due to dataset not existing
+    # since dryruns on views will also return 403 due to the table CREATE
+    # 404 is returned if referenced table or view doesn't exist
+    return not any([
+        404 == e.get("code") or 
+        (403 == e.get("code") and "does not exist in location" in e.get("message")) 
+        for e in dryrun.errors()
+    ])
 
 
 def _contains_glob(patterns):

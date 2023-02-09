@@ -23,7 +23,7 @@ fields:
 - mode: NULLABLE
   name: reservation_id
   type: STRING
-  description: Name of the primary reservation assigned to this job. Reservations are BigQuery slots allocated to projects in order to distribute the resources and processing capacity.
+  description: Name of the primary reservation (slots for distributing resources) assigned to this job.
 
 - mode: NULLABLE
   name: cache_hit

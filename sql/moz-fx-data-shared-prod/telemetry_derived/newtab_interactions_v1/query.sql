@@ -245,5 +245,5 @@ FROM
 WHERE
    -- If we're not able to attach newtab_open_source and newtab_visit_started_at,
    -- we haven't received a valid newtab.opened event:
-   newtab_open_source IS NOT NULL
-   AND newtab_visit_started_at IS NOT NULL
+  newtab_open_source IS NOT NULL
+  AND newtab_visit_started_at IS NOT NULL

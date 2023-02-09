@@ -1103,6 +1103,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#bigquery_usage_costs" class="md-nav__link">
+    bigquery_usage_costs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#column_size" class="md-nav__link">
     column_size
   </a>
@@ -2586,6 +2593,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#bigquery_usage_costs" class="md-nav__link">
+    bigquery_usage_costs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#column_size" class="md-nav__link">
     column_size
   </a>
@@ -3701,11 +3715,6 @@ including views on <code>payload_bytes</code> tables</p>
         <td>Float</td>
         <td>Yes</td>
     </tr><tr>
-        <td>cost_usd</td>
-        <td>Total cost of the job in USD</td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
         <td>error_location</td>
         <td>Specifies where the error occurred, if present</td>
         <td>String</td>
@@ -3718,6 +3727,21 @@ including views on <code>payload_bytes</code> tables</p>
     </tr><tr>
         <td>error_message</td>
         <td>A human-readable description of the error</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>reservation_id</td>
+        <td>Name of the primary reservation (slots for distributing resources) assigned to this job.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>cache_hit</td>
+        <td>Whether the query results of this job were from a cache</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>query</td>
+        <td>SQL query text</td>
         <td>String</td>
         <td>Yes</td>
     </tr>
@@ -3738,6 +3762,24 @@ including views on <code>payload_bytes</code> tables</p>
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/bigquery_usage">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/bigquery_usage/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/bigquery_usage/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="bigquery_usage_costs"><a href="#bigquery_usage_costs">bigquery_usage_costs</a></h2>
+<p><code>monitoring.bigquery_usage_costs</code></p>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring>monitoring</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/bigquery_usage>bigquery_usage</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/bigquery_usage_costs">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/bigquery_usage_costs/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/bigquery_usage_costs/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="column_size"><a href="#column_size">column_size</a></h2>
 <p><code>monitoring.column_size</code></p>

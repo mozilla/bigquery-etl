@@ -45,7 +45,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     search_derived__search_aggregates__v8 = bigquery_etl_query(
         task_id="search_derived__search_aggregates__v8",
         destination_table="search_aggregates_v8",

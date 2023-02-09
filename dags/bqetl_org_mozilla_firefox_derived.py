@@ -40,7 +40,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     fenix_derived__attributable_clients__v1 = bigquery_etl_query(
         task_id="fenix_derived__attributable_clients__v1",
         destination_table="attributable_clients_v1",

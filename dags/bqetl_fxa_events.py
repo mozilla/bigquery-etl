@@ -54,7 +54,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     docker_fxa_admin_server_v1 = bigquery_etl_query(
         task_id="docker_fxa_admin_server_v1",
         destination_table="docker_fxa_admin_server_sanitized_v1",

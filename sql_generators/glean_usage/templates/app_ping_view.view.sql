@@ -6,6 +6,8 @@ AS
 {% if not loop.first -%}
 UNION ALL
 {% endif -%}
-SELECT {{ query.select_expression }}
+SELECT 
+  "{{ query.dataset }}" AS normalized_app_id,
+  {{ query.select_expression }}
 FROM `{{ project_id }}.{{ query.dataset }}.{{ query.table }}`
 {% endfor %}

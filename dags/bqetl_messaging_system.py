@@ -45,7 +45,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     messaging_system_derived__cfr_exact_mau28_by_dimensions__v1 = bigquery_etl_query(
         task_id="messaging_system_derived__cfr_exact_mau28_by_dimensions__v1",
         destination_table="cfr_exact_mau28_by_dimensions_v1",

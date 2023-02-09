@@ -47,7 +47,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     monitoring__experimenter_experiments__v1 = gke_command(
         task_id="monitoring__experimenter_experiments__v1",
         command=[

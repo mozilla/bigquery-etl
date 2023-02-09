@@ -43,7 +43,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     telemetry_derived__ssl_ratios__v1 = bigquery_etl_query(
         task_id="telemetry_derived__ssl_ratios__v1",
         destination_table="ssl_ratios_v1",

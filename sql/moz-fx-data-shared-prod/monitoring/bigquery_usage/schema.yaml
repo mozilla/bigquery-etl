@@ -63,10 +63,6 @@ fields:
   mode: NULLABLE
   name: total_terabytes_processed
   type: FLOAT
-- description: Total cost of the job in USD
-  mode: NULLABLE
-  name: cost_usd
-  type: FLOAT
 - description: Specifies where the error occurred, if present
   mode: NULLABLE
   name: error_location
@@ -78,4 +74,17 @@ fields:
 - description: A human-readable description of the error
   mode: NULLABLE
   name: error_message
+  type: STRING
+- description: Name of the primary reservation (slots for distributing resources)
+    assigned to this job.
+  mode: NULLABLE
+  name: reservation_id
+  type: STRING
+- description: Whether the query results of this job were from a cache
+  mode: NULLABLE
+  name: cache_hit
+  type: BOOLEAN
+- description: SQL query text
+  mode: NULLABLE
+  name: query
   type: STRING

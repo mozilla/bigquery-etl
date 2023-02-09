@@ -146,7 +146,7 @@ def info(name, dags_config, with_tasks):
 )
 @click.option(
     "--tag",
-    help=("Tag to use for the DAG"),
+    help=("Tag to apply to the DAG"),
     required=True,
     multiple=True,
 )

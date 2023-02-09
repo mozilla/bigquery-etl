@@ -108,8 +108,8 @@ def referenced_table_exists(view_sql):
     # since dryruns on views will also return 403 due to the table CREATE
     # 404 is returned if referenced table or view doesn't exist
     return not any([
-        404 == e.get("code") or 
-        (403 == e.get("code") and "does not exist in location" in e.get("message")) 
+        404 == e.get("code")
+        or (403 == e.get("code") and "bigquery.tables.create denied" not in e.get("message")) 
         for e in dryrun.errors()
     ])
 

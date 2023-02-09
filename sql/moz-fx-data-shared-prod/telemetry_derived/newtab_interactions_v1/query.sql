@@ -184,6 +184,8 @@ aggregated_newtab_activity AS (
     COUNTIF(is_organic_pocket_save) AS organic_pocket_saves,
   FROM
     categorized_events
+  WHERE
+    newtab_visit_id IS NOT NULL
   GROUP BY
     newtab_visit_id,
     client_id,
@@ -206,12 +208,42 @@ client_profile_info AS (
     submission_date = @submission_date
   GROUP BY
     client_id
+),
+-- Newtab interactions may arrive in different pings so we attach the open details for a visit to all interactions.
+side_filled AS (
+  SELECT
+    * EXCEPT (newtab_open_source, newtab_visit_started_at, newtab_visit_ended_at),
+    FIRST_VALUE(newtab_open_source IGNORE NULLS) OVER (
+      PARTITION BY
+        newtab_visit_id
+      ORDER BY
+        submission_date ASC
+    ) AS newtab_open_source,
+    FIRST_VALUE(newtab_visit_started_at IGNORE NULLS) OVER (
+      PARTITION BY
+        newtab_visit_id
+      ORDER BY
+        submission_date ASC
+    ) AS newtab_visit_started_at,
+    FIRST_VALUE(newtab_visit_ended_at IGNORE NULLS) OVER (
+      PARTITION BY
+        newtab_visit_id
+      ORDER BY
+        submission_date ASC
+    ) AS newtab_visit_ended_at
+  FROM
+    aggregated_newtab_activity
+  LEFT JOIN
+    client_profile_info
+  USING
+    (legacy_telemetry_client_id)
 )
 SELECT
   *
 FROM
-  aggregated_newtab_activity
-LEFT JOIN
-  client_profile_info
-USING
-  (legacy_telemetry_client_id)
+  side_filled
+WHERE
+   -- If we're not able to attach newtab_open_source and newtab_visit_started_at,
+   -- we haven't received a valid newtab.opened event:
+   newtab_open_source IS NOT NULL
+   AND newtab_visit_started_at IS NOT NULL

@@ -94,7 +94,8 @@ CLUSTER BY
       adjust_adgroup,
       adjust_campaign,
       adjust_creative,
-      reported_first_session_ping AS is_new_install,
+      first_seen_date = submission_date
+      AND reported_first_session_ping AS is_new_install,
       first_seen_date = submission_date AS is_new_profile,
       CASE
         WHEN client_day.has_search_data

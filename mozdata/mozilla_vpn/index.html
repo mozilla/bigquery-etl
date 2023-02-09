@@ -625,6 +625,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../firefox_desktop_background_tasks/" class="md-nav__link">
+        firefox-desktop-background-tasks
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../firefox_desktop_background_update/" class="md-nav__link">
         firefox-desktop-background-update
       </a>
@@ -1075,6 +1089,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#baseline" class="md-nav__link">
+    baseline
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#channel_group_proportions" class="md-nav__link">
     channel_group_proportions
   </a>
@@ -1161,6 +1182,20 @@
         <li class="md-nav__item">
   <a href="#main" class="md-nav__link">
     main
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metrics" class="md-nav__link">
+    metrics
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metrics_clients_daily" class="md-nav__link">
+    metrics_clients_daily
   </a>
   
 </li>
@@ -1267,20 +1302,6 @@
   
 </nav>
       
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../mozilla_vpn_android/" class="md-nav__link">
-        Mozilla Vpn Android
-      </a>
     </li>
   
 
@@ -2467,6 +2488,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#baseline" class="md-nav__link">
+    baseline
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#channel_group_proportions" class="md-nav__link">
     channel_group_proportions
   </a>
@@ -2553,6 +2581,20 @@
         <li class="md-nav__item">
   <a href="#main" class="md-nav__link">
     main
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metrics" class="md-nav__link">
+    metrics
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metrics_clients_daily" class="md-nav__link">
+    metrics_clients_daily
   </a>
   
 </li>
@@ -3243,6 +3285,114 @@
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/all_subscriptions">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/all_subscriptions/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/all_subscriptions/metadata.yaml">Metadata File</a> </p>
 <hr />
+<h2 id="baseline"><a href="#baseline">baseline</a></h2>
+<p><strong>App-specific view for Glean ping "baseline"</strong></p>
+<p><code>mozilla_vpn.baseline</code></p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Mozilla VPN"
+(mozillavpn.baseline, org_mozilla_firefox_vpn.baseline).</p>
+<p>It is used by Looker.</p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>additional_properties</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>events</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metrics</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozillavpn>mozillavpn</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozillavpn/baseline>baseline</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox_vpn>org_mozilla_firefox_vpn</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox_vpn/baseline>baseline</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/baseline">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/baseline/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/baseline/metadata.yaml">Metadata File</a> </p>
+<hr />
 <h2 id="channel_group_proportions"><a href="#channel_group_proportions">channel_group_proportions</a></h2>
 <p><code>mozilla_vpn.channel_group_proportions</code></p>
 <table>
@@ -3366,7 +3516,7 @@
 <p><code>mozilla_vpn.deletion_request</code></p>
 <p>This a view that UNIONs the stable ping tables
 across all channels of the Glean application "Mozilla VPN"
-(mozillavpn.deletion_request).</p>
+(mozillavpn.deletion_request, org_mozilla_firefox_vpn.deletion_request).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -3592,7 +3742,7 @@ across all channels of the Glean application "Mozilla VPN"
 <p><code>mozilla_vpn.events</code></p>
 <p>This a view that UNIONs the stable ping tables
 across all channels of the Glean application "Mozilla VPN"
-(mozillavpn.events).</p>
+(mozillavpn.events, org_mozilla_firefox_vpn.events).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -4416,7 +4566,7 @@ sent in an "events" ping.</p>
 <p><code>mozilla_vpn.main</code></p>
 <p>This a view that UNIONs the stable ping tables
 across all channels of the Glean application "Mozilla VPN"
-(mozillavpn.main).</p>
+(mozillavpn.main, org_mozilla_firefox_vpn.main).</p>
 <p>It is used by Looker.</p>
 <table>
 <caption>Schema</caption>
@@ -4518,6 +4668,132 @@ across all channels of the Glean application "Mozilla VPN"
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/main">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/main/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/main/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="metrics"><a href="#metrics">metrics</a></h2>
+<p><strong>App-specific view for Glean ping "metrics"</strong></p>
+<p><code>mozilla_vpn.metrics</code></p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Mozilla VPN"
+(mozillavpn.metrics, org_mozilla_firefox_vpn.metrics).</p>
+<p>It is used by Looker.</p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>additional_properties</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>events</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metrics</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozillavpn>mozillavpn</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozillavpn/metrics>metrics</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox_vpn>org_mozilla_firefox_vpn</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox_vpn/metrics>metrics</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/metrics">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/metrics/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/metrics/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="metrics_clients_daily"><a href="#metrics_clients_daily">metrics_clients_daily</a></h2>
+<p><code>mozilla_vpn.metrics_clients_daily</code></p>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn_derived>mozilla_vpn_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn_derived/metrics_clients_daily_v1>metrics_clients_daily_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/metrics_clients_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/metrics_clients_daily/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_vpn/metrics_clients_daily/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="protected"><a href="#protected">protected</a></h2>
 <p><code>mozilla_vpn.protected</code></p>
@@ -5555,13 +5831,13 @@ across all channels of the Glean application "Mozilla VPN"
       
       
         
-        <a href="../mozilla_vpn_android/" class="md-footer__link md-footer__link--next" aria-label="Next: Mozilla Vpn Android" rel="next">
+        <a href="../mozillavpn/" class="md-footer__link md-footer__link--next" aria-label="Next: mozillavpn" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Mozilla Vpn Android
+              mozillavpn
             </div>
           </div>
           <div class="md-footer__button md-icon">

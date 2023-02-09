@@ -625,6 +625,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../firefox_desktop_background_tasks/" class="md-nav__link">
+        firefox-desktop-background-tasks
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../firefox_desktop_background_update/" class="md-nav__link">
         firefox-desktop-background-update
       </a>
@@ -1063,20 +1077,6 @@
     <li class="md-nav__item">
       <a href="../mozilla_vpn/" class="md-nav__link">
         Mozilla VPN
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../mozilla_vpn_android/" class="md-nav__link">
-        Mozilla Vpn Android
       </a>
     </li>
   
@@ -2270,6 +2270,52 @@
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs">Source Directory</a></p>
 <h2 id="daily_active_rows"><a href="#daily_active_rows">daily_active_rows</a></h2>
 <p><code>fivetran_costs.daily_active_rows</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>destination_name</td>
+        <td>Name of the Fivetran destination as it appears in the UI.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>measured_date</td>
+        <td>Date of the usage measurement
+</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>connector_name</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>paid_active_rows</td>
+        <td>Number of active rows billed for that connector on that date.
+</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>free_active_rows</td>
+        <td>Number of free active rows for that connector on that date.
+</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>total_active_rows</td>
+        <td>Number of active rows, billed and free for that connector on that date.
+</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
 <table>
 <caption>Referenced Tables</caption>
     <tr>

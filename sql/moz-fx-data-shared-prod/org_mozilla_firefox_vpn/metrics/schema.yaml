@@ -231,6 +231,11 @@ fields:
       mode: NULLABLE
       name: glean_error_preinit_tasks_timeout
       type: BOOLEAN
+    - description: Reports `true` if the client was successfully migrated from the
+        Android-specific implementation of the Glean SDK to the cross-platform one.
+      mode: NULLABLE
+      name: glean_core_migration_successful
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD
@@ -294,6 +299,19 @@ fields:
         '
       mode: NULLABLE
       name: glean_validation_foreground_count
+      type: INTEGER
+    - description: This metric counts how many times a dirty bit was detected when
+        starting the Glean SDK, on Android. This dirty bit is set to `true` when Android's
+        lifecycle `ON_START` is hit and flipped back to false on `ON_STOP`. When an
+        application is force-closed, it might not get the `ON_STOP` and so the value
+        would stay `true`. The next time Glean starts, it will increment this counter.
+      mode: NULLABLE
+      name: glean_validation_app_forceclosed_count
+      type: INTEGER
+    - description: The number of baseline pings sent during the lifetime of this metrics
+        ping.
+      mode: NULLABLE
+      name: glean_validation_baseline_ping_count
       type: INTEGER
     mode: NULLABLE
     name: counter

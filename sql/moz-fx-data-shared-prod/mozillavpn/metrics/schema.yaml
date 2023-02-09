@@ -226,6 +226,79 @@ fields:
   type: RECORD
 - fields:
   - fields:
+    - description: Set to true if the tasks that are queued prior to Glean initialization
+        time out.
+      mode: NULLABLE
+      name: glean_error_preinit_tasks_timeout
+      type: BOOLEAN
+    mode: NULLABLE
+    name: boolean
+    type: RECORD
+  - fields:
+    - description: 'The number of times we encountered an IO error
+
+        when writing a pending ping to disk.
+
+        '
+      mode: NULLABLE
+      name: glean_error_io
+      type: INTEGER
+    - description: 'The number of tasks that overflowed the pre-initialization buffer.
+
+        Only sent if the buffer ever overflows.
+
+
+        In Version 0 this reported the total number of tasks enqueued.
+
+        '
+      mode: NULLABLE
+      name: glean_error_preinit_tasks_overflow
+      type: INTEGER
+    - description: 'Counts the number of times we encountered an invalid timezone
+        offset
+
+        when trying to get the current time.
+
+        A timezone offset is invalid if it is outside [-24h, +24h].
+
+        If invalid a UTC offset is used (+0h).
+
+        '
+      mode: NULLABLE
+      name: glean_time_invalid_timezone_offset
+      type: INTEGER
+    - description: 'The number of pings deleted after the quota
+
+        for the size of the pending pings directory or number of files is hit.
+
+        Since quota is only calculated for the pending pings directory,
+
+        and deletion request ping live in a different directory,
+
+        deletion request pings are never deleted.
+
+        '
+      mode: NULLABLE
+      name: glean_upload_deleted_pings_after_quota_hit
+      type: INTEGER
+    - description: 'The total number of pending pings at startup.
+
+        This does not include deletion-request pings.
+
+        '
+      mode: NULLABLE
+      name: glean_upload_pending_pings
+      type: INTEGER
+    - description: 'On mobile, the number of times the application went to foreground.
+
+        '
+      mode: NULLABLE
+      name: glean_validation_foreground_count
+      type: INTEGER
+    mode: NULLABLE
+    name: counter
+    type: RECORD
+  - fields:
     - description: 'The hour of the first run of the application.
 
         '
@@ -299,6 +372,23 @@ fields:
       mode: REPEATED
       name: glean_error_invalid_value
       type: RECORD
+    - description: 'Counts the number of ping upload failures, by type of failure.
+
+        This includes failures for all ping types,
+
+        though the counts appear in the next successfully sent `metrics` ping.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: glean_upload_ping_upload_failure
+      type: RECORD
     - description: "A count of the pings submitted, by ping type.\n\nThis metric appears\
         \ in both the metrics and baseline pings.\n\n- On the metrics ping, the counts\
         \ include the number of pings sent since\n  the last metrics ping (including\
@@ -319,46 +409,95 @@ fields:
     name: labeled_counter
     type: RECORD
   - fields:
-    - description: 'The locale of the application during initialization (e.g. "es-ES").
-
-        If the locale can''t be determined on the system, the value is
-
-        ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
-
-        to indicate "undetermined".
-
-        '
-      mode: NULLABLE
-      name: glean_baseline_locale
-      type: STRING
-    mode: NULLABLE
-    name: string
-    type: RECORD
-  - fields:
-    - description: 'The duration of the last foreground session.
+    - description: 'The size of the database file at startup.
 
         '
       fields:
       - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: value
+        name: count
         type: INTEGER
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
       mode: NULLABLE
-      name: glean_baseline_duration
+      name: glean_database_size
+      type: RECORD
+    - description: 'The size of pings that exceeded the maximum ping size allowed
+        for upload.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: glean_upload_discarded_exceeding_pings_size
+      type: RECORD
+    - description: 'The size of the pending pings directory upon initialization of
+        Glean.
+
+        This does not include the size of the deletion request pings directory.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: glean_upload_pending_pings_directory_size
       type: RECORD
     mode: NULLABLE
-    name: timespan
+    name: memory_distribution
     type: RECORD
   - fields:
-    - description: The number of metrics pings sent during the lifetime of this baseline
-        ping.
+    - description: 'The optional reason the ping was submitted.
+
+        The specific values for reason are specific to each ping, and are
+
+        documented in the ping''s pings.yaml file.
+
+        '
       mode: NULLABLE
-      name: glean_validation_metrics_ping_count
-      type: INTEGER
+      name: ping_reason
+      type: STRING
     mode: NULLABLE
-    name: counter
+    name: string
     type: RECORD
   mode: NULLABLE
   name: metrics

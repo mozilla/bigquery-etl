@@ -34629,6 +34629,26 @@ fields:
           mode: REPEATED
           name: quickaction_impression
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: browser_ui_interaction_all_tabs_panel_entrypoint
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: browser_ui_interaction_tabs_context_entrypoint
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD
@@ -35893,6 +35913,9 @@ fields:
         - mode: NULLABLE
           name: startup_is_restored_by_macos
           type: BOOLEAN
+        - mode: NULLABLE
+          name: browser_ui_interaction_all_tabs_panel_dragstart_tab_event_count
+          type: INTEGER
         mode: NULLABLE
         name: scalars
         type: RECORD

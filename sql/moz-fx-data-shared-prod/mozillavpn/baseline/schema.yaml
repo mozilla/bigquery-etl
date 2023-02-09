@@ -351,15 +351,6 @@ fields:
     mode: NULLABLE
     name: timespan
     type: RECORD
-  - fields:
-    - description: The number of metrics pings sent during the lifetime of this baseline
-        ping.
-      mode: NULLABLE
-      name: glean_validation_metrics_ping_count
-      type: INTEGER
-    mode: NULLABLE
-    name: counter
-    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

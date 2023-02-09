@@ -4,7 +4,7 @@ friendly_name: App-specific view for Glean ping "events"
 description: |-
   This a view that UNIONs the stable ping tables
   across all channels of the Glean application "Mozilla VPN"
-  (mozillavpn.events).
+  (mozillavpn.events, org_mozilla_firefox_vpn.events).
 
   It is used by Looker.
 

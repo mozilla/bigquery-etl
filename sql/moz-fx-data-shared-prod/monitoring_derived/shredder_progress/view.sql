@@ -5,18 +5,12 @@ WITH shredder AS (
   SELECT
     task_id,
     CASE
-    WHEN
-      target = "moz-fx-data-shared-prod.telemetry_stable.main_v4"
-    THEN
-      "telemetry_main"
-    WHEN
-      target = "moz-fx-data-shared-prod.telemetry_derived.main_summary_v4"
-    THEN
-      "telemetry_main_summary"
-    ELSE
-      "all"
-    END
-    AS airflow_task_id,
+      WHEN target = "moz-fx-data-shared-prod.telemetry_stable.main_v4"
+        THEN "telemetry_main"
+      WHEN target = "moz-fx-data-shared-prod.telemetry_derived.main_summary_v4"
+        THEN "telemetry_main_summary"
+      ELSE "all"
+    END AS airflow_task_id,
     target,
     end_date,
     -- oldest table size

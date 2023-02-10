@@ -46,7 +46,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     experiment_enrollment_daily_active_population = bigquery_etl_query(
         task_id="experiment_enrollment_daily_active_population",
         destination_table="experiment_enrollment_daily_active_population_v1",

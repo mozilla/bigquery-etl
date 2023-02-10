@@ -127,11 +127,11 @@ def format(paths, check=False):
             formatted = reformat(query, trailing_newline=True)
             if query != formatted:
                 if check:
-                    print(f"would reformat {path}")
+                    print(f"Needs reformatting: bqetl format {path}")
                 else:
                     with open(path, "w") as fp:
                         fp.write(formatted)
-                    print(f"reformatted {path}")
+                    print(f"Reformatted: {path}")
                 reformatted += 1
             else:
                 unchanged += 1

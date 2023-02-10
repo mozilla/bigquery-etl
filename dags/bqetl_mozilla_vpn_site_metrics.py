@@ -49,7 +49,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     mozilla_vpn_derived__funnel_ga_to_subscriptions__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__funnel_ga_to_subscriptions__v1",
         destination_table="funnel_ga_to_subscriptions_v1",

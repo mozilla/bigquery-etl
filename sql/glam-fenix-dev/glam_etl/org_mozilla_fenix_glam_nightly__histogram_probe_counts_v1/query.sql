@@ -10,28 +10,22 @@ RETURNS ARRAY<INT64> AS (
     WITH buckets AS (
       SELECT
         CASE
-        WHEN
-          metric_type = 'timing_distribution'
-        THEN
-          -- https://mozilla.github.io/glean/book/user/metrics/timing_distribution.html
-          mozfun.glam.histogram_generate_functional_buckets(2, 8, range_max)
-        WHEN
-          metric_type = 'memory_distribution'
-        THEN
-          -- https://mozilla.github.io/glean/book/user/metrics/memory_distribution.html
-          mozfun.glam.histogram_generate_functional_buckets(2, 16, range_max)
-        WHEN
-          metric_type = 'custom_distribution_exponential'
-        THEN
-          mozfun.glam.histogram_generate_exponential_buckets(range_min, range_max, bucket_count)
-        WHEN
-          metric_type = 'custom_distribution_linear'
-        THEN
-          mozfun.glam.histogram_generate_linear_buckets(range_min, range_max, bucket_count)
-        ELSE
-          []
-        END
-        AS arr
+          WHEN metric_type = 'timing_distribution'
+            -- https://mozilla.github.io/glean/book/user/metrics/timing_distribution.html
+            THEN mozfun.glam.histogram_generate_functional_buckets(2, 8, range_max)
+          WHEN metric_type = 'memory_distribution'
+            -- https://mozilla.github.io/glean/book/user/metrics/memory_distribution.html
+            THEN mozfun.glam.histogram_generate_functional_buckets(2, 16, range_max)
+          WHEN metric_type = 'custom_distribution_exponential'
+            THEN mozfun.glam.histogram_generate_exponential_buckets(
+                range_min,
+                range_max,
+                bucket_count
+              )
+          WHEN metric_type = 'custom_distribution_linear'
+            THEN mozfun.glam.histogram_generate_linear_buckets(range_min, range_max, bucket_count)
+          ELSE []
+        END AS arr
     )
     SELECT
       ARRAY_AGG(CAST(item AS INT64))

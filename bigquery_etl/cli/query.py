@@ -478,7 +478,6 @@ def _backfill_query(
 
     backfill_date = backfill_date.strftime("%Y-%m-%d")
     if backfill_date not in exclude:
-
         if no_partition:
             destination_table = table
         else:

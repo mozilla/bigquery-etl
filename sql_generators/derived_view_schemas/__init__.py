@@ -6,6 +6,8 @@ from pathlib import Path
 import click
 from pathos.multiprocessing import ProcessingPool
 
+from bigquery_etl.cli.utils import use_cloud_function_option
+
 NON_USER_FACING_DATASET_SUBSTRINGS = (
     "_derived",
     "_external",
@@ -41,7 +43,7 @@ def _generate_view_schema(sql_dir, view_directory):
         view_references = extract_table_references(view_file.read_text())
         if len(view_references) != 1:
             return
-    
+
         target_project = view_dir.parent.parent.name
         target_dataset = view_dir.parent.name
 
@@ -154,7 +156,8 @@ def _generate_view_schema(sql_dir, view_directory):
     default=20,
     type=int,
 )
-def generate(target_project, output_dir, parallelism):
+@use_cloud_function_option
+def generate(target_project, output_dir, parallelism, use_cloud_function):
     """
     Generate schema yaml files for views in output_dir/target_project.
 

@@ -24,14 +24,6 @@ fields:
     Example: sync
 
 - mode: NULLABLE
-  name: timestamp
-  type: TIMESTAMP
-  description: |
-    Timestamp value of the first activity
-    recorded by the user in a specific service
-    on a specific date.
-
-- mode: NULLABLE
   name: country
   type: STRING
   description: |

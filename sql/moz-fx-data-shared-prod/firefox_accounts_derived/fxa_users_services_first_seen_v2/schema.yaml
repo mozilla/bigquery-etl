@@ -24,13 +24,6 @@ fields:
     event on the specific submission_date.
 
 - mode: NULLABLE
-  name: first_service_timestamp
-  type: TIMESTAMP
-  description: |
-    Timestamp value corresponding to the very first record
-    matching the user_id/service combination.
-
-- mode: NULLABLE
   name: first_service_os_name
   type: STRING
   description: |

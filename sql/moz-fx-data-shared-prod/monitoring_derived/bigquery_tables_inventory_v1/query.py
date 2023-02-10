@@ -25,7 +25,7 @@ parser.add_argument("--destination_table", default="bigquery_tables_inventory_v1
 parser.add_argument("--tmp_table", default="bigquery_tables_last_modified_tmp")
 
 
-def create_last_modified_tmp_table(project, tmp_table_name):
+def create_last_modified_tmp_table(date, project, tmp_table_name):
     """Create temp table to capture last modified dates."""
     # remove old table in case of re-run
     client = bigquery.Client(project)
@@ -52,6 +52,7 @@ def create_last_modified_tmp_table(project, tmp_table_name):
                 table_id,
                 DATE(TIMESTAMP_MILLIS(creation_time)) AS creation_date,
                 DATE(TIMESTAMP_MILLIS(last_modified_time)) AS last_modified_date
+                WHERE DATE(TIMESTAMP_MILLIS(creation_time)) <= DATE('{date}')
                 FROM `{project}.{dataset.dataset_id}.__TABLES__`
         """
 
@@ -78,6 +79,7 @@ def create_query(date, source_project, tmp_table_name):
             table_name AS table_id,
             table_type,
             FROM `{source_project}.region-us.INFORMATION_SCHEMA.TABLES`
+            WHERE DATE(creation_time) <= DATE('{date}')
             )
         LEFT JOIN {tmp_table_name}
         USING (project_id, dataset_id, table_id, creation_date)
@@ -101,7 +103,7 @@ def main():
 
     for project in args.source_projects:
 
-        create_last_modified_tmp_table(project, tmp_table_name)
+        create_last_modified_tmp_table(args.date, project, tmp_table_name)
 
         client = bigquery.Client(project)
         query = create_query(args.date, project, tmp_table_name)

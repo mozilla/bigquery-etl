@@ -11,7 +11,7 @@ fields:
   mode: NULLABLE
   name: measured_date
   type: DATE
-- desctription: 'Name of the Fivetran connector.
+- description: 'Name of the Fivetran connector.
 
     '
   mode: NULLABLE

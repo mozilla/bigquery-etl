@@ -1,0 +1,24 @@
+---
+friendly_name: FxA Users Services First Seen
+description: |
+  Usage aggregations describing when an FxA user
+  was seen for the first time using an FxA service.
+owners:
+  - kignasiak@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_fxa_events
+  date_partition_parameter: submission_date
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_service_flow_timestamp
+    require_partition_filter: false
+  clustering:
+    fields:
+      - service
+      - first_service_country
+      - first_service_os_name

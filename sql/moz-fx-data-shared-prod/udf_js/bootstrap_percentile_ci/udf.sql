@@ -33,6 +33,10 @@ AS
     histogram.sort(function(a, b) {return parseFloat(a.key) - parseFloat(b.key);});
   }
 
+  function arraySort(x) {
+    x.sort(function(a, b) {return parseFloat(a) - parseFloat(b);});
+  }
+
   function histogramIsNonZero(histogram) {
     return histogram.some(bin => parseFloat(bin.value) > 0.0);
   }
@@ -55,9 +59,9 @@ AS
     /* calculate the cumulative number of elements in the histogram */
     var total = 0;
     for (var bin of histogram) {
-        total += bin.value;
         if ( bin.value > 0 ) {
           /* include this non-empty bin when drawing samples */
+          total += bin.value;
           bin.cumulative_sum = total;
         } else {
           /* ignore this empty bin when drawing samples */
@@ -65,11 +69,19 @@ AS
         }
     };
 
-    var samples = [];
+    /*
+    Use a `scale` to approximate non-integer samples from qbinom. This is required because
+    histogram values may not always be counts; if the histogram is normalized, bins can
+    contain floats.
+    */
+    const scale = 1000;
+    total = Math.ceil(total * scale);
+    
     /* sample the quantile of interest */
+    var samples = [];
     for ( var i = 0; i < n_samples; i++ ) {
       /* draw a random variable from the binomial distribution */
-      var x = qbinom(Math.random(), total, parseFloat(percentile) / 100);
+      var x = qbinom(Math.random(), total, parseFloat(percentile) / 100) / scale;
       if ( x in samples ) {
         samples[x].value += 1;
       } else {
@@ -83,11 +95,16 @@ AS
       }
     }
 
-    /* ensure the histogram is sorted */
-    histogramSort(samples);
-
-    /* expand the output */
-    var output = samples.map(bin => Array(bin.value).fill(parseFloat(bin.key))).reduce((prev, curr) => prev.concat(curr));
+    /* build the output from the sorted sample keys */
+    sample_keys = Object.keys(samples);
+    arraySort(sample_keys);
+    output = [];
+    for ( const x of sample_keys ) {
+        const bin = samples[x];
+        for(var i = 0; i < bin.value; i++){
+            output.push(bin.key);
+        }
+    }
 
     return output;
   }

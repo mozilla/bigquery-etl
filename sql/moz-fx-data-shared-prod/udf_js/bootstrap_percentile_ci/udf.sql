@@ -11,7 +11,7 @@ histogram struct as the second.
 */
 CREATE OR REPLACE FUNCTION udf_js.bootstrap_percentile_ci(
   percentiles ARRAY<INT64>,
-  histogram STRUCT<VALUES ARRAY<STRUCT<key FLOAT64, value FLOAT64>>>,
+  histogram STRUCT<values ARRAY<STRUCT<key FLOAT64, value FLOAT64>>>,
   metric STRING
 )
 RETURNS ARRAY<
@@ -197,41 +197,41 @@ WITH test_data AS (
         STRUCT(0.0 AS key, 0.0 AS value),
         STRUCT(1.0 AS key, NULL AS value),
         STRUCT(2.0 AS key, 0.0 AS value)
-      ] AS values
+      ] AS VALUES
     ) AS null_value,
     STRUCT(
       [
         STRUCT(0.0 AS key, 0.0 AS value),
-        STRUCT(NULL AS key, 10.0 AS value),
+        STRUCT(NULL AS key, 1.0 AS value),
         STRUCT(2.0 AS key, 0.0 AS value)
-      ] AS values
+      ] AS VALUES
     ) AS null_key,
     STRUCT(
       [
         STRUCT(0.0 AS key, 0.0 AS value),
         STRUCT(1.0 AS key, 0.0 AS value),
         STRUCT(2.0 AS key, 0.0 AS value)
-      ] AS values
+      ] AS VALUES
     ) AS all_zero,
     STRUCT(
       [
         STRUCT(0.0 AS key, 0.0 AS value),
-        STRUCT(1.0 AS key, 10.0 AS value),
+        STRUCT(1.0 AS key, 1.0 AS value),
         STRUCT(2.0 AS key, 0.0 AS value)
-      ] AS values
+      ] AS VALUES
     ) AS one_bin,
     STRUCT(
       [
-        STRUCT(-4.5 AS key, 0.0 AS value),
-        STRUCT(-3.5 AS key, 1.0 AS value),
-        STRUCT(-2.5 AS key, 12.0 AS value),
-        STRUCT(-1.5 AS key, 22.0 AS value),
-        STRUCT(-0.5 AS key, 30.0 AS value),
-        STRUCT(0.5 AS key, 22.0 AS value),
-        STRUCT(1.5 AS key, 12.0 AS value),
-        STRUCT(2.5 AS key, 1.0 AS value),
-        STRUCT(3.5 AS key, 0.0 AS value)
-      ] AS values
+        STRUCT(-4.5 AS key, 0.0 / 100.0 AS value),
+        STRUCT(-3.5 AS key, 1.0 / 100.0 AS value),
+        STRUCT(-2.5 AS key, 12.0 / 100.0 AS value),
+        STRUCT(-1.5 AS key, 22.0 / 100.0 AS value),
+        STRUCT(-0.5 AS key, 30.0 / 100.0 AS value),
+        STRUCT(0.5 AS key, 22.0 / 100.0 AS value),
+        STRUCT(1.5 AS key, 12.0 / 100.0 AS value),
+        STRUCT(2.5 AS key, 1.0 / 100.0 AS value),
+        STRUCT(3.5 AS key, 0.0 / 100.0 AS value)
+      ] AS VALUES
     ) AS seven_bin
 ),
 all_zero_percentiles AS (
@@ -281,9 +281,9 @@ SELECT
     (SELECT ['5', '25', '50', '75', '95']),
     (SELECT ARRAY(SELECT parameter FROM all_zero_results))
   ),
-  assert.null((SELECT ARRAY(SELECT lower FROM all_zero_results WHERE lower IS NOT NULL))),
-  assert.null((SELECT ARRAY(SELECT point FROM all_zero_results WHERE point IS NOT NULL))),
-  assert.null((SELECT ARRAY(SELECT upper FROM all_zero_results WHERE upper IS NOT NULL))),
+  assert.array_empty((SELECT ARRAY(SELECT lower FROM all_zero_results WHERE lower IS NOT NULL))),
+  assert.array_empty((SELECT ARRAY(SELECT point FROM all_zero_results WHERE point IS NOT NULL))),
+  assert.array_empty((SELECT ARRAY(SELECT upper FROM all_zero_results WHERE upper IS NOT NULL))),
   assert.equals('test', (SELECT DISTINCT metric FROM one_bin_results)),
   assert.equals('percentile', (SELECT DISTINCT statistic FROM one_bin_results)),
   assert.array_equals(

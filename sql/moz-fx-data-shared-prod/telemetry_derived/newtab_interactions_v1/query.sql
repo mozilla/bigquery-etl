@@ -244,6 +244,6 @@ FROM
   side_filled
 WHERE
    -- If we're not able to attach newtab_open_source and newtab_visit_started_at,
-   -- we haven't received a valid newtab.opened event:
+   -- we haven't received a valid newtab.opened event within the partition (submission date):
   newtab_open_source IS NOT NULL
   AND newtab_visit_started_at IS NOT NULL

@@ -48,7 +48,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     cjms_bigquery__flows__v1 = bigquery_etl_query(
         task_id="cjms_bigquery__flows__v1",
         destination_table='flows_v1${{ (execution_date - macros.timedelta(hours=2)).strftime("%Y%m%d") }}',

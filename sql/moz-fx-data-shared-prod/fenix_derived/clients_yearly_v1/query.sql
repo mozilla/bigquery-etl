@@ -2,7 +2,7 @@ WITH base AS (
   -- There are duplicates now in `baseline_clients_daily` because of the join with `clients_first_seen`,
   -- so we take the minimum
   SELECT
-    *,
+    * EXCEPT (normalized_app_id),
     ROW_NUMBER() OVER (
       PARTITION BY
         client_id,

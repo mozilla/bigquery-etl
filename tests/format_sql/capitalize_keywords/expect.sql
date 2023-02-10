@@ -237,9 +237,9 @@ LOOP
 END LOOP;
 
 CASE
-WHEN
-THEN
-ELSE
+  WHEN
+    THEN
+  ELSE
 END;
 
 -- top level keywords

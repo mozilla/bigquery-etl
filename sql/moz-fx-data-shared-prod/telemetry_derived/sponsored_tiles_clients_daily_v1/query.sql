@@ -125,14 +125,10 @@ unified_metrics AS (
   SELECT
     submission_date,
     CASE
-    WHEN
-      normalized_app_name = "Firefox Desktop"
-    THEN
-      "desktop"
-    ELSE
-      "mobile"
-    END
-    AS device,
+      WHEN normalized_app_name = "Firefox Desktop"
+        THEN "desktop"
+      ELSE "mobile"
+    END AS device,
     client_id,
     browser_version_info,
     country,

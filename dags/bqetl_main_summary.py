@@ -49,7 +49,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     client_probe_processes__v1 = bigquery_etl_query(
         task_id="client_probe_processes__v1",
         destination_table="client_probe_processes_v1",

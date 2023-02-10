@@ -21,6 +21,16 @@ fields:
   description: The type of the job
 
 - mode: NULLABLE
+  name: reservation_id
+  type: STRING
+  description: Name of the primary reservation (slots for distributing resources) assigned to this job.
+
+- mode: NULLABLE
+  name: cache_hit
+  type: BOOLEAN
+  description: Whether the query results of this job were from a cache
+
+- mode: NULLABLE
   name: state
   type: STRING
   description: Running state of the job
@@ -81,11 +91,6 @@ fields:
   description: Total terabytes processed by the job
 
 - mode: NULLABLE
-  name: cost_usd
-  type: FLOAT
-  description: Total cost of the job in USD
-
-- mode: NULLABLE
   name: error_location
   type: STRING
   description: Specifies where the error occurred, if present
@@ -99,3 +104,8 @@ fields:
   name: error_message
   type: STRING
   description: A human-readable description of the error
+
+- mode: NULLABLE
+  name: query
+  type: STRING
+  description: SQL query text

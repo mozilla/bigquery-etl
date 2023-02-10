@@ -1,0 +1,19 @@
+description: This table aggregates the traffic to Firefox "what's new" pages and the number of bounces
+friendly_name: Firefox "what's new" hits and bounces
+labels:
+  incremental: true
+  schedule: daily
+owners:
+  - rbaffourawuah@mozilla.com
+scheduling:
+  dag_name: bqetl_google_analytics_derived
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+  clustering:
+    fields:
+      - country
+      - locale
+      - version

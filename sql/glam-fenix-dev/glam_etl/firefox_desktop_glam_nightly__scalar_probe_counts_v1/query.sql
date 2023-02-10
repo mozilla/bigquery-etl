@@ -14,25 +14,20 @@ SELECT
   mozfun.glam.histogram_fill_buckets_dirichlet(
     mozfun.map.sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
     CASE
-    WHEN
-      metric_type IN ("counter", "quantity", "labeled_counter", "timespan")
-    THEN
-      ARRAY(
-        SELECT
-          FORMAT("%.*f", 2, bucket)
-        FROM
-          UNNEST(
-            mozfun.glam.histogram_generate_scalar_buckets(range_min, range_max, bucket_count)
-          ) AS bucket
-        ORDER BY
-          bucket
-      )
-    WHEN
-      metric_type IN ("boolean")
-    THEN
-      ['always', 'never', 'sometimes']
-    END
-    ,
+      WHEN metric_type IN ("counter", "quantity", "labeled_counter", "timespan")
+        THEN ARRAY(
+            SELECT
+              FORMAT("%.*f", 2, bucket)
+            FROM
+              UNNEST(
+                mozfun.glam.histogram_generate_scalar_buckets(range_min, range_max, bucket_count)
+              ) AS bucket
+            ORDER BY
+              bucket
+          )
+      WHEN metric_type IN ("boolean")
+        THEN ['always', 'never', 'sometimes']
+    END,
     SUM(count)
   ) AS aggregates
 FROM

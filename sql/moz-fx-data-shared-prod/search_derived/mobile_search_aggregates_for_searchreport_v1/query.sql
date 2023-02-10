@@ -3,47 +3,32 @@ SELECT
   submission_date,
   country,
   CASE
-  WHEN
-    app_name IN ('Fenix', 'Firefox Preview')
-  THEN
-    app_name
-  WHEN
-    app_name = 'Fennec'
-    AND os = 'Android'
-  THEN
-    'Fennec'
-  WHEN
-    app_name = 'Fennec'
-    AND os = 'iOS'
-  THEN
-    'Firefox iOS'
-  WHEN
-    app_name = 'Focus'
-    AND os = 'Android'
-  THEN
-    'Focus Android'
-  WHEN
-    app_name = 'Focus'
-    AND os = 'iOS'
-  THEN
-    'Focus iOS'
-  ELSE
-    'Other'
-  END
-  AS product,
+    WHEN app_name IN ('Fenix', 'Firefox Preview')
+      THEN app_name
+    WHEN app_name = 'Fennec'
+      AND os = 'Android'
+      THEN 'Fennec'
+    WHEN app_name = 'Fennec'
+      AND os = 'iOS'
+      THEN 'Firefox iOS'
+    WHEN app_name = 'Focus'
+      AND os = 'Android'
+      THEN 'Focus Android'
+    WHEN app_name = 'Focus'
+      AND os = 'iOS'
+      THEN 'Focus iOS'
+    ELSE 'Other'
+  END AS product,
   normalized_engine,
   COUNT(DISTINCT client_id) AS clients,
   COUNT(
     DISTINCT(
       CASE
-      WHEN
-        sap > 0
-        OR tagged_sap > 0
-        OR tagged_follow_on > 0
-      THEN
-        client_id
-      ELSE
-        NULL
+        WHEN sap > 0
+          OR tagged_sap > 0
+          OR tagged_follow_on > 0
+          THEN client_id
+        ELSE NULL
       END
     )
   ) AS search_clients,

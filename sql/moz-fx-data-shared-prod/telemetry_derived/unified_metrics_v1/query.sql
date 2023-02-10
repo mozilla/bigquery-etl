@@ -159,8 +159,8 @@ WITH unioned_source AS (
     device_model,
     first_seen_date,
     submission_date = first_seen_date AS is_new_profile,
-    NULL AS uri_count,
-    NULL AS is_default_browser,
+    uri_count,
+    is_default_browser,
     CAST(NULL AS string) AS distribution_id,
     isp,
     'Klar iOS' AS normalized_app_name
@@ -223,32 +223,22 @@ mobile_with_searches AS (
     unioned.client_id,
     unioned.sample_id,
     CASE
-    WHEN
-      BIT_COUNT(days_seen_bits)
-      BETWEEN 1
-      AND 6
-    THEN
-      'infrequent_user'
-    WHEN
-      BIT_COUNT(days_seen_bits)
-      BETWEEN 7
-      AND 13
-    THEN
-      'casual_user'
-    WHEN
-      BIT_COUNT(days_seen_bits)
-      BETWEEN 14
-      AND 20
-    THEN
-      'regular_user'
-    WHEN
-      BIT_COUNT(days_seen_bits) >= 21
-    THEN
-      'core_user'
-    ELSE
-      'other'
-    END
-    AS activity_segment,
+      WHEN BIT_COUNT(days_seen_bits)
+        BETWEEN 1
+        AND 6
+        THEN 'infrequent_user'
+      WHEN BIT_COUNT(days_seen_bits)
+        BETWEEN 7
+        AND 13
+        THEN 'casual_user'
+      WHEN BIT_COUNT(days_seen_bits)
+        BETWEEN 14
+        AND 20
+        THEN 'regular_user'
+      WHEN BIT_COUNT(days_seen_bits) >= 21
+        THEN 'core_user'
+      ELSE 'other'
+    END AS activity_segment,
     unioned.normalized_app_name,
     unioned.app_display_version AS app_version,
     unioned.normalized_channel,

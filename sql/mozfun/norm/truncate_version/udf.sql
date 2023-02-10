@@ -1,16 +1,11 @@
 CREATE OR REPLACE FUNCTION norm.truncate_version(os_version STRING, truncation_level STRING)
 RETURNS NUMERIC AS (
   CASE
-  WHEN
-    truncation_level = "minor"
-  THEN
-    CAST(REGEXP_EXTRACT(os_version, r"^([0-9]+[.]?[0-9]+).*") AS NUMERIC)
-  WHEN
-    truncation_level = "major"
-  THEN
-    CAST(REGEXP_EXTRACT(os_version, r"^([0-9]+).*") AS NUMERIC)
-  ELSE
-    NULL
+    WHEN truncation_level = "minor"
+      THEN CAST(REGEXP_EXTRACT(os_version, r"^([0-9]+[.]?[0-9]+).*") AS NUMERIC)
+    WHEN truncation_level = "major"
+      THEN CAST(REGEXP_EXTRACT(os_version, r"^([0-9]+).*") AS NUMERIC)
+    ELSE NULL
   END
 );
 

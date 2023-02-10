@@ -47,7 +47,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     pocket_derived__rolling_monthly_active_user_counts__v1 = bigquery_etl_query(
         task_id="pocket_derived__rolling_monthly_active_user_counts__v1",
         destination_table="rolling_monthly_active_user_counts_v1",

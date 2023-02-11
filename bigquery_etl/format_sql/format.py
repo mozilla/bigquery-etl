@@ -83,6 +83,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry_derived/smoot_usage_fxa_v2/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/smoot_usage_new_profiles_v2/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/udf_js/jackknife_percentile_ci/udf.sql",
+    "sql/moz-fx-data-shared-prod/udf_js/bootstrap_percentile_ci/udf.sql",
     "sql/moz-fx-data-shared-prod/udf_legacy/contains.sql",
     "sql/moz-fx-data-shared-prod/udf_legacy/date_format.sql",
     "sql/moz-fx-data-shared-prod/udf_legacy/date_trunc.sql",

@@ -27,6 +27,8 @@ WITH adblocker_addons AS (
     addon_name
   FROM
     <PRIVATE TABLE>
+  WHERE
+    blocks_monetization = 'yes'
 ),
 clients_with_adblocker_addons AS (
   SELECT

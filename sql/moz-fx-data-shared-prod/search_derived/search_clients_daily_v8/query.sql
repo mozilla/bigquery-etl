@@ -20,16 +20,13 @@ CREATE TEMP FUNCTION add_access_point(
   ARRAY(SELECT AS STRUCT CONCAT(key, '.', access_point) AS key, value, FROM UNNEST(entries))
 );
 
--- List of Ad Blocking Addons
+-- List of Ad Blocking Addons produced using this logic: https://github.com/mozilla/search-adhoc-analysis/tree/master/monetization-blocking-addons
 WITH adblocker_addons AS (
   SELECT
     addon_id,
     addon_name
   FROM
-    `moz-fx-data-shared-prod.telemetry.addon_names`
-  WHERE
-    LOWER(addon_name) LIKE "%block%"
-    AND occurrences > 10000
+    <PRIVATE TABLE>
 ),
 clients_with_adblocker_addons AS (
   SELECT

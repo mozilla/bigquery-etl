@@ -1,6 +1,20 @@
 fields:
 
 - mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: |
+    Corresponds to the submission_date of the record
+    used from fxa_users_services_daily_v2.
+
+    IMPORTANT:
+    submission_date and first_service_flow_timestamp
+    will not always have the same date (should at most be 1
+    day difference). When filtering for users that we first
+    saw on x day should be done using
+    DATE(first_service_flow_timestamp) = "DAY".
+
+- mode: NULLABLE
   name: user_id
   type: STRING
   description: |

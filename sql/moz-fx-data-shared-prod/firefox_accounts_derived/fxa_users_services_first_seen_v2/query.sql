@@ -51,6 +51,7 @@ existing_entries AS (
     DATE(first_service_flow_timestamp) < @submission_date
 )
 SELECT
+  new_records.submission_date,
   new_records.user_id,
   new_records.`service`,
   new_records.registered AS did_register,

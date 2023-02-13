@@ -109,7 +109,9 @@ SELECT
       metrics.labeled_counter.cookie_banners_rule_lookup_by_domain,
       metrics.labeled_counter.cookie_banners_rule_lookup_by_load,
       metrics.labeled_counter.pdfjs_buttons,
-      metrics.labeled_counter.pdfjs_editing
+      metrics.labeled_counter.pdfjs_editing,
+      metrics.labeled_counter.network_data_size_pb_per_type,
+      metrics.labeled_counter.network_data_size_per_type
     ) AS labeled_counter,
     metrics.quantity,
     metrics.string,
@@ -364,7 +366,9 @@ SELECT
       metrics.labeled_counter.cookie_banners_rule_lookup_by_domain,
       metrics.labeled_counter.cookie_banners_rule_lookup_by_load,
       metrics.labeled_counter.pdfjs_buttons,
-      metrics.labeled_counter.pdfjs_editing
+      metrics.labeled_counter.pdfjs_editing,
+      metrics.labeled_counter.network_data_size_pb_per_type,
+      metrics.labeled_counter.network_data_size_per_type
     ) AS labeled_counter,
     metrics.quantity,
     STRUCT(
@@ -525,7 +529,10 @@ SELECT
       metrics.timing_distribution.places_manager_run_maintenance_vacuum_time,
       metrics.timing_distribution.cookie_banners_click_handle_duration,
       metrics.timing_distribution.nimbus_health_apply_pending_experiments_time,
-      metrics.timing_distribution.nimbus_health_fetch_experiments_time
+      metrics.timing_distribution.nimbus_health_fetch_experiments_time,
+      metrics.timing_distribution.glean_upload_send_failure,
+      metrics.timing_distribution.glean_upload_send_success,
+      metrics.timing_distribution.glean_validation_shutdown_wait
     ) AS timing_distribution,
     metrics.jwe,
     metrics.memory_distribution,
@@ -785,7 +792,9 @@ SELECT
       metrics.labeled_counter.cookie_banners_rule_lookup_by_domain,
       metrics.labeled_counter.cookie_banners_rule_lookup_by_load,
       metrics.labeled_counter.pdfjs_buttons,
-      metrics.labeled_counter.pdfjs_editing
+      metrics.labeled_counter.pdfjs_editing,
+      metrics.labeled_counter.network_data_size_pb_per_type,
+      metrics.labeled_counter.network_data_size_per_type
     ) AS labeled_counter,
     metrics.quantity,
     STRUCT(
@@ -946,7 +955,10 @@ SELECT
       metrics.timing_distribution.places_manager_run_maintenance_vacuum_time,
       metrics.timing_distribution.cookie_banners_click_handle_duration,
       metrics.timing_distribution.nimbus_health_apply_pending_experiments_time,
-      metrics.timing_distribution.nimbus_health_fetch_experiments_time
+      metrics.timing_distribution.nimbus_health_fetch_experiments_time,
+      metrics.timing_distribution.glean_upload_send_failure,
+      metrics.timing_distribution.glean_upload_send_success,
+      metrics.timing_distribution.glean_validation_shutdown_wait
     ) AS timing_distribution,
     metrics.jwe,
     metrics.memory_distribution,
@@ -1067,7 +1079,9 @@ SELECT
       metrics.labeled_counter.cookie_banners_rule_lookup_by_domain,
       metrics.labeled_counter.cookie_banners_rule_lookup_by_load,
       metrics.labeled_counter.pdfjs_buttons,
-      metrics.labeled_counter.pdfjs_editing
+      metrics.labeled_counter.pdfjs_editing,
+      metrics.labeled_counter.network_data_size_pb_per_type,
+      metrics.labeled_counter.network_data_size_per_type
     ) AS labeled_counter,
     metrics.quantity,
     metrics.string,

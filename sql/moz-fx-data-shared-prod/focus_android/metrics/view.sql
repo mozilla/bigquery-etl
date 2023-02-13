@@ -127,7 +127,9 @@ SELECT
       metrics.labeled_counter.cookie_banners_rule_lookup_by_domain,
       metrics.labeled_counter.cookie_banners_rule_lookup_by_load,
       metrics.labeled_counter.pdfjs_buttons,
-      metrics.labeled_counter.pdfjs_editing
+      metrics.labeled_counter.pdfjs_editing,
+      metrics.labeled_counter.network_data_size_pb_per_type,
+      metrics.labeled_counter.network_data_size_per_type
     ) AS labeled_counter,
     metrics.labeled_rate,
     metrics.memory_distribution,
@@ -267,7 +269,9 @@ SELECT
       metrics.labeled_counter.cookie_banners_rule_lookup_by_domain,
       metrics.labeled_counter.cookie_banners_rule_lookup_by_load,
       metrics.labeled_counter.pdfjs_buttons,
-      metrics.labeled_counter.pdfjs_editing
+      metrics.labeled_counter.pdfjs_editing,
+      metrics.labeled_counter.network_data_size_pb_per_type,
+      metrics.labeled_counter.network_data_size_per_type
     ) AS labeled_counter,
     metrics.labeled_rate,
     metrics.memory_distribution,

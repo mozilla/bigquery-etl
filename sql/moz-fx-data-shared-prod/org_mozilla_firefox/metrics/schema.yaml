@@ -2717,6 +2717,32 @@ fields:
       mode: REPEATED
       name: pdfjs_editing
       type: RECORD
+    - description: 'Number of KB we transferred keyed by "contentType"
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: network_data_size_pb_per_type
+      type: RECORD
+    - description: 'Number of KB we transferred keyed by "contentType"
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: network_data_size_per_type
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD
@@ -8189,6 +8215,131 @@ fields:
         type: RECORD
       mode: NULLABLE
       name: nimbus_health_fetch_experiments_time
+      type: RECORD
+    - description: 'Time needed for a failed send of a ping to the servers and getting
+        a reply back.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: glean_upload_send_failure
+      type: RECORD
+    - description: 'Time needed for a successful send of a ping to the servers and
+        getting a reply back
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: glean_upload_send_success
+      type: RECORD
+    - description: 'Time waited for the uploader at shutdown.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: glean_validation_shutdown_wait
       type: RECORD
     mode: NULLABLE
     name: timing_distribution

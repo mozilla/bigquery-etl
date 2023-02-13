@@ -41,15 +41,23 @@ WITH client_counts AS (
             )
           )
           THEN 1
-  -- ANDROID ELIGIBLITY REQUIREMENTS
+-- ANDROID ELIGIBLITY REQUIREMENTS
         WHEN normalized_app_name != "Firefox Desktop"
           AND normalized_os = "Android"
           AND browser_version_info.major_version > 100
+          AND (
+            (country IN UNNEST(["US"]) AND submission_date >= "2022-05-10")
+            OR (country IN UNNEST(["DE"]) AND submission_date >= "2022-12-05")
+          )
           THEN 1
   -- iOS ELIGIBLITY REQUIREMENTS
         WHEN normalized_app_name != "Firefox Desktop"
           AND normalized_os = "iOS"
           AND browser_version_info.major_version > 101
+          AND (
+            (country IN UNNEST(["US"]) AND submission_date >= "2022-06-07")
+            OR (country IN UNNEST(["DE"]) AND submission_date >= "2022-12-05")
+          )
           THEN 1
         ELSE NULL
       END
@@ -288,16 +296,14 @@ daily_mobile_clients AS (
             -- don't want Focus apps
         AND browser_dau.normalized_app_name IN ('Fenix', "Firefox iOS")
         AND country IN UNNEST(["US"])
-        AND submission_date >= "2022-05-10"
         AND normalized_channel = "release"
-            -- AND sample_id = 1
+        -- AND sample_id = 1
+        AND (submission_date BETWEEN "2022-05-10" AND "2022-10-03")
         AND (
           (normalized_app_name = "Fenix" AND submission_date BETWEEN "2022-05-10" AND "2022-09-19")
           OR (
             normalized_app_name = "Firefox iOS"
-            AND submission_date
-            BETWEEN "2022-06-07"
-            AND "2022-10-03"
+            AND (submission_date BETWEEN "2022-06-07" AND "2022-10-03")
           )
         )
     )
@@ -315,15 +321,27 @@ daily_mobile_clients AS (
     telemetry.unified_metrics AS browser_dau
   WHERE
     mozfun.bits28.active_in_range(browser_dau.days_seen_bits, 0, 1)
-        -- don't want Focus apps
+    -- don't want Focus apps
     AND browser_dau.normalized_app_name IN ('Fenix', "Firefox iOS")
-    AND country IN UNNEST(["US"])
-    AND submission_date >= "2022-09-20"
     AND normalized_channel = "release"
+    AND submission_date >= "2022-09-20"
     AND (
-      (normalized_app_name = "Fenix" AND submission_date >= "2022-09-20")
-      OR (normalized_app_name = "Firefox iOS" AND submission_date >= "2022-10-04")
+      (
+        normalized_app_name = "Fenix"
+        AND (
+          (submission_date >= "2022-09-20" AND country IN UNNEST(["US"]))
+          OR (submission_date >= "2022-12-05" AND country IN UNNEST(["DE"]))
+        )
+      )
+      OR (
+        normalized_app_name = "Firefox iOS"
+        AND (
+          (submission_date >= "2022-10-04" AND country IN UNNEST(["US"]))
+          OR (submission_date >= "2022-12-05" AND country IN UNNEST(["DE"]))
+        )
+      )
     )
+    -- AND sample_id = 1
 ),
 -- total mobile clients per day
 mobile_population AS (
@@ -386,7 +404,7 @@ clicks AS (
   FROM
     contextual_services.event_aggregates
   WHERE
-    submission_Date >= "2021-09-07"
+    submission_date >= "2021-09-07"
     AND release_channel = "release"
     AND event_type = "click"
     AND source = "topsites"
@@ -414,7 +432,7 @@ clicks AS (
   FROM
     contextual_services.event_aggregates
   WHERE
-    submission_Date >= "2022-06-07"
+    submission_date >= "2022-06-07"
     AND release_channel = "release"
     AND event_type = "click"
     AND source = "suggest"

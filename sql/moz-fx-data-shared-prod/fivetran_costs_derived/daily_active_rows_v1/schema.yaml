@@ -12,7 +12,7 @@ fields:
 - mode: NULLABLE
   name: connector_name
   type: STRING
-  desctription: |
+  description: |
     Name of the Fivetran connector.
 - mode: NULLABLE
   name: paid_active_rows

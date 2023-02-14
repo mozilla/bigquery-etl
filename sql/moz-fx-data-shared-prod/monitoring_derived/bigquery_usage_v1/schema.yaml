@@ -104,8 +104,3 @@ fields:
   name: error_message
   type: STRING
   description: A human-readable description of the error
-
-- mode: NULLABLE
-  name: query
-  type: STRING
-  description: SQL query text

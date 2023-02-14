@@ -50,3 +50,9 @@ fields:
 - mode: NULLABLE
   name: search_count
   type: INTEGER
+- mode: NULLABLE
+  name: new_installs
+  type: INTEGER
+- mode: NULLABLE
+  name: activations
+  type: INTEGER

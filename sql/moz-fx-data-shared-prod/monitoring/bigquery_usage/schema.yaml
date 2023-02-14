@@ -84,7 +84,3 @@ fields:
   mode: NULLABLE
   name: cache_hit
   type: BOOLEAN
-- description: SQL query text
-  mode: NULLABLE
-  name: query
-  type: STRING

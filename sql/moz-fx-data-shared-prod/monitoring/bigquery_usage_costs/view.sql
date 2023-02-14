@@ -5,6 +5,7 @@ SELECT
   creation_date,
   source_project,
   user_email,
+  username,
   job_id,
   destination_table_id,
   SUM(total_terabytes_processed) * 4.15 AS cost_usd
@@ -14,6 +15,7 @@ FROM
       creation_date,
       source_project,
       user_email,
+      username,
       job_id,
       destination_table_id,
       total_terabytes_processed
@@ -28,6 +30,7 @@ FROM
       creation_date,
       source_project,
       user_email,
+      username,
       job_id,
       destination_table_id,
       total_terabytes_processed
@@ -36,5 +39,6 @@ GROUP BY
   creation_date,
   source_project,
   user_email,
+  username,
   job_id,
   destination_table_id

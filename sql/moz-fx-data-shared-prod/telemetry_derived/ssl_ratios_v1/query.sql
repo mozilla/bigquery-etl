@@ -9,7 +9,8 @@ SELECT
     mozfun.map.get_key(mozfun.hist.extract(payload.histograms.http_pageload_is_ssl).values, 1)
   ) AS ssl_loads,
   -- ratio of pings that have the probe
-  COUNT(payload.histograms.http_pageload_is_ssl) / COUNT(*) AS reporting_ratio
+  COUNT(payload.histograms.http_pageload_is_ssl) / COUNT(*) AS reporting_ratio,
+  "test" AS test
 FROM
   telemetry.main
 WHERE

@@ -12,7 +12,7 @@ from google.cloud import bigquery
 from ..cli.query import deploy as deploy_query_schema
 from ..cli.query import update as update_query_schema
 from ..cli.routine import publish as publish_routine
-from ..cli.utils import QUERY_FILE_RE, paths_matching_name_pattern, sql_dir_option
+from ..cli.utils import paths_matching_name_pattern, sql_dir_option
 from ..cli.view import publish as publish_view
 from ..routine.parse_routine import (
     UDF_FILE,
@@ -20,8 +20,14 @@ from ..routine.parse_routine import (
     accumulate_dependencies,
     read_routine_dir,
 )
+from ..schema import SCHEMA_FILE, Schema
+from ..view import View
 
 VIEW_FILE = "view.sql"
+QUERY_FILE = "query.sql"
+QUERY_SCRIPT = "query.py"
+ROOT = Path(__file__).parent.parent.parent
+TEST_DIR = ROOT / "tests" / "sql"
 
 
 @click.group(help="Commands for managing stage deploys")
@@ -86,15 +92,59 @@ def deploy(
         shutil.copytree(sql_dir, tmp_dir)
         sql_dir = tmp_dir / sql_dir.name
 
-    artifact_files = []
+    artifact_files = set()
 
     # get SQL files for artifacts that are to be deployed
     for path in paths:
-        artifact_files += paths_matching_name_pattern(
-            path, sql_dir, None, files=["*.sql", "*.py"]
+        artifact_files.update(
+            paths_matching_name_pattern(path, sql_dir, None, files=["*.sql", "*.py"])
         )
 
-    # determine UDF dependencies
+    # any dependencies need to be determined an deployed as well since the stage
+    # environment doesn't have access to the prod environment
+    artifact_files.update(_udf_dependencies(artifact_files))
+    artifact_files.update(_view_dependencies(artifact_files, sql_dir))
+
+    # update references of all deployed artifacts
+    # references needs to be set to the stage project and the new dataset identifier
+    if update_references:
+        _update_references(artifact_files, project_id, dataset_suffix, sql_dir)
+
+    updated_artifact_files = set()
+    # copy updated files locally to a folder representing the stage env project
+    for artifact_file in artifact_files:
+        project = artifact_file.parent.parent.parent.name
+        dataset = artifact_file.parent.parent.name
+        name = artifact_file.parent.name
+        test_path = TEST_DIR / project / dataset / name
+
+        if dataset_suffix:
+            dataset = f"{dataset}_{dataset_suffix}"
+
+        new_artifact_path = Path(sql_dir) / project_id / dataset / name
+        new_artifact_path.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(artifact_file.parent, new_artifact_path, dirs_exist_ok=True)
+        updated_artifact_files.add(new_artifact_path / artifact_file.name)
+
+        # copy tests to the right structure
+        if test_path.exists():
+            shutil.copytree(
+                test_path, TEST_DIR / project_id / dataset / name, dirs_exist_ok=True
+            )
+            shutil.rmtree(test_path)
+
+    # remove artifacts from the "prod" folders
+    for artifact_file in artifact_files:
+        if artifact_file.parent.exists():
+            shutil.rmtree(artifact_file.parent)
+
+    # deploy to stage
+    _deploy_artifacts(ctx, updated_artifact_files, project_id, dataset_suffix, sql_dir)
+
+
+def _udf_dependencies(artifact_files):
+    """Determine UDF dependencies."""
+    udf_dependencies = set()
     raw_routines = read_routine_dir()
     udf_files = [file for file in artifact_files if file.name == UDF_FILE]
     for udf_file in udf_files:
@@ -108,81 +158,107 @@ def deploy(
                 raw_routine.filepath.parent.parent.parent / dataset / name / UDF_FILE
             )
             if file_path not in artifact_files:
-                artifact_files.append(file_path)
+                artifact_files.add(file_path)
 
-    # update references of all deployed artifacts
-    # references needs to be set to the stage project and the new dataset identifier
-    if update_references:
-        replace_references = []
-        for artifact_file in artifact_files:
-            name = artifact_file.parent.name
-            original_dataset = artifact_file.parent.parent.name
-            deployed_dataset = original_dataset
-            if dataset_suffix:
-                deployed_dataset += f"_{dataset_suffix}"
-            original_project = artifact_file.parent.parent.parent.name
-            deployed_project = project_id
+    return udf_dependencies
 
-            # replace partially qualified references (like "telemetry.main")
-            replace_references.append(
-                (
-                    re.compile(
-                        rf"(?<!\.)`?{original_dataset}`?\.{name}(?![a-zA-Z0-9_])`?"
-                    ),
-                    f"`{deployed_project}`.{deployed_dataset}.{name}",
-                )
-            )
-            # replace fully qualified references (like "moz-fx-data-shared-prod.telemetry.main")
-            replace_references.append(
-                (
-                    rf"(?<![a-zA-Z0-9_])`?{original_project}`?\.{original_dataset}`?\.{name}(?![a-zA-Z0-9_])`?",
-                    f"`{deployed_project}`.{deployed_dataset}.{name}",
-                )
-            )
 
-        for path in Path(sql_dir).rglob("*.sql"):
-            # apply substitutions
-            if path.is_file():
-                sql = path.read_text()
+def _view_dependencies(artifact_files, sql_dir):
+    """Determine view dependencies."""
+    view_dependencies = set()
+    view_dependency_files = [file for file in artifact_files if file.name == VIEW_FILE]
+    for dep_file in view_dependency_files:
+        # all references views and tables need to be deployed in the same stage project
+        if dep_file not in artifact_files:
+            view_dependencies.add(dep_file)
 
-                for ref in replace_references:
-                    sql = re.sub(ref[0], ref[1], sql)
+        if dep_file.name == VIEW_FILE:
+            view = View.from_file(dep_file)
 
-                path.write_text(sql)
+            for dependency in view.table_references:
+                project, dataset, name = dependency.split(".")
+                file_path = Path(view.path).parent.parent.parent / dataset / name
 
-    updated_artifact_files = []
-    # copy updated files locally to a folder representing the stage env project
+                file_exists_for_dependency = False
+                for file in [VIEW_FILE, QUERY_FILE, QUERY_SCRIPT]:
+                    if (file_path / file).is_file():
+                        if (file_path / file) not in artifact_files:
+                            view_dependency_files.append(file_path / file)
+
+                        file_exists_for_dependency = True
+                        break
+
+                path = Path(sql_dir) / project / dataset / name
+                if not path.exists():
+                    path.mkdir(parents=True, exist_ok=True)
+                    partitioned_by = "submission_timestamp"
+                    schema = Schema.for_table(
+                        project=project,
+                        dataset=dataset,
+                        table=name,
+                        partitioned_by=partitioned_by,
+                    )
+                    schema.to_yaml_file(path / SCHEMA_FILE)
+
+                if not file_exists_for_dependency:
+                    (path / QUERY_SCRIPT).write_text("")
+                    view_dependencies.add(path / QUERY_SCRIPT)
+
+    return view_dependencies
+
+
+def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
+    replace_references = []
     for artifact_file in artifact_files:
-        dataset = artifact_file.parent.parent.name
         name = artifact_file.parent.name
-
+        original_dataset = artifact_file.parent.parent.name
+        deployed_dataset = original_dataset
         if dataset_suffix:
-            dataset = f"{dataset}_{dataset_suffix}"
+            deployed_dataset += f"_{dataset_suffix}"
+        original_project = artifact_file.parent.parent.parent.name
+        deployed_project = project_id
 
-        new_artifact_path = Path(sql_dir) / project_id / dataset / name
-        new_artifact_path.mkdir(parents=True, exist_ok=True)
-        shutil.copytree(artifact_file.parent, new_artifact_path, dirs_exist_ok=True)
-        updated_artifact_files.append(new_artifact_path / artifact_file.name)
+        # replace partially qualified references (like "telemetry.main")
+        replace_references.append(
+            (
+                re.compile(rf"(?<!\.)`?{original_dataset}`?\.{name}(?![a-zA-Z0-9_])`?"),
+                f"`{deployed_project}`.{deployed_dataset}.{name}",
+            )
+        )
+        # replace fully qualified references (like "moz-fx-data-shared-prod.telemetry.main")
+        replace_references.append(
+            (
+                rf"(?<![a-zA-Z0-9_])`?{original_project}`?\.{original_dataset}`?\.{name}(?![a-zA-Z0-9_])`?",
+                f"`{deployed_project}`.{deployed_dataset}.{name}",
+            )
+        )
 
+    for path in Path(sql_dir).rglob("*.sql"):
+        # apply substitutions
+        if path.is_file():
+            sql = path.read_text()
+
+            for ref in replace_references:
+                sql = re.sub(ref[0], ref[1], sql)
+
+            path.write_text(sql)
+
+
+def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
+    """Deploy UDFs, tables and views."""
     # deploy UDFs
-    udf_files = [file for file in updated_artifact_files if file.name == UDF_FILE]
-
+    udf_files = [file for file in artifact_files if file.name == UDF_FILE]
     for udf_file in udf_files:
-        name = udf_file.parent.name
         dataset = udf_file.parent.parent.name
         create_dataset_if_not_exists(
             project_id=project_id, dataset=dataset, suffix=dataset_suffix
         )
-
     ctx.invoke(publish_routine, name=None, project_id=project_id, dry_run=False)
 
     # deploy table schemas
     query_files = [
-        file
-        for file in updated_artifact_files
-        if QUERY_FILE_RE.match(str(file)) and file.name != VIEW_FILE
+        file for file in artifact_files if file.name in [QUERY_FILE, QUERY_SCRIPT]
     ]
-
     for query_file in query_files:
         dataset = query_file.parent.parent.name
         create_dataset_if_not_exists(
@@ -206,10 +282,8 @@ def deploy(
         )
 
     # deploy views
-    view_files = [file for file in updated_artifact_files if file.name == VIEW_FILE]
-
+    view_files = [file for file in artifact_files if file.name == VIEW_FILE]
     for view_file in view_files:
-        name = view_file.parent.name
         dataset = view_file.parent.parent.name
         create_dataset_if_not_exists(
             project_id=project_id, dataset=dataset, suffix=dataset_suffix
@@ -232,10 +306,12 @@ def create_dataset_if_not_exists(project_id, dataset, suffix=None):
     dataset = bigquery.Dataset(f"{project_id}.{dataset}")
     dataset.location = "US"
     dataset = client.create_dataset(dataset, exists_ok=True)
-    dataset.default_table_expiration_ms = 24 * 60 * 60 * 1000  # ms
+    dataset.default_table_expiration_ms = 60 * 60 * 1000  # ms
 
     # mark dataset as expired 1 hour from now; can be removed by CI
-    expiration = int((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() * 1000)
+    expiration = int(
+        ((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() + 60 * 60) * 1000
+    )
     dataset.labels = {"expires_on": expiration}
     if suffix:
         dataset.labels["suffix"] = suffix

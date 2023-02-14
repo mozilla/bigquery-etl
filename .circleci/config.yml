@@ -106,6 +106,8 @@ jobs:
           command: |
             rm -rf sql/
             cp -r /tmp/workspace/staged-generated-sql/sql sql
+            rm -rf tests/
+            cp -r /tmp/workspace/staged-generated-sql/tests tests
       - run:
           name: Run SQL tests
           command: |
@@ -137,8 +139,7 @@ jobs:
                 "commit message"
               PATHS=sql
             else
-              echo "Check dry run for modified queries"
-              PATHS="$(git diff origin/main... --name-only --diff-filter=d -- sql)"
+              PATHS="sql/bigquery-etl-integration-test"
             fi
             echo $PATHS
             PATH="venv/bin:$PATH" script/bqetl dryrun --validate-schemas $PATHS
@@ -277,7 +278,7 @@ jobs:
       - *restore_venv_cache
       - *build
       - *attach_generated_sql
-      - *copy_staged_sql
+      - *copy_generated_sql
       - run:
           name: Validate doc examples
           command: |
@@ -352,7 +353,7 @@ jobs:
       - *attach_generated_sql
       - *copy_generated_sql
       - add_ssh_keys:
-          fingerprints: "38:49:5e:71:1d:b7:14:84:45:08:8a:4c:6b:67:4e:4d"
+          fingerprints: "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
       - run:
           name: Pull in generated-sql branch from remote
           command: |
@@ -376,6 +377,7 @@ jobs:
           command: |
             mkdir -p /tmp/workspace/staged-generated-sql
             cp -r sql/ /tmp/workspace/staged-generated-sql
+            cp -r tests/ /tmp/workspace/staged-generated-sql
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -638,7 +640,7 @@ workflows:
             - generate-dags
       - validate-docs:
           requires:
-            - deploy-changes-to-stage
+            - generate-sql
       - validate-views:
           requires:
             - deploy-changes-to-stage

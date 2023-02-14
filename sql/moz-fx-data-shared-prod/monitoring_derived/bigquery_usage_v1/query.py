@@ -54,7 +54,6 @@ def create_query(date, source_project):
           error_result.location AS error_location,
           error_result.reason AS error_reason,
           error_result.message AS error_message,
-          query
         FROM
           `{source_project}.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT`
         LEFT JOIN

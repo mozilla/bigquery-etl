@@ -36,6 +36,12 @@ fields:
   name: ad_clicks
   type: INTEGER
 - mode: NULLABLE
+  name: is_new_install
+  type: BOOLEAN
+- mode: NULLABLE
+  name: activated
+  type: BOOLEAN
+- mode: NULLABLE
   name: dau
   type: INTEGER
 - mode: NULLABLE

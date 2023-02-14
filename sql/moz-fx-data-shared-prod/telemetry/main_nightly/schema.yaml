@@ -14075,6 +14075,9 @@ fields:
     - mode: NULLABLE
       name: network_cookie_unicode_byte
       type: STRING
+    - mode: NULLABLE
+      name: places_frecency_recalc_chunk_time_ms
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -34649,6 +34652,26 @@ fields:
           mode: REPEATED
           name: browser_ui_interaction_tabs_context_entrypoint
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: networking_data_transferred_pb_per_content_type
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: networking_data_transferred_per_content_type
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD
@@ -35915,6 +35938,12 @@ fields:
           type: BOOLEAN
         - mode: NULLABLE
           name: browser_ui_interaction_all_tabs_panel_dragstart_tab_event_count
+          type: INTEGER
+        - mode: NULLABLE
+          name: places_pages_need_frecency_recalculation
+          type: INTEGER
+        - mode: NULLABLE
+          name: urlbar_autofill_deletion
           type: INTEGER
         mode: NULLABLE
         name: scalars

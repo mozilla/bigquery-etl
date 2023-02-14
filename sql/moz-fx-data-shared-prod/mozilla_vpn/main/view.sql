@@ -62,20 +62,20 @@ SELECT
     metadata.user_agent
   ) AS metadata,
   STRUCT(
-    STRUCT(SAFE_CAST(NULL AS STRING) AS key, SAFE_CAST(NULL AS STRING) AS value) AS jwe,
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS jwe,
     metrics.labeled_counter,
-    STRUCT(
-      SAFE_CAST(NULL AS STRING) AS key,
-      STRUCT(
-        SAFE_CAST(NULL AS STRING) AS key,
-        STRUCT(
-          SAFE_CAST(NULL AS INTEGER) AS denominator,
-          SAFE_CAST(NULL AS INTEGER) AS numerator
-        ) AS value
-      ) AS value
+    CAST(
+      NULL
+      AS
+        ARRAY<
+          STRUCT<
+            key STRING,
+            value ARRAY<STRUCT<key STRING, value STRUCT<denominator INTEGER, numerator INTEGER>>>
+          >
+        >
     ) AS labeled_rate,
-    STRUCT(SAFE_CAST(NULL AS STRING) AS key, SAFE_CAST(NULL AS STRING) AS value) AS url,
-    STRUCT(SAFE_CAST(NULL AS STRING) AS key, SAFE_CAST(NULL AS STRING) AS value) AS text
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS url,
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS text
   ) AS metrics,
   normalized_app_name,
   normalized_channel,

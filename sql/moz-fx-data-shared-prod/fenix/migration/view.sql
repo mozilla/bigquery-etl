@@ -20,12 +20,9 @@ SELECT
       metadata.header.x_telemetry_agent,
       metadata.header.x_foxsec_ip_reputation,
       metadata.header.x_lb_tags,
-      SAFE_CAST(NULL AS TIMESTAMP) AS parsed_date,
-      SAFE_CAST(NULL AS ARRAY<STRING>) AS parsed_x_source_tags,
-      STRUCT(
-        SAFE_CAST(NULL AS STRING) AS tls_version,
-        SAFE_CAST(NULL AS STRING) AS tls_cipher_hex
-      ) AS parsed_x_lb_tags
+      CAST(NULL AS TIMESTAMP) AS parsed_date,
+      CAST(NULL AS ARRAY<STRING>) AS parsed_x_source_tags,
+      CAST(NULL AS STRUCT<tls_version STRING, tls_cipher_hex STRING>) AS parsed_x_lb_tags
     ) AS header,
     metadata.user_agent,
     metadata.isp
@@ -35,7 +32,7 @@ SELECT
     metrics.counter,
     STRUCT(
       metrics.datetime.migration_telemetry_identifiers_fennec_profile_creation_date,
-      SAFE_CAST(NULL AS STRING) AS raw_migration_telemetry_identifiers_fennec_profile_creation_date
+      CAST(NULL AS STRING) AS raw_migration_telemetry_identifiers_fennec_profile_creation_date
     ) AS datetime,
     metrics.labeled_counter,
     metrics.labeled_string,
@@ -59,8 +56,8 @@ SELECT
     ping_info.reason,
     ping_info.seq,
     ping_info.start_time,
-    SAFE_CAST(NULL AS TIMESTAMP) AS parsed_start_time,
-    SAFE_CAST(NULL AS TIMESTAMP) AS parsed_end_time
+    CAST(NULL AS TIMESTAMP) AS parsed_start_time,
+    CAST(NULL AS TIMESTAMP) AS parsed_end_time
   ) AS ping_info,
   sample_id,
   submission_timestamp
@@ -69,7 +66,7 @@ FROM
 UNION ALL
 SELECT
   "org_mozilla_firefox_beta" AS normalized_app_id,
-  SAFE_CAST(NULL AS DATE) AS submission_date,
+  CAST(NULL AS DATE) AS submission_date,
   additional_properties,
   client_info,
   document_id,
@@ -105,7 +102,7 @@ FROM
 UNION ALL
 SELECT
   "org_mozilla_fenix" AS normalized_app_id,
-  SAFE_CAST(NULL AS DATE) AS submission_date,
+  CAST(NULL AS DATE) AS submission_date,
   additional_properties,
   client_info,
   document_id,
@@ -141,7 +138,7 @@ FROM
 UNION ALL
 SELECT
   "org_mozilla_fenix_nightly" AS normalized_app_id,
-  SAFE_CAST(NULL AS DATE) AS submission_date,
+  CAST(NULL AS DATE) AS submission_date,
   additional_properties,
   client_info,
   document_id,
@@ -177,7 +174,7 @@ FROM
 UNION ALL
 SELECT
   "org_mozilla_fennec_aurora" AS normalized_app_id,
-  SAFE_CAST(NULL AS DATE) AS submission_date,
+  CAST(NULL AS DATE) AS submission_date,
   additional_properties,
   client_info,
   document_id,

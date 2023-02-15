@@ -114,6 +114,3 @@ ON
   AND (
     campaigns_with_persisted_ids.fenix_compatible_campaign_name = install_dou_metrics.fenix_marketing_metrics_adjust_campaign
   )
-ORDER BY
-  campaign_name,
-  date

@@ -20,9 +20,8 @@ CREATE TEMP FUNCTION contains_qualified_fxa_activity_event(events ANY TYPE, `ser
   )
 );
 
-WITH fxa_users_services_daily_events AS (
+WITH fxa_users_services_daily_new_entries AS (
   SELECT
-    submission_date,
     user_id,
     `service`,
     app_version,
@@ -48,30 +47,30 @@ existing_entries AS (
   FROM
     `firefox_accounts_derived.fxa_users_services_first_seen_v2`
   WHERE
-    DATE(first_service_flow_timestamp) < @submission_date
+    DATE(submission_date) < @submission_date
 )
 SELECT
-  new_records.submission_date,
-  new_records.user_id,
-  new_records.`service`,
-  new_records.registered AS did_register,
-  new_records.os_name AS first_service_os_name,
-  new_records.os_version AS first_service_os_version,
-  new_records.app_version AS first_service_app_version,
-  new_records.country AS first_service_country,
-  new_records.`language` AS first_service_language,
-  new_records.ua_version AS first_service_ua_version,
-  new_records.ua_browser AS first_service_ua_browser,
-  new_records.user_service_first_daily_flow_info.flow_id AS first_service_flow,
-  new_records.user_service_first_daily_flow_info.`timestamp` AS first_service_flow_timestamp,
-  new_records.user_service_first_daily_flow_info.entrypoint AS first_service_flow_entrypoint,
-  new_records.user_service_utm_info.utm_term AS first_service_flow_utm_term,
-  new_records.user_service_utm_info.utm_medium AS first_service_flow_utm_medium,
-  new_records.user_service_utm_info.utm_source AS first_service_flow_utm_source,
-  new_records.user_service_utm_info.utm_campaign AS first_service_flow_utm_campaign,
-  new_records.user_service_utm_info.utm_content AS first_service_flow_utm_content,
+  DATE(@submission_date) AS submission_date,
+  new_entries.user_id,
+  new_entries.`service`,
+  new_entries.registered AS did_register,
+  new_entries.os_name AS first_service_os_name,
+  new_entries.os_version AS first_service_os_version,
+  new_entries.app_version AS first_service_app_version,
+  new_entries.country AS first_service_country,
+  new_entries.`language` AS first_service_language,
+  new_entries.ua_version AS first_service_ua_version,
+  new_entries.ua_browser AS first_service_ua_browser,
+  new_entries.user_service_first_daily_flow_info.flow_id AS first_service_flow,
+  new_entries.user_service_first_daily_flow_info.`timestamp` AS first_service_flow_timestamp,
+  new_entries.user_service_first_daily_flow_info.entrypoint AS first_service_flow_entrypoint,
+  new_entries.user_service_utm_info.utm_term AS first_service_flow_utm_term,
+  new_entries.user_service_utm_info.utm_medium AS first_service_flow_utm_medium,
+  new_entries.user_service_utm_info.utm_source AS first_service_flow_utm_source,
+  new_entries.user_service_utm_info.utm_campaign AS first_service_flow_utm_campaign,
+  new_entries.user_service_utm_info.utm_content AS first_service_flow_utm_content,
 FROM
-  fxa_users_services_daily_events AS new_records
+  fxa_users_services_daily_new_entries AS new_entries
 FULL OUTER JOIN
   existing_entries
 USING

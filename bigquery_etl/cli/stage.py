@@ -364,4 +364,4 @@ def clean(project_id, dataset_suffix, delete_expired):
                     and label == "expires_on"
                     and int(value) < current_timestamp
                 ):
-                    client.delete_dataset(dataset)
+                    client.delete_dataset(dataset, delete_contents=True)

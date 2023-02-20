@@ -26,9 +26,9 @@ WITH adblocker_addons AS (
     addon_id,
     addon_name
   FROM
-    <PRIVATE TABLE>
+    `moz-fx-data-shared-prod.static.monetization_blocking_addons`
   WHERE
-    blocks_monetization = 'yes'
+    blocks_monetization
 ),
 clients_with_adblocker_addons AS (
   SELECT

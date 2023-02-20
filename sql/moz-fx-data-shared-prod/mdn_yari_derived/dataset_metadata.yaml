@@ -1,0 +1,12 @@
+friendly_name: MDN Yari Dataset
+description: |-
+  Derived data used for analysing and understanding
+  the MDN product.
+
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

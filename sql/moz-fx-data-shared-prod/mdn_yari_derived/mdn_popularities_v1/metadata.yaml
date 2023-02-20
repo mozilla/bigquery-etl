@@ -1,0 +1,15 @@
+friendly_name: MDN Popularities
+description: |-
+  Used for monthly data exports of MDN 'Popularities'
+  This aggregates and total page visits counts
+  and normalizes them agains the total found during the run.
+
+  This table is overwritten on each job run.
+
+  for job details see:
+  https://github.com/mozilla/telemetry-airflow/blob/main/dags/mdn_popularities.py
+owners:
+- fmerz@mozilla.com
+labels:
+  incremental: false
+bigquery: {}

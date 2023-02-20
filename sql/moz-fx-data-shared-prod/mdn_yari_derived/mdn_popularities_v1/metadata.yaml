@@ -4,12 +4,18 @@ description: |-
   This aggregates and total page visits counts
   and normalizes them agains the total found during the run.
 
-  This table is overwritten on each job run.
+  TODO: delete below in case we go with query.py
+  # This table is overwritten on each job run.
 
-  for job details see:
-  https://github.com/mozilla/telemetry-airflow/blob/main/dags/mdn_popularities.py
+  # for job details see:
+  # https://github.com/mozilla/telemetry-airflow/blob/main/dags/mdn_popularities.py
 owners:
 - fmerz@mozilla.com
 labels:
   incremental: false
 bigquery: {}
+scheduling:
+  dag_name: bqetl_mdn_yari
+  arguments: ["--date", "{{ ds }}"]
+  date_partition_parameter: null
+  referenced_tables: []

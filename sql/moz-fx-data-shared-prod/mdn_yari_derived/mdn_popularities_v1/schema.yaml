@@ -1,12 +1,14 @@
-fields:
-- mode: NULLABLE
-  name: path
-  type: STRING
-  description: |
-    MDN product path
-- mode: NULLABLE
-  name: popularity
-  type: FLOAT
-  description: |
-    Calculating how popular is a specific MDN product path
-    vs the post popular path
+# fields:
+
+# - mode: NULLABLE
+#   name: path
+#   type: STRING
+#   description: |
+#     MDN product path
+
+# - mode: NULLABLE
+#   name: popularity
+#   type: FLOAT
+#   description: |
+#     Calculating how popular is a specific MDN product path
+#     vs the post popular path

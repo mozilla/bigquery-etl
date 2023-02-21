@@ -230,7 +230,19 @@ side_filled AS (
         newtab_visit_id
       ORDER BY
         submission_date ASC
-    ) AS newtab_visit_ended_at
+    ) AS newtab_visit_ended_at,
+    LOGICAL_OR(
+      searches > 0
+      OR tagged_search_ad_clicks > 0
+      OR tagged_search_ad_impressions > 0
+      OR follow_on_search_ad_clicks > 0
+      OR follow_on_search_ad_impressions > 0
+      OR topsite_impressions > 0
+      OR topsite_clicks > 0
+      OR pocket_impressions > 0
+      OR pocket_clicks > 0
+      OR pocket_saves > 0
+    ) OVER (PARTITION BY newtab_visit_id) AS visit_had_any_interaction
   FROM
     aggregated_newtab_activity
   LEFT JOIN
@@ -239,11 +251,10 @@ side_filled AS (
     (legacy_telemetry_client_id)
 )
 SELECT
-  *
+  * EXCEPT (visit_had_any_interaction)
 FROM
   side_filled
 WHERE
-   -- If we're not able to attach newtab_open_source and newtab_visit_started_at,
-   -- we haven't received a valid newtab.opened event within the partition (submission date):
-  newtab_open_source IS NOT NULL
-  AND newtab_visit_started_at IS NOT NULL
+   -- Keep only rows with interactions, unless we receive a valid newtab.opened event.
+  visit_had_any_interaction = TRUE
+  OR (visit_had_any_interaction = FALSE AND newtab_open_source IS NOT NULL)

@@ -244,8 +244,9 @@ jobs:
             fi
       - run:
           name: Pull telemetry-airflow
+          # TODO: clone main when feat/clean-deps is merged
           command: |
-            git clone https://github.com/mozilla/telemetry-airflow.git
+            git clone --branch feat/clean-deps https://github.com/mozilla/telemetry-airflow.git
       - run:
           name: Replace telemetry-airflow DAGs with BigQuery ETL DAGs
           command: |

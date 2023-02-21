@@ -259,16 +259,16 @@ jobs:
           command: |
             cd ~/telemetry-airflow
             virtualenv .venv
-            source .venv/bin/activate   
+            source .venv/bin/activate
             pip install -r requirements.txt
       - run:
           name: 🧪 Test valid DAGs
           command: |
             cd ~/telemetry-airflow
-            source .venv/bin/activate   
-            python -m pytest tests/dags/test_dag_validity.py --junitxml=test-results/junit.xml
+            source .venv/bin/activate
+            python -m pytest tests/dags/test_dag_validity.py --junitxml=~/telemetry-airflow/test-results/junit.xml
       - store_test_results:
-          path: test-results
+          path: ~/telemetry-airflow/test-results/junit.xml
   validate-docs:
     docker: *docker
     steps:

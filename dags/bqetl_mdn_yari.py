@@ -46,15 +46,14 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    mdn_yari_derived__mdn_popularities__v1 = bigquery_etl_query(
+    mdn_yari_derived__mdn_popularities__v1 = gke_command(
         task_id="mdn_yari_derived__mdn_popularities__v1",
-        destination_table="mdn_popularities_v1",
-        dataset_id="mdn_yari_derived",
-        project_id="moz-fx-data-shared-prod",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/mdn_yari_derived/mdn_popularities_v1/query.py",
+        ]
+        + ["--date", "{{ ds }}"],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="fmerz@mozilla.com",
         email=["fmerz@mozilla.com", "mdn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        task_concurrency=1,
-        arguments=["--date", "{{ ds }}"],
     )

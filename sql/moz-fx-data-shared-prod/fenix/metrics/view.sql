@@ -268,7 +268,9 @@ SELECT
       metrics.counter.addresses_updated,
       metrics.counter.rtcrtpsender_count,
       metrics.counter.rtcrtpsender_count_setparameters_compat,
-      metrics.counter.pdfjs_used
+      metrics.counter.pdfjs_used,
+      metrics.counter.glean_upload_in_flight_pings_dropped,
+      metrics.counter.glean_upload_missing_send_ids
     ) AS counter,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -694,7 +696,9 @@ SELECT
       metrics.counter.addresses_updated,
       metrics.counter.rtcrtpsender_count,
       metrics.counter.rtcrtpsender_count_setparameters_compat,
-      metrics.counter.pdfjs_used
+      metrics.counter.pdfjs_used,
+      metrics.counter.glean_upload_in_flight_pings_dropped,
+      metrics.counter.glean_upload_missing_send_ids
     ) AS counter,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,

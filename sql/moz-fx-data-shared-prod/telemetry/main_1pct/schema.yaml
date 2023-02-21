@@ -14081,6 +14081,15 @@ fields:
     - mode: NULLABLE
       name: places_frecency_recalc_chunk_time_ms
       type: STRING
+    - mode: NULLABLE
+      name: fx_picture_in_picture_background_tab_playing_duration
+      type: STRING
+    - mode: NULLABLE
+      name: fx_picture_in_picture_foreground_tab_playing_duration
+      type: STRING
+    - mode: NULLABLE
+      name: orb_did_ever_block_response
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD

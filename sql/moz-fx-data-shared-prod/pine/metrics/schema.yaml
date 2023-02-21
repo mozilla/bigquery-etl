@@ -477,6 +477,23 @@ fields:
       mode: NULLABLE
       name: pdfjs_used
       type: INTEGER
+    - description: 'How many pings were dropped because we found them already in-flight.
+
+        '
+      mode: NULLABLE
+      name: glean_upload_in_flight_pings_dropped
+      type: INTEGER
+    - description: 'How many ping upload responses did we not record as a success
+        or failure
+
+        (in `glean.upload.send_success` or `glean.upload.send_failue`,
+
+        respectively) due to an inconsistency in our internal bookkeeping?
+
+        '
+      mode: NULLABLE
+      name: glean_upload_missing_send_ids
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -532,6 +549,15 @@ fields:
     name: custom_distribution
     type: RECORD
   - fields:
+    - description: 'Last time the background update was triggered.
+
+        '
+      mode: NULLABLE
+      name: background_update_time_last_update_scheduled
+      type: TIMESTAMP
+    - mode: NULLABLE
+      name: raw_background_update_time_last_update_scheduled
+      type: STRING
     - description: 'The hour of the first run of the application.
 
         '
@@ -2469,6 +2495,13 @@ fields:
       type: RECORD
     mode: NULLABLE
     name: rate
+    type: RECORD
+  - fields:
+    - mode: REPEATED
+      name: background_update_reasons_to_not_update
+      type: STRING
+    mode: NULLABLE
+    name: string_list
     type: RECORD
   mode: NULLABLE
   name: metrics

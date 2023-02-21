@@ -337,6 +337,12 @@ fields:
     - mode: NULLABLE
       name: glean_time_invalid_timezone_offset
       type: INTEGER
+    - mode: NULLABLE
+      name: glean_upload_in_flight_pings_dropped
+      type: INTEGER
+    - mode: NULLABLE
+      name: glean_upload_missing_send_ids
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

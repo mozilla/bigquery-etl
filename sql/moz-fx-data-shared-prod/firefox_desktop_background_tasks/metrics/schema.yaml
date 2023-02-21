@@ -295,6 +295,23 @@ fields:
       mode: NULLABLE
       name: glean_validation_foreground_count
       type: INTEGER
+    - description: 'How many pings were dropped because we found them already in-flight.
+
+        '
+      mode: NULLABLE
+      name: glean_upload_in_flight_pings_dropped
+      type: INTEGER
+    - description: 'How many ping upload responses did we not record as a success
+        or failure
+
+        (in `glean.upload.send_success` or `glean.upload.send_failue`,
+
+        respectively) due to an inconsistency in our internal bookkeeping?
+
+        '
+      mode: NULLABLE
+      name: glean_upload_missing_send_ids
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

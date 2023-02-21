@@ -203,7 +203,7 @@ client_profile_info AS (
     ANY_VALUE(is_new_profile) AS is_new_profile,
     ANY_VALUE(activity_segment) AS activity_segment
   FROM
-    telemetry_derived.unified_metrics_v1
+    `moz-fx-data-shared-prod.telemetry_derived.unified_metrics_v1`
   WHERE
     submission_date = @submission_date
   GROUP BY

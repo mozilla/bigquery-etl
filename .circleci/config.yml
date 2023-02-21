@@ -128,6 +128,12 @@ jobs:
       - run:
           name: Dry run queries
           # yamllint disable rule:line-length
+          # Dry runs on PRs are executed on sql/bigquery-etl-integration-test
+          # Artifacts (queries, views, UDFs) that are changed will be moved to the
+          # bigquery-etl-integration-test folder and deployed to the corresponding
+          # project. This ensures that dry runs can be executed before changes
+          # have been deployed to prod. (bigquery-etl-integration-test is treated
+          # as a stage environment)
           command: |
             if [ "$CIRCLE_BRANCH" = main ]; then
               echo "Check dry run for all queries because branch is" \
@@ -371,6 +377,7 @@ jobs:
             echo $PATHS
             PATH="venv/bin:$PATH" script/bqetl stage deploy \
               --dataset-suffix=$CIRCLE_SHA1 \
+              --remove-updated-artifacts \
               $PATHS
       - run:
           name: Copy generated SQL to temporary stage directory

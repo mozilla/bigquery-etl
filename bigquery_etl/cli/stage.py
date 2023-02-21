@@ -65,6 +65,7 @@ def stage():
     "--update-references",
     "--update_references",
     default=True,
+    is_flag=True,
     help="Update references to deployed artifacts with project and dataset artifacts have been deployed to.",
 )
 @click.option(
@@ -73,6 +74,14 @@ def stage():
     help="Copy existing SQL from the sql_dir to a temporary directory and apply updates there.",
     default=False,
     is_flag=True,
+)
+@click.option(
+    "--remove-updated-artifacts",
+    "--remove_updated_artifacts",
+    default=False,
+    is_flag=True,
+    help="Remove artifacts that have been updated and deployed to stage from prod folder. This ensures that"
+    + " tests don't run on outdated or undeployed artifacts (required for CI)",
 )
 @click.pass_context
 def deploy(
@@ -83,6 +92,7 @@ def deploy(
     dataset_suffix,
     update_references,
     copy_sql_to_tmp_dir,
+    remove_updated_artifacts,
 ):
     """Deploy provided artifacts to destination project."""
     if copy_sql_to_tmp_dir:
@@ -111,6 +121,7 @@ def deploy(
         _update_references(artifact_files, project_id, dataset_suffix, sql_dir)
 
     updated_artifact_files = set()
+    (Path(sql_dir) / project_id).mkdir(parents=True, exist_ok=True)
     # copy updated files locally to a folder representing the stage env project
     for artifact_file in artifact_files:
         project = artifact_file.parent.parent.parent.name
@@ -131,12 +142,14 @@ def deploy(
             shutil.copytree(
                 test_path, TEST_DIR / project_id / dataset / name, dirs_exist_ok=True
             )
-            shutil.rmtree(test_path)
+            if remove_updated_artifacts:
+                shutil.rmtree(test_path)
 
     # remove artifacts from the "prod" folders
-    for artifact_file in artifact_files:
-        if artifact_file.parent.exists():
-            shutil.rmtree(artifact_file.parent)
+    if remove_updated_artifacts:
+        for artifact_file in artifact_files:
+            if artifact_file.parent.exists():
+                shutil.rmtree(artifact_file.parent)
 
     # deploy to stage
     _deploy_artifacts(ctx, updated_artifact_files, project_id, dataset_suffix, sql_dir)
@@ -221,7 +234,9 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
         # replace partially qualified references (like "telemetry.main")
         replace_references.append(
             (
-                re.compile(rf"(?<!\.)`?{original_dataset}`?\.{name}(?![a-zA-Z0-9_])`?"),
+                re.compile(
+                    rf"(?<![\._])`?{original_dataset}`?\.{name}(?![a-zA-Z0-9_])`?"
+                ),
                 f"`{deployed_project}`.{deployed_dataset}.{name}",
             )
         )
@@ -302,6 +317,9 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
 
 def create_dataset_if_not_exists(project_id, dataset, suffix=None):
     """Create a temporary dataset if not already exists."""
+    if suffix:
+        dataset += f"_{suffix}"
+
     client = bigquery.Client(project_id)
     dataset = bigquery.Dataset(f"{project_id}.{dataset}")
     dataset.location = "US"
@@ -324,7 +342,7 @@ def create_dataset_if_not_exists(project_id, dataset, suffix=None):
         Remove deployed artifacts from stage environment
 
     Examples:
-    ./bqetl deploy clean
+    ./bqetl stage clean
     """
 )
 @click.option(

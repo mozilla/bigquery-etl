@@ -250,7 +250,7 @@ jobs:
       - run:
           name: Replace telemetry-airflow DAGs with BigQuery ETL DAGs
           command: |
-            rm telemetry-airflow/dags/*
+            rm telemetry-airflow/dags/* -f || true
             cp -a dags/. telemetry-airflow/dags/
       - *attach_generated_sql
       - *copy_generated_sql

@@ -246,23 +246,26 @@ jobs:
           name: Pull telemetry-airflow
           # TODO: clone main when feat/clean-deps is merged
           command: |
-            git clone --branch feat/clean-deps https://github.com/mozilla/telemetry-airflow.git
+            git clone --branch feat/clean-deps https://github.com/mozilla/telemetry-airflow.git ~/telemetry-airflow
       - run:
           name: Replace telemetry-airflow DAGs with BigQuery ETL DAGs
           command: |
-            rm telemetry-airflow/dags/* -f || true
-            cp -a dags/. telemetry-airflow/dags/
+            rm ~/telemetry-airflow/dags/* -f || true
+            cp -a dags/. ~/telemetry-airflow/dags/
       - *attach_generated_sql
       - *copy_generated_sql
       - run:
           name: Install telemetry-airflow dependencies
           command: |
-            cd telemetry-airflow
+            cd ~/telemetry-airflow
+            virtualenv .venv
+            source .venv/bin/activate   
             pip install -r requirements.txt
       - run:
           name: 🧪 Test valid DAGs
           command: |
-            cd telemetry-airflow
+            cd ~/telemetry-airflow
+            source .venv/bin/activate   
             python -m pytest tests/dags/test_dag_validity.py --junitxml=test-results/junit.xml
       - store_test_results:
           path: test-results

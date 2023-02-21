@@ -4,6 +4,7 @@
 
 import logging
 import re
+from collections import defaultdict
 from dataclasses import dataclass
 from functools import partial
 from typing import Tuple, Union
@@ -406,19 +407,47 @@ def find_glean_targets(pool, client, project=SHARED_PROD):
         if table.labels.get("schema_id") == GLEAN_SCHEMA_ID
     ]
     source_doctype = "deletion_request"
-    sources = {
-        dataset_id: DeleteSource(qualified_table_id(table), GLEAN_CLIENT_ID, project)
-        # dict comprehension will only keep the last value for a given key, so
-        # sort by table_id to use the latest version
-        for table in sorted(glean_stable_tables, key=lambda t: t.table_id)
-        if table.table_id.startswith(source_doctype)
-        # re-use source for derived tables
-        for dataset_id in [
-            table.dataset_id,
-            re.sub("_stable$", "_derived", table.dataset_id),
-        ]
-        if dataset_id in datasets
-    }
+    sources = defaultdict(default_factory=list)
+    for table in glean_stable_tables:
+        if table.table_id.startswith(source_doctype):
+            source = DeleteSource(qualified_table_id(table), GLEAN_CLIENT_ID, project)
+            derived_dataset = re.sub("_stable$", "_derived", table.dataset_id)
+            # append to list to use every version of deletion request tables
+            sources[table.dataset_id].append(source)
+            sources[derived_dataset].append(source)
+    glean_derived_tables = list(
+        pool.map(
+            client.get_table,
+            [
+                table
+                for tables in pool.map(
+                    client.list_tables,
+                    [
+                        bigquery.DatasetReference(project, dataset_id)
+                        for dataset_id in sources
+                        if not dataset_id.endswith("_stable")
+                    ],
+                    chunksize=1,
+                )
+                for table in tables
+            ],
+            chunksize=1,
+        )
+    )
+    # handle additional source for deletion requests for things like
+    # https://bugzilla.mozilla.org/show_bug.cgi?id=1810236
+    # table must contain client_id at the top level and be partitioned on
+    # submission_timestamp
+    derived_source_table = "additional_deletion_requests_v1"
+    # use [:] to iterate over a copy so that we can delete from the original
+    for table in glean_derived_tables[:]:
+        if table.table_id == derived_source_table:
+            source = DeleteSource(qualified_table_id(table), CLIENT_ID, project)
+            stable_dataset = re.sub("_derived$", "_stable", table.dataset_id)
+            sources[stable_dataset].append(source)
+            sources[table.dataset_id].append(source)
+            # don't target this table for shredding
+            glean_derived_tables.remove(table)
     return {
         **{
             # glean stable tables that have a source
@@ -432,23 +461,7 @@ def find_glean_targets(pool, client, project=SHARED_PROD):
         **{
             # glean derived tables that contain client_id
             client_id_target(table=qualified_table_id(table)): sources[table.dataset_id]
-            for table in pool.map(
-                client.get_table,
-                [
-                    table
-                    for tables in pool.map(
-                        client.list_tables,
-                        [
-                            bigquery.DatasetReference(project, dataset_id)
-                            for dataset_id in sources
-                            if not dataset_id.endswith("_stable")
-                        ],
-                        chunksize=1,
-                    )
-                    for table in tables
-                ],
-                chunksize=1,
-            )
+            for table in glean_derived_tables
             if any(field.name == CLIENT_ID for field in table.schema)
         },
     }

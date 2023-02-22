@@ -27,6 +27,9 @@ fields:
   name: first_run_date
   type: STRING
 - mode: NULLABLE
+  name: telemetry_agent
+  type: STRING
+- mode: NULLABLE
   name: telemetry_sdk_build
   type: STRING
 - mode: NULLABLE

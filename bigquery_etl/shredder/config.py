@@ -421,7 +421,7 @@ def find_glean_targets(
         if table.table_id.startswith(source_doctype):
             source = DeleteSource(qualified_table_id(table), GLEAN_CLIENT_ID, project)
             derived_dataset = re.sub("_stable$", "_derived", table.dataset_id)
-            # append to list to use every version of deletion request tables
+            # append to tuple to use every version of deletion request tables
             sources[table.dataset_id] += (source,)
             sources[derived_dataset] += (source,)
     glean_derived_tables = list(

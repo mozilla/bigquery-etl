@@ -407,14 +407,14 @@ def find_glean_targets(pool, client, project=SHARED_PROD):
         if table.labels.get("schema_id") == GLEAN_SCHEMA_ID
     ]
     source_doctype = "deletion_request"
-    sources = defaultdict(default_factory=list)
+    sources = defaultdict(tuple)
     for table in glean_stable_tables:
         if table.table_id.startswith(source_doctype):
             source = DeleteSource(qualified_table_id(table), GLEAN_CLIENT_ID, project)
             derived_dataset = re.sub("_stable$", "_derived", table.dataset_id)
             # append to list to use every version of deletion request tables
-            sources[table.dataset_id].append(source)
-            sources[derived_dataset].append(source)
+            sources[table.dataset_id] += (source,)
+            sources[derived_dataset] += (source,)
     glean_derived_tables = list(
         pool.map(
             client.get_table,
@@ -444,8 +444,8 @@ def find_glean_targets(pool, client, project=SHARED_PROD):
         if table.table_id == derived_source_table:
             source = DeleteSource(qualified_table_id(table), CLIENT_ID, project)
             stable_dataset = re.sub("_derived$", "_stable", table.dataset_id)
-            sources[stable_dataset].append(source)
-            sources[table.dataset_id].append(source)
+            sources[stable_dataset] += (source,)
+            sources[table.dataset_id] += (source,)
             # don't target this table for shredding
             glean_derived_tables.remove(table)
     return {

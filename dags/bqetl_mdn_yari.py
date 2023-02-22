@@ -28,7 +28,12 @@ default_args = {
     "owner": "fmerz@mozilla.com",
     "start_date": datetime.datetime(2023, 2, 1, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "mdn@mozilla.com", "fmerz@mozilla.com"],
+    "email": [
+        "telemetry-alerts@mozilla.com",
+        "mdn@mozilla.com",
+        "fmerz@mozilla.com",
+        "kignasiak@mozilla.com",
+    ],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=300),
     "email_on_failure": True,
@@ -54,5 +59,10 @@ with DAG(
         + ["--date", "{{ ds }}"],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="fmerz@mozilla.com",
-        email=["fmerz@mozilla.com", "mdn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "fmerz@mozilla.com",
+            "kignasiak@mozilla.com",
+            "mdn@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
     )

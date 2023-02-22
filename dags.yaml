@@ -1002,6 +1002,7 @@ bqetl_mdn_yari:
       - telemetry-alerts@mozilla.com
       - mdn@mozilla.com
       - fmerz@mozilla.com
+      - kignasiak@mozilla.com
     email_on_failure: true
     email_on_retry: false
     end_date: null

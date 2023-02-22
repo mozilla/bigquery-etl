@@ -107,7 +107,13 @@ def deploy(
     # get SQL files for artifacts that are to be deployed
     for path in paths:
         artifact_files.update(
-            paths_matching_name_pattern(path, sql_dir, None, files=["*.sql", "*.py"])
+            [
+                p
+                for p in paths_matching_name_pattern(
+                    path, sql_dir, None, files=["*.sql", "*.py"]
+                )
+                if p.suffix in [".sql", ".py"]
+            ]
         )
 
     # any dependencies need to be determined an deployed as well since the stage
@@ -317,9 +323,6 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
 
 def create_dataset_if_not_exists(project_id, dataset, suffix=None):
     """Create a temporary dataset if not already exists."""
-    if suffix:
-        dataset += f"_{suffix}"
-
     client = bigquery.Client(project_id)
     dataset = bigquery.Dataset(f"{project_id}.{dataset}")
     dataset.location = "US"

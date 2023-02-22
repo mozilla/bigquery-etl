@@ -45,7 +45,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     mdn_yari_derived__mdn_popularities__v1 = gke_command(
         task_id="mdn_yari_derived__mdn_popularities__v1",
         command=[

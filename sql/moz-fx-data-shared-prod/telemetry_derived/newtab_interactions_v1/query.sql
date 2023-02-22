@@ -242,7 +242,10 @@ side_filled AS (
       OR pocket_impressions > 0
       OR pocket_clicks > 0
       OR pocket_saves > 0
-    ) OVER (PARTITION BY newtab_visit_id) AS visit_had_any_interaction
+    ) OVER (
+      PARTITION BY
+        newtab_visit_id
+    ) AS visit_had_any_interaction -- Note this will have to be updated when other valid interactions are added.
   FROM
     aggregated_newtab_activity
   LEFT JOIN
@@ -256,5 +259,7 @@ FROM
   side_filled
 WHERE
    -- Keep only rows with interactions, unless we receive a valid newtab.opened event.
+   -- This is meant to drop only interactions that only have a newtab.closed event on the same partition
+   -- (these are suspected to be from pre-loaded tabs)
   visit_had_any_interaction = TRUE
   OR (visit_had_any_interaction = FALSE AND newtab_open_source IS NOT NULL)

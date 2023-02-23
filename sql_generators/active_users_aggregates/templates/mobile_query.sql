@@ -1,4 +1,4 @@
-{{ header }}
+{ {header } }
 WITH baseline AS (
   SELECT
     submission_date,

@@ -15,6 +15,7 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_analytics_aggregations
+  application: {{ app_name }}
   task_name: {{ app_name }}_active_users_aggregates
 bigquery:
   time_partitioning:

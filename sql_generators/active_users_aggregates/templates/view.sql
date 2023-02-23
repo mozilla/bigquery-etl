@@ -1,4 +1,4 @@
-{{ header }}
+{ {header } }
 CREATE OR REPLACE VIEW
   `{{ project_id }}.{{ app_name }}.active_users_aggregates`
 AS

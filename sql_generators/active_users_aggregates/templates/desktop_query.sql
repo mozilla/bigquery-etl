@@ -1,4 +1,4 @@
-{{ header }}
+{ {header } }
 WITH todays_metrics AS (
   SELECT
     client_id,

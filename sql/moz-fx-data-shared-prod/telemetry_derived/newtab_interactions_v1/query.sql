@@ -184,6 +184,8 @@ aggregated_newtab_activity AS (
     COUNTIF(is_organic_pocket_save) AS organic_pocket_saves,
   FROM
     categorized_events
+  WHERE
+    newtab_visit_id IS NOT NULL
   GROUP BY
     newtab_visit_id,
     client_id,
@@ -201,17 +203,63 @@ client_profile_info AS (
     ANY_VALUE(is_new_profile) AS is_new_profile,
     ANY_VALUE(activity_segment) AS activity_segment
   FROM
-    telemetry_derived.unified_metrics_v1
+    `moz-fx-data-shared-prod.telemetry_derived.unified_metrics_v1`
   WHERE
     submission_date = @submission_date
   GROUP BY
     client_id
+),
+-- Newtab interactions may arrive in different pings so we attach the open details for a visit to all interactions.
+side_filled AS (
+  SELECT
+    * EXCEPT (newtab_open_source, newtab_visit_started_at, newtab_visit_ended_at),
+    FIRST_VALUE(newtab_open_source IGNORE NULLS) OVER (
+      PARTITION BY
+        newtab_visit_id
+      ORDER BY
+        submission_date ASC
+    ) AS newtab_open_source,
+    FIRST_VALUE(newtab_visit_started_at IGNORE NULLS) OVER (
+      PARTITION BY
+        newtab_visit_id
+      ORDER BY
+        submission_date ASC
+    ) AS newtab_visit_started_at,
+    FIRST_VALUE(newtab_visit_ended_at IGNORE NULLS) OVER (
+      PARTITION BY
+        newtab_visit_id
+      ORDER BY
+        submission_date ASC
+    ) AS newtab_visit_ended_at,
+    LOGICAL_OR(
+      searches > 0
+      OR tagged_search_ad_clicks > 0
+      OR tagged_search_ad_impressions > 0
+      OR follow_on_search_ad_clicks > 0
+      OR follow_on_search_ad_impressions > 0
+      OR topsite_impressions > 0
+      OR topsite_clicks > 0
+      OR pocket_impressions > 0
+      OR pocket_clicks > 0
+      OR pocket_saves > 0
+    ) OVER (
+      PARTITION BY
+        newtab_visit_id
+    ) AS visit_had_any_interaction -- Note this will have to be updated when other valid interactions are added.
+  FROM
+    aggregated_newtab_activity
+  LEFT JOIN
+    client_profile_info
+  USING
+    (legacy_telemetry_client_id)
 )
 SELECT
-  *
+  * EXCEPT (visit_had_any_interaction)
 FROM
-  aggregated_newtab_activity
-LEFT JOIN
-  client_profile_info
-USING
-  (legacy_telemetry_client_id)
+  side_filled
+WHERE
+   -- Keep only rows with interactions, unless we receive a valid newtab.opened event.
+   -- This is meant to drop only interactions that only have a newtab.closed event on the same partition
+   -- (these are suspected to be from pre-loaded tabs)
+  visit_had_any_interaction = TRUE
+  OR (visit_had_any_interaction = FALSE AND newtab_open_source IS NOT NULL)

@@ -12,8 +12,13 @@ from google.cloud import bigquery
 from ..cli.query import deploy as deploy_query_schema
 from ..cli.query import update as update_query_schema
 from ..cli.routine import publish as publish_routine
-from ..cli.utils import paths_matching_name_pattern, sql_dir_option
+from ..cli.utils import (
+    paths_matching_name_pattern,
+    respect_dryrun_skip_option,
+    sql_dir_option,
+)
 from ..cli.view import publish as publish_view
+from ..dryrun import SKIP
 from ..routine.parse_routine import (
     UDF_FILE,
     RawRoutine,
@@ -83,6 +88,7 @@ def stage():
     help="Remove artifacts that have been updated and deployed to stage from prod folder. This ensures that"
     + " tests don't run on outdated or undeployed artifacts (required for CI)",
 )
+@respect_dryrun_skip_option(default=False)
 @click.pass_context
 def deploy(
     ctx,
@@ -93,6 +99,7 @@ def deploy(
     update_references,
     copy_sql_to_tmp_dir,
     remove_updated_artifacts,
+    respect_dryrun_skip,
 ):
     """Deploy provided artifacts to destination project."""
     if copy_sql_to_tmp_dir:
@@ -113,6 +120,7 @@ def deploy(
                     path, sql_dir, None, files=["*.sql", "*.py"]
                 )
                 if p.suffix in [".sql", ".py"]
+                and not (respect_dryrun_skip and str(p) in SKIP)
             ]
         )
 

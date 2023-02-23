@@ -11,6 +11,7 @@ from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import render, write_sql
 
 THIS_PATH = Path(os.path.dirname(__file__))
+TABLE_NAME = "active_users_aggregates"
 
 
 class Browsers(Enum):
@@ -51,14 +52,6 @@ def generate(target_project, output_dir, use_cloud_function):
     view_template = env.get_template("view.sql")
 
     for browser in Browsers:
-        metadata_output_dir = Path(
-            f"{output_dir}/{target_project}/{browser.name}_derived/"
-        )
-        view_output_dir = Path(f"{output_dir}/{target_project}/{browser.name}/")
-
-        metadata_output_dir.mkdir(parents=True, exist_ok=True)
-        view_output_dir.mkdir(parents=True, exist_ok=True)
-
         if browser.name == "firefox_desktop":
             query_sql = reformat(
                 desktop_query_template.render(
@@ -84,8 +77,8 @@ def generate(target_project, output_dir, use_cloud_function):
         )
 
         write_sql(
-            output_dir=metadata_output_dir,
-            full_table_id="active_users_aggregates",
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v1",
             basename="metadata.yaml",
             sql=render(
                 metadata_template,
@@ -97,16 +90,16 @@ def generate(target_project, output_dir, use_cloud_function):
         )
 
         write_sql(
-            output_dir=metadata_output_dir,
-            full_table_id="active_users_aggregates",
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v1",
             basename="query.sql",
             sql=query_sql,
             skip_existing=False,
         )
 
         write_sql(
-            output_dir=view_output_dir,
-            full_table_id="active_users_aggregates",
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{browser.name}.{TABLE_NAME}",
             basename="view.sql",
             sql=view_sql,
             skip_existing=False,

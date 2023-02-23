@@ -1,4 +1,4 @@
-{ {header } }
+--- Query generated via sql_generators.active_users_aggregates.
 WITH todays_metrics AS (
   SELECT
     client_id,

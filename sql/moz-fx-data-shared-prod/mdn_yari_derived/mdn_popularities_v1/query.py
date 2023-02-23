@@ -47,7 +47,7 @@ parser.add_argument("--project", default="moz-fx-data-shared-prod")
 parser.add_argument("--temp_dataset", default="tmp")
 parser.add_argument("--temp_table", default="mdn_popularities_v1")
 parser.add_argument("--destination_project", default="moz-fx-dev-gsleigh-migration")
-parser.add_argument("--destination_bucket", default="mdn-dev")
+parser.add_argument("--destination_bucket", default="mdn-gcp")
 parser.add_argument("--destination_path", default="popularities/current")
 
 

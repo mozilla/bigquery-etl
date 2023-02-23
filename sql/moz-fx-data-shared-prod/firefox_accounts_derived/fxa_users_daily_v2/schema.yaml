@@ -30,13 +30,6 @@ fields:
     User's language.
 
 - mode: NULLABLE
-  name: app_version
-  type: STRING
-  description: |
-    Mozilla app version,
-    follows format: major.minor.patch (e.g. 99.3.3).
-
-- mode: NULLABLE
   name: os_name
   type: STRING
   description: |
@@ -58,6 +51,7 @@ fields:
     a specific submission_date:
     ('United States','France',
     'Germany','United Kingdom','Canada')
+    for any of the services they used that day.
 
 - mode: NULLABLE
   name: registered

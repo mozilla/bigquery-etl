@@ -62,7 +62,6 @@ def generate(target_project, output_dir, use_cloud_function):
         if browser.name == "firefox_desktop":
             query_sql = reformat(
                 desktop_query_template.render(
-                    header=f"--- {browser.value} aggregates query. Generated via sql_generators.active_users_aggregates.\n",
                     project_id=target_project,
                     app_value=browser.value,
                     app_name=browser.name,
@@ -71,7 +70,6 @@ def generate(target_project, output_dir, use_cloud_function):
         else:
             query_sql = reformat(
                 mobile_query_template.render(
-                    header=f"--- {browser.value} aggregates query. Generated via sql_generators.active_users_aggregates.\n",
                     project_id=target_project,
                     app_value=browser.value,
                     app_name=browser.name,
@@ -80,7 +78,6 @@ def generate(target_project, output_dir, use_cloud_function):
 
         view_sql = reformat(
             view_template.render(
-                header=f"--- {browser.value} aggregates user-facing view. Generated via sql_generators.active_users_aggregates.\n",
                 project_id=target_project,
                 app_name=browser.name,
             )

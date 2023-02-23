@@ -28,22 +28,23 @@ monthly_costs_per_mar AS (
   USING
     (measured_month, destination_id)
   WHERE
-    incremental_mar.billing_info = "paid"
+    incremental_mar.billing_type = "paid"
   GROUP BY
-    measured_month,
     destination_id,
-    dollars_spent
+    measured_month,
+    monthly_costs.dollars_spent
 ),
 daily_connector_costs AS (
   SELECT
     destinations.destination_name AS destination,
     incremental_mar.measured_date,
-    connector,
-    billing_info,
-    SUM(active_rows) AS active_rows,
-    SUM(
-      IF(billing_info = "paid", active_rows, 0)
-    ) * monthly_costs_per_mar.cost_per_mar AS cost_in_usd
+    incremental_mar.connector,
+    incremental_mar.billing_type,
+    SUM(incremental_mar.active_rows) AS active_rows,
+    SUM(IF(incremental_mar.billing_type = "paid", active_rows, 0)) * COALESCE(
+      monthly_costs_per_mar.cost_per_mar,
+      0
+    ) AS cost_in_usd
   FROM
     incremental_mar
   LEFT JOIN
@@ -58,7 +59,7 @@ daily_connector_costs AS (
     destination,
     measured_date,
     connector,
-    billing_info,
+    billing_type,
     monthly_costs_per_mar.cost_per_mar
 )
 SELECT

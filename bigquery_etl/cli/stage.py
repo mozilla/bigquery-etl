@@ -88,6 +88,7 @@ def stage():
     help="Remove artifacts that have been updated and deployed to stage from prod folder. This ensures that"
     + " tests don't run on outdated or undeployed artifacts (required for CI)",
 )
+@respect_dryrun_skip_option(default=True)
 @click.pass_context
 def deploy(
     ctx,
@@ -98,6 +99,7 @@ def deploy(
     update_references,
     copy_sql_to_tmp_dir,
     remove_updated_artifacts,
+    respect_dryrun_skip,
 ):
     """Deploy provided artifacts to destination project."""
     if copy_sql_to_tmp_dir:
@@ -142,6 +144,14 @@ def deploy(
 
         if dataset_suffix:
             dataset = f"{dataset}_{dataset_suffix}"
+
+        if (
+            respect_dryrun_skip
+            and artifact_file.name == VIEW_FILE
+            and str(artifact_file) in SKIP
+        ):
+            # skip views that are marked as SKIPped as part of the dryrun
+            continue
 
         new_artifact_path = Path(sql_dir) / project_id / dataset / name
         new_artifact_path.mkdir(parents=True, exist_ok=True)

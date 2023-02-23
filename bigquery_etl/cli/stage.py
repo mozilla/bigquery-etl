@@ -12,8 +12,13 @@ from google.cloud import bigquery
 from ..cli.query import deploy as deploy_query_schema
 from ..cli.query import update as update_query_schema
 from ..cli.routine import publish as publish_routine
-from ..cli.utils import paths_matching_name_pattern, sql_dir_option
+from ..cli.utils import (
+    paths_matching_name_pattern,
+    respect_dryrun_skip_option,
+    sql_dir_option,
+)
 from ..cli.view import publish as publish_view
+from ..dryrun import SKIP
 from ..routine.parse_routine import (
     UDF_FILE,
     RawRoutine,

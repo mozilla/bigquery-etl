@@ -22,6 +22,7 @@ from urllib.request import Request, urlopen
 import click
 from google.cloud import bigquery
 
+from .cli.utils import TEST_PROJECT
 from .metadata.parse_metadata import Metadata
 
 try:
@@ -253,6 +254,16 @@ SKIP = {
     # Tests
     "sql/moz-fx-data-test-project/test/simple_view/view.sql",
 }
+SKIP.update(
+    [
+        p
+        for f in [Path(s) for s in SKIP]
+        for p in glob.glob(
+            f"sql/{TEST_PROJECT}/{f.parent.parent.name}*/{f.parent.name}/{f.name}",
+            recursive=True,
+        )
+    ]
+)
 
 
 class Errors(Enum):

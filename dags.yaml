@@ -361,6 +361,22 @@ bqetl_org_mozilla_firefox_derived:
   tags:
     - impact/tier_1
 
+bqetl_org_mozilla_focus_derived:
+  schedule_interval: 0 2 * * *
+  default_args:
+    depends_on_past: false
+    email:
+      - dthorn@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    owner: dthorn@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: "2023-02-22"
+  tags:
+    - impact/tier_1
+
 bqetl_google_analytics_derived:
   schedule_interval: 0 23 * * *
   description: |
@@ -978,3 +994,26 @@ bqetl_fivetran_costs:
   schedule_interval: 0 5 * * *
   tags:
     - impact/tier_3
+
+bqetl_mdn_yari:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - mdn@mozilla.com
+      - fmerz@mozilla.com
+      - kignasiak@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: fmerz@mozilla.com
+    retries: 1
+    retry_delay: 5m
+    start_date: '2023-02-01'
+  description: |
+    Monthly data exports of MDN 'Popularities'. This aggregates and counts total
+    page visits and normalizes them agains the max.
+  schedule_interval: 0 0 1 * *
+  tags:
+    - impact/tier_3
+    - triage/record_only

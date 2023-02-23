@@ -20,3 +20,13 @@
   measured_date: 2023-01-07
   free_type: SYSTEM
   incremental_rows: 100
+- <<: *base
+  free_type: FREE_SOMETHING
+- <<: *base
+  free_type: free_something_else
+- <<: *base
+  free_type: PaId
+- <<: *base
+  free_type: something_ELSE
+- <<: *base
+  free_type: this_is_free

@@ -20,7 +20,12 @@ fields:
   description: |
     The name of the connector being measured.
 - mode: NULLABLE
-  name: billing_info
+  name: table_name
+  type: STRING
+  description: |
+    The name of the table the connector is writing to.
+- mode: NULLABLE
+  name: billing_type
   type: STRING
   description: |
     Information on how the active rows got billed, paid or free.

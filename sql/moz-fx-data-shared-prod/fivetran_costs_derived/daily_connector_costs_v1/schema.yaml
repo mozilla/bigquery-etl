@@ -15,7 +15,7 @@ fields:
   description: |
     The name of the connector being measured.
 - mode: NULLABLE
-  name: billing_info
+  name: billing_type
   type: STRING
   description: |
     Information on how the active rows got billed, paid or free.
@@ -28,4 +28,4 @@ fields:
   name: cost_in_usd
   type: BIGNUMERIC
   description: |
-    Costs in USD for that row.
+    Costs in USD for that row. This value is not rounded to the cent but contains fractional cents for later calculations.

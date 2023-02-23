@@ -1825,22 +1825,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#days_since_seen-udf" class="md-nav__link">
-    days_since_seen (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#retention-udf" class="md-nav__link">
     retention (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#to_dates-udf" class="md-nav__link">
-    to_dates (UDF)
   </a>
   
 </li>
@@ -1862,6 +1848,20 @@
         <li class="md-nav__item">
   <a href="#range-udf" class="md-nav__link">
     range (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#days_since_seen-udf" class="md-nav__link">
+    days_since_seen (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#to_dates-udf" class="md-nav__link">
+    to_dates (UDF)
   </a>
   
 </li>
@@ -2284,22 +2284,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#days_since_seen-udf" class="md-nav__link">
-    days_since_seen (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#retention-udf" class="md-nav__link">
     retention (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#to_dates-udf" class="md-nav__link">
-    to_dates (UDF)
   </a>
   
 </li>
@@ -2321,6 +2307,20 @@
         <li class="md-nav__item">
   <a href="#range-udf" class="md-nav__link">
     range (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#days_since_seen-udf" class="md-nav__link">
+    days_since_seen (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#to_dates-udf" class="md-nav__link">
+    to_dates (UDF)
   </a>
   
 </li>
@@ -2367,27 +2367,10 @@ the individual bits.</p>
 <span class="c1">--      &#39;0000000000000000000000000011&#39;]</span>
 </code></pre></div>
 <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/to_string">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/to_string/metadata.yaml">Edit</a></p>
-<h2 id="days_since_seen-udf">days_since_seen (UDF)</h2>
-<p>Return the position of the rightmost set bit in an INT64 bit pattern.</p>
-<p>To determine this position, we take a bitwise AND of the bit pattern and
-its complement, then we determine the position of the bit via base-2
-logarithm; see <a href="https://stackoverflow.com/a/42747608/1260237">https://stackoverflow.com/a/42747608/1260237</a></p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<p><div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
-<span class="w">  </span><span class="n">mozfun</span><span class="p">.</span><span class="n">bits28</span><span class="p">.</span><span class="n">days_since_seen</span><span class="p">(</span><span class="mi">18</span><span class="p">)</span>
-<span class="c1">-- &gt;&gt; 1</span>
-</code></pre></div>
-<a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/days_since_seen">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/days_since_seen/metadata.yaml">Edit</a></p>
 <h2 id="retention-udf">retention (UDF)</h2>
 <p>Return a nested struct providing booleans indicating whether a given client
 was active various time periods based on the passed bit pattern.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/retention">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/retention/metadata.yaml">Edit</a></p>
-<h2 id="to_dates-udf">to_dates (UDF)</h2>
-<p>Convert a bit pattern into an array of the dates is represents.</p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/to_dates">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/to_dates/metadata.yaml">Edit</a></p>
 <h2 id="active_in_range-udf">active_in_range (UDF)</h2>
 <p>Return a boolean indicating if any bits are set in the specified range
 of a bit pattern. The <code>start_offset</code> must be zero or a negative number
@@ -2421,6 +2404,23 @@ start_offset.</p>
 <span class="w">  </span><span class="n">submission_date</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="s1">&#39;2020-01-01&#39;</span>
 </code></pre></div>
 <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/range/metadata.yaml">Edit</a></p>
+<h2 id="days_since_seen-udf">days_since_seen (UDF)</h2>
+<p>Return the position of the rightmost set bit in an INT64 bit pattern.</p>
+<p>To determine this position, we take a bitwise AND of the bit pattern and
+its complement, then we determine the position of the bit via base-2
+logarithm; see <a href="https://stackoverflow.com/a/42747608/1260237">https://stackoverflow.com/a/42747608/1260237</a></p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<p><div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">  </span><span class="n">mozfun</span><span class="p">.</span><span class="n">bits28</span><span class="p">.</span><span class="n">days_since_seen</span><span class="p">(</span><span class="mi">18</span><span class="p">)</span>
+<span class="c1">-- &gt;&gt; 1</span>
+</code></pre></div>
+<a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/days_since_seen">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/days_since_seen/metadata.yaml">Edit</a></p>
+<h2 id="to_dates-udf">to_dates (UDF)</h2>
+<p>Convert a bit pattern into an array of the dates is represents.</p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/to_dates">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/to_dates/metadata.yaml">Edit</a></p>
 
 
 

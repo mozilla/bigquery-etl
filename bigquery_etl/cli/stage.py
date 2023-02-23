@@ -12,8 +12,13 @@ from google.cloud import bigquery
 from ..cli.query import deploy as deploy_query_schema
 from ..cli.query import update as update_query_schema
 from ..cli.routine import publish as publish_routine
-from ..cli.utils import paths_matching_name_pattern, sql_dir_option
+from ..cli.utils import (
+    paths_matching_name_pattern,
+    respect_dryrun_skip_option,
+    sql_dir_option,
+)
 from ..cli.view import publish as publish_view
+from ..dryrun import SKIP
 from ..routine.parse_routine import (
     UDF_FILE,
     RawRoutine,
@@ -141,7 +146,6 @@ def deploy(
         new_artifact_path = Path(sql_dir) / project_id / dataset / name
         new_artifact_path.mkdir(parents=True, exist_ok=True)
         shutil.copytree(artifact_file.parent, new_artifact_path, dirs_exist_ok=True)
-        updated_artifact_files.add(new_artifact_path / artifact_file.name)
 
         # copy tests to the right structure
         if test_path.exists():

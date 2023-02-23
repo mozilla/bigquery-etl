@@ -457,7 +457,11 @@ def find_glean_targets(
     return {
         **{
             # glean stable tables that have a source
-            glean_target(qualified_table_id(table)): sources[table.dataset_id]
+            DeleteTarget(
+                table=qualified_table_id(table),
+                # field must be repeated for each deletion source
+                field=(GLEAN_CLIENT_ID,) * len(sources[table.dataset_id]),
+            ): sources[table.dataset_id]
             for table in glean_stable_tables
             if table.dataset_id in sources
             and not table.table_id.startswith(source_doctype)
@@ -466,7 +470,11 @@ def find_glean_targets(
         },
         **{
             # glean derived tables that contain client_id
-            client_id_target(table=qualified_table_id(table)): sources[table.dataset_id]
+            DeleteTarget(
+                table=qualified_table_id(table),
+                # field must be repeated for each deletion source
+                field=(CLIENT_ID,) * len(sources[table.dataset_id]),
+            ): sources[table.dataset_id]
             for table in glean_derived_tables
             if any(field.name == CLIENT_ID for field in table.schema)
             and not table.table_id.startswith(derived_source_prefix)

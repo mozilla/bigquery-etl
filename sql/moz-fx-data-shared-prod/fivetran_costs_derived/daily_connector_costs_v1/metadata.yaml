@@ -1,6 +1,6 @@
-friendly_name: Monthly Connector Costs
+friendly_name: Daily Connector Costs
 description: |-
-  Monthly Costs per Fivetran Connector
+  Daily Costs per Fivetran Connector
 owners:
 - lschiestl@mozilla.com
 labels: {}

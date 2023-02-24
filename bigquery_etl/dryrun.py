@@ -22,7 +22,6 @@ from urllib.request import Request, urlopen
 import click
 from google.cloud import bigquery
 
-from .cli.utils import TEST_PROJECT
 from .metadata.parse_metadata import Metadata
 
 try:
@@ -32,6 +31,7 @@ except ImportError:
     from backports.cached_property import cached_property  # type: ignore
 
 
+TEST_PROJECT = "bigquery-etl-integration-test"
 SKIP = {
     # Access Denied
     "sql/moz-fx-data-shared-prod/account_ecosystem_derived/ecosystem_client_id_lookup_v1/query.sql",  # noqa E501

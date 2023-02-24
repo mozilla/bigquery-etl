@@ -12,13 +12,8 @@ from google.cloud import bigquery
 from ..cli.query import deploy as deploy_query_schema
 from ..cli.query import update as update_query_schema
 from ..cli.routine import publish as publish_routine
-from ..cli.utils import (
-    paths_matching_name_pattern,
-    respect_dryrun_skip_option,
-    sql_dir_option,
-)
+from ..cli.utils import paths_matching_name_pattern, sql_dir_option
 from ..cli.view import publish as publish_view
-from ..dryrun import SKIP
 from ..routine.parse_routine import (
     UDF_FILE,
     RawRoutine,
@@ -266,14 +261,14 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
                 re.compile(
                     rf"(?<![\._])`?{original_dataset}`?\.{name}(?![a-zA-Z0-9_])`?"
                 ),
-                f"`{deployed_project}`.{deployed_dataset}.{name}",
+                f"`{deployed_project}.{deployed_dataset}.{name}`",
             )
         )
         # replace fully qualified references (like "moz-fx-data-shared-prod.telemetry.main")
         replace_references.append(
             (
                 rf"(?<![a-zA-Z0-9_])`?{original_project}`?\.{original_dataset}`?\.{name}(?![a-zA-Z0-9_])`?",
-                f"`{deployed_project}`.{deployed_dataset}.{name}",
+                f"`{deployed_project}.{deployed_dataset}.{name}`",
             )
         )
 

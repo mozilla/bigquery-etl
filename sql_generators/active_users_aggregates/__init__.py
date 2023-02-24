@@ -31,7 +31,7 @@ class Browsers(Enum):
     "--output_dir",
     help="Output directory generated SQL is written to",
     type=click.Path(file_okay=False),
-    default=Path("sql"),
+    default="sql",
 )
 @click.option(
     "--target-project",
@@ -46,11 +46,11 @@ def generate(target_project, output_dir, use_cloud_function):
     The parent folders will be created if not existing and existing files will be overwritten.
     """
     env = Environment(loader=FileSystemLoader(str(THIS_PATH / "templates")))
-    metadata_template = env.get_template("metadata.yaml")
     mobile_query_template = env.get_template("mobile_query.sql")
     desktop_query_template = env.get_template("desktop_query.sql")
+    metadata_template = env.get_template("metadata.yaml")
     view_template = env.get_template("view.sql")
-
+    output_dir = Path(output_dir) / target_project
     for browser in Browsers:
         if browser.name == "firefox_desktop":
             query_sql = reformat(
@@ -69,15 +69,16 @@ def generate(target_project, output_dir, use_cloud_function):
                 )
             )
 
-        view_sql = reformat(
-            view_template.render(
-                project_id=target_project,
-                app_name=browser.name,
-            )
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v1",
+            basename="query.sql",
+            sql=query_sql,
+            skip_existing=False,
         )
 
         write_sql(
-            output_dir=output_dir / target_project,
+            output_dir=output_dir,
             full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v1",
             basename="metadata.yaml",
             sql=render(
@@ -90,17 +91,11 @@ def generate(target_project, output_dir, use_cloud_function):
         )
 
         write_sql(
-            output_dir=output_dir / target_project,
-            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v1",
-            basename="query.sql",
-            sql=query_sql,
-            skip_existing=False,
-        )
-
-        write_sql(
-            output_dir=output_dir / target_project,
+            output_dir=output_dir,
             full_table_id=f"{target_project}.{browser.name}.{TABLE_NAME}",
             basename="view.sql",
-            sql=view_sql,
+            sql=reformat(
+                view_template.render(project_id=target_project, app_name=browser.name)
+            ),
             skip_existing=False,
         )

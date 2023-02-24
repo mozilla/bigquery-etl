@@ -42,6 +42,12 @@ monthly_costs AS (
       monthly_costs_dollars.dollars_spent,
       monthly_costs_credits.credits_spent * 2
     ) AS dollars_spent
+  FROM
+    monthly_costs_credits
+  FULL OUTER JOIN
+    monthly_costs_dollars
+  USING
+    (destination_id, measured_month)
 )
 SELECT
   *

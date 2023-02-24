@@ -34681,6 +34681,16 @@ fields:
           mode: REPEATED
           name: networking_data_transferred_per_content_type
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: sidebar_link
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD

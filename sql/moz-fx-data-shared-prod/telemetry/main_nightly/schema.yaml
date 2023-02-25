@@ -14087,6 +14087,9 @@ fields:
     - mode: NULLABLE
       name: orb_did_ever_block_response
       type: STRING
+    - mode: NULLABLE
+      name: places_library_cumulative_history_searches
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -34690,6 +34693,36 @@ fields:
             type: INTEGER
           mode: REPEATED
           name: sidebar_link
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: library_link
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: library_opened
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: library_search
           type: RECORD
         mode: NULLABLE
         name: keyed_scalars

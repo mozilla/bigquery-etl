@@ -167,6 +167,7 @@ def publish_routine(
             # ensure UDF definitions are not replaced twice as would be the case for
             # `mozfun`.stats.mode_last and `mozfun`.stats.mode_last_retain_nulls
             # since one name is a substring of the other
+            definition = definition.replace(f"`{project_id}.{udf}`", udf)
             definition = definition.replace(f"`{project_id}`.{udf}", udf)
             definition = definition.replace(f"{project_id}.{udf}", udf)
             definition = definition.replace(udf, f"`{project_id}`.{udf}")

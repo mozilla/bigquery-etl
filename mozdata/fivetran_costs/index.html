@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#daily_active_rows" class="md-skip">
+        <a href="#daily_connector_costs" class="md-skip">
           Skip to content
         </a>
       
@@ -795,15 +795,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#daily_active_rows" class="md-nav__link">
-    daily_active_rows
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#monthly_connector_costs" class="md-nav__link">
-    monthly_connector_costs
+  <a href="#daily_connector_costs" class="md-nav__link">
+    daily_connector_costs
   </a>
   
 </li>
@@ -2236,15 +2229,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#daily_active_rows" class="md-nav__link">
-    daily_active_rows
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#monthly_connector_costs" class="md-nav__link">
-    monthly_connector_costs
+  <a href="#daily_connector_costs" class="md-nav__link">
+    daily_connector_costs
   </a>
   
 </li>
@@ -2268,55 +2254,8 @@
 
 <p>Analyze the costs for Fivetran connectors.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs">Source Directory</a></p>
-<h2 id="daily_active_rows"><a href="#daily_active_rows">daily_active_rows</a></h2>
-<p><code>fivetran_costs.daily_active_rows</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>destination_name</td>
-        <td>Name of the Fivetran destination as it appears in the UI.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>measured_date</td>
-        <td>Date of the usage measurement
-</td>
-        <td>Date</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>connector_name</td>
-        <td>Name of the Fivetran connector.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>paid_active_rows</td>
-        <td>Number of active rows billed for that connector on that date.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>free_active_rows</td>
-        <td>Number of free active rows for that connector on that date.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>total_active_rows</td>
-        <td>Number of active rows, billed and free for that connector on that date.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
+<h2 id="daily_connector_costs"><a href="#daily_connector_costs">daily_connector_costs</a></h2>
+<p><code>fivetran_costs.daily_connector_costs</code></p>
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -2327,100 +2266,11 @@
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs_derived>fivetran_costs_derived</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs_derived/daily_active_rows_v1>daily_active_rows_v1</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs_derived/daily_connector_costs_v1>daily_connector_costs_v1</a></td>
         </tr>
 </table>
 
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs/daily_active_rows">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs/daily_active_rows/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs/daily_active_rows/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="monthly_connector_costs"><a href="#monthly_connector_costs">monthly_connector_costs</a></h2>
-<p><code>fivetran_costs.monthly_connector_costs</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>destination_name</td>
-        <td>Name of the Fivetran destination as it appears in the UI.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>measured_month</td>
-        <td>Month of the usage measurement.
-</td>
-        <td>Date</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>connector_name</td>
-        <td>Name of the Fivetran connector billed.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>paid_active_rows</td>
-        <td>Number of active rows billed for that connector in that month.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>free_active_rows</td>
-        <td>Number of free active rows for that connector in that month.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>total_active_rows</td>
-        <td>Total number of active rows, billed and free for that connector in that month.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>percentage_of_destination_paid_active_rows</td>
-        <td>Percentage of paid active rows for that connector compared to the total amount of paid active rows for the destination for that month.
-</td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>percentage_of_total_paid_active_rows</td>
-        <td>Percentage of paid active rows for that connector compared to the total amount of paid active rows over all destinations for that month.
-</td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>cost_in_usd</td>
-        <td>Costs for that connector for that month in USD
-</td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>cost_in_credits</td>
-        <td>Costs for that connector for that month in Fivetran credits
-</td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs_derived>fivetran_costs_derived</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs_derived/monthly_connector_costs_v1>monthly_connector_costs_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs/monthly_connector_costs">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs/monthly_connector_costs/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs/monthly_connector_costs/metadata.yaml">Metadata File</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs/daily_connector_costs">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs/daily_connector_costs/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fivetran_costs/daily_connector_costs/metadata.yaml">Metadata File</a> </p>
 <hr />
 
 

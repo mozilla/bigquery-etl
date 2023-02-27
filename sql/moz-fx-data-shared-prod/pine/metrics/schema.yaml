@@ -1329,6 +1329,21 @@ fields:
       mode: NULLABLE
       name: browser_link_open_newwindow_restriction
       type: INTEGER
+    - description: 'Windows only count of the browser profiles on the current system.
+        This
+
+        counts profiles that have been used across all Windows user accounts on
+
+        machine since this probe was added. The value persists across installs.
+
+        A value of 0 is reported if there is an error determining the correct
+
+        count. Unset on other platforms.
+
+        '
+      mode: NULLABLE
+      name: browser_engagement_profile_count
+      type: INTEGER
     mode: NULLABLE
     name: quantity
     type: RECORD

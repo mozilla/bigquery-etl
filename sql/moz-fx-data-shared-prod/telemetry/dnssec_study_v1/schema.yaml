@@ -1377,6 +1377,42 @@ fields:
     - mode: REPEATED
       name: webext_a_u
       type: STRING
+    - mode: REPEATED
+      name: udp_a_afirst
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_a_afirst_u
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_a_alast
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_a_alast_u
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_a_n_prefix
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_dsdo
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_newone_afirst
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_newone_afirst_u
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_newone_alast
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_newone_alast_u
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_rrsig_u
+      type: INTEGER
+    - mode: REPEATED
+      name: webext_a_prefix
+      type: STRING
     mode: NULLABLE
     name: dns_data
     type: RECORD
@@ -1441,8 +1477,7 @@ fields:
     - mode: NULLABLE
       name: udp_newtwo
       type: FLOAT
-    - description: This property is deprecated and no longer used
-      mode: NULLABLE
+    - mode: NULLABLE
       name: udp_rrsig
       type: FLOAT
     - mode: NULLABLE
@@ -1592,6 +1627,42 @@ fields:
     - mode: NULLABLE
       name: webext_a_u
       type: FLOAT
+    - mode: NULLABLE
+      name: udp_a_afirst
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_a_afirst_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_a_alast
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_a_alast_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_a_n_prefix
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_dsdo
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_newone_afirst
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_newone_afirst_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_newone_alast
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_newone_alast_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_rrsig_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: webext_a_prefix
+      type: FLOAT
     mode: NULLABLE
     name: dns_attempts
     type: RECORD
@@ -1620,6 +1691,771 @@ fields:
     mode: NULLABLE
     name: apex_domain
     type: STRING
+  - description: parent object for DNS query attempts for each RRTYPE and socket type
+    fields:
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_a
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_a_n
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_a_n_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_a_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_acd
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_acd_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_ado
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_ado_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_adocd
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_adocd_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_an
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_an_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_dnskey
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_dnskey_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_dnskeydo
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_dnskeydo_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_ds
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_ds_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_https
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_https_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_newfour
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_newfour_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_newone
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_newone_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_newthree
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_newthree_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_newtwo
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_newtwo_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_rrsig
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_smimea
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: tcp_smimea_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_a
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_a_afirst
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_a_afirst_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_a_alast
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_a_alast_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_a_n
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_a_n_prefix
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_a_n_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_a_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_acd
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_acd_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_ado
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_ado_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_adocd
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_adocd_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_an
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_an_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_dnskey
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_dnskey_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_dnskeydo
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_dnskeydo_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_ds
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_ds_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_dsdo
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_https
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_https_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_newfour
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_newfour_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_newone
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_newone_afirst
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_newone_afirst_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_newone_alast
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_newone_alast_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_newone_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_newthree
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_newthree_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_newtwo
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_newtwo_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_rrsig
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_rrsig_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_smimea
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_smimea_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: webext_a
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: webext_a_prefix
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: webext_a_u
+      type: RECORD
+    mode: NULLABLE
+    name: dns_query_info
+    type: RECORD
   mode: NULLABLE
   name: payload
   type: RECORD

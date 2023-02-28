@@ -2257,6 +2257,53 @@
 <h2 id="daily_connector_costs"><a href="#daily_connector_costs">daily_connector_costs</a></h2>
 <p><code>fivetran_costs.daily_connector_costs</code></p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>destination</td>
+        <td>Name of the destination warehouse.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>measured_date</td>
+        <td>Date of when the active row measurement was made.
+</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>connector</td>
+        <td>The name of the connector being measured.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>billing_type</td>
+        <td>Information on how the active rows got billed, paid or free.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>active_rows</td>
+        <td>The number of new distinct primary keys on the current day synced for the connector.
+</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>cost_in_usd</td>
+        <td>Costs in USD for that row. This value is not rounded to the cent but contains fractional cents for later calculations.
+</td>
+        <td>Bignumeric</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>

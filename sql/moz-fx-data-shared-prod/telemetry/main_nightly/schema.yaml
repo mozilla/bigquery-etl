@@ -14090,6 +14090,15 @@ fields:
     - mode: NULLABLE
       name: places_library_cumulative_history_searches
       type: STRING
+    - mode: NULLABLE
+      name: gc_parallel_mark_interruptions
+      type: STRING
+    - mode: NULLABLE
+      name: gc_parallel_mark_speedup
+      type: STRING
+    - mode: NULLABLE
+      name: gc_parallel_mark_utilization
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -29256,6 +29265,15 @@ fields:
           type: STRING
         - mode: NULLABLE
           name: use_counter2_css_property_font_synthesis_weight_page
+          type: STRING
+        - mode: NULLABLE
+          name: gc_parallel_mark_interruptions
+          type: STRING
+        - mode: NULLABLE
+          name: gc_parallel_mark_speedup
+          type: STRING
+        - mode: NULLABLE
+          name: gc_parallel_mark_utilization
           type: STRING
         mode: NULLABLE
         name: histograms

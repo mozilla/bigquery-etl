@@ -152,6 +152,23 @@ with DAG(
         depends_on_past=False,
     )
 
+    monitoring_derived__shredder_rows_deleted__v1 = gke_command(
+        task_id="monitoring_derived__shredder_rows_deleted__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/monitoring_derived/shredder_rows_deleted_v1/query.py",
+        ]
+        + [
+            "--end_date",
+            "{{ds}}",
+            "--destination_table",
+            "moz-fx-data-shared-prod.monitoring_derived.shredder_rows_deleted_v1${{ds_nodash}}",
+        ],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="dthorn@mozilla.com",
+        email=["ascholtz@mozilla.com", "dthorn@mozilla.com"],
+    )
+
     monitoring_derived__stable_and_derived_table_sizes__v1 = gke_command(
         task_id="monitoring_derived__stable_and_derived_table_sizes__v1",
         command=[

@@ -1041,6 +1041,26 @@ fields:
       mode: NULLABLE
       name: pdfjs_time_to_view
       type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: timer_thread_timers_fired_per_wakeup
+      type: RECORD
     mode: NULLABLE
     name: custom_distribution
     type: RECORD

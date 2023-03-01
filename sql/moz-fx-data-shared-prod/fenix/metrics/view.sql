@@ -289,7 +289,8 @@ SELECT
       metrics.custom_distribution.performance_clone_deserialize_items,
       metrics.custom_distribution.search_terms_group_size_distribution,
       metrics.custom_distribution.power_battery_percentage_when_user_active,
-      metrics.custom_distribution.pdfjs_time_to_view
+      metrics.custom_distribution.pdfjs_time_to_view,
+      metrics.custom_distribution.timer_thread_timers_fired_per_wakeup
     ) AS custom_distribution,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -717,7 +718,8 @@ SELECT
       metrics.custom_distribution.performance_clone_deserialize_items,
       metrics.custom_distribution.search_terms_group_size_distribution,
       metrics.custom_distribution.power_battery_percentage_when_user_active,
-      metrics.custom_distribution.pdfjs_time_to_view
+      metrics.custom_distribution.pdfjs_time_to_view,
+      metrics.custom_distribution.timer_thread_timers_fired_per_wakeup
     ) AS custom_distribution,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,

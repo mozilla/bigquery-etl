@@ -1,18 +1,18 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.mozilla_vpn_derived.subscription_events_live`
+  `moz-fx-data-shared-prod.hubs_derived.subscription_events_live`
 AS
 WITH all_subscriptions AS (
   SELECT
     *,
     TO_JSON_STRING(promotion_codes) AS json_promotion_codes
   FROM
-    `moz-fx-data-shared-prod`.mozilla_vpn.all_subscriptions
+    `moz-fx-data-shared-prod`.hubs.all_subscriptions
 ),
 max_active_date AS (
   SELECT AS VALUE
     MAX(active_date)
   FROM
-    `moz-fx-data-shared-prod`.mozilla_vpn.active_subscription_ids
+    `moz-fx-data-shared-prod`.hubs.active_subscription_ids
 ),
 trials AS (
   SELECT
@@ -48,7 +48,7 @@ new_events AS (
     subscription_id,
     "New" AS event_type,
   FROM
-    `moz-fx-data-shared-prod`.mozilla_vpn.active_subscription_ids
+    `moz-fx-data-shared-prod`.hubs.active_subscription_ids
   WHERE
     TRUE -- zetasql requires QUALIFY to be used in conjunction with WHERE, GROUP BY, or HAVING
   QUALIFY
@@ -62,7 +62,7 @@ cancelled_events AS (
     subscription_id,
     "Cancelled" AS event_type,
   FROM
-    `moz-fx-data-shared-prod`.mozilla_vpn.active_subscription_ids
+    `moz-fx-data-shared-prod`.hubs.active_subscription_ids
   CROSS JOIN
     max_active_date
   WHERE

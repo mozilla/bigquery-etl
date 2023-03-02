@@ -1,11 +1,11 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.mozilla_vpn_derived.active_subscription_ids_live`
+  `moz-fx-data-shared-prod.hubs_derived.active_subscription_ids_live`
 AS
 SELECT
   active_date,
   subscription_id,
 FROM
-  `moz-fx-data-shared-prod`.mozilla_vpn.all_subscriptions
+  `moz-fx-data-shared-prod`.hubs.all_subscriptions
 CROSS JOIN
   UNNEST(
     GENERATE_DATE_ARRAY(
@@ -19,5 +19,5 @@ WHERE
     SELECT
       DATE(MAX(end_date))
     FROM
-      `moz-fx-data-shared-prod`.mozilla_vpn.all_subscriptions
+      `moz-fx-data-shared-prod`.hubs.all_subscriptions
   )

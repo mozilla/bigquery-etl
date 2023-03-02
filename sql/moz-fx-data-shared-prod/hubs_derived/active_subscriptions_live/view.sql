@@ -1,12 +1,12 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.mozilla_vpn_derived.active_subscriptions_live`
+  `moz-fx-data-shared-prod.hubs_derived.active_subscriptions_live`
 AS
 WITH all_subscriptions AS (
   SELECT
     *,
     TO_JSON_STRING(promotion_codes) AS json_promotion_codes
   FROM
-    `moz-fx-data-shared-prod`.mozilla_vpn.all_subscriptions
+    `moz-fx-data-shared-prod`.hubs.all_subscriptions
 )
 SELECT
   active_subscription_ids.active_date,
@@ -42,7 +42,7 @@ SELECT
 FROM
   all_subscriptions
 JOIN
-  `moz-fx-data-shared-prod`.mozilla_vpn.active_subscription_ids
+  `moz-fx-data-shared-prod`.hubs.active_subscription_ids
 USING
   (subscription_id)
 GROUP BY

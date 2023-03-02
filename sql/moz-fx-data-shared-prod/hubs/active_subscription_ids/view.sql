@@ -1,16 +1,16 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.mozilla_vpn.active_subscription_ids`
+  `moz-fx-data-shared-prod.hubs.active_subscription_ids`
 AS
 WITH max_active_date AS (
   SELECT AS VALUE
     MAX(active_date)
   FROM
-    `moz-fx-data-shared-prod`.mozilla_vpn_derived.active_subscription_ids_v1
+    `moz-fx-data-shared-prod`.hubs_derived.active_subscription_ids_v1
 )
 SELECT
   active_subscription_ids_live.*
 FROM
-  `moz-fx-data-shared-prod`.mozilla_vpn_derived.active_subscription_ids_live
+  `moz-fx-data-shared-prod`.hubs_derived.active_subscription_ids_live
 CROSS JOIN
   max_active_date
 WHERE
@@ -20,4 +20,4 @@ UNION ALL
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod`.mozilla_vpn_derived.active_subscription_ids_v1
+  `moz-fx-data-shared-prod`.hubs_derived.active_subscription_ids_v1

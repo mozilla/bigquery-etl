@@ -1225,7 +1225,7 @@ def schema():
     "--tmp-dataset",
     "--tmp_dataset",
     help="GCP datasets for creating updated tables temporarily.",
-    default="analysis",
+    default="tmp",
 )
 @use_cloud_function_option
 @respect_dryrun_skip_option(default=True)

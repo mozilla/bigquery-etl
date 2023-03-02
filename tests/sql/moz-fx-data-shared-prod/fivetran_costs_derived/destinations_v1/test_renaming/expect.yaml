@@ -1,0 +1,16 @@
+---
+- destination_id: test_prod_destination_id
+  destination_name: test_prod_destination_name
+  account_id: test_account_id
+  created_at: 2023-01-01
+  region: us-east4
+- destination_id: other_destination_id
+  destination_name: other_destination
+  account_id: test_account_name
+  created_at: 2022-11-01
+  region: region_2
+- destination_id: third_destination_id
+  destination_name: third_destination
+  account_id: test_account_name
+  created_at: 2022-04-01
+  region: region_3

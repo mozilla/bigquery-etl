@@ -367,6 +367,28 @@ fields:
     mode: NULLABLE
     name: uuid
     type: RECORD
+  - fields:
+    - description: 'Whether topsite results are enabled in the urlbar. Corresponds
+        to the value of the `browser.urlbar.suggest.topsites` pref.
+
+        '
+      mode: NULLABLE
+      name: urlbar_pref_suggest_topsites
+      type: BOOLEAN
+    mode: NULLABLE
+    name: boolean
+    type: RECORD
+  - fields:
+    - description: 'Maximum results to show in the Address Bar. Corresponds to the
+        value of the `browser.urlbar.maxRichResults` pref.
+
+        '
+      mode: NULLABLE
+      name: urlbar_pref_max_results
+      type: INTEGER
+    mode: NULLABLE
+    name: quantity
+    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

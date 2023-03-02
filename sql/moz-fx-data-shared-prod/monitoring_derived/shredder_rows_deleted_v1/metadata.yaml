@@ -1,0 +1,20 @@
+friendly_name: Shredder Rows Deleted
+description: >
+  Record of rows deleted by shredder.
+owners:
+  - dthorn@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_monitoring
+  arguments:
+    - --end_date
+    - "{{ds}}"
+    - --destination_table
+    - moz-fx-data-shared-prod.monitoring_derived.shredder_rows_deleted_v1${{ds_nodash}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: end_time
+    require_partition_filter: false

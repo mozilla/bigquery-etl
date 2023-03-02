@@ -145,11 +145,29 @@ def deploy(
 
         # copy tests to the right structure
         if test_path.exists():
-            shutil.copytree(
-                test_path, TEST_DIR / project_id / dataset / name, dirs_exist_ok=True
-            )
+            test_destination = TEST_DIR / project_id / dataset / name
+            shutil.copytree(test_path, test_destination, dirs_exist_ok=True)
             if remove_updated_artifacts:
                 shutil.rmtree(test_path)
+
+            # rename test files
+            for test_file_path in test_destination.glob("**/*"):
+                for test_dep_file in artifact_files:
+                    test_project = test_dep_file.parent.parent.parent.name
+                    test_dataset = test_dep_file.parent.parent.name
+                    test_name = test_dep_file.parent.name
+
+                    if test_file_path.name.startswith(
+                        f"{test_project}.{test_dataset}.{test_name}"
+                    ):
+                        file_suffix = test_file_path.suffix
+                        if dataset_suffix:
+                            test_dataset = f"{test_dataset}_{dataset_suffix}"
+
+                        test_file_path.rename(
+                            test_file_path.parent
+                            / f"{project_id}.{test_dataset}.{test_name}{file_suffix}"
+                        )
 
     # remove artifacts from the "prod" folders
     if remove_updated_artifacts:
@@ -243,14 +261,14 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
                 re.compile(
                     rf"(?<![\._])`?{original_dataset}`?\.{name}(?![a-zA-Z0-9_])`?"
                 ),
-                f"`{deployed_project}`.{deployed_dataset}.{name}",
+                f"`{deployed_project}.{deployed_dataset}.{name}`",
             )
         )
         # replace fully qualified references (like "moz-fx-data-shared-prod.telemetry.main")
         replace_references.append(
             (
                 rf"(?<![a-zA-Z0-9_])`?{original_project}`?\.{original_dataset}`?\.{name}(?![a-zA-Z0-9_])`?",
-                f"`{deployed_project}`.{deployed_dataset}.{name}",
+                f"`{deployed_project}.{deployed_dataset}.{name}`",
             )
         )
 

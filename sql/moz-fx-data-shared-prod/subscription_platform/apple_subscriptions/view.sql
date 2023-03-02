@@ -24,7 +24,8 @@ apple_iap_times AS (
     user_id,
     ARRAY_CONCAT(
       -- original_purchase_date does not change
-      [MIN(original_purchase_date)],
+      -- sometimes the earliest purchase_date is a few seconds before original_purchase_date
+      [MIN(LEAST(original_purchase_date, purchase_date))],
       -- status 1 means subscription is active
       IFNULL(ARRAY_AGG(DISTINCT IF(status IN (1, 3, 4), purchase_date, NULL) IGNORE NULLS), [])
     ) AS start_times,

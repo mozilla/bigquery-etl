@@ -16,37 +16,62 @@ monthly_costs AS (
   FROM
     `moz-fx-data-shared-prod.fivetran_costs_derived.monthly_costs_v1`
 ),
+monthly_paid_mar AS (
+  SELECT
+    destination_id,
+    measured_month,
+    SUM(active_rows) AS paid_active_rows
+  FROM
+    incremental_mar
+  WHERE
+    billing_type = "paid"
+  GROUP BY
+    1,
+    2
+),
 monthly_costs_per_mar AS (
   SELECT
     destination_id,
     measured_month,
-    monthly_costs.dollars_spent / NULLIF(SUM(incremental_mar.active_rows), 0) AS cost_per_mar
+    monthly_costs.dollars_spent / NULLIF(monthly_paid_mar.paid_active_rows, 0) AS cost_per_mar
   FROM
-    incremental_mar
+    monthly_paid_mar
   LEFT JOIN
     monthly_costs
   USING
-    (measured_month, destination_id)
-  WHERE
-    incremental_mar.billing_type = "paid"
-  GROUP BY
+    (destination_id, measured_month)
+),
+daily_mar AS (
+  SELECT
     destination_id,
+    measured_date,
     measured_month,
-    monthly_costs.dollars_spent
+    connector,
+    billing_type,
+    SUM(active_rows) AS active_rows,
+  FROM
+    incremental_mar
+  GROUP BY
+    1,
+    2,
+    3,
+    4,
+    5
 ),
 daily_connector_costs AS (
   SELECT
     destinations.destination_name AS destination,
-    incremental_mar.measured_date,
-    incremental_mar.connector,
-    incremental_mar.billing_type,
-    SUM(incremental_mar.active_rows) AS active_rows,
-    SUM(IF(incremental_mar.billing_type = "paid", active_rows, 0)) * COALESCE(
-      monthly_costs_per_mar.cost_per_mar,
+    daily_mar.measured_date,
+    daily_mar.connector,
+    daily_mar.billing_type,
+    daily_mar.active_rows,
+    IF(
+      daily_mar.billing_type = "paid",
+      daily_mar.active_rows * COALESCE(monthly_costs_per_mar.cost_per_mar, 0),
       0
     ) AS cost_in_usd
   FROM
-    incremental_mar
+    daily_mar
   LEFT JOIN
     monthly_costs_per_mar
   USING
@@ -55,12 +80,6 @@ daily_connector_costs AS (
     destinations
   USING
     (destination_id)
-  GROUP BY
-    destination,
-    measured_date,
-    connector,
-    billing_type,
-    monthly_costs_per_mar.cost_per_mar
 )
 SELECT
   *

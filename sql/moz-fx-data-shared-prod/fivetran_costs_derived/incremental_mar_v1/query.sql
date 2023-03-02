@@ -8,16 +8,6 @@ WITH incremental_mar AS (
     incremental_rows
   FROM
     `moz-fx-data-bq-fivetran.fivetran_log.incremental_mar`
-  UNION ALL
-  SELECT
-    measured_date,
-    destination_id,
-    connector_id,
-    table_name,
-    free_type,
-    incremental_rows
-  FROM
-    `dev-fivetran.fivetran_log.incremental_mar`
 )
 SELECT
   measured_date,

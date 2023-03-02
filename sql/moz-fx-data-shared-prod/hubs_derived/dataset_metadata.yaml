@@ -1,0 +1,10 @@
+friendly_name: Mozilla VPN Derived
+description: |-
+  Derived data related to the Mozilla VPN service
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

@@ -52,8 +52,8 @@ def create_last_modified_tmp_table(date, project, tmp_table_name):
                 table_id,
                 DATE(TIMESTAMP_MILLIS(creation_time)) AS creation_date,
                 DATE(TIMESTAMP_MILLIS(last_modified_time)) AS last_modified_date
-                WHERE DATE(TIMESTAMP_MILLIS(creation_time)) <= DATE('{date}')
                 FROM `{project}.{dataset.dataset_id}.__TABLES__`
+                WHERE DATE(TIMESTAMP_MILLIS(creation_time)) <= DATE('{date}')
         """
 
         try:

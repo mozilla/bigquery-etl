@@ -11,18 +11,31 @@ WITH first_seen AS (
     normalized_channel AS channel,
     device_manufacturer,
     device_model,
-    normalized_os_version AS os_version
+    normalized_os_version AS os_version,
+    app_display_version AS app_version
   FROM
     `moz-fx-data-shared-prod.fenix.baseline_clients_first_seen`
   WHERE
     submission_date = @submission_date
     AND normalized_channel = 'release'
 ),
+-- Find activations per client_id.
+activations AS (
+  SELECT
+    client_id,
+    submission_date,
+    activated > 0 AS activated
+  FROM
+    `moz-fx-data-shared-prod.fenix.new_profile_activation`
+  WHERE
+    submission_date = @submission_date
+),
 -- Find earliest data per client from the first_session ping.
 first_session_ping AS (
   SELECT
     client_info.client_id AS client_id,
     MIN(sample_id) AS sample_id,
+    DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
     MIN(SAFE.PARSE_DATETIME('%F', SUBSTR(client_info.first_run_date, 1, 10))) AS first_run_datetime,
     ARRAY_AGG(metrics.string.first_session_campaign IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
@@ -92,6 +105,8 @@ _current AS (
     first_seen.device_manufacturer AS device_manufacturer,
     first_seen.device_model AS device_model,
     first_seen.os_version AS os_version,
+    first_seen.app_version AS app_version,
+    COALESCE(activated, FALSE) AS activated,
     COALESCE(first_session.adjust_campaign, metrics.adjust_campaign) AS adjust_campaign,
     COALESCE(first_session.adjust_ad_group, metrics.adjust_ad_group) AS adjust_ad_group,
     COALESCE(first_session.adjust_creative, metrics.adjust_creative) AS adjust_creative,
@@ -108,18 +123,22 @@ _current AS (
           THEN FALSE
         ELSE TRUE
       END AS reported_metrics_ping,
+      DATE(first_session.min_submission_datetime) AS min_first_session_ping_submission_date,
       DATE(first_session.first_run_datetime) AS min_first_session_ping_run_date,
       DATE(metrics.min_submission_datetime) AS min_metrics_ping_submission_date,
       CASE
         mozfun.norm.get_earliest_value(
           [
             (
-              STRUCT(CAST(first_session.adjust_network AS STRING), first_session.first_run_datetime)
+              STRUCT(
+                CAST(first_session.adjust_network AS STRING),
+                first_session.min_submission_datetime
+              )
             ),
             (STRUCT(CAST(metrics.adjust_network AS STRING), metrics.min_submission_datetime))
           ]
         )
-        WHEN STRUCT(first_session.adjust_network, first_session.first_run_datetime)
+        WHEN STRUCT(first_session.adjust_network, first_session.min_submission_datetime)
           THEN 'first_session'
         WHEN STRUCT(metrics.adjust_network, metrics.min_submission_datetime)
           THEN 'metrics'
@@ -132,7 +151,12 @@ _current AS (
       END AS install_source__source_ping,
       mozfun.norm.get_earliest_value(
         [
-          (STRUCT(CAST(first_session.adjust_network AS STRING), first_session.first_run_datetime)),
+          (
+            STRUCT(
+              CAST(first_session.adjust_network AS STRING),
+              first_session.min_submission_datetime
+            )
+          ),
           (STRUCT(CAST(metrics.adjust_network AS STRING), metrics.min_submission_datetime))
         ]
       ).earliest_date AS adjust_network__source_ping_datetime,
@@ -150,6 +174,10 @@ _current AS (
     (client_id)
   FULL OUTER JOIN
     metrics_ping AS metrics
+  USING
+    (client_id)
+  LEFT JOIN
+    activations
   USING
     (client_id)
   WHERE
@@ -177,6 +205,8 @@ SELECT
   COALESCE(_previous.device_manufacturer, _current.device_manufacturer) AS device_manufacturer,
   COALESCE(_previous.device_model, _current.device_model) AS device_model,
   COALESCE(_previous.os_version, _current.os_version) AS os_version,
+  COALESCE(_previous.app_version, _current.app_version) AS app_version,
+  COALESCE(_previous.activated, _current.activated) AS activated,
   COALESCE(_previous.adjust_campaign, _current.adjust_campaign) AS adjust_campaign,
   COALESCE(_previous.adjust_ad_group, _current.adjust_ad_group) AS adjust_ad_group,
   COALESCE(_previous.adjust_creative, _current.adjust_creative) AS adjust_creative,
@@ -187,6 +217,18 @@ SELECT
     OR _current.metadata.reported_first_session_ping AS reported_first_session_ping,
     _previous.metadata.reported_metrics_ping
     OR _current.metadata.reported_metrics_ping AS reported_metrics_ping,
+    CASE
+      WHEN _previous.metadata.min_first_session_ping_submission_date IS NOT NULL
+        AND _current.metadata.min_first_session_ping_submission_date IS NOT NULL
+        THEN LEAST(
+            _previous.metadata.min_first_session_ping_submission_date,
+            _current.metadata.min_first_session_ping_submission_date
+          )
+      ELSE COALESCE(
+          _previous.metadata.min_first_session_ping_submission_date,
+          _current.metadata.min_first_session_ping_submission_date
+        )
+    END AS min_first_session_ping_submission_date,
     CASE
       WHEN _previous.metadata.min_first_session_ping_run_date IS NOT NULL
         AND _current.metadata.min_first_session_ping_run_date IS NOT NULL

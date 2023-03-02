@@ -33,12 +33,6 @@ fields:
   name: os_version
   type: STRING
 - mode: NULLABLE
-  name: app_version
-  type: STRING
-- mode: NULLABLE
-  name: activated
-  type: BOOLEAN
-- mode: NULLABLE
   name: adjust_campaign
   type: STRING
 - mode: NULLABLE
@@ -56,9 +50,6 @@ fields:
     type: BOOLEAN
   - mode: NULLABLE
     name: min_first_session_ping_run_date
-    type: DATE
-  - mode: NULLABLE
-    name: min_first_session_ping_submission_date
     type: DATE
   - mode: NULLABLE
     name: min_metrics_ping_submission_date

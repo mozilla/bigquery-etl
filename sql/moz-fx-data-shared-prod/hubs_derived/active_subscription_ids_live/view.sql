@@ -5,7 +5,7 @@ SELECT
   active_date,
   subscription_id,
 FROM
-  `moz-fx-data-shared-prod`.hubs.all_subscriptions
+  `moz-fx-data-shared-prod`.hubs.subscriptions
 CROSS JOIN
   UNNEST(
     GENERATE_DATE_ARRAY(
@@ -19,5 +19,5 @@ WHERE
     SELECT
       DATE(MAX(end_date))
     FROM
-      `moz-fx-data-shared-prod`.hubs.all_subscriptions
+      `moz-fx-data-shared-prod`.hubs.subscriptions
   )

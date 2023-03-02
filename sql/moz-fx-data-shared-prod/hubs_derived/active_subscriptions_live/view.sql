@@ -1,46 +1,46 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.hubs_derived.active_subscriptions_live`
 AS
-WITH all_subscriptions AS (
+WITH subscriptions AS (
   SELECT
     *,
     TO_JSON_STRING(promotion_codes) AS json_promotion_codes
   FROM
-    `moz-fx-data-shared-prod`.hubs.all_subscriptions
+    `moz-fx-data-shared-prod`.hubs.subscriptions
 )
 SELECT
   active_subscription_ids.active_date,
-  all_subscriptions.plan_id,
-  all_subscriptions.status,
-  all_subscriptions.country,
-  all_subscriptions.country_name,
-  all_subscriptions.entrypoint_experiment,
-  all_subscriptions.entrypoint_variation,
-  all_subscriptions.utm_campaign,
-  all_subscriptions.utm_content,
-  all_subscriptions.utm_medium,
-  all_subscriptions.utm_source,
-  all_subscriptions.utm_term,
-  all_subscriptions.provider,
-  all_subscriptions.plan_amount,
-  all_subscriptions.billing_scheme,
-  all_subscriptions.plan_currency,
-  all_subscriptions.plan_interval,
-  all_subscriptions.plan_interval_count,
-  all_subscriptions.product_id,
-  all_subscriptions.product_name,
-  all_subscriptions.pricing_plan,
-  all_subscriptions.normalized_acquisition_channel,
-  all_subscriptions.normalized_campaign,
-  all_subscriptions.normalized_content,
-  all_subscriptions.normalized_medium,
-  all_subscriptions.normalized_source,
-  all_subscriptions.website_channel_group,
-  JSON_VALUE_ARRAY(all_subscriptions.json_promotion_codes) AS promotion_codes,
-  all_subscriptions.promotion_discounts_amount,
+  subscriptions.plan_id,
+  subscriptions.status,
+  subscriptions.country,
+  subscriptions.country_name,
+  subscriptions.entrypoint_experiment,
+  subscriptions.entrypoint_variation,
+  subscriptions.utm_campaign,
+  subscriptions.utm_content,
+  subscriptions.utm_medium,
+  subscriptions.utm_source,
+  subscriptions.utm_term,
+  subscriptions.provider,
+  subscriptions.plan_amount,
+  subscriptions.billing_scheme,
+  subscriptions.plan_currency,
+  subscriptions.plan_interval,
+  subscriptions.plan_interval_count,
+  subscriptions.product_id,
+  subscriptions.product_name,
+  subscriptions.pricing_plan,
+  subscriptions.normalized_acquisition_channel,
+  subscriptions.normalized_campaign,
+  subscriptions.normalized_content,
+  subscriptions.normalized_medium,
+  subscriptions.normalized_source,
+  subscriptions.website_channel_group,
+  JSON_VALUE_ARRAY(subscriptions.json_promotion_codes) AS promotion_codes,
+  subscriptions.promotion_discounts_amount,
   COUNT(*) AS `count`,
 FROM
-  all_subscriptions
+  subscriptions
 JOIN
   `moz-fx-data-shared-prod`.hubs.active_subscription_ids
 USING

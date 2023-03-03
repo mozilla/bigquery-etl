@@ -466,7 +466,11 @@ def _backfill_query(
     backfill_date,
 ):
     """Run a query backfill for a specific date."""
-    project, dataset, table = extract_from_query_path(query_file_path)
+    (
+        destination_project,
+        destination_dataset,
+        destination_table,
+    ) = extract_from_query_path(query_file_path)
 
     match partitioning_type:
         case PartitionType.DAY:
@@ -478,13 +482,11 @@ def _backfill_query(
 
     backfill_date = backfill_date.strftime("%Y-%m-%d")
     if backfill_date not in exclude:
-        if no_partition:
-            destination_table = table
-        else:
-            destination_table = f"{table}${partition}"
+        if not no_partition:
+            destination_table = f"{destination_table}${partition}"
 
         click.echo(
-            f"Run backfill for {project}.{dataset}.{destination_table} "
+            f"Run backfill for {destination_project}.{destination_dataset}.{destination_table} "
             f"with @{date_partition_parameter}={backfill_date}"
         )
 
@@ -503,7 +505,8 @@ def _backfill_query(
         _run_query(
             [query_file_path],
             project_id=project_id,
-            dataset_id=dataset,
+            destination_project_id=destination_project,
+            dataset_id=destination_dataset,
             destination_table=destination_table,
             public_project_id=PUBLIC_PROJECT_ID,
             query_arguments=arguments,
@@ -807,6 +810,7 @@ def _run_query(
     destination_table,
     dataset_id,
     query_arguments,
+    destination_project_id=None,
 ):
     """Run a query."""
     if dataset_id is not None:
@@ -835,11 +839,11 @@ def _run_query(
                     and destination_table is not None
                     and re.match(DESTINATION_TABLE_RE, destination_table)
                 ):
-                    destination_table = "{}:{}.{}".format(
+                    qualified_destination_table = "{}:{}.{}".format(
                         public_project_id, dataset_id, destination_table
                     )
                     query_arguments.append(
-                        "--destination_table={}".format(destination_table)
+                        "--destination_table={}".format(qualified_destination_table)
                     )
                     use_public_table = True
                 else:
@@ -858,7 +862,19 @@ def _run_query(
         if not use_public_table and destination_table is not None:
             # destination table was parsed by argparse, however if it wasn't modified to
             # point to a public table it needs to be passed as parameter for the query
-            query_arguments.append("--destination_table={}".format(destination_table))
+
+            if destination_project_id is not None:
+                qualified_destination_table = "{}:{}.{}".format(
+                    destination_project_id, dataset_id, destination_table
+                )
+
+                query_arguments.append(
+                    "--destination_table={}".format(qualified_destination_table)
+                )
+            else:
+                query_arguments.append(
+                    "--destination_table={}".format(destination_table)
+                )
 
         with open(query_file) as query_stream:
             # run the query as shell command so that passed parameters can be used as is
@@ -1681,6 +1697,7 @@ def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
         return
 
     table.description = metadata.description
+
     table.friendly_name = metadata.friendly_name
 
     if metadata.bigquery and metadata.bigquery.time_partitioning:

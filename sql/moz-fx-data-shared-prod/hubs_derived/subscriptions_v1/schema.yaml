@@ -1,7 +1,4 @@
 fields:
-- name: user_id
-  type: INTEGER
-  mode: NULLABLE
 - name: customer_id
   type: STRING
   mode: NULLABLE
@@ -71,30 +68,6 @@ fields:
 - name: country_name
   type: STRING
   mode: NULLABLE
-- name: user_registration_date
-  type: TIMESTAMP
-  mode: NULLABLE
-- name: entrypoint_experiment
-  type: STRING
-  mode: NULLABLE
-- name: entrypoint_variation
-  type: STRING
-  mode: NULLABLE
-- name: utm_campaign
-  type: STRING
-  mode: NULLABLE
-- name: utm_content
-  type: STRING
-  mode: NULLABLE
-- name: utm_medium
-  type: STRING
-  mode: NULLABLE
-- name: utm_source
-  type: STRING
-  mode: NULLABLE
-- name: utm_term
-  type: STRING
-  mode: NULLABLE
 - name: provider
   type: STRING
   mode: NULLABLE
@@ -133,24 +106,6 @@ fields:
   mode: REPEATED
 - name: promotion_discounts_amount
   type: INTEGER
-  mode: NULLABLE
-- name: normalized_acquisition_channel
-  type: STRING
-  mode: NULLABLE
-- name: normalized_campaign
-  type: STRING
-  mode: NULLABLE
-- name: normalized_content
-  type: STRING
-  mode: NULLABLE
-- name: normalized_medium
-  type: STRING
-  mode: NULLABLE
-- name: normalized_source
-  type: STRING
-  mode: NULLABLE
-- name: website_channel_group
-  type: STRING
   mode: NULLABLE
 - name: months_retained
   type: INTEGER

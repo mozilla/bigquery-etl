@@ -268,7 +268,7 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
         replace_references.append(
             (
                 rf"(?<![a-zA-Z0-9_])`?{original_project}`?\.{original_dataset}`?\.{name}(?![a-zA-Z0-9_])`?",
-                f"`{deployed_project}`.{deployed_dataset}.{name}",
+                f"`{deployed_project}`.`{deployed_dataset}`.`{name}`",
             )
         )
 

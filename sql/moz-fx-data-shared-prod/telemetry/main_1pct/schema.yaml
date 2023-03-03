@@ -34745,6 +34745,16 @@ fields:
           mode: REPEATED
           name: library_search
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: urlbar_picked_weather
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD

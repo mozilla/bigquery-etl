@@ -1,0 +1,64 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: |
+    Represents ETL job date.
+    Also, used for table partitioning.
+
+- mode: NULLABLE
+  name: flow_id
+  type: STRING
+  description: |
+    The the first flow_id recorded for this specific
+    user / service combination.
+    The flow identifier is a hash value representing
+    a registration and login sessions.
+
+- mode: NULLABLE
+  name: flow_event_count
+  type: INTEGER
+  description: |
+    Total number of events seen for this specific flow_id
+
+- mode: NULLABLE
+  name: emails_submitted
+  type: INTEGER
+  description: |
+    Count of how many times we've observed event category:
+    `fxa_email_first` with event of: `submit`
+
+- mode: NULLABLE
+  name: emails_engaged
+  type: INTEGER
+  description: |
+    Count of how many times we've observed event category:
+    `fxa_email_first` with event of: `engage`
+
+- mode: NULLABLE
+  name: registrations_started
+  type: INTEGER
+  description: |
+    Count of how many times we've observed event category:
+    `fxa_reg` with event of: `view`
+
+- mode: NULLABLE
+  name: registrations_complete
+  type: INTEGER
+  description: |
+    Count of how many times we've observed event category:
+    `fxa_reg` with event of: `complete`
+
+- mode: NULLABLE
+  name: logins_started
+  type: INTEGER
+  description: |
+    Count of how many times we've observed event category:
+    `fxa_login` with event of: `view`
+
+- mode: NULLABLE
+  name: logins_complete
+  type: INTEGER
+  description: |
+    Count of how many times we've observed event category:
+    `fxa_login` with event of: `complete`

@@ -1,0 +1,147 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: |
+    Represents ETL job date.
+    Also, used for table partitioning.
+
+- mode: NULLABLE
+  name: flow_id
+  type: STRING
+  description: |
+    The the first flow_id recorded for this specific
+    user / service combination.
+    The flow identifier is a hash value representing
+    a registration and login sessions.
+
+- mode: NULLABLE
+  name: flow_start_timestamp
+  type: TIMESTAMP
+  description: |
+    Timestamp of when we we saw the first record
+    for this specific flow_id.
+
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: |
+    User's country where activity took place.
+    See: UDF mozdata.stats.mode_last for more
+    info on how the function operates.
+
+- mode: NULLABLE
+  name: os_name
+  type: STRING
+  description: |
+    OS on which the app was running.
+    For example: Android.
+
+- mode: NULLABLE
+  name: browser_name
+  type: STRING
+  description: |
+    The user's web browser, e.g. 'Firefox' or 'Chrome'.
+
+- mode: NULLABLE
+  name: browser_version
+  type: STRING
+  description: |
+    The user's browser version.
+
+- mode: NULLABLE
+  name: utm_info
+  type: RECORD
+  description: |
+    Contains utm information for the specific flow_id
+  fields:
+  - mode: NULLABLE
+    name: utm_term
+    type: STRING
+    description: |
+      Marketing campaign search term
+      for the flow session.
+      Not stored if the DNT request header was 1.
+
+  - mode: NULLABLE
+    name: utm_medium
+    type: STRING
+    description: |
+      Marketing campaign medium for the flow session.
+      Not stored if the DNT request header was 1.
+
+  - mode: NULLABLE
+    name: utm_source
+    type: STRING
+    description: |
+      Marketing campaign source for
+      the flow session.
+      Not stored if the DNT request header was 1.
+
+  - mode: NULLABLE
+    name: utm_campaign
+    type: STRING
+    description: |
+      Marketing campaign identifier
+      for the flow session.
+      Not stored if the DNT request header was 1.
+
+  - mode: NULLABLE
+    name: utm_content
+    type: STRING
+    description: |
+      Marketing campaign content identifier
+      for the flow session.
+      Not stored if the DNT request header was 1.
+
+- mode: NULLABLE
+  name: entrypoint_info
+  type: RECORD
+  description: |
+    Entrypoint attributes related to the specific flow_id
+  fields:
+  - mode: NULLABLE
+    name: entrypoint
+    type: STRING
+    description: |
+      The entrypoint of the flow session.
+      Typically a UI touchpoint like "preferences".
+
+  - mode: NULLABLE
+    name: entrypoint_variation
+    type: STRING
+    description: |
+      Identifier for the experiment variation
+      the user is part of at the entrypoint (if any).
+
+  - mode: NULLABLE
+    name: entrypoint_experiment
+    type: STRING
+    description: |
+      Identifier for the experiment the user
+      is part of at the entrypoint (if any).
+
+- mode: REPEATED
+  name: flow_events
+  type: RECORD
+  description: |
+    Contains a list observed for a specific flow_id,
+    in ASC order.
+  fields:
+  - mode: NULLABLE
+    name: timestamp
+    type: TIMESTAMP
+    description: |
+      Timestamp value of when the event was recorded.
+
+  - mode: NULLABLE
+    name: category
+    type: STRING
+    description: |
+      Event type, for example: fxa_reg or fxa_login
+
+  - mode: NULLABLE
+    name: event
+    type: STRING
+    description: |
+      Event that took place, for example: view or complete

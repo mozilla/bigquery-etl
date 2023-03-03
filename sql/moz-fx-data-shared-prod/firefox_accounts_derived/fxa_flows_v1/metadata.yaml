@@ -1,0 +1,27 @@
+---
+friendly_name: FxA Flows
+description: |
+  Table contains a list of FxA flows along with
+  some attributes related to the initial activity
+  related to flow. This includes things like entrypoint,
+  country, browser.
+
+  Partitioned by submission_date
+owners:
+  - kignasiak@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_fxa_events
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - country
+      - os_name
+      - browser_name

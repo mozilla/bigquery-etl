@@ -261,7 +261,7 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
                 re.compile(
                     rf"(?<![\._])`?{original_dataset}`?\.{name}(?![a-zA-Z0-9_])`?"
                 ),
-                f"`{deployed_project}`.{deployed_dataset}.{name}",
+                f"`{deployed_project}`.`{deployed_dataset}`.`{name}`",
             )
         )
         # replace fully qualified references (like "moz-fx-data-shared-prod.telemetry.main")

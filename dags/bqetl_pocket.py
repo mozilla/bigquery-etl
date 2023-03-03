@@ -32,10 +32,10 @@ default_args = {
     "end_date": None,
     "email": ["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
-    "retry_delay": datetime.timedelta(seconds=1800),
+    "retry_delay": datetime.timedelta(seconds=3600),
     "email_on_failure": True,
     "email_on_retry": True,
-    "retries": 2,
+    "retries": 10,
 }
 
 tags = ["impact/tier_2", "repo/bigquery-etl"]

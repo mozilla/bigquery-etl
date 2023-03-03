@@ -1,10 +1,10 @@
-friendly_name: Active Mozilla VPN Subscription IDs
+friendly_name: Active Hubs Subscription IDs
 description: >
-  IDs of active Mozilla VPN subscriptions by date.
+  IDs of active Hubs subscriptions by date.
 owners:
   - srose@mozilla.com
 labels:
-  application: mozilla_vpn
+  application: hubs
   schedule: daily
 scheduling:
   dag_name: bqetl_subplat

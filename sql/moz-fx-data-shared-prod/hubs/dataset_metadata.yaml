@@ -1,6 +1,6 @@
-friendly_name: Mozilla VPN
+friendly_name: Hubs
 description: |-
-  Data related to the Mozilla VPN service
+  Data related to the Hubs service
 dataset_base_acl: view
 user_facing: true
 labels: {}

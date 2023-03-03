@@ -1,10 +1,10 @@
-friendly_name: Active Mozilla VPN Subscriptions
+friendly_name: Active Hubs Subscriptions
 description: >
-  Aggregated count of active Mozilla VPN subscriptions.
+  Aggregated count of active Hubs subscriptions.
 owners:
   - srose@mozilla.com
 labels:
-  application: mozilla_vpn
+  application: hubs
   schedule: daily
 scheduling:
   dag_name: bqetl_subplat

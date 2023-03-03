@@ -1,10 +1,10 @@
-friendly_name: Mozilla VPN Subscription Events
+friendly_name: Hubs Subscription Events
 description: >
-  Aggregated count of Mozilla VPN subscription start/end events.
+  Aggregated count of Hubs subscription start/end events.
 owners:
   - srose@mozilla.com
 labels:
-  application: mozilla_vpn
+  application: hubs
   schedule: daily
 scheduling:
   dag_name: bqetl_subplat

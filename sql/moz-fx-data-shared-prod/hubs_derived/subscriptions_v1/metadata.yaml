@@ -1,10 +1,10 @@
-friendly_name: All Mozilla VPN Subscriptions
+friendly_name: All Hubs Subscriptions
 description: >
-  Mozilla VPN Subscriptions from both IAP and FxA.
+  Hubs subscriptions.
 owners:
   - srose@mozilla.com
 labels:
-  application: mozilla_vpn
+  application: hubs
   schedule: daily
 scheduling:
   dag_name: bqetl_subplat

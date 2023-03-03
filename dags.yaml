@@ -530,8 +530,9 @@ bqetl_pocket:
     email_on_failure: true
     email_on_retry: true
     owner: jklukas@mozilla.com
-    retries: 2
-    retry_delay: 30m
+    # Retry more than normal because the files from Pocket may not always be available on time.
+    retries: 10
+    retry_delay: 60m
     start_date: "2021-03-10"
   description: |
     Import of data from Pocket's Snowflake warehouse.

@@ -109,7 +109,6 @@ SELECT
         )
   END AS granular_event_type,
   subscriptions.plan_id,
-  subscriptions.status,
   subscriptions.country,
   subscriptions.country_name,
   subscriptions.provider,
@@ -134,7 +133,6 @@ GROUP BY
   event_type,
   granular_event_type,
   plan_id,
-  status,
   country,
   country_name,
   provider,

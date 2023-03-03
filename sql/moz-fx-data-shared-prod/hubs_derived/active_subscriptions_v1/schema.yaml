@@ -5,9 +5,6 @@ fields:
 - name: plan_id
   type: STRING
   mode: NULLABLE
-- name: status
-  type: STRING
-  mode: NULLABLE
 - name: country
   type: STRING
   mode: NULLABLE

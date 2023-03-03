@@ -11,7 +11,6 @@ WITH subscriptions AS (
 SELECT
   active_subscription_ids.active_date,
   subscriptions.plan_id,
-  subscriptions.status,
   subscriptions.country,
   subscriptions.country_name,
   subscriptions.provider,
@@ -35,7 +34,6 @@ USING
 GROUP BY
   active_date,
   plan_id,
-  status,
   country,
   country_name,
   provider,

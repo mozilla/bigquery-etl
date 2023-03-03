@@ -1697,7 +1697,6 @@ def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
         return
 
     table.description = metadata.description
-
     table.friendly_name = metadata.friendly_name
 
     if metadata.bigquery and metadata.bigquery.time_partitioning:

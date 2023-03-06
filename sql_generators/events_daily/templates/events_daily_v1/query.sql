@@ -14,7 +14,7 @@ WITH sample AS (
           normalized_os_version,
           client_info.client_id as client_id,
           {% for property in user_properties %}
-          client_info.{{property.src}} as {{property.src}},
+          {{property.src}} as {{property.dest}},
           {% endfor %}
           (
             SELECT
@@ -82,7 +82,9 @@ SELECT
   CONCAT(STRING_AGG(index, ',' ORDER BY timestamp ASC), ',') AS events,
   -- client info
   {% for property in user_properties %}
-    mozfun.stats.mode_last(ARRAY_AGG({{ property.src }})) AS {{ property.dest }},
+    mozfun.stats.mode_last(ARRAY_AGG(
+      {% if glean %}{{ property.dest }}{% else %}{{ property.src }}{% endif %}
+    )) AS {{ property.dest }},
   {% endfor %}
   -- metadata
   {% if include_metadata_fields %}

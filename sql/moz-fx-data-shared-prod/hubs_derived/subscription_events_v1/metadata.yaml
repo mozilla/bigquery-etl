@@ -1,0 +1,19 @@
+friendly_name: Hubs Subscription Events
+description: >
+  Aggregated count of Hubs subscription start/end events.
+owners:
+  - srose@mozilla.com
+labels:
+  application: hubs
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  # Delay aggregates by 8 days, to ensure data is complete. Upstream tables are
+  # delayed 7 days, and this needs an additional day of delay for cancel events.
+  date_partition_offset: -8
+  date_partition_parameter: date
+bigquery:
+  time_partitioning:
+    type: day
+    field: event_date
+    require_partition_filter: false

@@ -9,9 +9,11 @@ owners:
 labels:
   application: fenix
   schedule: daily
-  incremental: true
+  incremental: false
 scheduling:
   dag_name: bqetl_campaign_cost_breakdowns
+  date_partition_parameter: null
+  depends_on_past: false
   referenced_tables: [
     [
       'moz-fx-data-bq-fivetran',

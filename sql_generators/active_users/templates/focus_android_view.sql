@@ -7,5 +7,5 @@ SELECT
 FROM
   `{{ project_id }}.{{ app_name }}_derived.active_users_aggregates_v1`
 WHERE
-  normalized_app_name != 'Focus Android Glean'
-  AND normalized_app_name != 'Focus Android Glean BrowserStack'
+  app_name != 'Focus Android Glean'
+  AND app_name != 'Focus Android Glean BrowserStack'

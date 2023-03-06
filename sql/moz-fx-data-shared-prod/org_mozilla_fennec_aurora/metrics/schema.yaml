@@ -368,9 +368,11 @@ fields:
       mode: NULLABLE
       name: preferences_clipboard_suggestions_enabled
       type: BOOLEAN
-    - description: 'Whether or not the user has the open links in apps feature enabled.
+    - description: 'The user has the open links in apps feature enabled.
 
-        default: false
+        "ask_before_opening", "always" or "never".
+
+        default: "never"
 
         '
       mode: NULLABLE

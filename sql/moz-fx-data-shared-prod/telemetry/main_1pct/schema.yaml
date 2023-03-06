@@ -14102,6 +14102,15 @@ fields:
     - mode: NULLABLE
       name: gc_parallel_mark_utilization
       type: STRING
+    - mode: NULLABLE
+      name: http_auth_resource_type
+      type: STRING
+    - mode: NULLABLE
+      name: use_counter2_css_property_offset_position_document
+      type: STRING
+    - mode: NULLABLE
+      name: use_counter2_css_property_offset_position_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -29277,6 +29286,12 @@ fields:
           type: STRING
         - mode: NULLABLE
           name: gc_parallel_mark_utilization
+          type: STRING
+        - mode: NULLABLE
+          name: use_counter2_css_property_offset_position_document
+          type: STRING
+        - mode: NULLABLE
+          name: use_counter2_css_property_offset_position_page
           type: STRING
         mode: NULLABLE
         name: histograms

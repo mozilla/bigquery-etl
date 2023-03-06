@@ -126,30 +126,8 @@ with DAG(
 
     fivetran_costs_derived__destinations__v1.set_upstream(fivetran_log_prod_sync_wait)
 
-    fivetran_log_dev_sync_start = FivetranOperator(
-        connector_id="{{ var.value.fivetran_log_dev_connector_id }}",
-        task_id="fivetran_log_dev_task",
-    )
-
-    fivetran_log_dev_sync_wait = FivetranSensor(
-        connector_id="{{ var.value.fivetran_log_dev_connector_id }}",
-        task_id="fivetran_log_dev_sensor",
-        poke_interval=30,
-        xcom="{{ task_instance.xcom_pull('fivetran_log_dev_task') }}",
-        on_retry_callback=retry_tasks_callback,
-        params={"retry_tasks": ["fivetran_log_dev_task"]},
-    )
-
-    fivetran_log_dev_sync_wait.set_upstream(fivetran_log_dev_sync_start)
-
-    fivetran_costs_derived__destinations__v1.set_upstream(fivetran_log_dev_sync_wait)
-
     fivetran_costs_derived__incremental_mar__v1.set_upstream(
         fivetran_log_prod_sync_wait
     )
 
-    fivetran_costs_derived__incremental_mar__v1.set_upstream(fivetran_log_dev_sync_wait)
-
     fivetran_costs_derived__monthly_costs__v1.set_upstream(fivetran_log_prod_sync_wait)
-
-    fivetran_costs_derived__monthly_costs__v1.set_upstream(fivetran_log_dev_sync_wait)

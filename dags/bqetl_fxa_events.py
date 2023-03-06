@@ -54,6 +54,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     docker_fxa_admin_server_v1 = bigquery_etl_query(
         task_id="docker_fxa_admin_server_v1",
         destination_table="docker_fxa_admin_server_sanitized_v1",
@@ -317,6 +318,22 @@ with DAG(
         firefox_accounts_derived__fxa_users_last_seen__v1_external.set_upstream(
             firefox_accounts_derived__fxa_users_last_seen__v1
         )
+
+    firefox_accounts_derived__fxa_users_last_seen__v2 = bigquery_etl_query(
+        task_id="firefox_accounts_derived__fxa_users_last_seen__v2",
+        destination_table="fxa_users_last_seen_v2",
+        dataset_id="firefox_accounts_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kignasiak@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "kignasiak@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        start_date=datetime.datetime(2019, 4, 23, 0, 0),
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+    )
 
     firefox_accounts_derived__fxa_users_services_daily__v1 = bigquery_etl_query(
         task_id="firefox_accounts_derived__fxa_users_services_daily__v1",

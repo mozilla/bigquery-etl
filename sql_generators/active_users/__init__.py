@@ -48,13 +48,23 @@ def generate(target_project, output_dir, use_cloud_function):
     env = Environment(loader=FileSystemLoader(str(THIS_PATH / "templates")))
     mobile_query_template = env.get_template("mobile_query.sql")
     desktop_query_template = env.get_template("desktop_query.sql")
+    focus_android_query_template = env.get_template("focus_android_query.sql")
     metadata_template = env.get_template("metadata.yaml")
     view_template = env.get_template("view.sql")
+    focus_android_view_template = env.get_template("focus_android_view.sql")
     output_dir = Path(output_dir) / target_project
     for browser in Browsers:
         if browser.name == "firefox_desktop":
             query_sql = reformat(
                 desktop_query_template.render(
+                    project_id=target_project,
+                    app_value=browser.value,
+                    app_name=browser.name,
+                )
+            )
+        elif browser.name == "focus_android":
+            query_sql = reformat(
+                focus_android_query_template.render(
                     project_id=target_project,
                     app_value=browser.value,
                     app_name=browser.name,
@@ -87,15 +97,30 @@ def generate(target_project, output_dir, use_cloud_function):
                 app_name=browser.name,
                 format=False,
             ),
-            skip_existing=True,
-        )
-
-        write_sql(
-            output_dir=output_dir,
-            full_table_id=f"{target_project}.{browser.name}.{TABLE_NAME}",
-            basename="view.sql",
-            sql=reformat(
-                view_template.render(project_id=target_project, app_name=browser.name)
-            ),
             skip_existing=False,
         )
+
+        if browser.name == "focus_android":
+            write_sql(
+                output_dir=output_dir,
+                full_table_id=f"{target_project}.{browser.name}.{TABLE_NAME}",
+                basename="view.sql",
+                sql=reformat(
+                    focus_android_view_template.render(
+                        project_id=target_project, app_name=browser.name
+                    )
+                ),
+                skip_existing=False,
+            )
+        else:
+            write_sql(
+                output_dir=output_dir,
+                full_table_id=f"{target_project}.{browser.name}.{TABLE_NAME}",
+                basename="view.sql",
+                sql=reformat(
+                    view_template.render(
+                        project_id=target_project, app_name=browser.name
+                    )
+                ),
+                skip_existing=False,
+            )

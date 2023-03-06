@@ -4,7 +4,6 @@ WITH baseline AS (
     submission_date,
     normalized_channel,
     client_id,
-    sample_id,
     days_since_seen,
     days_seen_bits,
     days_created_profile_bits,
@@ -68,7 +67,6 @@ search_metrics AS (
 baseline_with_searches AS (
   SELECT
     baseline.client_id,
-    baseline.sample_id,
     CASE
       WHEN BIT_COUNT(days_seen_bits)
         BETWEEN 1

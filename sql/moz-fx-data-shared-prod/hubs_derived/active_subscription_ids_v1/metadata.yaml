@@ -1,0 +1,21 @@
+friendly_name: Active Hubs Subscription IDs
+description: >
+  IDs of active Hubs subscriptions by date.
+owners:
+  - srose@mozilla.com
+labels:
+  application: hubs
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  # While this ETL doesn't depend on its own previous runs, other ETLs are built
+  # on the assumption that this is built sequentially day-by-day with no gaps.
+  depends_on_past: true
+  # delay aggregates by 7 days, to ensure data is complete
+  date_partition_offset: -7
+  date_partition_parameter: date
+bigquery:
+  time_partitioning:
+    type: day
+    field: active_date
+    require_partition_filter: false

@@ -259,7 +259,7 @@ class Metadata:
                         label = owner.split("@")[0]
                         if not Metadata.is_valid_label(label):
                             label = ""
-                        labels["owner" + str(i + 1)] = label
+                        labels[f"owner{i+1}"] = label
 
                 if "schema" in metadata:
                     converter = cattrs.BaseConverter()

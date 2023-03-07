@@ -18159,7 +18159,7 @@ histograms AS (
         payload.histograms.zoomed_view_enabled,
         (1, 2, 3)
       ),
-        (
+      (
         'places_searchbar_filter_type',
         'histogram-categorical',
         'parent',

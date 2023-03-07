@@ -255,6 +255,11 @@ class Metadata:
 
                 if "owners" in metadata:
                     owners = metadata["owners"]
+                    for i, owner in enumerate(metadata["owners"]):
+                        label = owner.split("@")[0]
+                        if not Metadata.is_valid_label(label):
+                            label = ""
+                        labels[f"owner{i+1}"] = label
 
                 if "schema" in metadata:
                     converter = cattrs.BaseConverter()

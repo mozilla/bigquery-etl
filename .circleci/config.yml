@@ -722,3 +722,12 @@ workflows:
             # can't run in parallel because CIRCLE_BUILD_NUM is same
             - build
             - generate-sql
+  nightly: # Run after schema-generator to ensure we are up-to-date
+    triggers:
+      - schedule:
+          cron: "0 5 * * *"
+          filters:
+            branches:
+              only:
+                - main
+    jobs: *build_jobs

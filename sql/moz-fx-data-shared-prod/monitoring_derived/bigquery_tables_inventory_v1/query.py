@@ -44,6 +44,7 @@ def create_last_modified_tmp_table(date, project, tmp_table_name):
     datasets = list(client.list_datasets())
 
     for dataset in datasets:
+
         query = f"""
               SELECT
                 project_id,

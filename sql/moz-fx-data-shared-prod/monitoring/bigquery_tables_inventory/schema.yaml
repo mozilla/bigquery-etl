@@ -23,7 +23,9 @@ fields:
   mode: NULLABLE
   name: table_type
   type: STRING
-- description: The table's last modified date
-  mode: NULLABLE
+- mode: NULLABLE
   name: last_modified_date
   type: DATE
+- mode: REPEATED
+  name: owners
+  type: STRING

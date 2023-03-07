@@ -44,7 +44,6 @@ def create_last_modified_tmp_table(date, project, tmp_table_name):
     datasets = list(client.list_datasets())
 
     for dataset in datasets:
-
         query = f"""
               SELECT
                 project_id,
@@ -69,6 +68,25 @@ def create_last_modified_tmp_table(date, project, tmp_table_name):
 def create_query(date, source_project, tmp_table_name):
     """Create query for a source project."""
     return f"""
+        WITH labels AS (
+            SELECT table_catalog, table_schema, table_name,
+              ARRAY(
+                SELECT as STRUCT ARR[OFFSET(0)] key, ARR[OFFSET(1)] value
+                FROM UNNEST(REGEXP_EXTRACT_ALL(option_value, r'STRUCT\(("[^"]+", "[^"]+")\)')) kv,
+                UNNEST([STRUCT(SPLIT(REPLACE(kv, '"', ''), ', ') as arr)])
+              ) options
+            FROM `{source_project}.region-us.INFORMATION_SCHEMA.TABLE_OPTIONS`
+            WHERE option_name = 'labels'
+        ),
+        labels_agg AS (
+            SELECT table_catalog,
+                 table_schema,
+                 table_name,
+                 ARRAY_AGG(value) AS owners
+            FROM labels, UNNEST(options) AS opt_key
+            WHERE key LIKE 'owner%'
+            GROUP BY table_catalog, table_schema, table_name
+        )
         SELECT *
         FROM
             (SELECT
@@ -78,7 +96,10 @@ def create_query(date, source_project, tmp_table_name):
             table_schema AS dataset_id,
             table_name AS table_id,
             table_type,
+            owners,
             FROM `{source_project}.region-us.INFORMATION_SCHEMA.TABLES`
+            LEFT JOIN labels_agg
+            USING (table_catalog, table_schema, table_name)
             WHERE DATE(creation_time) <= DATE('{date}')
             )
         LEFT JOIN {tmp_table_name}
@@ -102,7 +123,6 @@ def main():
     client.delete_table(destination_table, not_found_ok=True)
 
     for project in args.source_projects:
-
         create_last_modified_tmp_table(args.date, project, tmp_table_name)
 
         client = bigquery.Client(project)

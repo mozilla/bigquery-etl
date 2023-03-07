@@ -14108,6 +14108,9 @@ fields:
     - mode: NULLABLE
       name: use_counter2_css_property_offset_position_page
       type: STRING
+    - mode: NULLABLE
+      name: gc_task_start_delay_us
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -29289,6 +29292,9 @@ fields:
           type: STRING
         - mode: NULLABLE
           name: use_counter2_css_property_offset_position_page
+          type: STRING
+        - mode: NULLABLE
+          name: gc_task_start_delay_us
           type: STRING
         mode: NULLABLE
         name: histograms

@@ -162,6 +162,7 @@ jobs:
       - run:
           name: Verify that metadata files are valid
           command: |
+            # TODO: Add check here to make sure all queries have metadata.yaml
             PATH="venv/bin:$PATH" script/bqetl query validate \
               --respect-dryrun-skip
   integration:

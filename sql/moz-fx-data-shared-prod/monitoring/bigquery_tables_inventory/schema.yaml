@@ -23,9 +23,11 @@ fields:
   mode: NULLABLE
   name: table_type
   type: STRING
-- mode: NULLABLE
+- description: The table's last modified date
+  mode: NULLABLE
   name: last_modified_date
   type: DATE
-- mode: REPEATED
+- description: The owner of the table listed in metadata yaml file
+  mode: REPEATED
   name: owners
   type: STRING

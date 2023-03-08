@@ -45,7 +45,6 @@ WITH all_hits AS (
   WHERE
     _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
 ),
-
 pageviews AS (
   SELECT
     client_id AS client_id,
@@ -60,7 +59,6 @@ pageviews AS (
     client_id,
     visit_id
 ),
-
 dl_events AS (
   SELECT
     client_id AS client_id,
@@ -73,7 +71,6 @@ dl_events AS (
     client_id,
     visit_id
 ),
-
 ga_sessions AS (
   SELECT
     clientId AS client_id,
@@ -96,7 +93,6 @@ ga_sessions AS (
     client_id,
     visit_id
 ),
-
 ga_sessions_with_hits AS (
   SELECT
     *
@@ -111,7 +107,6 @@ ga_sessions_with_hits AS (
   USING
     (client_id, visit_id)
 ),
-
 stub AS (
   SELECT
     s.jsonPayload.fields.visit_id AS stub_visit_id,

@@ -1658,5 +1658,5 @@ SELECT
   map_sum_aggregates[OFFSET(106)].map AS search_content_urlbar_persisted_sum,
   map_sum_aggregates[OFFSET(107)].map AS search_withads_urlbar_persisted_sum,
   map_sum_aggregates[OFFSET(108)].map AS search_adclicks_urlbar_persisted_sum,
-  FROM
-    udf_aggregates
+FROM
+  udf_aggregates

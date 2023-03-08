@@ -30,7 +30,12 @@ fields:
   type: STRING
   description: The table type
 
-- mode: NULLABLE
+- mode: REPEATED
   name: last_modified_date
   type: DATE
   description: The table's last modified date
+
+- mode: NULLABLE
+  name: owners
+  type: STRING
+  description: The owner of the table listed in metadata yaml file

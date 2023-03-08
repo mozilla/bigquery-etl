@@ -2255,6 +2255,3 @@ fields:
   mode: REPEATED
   name: scalar_parent_sidebar_link_sum
   type: RECORD
-- mode: NULLABLE
-  name: text_recognition_text_length_count_sum
-  type: INTEGER

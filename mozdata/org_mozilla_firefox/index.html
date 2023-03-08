@@ -1278,6 +1278,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#client_deduplication" class="md-nav__link">
+    client_deduplication
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#creditcards_sync" class="md-nav__link">
     creditcards_sync
   </a>
@@ -2453,6 +2460,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#client_deduplication" class="md-nav__link">
+    client_deduplication
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#creditcards_sync" class="md-nav__link">
     creditcards_sync
   </a>
@@ -3523,6 +3537,32 @@ and to contain only one row per distinct <code>document_id</code> within a given
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox/bookmarks_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox/bookmarks_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox/bookmarks_sync/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="client_deduplication"><a href="#client_deduplication">client_deduplication</a></h2>
+<p><strong>Historical Pings for <code>org-mozilla-firefox/client-deduplication</code></strong></p>
+<p><code>org_mozilla_firefox.client_deduplication</code></p>
+<p>A historical view of pings sent for the
+<code>org-mozilla-firefox/client-deduplication</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox_stable>org_mozilla_firefox_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox_stable/client_deduplication_v1>client_deduplication_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox/client_deduplication">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox/client_deduplication/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_firefox/client_deduplication/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="creditcards_sync"><a href="#creditcards_sync">creditcards_sync</a></h2>
 <p><strong>Historical Pings for <code>org-mozilla-firefox/creditcards-sync</code></strong></p>

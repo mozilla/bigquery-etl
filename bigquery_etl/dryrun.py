@@ -180,6 +180,10 @@ SKIP = {
         "sql/moz-fx-data-shared-prod/google_ads_derived/**/*.sql",
         recursive=True,
     ),
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/**/client_deduplication/view.sql",
+        recursive=True,
+    ),
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501

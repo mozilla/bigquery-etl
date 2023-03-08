@@ -65,6 +65,19 @@ jobs:
           name: Build Docker image
           command: docker build -t app:build jobs/bq2sftp/
 
+  build-job-dap-collector:
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - compare-branch:
+          pattern: ^jobs/dap-collector/
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Build Docker image
+          command: docker build -t app:build jobs/dap-collector/
+
   build-job-desktop-mobile-mau-2020:
     docker:
       - image: docker:stable-git
@@ -230,6 +243,19 @@ workflows:
             branches:
               only: main
 
+  job-dap-collector:
+    jobs:
+      - build-job-dap-collector
+      - gcp-gcr/build-and-push-image:
+          context: data-eng-airflow-gcr
+          docker-context: jobs/dap-collector/
+          path: jobs/dap-collector/
+          image: dap-collector_docker_etl
+          requires:
+            - build-job-dap-collector
+          filters:
+            branches:
+              only: main
 
   job-desktop-mobile-mau-2020:
     jobs:

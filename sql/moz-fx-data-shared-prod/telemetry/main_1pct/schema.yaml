@@ -14114,6 +14114,18 @@ fields:
     - mode: NULLABLE
       name: gc_task_start_delay_us
       type: STRING
+    - mode: NULLABLE
+      name: browser_set_default_pdf_handler_user_choice_result
+      type: STRING
+    - mode: NULLABLE
+      name: mixed_content_audio
+      type: STRING
+    - mode: NULLABLE
+      name: mixed_content_images
+      type: STRING
+    - mode: NULLABLE
+      name: mixed_content_video
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -29298,6 +29310,15 @@ fields:
           type: STRING
         - mode: NULLABLE
           name: gc_task_start_delay_us
+          type: STRING
+        - mode: NULLABLE
+          name: mixed_content_audio
+          type: STRING
+        - mode: NULLABLE
+          name: mixed_content_images
+          type: STRING
+        - mode: NULLABLE
+          name: mixed_content_video
           type: STRING
         mode: NULLABLE
         name: histograms

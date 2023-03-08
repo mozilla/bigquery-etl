@@ -1809,6 +1809,12 @@ fields:
   name: text_recognition_text_length_count_sum
   type: INTEGER
 - mode: NULLABLE
+  name: places_searchbar_cumulative_searches_sum
+  type: INTEGER
+- mode: NULLABLE
+  name: places_searchbar_cumulative_filter_count_sum
+  type: INTEGER
+- mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_taskbar_private
   type: BOOLEAN
 - mode: NULLABLE

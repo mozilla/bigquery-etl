@@ -2,14 +2,14 @@
 WITH hmac_key AS (
   SELECT
     AEAD.DECRYPT_BYTES(
-      (SELECT keyset FROM `moz-fx-dataops-secrets.airflow_query_keys.org_mozilla_firefox`),
+      (SELECT keyset FROM `moz-fx-dataops-secrets.airflow_query_keys.ad_id_prod`),
       ciphertext,
       CAST(key_id AS BYTES)
     ) AS value
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox.encrypted_keys_v1`
+    `moz-fx-data-shared-prod.org_mozilla_firefox_derived.encrypted_keys_v1`
   WHERE
-    key_id = 'ad_id'
+    key_id = 'ad_id_prod'
 ),
 SELECT
   DATE(submission_timestamp) AS submission_date,

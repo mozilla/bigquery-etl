@@ -1225,7 +1225,7 @@ def schema():
     "--tmp-dataset",
     "--tmp_dataset",
     help="GCP datasets for creating updated tables temporarily.",
-    default="analysis",
+    default="tmp",
 )
 @use_cloud_function_option
 @respect_dryrun_skip_option(default=True)
@@ -1557,6 +1557,13 @@ def _update_query_schema(
     default=False,
     is_flag=True,
 )
+@click.option(
+    "--skip-external-data",
+    "--skip_external_data",
+    help="Skip publishing external data, such as Google Sheets.",
+    default=False,
+    is_flag=True,
+)
 @click.pass_context
 def deploy(
     ctx,
@@ -1567,6 +1574,7 @@ def deploy(
     use_cloud_function,
     respect_dryrun_skip,
     skip_existing,
+    skip_external_data,
 ):
     """CLI command for deploying destination table schemas."""
     if not is_authenticated():
@@ -1606,6 +1614,7 @@ def deploy(
             table_name = query_file_path.parent.name
             dataset_name = query_file_path.parent.parent.name
             project_name = query_file_path.parent.parent.parent.name
+
             full_table_id = f"{project_name}.{dataset_name}.{table_name}"
 
             existing_schema = Schema.from_schema_file(existing_schema_path)
@@ -1659,10 +1668,11 @@ def deploy(
             print_exc()
             failed_deploys.append(query_file)
 
-    failed_external_deploys = _deploy_external_data(
-        name, sql_dir, project_id, skip_existing
-    )
-    failed_deploys += failed_external_deploys
+    if not skip_external_data:
+        failed_external_deploys = _deploy_external_data(
+            name, sql_dir, project_id, skip_existing
+        )
+        failed_deploys += failed_external_deploys
 
     if len(failed_deploys) > 0:
         click.echo("The following tables could not be deployed:")

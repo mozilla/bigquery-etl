@@ -58,10 +58,21 @@ adjust_client AS (
     adjust_ad_group AS adjust_adgroup,
     adjust_campaign,
     adjust_creative,
+    metadata.reported_first_session_ping,
   FROM
     `moz-fx-data-shared-prod`.fenix.firefox_android_clients
   WHERE
     adjust_network != 'Unknown'
+),
+activations AS (
+  SELECT
+    client_id,
+    submission_date,
+    activated > 0 AS activated,
+  FROM
+    `moz-fx-data-shared-prod`.fenix.new_profile_activation
+  WHERE
+    submission_date = @submission_date
 )
 SELECT
   submission_date,
@@ -73,6 +84,8 @@ SELECT
   adjust_adgroup,
   adjust_campaign,
   adjust_creative,
+  first_seen_date = submission_date
+  AND reported_first_session_ping AS is_new_install,
   first_seen_date = submission_date AS is_new_profile,
   CASE
     WHEN client_day.has_search_data
@@ -95,6 +108,7 @@ SELECT
       THEN metrics_searches.ad_clicks
     ELSE 0
   END AS ad_clicks,
+  COALESCE(activated, FALSE) AS activated,
 FROM
   adjust_client
 JOIN
@@ -109,3 +123,7 @@ JOIN
   first_seen
 USING
   (client_id)
+LEFT JOIN
+  activations
+USING
+  (client_id, submission_date)

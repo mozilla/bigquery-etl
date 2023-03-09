@@ -1,0 +1,7 @@
+fields:
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+- mode: NULLABLE
+  name: submission_timestamp
+  type: TIMESTAMP

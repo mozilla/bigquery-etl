@@ -16,7 +16,7 @@ import yaml
 
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE
 
-UDF_CHAR = "[a-zA-z0-9_]"
+UDF_CHAR = "[a-zA-Z0-9_]"
 UDF_FILE = "udf.sql"
 PROCEDURE_FILE = "stored_procedure.sql"
 ROUTINE_FILE = (UDF_FILE, PROCEDURE_FILE)
@@ -27,7 +27,8 @@ PERSISTENT_UDF_PREFIX_RE_STR = (
 )
 PERSISTENT_UDF_PREFIX = re.compile(PERSISTENT_UDF_PREFIX_RE_STR, re.IGNORECASE)
 PERSISTENT_UDF_RE = re.compile(
-    rf"{PERSISTENT_UDF_PREFIX_RE_STR}\s+({UDF_CHAR}*)\.({UDF_CHAR}+)`?", re.IGNORECASE
+    rf"{PERSISTENT_UDF_PREFIX_RE_STR}\s+`?(?:[a-zA-Z0-9_-]*`?\.)?({UDF_CHAR}*)\.({UDF_CHAR}+)`?",
+    re.IGNORECASE,
 )
 UDF_NAME_RE = re.compile(r"^([a-zA-Z0-9_]+\.)?[a-zA-Z][a-zA-Z0-9_]{0,255}$")
 GENERIC_DATASET = "_generic_dataset_"

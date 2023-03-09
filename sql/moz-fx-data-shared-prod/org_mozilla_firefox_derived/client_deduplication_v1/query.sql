@@ -22,7 +22,10 @@ SELECT
   metrics.* REPLACE (
     metrics.string.* REPLACE (
       TO_HEX(
-        udf.hmac_sha256((SELECT * FROM hmac_key), CAST(metrics.string.activation_identifier AS BYTES))
+        udf.hmac_sha256(
+          (SELECT * FROM hmac_key),
+          CAST(metrics.string.activation_identifier AS BYTES)
+        )
       ) AS activation_identifier
     ) AS string
   ) AS metrics,

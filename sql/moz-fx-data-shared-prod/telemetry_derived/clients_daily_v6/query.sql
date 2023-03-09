@@ -1552,13 +1552,13 @@ SELECT
       THEN map_sum_aggregates[OFFSET(38)].map
     WHEN mozfun.norm.truncate_version(app_version, "major") <= 108
       THEN map_sum_aggregates[OFFSET(113)].map
-    ELSE NULL AS search_with_ads,
+    ELSE NULL END AS search_with_ads,
   CASE
     WHEN mozfun.norm.truncate_version(app_version, "major") <= 108
       THEN map_sum_aggregates[OFFSET(39)].map
     WHEN mozfun.norm.truncate_version(app_version, "major") > 108
       THEN map_sum_aggregates[OFFSET(112)].map
-    ELSE NULL AS ad_clicks,
+    ELSE NULL END AS ad_clicks,
   map_sum_aggregates[OFFSET(40)].map AS search_content_urlbar_sum,
   map_sum_aggregates[OFFSET(41)].map AS search_content_urlbar_searchmode_sum,
   map_sum_aggregates[OFFSET(42)].map AS search_content_contextmenu_sum,

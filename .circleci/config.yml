@@ -361,11 +361,6 @@ jobs:
       - *java_deps
       - *attach_generated_sql
       - *copy_generated_sql
-      - run:
-          name: Install rsync
-          command: |
-            apt update
-            apt install -y rsync
       - add_ssh_keys:
           fingerprints: "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
       - run:
@@ -383,11 +378,6 @@ jobs:
 
             PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
             echo $PATHS
-
-            mkdir private-sql
-            find /tmp/workspace/private-generated-sql/sql -type d -name 'udf' -exec cp -r --parents '{}' private-sql \;
-            rsync --archive private-sql/tmp/workspace/private-generated-sql/sql/ sql/
-
             PATH="venv/bin:$PATH" script/bqetl stage deploy \
               --dataset-suffix=$CIRCLE_SHA1 \
               --remove-updated-artifacts \
@@ -643,7 +633,6 @@ workflows:
       - deploy-changes-to-stage:
           requires:
             - generate-sql
-            - private-generate-sql
       - verify-requirements
       - test-sql:
           context: data-eng-circleci-tests

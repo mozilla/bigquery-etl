@@ -1,4 +1,6 @@
-# Stage Deploys in Continuous Integration
+# Stage Deploys 
+
+## Stage Deploys in Continuous Integration
 
 Before changes, such as adding new fields to existing datasets or adding new datasets, can be deployed to production, bigquery-etl's [CI (continuous integration)](https://github.com/mozilla/bigquery-etl/blob/main/.circleci/config.yml) [deploys these changes to a stage environment](https://github.com/mozilla/bigquery-etl/blob/06d7baa3678509abc42ab190c6f1beabc920001c/.circleci/config.yml#L353) and uses these stage artifacts to run its various checks. 
 
@@ -26,3 +28,26 @@ Deploying artifacts to stage follows the following steps:
     * This step will also automatically remove any tables and datasets that got previously deployed, are older than an hour but haven't been removed (for example due to some CI check failing)
 
 After CI checks have passed and the pull-request has been approved, changes can be merged to `main`. Once a new version of bigquery-etl has been published the changes can be deployed to production through the [`bqetl_artifact_deployment` Airflow DAG](https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment). For more information on artifact deployments to production see: https://docs.telemetry.mozilla.org/concepts/pipeline/artifact_deployment.html
+
+## Local Deploys to Stage
+
+Local changes can be deployed to stage using the `./bqetl stage deploy` command:
+
+```
+./bqetl stage deploy \
+  --dataset-suffix=test \
+  --copy-sql-to-tmp-dir \
+  sql/moz-fx-data-shared-prod/firefox_ios/new_profile_activation/view.sql \
+  sql/mozfun/map/sum/udf.sql
+```
+
+Files (for example ones with changes) that should be deployed to stage need to be specified. The `stage deploy` accepts the following parameters:
+* `--dataset-suffix` is an optional suffix that will be added to the datasets deployed to stage
+* `--copy-sql-to-tmp-dir` copies SQL stored in `sql/` to a temporary folder. Reference updates and any other modifications required to run the stage deploy will be performed in this temporary directory. This is an optional parameter. If not specified, changes get applied to the files directly and can be reverted, for example, by running `git checkout -- sql/`
+* (optional) `--remove-updated-artifacts` removes artifact files that have been deployed from the "prod" folders. This ensures that tests don't run on outdated or undeployed artifacts.
+
+Deployed stage artifacts can be deleted from `bigquery-etl-integration-test` by running:
+
+```
+./bqetl stage clean --delete-expired --dataset-suffix=test
+```

@@ -1552,13 +1552,15 @@ SELECT
       THEN map_sum_aggregates[OFFSET(38)].map
     WHEN mozfun.norm.truncate_version(app_version, "major") <= 108
       THEN map_sum_aggregates[OFFSET(113)].map
-    ELSE NULL END AS search_with_ads,
+    ELSE NULL
+  END AS search_with_ads,
   CASE
     WHEN mozfun.norm.truncate_version(app_version, "major") <= 108
       THEN map_sum_aggregates[OFFSET(39)].map
     WHEN mozfun.norm.truncate_version(app_version, "major") > 108
       THEN map_sum_aggregates[OFFSET(112)].map
-    ELSE NULL END AS ad_clicks,
+    ELSE NULL
+  END AS ad_clicks,
   map_sum_aggregates[OFFSET(40)].map AS search_content_urlbar_sum,
   map_sum_aggregates[OFFSET(41)].map AS search_content_urlbar_searchmode_sum,
   map_sum_aggregates[OFFSET(42)].map AS search_content_contextmenu_sum,
@@ -1598,15 +1600,11 @@ SELECT
   map_sum_aggregates[
     OFFSET(76)
   ].map AS contextual_services_quicksuggest_block_dynamic_wikipedia_sum,
-  map_sum_aggregates[
-    OFFSET(77)
-  ].map AS contextual_services_quicksuggest_block_nonsponsored_sum,
+  map_sum_aggregates[OFFSET(77)].map AS contextual_services_quicksuggest_block_nonsponsored_sum,
   map_sum_aggregates[
     OFFSET(78)
   ].map AS contextual_services_quicksuggest_block_nonsponsored_bestmatch_sum,
-  map_sum_aggregates[
-    OFFSET(79)
-  ].map AS contextual_services_quicksuggest_block_sponsored_sum,
+  map_sum_aggregates[OFFSET(79)].map AS contextual_services_quicksuggest_block_sponsored_sum,
   map_sum_aggregates[
     OFFSET(80)
   ].map AS contextual_services_quicksuggest_block_sponsored_bestmatch_sum,
@@ -1615,26 +1613,18 @@ SELECT
   map_sum_aggregates[
     OFFSET(83)
   ].map AS contextual_services_quicksuggest_click_dynamic_wikipedia_sum,
-  map_sum_aggregates[
-    OFFSET(84)
-  ].map AS contextual_services_quicksuggest_click_nonsponsored_sum,
+  map_sum_aggregates[OFFSET(84)].map AS contextual_services_quicksuggest_click_nonsponsored_sum,
   map_sum_aggregates[
     OFFSET(85)
   ].map AS contextual_services_quicksuggest_click_nonsponsored_bestmatch_sum,
-  map_sum_aggregates[
-    OFFSET(86)
-  ].map AS contextual_services_quicksuggest_click_sponsored_sum,
+  map_sum_aggregates[OFFSET(86)].map AS contextual_services_quicksuggest_click_sponsored_sum,
   map_sum_aggregates[
     OFFSET(87)
   ].map AS contextual_services_quicksuggest_click_sponsored_bestmatch_sum,
   map_sum_aggregates[OFFSET(88)].map AS contextual_services_quicksuggest_click_weather_sum,
   map_sum_aggregates[OFFSET(89)].map AS contextual_services_quicksuggest_help_sum,
-  map_sum_aggregates[
-    OFFSET(90)
-  ].map AS contextual_services_quicksuggest_help_dynamic_wikipedia_sum,
-  map_sum_aggregates[
-    OFFSET(91)
-  ].map AS contextual_services_quicksuggest_help_nonsponsored_sum,
+  map_sum_aggregates[OFFSET(90)].map AS contextual_services_quicksuggest_help_dynamic_wikipedia_sum,
+  map_sum_aggregates[OFFSET(91)].map AS contextual_services_quicksuggest_help_nonsponsored_sum,
   map_sum_aggregates[
     OFFSET(92)
   ].map AS contextual_services_quicksuggest_help_nonsponsored_bestmatch_sum,
@@ -1653,20 +1643,14 @@ SELECT
   map_sum_aggregates[
     OFFSET(99)
   ].map AS contextual_services_quicksuggest_impression_nonsponsored_bestmatch_sum,
-  map_sum_aggregates[
-    OFFSET(100)
-  ].map AS contextual_services_quicksuggest_impression_sponsored_sum,
+  map_sum_aggregates[OFFSET(100)].map AS contextual_services_quicksuggest_impression_sponsored_sum,
   map_sum_aggregates[
     OFFSET(101)
   ].map AS contextual_services_quicksuggest_impression_sponsored_bestmatch_sum,
-  map_sum_aggregates[
-    OFFSET(102)
-  ].map AS contextual_services_quicksuggest_impression_weather_sum,
+  map_sum_aggregates[OFFSET(102)].map AS contextual_services_quicksuggest_impression_weather_sum,
   map_sum_aggregates[OFFSET(103)].map AS contextual_services_topsites_click_sum,
   map_sum_aggregates[OFFSET(104)].map AS contextual_services_topsites_impression_sum,
-  map_sum_aggregates[
-    OFFSET(105)
-  ].map AS scalar_parent_browser_ui_interaction_content_context_sum,
+  map_sum_aggregates[OFFSET(105)].map AS scalar_parent_browser_ui_interaction_content_context_sum,
   map_sum_aggregates[OFFSET(106)].map AS search_content_urlbar_persisted_sum,
   map_sum_aggregates[OFFSET(107)].map AS search_withads_urlbar_persisted_sum,
   map_sum_aggregates[OFFSET(108)].map AS search_adclicks_urlbar_persisted_sum,

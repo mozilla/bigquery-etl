@@ -19,15 +19,21 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics.* REPLACE (
-    metrics.string.* REPLACE (
-      TO_HEX(
-        udf.hmac_sha256(
-          (SELECT * FROM hmac_key),
-          CAST(metrics.string.activation_identifier AS BYTES)
-        )
-      ) AS activation_identifier
-    ) AS string
+  (
+    SELECT AS STRUCT
+      metrics.* REPLACE (
+        (
+          SELECT AS STRUCT
+            metrics.string.* REPLACE (
+              TO_HEX(
+                `moz-fx-data-shared-prod`.udf.hmac_sha256(
+                  (SELECT * FROM hmac_key),
+                  CAST(metrics.string.activation_identifier AS BYTES)
+                )
+              ) AS activation_identifier
+            )
+        ) AS string
+      )
   ) AS metrics,
   normalized_app_name,
   normalized_channel,

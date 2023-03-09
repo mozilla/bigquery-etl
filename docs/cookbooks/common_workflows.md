@@ -25,9 +25,9 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
 1. Create a pull request
    * CI fails since table doesn't exist yet
 1. PR gets reviewed and eventually approved
-1. Create destination table: `./bqetl query schema deploy` (requires a `schema.yaml` file to be present)
-   * This step needs to be performed by a data engineer as it requires DE credentials.
 1. Merge pull-request
+1. Table deploys happen on a nightly cadence through the [`bqetl_artifact_deployment` Airflow DAG](https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid)
+   * Clear the most recent DAG run once a new version of bigquery-etl has been deployed to create new datasets earlier
 1. Backfill data
    * Option 1: via Airflow interface
    * Option 2: `./bqetl query backfill --project-id <project id> <dataset>.<table>_<version>`
@@ -41,8 +41,9 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
 1. Open PR with changes
    * CI can fail if schema updates haven't been propagated to destination tables, for example when adding new fields
 1. PR reviewed and approved
-1. Deploy schema changes by running `./bqetl query schema deploy <dataset>.<table>_<version>`
 1. Merge pull-request
+1. Table deploys happen on a nightly cadence through the [`bqetl_artifact_deployment` Airflow DAG](https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid)
+   * Clear the most recent DAG run once a new version of bigquery-etl has been deployed to apply changes earlier
 
 ## Formatting SQL
 
@@ -103,10 +104,11 @@ Adding a new field to a table schema also means that the field has to propagate 
 1. Open a new PR with these changes.
 1. The dry-run-sql task is expected to fail at this point due to mismatch with deployed schemas!
 1. PR reviewed and approved.
-1. Deploy schema changes by running: `./bqetl query schema deploy <dataset>.<table>;`
 1. Find and run again the [CI pipeline](https://app.circleci.com/pipelines/github/mozilla/bigquery-etl?) for the PR.
    * [x] Make sure all dry runs are successful.
 1. Merge pull-request.
+1. Table deploys happen on a nightly cadence through the [`bqetl_artifact_deployment` Airflow DAG](https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid)
+   * Clear the most recent DAG run once a new version of bigquery-etl has been deployed to apply changes earlier
 
 The following is an example to update a new field in `telemetry_derived.clients_daily_v6`
 
@@ -120,17 +122,9 @@ The following is an example to update a new field in `telemetry_derived.clients_
 1. Open a PR with these changes.
    * [x] The `dry-run-sql` task fails.
 1. PR is reviewed and approved.
-1. Deploy schema changes by running:
-   ```bash
-   ./bqetl query schema deploy telemetry_derived.clients_daily_v6;
-   ./bqetl query schema deploy telemetry_derived.clients_daily_joined_v1;
-   ./bqetl query schema deploy --force --ignore-dryrun-skip telemetry_derived.clients_last_seen_v1;
-   ./bqetl query schema deploy telemetry_derived.clients_last_seen_joined_v1;
-   ./bqetl query schema deploy --force telemetry_derived.clients_first_seen_v1;
-   ```
-1. Rerun CI pipeline
-   * [x] All tests pass
 1. Merge pull-request.
+1. Table deploys happen on a nightly cadence through the [`bqetl_artifact_deployment` Airflow DAG](https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid)
+   * Clear the most recent DAG run once a new version of bigquery-etl has been deployed to apply changes earlier
 
 ## Remove a field from a table schema
 
@@ -161,9 +155,8 @@ Internal UDFs are usually only used by specific queries. If your UDF might be us
    * Before running the tests, you need to [setup the access to the Google Cloud API](https://mozilla.github.io/bigquery-etl/cookbooks/testing/).
 5. Open a PR
 6. PR gets reviewed and approved and merged
-7. To publish UDF immediately:
-   * Run `./bqetl routine publish`
-   * Or else it will take a day until UDF gets published automatically
+1. UDF deploys happen on a nightly cadence through the [`bqetl_artifact_deployment` Airflow DAG](https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid)
+   * Clear the most recent DAG run once a new version of bigquery-etl has been deployed to apply changes earlier
 
 ## Adding a stored procedure
 

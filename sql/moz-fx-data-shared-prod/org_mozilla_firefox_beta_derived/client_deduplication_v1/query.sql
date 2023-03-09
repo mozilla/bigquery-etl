@@ -10,7 +10,7 @@ WITH hmac_key AS (
     `moz-fx-data-shared-prod.org_mozilla_firefox_derived.encrypted_keys_v1`
   WHERE
     key_id = 'ad_id_prod'
-),
+)
 SELECT
   DATE(submission_timestamp) AS submission_date,
   "org_mozilla_firefox_beta" AS normalized_app_id,

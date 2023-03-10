@@ -2136,6 +2136,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#using-a-private-internal-udf" class="md-nav__link">
+    Using a private internal UDF
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#creating-a-new-bigquery-dataset" class="md-nav__link">
     Creating a new BigQuery Dataset
   </a>
@@ -2441,6 +2448,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#using-a-private-internal-udf" class="md-nav__link">
+    Using a private internal UDF
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#creating-a-new-bigquery-dataset" class="md-nav__link">
     Creating a new BigQuery Dataset
   </a>
@@ -2692,6 +2706,14 @@ SELECT
 </li>
 <li>Open a PR</li>
 <li>PR gets reviews, approved and merged</li>
+</ol>
+<h2 id="using-a-private-internal-udf">Using a private internal UDF</h2>
+<ol>
+<li>Follow the steps for Adding a new internal UDF above to create a stub of the private UDF. Note this should <em>not</em>
+contain actual private UDF code or logic. The directory name and function parameters should match the private UDF.</li>
+<li><strong>Do Not</strong> publish the stub UDF. This could result in incorrect results for other users of the private UDF.</li>
+<li>Open a PR</li>
+<li>PR gets reviewed, approved and merged</li>
 </ol>
 <h2 id="creating-a-new-bigquery-dataset">Creating a new BigQuery Dataset</h2>
 <p>To provision a new BigQuery dataset for holding tables, you'll need to

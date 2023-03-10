@@ -183,6 +183,14 @@ The same steps as creating a new UDF apply for creating stored procedures, excep
 1. Open a PR
 1. PR gets reviews, approved and merged
 
+## Using a private internal UDF
+
+1. Follow the steps for Adding a new internal UDF above to create a stub of the private UDF. Note this should *not*
+contain actual private UDF code or logic. The directory name and function parameters should match the private UDF.
+1. **Do Not** publish the stub UDF. This could result in incorrect results for other users of the private UDF.
+1. Open a PR
+1. PR gets reviewed, approved and merged
+
 ## Creating a new BigQuery Dataset
 
 To provision a new BigQuery dataset for holding tables, you'll need to

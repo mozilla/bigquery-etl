@@ -18,6 +18,7 @@ Deploying artifacts to stage follows the following steps:
     * If artifacts are referenced that are not defined as part of the bigquery-etl repo (like stable or live tables) then their schema will get determined and a placeholder `query.sql` file will be created
     * Also dependencies of dependencies need to be deployed, and so on
 4. Once all artifacts that need to be deployed have been determined, all references to these artifacts in existing SQL files need to be updated. These references will need to point to the stage project and the temporary datasets that artifacts will be published to.
+    * Artifacts that get deployed are determined from the files that got changed and any artifacts that are referenced in the SQL definitions of these files, as well as their references and so on.
 5. To run the deploy, all artifacts will be copied to `sql/bigquery-etl-integration-test` into their corresponding temporary datasets.
     * Also if any existing [SQL tests](https://github.com/mozilla/bigquery-etl/tree/main/tests/sql) the are related to changed artifacts will have their referenced artifacts updated and will get copied to a `bigquery-etl-integration-test` folder
     * The deploy is executed in the order of: UDFs, tables, views

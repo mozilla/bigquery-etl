@@ -23,7 +23,6 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
 1. Run `./bqetl query schedule <dataset>.<table>_<version> --dag <bqetl_dag>` to schedule the query
 1. Run `./bqetl dag generate <bqetl_dag>` to update the DAG file
 1. Create a pull request
-   * CI fails since table doesn't exist yet
 1. PR gets reviewed and eventually approved
 1. Merge pull-request
 1. Table deploys happen on a nightly cadence through the [`bqetl_artifact_deployment` Airflow DAG](https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid)
@@ -39,10 +38,9 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
 1. If the query scheduling metadata has changed, run `./bqetl dag generate <bqetl_dag>` to update the DAG file
 1. If the query adds new columns, run `./bqetl query schema update <dataset>.<table>_<version>` to make local `schema.yaml` updates
 1. Open PR with changes
-   * CI can fail if schema updates haven't been propagated to destination tables, for example when adding new fields
 1. PR reviewed and approved
 1. Merge pull-request
-1. Table deploys happen on a nightly cadence through the [`bqetl_artifact_deployment` Airflow DAG](https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid)
+1. Table deploys (including schema changes) happen on a nightly cadence through the [`bqetl_artifact_deployment` Airflow DAG](https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid)
    * Clear the most recent DAG run once a new version of bigquery-etl has been deployed to apply changes earlier
 
 ## Formatting SQL
@@ -102,7 +100,6 @@ Adding a new field to a table schema also means that the field has to propagate 
    * [x] `--update_downstream` is optional as it takes longer. It is recommended when you know that there are downstream dependencies whose `schema.yaml` need to be updated, in which case, the update will happen automatically.
    * [x] `--force` should only be used in very specific cases, particularly the `clients_last_seen` tables. It skips some checks that would otherwise catch some error scenarios.
 1. Open a new PR with these changes.
-1. The dry-run-sql task is expected to fail at this point due to mismatch with deployed schemas!
 1. PR reviewed and approved.
 1. Find and run again the [CI pipeline](https://app.circleci.com/pipelines/github/mozilla/bigquery-etl?) for the PR.
    * [x] Make sure all dry runs are successful.
@@ -120,7 +117,6 @@ The following is an example to update a new field in `telemetry_derived.clients_
 1. Run `./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream`.
    * [x] `schema.yaml` files of downstream dependencies, like `clients_last_seen_v1` are updated.
 1. Open a PR with these changes.
-   * [x] The `dry-run-sql` task fails.
 1. PR is reviewed and approved.
 1. Merge pull-request.
 1. Table deploys happen on a nightly cadence through the [`bqetl_artifact_deployment` Airflow DAG](https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid)

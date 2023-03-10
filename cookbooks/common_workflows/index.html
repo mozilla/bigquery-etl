@@ -2532,16 +2532,13 @@
 <li>To schedule the query, first select a DAG from the <code>./bqetl dag info</code> list or create a new DAG <code>./bqetl dag create &lt;bqetl_new_dag&gt;</code></li>
 <li>Run <code>./bqetl query schedule &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt; --dag &lt;bqetl_dag&gt;</code> to schedule the query</li>
 <li>Run <code>./bqetl dag generate &lt;bqetl_dag&gt;</code> to update the DAG file</li>
-<li>Create a pull request<ul>
-<li>CI fails since table doesn't exist yet</li>
-</ul>
-</li>
+<li>Create a pull request</li>
 <li>PR gets reviewed and eventually approved</li>
-<li>Create destination table: <code>./bqetl query schema deploy</code> (requires a <code>schema.yaml</code> file to be present)<ul>
-<li>This step needs to be performed by a data engineer as it requires DE credentials.</li>
+<li>Merge pull-request</li>
+<li>Table deploys happen on a nightly cadence through the <a href="https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid"><code>bqetl_artifact_deployment</code> Airflow DAG</a><ul>
+<li>Clear the most recent DAG run once a new version of bigquery-etl has been deployed to create new datasets earlier</li>
 </ul>
 </li>
-<li>Merge pull-request</li>
 <li>Backfill data<ul>
 <li>Option 1: via Airflow interface</li>
 <li>Option 2: <code>./bqetl query backfill --project-id &lt;project id&gt; &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code></li>
@@ -2554,13 +2551,13 @@
 <li>Run <code>./bqetl query validate &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code> to dry run and format the query</li>
 <li>If the query scheduling metadata has changed, run <code>./bqetl dag generate &lt;bqetl_dag&gt;</code> to update the DAG file</li>
 <li>If the query adds new columns, run <code>./bqetl query schema update &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code> to make local <code>schema.yaml</code> updates</li>
-<li>Open PR with changes<ul>
-<li>CI can fail if schema updates haven't been propagated to destination tables, for example when adding new fields</li>
+<li>Open PR with changes</li>
+<li>PR reviewed and approved</li>
+<li>Merge pull-request</li>
+<li>Table deploys (including schema changes) happen on a nightly cadence through the <a href="https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid"><code>bqetl_artifact_deployment</code> Airflow DAG</a><ul>
+<li>Clear the most recent DAG run once a new version of bigquery-etl has been deployed to apply changes earlier</li>
 </ul>
 </li>
-<li>PR reviewed and approved</li>
-<li>Deploy schema changes by running <code>./bqetl query schema deploy &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code></li>
-<li>Merge pull-request</li>
 </ol>
 <h2 id="formatting-sql">Formatting SQL</h2>
 <p>We enforce consistent SQL formatting as part of CI. After adding or changing a
@@ -2614,14 +2611,16 @@ SELECT
 </ul>
 </li>
 <li>Open a new PR with these changes.</li>
-<li>The dry-run-sql task is expected to fail at this point due to mismatch with deployed schemas!</li>
 <li>PR reviewed and approved.</li>
-<li>Deploy schema changes by running: <code>./bqetl query schema deploy &lt;dataset&gt;.&lt;table&gt;;</code></li>
 <li>Find and run again the <a href="https://app.circleci.com/pipelines/github/mozilla/bigquery-etl?">CI pipeline</a> for the PR.<ul class="task-list">
 <li class="task-list-item"><input type="checkbox" disabled checked/> Make sure all dry runs are successful.</li>
 </ul>
 </li>
 <li>Merge pull-request.</li>
+<li>Table deploys happen on a nightly cadence through the <a href="https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid"><code>bqetl_artifact_deployment</code> Airflow DAG</a><ul>
+<li>Clear the most recent DAG run once a new version of bigquery-etl has been deployed to apply changes earlier</li>
+</ul>
+</li>
 </ol>
 <p>The following is an example to update a new field in <code>telemetry_derived.clients_daily_v6</code></p>
 <h3 id="example-add-a-new-field-to-clients_daily">Example: Add a new field to clients_daily</h3>
@@ -2633,23 +2632,13 @@ SELECT
 <li class="task-list-item"><input type="checkbox" disabled checked/> <code>schema.yaml</code> files of downstream dependencies, like <code>clients_last_seen_v1</code> are updated.</li>
 </ul>
 </li>
-<li>Open a PR with these changes.<ul class="task-list">
-<li class="task-list-item"><input type="checkbox" disabled checked/> The <code>dry-run-sql</code> task fails.</li>
-</ul>
-</li>
+<li>Open a PR with these changes.</li>
 <li>PR is reviewed and approved.</li>
-<li>Deploy schema changes by running:
-   <div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>deploy<span class="w"> </span>telemetry_derived.clients_daily_v6<span class="p">;</span>
-./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>deploy<span class="w"> </span>telemetry_derived.clients_daily_joined_v1<span class="p">;</span>
-./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>deploy<span class="w"> </span>--force<span class="w"> </span>--ignore-dryrun-skip<span class="w"> </span>telemetry_derived.clients_last_seen_v1<span class="p">;</span>
-./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>deploy<span class="w"> </span>telemetry_derived.clients_last_seen_joined_v1<span class="p">;</span>
-./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>deploy<span class="w"> </span>--force<span class="w"> </span>telemetry_derived.clients_first_seen_v1<span class="p">;</span>
-</code></pre></div></li>
-<li>Rerun CI pipeline<ul class="task-list">
-<li class="task-list-item"><input type="checkbox" disabled checked/> All tests pass</li>
+<li>Merge pull-request.</li>
+<li>Table deploys happen on a nightly cadence through the <a href="https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid"><code>bqetl_artifact_deployment</code> Airflow DAG</a><ul>
+<li>Clear the most recent DAG run once a new version of bigquery-etl has been deployed to apply changes earlier</li>
 </ul>
 </li>
-<li>Merge pull-request.</li>
 </ol>
 <h2 id="remove-a-field-from-a-table-schema">Remove a field from a table schema</h2>
 <p>Deleting a field from an existing table schema should be done only when is totally neccessary. If you decide to delete it:
@@ -2683,9 +2672,8 @@ SELECT
 </li>
 <li>Open a PR</li>
 <li>PR gets reviewed and approved and merged</li>
-<li>To publish UDF immediately:<ul>
-<li>Run <code>./bqetl routine publish</code></li>
-<li>Or else it will take a day until UDF gets published automatically</li>
+<li>UDF deploys happen on a nightly cadence through the <a href="https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid"><code>bqetl_artifact_deployment</code> Airflow DAG</a><ul>
+<li>Clear the most recent DAG run once a new version of bigquery-etl has been deployed to apply changes earlier</li>
 </ul>
 </li>
 </ol>

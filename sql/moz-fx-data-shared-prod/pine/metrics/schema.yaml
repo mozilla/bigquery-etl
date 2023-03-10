@@ -1241,6 +1241,19 @@ fields:
       mode: REPEATED
       name: network_data_size_per_type
       type: RECORD
+    - description: 'Counts the occurrence of each outcome of a speculative connection
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: networking_speculative_connection_outcome
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

@@ -1204,6 +1204,71 @@ fields:
           mode: NULLABLE
           name: startup_profile_selection_reason
           type: STRING
+        - description: 'Will always be false if attribution.provenance.zone_id.data_exists
+            is false. Will be true if the provenance data indicates that the :Zone.Identifier
+            Alternate Data Stream existed on the installer.
+
+            '
+          mode: NULLABLE
+          name: attribution_provenance_ads_exists
+          type: BOOLEAN
+        - description: 'Will be true if the "zoneIdProvenanceData" file is present
+            in the installation directory and we were able to successfully read it.
+
+            '
+          mode: NULLABLE
+          name: attribution_provenance_data_exists
+          type: BOOLEAN
+        - description: 'The file system that the installer resided on at installation
+            time. Possible values are: "NTFS", "FAT32", "other". In error cases, it
+            can also be "missing", "error" or "readIniError". Only sent if attribution.provenance.zone_id.data_exists
+            is true.
+
+            '
+          mode: NULLABLE
+          name: attribution_provenance_file_system
+          type: STRING
+        - description: 'Will be true if the zone identifier ADS contained a host URL.
+            Will be false if a host URL is specified, but it isn''t a valid URL. Only
+            sent if attribution.provenance.zone_id.ads_exists is true.
+
+            '
+          mode: NULLABLE
+          name: attribution_provenance_host_url_exists
+          type: BOOLEAN
+        - description: 'Will be true if the host URL from the zone identifier ADS
+            appeared to be a Mozilla URL. Only sent if attribution.provenance.zone_id.host_url_exists
+            is true.
+
+            '
+          mode: NULLABLE
+          name: attribution_provenance_host_url_is_mozilla
+          type: BOOLEAN
+        - description: 'Will be true if the zone identifier ADS contained a referrer
+            URL. Will be false if a referrer URL is specified, but it isn''t a valid
+            URL. Only sent if attribution.provenance.zone_id.ads_exists is true.
+
+            '
+          mode: NULLABLE
+          name: attribution_provenance_referrer_url_exists
+          type: BOOLEAN
+        - description: 'Will be true if the referrer URL from the zone identifier
+            ADS appeared to be a Mozilla URL. Only sent if attribution.provenance.zone_id.referrer_url_exists
+            is true.
+
+            '
+          mode: NULLABLE
+          name: attribution_provenance_referrer_url_is_mozilla
+          type: BOOLEAN
+        - description: 'The zone identifier in the installer''s :Zone.Identifier ADS.
+            Possible values are integers between 0 and 4, inclusive. In error cases,
+            it can also be "unexpected", "missing", "error", or "readIniError". Only
+            sent if attribution.provenance.zone_id.ads_exists is true.
+
+            '
+          mode: NULLABLE
+          name: attribution_provenance_security_zone
+          type: STRING
         mode: NULLABLE
         name: scalars
         type: RECORD

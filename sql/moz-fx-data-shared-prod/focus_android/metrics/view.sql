@@ -131,7 +131,8 @@ SELECT
       metrics.labeled_counter.pdfjs_buttons,
       metrics.labeled_counter.pdfjs_editing,
       metrics.labeled_counter.network_data_size_pb_per_type,
-      metrics.labeled_counter.network_data_size_per_type
+      metrics.labeled_counter.network_data_size_per_type,
+      metrics.labeled_counter.networking_speculative_connection_outcome
     ) AS labeled_counter,
     metrics.labeled_rate,
     metrics.memory_distribution,
@@ -275,7 +276,8 @@ SELECT
       metrics.labeled_counter.pdfjs_buttons,
       metrics.labeled_counter.pdfjs_editing,
       metrics.labeled_counter.network_data_size_pb_per_type,
-      metrics.labeled_counter.network_data_size_per_type
+      metrics.labeled_counter.network_data_size_per_type,
+      metrics.labeled_counter.networking_speculative_connection_outcome
     ) AS labeled_counter,
     metrics.labeled_rate,
     metrics.memory_distribution,

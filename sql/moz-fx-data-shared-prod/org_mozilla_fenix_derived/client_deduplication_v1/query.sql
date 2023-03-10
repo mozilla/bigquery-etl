@@ -45,3 +45,5 @@ SELECT
   submission_timestamp
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix_stable.client_deduplication_v1`
+WHERE
+  DATE(submission_timestamp) = @submission_date

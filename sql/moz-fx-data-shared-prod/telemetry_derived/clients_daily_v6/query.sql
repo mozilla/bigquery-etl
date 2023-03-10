@@ -547,6 +547,36 @@ clients_summary AS (
     payload.processes.parent.keyed_scalars.sidebar_opened AS scalar_parent_sidebar_opened,
     payload.processes.parent.keyed_scalars.sidebar_search AS scalar_parent_sidebar_search,
     payload.processes.parent.keyed_scalars.sidebar_link AS scalar_parent_sidebar_link,
+    ARRAY_CONCAT(
+      payload.processes.parent.keyed_scalars.browser_search_adclicks_urlbar,
+      payload.processes.parent.keyed_scalars.browser_search_adclicks_urlbar_searchmode,
+      payload.processes.parent.keyed_scalars.browser_search_adclicks_contextmenu,
+      payload.processes.parent.keyed_scalars.browser_search_adclicks_about_home,
+      payload.processes.parent.keyed_scalars.browser_search_adclicks_about_newtab,
+      payload.processes.parent.keyed_scalars.browser_search_adclicks_searchbar,
+      payload.processes.parent.keyed_scalars.browser_search_adclicks_system,
+      payload.processes.parent.keyed_scalars.browser_search_adclicks_webextension,
+      payload.processes.parent.keyed_scalars.browser_search_adclicks_tabhistory,
+      payload.processes.parent.keyed_scalars.browser_search_adclicks_reload,
+      payload.processes.parent.keyed_scalars.browser_search_adclicks_unknown,
+      payload.processes.parent.keyed_scalars.browser_search_adclicks_urlbar_handoff,
+      payload.processes.parent.keyed_scalars.browser_search_adclicks_urlbar_persisted
+    ) AS browser_ad_clicks_combined,
+    ARRAY_CONCAT(
+      payload.processes.parent.keyed_scalars.browser_search_withads_urlbar,
+      payload.processes.parent.keyed_scalars.browser_search_withads_urlbar_searchmode,
+      payload.processes.parent.keyed_scalars.browser_search_withads_contextmenu,
+      payload.processes.parent.keyed_scalars.browser_search_withads_about_home,
+      payload.processes.parent.keyed_scalars.browser_search_withads_about_newtab,
+      payload.processes.parent.keyed_scalars.browser_search_withads_searchbar,
+      payload.processes.parent.keyed_scalars.browser_search_withads_system,
+      payload.processes.parent.keyed_scalars.browser_search_withads_webextension,
+      payload.processes.parent.keyed_scalars.browser_search_withads_tabhistory,
+      payload.processes.parent.keyed_scalars.browser_search_withads_reload,
+      payload.processes.parent.keyed_scalars.browser_search_withads_unknown,
+      payload.processes.parent.keyed_scalars.browser_search_withads_urlbar_handoff,
+      payload.processes.parent.keyed_scalars.browser_search_withads_urlbar_persisted
+    ) AS browser_search_with_ads_combined,
     -- CAUTION: the order of fields here must match the order defined in
     -- count_histograms above and offsets must increment on each line.
     count_histograms[OFFSET(0)].histogram AS histogram_parent_devtools_aboutdebugging_opened_count,
@@ -1166,57 +1196,11 @@ aggregates AS (
     MIN(submission_timestamp) AS submission_timestamp_min,
     -- prioritize access point based probes
     COALESCE(
-      SUM(
-        (
-          SELECT
-            SUM(value)
-          FROM
-            UNNEST(
-              ARRAY_CONCAT(
-                browser_search_adclicks_urlbar,
-                browser_search_adclicks_urlbar_searchmode,
-                browser_search_adclicks_contextmenu,
-                browser_search_adclicks_about_home,
-                browser_search_adclicks_about_newtab,
-                browser_search_adclicks_searchbar,
-                browser_search_adclicks_system,
-                browser_search_adclicks_webextension,
-                browser_search_adclicks_tabhistory,
-                browser_search_adclicks_reload,
-                browser_search_adclicks_unknown,
-                browser_search_adclicks_urlbar_handoff,
-                browser_search_adclicks_urlbar_persisted
-              )
-            )
-        )
-      ),
+      SUM((SELECT SUM(value) FROM UNNEST(browser_ad_clicks_combined))),
       SUM((SELECT SUM(value) FROM UNNEST(scalar_parent_browser_search_ad_clicks)))
     ) AS ad_clicks_count_all,
     COALESCE(
-      SUM(
-        (
-          SELECT
-            SUM(value)
-          FROM
-            UNNEST(
-              ARRAY_CONCAT(
-                browser_search_withads_urlbar,
-                browser_search_withads_urlbar_searchmode,
-                browser_search_withads_contextmenu,
-                browser_search_withads_about_home,
-                browser_search_withads_about_newtab,
-                browser_search_withads_searchbar,
-                browser_search_withads_system,
-                browser_search_withads_webextension,
-                browser_search_withads_tabhistory,
-                browser_search_withads_reload,
-                browser_search_withads_unknown,
-                browser_search_withads_urlbar_handoff,
-                browser_search_withads_urlbar_persisted
-              )
-            )
-        )
-      ),
+      SUM((SELECT SUM(value) FROM UNNEST(browser_search_with_ads_combined))),
       SUM((SELECT SUM(value) FROM UNNEST(scalar_parent_browser_search_with_ads)))
     ) AS search_with_ads_count_all,
     SUM(
@@ -1354,44 +1338,8 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_sidebar_opened)),
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_sidebar_search)),
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_sidebar_link)),
-      STRUCT(
-        ARRAY_CONCAT_AGG(
-          ARRAY_CONCAT(
-            browser_search_adclicks_urlbar,
-            browser_search_adclicks_urlbar_searchmode,
-            browser_search_adclicks_contextmenu,
-            browser_search_adclicks_about_home,
-            browser_search_adclicks_about_newtab,
-            browser_search_adclicks_searchbar,
-            browser_search_adclicks_system,
-            browser_search_adclicks_webextension,
-            browser_search_adclicks_tabhistory,
-            browser_search_adclicks_reload,
-            browser_search_adclicks_unknown,
-            browser_search_adclicks_urlbar_handoff,
-            browser_search_adclicks_urlbar_persisted
-          )
-        )
-      ),
-      STRUCT(
-        ARRAY_CONCAT_AGG(
-          ARRAY_CONCAT(
-            browser_search_withads_urlbar,
-            browser_search_withads_urlbar_searchmode,
-            browser_search_withads_contextmenu,
-            browser_search_withads_about_home,
-            browser_search_withads_about_newtab,
-            browser_search_withads_searchbar,
-            browser_search_withads_system,
-            browser_search_withads_webextension,
-            browser_search_withads_tabhistory,
-            browser_search_withads_reload,
-            browser_search_withads_unknown,
-            browser_search_withads_urlbar_handoff,
-            browser_search_withads_urlbar_persisted
-          )
-        )
-      )
+      STRUCT(ARRAY_CONCAT_AGG(browser_ad_clicks_combined)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_with_ads_combined))
     ] AS map_sum_aggregates,
     udf.search_counts_map_sum(ARRAY_CONCAT_AGG(search_counts)) AS search_counts,
     mozfun.stats.mode_last(

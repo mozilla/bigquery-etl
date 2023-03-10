@@ -1356,36 +1356,40 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_sidebar_link)),
       STRUCT(
         ARRAY_CONCAT_AGG(
-          browser_search_adclicks_urlbar,
-          browser_search_adclicks_urlbar_searchmode,
-          browser_search_adclicks_contextmenu,
-          browser_search_adclicks_about_home,
-          browser_search_adclicks_about_newtab,
-          browser_search_adclicks_searchbar,
-          browser_search_adclicks_system,
-          browser_search_adclicks_webextension,
-          browser_search_adclicks_tabhistory,
-          browser_search_adclicks_reload,
-          browser_search_adclicks_unknown,
-          browser_search_adclicks_urlbar_handoff,
-          browser_search_adclicks_urlbar_persisted
+          ARRAY_CONCAT(
+            browser_search_adclicks_urlbar,
+            browser_search_adclicks_urlbar_searchmode,
+            browser_search_adclicks_contextmenu,
+            browser_search_adclicks_about_home,
+            browser_search_adclicks_about_newtab,
+            browser_search_adclicks_searchbar,
+            browser_search_adclicks_system,
+            browser_search_adclicks_webextension,
+            browser_search_adclicks_tabhistory,
+            browser_search_adclicks_reload,
+            browser_search_adclicks_unknown,
+            browser_search_adclicks_urlbar_handoff,
+            browser_search_adclicks_urlbar_persisted
+          )
         )
       ),
       STRUCT(
         ARRAY_CONCAT_AGG(
-          browser_search_withads_urlbar,
-          browser_search_withads_urlbar_searchmode,
-          browser_search_withads_contextmenu,
-          browser_search_withads_about_home,
-          browser_search_withads_about_newtab,
-          browser_search_withads_searchbar,
-          browser_search_withads_system,
-          browser_search_withads_webextension,
-          browser_search_withads_tabhistory,
-          browser_search_withads_reload,
-          browser_search_withads_unknown,
-          browser_search_withads_urlbar_handoff,
-          browser_search_withads_urlbar_persisted
+          ARRAY_CONCAT(
+            browser_search_withads_urlbar,
+            browser_search_withads_urlbar_searchmode,
+            browser_search_withads_contextmenu,
+            browser_search_withads_about_home,
+            browser_search_withads_about_newtab,
+            browser_search_withads_searchbar,
+            browser_search_withads_system,
+            browser_search_withads_webextension,
+            browser_search_withads_tabhistory,
+            browser_search_withads_reload,
+            browser_search_withads_unknown,
+            browser_search_withads_urlbar_handoff,
+            browser_search_withads_urlbar_persisted
+          )
         )
       )
     ] AS map_sum_aggregates,

@@ -1338,8 +1338,8 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_sidebar_opened)),
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_sidebar_search)),
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_sidebar_link)),
-      STRUCT(ARRAY_CONCAT_AGG(browser_ad_clicks_combined)),
-      STRUCT(ARRAY_CONCAT_AGG(browser_search_with_ads_combined))
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_with_ads_combined)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_ad_clicks_combined))
     ] AS map_sum_aggregates,
     udf.search_counts_map_sum(ARRAY_CONCAT_AGG(search_counts)) AS search_counts,
     mozfun.stats.mode_last(
@@ -1502,15 +1502,15 @@ SELECT
   CASE
     WHEN mozfun.norm.truncate_version(app_version, "major") <= 108
       THEN map_sum_aggregates[OFFSET(38)].map
-    WHEN mozfun.norm.truncate_version(app_version, "major") <= 108
-      THEN map_sum_aggregates[OFFSET(113)].map
+    WHEN mozfun.norm.truncate_version(app_version, "major") > 108
+      THEN map_sum_aggregates[OFFSET(112)].map
     ELSE NULL
   END AS search_with_ads,
   CASE
     WHEN mozfun.norm.truncate_version(app_version, "major") <= 108
       THEN map_sum_aggregates[OFFSET(39)].map
     WHEN mozfun.norm.truncate_version(app_version, "major") > 108
-      THEN map_sum_aggregates[OFFSET(112)].map
+      THEN map_sum_aggregates[OFFSET(113)].map
     ELSE NULL
   END AS ad_clicks,
   map_sum_aggregates[OFFSET(40)].map AS search_content_urlbar_sum,

@@ -5,6 +5,10 @@ owners:
 - frank@mozilla.com
 labels:
   incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_org_mozilla_firefox_derived
+  depends_on_past: false
 bigquery:
   time_partitioning:
     type: day

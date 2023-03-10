@@ -36160,6 +36160,30 @@ fields:
         - mode: NULLABLE
           name: urlbar_autofill_deletion
           type: INTEGER
+        - mode: NULLABLE
+          name: attribution_provenance_ads_exists
+          type: BOOLEAN
+        - mode: NULLABLE
+          name: attribution_provenance_data_exists
+          type: BOOLEAN
+        - mode: NULLABLE
+          name: attribution_provenance_file_system
+          type: STRING
+        - mode: NULLABLE
+          name: attribution_provenance_host_url_exists
+          type: BOOLEAN
+        - mode: NULLABLE
+          name: attribution_provenance_host_url_is_mozilla
+          type: BOOLEAN
+        - mode: NULLABLE
+          name: attribution_provenance_referrer_url_exists
+          type: BOOLEAN
+        - mode: NULLABLE
+          name: attribution_provenance_referrer_url_is_mozilla
+          type: BOOLEAN
+        - mode: NULLABLE
+          name: attribution_provenance_security_zone
+          type: STRING
         mode: NULLABLE
         name: scalars
         type: RECORD

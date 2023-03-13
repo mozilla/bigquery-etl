@@ -14,4 +14,4 @@ UNION ALL
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.client_deduplication`
+  `moz-fx-data-shared-prod.org_mozilla_fenix.client_deduplication`

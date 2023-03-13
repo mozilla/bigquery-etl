@@ -19,28 +19,31 @@ fields:
   name: country
   type: STRING
   description: |
-    User's country where activity took place.
-    See: UDF mozdata.stats.mode_last for more
-    info on how the function operates.
+    The first country value observed
+    in a day for a specific user.
+    For example: Android
 
 - mode: NULLABLE
   name: language
   type: STRING
   description: |
-    User's language.
+    The first language value observed
+    in a day for a specific user.
 
 - mode: NULLABLE
   name: os_name
   type: STRING
   description: |
-    OS on which the app was running.
-    For example: Android.
+    The first os_name value observed
+    in a day for a specific user.
+    For example: Android
 
 - mode: NULLABLE
   name: os_version
   type: STRING
   description: |
-    Version of the OS the device was using.
+    The first os_version value observed
+    in a day for a specific user.
 
 - mode: NULLABLE
   name: seen_in_tier1_country

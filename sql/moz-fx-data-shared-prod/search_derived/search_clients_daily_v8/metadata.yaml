@@ -22,6 +22,8 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
+    expiration_days: null
   clustering:
     fields:
     - sample_id
+references: {}

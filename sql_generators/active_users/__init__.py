@@ -128,10 +128,10 @@ def generate(target_project, output_dir, use_cloud_function):
                 skip_existing=False,
             )
 
-        write_sql(
-            output_dir=output_dir,
-            full_table_id=f"{target_project}.{DATASET_FOR_UNIONED_VIEWS}.{TABLE_NAME}_mobile",
-            basename="view.sql",
-            sql=reformat(mobile_view_template.render(project_id=target_project)),
-            skip_existing=False,
-        )
+    write_sql(
+        output_dir=output_dir,
+        full_table_id=f"{target_project}.{DATASET_FOR_UNIONED_VIEWS}.{TABLE_NAME}_mobile",
+        basename="view.sql",
+        sql=reformat(mobile_view_template.render(project_id=target_project)),
+        skip_existing=False,
+    )

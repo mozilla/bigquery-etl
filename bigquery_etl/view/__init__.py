@@ -1,5 +1,6 @@
 """Represents a SQL view."""
 
+import glob
 import re
 import string
 import time
@@ -40,6 +41,10 @@ SKIP_VALIDATION = {
     "sql/moz-fx-data-shared-prod/mlhackweek_search/metrics/view.sql",
     "sql/moz-fx-data-shared-prod/regrets_reporter_ucs/main_events/view.sql",
     "sql/moz-fx-data-shared-prod/mlhackweek_search/action/view.sql",
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/**/client_deduplication/view.sql",
+        recursive=True,
+    ),
 }
 
 # skip publishing these views

@@ -262,3 +262,6 @@ fields:
 - mode: NULLABLE
   name: normalized_engine
   type: STRING
+- mode: NULLABLE
+  name: is_sap_monetizable
+  type: BOOLEAN

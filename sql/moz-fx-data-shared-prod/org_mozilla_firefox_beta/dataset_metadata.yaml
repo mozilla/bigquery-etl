@@ -1,0 +1,11 @@
+friendly_name: Org Mozilla Firefox Beta
+description: |-
+  User-facing views related to document namespace org-mozilla-firefox-beta
+  see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/org-mozilla-firefox-beta
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

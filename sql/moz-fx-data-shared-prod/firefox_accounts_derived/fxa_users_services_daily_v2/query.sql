@@ -54,7 +54,7 @@ WITH fxa_events AS (
     DATE(`timestamp`)
     BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND @submission_date
-    AND event_category IN ('content', 'auth', 'oauth')
+    AND fxa_log IN ('content', 'auth', 'oauth')
     AND event_type NOT IN ( --
       'fxa_email - bounced',
       'fxa_email - click',

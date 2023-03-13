@@ -17,7 +17,7 @@ WITH fxa_events AS (
     `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
     DATE(`timestamp`) = @submission_date
-    AND event_category IN ('content', 'auth', 'oauth')
+    AND fxa_log IN ('content', 'auth', 'oauth')
 )
 SELECT
   DATE(`timestamp`) AS submission_date,

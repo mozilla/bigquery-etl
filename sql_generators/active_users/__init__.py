@@ -12,6 +12,7 @@ from bigquery_etl.util.common import render, write_sql
 
 THIS_PATH = Path(os.path.dirname(__file__))
 TABLE_NAME = "active_users_aggregates"
+DATASET_FOR_UNIONED_VIEWS = "telemetry"
 
 
 class Browsers(Enum):
@@ -52,7 +53,9 @@ def generate(target_project, output_dir, use_cloud_function):
     metadata_template = env.get_template("metadata.yaml")
     view_template = env.get_template("view.sql")
     focus_android_view_template = env.get_template("focus_android_view.sql")
+    mobile_view_template = env.get_template("mobile_view.sql")
     output_dir = Path(output_dir) / target_project
+
     for browser in Browsers:
         if browser.name == "firefox_desktop":
             query_sql = reformat(
@@ -124,3 +127,11 @@ def generate(target_project, output_dir, use_cloud_function):
                 ),
                 skip_existing=False,
             )
+
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{DATASET_FOR_UNIONED_VIEWS}.{TABLE_NAME}_mobile",
+            basename="view.sql",
+            sql=reformat(mobile_view_template.render(project_id=target_project)),
+            skip_existing=False,
+        )

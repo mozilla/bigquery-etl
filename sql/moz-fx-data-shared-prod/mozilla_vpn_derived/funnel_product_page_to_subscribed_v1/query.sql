@@ -12,9 +12,9 @@ WITH stripe_plans AS (
     ) AS pricing_plan,
     plans.nickname AS plan_name,
   FROM
-    `moz-fx-data-bq-fivetran`.stripe.plan AS plans
+    `moz-fx-data-shared-prod`.stripe_external.plan_v1 AS plans
   LEFT JOIN
-    `moz-fx-data-bq-fivetran`.stripe.product AS products
+    `moz-fx-data-shared-prod`.stripe_external.product_v1 AS products
   ON
     plans.product_id = products.id
 ),

@@ -1,6 +1,6 @@
 --- User-facing view for all mobile apps. Generated via sql_generators.active_users_aggregates.
 CREATE OR REPLACE VIEW
-  `{{ project_id }}.{{ telemetry }}.active_users_aggregates_mobile`
+  `{{ project_id }}.{{ dataset_id }}.active_users_aggregates_mobile`
 AS
 SELECT
   *

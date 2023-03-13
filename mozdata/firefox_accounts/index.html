@@ -725,6 +725,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#fxa_users_daily" class="md-nav__link">
+    fxa_users_daily
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#fxa_users_first_seen" class="md-nav__link">
     fxa_users_first_seen
   </a>
@@ -769,6 +776,13 @@
         <li class="md-nav__item">
   <a href="#fxa_users_services_first_seen" class="md-nav__link">
     fxa_users_services_first_seen
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fxa_users_services_last_seen" class="md-nav__link">
+    fxa_users_services_last_seen
   </a>
   
 </li>
@@ -2488,6 +2502,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#fxa_users_daily" class="md-nav__link">
+    fxa_users_daily
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#fxa_users_first_seen" class="md-nav__link">
     fxa_users_first_seen
   </a>
@@ -2532,6 +2553,13 @@
         <li class="md-nav__item">
   <a href="#fxa_users_services_first_seen" class="md-nav__link">
     fxa_users_services_first_seen
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fxa_users_services_last_seen" class="md-nav__link">
+    fxa_users_services_last_seen
   </a>
   
 </li>
@@ -3651,6 +3679,110 @@ and to contain only one row per distinct <code>document_id</code> within a given
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts/fxa_log_performance_events">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts/fxa_log_performance_events/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts/fxa_log_performance_events/metadata.yaml">Metadata File</a> </p>
 <hr />
+<h2 id="fxa_users_daily"><a href="#fxa_users_daily">fxa_users_daily</a></h2>
+<p><code>firefox_accounts.fxa_users_daily</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>submission_date</td>
+        <td>Represents ETL job date.
+Also, used for table partitioning.
+</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>user_id</td>
+        <td>A 36 char long hash value representing
+User ID (registered user).
+Also, used as a clustering field.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>country</td>
+        <td>User's country where activity took place.
+See: UDF mozdata.stats.mode_last for more
+info on how the function operates.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>language</td>
+        <td>User's language.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>app_version</td>
+        <td>Mozilla app version,
+follows format: major.minor.patch (e.g. 99.3.3).
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>os_name</td>
+        <td>OS on which the app was running.
+For example: Android.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>os_version</td>
+        <td>Version of the OS the device was using.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>seen_in_tier1_country</td>
+        <td>Set to True if a user sent an event from
+one of the following countries for
+a specific submission_date:
+('United States','France',
+'Germany','United Kingdom','Canada')
+</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>registered</td>
+        <td>Set to True if the user submitted
+the event_type of `fxa_reg - complete`
+event on the specific submission_date.
+</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>monitor_only</td>
+        <td>Set to True if the user contains events of
+event_type `fxa_rp - engage` only
+for service `fx-monitor`.
+</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts_derived>firefox_accounts_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_daily_v1>fxa_users_daily_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts/fxa_users_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts/fxa_users_daily/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts/fxa_users_daily/metadata.yaml">Metadata File</a> </p>
+<hr />
 <h2 id="fxa_users_first_seen"><a href="#fxa_users_first_seen">fxa_users_first_seen</a></h2>
 <p><code>firefox_accounts.fxa_users_first_seen</code></p>
 <table>
@@ -4190,6 +4322,24 @@ are the events used to create this table.
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts/fxa_users_services_first_seen">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts/fxa_users_services_first_seen/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts/fxa_users_services_first_seen/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="fxa_users_services_last_seen"><a href="#fxa_users_services_last_seen">fxa_users_services_last_seen</a></h2>
+<p><code>firefox_accounts.fxa_users_services_last_seen</code></p>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts_derived>firefox_accounts_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_last_seen_v1>fxa_users_services_last_seen_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts/fxa_users_services_last_seen">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts/fxa_users_services_last_seen/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_accounts/fxa_users_services_last_seen/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="nonprod_fxa_content_auth_stdout_events"><a href="#nonprod_fxa_content_auth_stdout_events">nonprod_fxa_content_auth_stdout_events</a></h2>
 <p><code>firefox_accounts.nonprod_fxa_content_auth_stdout_events</code></p>

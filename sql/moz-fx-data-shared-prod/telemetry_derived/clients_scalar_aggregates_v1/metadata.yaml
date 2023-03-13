@@ -3,4 +3,4 @@ friendly_name: |-
 description: |-
   [DESCRIPTION_MISSING]
 owners:
-- nobody@mozilla.com
+- data-platform-infra-wg@mozilla.com

@@ -8,7 +8,7 @@ WITH todays_metrics AS (
     normalized_channel AS channel,
     IFNULL(country, '??') country,
     city,
-    locale,
+    COALESCE(REGEXP_EXTRACT(locale, r'^(.+?)-'), locale, NULL) AS locale,
     first_seen_date,
     EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
     days_since_seen,

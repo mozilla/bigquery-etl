@@ -125,21 +125,21 @@ fields:
   mode: NULLABLE
   name: count_dltoken_duplicates
   type: INTEGER
-- description: "Indicates an exception state when determining the Google Analytics\
+- description: "Indicates an exception state when determining the GA\
     \ session associated with the Firefox download\naction.  Values are limited to:\n\
-    NULL:  unique Google Analytics session matches the Firefox download.  This is\
+    NULL:  unique GA session matches the Firefox download.  This is\
     \ the normal state.\nGA_UNRESOLVABLE:  This indicates that more than one Google\
     \ Analytics session matches the Firefox download.  \nThe occurrences of this value\
     \ will decrease in the future.      \nDOWNLOAD_SESSION_ID_EMPTY:  The raw download\
-    \ record did not contain any Google Analytics session identifier.\nDOWNLOAD_SESSION_ID_VALUE_NOT_SET:\
-    \  The raw download record contained Google Analytics session identifier with\
-    \ value\n\u2018(not set)\u2019 and could not be associated with a Google Analytics\
+    \ record did not contain any GA session identifier.\nDOWNLOAD_SESSION_ID_VALUE_NOT_SET:\
+    \  The raw download record contained GA session identifier with\
+    \ value\n\u2018(not set)\u2019 and could not be associated with a GA\
     \ session.\nDOWNLOAD_SESSION_ID_VALUE_SOMETHING:  The raw download record contained\
-    \ Google Analytics session identifier with value\n\u2018something\u2019 and could\
-    \ not be associated with a Google Analytics session.\nMISSING_GA_CLIENT:  The\
-    \ raw download record contained a valid Google Analytics session identifier however\
-    \ there was \nno corresponding Google Analytics session found.  This value is\
-    \ used to identify why the Google Analytics sourced \ncolumns are NULL.\n"
+    \ GA session identifier with value\n\u2018something\u2019 and could\
+    \ not be associated with a GA session.\nMISSING_GA_CLIENT:  The\
+    \ raw download record contained a valid GA session identifier however\
+    \ there was \nno corresponding GA session found.  This value is\
+    \ used to identify why the GA sourced \ncolumns are NULL.\n"
   mode: NULLABLE
   name: exception
   type: STRING

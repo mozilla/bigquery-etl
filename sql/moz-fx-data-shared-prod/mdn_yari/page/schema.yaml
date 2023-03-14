@@ -326,8 +326,34 @@ fields:
       mode: NULLABLE
       name: navigator_user_agent
       type: STRING
+    - description: 'The currently displayed viewport breakpoint,
+
+        one of "xs", "sm", "md","lg", "xl" or "xxl".
+
+        '
+      mode: NULLABLE
+      name: navigator_viewport_breakpoint
+      type: STRING
     mode: NULLABLE
     name: string
+    type: RECORD
+  - fields:
+    - description: 'The ratio of viewport width to screen width, expressed as a percentage.
+
+        '
+      mode: NULLABLE
+      name: navigator_viewport_horizontal_coverage
+      type: INTEGER
+    - description: 'The ratio of viewport width to viewport height,
+
+        expressed as a percentage.
+
+        '
+      mode: NULLABLE
+      name: navigator_viewport_ratio
+      type: INTEGER
+    mode: NULLABLE
+    name: quantity
     type: RECORD
   mode: NULLABLE
   name: metrics
@@ -366,6 +392,9 @@ fields:
       - fields:
         - mode: NULLABLE
           name: type
+          type: STRING
+        - mode: NULLABLE
+          name: enrollment_id
           type: STRING
         mode: NULLABLE
         name: extra

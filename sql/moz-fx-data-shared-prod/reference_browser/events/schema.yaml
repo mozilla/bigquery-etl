@@ -201,6 +201,9 @@ fields:
         - mode: NULLABLE
           name: type
           type: STRING
+        - mode: NULLABLE
+          name: enrollment_id
+          type: STRING
         mode: NULLABLE
         name: extra
         type: RECORD

@@ -26,7 +26,11 @@ default_args = {
     "owner": "skahmann@mozilla.com",
     "start_date": datetime.datetime(2022, 9, 13, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "skahmann@mozilla.com"],
+    "email": [
+        "cmorales@mozilla.com",
+        "skahmann@mozilla.com",
+        "telemetry-alerts@mozilla.com",
+    ],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,

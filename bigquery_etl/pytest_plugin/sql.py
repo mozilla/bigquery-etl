@@ -133,11 +133,12 @@ class SqlTest(pytest.Item, pytest.File):
                 # with the date appended to allow for daily processing.
                 try:
                     datetime.datetime.strptime(table_name[-8:], "%Y%m%d")
+                except ValueError:
+                    pass
+                else:
                     generic_table_name = table_name[:-8] + "*"
                     generic_original = original[:-8] + "*"
                     query = query.replace(generic_original, generic_table_name)
-                except ValueError:
-                    pass
                 tables[table_name] = Table(table_name, source_format, source_path)
                 print(f"Initialized {table_name}")
             elif extension == "sql":

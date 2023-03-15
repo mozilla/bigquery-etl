@@ -9,7 +9,18 @@
     "name": "date",
     "type": "STRING"
   },
-
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "timeOnSite",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "NULLABLE",
+    "name": "totals",
+    "type": "RECORD"
+  },
   {
     "fields": [
       {
@@ -49,7 +60,7 @@
         "name": "browserVersion",
         "type": "STRING"
       },
-            {
+      {
         "mode": "NULLABLE",
         "name": "operatingSystem",
         "type": "STRING"

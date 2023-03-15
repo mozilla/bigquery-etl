@@ -84,7 +84,8 @@ ga_sessions AS (
     ANY_VALUE(device.operatingSystem) AS os,
     ANY_VALUE(device.browser) AS browser,
     ANY_VALUE(device.browserVersion) AS browser_version,
-    ANY_VALUE(device.language) AS `language`
+    ANY_VALUE(device.language) AS `language`,
+    ANY_VALUE(totals.timeOnSite) AS time_on_site
   FROM
     `moz-fx-data-marketing-prod.65789850.ga_sessions_*` AS ga
   WHERE
@@ -149,7 +150,8 @@ downloads_and_ga_session AS (
     ) AS has_ga_download_event,  -- this will be ignored if nrows >1
     ANY_VALUE(count_dltoken_duplicates) AS count_dltoken_duplicates,
     COUNT(*) AS nrows,
-    ANY_VALUE(s.download_date) AS download_date
+    ANY_VALUE(s.download_date) AS download_date,
+    ANY_VALUE(time_on_site) AS time_on_site
   FROM
     ga_sessions_with_hits gs
   RIGHT JOIN
@@ -164,6 +166,21 @@ downloads_and_ga_session AS (
 SELECT
   dltoken,
   download_date,
+  CASE
+    WHEN nrows > 1
+      THEN NULL
+    WHEN stub_visit_id = ''
+      THEN NULL
+    WHEN stub_visit_id = '(not set)'
+      THEN NULL
+    WHEN stub_visit_id = 'something'
+      THEN NULL
+    WHEN client_id IS NULL
+      THEN NULL
+    --only set to null when we do not have a session.  The value can be null when we do have a session so set those to 0.
+    ELSE IFNULL(time_on_site, 0)
+  END
+  time_on_site,
   CASE
     WHEN nrows > 1
       THEN NULL

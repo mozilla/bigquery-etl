@@ -4,6 +4,10 @@ fields:
   mode: NULLABLE
   name: dltoken
   type: STRING
+- description: "Time visitor on site"
+  mode: NULLABLE
+  name: time_on_site
+  type: NUMERIC
 - description: "A description of the advertising or promotional copy.  \nValue will\
     \ be null if the Firefox download has no corresponding Google Analytics session.\n"
   mode: NULLABLE

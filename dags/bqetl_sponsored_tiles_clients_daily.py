@@ -49,7 +49,11 @@ with DAG(
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="skahmann@mozilla.com",
-        email=["skahmann@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "cmorales@mozilla.com",
+            "skahmann@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],

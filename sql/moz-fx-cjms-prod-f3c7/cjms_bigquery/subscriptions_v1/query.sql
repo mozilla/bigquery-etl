@@ -56,7 +56,7 @@ initial_invoices AS (
   FROM
     attributed_subs
   JOIN
-    `moz-fx-data-bq-fivetran`.stripe.invoice AS invoices
+    `moz-fx-data-shared-prod`.stripe_external.invoice_v1 AS invoices
   USING
     (subscription_id)
   -- ZetaSQL requires QUALIFY to be used in conjunction with WHERE, GROUP BY, or HAVING.
@@ -74,15 +74,15 @@ initial_discounts AS (
   FROM
     initial_invoices
   JOIN
-    `moz-fx-data-bq-fivetran`.stripe.invoice_discount AS invoice_discounts
+    `moz-fx-data-shared-prod`.stripe_external.invoice_discount_v1 AS invoice_discounts
   USING
     (invoice_id)
   JOIN
-    `moz-fx-data-bq-fivetran`.stripe.promotion_code AS promotion_codes
+    `moz-fx-data-shared-prod`.stripe_external.promotion_code_v1 AS promotion_codes
   ON
     invoice_discounts.promotion_code = promotion_codes.id
   JOIN
-    `moz-fx-data-bq-fivetran`.stripe.coupon AS coupons
+    `moz-fx-data-shared-prod`.stripe_external.coupon_v1 AS coupons
   ON
     promotion_codes.coupon_id = coupons.id
 ),

@@ -8,7 +8,10 @@ SELECT
     active_experiment_branch,
     total_hours_sum,
     scalar_parent_dom_contentprocess_troubled_due_to_memory_sum,
-    histogram_parent_devtools_developertoolbar_opened_count_sum
+    histogram_parent_devtools_developertoolbar_opened_count_sum,
+    -- see logic for search_with_ads and ad_clicks below
+    search_with_ads_combined_sum,
+    ad_clicks_combined_sum
   ) REPLACE(
     IFNULL(country, '??') AS country,
     IFNULL(city, '??') AS city,
@@ -167,7 +170,21 @@ SELECT
         UNNEST(contextual_services_topsites_impression_sum)
       WHERE
         key LIKE "newtab%"
-    ) AS contextual_services_topsites_impression_sum
+    ) AS contextual_services_topsites_impression_sum,
+    CASE
+      WHEN mozfun.norm.truncate_version(app_version, "major") <= 108
+        THEN search_with_ads
+      WHEN mozfun.norm.truncate_version(app_version, "major") > 108
+        THEN search_with_ads_combined_sum
+      ELSE NULL
+    END AS search_with_ads,
+    CASE
+      WHEN `mozfun.norm.truncate_version`(app_version, "major") <= 108
+        THEN ad_clicks
+      WHEN `mozfun.norm.truncate_version`(app_version, "major") > 108
+        THEN ad_clicks_combined_sum
+      ELSE NULL
+    END AS ad_clicks
   ),
   `mozfun.norm.browser_version_info`(app_version) AS browser_version_info,
   COALESCE(

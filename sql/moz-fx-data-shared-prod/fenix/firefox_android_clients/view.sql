@@ -29,6 +29,6 @@ SELECT
     WHEN install_source NOT IN ('com.android.vending')
       THEN 'Other'
     ELSE install_source
-  END AS install_source
+  END AS install_source,
 FROM
   `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`

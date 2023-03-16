@@ -19,12 +19,13 @@ WITH first_seen AS (
     submission_date = @submission_date
     AND normalized_channel = 'release'
 ),
--- Find activations per client_id.
+-- Find the most recent activation record per client_id.
 activations AS (
   SELECT
     client_id,
-    submission_date,
-    activated > 0 AS activated
+    ARRAY_AGG(activated ORDER BY submission_date DESC)[
+      SAFE_OFFSET(0)
+    ] > 0 AS activated
   FROM
     `moz-fx-data-shared-prod.fenix.new_profile_activation`
   WHERE

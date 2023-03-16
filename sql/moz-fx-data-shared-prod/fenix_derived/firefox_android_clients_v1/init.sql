@@ -123,16 +123,19 @@ WITH first_seen AS (
     submission_date >= '2019-01-01'
     AND normalized_channel = 'release'
 ),
--- Find activations per client_id. Data available since '2021-12-01'
+-- Find the most recent activation record per client_id. Data available since '2021-12-01'
 activations AS (
   SELECT
     client_id,
-    submission_date,
-    activated > 0 AS activated
+    ARRAY_AGG(activated ORDER BY submission_date DESC)[
+      SAFE_OFFSET(0)
+    ] > 0 AS activated,
   FROM
     `moz-fx-data-shared-prod.fenix.new_profile_activation`
   WHERE
     submission_date >= '2021-12-01'
+  GROUP BY
+    client_id
 ),
 -- Find earliest data per client from the first_session ping.
 first_session_ping AS (

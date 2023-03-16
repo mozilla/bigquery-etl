@@ -6,13 +6,13 @@ SELECT
   refund.reason,
   refund.status,
 FROM
-  `dev-fivetran`.stripe_nonprod.refund
+  `moz-fx-data-shared-prod`.stripe_external.nonprod_refund_v1 AS refund
 JOIN
-  `dev-fivetran`.stripe_nonprod.charge
+  `moz-fx-data-shared-prod`.stripe_external.nonprod_charge_v1 AS charge
 ON
   refund.charge_id = charge.id
 JOIN
-  `dev-fivetran`.stripe_nonprod.invoice
+  `moz-fx-data-shared-prod`.stripe_external.nonprod_invoice_v1 AS invoice
 ON
   charge.invoice_id = invoice.id
 JOIN

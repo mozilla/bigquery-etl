@@ -181,7 +181,7 @@ SKIP = {
         recursive=True,
     ),
     *glob.glob(
-        "sql/moz-fx-data-shared-prod/**/client_deduplication/view.sql",
+        "sql/moz-fx-data-shared-prod/**/client_deduplication*/*.sql",
         recursive=True,
     ),
     "sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v1/query.sql",

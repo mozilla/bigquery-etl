@@ -97,7 +97,7 @@ ga_sessions_with_hits AS (
     *
   FROM
     ga_sessions ga
-  JOIN
+  LEFT JOIN
     pageviews p
   USING
     (client_id, visit_id)

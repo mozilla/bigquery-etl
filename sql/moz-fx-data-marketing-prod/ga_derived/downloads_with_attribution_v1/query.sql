@@ -1,6 +1,4 @@
 -- Query for ga_derived.downloads_with_attribution_v1
-            -- For more information on writing queries see:
-            -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 CREATE TEMP FUNCTION normalize_browser(browser STRING) AS (
   CASE
     WHEN `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(browser)

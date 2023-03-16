@@ -8,12 +8,15 @@ WITH todays_metrics AS (
     normalized_channel AS channel,
     IFNULL(country, '??') country,
     city,
-    locale,
+    COALESCE(REGEXP_EXTRACT(locale, r'^(.+?)-'), locale, NULL) AS locale,
     first_seen_date,
     EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
     days_since_seen,
     os,
-    normalized_os_version AS os_version,
+    COALESCE(
+      `mozfun.norm.windows_version_info`(os, normalized_os_version, windows_build_number),
+      normalized_os_version
+    ) AS os_version,
     COALESCE(
       CAST(NULLIF(SPLIT(normalized_os_version, ".")[SAFE_OFFSET(0)], "") AS INTEGER),
       0

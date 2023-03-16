@@ -1,0 +1,17 @@
+SELECT
+  id,
+  _fivetran_synced,
+  active,
+  code,
+  coupon_id,
+  created,
+  customer_id,
+  expires_at,
+  first_time_transaction,
+  max_redemptions,
+  metadata,
+  minimum_amount,
+  minimum_amount_currency,
+  times_redeemed,
+FROM
+  `moz-fx-data-bq-fivetran`.stripe.promotion_code

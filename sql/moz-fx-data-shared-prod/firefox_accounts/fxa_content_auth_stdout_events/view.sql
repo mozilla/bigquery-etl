@@ -5,9 +5,9 @@
 --- please use `firefox_accounts.fxa_all_events` view instead
 --- in new queries.
 ---
---- Please filter on `event_category` field to limit your results
+--- Please filter on `fxa_log` field to limit your results
 --- to events coming only from a specific fxa server like so:
---- WHERE event_category IN ('auth', 'stdout', ...)
+--- WHERE fxa_log IN ('auth', 'stdout', ...)
 --- Options include:
 ---   content
 ---   auth
@@ -15,7 +15,7 @@
 ---   oauth -- this has been deprecated and merged into fxa_auth_event
 ---   auth_bounce
 --- to replicate results of this view use:
---- WHERE event_category IN (
+--- WHERE fxa_log IN (
 ---  'content',
 ---  'auth',
 --   'stdout'
@@ -137,5 +137,5 @@ FROM
 -- See DENG-582 for more info.
 -- WHERE
 --   ERROR(
---     'VIEW DEPRECATED - This view will be completely deleted after 9th of February 2023, please use `fxa_all_events` with filter on `event_category` instead. See DENG-582 for more info.'
+--     'VIEW DEPRECATED - This view will be completely deleted after 9th of February 2023, please use `fxa_all_events` with filter on `fxa_log` instead. See DENG-582 for more info.'
 --   )

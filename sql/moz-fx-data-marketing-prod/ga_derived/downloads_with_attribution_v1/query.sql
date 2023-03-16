@@ -123,7 +123,7 @@ stub AS (
     DATE(s.timestamp)
 ),
 -- This will drop all the ga_sessions w/o a DLtoken but keep DLtoken without a GA session.
--- This will also result in multiple rows is the ga.client_id is not unique for the day
+-- This will also result in multiple rows as the ga.client_id is not unique for the day
 -- since this visit_id is missing from the stub.
 downloads_and_ga_session AS (
   SELECT

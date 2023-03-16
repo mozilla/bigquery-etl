@@ -334,6 +334,12 @@ fields:
       mode: NULLABLE
       name: navigator_viewport_breakpoint
       type: STRING
+    - description: 'The HTTP status code of the page.
+
+        '
+      mode: NULLABLE
+      name: page_http_status
+      type: STRING
     mode: NULLABLE
     name: string
     type: RECORD

@@ -6,7 +6,7 @@ WITH _current AS (
     firefox_accounts.fxa_all_events
   WHERE
     DATE(`timestamp`) = @submission_date
-    AND event_category IN ('auth', 'auth_bounce', 'content', 'oauth')
+    AND fxa_log IN ('auth', 'auth_bounce', 'content', 'oauth')
   GROUP BY
     user_id
 ),

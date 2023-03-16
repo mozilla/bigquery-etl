@@ -2,10 +2,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.clients_first_seen`
 AS
 SELECT
-  * EXCEPT (
-    search_with_ads_combined_sum,
-    ad_clicks_combined_sum
-  ) REPLACE(
+  * EXCEPT (search_with_ads_combined_sum, ad_clicks_combined_sum) REPLACE(
     CASE
       WHEN mozfun.norm.truncate_version(app_version, "major") <= 108
         THEN search_with_ads

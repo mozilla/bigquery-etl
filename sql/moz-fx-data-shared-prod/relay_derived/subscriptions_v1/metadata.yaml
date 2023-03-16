@@ -11,5 +11,3 @@ scheduling:
   # destination is the whole table, not a single partition,
   # so don't use date_partition_parameter
   date_partition_parameter: null
-  depends_on_fivetran:
-    - task_id: fivetran_stripe

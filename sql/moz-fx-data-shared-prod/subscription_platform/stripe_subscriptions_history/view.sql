@@ -23,7 +23,7 @@ WITH subscriptions_history AS (
     ) AS plan_change_date,
     JSON_VALUE(metadata, "$.previous_plan_id") AS previous_plan_id,
   FROM
-    `moz-fx-data-bq-fivetran`.stripe.subscription_history
+    `moz-fx-data-shared-prod`.stripe_external.subscription_history_v1
 ),
 subscriptions_history_with_lead_plan_metadata AS (
   SELECT
@@ -86,7 +86,7 @@ subscription_items AS (
     subscription_id,
     plan_id,
   FROM
-    `moz-fx-data-bq-fivetran`.stripe.subscription_item
+    `moz-fx-data-shared-prod`.stripe_external.subscription_item_v1
   -- ZetaSQL requires QUALIFY to be used in conjunction with WHERE, GROUP BY, or HAVING.
   WHERE
     TRUE
@@ -114,7 +114,7 @@ product_capabilities AS (
     products.id AS product_id,
     ARRAY_AGG(DISTINCT TRIM(capability) IGNORE NULLS) AS capabilities
   FROM
-    `moz-fx-data-bq-fivetran`.stripe.product AS products
+    `moz-fx-data-shared-prod`.stripe_external.product_v1 AS products
   JOIN
     UNNEST(mozfun.json.js_extract_string_map(metadata)) AS metadata_items
   ON
@@ -131,7 +131,7 @@ plan_capabilities AS (
     plans.id AS plan_id,
     ARRAY_AGG(DISTINCT TRIM(capability) IGNORE NULLS) AS capabilities
   FROM
-    `moz-fx-data-bq-fivetran`.stripe.plan AS plans
+    `moz-fx-data-shared-prod`.stripe_external.plan_v1 AS plans
   JOIN
     UNNEST(mozfun.json.js_extract_string_map(metadata)) AS metadata_items
   ON
@@ -157,9 +157,9 @@ plans AS (
     products.name AS product_name,
     product_capabilities.capabilities AS product_capabilities,
   FROM
-    `moz-fx-data-bq-fivetran`.stripe.plan AS plans
+    `moz-fx-data-shared-prod`.stripe_external.plan_v1 AS plans
   LEFT JOIN
-    `moz-fx-data-bq-fivetran`.stripe.product AS products
+    `moz-fx-data-shared-prod`.stripe_external.product_v1 AS products
   ON
     plans.product_id = products.id
   LEFT JOIN
@@ -180,7 +180,7 @@ customers AS (
     ) AS fxa_uid,
     COALESCE(customers.address_country, pre_fivetran_customers.address_country) AS address_country,
   FROM
-    `moz-fx-data-bq-fivetran`.stripe.customer AS customers
+    `moz-fx-data-shared-prod`.stripe_external.customer_v1 AS customers
   FULL JOIN
     -- Include customers that were deleted before the initial Fivetran Stripe import.
     `moz-fx-data-shared-prod`.stripe_external.pre_fivetran_customers
@@ -192,9 +192,9 @@ charges AS (
     charges.id AS charge_id,
     COALESCE(cards.country, charges.billing_detail_address_country) AS country,
   FROM
-    `moz-fx-data-bq-fivetran`.stripe.charge AS charges
+    `moz-fx-data-shared-prod`.stripe_external.charge_v1 AS charges
   JOIN
-    `moz-fx-data-bq-fivetran`.stripe.card AS cards
+    `moz-fx-data-shared-prod`.stripe_external.card_v1 AS cards
   ON
     charges.card_id = cards.id
   WHERE
@@ -211,7 +211,7 @@ invoices_provider_country AS (
     ).*,
     invoices.created,
   FROM
-    `moz-fx-data-bq-fivetran`.stripe.invoice AS invoices
+    `moz-fx-data-shared-prod`.stripe_external.invoice_v1 AS invoices
   LEFT JOIN
     customers
   USING
@@ -267,7 +267,7 @@ subscriptions_history_promotions AS (
   FROM
     subscriptions_history
   JOIN
-    `moz-fx-data-bq-fivetran`.stripe.invoice AS invoices
+    `moz-fx-data-shared-prod`.stripe_external.invoice_v1 AS invoices
   ON
     subscriptions_history.subscription_id = invoices.subscription_id
     AND (
@@ -275,15 +275,15 @@ subscriptions_history_promotions AS (
       OR subscriptions_history.valid_to IS NULL
     )
   JOIN
-    `moz-fx-data-bq-fivetran`.stripe.invoice_discount AS invoice_discounts
+    `moz-fx-data-shared-prod`.stripe_external.invoice_discount_v1 AS invoice_discounts
   ON
     invoices.id = invoice_discounts.invoice_id
   JOIN
-    `moz-fx-data-bq-fivetran`.stripe.promotion_code AS promotion_codes
+    `moz-fx-data-shared-prod`.stripe_external.promotion_code_v1 AS promotion_codes
   ON
     invoice_discounts.promotion_code = promotion_codes.id
   JOIN
-    `moz-fx-data-bq-fivetran`.stripe.coupon AS coupons
+    `moz-fx-data-shared-prod`.stripe_external.coupon_v1 AS coupons
   ON
     promotion_codes.coupon_id = coupons.id
   WHERE

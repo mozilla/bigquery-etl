@@ -9,6 +9,7 @@ labels:
 scheduling:
   dag_name: bqetl_org_mozilla_firefox_derived
   depends_on_past: false
+  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
 bigquery:
   time_partitioning:
     type: day

@@ -291,6 +291,9 @@ fields:
     - mode: NULLABLE
       name: search_default_engine_name
       type: STRING
+    - mode: NULLABLE
+      name: client_deduplication_hashed_gaid
+      type: STRING
     mode: NULLABLE
     name: string
     type: RECORD

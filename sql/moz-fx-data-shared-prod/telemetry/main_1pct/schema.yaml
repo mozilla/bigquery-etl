@@ -34917,6 +34917,16 @@ fields:
           mode: REPEATED
           name: media_audio_process_per_codec_name
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: networking_speculative_connect_outcome
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD

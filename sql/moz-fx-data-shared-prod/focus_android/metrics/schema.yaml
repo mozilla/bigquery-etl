@@ -827,6 +827,16 @@ fields:
       mode: REPEATED
       name: networking_speculative_connection_outcome
       type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: networking_speculative_connect_outcome
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

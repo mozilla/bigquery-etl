@@ -112,7 +112,8 @@ SELECT
       metrics.labeled_counter.pdfjs_editing,
       metrics.labeled_counter.network_data_size_pb_per_type,
       metrics.labeled_counter.network_data_size_per_type,
-      metrics.labeled_counter.networking_speculative_connection_outcome
+      metrics.labeled_counter.networking_speculative_connection_outcome,
+      metrics.labeled_counter.networking_speculative_connect_outcome
     ) AS labeled_counter,
     metrics.quantity,
     metrics.string,
@@ -373,7 +374,8 @@ SELECT
       metrics.labeled_counter.pdfjs_editing,
       metrics.labeled_counter.network_data_size_pb_per_type,
       metrics.labeled_counter.network_data_size_per_type,
-      metrics.labeled_counter.networking_speculative_connection_outcome
+      metrics.labeled_counter.networking_speculative_connection_outcome,
+      metrics.labeled_counter.networking_speculative_connect_outcome
     ) AS labeled_counter,
     metrics.quantity,
     STRUCT(
@@ -803,7 +805,8 @@ SELECT
       metrics.labeled_counter.pdfjs_editing,
       metrics.labeled_counter.network_data_size_pb_per_type,
       metrics.labeled_counter.network_data_size_per_type,
-      metrics.labeled_counter.networking_speculative_connection_outcome
+      metrics.labeled_counter.networking_speculative_connection_outcome,
+      metrics.labeled_counter.networking_speculative_connect_outcome
     ) AS labeled_counter,
     metrics.quantity,
     STRUCT(
@@ -1091,7 +1094,8 @@ SELECT
       metrics.labeled_counter.pdfjs_editing,
       metrics.labeled_counter.network_data_size_pb_per_type,
       metrics.labeled_counter.network_data_size_per_type,
-      metrics.labeled_counter.networking_speculative_connection_outcome
+      metrics.labeled_counter.networking_speculative_connection_outcome,
+      metrics.labeled_counter.networking_speculative_connect_outcome
     ) AS labeled_counter,
     metrics.quantity,
     metrics.string,

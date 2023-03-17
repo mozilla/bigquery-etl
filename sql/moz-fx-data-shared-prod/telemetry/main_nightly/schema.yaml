@@ -31345,6 +31345,16 @@ fields:
           mode: REPEATED
           name: cookie_banners_click_result
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: media_audio_process_per_codec_name
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD
@@ -32120,6 +32130,16 @@ fields:
             type: INTEGER
           mode: REPEATED
           name: power_wakeups_per_process_type
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: media_decode_error_per_mime_type
           type: RECORD
         mode: NULLABLE
         name: keyed_scalars
@@ -34883,6 +34903,16 @@ fields:
             type: INTEGER
           mode: REPEATED
           name: urlbar_picked_navigational
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: media_audio_process_per_codec_name
           type: RECORD
         mode: NULLABLE
         name: keyed_scalars

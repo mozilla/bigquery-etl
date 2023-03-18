@@ -30,7 +30,13 @@ SELECT
                   (SELECT * FROM hmac_key),
                   CAST(metrics.string.activation_identifier AS BYTES)
                 )
-              ) AS activation_identifier
+              ) AS activation_identifier,
+              TO_HEX(
+                `moz-fx-data-shared-prod`.udf.hmac_sha256(
+                  (SELECT * FROM hmac_key),
+                  CAST(metrics.string.client_deduplication_hashed_gaid AS BYTES)
+                )
+              ) AS client_deduplication_hashed_gaid
             )
         ) AS string
       )

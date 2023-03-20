@@ -5,7 +5,7 @@ import logging
 from argparse import ArgumentParser
 from datetime import datetime
 
-from google.cloud import bigquery
+from google.cloud import bigquery, storage
 
 QUERY_TEMPLATE = """\
 WITH host_stripped AS (
@@ -48,7 +48,7 @@ parser.add_argument("--temp_dataset", default="tmp")
 parser.add_argument("--temp_table", default="mdn_popularities_v1")
 parser.add_argument("--destination_project", default="moz-fx-dev-gsleigh-migration")
 parser.add_argument("--destination_bucket", default="mdn-gcp")
-parser.add_argument("--destination_path", default="popularities/current")
+parser.add_argument("--destination_path", default="")
 
 
 def main():
@@ -77,9 +77,10 @@ def main():
     dataset_ref = bigquery.DatasetReference(args.project, args.temp_dataset)
     table_ref = dataset_ref.table(args.temp_table)
 
-    target_file_name = f"{args.date.strftime('%m-%Y')}.json"
+    target_file_name = f"{args.date.strftime('%Y/%m')}.json"
+    target_file_path = f"{args.destination_path}/{target_file_name}"
     mdn_uri = (
-        f"gs://{args.destination_bucket}/{args.destination_path}/{target_file_name}"
+        f"gs://{args.destination_bucket}/{target_file_path}"
     )
 
     logging.info(
@@ -95,6 +96,14 @@ def main():
     logging.info("Deleting temp table: %s" % temp_table)
     client.delete_table(temp_table)
 
+    # Make it available as current.
+    current_file_name = "current.json"
+    current_file_path = f"{args.destination_path}/{target_file_name}"
+    
+    storage_client = storage.Client(args.project)
+    bucket = storage_client.get_bucket(args.destination_bucket)
+    blob = bucket.get_blob(target_file_path)
+    bucket.copy_blob(blob, args.destination_bucket, current_file_path)
 
 if __name__ == "__main__":
     main()

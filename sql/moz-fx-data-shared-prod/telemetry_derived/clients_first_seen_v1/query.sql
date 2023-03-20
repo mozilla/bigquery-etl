@@ -4,7 +4,7 @@ WITH today AS (
     CAST(NULL AS DATE) AS second_seen_date,
     * EXCEPT (submission_date)
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
+    telemetry_derived.clients_daily_v6
   WHERE
     submission_date = @submission_date
 ),
@@ -15,7 +15,7 @@ previous AS (
   SELECT
     * REPLACE (IF(second_seen_date >= @submission_date, NULL, second_seen_date) AS second_seen_date)
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v1`
+    telemetry_derived.clients_first_seen_v1
   WHERE
     first_seen_date < @submission_date
 )

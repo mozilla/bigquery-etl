@@ -28,6 +28,8 @@ activations AS (
     `moz-fx-data-shared-prod.fenix.new_profile_activation`
   WHERE
     submission_date = @submission_date
+  GROUP BY
+    client_id
 ),
 -- Find earliest data per client from the first_session ping.
 first_session_ping AS (

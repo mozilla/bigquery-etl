@@ -210,7 +210,7 @@ SELECT
   first_seen.device_model AS device_model,
   first_seen.os_version AS os_version,
   first_seen.app_version AS app_version,
-  COALESCE(activated, NULL) AS activated,
+  activated AS activated,
   COALESCE(first_session.adjust_campaign, metrics.adjust_campaign) AS adjust_campaign,
   COALESCE(first_session.adjust_ad_group, metrics.adjust_ad_group) AS adjust_ad_group,
   COALESCE(first_session.adjust_creative, metrics.adjust_creative) AS adjust_creative,

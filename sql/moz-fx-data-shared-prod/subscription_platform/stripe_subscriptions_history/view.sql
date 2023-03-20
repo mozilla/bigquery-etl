@@ -1,10 +1,11 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.subscription_platform.stripe_subscriptions_history`
 AS
-WITH subscriptions_history AS (
+WITH base_subscriptions_history AS (
   SELECT
     customer_id,
     id AS subscription_id,
+    ROW_NUMBER() OVER (PARTITION BY id ORDER BY _fivetran_start) AS subscription_history_row_number,
     _fivetran_synced AS synced_at,
     _fivetran_start AS valid_from,
     LEAD(_fivetran_start) OVER (PARTITION BY id ORDER BY _fivetran_start) AS valid_to,
@@ -24,6 +25,40 @@ WITH subscriptions_history AS (
     JSON_VALUE(metadata, "$.previous_plan_id") AS previous_plan_id,
   FROM
     `moz-fx-data-shared-prod`.stripe_external.subscription_history_v1
+),
+subscriptions_history AS (
+  -- If a subscription's first history record has a previous_plan_id then synthesize
+  -- an extra history record to represent that previous plan period.
+  SELECT
+    * REPLACE (
+      0 AS subscription_history_row_number,
+      plan_change_date AS valid_to,
+      CAST(NULL AS TIMESTAMP) AS cancel_at,
+      FALSE AS cancel_at_period_end,
+      CAST(NULL AS TIMESTAMP) AS canceled_at,
+      CAST(NULL AS STRING) AS canceled_for_customer_at,
+      CAST(NULL AS TIMESTAMP) AS ended_at,
+      "active" AS status,
+      CAST(NULL AS TIMESTAMP) AS plan_change_date,
+      CAST(NULL AS STRING) AS previous_plan_id
+    )
+  FROM
+    base_subscriptions_history
+  WHERE
+    subscription_history_row_number = 1
+    AND plan_change_date IS NOT NULL
+    AND previous_plan_id IS NOT NULL
+  UNION ALL
+  SELECT
+    * REPLACE (
+      IF(
+        subscription_history_row_number = 1,
+        COALESCE(plan_change_date, valid_from),
+        valid_from
+      ) AS valid_from
+    )
+  FROM
+    base_subscriptions_history
 ),
 subscriptions_history_with_lead_plan_metadata AS (
   SELECT

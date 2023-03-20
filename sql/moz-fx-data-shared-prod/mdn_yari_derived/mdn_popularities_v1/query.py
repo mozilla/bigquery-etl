@@ -98,7 +98,7 @@ def main():
 
     # Make it available as current.
     current_file_name = "current.json"
-    current_file_path = f"{args.destination_path}/{target_file_name}"
+    current_file_path = f"{args.destination_path}/{current_file_name}"
     
     storage_client = storage.Client(args.project)
     bucket = storage_client.get_bucket(args.destination_bucket)

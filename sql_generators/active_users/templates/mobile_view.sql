@@ -3,7 +3,7 @@ CREATE OR REPLACE VIEW
   `{{ project_id }}.{{ dataset_id }}.active_users_aggregates_mobile`
 AS
 SELECT
-  { {view_columns } }
+  {{ view_columns }}
 FROM
   `{{ project_id }}.{{ fenix_dataset }}_derived.active_users_aggregates_v1`
 UNION ALL

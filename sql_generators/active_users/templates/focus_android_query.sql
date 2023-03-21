@@ -21,7 +21,7 @@ WITH baseline AS (
     default_browser AS is_default_browser,
     distribution_id,
     CAST(NULL AS string) AS isp,
-    'Focus Android' AS normalized_app_name
+    'Focus Android' AS app_name
   FROM
     `{{ project_id }}.telemetry.core_clients_last_seen`
   WHERE
@@ -50,7 +50,7 @@ WITH baseline AS (
     is_default_browser,
     CAST(NULL AS string) AS distribution_id,
     isp,
-    'Focus Android Glean' AS normalized_app_name
+    'Focus Android Glean' AS app_name
   FROM
     `{{ project_id }}.{{ app_name }}.clients_last_seen_joined`
   WHERE
@@ -61,9 +61,9 @@ unioned AS (
     * REPLACE (
       IF(
         isp = 'BrowserStack',
-        CONCAT(normalized_app_name, ' BrowserStack'),
-        normalized_app_name
-      ) AS normalized_app_name
+        CONCAT(app_name, ' BrowserStack'),
+        app_name
+      ) AS app_name
     )
   FROM
     baseline
@@ -121,7 +121,7 @@ unioned_with_searches AS (
         THEN 'core_user'
       ELSE 'other'
     END AS activity_segment,
-    unioned.normalized_app_name,
+    unioned.app_name,
     unioned.app_display_version AS app_version,
     unioned.normalized_channel,
     IFNULL(country, '??') country,
@@ -187,7 +187,7 @@ todays_metrics AS (
     EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
     is_default_browser,
     COALESCE(REGEXP_EXTRACT(locale, r'^(.+?)-'), locale, NULL) AS locale,
-    normalized_app_name AS app_name,
+    app_name AS app_name,
     normalized_channel AS channel,
     normalized_os AS os,
     normalized_os_version AS os_version,

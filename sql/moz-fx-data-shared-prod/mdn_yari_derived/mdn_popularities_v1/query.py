@@ -60,7 +60,7 @@ def main():
     dataset_ref = bigquery.DatasetReference(args.project, args.temp_dataset)
     table_ref = dataset_ref.table(args.temp_table)
 
-    target_file_name = f"{args.date.strftime('%Y/%m')}.json"
+    target_file_name = f"{args.date.strftime('%Y/%m')}.csv"
     target_file_path = f"{args.destination_path}/{target_file_name}"
     mdn_uri = (
         f"gs://{args.destination_bucket}/{target_file_path}"
@@ -80,7 +80,7 @@ def main():
     client.delete_table(temp_table)
 
     # Make it available as current.
-    current_file_name = "current.json"
+    current_file_name = "current.csv"
     current_file_path = f"{args.destination_path}/{current_file_name}"
     
     storage_client = storage.Client(args.project)

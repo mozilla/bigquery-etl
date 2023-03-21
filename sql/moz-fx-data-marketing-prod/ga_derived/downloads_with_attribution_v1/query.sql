@@ -287,6 +287,11 @@ SELECT
     ELSE unique_pageviews
   END
   unique_pageviews,
+  CASE
+    WHEN nrows > 1
+      THEN NULL
+    ELSE has_ga_download_event
+  END
   has_ga_download_event,
   count_dltoken_duplicates,
   CASE

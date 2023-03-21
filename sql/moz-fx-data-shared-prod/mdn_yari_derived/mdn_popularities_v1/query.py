@@ -30,7 +30,7 @@ parser.add_argument(
 parser.add_argument("--project", default="moz-fx-data-shared-prod")
 parser.add_argument("--temp_dataset", default="tmp")
 parser.add_argument("--temp_table", default="mdn_popularities_v1")
-parser.add_argument("--destination_project", default="mdn-prod")
+parser.add_argument("--destination_project", default="moz-fx-mdn-prod")
 parser.add_argument("--destination_bucket", default="popularities-prod-mdn")
 parser.add_argument("--destination_path", default="")
 

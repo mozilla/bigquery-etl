@@ -83,7 +83,7 @@ ga_sessions AS (
     ANY_VALUE(device.browser) AS browser,
     ANY_VALUE(device.browserVersion) AS browser_version,
     ANY_VALUE(device.language) AS `language`,
-    ANY_VALUE(totals.timeOnSite) AS time_on_site
+    IFNULL(ANY_VALUE(totals.timeOnSite), 0) AS time_on_site
   FROM
     `moz-fx-data-marketing-prod.65789850.ga_sessions_*` AS ga
   WHERE
@@ -167,16 +167,7 @@ SELECT
   CASE
     WHEN nrows > 1
       THEN NULL
-    WHEN stub_visit_id = ''
-      THEN NULL
-    WHEN stub_visit_id = '(not set)'
-      THEN NULL
-    WHEN stub_visit_id = 'something'
-      THEN NULL
-    WHEN client_id IS NULL
-      THEN NULL
-    --only set to null when we do not have a session.  The value can be null when we do have a session so set those to 0.
-    ELSE IFNULL(time_on_site, 0)
+    ELSE time_on_site
   END
   time_on_site,
   CASE

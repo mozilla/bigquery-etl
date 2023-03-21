@@ -1,0 +1,17 @@
+fields:
+- mode: NULLABLE
+  name: destination_id
+  type: STRING
+  description: |
+    Foreign key referencing the destination warehouse that was used.
+- mode: NULLABLE
+  name: measured_month
+  type: DATE
+  description: |
+    Month of the usage activity.
+- mode: NULLABLE
+  name: dollars_spent
+  type: BIGNUMERIC
+  description: |
+    Total USD used by the destination for the given month. Prior to September 2022 Fivetran was paid in credits.
+    Those credits where translated to the dollar cost in order to see the cost per connector.

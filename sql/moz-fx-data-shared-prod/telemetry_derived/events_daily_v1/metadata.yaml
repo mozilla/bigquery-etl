@@ -3,7 +3,8 @@
 ---
 friendly_name: 'Firefox Events Daily'
 description: >
-  Packed event representation with one-row per-client
+  Packed event representation with one-row per-client.
+  Deprecated per https://bugzilla.mozilla.org/show_bug.cgi?id=1805722#c10
 owners:
   - wlachance@mozilla.com
   - akomar@mozilla.com
@@ -11,12 +12,21 @@ labels:
   application: telemetry
   schedule: daily
   incremental: true
-scheduling:
-  dag_name: bqetl_event_rollup
-  referenced_tables: [
-    [
-      'moz-fx-data-shared-prod',
-      'telemetry_derived',
-      'event_types_v1'
-    ],
-  ]
+# see https://bugzilla.mozilla.org/show_bug.cgi?id=1805722#c10
+#scheduling:
+#  dag_name: bqetl_event_rollup
+#  referenced_tables: [
+#    [
+#      'moz-fx-data-shared-prod',
+#      'telemetry_derived',
+#      'event_types_v1'
+#    ],
+#  ]
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - sample_id

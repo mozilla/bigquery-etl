@@ -49,7 +49,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     client_probe_processes__v1 = bigquery_etl_query(
         task_id="client_probe_processes__v1",
         destination_table="client_probe_processes_v1",
@@ -299,6 +298,13 @@ with DAG(
         "telemetry_derived__clients_last_seen__v1_external"
     ) as telemetry_derived__clients_last_seen__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_telemetry_derived__clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_search_dashboard__wait_for_telemetry_derived__clients_last_seen__v1",
             external_dag_id="bqetl_search_dashboard",
             external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
@@ -528,6 +534,20 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
+
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    crashes_daily_v1.set_upstream(wait_for_copy_deduplicate_all)
 
     firefox_desktop_exact_mau28_by_client_count_dimensions.set_upstream(
         telemetry_derived__clients_last_seen__v1

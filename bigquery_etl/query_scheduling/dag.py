@@ -117,6 +117,7 @@ class Dag:
     default_args: DagDefaultArgs
     tasks: List[Task] = attr.ib([])
     description: str = attr.ib("")
+    repo: str = attr.ib("bigquery-etl")
     tags: List[str] = attr.ib([])
 
     @name.validator
@@ -173,7 +174,7 @@ class Dag:
         return {name: d}
 
     @classmethod
-    def from_dict(cls, d):
+    def from_dict(cls: type, d: dict):
         """
         Parse the DAG configuration from a dict and create a new Dag instance.
 
@@ -191,9 +192,10 @@ class Dag:
         converter = cattrs.BaseConverter()
         try:
             name = list(d.keys())[0]
-            d[name]["tags"] = sorted(
-                list(set([*d[name].get("tags", []), "repo/bigquery-etl"]))
-            )
+            tags: set[str] = set(d[name].get("tags", []))
+            if not any(tag.startswith("repo/") for tag in tags):
+                tags.add("repo/" + d[name].get("repo", "bigquery-etl"))
+            d[name]["tags"] = sorted(tags)
 
             if name == PUBLIC_DATA_JSON_DAG:
                 return converter.structure({"name": name, **d[name]}, PublicDataJsonDag)

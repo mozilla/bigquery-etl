@@ -8,8 +8,18 @@ description: |
   as the basis for mobile LTV calculations.
 owners:
   - akomar@mozilla.com
+  - cmorales@mozilla.com
 labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_mobile_search
   depends_on_past: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - sample_id
+      - client_id

@@ -12,18 +12,41 @@ WITH stripe_plans AS (
     ) AS pricing_plan,
     plans.nickname AS plan_name,
   FROM
-    `moz-fx-data-bq-fivetran`.stripe.plan AS plans
+    `moz-fx-data-shared-prod`.stripe_external.plan_v1 AS plans
   LEFT JOIN
-    `moz-fx-data-bq-fivetran`.stripe.product AS products
+    `moz-fx-data-shared-prod`.stripe_external.product_v1 AS products
   ON
     plans.product_id = products.id
 ),
 events AS (
   SELECT
-    *,
     DATE(`timestamp`) AS partition_date,
+    `timestamp`,
+    flow_id,
+    entrypoint,
+    entrypoint_experiment,
+    entrypoint_variation,
+    utm_term,
+    utm_source,
+    utm_medium,
+    utm_campaign,
+    utm_content,
+    ua_version,
+    ua_browser,
+    plan_id,
+    promotion_code,
+    oauth_client_id,
+    event_type,
+    os_name,
+    os_version,
+    country,
+    user_id,
+    service,
+    product_id,
   FROM
-    mozdata.firefox_accounts.fxa_content_auth_stdout_events
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
+  WHERE
+    fxa_log IN ('content', 'auth', 'stdout')
 ),
 flows AS (
   SELECT

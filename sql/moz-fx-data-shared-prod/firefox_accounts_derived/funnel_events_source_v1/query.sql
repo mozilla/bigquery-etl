@@ -1,5 +1,26 @@
+WITH fxa_events AS (
+  SELECT
+    `timestamp`,
+    user_id,
+    event_type,
+    service,
+    email_type,
+    oauth_client_id,
+    connect_device_flow,
+    connect_device_os,
+    sync_device_count,
+    email_sender,
+    email_service,
+    email_template,
+    email_version,
+  FROM
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
+  WHERE
+    DATE(`timestamp`) = @submission_date
+    AND fxa_log IN ('content', 'auth', 'oauth')
+)
 SELECT
-  DATE(timestamp) AS submission_date,
+  DATE(`timestamp`) AS submission_date,
   user_id AS client_id,
   `moz-fx-data-shared-prod`.udf.safe_sample_id(user_id) AS sample_id,
   SPLIT(event_type, ' - ')[OFFSET(0)] AS category,
@@ -19,6 +40,4 @@ SELECT
   CAST([] AS ARRAY<STRUCT<key STRING, value STRING>>) AS experiments,
   *,
 FROM
-  `moz-fx-data-shared-prod.firefox_accounts.fxa_content_auth_oauth_events`
-WHERE
-  DATE(timestamp) = @submission_date
+  fxa_events

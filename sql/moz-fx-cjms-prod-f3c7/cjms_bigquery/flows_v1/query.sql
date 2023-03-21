@@ -1,3 +1,14 @@
+WITH fxa_events AS (
+  SELECT
+    `timestamp`,
+    user_id,
+    flow_id,
+  FROM
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
+  WHERE
+    DATE(`timestamp`) = @submission_date
+    AND fxa_log IN ('content', 'auth', 'stdout')
+)
 SELECT
   DATE(`timestamp`) AS submission_date,
   flow_id,
@@ -14,10 +25,9 @@ SELECT
       1
   )[SAFE_OFFSET(0)].*,
 FROM
-  mozdata.firefox_accounts.fxa_content_auth_stdout_events
+  fxa_events
 WHERE
-  DATE(`timestamp`) = @submission_date
-  AND flow_id IS NOT NULL
+  flow_id IS NOT NULL
 GROUP BY
   submission_date,
   flow_id

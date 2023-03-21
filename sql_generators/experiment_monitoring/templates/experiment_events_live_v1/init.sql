@@ -72,7 +72,7 @@ IF
   )
   {% endif %}
   SELECT
-    date(`timestamp`) AS submission_date,
+    DATE(`timestamp`) AS submission_date,
     `type`,
     experiment,
     branch,
@@ -93,7 +93,8 @@ IF
     COUNTIF(event_method = 'unenrollFailed') AS unenroll_failed_count,
     COUNTIF(event_method = 'updateFailed') AS update_failed_count,
     COUNTIF(event_method = 'disqualification') AS disqualification_count,
-    COUNTIF(event_method = 'expose' OR event_method = 'exposure') AS exposure_count
+    COUNTIF(event_method = 'expose' OR event_method = 'exposure') AS exposure_count,
+    COUNTIF(event_method = 'validationFailed') AS validation_failed_count
   FROM
     experiment_events
   WHERE

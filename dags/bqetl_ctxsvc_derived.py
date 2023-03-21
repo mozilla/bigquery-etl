@@ -47,7 +47,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     contextual_services_derived__adm_forecasting__v1 = bigquery_etl_query(
         task_id="contextual_services_derived__adm_forecasting__v1",
         destination_table='adm_forecasting_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
@@ -80,6 +79,23 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+    )
+
+    contextual_services_derived__event_aggregates_check__v1 = bigquery_etl_query(
+        task_id="contextual_services_derived__event_aggregates_check__v1",
+        destination_table=None,
+        dataset_id="contextual_services_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="wstuckey@mozilla.com",
+        email=[
+            "ctroy@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        sql_file_path="sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_check_v1/query.sql",
     )
 
     contextual_services_derived__event_aggregates_spons_tiles__v1 = bigquery_etl_query(
@@ -161,6 +177,10 @@ with DAG(
 
     contextual_services_derived__event_aggregates__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    contextual_services_derived__event_aggregates_check__v1.set_upstream(
+        contextual_services_derived__event_aggregates__v1
     )
 
     contextual_services_derived__event_aggregates_spons_tiles__v1.set_upstream(

@@ -5,7 +5,7 @@ CREATE OR REPLACE VIEW
 AS
 WITH agg AS (
   SELECT
-    array_agg(t ORDER BY geckoview_major_version DESC, n_pings DESC LIMIT 1)[offset(0)] AS top_row
+    ARRAY_AGG(t ORDER BY geckoview_major_version DESC, n_pings DESC LIMIT 1)[OFFSET(0)] AS top_row
   FROM
     `moz-fx-data-shared-prod`.org_mozilla_fenix_derived.geckoview_version_v1 t
   GROUP BY

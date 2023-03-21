@@ -142,7 +142,7 @@ EXTERNAL_TASKS = {
         task_id="clients_last_seen_joined",
         schedule_interval="0 1 * * *",
         date_partition_offset=-1,
-    ): ["*.clients_last_seen_joined"],
+    ): ["*.clients_last_seen_joined*"],
     # *_stable.* should be matched last since all
     # pattern before are downstream dependencies of
     # copy_deduplicate_all.

@@ -1,0 +1,18 @@
+friendly_name: Campaign Conversions By Date
+description: |-
+  Campaign conversions and installs, by date.
+  Conversions is the number of conversions from installs on
+  that day, meaning that the values will continue to change
+  as users convert.
+owners:
+- frank@mozilla.com
+scheduling:
+  dag_name: bqetl_fivetran_google_ads
+  depends_on_past: false
+  date_partition_parameter: null
+labels:
+  incremental: false
+bigquery:
+  clustering:
+    fields: ["date"]
+references: {}

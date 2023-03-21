@@ -15,3 +15,11 @@ scheduling:
   start_date: "2021-01-19"
   priority: 85
   depends_on_past: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - sample_id

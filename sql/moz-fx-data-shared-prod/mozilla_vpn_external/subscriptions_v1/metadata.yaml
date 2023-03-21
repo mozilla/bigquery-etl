@@ -23,6 +23,32 @@ scheduling:
     # at runtime using function calls like CONCAT or FORMAT, so the
     # entire value must be provided as a STRING query parameter to
     # handle specific dates:
-    - "external_database_query:STRING:SELECT * FROM subscriptions
-  WHERE DATE(updated_at) = DATE '{{ds}}'"
+    - >-
+      external_database_query:STRING:
+      SELECT
+        id,
+        user_id,
+        is_active,
+        mullvad_token,
+        mullvad_account_created_at,
+        mullvad_account_expiration_date,
+        ended_at,
+        created_at,
+        updated_at,
+        type,
+        fxa_last_changed_at,
+        provider,
+        provider_product_id,
+        provider_original_purchase_token,
+        provider_receipt_raw,
+        provider_receipt_json,
+        provider_expiration_date,
+        fxa_migration_note
+      FROM subscriptions
+      WHERE DATE(updated_at) = DATE '{{ds}}'
   referenced_tables: []
+bigquery:
+  time_partitioning:
+    type: day
+    field: updated_at
+    require_partition_filter: false

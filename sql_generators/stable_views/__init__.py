@@ -17,6 +17,7 @@ from pathlib import Path
 import click
 from pathos.multiprocessing import ProcessingPool
 
+from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.schema.stable_table_schema import SchemaFile, get_stable_table_schemas
 
 VIEW_QUERY_TEMPLATE = """\
@@ -112,6 +113,14 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
         r"CREATE OR REPLACE VIEW\n\s*[^\s]+\s*\nAS", re.IGNORECASE
     )
 
+    SKIP_VIEW_SCHEMA = {
+        # skip main and its clones because their large schema causes frequent API
+        # failures when trying to update the view schema
+        "telemetry.main",
+        "telemetry.first_shutdown",
+        "telemetry.saved_session",
+    }
+
     target_dir = (
         sql_dir
         / target_project
@@ -139,11 +148,34 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
             and schema.bq_table == "metrics_v1"
         ):
             # todo: use mozfun udfs
-            replacements += [
-                "mozdata.udf.normalize_fenix_metrics"
+            metrics_source = (
+                "`moz-fx-data-shared-prod`.udf.normalize_fenix_metrics"
                 "(client_info.telemetry_sdk_build, metrics)"
-                " AS metrics"
+            )
+        else:
+            metrics_source = "metrics"
+        if metrics_datetime_fields := [
+            metrics_datetime_field["name"]
+            for field in schema.schema
+            if field["name"] == "metrics"
+            for metrics_field in field["fields"]
+            if metrics_field["name"] == "datetime"
+            for metrics_datetime_field in metrics_field["fields"]
+        ]:
+            replacements += [
+                f"(SELECT AS STRUCT {metrics_source}.* REPLACE (STRUCT("
+                + ", ".join(
+                    field_select
+                    for field in metrics_datetime_fields
+                    for field_select in (
+                        f"mozfun.glean.parse_datetime(metrics.datetime.{field}) AS {field}",
+                        f"metrics.datetime.{field} AS raw_{field}",
+                    )
+                )
+                + ") AS datetime)) AS metrics"
             ]
+        elif metrics_source != "metrics":
+            replacements += [f"{metrics_source} AS metrics"]
         if schema.bq_dataset_family == "firefox_desktop":
             # FOG does not provide an app_name, so we inject the one that
             # people already associate with desktop Firefox per bug 1672191.
@@ -151,7 +183,9 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
                 "'Firefox' AS normalized_app_name",
             ]
     elif schema.schema_id.startswith("moz://mozilla.org/schemas/main/ping/"):
-        replacements += ["mozdata.udf.normalize_main_payload(payload) AS payload"]
+        replacements += [
+            "`moz-fx-data-shared-prod`.udf.normalize_main_payload(payload) AS payload"
+        ]
     replacements_str = ",\n    ".join(replacements)
     full_sql = reformat(
         VIEW_QUERY_TEMPLATE.format(
@@ -174,19 +208,22 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
         with metadata_file.open("w") as f:
             f.write(metadata_content)
 
-    # get view schema with descriptions
-    try:
-        content = VIEW_CREATE_REGEX.sub("", target_file.read_text())
-        content += " WHERE DATE(submission_timestamp) = '2020-01-01'"
-        view_schema = Schema.from_query_file(target_file, content=content)
+    if schema.user_facing_view not in SKIP_VIEW_SCHEMA:
+        # get view schema with descriptions
+        try:
+            content = VIEW_CREATE_REGEX.sub("", target_file.read_text())
+            content += " WHERE DATE(submission_timestamp) = '2020-01-01'"
+            view_schema = Schema.from_query_file(target_file, content=content)
 
-        stable_table_schema = Schema.from_json({"fields": schema.schema})
-        view_schema.merge(
-            stable_table_schema, attributes=["description"], add_missing_fields=False
-        )
-        view_schema.to_yaml_file(target_dir / "schema.yaml")
-    except Exception as e:
-        print(f"Cannot generate schema.yaml for {target_file}: {e}")
+            stable_table_schema = Schema.from_json({"fields": schema.schema})
+            view_schema.merge(
+                stable_table_schema,
+                attributes=["description"],
+                add_missing_fields=False,
+            )
+            view_schema.to_yaml_file(target_dir / "schema.yaml")
+        except Exception as e:
+            print(f"Cannot generate schema.yaml for {target_file}: {e}")
 
 
 @click.command("generate")
@@ -219,7 +256,8 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
     default=20,
     type=int,
 )
-def generate(target_project, output_dir, log_level, parallelism):
+@use_cloud_function_option
+def generate(target_project, output_dir, log_level, parallelism, use_cloud_function):
     """
     Generate view definitions.
 

@@ -5,16 +5,11 @@
 CREATE TEMP FUNCTION normalize_fenix_search_key(key STRING) AS (
   (
     CASE
-    WHEN
-      ARRAY_LENGTH(SPLIT(key, '_')) = 2
-    THEN
-      SPLIT(key, '_')
-    WHEN
-      ARRAY_LENGTH(SPLIT(key, '.')) = 2
-    THEN
-      SPLIT(key, '.')
-    ELSE
-      []
+      WHEN ARRAY_LENGTH(SPLIT(key, '_')) = 2
+        THEN SPLIT(key, '_')
+      WHEN ARRAY_LENGTH(SPLIT(key, '.')) = 2
+        THEN SPLIT(key, '.')
+      ELSE []
     END
   )
 );
@@ -25,16 +20,11 @@ CREATE TEMP FUNCTION normalize_fenix_search_key(key STRING) AS (
 -- Return array of form [source, engine] if key is valid, empty array otherwise
 CREATE TEMP FUNCTION normalize_core_search_key(key STRING) AS (
   CASE
-  WHEN
-    ARRAY_LENGTH(SPLIT(key, '.')) != 2
-  THEN
-    []
-  WHEN
-    SPLIT(key, '.')[OFFSET(0)] IN UNNEST(['actionbar', 'listitem', 'suggestion', 'quicksearch'])
-  THEN
-    ARRAY_REVERSE(SPLIT(key, '.'))
-  ELSE
-    SPLIT(key, '.')
+    WHEN ARRAY_LENGTH(SPLIT(key, '.')) != 2
+      THEN []
+    WHEN SPLIT(key, '.')[OFFSET(0)] IN UNNEST(['actionbar', 'listitem', 'suggestion', 'quicksearch'])
+      THEN ARRAY_REVERSE(SPLIT(key, '.'))
+    ELSE SPLIT(key, '.')
   END
 );
 
@@ -227,51 +217,37 @@ glean_flattened_searches AS (
     *,
 
     CASE
-    WHEN
-      search.search_type = 'sap'
-    THEN
-      normalize_fenix_search_key(search.key)[SAFE_OFFSET(0)]
-    WHEN
-      search.search_type = 'in-content'
-    THEN
-      -- key format is engine.in-content.type.code
-      SPLIT(search.key, '.')[SAFE_OFFSET(0)]
-    WHEN
-      search.search_type = 'ad-click' OR search.search_type = 'search-with-ads'
-    THEN
-      -- ad-click key format is engine.in-content.type.code for builds starting 2021-03-16
-      -- otherwise key is engine
-      SPLIT(search.key, '.')[SAFE_OFFSET(0)]
-    ELSE
-      NULL
+      WHEN search.search_type = 'sap'
+        THEN normalize_fenix_search_key(search.key)[SAFE_OFFSET(0)]
+      WHEN search.search_type = 'in-content'
+        -- key format is engine.in-content.type.code
+        THEN SPLIT(search.key, '.')[SAFE_OFFSET(0)]
+      WHEN search.search_type = 'ad-click' OR search.search_type = 'search-with-ads'
+        -- ad-click key format is engine.in-content.type.code for builds starting 2021-03-16
+        -- otherwise key is engine
+        THEN SPLIT(search.key, '.')[SAFE_OFFSET(0)]
+      ELSE NULL
     END AS engine,
 
     CASE
-    WHEN
-      search.search_type = 'sap'
-    THEN
-      normalize_fenix_search_key(search.key)[SAFE_OFFSET(1)]
-    WHEN
-      search.search_type = 'in-content'
-    THEN
-      -- Drop engine from search key to get source
-      -- Key should look like `engine.in-content.sap.code` with possible
-      -- additional period-separated segments (e.g. .ts for top sites)
-      IF(
-        STRPOS(search.key, '.') IN (0, LENGTH(search.key)),
-        NULL,
-        SUBSTR(search.key, STRPOS(search.key, '.') + 1)
-      )
-    WHEN
-      search.search_type = 'ad-click'
-    THEN
-      IF(
-        REGEXP_CONTAINS(search.key, '\\.'),
-        SUBSTR(search.key, STRPOS(search.key, '.') + 1),
-        search.search_type
-      )
-    ELSE
-      search.search_type
+      WHEN search.search_type = 'sap'
+        THEN normalize_fenix_search_key(search.key)[SAFE_OFFSET(1)]
+      WHEN search.search_type = 'in-content'
+        -- Drop engine from search key to get source
+        -- Key should look like `engine.in-content.sap.code` with possible
+        -- additional period-separated segments (e.g. .ts for top sites)
+        THEN IF(
+            STRPOS(search.key, '.') IN (0, LENGTH(search.key)),
+            NULL,
+            SUBSTR(search.key, STRPOS(search.key, '.') + 1)
+          )
+      WHEN search.search_type = 'ad-click'
+        THEN IF(
+            REGEXP_CONTAINS(search.key, '\\.'),
+            SUBSTR(search.key, STRPOS(search.key, '.') + 1),
+            search.search_type
+          )
+      ELSE search.search_type
     END AS source,
 
     search.value AS search_count,
@@ -327,31 +303,20 @@ combined_search_clients AS (
     source,
 
     CASE
-    WHEN
-      search_type = 'ad-click'
-    THEN
-      IF(STARTS_WITH(source, 'in-content.organic'), 'ad-click-organic', search_type)
-    WHEN
-      STARTS_WITH(source, 'in-content.sap.')
-    THEN
-      'tagged-sap'
-    WHEN
-      REGEXP_CONTAINS(source, '^in-content.*-follow-on')
-    THEN
-      'tagged-follow-on'
-    WHEN
-      STARTS_WITH(source, 'in-content.organic')
-      OR STARTS_WITH(source, 'organic.')  -- for ios
-    THEN
-        'organic'
-    WHEN
-      search_type = 'ad-click'
-      OR search_type = 'search-with-ads'
-      OR search_type = 'sap'
-    THEN
-      search_type
-    ELSE
-      'unknown'
+      WHEN search_type = 'ad-click'
+        THEN IF(STARTS_WITH(source, 'in-content.organic'), 'ad-click-organic', search_type)
+      WHEN STARTS_WITH(source, 'in-content.sap.')
+        THEN 'tagged-sap'
+      WHEN REGEXP_CONTAINS(source, '^in-content.*-follow-on')
+        THEN 'tagged-follow-on'
+      WHEN STARTS_WITH(source, 'in-content.organic')
+        OR STARTS_WITH(source, 'organic.')  -- for ios
+        THEN 'organic'
+      WHEN search_type = 'ad-click'
+        OR search_type = 'search-with-ads'
+        OR search_type = 'sap'
+        THEN search_type
+      ELSE 'unknown'
     END AS search_type,
 
     search_count,

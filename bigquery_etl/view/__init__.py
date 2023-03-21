@@ -1,5 +1,6 @@
 """Represents a SQL view."""
 
+import glob
 import re
 import string
 import time
@@ -40,6 +41,10 @@ SKIP_VALIDATION = {
     "sql/moz-fx-data-shared-prod/mlhackweek_search/metrics/view.sql",
     "sql/moz-fx-data-shared-prod/regrets_reporter_ucs/main_events/view.sql",
     "sql/moz-fx-data-shared-prod/mlhackweek_search/action/view.sql",
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/**/client_deduplication/view.sql",
+        recursive=True,
+    ),
 }
 
 # skip publishing these views
@@ -113,6 +118,16 @@ class View:
         if not path.exists():
             return None
         return Metadata.from_file(path)
+
+    @property
+    def labels(self):
+        """Return the view labels."""
+        if not hasattr(self, "_labels"):
+            if self.metadata:
+                self._labels = self.metadata.labels.copy()
+            else:
+                self._labels = {}
+        return self._labels
 
     @classmethod
     def create(cls, project, dataset, name, sql_dir, base_table=None):
@@ -247,10 +262,10 @@ class View:
 
         expected_view_query = CREATE_VIEW_PATTERN.sub(
             "", sqlparse.format(self.content, strip_comments=True), count=1
-        ).strip()
+        ).strip(";" + string.whitespace)
         actual_view_query = sqlparse.format(
             table.view_query, strip_comments=True
-        ).strip()
+        ).strip(";" + string.whitespace)
         if expected_view_query != actual_view_query:
             print(f"view {target_view_id} will change: query does not match")
             return True
@@ -266,7 +281,7 @@ class View:
                 print(f"view {target_view_id} will change: schema does not match")
                 return True
 
-        if self.metadata and self.metadata.labels != table.labels:
+        if self.labels != table.labels:
             print(f"view {target_view_id} will change: labels do not match")
             return True
         return False
@@ -325,16 +340,19 @@ class View:
                 except Exception as e:
                     print(f"Could not update field descriptions for {target_view}: {e}")
 
-                if self.metadata:
-                    table = client.get_table(target_view)
-                    if table.labels != self.metadata.labels:
-                        labels = self.metadata.labels.copy()
-                        for key in table.labels:
-                            if key not in labels:
-                                # To delete a label its value must be set to None
-                                labels[key] = None
-                        table.labels = labels
-                        client.update_table(table, ["labels"])
+                table = client.get_table(target_view)
+                if table.labels != self.labels:
+                    labels = self.labels.copy()
+                    for key in table.labels:
+                        if key not in labels:
+                            # To delete a label its value must be set to None
+                            labels[key] = None
+                    table.labels = {
+                        key: value
+                        for key, value in labels.items()
+                        if isinstance(value, str)
+                    }
+                    client.update_table(table, ["labels"])
 
                 print(f"Published view {target_view}")
         else:

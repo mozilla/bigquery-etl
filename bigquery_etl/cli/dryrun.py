@@ -7,7 +7,7 @@ import re
 import sys
 from functools import partial
 from multiprocessing.pool import Pool
-from typing import Set
+from typing import List, Set
 
 import click
 from google.cloud import bigquery
@@ -63,7 +63,13 @@ from ..dryrun import SKIP, DryRun
     help="GCP project to perform dry run in when --use_cloud_function=False",
     default="moz-fx-data-shared-prod",
 )
-def dryrun(paths, use_cloud_function, validate_schemas, respect_skip, project):
+def dryrun(
+    paths: List[str],
+    use_cloud_function: bool,
+    validate_schemas: bool,
+    respect_skip: bool,
+    project: str,
+):
     """Perform a dry run."""
     file_names = ("query.sql", "view.sql", "part*.sql", "init.sql")
     file_re = re.compile("|".join(map(fnmatch.translate, file_names)))

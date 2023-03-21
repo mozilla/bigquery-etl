@@ -104,7 +104,14 @@ def table_names_from_baseline(baseline_table, include_project_id=True):
 def referenced_table_exists(view_sql):
     """Dry run the given view SQL to see if its referent exists."""
     dryrun = DryRun("foo/bar/view.sql", content=view_sql)
-    return 404 not in [e.get("code") for e in dryrun.errors()]
+    # 403 is returned if referenced dataset doesn't exist; we need to check that the 403 is due to dataset not existing
+    # since dryruns on views will also return 403 due to the table CREATE
+    # 404 is returned if referenced table or view doesn't exist
+    return not any([
+        404 == e.get("code")
+        or (403 == e.get("code") and "bigquery.tables.create denied" not in e.get("message")) 
+        for e in dryrun.errors()
+    ])
 
 
 def _contains_glob(patterns):
@@ -147,7 +154,9 @@ class GleanTable:
         self.per_app_enabled = True
         self.cross_channel_template = "cross_channel.view.sql"
 
-    def generate_per_app_id(self, project_id, baseline_table, output_dir=None):
+    def generate_per_app_id(
+        self, project_id, baseline_table, output_dir=None, use_cloud_function=True
+    ):
         """Generate the baseline table query per app_id."""
         if not self.per_app_id_enabled:
             return
@@ -208,7 +217,9 @@ class GleanTable:
 
             write_dataset_metadata(output_dir, view)
 
-    def generate_per_app(self, project_id, app_info, output_dir=None):
+    def generate_per_app(
+        self, project_id, app_info, output_dir=None, use_cloud_function=True
+    ):
         """Generate the baseline table query per app_name."""
         if not self.per_app_enabled:
             return
@@ -247,12 +258,12 @@ class GleanTable:
             )
             view = f"{project_id}.{target_dataset}.{target_view_name}"
 
-            if output_dir:
-                write_dataset_metadata(output_dir, view)
-
             if not (referenced_table_exists(sql)):
                 logging.info("Skipping view for table which doesn't exist:" f" {view}")
                 return
+
+            if output_dir:
+                write_dataset_metadata(output_dir, view)
 
             if output_dir:
                 write_sql(output_dir, view, "view.sql", sql, skip_existing=True)

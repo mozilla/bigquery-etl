@@ -8,7 +8,19 @@ labels:
   incremental: true
   schedule: daily
 owners:
+- cmorales@mozilla.com
 - xluo@mozilla.com
 scheduling:
   dag_name: bqetl_search_dashboard
   depends_on_past: false
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+  clustering:
+    fields:
+    - geo
+    - locale
+    - engine
+    - app_version

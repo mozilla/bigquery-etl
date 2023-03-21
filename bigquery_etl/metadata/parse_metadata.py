@@ -57,8 +57,8 @@ class PartitionType(enum.Enum):
 class PartitionMetadata:
     """Metadata for defining BigQuery table partitions."""
 
-    field: str
     type: PartitionType
+    field: Optional[str] = attr.ib(None)
     require_partition_filter: bool = attr.ib(True)
     expiration_days: Optional[float] = attr.ib(None)
 
@@ -255,6 +255,11 @@ class Metadata:
 
                 if "owners" in metadata:
                     owners = metadata["owners"]
+                    for i, owner in enumerate(metadata["owners"]):
+                        label = owner.split("@")[0]
+                        if not Metadata.is_valid_label(label):
+                            label = ""
+                        labels[f"owner{i+1}"] = label
 
                 if "schema" in metadata:
                     converter = cattrs.BaseConverter()

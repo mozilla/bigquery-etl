@@ -6,13 +6,13 @@ WITH all_subscriptions AS (
     *,
     TO_JSON_STRING(promotion_codes) AS json_promotion_codes
   FROM
-    mozdata.mozilla_vpn.all_subscriptions
+    `moz-fx-data-shared-prod`.mozilla_vpn.all_subscriptions
 ),
 max_active_date AS (
   SELECT AS VALUE
     MAX(active_date)
   FROM
-    mozdata.mozilla_vpn.active_subscription_ids
+    `moz-fx-data-shared-prod`.mozilla_vpn.active_subscription_ids
 ),
 trials AS (
   SELECT
@@ -48,7 +48,7 @@ new_events AS (
     subscription_id,
     "New" AS event_type,
   FROM
-    mozdata.mozilla_vpn.active_subscription_ids
+    `moz-fx-data-shared-prod`.mozilla_vpn.active_subscription_ids
   WHERE
     TRUE -- zetasql requires QUALIFY to be used in conjunction with WHERE, GROUP BY, or HAVING
   QUALIFY
@@ -62,7 +62,7 @@ cancelled_events AS (
     subscription_id,
     "Cancelled" AS event_type,
   FROM
-    mozdata.mozilla_vpn.active_subscription_ids
+    `moz-fx-data-shared-prod`.mozilla_vpn.active_subscription_ids
   CROSS JOIN
     max_active_date
   WHERE
@@ -98,23 +98,16 @@ SELECT
   events.event_date,
   events.event_type,
   CASE
-  WHEN
-    events.event_type IN ("New Trial", "Cancelled Trial")
-  THEN
-    events.event_type
-  WHEN
-    events.event_type = "New"
-  THEN
-    all_subscriptions.subscription_start_reason
-  WHEN
-    events.event_type = "Cancelled"
-  THEN
-    COALESCE(
-      all_subscriptions.ended_reason,
-      IF(all_subscriptions.provider = "Apple Store", "Cancelled by IAP", "Payment Failed")
-    )
-  END
-  AS granular_event_type,
+    WHEN events.event_type IN ("New Trial", "Cancelled Trial")
+      THEN events.event_type
+    WHEN events.event_type = "New"
+      THEN all_subscriptions.subscription_start_reason
+    WHEN events.event_type = "Cancelled"
+      THEN COALESCE(
+          all_subscriptions.ended_reason,
+          IF(all_subscriptions.provider = "Apple Store", "Cancelled by IAP", "Payment Failed")
+        )
+  END AS granular_event_type,
   all_subscriptions.plan_id,
   all_subscriptions.status,
   all_subscriptions.country,

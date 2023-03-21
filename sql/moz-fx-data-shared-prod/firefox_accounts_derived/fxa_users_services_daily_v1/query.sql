@@ -34,18 +34,24 @@ CREATE TEMP FUNCTION udf_contains_registration(
   )
 );
 
-  --
 WITH base AS (
   SELECT
-    * REPLACE (
-        -- cert_signed is specific to sync, but these events do not have the
-        -- 'service' field populated, so we fill in the service name for this special case.
-      IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service) AS service
-    )
+    `timestamp`,
+    event_type,
+    user_id,
+    app_version,
+    os_name,
+    os_version,
+    country,
+    `language`,
+    -- cert_signed is specific to sync, but these events do not have the
+    -- 'service' field populated, so we fill in the service name for this special case.
+    IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service) AS service,
   FROM
-    firefox_accounts.fxa_content_auth_oauth_events
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
-    user_id IS NOT NULL
+    fxa_log IN ('content', 'auth', 'oauth')
+    AND user_id IS NOT NULL
     AND event_type NOT IN ( --
       'fxa_email - bounced',
       'fxa_email - click',

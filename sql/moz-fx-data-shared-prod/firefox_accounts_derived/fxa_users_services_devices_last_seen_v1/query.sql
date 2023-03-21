@@ -1,6 +1,6 @@
 WITH _current AS (
   SELECT
-    `timestamp` AS submission_date,
+    `timestamp` AS event_timestamp,
     user_id,
     service,
     device_id,
@@ -22,7 +22,7 @@ WITH _current AS (
     -- rightmost bit represents whether the user was active in the current day.
     CAST(TRUE AS INT64) AS days_seen_bits,
   FROM
-    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_devices_daily_v1`
+    `firefox_accounts_derived.fxa_users_services_devices_daily_v1`
   WHERE
     DATE(`timestamp`) = @submission_date
     -- Making sure we only use login or registration complete events
@@ -33,9 +33,9 @@ WITH _current AS (
   --
 _previous AS (
   SELECT
-    *
+    * EXCEPT (submission_date)
   FROM
-    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_devices_last_seen_v1`
+    `firefox_accounts_derived.fxa_users_services_devices_last_seen_v1`
   WHERE
     DATE(submission_date) = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.
@@ -57,7 +57,10 @@ combined AS (
     (user_id, service, device_id)
 )
 SELECT
-  submission_date,
+  -- Retaining `timestamp` to represent when the last event took place
+  -- and adding submission_date for correct partitioning in BigQuery.
+  @submission_date AS submission_date,
+  event_timestamp,
   user_id,
   service,
   device_id,
@@ -82,4 +85,4 @@ WHERE
   AND service IS NOT NULL
   AND device_id IS NOT NULL
 QUALIFY
-  ROW_NUMBER() OVER (PARTITION BY user_id, service, device_id ORDER BY `submission_date` DESC) = 1
+  ROW_NUMBER() OVER (PARTITION BY user_id, service, device_id ORDER BY `event_timestamp` DESC) = 1

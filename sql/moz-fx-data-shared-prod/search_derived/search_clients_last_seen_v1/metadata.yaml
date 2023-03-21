@@ -8,6 +8,7 @@ description: |
 owners:
 - akomar@mozilla.com
 - anicholson@mozilla.com
+- cmorales@mozilla.com
 labels:
   schedule: daily
 scheduling:
@@ -19,8 +20,8 @@ scheduling:
     execution_delta: 1h
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: true
   clustering:
     fields:

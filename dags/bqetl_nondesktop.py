@@ -40,7 +40,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     firefox_nondesktop_exact_mau28_by_client_count_dimensions = bigquery_etl_query(
         task_id="firefox_nondesktop_exact_mau28_by_client_count_dimensions",
         destination_table="firefox_nondesktop_exact_mau28_by_client_count_dimensions_v1",

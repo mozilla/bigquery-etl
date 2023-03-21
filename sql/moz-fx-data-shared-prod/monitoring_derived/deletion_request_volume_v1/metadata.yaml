@@ -18,3 +18,8 @@ scheduling:
     - ['moz-fx-data-shared-prod',
        'monitoring',
        'payload_bytes_decoded_telemetry']
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false

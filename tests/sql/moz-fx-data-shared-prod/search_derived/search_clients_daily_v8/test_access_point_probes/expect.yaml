@@ -27,6 +27,7 @@
   scalar_parent_urlbar_searchmode_topsites_urlbar_sum: []
   scalar_parent_urlbar_searchmode_touchbar_sum: []
   scalar_parent_urlbar_searchmode_typed_sum: []
+  is_sap_monetizable: False
 - <<: *base
   client_id: b
   engine: engine1

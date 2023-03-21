@@ -57,7 +57,7 @@ class Schema:
         return cls(json_schema)
 
     @classmethod
-    def for_table(cls, project, dataset, table, partitioned_by=None):
+    def for_table(cls, project, dataset, table, partitioned_by=None, *args, **kwargs):
         """Get the schema for a BigQuery table."""
         query = f"SELECT * FROM `{project}.{dataset}.{table}`"
 
@@ -67,7 +67,10 @@ class Schema:
         try:
             return cls(
                 dryrun.DryRun(
-                    os.path.join(project, dataset, table, "query.sql"), query
+                    os.path.join(project, dataset, table, "query.sql"),
+                    query,
+                    *args,
+                    **kwargs,
                 ).get_schema()
             )
         except Exception as e:
@@ -96,6 +99,7 @@ class Schema:
         exclude: Optional[List[str]] = None,
         add_missing_fields=True,
         attributes: Optional[List[str]] = None,
+        ignore_incompatible_fields: bool = False,
     ):
         """Merge another schema into the schema."""
         if "fields" in other.schema and "fields" in self.schema:
@@ -107,6 +111,7 @@ class Schema:
                 exclude=exclude,
                 add_missing_fields=add_missing_fields,
                 attributes=attributes,
+                ignore_incompatible_fields=ignore_incompatible_fields,
             )
 
     def equal(self, other: "Schema") -> bool:
@@ -171,6 +176,7 @@ class Schema:
         ignore_missing_fields=False,
         exclude=None,
         attributes=None,
+        ignore_incompatible_fields=False,
     ):
         """Traverses two schemas for validation and optionally updates the first schema."""
         nodes = {n["name"]: Schema._node_with_mode(n) for n in columns}
@@ -220,9 +226,10 @@ class Schema:
                                     f"{prefix}.{field_path} differ"
                                 )
                             else:
-                                raise Exception(
-                                    f"{node_attr_key} missing in {prefix}.{field_path}"
-                                )
+                                if not ignore_incompatible_fields:
+                                    raise Exception(
+                                        f"{node_attr_key} missing in {prefix}.{field_path}"
+                                    )
                     elif nodes[node_name][node_attr_key] != node_attr_value:
                         # check field attribute diffs
                         if node_attr_key == "description":
@@ -231,10 +238,11 @@ class Schema:
                                 f"Warning: descriptions for {prefix}.{field_path} differ."
                             )
                         elif node_attr_key != "fields":
-                            raise Exception(
-                                f"Cannot merge schemas. {node_attr_key} attributes "
-                                f"for {prefix}.{field_path} are incompatible"
-                            )
+                            if not ignore_incompatible_fields:
+                                raise Exception(
+                                    f"Cannot merge schemas. {node_attr_key} attributes "
+                                    f"for {prefix}.{field_path} are incompatible"
+                                )
 
                 if dtype == "RECORD":
                     # keep traversing nested fields
@@ -246,6 +254,7 @@ class Schema:
                         add_missing_fields=add_missing_fields,
                         ignore_missing_fields=ignore_missing_fields,
                         attributes=attributes,
+                        ignore_incompatible_fields=ignore_incompatible_fields,
                     )
             else:
                 if update and add_missing_fields:

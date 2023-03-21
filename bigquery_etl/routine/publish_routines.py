@@ -1,5 +1,6 @@
 """Publish UDFs and resources to the public mozfun GCP project."""
 
+import fnmatch
 import json
 import os
 import re
@@ -83,7 +84,16 @@ def main():
         )
 
 
-def publish(target, project_id, dependency_dir, gcs_bucket, gcs_path, public):
+def publish(
+    target,
+    project_id,
+    dependency_dir,
+    gcs_bucket,
+    gcs_path,
+    public,
+    pattern=None,
+    dry_run=False,
+):
     """Publish routines in the provided directory."""
     client = bigquery.Client(project_id)
 
@@ -96,9 +106,13 @@ def publish(target, project_id, dependency_dir, gcs_bucket, gcs_path, public):
 
     published_routines = []
 
-    for raw_routine in raw_routines:
+    for raw_routine in (
+        raw_routines if pattern is None else fnmatch.filter(raw_routines, pattern)
+    ):
         # get all dependencies for UDF and publish as persistent UDF
         udfs_to_publish = accumulate_dependencies([], raw_routines, raw_routine)
+        if pattern is not None:
+            udfs_to_publish = fnmatch.filter(udfs_to_publish, pattern)
         udfs_to_publish.append(raw_routine)
 
         for dep in udfs_to_publish:
@@ -111,12 +125,20 @@ def publish(target, project_id, dependency_dir, gcs_bucket, gcs_path, public):
                     gcs_path,
                     raw_routines.keys(),
                     public,
+                    dry_run=dry_run,
                 )
                 published_routines.append(dep)
 
 
 def publish_routine(
-    raw_routine, client, project_id, gcs_bucket, gcs_path, known_udfs, is_public
+    raw_routine,
+    client,
+    project_id,
+    gcs_bucket,
+    gcs_path,
+    known_udfs,
+    is_public,
+    dry_run=False,
 ):
     """Publish a specific routine to BigQuery."""
     if is_public:
@@ -145,6 +167,7 @@ def publish_routine(
             # ensure UDF definitions are not replaced twice as would be the case for
             # `mozfun`.stats.mode_last and `mozfun`.stats.mode_last_retain_nulls
             # since one name is a substring of the other
+            definition = definition.replace(f"`{project_id}.{udf}`", udf)
             definition = definition.replace(f"`{project_id}`.{udf}", udf)
             definition = definition.replace(f"{project_id}.{udf}", udf)
             definition = definition.replace(udf, f"`{project_id}`.{udf}")
@@ -165,7 +188,9 @@ def publish_routine(
                 query = query[:-1] + f"OPTIONS(description={escaped_description});"
 
         print(f"Publish {raw_routine.name}")
-        client.query(query).result()
+        job = client.query(query, job_config=bigquery.QueryJobConfig(dry_run=dry_run))
+        if not dry_run:
+            job.result()
 
 
 def push_dependencies_to_gcs(bucket, path, dependency_dir, project_id):

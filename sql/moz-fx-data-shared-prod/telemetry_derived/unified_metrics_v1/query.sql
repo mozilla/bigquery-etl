@@ -140,6 +140,34 @@ WITH unioned_source AS (
     focus_android.clients_last_seen_joined
   WHERE
     submission_date = @submission_date
+  UNION ALL
+  SELECT
+    submission_date,
+    normalized_channel,
+    client_id,
+    sample_id,
+    days_since_seen,
+    days_seen_bits,
+    days_created_profile_bits,
+    durations,
+    normalized_os,
+    normalized_os_version,
+    locale,
+    city,
+    country,
+    app_display_version,
+    device_model,
+    first_seen_date,
+    submission_date = first_seen_date AS is_new_profile,
+    uri_count,
+    is_default_browser,
+    CAST(NULL AS string) AS distribution_id,
+    isp,
+    'Klar iOS' AS normalized_app_name
+  FROM
+    klar_ios.clients_last_seen_joined
+  WHERE
+    submission_date = @submission_date
 ),
 unioned AS (
   SELECT
@@ -195,32 +223,22 @@ mobile_with_searches AS (
     unioned.client_id,
     unioned.sample_id,
     CASE
-    WHEN
-      BIT_COUNT(days_seen_bits)
-      BETWEEN 1
-      AND 6
-    THEN
-      'infrequent_user'
-    WHEN
-      BIT_COUNT(days_seen_bits)
-      BETWEEN 7
-      AND 13
-    THEN
-      'casual_user'
-    WHEN
-      BIT_COUNT(days_seen_bits)
-      BETWEEN 14
-      AND 20
-    THEN
-      'regular_user'
-    WHEN
-      BIT_COUNT(days_seen_bits) >= 21
-    THEN
-      'core_user'
-    ELSE
-      'other'
-    END
-    AS activity_segment,
+      WHEN BIT_COUNT(days_seen_bits)
+        BETWEEN 1
+        AND 6
+        THEN 'infrequent_user'
+      WHEN BIT_COUNT(days_seen_bits)
+        BETWEEN 7
+        AND 13
+        THEN 'casual_user'
+      WHEN BIT_COUNT(days_seen_bits)
+        BETWEEN 14
+        AND 20
+        THEN 'regular_user'
+      WHEN BIT_COUNT(days_seen_bits) >= 21
+        THEN 'core_user'
+      ELSE 'other'
+    END AS activity_segment,
     unioned.normalized_app_name,
     unioned.app_display_version AS app_version,
     unioned.normalized_channel,

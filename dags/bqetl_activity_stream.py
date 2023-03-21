@@ -46,7 +46,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     activity_stream_bi__impression_stats_by_experiment__v1 = bigquery_etl_query(
         task_id="activity_stream_bi__impression_stats_by_experiment__v1",
         destination_table="impression_stats_by_experiment_v1",

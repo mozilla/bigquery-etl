@@ -17,8 +17,8 @@ IF
     SELECT
       submission_timestamp AS `timestamp`,
       event.category AS `type`,
-      CAST(event.extra[safe_offset(i)].value AS STRING) AS branch,
-      CAST(event.extra[safe_offset(j)].value AS STRING) AS experiment,
+      CAST(event.extra[SAFE_OFFSET(i)].value AS STRING) AS branch,
+      CAST(event.extra[SAFE_OFFSET(j)].value AS STRING) AS experiment,
       event.name AS event_method
     FROM
       all_events,
@@ -30,11 +30,11 @@ IF
       UNNEST(GENERATE_ARRAY(0, 51)) AS j
     WHERE
       event.category = 'nimbus_events'
-      AND CAST(event.extra[safe_offset(i)].key AS STRING) = 'branch'
-      AND CAST(event.extra[safe_offset(j)].key AS STRING) = 'experiment'
+      AND CAST(event.extra[SAFE_OFFSET(i)].key AS STRING) = 'branch'
+      AND CAST(event.extra[SAFE_OFFSET(j)].key AS STRING) = 'experiment'
   )
   SELECT
-    date(`timestamp`) AS submission_date,
+    DATE(`timestamp`) AS submission_date,
     `type`,
     experiment,
     branch,
@@ -55,13 +55,14 @@ IF
     COUNTIF(event_method = 'unenrollFailed') AS unenroll_failed_count,
     COUNTIF(event_method = 'updateFailed') AS update_failed_count,
     COUNTIF(event_method = 'disqualification') AS disqualification_count,
-    COUNTIF(event_method = 'expose' OR event_method = 'exposure') AS exposure_count
+    COUNTIF(event_method = 'expose' OR event_method = 'exposure') AS exposure_count,
+    COUNTIF(event_method = 'validationFailed') AS validation_failed_count
   FROM
     experiment_events
   WHERE
     -- Limit the amount of data the materialized view is going to backfill when created.
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.
-    timestamp > TIMESTAMP('2021-10-25')
+    timestamp > TIMESTAMP('2023-03-13')
   GROUP BY
     submission_date,
     `type`,

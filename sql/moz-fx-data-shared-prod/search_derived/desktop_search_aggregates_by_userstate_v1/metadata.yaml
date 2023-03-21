@@ -5,6 +5,7 @@ description: |-
   and whether the user searched or not.
   Originally created for the search report dashboard.
 owners:
+- cmorales@mozilla.com
 - xluo@mozilla.com
 labels:
   incremental: true
@@ -14,8 +15,8 @@ scheduling:
   depends_on_past: false
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: false
   clustering:
     fields:

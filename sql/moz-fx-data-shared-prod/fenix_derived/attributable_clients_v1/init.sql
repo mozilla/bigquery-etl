@@ -25,7 +25,7 @@ CLUSTER BY
         SUM(sum_map_values(metrics.labeled_counter.browser_search_with_ads)) AS searches_with_ads,
         SUM(sum_map_values(metrics.labeled_counter.browser_search_ad_clicks)) AS ad_clicks,
       FROM
-        mozdata.fenix.baseline
+        `moz-fx-data-shared-prod`.fenix.baseline
       WHERE
         DATE(submission_timestamp) >= first_date
       GROUP BY
@@ -57,34 +57,32 @@ CLUSTER BY
         country,
         first_seen_date
       FROM
-        mozdata.fenix.baseline_clients_first_seen
+        `moz-fx-data-shared-prod`.fenix.baseline_clients_first_seen
       WHERE
         submission_date >= first_date
     ),
     adjust_client AS (
       SELECT
-        client_info.client_id AS client_id,
-        ARRAY_AGG(metrics.string.first_session_network ORDER BY submission_timestamp)[
-          SAFE_OFFSET(0)
-        ] AS adjust_network,
-        ARRAY_AGG(metrics.string.first_session_adgroup ORDER BY submission_timestamp)[
-          SAFE_OFFSET(0)
-        ] AS adjust_adgroup,
-        ARRAY_AGG(metrics.string.first_session_campaign ORDER BY submission_timestamp)[
-          SAFE_OFFSET(0)
-        ] AS adjust_campaign,
-        ARRAY_AGG(metrics.string.first_session_creative ORDER BY submission_timestamp)[
-          SAFE_OFFSET(0)
-        ] AS adjust_creative,
-        MIN(DATE(submission_timestamp)) AS first_session_date
+        client_id,
+        adjust_network,
+        adjust_ad_group AS adjust_adgroup,
+        adjust_campaign,
+        adjust_creative,
+        metadata.reported_first_session_ping,
       FROM
-        `mozdata.fenix.first_session`
+        `moz-fx-data-shared-prod`.fenix.firefox_android_clients
       WHERE
-        DATE(submission_timestamp) >= first_date
-        AND metrics.string.first_session_network IS NOT NULL
-        AND metrics.string.first_session_network != ''
-      GROUP BY
-        client_id
+        adjust_network != 'Unknown'
+    ),
+    activations AS (
+      SELECT
+        client_id,
+        submission_date,
+        activated > 0 AS activated,
+      FROM
+        `moz-fx-data-shared-prod`.fenix.new_profile_activation
+      WHERE
+        submission_date = @submission_date
     )
     SELECT
       submission_date,
@@ -96,46 +94,31 @@ CLUSTER BY
       adjust_adgroup,
       adjust_campaign,
       adjust_creative,
+      first_seen_date = submission_date
+      AND reported_first_session_ping AS is_new_install,
       first_seen_date = submission_date AS is_new_profile,
       CASE
-      WHEN
-        client_day.has_search_data
-      THEN
-        client_day.searches
-      WHEN
-        metrics_searches.has_search_data
-      THEN
-        metrics_searches.searches
-      ELSE
-        0
-      END
-      AS searches,
+        WHEN client_day.has_search_data
+          THEN client_day.searches
+        WHEN metrics_searches.has_search_data
+          THEN metrics_searches.searches
+        ELSE 0
+      END AS searches,
       CASE
-      WHEN
-        client_day.has_search_data
-      THEN
-        client_day.searches_with_ads
-      WHEN
-        metrics_searches.has_search_data
-      THEN
-        metrics_searches.searches_with_ads
-      ELSE
-        0
-      END
-      AS searches_with_ads,
+        WHEN client_day.has_search_data
+          THEN client_day.searches_with_ads
+        WHEN metrics_searches.has_search_data
+          THEN metrics_searches.searches_with_ads
+        ELSE 0
+      END AS searches_with_ads,
       CASE
-      WHEN
-        client_day.has_search_data
-      THEN
-        client_day.ad_clicks
-      WHEN
-        metrics_searches.has_search_data
-      THEN
-        metrics_searches.ad_clicks
-      ELSE
-        0
-      END
-      AS ad_clicks,
+        WHEN client_day.has_search_data
+          THEN client_day.ad_clicks
+        WHEN metrics_searches.has_search_data
+          THEN metrics_searches.ad_clicks
+        ELSE 0
+      END AS ad_clicks,
+      COALESCE(activated, FALSE) AS activated,
     FROM
       adjust_client
     JOIN
@@ -150,4 +133,8 @@ CLUSTER BY
       first_seen
     USING
       (client_id)
+    LEFT JOIN
+      activations
+    USING
+      (client_id, submission_date)
   )

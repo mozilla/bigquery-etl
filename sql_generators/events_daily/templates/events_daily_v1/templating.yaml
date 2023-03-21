@@ -9,58 +9,59 @@ fenix_derived:
   start_date: 2020-01-01
   dag_name: bqetl_fenix_event_rollup
   user_properties:
-    - src: android_sdk_version
+    - src: client_info.android_sdk_version
       dest: android_sdk_version
-    - src: app_build
+    - src: client_info.app_build
       dest: app_build
-    - src: app_channel
+    - src: client_info.app_channel
       dest: app_channel
-    - src: app_display_version
+    - src: client_info.app_display_version
       dest: app_display_version
-    - src: architecture
+    - src: client_info.architecture
       dest: architecture
-    - src: device_manufacturer
+    - src: client_info.device_manufacturer
       dest: device_manufacturer
-    - src: device_model
+    - src: client_info.device_model
       dest: device_model
-    - src: first_run_date
+    - src: client_info.first_run_date
       dest: first_run_date
-    - src: telemetry_sdk_build
+    - src: client_info.telemetry_sdk_build
       dest: telemetry_sdk_build
-    - src: locale
+    - src: client_info.locale
       dest: locale
-telemetry_derived:
-  name: Firefox
-  include_normalized_fields: True
-  include_metadata_fields: True
-  glean: False
-  dataset: telemetry
-  source_table: telemetry_derived.deanonymized_events
-  start_date: 2020-01-01
-  dag_name: bqetl_event_rollup
-  user_properties:
-    - src: application.build_id
-      dest: build_id
-    - src: environment.build.architecture
-      dest: build_architecture
-    - src: environment.profile.creation_date
-      dest: profile_creation_date
-      type: FLOAT64
-    - src: environment.settings.is_default_browser
-      dest: is_default_browser
-      type: BOOL
-    - src: environment.settings.attribution.source
-      dest: attribution_source
-    - src: metadata.uri.app_version
-      dest: app_version
-    - src: environment.settings.locale
-      dest: locale
-    - src: environment.partner.distribution_id
-      dest: distribution_id
-    - src: environment.settings.attribution.ua
-      dest: attribution_ua
-    - src: application.display_version
-      dest: display_version
+# see https://bugzilla.mozilla.org/show_bug.cgi?id=1805722#c10
+#telemetry_derived:
+#  name: Firefox
+#  include_normalized_fields: True
+#  include_metadata_fields: True
+#  glean: False
+#  dataset: telemetry
+#  source_table: telemetry_derived.deanonymized_events
+#  start_date: 2020-01-01
+#  dag_name: bqetl_event_rollup
+#  user_properties:
+#    - src: application.build_id
+#      dest: build_id
+#    - src: environment.build.architecture
+#      dest: build_architecture
+#    - src: environment.profile.creation_date
+#      dest: profile_creation_date
+#      type: FLOAT64
+#    - src: environment.settings.is_default_browser
+#      dest: is_default_browser
+#      type: BOOL
+#    - src: environment.settings.attribution.source
+#      dest: attribution_source
+#    - src: metadata.uri.app_version
+#      dest: app_version
+#    - src: environment.settings.locale
+#      dest: locale
+#    - src: environment.partner.distribution_id
+#      dest: distribution_id
+#    - src: environment.settings.attribution.ua
+#      dest: attribution_ua
+#    - src: application.display_version
+#      dest: display_version
 messaging_system_derived:
   name: Firefox Messaging System
   include_normalized_fields: False
@@ -136,17 +137,19 @@ mozilla_vpn_derived:
   start_date: 2021-10-01
   dag_name: bqetl_event_rollup
   user_properties:
-    - src: app_build
+    - src: client_info.app_build
       dest: app_build
-    - src: app_channel
+    - src: client_info.app_channel
       dest: app_channel
-    - src: app_display_version
+    - src: client_info.app_display_version
       dest: app_display_version
-    - src: architecture
+    - src: client_info.architecture
       dest: architecture
-    - src: first_run_date
+    - src: client_info.first_run_date
       dest: first_run_date
-    - src: telemetry_sdk_build
+    - src: metadata.header.x_telemetry_agent
+      dest: telemetry_agent
+    - src: client_info.telemetry_sdk_build
       dest: telemetry_sdk_build
-    - src: locale
+    - src: client_info.locale
       dest: locale

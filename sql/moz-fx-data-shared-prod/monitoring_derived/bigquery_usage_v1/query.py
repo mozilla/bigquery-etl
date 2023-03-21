@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 
-"""Determine big query usage."""
+"""
+Determine BigQuery usage.
+
+To read more on the source table, please visit:
+https://cloud.google.com/bigquery/docs/information-schema-jobs
+"""
 
 from argparse import ArgumentParser
 
@@ -20,6 +25,8 @@ parser.add_argument("--source_projects", nargs="+", default=DEFAULT_PROJECTS)
 parser.add_argument("--destination_dataset", default="monitoring_derived")
 parser.add_argument("--destination_table", default="bigquery_usage_v1")
 
+# total_bytes_billed a minimum of 10MB per table total_bytes_processed
+
 
 def create_query(date, source_project):
     """Create query for a source project."""
@@ -29,6 +36,8 @@ def create_query(date, source_project):
           DATE('{date}') AS creation_date,
           job_id,
           job_type,
+          reservation_id,
+          cache_hit,
           state,
           referenced_tables.project_id AS reference_project_id,
           dataset_id AS reference_dataset_id,
@@ -42,7 +51,6 @@ def create_query(date, source_project):
           end_time-start_time as task_duration,
           ROUND(total_bytes_processed / 1024 / 1024 / 1024 / 1024, 4)
           AS total_terabytes_processed,
-          ROUND(total_bytes_processed / 1024 / 1024 / 1024 / 1024 * 5, 2) AS cost_usd,
           error_result.location AS error_location,
           error_result.reason AS error_reason,
           error_result.message AS error_message,

@@ -72,8 +72,8 @@ WITH previous_examples AS (
       STRUCT(
         "google" AS key,
         STRUCT(
-          generate_array(11, 0, -1) AS total_searches,
-          generate_array(12, 1, -1) AS tagged_searches,
+          GENERATE_ARRAY(11, 0, -1) AS total_searches,
+          GENERATE_ARRAY(12, 1, -1) AS tagged_searches,
           udf.zeroed_array(12) AS search_with_ads,
           udf.zeroed_array(12) AS ad_click
         ) AS value
@@ -385,22 +385,14 @@ SELECT
   assert.array_equals(
     exp,
     CASE
-    WHEN
-      res_type = "total_searches"
-    THEN
-      udf.get_key_with_null(res, key).total_searches
-    WHEN
-      res_type = "tagged_searches"
-    THEN
-      udf.get_key_with_null(res, key).tagged_searches
-    WHEN
-      res_type = "search_with_ads"
-    THEN
-      udf.get_key_with_null(res, key).search_with_ads
-    WHEN
-      res_type = "ad_click"
-    THEN
-      udf.get_key_with_null(res, key).ad_click
+      WHEN res_type = "total_searches"
+        THEN udf.get_key_with_null(res, key).total_searches
+      WHEN res_type = "tagged_searches"
+        THEN udf.get_key_with_null(res, key).tagged_searches
+      WHEN res_type = "search_with_ads"
+        THEN udf.get_key_with_null(res, key).search_with_ads
+      WHEN res_type = "ad_click"
+        THEN udf.get_key_with_null(res, key).ad_click
     END
   ),
 FROM

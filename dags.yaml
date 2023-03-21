@@ -81,6 +81,7 @@ bqetl_mobile_search:
       - "telemetry-alerts@mozilla.com"
       - "anicholson@mozilla.com"
       - "akomar@mozilla.com"
+      - "cmorales@mozilla.com"
     retries: 1
     retry_delay: 5m
   tags:
@@ -206,6 +207,7 @@ bqetl_search:
       - "telemetry-alerts@mozilla.com"
       - "anicholson@mozilla.com"
       - "akomar@mozilla.com"
+      - "cmorales@mozilla.com"
     retries: 2
     retry_delay: 30m
   tags:
@@ -359,6 +361,22 @@ bqetl_org_mozilla_firefox_derived:
   tags:
     - impact/tier_1
 
+bqetl_org_mozilla_focus_derived:
+  schedule_interval: 0 2 * * *
+  default_args:
+    depends_on_past: false
+    email:
+      - dthorn@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    owner: dthorn@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: "2023-02-22"
+  tags:
+    - impact/tier_1
+
 bqetl_google_analytics_derived:
   schedule_interval: 0 23 * * *
   description: |
@@ -407,6 +425,9 @@ bqetl_monitoring_airflow:
 
 bqetl_event_rollup:
   schedule_interval: 0 3 * * *
+  description: |
+    Desktop tables (`telemetry_derived.events_daily_v1` and upstream) are deprecated and paused
+    (have their scheduling metadata commented out) per https://bugzilla.mozilla.org/show_bug.cgi?id=1805722#c10
   default_args:
     owner: wlachance@mozilla.com
     start_date: "2020-11-03"
@@ -509,8 +530,9 @@ bqetl_pocket:
     email_on_failure: true
     email_on_retry: true
     owner: jklukas@mozilla.com
-    retries: 2
-    retry_delay: 30m
+    # Retry more than normal because the files from Pocket may not always be available on time.
+    retries: 10
+    retry_delay: 60m
     start_date: "2021-03-10"
   description: |
     Import of data from Pocket's Snowflake warehouse.
@@ -775,7 +797,7 @@ bqetl_analytics_aggregations:
     It provides data to build growth, search and usage metrics, as well
     as acquisition and retention KPIs, in a model that facilitates
     reporting in Looker.
-  schedule_interval: 0 1 * * *
+  schedule_interval: 30 3 * * *
   tags:
     - impact/tier_1
 
@@ -892,3 +914,107 @@ bqetl_mobile_activation:
   tags:
     - impact/tier_1
     - repo/bigquery-etl
+
+bqetl_analytics_tables:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - lvargas@mozilla.com
+      - gkaberere@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: lvargas@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2022-12-01'
+  description: Scheduled queries for analytics tables.
+    engineering.
+  schedule_interval: 0 2 * * *
+  tags:
+    - impact/tier_1
+    - repo/bigquery-etl
+bqetl_fivetran_google_ads:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - frank@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: frank@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-01-01'
+  description: Queries for Google Ads data
+      coming from Fivetran. Fivetran
+      updates these tables every hour.
+  schedule_interval: 0 2 * * *
+  tags:
+    - impact/tier_2
+    - repo/bigquery-etl
+bqetl_campaign_cost_breakdowns:
+  default_args:
+    depends_on_past: false
+    email:
+      - ctroy@mozilla.com
+      - frank@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: ctroy@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2021-09-20'
+  description: |
+    Derived tables on top of fenix installation and DOU metrics,
+    as well as Google ads campaign data.
+  schedule_interval: 0 3 * * *
+  tags:
+    - impact/tier_2
+    - repo/bigquery-etl
+bqetl_fivetran_costs:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - lschiestl@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: lschiestl@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-01-18'
+  description: |
+    Derived tables for analyzing the Fivetran Costs. Data coming from Fivetran.
+  repo: bigquery-etl
+  schedule_interval: 0 5 * * *
+  tags:
+    - impact/tier_3
+
+bqetl_mdn_yari:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - mdn@mozilla.com
+      - fmerz@mozilla.com
+      - kignasiak@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: fmerz@mozilla.com
+    retries: 1
+    retry_delay: 5m
+    start_date: '2023-02-01'
+  description: |
+    Monthly data exports of MDN 'Popularities'. This aggregates and counts total
+    page visits and normalizes them agains the max.
+  schedule_interval: 0 0 1 * *
+  tags:
+    - impact/tier_3
+    - triage/record_only

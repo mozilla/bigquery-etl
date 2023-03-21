@@ -30,7 +30,7 @@ except ImportError:
     # python 3.7 compatibility
     from backports.cached_property import cached_property  # type: ignore
 
-
+TEST_PROJECT = "bigquery-etl-integration-test"
 SKIP = {
     # Access Denied
     "sql/moz-fx-data-shared-prod/account_ecosystem_derived/ecosystem_client_id_lookup_v1/query.sql",  # noqa E501
@@ -79,9 +79,13 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_auth_events_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_content_events_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_stdout_events_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/fivetran_costs_derived/destinations_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/fivetran_costs_derived/incremental_mar_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/fivetran_costs_derived/monthly_costs_v1/query.sql",
     "sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_update/view.sql",
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_v1/query.sql",
     "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_structured/view.sql",
@@ -100,6 +104,8 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/subscription_platform/stripe_subscriptions_history/view.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/subscription_platform/nonprod_stripe_subscriptions/view.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/subscription_platform/nonprod_stripe_subscriptions_history/view.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/subscription_platform/apple_subscriptions/view.sql",
+    "sql/moz-fx-data-shared-prod/subscription_platform/nonprod_apple_subscriptions/view.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/stripe/itemized_payout_reconciliation/view.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscription_ids_v1/query.sql",  # noqa E501
@@ -109,6 +115,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/devices_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/fxa_attribution_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/funnel_product_page_to_subscribed_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/guardian_apple_events_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/login_flows_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/protected_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/site_metrics_empty_check_v1/query.sql",  # noqa E501
@@ -126,6 +133,9 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/protected_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/hubs_derived/subscriptions_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/relay_derived/subscriptions_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/fenix_derived/google_ads_campaign_cost_breakdowns_v1/query.sql",
     *glob.glob("sql/moz-fx-data-shared-prod/search_terms*/**/*.sql", recursive=True),
     "sql/moz-fx-data-bq-performance/release_criteria/dashboard_health_v1/query.sql",
     "sql/moz-fx-data-bq-performance/release_criteria/rc_flattened_test_data_v1/query.sql",
@@ -166,6 +176,14 @@ SKIP = {
         "sql/moz-fx-data-shared-prod/monitoring_derived/airflow_*/*.sql",
         recursive=True,
     ),  # noqa E501
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/google_ads_derived/**/*.sql",
+        recursive=True,
+    ),
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/**/client_deduplication*/*.sql",
+        recursive=True,
+    ),
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501
@@ -240,6 +258,16 @@ SKIP = {
     # Tests
     "sql/moz-fx-data-test-project/test/simple_view/view.sql",
 }
+SKIP.update(
+    [
+        p
+        for f in [Path(s) for s in SKIP]
+        for p in glob.glob(
+            f"sql/{TEST_PROJECT}/{f.parent.parent.name}*/{f.parent.name}/{f.name}",
+            recursive=True,
+        )
+    ]
+)
 
 
 class Errors(Enum):

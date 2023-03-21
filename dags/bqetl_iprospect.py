@@ -44,7 +44,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     iprospect__adspend__v1 = gke_command(
         task_id="iprospect__adspend__v1",
         command=[

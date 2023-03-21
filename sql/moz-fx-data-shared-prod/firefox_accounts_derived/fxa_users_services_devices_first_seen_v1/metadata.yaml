@@ -7,6 +7,22 @@ description: |
   attributes associated with this first session.
   Note: registration or login events are used to
   determine the first session.
+
+  Additional attributes get captured to provide insight into
+  what os and browser is used by the new device, as well as,
+  the device's entrypoint and utm information.
+  This information is static and represents as was at the time
+  (does not change).
+
+  Lowest granularity field: device_id
+
+  Notes:
+    - There are very few cases when a single flow_id
+      can contain multiple device_ids.
+    - utm fields contain very high levels of null values.
+
+  More information about fxa data can be found here:
+  https://docs.telemetry.mozilla.org/datasets/fxa.html
 owners:
   - kignasiak@mozilla.com
 labels:
@@ -17,16 +33,10 @@ scheduling:
   dag_name: bqetl_fxa_events
   depends_on_past: true
   date_partition_parameter: submission_date
-  referenced_tables:
-    - [
-      'moz-fx-data-shared-prod',
-      'firefox_accounts_derived',
-      'fxa_users_services_devices_daily_v1'
-    ]
 bigquery:
   time_partitioning:
-    field: first_seen_date
     type: day
+    field: first_seen_date
     require_partition_filter: true
   clustering:
     fields:

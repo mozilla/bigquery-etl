@@ -22,7 +22,6 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry/first_shutdown_summary_v4/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/focus_android_events_v1/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/lockwise_mobile_events_v1/view.sql",
-    "sql/moz-fx-data-shared-prod/telemetry/origin_content_blocking/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/rocket_android_events_v1/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/simpleprophet_forecasts/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/smoot_usage_day_0/view.sql",
@@ -84,6 +83,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry_derived/smoot_usage_fxa_v2/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/smoot_usage_new_profiles_v2/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/udf_js/jackknife_percentile_ci/udf.sql",
+    "sql/moz-fx-data-shared-prod/udf_js/bootstrap_percentile_ci/udf.sql",
     "sql/moz-fx-data-shared-prod/udf_legacy/contains.sql",
     "sql/moz-fx-data-shared-prod/udf_legacy/date_format.sql",
     "sql/moz-fx-data-shared-prod/udf_legacy/date_trunc.sql",
@@ -128,11 +128,11 @@ def format(paths, check=False):
             formatted = reformat(query, trailing_newline=True)
             if query != formatted:
                 if check:
-                    print(f"would reformat {path}")
+                    print(f"Needs reformatting: bqetl format {path}")
                 else:
                     with open(path, "w") as fp:
                         fp.write(formatted)
-                    print(f"reformatted {path}")
+                    print(f"Reformatted: {path}")
                 reformatted += 1
             else:
                 unchanged += 1

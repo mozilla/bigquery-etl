@@ -128,7 +128,7 @@ def ensure_table(bqclient, table_id):
         bigquery.SchemaField("slot_start", "TIMESTAMP", mode="REQUIRED"),
         bigquery.SchemaField("report_count", "INTEGER"),
         bigquery.SchemaField("error", "STRING"),
-        bigquery.SchemaField("values", "INTEGER", mode="REPEATED"),
+        bigquery.SchemaField("value", "INTEGER", mode="REPEATED"),
     ]
 
     table = bigquery.Table(table_id, schema=schema)
@@ -164,8 +164,7 @@ def store_data(task, data, bqclient, table_id):
     print("Inserting data into BQ.")
     insert_res = bqclient.insert_rows_json(table=table_id, json_rows=rows)
 
-    # cheap error handling
-    assert len(insert_res) == 0
+    assert len(insert_res) == 0, insert_res
 
 
 @click.command()

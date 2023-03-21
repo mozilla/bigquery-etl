@@ -3,34 +3,28 @@ CREATE OR REPLACE VIEW
   `{{ project_id }}.{{ dataset_id }}.active_users_aggregates_mobile`
 AS
 SELECT
-  *,
-  `mozfun.norm.os`(os) AS os_grouped
+  {{ view_columns }}
 FROM
-  `{{ project_id }}.fenix_derived.active_users_aggregates_v1`
+  `{{ project_id }}.{{ fenix_dataset }}_derived.active_users_aggregates_v1`
 UNION ALL
 SELECT
-  *,
-  `mozfun.norm.os`(os) AS os_grouped
+  {{ view_columns }}
 FROM
-  `{{ project_id }}.firefox_ios_derived.active_users_aggregates_v1`
+  `{{ project_id }}.{{ firefox_ios_dataset }}_derived.active_users_aggregates_v1`
 UNION ALL
 SELECT
-  *,
-  `mozfun.norm.os`(os) AS os_grouped
+  {{ view_columns }}
 FROM
-  `{{ project_id }}.focus_ios_derived.active_users_aggregates_v1`
+  `{{ project_id }}.{{ focus_ios_dataset }}_derived.active_users_aggregates_v1`
 UNION ALL
 SELECT
-  *,
-  `mozfun.norm.os`(os) AS os_grouped
+  {{ view_columns }}
 FROM
-  `{{ project_id }}.klar_ios_derived.active_users_aggregates_v1`
+  `{{ project_id }}.{{ klar_ios_dataset }}_derived.active_users_aggregates_v1`
 UNION ALL
 SELECT
-  *,
-  `mozfun.norm.os`(os) AS os_grouped
+  {{ view_columns }}
 FROM
-  `{{ project_id }}.focus_android_derived.active_users_aggregates_v1`
+  `{{ project_id }}.{{ focus_android_dataset }}_derived.active_users_aggregates_v1`
 WHERE
-  app_name != 'Focus Android Glean'
-  AND app_name != 'Focus Android Glean BrowserStack'
+  app_name NOT IN ('Focus Android Glean', 'Focus Android Glean BrowserStack')

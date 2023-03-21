@@ -55,6 +55,18 @@ def generate(target_project, output_dir, use_cloud_function):
     focus_android_view_template = env.get_template("focus_android_view.sql")
     mobile_view_template = env.get_template("mobile_view.sql")
     output_dir = Path(output_dir) / target_project
+    view_columns = (
+        "\t* EXCEPT(app_version),\n\tapp_version,\n\t"
+        "`mozfun.norm.browser_version_info`(app_version).major_version"
+        " as app_version_major,\n\t"
+        "`mozfun.norm.browser_version_info`(app_version).minor_version"
+        " as app_version_minor,\n\t"
+        "`mozfun.norm.browser_version_info`(app_version).patch_revision"
+        " as app_version_patch_revision,\n\t"
+        "`mozfun.norm.browser_version_info`(app_version).is_major_release"
+        " as app_version_is_major_release,\n\t"
+        "`mozfun.norm.os`(os) AS os_grouped"
+    )
 
     for browser in Browsers:
         if browser.name == "firefox_desktop":
@@ -110,7 +122,9 @@ def generate(target_project, output_dir, use_cloud_function):
                 basename="view.sql",
                 sql=reformat(
                     focus_android_view_template.render(
-                        project_id=target_project, app_name=browser.name
+                        project_id=target_project,
+                        app_name=browser.name,
+                        view_columns=view_columns,
                     )
                 ),
                 skip_existing=False,
@@ -122,7 +136,9 @@ def generate(target_project, output_dir, use_cloud_function):
                 basename="view.sql",
                 sql=reformat(
                     view_template.render(
-                        project_id=target_project, app_name=browser.name
+                        project_id=target_project,
+                        app_name=browser.name,
+                        view_columns=view_columns,
                     )
                 ),
                 skip_existing=False,
@@ -134,7 +150,14 @@ def generate(target_project, output_dir, use_cloud_function):
         basename="view.sql",
         sql=reformat(
             mobile_view_template.render(
-                project_id=target_project, dataset_id=DATASET_FOR_UNIONED_VIEWS
+                project_id=target_project,
+                dataset_id=DATASET_FOR_UNIONED_VIEWS,
+                fenix_dataset=Browsers("Fenix").name,
+                focus_ios_dataset=Browsers("Focus iOS").name,
+                focus_android_dataset=Browsers("Focus Android").name,
+                firefox_ios_dataset=Browsers("Firefox iOS").name,
+                klar_ios_dataset=Browsers("Klar iOS").name,
+                view_columns=view_columns,
             )
         ),
         skip_existing=False,

@@ -526,8 +526,8 @@ jobs:
       - when:
           condition:
             or:
-              - equal: [glam-etl-dev-dag, << pipeline.git.branch >>]
-              - equal: [glam-etl-dev-dag, << pipeline.git.branch >>]
+              - equal: [glam-etl-dev-partition, << pipeline.git.branch >>]
+              - equal: [glam-etl-dev-partition, << pipeline.git.branch >>]
           steps:
             - *attach_generated_sql
             - run:

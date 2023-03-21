@@ -272,7 +272,7 @@ def main():
         else _find_probes_to_backfill(new_hotlist, current_hotlist)
     )
     generated_queries = []
-    for (probe_name, days) in probe_names:
+    for probe_name, days in probe_names:
         backfill_days = args.days if args.days else days
         queries_loc = _gen_query_for_probe(
             probe_name,

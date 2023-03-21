@@ -110,7 +110,7 @@ WITH flat_clients_scalar_aggregates AS (
     os = 'Windows'
     AND channel = 'release' AS sampled,
   FROM
-    clients_scalar_aggregates_v1
+    `moz-fx-data-shared-prod.dev_telemetry_derived.clients_scalar_aggregates_v1_pc`
   WHERE
     submission_date = @submission_date
     AND (@app_version IS NULL OR app_version = @app_version)

@@ -58,13 +58,7 @@ WITH baseline AS (
 ),
 unioned AS (
   SELECT
-    * REPLACE (
-      IF(
-        isp = 'BrowserStack',
-        CONCAT(app_name, ' BrowserStack'),
-        app_name
-      ) AS app_name
-    )
+    * REPLACE (IF(isp = 'BrowserStack', CONCAT(app_name, ' BrowserStack'), app_name) AS app_name)
   FROM
     baseline
 ),

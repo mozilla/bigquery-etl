@@ -85,6 +85,7 @@ with DAG(
         email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
     org_mozilla_firefox_beta_derived__client_deduplication__v1 = bigquery_etl_query(
@@ -96,6 +97,7 @@ with DAG(
         email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
     org_mozilla_firefox_derived__client_deduplication__v1 = bigquery_etl_query(
@@ -107,6 +109,7 @@ with DAG(
         email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
     wait_for_baseline_clients_daily = ExternalTaskSensor(

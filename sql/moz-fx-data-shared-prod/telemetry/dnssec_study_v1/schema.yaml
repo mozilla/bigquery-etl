@@ -1413,6 +1413,18 @@ fields:
     - mode: REPEATED
       name: webext_a_prefix
       type: STRING
+    - mode: REPEATED
+      name: udp_newone_alt
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_newone_alt_prefix
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_newone_alt_u
+      type: INTEGER
+    - mode: REPEATED
+      name: udp_newone_prefix
+      type: INTEGER
     mode: NULLABLE
     name: dns_data
     type: RECORD
@@ -1662,6 +1674,18 @@ fields:
       type: FLOAT
     - mode: NULLABLE
       name: webext_a_prefix
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_newone_alt
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_newone_alt_prefix
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_newone_alt_u
+      type: FLOAT
+    - mode: NULLABLE
+      name: udp_newone_prefix
       type: FLOAT
     mode: NULLABLE
     name: dns_attempts
@@ -2452,6 +2476,46 @@ fields:
         type: INTEGER
       mode: NULLABLE
       name: webext_a_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_newone_alt
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_newone_alt_prefix
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_newone_alt_u
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: order
+        type: INTEGER
+      - mode: NULLABLE
+        name: timestamp
+        type: INTEGER
+      mode: NULLABLE
+      name: udp_newone_prefix
       type: RECORD
     mode: NULLABLE
     name: dns_query_info

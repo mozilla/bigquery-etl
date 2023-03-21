@@ -13,7 +13,7 @@ WHERE
     'Focus Android'
   )
   OR (
-    app_name IN ('Focus Android Glean', 'Focus Android Glean BrowserStack')
+    normalized_app_name IN ('Focus Android Glean', 'Focus Android Glean BrowserStack')
     AND submission_date >= '2023-01-01'
   )
   OR (app_name IN ('Focus Android') AND submission_date < '2023-01-01')

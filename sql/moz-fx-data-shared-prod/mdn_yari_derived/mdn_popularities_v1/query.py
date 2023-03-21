@@ -4,6 +4,7 @@
 import logging
 from argparse import ArgumentParser
 from datetime import datetime
+from uuid import uuidv4
 
 from google.cloud import bigquery, storage
 
@@ -60,7 +61,8 @@ def main():
     dataset_ref = bigquery.DatasetReference(args.project, args.temp_dataset)
     table_ref = dataset_ref.table(args.temp_table)
 
-    target_file_name = f"{args.date.strftime('%Y/%m')}.csv"
+    uuid = uuidv4()
+    target_file_name = f"{args.date.strftime('%Y/%m')}/{uuid}.csv"
     target_file_path = f"{args.destination_path}/{target_file_name}"
     mdn_uri = (
         f"gs://{args.destination_bucket}/{target_file_path}"

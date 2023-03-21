@@ -15,3 +15,5 @@
 {"jsonPayload":{ "fields": {"visit_id": "client111", "dltoken": "null_time_on_site", "log_type": "download_started" }},"timestamp": "2023-02-14 01:16:43.101135 UTC"}
 {"jsonPayload":{ "fields": {"visit_id": "client112", "dltoken": "valid_time_on_site", "log_type": "download_started" }},"timestamp": "2023-02-14 01:16:43.101135 UTC"}
 {"jsonPayload":{ "fields": {"visit_id": "client113", "dltoken": "missing_hit_type_page", "log_type": "download_started" }},"timestamp": "2023-02-14 01:16:43.101135 UTC"}
+{"jsonPayload":{ "fields": {"visit_id": "client114", "dltoken": "multi_download_1", "log_type": "download_started" }},"timestamp": "2023-02-14 01:16:43.101135 UTC"}
+{"jsonPayload":{ "fields": {"visit_id": "client114", "dltoken": "multi_download_2", "log_type": "download_started" }},"timestamp": "2023-02-14 01:16:43.101135 UTC"}

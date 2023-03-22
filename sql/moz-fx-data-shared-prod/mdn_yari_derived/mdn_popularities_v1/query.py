@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Monthly data exports of MDN 'Popularities'. This aggregates and counts total page visits and normalizes them agains the max."""
+"""Monthly data exports of MDN 'Popularities'. This aggregates and counts total page visits."""
 import logging
 from argparse import ArgumentParser
 from datetime import datetime

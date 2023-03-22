@@ -482,7 +482,7 @@ def _backfill_query(
 
     backfill_date = backfill_date.strftime("%Y-%m-%d")
     if backfill_date not in exclude:
-        # If table is partitioned, add partition decorator: 
+        # If table is partitioned, add partition decorator:
         if not no_partition:
             destination_table = f"{destination_table}${partition}"
 

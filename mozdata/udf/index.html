@@ -2377,6 +2377,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#pseudonymize_ad_id" class="md-nav__link">
+    pseudonymize_ad_id
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#quantile_search_metric_contribution" class="md-nav__link">
     quantile_search_metric_contribution
   </a>
@@ -3748,6 +3755,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#pseudonymize_ad_id" class="md-nav__link">
+    pseudonymize_ad_id
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#quantile_search_metric_contribution" class="md-nav__link">
     quantile_search_metric_contribution
   </a>
@@ -4445,6 +4459,20 @@ by build date.</p>
 <p><code>udf.product_info_with_baseline</code></p>
 <p>Similar to mozfun.norm.product_info(), but this UDF also handles "baseline" apps that were introduced differentiate for certain apps whether data is sent through Glean or core pings. This UDF has been temporarily introduced as part of https://bugzilla.mozilla.org/show_bug.cgi?id=1775216</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/product_info_with_baseline">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/product_info_with_baseline/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="pseudonymize_ad_id"><a href="#pseudonymize_ad_id">pseudonymize_ad_id</a></h2>
+<p><strong>Pseudonymize Ad Ids</strong></p>
+<p><code>udf.pseudonymize_ad_id</code></p>
+<p>Pseudonymize Ad IDs, handling opt-outs.</p>
+<!--
+Warning: Only for use in the Ad ID pipeline.
+
+This UDF uses a key to pseduonymize Ad IDs,
+and handles the all-0 Ad IDs we get from
+opted-out clients.
+-->
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/pseudonymize_ad_id">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf/pseudonymize_ad_id/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="quantile_search_metric_contribution"><a href="#quantile_search_metric_contribution">quantile_search_metric_contribution</a></h2>
 <p><strong>Quantile Search Metric Contribution</strong></p>

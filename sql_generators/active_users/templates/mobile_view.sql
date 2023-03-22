@@ -3,28 +3,28 @@ CREATE OR REPLACE VIEW
   `{{ project_id }}.{{ dataset_id }}.active_users_aggregates_mobile`
 AS
 SELECT
-  {{ view_columns }}
+  *
 FROM
-  `{{ project_id }}.{{ fenix_dataset }}_derived.active_users_aggregates_v1`
+  `{{ project_id }}.{{ fenix_dataset }}.active_users_aggregates`
 UNION ALL
 SELECT
-  {{ view_columns }}
+  *
 FROM
-  `{{ project_id }}.{{ firefox_ios_dataset }}_derived.active_users_aggregates_v1`
+  `{{ project_id }}.{{ firefox_ios_dataset }}.active_users_aggregates`
 UNION ALL
 SELECT
-  {{ view_columns }}
+  *
 FROM
-  `{{ project_id }}.{{ focus_ios_dataset }}_derived.active_users_aggregates_v1`
+  `{{ project_id }}.{{ focus_ios_dataset }}.active_users_aggregates`
 UNION ALL
 SELECT
-  {{ view_columns }}
+  *
 FROM
-  `{{ project_id }}.{{ klar_ios_dataset }}_derived.active_users_aggregates_v1`
+  `{{ project_id }}.{{ klar_ios_dataset }}.active_users_aggregates`
 UNION ALL
 SELECT
-  {{ view_columns }}
+  *
 FROM
-  `{{ project_id }}.{{ focus_android_dataset }}_derived.active_users_aggregates_v1`
+  `{{ project_id }}.{{ focus_android_dataset }}.active_users_aggregates`
 WHERE
   app_name NOT IN ('Focus Android Glean', 'Focus Android Glean BrowserStack')

@@ -64,8 +64,7 @@ def generate(target_project, output_dir, use_cloud_function):
         "`mozfun.norm.browser_version_info`(app_version).patch_revision"
         " as app_version_patch_revision,\n\t"
         "`mozfun.norm.browser_version_info`(app_version).is_major_release"
-        " as app_version_is_major_release,\n\t"
-        "`mozfun.norm.os`(os) AS os_grouped"
+        " as app_version_is_major_release\n\t"
     )
 
     for browser in Browsers:

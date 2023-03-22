@@ -6,6 +6,9 @@ fields:
   name: hashed_ad_id
   type: STRING
 - mode: NULLABLE
+  name: valid_advertising_id
+  type: BOOLEAN
+- mode: NULLABLE
   name: submission_date
   type: DATE
 - mode: NULLABLE

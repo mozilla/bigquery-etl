@@ -37,6 +37,6 @@ SELECT
   hashed_ad_id,
   metrics.boolean.client_deduplication_valid_advertising_id
   AND hashed_ad_id IS NOT NULL AS valid_advertising_id,
-  *
+  * EXCEPT (client_id, hashed_ad_id)
 FROM
   with_ad_id

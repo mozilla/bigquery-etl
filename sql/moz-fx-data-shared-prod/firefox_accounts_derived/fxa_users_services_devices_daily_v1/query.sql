@@ -27,7 +27,7 @@ WITH fxa_events AS (
     -- this includes fields such as entrypoint, utm's etc.
     BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND @submission_date
-    AND event_category IN ('content', 'auth', 'oauth')
+    AND fxa_log IN ('content', 'auth', 'oauth')
     -- re-using the filter from users_services_daily_v1 for consistency across the models
     -- at some point in the future we should re-evaluate this list
     AND event_type NOT IN ( --

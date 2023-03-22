@@ -1,0 +1,17 @@
+friendly_name: Non-Prod Stripe refund
+description: Non-Prod Stripe refund table from fivetran
+owners:
+  - srose@mozilla.com
+labels:
+  schedule: hourly
+scheduling:
+  dag_name: bqetl_cjms_nonprod
+  # destination is the whole table, not a single partition,
+  # so don't use date_partition_parameter
+  date_partition_parameter: null
+  depends_on_fivetran:
+    - task_id: fivetran_stripe_nonprod
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

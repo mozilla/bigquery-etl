@@ -86,7 +86,7 @@ def main():
     storage_client = storage.Client(args.project)
     bucket = storage_client.get_bucket(args.destination_bucket)
     blob = bucket.get_blob(target_file_path)
-    bucket.copy_blob(blob, args.destination_bucket, current_file_path)
+    bucket.copy_blob(blob, bucket, current_file_path)
 
 if __name__ == "__main__":
     main()

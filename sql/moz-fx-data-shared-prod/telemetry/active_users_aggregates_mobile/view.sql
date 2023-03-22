@@ -5,24 +5,26 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.fenix_derived.active_users_aggregates_v1`
+  `moz-fx-data-shared-prod.fenix.active_users_aggregates`
 UNION ALL
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.firefox_ios_derived.active_users_aggregates_v1`
+  `moz-fx-data-shared-prod.firefox_ios.active_users_aggregates`
 UNION ALL
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.focus_ios_derived.active_users_aggregates_v1`
+  `moz-fx-data-shared-prod.focus_ios.active_users_aggregates`
 UNION ALL
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.focus_android_derived.active_users_aggregates_v1`
+  `moz-fx-data-shared-prod.klar_ios.active_users_aggregates`
 UNION ALL
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.klar_ios_derived.active_users_aggregates_v1`
+  `moz-fx-data-shared-prod.focus_android.active_users_aggregates`
+WHERE
+  app_name NOT IN ('Focus Android Glean', 'Focus Android Glean BrowserStack')

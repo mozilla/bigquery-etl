@@ -21,11 +21,7 @@ WITH baseline AS (
     is_default_browser,
     CAST(NULL AS string) AS distribution_id,
     isp,
-    IF(
-      isp = 'BrowserStack',
-      CONCAT('Firefox iOS', ' BrowserStack'),
-      'Firefox iOS'
-    ) AS normalized_app_name
+    IF(isp = 'BrowserStack', CONCAT('Firefox iOS', ' BrowserStack'), 'Firefox iOS') AS app_name
   FROM
     `moz-fx-data-shared-prod.firefox_ios.clients_last_seen_joined`
   WHERE
@@ -84,7 +80,7 @@ baseline_with_searches AS (
         THEN 'core_user'
       ELSE 'other'
     END AS activity_segment,
-    baseline.normalized_app_name,
+    baseline.app_name,
     baseline.app_display_version AS app_version,
     baseline.normalized_channel,
     IFNULL(country, '??') country,
@@ -150,7 +146,7 @@ todays_metrics AS (
     EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
     is_default_browser,
     COALESCE(REGEXP_EXTRACT(locale, r'^(.+?)-'), locale, NULL) AS locale,
-    normalized_app_name AS app_name,
+    app_name AS app_name,
     normalized_channel AS channel,
     normalized_os AS os,
     normalized_os_version AS os_version,

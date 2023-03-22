@@ -24,6 +24,8 @@ ORDER BY Pageviews DESC
 
 APP = "mdn_yari"
 
+CURRENT_FILE_NAME = "current.csv"
+
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
     "--date", type=lambda x: datetime.strptime(x, "%Y-%m-%d").date(), required=True
@@ -62,7 +64,8 @@ def main():
     dataset_ref = bigquery.DatasetReference(args.project, args.temp_dataset)
     table_ref = dataset_ref.table(args.temp_table)
 
-    target_file_path = join(args.destination_path, args.date.strftime('%Y/%m'), f"{uuid4()}.csv")
+    target_file_name = f"{uuid4()}.csv"
+    target_file_path = join(args.destination_path, args.date.strftime('%Y/%m'), target_file_name)
     mdn_uri = (
         f"gs://{args.destination_bucket}/{target_file_path}"
     )
@@ -81,7 +84,7 @@ def main():
     client.delete_table(temp_table)
 
     # Make it available as current.
-    current_file_path = join(args.destination_path, "current.csv")
+    current_file_path = join(args.destination_path, CURRENT_FILE_NAME)
     
     storage_client = storage.Client(args.project)
     bucket = storage_client.get_bucket(args.destination_bucket)

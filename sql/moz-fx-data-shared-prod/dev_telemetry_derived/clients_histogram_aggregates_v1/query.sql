@@ -65,6 +65,7 @@ clients_histogram_aggregates_partition AS
   (SELECT *
   FROM `moz-fx-data-shared-prod.dev_telemetry_derived.clients_histogram_aggregates_v1_pc`
   WHERE submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
+    AND app_version > 100
     AND sample_id >= @min_sample_id
     AND sample_id <= @max_sample_id),
 

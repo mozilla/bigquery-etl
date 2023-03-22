@@ -23,6 +23,7 @@ WITH filtered_data AS (
     UNNEST(histogram_aggregates)
   WHERE
     submission_date = @submission_date
+    AND app_version > 100
     AND first_bucket IS NOT NULL
 ),
 static_combos AS (

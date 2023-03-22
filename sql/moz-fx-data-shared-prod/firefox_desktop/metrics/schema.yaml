@@ -269,6 +269,14 @@ fields:
       mode: NULLABLE
       name: cookie_banners_service_detect_only
       type: BOOLEAN
+    - description: 'Recorded on every launch of a Firefox install on macOS, with a
+        boolean value indicating whether Firefox was restored by macOS or if it was
+        manually launched by a user.
+
+        '
+      mode: NULLABLE
+      name: startup_is_restored_by_macos
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD

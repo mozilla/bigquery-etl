@@ -4,6 +4,7 @@
 import logging
 from argparse import ArgumentParser
 from datetime import datetime
+from os.path import join
 from uuid import uuid4
 
 from google.cloud import bigquery, storage
@@ -61,9 +62,7 @@ def main():
     dataset_ref = bigquery.DatasetReference(args.project, args.temp_dataset)
     table_ref = dataset_ref.table(args.temp_table)
 
-    uuid = uuid4()
-    target_file_name = f"{args.date.strftime('%Y/%m')}/{uuid}.csv"
-    target_file_path = f"{args.destination_path}/{target_file_name}"
+    target_file_path = join(args.destination_path, args.date.strftime('%Y/%m'), f"{uuid4()}.csv")
     mdn_uri = (
         f"gs://{args.destination_bucket}/{target_file_path}"
     )
@@ -82,8 +81,7 @@ def main():
     client.delete_table(temp_table)
 
     # Make it available as current.
-    current_file_name = "current.csv"
-    current_file_path = f"{args.destination_path}/{current_file_name}"
+    current_file_path = join(args.destination_path, "current.csv")
     
     storage_client = storage.Client(args.project)
     bucket = storage_client.get_bucket(args.destination_bucket)

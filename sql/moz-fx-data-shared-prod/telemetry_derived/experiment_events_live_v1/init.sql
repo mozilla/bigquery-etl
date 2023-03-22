@@ -62,13 +62,14 @@ IF
     COUNTIF(event_method = 'unenrollFailed') AS unenroll_failed_count,
     COUNTIF(event_method = 'updateFailed') AS update_failed_count,
     COUNTIF(event_method = 'disqualification') AS disqualification_count,
-    COUNTIF(event_method = 'expose' OR event_method = 'exposure') AS exposure_count
+    COUNTIF(event_method = 'expose' OR event_method = 'exposure') AS exposure_count,
+    COUNTIF(event_method = 'validationFailed') AS validation_failed_count
   FROM
     experiment_events
   WHERE
     -- Limit the amount of data the materialized view is going to backfill when created.
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.
-    timestamp > TIMESTAMP('2021-10-25')
+    timestamp > TIMESTAMP('2023-03-13')
   GROUP BY
     submission_date,
     `type`,

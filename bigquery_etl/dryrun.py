@@ -180,6 +180,10 @@ SKIP = {
         "sql/moz-fx-data-shared-prod/google_ads_derived/**/*.sql",
         recursive=True,
     ),
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/**/client_deduplication*/*.sql",
+        recursive=True,
+    ),
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501
@@ -217,6 +221,7 @@ SKIP = {
     # Syntax error
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/init.sql",  # noqa E501
     # HTTP Error 408: Request Time-out
+    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/latest_versions/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/italy_covid19_outage_v1/query.sql",

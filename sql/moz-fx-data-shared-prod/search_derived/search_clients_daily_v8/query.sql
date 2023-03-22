@@ -261,7 +261,13 @@ counted AS (
     )
 )
 SELECT
-  * EXCEPT (_n)
+  * EXCEPT (_n),
+  `moz-fx-data-shared-prod.udf.monetized_search`(
+    engine,
+    country,
+    distribution_id,
+    submission_date
+  ) AS is_sap_monetizable
 FROM
   counted
 WHERE

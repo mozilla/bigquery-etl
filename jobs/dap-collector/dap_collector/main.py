@@ -42,7 +42,7 @@ def collect_once(task, timestamp, duration, hpke_private_key, auth_token):
         vdaf=task["vdaf"],
         vdaf_args=task["vdaf_args"],
     )
-    timeout = 10
+    timeout = 60
     res = [None, None]
     try:
         completed_proc = subprocess.run(
@@ -105,15 +105,11 @@ def collect_many(
     return results
 
 
-def collect_task(task, auth_token, hpke_private_key):
-    """Collects data for the given task and the previous day."""
-    start = datetime.datetime.now(datetime.timezone.utc)
-    start = start.replace(
-        hour=0, minute=0, second=0, microsecond=0
-    ) - datetime.timedelta(days=1)
-
-    end = datetime.datetime.now(datetime.timezone.utc)
-    end = end.replace(hour=0, minute=0, second=0, microsecond=0)
+def collect_task(task, auth_token, hpke_private_key, date):
+    """Collects data for the given task and the given day."""
+    start = datetime.datetime.fromisoformat(date)
+    start = start.replace(tzinfo=datetime.timezone.utc)
+    end = start + datetime.timedelta(days=1)
 
     results = collect_many(task, start, end, INTLEN, hpke_private_key, auth_token)
 
@@ -184,13 +180,18 @@ def store_data(task, data, bqclient, table_id):
     help="The private key used to decrypt shares from the leader and helper.",
     required=True,
 )
-def main(project, table_id, auth_token, hpke_private_key):
+@click.option(
+    "--date",
+    help="Date at which the backfill will start, going backwards (YYYY-MM-DD)",
+    required=True,
+)
+def main(project, table_id, auth_token, hpke_private_key, date):
     table_id = project + "." + table_id
     bqclient = bigquery.Client(project=project)
     ensure_table(bqclient, table_id)
     for task in TASKS:
         print(f"Now processing task: {task['task_id']}")
-        results = collect_task(task, auth_token, hpke_private_key)
+        results = collect_task(task, auth_token, hpke_private_key, date)
         store_data(task, results, bqclient, table_id)
 
 

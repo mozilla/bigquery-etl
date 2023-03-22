@@ -61,7 +61,7 @@ dl_events AS (
   SELECT
     client_id AS client_id,
     visit_id AS visit_id,
-    ANY_VALUE(landing_page) AS landing_page,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(landing_page)) AS landing_page,
     LOGICAL_OR(has_ga_download_event) AS has_ga_download_event
   FROM
     all_hits
@@ -73,17 +73,17 @@ ga_sessions AS (
   SELECT
     clientId AS client_id,
     visitId AS visit_id,
-    ANY_VALUE(geoNetwork.country) AS country,
-    ANY_VALUE(trafficSource.adContent) AS ad_content,
-    ANY_VALUE(trafficSource.campaign) AS campaign,
-    ANY_VALUE(trafficSource.medium) AS medium,
-    ANY_VALUE(trafficSource.source) AS source,
-    ANY_VALUE(device.deviceCategory) AS device_category,
-    ANY_VALUE(device.operatingSystem) AS os,
-    ANY_VALUE(device.browser) AS browser,
-    ANY_VALUE(device.browserVersion) AS browser_version,
-    ANY_VALUE(device.language) AS `language`,
-    IFNULL(ANY_VALUE(totals.timeOnSite), 0) AS time_on_site
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(geoNetwork.country)) AS country,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(trafficSource.adContent)) AS ad_content,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(trafficSource.campaign)) AS campaign,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(trafficSource.medium)) AS medium,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(trafficSource.source)) AS source,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(device.deviceCategory)) AS device_category,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(device.operatingSystem)) AS os,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(device.browser)) AS browser,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(device.browserVersion)) AS browser_version,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(device.language)) AS `language`,
+    IFNULL(mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(totals.timeOnSite)), 0) AS time_on_site
   FROM
     `moz-fx-data-marketing-prod.65789850.ga_sessions_*` AS ga
   WHERE
@@ -128,28 +128,28 @@ stub AS (
 downloads_and_ga_session AS (
   SELECT
     gs.client_id AS client_id,
-    ANY_VALUE(country) AS country,
-    ANY_VALUE(ad_content) AS ad_content,
-    ANY_VALUE(campaign) AS campaign,
-    ANY_VALUE(medium) AS medium,
-    ANY_VALUE(source) AS source,
-    ANY_VALUE(device_category) AS device_category,
-    ANY_VALUE(os) AS os,
-    ANY_VALUE(browser) AS browser,
-    ANY_VALUE(browser_version) AS browser_version,
-    ANY_VALUE(`language`) AS `language`,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(country)) AS country,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(ad_content)) AS ad_content,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(campaign)) AS campaign,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(medium)) AS medium,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(source)) AS source,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(device_category)) AS device_category,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(os)) AS os,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(browser)) AS browser,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(browser_version)) AS browser_version,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(`language`)) AS `language`,
     s.stub_visit_id AS stub_visit_id,
     s.dltoken AS dltoken,
-    ANY_VALUE(landing_page) AS landing_page,
-    ANY_VALUE(pageviews) AS pageviews,
-    ANY_VALUE(unique_pageviews) AS unique_pageviews,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(landing_page)) AS landing_page,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(pageviews)) AS pageviews,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(unique_pageviews)) AS unique_pageviews,
     LOGICAL_OR(
       has_ga_download_event
     ) AS has_ga_download_event,  -- this will be ignored if nrows >1
-    ANY_VALUE(count_dltoken_duplicates) AS count_dltoken_duplicates,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(count_dltoken_duplicates)) AS count_dltoken_duplicates,
     COUNT(*) AS nrows,
-    ANY_VALUE(s.download_date) AS download_date,
-    ANY_VALUE(time_on_site) AS time_on_site
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(s.download_date)) AS download_date,
+    mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(time_on_site)) AS time_on_site
   FROM
     ga_sessions_with_hits gs
   RIGHT JOIN

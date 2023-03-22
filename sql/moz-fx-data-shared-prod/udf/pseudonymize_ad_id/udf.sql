@@ -7,7 +7,7 @@ RETURNS STRING AS (
       "ksEEnM6/esBxl2myqrVLo31ePBoQZZnkCm81vefaF90="
     ),
     NULL,
-    TO_HEX(`moz-fx-data-shared-prod`.udf.hmac_sha256(key, CAST(ad_id AS BYTES)))
+    TO_HEX(`moz-fx-data-shared-prod`.udf.hmac_sha256(key, CAST(hashed_ad_id AS BYTES)))
   )
 );
 

@@ -840,11 +840,11 @@ def _run_query(
                     and destination_table is not None
                     and re.match(DESTINATION_TABLE_RE, destination_table)
                 ):
-                    qualified_destination_table = "{}:{}.{}".format(
+                    destination_table = "{}:{}.{}".format(
                         public_project_id, dataset_id, destination_table
                     )
                     query_arguments.append(
-                        "--destination_table={}".format(qualified_destination_table)
+                        "--destination_table={}".format(destination_table)
                     )
                     use_public_table = True
                 else:

@@ -14126,6 +14126,9 @@ fields:
     - mode: NULLABLE
       name: mixed_content_video
       type: STRING
+    - mode: NULLABLE
+      name: fx_migration_entry_point_categorical
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD

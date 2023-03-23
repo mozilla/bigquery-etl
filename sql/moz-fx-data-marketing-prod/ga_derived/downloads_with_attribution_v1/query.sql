@@ -94,7 +94,9 @@ ga_sessions AS (
 ),
 ga_sessions_with_hits AS (
   SELECT
-    *
+    * EXCEPT (pageviews, unique_pageviews),
+    IFNULL(pageviews, 0) AS pageviews,
+    IFNULL(unique_pageviews, 0) AS unique_pageviews,
   FROM
     ga_sessions ga
   LEFT JOIN

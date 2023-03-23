@@ -26,15 +26,16 @@ labels:
   application: firefox_android
   incremental: true
   schedule: daily
+  owner1: lvargas
 scheduling:
   dag_name: bqetl_analytics_tables
   task_name: firefox_android_clients
   depends_on_past: true
   date_partition_parameter: null
   referenced_tables:
-  - - 'moz-fx-data-shared-prod'
-    - 'org_mozilla_firefox'
-    - 'baseline_clients_daily_v1'
+  - - moz-fx-data-shared-prod
+    - org_mozilla_firefox
+    - baseline_clients_daily_v1
   depends_on:
   - task_id: baseline_clients_daily
     dag_name: copy_deduplicate
@@ -46,6 +47,7 @@ bigquery:
     type: day
     field: first_seen_date
     require_partition_filter: false
+    expiration_days: null
   clustering:
     fields:
     - channel

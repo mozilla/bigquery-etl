@@ -14129,6 +14129,12 @@ fields:
     - mode: NULLABLE
       name: fx_migration_entry_point_categorical
       type: STRING
+    - mode: NULLABLE
+      name: places_bookmarks_searchbar_cumulative_searches
+      type: STRING
+    - mode: NULLABLE
+      name: places_library_cumulative_bookmark_searches
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -36227,6 +36233,12 @@ fields:
         - mode: NULLABLE
           name: attribution_provenance_security_zone
           type: STRING
+        - mode: NULLABLE
+          name: urlbar_persistedsearchterms_revert_by_popup_count
+          type: INTEGER
+        - mode: NULLABLE
+          name: urlbar_persistedsearchterms_view_count
+          type: INTEGER
         mode: NULLABLE
         name: scalars
         type: RECORD

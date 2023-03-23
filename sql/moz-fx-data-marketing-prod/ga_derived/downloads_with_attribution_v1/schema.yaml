@@ -129,6 +129,11 @@ fields:
   mode: NULLABLE
   name: count_dltoken_duplicates
   type: INTEGER
+- description: "This column represents if there was at least one other download completed during the same\
+    \ session as this download. "
+  mode: NULLABLE
+  name: additional_download_occurred
+  type: BOOLEAN
 - description: "Indicates an exception state when determining the GA\
     \ session associated with the Firefox download\naction.  Values are limited to:\n\
     NULL:  unique GA session matches the Firefox download.  This is\

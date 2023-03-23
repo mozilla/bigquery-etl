@@ -108,7 +108,7 @@ ga_sessions_with_hits AS (
   USING
     (client_id, visit_id)
 ),
-stub AS (
+stub_dl AS (
   SELECT
     s.jsonPayload.fields.visit_id AS stub_visit_id,
     s.jsonPayload.fields.dltoken AS dltoken,
@@ -123,6 +123,36 @@ stub AS (
     stub_visit_id,
     dltoken,
     DATE(s.timestamp)
+),
+stub_other_dl AS (
+  SELECT
+    s.jsonPayload.fields.visit_id AS stub_visit_id,
+    CASE
+      WHEN (COUNT(*) > 1)
+        THEN TRUE
+      ELSE FALSE
+    END AS additional_download_occurred
+  FROM
+    `moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout` s
+  WHERE
+    DATE(s.timestamp) = @submission_date
+    AND s.jsonPayload.fields.log_type = 'download_started'
+  GROUP BY
+    stub_visit_id
+),
+stub AS (
+  SELECT
+    stub_visit_id,
+    dltoken,
+    count_dltoken_duplicates,
+    additional_download_occurred,
+    download_date
+  FROM
+    stub_dl
+  JOIN
+    stub_other_dl
+  USING
+    (stub_visit_id)
 ),
 -- This will drop all the ga_sessions w/o a DLtoken but keep DLtoken without a GA session.
 -- This will also result in multiple rows as the ga.client_id is not unique for the day
@@ -151,6 +181,7 @@ downloads_and_ga_session AS (
     mozfun.stats.mode_last_retain_nulls(
       ARRAY_AGG(count_dltoken_duplicates)
     ) AS count_dltoken_duplicates,
+    LOGICAL_OR(additional_download_occurred) AS additional_download_occurred,
     COUNT(*) AS nrows,
     mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(s.download_date)) AS download_date,
     mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(time_on_site)) AS time_on_site
@@ -289,6 +320,7 @@ SELECT
   END
   has_ga_download_event,
   count_dltoken_duplicates,
+  additional_download_occurred,
   CASE
     WHEN stub_visit_id = ''
       THEN 'DOWNLOAD_SESSION_ID_EMPTY'

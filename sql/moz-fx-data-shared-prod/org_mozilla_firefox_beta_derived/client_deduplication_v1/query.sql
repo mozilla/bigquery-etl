@@ -25,17 +25,13 @@ SELECT
         (
           SELECT AS STRUCT
             metrics.string.* REPLACE (
-              TO_HEX(
-                `moz-fx-data-shared-prod`.udf.hmac_sha256(
-                  (SELECT * FROM hmac_key),
-                  CAST(metrics.string.activation_identifier AS BYTES)
-                )
+              `moz-fx-data-shared-prod`.udf.pseudonymize_ad_id(
+                metrics.string.activation_identifier,
+                (SELECT * FROM hmac_key)
               ) AS activation_identifier,
-              TO_HEX(
-                `moz-fx-data-shared-prod`.udf.hmac_sha256(
-                  (SELECT * FROM hmac_key),
-                  CAST(metrics.string.client_deduplication_hashed_gaid AS BYTES)
-                )
+              `moz-fx-data-shared-prod`.udf.pseudonymize_ad_id(
+                metrics.string.client_deduplication_hashed_gaid,
+                (SELECT * FROM hmac_key)
               ) AS client_deduplication_hashed_gaid
             )
         ) AS string

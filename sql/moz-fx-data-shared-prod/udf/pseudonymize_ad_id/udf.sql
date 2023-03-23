@@ -7,7 +7,7 @@ RETURNS STRING AS (
       "ksEEnM6/esBxl2myqrVLo31ePBoQZZnkCm81vefaF90="
     ),
     NULL,
-    TO_HEX(`moz-fx-data-shared-prod`.udf.hmac_sha256(key, CAST(hashed_ad_id AS BYTES)))
+    TO_HEX(udf.hmac_sha256(key, CAST(hashed_ad_id AS BYTES)))
   )
 );
 
@@ -19,5 +19,5 @@ SELECT
   assert.not_null(udf.pseudonymize_ad_id("sEEnM6/esBxl2myqrVLo31ePBoQZZnkCm81vefaF90=", b"\x14")),
   assert.equals(
     udf.pseudonymize_ad_id("abc", b"\x14"),
-    TO_HEX(`moz-fx-data-shared-prod`.udf.hmac_sha256(b"\x14", CAST("abc" AS BYTES)))
+    TO_HEX(udf.hmac_sha256(b"\x14", CAST("abc" AS BYTES)))
   )

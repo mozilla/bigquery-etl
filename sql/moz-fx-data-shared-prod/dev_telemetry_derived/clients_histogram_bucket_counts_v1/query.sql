@@ -25,6 +25,8 @@ WITH filtered_data AS (
     submission_date = @submission_date
     AND app_version > 100
     AND first_bucket IS NOT NULL
+    AND sample_id >= @min_sample_id
+    AND sample_id <= @max_sample_id
 ),
 static_combos AS (
   SELECT

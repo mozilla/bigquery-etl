@@ -10,6 +10,7 @@ import click
 import yaml
 
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
+from bigquery_etl.util import render
 
 stable_views = None
 
@@ -57,7 +58,8 @@ def extract_table_references_without_views(path: Path) -> Iterator[str]:
     """Recursively search for non-view tables referenced in the given SQL file."""
     global stable_views
 
-    for table in extract_table_references(path.read_text()):
+    sql = render(path.name, template_folder=path.parent, templates_dir="")
+    for table in extract_table_references(sql):
         ref_base = path.parent
         parts = tuple(table.split("."))
         for _ in parts:

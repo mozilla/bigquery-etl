@@ -23,6 +23,7 @@ import click
 from google.cloud import bigquery
 
 from .metadata.parse_metadata import Metadata
+from .util import render
 
 try:
     from functools import cached_property  # type: ignore
@@ -317,7 +318,10 @@ class DryRun:
     def get_sql(self):
         """Get SQL content."""
         if exists(self.sqlfile):
-            sql = open(self.sqlfile).read()
+            file_path = Path(self.sqlfile)
+            sql = render(
+                file_path.name, template_folder=file_path.parent, template_dir=""
+            )
         else:
             raise ValueError(f"Invalid file path: {self.sqlfile}")
         if self.strip_dml:

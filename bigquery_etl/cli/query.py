@@ -52,7 +52,7 @@ from ..query_scheduling.generate_airflow_dags import get_dags
 from ..schema import SCHEMA_FILE, Schema
 from ..util import extract_from_query_path
 from ..util.bigquery_id import sql_table_id
-from ..util.common import random_str
+from ..util.common import random_str, render
 from .dryrun import dryrun
 from .generate import generate_all
 
@@ -860,9 +860,17 @@ def _run_query(
             # point to a public table it needs to be passed as parameter for the query
             query_arguments.append("--destination_table={}".format(destination_table))
 
-        with open(query_file) as query_stream:
-            # run the query as shell command so that passed parameters can be used as is
-            subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
+        query_arguments.append(
+            render(
+                query_file.name,
+                template_folder=str(query_file.parent),
+                templates_dir="",
+                format=False,
+            )
+        )
+
+        # run the query as shell command so that passed parameters can be used as is
+        subprocess.check_call(["bq"] + query_arguments)
 
 
 @query.command(

@@ -22,6 +22,7 @@ from .sql_test import (
     print_and_test,
     read,
 )
+from ..util import render
 
 expect_names = {f"expect.{ext}" for ext in ("yaml", "json", "ndjson")}
 
@@ -82,7 +83,7 @@ class SqlTest(pytest.Item, pytest.File):
         if test_name == "test_init":
             init_test = True
 
-            query = read(f"{path}/init.sql")
+            query = render("init.sql", template_folder=path, templates_dir="")
             original, dest_name = (
                 f"{dataset_name}.{query_name}",
                 f"{dataset_name}_{query_name}_{test_name}",
@@ -91,9 +92,9 @@ class SqlTest(pytest.Item, pytest.File):
             query_name = dest_name
         elif test_name == "test_script":
             script_test = True
-            query = read(f"{path}/script.sql")
+            query = render("script.sql", template_folder=path, templates_dir="")
         else:
-            query = read(f"{path}/query.sql")
+            query = render("query.sql", template_folder=path, templates_dir="")
 
         expect = load(self.fspath.strpath, "expect")
 

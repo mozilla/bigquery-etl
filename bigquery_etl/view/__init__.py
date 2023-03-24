@@ -20,7 +20,7 @@ from bigquery_etl.metadata.parse_metadata import (
     Metadata,
 )
 from bigquery_etl.schema import Schema
-from bigquery_etl.util import extract_from_query_path
+from bigquery_etl.util import extract_from_query_path, render
 
 # skip validation for these views
 SKIP_VALIDATION = {
@@ -93,7 +93,9 @@ class View:
     @property
     def content(self):
         """Return the view SQL."""
-        return Path(self.path).read_text()
+        return render(
+            self.path.name, template_folder=self.path.parent, templates_dir=""
+        )
 
     @classmethod
     def from_file(cls, path):

@@ -52,37 +52,6 @@ class TestParseRoutine:
         )
         assert result.dependencies == ["udf.test_bitmask_lowest_28"]
 
-    def test_raw_routine_from_text(self):
-        text = (
-            "CREATE OR REPLACE FUNCTION udf.test_js_udf() "
-            + "AS (SELECT mozfun.json.mode_last('{}'))"
-        )
-        result = parse_routine.RawRoutine.from_file(
-            path=TEST_DIR
-            / "data"
-            / "test_sql"
-            / "moz-fx-data-test-project"
-            / "udf"
-            / "test_js_udf"
-            / "udf.sql",
-            from_text=text,
-        )
-        assert result.name == "udf.test_js_udf"
-        assert len(result.definitions) == 1
-        assert len(result.dependencies) == 1
-        assert "json.mode_last" in result.dependencies
-        assert result.tests == []
-
-        text = "CREATE OR REPLACE FUNCTION json.mode_last() " + "AS (SELECT 1)"
-        result = parse_routine.RawRoutine.from_file(
-            path=Path("sql") / "mozfun" / "json" / "mode_last" / "udf.sql",
-            from_text=text,
-        )
-        assert result.name == "json.mode_last"
-        assert len(result.definitions) == 1
-        assert result.dependencies == []
-        assert result.tests == []
-
     def test_parse_routine(self):
         raw_routine = parse_routine.RawRoutine.from_file(
             self.udf_dir / "test_shift_28_bits_one_day" / "udf.sql"

@@ -26,20 +26,23 @@ description: |-
     * count_dltoken_duplicates will be >= 1.
     * A value of 0 means there are no duplicates (expected state).
     * A value of 1 means there was 1 other row with the dltoken value, etc.
-
 owners:
 - gleonard@mozilla.com
 labels:
   incremental: true
   schedule: daily
+  owner1: gleonard
 scheduling:
   dag_name: bqetl_google_analytics_derived
   referenced_tables:
-  - ['moz-fx-data-marketing-prod', 'ga_derived', 'www_site_empty_check_v1']
+  - - moz-fx-data-marketing-prod
+    - ga_derived
+    - www_site_empty_check_v1
 bigquery:
   time_partitioning:
     type: day
     field: download_date
     require_partition_filter: false
     expiration_days: null
+  clustering: null
 references: {}

@@ -7,7 +7,7 @@ fields:
 - description: "Time visitor on site"
   mode: NULLABLE
   name: time_on_site
-  type: NUMERIC
+  type: INTEGER
 - description: "A description of the advertising or promotional copy.  \nValue will\
     \ be null if the Firefox download has no corresponding Google Analytics session.\n"
   mode: NULLABLE
@@ -83,7 +83,7 @@ fields:
     \ be null if the Firefox download has no corresponding Google Analytics session.\n"
   mode: NULLABLE
   name: browser_major_version
-  type: NUMERIC
+  type: INTEGER
 - description: 'Device language, may be 2 char language code (en) or 4 char locale
     (en-gb).
 
@@ -129,26 +129,25 @@ fields:
   mode: NULLABLE
   name: count_dltoken_duplicates
   type: INTEGER
-- description: "This column represents if there was at least one other download completed during the same\
-    \ session as this download. "
+- description: 'This column represents if there was at least one other download completed
+    during the same session as this download. '
   mode: NULLABLE
   name: additional_download_occurred
   type: BOOLEAN
-- description: "Indicates an exception state when determining the GA\
-    \ session associated with the Firefox download\naction.  Values are limited to:\n\
-    NULL:  unique GA session matches the Firefox download.  This is\
-    \ the normal state.\nGA_UNRESOLVABLE:  This indicates that more than one Google\
-    \ Analytics session matches the Firefox download.  \nThe occurrences of this value\
-    \ will decrease in the future.      \nDOWNLOAD_SESSION_ID_EMPTY:  The raw download\
-    \ record did not contain any GA session identifier.\nDOWNLOAD_SESSION_ID_VALUE_NOT_SET:\
-    \  The raw download record contained GA session identifier with\
-    \ value\n\u2018(not set)\u2019 and could not be associated with a GA\
-    \ session.\nDOWNLOAD_SESSION_ID_VALUE_SOMETHING:  The raw download record contained\
-    \ GA session identifier with value\n\u2018something\u2019 and could\
-    \ not be associated with a GA session.\nMISSING_GA_CLIENT:  The\
-    \ raw download record contained a valid GA session identifier however\
-    \ there was \nno corresponding GA session found.  This value is\
-    \ used to identify why the GA sourced \ncolumns are NULL.\n"
+- description: "Indicates an exception state when determining the GA session associated\
+    \ with the Firefox download\naction.  Values are limited to:\nNULL:  unique GA\
+    \ session matches the Firefox download.  This is the normal state.\nGA_UNRESOLVABLE:\
+    \  This indicates that more than one Google Analytics session matches the Firefox\
+    \ download.  \nThe occurrences of this value will decrease in the future.    \
+    \  \nDOWNLOAD_SESSION_ID_EMPTY:  The raw download record did not contain any GA\
+    \ session identifier.\nDOWNLOAD_SESSION_ID_VALUE_NOT_SET:  The raw download record\
+    \ contained GA session identifier with value\n\u2018(not set)\u2019 and could\
+    \ not be associated with a GA session.\nDOWNLOAD_SESSION_ID_VALUE_SOMETHING: \
+    \ The raw download record contained GA session identifier with value\n\u2018something\u2019\
+    \ and could not be associated with a GA session.\nMISSING_GA_CLIENT:  The raw\
+    \ download record contained a valid GA session identifier however there was \n\
+    no corresponding GA session found.  This value is used to identify why the GA\
+    \ sourced \ncolumns are NULL.\n"
   mode: NULLABLE
   name: exception
   type: STRING

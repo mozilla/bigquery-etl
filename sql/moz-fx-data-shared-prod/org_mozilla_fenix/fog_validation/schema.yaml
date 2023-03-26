@@ -32,10 +32,6 @@ fields:
     mode: NULLABLE
     name: architecture
     type: STRING
-  - description: The date & time the application was built
-    mode: NULLABLE
-    name: build_date
-    type: STRING
   - description: A UUID uniquely identifying the client.
     mode: NULLABLE
     name: client_id
@@ -74,6 +70,10 @@ fields:
   - description: The version of the Glean SDK
     mode: NULLABLE
     name: telemetry_sdk_build
+    type: STRING
+  - description: The date & time the application was built
+    mode: NULLABLE
+    name: build_date
     type: STRING
   - description: The optional Windows build number, reported by Windows (e.g. 22000)
       and not set for other platforms
@@ -154,10 +154,6 @@ fields:
       mode: NULLABLE
       name: x_foxsec_ip_reputation
       type: STRING
-    - description: X-LB-Tags HTTP header
-      mode: NULLABLE
-      name: x_lb_tags
-      type: STRING
     - description: X-PingSender-Version HTTP header
       mode: NULLABLE
       name: x_pingsender_version
@@ -169,6 +165,10 @@ fields:
     - description: X-Telemetry-Agent HTTP header
       mode: NULLABLE
       name: x_telemetry_agent
+      type: STRING
+    - description: X-LB-Tags HTTP header
+      mode: NULLABLE
+      name: x_lb_tags
       type: STRING
     - mode: NULLABLE
       name: parsed_date
@@ -225,6 +225,25 @@ fields:
   name: metadata
   type: RECORD
 - fields:
+  - fields:
+    - description: True iff the type of the disk the current Firefox profile is stored
+        on is an SSD. (Windows only).
+      mode: NULLABLE
+      name: fog_validation_profile_disk_is_ssd
+      type: BOOLEAN
+    mode: NULLABLE
+    name: boolean
+    type: RECORD
+  - fields:
+    - mode: NULLABLE
+      name: key
+      type: STRING
+    - mode: NULLABLE
+      name: value
+      type: STRING
+    mode: REPEATED
+    name: jwe
+    type: RECORD
   - fields:
     - description: 'Counts the number of times a metric was set with an invalid label.
 
@@ -290,76 +309,66 @@ fields:
     name: labeled_counter
     type: RECORD
   - fields:
-    - description: 'The URL path of the page that was viewed.
-
-        '
-      mode: NULLABLE
-      name: page_path
+    - mode: NULLABLE
+      name: key
       type: STRING
-    - description: 'The referring URL that linked to the page that was viewed.
-
-        '
-      mode: NULLABLE
-      name: page_referrer
-      type: STRING
-    mode: NULLABLE
-    name: url2
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - fields:
+        - mode: NULLABLE
+          name: denominator
+          type: INTEGER
+        - mode: NULLABLE
+          name: numerator
+          type: INTEGER
+        mode: NULLABLE
+        name: value
+        type: RECORD
+      mode: REPEATED
+      name: value
+      type: RECORD
+    mode: REPEATED
+    name: labeled_rate
     type: RECORD
   - fields:
-    - description: 'The navigators ISO 3166 country name (not code) based on geo ip.
-
-        '
+    - description: The version of the OS running Firefox, as detected by Gecko. To
+        be sent only in the "fog-validation" ping.
       mode: NULLABLE
-      name: navigator_geo
-      type: STRING
-    - description: 'The subscription type of the user. can be one of
-
-        ''core'',''mdn_plus_5m'',''mdn_plus_5y'',''mdn_plus_10m'',''mdn_plus_10y''
-
-        '
-      mode: NULLABLE
-      name: navigator_subscription_type
-      type: STRING
-    - description: 'The navigators user agent.
-
-        '
-      mode: NULLABLE
-      name: navigator_user_agent
-      type: STRING
-    - description: 'The currently displayed viewport breakpoint,
-
-        one of "xs", "sm", "md","lg", "xl" or "xxl".
-
-        '
-      mode: NULLABLE
-      name: navigator_viewport_breakpoint
-      type: STRING
-    - description: 'The HTTP status code of the page.
-
-        '
-      mode: NULLABLE
-      name: page_http_status
+      name: fog_validation_os_version
       type: STRING
     mode: NULLABLE
     name: string
     type: RECORD
   - fields:
-    - description: 'The ratio of viewport width to screen width, expressed as a percentage.
-
-        '
+    - mode: NULLABLE
+      name: key
+      type: STRING
+    - mode: NULLABLE
+      name: value
+      type: STRING
+    mode: REPEATED
+    name: text
+    type: RECORD
+  - fields:
+    - mode: NULLABLE
+      name: key
+      type: STRING
+    - mode: NULLABLE
+      name: value
+      type: STRING
+    mode: REPEATED
+    name: url
+    type: RECORD
+  - fields:
+    - description: The Telemetry client_id. To be sent only in the "fog-validation"
+        ping.
       mode: NULLABLE
-      name: navigator_viewport_horizontal_coverage
-      type: INTEGER
-    - description: 'The ratio of viewport width to viewport height,
-
-        expressed as a percentage.
-
-        '
-      mode: NULLABLE
-      name: navigator_viewport_ratio
-      type: INTEGER
+      name: fog_validation_legacy_telemetry_client_id
+      type: STRING
     mode: NULLABLE
-    name: quantity
+    name: uuid
     type: RECORD
   mode: NULLABLE
   name: metrics

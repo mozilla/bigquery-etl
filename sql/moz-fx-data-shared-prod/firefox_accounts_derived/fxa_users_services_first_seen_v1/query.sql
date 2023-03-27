@@ -11,7 +11,7 @@ WITH fxa_content_auth_oauth AS (
   FROM
     `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
-    event_category IN ('content', 'auth', 'oauth')
+    fxa_log IN ('content', 'auth', 'oauth')
 ),
   -- use a window function to look within each USER and SERVICE for the first value of service, os, and country.
   -- also, get the first value of flow_id for later use and create a boolean column that is true if the first instance of a service usage includes a registration.

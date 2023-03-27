@@ -30,7 +30,7 @@ except ImportError:
     # python 3.7 compatibility
     from backports.cached_property import cached_property  # type: ignore
 
-
+TEST_PROJECT = "bigquery-etl-integration-test"
 SKIP = {
     # Access Denied
     "sql/moz-fx-data-shared-prod/account_ecosystem_derived/ecosystem_client_id_lookup_v1/query.sql",  # noqa E501
@@ -133,6 +133,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/protected_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/hubs_derived/subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/relay_derived/subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/fenix_derived/google_ads_campaign_cost_breakdowns_v1/query.sql",
     *glob.glob("sql/moz-fx-data-shared-prod/search_terms*/**/*.sql", recursive=True),
@@ -179,6 +180,11 @@ SKIP = {
         "sql/moz-fx-data-shared-prod/google_ads_derived/**/*.sql",
         recursive=True,
     ),
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/**/client_deduplication*/*.sql",
+        recursive=True,
+    ),
+    "sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v1/query.sql",
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501
@@ -216,6 +222,7 @@ SKIP = {
     # Syntax error
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/init.sql",  # noqa E501
     # HTTP Error 408: Request Time-out
+    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/latest_versions/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/italy_covid19_outage_v1/query.sql",
@@ -253,6 +260,16 @@ SKIP = {
     # Tests
     "sql/moz-fx-data-test-project/test/simple_view/view.sql",
 }
+SKIP.update(
+    [
+        p
+        for f in [Path(s) for s in SKIP]
+        for p in glob.glob(
+            f"sql/{TEST_PROJECT}/{f.parent.parent.name}*/{f.parent.name}/{f.name}",
+            recursive=True,
+        )
+    ]
+)
 
 
 class Errors(Enum):

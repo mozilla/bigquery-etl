@@ -47,7 +47,7 @@ def format_timedelta(timdelta_string):
 
     parts = parts.groupdict()
     time_params = {}
-    for (name, param) in parts.items():
+    for name, param in parts.items():
         if param:
             time_params[name] = int(param)
 

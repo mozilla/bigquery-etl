@@ -27,3 +27,9 @@ focus_android:
     counter: true
   is_default_browser:
     sql: "LOGICAL_OR(metrics.boolean.browser_is_default)"
+klar_ios:
+  uri_count:
+    sql: "SUM(metrics.counter.browser_total_uri_count)"
+    counter: true
+  is_default_browser:
+    sql: "LOGICAL_OR(metrics.counter.app_opened_as_default_browser > 0)"

@@ -9,25 +9,25 @@ fenix_derived:
   start_date: 2020-01-01
   dag_name: bqetl_fenix_event_rollup
   user_properties:
-    - src: android_sdk_version
+    - src: client_info.android_sdk_version
       dest: android_sdk_version
-    - src: app_build
+    - src: client_info.app_build
       dest: app_build
-    - src: app_channel
+    - src: client_info.app_channel
       dest: app_channel
-    - src: app_display_version
+    - src: client_info.app_display_version
       dest: app_display_version
-    - src: architecture
+    - src: client_info.architecture
       dest: architecture
-    - src: device_manufacturer
+    - src: client_info.device_manufacturer
       dest: device_manufacturer
-    - src: device_model
+    - src: client_info.device_model
       dest: device_model
-    - src: first_run_date
+    - src: client_info.first_run_date
       dest: first_run_date
-    - src: telemetry_sdk_build
+    - src: client_info.telemetry_sdk_build
       dest: telemetry_sdk_build
-    - src: locale
+    - src: client_info.locale
       dest: locale
 # see https://bugzilla.mozilla.org/show_bug.cgi?id=1805722#c10
 #telemetry_derived:
@@ -137,17 +137,19 @@ mozilla_vpn_derived:
   start_date: 2021-10-01
   dag_name: bqetl_event_rollup
   user_properties:
-    - src: app_build
+    - src: client_info.app_build
       dest: app_build
-    - src: app_channel
+    - src: client_info.app_channel
       dest: app_channel
-    - src: app_display_version
+    - src: client_info.app_display_version
       dest: app_display_version
-    - src: architecture
+    - src: client_info.architecture
       dest: architecture
-    - src: first_run_date
+    - src: client_info.first_run_date
       dest: first_run_date
-    - src: telemetry_sdk_build
+    - src: metadata.header.x_telemetry_agent
+      dest: telemetry_agent
+    - src: client_info.telemetry_sdk_build
       dest: telemetry_sdk_build
-    - src: locale
+    - src: client_info.locale
       dest: locale

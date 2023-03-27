@@ -5,7 +5,7 @@ from pathlib import Path
 
 import click
 
-from bigquery_etl.cli.utils import is_valid_project
+from bigquery_etl.cli.utils import is_valid_project, use_cloud_function_option
 
 SQL_GENERATORS_DIR = "sql_generators"
 GENERATE_COMMAND = "generate"
@@ -71,10 +71,16 @@ generate = generate_group()
     default=[],
     multiple=True,
 )
+@use_cloud_function_option
 @click.pass_context
-def generate_all(ctx, output_dir, target_project, ignore):
+def generate_all(ctx, output_dir, target_project, ignore, use_cloud_function):
     """Run all SQL generators."""
     click.echo(f"Generating SQL content in {output_dir}.")
     for _, cmd in reversed(generate.commands.items()):
         if cmd.name != "all" and cmd.name not in ignore:
-            ctx.invoke(cmd, output_dir=output_dir, target_project=target_project)
+            ctx.invoke(
+                cmd,
+                output_dir=output_dir,
+                target_project=target_project,
+                use_cloud_function=use_cloud_function,
+            )

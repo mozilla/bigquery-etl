@@ -1,0 +1,171 @@
+fields:
+
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: |
+    Date field corresponding to the ETL
+    processing date. Also, used for
+    table partitioning.
+
+- mode: NULLABLE
+  name: user_id
+  type: STRING
+  description: |
+    36-char long hash randomly assigned when the account
+    is created.
+
+- mode: NULLABLE
+  name: service
+  type: STRING
+  description: |
+    The service identifier. For Sync it may be empty or sync.
+    For OAuth reliers it is their hex client id.
+    Example: sync
+
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: |
+    2 char string representing the country where the device was located.
+
+- mode: NULLABLE
+  name: language
+  type: STRING
+  description: |
+    Language settings used by the device.
+
+- mode: NULLABLE
+  name: app_version
+  type: STRING
+  description: |
+    Mozilla app version,
+    follows format: major.minor.patch (e.g. 99.3.3).
+
+- mode: NULLABLE
+  name: os_name
+  type: STRING
+  description: |
+    Name of the operating system the device was using.
+    E.g. Android
+
+- mode: NULLABLE
+  name: os_version
+  type: STRING
+  description: |
+    Version of the OS the device was using.
+
+- mode: NULLABLE
+  name: ua_version
+  type: STRING
+  description: |
+    The user's browser version.
+
+- mode: NULLABLE
+  name: ua_browser
+  type: STRING
+  description: |
+    The user's web browser, e.g. 'Firefox' or 'Chrome'.
+
+- mode: NULLABLE
+  name: seen_in_tier1_country
+  type: BOOLEAN
+  description: |
+    Set to True if a user sent an event from
+    one of the following countries for
+    a specific submission_date:
+    ('United States','France',
+    'Germany','United Kingdom','Canada')
+
+- mode: NULLABLE
+  name: registered
+  type: BOOLEAN
+  description: |
+    Set to True if the user submitted
+    the event_type of `fxa_reg - complete`
+    event on the specific submission_date.
+
+- mode: REPEATED
+  name: service_events
+  type: STRING
+  description: |
+    Contains an array of all event_type(s)
+    we observed for a specific user_id / service
+    combination. Ordered in ASC occurance order.
+
+- mode: NULLABLE
+  name: user_service_first_daily_flow_info
+  type: RECORD
+  description: |
+    Contains the first flow_id observed for the specific
+    user / service combination each day along with
+    the flow's entrypoint.
+  fields:
+  - mode: NULLABLE
+    name: flow_id
+    type: STRING
+    description: |
+      The the first flow_id recorded for this specific
+      user / service combination.
+      The flow identifier is a hash value representing
+      a registration and login sessions.
+
+  - mode: NULLABLE
+    name: timestamp
+    type: TIMESTAMP
+    description: |
+      Timestamp of when we we saw the first record
+      for this specific flow_id.
+
+  - mode: NULLABLE
+    name: entrypoint
+    type: STRING
+    description: |
+      The entrypoint of the flow session.
+      Typically a UI touchpoint like "preferences".
+
+- mode: NULLABLE
+  name: user_service_utm_info
+  type: RECORD
+  description: |
+    Contains utm information for the specific
+    user / service combination for each day.
+  fields:
+  - mode: NULLABLE
+    name: utm_term
+    type: STRING
+    description: |
+      Marketing campaign search term
+      for the flow session.
+      Not stored if the DNT request header was 1.
+
+  - mode: NULLABLE
+    name: utm_medium
+    type: STRING
+    description: |
+      Marketing campaign medium for the flow session.
+      Not stored if the DNT request header was 1.
+
+  - mode: NULLABLE
+    name: utm_source
+    type: STRING
+    description: |
+      Marketing campaign source for
+      the flow session.
+      Not stored if the DNT request header was 1.
+
+  - mode: NULLABLE
+    name: utm_campaign
+    type: STRING
+    description: |
+      Marketing campaign identifier
+      for the flow session.
+      Not stored if the DNT request header was 1.
+
+  - mode: NULLABLE
+    name: utm_content
+    type: STRING
+    description: |
+      Marketing campaign content identifier
+      for the flow session.
+      Not stored if the DNT request header was 1.

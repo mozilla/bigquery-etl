@@ -47,7 +47,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     firefox_android_clients = bigquery_etl_query(
         task_id="firefox_android_clients",
         destination_table="firefox_android_clients_v1",
@@ -71,7 +70,7 @@ with DAG(
             task_id="bqetl_analytics_aggregations__wait_for_firefox_android_clients",
             external_dag_id="bqetl_analytics_aggregations",
             external_task_id="wait_for_firefox_android_clients",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=3600)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
         )
 
         firefox_android_clients_external.set_upstream(firefox_android_clients)

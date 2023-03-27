@@ -140,7 +140,7 @@ def apple_import(
         raise click.ClickException("must specify --date")
     if table and date:
         table = f"{table}${date:%Y%m%d}"
-    with (TemporaryFile(mode="w+b") if table else sys.stdout.buffer) as file_obj:
+    with TemporaryFile(mode="w+b") if table else sys.stdout.buffer as file_obj:
         has_rows = False
         report_date = f"{date:%F}\t".encode("UTF-8")
         for line in _get_lines(key_id, issuer_id, private_key, vendor_number, date):

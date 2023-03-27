@@ -385,22 +385,14 @@ SELECT
   assert.array_equals(
     exp,
     CASE
-    WHEN
-      res_type = "total_searches"
-    THEN
-      udf.get_key_with_null(res, key).total_searches
-    WHEN
-      res_type = "tagged_searches"
-    THEN
-      udf.get_key_with_null(res, key).tagged_searches
-    WHEN
-      res_type = "search_with_ads"
-    THEN
-      udf.get_key_with_null(res, key).search_with_ads
-    WHEN
-      res_type = "ad_click"
-    THEN
-      udf.get_key_with_null(res, key).ad_click
+      WHEN res_type = "total_searches"
+        THEN udf.get_key_with_null(res, key).total_searches
+      WHEN res_type = "tagged_searches"
+        THEN udf.get_key_with_null(res, key).tagged_searches
+      WHEN res_type = "search_with_ads"
+        THEN udf.get_key_with_null(res, key).search_with_ads
+      WHEN res_type = "ad_click"
+        THEN udf.get_key_with_null(res, key).ad_click
     END
   ),
 FROM

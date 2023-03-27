@@ -27,7 +27,7 @@ WITH fxa_events AS (
     -- this includes fields such as entrypoint, utm's etc.
     BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND @submission_date
-    AND event_category IN ('content', 'auth', 'oauth')
+    AND fxa_log IN ('content', 'auth', 'oauth')
     -- re-using the filter from users_services_daily_v1 for consistency across the models
     -- at some point in the future we should re-evaluate this list
     AND event_type NOT IN ( --
@@ -57,6 +57,8 @@ entrypoints AS (
     -- cannot be used for mapping
     flow_id IS NOT NULL
     AND entrypoint IS NOT NULL
+  -- in case we find multiple entrypoints for a single flow_id
+  -- we only keep the first one
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY flow_id ORDER BY `timestamp` ASC) = 1
 ),

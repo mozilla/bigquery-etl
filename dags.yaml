@@ -361,6 +361,22 @@ bqetl_org_mozilla_firefox_derived:
   tags:
     - impact/tier_1
 
+bqetl_org_mozilla_focus_derived:
+  schedule_interval: 0 2 * * *
+  default_args:
+    depends_on_past: false
+    email:
+      - dthorn@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    owner: dthorn@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: "2023-02-22"
+  tags:
+    - impact/tier_1
+
 bqetl_google_analytics_derived:
   schedule_interval: 0 23 * * *
   description: |
@@ -514,8 +530,9 @@ bqetl_pocket:
     email_on_failure: true
     email_on_retry: true
     owner: jklukas@mozilla.com
-    retries: 2
-    retry_delay: 30m
+    # Retry more than normal because the files from Pocket may not always be available on time.
+    retries: 10
+    retry_delay: 60m
     start_date: "2021-03-10"
   description: |
     Import of data from Pocket's Snowflake warehouse.
@@ -780,7 +797,7 @@ bqetl_analytics_aggregations:
     It provides data to build growth, search and usage metrics, as well
     as acquisition and retention KPIs, in a model that facilitates
     reporting in Looker.
-  schedule_interval: 0 1 * * *
+  schedule_interval: 30 3 * * *
   tags:
     - impact/tier_1
 
@@ -978,3 +995,26 @@ bqetl_fivetran_costs:
   schedule_interval: 0 5 * * *
   tags:
     - impact/tier_3
+
+bqetl_mdn_yari:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - mdn@mozilla.com
+      - fmerz@mozilla.com
+      - kignasiak@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: fmerz@mozilla.com
+    retries: 1
+    retry_delay: 5m
+    start_date: '2023-02-01'
+  description: |
+    Monthly data exports of MDN 'Popularities'. This aggregates and counts total
+    page visits and normalizes them agains the max.
+  schedule_interval: 0 0 1 * *
+  tags:
+    - impact/tier_3
+    - triage/record_only

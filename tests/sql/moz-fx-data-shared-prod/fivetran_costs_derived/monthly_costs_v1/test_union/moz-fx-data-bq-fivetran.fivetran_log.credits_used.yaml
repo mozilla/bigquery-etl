@@ -1,7 +1,0 @@
----
-- destination_id: prod_destination_id
-  measured_month: 2023-01
-  credits_consumed: 3
-- destination_id: prod_destination_id
-  measured_month: 2022-02
-  credits_consumed: 5

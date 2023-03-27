@@ -1,32 +1,19 @@
 CREATE OR REPLACE FUNCTION datetime_util.fxa_parse_date(date_string STRING)
 RETURNS DATE AS (
   CASE
-  WHEN
-    REGEXP_CONTAINS(date_string, r"^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{1,3}Z)$")
-  THEN
-    DATE(DATETIME(SPLIT(date_string, ".")[OFFSET(0)]))
-  WHEN
-    REGEXP_CONTAINS(date_string, r"^(\d{2}/\d{2}/\d{4}\s\d{2}:\d{2}\s(AM|PM))$")
-  THEN
-    DATE(PARSE_DATETIME("%m/%d/%Y %I:%M %p", date_string))
-  WHEN
-    REGEXP_CONTAINS(date_string, r"^(\d{2}/\d{2}/\d{4}\s\d{2}:\d{2}:\d{3})$")
-  THEN
-    DATE(PARSE_DATETIME("%m/%d/%Y", SPLIT(date_string, " ")[OFFSET(0)]))
-  WHEN
-    REGEXP_CONTAINS(date_string, r"^(\d{2}/\d{2}/\d{4}\s\d{2}:\d{2}:\d{2})$")
-  THEN
-    DATE(PARSE_DATETIME("%m/%d/%Y", SPLIT(date_string, " ")[OFFSET(0)]))
-  WHEN
-    REGEXP_CONTAINS(date_string, r"^(\d{2}/\d{2}/\d{4})$")
-  THEN
-    PARSE_DATE("%m/%d/%Y", date_string)
-  WHEN
-    REGEXP_CONTAINS(date_string, r"^(\d{4}/\d{2}/\d{2})$")
-  THEN
-    PARSE_DATE("%Y/%m/%d", date_string)
-  ELSE
-    DATE(NULLIF(date_string, ''))
+    WHEN REGEXP_CONTAINS(date_string, r"^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{1,3}Z)$")
+      THEN DATE(DATETIME(SPLIT(date_string, ".")[OFFSET(0)]))
+    WHEN REGEXP_CONTAINS(date_string, r"^(\d{2}/\d{2}/\d{4}\s\d{2}:\d{2}\s(AM|PM))$")
+      THEN DATE(PARSE_DATETIME("%m/%d/%Y %I:%M %p", date_string))
+    WHEN REGEXP_CONTAINS(date_string, r"^(\d{2}/\d{2}/\d{4}\s\d{2}:\d{2}:\d{3})$")
+      THEN DATE(PARSE_DATETIME("%m/%d/%Y", SPLIT(date_string, " ")[OFFSET(0)]))
+    WHEN REGEXP_CONTAINS(date_string, r"^(\d{2}/\d{2}/\d{4}\s\d{2}:\d{2}:\d{2})$")
+      THEN DATE(PARSE_DATETIME("%m/%d/%Y", SPLIT(date_string, " ")[OFFSET(0)]))
+    WHEN REGEXP_CONTAINS(date_string, r"^(\d{2}/\d{2}/\d{4})$")
+      THEN PARSE_DATE("%m/%d/%Y", date_string)
+    WHEN REGEXP_CONTAINS(date_string, r"^(\d{4}/\d{2}/\d{2})$")
+      THEN PARSE_DATE("%Y/%m/%d", date_string)
+    ELSE DATE(NULLIF(date_string, ''))
   END
 );
 

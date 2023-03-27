@@ -3,6 +3,7 @@ description: |-
   daily client-level aggregates of Sponsored Tiles-related fields
 owners:
 - skahmann@mozilla.com
+- cmorales@mozilla.com
 labels:
   incremental: true
 scheduling:

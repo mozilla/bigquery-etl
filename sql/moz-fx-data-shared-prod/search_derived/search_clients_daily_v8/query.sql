@@ -118,52 +118,38 @@ augmented AS (
           element.engine AS engine,
           element.count AS count,
           CASE
-          WHEN
-            (
-              element.source IN (
-                'searchbar',
-                'urlbar',
-                'abouthome',
-                'newtab',
-                'contextmenu',
-                'system',
-                'activitystream',
-                'webextension',
-                'alias',
-                'urlbar-searchmode',
-                'urlbar-handoff',
-                'urlbar-persisted'
+            WHEN (
+                element.source IN (
+                  'searchbar',
+                  'urlbar',
+                  'abouthome',
+                  'newtab',
+                  'contextmenu',
+                  'system',
+                  'activitystream',
+                  'webextension',
+                  'alias',
+                  'urlbar-searchmode',
+                  'urlbar-handoff',
+                  'urlbar-persisted'
+                )
+                OR element.source IS NULL
               )
-              OR element.source IS NULL
-            )
-          THEN
-            'sap'
-          WHEN
-            STARTS_WITH(element.source, 'in-content:sap:')
-            OR STARTS_WITH(element.source, 'sap:')
-          THEN
-            'tagged-sap'
-          WHEN
-            STARTS_WITH(element.source, 'in-content:sap-follow-on:')
-            OR STARTS_WITH(element.source, 'follow-on:')
-          THEN
-            'tagged-follow-on'
-          WHEN
-            STARTS_WITH(element.source, 'in-content:organic:')
-          THEN
-            'organic'
-          WHEN
-            STARTS_WITH(element.source, 'ad-click:')
-          THEN
-            'ad-click'
-          WHEN
-            STARTS_WITH(element.source, 'search-with-ads:')
-          THEN
-            'search-with-ads'
-          ELSE
-            'unknown'
-          END
-          AS type
+              THEN 'sap'
+            WHEN STARTS_WITH(element.source, 'in-content:sap:')
+              OR STARTS_WITH(element.source, 'sap:')
+              THEN 'tagged-sap'
+            WHEN STARTS_WITH(element.source, 'in-content:sap-follow-on:')
+              OR STARTS_WITH(element.source, 'follow-on:')
+              THEN 'tagged-follow-on'
+            WHEN STARTS_WITH(element.source, 'in-content:organic:')
+              THEN 'organic'
+            WHEN STARTS_WITH(element.source, 'ad-click:')
+              THEN 'ad-click'
+            WHEN STARTS_WITH(element.source, 'search-with-ads:')
+              THEN 'search-with-ads'
+            ELSE 'unknown'
+          END AS type
         FROM
           UNNEST(search_counts) AS element
         WHERE
@@ -177,22 +163,14 @@ augmented AS (
           SPLIT(key, ':')[OFFSET(0)] AS engine,
           value AS count,
           CASE
-          WHEN
-            REGEXP_CONTAINS(key, ':tagged:')
-          THEN
-            'tagged-sap'
-          WHEN
-            REGEXP_CONTAINS(key, ':tagged-follow-on:')
-          THEN
-            'tagged-follow-on'
-          WHEN
-            REGEXP_CONTAINS(key, ':organic:')
-          THEN
-            'organic'
-          ELSE
-            'unknown'
-          END
-          AS type
+            WHEN REGEXP_CONTAINS(key, ':tagged:')
+              THEN 'tagged-sap'
+            WHEN REGEXP_CONTAINS(key, ':tagged-follow-on:')
+              THEN 'tagged-follow-on'
+            WHEN REGEXP_CONTAINS(key, ':organic:')
+              THEN 'organic'
+            ELSE 'unknown'
+          END AS type
         FROM
           UNNEST(in_content_with_sap)
       ),
@@ -321,7 +299,13 @@ counted AS (
     )
 )
 SELECT
-  * EXCEPT (_n)
+  * EXCEPT (_n),
+  `moz-fx-data-shared-prod.udf.monetized_search`(
+    engine,
+    country,
+    distribution_id,
+    submission_date
+  ) AS is_sap_monetizable
 FROM
   counted
 WHERE

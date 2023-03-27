@@ -45,7 +45,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     search_derived__mobile_search_aggregates__v1 = bigquery_etl_query(
         task_id="search_derived__mobile_search_aggregates__v1",
         destination_table="mobile_search_aggregates_v1",
@@ -81,6 +80,13 @@ with DAG(
     with TaskGroup(
         "search_derived__mobile_search_clients_daily__v1_external"
     ) as search_derived__mobile_search_clients_daily__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_search_derived__mobile_search_clients_daily__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
+        )
+
         ExternalTaskMarker(
             task_id="bqetl_org_mozilla_firefox_derived__wait_for_search_derived__mobile_search_clients_daily__v1",
             external_dag_id="bqetl_org_mozilla_firefox_derived",

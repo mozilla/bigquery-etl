@@ -126,17 +126,14 @@ stub_dl AS (
 ),
 stub_other_dl AS (
   SELECT
-    s.jsonPayload.fields.visit_id AS stub_visit_id,
+    stub_visit_id,
     CASE
       WHEN (COUNT(*) > 1)
         THEN TRUE
       ELSE FALSE
     END AS additional_download_occurred
   FROM
-    `moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout` s
-  WHERE
-    DATE(s.timestamp) = @submission_date
-    AND s.jsonPayload.fields.log_type = 'download_started'
+    stub_dl
   GROUP BY
     stub_visit_id
 ),

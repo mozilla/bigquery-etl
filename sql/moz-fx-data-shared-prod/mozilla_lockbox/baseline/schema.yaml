@@ -189,6 +189,20 @@ fields:
     mode: NULLABLE
     name: header
     type: RECORD
+  - description: Parsed components of the client's user agent string
+    fields:
+    - mode: NULLABLE
+      name: browser
+      type: STRING
+    - mode: NULLABLE
+      name: os
+      type: STRING
+    - mode: NULLABLE
+      name: version
+      type: STRING
+    mode: NULLABLE
+    name: user_agent
+    type: RECORD
   - description: Results of ISP lookup based on the client's IP address
     fields:
     - description: The specific geo ISP database version used for this lookup
@@ -207,103 +221,20 @@ fields:
     mode: NULLABLE
     name: isp
     type: RECORD
-  - description: Parsed components of the client's user agent string
-    fields:
-    - mode: NULLABLE
-      name: browser
-      type: STRING
-    - mode: NULLABLE
-      name: os
-      type: STRING
-    - mode: NULLABLE
-      name: version
-      type: STRING
-    mode: NULLABLE
-    name: user_agent
-    type: RECORD
   mode: NULLABLE
   name: metadata
   type: RECORD
 - fields:
   - fields:
-    - description: 'Records the number of batches needed to upload all outgoing records.
-        The Sync server has a hard limit on the number of records (and request body
-        bytes) on the number of records that can fit into a single batch, and large
-        syncs may require multiple batches.
-
-        '
+    - description: The number of metrics pings sent during the lifetime of this baseline
+        ping.
       mode: NULLABLE
-      name: addresses_sync_outgoing_batches
+      name: glean_validation_metrics_ping_count
       type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
   - fields:
-    - description: 'Records when the addresses sync finished. This includes the time
-        to download, apply, and upload all records.
-
-        '
-      mode: NULLABLE
-      name: addresses_sync_finished_at
-      type: TIMESTAMP
-    - mode: NULLABLE
-      name: raw_addresses_sync_finished_at
-      type: STRING
-    - description: 'Records when the addresses sync started.
-
-        '
-      mode: NULLABLE
-      name: addresses_sync_started_at
-      type: TIMESTAMP
-    - mode: NULLABLE
-      name: raw_addresses_sync_started_at
-      type: STRING
-    mode: NULLABLE
-    name: datetime
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: jwe
-    type: RECORD
-  - fields:
-    - description: 'Records incoming addresses record counts. `applied` is the number
-        of incoming records that were successfully stored or updated in the local
-        database. `failed_to_apply` is the number of records that were ignored due
-        to errors. `reconciled` is the number of merged records.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: addresses_sync_incoming
-      type: RECORD
-    - description: 'Records outgoing addresses record counts. `uploaded` is the number
-        of records that were successfully sent to the server. `failed_to_upload` is
-        the number of records that weren''t uploaded, and will be retried on the next
-        sync.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: addresses_sync_outgoing
-      type: RECORD
     - description: 'Counts the number of times a metric was set with an invalid label.
 
         The labels are the `category.name` identifier of the metric.
@@ -364,8 +295,80 @@ fields:
       mode: REPEATED
       name: glean_error_invalid_value
       type: RECORD
+    - description: "A count of the pings submitted, by ping type.\n\nThis metric appears\
+        \ in both the metrics and baseline pings.\n\n- On the metrics ping, the counts\
+        \ include the number of pings sent since\n  the last metrics ping (including\
+        \ the last metrics ping)\n- On the baseline ping, the counts include the number\
+        \ of pings send since\n  the last baseline ping (including the last baseline\
+        \ ping)\n"
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: glean_validation_pings_submitted
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
+    type: RECORD
+  - fields:
+    - description: 'The locale of the application during initialization (e.g. "es-ES").
+
+        If the locale can''t be determined on the system, the value is
+
+        ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
+
+        to indicate "undetermined".
+
+        '
+      mode: NULLABLE
+      name: glean_baseline_locale
+      type: STRING
+    mode: NULLABLE
+    name: string
+    type: RECORD
+  - fields:
+    - description: 'The duration of the last foreground session.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: NULLABLE
+      name: glean_baseline_duration
+      type: RECORD
+    mode: NULLABLE
+    name: timespan
+    type: RECORD
+  - fields:
+    - mode: NULLABLE
+      name: key
+      type: STRING
+    - mode: NULLABLE
+      name: value
+      type: STRING
+    mode: REPEATED
+    name: jwe
+    type: RECORD
+  - fields:
+    - description: 'The hour of the first run of the application.
+
+        '
+      mode: NULLABLE
+      name: glean_validation_first_run_hour
+      type: TIMESTAMP
+    - mode: NULLABLE
+      name: raw_glean_validation_first_run_hour
+      type: STRING
+    mode: NULLABLE
+    name: datetime
     type: RECORD
   - fields:
     - mode: NULLABLE
@@ -390,35 +393,6 @@ fields:
       type: RECORD
     mode: REPEATED
     name: labeled_rate
-    type: RECORD
-  - fields:
-    - description: 'Records why the addresses sync failed: either due to an authentication
-        error, unexpected exception, or other error. The error strings are truncated
-        and sanitized to omit PII, like URLs and file system paths.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: STRING
-      mode: REPEATED
-      name: addresses_sync_failure_reason
-      type: RECORD
-    mode: NULLABLE
-    name: labeled_string
-    type: RECORD
-  - fields:
-    - description: 'The user''s hashed Firefox Account ID.
-
-        '
-      mode: NULLABLE
-      name: addresses_sync_uid
-      type: STRING
-    mode: NULLABLE
-    name: string
     type: RECORD
   - fields:
     - mode: NULLABLE

@@ -30,7 +30,7 @@ default_args = {
     "end_date": None,
     "email": [
         "telemetry-alerts@mozilla.com",
-        "mdn@mozilla.com",
+        "mdn-infra@mozilla.com",
         "fmerz@mozilla.com",
         "kignasiak@mozilla.com",
     ],
@@ -62,7 +62,7 @@ with DAG(
         email=[
             "fmerz@mozilla.com",
             "kignasiak@mozilla.com",
-            "mdn@mozilla.com",
+            "mdn-infra@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
     )

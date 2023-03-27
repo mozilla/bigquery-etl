@@ -10,7 +10,7 @@ import cattrs
 import yaml
 from google.cloud import bigquery
 
-from bigquery_etl.query_scheduling.utils import is_email
+from bigquery_etl.query_scheduling.utils import is_email_or_github_identity
 
 METADATA_FILE = "metadata.yaml"
 DATASET_METADATA_FILE = "dataset_metadata.yaml"
@@ -152,8 +152,8 @@ class Metadata:
     @owners.validator
     def validate_owners(self, attribute, value):
         """Check that provided email addresses for owners are valid."""
-        if not all(map(lambda e: is_email(e), value)):
-            raise ValueError(f"Invalid email for owners: {value}.")
+        if not all(map(lambda e: is_email_or_github_identity(e), value)):
+            raise ValueError(f"Invalid email or Github identity for owners: {value}.")
 
     @labels.validator
     def validate_labels(self, attribute, value):

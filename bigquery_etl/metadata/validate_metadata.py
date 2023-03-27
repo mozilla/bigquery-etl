@@ -5,6 +5,8 @@ import os
 import sys
 from argparse import ArgumentParser
 
+import click
+
 from ..util import standard_args
 from ..util.common import project_dirs
 from .parse_metadata import DatasetMetadata, Metadata
@@ -13,6 +15,9 @@ parser = ArgumentParser(description=__doc__)
 
 parser.add_argument("--target", help="File or directory containing metadata files")
 standard_args.add_log_level(parser)
+
+CODEOWNERS_FILE = "CODEOWNERS"
+CHANGE_CONTROL_LABEL = "change_controlled"
 
 
 def validate_public_data(metadata, path):
@@ -27,7 +32,43 @@ def validate_public_data(metadata, path):
     return is_valid
 
 
-def validate(target):
+def validate_change_control(file_path, metadata, project_id, query_files_path):
+    """Verify that a query is correctly setup for change control."""
+    if not project_id:
+        project_id = "moz-fx-data-shared-prod"
+    if not query_files_path:
+        query_files_path = "sql"
+
+    path_to_add = file_path.partition(f"{project_id}/")[2]
+    path_in_codeowners = os.path.join(query_files_path, project_id, path_to_add)
+
+    if CHANGE_CONTROL_LABEL in metadata.labels:
+        # This label requires to have at least one owner in the metadata file.
+        # And for any of the owners, at least one entry in the CODEOWNERS file.
+        counter = 0
+        rows_expected = []
+        for owner in metadata.owners:
+            if not owner.__contains__("@"):
+                owner = f"@{owner}"
+            row_to_search_for = f"{path_in_codeowners} {owner}"
+            rows_expected.append(row_to_search_for)
+
+            with open(CODEOWNERS_FILE) as owners:
+                if row_to_search_for in owners.read():
+                    counter = counter + 1
+        if metadata.owners and counter > 0:
+            return True
+        else:
+            click.echo(
+                click.style(
+                    f"The metadata includes the label change_controlled but it's missing the owners,"
+                    f" or the expected entry is missing in the CODEOWNERS file: {row_to_search_for}."
+                )
+            )
+            return
+
+
+def validate(target, project_id, sql_dir):
     """Validate metadata files."""
     failed = False
 
@@ -39,6 +80,9 @@ def validate(target):
                     metadata = Metadata.from_file(path)
 
                     if not validate_public_data(metadata, path):
+                        failed = True
+
+                    if not validate_change_control(root, metadata, project_id, sql_dir):
                         failed = True
 
                     # todo more validation

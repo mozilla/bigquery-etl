@@ -10,7 +10,7 @@ import click
 import yaml
 
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
-from bigquery_etl.util import render
+from bigquery_etl.util.common import render
 
 stable_views = None
 
@@ -107,7 +107,8 @@ def _get_references(
             if without_views:
                 yield path, list(extract_table_references_without_views(path))
             else:
-                yield path, extract_table_references(path.read_text())
+                sql = render(path.name, template_folder=path.parent, templates_dir="")
+                yield path, extract_table_references(sql)
         except CalledProcessError as e:
             raise click.ClickException(f"failed to import jnius: {e}")
         except ImportError as e:

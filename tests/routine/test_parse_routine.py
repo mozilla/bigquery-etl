@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from bigquery_etl.routine import parse_routine
@@ -207,16 +208,19 @@ class TestParseRoutine:
             == "Shift input bits one day left and drop any bits beyond 28 days."
         )
 
-    def test_procedure(self):
+    def test_procedure(self, tmp_path):
         text = (
             "CREATE OR REPLACE PROCEDURE procedure.test_procedure(out STRING) "
             "BEGIN "
             "SET out = mozfun.json.mode_last('{}'); "
             "END "
         )
-        result = parse_routine.RawRoutine.from_file(
-            self.udf_dir.parent / "procedure" / "test_procedure" / "sql", from_text=text
+        procedure_file = (
+            tmp_path / "procedure" / "test_procedure" / "stored_procedure.sql"
         )
+        os.makedirs(procedure_file.parent)
+        procedure_file.write_text(text)
+        result = parse_routine.RawRoutine.from_file(procedure_file)
         assert result.name == "procedure.test_procedure"
         assert len(result.definitions) == 1
         assert len(result.dependencies) == 1
@@ -229,9 +233,8 @@ class TestParseRoutine:
             "SET out = ''; "
             "END "
         )
-        result = parse_routine.RawRoutine.from_file(
-            self.udf_dir.parent / "procedure" / "test_procedure" / "sql", from_text=text
-        )
+        procedure_file.write_text(text)
+        result = parse_routine.RawRoutine.from_file(procedure_file)
         assert result.name == "procedure.test_procedure"
         assert len(result.definitions) == 1
         assert result.dependencies == []

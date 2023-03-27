@@ -133,7 +133,12 @@ class RawRoutine:
     def from_file(cls, path):
         """Create a RawRoutine instance from text."""
         filepath = Path(path)
-        text = render(filepath.name, template_folder=filepath.parent, templates_dir="")
+        text = render(
+            filepath.name,
+            template_folder=filepath.parent,
+            templates_dir="",
+            format=False,
+        )
 
         sql = sqlparse.format(text, strip_comments=True)
         statements = [s for s in sqlparse.split(sql) if s.strip()]

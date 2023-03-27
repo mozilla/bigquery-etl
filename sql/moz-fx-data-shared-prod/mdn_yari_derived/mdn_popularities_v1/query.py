@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
-"""Monthly data exports of MDN 'Popularities'. This aggregates and counts total page visits and normalizes them agains the max."""
+"""Monthly data exports of MDN 'Popularities'. This aggregates and counts total page visits."""
 import logging
 from argparse import ArgumentParser
 from datetime import datetime
+from os.path import join
 from uuid import uuid4
 
 from google.cloud import bigquery, storage
@@ -22,6 +23,8 @@ ORDER BY Pageviews DESC
 """
 
 APP = "mdn_yari"
+
+CURRENT_FILE_NAME = "current.csv"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -61,9 +64,8 @@ def main():
     dataset_ref = bigquery.DatasetReference(args.project, args.temp_dataset)
     table_ref = dataset_ref.table(args.temp_table)
 
-    uuid = uuid4()
-    target_file_name = f"{args.date.strftime('%Y/%m')}/{uuid}.csv"
-    target_file_path = f"{args.destination_path}/{target_file_name}"
+    target_file_name = f"{uuid4()}.csv"
+    target_file_path = join(args.destination_path, args.date.strftime('%Y/%m'), target_file_name)
     mdn_uri = (
         f"gs://{args.destination_bucket}/{target_file_path}"
     )
@@ -82,13 +84,12 @@ def main():
     client.delete_table(temp_table)
 
     # Make it available as current.
-    current_file_name = "current.csv"
-    current_file_path = f"{args.destination_path}/{current_file_name}"
+    current_file_path = join(args.destination_path, CURRENT_FILE_NAME)
     
     storage_client = storage.Client(args.project)
     bucket = storage_client.get_bucket(args.destination_bucket)
     blob = bucket.get_blob(target_file_path)
-    bucket.copy_blob(blob, args.destination_bucket, current_file_path)
+    bucket.copy_blob(blob, bucket, current_file_path)
 
 if __name__ == "__main__":
     main()

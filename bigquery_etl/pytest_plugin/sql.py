@@ -9,6 +9,7 @@ from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
 from ..routine import parse_routine
+from ..util.common import render
 from .sql_test import (
     TABLE_EXTENSIONS,
     Table,
@@ -22,7 +23,6 @@ from .sql_test import (
     print_and_test,
     read,
 )
-from ..util import render
 
 expect_names = {f"expect.{ext}" for ext in ("yaml", "json", "ndjson")}
 

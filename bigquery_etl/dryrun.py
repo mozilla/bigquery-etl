@@ -23,7 +23,7 @@ import click
 from google.cloud import bigquery
 
 from .metadata.parse_metadata import Metadata
-from .util import render
+from .util.common import render
 
 try:
     from functools import cached_property  # type: ignore
@@ -320,7 +320,10 @@ class DryRun:
         if exists(self.sqlfile):
             file_path = Path(self.sqlfile)
             sql = render(
-                file_path.name, template_folder=file_path.parent, template_dir=""
+                file_path.name,
+                format=False,
+                template_folder=file_path.parent.absolute(),
+                templates_dir="",
             )
         else:
             raise ValueError(f"Invalid file path: {self.sqlfile}")

@@ -1001,7 +1001,7 @@ bqetl_mdn_yari:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - mdn@mozilla.com
+      - mdn-infra@mozilla.com
       - fmerz@mozilla.com
       - kignasiak@mozilla.com
     email_on_failure: true

@@ -1130,6 +1130,7 @@ def validate(
                 "events_daily",
                 "experiment_monitoring",
                 "feature_usage",
+                "glean_usage",
                 "search",
                 "stable_views",
             ],

@@ -32,7 +32,9 @@ def validate_public_data(metadata, path):
     return is_valid
 
 
-def validate_change_control(file_path, metadata, project_id, query_files_path):
+def validate_change_control(
+    file_path, metadata, project_id, query_files_path, codeowners_file
+):
     """Verify that a query is correctly setup for change control."""
     if not project_id:
         project_id = "moz-fx-data-shared-prod"
@@ -47,25 +49,25 @@ def validate_change_control(file_path, metadata, project_id, query_files_path):
         # And for any of the owners, at least one entry in the CODEOWNERS file.
         counter = 0
         rows_expected = []
+        row_to_search_for = ""
         for owner in metadata.owners:
             if not owner.__contains__("@"):
                 owner = f"@{owner}"
-            row_to_search_for = f"{path_in_codeowners} {owner}"
+            row_to_search_for = f"/{path_in_codeowners} {owner}"
             rows_expected.append(row_to_search_for)
 
-            with open(CODEOWNERS_FILE) as owners:
+            with open(codeowners_file) as owners:
                 if row_to_search_for in owners.read():
                     counter = counter + 1
-        if metadata.owners and counter > 0:
-            return True
-        else:
+        if len(metadata.owners) == 0 or counter == 0:
             click.echo(
                 click.style(
-                    f"The metadata includes the label change_controlled but it's missing the owners,"
-                    f" or the expected entry is missing in the CODEOWNERS file: {row_to_search_for}."
+                    f"The metadata includes the label change_controlled but it's missing the owners"
+                    f" or their expected entry in file CODEOWNERS: {row_to_search_for}."
                 )
             )
             return
+    return True
 
 
 def validate(target, project_id, sql_dir):
@@ -82,7 +84,9 @@ def validate(target, project_id, sql_dir):
                     if not validate_public_data(metadata, path):
                         failed = True
 
-                    if not validate_change_control(root, metadata, project_id, sql_dir):
+                    if not validate_change_control(
+                        root, metadata, project_id, sql_dir, CODEOWNERS_FILE
+                    ):
                         failed = True
 
                     # todo more validation

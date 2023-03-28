@@ -445,11 +445,13 @@ name,code
 "Saint Helena",SH
 "St Helena, Ascension, Tristan da Cunha",SH
 "Saint Helena, Ascension and Tristan da Cunha",SH
+"St. Helena",SH
 "Slovenia",SI
 "The Republic of Slovenia",SI
 "Svalbard",SJ
 "Jan Mayen Jan Mayen",SJ
 "Svalbard and Jan Mayen",SJ
+"Svalbard & Jan Mayen",SJ
 "Slovakia",SK
 "The Slovak Republic",SK
 "Sierra Leone",SL
@@ -525,6 +527,7 @@ name,code
 "United States Minor Outlying Islands",UM
 "The United States Minor Outlying Islands",UM
 "Baker Island, Howland Island, Jarvis Island, Johnston Atoll, Kingman Reef, Midway Atoll, Navassa Island, Palmyra Atoll, and Wake Island",UM
+"U.S. Outlying Islands",UM
 "United States",US
 "USA",US
 "The United States of America",US

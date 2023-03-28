@@ -323,7 +323,6 @@ class DryRun:
                 file_path.name,
                 format=False,
                 template_folder=file_path.parent.absolute(),
-                templates_dir="",
             )
         else:
             raise ValueError(f"Invalid file path: {self.sqlfile}")

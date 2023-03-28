@@ -136,7 +136,6 @@ class RawRoutine:
         text = render(
             filepath.name,
             template_folder=filepath.parent,
-            templates_dir="",
             format=False,
         )
 

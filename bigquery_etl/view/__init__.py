@@ -95,7 +95,7 @@ class View:
     def content(self):
         """Return the view SQL."""
         path = Path(self.path)
-        return render(path.name, template_folder=path.parent, templates_dir="")
+        return render(path.name, template_folder=path.parent)
 
     @classmethod
     def from_file(cls, path):

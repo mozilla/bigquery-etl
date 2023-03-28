@@ -742,7 +742,7 @@ class JinjaExpression(Token):
     May be followed by no whitespace or a new line and increased indent.
     """
 
-    pattern = re.compile(r"{\s*{.*}\s*}")
+    pattern = re.compile(r"{{.*?}}", re.DOTALL)
 
 
 class JinjaStatement(Token):
@@ -751,7 +751,7 @@ class JinjaStatement(Token):
     May be followed by no whitespace or a new line and increased indent.
     """
 
-    pattern = re.compile(r"{\s*%.*%\s*}")
+    pattern = re.compile(r"{%.*?%}", re.DOTALL)
 
 
 class JinjaComment(Token):
@@ -760,7 +760,7 @@ class JinjaComment(Token):
     May be followed by no whitespace or a new line and increased indent.
     """
 
-    pattern = re.compile(r"{\s*#.*#\s*}")
+    pattern = re.compile(r"{#.*?#}", re.DOTALL)
 
 
 class OpeningBracket(Token):

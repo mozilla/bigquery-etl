@@ -83,7 +83,7 @@ class SqlTest(pytest.Item, pytest.File):
         if test_name == "test_init":
             init_test = True
 
-            query = render("init.sql", template_folder=path, templates_dir="")
+            query = render("init.sql", template_folder=path)
             original, dest_name = (
                 f"{dataset_name}.{query_name}",
                 f"{dataset_name}_{query_name}_{test_name}",
@@ -92,9 +92,9 @@ class SqlTest(pytest.Item, pytest.File):
             query_name = dest_name
         elif test_name == "test_script":
             script_test = True
-            query = render("script.sql", template_folder=path, templates_dir="")
+            query = render("script.sql", template_folder=path)
         else:
-            query = render("query.sql", template_folder=path, templates_dir="")
+            query = render("query.sql", template_folder=path)
 
         expect = load(self.fspath.strpath, "expect")
 

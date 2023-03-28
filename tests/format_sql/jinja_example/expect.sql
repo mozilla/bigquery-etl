@@ -5,7 +5,7 @@ SELECT
   "option a" AS a,
   {% else %}
   "{{ option }}" AS {{ option }},
-  { % endif % }
+  {% endif %}
   {% endfor %}
   test,{# another comment #}
   foo

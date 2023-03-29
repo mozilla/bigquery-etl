@@ -10,7 +10,10 @@ from bigquery_etl.metadata.validate_metadata import validate_change_control
 
 class TestMetadata:
     test_path = "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1"
-    codeowners_file = os.path.join(test_path, "CODEOWNERS1")
+
+    @property
+    def codeowners_filename(self) -> str:
+        return "CODEOWNERS_TEST"
 
     @pytest.fixture
     def runner(self):
@@ -19,6 +22,7 @@ class TestMetadata:
     def check_metadata(
         self, runner, metadata_conf, codeowners_conf=None, expected_result=None
     ):
+        codeowners_file = os.path.join(self.test_path, self.codeowners_filename)
         with runner.isolated_filesystem():
             os.makedirs(self.test_path)
             with open(
@@ -28,15 +32,15 @@ class TestMetadata:
                 f.write(yaml.dump(metadata_conf))
 
             metadata = Metadata.from_file(f"{self.test_path}/metadata.yaml")
-            with open(self.codeowners_file, "w") as codeowners:
+            with open(codeowners_file, "w") as codeowners:
                 codeowners.write(codeowners_conf or "")
 
-            assert "CODEOWNERS1" in os.listdir(self.test_path)
+            assert self.codeowners_filename in os.listdir(self.test_path)
             assert (
                 validate_change_control(
                     file_path=self.test_path,
                     metadata=metadata,
-                    codeowners_file=self.codeowners_file,
+                    codeowners_file=codeowners_file,
                 )
                 is expected_result
             )

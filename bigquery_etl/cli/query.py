@@ -1116,7 +1116,7 @@ def validate(
                 respect_skip=respect_dryrun_skip,
             )
 
-        validate_metadata.validate(query.parent, project_id, sql_dir)
+        validate_metadata.validate(query.parent)
         dataset_dirs.add(query.parent.parent)
 
     if not query_files:
@@ -1153,7 +1153,7 @@ def validate(
                     respect_skip=respect_dryrun_skip,
                 )
 
-            validate_metadata.validate(query.parent, project_id, sql_dir)
+            validate_metadata.validate(query.parent)
             dataset_dirs.add(query.parent.parent)
 
     if no_dryrun:
@@ -1872,8 +1872,8 @@ def _validate_schema_from_path(
 def validate_schema(
     ctx, name, sql_dir, project_id, use_cloud_function, respect_dryrun_skip
 ):
-    """Validate the defined querypaths_matching_name_pattern schema against the query and destination table."""
-    query_files = (name, sql_dir, project_id)
+    """Validate the defined query schema with the query and the destination table."""
+    query_files = paths_matching_name_pattern(name, sql_dir, project_id)
     if query_files == []:
         # run SQL generators if no matching query has been found
         ctx.invoke(

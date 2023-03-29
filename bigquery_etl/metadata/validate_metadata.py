@@ -33,44 +33,54 @@ def validate_public_data(metadata, path):
 
 
 def validate_change_control(
-    file_path, metadata, project_id, query_files_path, codeowners_file
+    file_path,
+    metadata,
+    codeowners_file,
+    project_id="moz-fx-data-shared-prod",
+    sql_dir="sql",
 ):
     """Verify that a query is correctly setup for change control."""
-    if not project_id:
-        project_id = "moz-fx-data-shared-prod"
-    if not query_files_path:
-        query_files_path = "sql"
-
     path_to_add = file_path.partition(f"{project_id}/")[2]
-    path_in_codeowners = os.path.join(query_files_path, project_id, path_to_add)
+    path_in_codeowners = os.path.join(sql_dir, project_id, path_to_add)
+    has_codeowner = CHANGE_CONTROL_LABEL in metadata.labels
 
-    if CHANGE_CONTROL_LABEL in metadata.labels:
+    if has_codeowner:
         # This label requires to have at least one owner in the metadata file.
         # And for any of the owners, at least one entry in the CODEOWNERS file.
-        counter = 0
+        # The owners can be emails or Github identities e.g. mozilla/team_name.
+        owners_counter = 0
+
+        if len(metadata.owners) == 0:
+            click.echo(
+                click.style(
+                    f"The metadata for {file_path} has the label"
+                    f" change_controlled but it's missing the owner(s)."
+                )
+            )
+            return
         rows_expected = []
         row_to_search_for = ""
         for owner in metadata.owners:
-            if not owner.__contains__("@"):
+            if "@" not in owner:
                 owner = f"@{owner}"
             row_to_search_for = f"/{path_in_codeowners} {owner}"
             rows_expected.append(row_to_search_for)
 
             with open(codeowners_file) as owners:
                 if row_to_search_for in owners.read():
-                    counter = counter + 1
-        if len(metadata.owners) == 0 or counter == 0:
+                    owners_counter += 1
+        if owners_counter == 0:
             click.echo(
                 click.style(
                     f"The metadata includes the label change_controlled but it's missing the owners"
-                    f" or their expected entry in file CODEOWNERS: {row_to_search_for}."
+                    f" or one of the expected entries in CODEOWNERS: {row_to_search_for}."
                 )
             )
             return
     return True
 
 
-def validate(target, project_id, sql_dir):
+def validate(target):
     """Validate metadata files."""
     failed = False
 
@@ -85,7 +95,9 @@ def validate(target, project_id, sql_dir):
                         failed = True
 
                     if not validate_change_control(
-                        root, metadata, project_id, sql_dir, CODEOWNERS_FILE
+                        file_path=root,
+                        metadata=metadata,
+                        codeowners_file=CODEOWNERS_FILE,
                     ):
                         failed = True
 

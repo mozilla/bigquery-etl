@@ -6,5 +6,5 @@
 /sql/moz-fx-data-shared-prod/firefox_desktop_derived/active_users_aggregates_v1 @mozilla/kpi_table_reviewers
 /sql/moz-fx-data-shared-prod/focus_android_derived/active_users_aggregates_v1 @mozilla/kpi_table_reviewers
 /sql/moz-fx-data-shared-prod/focus_ios_derived/active_users_aggregates_v1 @mozilla/kpi_table_reviewers
-/sql/moz-fx-data-shared-prod/klar_ios_desktop_derived/active_users_aggregates_v1 @mozilla/kpi_table_reviewers
+/sql/moz-fx-data-shared-prod/klar_ios_derived/active_users_aggregates_v1 @mozilla/kpi_table_reviewers
 /sql/moz-fx-data-shared-prod/firefox_ios_derived/active_users_aggregates_v1 @mozilla/kpi_table_reviewers

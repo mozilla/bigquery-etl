@@ -118,6 +118,7 @@ with DAG(
         email=[
             "gkaberere@mozilla.com",
             "lvargas@mozilla.com",
+            "mozilla/kpi_table_reviewers",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter=None,
@@ -134,6 +135,7 @@ with DAG(
         email=[
             "gkaberere@mozilla.com",
             "lvargas@mozilla.com",
+            "mozilla/kpi_table_reviewers",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
@@ -149,6 +151,7 @@ with DAG(
         email=[
             "gkaberere@mozilla.com",
             "lvargas@mozilla.com",
+            "mozilla/kpi_table_reviewers",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter=None,
@@ -165,6 +168,7 @@ with DAG(
         email=[
             "gkaberere@mozilla.com",
             "lvargas@mozilla.com",
+            "mozilla/kpi_table_reviewers",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter=None,
@@ -181,6 +185,7 @@ with DAG(
         email=[
             "gkaberere@mozilla.com",
             "lvargas@mozilla.com",
+            "mozilla/kpi_table_reviewers",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter=None,
@@ -197,6 +202,7 @@ with DAG(
         email=[
             "gkaberere@mozilla.com",
             "lvargas@mozilla.com",
+            "mozilla/kpi_table_reviewers",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter=None,

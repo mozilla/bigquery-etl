@@ -14,7 +14,7 @@ from bigquery_etl.dependency import extract_table_references_without_views
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.query_scheduling.utils import (
     is_date_string,
-    is_email,
+    is_email_or_github_identity,
     is_schedule_interval,
     is_timedelta_string,
     is_valid_dag_name,
@@ -213,14 +213,16 @@ class Task:
     @owner.validator
     def validate_owner(self, attribute, value):
         """Check that owner is a valid email address."""
-        if not is_email(value):
-            raise ValueError(f"Invalid email for task owner: {value}.")
+        if not is_email_or_github_identity(value):
+            raise ValueError(
+                f"Invalid email or github identity for task owner: {value}."
+            )
 
     @email.validator
     def validate_email(self, attribute, value):
         """Check that provided email addresses are valid."""
-        if not all(map(lambda e: is_email(e), value)):
-            raise ValueError(f"Invalid email in DAG email: {value}.")
+        if not all(map(lambda e: is_email_or_github_identity(e), value)):
+            raise ValueError(f"Invalid email or github identity in DAG email: {value}.")
 
     @start_date.validator
     def validate_start_date(self, attribute, value):

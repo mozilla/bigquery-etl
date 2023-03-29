@@ -18,11 +18,11 @@ WITH filtered_data AS (
     os = 'Windows'
     AND channel = 'release' AS sampled
   FROM
-    `moz-fx-data-shared-prod.dev_telemetry_derived.clients_histogram_aggregates_v1_sp`
+    `moz-fx-data-shared-prod.dev_telemetry_derived.clients_histogram_aggregates_v1_perf`
   CROSS JOIN
     UNNEST(histogram_aggregates)
   WHERE
-    AND first_bucket IS NOT NULL
+    first_bucket IS NOT NULL
     AND sample_id >= @min_sample_id
     AND sample_id <= @max_sample_id
 ),

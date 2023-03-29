@@ -58,16 +58,15 @@ CREATE TEMP FUNCTION udf_merged_user_data(old_aggs ANY TYPE, new_aggs ANY TYPE)
 WITH clients_histogram_aggregates_new AS
   (SELECT *
   FROM `moz-fx-data-shared-prod.telemetry_derived.clients_histogram_aggregates_new_v1`
-  WHERE sample_id >= @min_sample_id
-    AND sample_id <= @max_sample_id),
+  WHERE sample_id >= 0
+    AND sample_id <= 99),
 
 clients_histogram_aggregates_partition AS
   (SELECT *
   FROM `moz-fx-data-shared-prod.dev_telemetry_derived.clients_histogram_aggregates_v1_pc`
   WHERE submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
-    AND app_version > 100
-    AND sample_id >= @min_sample_id
-    AND sample_id <= @max_sample_id),
+    AND sample_id >= 0
+    AND sample_id <= 99),
 
 clients_histogram_aggregates_old AS
   (SELECT

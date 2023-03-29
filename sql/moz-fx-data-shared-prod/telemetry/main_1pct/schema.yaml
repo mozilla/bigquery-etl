@@ -16744,6 +16744,16 @@ fields:
       mode: REPEATED
       name: orb_receive_data_for_validation_ms
       type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: http3_ech_outcome
+      type: RECORD
     mode: NULLABLE
     name: keyed_histograms
     type: RECORD

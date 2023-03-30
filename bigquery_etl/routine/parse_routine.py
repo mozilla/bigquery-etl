@@ -15,7 +15,6 @@ import sqlparse
 import yaml
 
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE
-from bigquery_etl.util.common import render
 
 UDF_CHAR = "[a-zA-Z0-9_]"
 UDF_FILE = "udf.sql"
@@ -130,14 +129,14 @@ class RawRoutine:
             return ""
 
     @classmethod
-    def from_file(cls, path):
+    def from_file(cls, path, from_text=None):
         """Create a RawRoutine instance from text."""
         filepath = Path(path)
-        text = render(
-            filepath.name,
-            template_folder=filepath.parent,
-            format=False,
-        )
+
+        if from_text is None:
+            text = filepath.read_text()
+        else:
+            text = from_text
 
         sql = sqlparse.format(text, strip_comments=True)
         statements = [s for s in sqlparse.split(sql) if s.strip()]

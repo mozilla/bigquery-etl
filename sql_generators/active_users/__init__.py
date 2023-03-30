@@ -85,7 +85,6 @@ def generate(target_project, output_dir, use_cloud_function):
             basename="metadata.yaml",
             sql=render(
                 metadata_template,
-                template_folder="templates",
                 app_value=browser.value,
                 app_name=browser.name,
                 format=False,

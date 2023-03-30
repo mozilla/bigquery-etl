@@ -53,14 +53,9 @@ def random_str(length: int = 12) -> str:
     return "".join(random.choice(string.ascii_lowercase) for i in range(length))
 
 
-def render(
-    sql_filename,
-    template_folder,
-    format=True,
-    **kwargs,
-) -> str:
+def render(sql_filename, format=True, template_folder="glean_usage", **kwargs) -> str:
     """Render a given template query using Jinja."""
-    file_loader = FileSystemLoader(f"{template_folder}")
+    file_loader = FileSystemLoader(f"{template_folder}/templates")
     env = Environment(loader=file_loader)
     main_sql = env.get_template(sql_filename)
     rendered = main_sql.render(**kwargs)

@@ -181,21 +181,21 @@ class GleanTable:
         render_kwargs.update(self.custom_render_kwargs)
         render_kwargs.update(tables)
 
-        query_sql = render(query_filename, template_folder=PATH / "templates", **render_kwargs)
-        view_sql = render(view_filename, template_folder=PATH / "templates", **render_kwargs)
+        query_sql = render(query_filename, template_folder=PATH, **render_kwargs)
+        view_sql = render(view_filename, template_folder=PATH, **render_kwargs)
         view_metadata = render(
-            view_metadata_filename, template_folder=PATH / "templates", format=False, **render_kwargs
+            view_metadata_filename, template_folder=PATH, format=False, **render_kwargs
         )
         table_metadata = render(
-            table_metadata_filename, template_folder=PATH / "templates", format=False, **render_kwargs
+            table_metadata_filename, template_folder=PATH, format=False, **render_kwargs
         )
 
         if not self.no_init:
             try:
-                init_sql = render(init_filename, template_folder=PATH / "templates", **render_kwargs)
+                init_sql = render(init_filename, template_folder=PATH, **render_kwargs)
             except TemplateNotFound:
                 init_sql = render(
-                    query_filename, template_folder=PATH / "templates", init=True, **render_kwargs
+                    query_filename, template_folder=PATH, init=True, **render_kwargs
                 )
 
         if not (referenced_table_exists(view_sql)):
@@ -254,7 +254,7 @@ class GleanTable:
 
         if self.cross_channel_template:
             sql = render(
-                self.cross_channel_template, template_folder=PATH / "templates", **render_kwargs
+                self.cross_channel_template, template_folder=PATH, **render_kwargs
             )
             view = f"{project_id}.{target_dataset}.{target_view_name}"
 
@@ -269,13 +269,13 @@ class GleanTable:
                 write_sql(output_dir, view, "view.sql", sql, skip_existing=True)
         else:
             query_filename = f"{target_view_name}.query.sql"
-            query_sql = render(query_filename, template_folder=PATH / "templates", **render_kwargs)
+            query_sql = render(query_filename, template_folder=PATH, **render_kwargs)
             view_sql = render(
-                f"{target_view_name}.view.sql", template_folder=PATH / "templates", **render_kwargs
+                f"{target_view_name}.view.sql", template_folder=PATH, **render_kwargs
             )
             metadata = render(
                 f"{self.target_table_id[:-3]}.metadata.yaml",
-                template_folder=PATH / "templates",
+                template_folder=PATH,
                 format=False,
                 **render_kwargs,
             )

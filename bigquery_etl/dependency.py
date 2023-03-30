@@ -10,7 +10,6 @@ import click
 import yaml
 
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
-from bigquery_etl.util.common import render
 
 stable_views = None
 
@@ -58,8 +57,7 @@ def extract_table_references_without_views(path: Path) -> Iterator[str]:
     """Recursively search for non-view tables referenced in the given SQL file."""
     global stable_views
 
-    sql = render(path.name, template_folder=path.parent)
-    for table in extract_table_references(sql):
+    for table in extract_table_references(path.read_text()):
         ref_base = path.parent
         parts = tuple(table.split("."))
         for _ in parts:
@@ -107,8 +105,7 @@ def _get_references(
             if without_views:
                 yield path, list(extract_table_references_without_views(path))
             else:
-                sql = render(path.name, template_folder=path.parent)
-                yield path, extract_table_references(sql)
+                yield path, extract_table_references(path.read_text())
         except CalledProcessError as e:
             raise click.ClickException(f"failed to import jnius: {e}")
         except ImportError as e:

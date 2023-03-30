@@ -64,7 +64,7 @@ WITH clients_histogram_aggregates_new AS
 clients_histogram_aggregates_partition AS
   (SELECT *
   FROM `moz-fx-data-shared-prod.dev_telemetry_derived.clients_histogram_aggregates_v1_perf`
-  WHERE submission_date = STRING(DATE_SUB(@submission_date, INTERVAL 1 DAY))
+  WHERE submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND sample_id >= 0
     AND sample_id <= 99),
 

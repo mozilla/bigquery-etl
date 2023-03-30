@@ -658,7 +658,7 @@ class AliasSeparator(SpaceBeforeBracketKeyword):
     """
 
     pattern = re.compile(
-        r"AS(?=\s+(?!(WITH|SELECT|STRUCT|ARRAY)\b)[a-z_`({])", re.IGNORECASE
+        r"AS(?=\s+(?!(WITH|SELECT|STRUCT|ARRAY)\b)[a-z_`(])", re.IGNORECASE
     )
 
 
@@ -734,33 +734,6 @@ class Literal(Token):
         # Decimal integer or float literal
         r"|\d+\.?\d*(?:[Ee][+-]?)?\d*"
     )
-
-
-class JinjaExpression(Token):
-    """Jinja expression delimiters {{ }}.
-
-    May be followed by no whitespace or a new line and increased indent.
-    """
-
-    pattern = re.compile(r"{{.*?}}", re.DOTALL)
-
-
-class JinjaStatement(Token):
-    """Jinja statement delimiters {% %}.
-
-    May be followed by no whitespace or a new line and increased indent.
-    """
-
-    pattern = re.compile(r"{%.*?%}", re.DOTALL)
-
-
-class JinjaComment(Token):
-    """Jinja comment delimiters {# #}.
-
-    May be followed by no whitespace or a new line and increased indent.
-    """
-
-    pattern = re.compile(r"{#.*?#}", re.DOTALL)
 
 
 class OpeningBracket(Token):
@@ -841,9 +814,6 @@ BIGQUERY_TOKEN_PRIORITY = [
     LineComment,
     BlockComment,
     Whitespace,
-    JinjaComment,
-    JinjaExpression,
-    JinjaStatement,
     MaybeCaseSubclause,
     CaseSubclause,
     BlockMiddleKeyword,

@@ -34946,6 +34946,16 @@ fields:
           mode: REPEATED
           name: networking_speculative_connect_outcome
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: urlbar_picked_trending
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD

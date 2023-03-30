@@ -23,6 +23,7 @@ import click
 from google.cloud import bigquery
 
 from .metadata.parse_metadata import Metadata
+from .util.common import render
 
 try:
     from functools import cached_property  # type: ignore
@@ -184,6 +185,7 @@ SKIP = {
         "sql/moz-fx-data-shared-prod/**/client_deduplication*/*.sql",
         recursive=True,
     ),
+    "sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v1/query.sql",
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501
@@ -316,7 +318,12 @@ class DryRun:
     def get_sql(self):
         """Get SQL content."""
         if exists(self.sqlfile):
-            sql = open(self.sqlfile).read()
+            file_path = Path(self.sqlfile)
+            sql = render(
+                file_path.name,
+                format=False,
+                template_folder=file_path.parent.absolute(),
+            )
         else:
             raise ValueError(f"Invalid file path: {self.sqlfile}")
         if self.strip_dml:

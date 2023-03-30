@@ -34,9 +34,8 @@ class TestRunQuery:
             assert result.exit_code == 0
 
             assert mock_call.call_args.args == (
-                ["bq", "--dataset_id=test", "--destination_table=query_v1"],
+                ["bq", "--dataset_id=test", "--destination_table=query_v1", "SELECT 1"],
             )
-            assert "stdin" in mock_call.call_args.kwargs
 
     def test_run_query_public_project(self, tmp_path):
         query_file_path = tmp_path / "sql" / "test" / "query_v1"
@@ -69,9 +68,9 @@ class TestRunQuery:
                     "bq",
                     "--dataset_id=test",
                     "--destination_table=mozilla-public-data:test.query_v1",
+                    "SELECT 1",
                 ],
             )
-            assert "stdin" in mock_call.call_args.kwargs
 
     def test_run_query_public_project_no_dataset(self, tmp_path):
         query_file_path = tmp_path / "sql" / "test" / "query_v1"

@@ -861,17 +861,21 @@ def _run_query(
             # point to a public table it needs to be passed as parameter for the query
             query_arguments.append("--destination_table={}".format(destination_table))
 
-        query_arguments.append(
-            render_template(
-                query_file.name,
-                template_folder=str(query_file.parent),
-                templates_dir="",
-                format=False,
+        # write rendered query to a temporary file;
+        # query string cannot be passed directly to bq as SQL comments will be interpreted as CLI arguments
+        with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
+            query_stream.write(
+                render_template(
+                    query_file.name,
+                    template_folder=str(query_file.parent),
+                    templates_dir="",
+                    format=False,
+                )
             )
-        )
+            query_stream.seek(0)
 
-        # run the query as shell command so that passed parameters can be used as is
-        subprocess.check_call(["bq"] + query_arguments)
+            # run the query as shell command so that passed parameters can be used as is
+            subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
 
 
 @query.command(

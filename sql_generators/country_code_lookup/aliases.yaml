@@ -600,6 +600,7 @@ SH:
     - "Saint Helena"
     - "St Helena, Ascension, Tristan da Cunha"
     - "Saint Helena, Ascension and Tristan da Cunha"
+    - "St. Helena"
 KN:
     - "St Kitts and Nevis"
     - "St. Kitts and Nevis"
@@ -691,6 +692,7 @@ SJ:
     - "Svalbard"
     - "Jan Mayen Jan Mayen"
     - "Svalbard and Jan Mayen"
+    - "Svalbard & Jan Mayen"
 SE:
     - "Sweden"
     - "The Kingdom of Sweden"
@@ -765,6 +767,7 @@ UM:
     - "United States Minor Outlying Islands"
     - "The United States Minor Outlying Islands"
     - "Baker Island, Howland Island, Jarvis Island, Johnston Atoll, Kingman Reef, Midway Atoll, Navassa Island, Palmyra Atoll, and Wake Island"
+    - "U.S. Outlying Islands"
 US:
     - "United States"
     - "USA"

@@ -53,6 +53,7 @@ from ..schema import SCHEMA_FILE, Schema
 from ..util import extract_from_query_path
 from ..util.bigquery_id import sql_table_id
 from ..util.common import random_str
+from ..util.common import render as render_template
 from .dryrun import dryrun
 from .generate import generate_all
 
@@ -860,7 +861,19 @@ def _run_query(
             # point to a public table it needs to be passed as parameter for the query
             query_arguments.append("--destination_table={}".format(destination_table))
 
-        with open(query_file) as query_stream:
+        # write rendered query to a temporary file;
+        # query string cannot be passed directly to bq as SQL comments will be interpreted as CLI arguments
+        with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
+            query_stream.write(
+                render_template(
+                    query_file.name,
+                    template_folder=str(query_file.parent),
+                    templates_dir="",
+                    format=False,
+                )
+            )
+            query_stream.seek(0)
+
             # run the query as shell command so that passed parameters can be used as is
             subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
 
@@ -1184,6 +1197,52 @@ def initialize(name, sql_dir, project_id, dry_run):
 
                 if not dry_run:
                     job.result()
+
+
+@query.command(
+    help="""Render a query Jinja template.
+
+    Examples:
+
+    ./bqetl query render telemetry_derived.ssl_ratios_v1 \\
+      --output-dir=/tmp
+    """,
+    context_settings=dict(
+        ignore_unknown_options=True,
+        allow_extra_args=True,
+    ),
+)
+@click.argument("name")
+@sql_dir_option
+@click.option(
+    "--output-dir",
+    "--output_dir",
+    help="Output directory generated SQL is written to. "
+    + "If not specified, rendered queries are printed to console.",
+    type=click.Path(file_okay=False),
+    required=False,
+)
+def render(name, sql_dir, output_dir):
+    """Render a query Jinja template."""
+    if name is None:
+        name = "*.*"
+
+    query_files = paths_matching_name_pattern(name, sql_dir, None)
+    for query_file in query_files:
+        rendered_sql = render_template(
+            query_file.name, template_folder=query_file.parent, templates_dir=""
+        )
+
+        if output_dir:
+            sql_dir = Path(sql_dir)
+            output_file = output_dir / query_file.resolve().relative_to(
+                sql_dir.resolve()
+            )
+            output_file.parent.mkdir(parents=True, exist_ok=True)
+            output_file.write_text(rendered_sql)
+        else:
+            click.echo(query_file)
+            click.echo(rendered_sql)
 
 
 @query.group(help="Commands for managing query schemas.")

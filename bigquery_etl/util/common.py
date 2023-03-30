@@ -55,7 +55,7 @@ def random_str(length: int = 12) -> str:
 
 def render(
     sql_filename,
-    template_folder,
+    template_folder=".",
     format=True,
     **kwargs,
 ) -> str:

@@ -35,7 +35,6 @@ class TestEntrypoint:
         except subprocess.CalledProcessError as e:
             # running bq in CircleCI will fail since it's not installed
             # but the error output can be checked for whether bq was called
-            print(e.output)
             assert b"No such file or directory: 'bq'" in e.output
             assert b"No metadata.yaml found for {}" in e.output
             assert (

@@ -2208,13 +2208,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#render" class="md-nav__link">
-    render
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#schema" class="md-nav__link">
     schema
   </a>
@@ -2622,13 +2615,6 @@
           <li class="md-nav__item">
   <a href="#initialize" class="md-nav__link">
     initialize
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#render" class="md-nav__link">
-    render
   </a>
   
 </li>
@@ -3092,20 +3078,6 @@ Options:
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>initialize<span class="w"> </span>telemetry_derived.ssl_ratios_v1
-</code></pre></div>
-<h4 id="render"><code>render</code></h4>
-<p>Render a query Jinja template.</p>
-<p><strong>Usage</strong></p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>render<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
-
-Options:
-
---sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
---output_dir:<span class="w"> </span>Output<span class="w"> </span>directory<span class="w"> </span>generated<span class="w"> </span>SQL<span class="w"> </span>is<span class="w"> </span>written<span class="w"> </span>to.<span class="w"> </span>If<span class="w"> </span>not<span class="w"> </span>specified,<span class="w"> </span>rendered<span class="w"> </span>queries<span class="w"> </span>are<span class="w"> </span>printed<span class="w"> </span>to<span class="w"> </span>console.
-</code></pre></div>
-<p><strong>Examples</strong></p>
-<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>render<span class="w"> </span>telemetry_derived.ssl_ratios_v1<span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>--output-dir<span class="o">=</span>/tmp
 </code></pre></div>
 <h4 id="schema"><code>schema</code></h4>
 <p>Commands for managing query schemas.</p>

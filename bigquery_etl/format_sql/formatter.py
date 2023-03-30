@@ -142,7 +142,9 @@ def simple_format(tokens, indent="  "):
         prev_was_block_end = isinstance(token, BlockEndKeyword)
         prev_was_statement_separator = isinstance(token, StatementSeparator)
         prev_was_unary_operator = next_operator_is_unary and isinstance(token, Operator)
-        prev_was_jinja = isinstance(token, JinjaExpression)
+        prev_was_jinja = isinstance(
+            token, (JinjaExpression, JinjaComment, JinjaStatement)
+        )
         if not isinstance(token, Comment):
             # format next operator as unary if there is no preceding argument
             next_operator_is_unary = not isinstance(

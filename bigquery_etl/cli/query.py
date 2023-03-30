@@ -1227,16 +1227,16 @@ def render(name, sql_dir, output_dir):
     if name is None:
         name = "*.*"
 
-    query_files = paths_matching_name_pattern(name, sql_dir, None)
+    query_files = paths_matching_name_pattern(name, sql_dir, project_id=None)
+    resolved_sql_dir = Path(sql_dir).resolve()
     for query_file in query_files:
         rendered_sql = render_template(
             query_file.name, template_folder=query_file.parent, templates_dir=""
         )
 
         if output_dir:
-            sql_dir = Path(sql_dir)
             output_file = output_dir / query_file.resolve().relative_to(
-                sql_dir.resolve()
+                resolved_sql_dir
             )
             output_file.parent.mkdir(parents=True, exist_ok=True)
             output_file.write_text(rendered_sql)

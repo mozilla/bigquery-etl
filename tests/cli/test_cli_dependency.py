@@ -2,6 +2,7 @@ import os
 
 import pytest
 from click.testing import CliRunner
+from jinja2.exceptions import TemplateNotFound
 
 from bigquery_etl.dependency import show as dependency_show
 
@@ -15,7 +16,7 @@ class TestDependency:
     def test_format_invalid_path(self, runner):
         result = runner.invoke(dependency_show, ["not-existing-path.sql"])
         assert result.exit_code == 1
-        assert isinstance(result.exception, FileNotFoundError)
+        assert isinstance(result.exception, TemplateNotFound)
 
     def test_format(self, runner):
         with runner.isolated_filesystem():

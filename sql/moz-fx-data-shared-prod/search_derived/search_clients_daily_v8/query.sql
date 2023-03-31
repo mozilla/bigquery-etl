@@ -26,7 +26,7 @@ WITH adblocker_addons AS (
     addon_id,
     addon_name
   FROM
-    `moz-fx-data-shared-prod.revenue.monetization_blocking_addons`
+    revenue.monetization_blocking_addons
   WHERE
     blocks_monetization
 ),

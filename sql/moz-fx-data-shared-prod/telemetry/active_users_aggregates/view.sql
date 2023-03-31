@@ -4,7 +4,8 @@ AS
 SELECT
   *,
   dau AS qdau
-FROM `telemetry.active_users_aggregates_mobile`
+FROM
+  `telemetry.active_users_aggregates_mobile`
 UNION ALL
 SELECT
   segment,

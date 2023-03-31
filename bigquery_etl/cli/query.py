@@ -861,17 +861,21 @@ def _run_query(
             # point to a public table it needs to be passed as parameter for the query
             query_arguments.append("--destination_table={}".format(destination_table))
 
-        query_arguments.append(
-            render_template(
-                query_file.name,
-                template_folder=str(query_file.parent),
-                templates_dir="",
-                format=False,
+        # write rendered query to a temporary file;
+        # query string cannot be passed directly to bq as SQL comments will be interpreted as CLI arguments
+        with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
+            query_stream.write(
+                render_template(
+                    query_file.name,
+                    template_folder=str(query_file.parent),
+                    templates_dir="",
+                    format=False,
+                )
             )
-        )
+            query_stream.seek(0)
 
-        # run the query as shell command so that passed parameters can be used as is
-        subprocess.check_call(["bq"] + query_arguments)
+            # run the query as shell command so that passed parameters can be used as is
+            subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
 
 
 @query.command(
@@ -1260,16 +1264,16 @@ def render(name, sql_dir, output_dir):
     if name is None:
         name = "*.*"
 
-    query_files = paths_matching_name_pattern(name, sql_dir, None)
+    query_files = paths_matching_name_pattern(name, sql_dir, project_id=None)
+    resolved_sql_dir = Path(sql_dir).resolve()
     for query_file in query_files:
         rendered_sql = render_template(
             query_file.name, template_folder=query_file.parent, templates_dir=""
         )
 
         if output_dir:
-            sql_dir = Path(sql_dir)
             output_file = output_dir / query_file.resolve().relative_to(
-                sql_dir.resolve()
+                resolved_sql_dir
             )
             output_file.parent.mkdir(parents=True, exist_ok=True)
             output_file.write_text(rendered_sql)

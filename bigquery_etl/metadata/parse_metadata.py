@@ -151,7 +151,7 @@ class Metadata:
 
     @owners.validator
     def validate_owners(self, attribute, value):
-        """Check that provided email addresses for owners are valid."""
+        """Check that provided email addresses or github identities for owners are valid."""
         if not all(map(lambda e: is_email_or_github_identity(e), value)):
             raise ValueError(f"Invalid email or Github identity for owners: {value}.")
 

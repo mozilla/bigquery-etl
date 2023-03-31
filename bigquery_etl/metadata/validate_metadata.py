@@ -42,38 +42,39 @@ def validate_change_control(
     """Verify that a query is correctly setup for change control."""
     path_to_add = file_path.partition(f"{project_id}/")[2]
     path_in_codeowners = os.path.join(sql_dir, project_id, path_to_add)
-    has_codeowner = CHANGE_CONTROL_LABEL in metadata.labels
+    has_change_control = CHANGE_CONTROL_LABEL in metadata.labels
 
-    if has_codeowner:
+    if has_change_control:
         # This label requires to have at least one owner in the metadata file.
         # And for any of the owners, at least one entry in the CODEOWNERS file.
-        # The owners can be emails or Github identities e.g. mozilla/team_name.
-        owners_counter = 0
-
+        # The owners can be emails or GitHub identities e.g. mozilla/team_name.
         if len(metadata.owners) == 0:
             click.echo(
                 click.style(
                     f"The metadata for {file_path} has the label"
-                    f" change_controlled but it's missing the owner(s)."
+                    f" change_controlled but it's missing code owners."
                 )
             )
             return
-        rows_expected = []
-        row_to_search_for = ""
-        for owner in metadata.owners:
-            if "@" not in owner:
-                owner = f"@{owner}"
-            row_to_search_for = f"/{path_in_codeowners} {owner}"
-            rows_expected.append(row_to_search_for)
 
-            with open(codeowners_file) as owners:
-                if row_to_search_for in owners.read():
-                    owners_counter += 1
-        if owners_counter == 0:
+        with open(codeowners_file, "r") as owners_file:
+            content = owners_file.readlines()
+        occurrences = 0
+        rows_expected = []
+        for meta_owner in metadata.owners:
+            if "@" not in meta_owner:
+                meta_owner = f"@{meta_owner}"
+            row_to_search_for = f"/{path_in_codeowners} {meta_owner}"
+            rows_expected.append(row_to_search_for)
+            for line in content:
+                if row_to_search_for == line.rstrip("\n"):
+                    occurrences += 1
+        if occurrences == 0:
             click.echo(
                 click.style(
-                    f"The metadata includes the label change_controlled but it's missing the owners"
-                    f" or one of the expected entries in CODEOWNERS: {row_to_search_for}."
+                    f"The metadata includes label change_controlled, which "
+                    f"requires CODEOWNERS to include at least one owner's "
+                    f"record: {rows_expected}."
                 )
             )
             return

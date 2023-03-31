@@ -32,7 +32,7 @@ def is_email(s):
 
 def is_github_identity(s):
     """Check if the given string matches the format of a Github identity."""
-    return re.match(r"[mozilla]+\/[a-zA-Z0-9]+", s)
+    return re.match(r"[@mozilla]+\/[a-zA-Z0-9]+", s)
 
 
 def is_email_or_github_identity(s):

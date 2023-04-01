@@ -427,6 +427,20 @@ fields:
     mode: NULLABLE
     name: boolean
     type: RECORD
+  - fields:
+    - description: 'The number of topsite tile rows configured to be shown on the
+        newtab page. Corresponds to the value of the `browser.newtabpage.activity-stream.topSitesRows`
+        pref. This is not the number of rows actually seen by the user: if the browser
+        window is partially off-screen, or isn''t wide enough to accommodate eight
+        tiles per row, the actual number of rows may be different.
+
+        '
+      mode: NULLABLE
+      name: topsites_rows
+      type: INTEGER
+    mode: NULLABLE
+    name: quantity
+    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

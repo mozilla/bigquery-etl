@@ -14135,6 +14135,12 @@ fields:
     - mode: NULLABLE
       name: places_library_cumulative_bookmark_searches
       type: STRING
+    - mode: NULLABLE
+      name: use_counter2_css_property_forced_color_adjust_document
+      type: STRING
+    - mode: NULLABLE
+      name: use_counter2_css_property_forced_color_adjust_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -29338,6 +29344,12 @@ fields:
           type: STRING
         - mode: NULLABLE
           name: mixed_content_video
+          type: STRING
+        - mode: NULLABLE
+          name: use_counter2_css_property_forced_color_adjust_document
+          type: STRING
+        - mode: NULLABLE
+          name: use_counter2_css_property_forced_color_adjust_page
           type: STRING
         mode: NULLABLE
         name: histograms

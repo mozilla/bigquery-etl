@@ -49,3 +49,14 @@ class MetricHub:
         return self.config_collection.get_data_source_sql(
             data_source=data_source, platform=platform, where=where
         )
+
+    def data_source(
+        self,
+        data_source: str,
+        platform: str,
+        where: Optional[str] = None,
+    ) -> str:
+        """Generate SQL query for specified data source."""
+        return self.config_collection.get_data_source_sql(
+            data_source=data_source, platform=platform, where=where
+        )

@@ -32,9 +32,14 @@
 - Should not refer to views in the `mozdata` project which are duplicates of views in another project
   (commonly `moz-fx-data-shared-prod`). Refer to the original view instead.
 - Should escape identifiers that match keywords, even if they aren't [reserved keywords]
+- Queries are interpreted as Jinja templates, so it is possible to use Jinja statements and expressions
 
 [spark-bigquery-connector]: https://github.com/GoogleCloudPlatform/spark-bigquery-connector/issues/5
 [reserved keywords]: https://cloud.google.com/bigquery/docs/reference/standard-sql/lexical#reserved-keywords
+
+### Querying Metrics
+
+- Queries, views and UDFs can reference metrics
 
 ## Query Metadata
 

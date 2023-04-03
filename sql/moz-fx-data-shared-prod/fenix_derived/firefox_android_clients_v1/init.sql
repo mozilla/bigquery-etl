@@ -34,6 +34,14 @@ CREATE OR REPLACE TABLE
       os_version STRING
     OPTIONS
       (description = "Version of the Operating System where the client is originally installed."),
+      app_version STRING
+    OPTIONS
+      (description = "App display version for this client installation."),
+      activated BOOLEAN
+    OPTIONS
+      (
+        description = "Determines if a client is activated based on the activation metric and a 7 day lag."
+      ),
       adjust_campaign STRING
     OPTIONS
       (description = "Structure parameter for the campaign name."),
@@ -56,9 +64,14 @@ CREATE OR REPLACE TABLE
           reported_metrics_ping BOOL
         OPTIONS
           (description = "True if the client ever reported a metrics ping."),
+          min_first_session_ping_submission_date DATE
+        OPTIONS
+          (
+            description = "Date when the first reported first_sessin ping is received by the server."
+          ),
           min_first_session_ping_run_date DATE
         OPTIONS
-          (description = "Date of first run in the earliest first_session ping reported."),
+          (description = "Date of first app run as reported in the earliest first_session ping."),
           min_metrics_ping_submission_date DATE
         OPTIONS
           (description = "Date when the first reported metrics ping is received by the server."),
@@ -102,18 +115,32 @@ WITH first_seen AS (
     normalized_channel AS channel,
     device_manufacturer,
     device_model,
-    normalized_os_version AS os_version
+    normalized_os_version AS os_version,
+    app_display_version AS app_version
   FROM
     `moz-fx-data-shared-prod.fenix.baseline_clients_first_seen`
   WHERE
     submission_date >= '2019-01-01'
     AND normalized_channel = 'release'
 ),
+-- Find the most recent activation record per client_id. Data available since '2021-12-01'
+activations AS (
+  SELECT
+    client_id,
+    ARRAY_AGG(activated ORDER BY submission_date DESC)[SAFE_OFFSET(0)] > 0 AS activated,
+  FROM
+    `moz-fx-data-shared-prod.fenix.new_profile_activation`
+  WHERE
+    submission_date >= '2021-12-01'
+  GROUP BY
+    client_id
+),
 -- Find earliest data per client from the first_session ping.
 first_session_ping AS (
   SELECT
     client_info.client_id AS client_id,
     MIN(sample_id) AS sample_id,
+    DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
     MIN(SAFE.PARSE_DATETIME('%F', SUBSTR(client_info.first_run_date, 1, 10))) AS first_run_datetime,
     ARRAY_AGG(metrics.string.first_session_campaign IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
@@ -182,6 +209,8 @@ SELECT
   first_seen.device_manufacturer AS device_manufacturer,
   first_seen.device_model AS device_model,
   first_seen.os_version AS os_version,
+  first_seen.app_version AS app_version,
+  activated AS activated,
   COALESCE(first_session.adjust_campaign, metrics.adjust_campaign) AS adjust_campaign,
   COALESCE(first_session.adjust_ad_group, metrics.adjust_ad_group) AS adjust_ad_group,
   COALESCE(first_session.adjust_creative, metrics.adjust_creative) AS adjust_creative,
@@ -198,16 +227,22 @@ SELECT
         THEN FALSE
       ELSE TRUE
     END AS reported_metrics_ping,
+    DATE(first_session.min_submission_datetime) AS min_first_session_ping_submission_date,
     DATE(first_session.first_run_datetime) AS min_first_session_ping_run_date,
     DATE(metrics.min_submission_datetime) AS min_metrics_ping_submission_date,
     CASE
       mozfun.norm.get_earliest_value(
         [
-          (STRUCT(CAST(first_session.adjust_network AS STRING), first_session.first_run_datetime)),
+          (
+            STRUCT(
+              CAST(first_session.adjust_network AS STRING),
+              first_session.min_submission_datetime
+            )
+          ),
           (STRUCT(CAST(metrics.adjust_network AS STRING), metrics.min_submission_datetime))
         ]
       )
-      WHEN STRUCT(first_session.adjust_network, first_session.first_run_datetime)
+      WHEN STRUCT(first_session.adjust_network, first_session.min_submission_datetime)
         THEN 'first_session'
       WHEN STRUCT(metrics.adjust_network, metrics.min_submission_datetime)
         THEN 'metrics'
@@ -220,7 +255,12 @@ SELECT
     END AS install_source__source_ping,
     mozfun.norm.get_earliest_value(
       [
-        (STRUCT(CAST(first_session.adjust_network AS STRING), first_session.first_run_datetime)),
+        (
+          STRUCT(
+            CAST(first_session.adjust_network AS STRING),
+            first_session.min_submission_datetime
+          )
+        ),
         (STRUCT(CAST(metrics.adjust_network AS STRING), metrics.min_submission_datetime))
       ]
     ).earliest_date AS adjust_network__source_ping_datetime,
@@ -238,6 +278,10 @@ USING
   (client_id)
 FULL OUTER JOIN
   metrics_ping AS metrics
+USING
+  (client_id)
+LEFT JOIN
+  activations
 USING
   (client_id)
 WHERE

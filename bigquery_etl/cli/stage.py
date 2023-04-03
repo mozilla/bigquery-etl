@@ -21,6 +21,7 @@ from ..routine.parse_routine import (
     read_routine_dir,
 )
 from ..schema import SCHEMA_FILE, Schema
+from ..util.common import render
 from ..view import View
 
 VIEW_FILE = "view.sql"
@@ -275,7 +276,7 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
     for path in Path(sql_dir).rglob("*.sql"):
         # apply substitutions
         if path.is_file():
-            sql = path.read_text()
+            sql = render(path.name, template_folder=path.parent)
 
             for ref in replace_references:
                 sql = re.sub(ref[0], ref[1], sql)

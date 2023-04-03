@@ -1,4 +1,3 @@
-{% raw %}
 CREATE OR REPLACE FUNCTION hist.string_to_json(input STRING) AS (
   CASE
     WHEN STARTS_WITH(TRIM(input), '{')
@@ -46,7 +45,6 @@ CREATE OR REPLACE FUNCTION hist.string_to_json(input STRING) AS (
   END
 );
 
-{% endraw %}
 -- Tests
 WITH test_data AS (
   SELECT

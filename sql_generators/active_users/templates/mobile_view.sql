@@ -26,5 +26,3 @@ SELECT
   *
 FROM
   `{{ project_id }}.{{ focus_android_dataset }}.active_users_aggregates`
-WHERE
-  app_name NOT IN ('Focus Android Glean', 'Focus Android Glean BrowserStack')

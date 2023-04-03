@@ -62,6 +62,12 @@ parser.add_argument(
     help="The published UDFs should be publicly accessible.",
 )
 standard_args.add_log_level(parser)
+parser.add_argument(
+    "pattern",
+    default=None,
+    nargs="?",
+    help="glob pattern matching udfs to publish",
+)
 
 
 def main():
@@ -81,6 +87,7 @@ def main():
             args.gcs_bucket,
             args.gcs_path,
             args.public,
+            pattern=args.pattern,
         )
 
 

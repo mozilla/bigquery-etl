@@ -96,6 +96,7 @@ def generate(target_project, output_dir, use_cloud_function):
             basename="metadata.yaml",
             sql=render(
                 metadata_template,
+                template_folder="templates",
                 app_value=browser.value,
                 app_name=browser.name,
                 format=False,
@@ -110,7 +111,8 @@ def generate(target_project, output_dir, use_cloud_function):
                 basename="view.sql",
                 sql=reformat(
                     focus_android_view_template.render(
-                        project_id=target_project, app_name=browser.name
+                        project_id=target_project,
+                        app_name=browser.name,
                     )
                 ),
                 skip_existing=False,
@@ -122,7 +124,8 @@ def generate(target_project, output_dir, use_cloud_function):
                 basename="view.sql",
                 sql=reformat(
                     view_template.render(
-                        project_id=target_project, app_name=browser.name
+                        project_id=target_project,
+                        app_name=browser.name,
                     )
                 ),
                 skip_existing=False,
@@ -134,7 +137,13 @@ def generate(target_project, output_dir, use_cloud_function):
         basename="view.sql",
         sql=reformat(
             mobile_view_template.render(
-                project_id=target_project, dataset_id=DATASET_FOR_UNIONED_VIEWS
+                project_id=target_project,
+                dataset_id=DATASET_FOR_UNIONED_VIEWS,
+                fenix_dataset=Browsers("Fenix").name,
+                focus_ios_dataset=Browsers("Focus iOS").name,
+                focus_android_dataset=Browsers("Focus Android").name,
+                firefox_ios_dataset=Browsers("Firefox iOS").name,
+                klar_ios_dataset=Browsers("Klar iOS").name,
             )
         ),
         skip_existing=False,

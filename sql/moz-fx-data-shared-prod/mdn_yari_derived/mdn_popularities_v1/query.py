@@ -1,43 +1,30 @@
 #!/usr/bin/env python3
 
-"""Monthly data exports of MDN 'Popularities'. This aggregates and counts total page visits and normalizes them agains the max."""
+"""Monthly data exports of MDN 'Popularities'. This aggregates and counts total page visits."""
 import logging
 from argparse import ArgumentParser
 from datetime import datetime
+from os.path import join
+from uuid import uuid4
 
-from google.cloud import bigquery
+from google.cloud import bigquery, storage
 
 QUERY_TEMPLATE = """\
-WITH host_stripped AS (
-  SELECT
-    SPLIT(pge.metrics.url2.page_path, 'https://developer.mozilla.org')[OFFSET(1)] AS `path`,
-    COUNT(*) AS page_hits,
-  FROM
-    `moz-fx-data-shared-prod.mdn_yari.page` AS pge
-  WHERE
-    DATE(submission_timestamp)
-    BETWEEN DATE_TRUNC(@submission_date, MONTH)
-    AND LAST_DAY(@submission_date)
-    AND CONTAINS_SUBSTR(pge.metrics.url2.page_path, 'https://developer.mozilla.org/')
-    AND client_info.app_channel = 'prod'
-  GROUP BY
-    `path`
-)
-SELECT
-  host_stripped.`path`,
-  host_stripped.page_hits / FIRST_VALUE(host_stripped.page_hits) OVER (
-    ORDER BY
-      page_hits DESC
-  ) AS popularity
-FROM
-  host_stripped
-WHERE
-  ARRAY_LENGTH(SPLIT(host_stripped.`path`, '/')) > 3
-ORDER BY
-    popularity DESC
+SELECT REGEXP_EXTRACT(pge.metrics.url2.page_path, r'^https://developer.mozilla.org(/.+?/docs/[^?#]+)') AS Page,
+       COUNT(*) AS Pageviews,
+FROM `moz-fx-data-shared-prod.mdn_yari.page` AS pge
+WHERE DATE(submission_timestamp) BETWEEN DATE_TRUNC(@submission_date, MONTH) AND LAST_DAY(@submission_date)
+  AND client_info.app_channel = 'prod'
+  AND REGEXP_CONTAINS(pge.metrics.url2.page_path, r'^https://developer.mozilla.org(/.+?/docs/[^?#]+)')
+  AND pge.metrics.string.page_http_status = '200'
+  AND pge.metrics.string.navigator_user_agent LIKE 'Mozilla%'
+GROUP BY Page
+ORDER BY Pageviews DESC
 """
 
 APP = "mdn_yari"
+
+CURRENT_FILE_NAME = "current.csv"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -46,9 +33,9 @@ parser.add_argument(
 parser.add_argument("--project", default="moz-fx-data-shared-prod")
 parser.add_argument("--temp_dataset", default="tmp")
 parser.add_argument("--temp_table", default="mdn_popularities_v1")
-parser.add_argument("--destination_project", default="moz-fx-dev-gsleigh-migration")
-parser.add_argument("--destination_bucket", default="mdn-gcp")
-parser.add_argument("--destination_path", default="popularities/current")
+parser.add_argument("--destination_project", default="moz-fx-mdn-prod")
+parser.add_argument("--destination_bucket", default="popularities-prod-mdn")
+parser.add_argument("--destination_path", default="")
 
 
 def main():
@@ -77,9 +64,10 @@ def main():
     dataset_ref = bigquery.DatasetReference(args.project, args.temp_dataset)
     table_ref = dataset_ref.table(args.temp_table)
 
-    target_file_name = f"{args.date.strftime('%m-%Y')}.json"
+    target_file_name = f"{uuid4()}.csv"
+    target_file_path = join(args.destination_path, args.date.strftime('%Y/%m'), target_file_name)
     mdn_uri = (
-        f"gs://{args.destination_bucket}/{args.destination_path}/{target_file_name}"
+        f"gs://{args.destination_bucket}/{target_file_path}"
     )
 
     logging.info(
@@ -95,6 +83,13 @@ def main():
     logging.info("Deleting temp table: %s" % temp_table)
     client.delete_table(temp_table)
 
+    # Make it available as current.
+    current_file_path = join(args.destination_path, CURRENT_FILE_NAME)
+    
+    storage_client = storage.Client(args.project)
+    bucket = storage_client.get_bucket(args.destination_bucket)
+    blob = bucket.get_blob(target_file_path)
+    bucket.copy_blob(blob, bucket, current_file_path)
 
 if __name__ == "__main__":
     main()

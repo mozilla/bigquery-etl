@@ -7,5 +7,16 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.search_derived.mobile_search_clients_last_seen_v1`
 WHERE
-    -- TODO DENG-245 this will be replaced after a cutover date is determined:
-  app_name NOT IN ('Focus Android Glean', 'Klar Android Glean', 'Focus iOS Glean', 'Klar iOS Glean')
+  app_name NOT IN (
+    'Focus Android Glean',
+    'Klar Android Glean',
+    'Focus iOS Glean',
+    'Klar iOS Glean',
+    'Focus',
+    'Klar'
+  )
+  OR (
+    app_name IN ('Focus Android Glean', 'Klar Android Glean', 'Focus iOS Glean', 'Klar iOS Glean')
+    AND submission_date >= '2023-01-01'
+  )
+  OR (app_name IN ('Focus', 'Klar') AND submission_date < '2023-01-01')

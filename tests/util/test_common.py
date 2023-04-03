@@ -66,3 +66,22 @@ class TestUtilCommon:
         assert "mozdata.search.search_clients_engines_sources_daily" in rendered_sql
         assert 'submission_date = "2023-01-01"' in rendered_sql
         assert "sample_id" in rendered_sql
+
+    def test_render_data_source(self, tmp_path):
+        file_path = tmp_path / "test_query.sql"
+        file_path.write_text(
+            r"""
+            SELECT * FROM (
+                {{ metrics.data_source(
+                    data_source="main",
+                    platform='firefox_desktop',
+                    where='submission_date = "2023-01-01"'
+                ) }}
+            )
+        """
+        )
+        rendered_sql = render(file_path.name, template_folder=file_path.parent)
+        assert "metrics.data_source" not in rendered_sql
+        assert r"{{" not in rendered_sql
+        assert "main" in rendered_sql
+        assert 'submission_date = "2023-01-01"' in rendered_sql

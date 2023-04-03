@@ -64,7 +64,10 @@ def render(
     file_loader = FileSystemLoader(f"{template_folder}")
     env = Environment(loader=file_loader)
     main_sql = env.get_template(sql_filename)
-    rendered = main_sql.render(**kwargs, metrics=MetricHub())
+    if "metrics" not in kwargs:
+        rendered = main_sql.render(**kwargs, metrics=MetricHub())
+    else:
+        rendered = main_sql.render(**kwargs)
     if format:
         rendered = reformat(rendered)
     return rendered

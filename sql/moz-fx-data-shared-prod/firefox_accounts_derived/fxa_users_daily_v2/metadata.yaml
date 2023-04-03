@@ -14,8 +14,9 @@ labels:
   application: fxa
   incremental: true
   schedule: daily
-scheduling:
-  dag_name: bqetl_fxa_events
+# TODO: once we agree on the model scheduling needs to be uncommented.
+# scheduling:
+#   dag_name: bqetl_fxa_events
 bigquery:
   time_partitioning:
     type: day

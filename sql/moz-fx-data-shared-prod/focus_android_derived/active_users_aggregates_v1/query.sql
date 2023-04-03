@@ -8,35 +8,6 @@ WITH baseline AS (
     days_seen_bits,
     days_created_profile_bits,
     durations,
-    os AS normalized_os,
-    osversion AS normalized_os_version,
-    locale,
-    city,
-    country,
-    metadata_app_version AS app_display_version,
-    device AS device_model,
-    first_seen_date,
-    submission_date = first_seen_date AS is_new_profile,
-    NULL AS uri_count,
-    default_browser AS is_default_browser,
-    distribution_id,
-    CAST(NULL AS string) AS isp,
-    'Focus Android' AS app_name
-  FROM
-    `moz-fx-data-shared-prod.telemetry.core_clients_last_seen`
-  WHERE
-    submission_date = @submission_date
-    AND app_name = 'Focus'
-    AND os = 'Android'
-  UNION ALL
-  SELECT
-    submission_date,
-    normalized_channel,
-    client_id,
-    days_since_seen,
-    days_seen_bits,
-    days_created_profile_bits,
-    durations,
     normalized_os,
     normalized_os_version,
     locale,
@@ -50,17 +21,11 @@ WITH baseline AS (
     is_default_browser,
     CAST(NULL AS string) AS distribution_id,
     isp,
-    'Focus Android Glean' AS app_name
+    IF(isp = 'BrowserStack', CONCAT('Focus Android', ' BrowserStack'), 'Focus Android') AS app_name
   FROM
     `moz-fx-data-shared-prod.focus_android.clients_last_seen_joined`
   WHERE
     submission_date = @submission_date
-),
-unioned AS (
-  SELECT
-    * REPLACE (IF(isp = 'BrowserStack', CONCAT(app_name, ' BrowserStack'), app_name) AS app_name)
-  FROM
-    baseline
 ),
 search_clients AS (
   SELECT
@@ -78,26 +43,26 @@ search_clients AS (
 ),
 search_metrics AS (
   SELECT
-    unioned.client_id,
-    unioned.submission_date,
+    baseline.client_id,
+    baseline.submission_date,
     SUM(ad_click) AS ad_clicks,
     SUM(organic) AS organic_search_count,
     SUM(search_count) AS search_count,
     SUM(search_with_ads) AS search_with_ads
   FROM
-    unioned
+    baseline
   LEFT JOIN
     search_clients s
   ON
-    unioned.client_id = s.client_id
-    AND unioned.submission_date = s.submission_date
+    baseline.client_id = s.client_id
+    AND baseline.submission_date = s.submission_date
   GROUP BY
     client_id,
     submission_date
 ),
-unioned_with_searches AS (
+baseline_with_searches AS (
   SELECT
-    unioned.client_id,
+    baseline.client_id,
     CASE
       WHEN BIT_COUNT(days_seen_bits)
         BETWEEN 1
@@ -115,39 +80,39 @@ unioned_with_searches AS (
         THEN 'core_user'
       ELSE 'other'
     END AS activity_segment,
-    unioned.app_name,
-    unioned.app_display_version AS app_version,
-    unioned.normalized_channel,
+    baseline.app_name,
+    baseline.app_display_version AS app_version,
+    baseline.normalized_channel,
     IFNULL(country, '??') country,
-    unioned.city,
-    unioned.days_seen_bits,
-    unioned.days_created_profile_bits,
-    DATE_DIFF(unioned.submission_date, unioned.first_seen_date, DAY) AS days_since_first_seen,
-    unioned.device_model,
-    unioned.isp,
-    unioned.is_new_profile,
-    unioned.locale,
-    unioned.first_seen_date,
-    unioned.days_since_seen,
-    unioned.normalized_os,
-    unioned.normalized_os_version,
+    baseline.city,
+    baseline.days_seen_bits,
+    baseline.days_created_profile_bits,
+    DATE_DIFF(baseline.submission_date, baseline.first_seen_date, DAY) AS days_since_first_seen,
+    baseline.device_model,
+    baseline.isp,
+    baseline.is_new_profile,
+    baseline.locale,
+    baseline.first_seen_date,
+    baseline.days_since_seen,
+    baseline.normalized_os,
+    baseline.normalized_os_version,
     COALESCE(
-      SAFE_CAST(NULLIF(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(0)], "") AS INTEGER),
+      SAFE_CAST(NULLIF(SPLIT(baseline.normalized_os_version, ".")[SAFE_OFFSET(0)], "") AS INTEGER),
       0
     ) AS os_version_major,
     COALESCE(
-      SAFE_CAST(NULLIF(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(1)], "") AS INTEGER),
+      SAFE_CAST(NULLIF(SPLIT(baseline.normalized_os_version, ".")[SAFE_OFFSET(1)], "") AS INTEGER),
       0
     ) AS os_version_minor,
     COALESCE(
-      SAFE_CAST(NULLIF(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(2)], "") AS INTEGER),
+      SAFE_CAST(NULLIF(SPLIT(baseline.normalized_os_version, ".")[SAFE_OFFSET(2)], "") AS INTEGER),
       0
     ) AS os_version_patch,
-    unioned.durations,
-    unioned.submission_date,
-    unioned.uri_count,
-    unioned.is_default_browser,
-    unioned.distribution_id,
+    baseline.durations,
+    baseline.submission_date,
+    baseline.uri_count,
+    baseline.is_default_browser,
+    baseline.distribution_id,
     CAST(NULL AS string) AS attribution_content,
     CAST(NULL AS string) AS attribution_source,
     CAST(NULL AS string) AS attribution_medium,
@@ -160,12 +125,12 @@ unioned_with_searches AS (
     search.search_with_ads,
     NULL AS active_hours_sum
   FROM
-    unioned
+    baseline
   LEFT JOIN
     search_metrics search
   ON
-    search.client_id = unioned.client_id
-    AND search.submission_date = unioned.submission_date
+    search.client_id = baseline.client_id
+    AND search.submission_date = baseline.submission_date
 ),
 todays_metrics AS (
   SELECT
@@ -198,7 +163,7 @@ todays_metrics AS (
     uri_count,
     active_hours_sum,
   FROM
-    unioned_with_searches
+    baseline_with_searches
 ),
 todays_metrics_enriched AS (
   SELECT

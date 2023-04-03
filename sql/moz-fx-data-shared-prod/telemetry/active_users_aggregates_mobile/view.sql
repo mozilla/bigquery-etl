@@ -26,5 +26,3 @@ SELECT
   *
 FROM
   `moz-fx-data-shared-prod.focus_android.active_users_aggregates`
-WHERE
-  app_name NOT IN ('Focus Android Glean', 'Focus Android Glean BrowserStack')

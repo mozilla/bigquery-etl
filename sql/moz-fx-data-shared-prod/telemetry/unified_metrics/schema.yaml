@@ -9,9 +9,6 @@ fields:
   name: activity_segment
   type: STRING
 - mode: NULLABLE
-  name: normalized_app_name
-  type: STRING
-- mode: NULLABLE
   name: normalized_channel
   type: STRING
 - mode: NULLABLE
@@ -112,6 +109,9 @@ fields:
   type: INTEGER
 - mode: NULLABLE
   name: isp
+  type: STRING
+- mode: NULLABLE
+  name: normalized_app_name
   type: STRING
 - fields:
   - mode: NULLABLE

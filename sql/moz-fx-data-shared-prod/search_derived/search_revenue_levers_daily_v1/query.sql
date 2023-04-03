@@ -96,7 +96,7 @@ mobile_dau_data AS (
     `moz-fx-data-shared-prod.telemetry.active_users_aggregates_device`
   WHERE
     submission_date = @submission_date
-    AND app_name IN ('Fenix', 'Firefox iOS', 'Focus Android', 'Focus Android')
+    AND app_name IN ('Fenix', 'Firefox iOS', 'Focus Android')
   GROUP BY
     submission_date
 ),
@@ -125,7 +125,7 @@ mobile_data_google AS (
   WHERE
     submission_date = @submission_date
     AND country NOT IN ('RU', 'UA', 'BY', 'TR', 'KZ', 'CN')
-    AND app_name IN ('Focus', 'Fenix', 'Fennec')
+    AND normalized_app_name IN ('Focus', 'Fenix', 'Fennec')
   GROUP BY
     submission_date,
     country,
@@ -166,7 +166,7 @@ mobile_data_bing_ddg AS (
     (submission_date)
   WHERE
     submission_date = @submission_date
-    AND app_name IN ('Focus', 'Fenix', 'Fennec')
+    AND normalized_app_name IN ('Focus', 'Fenix', 'Fennec')
   GROUP BY
     submission_date,
     dau

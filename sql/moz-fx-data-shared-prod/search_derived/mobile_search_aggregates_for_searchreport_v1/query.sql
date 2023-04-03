@@ -42,7 +42,6 @@ FROM
   search.mobile_search_clients_engines_sources_daily
 WHERE
   normalized_app_name IN ('Fenix', 'Fennec', 'Firefox Preview', 'Focus')
-  AND normalized_app_name IS NOT NULL
   AND submission_date = @submission_date
 GROUP BY
   1,

@@ -1,4 +1,5 @@
 """Generic utility functions."""
+import glob
 import logging
 import os
 import random
@@ -27,6 +28,11 @@ REV_WORD_BOUND_PAT = re.compile(
 )
 SQL_DIR = "sql/"
 FILE_PATH = Path(os.path.dirname(__file__))
+TEST_PROJECT = "bigquery-etl-integration-test"
+SKIP_RENDER = {
+    # uses {%s} which results in unknown tag exception
+    "sql/mozfun/hist/string_to_json/udf.sql",
+}
 
 
 def snake_case(line: str) -> str:
@@ -61,13 +67,33 @@ def render(
     **kwargs,
 ) -> str:
     """Render a given template query using Jinja."""
-    file_loader = FileSystemLoader(f"{template_folder}")
-    env = Environment(loader=file_loader)
-    main_sql = env.get_template(sql_filename)
-    if "metrics" not in kwargs:
-        rendered = main_sql.render(**kwargs, metrics=MetricHub())
+    path = Path(template_folder) / sql_filename
+    skip = SKIP_RENDER
+
+    if TEST_PROJECT in str(path):
+        # check if staged file needs to be skipped
+        skip.update(
+            [
+                p
+                for f in [Path(s) for s in skip]
+                for p in glob.glob(
+                    f"sql/{TEST_PROJECT}/{f.parent.parent.name}*/{f.parent.name}/{f.name}",
+                    recursive=True,
+                )
+            ]
+        )
+
+    if any(s in str(path) for s in skip):
+        rendered = path.read_text()
     else:
-        rendered = main_sql.render(**kwargs)
+        file_loader = FileSystemLoader(f"{template_folder}")
+        env = Environment(loader=file_loader)
+        main_sql = env.get_template(sql_filename)
+        if "metrics" not in kwargs:
+            rendered = main_sql.render(**kwargs, metrics=MetricHub())
+        else:
+            rendered = main_sql.render(**kwargs)
+
     if format:
         rendered = reformat(rendered)
     return rendered

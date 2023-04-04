@@ -80,7 +80,8 @@ SELECT
       metrics.counter.rtcrtpsender_count_setparameters_compat,
       metrics.counter.pdfjs_used,
       metrics.counter.glean_upload_in_flight_pings_dropped,
-      metrics.counter.glean_upload_missing_send_ids
+      metrics.counter.glean_upload_missing_send_ids,
+      metrics.counter.dotprint_requested
     ) AS counter,
     metrics.datetime,
     metrics.jwe,
@@ -226,7 +227,8 @@ SELECT
       metrics.counter.rtcrtpsender_count_setparameters_compat,
       metrics.counter.pdfjs_used,
       metrics.counter.glean_upload_in_flight_pings_dropped,
-      metrics.counter.glean_upload_missing_send_ids
+      metrics.counter.glean_upload_missing_send_ids,
+      metrics.counter.dotprint_requested
     ) AS counter,
     metrics.datetime,
     metrics.jwe,

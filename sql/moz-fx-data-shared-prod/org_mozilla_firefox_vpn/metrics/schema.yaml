@@ -236,6 +236,19 @@ fields:
       mode: NULLABLE
       name: glean_core_migration_successful
       type: BOOLEAN
+    - description: 'The status of whether the VPN is activated on device start
+
+        '
+      mode: NULLABLE
+      name: settings_connect_on_startup_active
+      type: BOOLEAN
+    - description: 'Status of whether app is being used in language of the operating
+        system
+
+        '
+      mode: NULLABLE
+      name: settings_using_system_language
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD
@@ -659,6 +672,48 @@ fields:
         type: RECORD
       mode: NULLABLE
       name: glean_validation_shutdown_wait
+      type: RECORD
+    - description: 'The time the app took between starting and rendering the main
+        screen.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: performance_time_to_main_screen
       type: RECORD
     mode: NULLABLE
     name: timing_distribution

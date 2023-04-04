@@ -436,6 +436,12 @@ fields:
       mode: NULLABLE
       name: glean_upload_missing_send_ids
       type: INTEGER
+    - description: 'How many times window.print was requested.
+
+        '
+      mode: NULLABLE
+      name: dotprint_requested
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

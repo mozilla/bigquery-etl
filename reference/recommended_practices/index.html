@@ -2433,9 +2433,9 @@
 <span class="w">    </span><span class="n">clients_daily</span>
 <span class="w">  </span><span class="p">)</span>
 </code></pre></div>
-    - <code>metrics</code>: unique to reference metric definition, all metric definitions are aggregations (e.g. SUM, AVG, ...)
+    - <code>metrics</code>: unique reference(s) to metric definition, all <a href="https://mozilla.github.io/metric-hub/metrics/firefox_desktop/">metric definitions</a> are aggregations (e.g. SUM, AVG, ...)
     - <code>platform</code>: platform to compute metrics for (e.g. <code>firefox_desktop</code>, <code>firefox_ios</code>, <code>fenix</code>, ...)
-    - <code>group_by</code>: fields used in the GROUP BY statement; this is a dictionary where the key represents the alias, the value is the field path; <code>GROUP BY</code> always includes the configured <code>client_id</code> and <code>submission_date</code> field
+    - <code>group_by</code>: fields used in the GROUP BY statement; this is a dictionary where the key represents the alias, the value is the field path; <code>GROUP BY</code> always includes the configured <code>client_id</code> and <code>submission_date</code> fields
     - <code>where</code>: SQL filter clause
     - <code>group_by_client_id</code>: Whether the field configured as <code>client_id</code> (defined as part of the data source specification in metric-hub) should be part of the <code>GROUP BY</code>. <code>True</code> by default
     - <code>group_by_submission_date</code>: Whether the field configured as <code>submission_date</code> (defined as part of the data source specification in metric-hub) should be part of the <code>GROUP BY</code>. <code>True</code> by default

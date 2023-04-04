@@ -2393,74 +2393,75 @@
 <h3 id="querying-metrics">Querying Metrics</h3>
 <ul>
 <li>Queries, views and UDFs can reference metrics and data sources that have been defined in <a href="https://mozilla.github.io/metric-hub/">metric-hub</a><ul>
-<li>To reference metrics use <code>{{ metrics.calculate() }}</code>:</li>
-</ul>
-</li>
-</ul>
+<li>
+<p>To reference metrics use <code>{{ metrics.calculate() }}</code>:</p>
 <p><div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
 <span class="w">  </span><span class="o">*</span>
-<span class="k">FROM</span><span class="w"> </span>
+<span class="k">FROM</span>
 <span class="w">  </span><span class="err">{{</span><span class="w"> </span><span class="n">metrics</span><span class="p">.</span><span class="n">calculate</span><span class="p">(</span>
 <span class="w">    </span><span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;days_of_use&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;active_hours&#39;</span><span class="p">],</span>
 <span class="w">    </span><span class="n">platform</span><span class="o">=</span><span class="s1">&#39;firefox_desktop&#39;</span><span class="p">,</span>
 <span class="w">    </span><span class="n">group_by</span><span class="o">=</span><span class="err">{</span><span class="s1">&#39;sample_id&#39;</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;sample_id&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;channel&#39;</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;application.channel&#39;</span><span class="err">}</span><span class="p">,</span>
 <span class="w">    </span><span class="k">where</span><span class="o">=</span><span class="s1">&#39;submission_date = &quot;2023-01-01&quot;&#39;</span>
 <span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-
 <span class="c1">-- this translates to</span>
 <span class="k">SELECT</span>
 <span class="w">  </span><span class="o">*</span>
 <span class="k">FROM</span>
 <span class="w">  </span><span class="p">(</span>
-<span class="w">  </span><span class="k">WITH</span><span class="w"> </span><span class="n">clients_daily</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">WITH</span><span class="w"> </span><span class="n">clients_daily</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">      </span><span class="k">SELECT</span>
+<span class="w">        </span><span class="n">client_id</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">client_id</span><span class="p">,</span>
+<span class="w">        </span><span class="n">submission_date</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">submission_date</span><span class="p">,</span>
+<span class="w">        </span><span class="k">COALESCE</span><span class="p">(</span><span class="k">SUM</span><span class="p">(</span><span class="n">active_hours_sum</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">active_hours</span><span class="p">,</span>
+<span class="w">        </span><span class="k">COUNT</span><span class="p">(</span><span class="n">submission_date</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">days_of_use</span><span class="p">,</span><span class="w">  </span>
+<span class="w">      </span><span class="k">FROM</span>
+<span class="w">        </span><span class="n">mozdata</span><span class="p">.</span><span class="n">telemetry</span><span class="p">.</span><span class="n">clients_daily</span>
+<span class="w">      </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w">    </span>
+<span class="w">        </span><span class="n">client_id</span><span class="p">,</span>
+<span class="w">        </span><span class="n">submission_date</span>
+<span class="w">    </span><span class="p">)</span>
 <span class="w">    </span><span class="k">SELECT</span>
-<span class="w">      </span><span class="n">client_id</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">client_id</span><span class="p">,</span>
-<span class="w">      </span><span class="n">submission_date</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">submission_date</span><span class="p">,</span>
-<span class="w">      </span><span class="k">COALESCE</span><span class="p">(</span><span class="k">SUM</span><span class="p">(</span><span class="n">active_hours_sum</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">active_hours</span><span class="p">,</span>
-<span class="w">      </span><span class="k">COUNT</span><span class="p">(</span><span class="n">submission_date</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">days_of_use</span><span class="p">,</span><span class="w">  </span>
+<span class="w">      </span><span class="n">clients_daily</span><span class="p">.</span><span class="n">client_id</span><span class="p">,</span>
+<span class="w">      </span><span class="n">clients_daily</span><span class="p">.</span><span class="n">submission_date</span><span class="p">,</span>
+<span class="w">      </span><span class="n">active_hours</span><span class="p">,</span>
+<span class="w">      </span><span class="n">days_of_use</span><span class="p">,</span>
 <span class="w">    </span><span class="k">FROM</span>
-<span class="w">      </span><span class="n">mozdata</span><span class="p">.</span><span class="n">telemetry</span><span class="p">.</span><span class="n">clients_daily</span>
-<span class="w">    </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w">    </span>
-<span class="w">      </span><span class="n">client_id</span><span class="p">,</span>
-<span class="w">      </span><span class="n">submission_date</span>
-<span class="w">  </span><span class="p">)</span>
-<span class="w">  </span><span class="k">SELECT</span>
-<span class="w">    </span><span class="n">clients_daily</span><span class="p">.</span><span class="n">client_id</span><span class="p">,</span>
-<span class="w">    </span><span class="n">clients_daily</span><span class="p">.</span><span class="n">submission_date</span><span class="p">,</span>
-<span class="w">    </span><span class="n">active_hours</span><span class="p">,</span>
-<span class="w">    </span><span class="n">days_of_use</span><span class="p">,</span>
-<span class="w">  </span><span class="k">FROM</span>
-<span class="w">    </span><span class="n">clients_daily</span>
+<span class="w">      </span><span class="n">clients_daily</span>
 <span class="w">  </span><span class="p">)</span>
 </code></pre></div>
-    - <code>metrics</code>: unique reference(s) to metric definition, all <a href="https://mozilla.github.io/metric-hub/metrics/firefox_desktop/">metric definitions</a> are aggregations (e.g. SUM, AVG, ...)
-    - <code>platform</code>: platform to compute metrics for (e.g. <code>firefox_desktop</code>, <code>firefox_ios</code>, <code>fenix</code>, ...)
-    - <code>group_by</code>: fields used in the GROUP BY statement; this is a dictionary where the key represents the alias, the value is the field path; <code>GROUP BY</code> always includes the configured <code>client_id</code> and <code>submission_date</code> fields
-    - <code>where</code>: SQL filter clause
-    - <code>group_by_client_id</code>: Whether the field configured as <code>client_id</code> (defined as part of the data source specification in metric-hub) should be part of the <code>GROUP BY</code>. <code>True</code> by default
-    - <code>group_by_submission_date</code>: Whether the field configured as <code>submission_date</code> (defined as part of the data source specification in metric-hub) should be part of the <code>GROUP BY</code>. <code>True</code> by default
-  - To reference data source definitions use <code>{{ metrics.data_source() }}</code>:</p>
-<p><div class="highlight"><pre><span></span><code><span class="w">  </span><span class="k">SELECT</span>
-<span class="w">    </span><span class="o">*</span>
-<span class="w">  </span><span class="k">FROM</span>
-<span class="w">    </span><span class="err">{{</span><span class="w"> </span><span class="n">metrics</span><span class="p">.</span><span class="n">data_source</span><span class="p">(</span>
-<span class="w">      </span><span class="n">data_source</span><span class="o">=</span><span class="s1">&#39;main&#39;</span><span class="p">,</span>
-<span class="w">      </span><span class="n">platform</span><span class="o">=</span><span class="s1">&#39;firefox_desktop&#39;</span><span class="p">,</span>
-<span class="w">      </span><span class="k">where</span><span class="o">=</span><span class="s1">&#39;submission_date = &quot;2023-01-01&quot;&#39;</span>
-<span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-
-<span class="w">  </span><span class="c1">-- this translates to</span>
-<span class="w">  </span><span class="k">SELECT</span>
-<span class="w">    </span><span class="o">*</span>
-<span class="w">  </span><span class="k">FROM</span><span class="w"> </span>
+- <code>metrics</code>: unique reference(s) to metric definition, all <a href="https://mozilla.github.io/metric-hub/metrics/firefox_desktop/">metric definitions</a> are aggregations (e.g. SUM, AVG, ...)
+- <code>platform</code>: platform to compute metrics for (e.g. <code>firefox_desktop</code>, <code>firefox_ios</code>, <code>fenix</code>, ...)
+- <code>group_by</code>: fields used in the GROUP BY statement; this is a dictionary where the key represents the alias, the value is the field path; <code>GROUP BY</code> always includes the configured <code>client_id</code> and <code>submission_date</code> fields
+- <code>where</code>: SQL filter clause
+- <code>group_by_client_id</code>: Whether the field configured as <code>client_id</code> (defined as part of the data source specification in metric-hub) should be part of the <code>GROUP BY</code>. <code>True</code> by default
+- <code>group_by_submission_date</code>: Whether the field configured as <code>submission_date</code> (defined as part of the data source specification in metric-hub) should be part of the <code>GROUP BY</code>. <code>True</code> by default
+  - To reference data source definitions use <code>{{ metrics.data_source() }}</code>:
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">  </span><span class="o">*</span>
+<span class="k">FROM</span>
+<span class="w">  </span><span class="err">{{</span><span class="w"> </span><span class="n">metrics</span><span class="p">.</span><span class="n">data_source</span><span class="p">(</span>
+<span class="w">    </span><span class="n">data_source</span><span class="o">=</span><span class="s1">&#39;main&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">platform</span><span class="o">=</span><span class="s1">&#39;firefox_desktop&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="k">where</span><span class="o">=</span><span class="s1">&#39;submission_date = &quot;2023-01-01&quot;&#39;</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="c1">-- this translates to</span>
+<span class="k">SELECT</span>
+<span class="w">  </span><span class="o">*</span>
+<span class="k">FROM</span>
 <span class="w">  </span><span class="p">(</span>
-<span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="o">`</span><span class="n">mozdata</span><span class="p">.</span><span class="n">telemetry</span><span class="p">.</span><span class="n">main</span><span class="o">`</span>
+<span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="o">`</span><span class="n">mozdata</span><span class="p">.</span><span class="n">telemetry</span><span class="p">.</span><span class="n">main</span><span class="o">`</span>
 <span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">submission_date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;2023-01-01&quot;</span>
 <span class="w">  </span><span class="p">)</span>
 </code></pre></div>
-- To render queries that use Jinja expressions or statements use <code>./bqetl query render path/to/query.py</code>
+- To render queries that use Jinja expressions or statements use <code>./bqetl query render path/to/query.sql</code>
 - The <code>generated-sql</code> branch has rendered queries/views/UDFs
 - <code>./bqetl query run</code> does support running Jinja queries</p>
+</li>
+</ul>
+</li>
+</ul>
 <h2 id="query-metadata">Query Metadata</h2>
 <ul>
 <li>For each query, a <code>metadata.yaml</code> file should be created in the same directory</li>

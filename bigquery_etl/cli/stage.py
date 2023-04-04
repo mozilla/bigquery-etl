@@ -276,7 +276,7 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
     for path in Path(sql_dir).rglob("*.sql"):
         # apply substitutions
         if path.is_file():
-            sql = render(path.name, template_folder=path.parent)
+            sql = render(path.name, template_folder=path.parent, format=False)
 
             for ref in replace_references:
                 sql = re.sub(ref[0], ref[1], sql)

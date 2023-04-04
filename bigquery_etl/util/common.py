@@ -13,6 +13,7 @@ from google.cloud import bigquery
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.format_sql.formatter import reformat
+from bigquery_etl.metrics import MetricHub
 
 # Search for all camelCase situations in reverse with arbitrary lookaheads.
 REV_WORD_BOUND_PAT = re.compile(
@@ -63,7 +64,10 @@ def render(
     file_loader = FileSystemLoader(f"{template_folder}")
     env = Environment(loader=file_loader)
     main_sql = env.get_template(sql_filename)
-    rendered = main_sql.render(**kwargs)
+    if "metrics" not in kwargs:
+        rendered = main_sql.render(**kwargs, metrics=MetricHub())
+    else:
+        rendered = main_sql.render(**kwargs)
     if format:
         rendered = reformat(rendered)
     return rendered

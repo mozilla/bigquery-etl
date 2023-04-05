@@ -8,7 +8,7 @@ labels:
   incremental: false
 scheduling:
   dag_name: bqetl_status_check
-  date_partition_parameter: null
+  date_partition_parameter: null  # overwriting entire table each time to keep just the latest record
   depends_on_past: false
   parameters:
   - task_instance:STRING:{{task_instance_key_str}}

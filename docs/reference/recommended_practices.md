@@ -41,7 +41,6 @@
 
 - Queries, views and UDFs can reference metrics and data sources that have been defined in [metric-hub](https://mozilla.github.io/metric-hub/)
   - To reference metrics use `{{ metrics.calculate() }}`:
-
     ```sql
     SELECT
       *
@@ -52,6 +51,7 @@
         group_by={'sample_id': 'sample_id', 'channel': 'application.channel'},
         where='submission_date = "2023-01-01"'
       ) }}
+
     -- this translates to
     SELECT
       *
@@ -62,10 +62,10 @@
             client_id AS client_id,
             submission_date AS submission_date,
             COALESCE(SUM(active_hours_sum), 0) AS active_hours,
-            COUNT(submission_date) AS days_of_use,  
+            COUNT(submission_date) AS days_of_use,
           FROM
             mozdata.telemetry.clients_daily
-          GROUP BY    
+          GROUP BY
             client_id,
             submission_date
         )
@@ -94,6 +94,7 @@
         platform='firefox_desktop',
         where='submission_date = "2023-01-01"'
       ) }}
+
     -- this translates to
     SELECT
       *

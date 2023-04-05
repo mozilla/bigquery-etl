@@ -1972,13 +1972,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mode_last-udf" class="md-nav__link">
-    mode_last (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#get_key_with_null-udf" class="md-nav__link">
     get_key_with_null (UDF)
   </a>
@@ -2291,13 +2284,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mode_last-udf" class="md-nav__link">
-    mode_last (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#get_key_with_null-udf" class="md-nav__link">
     get_key_with_null (UDF)
   </a>
@@ -2337,9 +2323,6 @@ structs.</p>
 <p>Because map types aren't available in BigQuery, we model maps as arrays
 of structs instead, and this function provides map-like access to such fields.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/map/get_key">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/map/get_key/metadata.yaml">Edit</a></p>
-<h2 id="mode_last-udf">mode_last (UDF)</h2>
-<p>Combine entries from multiple maps, determine the value for each key using mozfun.stats.mode_last.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/map/mode_last">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/map/mode_last/metadata.yaml">Edit</a></p>
 <h2 id="get_key_with_null-udf">get_key_with_null (UDF)</h2>
 <p>Fetch the value associated with a given key from an array of
 key/value structs.</p>
@@ -2356,6 +2339,9 @@ type is <code>ARRAY&lt;STRUCT&lt;key STRING, value INT64&gt;&gt;</code></p>
 <p>The return type is <code>INT64</code>.</p>
 <p>The <code>key</code> field will be ignored.
 <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/map/extract_keyed_scalar_sum">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/map/extract_keyed_scalar_sum/metadata.yaml">Edit</a></p>
+<h2 id="mode_last-udf">mode_last (UDF)</h2>
+<p>Combine entries from multiple maps, determine the value for each key using mozfun.stats.mode_last.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/map/mode_last">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/map/mode_last/metadata.yaml">Edit</a></p>
 
 
 

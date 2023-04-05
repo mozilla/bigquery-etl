@@ -51,7 +51,6 @@ def generate(target_project, output_dir, use_cloud_function):
     desktop_query_template = env.get_template("desktop_query.sql")
     metadata_template = "metadata.yaml"
     view_template = env.get_template("view.sql")
-    focus_android_view_template = env.get_template("focus_android_view.sql")
     mobile_view_template = env.get_template("mobile_view.sql")
     output_dir = Path(output_dir) / target_project
 
@@ -93,32 +92,18 @@ def generate(target_project, output_dir, use_cloud_function):
             skip_existing=False,
         )
 
-        if browser.name == "focus_android":
-            write_sql(
-                output_dir=output_dir,
-                full_table_id=f"{target_project}.{browser.name}.{TABLE_NAME}",
-                basename="view.sql",
-                sql=reformat(
-                    focus_android_view_template.render(
-                        project_id=target_project,
-                        app_name=browser.name,
-                    )
-                ),
-                skip_existing=False,
-            )
-        else:
-            write_sql(
-                output_dir=output_dir,
-                full_table_id=f"{target_project}.{browser.name}.{TABLE_NAME}",
-                basename="view.sql",
-                sql=reformat(
-                    view_template.render(
-                        project_id=target_project,
-                        app_name=browser.name,
-                    )
-                ),
-                skip_existing=False,
-            )
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{browser.name}.{TABLE_NAME}",
+            basename="view.sql",
+            sql=reformat(
+                view_template.render(
+                    project_id=target_project,
+                    app_name=browser.name,
+                )
+            ),
+            skip_existing=False,
+        )
 
     write_sql(
         output_dir=output_dir,

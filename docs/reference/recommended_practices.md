@@ -62,10 +62,10 @@
             client_id AS client_id,
             submission_date AS submission_date,
             COALESCE(SUM(active_hours_sum), 0) AS active_hours,
-            COUNT(submission_date) AS days_of_use,  
+            COUNT(submission_date) AS days_of_use,
           FROM
             mozdata.telemetry.clients_daily
-          GROUP BY    
+          GROUP BY
             client_id,
             submission_date
         )

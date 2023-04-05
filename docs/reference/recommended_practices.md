@@ -41,7 +41,6 @@
 
 - Queries, views and UDFs can reference metrics and data sources that have been defined in [metric-hub](https://mozilla.github.io/metric-hub/)
   - To reference metrics use `{{ metrics.calculate() }}`:
-
     ```sql
     SELECT
       *

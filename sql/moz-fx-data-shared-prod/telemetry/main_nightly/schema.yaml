@@ -34965,6 +34965,16 @@ fields:
           mode: REPEATED
           name: urlbar_picked_trending
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: migration_discovered_migrators
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD

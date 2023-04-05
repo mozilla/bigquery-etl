@@ -51,6 +51,7 @@
         group_by={'sample_id': 'sample_id', 'channel': 'application.channel'},
         where='submission_date = "2023-01-01"'
       ) }}
+
     -- this translates to
     SELECT
       *
@@ -93,6 +94,7 @@
         platform='firefox_desktop',
         where='submission_date = "2023-01-01"'
       ) }}
+
     -- this translates to
     SELECT
       *

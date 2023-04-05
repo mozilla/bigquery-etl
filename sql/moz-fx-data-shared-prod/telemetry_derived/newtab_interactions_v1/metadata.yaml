@@ -8,6 +8,7 @@ labels:
   application: firefox
   incremental: true
   schedule: daily
+  owner1: anicholson
 scheduling:
   dag_name: bqetl_newtab
 bigquery:

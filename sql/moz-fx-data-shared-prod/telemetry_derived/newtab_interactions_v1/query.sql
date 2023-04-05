@@ -58,10 +58,19 @@ categorized_events AS (
       "is_sponsored"
     ) = "true" AS is_sponsored_topsite_impression,
     event_category = 'topsites'
+    AND event_name = 'impression'
+    AND mozfun.map.get_key(
+      event_details,
+      "is_sponsored"
+    ) = "false" AS is_organic_topsite_impression,
+    event_category = 'topsites'
     AND event_name = 'click' AS is_topsite_click,
     event_category = 'topsites'
     AND event_name = 'click'
     AND mozfun.map.get_key(event_details, "is_sponsored") = "true" AS is_sponsored_topsite_click,
+    event_category = 'topsites'
+    AND event_name = 'click'
+    AND mozfun.map.get_key(event_details, "is_sponsored") = "false" AS is_organic_topsite_click,
         -- Pocket
     event_category = 'pocket'
     AND event_name = 'click' AS is_pocket_click,
@@ -109,16 +118,25 @@ categorized_events AS (
     metrics.string.newtab_newtab_category,
     metrics.boolean.newtab_search_enabled,
     metrics.uuid.legacy_telemetry_client_id,
+    metrics.quantity.topsites_rows,
     ping_info.experiments,
         -- ??? private_browsing_mode
         -- Partially unique visit attributes
     mozfun.map.get_key(event_details, "telemetry_id") AS search_engine,
     mozfun.map.get_key(event_details, "search_access_point") AS search_access_point,
-    SAFE_CAST(
-      mozfun.map.get_key(event_details, "position") AS INT64
-    ) AS pocket_story_position, -- Note potential name-collision here with topsite position
+    IF(
+      event_category = "pocket",
+      SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64),
+      NULL
+    ) AS pocket_story_position,
+-- TODO:  Note: this greatly increases the cardinality of the table, this means we'll likely have to make a version two
+-- with more nesting.
+--     IF(
+--       event_category = "topsites",
+--       SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64),
+--       NULL
+--     ) AS topsite_position,
         -- ??? topsite_advertiser_id
-        -- ??? topsite_position
     submission_date
   FROM
     events_unnested
@@ -151,13 +169,16 @@ aggregated_newtab_activity AS (
     ANY_VALUE(newtab_homepage_category) AS newtab_homepage_category,
     ANY_VALUE(newtab_newtab_category) AS newtab_newtab_category,
     ANY_VALUE(newtab_search_enabled) AS newtab_search_enabled,
+    ANY_VALUE(topsites_rows) AS topsites_rows,
     MIN(newtab_visit_started_at) AS newtab_visit_started_at,
     MIN(newtab_visit_ended_at) AS newtab_visit_ended_at,
           -- Topsite
     COUNTIF(is_topsite_click) AS topsite_clicks,
     COUNTIF(is_sponsored_topsite_click) AS sponsored_topsite_clicks,
+    COUNTIF(is_organic_topsite_click) AS organic_topsite_clicks,
     COUNTIF(is_topsite_impression) AS topsite_impressions,
     COUNTIF(is_sponsored_topsite_impression) AS sponsored_topsite_impressions,
+    COUNTIF(is_organic_topsite_impression) AS organic_topsite_impressions,
           -- Search
     COUNTIF(is_search_issued) AS searches,
     COUNTIF(is_tagged_search_ad_click) AS tagged_search_ad_clicks,

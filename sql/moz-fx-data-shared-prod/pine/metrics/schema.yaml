@@ -1274,6 +1274,21 @@ fields:
       mode: REPEATED
       name: networking_speculative_connect_outcome
       type: RECORD
+    - description: 'Counters for startup cache data hits or misses on initializating
+
+        DNR rules for extensions loaded on application startup.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: extensions_apis_dnr_startup_cache_entries
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD
@@ -1375,6 +1390,52 @@ fields:
       mode: NULLABLE
       name: glean_upload_pending_pings_directory_size
       type: RECORD
+    - description: 'Amount of data read from the DNR startup cache file.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: extensions_apis_dnr_startup_cache_read_size
+      type: RECORD
+    - description: 'Amount of data written to the DNR startup cache file.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: extensions_apis_dnr_startup_cache_write_size
+      type: RECORD
     mode: NULLABLE
     name: memory_distribution
     type: RECORD
@@ -1400,6 +1461,12 @@ fields:
         '
       mode: NULLABLE
       name: browser_engagement_profile_count
+      type: INTEGER
+    - description: 'Max amount of DNR rules being evaluated.
+
+        '
+      mode: NULLABLE
+      name: extensions_apis_dnr_evaluate_rules_count_max
       type: INTEGER
     mode: NULLABLE
     name: quantity
@@ -2319,6 +2386,175 @@ fields:
         type: RECORD
       mode: NULLABLE
       name: glean_validation_shutdown_wait
+      type: RECORD
+    - description: 'Amount of time it takes to evaluate DNR rules for one network
+        request.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: extensions_apis_dnr_evaluate_rules_time
+      type: RECORD
+    - description: 'Amount of time it takes to read data into the DNR startup cache
+        file.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: extensions_apis_dnr_startup_cache_read_time
+      type: RECORD
+    - description: 'Amount of time it takes to write data into the DNR startup cache
+        file.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: extensions_apis_dnr_startup_cache_write_time
+      type: RECORD
+    - description: 'Amount of time it takes to validate DNR rules of individual ruleset
+
+        when dynamic or static rulesets have been loaded from disk.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: extensions_apis_dnr_validate_rules_time
       type: RECORD
     mode: NULLABLE
     name: timing_distribution

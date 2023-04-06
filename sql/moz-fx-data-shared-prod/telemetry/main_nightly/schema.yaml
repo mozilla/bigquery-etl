@@ -14138,6 +14138,24 @@ fields:
     - mode: NULLABLE
       name: use_counter2_css_property_forced_color_adjust_page
       type: STRING
+    - mode: NULLABLE
+      name: webext_dnr_evaluate_rules_ms
+      type: STRING
+    - mode: NULLABLE
+      name: webext_dnr_startupcache_read_bytes
+      type: STRING
+    - mode: NULLABLE
+      name: webext_dnr_startupcache_read_ms
+      type: STRING
+    - mode: NULLABLE
+      name: webext_dnr_startupcache_write_bytes
+      type: STRING
+    - mode: NULLABLE
+      name: webext_dnr_startupcache_write_ms
+      type: STRING
+    - mode: NULLABLE
+      name: webext_dnr_validate_rules_ms
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -34975,6 +34993,16 @@ fields:
           mode: REPEATED
           name: migration_discovered_migrators
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: extensions_apis_dnr_startup_cache_entries
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD
@@ -36278,6 +36306,12 @@ fields:
         - mode: NULLABLE
           name: urlbar_persistedsearchterms_view_count
           type: INTEGER
+        - mode: NULLABLE
+          name: extensions_apis_dnr_evaluate_rules_count_max
+          type: INTEGER
+        - mode: NULLABLE
+          name: policies_is_enterprise
+          type: BOOLEAN
         mode: NULLABLE
         name: scalars
         type: RECORD

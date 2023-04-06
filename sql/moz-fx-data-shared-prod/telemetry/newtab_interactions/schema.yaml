@@ -162,5 +162,14 @@ fields:
   name: activity_segment
   type: STRING
 - mode: NULLABLE
+  name: topsites_rows
+  type: INTEGER
+- mode: NULLABLE
+  name: organic_topsite_clicks
+  type: INTEGER
+- mode: NULLABLE
+  name: organic_topsite_impressions
+  type: INTEGER
+- mode: NULLABLE
   name: search_engine
   type: STRING

@@ -1,6 +1,6 @@
-friendly_name: Firefox iOS Clients
+friendly_name: Firefox Clients (iOS)
 description: |-
-  First observations for Firefox iOS clients of channel Release,
+  First observations for Firefox iOS clients of channel `release`,
   retrieved from the earliest pings: baseline, first_session and metrics.
   The attributes stored in this table include the first attribution,
   device, OS and ISP details.
@@ -9,8 +9,7 @@ description: |-
   `firefox_ios.firefox_ios_clients`.
 
   For analysis purposes, use first_seen_date to query clients that
-  effectively appeared on that date. The submission_date indicates
-  when the server received the data.
+  effectively appeared on that date.
 
   The query for this table overwrites the whole table instead of writing to
   a single partition, so manual backfills must use parameter --no_partition.
@@ -24,7 +23,7 @@ owners:
 - kignasiak@mozilla.com
 labels:
   application: firefox_ios
-  incremental: true
+  incremental: true  # TODO: should this be false sinse the table is overwritten on each run?
   schedule: daily
   owner: kignasiak@mozilla.com
 scheduling:

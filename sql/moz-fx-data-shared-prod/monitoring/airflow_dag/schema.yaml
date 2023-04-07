@@ -19,23 +19,15 @@ fields:
   mode: NULLABLE
   name: owners
   type: STRING
-- description: Indicates if the DAG is currently paused
-  mode: NULLABLE
+- mode: NULLABLE
   name: is_paused
   type: BOOLEAN
-- description: Indicates if DAG has concurrency limit set
-  mode: NULLABLE
+- mode: NULLABLE
   name: has_task_concurrency_limits
   type: BOOLEAN
-- description: Cuncerrency settings for the DAG
-  mode: NULLABLE
+- mode: NULLABLE
   name: concurrency
   type: INTEGER
-- description: Max number of active DAG runs allowed
-  mode: NULLABLE
+- mode: NULLABLE
   name: max_active_runs
   type: INTEGER
-- description: Indicates if the DAG is active
-  mode: NULLABLE
-  name: is_active
-  type: BOOLEAN

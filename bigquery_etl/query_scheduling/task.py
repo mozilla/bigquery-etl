@@ -11,7 +11,7 @@ import attr
 import cattrs
 
 from bigquery_etl.dependency import extract_table_references_without_views
-from bigquery_etl.metadata.parse_metadata import Metadata
+from bigquery_etl.metadata.parse_metadata import Metadata, PartitionType
 from bigquery_etl.query_scheduling.utils import (
     is_date_string,
     is_email,
@@ -175,6 +175,7 @@ class Task:
     depends_on_past: bool = attr.ib(False)
     start_date: Optional[str] = attr.ib(None)
     date_partition_parameter: Optional[str] = "submission_date"
+    table_partition_format: Optional[str] = None
     # number of days date partition parameter should be offset
     date_partition_offset: Optional[int] = None
     # indicate whether data should be published as JSON
@@ -331,6 +332,14 @@ class Task:
         # data processed in task should be published
         if metadata.is_public_json():
             task_config["public_json"] = True
+
+        # Override the table_partition_format if the bq partition type is MONTH
+        # Pass a jinja template that reformats the date string used for table partition name.
+        if metadata.bigquery and metadata.bigquery.time_partitioning:
+            if metadata.bigquery.time_partitioning.type is PartitionType.MONTH:
+                task_config[
+                    "table_partition_format"
+                ] = '{{ macros.ds_format(ds, "%Y-%m-%d", "%Y%m") }}'
 
         try:
             return converter.structure(task_config, cls)

@@ -51,7 +51,7 @@ with DAG(
         owner="wstuckey@mozilla.com",
         email=["wstuckey@mozilla.com"],
         date_partition_parameter="submission_date",
-        table_partition_template="{{ macros.ds_format(ds, '%Y-%m-%d', '%Y%m')}}",
+        table_partition_format='{{ macros.ds_format(ds, "%Y-%m-%d", "%Y%m") }}',
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )

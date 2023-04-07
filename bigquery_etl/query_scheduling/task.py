@@ -336,7 +336,12 @@ class Task:
         # Override the table_partition_format if the bq partition type is MONTH
         # Pass a jinja template that reformats the date string used for table partition name.
         if metadata.bigquery and metadata.bigquery.time_partitioning:
-            if metadata.bigquery.time_partitioning.type is PartitionType.MONTH:
+            destination_table = metadata.scheduling.get("destination_table")
+            # only proceed if there is no destination_table specified
+            if (
+                destination_table is None
+                and metadata.bigquery.time_partitioning.type is PartitionType.MONTH
+            ):
                 task_config[
                     "table_partition_format"
                 ] = '{{ macros.ds_format(ds, "%Y-%m-%d", "%Y%m") }}'

@@ -333,18 +333,33 @@ class Task:
         if metadata.is_public_json():
             task_config["public_json"] = True
 
-        # Override the table_partition_template if the bq partition type is MONTH
-        # Pass a jinja template that reformats the date string used for table partition name.
-        if metadata.bigquery and metadata.bigquery.time_partitioning:
-            destination_table = metadata.scheduling.get("destination_table")
-            # only proceed if there is no destination_table specified
-            if (
-                destination_table is None
-                and metadata.bigquery.time_partitioning.type is PartitionType.MONTH
-            ):
-                task_config[
-                    "table_partition_template"
-                ] = '{{ macros.ds_format(ds, "%Y-%m-%d", "%Y%m") }}'
+        # Override the table_partition_template if there is no `destination_table`
+        # set in the scheduling section of the metadata. If not then pass a jinja
+        # template that reformats the date string used for table partition name.
+        if (
+            metadata.bigquery
+            and metadata.bigquery.time_partitioning
+            and metadata.scheduling.get("destination_table") is None
+        ):
+
+            partition_template: str
+            match metadata.bigquery.time_partitioning.type:
+                case PartitionType.YEAR:
+                    partition_template = '{{ dag_run.logical_date.strftime("%Y") }}'
+                case PartitionType.MONTH:
+                    partition_template = '{{ dag_run.logical_date.strftime("%Y%m") }}'
+                case PartitionType.DAY:
+                    partition_template = "{{ ds_nodash }}"
+                case PartitionType.HOUR:
+                    partition_template = (
+                        '{{ dag_run.logical_date.strftime("%Y%m%d%H") }}'
+                    )
+                case _:
+                    raise TaskParseException(
+                        f"Invalid partition type: {metadata.bigquery.time_partitioning.type}"
+                    )
+
+            task_config["table_partition_template"] = partition_template
 
         try:
             return converter.structure(task_config, cls)

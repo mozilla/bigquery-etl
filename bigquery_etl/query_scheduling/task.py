@@ -335,7 +335,9 @@ class Task:
 
         # Override the table_partition_template if there is no `destination_table`
         # set in the scheduling section of the metadata. If not then pass a jinja
-        # template that reformats the date string used for table partition name.
+        # template that reformats the date string used for table partition decorator.
+        # See doc here for formatting conventions:
+        #  https://cloud.google.com/bigquery/docs/managing-partitioned-table-data#partition_decorators
         if (
             metadata.bigquery
             and metadata.bigquery.time_partitioning

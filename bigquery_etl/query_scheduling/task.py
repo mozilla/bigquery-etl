@@ -341,8 +341,6 @@ class Task:
             and metadata.bigquery.time_partitioning
             and metadata.scheduling.get("destination_table") is None
         ):
-
-            partition_template: str
             match metadata.bigquery.time_partitioning.type:
                 case PartitionType.YEAR:
                     partition_template = '{{ dag_run.logical_date.strftime("%Y") }}'

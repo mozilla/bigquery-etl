@@ -1,0 +1,27 @@
+friendly_name: Attributable Clients
+description: |
+  For clients who send a first_session ping,
+  this table records daily information about
+  them and their activity.
+owners:
+- kignasiak@mozilla.com
+labels:
+  schedule: daily
+scheduling:
+  dag_name: bqetl_org_mozilla_firefox_derived
+  depends_on_past: false
+  depends_on:
+  - task_id: baseline_clients_daily
+    dag_name: copy_deduplicate
+    execution_delta: 1h
+  - task_id: search_derived__mobile_search_clients_daily__v1
+    dag_name: bqetl_mobile_search
+    execution_delta: 0h
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+  clustering:
+    fields:
+    - country

@@ -1,0 +1,92 @@
+fields:
+
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: |
+    Processing date, this indicates which date partiion was used
+    when generating this record.
+
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: |
+    Unique ID for the client installation.
+
+- mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+  description: |
+    Sample ID to limit query results during an analysis.
+
+- mode: NULLABLE
+  name: cohort_date
+  type: DATE
+  description: |
+    TODO:
+
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: |
+    Unique ID for the client installation.
+
+- mode: NULLABLE
+  name: adjust_adgroup
+  type: STRING
+  description: |
+    Structure parameter for the the ad group of a campaign.
+
+- mode: NULLABLE
+  name: adjust_campaign
+  type: STRING
+  description: |
+    Structure parameter for the campaign name.
+
+- mode: NULLABLE
+  name: adjust_creative
+  type: STRING
+  description: |
+    Structure parameter for the creative content of a campaign.
+
+- mode: NULLABLE
+  name: adjust_network
+  type: STRING
+  description: |
+    The type of source of a client installation.
+
+- mode: NULLABLE
+  name: searches
+  type: INTEGER
+  description: |
+    TODO:
+
+- mode: NULLABLE
+  name: searches_with_ads
+  type: INTEGER
+  description: |
+    TODO:
+
+- mode: NULLABLE
+  name: ad_clicks
+  type: INTEGER
+  description: |
+    TODO:
+
+- mode: NULLABLE
+  name: is_new_install
+  type: BOOLEAN
+  description: |
+    Determines if this is a brand new installation.
+
+- mode: NULLABLE
+  name: is_new_profile
+  type: BOOLEAN
+  description: |
+    Determines if a client is a new profile.
+
+- mode: NULLABLE
+  name: activated
+  type: BOOLEAN
+  description: |
+    Determines if a client is activated based on the activation metric and a 7 day lag.

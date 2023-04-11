@@ -3,6 +3,7 @@ description: |-
   Mobile activation metric used for Marketing campaign performance
 owners:
 - vsabino@mozilla.com
+- kignasiak@mozilla.com
 labels:
   incremental: true
 bigquery:
@@ -12,7 +13,9 @@ bigquery:
     require_partition_filter: true
     expiration_days: null
   clustering:
-    fields: [sample_id, country]
+    fields:
+    - sample_id
+    - country
 scheduling:
   dag_name: bqetl_mobile_activation
   date_partition_parameter: submission_date

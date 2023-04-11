@@ -49,8 +49,6 @@ first_seen AS (
     first_seen_date
   FROM
     firefox_ios.baseline_clients_first_seen
-  WHERE
-    submission_date >= "2021-01-01"  -- # TODO: should this be @submission_date AKA @submission_date?
 ),
 adjust_client AS (
   SELECT
@@ -64,16 +62,6 @@ adjust_client AS (
     firefox_ios.firefox_ios_clients
   WHERE
     adjust_info.adjust_network <> "Unknown"
-),
-activations AS (
-  SELECT
-    client_id,
-    submission_date,
-    activated > 0 AS activated,
-  FROM
-    firefox_ios.new_profile_activation
-  WHERE
-    submission_date = @submission_date
 )
 SELECT
   submission_date,
@@ -91,8 +79,6 @@ SELECT
     FALSE
   ) AS is_new_install,
   COALESCE(first_seen_date = submission_date, FALSE) AS is_new_profile,
-  -- TODO: is this right? The below
-  -- CASE statements can result in NULL
   COALESCE(
     CASE
       WHEN client_day.has_search_data
@@ -123,7 +109,6 @@ SELECT
     END,
     0
   ) AS ad_clicks,
-  COALESCE(activated, FALSE) AS activated,
 FROM
   adjust_client
 JOIN
@@ -138,7 +123,3 @@ JOIN
   first_seen
 USING
   (client_id)
-LEFT JOIN
-  activations
-USING
-  (client_id, submission_date)

@@ -1,6 +1,6 @@
 friendly_name: Attributable Clients
 description: |
-  For clients who send a first_session ping,
+  For clients who have attribution data,
   this table records daily information about
   them and their activity.
 owners:

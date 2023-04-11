@@ -36,7 +36,7 @@ client_search AS (
     (client_id)
   WHERE
     (submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY) AND @submission_date)
-    AND normalized_app_name = 'Fennec'
+    -- AND normalized_app_name = 'Fennec'  -- # TODO: should this be filtering for a specific app or is os filter enough here?
     AND os = 'iOS'
   GROUP BY
     client_id
@@ -53,7 +53,6 @@ dou AS (
   WHERE
     submission_date = @submission_date
     AND DATE_DIFF(submission_date, first_seen_date, DAY) = 6
-    AND normalized_channel = 'release'  -- # TODO: should we be filtering for a single channel here?
 )
 SELECT
   client_id,

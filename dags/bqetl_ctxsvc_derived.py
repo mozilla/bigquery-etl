@@ -60,7 +60,6 @@ with DAG(
             "wstuckey@mozilla.com",
         ],
         date_partition_parameter=None,
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )

@@ -491,6 +491,9 @@ class Task:
 
             if len(date_partition_offsets) > 0:
                 self.date_partition_offset = min(date_partition_offsets)
+                # unset the table_partition_template property if we have an offset
+                # as that will be overridden in the template via `destination_table`
+                self.table_partition_template = None
                 date_partition_offset_task_keys = [
                     dependency.task_key
                     for dependency in dependencies

@@ -349,7 +349,8 @@ class Task:
                 case PartitionType.MONTH:
                     partition_template = '{{ dag_run.logical_date.strftime("%Y%m") }}'
                 case PartitionType.DAY:
-                    partition_template = "{{ ds_nodash }}"
+                    # skip for the default case of daily partitioning
+                    partition_template = None
                 case PartitionType.HOUR:
                     partition_template = (
                         '{{ dag_run.logical_date.strftime("%Y%m%d%H") }}'
@@ -359,7 +360,8 @@ class Task:
                         f"Invalid partition type: {metadata.bigquery.time_partitioning.type}"
                     )
 
-            task_config["table_partition_template"] = partition_template
+            if partition_template:
+                task_config["table_partition_template"] = partition_template
 
         try:
             return converter.structure(task_config, cls)

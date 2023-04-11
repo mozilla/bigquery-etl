@@ -69,7 +69,6 @@ with DAG(
             "wstuckey@mozilla.com",
         ],
         date_partition_parameter="submission_date",
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
@@ -87,7 +86,6 @@ with DAG(
             "wstuckey@mozilla.com",
         ],
         date_partition_parameter="submission_date",
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
@@ -105,7 +103,6 @@ with DAG(
             "wstuckey@mozilla.com",
         ],
         date_partition_parameter="submission_date",
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
@@ -123,7 +120,6 @@ with DAG(
             "wstuckey@mozilla.com",
         ],
         date_partition_parameter="submission_date",
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
@@ -141,7 +137,6 @@ with DAG(
             "wstuckey@mozilla.com",
         ],
         date_partition_parameter="submission_date",
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )

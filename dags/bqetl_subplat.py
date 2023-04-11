@@ -71,7 +71,6 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -109,7 +108,6 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
     )
@@ -122,7 +120,6 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
     )
@@ -135,7 +132,6 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -8)}}"],
     )
@@ -160,7 +156,6 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
     )
@@ -173,7 +168,6 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
     )
@@ -186,7 +180,6 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -224,7 +217,6 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
     )
@@ -297,7 +289,6 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         task_concurrency=1,
     )
@@ -310,7 +301,6 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="date",
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -373,7 +363,6 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -8)}}"],
     )
@@ -592,7 +581,6 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
         parameters=[
             "external_database_query:STRING: SELECT\n  id,\n  user_id,\n  name,\n  mullvad_id,\n  pubkey,\n  ipv4_address,\n  ipv6_address,\n  created_at,\n  updated_at,\n  uid,\n  platform,\n  useragent,\n  unique_id\nFROM devices WHERE DATE(updated_at) = DATE '{{ds}}'"
@@ -607,7 +595,6 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
         parameters=[
             "external_database_query:STRING: SELECT\n  id,\n  user_id,\n  is_active,\n  mullvad_token,\n  mullvad_account_created_at,\n  mullvad_account_expiration_date,\n  ended_at,\n  created_at,\n  updated_at,\n  type,\n  fxa_last_changed_at,\n  provider,\n  provider_product_id,\n  provider_original_purchase_token,\n  provider_receipt_raw,\n  provider_receipt_json,\n  provider_expiration_date,\n  fxa_migration_note\nFROM subscriptions WHERE DATE(updated_at) = DATE '{{ds}}'"
@@ -622,7 +609,6 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
         parameters=[
             "external_database_query:STRING: SELECT\n  id,\n  email,\n  fxa_uid,\n  fxa_access_token,\n  fxa_refresh_token,\n  fxa_profile_json,\n  created_at,\n  updated_at,\n  display_name,\n  avatar\nFROM users WHERE DATE(updated_at) = DATE '{{ds}}'"
@@ -637,7 +623,6 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
     )
@@ -650,7 +635,6 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
     )
@@ -663,7 +647,6 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
-        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -8)}}"],
     )

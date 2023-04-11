@@ -14,7 +14,7 @@ WITH first_seen AS (
     normalized_os_version AS os_version,
     app_display_version AS app_version
   FROM
-    `moz-fx-data-shared-prod.firefox_ios.baseline_clients_first_seen`
+    firefox_ios.baseline_clients_first_seen
   WHERE
     submission_date = @submission_date
     AND client_id IS NOT NULL
@@ -30,7 +30,7 @@ WITH first_seen AS (
 --     client_id,
 --     ARRAY_AGG(activated ORDER BY submission_date DESC)[SAFE_OFFSET(0)] > 0 AS activated
 --   FROM
---     `moz-fx-data-shared-prod.fenix.new_profile_activation`
+--     firefox_ios.new_profile_activation
 --   WHERE
 --     submission_date = @submission_date
 --   GROUP BY
@@ -76,7 +76,7 @@ first_session_ping AS (
         NULLIF(metrics.string.adjust_creative, "") AS adjust_creative,
         NULLIF(metrics.string.adjust_network, "") AS adjust_network,
       FROM
-        `moz-fx-data-shared-prod.firefox_ios.first_session`
+        firefox_ios.first_session
       WHERE
         DATE(submission_timestamp) = @submission_date
         AND client_info.client_id IS NOT NULL
@@ -130,7 +130,7 @@ metrics_ping AS (
         NULLIF(metrics.string.metrics_adjust_network, "") AS adjust_network,
         NULLIF(metrics.string.metrics_install_source, "") AS install_source,
       FROM
-        `org_mozilla_firefox.metrics`
+        firefox_ios.metrics
       WHERE
         DATE(submission_timestamp) = @submission_date
         AND client_info.client_id IS NOT NULL
@@ -206,7 +206,7 @@ _previous AS (
   SELECT
     *
   FROM
-    `firefox_ios_derived.firefox_ios_clients_v1`
+    firefox_ios_derived.firefox_ios_clients_v1
 )
 SELECT
   client_id,
@@ -275,8 +275,6 @@ SELECT
       _current.metadata.install_source__source_ping
     ) AS install_source__source_ping
   ) AS metadata,
-  -- IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
-  -- )
 FROM
   _current
 FULL OUTER JOIN

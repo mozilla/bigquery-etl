@@ -60,11 +60,11 @@ fields:
   description: |
     App display version for this client installation.
 
-# - mode: NULLABLE
-#   name: activated
-#   type: BOOLEAN
-#   description: |
-#     Determines if a client is activated based on the activation metric and a 7 day lag.
+- mode: NULLABLE
+  name: activated
+  type: BOOLEAN
+  description: |
+    Determines if a client is activated based on the activation metric and a 7 day lag.
 
 - mode: NULLABLE
   name: install_source
@@ -129,32 +129,26 @@ fields:
     description: |
       True if the client ever reported a metrics ping.
 
-  - mode: NULLABLE
-    name: min_first_session_ping_submission_date
-    type: DATE
-    description: |
-      Date when the first reported first_sessin ping is received by the server.
+  # - mode: NULLABLE
+  #   name: min_first_session_ping_submission_date
+  #   type: DATE
+  #   description: |
+  #     Date when the first reported first_sessin ping is received by the server.
 
-  - mode: NULLABLE
-    name: min_first_session_ping_run_date
-    type: DATE
-    description: |
-      Date of first app run as reported in the earliest first_session ping.
+  # - mode: NULLABLE
+  #   name: min_first_session_ping_run_date
+  #   type: DATE
+  #   description: |
+  #     Date of first app run as reported in the earliest first_session ping.
 
-  - mode: NULLABLE
-    name: min_metrics_ping_submission_date
-    type: DATE
-    description: |
-      Date when the first reported metrics ping is received by the server.
+  # - mode: NULLABLE
+  #   name: min_metrics_ping_submission_date
+  #   type: DATE
+  #   description: |
+  #     Date when the first reported metrics ping is received by the server.
 
   - mode: NULLABLE
     name: adjust_info__source_ping
     type: STRING
     description: |
       Ping from which the adjust_info values originate.
-
-  - mode: NULLABLE
-    name: install_source__source_ping
-    type: STRING
-    description: |
-      Ping from which the install_source value originates.

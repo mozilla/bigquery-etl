@@ -131,10 +131,10 @@ metrics_ping AS (
 ),
 _current AS (
   SELECT
-    * EXCEPT (sample_id, adjust_info),
+    * EXCEPT (sample_id, adjust_info, activated),
     COALESCE(first_session.adjust_info, metrics.adjust_info) AS adjust_info,
     COALESCE(first_seen.sample_id, first_session.sample_id, metrics.sample_id) AS sample_id,
-    activated AS activated,
+    activations.activated AS activated,
     STRUCT(
       IF(first_session.client_id IS NULL, FALSE, TRUE) AS reported_first_session_ping,
       IF(metrics.client_id IS NULL, FALSE, TRUE) AS reported_metrics_ping,
@@ -188,6 +188,7 @@ SELECT
   COALESCE(_previous.device_model, _current.device_model) AS device_model,
   COALESCE(_previous.os_version, _current.os_version) AS os_version,
   COALESCE(_previous.app_version, _current.app_version) AS app_version,
+  COALESCE(_previous.activated, _current.activated) AS activated,
   STRUCT(
     COALESCE(
       _previous.adjust_info.submission_timestamp,

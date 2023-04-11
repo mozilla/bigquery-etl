@@ -57,6 +57,7 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -84,6 +85,7 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 

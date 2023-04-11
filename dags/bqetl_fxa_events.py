@@ -66,6 +66,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
@@ -82,6 +83,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
@@ -94,6 +96,7 @@ with DAG(
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -105,6 +108,7 @@ with DAG(
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
@@ -138,6 +142,7 @@ with DAG(
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
@@ -171,6 +176,7 @@ with DAG(
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -182,6 +188,7 @@ with DAG(
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -193,6 +200,7 @@ with DAG(
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -204,6 +212,7 @@ with DAG(
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -215,6 +224,7 @@ with DAG(
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
@@ -252,6 +262,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -268,6 +279,7 @@ with DAG(
         ],
         start_date=datetime.datetime(2021, 7, 9, 0, 0),
         date_partition_parameter=None,
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
         priority_weight=80,
@@ -286,6 +298,7 @@ with DAG(
         ],
         start_date=datetime.datetime(2019, 4, 23, 0, 0),
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
     )
 
@@ -311,6 +324,7 @@ with DAG(
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -326,6 +340,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -341,6 +356,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -356,6 +372,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -367,6 +384,7 @@ with DAG(
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
@@ -379,6 +397,7 @@ with DAG(
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
@@ -391,6 +410,7 @@ with DAG(
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
@@ -407,6 +427,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
     )
 
@@ -422,6 +443,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
     )
 

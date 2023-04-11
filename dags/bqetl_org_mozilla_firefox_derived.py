@@ -48,6 +48,7 @@ with DAG(
         owner="frank@mozilla.com",
         email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -73,6 +74,7 @@ with DAG(
         owner="frank@mozilla.com",
         email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
     )
 
@@ -84,6 +86,7 @@ with DAG(
         owner="frank@mozilla.com",
         email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
@@ -96,6 +99,7 @@ with DAG(
         owner="frank@mozilla.com",
         email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
@@ -108,6 +112,7 @@ with DAG(
         owner="frank@mozilla.com",
         email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )

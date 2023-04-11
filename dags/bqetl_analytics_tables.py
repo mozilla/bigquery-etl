@@ -59,6 +59,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter=None,
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
     )

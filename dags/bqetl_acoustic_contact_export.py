@@ -54,6 +54,7 @@ with DAG(
         owner="kignasiak@mozilla.com",
         email=["kignasiak@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -65,6 +66,7 @@ with DAG(
         owner="kignasiak@mozilla.com",
         email=["kignasiak@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         task_concurrency=1,
     )
@@ -77,6 +79,7 @@ with DAG(
         owner="kignasiak@mozilla.com",
         email=["kignasiak@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 

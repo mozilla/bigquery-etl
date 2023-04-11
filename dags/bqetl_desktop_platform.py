@@ -57,6 +57,7 @@ with DAG(
         ],
         start_date=datetime.datetime(2018, 11, 1, 0, 0),
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 

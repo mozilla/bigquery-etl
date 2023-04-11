@@ -58,6 +58,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -88,6 +89,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -139,6 +141,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
     )
 
@@ -170,6 +173,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 

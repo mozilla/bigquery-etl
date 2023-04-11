@@ -66,6 +66,7 @@ with DAG(
         owner="wlachance@mozilla.com",
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
     )
 
@@ -77,6 +78,7 @@ with DAG(
         owner="wlachance@mozilla.com",
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -88,6 +90,7 @@ with DAG(
         owner="wlachance@mozilla.com",
         email=["wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
@@ -113,6 +116,7 @@ with DAG(
         owner="wlachance@mozilla.com",
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
     )
 
@@ -124,6 +128,7 @@ with DAG(
         owner="wlachance@mozilla.com",
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -148,6 +153,7 @@ with DAG(
         owner="wlachance@mozilla.com",
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
     )
 
@@ -159,6 +165,7 @@ with DAG(
         owner="wlachance@mozilla.com",
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 

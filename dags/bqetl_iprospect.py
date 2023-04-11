@@ -64,6 +64,7 @@ with DAG(
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "echo@mozilla.com", "shong@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
     )
 

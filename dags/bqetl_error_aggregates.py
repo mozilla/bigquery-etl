@@ -48,5 +48,6 @@ with DAG(
         owner="wkahngreene@mozilla.com",
         email=["telemetry-alerts@mozilla.com", "wkahngreene@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )

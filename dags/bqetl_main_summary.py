@@ -79,6 +79,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         priority_weight=85,
     )
@@ -95,6 +96,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -110,6 +112,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -125,6 +128,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -141,6 +145,7 @@ with DAG(
         ],
         start_date=datetime.datetime(2019, 11, 5, 0, 0),
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 
@@ -192,6 +197,7 @@ with DAG(
         ],
         start_date=datetime.datetime(2021, 1, 19, 0, 0),
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         priority_weight=85,
     )
@@ -210,6 +216,7 @@ with DAG(
         ],
         start_date=datetime.datetime(2021, 1, 19, 0, 0),
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         priority_weight=85,
     )
@@ -276,6 +283,7 @@ with DAG(
         ],
         start_date=datetime.datetime(2020, 5, 5, 0, 0),
         date_partition_parameter=None,
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
         priority_weight=80,
@@ -290,6 +298,7 @@ with DAG(
         email=["dthorn@mozilla.com", "jklukas@mozilla.com"],
         start_date=datetime.datetime(2019, 4, 15, 0, 0),
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
         priority_weight=85,
     )
@@ -370,6 +379,7 @@ with DAG(
         ],
         start_date=datetime.datetime(2021, 1, 19, 0, 0),
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
         priority_weight=85,
     )
@@ -387,6 +397,7 @@ with DAG(
         ],
         start_date=datetime.datetime(2021, 1, 19, 0, 0),
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=True,
         priority_weight=85,
     )
@@ -404,6 +415,7 @@ with DAG(
         ],
         start_date=datetime.datetime(2020, 8, 1, 0, 0),
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
@@ -420,6 +432,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter=None,
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         task_concurrency=1,
     )
@@ -437,6 +450,7 @@ with DAG(
         ],
         start_date=datetime.datetime(2020, 6, 1, 0, 0),
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
@@ -468,6 +482,7 @@ with DAG(
         ],
         start_date=datetime.datetime(2020, 7, 1, 0, 0),
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
@@ -485,6 +500,7 @@ with DAG(
         ],
         start_date=datetime.datetime(2019, 10, 25, 0, 0),
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
         multipart=True,
         sql_file_path="sql/moz-fx-data-shared-prod/telemetry_derived/main_summary_v4",
@@ -532,6 +548,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
+        table_partition_template="{{ ds_nodash }}",
         depends_on_past=False,
     )
 

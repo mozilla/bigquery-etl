@@ -16,6 +16,7 @@ WITH stage_1 AS (
     pricing_plan,
     provider,
     TO_JSON_STRING(promotion_codes) AS json_promotion_codes,
+    granular_event_type,
     SUM(`count`) AS new_subscriptions,
   FROM
     `moz-fx-data-shared-prod`.mozilla_vpn.subscription_events
@@ -34,7 +35,8 @@ WITH stage_1 AS (
     product_name,
     pricing_plan,
     provider,
-    json_promotion_codes
+    json_promotion_codes,
+    granular_event_type,
 ),
 stage_2 AS (
   SELECT

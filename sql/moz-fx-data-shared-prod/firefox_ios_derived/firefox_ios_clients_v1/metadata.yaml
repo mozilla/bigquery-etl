@@ -1,6 +1,6 @@
 friendly_name: Firefox Clients (iOS)
 description: |-
-  First observations for Firefox iOS clients of channel `release`,
+  First observations for Firefox iOS clients,
   retrieved from the earliest pings: baseline, first_session and metrics.
   The attributes stored in this table include the first attribution,
   device, OS and ISP details.
@@ -23,7 +23,7 @@ owners:
 - kignasiak@mozilla.com
 labels:
   application: firefox_ios
-  incremental: true  # TODO: should this be false sinse the table is overwritten on each run?
+  incremental: true
   schedule: daily
   owner: kignasiak@mozilla.com
 scheduling:

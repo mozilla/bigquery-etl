@@ -11,14 +11,11 @@ SELECT
     STRUCT(
       CASE
         WHEN adjust_info.adjust_network IS NULL
-          OR adjust_info.adjust_network = ''
           THEN 'Unknown'
         WHEN adjust_info.adjust_network NOT IN (
-            'Organic',
-            'Google Organic Search',
-            'Untrusted Devices',
+            'Apple Search Ads',
             'Product Marketing (Owned media)',
-            'Google Ads ACI'
+            'product-owned'
           )
           THEN 'Other'
         ELSE adjust_info.adjust_network
@@ -27,17 +24,7 @@ SELECT
       adjust_info.adjust_campaign,
       adjust_info.adjust_creative,
       adjust_info.submission_timestamp
-    ) AS adjust_info,
-    CASE
-      WHEN install_source IS NULL
-        OR install_source = ''
-        THEN 'Unknown'
-      WHEN install_source NOT IN (
-          'com.android.vending'
-        )  -- TODO: this needs to be changed
-        THEN 'Other'
-      ELSE install_source
-    END AS install_source
+    ) AS adjust_info
   ),
 FROM
-  tmp.kik_firefox_ios_attribution_1st_version
+  firefox_ios_derived.firefox_ios_clients_v1

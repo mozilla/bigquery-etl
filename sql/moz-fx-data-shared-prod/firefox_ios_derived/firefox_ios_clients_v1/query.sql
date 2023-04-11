@@ -22,20 +22,17 @@ WITH first_seen AS (
     AND normalized_channel = 'release'
 ),
 -- Find the most recent activation record per client_id.
--- # TODO: new_profile_activation needs to be created for firefox_ios first
--- #        this should probably a separate ETL and join with this using a view to avoid having to recreate this table
--- #        to reflect users activation status
--- activations AS (
---   SELECT
---     client_id,
---     ARRAY_AGG(activated ORDER BY submission_date DESC)[SAFE_OFFSET(0)] > 0 AS activated
---   FROM
---     firefox_ios.new_profile_activation
---   WHERE
---     submission_date = @submission_date
---   GROUP BY
---     client_id
--- ),
+activations AS (
+  SELECT
+    client_id,
+    ARRAY_AGG(activated ORDER BY submission_date DESC)[SAFE_OFFSET(0)] > 0 AS activated
+  FROM
+    firefox_ios.new_profile_activation
+  WHERE
+    submission_date = @submission_date
+  GROUP BY
+    client_id
+),
 -- Find earliest data per client from the first_session ping.
 first_session_ping AS (
   SELECT
@@ -113,24 +110,19 @@ metrics_ping AS (
       LIMIT
         1
     )[SAFE_OFFSET(0)] AS adjust_info,
-    -- # TODO: understand better the install_source field.
-    -- what exactly does it contain?
-    ARRAY_AGG(install_source IGNORE NULLS ORDER BY submission_timestamp ASC)[
-      SAFE_OFFSET(0)
-    ] AS install_source,
   FROM
     (
       SELECT
         client_info.client_id AS client_id,
         sample_id,
         submission_timestamp,
-        NULLIF(metrics.string.metrics_adjust_ad_group, "") AS adjust_ad_group,
-        NULLIF(metrics.string.metrics_adjust_campaign, "") AS adjust_campaign,
-        NULLIF(metrics.string.metrics_adjust_creative, "") AS adjust_creative,
-        NULLIF(metrics.string.metrics_adjust_network, "") AS adjust_network,
-        NULLIF(metrics.string.metrics_install_source, "") AS install_source,
+        NULLIF(fxa_metrics.metrics.string.adjust_ad_group, "") AS adjust_ad_group,
+        NULLIF(fxa_metrics.metrics.string.adjust_campaign, "") AS adjust_campaign,
+        NULLIF(fxa_metrics.metrics.string.adjust_creative, "") AS adjust_creative,
+        NULLIF(fxa_metrics.metrics.string.adjust_network, "") AS adjust_network,
+        -- NULLIF(metrics.string.metrics_install_source, "") AS install_source,
       FROM
-        firefox_ios.metrics
+        firefox_ios.metrics AS fxa_metrics
       WHERE
         DATE(submission_timestamp) = @submission_date
         AND client_info.client_id IS NOT NULL
@@ -143,7 +135,7 @@ _current AS (
     * EXCEPT (min_submission_datetime, first_run_date, sample_id, adjust_info),
     COALESCE(first_session.adjust_info, metrics.adjust_info) AS adjust_info,
     COALESCE(first_seen.sample_id, first_session.sample_id, metrics.sample_id) AS sample_id,
-    -- activated AS activated,  -- # TODO: new_profile_activation needs to be created before we can get this
+    activated AS activated,
     STRUCT(
       IF(first_session.client_id IS NULL, FALSE, TRUE) AS reported_first_session_ping,
       IF(metrics.client_id IS NULL, FALSE, TRUE) AS reported_metrics_ping,
@@ -178,12 +170,7 @@ _current AS (
         WHEN metrics.adjust_info IS NOT NULL
           THEN "metrics"
         ELSE NULL
-      END AS adjust_info__source_ping,
-      CASE
-        WHEN metrics.install_source IS NOT NULL
-          THEN "metrics"
-        ELSE NULL
-      END AS install_source__source_ping
+      END AS adjust_info__source_ping
     ) AS metadata
   FROM
     first_seen
@@ -195,10 +182,10 @@ _current AS (
     metrics_ping AS metrics
   USING
     (client_id)
-  -- LEFT JOIN
-  --   activations
-  -- USING
-  --   (client_id)
+  LEFT JOIN
+    activations
+  USING
+    (client_id)
   WHERE
     client_id IS NOT NULL
 ),
@@ -222,7 +209,6 @@ SELECT
   COALESCE(_previous.device_model, _current.device_model) AS device_model,
   COALESCE(_previous.os_version, _current.os_version) AS os_version,
   COALESCE(_previous.app_version, _current.app_version) AS app_version,
-  COALESCE(_previous.install_source, _current.install_source) AS install_source,
   STRUCT(
     COALESCE(
       _previous.adjust_info.submission_timestamp,
@@ -269,11 +255,7 @@ SELECT
     COALESCE(
       _previous.metadata.adjust_info__source_ping,
       _current.metadata.adjust_info__source_ping
-    ) AS adjust_info__source_ping,
-    COALESCE(
-      _previous.metadata.install_source__source_ping,
-      _current.metadata.install_source__source_ping
-    ) AS install_source__source_ping
+    ) AS adjust_info__source_ping
   ) AS metadata,
 FROM
   _current

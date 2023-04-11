@@ -16,6 +16,39 @@ RETURNS ARRAY<INT64> AS (
   )
 );
 
+WITH all_bucket_counts AS (
+  SELECT
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    first_bucket,
+    last_bucket,
+    num_buckets,
+    metric,
+    metric_type,
+    key,
+    process,
+    agg_type,
+    bucket_counts.record AS record,
+    non_norm_bucket_counts.record as non_norm_record
+  FROM clients_histogram_bucket_counts_v1 AS bucket_counts
+  JOIN clients_non_norm_histogram_bucket_counts_v1 AS non_norm_bucket_counts
+  USING
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    first_bucket,
+    last_bucket,
+    num_buckets,
+    metric,
+    metric_type,
+    key,
+    process,
+    agg_type
+)
+
 SELECT
   IF(os = '*', NULL, os) AS os,
   app_version,
@@ -35,8 +68,13 @@ SELECT
     mozfun.map.sum(ARRAY_AGG(record)),
     mozfun.glam.histogram_buckets_cast_string_array(udf_get_buckets(first_bucket, max(last_bucket), max(num_buckets), metric_type)),
     CAST(ROUND(SUM(record.value)) AS INT64)
-  ) AS aggregates
-FROM clients_histogram_bucket_counts_v1
+  ) AS aggregates,
+  mozfun.glam.histogram_fill_buckets( mozfun.map.sum(ARRAY_AGG(non_norm_record)),
+      mozfun.glam.histogram_buckets_cast_string_array(udf_get_buckets(first_bucket,
+          MAX(last_bucket),
+          MAX(num_buckets),
+          metric_type))) AS non_norm_aggregates,
+FROM all_bucket_counts
 GROUP BY
   os,
   app_version,

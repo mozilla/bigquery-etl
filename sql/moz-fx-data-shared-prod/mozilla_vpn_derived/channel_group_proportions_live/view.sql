@@ -36,7 +36,7 @@ WITH stage_1 AS (
     pricing_plan,
     provider,
     json_promotion_codes,
-    granular_event_type,
+    granular_event_type
 ),
 stage_2 AS (
   SELECT

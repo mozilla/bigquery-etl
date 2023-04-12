@@ -11,7 +11,7 @@ import attr
 import cattrs
 
 from bigquery_etl.dependency import extract_table_references_without_views
-from bigquery_etl.metadata.parse_metadata import Metadata
+from bigquery_etl.metadata.parse_metadata import Metadata, PartitionType
 from bigquery_etl.query_scheduling.utils import (
     is_date_string,
     is_email,
@@ -175,6 +175,7 @@ class Task:
     depends_on_past: bool = attr.ib(False)
     start_date: Optional[str] = attr.ib(None)
     date_partition_parameter: Optional[str] = "submission_date"
+    table_partition_template: Optional[str] = None
     # number of days date partition parameter should be offset
     date_partition_offset: Optional[int] = None
     # indicate whether data should be published as JSON
@@ -332,6 +333,36 @@ class Task:
         if metadata.is_public_json():
             task_config["public_json"] = True
 
+        # Override the table_partition_template if there is no `destination_table`
+        # set in the scheduling section of the metadata. If not then pass a jinja
+        # template that reformats the date string used for table partition decorator.
+        # See doc here for formatting conventions:
+        #  https://cloud.google.com/bigquery/docs/managing-partitioned-table-data#partition_decorators
+        if (
+            metadata.bigquery
+            and metadata.bigquery.time_partitioning
+            and metadata.scheduling.get("destination_table") is None
+        ):
+            match metadata.bigquery.time_partitioning.type:
+                case PartitionType.YEAR:
+                    partition_template = '{{ dag_run.logical_date.strftime("%Y") }}'
+                case PartitionType.MONTH:
+                    partition_template = '{{ dag_run.logical_date.strftime("%Y%m") }}'
+                case PartitionType.DAY:
+                    # skip for the default case of daily partitioning
+                    partition_template = None
+                case PartitionType.HOUR:
+                    partition_template = (
+                        '{{ dag_run.logical_date.strftime("%Y%m%d%H") }}'
+                    )
+                case _:
+                    raise TaskParseException(
+                        f"Invalid partition type: {metadata.bigquery.time_partitioning.type}"
+                    )
+
+            if partition_template:
+                task_config["table_partition_template"] = partition_template
+
         try:
             return converter.structure(task_config, cls)
         except TypeError as e:
@@ -462,6 +493,9 @@ class Task:
 
             if len(date_partition_offsets) > 0:
                 self.date_partition_offset = min(date_partition_offsets)
+                # unset the table_partition_template property if we have an offset
+                # as that will be overridden in the template via `destination_table`
+                self.table_partition_template = None
                 date_partition_offset_task_keys = [
                     dependency.task_key
                     for dependency in dependencies

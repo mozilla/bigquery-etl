@@ -1,3 +1,4 @@
+--- User-facing view. Generated via sql_generators.active_users_aggregates.
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.focus_android.active_users_aggregates`
 AS
@@ -12,8 +13,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.focus_android_derived.active_users_aggregates_v1`
 WHERE
-  app_name NOT IN ('Focus Android Glean', 'Focus Android Glean BrowserStack', 'Focus Android')
-  OR (
+  (
     app_name IN ('Focus Android Glean', 'Focus Android Glean BrowserStack')
     AND submission_date >= '2023-01-01'
   )

@@ -3,7 +3,7 @@ WITH todays_metrics AS (
   SELECT
     client_id,
     activity_segments_v1 AS segment,
-    '' AS app_name,
+    'Firefox Desktop' AS app_name,
     app_version AS app_version,
     normalized_channel AS channel,
     IFNULL(country, '??') country,

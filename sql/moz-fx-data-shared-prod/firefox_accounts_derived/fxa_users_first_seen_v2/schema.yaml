@@ -1,0 +1,62 @@
+fields:
+
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: |
+    Represents ETL job date.
+    Also, used for table partitioning.
+
+- mode: NULLABLE
+  name: user_id
+  type: STRING
+  description: |
+    A 36 char long hash value representing
+    User ID (registered user).
+    Also, used as a clustering field.
+
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: |
+    User's country where activity took place.
+    See: UDF mozdata.stats.mode_last for more
+    info on how the function operates.
+
+- mode: NULLABLE
+  name: language
+  type: STRING
+  description: |
+    User's language.
+
+- mode: NULLABLE
+  name: os_name
+  type: STRING
+  description: |
+    OS on which the app was running.
+    For example: Android.
+
+- mode: NULLABLE
+  name: os_version
+  type: STRING
+  description: |
+    Version of the OS the device was using.
+
+- mode: NULLABLE
+  name: seen_in_tier1_country
+  type: BOOLEAN
+  description: |
+    Set to True if a user sent an event from
+    one of the following countries for
+    a specific submission_date:
+    ('United States','France',
+    'Germany','United Kingdom','Canada')
+    when seen for the first time.
+
+- mode: NULLABLE
+  name: registered
+  type: BOOLEAN
+  description: |
+    Set to True if the user submitted
+    the event_type of `fxa_reg - complete`
+    event on the specific submission_date.

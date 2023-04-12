@@ -1,0 +1,49 @@
+friendly_name: Downloads With Attribution
+description: |-
+  A daily joining of Firefox download tokens with Google Analytics attribution data.
+  Due to delays in GA session reporting this table has a total 3 day lag. This is due to a combination of delayed data
+  from GA, end of day processing in ETL and the need to check GA sessions a day later for the download attribution.
+  e.g Data for 2023-04-05 will not be available until 2023-04-08
+
+  1. Each row in this table should be a unique dltoken.
+
+  2. A single GA session can have multiple dltokens (a session resulted in multiple downloads).
+
+  3. If either the stub_visit_id or stub_download_session_id is '', '(not set)', or 'something', the exception column will be:
+    * DOWNLOAD_SESSION_ID_EMPTY
+    * DOWNLOAD_SESSION_ID_VALUE_NOT_SET or
+    * DOWNLOAD_SESSION_ID_VALUE_SOMETHING
+    * All GA derived values will be null
+
+  4. If the stub_visit_id is valid but not found in that day's GA sessions:
+    * exception column will be MISSING_GA_CLIENT
+    * All GA derived values will be null
+
+  5. A GA session which does not have a dltoken with a corresponding stub_visit_id/clientId match is excluded from this dataset.
+
+  6. A single dltoken has multiple records
+    * count_dltoken_duplicates will be >= 1.
+    * A value of 0 means there are no duplicates (expected state).
+    * A value of 1 means there was 1 other row with the dltoken value, etc.
+owners:
+- gleonard@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  owner1: gleonard
+scheduling:
+  dag_name: bqetl_download_funnel_attribution
+  referenced_tables:
+  - - moz-fx-data-marketing-prod
+    - ga_derived
+    - www_site_empty_check_v1
+  date_partition_offset: -7
+  date_partition_parameter: download_date
+bigquery:
+  time_partitioning:
+    type: day
+    field: download_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering: null
+references: {}

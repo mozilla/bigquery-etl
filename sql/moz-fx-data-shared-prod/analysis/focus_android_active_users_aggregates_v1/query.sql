@@ -25,7 +25,7 @@ WITH baseline AS (
     CAST(NULL AS string) AS isp,
     'Focus Android' AS app_name
   FROM
-    `{{ project_id }}.telemetry.core_clients_last_seen`
+    `moz-fx-data-shared-prod.telemetry.core_clients_last_seen`
   WHERE
     submission_date = @submission_date
     AND app_name = 'Focus'
@@ -54,7 +54,7 @@ WITH baseline AS (
     isp,
     'Focus Android Glean' AS app_name
   FROM
-    `{{ project_id }}.{{ app_name }}.clients_last_seen_joined`
+    `moz-fx-data-shared-prod.focus_android.clients_last_seen_joined`
   WHERE
     submission_date = @submission_date
 ),
@@ -76,7 +76,7 @@ search_clients AS (
     `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
   WHERE
     submission_date = @submission_date
-    AND app_name = '{{ app_value }}'
+    AND app_name = 'Focus Android'
 ),
 search_metrics AS (
   SELECT

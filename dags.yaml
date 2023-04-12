@@ -862,7 +862,6 @@ bqetl_domain_meta:
   default_args:
     depends_on_past: false
     email:
-      - telemetry-alerts@mozilla.com
       - wstuckey@mozilla.com
     email_on_failure: true
     email_on_retry: true
@@ -874,7 +873,8 @@ bqetl_domain_meta:
   description: Domain metadata
   schedule_interval: monthly
   tags:
-    - impact/tier_2
+    - impact/tier_3
+    - triage/no_triage
     - repo/bigquery-etl
 
 bqetl_sponsored_tiles_clients_daily:
@@ -1018,6 +1018,30 @@ bqetl_mdn_yari:
   tags:
     - impact/tier_3
     - triage/record_only
+
+bqetl_status_check:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: ascholtz@mozilla.com
+    retries: 0
+    start_date: '2023-04-01'
+  description: |
+    This DAG checks if bigquery-etl is working properly. Dummy ETL tasks are executed to detect
+    breakages as soon as possible.
+
+    *Triage notes*
+
+    None of these tasks should fail. If they do it is very likely that other/all ETL tasks will
+    subsequently fail as well. Any failures should be communicated to the Data Infra Working Group
+    as soon as possible.
+  schedule_interval: "1h"
+  tags:
+    - impact/tier_1
 
 bqetl_download_funnel_attribution:
   default_args:

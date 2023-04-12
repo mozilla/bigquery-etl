@@ -9,8 +9,8 @@ RUN apt update && apt --yes install curl
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH $HOME/.cargo/bin:$PATH
 
-RUN git clone --depth 1 https://github.com/divviup/janus.git --branch 0.2.7 --single-branch
-RUN cd janus && cargo build -r -p janus_collector --example collect
+RUN git clone --depth 1 https://github.com/divviup/janus.git
+RUN cd janus && cargo build -r -p janus_tools --bin collect
 
 ######### next stage
 
@@ -25,7 +25,7 @@ WORKDIR ${HOME}
 RUN groupadd --gid ${USER_ID} ${GROUP_ID} && \
     useradd --create-home --uid ${USER_ID} --gid ${GROUP_ID} --home-dir ${HOME} ${GROUP_ID}
 
-COPY --from=0 /janus_build/janus/target/release/examples/collect ./
+COPY --from=0 /janus_build/janus/target/release/collect ./
 
 # Drop root and change ownership of the application folder to the user
 RUN chown -R ${USER_ID}:${GROUP_ID} ${HOME}

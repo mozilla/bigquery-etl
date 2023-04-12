@@ -37,8 +37,7 @@ scheduling:
   - - moz-fx-data-marketing-prod
     - ga_derived
     - www_site_empty_check_v1
-  date_partition_offset: -7
-  date_partition_parameter: download_date
+  date_partition_parameter: null
 bigquery:
   time_partitioning:
     type: day

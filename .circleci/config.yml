@@ -519,15 +519,15 @@ jobs:
                 image: bigquery-etl
                 tag: ${CIRCLE_TAG:-latest}
             - gcp-gcr/push-image: *private-image
-  glam-dev-deploy:
+  glam-dev-non-norm-deploy:
     executor: ubuntu-machine-executor
     steps:
       - checkout
       - when:
           condition:
             or:
-              - equal: [glam-etl-dev-partition, << pipeline.git.branch >>]
-              - equal: [glam-etl-dev-partition, << pipeline.git.branch >>]
+              - equal: [glam-dev-non-norm-agg, << pipeline.git.branch >>]
+              - equal: [glam-dev-non-norm-agg, << pipeline.git.branch >>]
           steps:
             - *attach_generated_sql
             - run:
@@ -537,7 +537,7 @@ jobs:
                   cp -r /tmp/workspace/private-generated-sql/sql sql
             - gcp-gcr/gcr-auth
             - gcp-gcr/build-image: &private-image
-                image: glam-dev-bigquery-etl
+                image: glam-dev-non-norm-bigquery-etl
                 tag: ${CIRCLE_TAG:-latest}
             - gcp-gcr/push-image: *private-image
   generate-diff:
@@ -744,7 +744,7 @@ workflows:
             # can't run in parallel because CIRCLE_BUILD_NUM is same
             - build
             - generate-sql
-      - glam-dev-deploy:
+      - glam-dev-non-norm-deploy:
           context: data-eng-airflow-gcr
           requires:
             - private-generate-sql

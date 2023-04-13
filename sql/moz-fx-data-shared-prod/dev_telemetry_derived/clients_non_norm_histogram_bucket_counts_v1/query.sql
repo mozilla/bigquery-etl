@@ -33,7 +33,7 @@ SELECT
   num_buckets,
   metric,
   metric_type,
-  normalized_histograms.key AS key,
+  non_normalized_histograms.key AS key,
   process,
   agg_type,
   STRUCT<key STRING, value FLOAT64>(

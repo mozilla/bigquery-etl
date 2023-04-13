@@ -22,7 +22,7 @@ WITH first_seen AS (
 activations AS (
   SELECT
     client_id,
-    activated > 0 AS activated,
+    activated,
   FROM
     firefox_ios.new_profile_activation
   WHERE

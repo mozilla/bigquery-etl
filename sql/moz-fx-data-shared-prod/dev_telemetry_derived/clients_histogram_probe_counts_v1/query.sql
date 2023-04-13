@@ -35,7 +35,7 @@ WITH all_bucket_counts AS (
   FROM clients_histogram_bucket_counts_v1 AS bucket_counts
   JOIN clients_non_norm_histogram_bucket_counts_v1 AS non_norm_bucket_counts
   USING
-    os,
+    (os,
     app_version,
     app_build_id,
     channel,
@@ -46,7 +46,7 @@ WITH all_bucket_counts AS (
     metric_type,
     key,
     process,
-    agg_type
+    agg_type)
 )
 
 SELECT

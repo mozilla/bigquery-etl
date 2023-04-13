@@ -3,7 +3,6 @@ WITH non_normalized_histograms AS (
     * EXCEPT (sampled) REPLACE(
         mozfun.map.sum(ARRAY_CONCAT_AGG(aggregates)) AS aggregates
       )
-    )
   FROM
     clients_histogram_all_combos_v1
   WHERE sample_id >= @min_sample_id

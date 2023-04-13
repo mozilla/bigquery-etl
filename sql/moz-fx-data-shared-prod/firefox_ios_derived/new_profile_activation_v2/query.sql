@@ -40,17 +40,18 @@ client_search AS (
   USING
     (client_id)
   WHERE
-    (submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY) AND @submission_date)
-    -- AND normalized_app_name = 'Fennec'  -- # TODO: should this be filtering for a specific app or is os filter enough here?
+    (submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY) AND @submission_date)  -- # TODO: is why look at a smaller time window here, why not 7 days?
     AND os = 'iOS'
+    AND normalized_app_name = 'Fennec'
   GROUP BY
     client_id
 )
 SELECT
   @submission_date AS submission_date,
-  client_id,
+  -- @submission_date AS activation_date,  -- # TODO: this naming only makes sense if we decide to only include users in this table that activate
   first_seen_date,
-  IF(days_2_7 > 1 AND COALESCE(search_count, 0) > 0, TRUE, FALSE) AS is_activated,
+  client_id,
+  IF(days_2_7 > 1 AND COALESCE(search_count, 0) > 0, TRUE, FALSE) AS is_activated,  -- # TODO: if we decide to only include activated users in this table this should be removed
 FROM
   dou
 INNER JOIN
@@ -61,3 +62,7 @@ LEFT JOIN
   client_search
 USING
   (client_id)
+-- # TODO: remove if we decide to include everyone
+-- filter for users that activated
+-- WHERE
+--   IF(days_2_7 > 1 AND COALESCE(search_count, 0) > 0, TRUE, FALSE)

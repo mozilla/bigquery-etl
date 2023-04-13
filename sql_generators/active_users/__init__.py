@@ -49,6 +49,7 @@ def generate(target_project, output_dir, use_cloud_function):
     env = Environment(loader=FileSystemLoader(str(THIS_PATH / "templates")))
     mobile_query_template = env.get_template("mobile_query.sql")
     desktop_query_template = env.get_template("desktop_query.sql")
+    focus_android_query_template = env.get_template("focus_android_query.sql")
     metadata_template = "metadata.yaml"
     view_template = env.get_template("view.sql")
     focus_android_view_template = env.get_template("focus_android_view.sql")
@@ -59,6 +60,16 @@ def generate(target_project, output_dir, use_cloud_function):
         if browser.name == "firefox_desktop":
             query_sql = reformat(
                 desktop_query_template.render(
+                    project_id=target_project,
+                    app_value=browser.value,
+                    app_name=browser.name,
+                )
+            )
+        elif browser.name == "focus_android":
+            query_sql = reformat(
+                focus_android_query_template.render(
+                    project_id=target_project,
+                    app_value=browser.value,
                     app_name=browser.name,
                 )
             )

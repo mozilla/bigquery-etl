@@ -3,7 +3,6 @@ WITH first_seen AS (
   SELECT
     client_id,
     submission_date,
-    -- first_run_date,
     first_seen_date,
     sample_id,
     country AS first_reported_country,
@@ -20,10 +19,12 @@ WITH first_seen AS (
     AND client_id IS NOT NULL
 ),
 -- Find the most recent activation record per client_id.
+-- TODO: Make sure new_profile_activation does not allow
+-- more than 1 record per client_id.
 activations AS (
   SELECT
     client_id,
-    ARRAY_AGG(activated ORDER BY submission_date DESC)[SAFE_OFFSET(0)] > 0 AS activated
+    activated > 0 AS activated,
   FROM
     firefox_ios.new_profile_activation
   WHERE
@@ -37,7 +38,6 @@ first_session_ping_base AS (
     client_info.client_id,
     sample_id,
     submission_timestamp,
-    -- client_info.first_run_date,
     NULLIF(metrics.string.adjust_ad_group, "") AS adjust_ad_group,
     NULLIF(metrics.string.adjust_campaign, "") AS adjust_campaign,
     NULLIF(metrics.string.adjust_creative, "") AS adjust_creative,
@@ -51,12 +51,9 @@ first_session_ping_base AS (
 first_session_ping AS (
   SELECT
     client_id,
-    MIN(sample_id) AS sample_id,
-    -- DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
-    -- DATE(MIN(SAFE.PARSE_DATETIME('%F', SUBSTR(first_run_date, 1, 10)))) AS first_run_date,
+    sample_id,
     ARRAY_AGG(
       IF(
-        -- we should probably do the nullif prior to doing this is not null check
         adjust_ad_group IS NOT NULL
         OR adjust_campaign IS NOT NULL
         OR adjust_creative IS NOT NULL
@@ -71,14 +68,15 @@ first_session_ping AS (
         NULL
       ) IGNORE NULLS
       ORDER BY
-        submission_timestamp
+        submission_timestamp ASC
       LIMIT
         1
     )[SAFE_OFFSET(0)] AS adjust_info,
   FROM
     first_session_ping_base
   GROUP BY
-    client_id
+    client_id,
+    sample_id
 ),
 -- Find earliest data per client from the metrics ping.
 metrics_ping_base AS (
@@ -90,7 +88,6 @@ metrics_ping_base AS (
     NULLIF(fxa_metrics.metrics.string.adjust_campaign, "") AS adjust_campaign,
     NULLIF(fxa_metrics.metrics.string.adjust_creative, "") AS adjust_creative,
     NULLIF(fxa_metrics.metrics.string.adjust_network, "") AS adjust_network,
-    -- NULLIF(metrics.string.metrics_install_source, "") AS install_source,
   FROM
     firefox_ios.metrics AS fxa_metrics
   WHERE
@@ -100,10 +97,7 @@ metrics_ping_base AS (
 metrics_ping AS (
   SELECT
     client_id,
-    MIN(sample_id) AS sample_id,
-    -- DATETIME(
-    --   MIN(submission_timestamp)
-    -- ) AS min_submission_datetime,  -- do we need this? Looks like later we might want to see timestamp corresponding to the row that contains the campaign info
+    sample_id,
     ARRAY_AGG(
       IF(
         adjust_ad_group IS NOT NULL
@@ -120,29 +114,25 @@ metrics_ping AS (
         NULL
       ) IGNORE NULLS
       ORDER BY
-        submission_timestamp
+        submission_timestamp ASC
       LIMIT
         1
     )[SAFE_OFFSET(0)] AS adjust_info,
   FROM
     metrics_ping_base
   GROUP BY
-    client_id
+    client_id,
+    sample_id
 ),
 _current AS (
   SELECT
-    * EXCEPT (sample_id, adjust_info, activated),
-    COALESCE(first_session.adjust_info, metrics.adjust_info) AS adjust_info,
+    * EXCEPT (adjust_info, activated, sample_id),
     COALESCE(first_seen.sample_id, first_session.sample_id, metrics.sample_id) AS sample_id,
+    COALESCE(first_session.adjust_info, metrics.adjust_info) AS adjust_info,
     activations.activated AS activated,
     STRUCT(
       IF(first_session.client_id IS NULL, FALSE, TRUE) AS reported_first_session_ping,
       IF(metrics.client_id IS NULL, FALSE, TRUE) AS reported_metrics_ping,
-      -- DATE(first_session.min_submission_datetime) AS min_first_session_ping_submission_date,
-      -- DATE(first_session.first_run_date) AS min_first_session_ping_run_date,
-      -- DATE(
-      --   metrics.min_submission_datetime
-      -- ) AS min_metrics_ping_submission_date, -- TODO: are these date fields useful?
       CASE
         WHEN first_session.adjust_info IS NOT NULL
           THEN "first_session"
@@ -156,11 +146,11 @@ _current AS (
   FULL OUTER JOIN
     first_session_ping AS first_session
   USING
-    (client_id)
+    (client_id, sample_id)
   FULL OUTER JOIN
     metrics_ping AS metrics
   USING
-    (client_id)
+    (client_id, sample_id)
   LEFT JOIN
     activations
   USING
@@ -176,7 +166,7 @@ _previous AS (
 )
 SELECT
   client_id,
-  COALESCE(_previous.sample_id, _current.sample_id) AS sample_id,
+  sample_id,
   COALESCE(_previous.first_seen_date, _current.first_seen_date) AS first_seen_date,
   COALESCE(
     _previous.first_reported_country,
@@ -189,28 +179,22 @@ SELECT
   COALESCE(_previous.os_version, _current.os_version) AS os_version,
   COALESCE(_previous.app_version, _current.app_version) AS app_version,
   COALESCE(_previous.activated, _current.activated) AS activated,
-  STRUCT(
-    COALESCE(
-      _previous.adjust_info.submission_timestamp,
-      _current.adjust_info.submission_timestamp
-    ) AS submission_timestamp,
-    COALESCE(
-      _previous.adjust_info.adjust_ad_group,
-      _current.adjust_info.adjust_ad_group
-    ) AS adjust_ad_group,
-    COALESCE(
-      _previous.adjust_info.adjust_campaign,
-      _current.adjust_info.adjust_campaign
-    ) AS adjust_campaign,
-    COALESCE(
-      _previous.adjust_info.adjust_creative,
-      _current.adjust_info.adjust_creative
-    ) AS adjust_creative,
-    COALESCE(
-      _previous.adjust_info.adjust_network,
-      _current.adjust_info.adjust_network
-    ) AS adjust_network
-  ) AS adjust_info,
+  -- below is to avoid mix and matching different adjust attributes
+  -- from different records. This way we always treat them as a single "unit"
+  IF(
+    _previous.adjust_ad_group IS NULL
+    AND _previous.adjust_campaign IS NULL
+    AND _previous.adjust_creative IS NULL
+    AND _previous.adjust_network IS NULL,
+    _current.adjust_info,
+    STRUCT(
+      _previous.submission_timestamp,
+      _previous.adjust_ad_group,
+      _previous.adjust_campaign,
+      _previous.adjust_creative,
+      _previous.adjust_network
+    )
+  ).*,
   STRUCT(
     COALESCE(
       _previous.metadata.reported_first_session_ping,
@@ -220,18 +204,6 @@ SELECT
       _previous.metadata.reported_metrics_ping,
       _current.metadata.reported_metrics_ping
     ) AS reported_metrics_ping,
-    -- COALESCE(
-    --   _previous.metadata.min_first_session_ping_submission_date,
-    --   _current.metadata.min_first_session_ping_submission_date
-    -- ) AS min_first_session_ping_submission_date,
-    -- COALESCE(
-    --   _previous.metadata.min_first_session_ping_run_date,
-    --   _current.metadata.min_first_session_ping_run_date
-    -- ) AS min_first_session_ping_run_date,
-    -- COALESCE(
-    --   _previous.metadata.min_metrics_ping_submission_date,
-    --   _current.metadata.min_metrics_ping_submission_date
-    -- ) AS min_metrics_ping_submission_date,
     COALESCE(
       _previous.metadata.adjust_info__source_ping,
       _current.metadata.adjust_info__source_ping
@@ -242,4 +214,4 @@ FROM
 FULL OUTER JOIN
   _previous
 USING
-  (client_id)
+  (client_id, sample_id)

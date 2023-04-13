@@ -47,6 +47,5 @@ bigquery:
     fields:
     - channel
     - sample_id
-    - first_reported_country
-    - device_model
+    - first_reported_isp
 references: {}

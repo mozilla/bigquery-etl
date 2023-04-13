@@ -67,48 +67,34 @@ fields:
     Determines if a client is activated based on the activation metric and a 7 day lag.
 
 - mode: NULLABLE
-  name: install_source
-  type: STRING
+  name: submission_timestamp
+  type: TIMESTAMP
   description: |
-    The source of a client installation.
-
+    Timestamp of the ping which contained the adjust information.
 
 - mode: NULLABLE
-  name: adjust_info
-  type: RECORD
+  name: adjust_ad_group
+  type: STRING
   description: |
-    Record containing adjust fields.
+    Structure parameter for the the ad group of a campaign.
 
-  fields:
-  - mode: NULLABLE
-    name: submission_timestamp
-    type: TIMESTAMP
-    description: |
-      Timestamp corresponding to the ping which contained the adjust information.
+- mode: NULLABLE
+  name: adjust_campaign
+  type: STRING
+  description: |
+    Structure parameter for the campaign name.
 
-  - mode: NULLABLE
-    name: adjust_ad_group
-    type: STRING
-    description: |
-      Structure parameter for the the ad group of a campaign.
+- mode: NULLABLE
+  name: adjust_creative
+  type: STRING
+  description: |
+    Structure parameter for the creative content of a campaign.
 
-  - mode: NULLABLE
-    name: adjust_campaign
-    type: STRING
-    description: |
-      Structure parameter for the campaign name.
-
-  - mode: NULLABLE
-    name: adjust_creative
-    type: STRING
-    description: |
-      Structure parameter for the creative content of a campaign.
-
-  - mode: NULLABLE
-    name: adjust_network
-    type: STRING
-    description: |
-      The type of source of a client installation.
+- mode: NULLABLE
+  name: adjust_network
+  type: STRING
+  description: |
+    The type of source of a client installation.
 
 - mode: NULLABLE
   name: metadata
@@ -128,24 +114,6 @@ fields:
     type: BOOLEAN
     description: |
       True if the client ever reported a metrics ping.
-
-  # - mode: NULLABLE
-  #   name: min_first_session_ping_submission_date
-  #   type: DATE
-  #   description: |
-  #     Date when the first reported first_sessin ping is received by the server.
-
-  # - mode: NULLABLE
-  #   name: min_first_session_ping_run_date
-  #   type: DATE
-  #   description: |
-  #     Date of first app run as reported in the earliest first_session ping.
-
-  # - mode: NULLABLE
-  #   name: min_metrics_ping_submission_date
-  #   type: DATE
-  #   description: |
-  #     Date when the first reported metrics ping is received by the server.
 
   - mode: NULLABLE
     name: adjust_info__source_ping

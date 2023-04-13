@@ -19,8 +19,6 @@ WITH first_seen AS (
     AND client_id IS NOT NULL
 ),
 -- Find the most recent activation record per client_id.
--- TODO: Make sure new_profile_activation does not allow
--- more than 1 record per client_id.
 activations AS (
   SELECT
     client_id,

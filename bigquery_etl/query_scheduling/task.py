@@ -9,12 +9,14 @@ from typing import List, Optional, Tuple
 
 import attr
 import cattrs
+import click
 
 from bigquery_etl.dependency import extract_table_references_without_views
 from bigquery_etl.metadata.parse_metadata import Metadata, PartitionType
 from bigquery_etl.query_scheduling.utils import (
     is_date_string,
     is_email_or_github_identity,
+    is_github_identity,
     is_schedule_interval,
     is_timedelta_string,
     is_valid_dag_name,
@@ -328,7 +330,11 @@ class Task:
             if dag is not None:
                 default_email = dag.default_args.email
         email = task_config.get("email", default_email)
-        # owners get added to the email list
+        # Remove Github identities from the owners and add to the email list.
+        for owner in metadata.owners:
+            if is_github_identity(owner):
+                metadata.owners.remove(owner)
+                click.echo(f"Identity removed from Airflow email list: {owner}")
         task_config["email"] = list(set(email + metadata.owners))
 
         # data processed in task should be published

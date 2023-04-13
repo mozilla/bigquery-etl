@@ -27,8 +27,6 @@ activations AS (
     firefox_ios.new_profile_activation
   WHERE
     submission_date = @submission_date
-  GROUP BY
-    client_id
 ),
 -- Find earliest data per client from the first_session ping.
 first_session_ping_base AS (

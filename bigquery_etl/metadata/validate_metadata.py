@@ -55,7 +55,7 @@ def validate_change_control(
                     f" change_controlled but it's missing owners."
                 )
             )
-            return
+            return False
 
         with open(codeowners_file, "r") as owners_file:
             content = owners_file.readlines()
@@ -78,7 +78,8 @@ def validate_change_control(
                     f"CODEOWNERS. Sample row expected: {sample_row_all_owners}"
                 )
             )
-            return
+            return False
+
         for line in content:
             if line.startswith("#"):
                 continue
@@ -93,7 +94,7 @@ def validate_change_control(
                         f"{sample_row_all_owners}"
                     )
                 )
-                return
+                return False
     return True
 
 

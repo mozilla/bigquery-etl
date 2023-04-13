@@ -51,14 +51,18 @@ class TestMetadata:
             "owners": ["test@example.org"],
             "labels": {"change_controlled": "true", "foo": "abc"},
         }
-        self.check_metadata(runner=runner, metadata_conf=metadata)
+        self.check_metadata(
+            runner=runner, metadata_conf=metadata, expected_result=False
+        )
 
     def test_validate_change_control_no_owners_in_metadata(self, runner):
         metadata = {
             "friendly_name": "test",
             "labels": {"change_controlled": "true", "foo": "abc"},
         }
-        self.check_metadata(runner=runner, metadata_conf=metadata)
+        self.check_metadata(
+            runner=runner, metadata_conf=metadata, expected_result=False
+        )
 
     def test_validate_change_control_ok(self, runner):
         metadata = {
@@ -164,5 +168,8 @@ class TestMetadata:
             "#/sql/moz-fx-data-shared-prod/telemetry_derived/query_v1 test@example.org"
         )
         self.check_metadata(
-            runner=runner, metadata_conf=metadata, codeowners_conf=codeowners
+            runner=runner,
+            metadata_conf=metadata,
+            codeowners_conf=codeowners,
+            expected_result=False,
         )

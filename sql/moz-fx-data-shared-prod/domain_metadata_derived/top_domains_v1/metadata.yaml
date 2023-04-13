@@ -19,7 +19,6 @@ bigquery:
 
 scheduling:
   dag_name: bqetl_domain_meta
-  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
 
 workgroup_access:
   - role: roles/bigquery.dataViewer

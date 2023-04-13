@@ -53,5 +53,4 @@ with DAG(
         date_partition_parameter="submission_date",
         table_partition_template='{{ dag_run.logical_date.strftime("%Y%m") }}',
         depends_on_past=False,
-        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )

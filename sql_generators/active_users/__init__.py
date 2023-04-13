@@ -50,7 +50,7 @@ def generate(target_project, output_dir, use_cloud_function):
     mobile_query_template = env.get_template("mobile_query.sql")
     desktop_query_template = env.get_template("desktop_query.sql")
     focus_android_query_template = env.get_template("focus_android_query.sql")
-    metadata_template = env.get_template("metadata.yaml")
+    metadata_template = "metadata.yaml"
     view_template = env.get_template("view.sql")
     focus_android_view_template = env.get_template("focus_android_view.sql")
     mobile_view_template = env.get_template("mobile_view.sql")
@@ -96,7 +96,7 @@ def generate(target_project, output_dir, use_cloud_function):
             basename="metadata.yaml",
             sql=render(
                 metadata_template,
-                template_folder="templates",
+                template_folder=THIS_PATH / "templates",
                 app_value=browser.value,
                 app_name=browser.name,
                 format=False,

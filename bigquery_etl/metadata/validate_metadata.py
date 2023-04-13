@@ -52,32 +52,42 @@ def validate_change_control(
             click.echo(
                 click.style(
                     f"The metadata for {file_path} has the label"
-                    f" change_controlled but it's missing code owners."
+                    f" change_controlled but it's missing owners."
                 )
             )
             return
 
         with open(codeowners_file, "r") as owners_file:
             content = owners_file.readlines()
-        occurrences = 0
-        rows_expected = []
-        for meta_owner in metadata.owners:
-            if "@" not in meta_owner:
-                meta_owner = f"@{meta_owner}"
-            row_to_search_for = f"/{path_in_codeowners} {meta_owner}"
-            rows_expected.append(row_to_search_for)
-            for line in content:
-                if row_to_search_for == line.rstrip("\n"):
-                    occurrences += 1
-        if occurrences == 0:
+        owners_list = []
+        for owner in metadata.owners:
+            if "@" not in owner:
+                owner = f"@{owner}"
+            owners_list.append(owner)
+        sample_row_all_owners = f"/{path_in_codeowners} {(' '.join(owners_list))}"
+
+        if not [line for line in content if path_in_codeowners in line]:
             click.echo(
                 click.style(
-                    f"The metadata includes label change_controlled, which "
-                    f"requires CODEOWNERS to include at least one owner's "
-                    f"record: {rows_expected}."
+                    f"ERROR: This query has label `change_controlled` which "
+                    f"requires the query path and at least one of the owners in "
+                    f"CODEOWNERS. Sample row expected: {sample_row_all_owners}"
                 )
             )
             return
+        for line in content:
+            if path_in_codeowners in line and not any(
+                owner in line for owner in owners_list
+            ):
+                click.echo(
+                    click.style(
+                        f"ERROR: This query has label `change_controlled` which "
+                        f"requires at least one of the owners to be registered "
+                        f"in CODEOWNERS. Sample row expected: \n"
+                        f"{sample_row_all_owners}"
+                    )
+                )
+                return
     return True
 
 
@@ -104,7 +114,6 @@ def validate(target):
 
                     # todo more validation
                     # e.g. https://github.com/mozilla/bigquery-etl/issues/924
-
     else:
         logging.error(f"Invalid target: {target}, target must be a directory.")
         sys.exit(1)

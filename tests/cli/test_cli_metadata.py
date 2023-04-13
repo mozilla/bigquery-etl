@@ -45,7 +45,7 @@ class TestMetadata:
                 is expected_result
             )
 
-    def test_validate_change_control_no_codeowners(self, runner):
+    def test_validate_change_control_no_owners_in_codeowners(self, runner):
         metadata = {
             "friendly_name": "test",
             "owners": ["test@example.org"],
@@ -53,7 +53,7 @@ class TestMetadata:
         }
         self.check_metadata(runner=runner, metadata_conf=metadata)
 
-    def test_validate_change_control_no_metadataowners(self, runner):
+    def test_validate_change_control_no_owners_in_metadata(self, runner):
         metadata = {
             "friendly_name": "test",
             "labels": {"change_controlled": "true", "foo": "abc"},
@@ -96,6 +96,42 @@ class TestMetadata:
             expected_result=True,
         )
 
+    def test_validate_change_control_all_owners(self, runner):
+        metadata = {
+            "friendly_name": "test",
+            "owners": [
+                "test@example.org",
+                "test2@example.org",
+                "test3@example.org",
+            ],
+            "labels": {"change_controlled": "true", "foo": "abc"},
+        }
+        codeowners = "/sql/moz-fx-data-shared-prod/telemetry_derived/query_v1 test@example.org test2@example.org test3@example.org"
+        self.check_metadata(
+            runner=runner,
+            metadata_conf=metadata,
+            codeowners_conf=codeowners,
+            expected_result=True,
+        )
+
+    def test_validate_change_control_github_identity(self, runner):
+        metadata = {
+            "friendly_name": "test",
+            "owners": [
+                "test@example.org",
+                "test2@example.org",
+                "mozilla/reviewers",
+            ],
+            "labels": {"change_controlled": "true", "foo": "abc"},
+        }
+        codeowners = "/sql/moz-fx-data-shared-prod/telemetry_derived/query_v1 test2@example.org mozilla/reviewers"
+        self.check_metadata(
+            runner=runner,
+            metadata_conf=metadata,
+            codeowners_conf=codeowners,
+            expected_result=True,
+        )
+
     def test_validate_change_control_no_label(self, runner):
         metadata = {
             "friendly_name": "test",
@@ -103,3 +139,30 @@ class TestMetadata:
             "labels": {"foo": "abc"},
         }
         self.check_metadata(runner=runner, metadata_conf=metadata, expected_result=True)
+
+    def test_validate_change_control_more_than_one_owner_but_not_all(self, runner):
+        metadata = {
+            "friendly_name": "test",
+            "owners": ["test@example.org", "test2@example.org", "test3@example.org"],
+            "labels": {"change_controlled": "true"},
+        }
+        codeowners = "/sql/moz-fx-data-shared-prod/telemetry_derived/query_v1 test@example.org test2@example.org"
+        self.check_metadata(
+            runner=runner,
+            metadata_conf=metadata,
+            codeowners_conf=codeowners,
+            expected_result=True,
+        )
+
+    def test_validate_change_control_commented_line(self, runner):
+        metadata = {
+            "friendly_name": "test",
+            "owners": ["test@example.org", "test2@example.org"],
+            "labels": {"change_controlled": "true"},
+        }
+        codeowners = (
+            "#/sql/moz-fx-data-shared-prod/telemetry_derived/query_v1 test@example.org"
+        )
+        self.check_metadata(
+            runner=runner, metadata_conf=metadata, codeowners_conf=codeowners
+        )

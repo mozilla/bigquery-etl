@@ -35,9 +35,8 @@ searches AS (
     search_derived.mobile_search_clients_daily_v1
   WHERE
     submission_date = @submission_date
-    -- #TODO: is there a specific app we should be filtering for here for search info for ios?
-    -- AND normalized_app_name = 'Klar'
     AND os = 'iOS'
+    AND normalized_app_name = 'Fennec'
   GROUP BY
     submission_date,
     client_id
@@ -46,22 +45,22 @@ first_seen AS (
   SELECT
     client_id,
     country,
-    first_seen_date
+    first_seen_date,
   FROM
     firefox_ios.baseline_clients_first_seen
 ),
 adjust_client AS (
   SELECT
     client_id,
-    adjust_info.adjust_network,
-    adjust_info.adjust_ad_group AS adjust_adgroup,
-    adjust_info.adjust_campaign,
-    adjust_info.adjust_creative,
+    adjust_network,
+    adjust_ad_group AS adjust_adgroup,
+    adjust_campaign,
+    adjust_creative,
     metadata.reported_first_session_ping,
   FROM
     firefox_ios.firefox_ios_clients
   WHERE
-    adjust_info.adjust_network <> "Unknown"
+    adjust_network <> "Unknown"
 )
 SELECT
   submission_date,
@@ -111,7 +110,7 @@ SELECT
   ) AS ad_clicks,
 FROM
   adjust_client
-JOIN
+LEFT JOIN
   client_day
 USING
   (client_id)
@@ -119,7 +118,7 @@ FULL OUTER JOIN
   searches AS metrics_searches
 USING
   (client_id, submission_date)
-JOIN
+LEFT JOIN
   first_seen
 USING
   (client_id)

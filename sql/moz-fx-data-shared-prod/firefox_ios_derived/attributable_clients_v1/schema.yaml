@@ -84,9 +84,3 @@ fields:
   type: BOOLEAN
   description: |
     Determines if a client is a new profile.
-
-- mode: NULLABLE
-  name: activated
-  type: BOOLEAN
-  description: |
-    Determines if a client is activated based on the activation metric and a 7 day lag.

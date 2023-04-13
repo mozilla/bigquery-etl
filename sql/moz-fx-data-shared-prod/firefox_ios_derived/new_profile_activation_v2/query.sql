@@ -5,6 +5,9 @@
 -- always lag new profiles by seven days and the CTEs are filtered for
 -- corresponding periods.
 -- Each entry in this table corresponds to a new_profile
+
+-- TODO: Make sure new_profile_activation does not allow
+-- more than 1 record per client_id.!!!
 WITH dou AS (
   SELECT
     client_id,

@@ -24,6 +24,18 @@
         "type": "RECORD",
         "name": "system",
         "mode": "NULLABLE"
+      },
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "name",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "experiments",
+        "mode": "NULLABLE"
       }
     ],
     "type": "RECORD",

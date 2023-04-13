@@ -1,0 +1,14 @@
+friendly_name: Bigquery ETL Python Run Check
+description: |-
+  This query is scheduled frequently and used to detect any breakages in the
+  bigquery-etl tooling related to running Python scripts as soon as possible
+  to ensure nightly ETL tasks can run.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: false
+scheduling:
+  dag_name: bqetl_status_check
+  date_partition_parameter: null
+  depends_on_past: false
+  arguments: ["--task_instance={{ task_instance_key_str }}", "--run_id={{ run_id }}"]

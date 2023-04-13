@@ -1,0 +1,15 @@
+friendly_name: Bigquery ETL SQL Run Check
+description: |-
+  This query is scheduled frequently and used to detect any breakages in the
+  bigquery-etl tooling as soon as possible to ensure nightly ETL tasks can run.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: false
+scheduling:
+  dag_name: bqetl_status_check
+  date_partition_parameter: null  # overwriting entire table each time to keep just the latest record
+  depends_on_past: false
+  parameters:
+  - task_instance:STRING:{{task_instance_key_str}}
+  - run_id:STRING:{{run_id}}

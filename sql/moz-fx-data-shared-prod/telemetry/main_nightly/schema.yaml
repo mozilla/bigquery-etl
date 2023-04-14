@@ -29366,6 +29366,9 @@ fields:
         - mode: NULLABLE
           name: use_counter2_css_property_forced_color_adjust_page
           type: STRING
+        - mode: NULLABLE
+          name: pwmgr_signup_form_detection_ms
+          type: STRING
         mode: NULLABLE
         name: histograms
         type: RECORD
@@ -35002,6 +35005,16 @@ fields:
             type: INTEGER
           mode: REPEATED
           name: extensions_apis_dnr_startup_cache_entries
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: dom_parentprocess_process_launch_errors
           type: RECORD
         mode: NULLABLE
         name: keyed_scalars

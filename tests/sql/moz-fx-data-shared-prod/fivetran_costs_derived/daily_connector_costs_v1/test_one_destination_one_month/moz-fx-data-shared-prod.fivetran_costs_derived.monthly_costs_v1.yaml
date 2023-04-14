@@ -1,0 +1,4 @@
+---
+- destination_id: destination_1_id
+  measured_month: 2023-01-01
+  dollars_spent: 200.00

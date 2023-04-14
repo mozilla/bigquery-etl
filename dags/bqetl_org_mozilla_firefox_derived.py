@@ -76,6 +76,42 @@ with DAG(
         depends_on_past=True,
     )
 
+    org_mozilla_fenix_derived__client_deduplication__v1 = bigquery_etl_query(
+        task_id="org_mozilla_fenix_derived__client_deduplication__v1",
+        destination_table="client_deduplication_v1",
+        dataset_id="org_mozilla_fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+    )
+
+    org_mozilla_firefox_beta_derived__client_deduplication__v1 = bigquery_etl_query(
+        task_id="org_mozilla_firefox_beta_derived__client_deduplication__v1",
+        destination_table="client_deduplication_v1",
+        dataset_id="org_mozilla_firefox_beta_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+    )
+
+    org_mozilla_firefox_derived__client_deduplication__v1 = bigquery_etl_query(
+        task_id="org_mozilla_firefox_derived__client_deduplication__v1",
+        destination_table="client_deduplication_v1",
+        dataset_id="org_mozilla_firefox_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+    )
+
     wait_for_baseline_clients_daily = ExternalTaskSensor(
         task_id="wait_for_baseline_clients_daily",
         external_dag_id="copy_deduplicate",
@@ -108,3 +144,27 @@ with DAG(
     )
 
     fenix_derived__clients_yearly__v1.set_upstream(wait_for_baseline_clients_daily)
+
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    org_mozilla_fenix_derived__client_deduplication__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    org_mozilla_firefox_beta_derived__client_deduplication__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    org_mozilla_firefox_derived__client_deduplication__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )

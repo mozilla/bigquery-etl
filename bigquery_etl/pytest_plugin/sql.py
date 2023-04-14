@@ -1,5 +1,6 @@
 """PyTest plugin for running sql tests."""
 
+import datetime
 import json
 import os.path
 
@@ -8,6 +9,7 @@ from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
 from ..routine import parse_routine
+from ..util.common import render
 from .sql_test import (
     TABLE_EXTENSIONS,
     Table,
@@ -81,7 +83,7 @@ class SqlTest(pytest.Item, pytest.File):
         if test_name == "test_init":
             init_test = True
 
-            query = read(f"{path}/init.sql")
+            query = render("init.sql", template_folder=path)
             original, dest_name = (
                 f"{dataset_name}.{query_name}",
                 f"{dataset_name}_{query_name}_{test_name}",
@@ -90,9 +92,9 @@ class SqlTest(pytest.Item, pytest.File):
             query_name = dest_name
         elif test_name == "test_script":
             script_test = True
-            query = read(f"{path}/script.sql")
+            query = render("script.sql", template_folder=path)
         else:
-            query = read(f"{path}/query.sql")
+            query = render("query.sql", template_folder=path)
 
         expect = load(self.fspath.strpath, "expect")
 
@@ -123,6 +125,21 @@ class SqlTest(pytest.Item, pytest.File):
                         table_name.replace(".", "_").replace("-", "_"),
                     )
                     query = query.replace(original, table_name)
+
+                # second check for tablename tweaks.
+                # if the tablename ends with a date then need to replace that date with '*' for the
+                # query text substitution to work.
+                # e.g. see moz-fx-data-marketing-prod.65789850.ga_sessions_20230214
+                # A query using that table uses moz-fx-data-marketing-prod.65789850.ga_sessions_*
+                # with the date appended to allow for daily processing.
+                try:
+                    datetime.datetime.strptime(table_name[-8:], "%Y%m%d")
+                except ValueError:
+                    pass
+                else:
+                    generic_table_name = table_name[:-8] + "*"
+                    generic_original = original[:-8] + "*"
+                    query = query.replace(generic_original, generic_table_name)
                 tables[table_name] = Table(table_name, source_format, source_path)
                 print(f"Initialized {table_name}")
             elif extension == "sql":

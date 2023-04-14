@@ -237,22 +237,24 @@ class GleanAppPingViews(GleanTable):
                                 f"SAFE_CAST(NULL AS {dtype}) AS {node_name}"
                             )
             else:
-                if dtype == "RECORD":
-                    # unwrap missing struct - workaround to prevent type incompatibilities; NULL is always INT in STRUCT
-                    select_expr.append(
-                        f"""
-                            STRUCT(
-                                {self._generate_select_expression(node['fields'], {}, path + [node_name])}
-                            ) AS {node_name}
-                        """
-                    )
-                else:
-                    # field doesn't exist in app schema, set to NULL
-                    if node.get("mode", None) == "REPEATED":
-                        select_expr.append(
-                            f"SAFE_CAST(NULL AS ARRAY<{dtype}>) AS {node_name}"
-                        )
-                    else:
-                        select_expr.append(f"SAFE_CAST(NULL AS {dtype}) AS {node_name}")
+                select_expr.append(
+                    f"CAST(NULL AS {self._type_info(node)}) AS {node_name}"
+                )
 
         return ", ".join(select_expr)
+
+    def _type_info(self, node):
+        """Determine the type information"""
+        dtype = node["type"]
+        if dtype == "RECORD":
+            dtype = (
+                "STRUCT<"
+                + ", ".join(
+                    f"{field['name']} {self._type_info(field)}"
+                    for field in node["fields"]
+                )
+                + ">"
+            )
+        if node.get("mode") == "REPEATED":
+            return f"ARRAY<{dtype}>"
+        return dtype

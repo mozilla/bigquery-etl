@@ -2,6 +2,7 @@ name,code
 "n/a",??
 "UNKNOWN",??
 "None",??
+"(not set)",??
 "Andorra",AD
 "The Principality of Andorra",AD
 "United Arab Emirates",AE
@@ -9,6 +10,7 @@ name,code
 "Afghanistan",AF
 "The Islamic Republic of Afghanistan",AF
 "Antigua and Barbuda",AG
+"Antigua & Barbuda",AG
 "Anguilla",AI
 "Albania",AL
 "The Republic Albania",AL
@@ -33,6 +35,7 @@ name,code
 "Azerbaijan",AZ
 "The Republic of Azerbaijan",AZ
 "Bosnia and Herzegovina",BA
+"Bosnia & Herzegovina",BA
 "Barbados",BB
 "Bangladesh",BD
 "The People's Republic of Bangladesh",BD
@@ -50,6 +53,7 @@ name,code
 "Saint Barthélemy",BL
 "Saint BarthÃ©lemy",BL
 "The Collectivity of Saint-Barthélemy",BL
+"St. Barthélemy",BL
 "Bermuda",BM
 "Brunei",BN
 "Brunei Darussalam",BN
@@ -62,6 +66,7 @@ name,code
 "Sint Eustatius",BQ
 "Bonaire, Sint Eustatius, and Saba",BQ
 "Bonaire, Sint Eustatius and Saba",BQ
+"Caribbean Netherlands",BQ
 "Brazil",BR
 "The Federative Republic of Brazil",BR
 "Bahamas",BS
@@ -84,12 +89,14 @@ name,code
 "Congo, the Democratic Republic of the",CD
 "Democratic Republic of the Congo",CD
 "The Democratic Republic of the Congo",CD
+"Congo - Kinshasa",CD
 "Central African Republic",CF
 "The Central African Republic",CF
 "Congo",CG
 "Congo, Republic of the",CG
 "Republic of the Congo",CG
 "The Republic of the Congo",CG
+"Congo - Brazzaville",CG
 "Switzerland",CH
 "The Swiss Confederation",CH
 "Ivory Coast",CI
@@ -261,6 +268,7 @@ name,code
 "St Kitts and Nevis",KN
 "St. Kitts and Nevis",KN
 "Saint Kitts and Nevis",KN
+"St. Kitts & Nevis",KN
 "North Korea",KP
 "Korea, Democratic People's Republic of",KP
 "The Democratic People's Republic of Korea",KP
@@ -311,6 +319,7 @@ name,code
 "Saint Martin (French part)",MF
 "Collectivity of Saint Martin Saint Martin (French part)",MF
 "The Collectivity of Saint-Martin",MF
+"St. Martin",MF
 "Madagascar",MG
 "The Republic of Madagascar",MG
 "Marshall Islands",MH
@@ -326,6 +335,7 @@ name,code
 "The Republic of Mali",ML
 "Myanmar",MM
 "The Republic of the Union of Myanmar",MM
+"Myanmar (Burma)",MM
 "Mongolia",MN
 "Macau",MO
 "Macao",MO
@@ -388,6 +398,7 @@ name,code
 "The Republic of Poland",PL
 "Saint Pierre and Miquelon",PM
 "The Overseas Collectivity of Saint-Pierre and Miquelon",PM
+"St. Pierre & Miquelon",PM
 "Pitcairn Islands",PN
 "Pitcairn",PN
 "The Pitcairn, Henderson, Ducie and Oeno Islands",PN
@@ -434,11 +445,13 @@ name,code
 "Saint Helena",SH
 "St Helena, Ascension, Tristan da Cunha",SH
 "Saint Helena, Ascension and Tristan da Cunha",SH
+"St. Helena",SH
 "Slovenia",SI
 "The Republic of Slovenia",SI
 "Svalbard",SJ
 "Jan Mayen Jan Mayen",SJ
 "Svalbard and Jan Mayen",SJ
+"Svalbard & Jan Mayen",SJ
 "Slovakia",SK
 "The Slovak Republic",SK
 "Sierra Leone",SL
@@ -457,6 +470,7 @@ name,code
 "Sao Tome and Principe",ST
 "SÃ£o TomÃ© and PrÃ­ncipe",ST
 "The Democratic Republic of São Tomé and Príncipe",ST
+"São Tomé & Príncipe",ST
 "El Salvador",SV
 "The Republic of El Salvador",SV
 "Sint Maarten",SX
@@ -471,6 +485,7 @@ name,code
 "Turks and Caicos",TC
 "Turks and Caicos Islands",TC
 "The Turks and Caicos Islands",TC
+"Turks & Caicos Islands",TC
 "Chad",TD
 "The Republic of Chad",TD
 "French Southern Territories",TF
@@ -494,8 +509,10 @@ name,code
 "The Kingdom of Tonga",TO
 "Turkey",TR
 "The Republic of Turkey",TR
+"Türkiye",TR
 "Trinidad and Tobago",TT
 "The Republic of Trinidad and Tobago",TT
+"Trinidad & Tobago",TT
 "Tuvalu",TV
 "Taiwan",TW
 "Taiwan, Province of China",TW
@@ -510,6 +527,7 @@ name,code
 "United States Minor Outlying Islands",UM
 "The United States Minor Outlying Islands",UM
 "Baker Island, Howland Island, Jarvis Island, Johnston Atoll, Kingman Reef, Midway Atoll, Navassa Island, Palmyra Atoll, and Wake Island",UM
+"U.S. Outlying Islands",UM
 "United States",US
 "USA",US
 "The United States of America",US
@@ -523,6 +541,7 @@ name,code
 "Holy See (Vatican City State)",VA
 "St. Vincent and the Grenadines",VC
 "Saint Vincent and the Grenadines",VC
+"St. Vincent & Grenadines",VC
 "Venezuela",VE
 "Venezuela, Bolivarian Republic of",VE
 "The Bolivarian Republic of Venezuela",VE
@@ -542,6 +561,7 @@ name,code
 "The Republic of Vanuatu",VU
 "Wallis and Futuna",WF
 "The Territory of the Wallis and Futuna Islands",WF
+"Wallis & Futuna",WF
 "Samoa",WS
 "The Independent State of Samoa",WS
 "Kosovo",XK

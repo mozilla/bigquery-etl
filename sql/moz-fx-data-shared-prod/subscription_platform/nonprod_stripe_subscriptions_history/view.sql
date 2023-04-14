@@ -1,10 +1,11 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.subscription_platform.nonprod_stripe_subscriptions_history`
 AS
-WITH subscriptions_history AS (
+WITH base_subscriptions_history AS (
   SELECT
     customer_id,
     id AS subscription_id,
+    ROW_NUMBER() OVER (PARTITION BY id ORDER BY _fivetran_start) AS subscription_history_row_number,
     _fivetran_synced AS synced_at,
     _fivetran_start AS valid_from,
     LEAD(_fivetran_start) OVER (PARTITION BY id ORDER BY _fivetran_start) AS valid_to,
@@ -23,7 +24,41 @@ WITH subscriptions_history AS (
     ) AS plan_change_date,
     JSON_VALUE(metadata, "$.previous_plan_id") AS previous_plan_id,
   FROM
-    `dev-fivetran`.stripe_nonprod.subscription_history
+    `moz-fx-data-shared-prod`.stripe_external.nonprod_subscription_history_v1
+),
+subscriptions_history AS (
+  -- If a subscription's first history record has a previous_plan_id then synthesize
+  -- an extra history record to represent that previous plan period.
+  SELECT
+    * REPLACE (
+      0 AS subscription_history_row_number,
+      plan_change_date AS valid_to,
+      CAST(NULL AS TIMESTAMP) AS cancel_at,
+      FALSE AS cancel_at_period_end,
+      CAST(NULL AS TIMESTAMP) AS canceled_at,
+      CAST(NULL AS STRING) AS canceled_for_customer_at,
+      CAST(NULL AS TIMESTAMP) AS ended_at,
+      "active" AS status,
+      CAST(NULL AS TIMESTAMP) AS plan_change_date,
+      CAST(NULL AS STRING) AS previous_plan_id
+    )
+  FROM
+    base_subscriptions_history
+  WHERE
+    subscription_history_row_number = 1
+    AND plan_change_date IS NOT NULL
+    AND previous_plan_id IS NOT NULL
+  UNION ALL
+  SELECT
+    * REPLACE (
+      IF(
+        subscription_history_row_number = 1,
+        COALESCE(plan_change_date, valid_from),
+        valid_from
+      ) AS valid_from
+    )
+  FROM
+    base_subscriptions_history
 ),
 subscriptions_history_with_lead_plan_metadata AS (
   SELECT
@@ -86,7 +121,7 @@ subscription_items AS (
     subscription_id,
     plan_id,
   FROM
-    `dev-fivetran`.stripe_nonprod.subscription_item
+    `moz-fx-data-shared-prod`.stripe_external.nonprod_subscription_item_v1
   -- ZetaSQL requires QUALIFY to be used in conjunction with WHERE, GROUP BY, or HAVING.
   WHERE
     TRUE
@@ -114,7 +149,7 @@ product_capabilities AS (
     products.id AS product_id,
     ARRAY_AGG(DISTINCT TRIM(capability) IGNORE NULLS) AS capabilities
   FROM
-    `dev-fivetran`.stripe_nonprod.product AS products
+    `moz-fx-data-shared-prod`.stripe_external.nonprod_product_v1 AS products
   JOIN
     UNNEST(mozfun.json.js_extract_string_map(metadata)) AS metadata_items
   ON
@@ -131,7 +166,7 @@ plan_capabilities AS (
     plans.id AS plan_id,
     ARRAY_AGG(DISTINCT TRIM(capability) IGNORE NULLS) AS capabilities
   FROM
-    `dev-fivetran`.stripe_nonprod.plan AS plans
+    `moz-fx-data-shared-prod`.stripe_external.nonprod_plan_v1 AS plans
   JOIN
     UNNEST(mozfun.json.js_extract_string_map(metadata)) AS metadata_items
   ON
@@ -157,9 +192,9 @@ plans AS (
     products.name AS product_name,
     product_capabilities.capabilities AS product_capabilities,
   FROM
-    `dev-fivetran`.stripe_nonprod.plan AS plans
+    `moz-fx-data-shared-prod`.stripe_external.nonprod_plan_v1 AS plans
   LEFT JOIN
-    `dev-fivetran`.stripe_nonprod.product AS products
+    `moz-fx-data-shared-prod`.stripe_external.nonprod_product_v1 AS products
   ON
     plans.product_id = products.id
   LEFT JOIN
@@ -177,16 +212,16 @@ customers AS (
     TO_HEX(SHA256(JSON_VALUE(metadata, "$.userid"))) AS fxa_uid,
     address_country,
   FROM
-    `dev-fivetran`.stripe_nonprod.customer AS customers
+    `moz-fx-data-shared-prod`.stripe_external.nonprod_customer_v1 AS customers
 ),
 charges AS (
   SELECT
     charges.id AS charge_id,
     COALESCE(cards.country, charges.billing_detail_address_country) AS country,
   FROM
-    `dev-fivetran`.stripe_nonprod.charge AS charges
+    `moz-fx-data-shared-prod`.stripe_external.nonprod_charge_v1 AS charges
   JOIN
-    `dev-fivetran`.stripe_nonprod.card AS cards
+    `moz-fx-data-shared-prod`.stripe_external.nonprod_card_v1 AS cards
   ON
     charges.card_id = cards.id
   WHERE
@@ -203,7 +238,7 @@ invoices_provider_country AS (
     ).*,
     invoices.created,
   FROM
-    `dev-fivetran`.stripe_nonprod.invoice AS invoices
+    `moz-fx-data-shared-prod`.stripe_external.nonprod_invoice_v1 AS invoices
   LEFT JOIN
     customers
   USING
@@ -259,7 +294,7 @@ subscriptions_history_promotions AS (
   FROM
     subscriptions_history
   JOIN
-    `dev-fivetran`.stripe_nonprod.invoice AS invoices
+    `moz-fx-data-shared-prod`.stripe_external.nonprod_invoice_v1 AS invoices
   ON
     subscriptions_history.subscription_id = invoices.subscription_id
     AND (
@@ -267,15 +302,15 @@ subscriptions_history_promotions AS (
       OR subscriptions_history.valid_to IS NULL
     )
   JOIN
-    `dev-fivetran`.stripe_nonprod.invoice_discount AS invoice_discounts
+    `moz-fx-data-shared-prod`.stripe_external.nonprod_invoice_discount_v1 AS invoice_discounts
   ON
     invoices.id = invoice_discounts.invoice_id
   JOIN
-    `dev-fivetran`.stripe_nonprod.promotion_code AS promotion_codes
+    `moz-fx-data-shared-prod`.stripe_external.nonprod_promotion_code_v1 AS promotion_codes
   ON
     invoice_discounts.promotion_code = promotion_codes.id
   JOIN
-    `dev-fivetran`.stripe_nonprod.coupon AS coupons
+    `moz-fx-data-shared-prod`.stripe_external.nonprod_coupon_v1 AS coupons
   ON
     promotion_codes.coupon_id = coupons.id
   WHERE

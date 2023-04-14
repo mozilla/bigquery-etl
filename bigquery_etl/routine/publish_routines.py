@@ -62,6 +62,12 @@ parser.add_argument(
     help="The published UDFs should be publicly accessible.",
 )
 standard_args.add_log_level(parser)
+parser.add_argument(
+    "pattern",
+    default=None,
+    nargs="?",
+    help="glob pattern matching udfs to publish",
+)
 
 
 def main():
@@ -81,6 +87,7 @@ def main():
             args.gcs_bucket,
             args.gcs_path,
             args.public,
+            pattern=args.pattern,
         )
 
 
@@ -167,6 +174,7 @@ def publish_routine(
             # ensure UDF definitions are not replaced twice as would be the case for
             # `mozfun`.stats.mode_last and `mozfun`.stats.mode_last_retain_nulls
             # since one name is a substring of the other
+            definition = definition.replace(f"`{project_id}.{udf}`", udf)
             definition = definition.replace(f"`{project_id}`.{udf}", udf)
             definition = definition.replace(f"{project_id}.{udf}", udf)
             definition = definition.replace(udf, f"`{project_id}`.{udf}")

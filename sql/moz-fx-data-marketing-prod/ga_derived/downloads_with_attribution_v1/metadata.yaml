@@ -1,0 +1,48 @@
+friendly_name: Downloads With Attribution
+description: |-
+  A daily joining of Firefix download tokens with Google Analytics attribution data.
+
+  1. Each row in this table should be a unique dltoken.
+
+  2. A single GA session can have multiple dltokens (a session resulted in multiple downloads).
+
+  3. If the stub_visit_id is '', '(not set)', or 'something', the exception column will be:
+    * DOWNLOAD_SESSION_ID_EMPTY
+    * DOWNLOAD_SESSION_ID_VALUE_NOT_SET or
+    * DOWNLOAD_SESSION_ID_VALUE_SOMETHING
+    * All GA derived values will be null
+
+  4. If the stub_visit_id is valid but not found in that day's GA sessions:
+    * exception column will be MISSING_GA_CLIENT
+    * All GA derived values will be null
+
+  5. A GA session which does not have a dltoken with a corresponding stub_visit_id/clientId match is excluded from this dataset.
+
+  6. The stub_visit_id has a clientId match but that clientId has multiple GA sessions that day:
+    * exception value will be GA_UNRESOLVABLE
+    * All GA derived values will be null
+
+  7. A single dltoken has multiple records
+    * count_dltoken_duplicates will be >= 1.
+    * A value of 0 means there are no duplicates (expected state).
+    * A value of 1 means there was 1 other row with the dltoken value, etc.
+owners:
+- gleonard@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  owner1: gleonard
+scheduling:
+  dag_name: bqetl_google_analytics_derived
+  referenced_tables:
+  - - moz-fx-data-marketing-prod
+    - ga_derived
+    - www_site_empty_check_v1
+bigquery:
+  time_partitioning:
+    type: day
+    field: download_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering: null
+references: {}

@@ -37,6 +37,9 @@ fields:
   name: provider
   type: STRING
 - mode: NULLABLE
+  name: granular_event_type
+  type: STRING
+- mode: NULLABLE
   name: new_subscriptions
   type: INTEGER
 - mode: REPEATED

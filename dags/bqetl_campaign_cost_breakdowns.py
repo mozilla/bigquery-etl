@@ -56,8 +56,9 @@ with DAG(
             "frank@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     wait_for_fenix_derived__attributable_clients__v1 = ExternalTaskSensor(

@@ -33,11 +33,6 @@ labels:
   owner1: gleonard
 scheduling:
   dag_name: bqetl_download_funnel_attribution
-  referenced_tables:
-  - - moz-fx-data-marketing-prod
-    - ga_derived
-    - www_site_empty_check_v1
-  date_partition_parameter: null
 bigquery:
   time_partitioning:
     type: day

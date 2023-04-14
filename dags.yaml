@@ -1056,7 +1056,7 @@ bqetl_download_funnel_attribution:
     retries: 2
     retry_delay: 30m
     start_date: '2023-04-10'
-  description: Daily aggregations of data exported from Google Analytics.
+  description: Daily aggregations of data exported from Google Analytics joined with Firefox download data.
   repo: bigquery-etl
   schedule_interval: 0 23 * * *
   tags:

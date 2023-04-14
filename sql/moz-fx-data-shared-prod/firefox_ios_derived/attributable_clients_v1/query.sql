@@ -3,7 +3,6 @@ RETURNS INT64 AS (
   (SELECT SUM(value) FROM UNNEST(map))
 );
 
--- TODO: verify from which app_version the baseline ping contains data!!!
 WITH client_day AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -24,8 +23,6 @@ WITH client_day AS (
     sample_id,
     client_id
 ),
--- # TODO: verify this app_version is also correct
--- # TODO: clarify source table grain, do we need the group by here?
 searches AS (
   SELECT
     submission_date,
@@ -44,14 +41,6 @@ searches AS (
     submission_date,
     client_id
 ),
-first_seen AS (
-  SELECT
-    client_id,
-    country,
-    first_seen_date,
-  FROM
-    firefox_ios.baseline_clients_first_seen
-),
 adjust_client AS (
   SELECT
     client_id,
@@ -66,8 +55,6 @@ adjust_client AS (
   WHERE
     adjust_network <> "Unknown"
 )
-
--- # TODO: remove first_seen CTE? we have first_seen_date inside adjust CTE
 SELECT
   submission_date,
   first_seen_date,
@@ -78,9 +65,7 @@ SELECT
   adjust_adgroup,
   adjust_campaign,
   adjust_creative,
-  first_seen_date = submission_date AS is_new_install
-  first_seen_date = submission_date AS is_new_profile
-  COALESCE(
+  first_seen_date = submission_date AS is_new_install first_seen_date = submission_date AS is_new_profile COALESCE(
     CASE
       WHEN client_day.has_search_data
         THEN client_day.searches
@@ -120,7 +105,3 @@ FULL OUTER JOIN
   searches AS metrics_searches
 USING
   (client_id, submission_date)
-LEFT JOIN
-  first_seen
-USING
-  (client_id)

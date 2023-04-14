@@ -43,7 +43,7 @@ with DAG(
 ) as dag:
     ga_derived__downloads_with_attribution__v2 = bigquery_etl_query(
         task_id="ga_derived__downloads_with_attribution__v2",
-        destination_table="downloads_with_attribution_v2",
+        destination_table='downloads_with_attribution_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="ga_derived",
         project_id="moz-fx-data-marketing-prod",
         owner="gleonard@mozilla.com",

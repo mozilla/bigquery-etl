@@ -126,15 +126,17 @@ fields:
   name: additional_download_occurred
   type: BOOLEAN
 - description: Indicates an exception state when determining the GA session associated
-    with the Firefox download action.  Values are limited to 1.NULL - Normal state, unique GA session
-    matches the Firefox download. 2. GA_UNRESOLVABLE - Indicates that more than one Google Analytics session
-    matches the Firefox download. 3. DOWNLOAD_SESSION_ID_EMPTY - The raw download record did not contain either a
-    GA client or stub_download_session_id. 4. DOWNLOAD_SESSION_ID_VALUE_NOT_SET -  The raw download record contained GA session
-    identifier or stub_download_session_id with value (not set) 5. DOWNLOAD_SESSION_ID_VALUE_SOMETHING - The raw download
-    record contained GA session identifier or stub_download_session_id with value something 6. MISSING_GA_CLIENT -
-    The raw download record contained a valid GA session identifier and stub_download_session_id however there
-    was no corresponding GA session found.  7. DOWNLOAD_SESSION_ID_NULL - The stub_download_session_id is null.  This state
-    should never occur.
+    with the Firefox download action.  Values are limited to 1.NULL - Normal state,
+    unique GA session matches the Firefox download. 2. GA_UNRESOLVABLE - Indicates
+    that more than one Google Analytics session matches the Firefox download. 3. DOWNLOAD_SESSION_ID_EMPTY
+    - The raw download record did not contain either a GA client or stub_download_session_id.
+    4. DOWNLOAD_SESSION_ID_VALUE_NOT_SET -  The raw download record contained GA session
+    identifier or stub_download_session_id with value (not set) 5. DOWNLOAD_SESSION_ID_VALUE_SOMETHING
+    - The raw download record contained GA session identifier or stub_download_session_id
+    with value something 6. MISSING_GA_CLIENT - The raw download record contained
+    a valid GA session identifier and stub_download_session_id however there was no
+    corresponding GA session found.  7. DOWNLOAD_SESSION_ID_NULL - The stub_download_session_id
+    is null.  This state should never occur.
   mode: NULLABLE
   name: exception
   type: STRING

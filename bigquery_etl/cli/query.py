@@ -35,6 +35,7 @@ from ..cli.utils import (
 )
 from ..dependency import get_dependency_graph
 from ..dryrun import SKIP, DryRun
+from ..format_sql.format import SKIP as SKIP_FORMAT
 from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
 from ..metadata.parse_metadata import (
@@ -1132,6 +1133,43 @@ def validate(
         validate_metadata.validate(query.parent)
         dataset_dirs.add(query.parent.parent)
 
+    if not query_files:
+        # run SQL generators if no matching query has been found.
+        ctx.invoke(
+            generate_all,
+            output_dir=ctx.obj["TMP_DIR"],
+            ignore=[
+                "country_code_lookup",
+                "derived_view_schemas",
+                "events_daily",
+                "experiment_monitoring",
+                "feature_usage",
+                "glean_usage",
+                "search",
+                "stable_views",
+            ],
+        )
+
+        query_files = paths_matching_name_pattern(
+            name, ctx.obj["TMP_DIR"], project_id, ["query.*"]
+        )
+
+        for query in query_files:
+            ctx.invoke(format, paths=[str(query)])
+
+            if not no_dryrun:
+                ctx.invoke(
+                    dryrun,
+                    paths=[str(query)],
+                    use_cloud_function=use_cloud_function,
+                    project=project_id,
+                    validate_schemas=validate_schemas,
+                    respect_skip=respect_dryrun_skip,
+                )
+
+            validate_metadata.validate(query.parent)
+            dataset_dirs.add(query.parent.parent)
+
     if no_dryrun:
         click.echo("Dry run skipped for query files.")
 
@@ -1230,9 +1268,18 @@ def render(name, sql_dir, output_dir):
     query_files = paths_matching_name_pattern(name, sql_dir, project_id=None)
     resolved_sql_dir = Path(sql_dir).resolve()
     for query_file in query_files:
-        rendered_sql = render_template(
-            query_file.name, template_folder=query_file.parent, templates_dir=""
+        rendered_sql = (
+            render_template(
+                query_file.name,
+                template_folder=query_file.parent,
+                templates_dir="",
+                format=False,
+            )
+            + "\n"
         )
+
+        if not any(s in str(query_file) for s in SKIP_FORMAT):
+            rendered_sql = reformat(rendered_sql, trailing_newline=True)
 
         if output_dir:
             output_file = output_dir / query_file.resolve().relative_to(
@@ -1894,7 +1941,7 @@ def _validate_schema_from_path(
 def validate_schema(
     ctx, name, sql_dir, project_id, use_cloud_function, respect_dryrun_skip
 ):
-    """Validate the defined query schema against the query and destination table."""
+    """Validate the defined query schema with the query and the destination table."""
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
     if query_files == []:
         # run SQL generators if no matching query has been found

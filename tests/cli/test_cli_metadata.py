@@ -128,7 +128,9 @@ class TestMetadata:
             ],
             "labels": {"change_controlled": "true", "foo": "abc"},
         }
-        codeowners = "/sql/moz-fx-data-shared-prod/telemetry_derived/query_v1 test2@example.org mozilla/reviewers"
+        codeowners = (
+            "/sql/moz-fx-data-shared-prod/telemetry_derived/query_v1 @mozilla/reviewers"
+        )
         self.check_metadata(
             runner=runner,
             metadata_conf=metadata,

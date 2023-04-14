@@ -58,7 +58,9 @@ def validate_change_control(
             return False
 
         with open(codeowners_file, "r") as owners_file:
-            content = owners_file.readlines()
+            file_content = owners_file.readlines()
+            content = [line for line in file_content if not line.startswith("#")]
+
         owners_list = []
         for owner in metadata.owners:
             if "@" not in owner:
@@ -66,11 +68,7 @@ def validate_change_control(
             owners_list.append(owner)
         sample_row_all_owners = f"/{path_in_codeowners} {(' '.join(owners_list))}"
 
-        if not [
-            line
-            for line in content
-            if path_in_codeowners in line and not line.startswith("#")
-        ]:
+        if not [line for line in content if path_in_codeowners in line]:
             click.echo(
                 click.style(
                     f"ERROR: This query has label `change_controlled` which "
@@ -81,8 +79,6 @@ def validate_change_control(
             return False
 
         for line in content:
-            if line.startswith("#"):
-                continue
             if path_in_codeowners in line and not any(
                 owner in line for owner in owners_list
             ):

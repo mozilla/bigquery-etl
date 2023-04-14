@@ -2,8 +2,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.active_users_aggregates`
 AS
 SELECT
-  *,
-  dau AS qdau
+  *
 FROM
   `telemetry.active_users_aggregates_mobile`
 UNION ALL
@@ -17,7 +16,6 @@ SELECT
   distribution_id,
   first_seen_year,
   is_default_browser,
-  app_name,
   channel,
   os,
   os_version,
@@ -25,7 +23,7 @@ SELECT
   os_version_minor,
   submission_date,
   language_name,
-  dau,
+  qdau as dau,
   wau,
   mau,
   new_profiles,
@@ -35,11 +33,11 @@ SELECT
   search_with_ads,
   uri_count,
   active_hours,
+  app_name,
   app_version,
   app_version_major,
   app_version_minor,
   app_version_patch_revision,
-  app_version_is_major_release,
-  qdau
+  app_version_is_major_release
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.active_users_aggregates`

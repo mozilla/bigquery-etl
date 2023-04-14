@@ -1,7 +1,7 @@
 friendly_name: Firefox iOS New Profile Activation
 description: |-
   Mobile activation metric used for Marketing campaign performance.
-  Each record inside this table corresponds to a new profile.
+  Each record inside this table corresponds to a user activation.
 owners:
 - vsabino@mozilla.com
 - kignasiak@mozilla.com

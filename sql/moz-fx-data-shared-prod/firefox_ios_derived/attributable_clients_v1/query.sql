@@ -3,6 +3,7 @@ RETURNS INT64 AS (
   (SELECT SUM(value) FROM UNNEST(map))
 );
 
+-- TODO: verify from which app_version the baseline ping contains data!!!
 WITH client_day AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -23,6 +24,8 @@ WITH client_day AS (
     sample_id,
     client_id
 ),
+-- # TODO: verify this app_version is also correct
+-- # TODO: clarify source table grain, do we need the group by here?
 searches AS (
   SELECT
     submission_date,
@@ -52,6 +55,7 @@ first_seen AS (
 adjust_client AS (
   SELECT
     client_id,
+    first_seen_date,
     adjust_network,
     adjust_ad_group AS adjust_adgroup,
     adjust_campaign,
@@ -62,9 +66,11 @@ adjust_client AS (
   WHERE
     adjust_network <> "Unknown"
 )
+
+-- # TODO: remove first_seen CTE? we have first_seen_date inside adjust CTE
 SELECT
   submission_date,
-  first_seen_date AS cohort_date,
+  first_seen_date,
   sample_id,
   client_id,
   country,
@@ -72,12 +78,8 @@ SELECT
   adjust_adgroup,
   adjust_campaign,
   adjust_creative,
-  COALESCE(
-    first_seen_date = submission_date
-    AND reported_first_session_ping,
-    FALSE
-  ) AS is_new_install,
-  COALESCE(first_seen_date = submission_date, FALSE) AS is_new_profile,
+  first_seen_date = submission_date AS is_new_install
+  first_seen_date = submission_date AS is_new_profile
   COALESCE(
     CASE
       WHEN client_day.has_search_data
@@ -110,7 +112,7 @@ SELECT
   ) AS ad_clicks,
 FROM
   adjust_client
-LEFT JOIN
+INNER JOIN
   client_day
 USING
   (client_id)

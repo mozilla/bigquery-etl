@@ -54,6 +54,18 @@ adjust_client AS (
     firefox_ios.firefox_ios_clients
   WHERE
     adjust_network <> "Unknown"
+),
+client_adjust_day AS (
+  SELECT * FROM client_day
+  INNER JOIN
+  (SELECT * FROM adjust_client)
+  USING (client_id)
+),
+metrics_searches AS (
+  SELECT * FROM searches
+  INNER JOIN
+  (SELECT * FROM adjust_client)
+  USING (client_id)
 )
 SELECT
   submission_date,
@@ -65,7 +77,9 @@ SELECT
   adjust_adgroup,
   adjust_campaign,
   adjust_creative,
-  first_seen_date = submission_date AS is_new_install first_seen_date = submission_date AS is_new_profile COALESCE(
+  first_seen_date = submission_date AS is_new_install,
+  first_seen_date = submission_date AS is_new_profile,
+  COALESCE(
     CASE
       WHEN client_day.has_search_data
         THEN client_day.searches
@@ -95,13 +109,8 @@ SELECT
     END,
     0
   ) AS ad_clicks,
-FROM
-  adjust_client
-INNER JOIN
-  client_day
-USING
-  (client_id)
+FROM client_day
 FULL OUTER JOIN
-  searches AS metrics_searches
+  metrics_searches
 USING
   (client_id, submission_date)

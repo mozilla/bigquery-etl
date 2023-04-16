@@ -16775,6 +16775,16 @@ fields:
       mode: REPEATED
       name: http3_ech_outcome
       type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: event_longtask
+      type: RECORD
     mode: NULLABLE
     name: keyed_histograms
     type: RECORD
@@ -31202,6 +31212,16 @@ fields:
             type: STRING
           mode: REPEATED
           name: dns_perf_first_byte_ms
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: event_longtask
           type: RECORD
         mode: NULLABLE
         name: keyed_histograms

@@ -214,7 +214,14 @@ def _view_dependencies(artifact_files, sql_dir):
             view = View.from_file(dep_file)
 
             for dependency in view.table_references:
-                project, dataset, name = dependency.split(".")
+                dependency_components = dependency.split(".")
+                if len(dependency_components) != 3:
+                    raise ValueError(
+                        f"Invalid table reference {dependency} in view {view.name}. "
+                        "Tables should be fully qualified, expected format: project.dataset.table."
+                    )
+                project, dataset, name = dependency_components
+
                 file_path = Path(view.path).parent.parent.parent / dataset / name
 
                 file_exists_for_dependency = False

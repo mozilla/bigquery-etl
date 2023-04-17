@@ -79,14 +79,6 @@ desktop_population AS (
     telemetry.suggest_clients_daily
   WHERE
     submission_date >= "2022-06-07"
-    AND normalized_channel = "release"
-    AND (
-      browser_version_info.major_version >= 92
-      OR (
-        mozfun.map.get_key(experiments, 'firefox-suggest-enhanced-exposure-phase-1') = "treatment-a"
-      )
-    )
-    AND country IN UNNEST(["US"])
   GROUP BY
     submission_date,
     country,

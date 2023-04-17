@@ -126,7 +126,10 @@ ios_clients AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
   -- iOS Sponsored Tiles is only available for the following clients:
-    AND normalized_country_code IN UNNEST(["US"])
+    AND (
+      (normalized_country_code IN UNNEST(["US"]))
+      OR (normalized_country_code IN UNNEST(["DE"]) AND DATE(submission_timestamp) >= "2022-12-05")
+    )
     AND `mozfun.norm.browser_version_info`(client_info.app_display_version).major_version >= 101
 ),
 android_events AS (
@@ -184,7 +187,10 @@ android_clients AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
   -- Android Sponsored Tiles is only available for the following clients:
-    AND normalized_country_code IN UNNEST(["US"])
+    AND (
+      (normalized_country_code IN UNNEST(["US"]))
+      OR (normalized_country_code IN UNNEST(["DE"]) AND DATE(submission_timestamp) >= "2022-12-05")
+    )
     AND `mozfun.norm.browser_version_info`(client_info.app_display_version).major_version >= 100
 )
 -- merge on measures by client

@@ -50,7 +50,7 @@ WITH all_hits AS (
     BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@download_date, INTERVAL 2 DAY))
     AND FORMAT_DATE('%Y%m%d', DATE_ADD(@download_date, INTERVAL 1 DAY))
 ),
-pageviews AS (
+page_hits AS (
   SELECT
     client_id AS client_id,
     visit_id AS visit_id,
@@ -64,7 +64,7 @@ pageviews AS (
     client_id,
     visit_id
 ),
-hits_fields AS (
+event_hits AS (
   SELECT
     client_id AS client_id,
     visit_id AS visit_id,
@@ -73,12 +73,14 @@ hits_fields AS (
     LOGICAL_OR(has_ga_download_event) AS has_ga_download_event
   FROM
     all_hits
+  WHERE
+     hit_type = 'EVENT'
   GROUP BY
     client_id,
     visit_id
     -- download_session_id  cannot group by download_session_id here since not every hit will have download_session_id
 ),
-ga_sessions AS (
+ga_session_dimensions AS (
   SELECT
     clientId AS client_id,
     visitId AS visit_id,
@@ -103,29 +105,31 @@ ga_sessions AS (
     client_id,
     visit_id
 ),
-ga_sessions_with_hits AS (
+ga_sessions_with_hits_dimensions AS (
   SELECT
     * EXCEPT (pageviews, unique_pageviews),
     IFNULL(pageviews, 0) AS pageviews,
     IFNULL(unique_pageviews, 0) AS unique_pageviews,
   FROM
-    ga_sessions ga
+    ga_session_dimensions ga
   LEFT JOIN
-    pageviews p
+    page_hits p
   USING
     (client_id, visit_id)
   JOIN
-    hits_fields
+    event_hits
   USING
     (client_id, visit_id)
 ),
-stub_dl AS (
+
+-- Extract all the download rows, de-duping and tracking number of duplicates per download token.
+stub_downloads AS (
   SELECT
     s.jsonPayload.fields.visit_id AS stub_visit_id,
     jsonPayload.fields.session_id AS stub_download_session_id,
     s.jsonPayload.fields.dltoken AS dltoken,
     (COUNT(*) - 1) AS count_dltoken_duplicates,
-    DATE(s.timestamp) AS download_date
+    @download_date AS download_date
   FROM
     `moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout` s
   WHERE
@@ -134,10 +138,10 @@ stub_dl AS (
   GROUP BY
     stub_visit_id,
     stub_download_session_id,
-    dltoken,
-    DATE(s.timestamp)
+    dltoken
 ),
-stub_other_dl AS (
+
+multiple_downloads_in_session AS (
   SELECT
     stub_visit_id,
     stub_download_session_id,
@@ -147,12 +151,13 @@ stub_other_dl AS (
       ELSE FALSE
     END AS additional_download_occurred
   FROM
-    stub_dl
+    stub_downloads
   GROUP BY
     stub_visit_id,
     stub_download_session_id
 ),
-stub AS (
+
+stub_downloads_with_download_tracking AS (
   SELECT
     stub_visit_id,
     stub_download_session_id,
@@ -161,9 +166,9 @@ stub AS (
     additional_download_occurred,
     download_date
   FROM
-    stub_dl
+    stub_downloads
   JOIN
-    stub_other_dl
+    multiple_downloads_in_session
   USING
     (stub_visit_id, stub_download_session_id)
 ),
@@ -171,7 +176,7 @@ stub AS (
 -- This will also result in multiple rows as the ga.client_id is not unique for the day
 -- since this visit_id is missing from the stub.
 -- The join must use client_id/stub_visit_id and download_session_id/stub_download_session_id
-downloads_and_ga_session AS (
+downloads_with_ga_session AS (
   SELECT
     gs.client_id AS client_id,
     mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(country)) AS country,
@@ -192,7 +197,7 @@ downloads_and_ga_session AS (
     mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(unique_pageviews)) AS unique_pageviews,
     LOGICAL_OR(
       has_ga_download_event
-    ) AS has_ga_download_event,  -- this will be ignored if nrows >1
+    ) AS has_ga_download_event,
     mozfun.stats.mode_last_retain_nulls(
       ARRAY_AGG(count_dltoken_duplicates)
     ) AS count_dltoken_duplicates,
@@ -201,9 +206,9 @@ downloads_and_ga_session AS (
     mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(s.download_date)) AS download_date,
     mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(time_on_site)) AS time_on_site
   FROM
-    ga_sessions_with_hits gs
+    ga_sessions_with_hits_dimensions gs
   RIGHT JOIN
-    stub s
+    stub_downloads_with_download_tracking s
   ON
     (gs.client_id = s.stub_visit_id AND gs.download_session_id = s.stub_download_session_id)
   GROUP BY
@@ -215,66 +220,16 @@ downloads_and_ga_session AS (
 SELECT
   dltoken,
   download_date,
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    ELSE time_on_site
-  END
-  time_on_site,
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    ELSE ad_content
-  END
-  ad_content,
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    ELSE campaign
-  END
-  campaign,
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    ELSE medium
-  END
-  medium,
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    ELSE source
-  END
-  source,
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    ELSE landing_page
-  END
-  landing_page,
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    ELSE country
-  END
-  country,
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    ELSE cn.code
-  END
-  normalized_country_code,
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    ELSE device_category
-  END
-  device_category,
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    ELSE os
-  END
-  os,
+  IF(nrows <= 1, time_on_site, NULL)  time_on_site,
+  IF(nrows <= 1, ad_content, NULL)  ad_content,
+  IF(nrows <= 1, campaign, NULL)  campaign,
+  IF(nrows <= 1, medium, NULL)  medium,
+  IF(nrows <= 1, source, NULL)  source,
+  IF(nrows <= 1, landing_page, NULL)  landing_page,
+  IF(nrows <= 1, country, NULL)  country,
+  IF(nrows <= 1, cn.code, NULL)  normalized_country_code,
+  IF(nrows <= 1, device_category, NULL)  device_category,
+  IF(nrows <= 1, os, NULL) os,
   CASE
     WHEN nrows > 1
       THEN NULL
@@ -285,56 +240,17 @@ SELECT
     ELSE mozfun.norm.os(os)
   END
   normalized_os,
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    ELSE browser
-  END
-  browser,
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    ELSE normalize_browser(browser)
-  END
-  normalized_browser,
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    ELSE browser_version
-  END
-  browser_version,
+  IF(nrows <= 1, browser, NULL) browser,
+  IF(nrows <= 1, normalize_browser(browser), NULL) normalized_browser,
+  IF(nrows <= 1, browser_version, NULL) browser_version,
  -- only setting browser major version since that is the only value used in
  -- moz-fx-data-shared-prod.firefox_installer.install
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    ELSE CAST(mozfun.norm.extract_version(browser_version, 'major') AS INTEGER)
-  END
-  browser_major_version,
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    ELSE `language`
-  END
-  `language`,
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    ELSE pageviews
-  END
-  pageviews,
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    ELSE unique_pageviews
-  END
-  unique_pageviews,
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    ELSE has_ga_download_event
-  END
-  has_ga_download_event,
+
+  IF(nrows <= 1, CAST(mozfun.norm.extract_version(browser_version, 'major') AS INTEGER), NULL) browser_major_version,
+  IF(nrows <= 1, `language`, NULL) `language`,
+  IF(nrows <= 1, pageviews, NULL) pageviews,
+  IF(nrows <= 1, unique_pageviews, NULL) unique_pageviews,
+  IF(nrows <= 1, has_ga_download_event, NULL) has_ga_download_event,
   count_dltoken_duplicates,
   additional_download_occurred,
   CASE
@@ -360,7 +276,7 @@ SELECT
   END
   `exception`
 FROM
-  downloads_and_ga_session
+  downloads_with_ga_session
 LEFT JOIN
   `moz-fx-data-shared-prod.static.country_names_v1` AS cn
 ON

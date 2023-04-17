@@ -36345,6 +36345,9 @@ fields:
         - mode: NULLABLE
           name: policies_is_enterprise
           type: BOOLEAN
+        - mode: NULLABLE
+          name: places_previousday_visits
+          type: INTEGER
         mode: NULLABLE
         name: scalars
         type: RECORD

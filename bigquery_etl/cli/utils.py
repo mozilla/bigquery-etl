@@ -122,6 +122,7 @@ def paths_matching_name_pattern(pattern, sql_path, project_id, files=["*.sql"]):
 
 sql_dir_option = click.option(
     "--sql_dir",
+    "--sql-dir",
     help="Path to directory which contains queries.",
     type=click.Path(file_okay=False),
     default="sql",

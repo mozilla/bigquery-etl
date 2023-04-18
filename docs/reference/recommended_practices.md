@@ -32,9 +32,82 @@
 - Should not refer to views in the `mozdata` project which are duplicates of views in another project
   (commonly `moz-fx-data-shared-prod`). Refer to the original view instead.
 - Should escape identifiers that match keywords, even if they aren't [reserved keywords]
+- Queries are interpreted as [Jinja](https://jinja.palletsprojects.com/en/3.1.x/) templates, so it is possible to use Jinja statements and expressions
 
 [spark-bigquery-connector]: https://github.com/GoogleCloudPlatform/spark-bigquery-connector/issues/5
 [reserved keywords]: https://cloud.google.com/bigquery/docs/reference/standard-sql/lexical#reserved-keywords
+
+### Querying Metrics
+
+- Queries, views and UDFs can reference metrics and data sources that have been defined in [metric-hub](https://mozilla.github.io/metric-hub/)
+  - To reference metrics use `{{ metrics.calculate() }}`:
+    ```sql
+    SELECT
+      *
+    FROM
+      {{ metrics.calculate(
+        metrics=['days_of_use', 'active_hours'],
+        platform='firefox_desktop',
+        group_by={'sample_id': 'sample_id', 'channel': 'application.channel'},
+        where='submission_date = "2023-01-01"'
+      ) }}
+
+    -- this translates to
+    SELECT
+      *
+    FROM
+      (
+        WITH clients_daily AS (
+          SELECT
+            client_id AS client_id,
+            submission_date AS submission_date,
+            COALESCE(SUM(active_hours_sum), 0) AS active_hours,
+            COUNT(submission_date) AS days_of_use,
+          FROM
+            mozdata.telemetry.clients_daily
+          GROUP BY
+            client_id,
+            submission_date
+        )
+        SELECT
+          clients_daily.client_id,
+          clients_daily.submission_date,
+          active_hours,
+          days_of_use,
+        FROM
+          clients_daily
+      )
+    ```
+    - `metrics`: unique reference(s) to metric definition, all [metric definitions](https://mozilla.github.io/metric-hub/metrics/firefox_desktop/) are aggregations (e.g. SUM, AVG, ...)
+    - `platform`: platform to compute metrics for (e.g. `firefox_desktop`, `firefox_ios`, `fenix`, ...)
+    - `group_by`: fields used in the GROUP BY statement; this is a dictionary where the key represents the alias, the value is the field path; `GROUP BY` always includes the configured `client_id` and `submission_date` fields
+    - `where`: SQL filter clause
+    - `group_by_client_id`: Whether the field configured as `client_id` (defined as part of the data source specification in metric-hub) should be part of the `GROUP BY`. `True` by default
+    - `group_by_submission_date`: Whether the field configured as `submission_date` (defined as part of the data source specification in metric-hub) should be part of the `GROUP BY`. `True` by default
+  - To reference data source definitions use `{{ metrics.data_source() }}`:
+    ```sql
+    SELECT
+      *
+    FROM
+      {{ metrics.data_source(
+        data_source='main',
+        platform='firefox_desktop',
+        where='submission_date = "2023-01-01"'
+      ) }}
+
+    -- this translates to
+    SELECT
+      *
+    FROM
+      (
+        SELECT *
+        FROM `mozdata.telemetry.main`
+        WHERE submission_date = "2023-01-01"
+      )
+    ```
+- To render queries that use Jinja expressions or statements use `./bqetl query render path/to/query.sql`
+- The `generated-sql` branch has rendered queries/views/UDFs
+- `./bqetl query run` does support running Jinja queries
 
 ## Query Metadata
 
@@ -75,6 +148,7 @@ labels:
     to other projects such as `derived-datasets`
 - Should not refer to views in the `mozdata` project which are duplicates of views in another project
   (commonly `moz-fx-data-shared-prod`). Refer to the original view instead.
+- Views are interpreted as [Jinja](https://jinja.palletsprojects.com/en/3.1.x/) templates, so it is possible to use Jinja statements and expressions
 
 ## UDFs
 
@@ -100,6 +174,7 @@ labels:
     - Changes made to UDFs need to be published manually in order for the
       dry run CI task to pass
 - Should use `SQL` over `js` for performance
+- UDFs are interpreted as [Jinja](https://jinja.palletsprojects.com/en/3.1.x/) templates, so it is possible to use Jinja statements and expressions
 
 [expression subqueries]: https://cloud.google.com/bigquery/docs/reference/standard-sql/expression_subqueries
 

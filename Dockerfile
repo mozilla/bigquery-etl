@@ -26,7 +26,7 @@ RUN mvn package
 
 FROM base
 # add bash for entrypoint and jdk for jni access to zetasql
-RUN mkdir -p /usr/share/man/man1 && apt-get update -qqy && apt-get install -qqy bash default-jdk-headless
+RUN mkdir -p /usr/share/man/man1 && apt-get update -qqy && apt-get install -qqy bash default-jdk-headless git
 COPY --from=google/cloud-sdk:alpine /google-cloud-sdk /google-cloud-sdk
 ENV PATH /google-cloud-sdk/bin:$PATH
 COPY --from=java-deps /app/target/dependency /app/target/dependency

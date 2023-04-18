@@ -21,6 +21,7 @@ from ..routine.parse_routine import (
     read_routine_dir,
 )
 from ..schema import SCHEMA_FILE, Schema
+from ..util.common import render
 from ..view import View
 
 VIEW_FILE = "view.sql"
@@ -213,7 +214,14 @@ def _view_dependencies(artifact_files, sql_dir):
             view = View.from_file(dep_file)
 
             for dependency in view.table_references:
-                project, dataset, name = dependency.split(".")
+                dependency_components = dependency.split(".")
+                if len(dependency_components) != 3:
+                    raise ValueError(
+                        f"Invalid table reference {dependency} in view {view.name}. "
+                        "Tables should be fully qualified, expected format: project.dataset.table."
+                    )
+                project, dataset, name = dependency_components
+
                 file_path = Path(view.path).parent.parent.parent / dataset / name
 
                 file_exists_for_dependency = False
@@ -275,7 +283,7 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
     for path in Path(sql_dir).rglob("*.sql"):
         # apply substitutions
         if path.is_file():
-            sql = path.read_text()
+            sql = render(path.name, template_folder=path.parent, format=False)
 
             for ref in replace_references:
                 sql = re.sub(ref[0], ref[1], sql)

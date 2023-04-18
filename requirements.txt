@@ -109,6 +109,7 @@ attrs==22.1.0 \
     #   aiohttp
     #   cattrs
     #   jsonschema
+    #   mozilla-metric-config-parser
     #   pytest
     #   pytest-mypy
 authlib==1.2.0 \
@@ -159,7 +160,9 @@ cachetools==5.3.0 \
 cattrs==22.2.0 \
     --hash=sha256:bc12b1f0d000b9f9bee83335887d532a1d3e99a833d1bf0882151c97d3e68c21 \
     --hash=sha256:f0eed5642399423cf656e7b66ce92cdc5b963ecafd041d1b24d136fdde7acf6d
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   mozilla-metric-config-parser
 certifi==2022.12.7 \
     --hash=sha256:35824b4c3a97115964b408844d64aa14db1cc518f6562e8d7261699d1350a9e3 \
     --hash=sha256:4ad3232f5e926d6718ec31cfc1fcadfde020920e278684144551c91769c7bc18
@@ -247,6 +250,7 @@ click==8.1.3 \
     #   -r requirements.in
     #   black
     #   mkdocs
+    #   mozilla-metric-config-parser
     #   mozilla-schema-generator
     #   pip-tools
 cryptography==39.0.1 \
@@ -412,6 +416,7 @@ gitpython==3.1.30 \
     --hash=sha256:cd455b0000615c60e286208ba540271af9fe531fa6a87cc590a7298785ab2882
     # via
     #   -r requirements.in
+    #   mozilla-metric-config-parser
     #   mozilla-schema-generator
 google-api-core[grpc]==2.11.0 \
     --hash=sha256:4b9bb5d5a380a0befa0573b302651b8a9a89262c1730e37bf423cec511804c22 \
@@ -617,6 +622,7 @@ jinja2==3.1.2 \
     #   -r requirements.in
     #   mkdocs
     #   mkdocs-material
+    #   mozilla-metric-config-parser
 jsonschema==4.17.0 \
     --hash=sha256:5bfcf2bca16a087ade17e02b282d34af7ccd749ef76241e7f9bd7c0cb8a9424d \
     --hash=sha256:f660066c3966db7d6daeaea8a75e0b68237a48e51cf49882087757bb59916248
@@ -718,6 +724,10 @@ mkdocs-material-extensions==1.1.1 \
     --hash=sha256:9c003da71e2cc2493d910237448c672e00cefc800d3d6ae93d2fc69979e3bd93 \
     --hash=sha256:e41d9f38e4798b6617ad98ca8f7f1157b1e4385ac1459ca1e4ea219b556df945
     # via mkdocs-material
+mozilla-metric-config-parser==2023.4.2 \
+    --hash=sha256:183637ec38e5a92b0130eb695d078c02fa73e36480e5b8a6a207d78dc19ce4ab \
+    --hash=sha256:674214af52949a64dd8af0f4fba8bcdc9eb3135a6bcdae91113c94956bc91f80
+    # via -r requirements.in
 mozilla-schema-generator==0.5.1 \
     --hash=sha256:77109d64d0fd55b2579568e9a8f7c52d8eeed7e2a254b3262dd206ed21ffad38 \
     --hash=sha256:957dcb990d67436cfdabc8878cea1102040920f00cd5c5a5a4962344000bb26b
@@ -1187,7 +1197,9 @@ python-dateutil==2.8.2 \
 pytz==2022.7.1 \
     --hash=sha256:01a0681c4b9684a28304615eba55d1ab31ae00bf68ec157ec3708a8182dbbcd0 \
     --hash=sha256:78f4f37d8198e0627c5f1143240bb0206b8691d8d7ac6d78fee88b78733f8c4a
-    # via pandas
+    # via
+    #   mozilla-metric-config-parser
+    #   pandas
 pyyaml==6.0 \
     --hash=sha256:01b45c0191e6d66c470b6cf1b9531a771a83c1c4208272ead47a3ae4f2f603bf \
     --hash=sha256:0283c35a6a9fbf047493e3a0ce8d79ef5030852c51e9d911a27badfde0605293 \
@@ -1249,6 +1261,7 @@ requests==2.28.2 \
     #   google-cloud-bigquery
     #   google-cloud-storage
     #   mkdocs-material
+    #   mozilla-metric-config-parser
     #   mozilla-schema-generator
     #   requests-oauthlib
     #   stripe
@@ -1295,6 +1308,7 @@ toml==0.10.2 \
     --hash=sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b \
     --hash=sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f
     # via
+    #   mozilla-metric-config-parser
     #   pre-commit
     #   pytest-black
 tomli==2.0.1 \

@@ -1,0 +1,17 @@
+description: Aggregated metrics from Adjust data
+friendly_name: Adjust mobile installs
+labels:
+  incremental: true
+  schedule: daily
+owners:
+  - rbaffourawuah@mozilla.com
+scheduling:
+  dag_name: bqetl_google_analytics_derived
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+  clustering:
+    fields:
+      - country

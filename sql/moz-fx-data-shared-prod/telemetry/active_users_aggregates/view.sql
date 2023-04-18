@@ -64,7 +64,7 @@ SELECT
   search_with_ads,
   uri_count,
   active_hours,
-  app_name,
+  IF(app_name != "Firefox Desktop", "Firefox Desktop", app_name) AS app_name,
   app_version,
   app_version_major,
   app_version_minor,

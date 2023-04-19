@@ -25,4 +25,3 @@
 {"jsonPayload":{ "fields": {"visit_id": "client114", "dltoken": "multi_download_2", "session_id": "session_1", "log_type": "download_started" }},"timestamp": "2023-04-02 01:16:43.101135 UTC"}
 {"jsonPayload":{ "fields": {"visit_id": "client115", "dltoken": "ga_unresolve_multi_download_1", "session_id": "session_1", "log_type": "download_started" }},"timestamp": "2023-04-02 01:16:43.101135 UTC"}
 {"jsonPayload":{ "fields": {"visit_id": "client115", "dltoken": "ga_unresolve_multi_download_2", "session_id": "session_1", "log_type": "download_started" }},"timestamp": "2023-04-02 01:16:43.101135 UTC"}
-{"jsonPayload":{ "fields": {"visit_id": "client116", "dltoken": "multi_ga_session_1_dl_session_missing_and_mismatch", "session_id": "session_1", "log_type": "download_started" }},"timestamp": "2023-04-02 01:16:43.101135 UTC"}

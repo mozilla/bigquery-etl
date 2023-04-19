@@ -1,11 +1,12 @@
 -- shredder requires this table contain client_id and be partitioned by submission_timestamp
 SELECT
   client_info.client_id,
-  -- if @submission_date is null this is a backfill, use CURRENT_TIMESTAMP to ensure results will be
-  -- serviced by the next shredder run, otherwise any value in @submission_date will suffice.
+  -- if @submission_date is null this is a backfill, use CURRENT_TIMESTAMP - 1 DAY to ensure results
+  -- will be serviced by the next shredder run and also not in a partition that will be overwritten
+  -- by the next airflow run, otherwise any value in @submission_date will suffice.
   IF(
     CAST(@submission_date AS DATE) IS NULL,
-    CURRENT_TIMESTAMP,
+    CURRENT_TIMESTAMP - INTERVAL 1 DAY,
     ANY_VALUE(submission_timestamp)
   ) AS submission_timestamp,
 FROM

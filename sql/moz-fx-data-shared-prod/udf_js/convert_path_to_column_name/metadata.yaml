@@ -1,0 +1,5 @@
+---
+description:
+  Converts the `path` column in `monitoring.telemetry_missing_columns` to a format in 'INFORMATION_SCHEMA'.
+  This is to check if the missing column has been added to the table.
+friendly_name: Path to Column schema format

@@ -8,7 +8,7 @@ for more context
 
 */
 
-CREATE OR REPLACE FUNCTION udf_js.format_path_string(input STRING)
+CREATE OR REPLACE FUNCTION udf_js.convert_path_to_column_name(input STRING)
 RETURNS STRING
 LANGUAGE js
 AS r"""
@@ -27,11 +27,11 @@ AS r"""
             }
             
     };
-    return [result];
+    return [result.join('.')];
 """;
 
 --Tests
-SELECT assert.equals("`metrics`.`timing_distribution`.`fog.ipc.flush_duratinns`.`values`.[...]",  udf_js.format_path_string("`metrics`,`timing_distribution`,`fog_ipc_flush_duratinns`,`values`")),
-assert.null(null, udf.format_path_string(null)),
-assert.equals("`processStartTimestamp`",udf_js.format_path_string("`processStartTimestamp`")),
-assert.equals("`environment`,`settings`,`intl`,`acceptLanguaces`",udf.format_path_string("`environment`.`settings`.`intl`.`acceptLanguaces`.[...]"))
+SELECT assert.equals("`metrics`.`timing_distribution`.`fog.ipc.flush_duratinns`.`values`.[...]",  udf_js.convert_path_to_column_name("`metrics`,`timing_distribution`,`fog_ipc_flush_duratinns`,`values`")),
+assert.null(null, udf.convert_path_to_column_name(null)),
+assert.equals("`processStartTimestamp`",udf_js.convert_path_to_column_name("`processStartTimestamp`")),
+assert.equals("`environment`,`settings`,`intl`,`acceptLanguaces`",udf.convert_path_to_column_name("`environment`.`settings`.`intl`.`acceptLanguaces`.[...]"))

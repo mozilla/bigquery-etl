@@ -1,0 +1,44 @@
+- clientId: client101
+  visitId: '1'
+  date: '20230403'
+  trafficSource:
+    campaign: "(not set)"
+    source: "(direct)"
+    medium: "(none)"
+    adContent: "(not set)"
+  device:
+    browser: Internet Explorer
+    browserVersion: '16.1'
+    operatingSystem: Windows
+    language: en-ca
+    deviceCategory: desktop
+  geoNetwork:
+    country: Canada
+  hits:
+    - page:
+        pagePath: "/en-GB/firefox/session"
+      appInfo:
+        landingScreenName: www.mozilla.org/en-GB/firefox/
+      eventInfo:
+        eventCategory: "/firefox/ Interactions"
+        eventAction: Stub Session ID
+        eventLabel: session_1
+      type: EVENT
+    - page:
+        pagePath: "/en-GB/firefox/"
+      appInfo:
+        landingScreenName: www.mozilla.org/en-GB/firefox/
+      eventInfo:
+        eventCategory: "/firefox/ Interactions"
+        eventAction: Firefox Download
+        eventLabel: Firefox for Desktop
+      type: EVENT
+    - page:
+        pagePath: "/en-GB/firefox/"
+      appInfo:
+        landingScreenName: www.mozilla.org/en-GB/firefox/
+      eventInfo:
+        eventCategory: "/firefox/ Interactions"
+        eventAction: Firefox Download
+        eventLabel: Firefox for Desktop
+      type: PAGE

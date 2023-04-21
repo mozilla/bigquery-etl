@@ -127,13 +127,13 @@ flows AS (
       AND user_id IS NOT NULL
     ) AS pay_setup_engage_with_uid,
     -- new fxa after entering the email
-    LOGICAL_OR(event_type = "fxa_pay_setup - 3ds_complete") AS pay_setup_complete,
+    LOGICAL_OR(event_type = "fxa_pay_setup - success") AS pay_setup_complete,
     LOGICAL_OR(
-      event_type = "fxa_pay_setup - 3ds_complete"
+      event_type = "fxa_pay_setup - success"
       AND user_id IS NULL
     ) AS pay_setup_complete_without_uid,
     LOGICAL_OR(
-      event_type = "fxa_pay_setup - 3ds_complete"
+      event_type = "fxa_pay_setup - success"
       AND user_id IS NOT NULL
     ) AS pay_setup_complete_with_uid,
     -- coupon activities

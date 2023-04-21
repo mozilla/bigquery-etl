@@ -41,11 +41,12 @@ client_search AS (
     client_id
 )
 SELECT
-  @submission_date AS activation_date,
+  @submission_date AS `date`,
   first_seen_date,
   client_id,
   sample_id,
-  -- TRUE AS activated,  -- in case we want to have an explicit field representing activation
+  TRUE AS new_profile,
+  IF(days_2_7 > 1 AND COALESCE(search_count, 0) > 0, TRUE, FALSE) AS activated,
 FROM
   dou
 INNER JOIN
@@ -56,6 +57,3 @@ LEFT JOIN
   client_search
 USING
   (client_id)
--- filter for users that activated
-WHERE
-  IF(days_2_7 > 1 AND COALESCE(search_count, 0) > 0, TRUE, FALSE)

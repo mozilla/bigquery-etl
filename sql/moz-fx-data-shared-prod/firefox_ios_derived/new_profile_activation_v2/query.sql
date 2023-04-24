@@ -9,6 +9,7 @@ WITH dou AS (
   SELECT
     client_id,
     sample_id,
+    first_seen_date,
     ARRAY_LENGTH(
       mozfun.bits28.to_dates(mozfun.bits28.range(days_seen_bits, -5, 6), submission_date)
     ) AS days_2_7,
@@ -17,15 +18,6 @@ WITH dou AS (
   WHERE
     submission_date = @submission_date
     AND DATE_DIFF(submission_date, first_seen_date, DAY) = 6
-),
-client_first_seen AS (
-  SELECT
-    client_id,
-    first_seen_date,
-  FROM
-    firefox_ios.baseline_clients_first_seen
-  WHERE
-    submission_date = DATE_SUB(@submission_date, INTERVAL 6 DAY)
 ),
 client_search AS (
   SELECT
@@ -49,10 +41,6 @@ SELECT
   IF(days_2_7 > 1 AND COALESCE(search_count, 0) > 0, TRUE, FALSE) AS activated,
 FROM
   dou
-INNER JOIN
-  client_first_seen
-USING
-  (client_id)
 LEFT JOIN
   client_search
 USING

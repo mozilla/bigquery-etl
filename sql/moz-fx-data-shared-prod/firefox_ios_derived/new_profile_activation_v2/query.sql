@@ -37,8 +37,8 @@ SELECT
   first_seen_date,
   client_id,
   sample_id,
-  TRUE AS new_profile,
-  IF(days_2_7 > 1 AND COALESCE(search_count, 0) > 0, TRUE, FALSE) AS activated,
+  TRUE AS is_new_profile,
+  IF(days_2_7 > 1 AND COALESCE(search_count, 0) > 0, TRUE, FALSE) AS is_activated,
 FROM
   dou
 LEFT JOIN

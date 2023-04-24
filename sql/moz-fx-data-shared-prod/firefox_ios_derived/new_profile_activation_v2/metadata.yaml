@@ -10,13 +10,12 @@ labels:
 bigquery:
   time_partitioning:
     type: day
-    field: submission_date
+    field: date
     require_partition_filter: true
     expiration_days: null
   clustering:
     fields:
     - sample_id
-    - country
 scheduling:
   dag_name: bqetl_mobile_activation
   date_partition_parameter: submission_date

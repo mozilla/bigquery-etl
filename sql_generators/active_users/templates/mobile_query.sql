@@ -1,4 +1,4 @@
---- Query generated via sql_generators.active_users_aggregates.
+--- Query generated via sql_generators.active_users
 WITH baseline AS (
   SELECT
     submission_date,
@@ -228,4 +228,3 @@ GROUP BY
   os_version_minor,
   submission_date,
   segment
-

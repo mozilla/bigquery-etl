@@ -1,3 +1,6 @@
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.telemetry.latest_releases`
+AS
 WITH channels AS (
   SELECT
     "release" AS channel
@@ -36,7 +39,7 @@ releases AS (
     END AS channel,
     build_number,
   FROM
-    telemetry.releases
+    `moz-fx-data-shared-prod.telemetry.releases`
 ),
 joined AS (
   SELECT

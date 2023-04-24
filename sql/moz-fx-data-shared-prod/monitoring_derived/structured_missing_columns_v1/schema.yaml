@@ -1,0 +1,29 @@
+fields:
+  - mode: NULLABLE
+    name: submission_date
+    type: DATE
+    description: Date of the tile ID export
+  - mode: NULLABLE
+    name: document_namespace
+    type: STRING
+  - mode: NULLABLE
+    name: document_version
+    type: STRING
+  - mode: NULLABLE
+    name: document_version
+    type: INTEGER
+  - mode: NULLABLE
+    name: path
+    type: STRING
+  - mode: NULLABLE
+    name: path_count
+    type: INT64
+  - mode: NULLABLE
+    name: formatted_path_string
+    type: STRING
+  - mode: NULLABLE
+    name: column_name_in_table
+    type: STRING
+  - mode: NULLABLE
+    name: missing_column_added
+    type: BOOL

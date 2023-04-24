@@ -52,12 +52,12 @@
     adContent: "(not set)"
   device:
     browser: Internet Explorer
-    browserVersion: '16.1'
+    browserVersion: '17.1'
     operatingSystem: Windows
     language: en-ca
     deviceCategory: desktop
   geoNetwork:
-    country: Canada
+    country: United States
   hits:
     - page:
         pagePath: "/en-GB/firefox/session"
@@ -66,7 +66,7 @@
       eventInfo:
         eventCategory: "/firefox/ Interactions"
         eventAction: Stub Session ID
-        eventLabel: session_1
+        eventLabel: session_2
       type: EVENT
     - page:
         pagePath: "/en-GB/firefox/"

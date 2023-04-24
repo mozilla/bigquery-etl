@@ -68,11 +68,21 @@ page_hits AS (
     client_id,
     visit_id
 ),
+extract_download_session_id AS (
+ select
+    client_id AS client_id,
+    visit_id AS visit_id,
+    download_session_id
+  FROM
+    all_hits
+  WHERE
+     hit_type = 'EVENT'
+     and download_session_id is not NULL
+),
 event_hits AS (
   SELECT
     client_id AS client_id,
     visit_id AS visit_id,
-    mozfun.stats.mode_last(ARRAY_AGG(download_session_id)) AS download_session_id,
     mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(landing_page)) AS landing_page,
     LOGICAL_OR(has_ga_download_event) AS has_ga_download_event
   FROM
@@ -122,6 +132,10 @@ ga_sessions_with_hits_fields AS (
     (client_id, visit_id)
   JOIN
     event_hits
+  USING
+    (client_id, visit_id)
+  LEFT JOIN
+    extract_download_session_id
   USING
     (client_id, visit_id)
 ),

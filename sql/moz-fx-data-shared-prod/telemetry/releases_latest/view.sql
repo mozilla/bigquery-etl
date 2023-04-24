@@ -1,77 +1,86 @@
 WITH channels AS (
   SELECT
-  "release" AS channel
-  UNION ALL SELECT "beta"
-  UNION ALL SELECT "esr"
+    "release" AS channel
+  UNION ALL
+  SELECT
+    "beta"
+  UNION ALL
+  SELECT
+    "esr"
 ),
 dates_and_channels AS (
   SELECT
-    `date`, channel
+    `date`,
+    channel
   FROM
     UNNEST(
-      (SELECT GENERATE_DATE_ARRAY("2016-01-01", CURRENT_DATE, INTERVAL 1 DAY) AS dates)
+      (SELECT GENERATE_DATE_ARRAY("2000-01-01", CURRENT_DATE, INTERVAL 1 DAY) AS dates)
     ) AS `date`
-    CROSS JOIN channels
-),
-builds AS (
-  SELECT
-    submission_timestamp,
-    build.target.channel AS channel,
-    build.target.`version`,
-    build.build.`date` AS build_date,
-  FROM `moz-fx-data-shared-prod.telemetry.buildhub2`
-  WHERE build.source.product = "firefox"
-  QUALIFY
-    ROW_NUMBER() OVER(PARTITION BY channel, version ORDER BY submission_timestamp DESC) = 1
+  CROSS JOIN
+    channels
 ),
 releases AS (
   SELECT
     `date`,
-    `version`,
+    version,
     category,
     product,
-    build_date,
+    CASE
+      WHEN category = "dev"
+        THEN "beta"
+      WHEN category = 'esr'
+        THEN "esr"
+      WHEN category IN ("stability", "major")
+        THEN "release"
+      ELSE "UNKNOWN"
+    END AS channel,
     build_number,
-    COALESCE(
-      channel,
-      CASE
-          WHEN category NOT IN ('esr', 'dev') THEN "release"
-          WHEN category = 'esr' THEN "esr"
-          WHEN category = 'dev' THEN 'beta'
-      END
-    ) AS channel,
-  FROM telemetry.releases
-  LEFT JOIN builds using(`version`)
-  -- we need to dedup per date, channel due to some cases where
-  -- we get some versions marked as the wrong channel.
-  WHERE
-    TRUE
-  QUALIFY
-    ROW_NUMBER() OVER(PARTITION BY `date`, channel ORDER BY submission_timestamp DESC) = 1
+  FROM
+    telemetry.releases
 ),
 joined AS (
   SELECT
-  dates_and_channels.`date`,
-  FIRST_VALUE(product IGNORE NULLS) OVER latest_values AS product,
-  FIRST_VALUE(category IGNORE NULLS) OVER latest_values AS category,
-  channel,
-  DATE(FIRST_VALUE(build_date IGNORE NULLS) OVER latest_values) AS build_date,
-  FIRST_VALUE(build_number IGNORE NULLS) OVER latest_values AS build_number,
-  FIRST_VALUE(releases.`date` IGNORE NULLS) OVER latest_values AS release_date,
-  FIRST_VALUE(`version` IGNORE NULLS) OVER latest_values AS `version`,
-  FROM dates_and_channels
-  FULL OUTER JOIN releases USING(`date`, channel)
-  WHERE channel IN ("release", "beta", "esr")
-  AND channel IN ("beta")
-  WINDOW latest_values AS (
-    PARTITION BY channel ORDER BY DATE DESC
-    ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING
-  )
+    dates_and_channels.`date`,
+    FIRST_VALUE(product IGNORE NULLS) OVER latest_values AS product,
+    FIRST_VALUE(category IGNORE NULLS) OVER latest_values AS category,
+    channel,
+    FIRST_VALUE(build_number IGNORE NULLS) OVER latest_values AS build_number,
+    FIRST_VALUE(releases.`date` IGNORE NULLS) OVER latest_values AS release_date,
+    FIRST_VALUE(`version` IGNORE NULLS) OVER latest_values AS `version`,
+  FROM
+    dates_and_channels
+  FULL OUTER JOIN
+    releases
+  USING
+    (`date`, channel)
+  WINDOW
+    latest_values AS (
+      PARTITION BY
+        channel
+      ORDER BY
+        DATE DESC
+      ROWS BETWEEN
+        CURRENT ROW
+        AND UNBOUNDED FOLLOWING
+    )
 )
 SELECT
   *,
-  IF(channel = "beta", SPLIT(version, "b")[SAFE_OFFSET(1)], NULL) AS beta_version,
+  IF(channel = "beta", REGEXP_EXTRACT(version, r"[a-z]+([0-9]+)$"), NULL) AS beta_version,
   mozfun.norm.extract_version(version, "major") AS major_version,
   mozfun.norm.extract_version(version, "minor") AS minor_version,
   mozfun.norm.extract_version(version, "patch") AS patch_version,
-FROM joined
+FROM
+  joined
+WHERE
+  TRUE
+QUALIFY
+  ROW_NUMBER() OVER (
+    PARTITION BY
+      `date`,
+      channel
+    ORDER BY
+      major_version,
+      minor_version,
+      patch_version DESC
+  ) = 1

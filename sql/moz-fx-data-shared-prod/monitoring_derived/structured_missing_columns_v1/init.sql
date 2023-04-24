@@ -6,9 +6,7 @@ CREATE TABLE IF NOT EXISTS
     document_version STRING,
     path STRING,
     path_count INT64,
-    formatted_path_string STRING,
-    column_name_in_table STRING,
-    missing_column_added BOOL
+    formatted_path_string STRING
   )
 PARTITION BY
   submission_date

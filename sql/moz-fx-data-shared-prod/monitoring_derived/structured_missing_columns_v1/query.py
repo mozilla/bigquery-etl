@@ -60,12 +60,6 @@ transformed AS (
     document_version,
     path
 ),
-
-information_schema_col AS (
-  SELECT field_path  AS column_name_in_table
-  FROM 
-    `moz-fx-data-shared-prod.{namespace}_stable.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS`
-)
 SELECT
   submission_date,
   document_namespace,
@@ -73,12 +67,9 @@ SELECT
   document_version,
   path,
   path_count,
-  formatted_path_string,
-  column_name_in_table,
-  IF(formatted_path_string=column_name_in_table, true, false) AS missing_column_added
+  formatted_path_string
 FROM
   transformed
-LEFT JOIN information_schema_col ON transformed.formatted_path_string = information_schema_col.column_name_in_table
 """
 
 

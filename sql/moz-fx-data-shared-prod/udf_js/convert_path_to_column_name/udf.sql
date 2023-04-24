@@ -27,7 +27,7 @@ AS r"""
             }
             
     };
-    return [result.join('.')];
+    return result.join('.');
 """;
 
 --Tests

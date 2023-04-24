@@ -7,7 +7,7 @@ fields:
     name: document_namespace
     type: STRING
   - mode: NULLABLE
-    name: document_version
+    name: document_type
     type: STRING
   - mode: NULLABLE
     name: document_version
@@ -21,9 +21,3 @@ fields:
   - mode: NULLABLE
     name: formatted_path_string
     type: STRING
-  - mode: NULLABLE
-    name: column_name_in_table
-    type: STRING
-  - mode: NULLABLE
-    name: missing_column_added
-    type: BOOL

@@ -228,3 +228,4 @@ GROUP BY
   os_version_minor,
   submission_date,
   segment
+

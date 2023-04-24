@@ -43,7 +43,7 @@
         eventLabel: Firefox for Desktop
       type: PAGE
 - clientId: client100
-  visitId: '1'
+  visitId: '2'
   date: '20230402'
   trafficSource:
     campaign: "(not set)"
@@ -87,7 +87,7 @@
         eventLabel: Firefox for Desktop
       type: PAGE
 - clientId: client100
-  visitId: '1'
+  visitId: '3'
   date: '20230402'
   trafficSource:
     campaign: "(not set)"

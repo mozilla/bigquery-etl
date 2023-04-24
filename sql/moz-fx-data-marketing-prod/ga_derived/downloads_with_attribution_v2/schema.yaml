@@ -125,20 +125,26 @@ fields:
   mode: NULLABLE
   name: additional_download_occurred
   type: BOOLEAN
-- description: Indicates an exception state when determining the GA session associated
-    with the Firefox download action.  Values are limited to 1.NULL - Normal state,
-    unique GA session matches the Firefox download. 2. GA_UNRESOLVABLE - Indicates
-    that more than one Google Analytics session matches the Firefox download. 3. DOWNLOAD_SESSION_ID_EMPTY
-    - The raw download record did not contain either a GA client or stub_download_session_id.
-    4. DOWNLOAD_SESSION_ID_VALUE_NOT_SET -  The raw download record contained GA session
-    identifier or stub_download_session_id with value (not set) 5. DOWNLOAD_SESSION_ID_VALUE_SOMETHING
-    - The raw download record contained GA session identifier or stub_download_session_id
-    with value something 6. MISSING_GA_CLIENT - The raw download record contained
-    a valid GA session identifier and stub_download_session_id however there was no
-    corresponding GA session found.  7. DOWNLOAD_SESSION_ID_NULL - The stub_download_session_id
-    is null.  This state should never occur.
+- description: Indicates the result of the JOIN between the stub attr data and the GA session associated with the
+    Firefox download using client_id and download_session_id.  Values are limited to
+    1.CLIENT_ID_SESSION_ID_MATCH - Normal state, GA session matches the download. 2. GA_UNRESOLVABLE - More than one GA
+    session matches the Firefox download. 3. DOWNLOAD_SESSION_ID_NULL - The stub_download_session_id
+    is null. 4. DOWNLOAD_CLIENT_OR_SESSION_ID_EMPTY - The stub attr record did not contain either a client or
+    stub_download_session_id. 5. DOWNLOAD_CLIENT_OR_SESSION_ID_VALUE_NOT_SET -  The stub attr record contained GA
+    session identifier or stub_download_session_id with value (not set). 6. DOWNLOAD_CLIENT_OR_SESSION_ID_VALUE_SOMETHING
+    - The raw download record contained GA session identifier or stub_download_session_id with value something.
+    7. MISSING_GA_CLIENT_OR_SESSION_ID - The stub attr record contained a valid GA session identifier and
+    stub_download_session_id however there was no corresponding GA session found.
   mode: NULLABLE
-  name: exception
+  name: join_result_v2
+  type: STRING
+- description: Indicates the result of the JOIN between the stub attr data and the GA session associated
+    with the Firefox download action using only the client_id. Values are limited to 1.CLIENT_ID_ONLY_MATCH -
+    Normal state, unique GA session matches the download. 2. GA_UNRESOLVABLE - Indicates that more than one GA session
+    matches the Firefox download. 3. MISSING_GA_CLIENT - The stub attr record contained a valid GA session identifier
+    however there was no corresponding GA session found.
+  mode: NULLABLE
+  name: join_result_v1
   type: STRING
 - description: The date of download, sourced from download logs.
   mode: NULLABLE

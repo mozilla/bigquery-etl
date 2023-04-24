@@ -68,21 +68,14 @@ page_hits AS (
     client_id,
     visit_id
 ),
-extract_download_session_id AS (
- select
-    client_id AS client_id,
-    visit_id AS visit_id,
-    download_session_id
-  FROM
-    all_hits
-  WHERE
-     hit_type = 'EVENT'
-     and download_session_id is not NULL
-),
 event_hits AS (
   SELECT
     client_id AS client_id,
     visit_id AS visit_id,
+    -- This will extract one download_session_id value arbitrarily; an initial attempt to 'fix' the behaviour resulted
+    -- in a 'Resources exceeded during query execution error'.  Since it is rare to have more than one
+    -- download_session_id per GA session implementation will be left as is.
+    mozfun.stats.mode_last(ARRAY_AGG(download_session_id)) AS download_session_id,
     mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(landing_page)) AS landing_page,
     LOGICAL_OR(has_ga_download_event) AS has_ga_download_event
   FROM
@@ -132,10 +125,6 @@ ga_sessions_with_hits_fields AS (
     (client_id, visit_id)
   JOIN
     event_hits
-  USING
-    (client_id, visit_id)
-  LEFT JOIN
-    extract_download_session_id
   USING
     (client_id, visit_id)
 ),
@@ -280,25 +269,23 @@ SELECT
   CASE
     WHEN stub_visit_id IS NULL
       OR stub_download_session_id IS NULL
-      THEN 'DOWNLOAD_SESSION_ID_NULL'
+      THEN 'DOWNLOAD_CLIENT_OR_SESSION_ID_NULL'
     WHEN stub_visit_id = ''
       OR stub_download_session_id = ''
-      THEN 'DOWNLOAD_SESSION_ID_EMPTY'
+      THEN 'DOWNLOAD_CLIENT_OR_SESSION_ID_EMPTY'
     WHEN stub_visit_id = '(not set)'
       OR stub_download_session_id = '(not set)'
-      THEN 'DOWNLOAD_SESSION_ID_VALUE_NOT_SET'
+      THEN 'DOWNLOAD_CLIENT_OR_SESSION_ID_VALUE_NOT_SET'
     WHEN stub_visit_id = 'something'
       OR stub_download_session_id = 'something'
-      THEN 'DOWNLOAD_SESSION_ID_VALUE_SOMETHING'
+      THEN 'DOWNLOAD_CLIENT_OR_SESSION_ID_VALUE_SOMETHING'
     WHEN client_id IS NULL
-      THEN 'MISSING_GA_CLIENT'
-    WHEN dltoken IS NULL
-      THEN 'MISSING_DL_TOKEN'
+      THEN 'MISSING_GA_CLIENT_OR_SESSION_ID'
     WHEN nrows > 1
       THEN 'GA_UNRESOLVABLE'
-    ELSE NULL
+    ELSE 'CLIENT_ID_SESSION_ID_MATCH'
   END
-  `exception`
+  join_result_v2
 FROM
   downloads_with_ga_session
 LEFT JOIN
@@ -309,14 +296,14 @@ ON
 
 -- Some of the joins for v2_table as not successful due to the GA data not including
 -- the download_session_id.  The downloads which are unable to match to a GA session
--- are set to exception='MISSING_GA_CLIENT'
+-- are set to exception='MISSING_GA_CLIENT_OR_SESSION_ID'
 -- Those dltokens are re-processed using the V1 logic (loin using only the client_id)
 extract_dltoken_missing_ga_client AS (
   SELECT s.stub_visit_id, v2.dltoken, v2.count_dltoken_duplicates,  v2.additional_download_occurred,  v2.download_date
   FROM v2_table v2
   JOIN stub_downloads_with_download_tracking s
   ON (s.dltoken = v2.dltoken)
-  WHERE exception = 'MISSING_GA_CLIENT'
+  WHERE join_result_v2 = 'MISSING_GA_CLIENT_OR_SESSION_ID'
 ),
 v1_downloads_with_ga_session AS (
   SELECT
@@ -394,23 +381,13 @@ SELECT
   count_dltoken_duplicates,
   additional_download_occurred,
   CASE
-    WHEN stub_visit_id IS NULL
-      THEN 'DOWNLOAD_SESSION_ID_NULL'
-    WHEN stub_visit_id = ''
-      THEN 'DOWNLOAD_SESSION_ID_EMPTY'
-    WHEN stub_visit_id = '(not set)'
-      THEN 'DOWNLOAD_SESSION_ID_VALUE_NOT_SET'
-    WHEN stub_visit_id = 'something'
-      THEN 'DOWNLOAD_SESSION_ID_VALUE_SOMETHING'
     WHEN client_id IS NULL
       THEN 'MISSING_GA_CLIENT'
-    WHEN dltoken IS NULL
-      THEN 'MISSING_DL_TOKEN'
     WHEN nrows > 1
       THEN 'GA_UNRESOLVABLE'
-    ELSE NULL
+    ELSE 'CLIENT_ID_ONLY_MATCH'
   END
-  `exception`
+  join_result_v1
 FROM
   v1_downloads_with_ga_session
 LEFT JOIN
@@ -419,9 +396,9 @@ ON
   cn.name = country
 )
 
-SELECT *
+SELECT * EXCEPT (join_result_v1), 'MISSING_GA_CLIENT_OR_SESSION_ID' AS join_result_v2, join_result_v1 as join_result_v1
 FROM v1_table
 UNION ALL
-SELECT *
+SELECT * EXCEPT (join_result_v2), join_result_v2 AS exception_v2, null as exception_v1
 FROM v2_table
-WHERE exception != 'MISSING_GA_CLIENT' OR exception is NULL
+WHERE join_result_v2 != 'MISSING_GA_CLIENT_OR_SESSION_ID'

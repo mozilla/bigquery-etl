@@ -22,6 +22,7 @@
   has_ga_download_event: true
   count_dltoken_duplicates: 0
   additional_download_occurred: false
+  join_result_v2: CLIENT_ID_SESSION_ID_MATCH
 - dltoken: mismatched_session
   download_date: 2023-04-02
   time_on_site: 0
@@ -45,6 +46,8 @@
   has_ga_download_event: true
   count_dltoken_duplicates: 0
   additional_download_occurred: false
+  join_result_v1: CLIENT_ID_ONLY_MATCH
+  join_result_v2: MISSING_GA_CLIENT_OR_SESSION_ID
 - dltoken: ga_missing_session_id
   download_date: 2023-04-02
   time_on_site: 0
@@ -68,28 +71,33 @@
   has_ga_download_event: true
   count_dltoken_duplicates: 0
   additional_download_occurred: false
+  join_result_v1: CLIENT_ID_ONLY_MATCH
+  join_result_v2: MISSING_GA_CLIENT_OR_SESSION_ID
 - dltoken: no_dl_session_ga_missing
   download_date: 2023-04-02
   count_dltoken_duplicates: 0
   additional_download_occurred: false
-  exception: DOWNLOAD_SESSION_ID_NULL
+  join_result_v2: DOWNLOAD_CLIENT_OR_SESSION_ID_NULL
 - dltoken: no_dl_session_no_ga_dl_session
   download_date: 2023-04-02
   count_dltoken_duplicates: 0
   additional_download_occurred: false
-  exception: DOWNLOAD_SESSION_ID_NULL
+  join_result_v2: DOWNLOAD_CLIENT_OR_SESSION_ID_NULL
 - dltoken: ga_missing
   download_date: 2023-04-02
   count_dltoken_duplicates: 0
   additional_download_occurred: false
-  exception: MISSING_GA_CLIENT
+  join_result_v1: MISSING_GA_CLIENT
+  join_result_v2: MISSING_GA_CLIENT_OR_SESSION_ID
 - dltoken: multi_ga_session_1_dl_session_missing
   download_date: 2023-04-02
   count_dltoken_duplicates: 0
   additional_download_occurred: false
-  exception: GA_UNRESOLVABLE
+  join_result_v1: GA_UNRESOLVABLE
+  join_result_v2: MISSING_GA_CLIENT_OR_SESSION_ID
 - dltoken: multi_ga_session_2_dl_session_missing
   download_date: 2023-04-02
   count_dltoken_duplicates: 0
   additional_download_occurred: false
-  exception: GA_UNRESOLVABLE
+  join_result_v1: GA_UNRESOLVABLE
+  join_result_v2: MISSING_GA_CLIENT_OR_SESSION_ID

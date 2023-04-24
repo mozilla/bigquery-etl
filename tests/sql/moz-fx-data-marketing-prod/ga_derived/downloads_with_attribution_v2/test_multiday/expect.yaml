@@ -15,12 +15,13 @@
   browser_version: '16.1'
   browser_major_version: 16
   language: en-ca
-  pageviews: 3
+  pageviews: 1
   unique_pageviews: 1
   landing_page: www.mozilla.org/en-GB/firefox/
   has_ga_download_event: true
   count_dltoken_duplicates: 0
   additional_download_occurred: false
+  join_result_v2: CLIENT_ID_SESSION_ID_MATCH
 - dltoken: session_1_day_later
   download_date: '2023-04-02'
   time_on_site: 0
@@ -44,6 +45,7 @@
   has_ga_download_event: true
   count_dltoken_duplicates: 0
   additional_download_occurred: false
+  join_result_v2: CLIENT_ID_SESSION_ID_MATCH
 - dltoken: session_1_day_earlier
   download_date: '2023-04-02'
   time_on_site: 0
@@ -67,6 +69,7 @@
   has_ga_download_event: true
   count_dltoken_duplicates: 0
   additional_download_occurred: false
+  join_result_v2: CLIENT_ID_SESSION_ID_MATCH
 - dltoken: session_2_days_earlier
   download_date: '2023-04-02'
   time_on_site: 0
@@ -90,3 +93,4 @@
   has_ga_download_event: true
   count_dltoken_duplicates: 0
   additional_download_occurred: false
+  join_result_v2: CLIENT_ID_SESSION_ID_MATCH

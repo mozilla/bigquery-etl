@@ -9,23 +9,35 @@ description: |-
 
   2. A single GA session can have multiple dltokens (a session resulted in multiple downloads).
 
-  3. If either the stub_visit_id or stub_download_session_id is NULL, '', '(not set)', or 'something', the exception column will be:
-    * DOWNLOAD_SESSION_ID_NULL
-    * DOWNLOAD_SESSION_ID_EMPTY
-    * DOWNLOAD_SESSION_ID_VALUE_NOT_SET
-    * DOWNLOAD_SESSION_ID_VALUE_SOMETHING
-    * All GA derived values will be null
+  3. The two datasets are first joined using the GA client_id and a custom download_session_id (v2 implementatin).
 
-  4. Occasionally GA sessions do not include a download_session_id only the client_id.  The download data
-  has both the client_id and the download_session_id.  Because of the missing GA field the join does not match
-  resulting in ~7000 dltoken rows with exception = MISSING_GA_CLIENT.  When this exception is detected, the join is
-  performed again for only those dltokens using the client_id only (V1 implementation).  This resolves many of the
-  MISSING_GA_CLIENT exceptions.  There are still a few hundred MISSING_GA_CLIENT occurring along with GA_UNRESOLVABLE
-  due to multiple GA sessions for the selected time range.
+  4. If either the stub_visit_id or stub_download_session_id is NULL, '', '(not set)', or 'something',
+    the join_result_v2 column is:
+    * DOWNLOAD_CLIENT_OR_SESSION_ID_NULL
+    * DOWNLOAD_CLIENT_OR_SESSION_ID_EMPTY
+    * DOWNLOAD_CLIENT_OR_SESSION_ID_VALUE_NOT_SET
+    * DOWNLOAD_CLIENT_OR_SESSION_ID_VALUE_SOMETHING
+    * All GA derived values are null
+    * The join_result_v1 is null
 
-  5. A GA session which does not have a dltoken with a corresponding stub_visit_id/clientId match is excluded from this dataset.
+  5. The join_result_v2 column is CLIENT_ID_SESSION_ID_MATCH for a successful join and join_result_v1 is null since the
+      v1 logic was not applied.
 
-  6. If a dltoken occurs in the raw stub attribution table more than once:
+  6. Occasionally GA sessions do not include a download_session_id only the client_id but the download data has both
+      theclient_id and the download_session_id.  Because of the missing GA field the join does not match resulting in
+      ~7000 dltoken rows with join_result_v2 = MISSING_GA_CLIENT_OR_SESSION_ID.  When this result is detected, the join
+      is performed again for only those dltokens using the client_id only (V1 implementation).  This may result in a
+      few hundred MISSING_GA_CLIENT occurring along with GA_UNRESOLVABLE due to multiple GA sessions for the selected
+      time range.
+
+  7.  In all cases where v1 logic has been applied, the join_result_v2 is set to MISSING_GA_CLIENT_OR_SESSION_ID
+
+  8.  If the v1 logic is applied, the join_result_v1 column will be CLIENT_ID_ONLY_MATCH for a successful join.
+
+  9. A GA session which does not have a dltoken with a corresponding stub_visit_id/clientId match is excluded from this
+      dataset.
+
+  10. If a dltoken occurs in the raw stub attribution table more than once:
     * count_dltoken_duplicates will be >= 1.
     * A value of 0 means there are no duplicates (expected state).
     * A value of 1 means there was 1 other row with the dltoken value, etc.

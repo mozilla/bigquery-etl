@@ -252,7 +252,7 @@ SELECT
       THEN 'Mac'  -- these values are coming from GA.
     ELSE mozfun.norm.os(os)
   END
-  normalized_os,
+ AS normalized_os,
   IF(nrows <= 1, browser, NULL) browser,
   IF(nrows <= 1, normalize_browser(browser), NULL) normalized_browser,
   IF(nrows <= 1, browser_version, NULL) browser_version,

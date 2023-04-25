@@ -69,14 +69,14 @@ joined AS (
 )
 SELECT
   *,
-  IF(channel = "beta", REGEXP_EXTRACT(version, r"[a-z]+([0-9]+)$"), NULL) AS beta_version,
   mozfun.norm.extract_version(version, "major") AS major_version,
   mozfun.norm.extract_version(version, "minor") AS minor_version,
   mozfun.norm.extract_version(version, "patch") AS patch_version,
+  mozfun.norm.extract_version(version, "beta") AS beta_version,
 FROM
   joined
 WHERE
-  TRUE
+  version IS NOT NULL
 QUALIFY
   ROW_NUMBER() OVER (
     PARTITION BY

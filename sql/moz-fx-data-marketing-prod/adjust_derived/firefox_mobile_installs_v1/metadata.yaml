@@ -1,0 +1,17 @@
+description: Aggregated metrics from Adjust data
+friendly_name: adjust firefox mobile installs
+labels:
+  incremental: false
+  schedule: daily
+owners:
+  - rbaffourawuah@mozilla.com
+scheduling:
+  dag_name: bqetl_adjust
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+  clustering:
+    fields:
+      - country

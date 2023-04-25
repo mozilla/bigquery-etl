@@ -29,35 +29,28 @@ WITH all_hits AS (
     visitId AS visit_id,
     hit.appInfo.landingScreenName AS landing_page,
     hit.page.pagePath AS pagepath,
-    CASE
-      WHEN (
-          hit.type = 'EVENT'
+    IF (hit.type = 'EVENT'
           AND hit.eventInfo.eventAction = 'Firefox Download'
           AND hit.eventInfo.eventCategory IS NOT NULL
-          AND hit.eventInfo.eventLabel LIKE 'Firefox for Desktop%'
-        )
-        THEN TRUE
-      ELSE FALSE
-    END AS has_ga_download_event,
+          AND hit.eventInfo.eventLabel LIKE 'Firefox for Desktop%',
+          TRUE, FALSE)
+    AS has_ga_download_event,
     hit.type AS hit_type,
-    CASE
-      WHEN (hit.type = 'EVENT' AND hit.eventInfo.eventAction = 'Stub Session ID')
-        THEN hit.eventInfo.eventLabel
-      ELSE NULL
-    END AS download_session_id
+    IF (hit.type = 'EVENT' AND hit.eventInfo.eventAction = 'Stub Session ID', hit.eventInfo.eventLabel, NULL)
+    AS download_session_id
   FROM
     `moz-fx-data-marketing-prod.65789850.ga_sessions_*` AS ga
   CROSS JOIN
     UNNEST(hits) AS hit
   WHERE
-    _TABLE_SUFFIX
-    BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@download_date, INTERVAL 2 DAY))
-    AND FORMAT_DATE('%Y%m%d', DATE_ADD(@download_date, INTERVAL 1 DAY))
+    PARSE_DATE('%Y%m%d', _TABLE_SUFFIX)
+    BETWEEN DATE_SUB(@download_date, INTERVAL 2 DAY)
+    AND DATE_ADD(@download_date, INTERVAL 1 DAY)
 ),
 page_hits AS (
   SELECT
-    client_id AS client_id,
-    visit_id AS visit_id,
+    client_id,
+    visit_id,
     COUNT(pagePath) AS pageviews,
     COUNT(DISTINCT pagePath) AS unique_pageviews,
   FROM
@@ -70,8 +63,8 @@ page_hits AS (
 ),
 event_hits AS (
   SELECT
-    client_id AS client_id,
-    visit_id AS visit_id,
+    client_id,
+    visit_id,
     -- This will extract one download_session_id value arbitrarily; an initial attempt to 'fix' the behaviour resulted
     -- in a 'Resources exceeded during query execution error'.  Since it is rare to have more than one
     -- download_session_id per GA session implementation will be left as is.
@@ -105,9 +98,9 @@ ga_session_dimensions AS (
   FROM
     `moz-fx-data-marketing-prod.65789850.ga_sessions_*` AS ga
   WHERE
-    _TABLE_SUFFIX
-    BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@download_date, INTERVAL 2 DAY))
-    AND FORMAT_DATE('%Y%m%d', DATE_ADD(@download_date, INTERVAL 1 DAY))
+    PARSE_DATE('%Y%m%d', _TABLE_SUFFIX)
+    BETWEEN DATE_SUB(@download_date, INTERVAL 2 DAY)
+    AND DATE_ADD(@download_date, INTERVAL 1 DAY)
   GROUP BY
     client_id,
     visit_id
@@ -152,11 +145,7 @@ multiple_downloads_in_session AS (
   SELECT
     stub_visit_id,
     stub_download_session_id,
-    CASE
-      WHEN (COUNT(*) > 1)
-        THEN TRUE
-      ELSE FALSE
-    END AS additional_download_occurred
+    IF (COUNT(*) > 1, TRUE, FALSE) AS additional_download_occurred
   FROM
     stub_downloads
   GROUP BY
@@ -233,16 +222,16 @@ v2_table AS (
 SELECT
   dltoken,
   download_date,
-  IF(nrows <= 1, time_on_site, NULL)  time_on_site,
-  IF(nrows <= 1, ad_content, NULL)  ad_content,
-  IF(nrows <= 1, campaign, NULL)  campaign,
-  IF(nrows <= 1, medium, NULL)  medium,
-  IF(nrows <= 1, source, NULL)  source,
-  IF(nrows <= 1, landing_page, NULL)  landing_page,
-  IF(nrows <= 1, country, NULL)  country,
-  IF(nrows <= 1, cn.code, NULL)  normalized_country_code,
-  IF(nrows <= 1, device_category, NULL)  device_category,
-  IF(nrows <= 1, os, NULL) os,
+  IF(nrows <= 1, time_on_site, NULL) AS time_on_site,
+  IF(nrows <= 1, ad_content, NULL) AS ad_content,
+  IF(nrows <= 1, campaign, NULL) AS campaign,
+  IF(nrows <= 1, medium, NULL) AS medium,
+  IF(nrows <= 1, source, NULL) AS source,
+  IF(nrows <= 1, landing_page, NULL) AS landing_page,
+  IF(nrows <= 1, country, NULL) AS country,
+  IF(nrows <= 1, cn.code, NULL) AS normalized_country_code,
+  IF(nrows <= 1, device_category, NULL) AS device_category,
+  IF(nrows <= 1, os, NULL) AS os,
   CASE
     WHEN nrows > 1
       THEN NULL
@@ -252,18 +241,18 @@ SELECT
       THEN 'Mac'  -- these values are coming from GA.
     ELSE mozfun.norm.os(os)
   END
- AS normalized_os,
-  IF(nrows <= 1, browser, NULL) browser,
-  IF(nrows <= 1, normalize_browser(browser), NULL) normalized_browser,
-  IF(nrows <= 1, browser_version, NULL) browser_version,
+  AS normalized_os,
+  IF(nrows <= 1, browser, NULL) AS browser,
+  IF(nrows <= 1, normalize_browser(browser), NULL) AS normalized_browser,
+  IF(nrows <= 1, browser_version, NULL) AS browser_version,
  -- only setting browser major version since that is the only value used in
  -- moz-fx-data-shared-prod.firefox_installer.install
 
-  IF(nrows <= 1, CAST(mozfun.norm.extract_version(browser_version, 'major') AS INTEGER), NULL) browser_major_version,
-  IF(nrows <= 1, `language`, NULL) `language`,
-  IF(nrows <= 1, pageviews, NULL) pageviews,
-  IF(nrows <= 1, unique_pageviews, NULL) unique_pageviews,
-  IF(nrows <= 1, has_ga_download_event, NULL) has_ga_download_event,
+  IF(nrows <= 1, CAST(mozfun.norm.extract_version(browser_version, 'major') AS INTEGER), NULL) AS browser_major_version,
+  IF(nrows <= 1, `language`, NULL) AS `language`,
+  IF(nrows <= 1, pageviews, NULL) AS pageviews,
+  IF(nrows <= 1, unique_pageviews, NULL) AS unique_pageviews,
+  IF(nrows <= 1, has_ga_download_event, NULL) AS has_ga_download_event,
   count_dltoken_duplicates,
   additional_download_occurred,
   CASE
@@ -285,7 +274,7 @@ SELECT
       THEN 'GA_UNRESOLVABLE'
     ELSE 'CLIENT_ID_SESSION_ID_MATCH'
   END
-  join_result_v2
+  AS join_result_v2
 FROM
   downloads_with_ga_session
 LEFT JOIN
@@ -347,16 +336,16 @@ v1_table AS (
 SELECT
   dltoken,
   download_date,
-  IF(nrows <= 1, time_on_site, NULL)  time_on_site,
-  IF(nrows <= 1, ad_content, NULL)  ad_content,
-  IF(nrows <= 1, campaign, NULL)  campaign,
-  IF(nrows <= 1, medium, NULL)  medium,
-  IF(nrows <= 1, source, NULL)  source,
-  IF(nrows <= 1, landing_page, NULL)  landing_page,
-  IF(nrows <= 1, country, NULL)  country,
-  IF(nrows <= 1, cn.code, NULL)  normalized_country_code,
-  IF(nrows <= 1, device_category, NULL)  device_category,
-  IF(nrows <= 1, os, NULL) os,
+  IF(nrows <= 1, time_on_site, NULL) AS time_on_site,
+  IF(nrows <= 1, ad_content, NULL) AS ad_content,
+  IF(nrows <= 1, campaign, NULL) AS campaign,
+  IF(nrows <= 1, medium, NULL) AS medium,
+  IF(nrows <= 1, source, NULL) AS source,
+  IF(nrows <= 1, landing_page, NULL) AS landing_page,
+  IF(nrows <= 1, country, NULL) AS country,
+  IF(nrows <= 1, cn.code, NULL) AS normalized_country_code,
+  IF(nrows <= 1, device_category, NULL) AS device_category,
+  IF(nrows <= 1, os, NULL) AS os,
   CASE
     WHEN nrows > 1
       THEN NULL
@@ -366,18 +355,18 @@ SELECT
       THEN 'Mac'  -- these values are coming from GA.
     ELSE mozfun.norm.os(os)
   END
-  normalized_os,
-  IF(nrows <= 1, browser, NULL) browser,
-  IF(nrows <= 1, normalize_browser(browser), NULL) normalized_browser,
-  IF(nrows <= 1, browser_version, NULL) browser_version,
+  AS normalized_os,
+  IF(nrows <= 1, browser, NULL) AS browser,
+  IF(nrows <= 1, normalize_browser(browser), NULL) AS normalized_browser,
+  IF(nrows <= 1, browser_version, NULL) AS browser_version,
  -- only setting browser major version since that is the only value used in
  -- moz-fx-data-shared-prod.firefox_installer.install
 
-  IF(nrows <= 1, CAST(mozfun.norm.extract_version(browser_version, 'major') AS INTEGER), NULL) browser_major_version,
-  IF(nrows <= 1, `language`, NULL) `language`,
-  IF(nrows <= 1, pageviews, NULL) pageviews,
-  IF(nrows <= 1, unique_pageviews, NULL) unique_pageviews,
-  IF(nrows <= 1, has_ga_download_event, NULL) has_ga_download_event,
+  IF(nrows <= 1, CAST(mozfun.norm.extract_version(browser_version, 'major') AS INTEGER), NULL) AS browser_major_version,
+  IF(nrows <= 1, `language`, NULL) AS `language`,
+  IF(nrows <= 1, pageviews, NULL) AS pageviews,
+  IF(nrows <= 1, unique_pageviews, NULL) AS unique_pageviews,
+  IF(nrows <= 1, has_ga_download_event, NULL) AS has_ga_download_event,
   count_dltoken_duplicates,
   additional_download_occurred,
   CASE
@@ -387,7 +376,7 @@ SELECT
       THEN 'GA_UNRESOLVABLE'
     ELSE 'CLIENT_ID_ONLY_MATCH'
   END
-  join_result_v1
+  AS join_result_v1
 FROM
   v1_downloads_with_ga_session
 LEFT JOIN

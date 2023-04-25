@@ -22,7 +22,7 @@ CREATE TEMPORARY FUNCTION labeled_counter(
 WITH extracted AS (
   SELECT
     *,
-    date(submission_timestamp) AS submission_date,
+    DATE(submission_timestamp) AS submission_date,
   FROM
     `moz-fx-data-shared-prod.telemetry_stable.mobile_event_v1`
   WHERE
@@ -39,7 +39,7 @@ meta AS (
 meta_ranked AS (
   SELECT
     t AS metadata,
-    row_number() OVER (
+    ROW_NUMBER() OVER (
       PARTITION BY
         client_id,
         submission_date
@@ -110,18 +110,12 @@ aggregated AS (
         IF(
           object = "bookmarks-panel",
           CASE
-          WHEN
-            string_value = "app-menu"
-          THEN
-            ("app-menu", value)
-          WHEN
-            string_value LIKE "home-panel%"
-          THEN
-            ("home-panel", value)
-          ELSE
-            NULL
-          END
-          ,
+            WHEN string_value = "app-menu"
+              THEN ("app-menu", value)
+            WHEN string_value LIKE "home-panel%"
+              THEN ("home-panel", value)
+            ELSE NULL
+          END,
           NULL
         ) IGNORE NULLS
       ),

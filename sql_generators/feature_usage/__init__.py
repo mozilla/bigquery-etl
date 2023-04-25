@@ -7,6 +7,7 @@ import click
 import yaml
 from jinja2 import Environment, FileSystemLoader
 
+from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util.common import write_sql
@@ -97,8 +98,11 @@ def generate_schema(project, dataset, destination_table, write_dir):
     default=Path("sql"),
     type=click.Path(file_okay=False),
 )
+@use_cloud_function_option
 @click.pass_context
-def generate(ctx, target_project, dataset, destination_table, output_dir):
+def generate(
+    ctx, target_project, dataset, destination_table, output_dir, use_cloud_function
+):
     """Generate the feature usage table."""
     output_dir = Path(output_dir)
     generate_query(target_project, dataset, destination_table, output_dir)

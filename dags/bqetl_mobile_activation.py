@@ -43,7 +43,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     fenix_derived__new_profile_activation__v1 = bigquery_etl_query(
         task_id="fenix_derived__new_profile_activation__v1",
         destination_table="new_profile_activation_v1",
@@ -62,6 +61,21 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="vsabino@mozilla.com",
         email=["telemetry-alerts@mozilla.com", "vsabino@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_ios_derived__new_profile_activation__v2 = bigquery_etl_query(
+        task_id="firefox_ios_derived__new_profile_activation__v2",
+        destination_table="new_profile_activation_v2",
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="vsabino@mozilla.com",
+        email=[
+            "kignasiak@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "vsabino@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -116,5 +130,12 @@ with DAG(
         wait_for_baseline_clients_last_seen
     )
     firefox_ios_derived__new_profile_activation__v1.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v1
+    )
+
+    firefox_ios_derived__new_profile_activation__v2.set_upstream(
+        wait_for_baseline_clients_last_seen
+    )
+    firefox_ios_derived__new_profile_activation__v2.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )

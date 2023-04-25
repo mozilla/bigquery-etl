@@ -4,9 +4,10 @@
 
 import logging
 import re
+from collections import defaultdict
 from dataclasses import dataclass
 from functools import partial
-from typing import Tuple, Union
+from multiprocessing.pool import ThreadPool
 
 from google.cloud import bigquery
 
@@ -23,7 +24,7 @@ class DeleteSource:
     table: str
     field: str
     project: str = SHARED_PROD
-    conditions: Tuple[str, ...] = ()
+    conditions: tuple[str, ...] = ()
 
     @property
     def table_id(self):
@@ -46,7 +47,7 @@ class DeleteTarget:
     """
 
     table: str
-    field: Union[str, Tuple[str, ...]]
+    field: str | tuple[str, ...]
     project: str = SHARED_PROD
 
     @property
@@ -60,12 +61,14 @@ class DeleteTarget:
         return self.table.partition(".")[0]
 
     @property
-    def fields(self) -> Tuple[str, ...]:
+    def fields(self) -> tuple[str, ...]:
         """Fields."""
         if isinstance(self.field, tuple):
             return self.field
         return (self.field,)
 
+
+DeleteIndex = dict[DeleteTarget, DeleteSource | tuple[DeleteSource, ...]]
 
 CLIENT_ID = "client_id"
 GLEAN_CLIENT_ID = "client_info.client_id"
@@ -150,7 +153,8 @@ fxa_user_id_target = partial(DeleteTarget, field=FXA_USER_ID)
 user_id_target = partial(DeleteTarget, field=USER_ID)
 context_id_target = partial(DeleteTarget, field=CONTEXT_ID)
 
-DELETE_TARGETS = {
+DELETE_TARGETS: DeleteIndex = {
+    client_id_target(table="search_derived.acer_cohort_v1"): DESKTOP_SRC,
     client_id_target(
         table="search_derived.mobile_search_clients_daily_v1"
     ): DESKTOP_SRC,
@@ -387,8 +391,14 @@ SEARCH_IGNORE_FIELDS = {
 }
 
 
-def find_glean_targets(pool, client, project=SHARED_PROD):
-    """Return a dict like DELETE_TARGETS for glean tables."""
+def find_glean_targets(
+    pool: ThreadPool, client: bigquery.Client, project: str = SHARED_PROD
+) -> DeleteIndex:
+    """Return a dict like DELETE_TARGETS for glean tables.
+
+    Note that dict values *must* be either DeleteSource or tuple[DeleteSource, ...],
+    and other iterable types, e.g. list[DeleteSource] are not allowed or supported.
+    """
     datasets = {dataset.dataset_id for dataset in client.list_datasets(project)}
     glean_stable_tables = [
         table
@@ -404,24 +414,54 @@ def find_glean_targets(pool, client, project=SHARED_PROD):
         for table in tables
         if table.labels.get("schema_id") == GLEAN_SCHEMA_ID
     ]
+    # construct values as tuples because that is what they must be in the return type
+    sources: dict[str, tuple[DeleteSource, ...]] = defaultdict(tuple)
     source_doctype = "deletion_request"
-    sources = {
-        dataset_id: DeleteSource(qualified_table_id(table), GLEAN_CLIENT_ID, project)
-        # dict comprehension will only keep the last value for a given key, so
-        # sort by table_id to use the latest version
-        for table in sorted(glean_stable_tables, key=lambda t: t.table_id)
-        if table.table_id.startswith(source_doctype)
-        # re-use source for derived tables
-        for dataset_id in [
-            table.dataset_id,
-            re.sub("_stable$", "_derived", table.dataset_id),
-        ]
-        if dataset_id in datasets
-    }
+    for table in glean_stable_tables:
+        if table.table_id.startswith(source_doctype):
+            source = DeleteSource(qualified_table_id(table), GLEAN_CLIENT_ID, project)
+            derived_dataset = re.sub("_stable$", "_derived", table.dataset_id)
+            # append to tuple to use every version of deletion request tables
+            sources[table.dataset_id] += (source,)
+            sources[derived_dataset] += (source,)
+    glean_derived_tables = list(
+        pool.map(
+            client.get_table,
+            [
+                table
+                for tables in pool.map(
+                    client.list_tables,
+                    [
+                        bigquery.DatasetReference(project, dataset_id)
+                        for dataset_id in sources
+                        if dataset_id.endswith("_derived")
+                    ],
+                    chunksize=1,
+                )
+                for table in tables
+            ],
+            chunksize=1,
+        )
+    )
+    # handle additional source for deletion requests for things like
+    # https://bugzilla.mozilla.org/show_bug.cgi?id=1810236
+    # table must contain client_id at the top level and be partitioned on
+    # submission_timestamp
+    derived_source_prefix = "additional_deletion_requests"
+    for table in glean_derived_tables:
+        if table.table_id.startswith(derived_source_prefix):
+            source = DeleteSource(qualified_table_id(table), CLIENT_ID, project)
+            stable_dataset = re.sub("_derived$", "_stable", table.dataset_id)
+            sources[stable_dataset] += (source,)
+            sources[table.dataset_id] += (source,)
     return {
         **{
             # glean stable tables that have a source
-            glean_target(qualified_table_id(table)): sources[table.dataset_id]
+            DeleteTarget(
+                table=qualified_table_id(table),
+                # field must be repeated for each deletion source
+                field=(GLEAN_CLIENT_ID,) * len(sources[table.dataset_id]),
+            ): sources[table.dataset_id]
             for table in glean_stable_tables
             if table.dataset_id in sources
             and not table.table_id.startswith(source_doctype)
@@ -430,25 +470,14 @@ def find_glean_targets(pool, client, project=SHARED_PROD):
         },
         **{
             # glean derived tables that contain client_id
-            client_id_target(table=qualified_table_id(table)): sources[table.dataset_id]
-            for table in pool.map(
-                client.get_table,
-                [
-                    table
-                    for tables in pool.map(
-                        client.list_tables,
-                        [
-                            bigquery.DatasetReference(project, dataset_id)
-                            for dataset_id in sources
-                            if not dataset_id.endswith("_stable")
-                        ],
-                        chunksize=1,
-                    )
-                    for table in tables
-                ],
-                chunksize=1,
-            )
+            DeleteTarget(
+                table=qualified_table_id(table),
+                # field must be repeated for each deletion source
+                field=(CLIENT_ID,) * len(sources[table.dataset_id]),
+            ): sources[table.dataset_id]
+            for table in glean_derived_tables
             if any(field.name == CLIENT_ID for field in table.schema)
+            and not table.table_id.startswith(derived_source_prefix)
         },
     }
 
@@ -456,8 +485,14 @@ def find_glean_targets(pool, client, project=SHARED_PROD):
 EXPERIMENT_ANALYSIS = "moz-fx-data-experiments"
 
 
-def find_experiment_analysis_targets(pool, client, project=EXPERIMENT_ANALYSIS):
-    """Return a dict like DELETE_TARGETS for experiment analysis tables."""
+def find_experiment_analysis_targets(
+    pool: ThreadPool, client: bigquery.Client, project: str = EXPERIMENT_ANALYSIS
+) -> DeleteIndex:
+    """Return a dict like DELETE_TARGETS for experiment analysis tables.
+
+    Note that dict values *must* be either DeleteSource or tuple[DeleteSource, ...],
+    and other iterable types, e.g. list[DeleteSource] are not allowed or supported.
+    """
     datasets = {dataset.reference for dataset in client.list_datasets(project)}
 
     tables = [
@@ -480,8 +515,17 @@ def find_experiment_analysis_targets(pool, client, project=EXPERIMENT_ANALYSIS):
 PIONEER_PROD = "moz-fx-data-pioneer-prod"
 
 
-def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
-    """Return a dict like DELETE_TARGETS for Pioneer tables."""
+def find_pioneer_targets(
+    pool: ThreadPool,
+    client: bigquery.Client,
+    project: str = PIONEER_PROD,
+    study_projects: list[str] = [],
+) -> DeleteIndex:
+    """Return a dict like DELETE_TARGETS for Pioneer tables.
+
+    Note that dict values *must* be either DeleteSource or tuple[DeleteSource, ...],
+    and other iterable types, e.g. list[DeleteSource] are not allowed or supported.
+    """
 
     def _has_nested_rally_id(field):
         """Check if any of the fields contains nested `metrics.uuid_rally_id`."""

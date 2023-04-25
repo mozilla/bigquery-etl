@@ -104,39 +104,39 @@ fxa_stdout_events AS (
 unioned AS (
   SELECT
     *,
-    'auth' AS event_category,
+    'auth' AS fxa_log,
   FROM
     fxa_auth_events
   UNION ALL
   SELECT
     *,
-    'auth_bounce' AS event_category,
+    'auth_bounce' AS fxa_log,
   FROM
     fxa_auth_bounce_events
   UNION ALL
   SELECT
     *,
-    'content' AS event_category,
+    'content' AS fxa_log,
   FROM
     fxa_content_events
   UNION ALL
   -- oauth events, see the note on top
   SELECT
     *,
-    'oauth' AS event_category,
+    'oauth' AS fxa_log,
   FROM
     fxa_oauth_events
   UNION ALL
   SELECT
     *,
-    'stdout' AS event_category,
+    'stdout' AS fxa_log,
   FROM
     fxa_stdout_events
 )
 SELECT
   `timestamp`,
   receiveTimestamp,
-  event_category,
+  fxa_log,
   event_type,
   user_id,
   device_id,

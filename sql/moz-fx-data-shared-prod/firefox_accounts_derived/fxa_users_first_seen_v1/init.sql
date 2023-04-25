@@ -13,6 +13,6 @@ FROM
   firefox_accounts.fxa_all_events
 WHERE
   `timestamp` > '2010-01-01'
-  AND event_category IN ('auth', 'auth_bounce', 'content', 'oauth')
+  AND fxa_log IN ('auth', 'auth_bounce', 'content', 'oauth')
 GROUP BY
   user_id

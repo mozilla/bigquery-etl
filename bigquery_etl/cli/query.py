@@ -35,6 +35,7 @@ from ..cli.utils import (
 )
 from ..dependency import get_dependency_graph
 from ..dryrun import SKIP, DryRun
+from ..format_sql.format import SKIP as SKIP_FORMAT
 from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
 from ..metadata.parse_metadata import (
@@ -53,6 +54,7 @@ from ..schema import SCHEMA_FILE, Schema
 from ..util import extract_from_query_path
 from ..util.bigquery_id import sql_table_id
 from ..util.common import random_str
+from ..util.common import render as render_template
 from .dryrun import dryrun
 from .generate import generate_all
 
@@ -478,7 +480,6 @@ def _backfill_query(
 
     backfill_date = backfill_date.strftime("%Y-%m-%d")
     if backfill_date not in exclude:
-
         if no_partition:
             destination_table = table
         else:
@@ -861,7 +862,19 @@ def _run_query(
             # point to a public table it needs to be passed as parameter for the query
             query_arguments.append("--destination_table={}".format(destination_table))
 
-        with open(query_file) as query_stream:
+        # write rendered query to a temporary file;
+        # query string cannot be passed directly to bq as SQL comments will be interpreted as CLI arguments
+        with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
+            query_stream.write(
+                render_template(
+                    query_file.name,
+                    template_folder=str(query_file.parent),
+                    templates_dir="",
+                    format=False,
+                )
+            )
+            query_stream.seek(0)
+
             # run the query as shell command so that passed parameters can be used as is
             subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
 
@@ -1120,6 +1133,43 @@ def validate(
         validate_metadata.validate(query.parent)
         dataset_dirs.add(query.parent.parent)
 
+    if not query_files:
+        # run SQL generators if no matching query has been found.
+        ctx.invoke(
+            generate_all,
+            output_dir=ctx.obj["TMP_DIR"],
+            ignore=[
+                "country_code_lookup",
+                "derived_view_schemas",
+                "events_daily",
+                "experiment_monitoring",
+                "feature_usage",
+                "glean_usage",
+                "search",
+                "stable_views",
+            ],
+        )
+
+        query_files = paths_matching_name_pattern(
+            name, ctx.obj["TMP_DIR"], project_id, ["query.*"]
+        )
+
+        for query in query_files:
+            ctx.invoke(format, paths=[str(query)])
+
+            if not no_dryrun:
+                ctx.invoke(
+                    dryrun,
+                    paths=[str(query)],
+                    use_cloud_function=use_cloud_function,
+                    project=project_id,
+                    validate_schemas=validate_schemas,
+                    respect_skip=respect_dryrun_skip,
+                )
+
+            validate_metadata.validate(query.parent)
+            dataset_dirs.add(query.parent.parent)
+
     if no_dryrun:
         click.echo("Dry run skipped for query files.")
 
@@ -1187,6 +1237,61 @@ def initialize(name, sql_dir, project_id, dry_run):
                     job.result()
 
 
+@query.command(
+    help="""Render a query Jinja template.
+
+    Examples:
+
+    ./bqetl query render telemetry_derived.ssl_ratios_v1 \\
+      --output-dir=/tmp
+    """,
+    context_settings=dict(
+        ignore_unknown_options=True,
+        allow_extra_args=True,
+    ),
+)
+@click.argument("name")
+@sql_dir_option
+@click.option(
+    "--output-dir",
+    "--output_dir",
+    help="Output directory generated SQL is written to. "
+    + "If not specified, rendered queries are printed to console.",
+    type=click.Path(file_okay=False),
+    required=False,
+)
+def render(name, sql_dir, output_dir):
+    """Render a query Jinja template."""
+    if name is None:
+        name = "*.*"
+
+    query_files = paths_matching_name_pattern(name, sql_dir, project_id=None)
+    resolved_sql_dir = Path(sql_dir).resolve()
+    for query_file in query_files:
+        rendered_sql = (
+            render_template(
+                query_file.name,
+                template_folder=query_file.parent,
+                templates_dir="",
+                format=False,
+            )
+            + "\n"
+        )
+
+        if not any(s in str(query_file) for s in SKIP_FORMAT):
+            rendered_sql = reformat(rendered_sql, trailing_newline=True)
+
+        if output_dir:
+            output_file = output_dir / query_file.resolve().relative_to(
+                resolved_sql_dir
+            )
+            output_file.parent.mkdir(parents=True, exist_ok=True)
+            output_file.write_text(rendered_sql)
+        else:
+            click.echo(query_file)
+            click.echo(rendered_sql)
+
+
 @query.group(help="Commands for managing query schemas.")
 def schema():
     """Create the CLI group for the query schema command."""
@@ -1226,7 +1331,7 @@ def schema():
     "--tmp-dataset",
     "--tmp_dataset",
     help="GCP datasets for creating updated tables temporarily.",
-    default="analysis",
+    default="tmp",
 )
 @use_cloud_function_option
 @respect_dryrun_skip_option(default=True)
@@ -1558,6 +1663,13 @@ def _update_query_schema(
     default=False,
     is_flag=True,
 )
+@click.option(
+    "--skip-external-data",
+    "--skip_external_data",
+    help="Skip publishing external data, such as Google Sheets.",
+    default=False,
+    is_flag=True,
+)
 @click.pass_context
 def deploy(
     ctx,
@@ -1568,6 +1680,7 @@ def deploy(
     use_cloud_function,
     respect_dryrun_skip,
     skip_existing,
+    skip_external_data,
 ):
     """CLI command for deploying destination table schemas."""
     if not is_authenticated():
@@ -1607,6 +1720,7 @@ def deploy(
             table_name = query_file_path.parent.name
             dataset_name = query_file_path.parent.parent.name
             project_name = query_file_path.parent.parent.parent.name
+
             full_table_id = f"{project_name}.{dataset_name}.{table_name}"
 
             existing_schema = Schema.from_schema_file(existing_schema_path)
@@ -1660,10 +1774,11 @@ def deploy(
             print_exc()
             failed_deploys.append(query_file)
 
-    failed_external_deploys = _deploy_external_data(
-        name, sql_dir, project_id, skip_existing
-    )
-    failed_deploys += failed_external_deploys
+    if not skip_external_data:
+        failed_external_deploys = _deploy_external_data(
+            name, sql_dir, project_id, skip_existing
+        )
+        failed_deploys += failed_external_deploys
 
     if len(failed_deploys) > 0:
         click.echo("The following tables could not be deployed:")
@@ -1697,8 +1812,14 @@ def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
     if metadata.bigquery and metadata.bigquery.clustering:
         table.clustering_fields = metadata.bigquery.clustering.fields
 
+    # BigQuery only allows for string type labels with specific requirements to be published:
+    # https://cloud.google.com/bigquery/docs/labels-intro#requirements
     if metadata.labels:
-        table.labels = metadata.labels
+        table.labels = {
+            key: value
+            for key, value in metadata.labels.items()
+            if isinstance(value, str)
+        }
 
 
 def _deploy_external_data(
@@ -1820,7 +1941,7 @@ def _validate_schema_from_path(
 def validate_schema(
     ctx, name, sql_dir, project_id, use_cloud_function, respect_dryrun_skip
 ):
-    """Validate the defined query schema against the query and destination table."""
+    """Validate the defined query schema with the query and the destination table."""
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
     if query_files == []:
         # run SQL generators if no matching query has been found

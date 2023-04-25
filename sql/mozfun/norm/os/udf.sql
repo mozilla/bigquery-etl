@@ -9,33 +9,22 @@ https://github.com/mozilla/gcp-ingestion/blob/a6928fb089f1652856147c4605df715f32
 */
 CREATE OR REPLACE FUNCTION norm.os(os STRING) AS (
   CASE
-  WHEN
-    os LIKE 'Windows%'
-    OR os LIKE 'WINNT%'
-  THEN
-    'Windows'
-  WHEN
-    os LIKE 'Darwin%'
-  THEN
-    'Mac'
-  WHEN
-    os LIKE '%Linux%'
-    OR os LIKE '%BSD%'
-    OR os LIKE '%SunOS%'
-    OR os LIKE '%Solaris%'
-  THEN
-    'Linux'
-  WHEN
-    os LIKE 'iOS%'
-    OR os LIKE '%iPhone%'
-  THEN
-    'iOS'
-  WHEN
-    os LIKE 'Android%'
-  THEN
-    'Android'
-  ELSE
-    'Other'
+    WHEN os LIKE 'Windows%'
+      OR os LIKE 'WINNT%'
+      THEN 'Windows'
+    WHEN os LIKE 'Darwin%'
+      THEN 'Mac'
+    WHEN os LIKE '%Linux%'
+      OR os LIKE '%BSD%'
+      OR os LIKE '%SunOS%'
+      OR os LIKE '%Solaris%'
+      THEN 'Linux'
+    WHEN os LIKE 'iOS%'
+      OR os LIKE '%iPhone%'
+      THEN 'iOS'
+    WHEN os LIKE 'Android%'
+      THEN 'Android'
+    ELSE 'Other'
   END
 );
 

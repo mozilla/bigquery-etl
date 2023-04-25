@@ -439,35 +439,26 @@ activity_stream_events AS (
     DATE(submission_timestamp) AS submission_date,
     LOGICAL_OR(
       CASE
-      WHEN
-        event = 'PAGE_TAKEOVER_DATA'
-        AND page = 'about:home'
-      THEN
-        TRUE
-      ELSE
-        FALSE
+        WHEN event = 'PAGE_TAKEOVER_DATA'
+          AND page = 'about:home'
+          THEN TRUE
+        ELSE FALSE
       END
     ) AS activitystream_reported_3rdparty_abouthome,
     LOGICAL_OR(
       CASE
-      WHEN
-        event = 'PAGE_TAKEOVER_DATA'
-        AND page = 'about:newtab'
-      THEN
-        TRUE
-      ELSE
-        FALSE
+        WHEN event = 'PAGE_TAKEOVER_DATA'
+          AND page = 'about:newtab'
+          THEN TRUE
+        ELSE FALSE
       END
     ) AS activitystream_reported_3rdparty_aboutnewtab,
     LOGICAL_OR(
       CASE
-      WHEN
-        event = 'PAGE_TAKEOVER_DATA'
-        AND page = 'both'
-      THEN
-        TRUE
-      ELSE
-        FALSE
+        WHEN event = 'PAGE_TAKEOVER_DATA'
+          AND page = 'both'
+          THEN TRUE
+        ELSE FALSE
       END
     ) AS activitystream_reported_3rdparty_both,
     COUNTIF(event = 'CLICK' AND source = 'TOP_SITES') AS activitystream_topsite_clicks,
@@ -532,20 +523,17 @@ addons AS (
     submission_date AS submission_date,
     SUM(
       CASE
-      WHEN
-        addon_id IN (
-          'uBlock0@raymondhill.net',                /* uBlock Origin */
-          '{d10d0bf8-f5b5-c8b4-a8b2-2b9879e08c5d}', /* Adblock Plus */
-          'jid1-NIfFY2CA8fy1tg@jetpack',            /* Adblock */
-          '{73a6fe31-595d-460b-a920-fcc0f8843232}', /* NoScript */
-          'firefox@ghostery.com',                   /* Ghostery */
-          'adblockultimate@adblockultimate.net', /* AdBlocker Ultimate */
-          'jid1-MnnxcxisBPnSXQ@jetpack'             /* Privacy Badger */
-        )
-      THEN
-        1
-      ELSE
-        0
+        WHEN addon_id IN (
+            'uBlock0@raymondhill.net',                /* uBlock Origin */
+            '{d10d0bf8-f5b5-c8b4-a8b2-2b9879e08c5d}', /* Adblock Plus */
+            'jid1-NIfFY2CA8fy1tg@jetpack',            /* Adblock */
+            '{73a6fe31-595d-460b-a920-fcc0f8843232}', /* NoScript */
+            'firefox@ghostery.com',                   /* Ghostery */
+            'adblockultimate@adblockultimate.net', /* AdBlocker Ultimate */
+            'jid1-MnnxcxisBPnSXQ@jetpack'             /* Privacy Badger */
+          )
+          THEN 1
+        ELSE 0
       END
     ) AS num_addblockers,
     LOGICAL_OR(COALESCE(addon_id = 'notes@mozilla.com', FALSE)) AS has_notes_extension,

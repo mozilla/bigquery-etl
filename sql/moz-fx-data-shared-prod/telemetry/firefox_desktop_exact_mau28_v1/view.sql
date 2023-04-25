@@ -7,9 +7,9 @@ WITH base AS (
     SUM(mau) AS mau,
     SUM(wau) AS wau,
     SUM(dau) AS dau,
-    sum(IF(country IN ('US', 'GB', 'FR', 'DE', 'CA'), mau, 0)) AS tier1_mau,
-    sum(IF(country IN ('US', 'GB', 'FR', 'DE', 'CA'), wau, 0)) AS tier1_wau,
-    sum(IF(country IN ('US', 'GB', 'FR', 'DE', 'CA'), dau, 0)) AS tier1_dau,
+    SUM(IF(country IN ('US', 'GB', 'FR', 'DE', 'CA'), mau, 0)) AS tier1_mau,
+    SUM(IF(country IN ('US', 'GB', 'FR', 'DE', 'CA'), wau, 0)) AS tier1_wau,
+    SUM(IF(country IN ('US', 'GB', 'FR', 'DE', 'CA'), dau, 0)) AS tier1_dau,
     SUM(visited_5_uri_mau) AS visited_5_uri_mau,
     SUM(visited_5_uri_wau) AS visited_5_uri_wau,
     SUM(visited_5_uri_dau) AS visited_5_uri_dau

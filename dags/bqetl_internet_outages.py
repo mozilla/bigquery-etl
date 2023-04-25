@@ -45,7 +45,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     internet_outages__global_outages__v1 = bigquery_etl_query(
         task_id="internet_outages__global_outages__v1",
         destination_table="global_outages_v1",

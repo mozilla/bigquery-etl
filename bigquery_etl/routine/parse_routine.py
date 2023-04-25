@@ -15,8 +15,9 @@ import sqlparse
 import yaml
 
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE
+from bigquery_etl.util.common import render
 
-UDF_CHAR = "[a-zA-z0-9_]"
+UDF_CHAR = "[a-zA-Z0-9_]"
 UDF_FILE = "udf.sql"
 PROCEDURE_FILE = "stored_procedure.sql"
 ROUTINE_FILE = (UDF_FILE, PROCEDURE_FILE)
@@ -27,7 +28,8 @@ PERSISTENT_UDF_PREFIX_RE_STR = (
 )
 PERSISTENT_UDF_PREFIX = re.compile(PERSISTENT_UDF_PREFIX_RE_STR, re.IGNORECASE)
 PERSISTENT_UDF_RE = re.compile(
-    rf"{PERSISTENT_UDF_PREFIX_RE_STR}\s+({UDF_CHAR}*)\.({UDF_CHAR}+)`?", re.IGNORECASE
+    rf"{PERSISTENT_UDF_PREFIX_RE_STR}\s+`?(?:[a-zA-Z0-9_-]*`?\.)?({UDF_CHAR}*)\.({UDF_CHAR}+)`?",
+    re.IGNORECASE,
 )
 UDF_NAME_RE = re.compile(r"^([a-zA-Z0-9_]+\.)?[a-zA-Z][a-zA-Z0-9_]{0,255}$")
 GENERIC_DATASET = "_generic_dataset_"
@@ -128,14 +130,14 @@ class RawRoutine:
             return ""
 
     @classmethod
-    def from_file(cls, path, from_text=None):
+    def from_file(cls, path):
         """Create a RawRoutine instance from text."""
         filepath = Path(path)
-
-        if from_text is None:
-            text = filepath.read_text()
-        else:
-            text = from_text
+        text = render(
+            filepath.name,
+            template_folder=filepath.parent,
+            format=False,
+        )
 
         sql = sqlparse.format(text, strip_comments=True)
         statements = [s for s in sqlparse.split(sql) if s.strip()]

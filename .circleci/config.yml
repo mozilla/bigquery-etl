@@ -4,6 +4,7 @@ version: 2.1
 orbs:
   gcp-gcr: circleci/gcp-gcr@0.13.0
   docker: circleci/docker@1.5
+  python: circleci/python@2.1.1
 
 parameters:
   python-version:
@@ -91,7 +92,7 @@ jobs:
           # of a package name and a version specifier"
           command: |
             pip install pip-tools --constraint requirements.in
-            pip-compile --quiet --generate-hashes --unsafe-package=
+            pip-compile --allow-unsafe --generate-hashes --quiet
             git diff --exit-code -G '^ *[^# ]' -- requirements.txt
   test-sql:
     docker: *docker
@@ -100,7 +101,14 @@ jobs:
       - *restore_venv_cache
       - *build
       - *attach_generated_sql
-      - *copy_generated_sql
+      - &copy_staged_sql
+        run:
+          name: Move sql deployed on stage into place
+          command: |
+            rm -rf sql/
+            cp -r /tmp/workspace/staged-generated-sql/sql sql
+            rm -rf tests/
+            cp -r /tmp/workspace/staged-generated-sql/tests tests
       - run:
           name: Run SQL tests
           command: |
@@ -117,10 +125,16 @@ jobs:
       - *restore_venv_cache
       - *build
       - *attach_generated_sql
-      - *copy_generated_sql
+      - *copy_staged_sql
       - run:
           name: Dry run queries
           # yamllint disable rule:line-length
+          # Dry runs on PRs are executed on sql/bigquery-etl-integration-test
+          # Artifacts (queries, views, UDFs) that are changed will be moved to the
+          # bigquery-etl-integration-test folder and deployed to the corresponding
+          # project. This ensures that dry runs can be executed before changes
+          # have been deployed to prod. (bigquery-etl-integration-test is treated
+          # as a stage environment)
           command: |
             if [ "$CIRCLE_BRANCH" = main ]; then
               echo "Check dry run for all queries because branch is" \
@@ -132,8 +146,7 @@ jobs:
                 "commit message"
               PATHS=sql
             else
-              echo "Check dry run for modified queries"
-              PATHS="$(git diff origin/main... --name-only --diff-filter=d -- sql)"
+              PATHS="sql/bigquery-etl-integration-test"
             fi
             echo $PATHS
             PATH="venv/bin:$PATH" script/bqetl dryrun --validate-schemas $PATHS
@@ -145,10 +158,11 @@ jobs:
       - *restore_venv_cache
       - *build
       - *attach_generated_sql
-      - *copy_generated_sql
+      - *copy_staged_sql
       - run:
           name: Verify that metadata files are valid
           command: |
+            # TODO: Add check here to make sure all queries have metadata.yaml
             PATH="venv/bin:$PATH" script/bqetl query validate \
               --respect-dryrun-skip
   integration:
@@ -220,11 +234,9 @@ jobs:
           paths:
             - generated-sql
   validate-dags:
-    # based on
-    # https://github.com/mozilla/telemetry-airflow/blob/main/.circleci/config.yml
-    machine:
-      image: ubuntu-2004:202111-01
-      docker_layer_caching: true
+    executor:
+      name: python/default
+      tag: 3.8.12
     steps:
       - checkout
       - run:
@@ -246,25 +258,29 @@ jobs:
       - run:
           name: Pull telemetry-airflow
           command: |
-            git clone https://github.com/mozilla/telemetry-airflow.git
-            cp -a dags/. telemetry-airflow/dags/
+            git clone https://github.com/mozilla/telemetry-airflow.git ~/telemetry-airflow
+      - run:
+          name: Replace telemetry-airflow DAGs with BigQuery ETL DAGs
+          command: |
+            rm ~/telemetry-airflow/dags/* -f || true
+            cp -a dags/. ~/telemetry-airflow/dags/
       - *attach_generated_sql
       - *copy_generated_sql
       - run:
+          name: Install telemetry-airflow dependencies
           command: |
-            cd telemetry-airflow
-            docker-compose pull
-            docker-compose build
-            # now take ownership of the folder
-            sudo chown -R 10001:10001 .
+            cd ~/telemetry-airflow
+            virtualenv .venv
+            source .venv/bin/activate
+            pip install -r requirements.txt
       - run:
-          name: |
-            Test if dag scripts can be parsed by Airflow
-            and tags have set correctly
-          # Valid tags defined in `telemetry-airflow/bin/test-dag-tags.py`
+          name: 🧪 Test valid DAGs
           command: |
-            cd telemetry-airflow
-            bash bin/test-parse
+            cd ~/telemetry-airflow
+            source .venv/bin/activate
+            python -m pytest tests/dags/test_dag_validity.py --junitxml=~/telemetry-airflow/test-results/junit.xml
+      - store_test_results:
+          path: ~/telemetry-airflow/test-results/junit.xml
   validate-docs:
     docker: *docker
     steps:
@@ -286,7 +302,7 @@ jobs:
       - *restore_mvn_cache
       - *java_deps
       - *attach_generated_sql
-      - *copy_generated_sql
+      - *copy_staged_sql
       - run:
           name: Validate views
           command: PATH="venv/bin:$PATH" script/bqetl view validate
@@ -301,7 +317,7 @@ jobs:
       - *java_deps
       - *attach_generated_sql
       - add_ssh_keys:
-          fingerprints: "38:49:5e:71:1d:b7:14:84:45:08:8a:4c:6b:67:4e:4d"
+          fingerprints: "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
       - run:
           name: Build and deploy docs
           command: |
@@ -328,6 +344,10 @@ jobs:
             PATH="venv/bin:$PATH" script/bqetl generate all \
               --output-dir /tmp/workspace/generated-sql/sql/ \
               --target-project moz-fx-data-shared-prod
+            PATH="venv/bin:$PATH" script/bqetl query render \
+              --sql-dir /tmp/workspace/generated-sql/sql/ \
+              --output-dir /tmp/workspace/generated-sql/sql/ \
+              /tmp/workspace/generated-sql/sql/
             PATH="venv/bin:$PATH" script/bqetl dependency record \
               --skip-existing \
               "/tmp/workspace/generated-sql/sql/"
@@ -335,12 +355,54 @@ jobs:
           root: /tmp/workspace
           paths:
             - generated-sql
+  deploy-changes-to-stage:
+    docker: *docker
+    steps:
+      - checkout
+      - *skip_forked_pr
+      - *restore_venv_cache
+      - *build
+      - *restore_mvn_cache
+      - *java_deps
+      - *attach_generated_sql
+      - *copy_generated_sql
+      - add_ssh_keys:
+          fingerprints: "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
+      - run:
+          name: Pull in generated-sql branch from remote
+          command: |
+            ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+            git clone --single-branch --branch generated-sql \
+              git@github.com:mozilla/bigquery-etl \
+              generated-sql
+      - run:
+          name: Deploy changes to stage
+          command: |
+            export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
+            echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
+
+            PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
+            echo $PATHS
+            PATH="venv/bin:$PATH" script/bqetl stage deploy \
+              --dataset-suffix=$CIRCLE_SHA1 \
+              --remove-updated-artifacts \
+              $PATHS
+      - run:
+          name: Copy generated SQL to temporary stage directory
+          command: |
+            mkdir -p /tmp/workspace/staged-generated-sql
+            cp -r sql/ /tmp/workspace/staged-generated-sql
+            cp -r tests/ /tmp/workspace/staged-generated-sql
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - staged-generated-sql
   push-generated-sql:
     docker: *docker
     steps:
       - *attach_generated_sql
       - add_ssh_keys:
-          fingerprints: "38:49:5e:71:1d:b7:14:84:45:08:8a:4c:6b:67:4e:4d"
+          fingerprints: "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
       - run:
           name: Push to generated-sql branch
           command: |
@@ -359,7 +421,6 @@ jobs:
             git commit -m "Auto-push due to change on main branch [ci skip]" \
               && git push \
               || echo "Skipping push since it looks like there were no changes"
-
   deploy:
     executor: ubuntu-machine-executor
     steps:
@@ -518,6 +579,19 @@ jobs:
       - store_artifacts:
           path: /tmp/integration
           destination: /app/integration
+  reset-stage-env:
+    docker: *docker
+    steps:
+      - checkout
+      - *skip_forked_pr
+      - *build
+      - run:
+          name: "Delete stage datasets"
+          command: |
+            export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
+            echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
+
+            PATH="venv/bin:$PATH" script/bqetl stage clean --dataset-suffix=$CIRCLE_SHA1 --delete-expired
   manual-trigger-required-for-fork:
     docker: *docker
     steps:
@@ -561,17 +635,20 @@ workflows:
       - verify-format-sql:
           requires:
             - generate-sql
+      - deploy-changes-to-stage:
+          requires:
+            - generate-sql
       - verify-requirements
       - test-sql:
           context: data-eng-circleci-tests
           requires:
-            - generate-sql
+            - deploy-changes-to-stage
       - dry-run-sql:
           requires:
-            - generate-sql
+            - deploy-changes-to-stage
       - validate-metadata:
           requires:
-            - generate-sql
+            - deploy-changes-to-stage
       - integration
       - validate-dags:
           requires:
@@ -581,7 +658,7 @@ workflows:
             - generate-sql
       - validate-views:
           requires:
-            - generate-sql
+            - deploy-changes-to-stage
       - generate-sql
       - generate-diff:
           requires:
@@ -611,6 +688,14 @@ workflows:
             branches:
               only:
                 - main
+      - reset-stage-env:
+          requires:
+            - push-generated-sql
+            - test-sql
+            - validate-views
+            - validate-docs
+            - validate-metadata
+            - dry-run-sql
       - deploy:
           context: data-eng-bigquery-etl-dockerhub
           requires:
@@ -642,3 +727,12 @@ workflows:
             # can't run in parallel because CIRCLE_BUILD_NUM is same
             - build
             - generate-sql
+  nightly: # Run after schema-generator to ensure we are up-to-date
+    triggers:
+      - schedule:
+          cron: "0 5 * * *"
+          filters:
+            branches:
+              only:
+                - main
+    jobs: *build_jobs

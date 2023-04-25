@@ -8,6 +8,7 @@ description: |
   as the basis for mobile LTV calculations.
 owners:
   - akomar@mozilla.com
+  - cmorales@mozilla.com
 labels:
   schedule: daily
 scheduling:

@@ -3,6 +3,7 @@
 import re
 import sys
 from dataclasses import dataclass, field
+from typing import Iterator
 
 # These words get their own line followed by increased indent
 TOP_LEVEL_KEYWORDS = [
@@ -138,7 +139,6 @@ RESERVED_KEYWORDS = [
     "GROUPS",
     "HASH",
     "HAVING",
-    "IFNULL",
     "IF",
     "IGNORE",
     "IN",
@@ -198,6 +198,337 @@ RESERVED_KEYWORDS = [
     "WINDOW",
     "WITH",
     "WITHIN",
+]
+# These built-in function names get capitalized
+BUILTIN_FUNCTIONS = [
+    "ABS",
+    "ACOS",
+    "ACOSH",
+    "AEAD.DECRYPT_BYTES",
+    "AEAD.DECRYPT_STRING",
+    "AEAD.ENCRYPT",
+    "ANY_VALUE",
+    "APPROX_COUNT_DISTINCT",
+    "APPROX_QUANTILES",
+    "APPROX_TOP_COUNT",
+    "APPROX_TOP_SUM",
+    "ARRAY",
+    "ARRAY_AGG",
+    "ARRAY_CONCAT",
+    "ARRAY_CONCAT_AGG",
+    "ARRAY_LENGTH",
+    "ARRAY_REVERSE",
+    "ARRAY_TO_STRING",
+    "ASCII",
+    "ASIN",
+    "ASINH",
+    "ATAN",
+    "ATAN2",
+    "ATANH",
+    "AVG",
+    "BIT_AND",
+    "BIT_COUNT",
+    "BIT_OR",
+    "BIT_XOR",
+    "BOOL",
+    "BYTE_LENGTH",
+    "CAST",
+    "CBRT",
+    "CEIL",
+    "CEILING",
+    "CHAR_LENGTH",
+    "CHARACTER_LENGTH",
+    "CHR",
+    "COALESCE",
+    "CODE_POINTS_TO_BYTES",
+    "CODE_POINTS_TO_STRING",
+    "COLLATE",
+    "CONCAT",
+    "CONTAINS_SUBSTR",
+    "CORR",
+    "COS",
+    "COSH",
+    "COT",
+    "COTH",
+    "COUNT",
+    "COUNTIF",
+    "COVAR_POP",
+    "COVAR_SAMP",
+    "CSC",
+    "CSCH",
+    "CUME_DIST",
+    "CURRENT_DATE",
+    "CURRENT_DATETIME",
+    "CURRENT_TIME",
+    "CURRENT_TIMESTAMP",
+    "DATE",
+    "DATE_ADD",
+    "DATE_DIFF",
+    "DATE_FROM_UNIX_DATE",
+    "DATE_SUB",
+    "DATE_TRUNC",
+    "DATETIME",
+    "DATETIME_ADD",
+    "DATETIME_DIFF",
+    "DATETIME_SUB",
+    "DATETIME_TRUNC",
+    "DENSE_RANK",
+    "DETERMINISTIC_DECRYPT_BYTES",
+    "DETERMINISTIC_DECRYPT_STRING",
+    "DETERMINISTIC_ENCRYPT",
+    "DIV",
+    "ENDS_WITH",
+    "ERROR",
+    "EXP",
+    "EXTERNAL_OBJECT_TRANSFORM",
+    "EXTRACT",
+    "FARM_FINGERPRINT",
+    "FIRST_VALUE",
+    "FLOAT64",
+    "FLOOR",
+    "FORMAT",
+    "FORMAT_DATE",
+    "FORMAT_DATETIME",
+    "FORMAT_TIME",
+    "FORMAT_TIMESTAMP",
+    "FROM_BASE32",
+    "FROM_BASE64",
+    "FROM_HEX",
+    "GENERATE_ARRAY",
+    "GENERATE_DATE_ARRAY",
+    "GENERATE_TIMESTAMP_ARRAY",
+    "GENERATE_UUID",
+    "GREATEST",
+    "HLL_COUNT.EXTRACT",
+    "HLL_COUNT.INIT",
+    "HLL_COUNT.MERGE",
+    "HLL_COUNT.MERGE_PARTIAL",
+    "IEEE_DIVIDE",
+    "IF",
+    "IFNULL",
+    "INITCAP",
+    "INSTR",
+    "INT64",
+    "IS_INF",
+    "IS_NAN",
+    "JSON_EXTRACT",
+    "JSON_EXTRACT_ARRAY",
+    "JSON_EXTRACT_SCALAR",
+    "JSON_EXTRACT_STRING_ARRAY",
+    "JSON_QUERY",
+    "JSON_QUERY_ARRAY",
+    "JSON_TYPE",
+    "JSON_VALUE",
+    "JSON_VALUE_ARRAY",
+    "JUSTIFY_DAYS",
+    "JUSTIFY_HOURS",
+    "JUSTIFY_INTERVAL",
+    "KEYS.ADD_KEY_FROM_RAW_BYTES",
+    "KEYS.KEYSET_CHAIN",
+    "KEYS.KEYSET_FROM_JSON",
+    "KEYS.KEYSET_LENGTH",
+    "KEYS.KEYSET_TO_JSON",
+    "KEYS.NEW_KEYSET",
+    "KEYS.NEW_WRAPPED_KEYSET",
+    "KEYS.REWRAP_KEYSET",
+    "KEYS.ROTATE_KEYSET",
+    "KEYS.ROTATE_WRAPPED_KEYSET",
+    "LAG",
+    "LAST_DAY",
+    "LAST_VALUE",
+    "LEAD",
+    "LEAST",
+    "LEFT",
+    "LENGTH",
+    "LN",
+    "LOG",
+    "LOG10",
+    "LOGICAL_AND",
+    "LOGICAL_OR",
+    "LOWER",
+    "LPAD",
+    "LTRIM",
+    "MAKE_INTERVAL",
+    "MAX",
+    "MD5",
+    "MIN",
+    "MOD",
+    "NET.HOST",
+    "NET.IP_FROM_STRING",
+    "NET.IP_NET_MASK",
+    "NET.IP_TO_STRING",
+    "NET.IP_TRUNC",
+    "NET.IPV4_FROM_INT64",
+    "NET.IPV4_TO_INT64",
+    "NET.PUBLIC_SUFFIX",
+    "NET.REG_DOMAIN",
+    "NET.SAFE_IP_FROM_STRING",
+    "NORMALIZE",
+    "NORMALIZE_AND_CASEFOLD",
+    "NTH_VALUE",
+    "NTILE",
+    "NULLIF",
+    "OCTET_LENGTH",
+    "OFFSET",
+    "ORDINAL",
+    "PARSE_BIGNUMERIC",
+    "PARSE_DATE",
+    "PARSE_DATETIME",
+    "PARSE_JSON",
+    "PARSE_NUMERIC",
+    "PARSE_TIME",
+    "PARSE_TIMESTAMP",
+    "PERCENT_RANK",
+    "PERCENTILE_CONT",
+    "PERCENTILE_DISC",
+    "POW",
+    "POWER",
+    "RAND",
+    "RANGE_BUCKET",
+    "RANK",
+    "REGEXP_CONTAINS",
+    "REGEXP_EXTRACT",
+    "REGEXP_EXTRACT_ALL",
+    "REGEXP_INSTR",
+    "REGEXP_REPLACE",
+    "REGEXP_SUBSTR",
+    "REPEAT",
+    "REPLACE",
+    "REVERSE",
+    "RIGHT",
+    "ROUND",
+    "ROW_NUMBER",
+    "RPAD",
+    "RTRIM",
+    "S2_CELLIDFROMPOINT",
+    "S2_COVERINGCELLIDS",
+    "SAFE_ADD",
+    "SAFE_CAST",
+    "SAFE_CONVERT_BYTES_TO_STRING",
+    "SAFE_DIVIDE",
+    "SAFE_MULTIPLY",
+    "SAFE_NEGATE",
+    "SAFE_OFFSET",
+    "SAFE_ORDINAL",
+    "SAFE_SUBTRACT",
+    "SEC",
+    "SECH",
+    "SESSION_USER",
+    "SHA1",
+    "SHA256",
+    "SHA512",
+    "SIGN",
+    "SIN",
+    "SINH",
+    "SOUNDEX",
+    "SPLIT",
+    "SQRT",
+    "ST_ANGLE",
+    "ST_AREA",
+    "ST_ASBINARY",
+    "ST_ASGEOJSON",
+    "ST_ASTEXT",
+    "ST_AZIMUTH",
+    "ST_BOUNDARY",
+    "ST_BOUNDINGBOX",
+    "ST_BUFFER",
+    "ST_BUFFERWITHTOLERANCE",
+    "ST_CENTROID",
+    "ST_CENTROID_AGG",
+    "ST_CLOSESTPOINT",
+    "ST_CLUSTERDBSCAN",
+    "ST_CONTAINS",
+    "ST_CONVEXHULL",
+    "ST_COVEREDBY",
+    "ST_COVERS",
+    "ST_DIFFERENCE",
+    "ST_DIMENSION",
+    "ST_DISJOINT",
+    "ST_DISTANCE",
+    "ST_DUMP",
+    "ST_DWITHIN",
+    "ST_ENDPOINT",
+    "ST_EQUALS",
+    "ST_EXTENT",
+    "ST_EXTERIORRING",
+    "ST_GEOGFROM",
+    "ST_GEOGFROMGEOJSON",
+    "ST_GEOGFROMTEXT",
+    "ST_GEOGFROMWKB",
+    "ST_GEOGPOINT",
+    "ST_GEOGPOINTFROMGEOHASH",
+    "ST_GEOHASH",
+    "ST_GEOMETRYTYPE",
+    "ST_INTERIORRINGS",
+    "ST_INTERSECTION",
+    "ST_INTERSECTS",
+    "ST_INTERSECTSBOX",
+    "ST_ISCLOSED",
+    "ST_ISCOLLECTION",
+    "ST_ISEMPTY",
+    "ST_ISRING",
+    "ST_LENGTH",
+    "ST_MAKELINE",
+    "ST_MAKEPOLYGON",
+    "ST_MAKEPOLYGONORIENTED",
+    "ST_MAXDISTANCE",
+    "ST_NPOINTS",
+    "ST_NUMGEOMETRIES",
+    "ST_NUMPOINTS",
+    "ST_PERIMETER",
+    "ST_POINTN",
+    "ST_SIMPLIFY",
+    "ST_SNAPTOGRID",
+    "ST_STARTPOINT",
+    "ST_TOUCHES",
+    "ST_UNION",
+    "ST_UNION_AGG",
+    "ST_WITHIN",
+    "ST_X",
+    "ST_Y",
+    "STARTS_WITH",
+    "STDDEV",
+    "STDDEV_POP",
+    "STDDEV_SAMP",
+    "STRING",
+    "STRING_AGG",
+    "STRPOS",
+    "SUBSTR",
+    "SUBSTRING",
+    "SUM",
+    "TAN",
+    "TANH",
+    "TIME",
+    "TIME_ADD",
+    "TIME_DIFF",
+    "TIME_SUB",
+    "TIME_TRUNC",
+    "TIMESTAMP",
+    "TIMESTAMP_ADD",
+    "TIMESTAMP_DIFF",
+    "TIMESTAMP_MICROS",
+    "TIMESTAMP_MILLIS",
+    "TIMESTAMP_SECONDS",
+    "TIMESTAMP_SUB",
+    "TIMESTAMP_TRUNC",
+    "TO_BASE32",
+    "TO_BASE64",
+    "TO_CODE_POINTS",
+    "TO_HEX",
+    "TO_JSON",
+    "TO_JSON_STRING",
+    "TRANSLATE",
+    "TRIM",
+    "TRUNC",
+    "UNICODE",
+    "UNIX_DATE",
+    "UNIX_MICROS",
+    "UNIX_MILLIS",
+    "UNIX_SECONDS",
+    "UPPER",
+    "VAR_POP",
+    "VAR_SAMP",
+    "VARIANCE",
 ]
 QUOTE = "\"\"\"|'''|\"|'"
 # strings contain any character, with backslash always followed by one more character
@@ -315,9 +646,7 @@ class BlockEndKeyword(BlockKeyword):
 class BlockMiddleKeyword(BlockStartKeyword, BlockEndKeyword):
     """Keyword that ends one indented block and starts another."""
 
-    pattern = _keyword_pattern(
-        ["BEGIN", "EXCEPTION WHEN ERROR THEN", "ELSEIF", "ELSE", "THEN", "DO", "WHEN"]
-    )
+    pattern = _keyword_pattern(["BEGIN", "EXCEPTION WHEN ERROR THEN", "ELSEIF", "DO"])
 
 
 class AliasSeparator(SpaceBeforeBracketKeyword):
@@ -329,7 +658,7 @@ class AliasSeparator(SpaceBeforeBracketKeyword):
     """
 
     pattern = re.compile(
-        r"AS(?=\s+(?!(WITH|SELECT|STRUCT|ARRAY)\b)[a-z_`(])", re.IGNORECASE
+        r"AS(?=\s+(?!(WITH|SELECT|STRUCT|ARRAY)\b)[a-z_`({])", re.IGNORECASE
     )
 
 
@@ -345,6 +674,18 @@ class TopLevelKeyword(NewlineKeyword):
     pattern = _keyword_pattern(TOP_LEVEL_KEYWORDS)
 
 
+class CaseSubclause(NewlineKeyword):
+    """Subclause within a CASE."""
+
+    pattern = _keyword_pattern(["WHEN"])
+
+
+class MaybeCaseSubclause(ReservedKeyword):
+    """Keyword that needs context to determine whether it is for a CASE or an IF."""
+
+    pattern = _keyword_pattern(["THEN", "ELSE"])
+
+
 class AngleBracketKeyword(ReservedKeyword):
     """Keyword indicating that if the next token is '<' it is a bracket."""
 
@@ -352,9 +693,34 @@ class AngleBracketKeyword(ReservedKeyword):
 
 
 class Identifier(Token):
-    """Token that identifies a column, parameter, table, or other database object."""
+    """Identifier for a column, table, or other database object."""
 
-    pattern = re.compile(rf"@?[A-Za-z_][A-Za-z_0-9]*|`(?:{STRING_CONTENT})+?`")
+    pattern = re.compile(r"[A-Za-z_][A-Za-z_0-9]*|`(?:\\.|[^\\`])+`")
+
+
+class QualifiedIdentifier(Identifier):
+    """Fully or partially qualified identifier for a column, table, or other database object."""
+
+    pattern = re.compile(
+        rf"(?:(?:{Identifier.pattern.pattern})\.)+(?:{Identifier.pattern.pattern})"
+    )
+
+
+class BuiltInFunctionIdentifier(Identifier):
+    """Identifier for a built-in function."""
+
+    pattern = re.compile(
+        r"(?:SAFE\.)?(?:"
+        + "|".join(re.escape(f) for f in BUILTIN_FUNCTIONS)
+        + r")(?=\()",
+        re.IGNORECASE,
+    )
+
+
+class QueryParameter(Identifier):
+    """Query parameter."""
+
+    pattern = re.compile("@[A-Za-z_][A-Za-z_0-9]*")
 
 
 class Literal(Token):
@@ -368,6 +734,33 @@ class Literal(Token):
         # Decimal integer or float literal
         r"|\d+\.?\d*(?:[Ee][+-]?)?\d*"
     )
+
+
+class JinjaExpression(Token):
+    """Jinja expression delimiters {{ }}.
+
+    May be followed by no whitespace or a new line and increased indent.
+    """
+
+    pattern = re.compile(r"{{.*?}}", re.DOTALL)
+
+
+class JinjaStatement(Token):
+    """Jinja statement delimiters {% %}.
+
+    May be followed by no whitespace or a new line and increased indent.
+    """
+
+    pattern = re.compile(r"{%.*?%}", re.DOTALL)
+
+
+class JinjaComment(Token):
+    """Jinja comment delimiters {# #}.
+
+    May be followed by no whitespace or a new line and increased indent.
+    """
+
+    pattern = re.compile(r"{#.*?#}", re.DOTALL)
 
 
 class OpeningBracket(Token):
@@ -448,6 +841,11 @@ BIGQUERY_TOKEN_PRIORITY = [
     LineComment,
     BlockComment,
     Whitespace,
+    JinjaComment,
+    JinjaExpression,
+    JinjaStatement,
+    MaybeCaseSubclause,
+    CaseSubclause,
     BlockMiddleKeyword,
     BlockStartKeyword,
     BlockEndKeyword,
@@ -459,7 +857,10 @@ BIGQUERY_TOKEN_PRIORITY = [
     ReservedKeyword,
     ConcatenationOperator,
     Literal,
+    BuiltInFunctionIdentifier,
+    QualifiedIdentifier,
     Identifier,
+    QueryParameter,
     OpeningBracket,
     ClosingBracket,
     MaybeOpeningAngleBracket,
@@ -471,8 +872,9 @@ BIGQUERY_TOKEN_PRIORITY = [
 ]
 
 
-def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY):
+def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY) -> Iterator[Token]:
     """Split query into a series of tokens."""
+    open_blocks: list[BlockStartKeyword] = []
     open_angle_brackets = 0
     angle_bracket_is_operator = True
     reserved_keyword_is_identifier = False
@@ -483,7 +885,12 @@ def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY):
                 continue
             token = token_type(match.group())
             # handle stateful matches
-            if isinstance(token, MaybeOpeningAngleBracket):
+            if isinstance(token, MaybeCaseSubclause):
+                if open_blocks and open_blocks[-1].value.upper() == "CASE":
+                    token = CaseSubclause(token.value)
+                else:
+                    token = BlockMiddleKeyword(token.value)
+            elif isinstance(token, MaybeOpeningAngleBracket):
                 if angle_bracket_is_operator:
                     continue  # prevent matching operator as opening bracket
                 token = OpeningBracket(token.value)
@@ -503,6 +910,10 @@ def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY):
             length = len(token.value)
             query = query[length:]
             # update stateful conditions for next token
+            if isinstance(token, BlockEndKeyword) and open_blocks:
+                open_blocks.pop()
+            if isinstance(token, BlockStartKeyword):
+                open_blocks.append(token)
             if not isinstance(token, (Comment, Whitespace)):
                 # angle brackets are operators unless already in angle bracket
                 # block or preceded by an AngleBracketKeyword

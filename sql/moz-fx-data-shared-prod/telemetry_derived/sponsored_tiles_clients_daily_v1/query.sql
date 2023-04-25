@@ -47,7 +47,7 @@ impressions_main AS (
 desktop_activity_stream_events AS (
   SELECT
     client_id,
-    date(submission_timestamp) AS submission_date,
+    DATE(submission_timestamp) AS submission_date,
     COUNTIF(
       event = 'BLOCK'
       AND value LIKE '%spoc%'
@@ -61,7 +61,7 @@ desktop_activity_stream_events AS (
   FROM
     `moz-fx-data-shared-prod.activity_stream.events`
   WHERE
-    date(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     1,
     2
@@ -125,14 +125,10 @@ unified_metrics AS (
   SELECT
     submission_date,
     CASE
-    WHEN
-      normalized_app_name = "Firefox Desktop"
-    THEN
-      "desktop"
-    ELSE
-      "mobile"
-    END
-    AS device,
+      WHEN normalized_app_name = "Firefox Desktop"
+        THEN "desktop"
+      ELSE "mobile"
+    END AS device,
     client_id,
     browser_version_info,
     country,
@@ -158,12 +154,14 @@ unified_metrics AS (
       )
       OR (
         normalized_app_name = "Firefox iOS"
-        AND country = "US"
+        AND (country IN UNNEST(["US"]))
+        OR (country IN UNNEST(["DE"]) AND submission_date >= "2022-12-05")
         AND browser_version_info.major_version >= 101
       )
       OR (
         normalized_app_name = "Fenix"
-        AND country = "US"
+        AND (country IN UNNEST(["US"]))
+        OR (country IN UNNEST(["DE"]) AND submission_date >= "2022-12-05")
         AND browser_version_info.major_version >= 100
       )
     )

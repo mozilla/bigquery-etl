@@ -5,7 +5,6 @@ WITH apple_iap_events AS (
   SELECT
     document_id,
     -- WARNING: field order from here must exactly match guardian_apple_events_v1
-    CAST(NULL AS STRING) AS legacy_subscription_id,
     `timestamp` AS event_timestamp,
     mozfun.iap.parse_apple_event(`data`).*,
   FROM
@@ -82,10 +81,7 @@ apple_iap_period_aggregates AS (
     periods.start_time,
     periods.end_time,
     periods.period_offset,
-    COALESCE(
-      MAX(events.legacy_subscription_id),
-      periods.original_transaction_id
-    ) AS original_subscription_id,
+    periods.original_transaction_id AS original_subscription_id,
     MIN(events.original_purchase_date) AS original_purchase_date,
     ARRAY_AGG(DISTINCT events.offer_identifier IGNORE NULLS) AS promotion_codes,
     ARRAY_AGG(
@@ -157,28 +153,17 @@ SELECT
   periods.product_id AS plan_id,
   CASE
     periods.status
-  WHEN
-    1
-  THEN
-    "active"
-  WHEN
-    2
-  THEN
-    "expired"
-  WHEN
-    3
-  THEN
-    "in billing retry period"
-  WHEN
-    4
-  THEN
-    "in billing grace period"
-  WHEN
-    5
-  THEN
-    "revoked"
-  END
-  AS status,
+    WHEN 1
+      THEN "active"
+    WHEN 2
+      THEN "expired"
+    WHEN 3
+      THEN "in billing retry period"
+    WHEN 4
+      THEN "in billing grace period"
+    WHEN 5
+      THEN "revoked"
+  END AS status,
   periods.verified_at AS event_timestamp,
   IF(
     periods.end_time <= trial_periods.end_time,
@@ -192,46 +177,28 @@ SELECT
   periods.end_time AS ended_at,
   -- https://developer.apple.com/documentation/appstoreservernotifications/expirationintent
   CASE
-  WHEN
-    periods.expiration_intent = 1
-  THEN
-    "Cancelled by Customer"
-  WHEN
-    periods.expiration_intent = 2
-  THEN
-    "Payment Failed"
-  WHEN
-    periods.expiration_intent = 3
-  THEN
-    "Price Change Not Approved by Customer"
-  WHEN
-    periods.expiration_intent = 4
-  THEN
-    "Product Unavailable at Renewal"
-  WHEN
-    periods.revocation_reason IS NOT NULL
-  THEN
-    "Refund"
-  END
-  AS ended_reason,
+    WHEN periods.expiration_intent = 1
+      THEN "Cancelled by Customer"
+    WHEN periods.expiration_intent = 2
+      THEN "Payment Failed"
+    WHEN periods.expiration_intent = 3
+      THEN "Price Change Not Approved by Customer"
+    WHEN periods.expiration_intent = 4
+      THEN "Product Unavailable at Renewal"
+    WHEN periods.revocation_reason IS NOT NULL
+      THEN "Refund"
+  END AS ended_reason,
   periods.user_id AS fxa_uid,
   "Apple Store" AS provider,
   (
     CASE
-    WHEN
-      CONTAINS_SUBSTR(periods.product_id, ".1_month_subscription")
-    THEN
-      STRUCT("month" AS plan_interval, 1 AS plan_interval_count)
-    WHEN
-      CONTAINS_SUBSTR(periods.product_id, ".6_mo_subscription")
-    THEN
-      ("month", 6)
-    WHEN
-      CONTAINS_SUBSTR(periods.product_id, ".1_year_subscription")
-    THEN
-      ("year", 1)
-    ELSE
-      ERROR("subscription period not found: " || periods.product_id)
+      WHEN CONTAINS_SUBSTR(periods.product_id, ".1_month_subscription")
+        THEN STRUCT("month" AS plan_interval, 1 AS plan_interval_count)
+      WHEN CONTAINS_SUBSTR(periods.product_id, ".6_mo_subscription")
+        THEN ("month", 6)
+      WHEN CONTAINS_SUBSTR(periods.product_id, ".1_year_subscription")
+        THEN ("year", 1)
+      ELSE ERROR("subscription period not found: " || periods.product_id)
     END
   ).*,
   "America/Los_Angeles" AS plan_interval_timezone,

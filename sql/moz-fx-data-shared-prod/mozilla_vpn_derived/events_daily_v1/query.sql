@@ -17,6 +17,7 @@ WITH sample AS (
     client_info.app_display_version AS app_display_version,
     client_info.architecture AS architecture,
     client_info.first_run_date AS first_run_date,
+    metadata.header.x_telemetry_agent AS telemetry_agent,
     client_info.telemetry_sdk_build AS telemetry_sdk_build,
     client_info.locale AS locale,
     (
@@ -47,6 +48,7 @@ WITH sample AS (
     client_info.app_display_version AS app_display_version,
     client_info.architecture AS architecture,
     client_info.first_run_date AS first_run_date,
+    metadata.header.x_telemetry_agent AS telemetry_agent,
     client_info.telemetry_sdk_build AS telemetry_sdk_build,
     client_info.locale AS locale,
     (
@@ -94,6 +96,7 @@ SELECT
   mozfun.stats.mode_last(ARRAY_AGG(app_display_version)) AS app_display_version,
   mozfun.stats.mode_last(ARRAY_AGG(architecture)) AS architecture,
   mozfun.stats.mode_last(ARRAY_AGG(first_run_date)) AS first_run_date,
+  mozfun.stats.mode_last(ARRAY_AGG(telemetry_agent)) AS telemetry_agent,
   mozfun.stats.mode_last(ARRAY_AGG(telemetry_sdk_build)) AS telemetry_sdk_build,
   mozfun.stats.mode_last(ARRAY_AGG(locale)) AS locale,
   -- metadata

@@ -43,7 +43,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     search_derived__desktop_mobile_search_clients_monthly__v1 = bigquery_etl_query(
         task_id="search_derived__desktop_mobile_search_clients_monthly__v1",
         destination_table='desktop_mobile_search_clients_monthly_v1${{ (execution_date + macros.dateutil.relativedelta.relativedelta(months=-1, day=1)).strftime("%Y%m") }}',

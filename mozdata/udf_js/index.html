@@ -1705,6 +1705,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#extract_string_from_bytes" class="md-nav__link">
+    extract_string_from_bytes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#gunzip" class="md-nav__link">
     gunzip
   </a>
@@ -1784,6 +1791,13 @@
         <li class="md-nav__item">
   <a href="#main_summary_disabled_addons" class="md-nav__link">
     main_summary_disabled_addons
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parse_sponsored_interaction" class="md-nav__link">
+    parse_sponsored_interaction
   </a>
   
 </li>
@@ -2369,6 +2383,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#extract_string_from_bytes" class="md-nav__link">
+    extract_string_from_bytes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#gunzip" class="md-nav__link">
     gunzip
   </a>
@@ -2453,6 +2474,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#parse_sponsored_interaction" class="md-nav__link">
+    parse_sponsored_interaction
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#sample_id" class="md-nav__link">
     sample_id
   </a>
@@ -2489,6 +2517,12 @@
 <p><code>udf_js.crc32</code></p>
 <p>Calculate the CRC-32 hash of an input string.  The implementation here could be optimized. In particular, it calculates a lookup table on every invocation which could be cached and reused. In practice, though, this implementation appears to be fast enough that further optimization is not yet warranted.  Based on https://stackoverflow.com/a/18639999/1260237 See https://en.wikipedia.org/wiki/Cyclic_redundancy_check</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf_js/crc32">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf_js/crc32/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="extract_string_from_bytes"><a href="#extract_string_from_bytes">extract_string_from_bytes</a></h2>
+<p><strong>Extract string from bytes</strong></p>
+<p><code>udf_js.extract_string_from_bytes</code></p>
+<p>Related to https://mozilla-hub.atlassian.net/browse/RS-682. The function extracts string data from <code>payload</code> which is in bytes.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf_js/extract_string_from_bytes">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf_js/extract_string_from_bytes/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="gunzip"><a href="#gunzip">gunzip</a></h2>
 <p><strong>Gunzip</strong></p>
@@ -2560,6 +2594,12 @@
 <p><code>udf_js.main_summary_disabled_addons</code></p>
 <p>Report the ids of the addons which are in the addonDetails but not in the activeAddons.  They are the disabled addons (possibly because they are legacy). We need this as addonDetails may contain both disabled and active addons. https://github.com/mozilla/telemetry-batch-view/blob/ea0733c00df191501b39d2c4e2ece3fe703a0ef3/src/main/scala/com/mozilla/telemetry/views/MainSummaryView.scala#L451-L464</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf_js/main_summary_disabled_addons">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf_js/main_summary_disabled_addons/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="parse_sponsored_interaction"><a href="#parse_sponsored_interaction">parse_sponsored_interaction</a></h2>
+<p><strong>Extract string from bytes</strong></p>
+<p><code>udf_js.parse_sponsored_interaction</code></p>
+<p>Related to https://mozilla-hub.atlassian.net/browse/RS-682. The function parses the sponsored interaction column from payload_error_bytes.contextual_services table.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf_js/parse_sponsored_interaction">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf_js/parse_sponsored_interaction/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="sample_id"><a href="#sample_id">sample_id</a></h2>
 <p><strong>Sample Id</strong></p>

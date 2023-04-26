@@ -1860,8 +1860,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#active_in_range-udf" class="md-nav__link">
-    active_in_range (UDF)
+  <a href="#from_string-udf" class="md-nav__link">
+    from_string (UDF)
   </a>
   
 </li>
@@ -1888,8 +1888,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#from_string-udf" class="md-nav__link">
-    from_string (UDF)
+  <a href="#active_in_range-udf" class="md-nav__link">
+    active_in_range (UDF)
   </a>
   
 </li>
@@ -2319,8 +2319,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#active_in_range-udf" class="md-nav__link">
-    active_in_range (UDF)
+  <a href="#from_string-udf" class="md-nav__link">
+    from_string (UDF)
   </a>
   
 </li>
@@ -2347,8 +2347,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#from_string-udf" class="md-nav__link">
-    from_string (UDF)
+  <a href="#active_in_range-udf" class="md-nav__link">
+    active_in_range (UDF)
   </a>
   
 </li>
@@ -2404,15 +2404,12 @@ start_offset.</p>
 <span class="w">  </span><span class="n">submission_date</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="s1">&#39;2020-01-01&#39;</span>
 </code></pre></div>
 <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/range/metadata.yaml">Edit</a></p>
-<h2 id="active_in_range-udf">active_in_range (UDF)</h2>
-<p>Return a boolean indicating if any bits are set in the specified range
-of a bit pattern. The <code>start_offset</code> must be zero or a negative number
-indicating an offset from the rightmost bit in the pattern. n_bits is
-the number of bits to consider, counting right from the bit at
-<code>start_offset</code>.</p>
+<h2 id="from_string-udf">from_string (UDF)</h2>
+<p>Convert a string representing individual bits into an INT64.</p>
+<p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>
 <p>See detailed docs for the bits28 suite of functions:
 <a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/active_in_range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/active_in_range/metadata.yaml">Edit</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/from_string">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/from_string/metadata.yaml">Edit</a></p>
 <h2 id="to_string-udf">to_string (UDF)</h2>
 <p>Convert an INT64 field into a 28-character string representing
 the individual bits.</p>
@@ -2443,12 +2440,15 @@ logarithm; see <a href="https://stackoverflow.com/a/42747608/1260237">https://st
 <p>See detailed docs for the bits28 suite of functions:
 <a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/to_dates">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/to_dates/metadata.yaml">Edit</a></p>
-<h2 id="from_string-udf">from_string (UDF)</h2>
-<p>Convert a string representing individual bits into an INT64.</p>
-<p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>
+<h2 id="active_in_range-udf">active_in_range (UDF)</h2>
+<p>Return a boolean indicating if any bits are set in the specified range
+of a bit pattern. The <code>start_offset</code> must be zero or a negative number
+indicating an offset from the rightmost bit in the pattern. n_bits is
+the number of bits to consider, counting right from the bit at
+<code>start_offset</code>.</p>
 <p>See detailed docs for the bits28 suite of functions:
 <a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/from_string">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/from_string/metadata.yaml">Edit</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/active_in_range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/active_in_range/metadata.yaml">Edit</a></p>
 
 
 

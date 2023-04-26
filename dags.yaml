@@ -1056,8 +1056,7 @@ bqetl_adjust:
     retries: 2
     retry_delay: 30m
     start_date: '2023-04-25'
-  description: This DAG schedules queries that are used created derived tables built
-    on adjust data.
+  description: Derived tables built on Adjust data.
   repo: bigquery-etl
   schedule_interval: 0 4 * * *
   tags:

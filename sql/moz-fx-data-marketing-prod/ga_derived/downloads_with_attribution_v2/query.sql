@@ -18,6 +18,19 @@ CREATE TEMP FUNCTION normalize_browser(browser STRING) AS (
   END
 );
 
+CREATE TEMP FUNCTION normalize_ga_os(os STRING, nrows INTEGER) AS (
+  CASE
+    WHEN nrows > 1
+      THEN NULL
+    WHEN os IS NULL
+      THEN NULL
+    WHEN os LIKE 'Macintosh%'
+      THEN 'Mac'  -- these values are coming from GA.
+    ELSE mozfun.norm.os(os)
+  END
+);
+
+
 -- Unnest all the hits for all  sessions, one row per hit.
 -- Different hit.type values (EVENT | PAGE)
 -- and hit.eventInfo.eventAction('Firefox Download'| 'Stub Session ID') are
@@ -232,16 +245,7 @@ SELECT
   IF(nrows <= 1, cn.code, NULL) AS normalized_country_code,
   IF(nrows <= 1, device_category, NULL) AS device_category,
   IF(nrows <= 1, os, NULL) AS os,
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    WHEN os IS NULL
-      THEN NULL
-    WHEN os LIKE 'Macintosh%'
-      THEN 'Mac'  -- these values are coming from GA.
-    ELSE mozfun.norm.os(os)
-  END
-  AS normalized_os,
+  normalize_ga_os(os, nrows) AS normalized_os,
   IF(nrows <= 1, browser, NULL) AS browser,
   IF(nrows <= 1, normalize_browser(browser), NULL) AS normalized_browser,
   IF(nrows <= 1, browser_version, NULL) AS browser_version,
@@ -346,16 +350,7 @@ SELECT
   IF(nrows <= 1, cn.code, NULL) AS normalized_country_code,
   IF(nrows <= 1, device_category, NULL) AS device_category,
   IF(nrows <= 1, os, NULL) AS os,
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    WHEN os IS NULL
-      THEN NULL
-    WHEN os LIKE 'Macintosh%'
-      THEN 'Mac'  -- these values are coming from GA.
-    ELSE mozfun.norm.os(os)
-  END
-  AS normalized_os,
+  normalize_ga_os(os, nrows) AS normalized_os,
   IF(nrows <= 1, browser, NULL) AS browser,
   IF(nrows <= 1, normalize_browser(browser), NULL) AS normalized_browser,
   IF(nrows <= 1, browser_version, NULL) AS browser_version,

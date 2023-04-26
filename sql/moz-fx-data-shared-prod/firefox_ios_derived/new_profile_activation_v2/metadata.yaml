@@ -19,3 +19,4 @@ bigquery:
 scheduling:
   dag_name: bqetl_mobile_activation
   date_partition_parameter: submission_date
+  depends_on_past: true

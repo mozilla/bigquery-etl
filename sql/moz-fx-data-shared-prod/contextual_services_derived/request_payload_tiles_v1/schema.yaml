@@ -1,13 +1,13 @@
 fields:
   - mode: NULLABLE
-    name: source
-    type: STRING
-  - mode: NULLABLE
     name: form_factor
     type: STRING
   - mode: NULLABLE
     name: send_event
     type: STRING
+  - mode: NULLABLE
+    name: flagged_fraud
+    type: BOOL
   - mode: NULLABLE
     name: submission_date
     type: DATE
@@ -35,6 +35,3 @@ fields:
   - mode: NULLABLE
     name: click_count
     type: INTEGER
-  - mode: NULLABLE
-    name: error_message
-    type: STRING

@@ -1042,3 +1042,20 @@ bqetl_status_check:
   schedule_interval: "1h"
   tags:
     - impact/tier_1
+
+bqetl_download_funnel_attribution:
+  description: Daily aggregations of data exported from Google Analytics joined with Firefox download data.
+  default_args:
+    depends_on_past: false
+    email:
+      - gleonard@mozilla.com
+      - telemetry-alerts@mozilla.com
+    end_date: null
+    owner: gleonard@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-04-10'
+  schedule_interval: 0 23 * * *
+  tags:
+    - impact/tier_1
+    - repo/bigquery-etl

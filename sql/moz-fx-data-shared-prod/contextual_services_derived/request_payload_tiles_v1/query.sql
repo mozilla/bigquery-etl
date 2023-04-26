@@ -40,7 +40,7 @@ parsed AS (
   FROM
     urls
   WHERE
-    si.source LIKE '%quicksuggest%' /* filtering in suggest data */
+    si.source LIKE '%topsites%' /* filtering in suggest data */
 )
 SELECT
   *

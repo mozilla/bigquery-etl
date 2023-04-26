@@ -1,6 +1,6 @@
-friendly_name: Contextual Services Suggest Request Payload
+friendly_name: Contextual Services Tiles Request Payload
 description: |-
-  Derived dataset for Contextual services tiles request payload
+  Derived dataset for contextual services tiles request payload
 owners:
   - skahmann@mozilla.com
   - akommasani@mozilla.com

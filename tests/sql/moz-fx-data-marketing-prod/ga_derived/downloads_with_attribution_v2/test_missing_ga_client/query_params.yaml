@@ -1,0 +1,4 @@
+---
+- name: download_date
+  type: DATE
+  value: 2023-04-02

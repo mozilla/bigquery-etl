@@ -186,6 +186,7 @@ SKIP = {
         recursive=True,
     ),
     "sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v1/query.sql",
+    "sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v2/query.sql",
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501

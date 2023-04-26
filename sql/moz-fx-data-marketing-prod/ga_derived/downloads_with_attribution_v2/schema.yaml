@@ -4,7 +4,7 @@ fields:
   mode: NULLABLE
   name: dltoken
   type: STRING
-- description: Time visitor on site
+- description: Total time of the GA session expressed in seconds.
   mode: NULLABLE
   name: time_on_site
   type: INTEGER

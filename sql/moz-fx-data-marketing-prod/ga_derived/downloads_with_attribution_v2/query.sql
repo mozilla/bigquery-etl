@@ -383,6 +383,6 @@ ON
 SELECT * EXCEPT (join_result_v1), 'MISSING_GA_CLIENT_OR_SESSION_ID' AS join_result_v2, join_result_v1 AS join_result_v1
 FROM v1_table
 UNION ALL
-SELECT * EXCEPT (join_result_v2), join_result_v2 AS exception_v2, NULL AS exception_v1
+SELECT * EXCEPT (join_result_v2), join_result_v2 AS join_result_v2, NULL AS join_result_v1
 FROM v2_table
 WHERE join_result_v2 != 'MISSING_GA_CLIENT_OR_SESSION_ID'

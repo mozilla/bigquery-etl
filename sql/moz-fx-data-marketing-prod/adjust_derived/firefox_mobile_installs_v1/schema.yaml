@@ -3,9 +3,6 @@ fields:
   name: date
   type: DATE
 - mode: NULLABLE
-  name: app
-  type: STRING
-- mode: NULLABLE
   name: network
   type: STRING
 - mode: NULLABLE

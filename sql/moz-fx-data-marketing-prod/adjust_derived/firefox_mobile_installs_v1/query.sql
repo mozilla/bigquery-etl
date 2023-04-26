@@ -17,8 +17,8 @@ LEFT JOIN
 ON
   UPPER(adjust.country) = country.country
 WHERE
-  app = 'Firefox Android and iOS'
-  AND date >= '2022-01-01'
+  adjust.app = 'Firefox Android and iOS'
+  AND adjust.date >= '2022-01-01'
 GROUP BY
   1,
   2,

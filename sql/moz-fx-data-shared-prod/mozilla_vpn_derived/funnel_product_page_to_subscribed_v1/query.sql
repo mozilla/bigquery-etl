@@ -133,7 +133,7 @@ flows AS (
       AND user_id IS NULL
     ) AS pay_setup_complete_without_uid,
     LOGICAL_OR(
-      event_type = "fxa_pay_setup - success"
+      event_type IN ("fxa_pay_setup - 3ds_complete", "fxa_pay_setup - success")
       AND user_id IS NOT NULL
     ) AS pay_setup_complete_with_uid,
     -- coupon activities

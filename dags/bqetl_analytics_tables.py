@@ -75,6 +75,23 @@ with DAG(
 
         firefox_android_clients_external.set_upstream(firefox_android_clients)
 
+    firefox_ios_clients = bigquery_etl_query(
+        task_id="firefox_ios_clients",
+        destination_table="firefox_ios_clients_v1",
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kignasiak@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "kignasiak@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
     wait_for_baseline_clients_daily = ExternalTaskSensor(
         task_id="wait_for_baseline_clients_daily",
         external_dag_id="copy_deduplicate",
@@ -88,8 +105,6 @@ with DAG(
     )
 
     firefox_android_clients.set_upstream(wait_for_baseline_clients_daily)
-<<<<<<< HEAD
-=======
 
     firefox_ios_clients.set_upstream(wait_for_baseline_clients_daily)
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
@@ -105,10 +120,10 @@ with DAG(
     )
 
     firefox_ios_clients.set_upstream(wait_for_copy_deduplicate_all)
-    wait_for_firefox_ios_derived__new_profile_activation__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_ios_derived__new_profile_activation__v1",
+    wait_for_firefox_ios_derived__new_profile_activation__v2 = ExternalTaskSensor(
+        task_id="wait_for_firefox_ios_derived__new_profile_activation__v2",
         external_dag_id="bqetl_mobile_activation",
-        external_task_id="firefox_ios_derived__new_profile_activation__v1",
+        external_task_id="firefox_ios_derived__new_profile_activation__v2",
         execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
@@ -118,6 +133,5 @@ with DAG(
     )
 
     firefox_ios_clients.set_upstream(
-        wait_for_firefox_ios_derived__new_profile_activation__v1
+        wait_for_firefox_ios_derived__new_profile_activation__v2
     )
->>>>>>> ac558e7bb (regenerated bqetl_analytics_aggregations DAg)

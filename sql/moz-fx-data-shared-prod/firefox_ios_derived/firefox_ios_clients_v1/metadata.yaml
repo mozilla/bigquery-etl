@@ -25,7 +25,6 @@ labels:
   application: firefox_ios
   incremental: true
   schedule: daily
-  owner: kignasiak@mozilla.com
 scheduling:
   dag_name: bqetl_analytics_tables
   task_name: firefox_ios_clients

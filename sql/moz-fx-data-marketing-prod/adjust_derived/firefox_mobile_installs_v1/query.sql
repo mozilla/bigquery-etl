@@ -11,9 +11,9 @@ SELECT
   SUM(adjust.clicks) AS clicks,
   SUM(adjust.installs) AS installs
 FROM
-  `ga-mozilla-org-prod-001.Adjust.deliverable_*` adjust
+  `ga-mozilla-org-prod-001.Adjust.deliverable_*` AS adjust
 LEFT JOIN
-  `moz-fx-data-shared-prod.static.country_codes_v1` country
+  `moz-fx-data-shared-prod.static.country_codes_v1` AS country
 ON
   UPPER(adjust.country) = country.country
 WHERE

@@ -157,6 +157,8 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/init.sql",
     "sql/moz-fx-data-shared-prod/contextual_services_derived/adm_forecasting_v1/query.sql",
     "sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_summary/view.sql",
+    "sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_suggest_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_tiles_v1/query.sql",
     *glob.glob(
         "sql/moz-fx-data-shared-prod/regrets_reporter_derived/regrets_reporter_summary_v1/*.sql",  # noqa E501
         recursive=True,
@@ -190,6 +192,7 @@ SKIP = {
         recursive=True,
     ),
     "sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v1/query.sql",
+    "sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v2/query.sql",
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501

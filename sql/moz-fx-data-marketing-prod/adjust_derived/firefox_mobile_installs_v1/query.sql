@@ -15,10 +15,10 @@ FROM
 LEFT JOIN
   `moz-fx-data-shared-prod.static.country_codes_v1` AS country
 ON
-  UPPER(adjust.country) = country.country
+  UPPER(adjust.country) = country.code
 WHERE
   adjust.app = 'Firefox Android and iOS'
-  AND adjust.date >= '2022-01-01'
+  AND adjust._TABLE_SUFFIX >= '20220101'
 GROUP BY
   1,
   2,

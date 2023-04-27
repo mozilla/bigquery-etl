@@ -15,7 +15,7 @@ Built from bigquery-etl repo, [`dags/bqetl_adjust.py`](https://github.com/mozill
 
 #### Description
 
-This DAG schedules queries that are used created derived tables built on adjust data.
+Derived tables built on Adjust data.
 #### Owner
 
 rbaffourawuah@mozilla.com
@@ -50,6 +50,7 @@ with DAG(
         project_id="moz-fx-data-marketing-prod",
         owner="rbaffourawuah@mozilla.com",
         email=["rbaffourawuah@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )

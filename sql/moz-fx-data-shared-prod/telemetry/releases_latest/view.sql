@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.latest_releases`
+  `moz-fx-data-shared-prod.telemetry.releases_latest`
 AS
 WITH channels AS (
   SELECT

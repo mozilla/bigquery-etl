@@ -89,24 +89,22 @@ extracted AS (
 SELECT
   assert.equals("topsites", e.`source`),
   assert.equals("desktop", e.formFactor),
-  assert.null(e.scenario),
+  assert.equals("null", e.scenario),
   assert.equals("click", e.interactionType),
   assert.equals("{10679079-b1cd-45a3-9e40-cdfb364d3476}", e.contextId),
   assert.equals(
     "https://bridge.sfo1.ap01.net/ctp?ci=1681139740815.12791&country-code=DE&ctag=pd_sl_08aeb79c14ac3da0f8e9116cdcb0afadec2e24da616da802ba033bf6&dma-code=&form-factor=desktop&key=1681139740400900002.1&os-family=Windows&product-version=firefox_111&region-code=NW&version=16.0.0",
     e.reportingUrl
   ),
-  assert.null(e.requestId),
-  assert.equals("2023-04-10 15:41:55 UTC", e.submissionTimestamp),
+  assert.equals("null", e.requestId),
+  assert.equals(TIMESTAMP("2023-04-10 15:41:55 UTC"), e.submissionTimestamp),
   assert.equals("topsites-click", e.originalDocType),
   assert.equals("contextual-services", e.originalNamespace),
   assert.equals(1, e.interactionCount),
   assert.false(e.flaggedFraud),
   assert.equals(
-    JSON(
-      '{\"host\":\"bridge.sfo1.ap01.net\",\"params\":{\"ci\":\"1681139740815.12791\",\"country_code\":\"DE\",\"ctag\":\"pd_sl_08aeb79c14ac3da0f8e9116cdcb0afadec2e24da616da802ba033bf6\",\"dma_code\":\"\",\"form_factor\":\"desktop\",\"key\":\"1681139740400900002.1\",\"os_family\":\"Windows\",\"product_version\":\"firefox_111\",\"region_code\":\"NW\",\"version\":\"16.0.0\"},\"path\":\"ctp\",\"scheme\":\"https:\"}'
-    ),
-    e.parsedReportingUrl
+    '{\"host\":\"bridge.sfo1.ap01.net\",\"params\":{\"ci\":\"1681139740815.12791\",\"country_code\":\"DE\",\"ctag\":\"pd_sl_08aeb79c14ac3da0f8e9116cdcb0afadec2e24da616da802ba033bf6\",\"dma_code\":\"\",\"form_factor\":\"desktop\",\"key\":\"1681139740400900002.1\",\"os_family\":\"Windows\",\"product_version\":\"firefox_111\",\"region_code\":\"NW\",\"version\":\"16.0.0\"},\"path\":\"ctp\",\"scheme\":\"https:\"}',
+    TO_JSON_STRING(e.parsedReportingUrl)
   )
 FROM
   extracted

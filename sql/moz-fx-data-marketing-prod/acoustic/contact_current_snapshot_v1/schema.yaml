@@ -36,7 +36,7 @@ fields:
   description: TRUE = has opted-out (exclude them from email sends)\
    FALSE = can send emails
 
-- mode: STRING
+- mode: NULLABLE
   name: email_lang
   type: STRING
   description: preferred email language

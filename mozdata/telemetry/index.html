@@ -2587,6 +2587,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#releases_latest" class="md-nav__link">
+    releases_latest
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#rocket_android_events_v1" class="md-nav__link">
     rocket_android_events_v1
   </a>
@@ -4583,6 +4590,13 @@
         <li class="md-nav__item">
   <a href="#releases" class="md-nav__link">
     releases
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#releases_latest" class="md-nav__link">
+    releases_latest
   </a>
   
 </li>
@@ -33158,6 +33172,38 @@ https://wiki.mozilla.org/Release_Management/Product_details</p>
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/releases">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/releases/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/releases/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="releases_latest"><a href="#releases_latest">releases_latest</a></h2>
+<p><strong>Releases Latest</strong></p>
+<p><code>telemetry.releases_latest</code></p>
+<p>This is built on top of telemetry.releases and aims
+to provide an entry on each day for on each day
+for the major release channels ("release", "beta", "esr")
+along with the latest Firefox version released on
+that day or earlier for those channels.</p>
+<p>Firefox release information imported from
+https://product-details.mozilla.org/1.0/firefox.json</p>
+<p>For more context, see
+https://wiki.mozilla.org/Release_Management/Product_details</p>
+<ul>
+<li>Owners:<p>- <a href="mailto:kignasiak@mozilla.com">kignasiak@mozilla.com</a></p>
+</li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry>telemetry</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/releases>releases</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/releases_latest">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/releases_latest/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/releases_latest/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="rocket_android_events_v1"><a href="#rocket_android_events_v1">rocket_android_events_v1</a></h2>
 <p><code>telemetry.rocket_android_events_v1</code></p>

@@ -56,9 +56,9 @@ WITH all_hits AS (
   CROSS JOIN
     UNNEST(hits) AS hit
   WHERE
-    PARSE_DATE('%Y%m%d', _TABLE_SUFFIX)
-    BETWEEN DATE_SUB(@download_date, INTERVAL 2 DAY)
-    AND DATE_ADD(@download_date, INTERVAL 1 DAY)
+    _TABLE_SUFFIX
+    BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@download_date, INTERVAL 2 DAY))
+    AND FORMAT_DATE('%Y%m%d', DATE_ADD(@download_date, INTERVAL 1 DAY))
 ),
 page_hits AS (
   SELECT
@@ -111,9 +111,9 @@ ga_session_dimensions AS (
   FROM
     `moz-fx-data-marketing-prod.65789850.ga_sessions_*` AS ga
   WHERE
-    PARSE_DATE('%Y%m%d', _TABLE_SUFFIX)
-    BETWEEN DATE_SUB(@download_date, INTERVAL 2 DAY)
-    AND DATE_ADD(@download_date, INTERVAL 1 DAY)
+    _TABLE_SUFFIX
+    BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@download_date, INTERVAL 2 DAY))
+    AND FORMAT_DATE('%Y%m%d', DATE_ADD(@download_date, INTERVAL 1 DAY))
   GROUP BY
     client_id,
     visit_id

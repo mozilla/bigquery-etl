@@ -2,21 +2,21 @@
 The function parses the `payload` column in `moz-fx-data-shared-prod.payload_bytes_error.contextual_services`
 to extract the `source` column
 */
-CREATE OR REPLACE FUNCTION udf_js.parse_sponsored_interaction(params string)
+CREATE OR REPLACE FUNCTION udf_js.parse_sponsored_interaction(params STRING)
 RETURNS STRUCT<
-  source string,
-  formFactor string,
-  scenario string,
-  interactionType string,
-  contextId string,
-  reportingUrl string,
-  requestId string,
-  submissionTimestamp timestamp,
-  parsedReportingUrl json,
-  originalDocType string,
-  originalNamespace string,
-  interactionCount integer,
-  flaggedFraud bool
+  `source` STRING,
+  formFactor STRING,
+  scenario STRING,
+  interactionType STRING,
+  contextId STRING,
+  reportingUrl STRING,
+  requestId STRING,
+  submissionTimestamp TIMESTAMP,
+  parsedReportingUrl JSON,
+  originalDocType STRING,
+  originalNamespace STRING,
+  interactionCount INTEGER,
+  flaggedFraud BOOLEAN
 >
 LANGUAGE js
 AS
@@ -52,7 +52,7 @@ AS
         return acc;
       }, {});
 
-    
+
     if (interaction.parsedReportingUrl?.params?.impressions) {
       interaction.source = "topsites";
       interaction.formFactor = interaction.parsedReportingUrl.params.form_factor;
@@ -66,9 +66,9 @@ AS
     }
 
     interaction.flaggedFraud = (
-      interaction.reportingUrl.includes("click-status=65") 
+      interaction.reportingUrl.includes("click-status=65")
       || interaction.reportingUrl.includes("custom-data=invalid"));
-     
+
     return interaction;
   }
   catch(err) {
@@ -86,24 +86,23 @@ extracted AS (
   FROM
     events
 )
-    --
 SELECT
-  assert.array_equals("topsites", e.source),
-  assert.array_equals("desktop", e.formFactor),
-  assert.array_equals(NULL, e.scenario),
-  assert.array_equals("click", e.interactionType),
-  assert.array_equals("{10679079-b1cd-45a3-9e40-cdfb364d3476}", e.contextId),
-  assert.array_equals(
+  assert.equals("topsites", e.`source`),
+  assert.equals("desktop", e.formFactor),
+  assert.null(e.scenario),
+  assert.equals("click", e.interactionType),
+  assert.equals("{10679079-b1cd-45a3-9e40-cdfb364d3476}", e.contextId),
+  assert.equals(
     "https://bridge.sfo1.ap01.net/ctp?ci=1681139740815.12791&country-code=DE&ctag=pd_sl_08aeb79c14ac3da0f8e9116cdcb0afadec2e24da616da802ba033bf6&dma-code=&form-factor=desktop&key=1681139740400900002.1&os-family=Windows&product-version=firefox_111&region-code=NW&version=16.0.0",
     e.reportingUrl
   ),
-  assert.array_equals(NULL, e.requestId),
-  assert.array_equals("2023-04-10 15:41:55 UTC", e.submissionTimestamp),
-  assert.array_equals("topsites-click", e.originalDocType),
-  assert.array_equals("contextual-services", e.originalNamespace),
-  assert.array_equals(1, e.interactionCount),
-  assert.array_equals(FALSE, e.flaggedFraud),
-  assert.array_equals(
+  assert.null(e.requestId),
+  assert.equals("2023-04-10 15:41:55 UTC", e.submissionTimestamp),
+  assert.equals("topsites-click", e.originalDocType),
+  assert.equals("contextual-services", e.originalNamespace),
+  assert.equals(1, e.interactionCount),
+  assert.false(e.flaggedFraud),
+  assert.equals(
     JSON(
       '{\"host\":\"bridge.sfo1.ap01.net\",\"params\":{\"ci\":\"1681139740815.12791\",\"country_code\":\"DE\",\"ctag\":\"pd_sl_08aeb79c14ac3da0f8e9116cdcb0afadec2e24da616da802ba033bf6\",\"dma_code\":\"\",\"form_factor\":\"desktop\",\"key\":\"1681139740400900002.1\",\"os_family\":\"Windows\",\"product_version\":\"firefox_111\",\"region_code\":\"NW\",\"version\":\"16.0.0\"},\"path\":\"ctp\",\"scheme\":\"https:\"}'
     ),

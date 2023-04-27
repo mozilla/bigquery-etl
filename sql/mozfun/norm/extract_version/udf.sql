@@ -28,5 +28,5 @@ SELECT
   assert.equals(1, norm.extract_version("100.04b1", "beta")),
   assert.equals(4, norm.extract_version("100.04rc4", "beta")),
   assert.null(norm.extract_version("100.04esr4", "beta")),
-  assert.equnullals(norm.extract_version("100.04.1", "beta")),
+  assert.null(norm.extract_version("100.04.1", "beta")),
   assert.null(norm.extract_version("5.1.5-ubuntu-foobar", "beta"))

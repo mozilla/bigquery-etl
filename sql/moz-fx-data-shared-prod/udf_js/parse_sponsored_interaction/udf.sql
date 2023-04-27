@@ -97,7 +97,7 @@ SELECT
     e.reportingUrl
   ),
   assert.null(e.requestId),
-  assert.equals("2023-04-10 15:41:55 UTC", e.submissionTimestamp),
+  assert.equals(TIMESTAMP("2023-04-10 15:41:55 UTC"), e.submissionTimestamp),
   assert.equals("topsites-click", e.originalDocType),
   assert.equals("contextual-services", e.originalNamespace),
   assert.equals(1, e.interactionCount),

@@ -3255,6 +3255,119 @@ across all channels of the Glean application "Firefox for iOS"
 <h2 id="firefox_ios_clients"><a href="#firefox_ios_clients">firefox_ios_clients</a></h2>
 <p><code>firefox_ios.firefox_ios_clients</code></p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>client_id</td>
+        <td>Unique ID for the client installation.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td>Sample ID to limit query results during an analysis.
+</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_seen_date</td>
+        <td>Date when the app first reported a baseline ping for the client.
+</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_reported_country</td>
+        <td>First reported country for the client installation.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_reported_isp</td>
+        <td>Name of the first reported isp (Internet Service Provider).
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>channel</td>
+        <td>Channel where the browser is released.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>device_manufacturer</td>
+        <td>Manufacturer of the device where the client is installed.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>device_model</td>
+        <td>Model of the device where the client is installed.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>os_version</td>
+        <td>Version of the Operating System where the client is originally installed.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>app_version</td>
+        <td>App display version for this client installation.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>is_activated</td>
+        <td>Determines if a client is activated based on the activation metric and a 7 day lag.
+</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td>Timestamp of the ping which contained the adjust information.
+</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>adjust_ad_group</td>
+        <td>Structure parameter for the the ad group of a campaign.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>adjust_campaign</td>
+        <td>Structure parameter for the campaign name.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>adjust_creative</td>
+        <td>Structure parameter for the creative content of a campaign.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>adjust_network</td>
+        <td>The type of source of a client installation.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td>Additional context around the source of this record.
+</td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>

@@ -9035,6 +9035,21 @@ fields:
     mode: NULLABLE
     name: rate
     type: RECORD
+  - fields:
+    - description: 'A UUID stored in Shared Preferences used to analyze technical
+        differences
+
+        between storage mechanisms in Android, specifically the Glean DB and
+
+        Shared Preferences.
+
+        '
+      mode: NULLABLE
+      name: metrics_shared_prefs_uuid
+      type: STRING
+    mode: NULLABLE
+    name: uuid
+    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

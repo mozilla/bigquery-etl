@@ -128,7 +128,8 @@ SELECT
     metrics.text,
     metrics.url2,
     metrics.labeled_boolean,
-    metrics.rate
+    metrics.rate,
+    metrics.uuid
   ) AS metrics,
   normalized_app_name,
   normalized_channel,
@@ -551,7 +552,8 @@ SELECT
     metrics.text,
     metrics.url2,
     metrics.labeled_boolean,
-    metrics.rate
+    metrics.rate,
+    metrics.uuid
   ) AS metrics,
   normalized_app_name,
   normalized_channel,
@@ -983,7 +985,8 @@ SELECT
     metrics.text,
     metrics.url2,
     metrics.labeled_boolean,
-    metrics.rate
+    metrics.rate,
+    metrics.uuid
   ) AS metrics,
   normalized_app_name,
   normalized_channel,
@@ -1112,7 +1115,8 @@ SELECT
     metrics.text,
     metrics.url2,
     metrics.labeled_boolean,
-    metrics.rate
+    metrics.rate,
+    metrics.uuid
   ) AS metrics,
   normalized_app_name,
   normalized_channel,

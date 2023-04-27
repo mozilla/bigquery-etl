@@ -6912,6 +6912,13 @@ fields:
     mode: NULLABLE
     name: rate
     type: RECORD
+  - fields:
+    - mode: NULLABLE
+      name: metrics_shared_prefs_uuid
+      type: STRING
+    mode: NULLABLE
+    name: uuid
+    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

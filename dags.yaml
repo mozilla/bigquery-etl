@@ -1079,5 +1079,4 @@ bqetl_download_funnel_attribution:
   schedule_interval: 0 23 * * *
   tags:
     - impact/tier_1
-
-   
+    - repo/bigquery-etl

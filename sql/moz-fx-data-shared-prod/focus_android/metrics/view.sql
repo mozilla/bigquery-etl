@@ -134,7 +134,8 @@ SELECT
       metrics.labeled_counter.network_data_size_pb_per_type,
       metrics.labeled_counter.network_data_size_per_type,
       metrics.labeled_counter.networking_speculative_connection_outcome,
-      metrics.labeled_counter.networking_speculative_connect_outcome
+      metrics.labeled_counter.networking_speculative_connect_outcome,
+      metrics.labeled_counter.networking_cookie_timestamp_fixed_count
     ) AS labeled_counter,
     metrics.labeled_rate,
     metrics.memory_distribution,
@@ -281,7 +282,8 @@ SELECT
       metrics.labeled_counter.network_data_size_pb_per_type,
       metrics.labeled_counter.network_data_size_per_type,
       metrics.labeled_counter.networking_speculative_connection_outcome,
-      metrics.labeled_counter.networking_speculative_connect_outcome
+      metrics.labeled_counter.networking_speculative_connect_outcome,
+      metrics.labeled_counter.networking_cookie_timestamp_fixed_count
     ) AS labeled_counter,
     metrics.labeled_rate,
     metrics.memory_distribution,

@@ -289,6 +289,134 @@ fields:
     mode: NULLABLE
     name: labeled_counter
     type: RECORD
+  - fields:
+    - description: Whether the target directory removal succeeded.
+      mode: NULLABLE
+      name: background_tasks_rmdir_base_succeeded
+      type: BOOLEAN
+    - description: Whether removing the suffixed directories ever failed.
+      mode: NULLABLE
+      name: background_tasks_rmdir_base_suffix_ever_failed
+      type: BOOLEAN
+    - description: 'Whether this task is the first one removing the directory.
+
+        '
+      mode: NULLABLE
+      name: background_tasks_rmdir_base_was_first
+      type: BOOLEAN
+    - description: Whether the target directory removal succeeded.
+      mode: NULLABLE
+      name: background_tasks_rmdir_http_cache_succeeded
+      type: BOOLEAN
+    - description: Whether removing the suffixed directories ever failed.
+      mode: NULLABLE
+      name: background_tasks_rmdir_http_cache_suffix_ever_failed
+      type: BOOLEAN
+    - description: 'Whether this task is the first one removing the directory.
+
+        '
+      mode: NULLABLE
+      name: background_tasks_rmdir_http_cache_was_first
+      type: BOOLEAN
+    - description: Whether the target directory removal succeeded.
+      mode: NULLABLE
+      name: background_tasks_rmdir_quota_succeeded
+      type: BOOLEAN
+    - description: Whether removing the suffixed directories ever failed.
+      mode: NULLABLE
+      name: background_tasks_rmdir_quota_suffix_ever_failed
+      type: BOOLEAN
+    - description: 'Whether this task is the first one removing the directory.
+
+        '
+      mode: NULLABLE
+      name: background_tasks_rmdir_quota_was_first
+      type: BOOLEAN
+    mode: NULLABLE
+    name: boolean
+    type: RECORD
+  - fields:
+    - description: 'The amount of time the task took for removing the directories.
+
+        '
+      mode: NULLABLE
+      name: background_tasks_rmdir_base_elapsed_ms
+      type: INTEGER
+    - description: 'The number of the removed entries at each call, even if the target
+        directory itself couldn''t be removed.
+
+        '
+      mode: NULLABLE
+      name: background_tasks_rmdir_base_removal_count
+      type: INTEGER
+    - description: 'The number of retries before the task started removing the child
+        directory. This can happen when the target directory doesn''t exist.
+
+        '
+      mode: NULLABLE
+      name: background_tasks_rmdir_base_retry_count
+      type: INTEGER
+    - description: 'The number of the removed entries of the suffixed directories.
+
+        '
+      mode: NULLABLE
+      name: background_tasks_rmdir_base_suffix_removal_count
+      type: INTEGER
+    - description: 'The amount of time the task took for removing the directories.
+
+        '
+      mode: NULLABLE
+      name: background_tasks_rmdir_http_cache_elapsed_ms
+      type: INTEGER
+    - description: 'The number of the removed entries at each call, even if the target
+        directory itself couldn''t be removed.
+
+        '
+      mode: NULLABLE
+      name: background_tasks_rmdir_http_cache_removal_count
+      type: INTEGER
+    - description: 'The number of retries before the task started removing the child
+        directory. This can happen when the target directory doesn''t exist.
+
+        '
+      mode: NULLABLE
+      name: background_tasks_rmdir_http_cache_retry_count
+      type: INTEGER
+    - description: 'The number of the removed entries of the suffixed directories.
+
+        '
+      mode: NULLABLE
+      name: background_tasks_rmdir_http_cache_suffix_removal_count
+      type: INTEGER
+    - description: 'The amount of time the task took for removing the directories.
+
+        '
+      mode: NULLABLE
+      name: background_tasks_rmdir_quota_elapsed_ms
+      type: INTEGER
+    - description: 'The number of the removed entries at each call, even if the target
+        directory itself couldn''t be removed.
+
+        '
+      mode: NULLABLE
+      name: background_tasks_rmdir_quota_removal_count
+      type: INTEGER
+    - description: 'The number of retries before the task started removing the child
+        directory. This can happen when the target directory doesn''t exist.
+
+        '
+      mode: NULLABLE
+      name: background_tasks_rmdir_quota_retry_count
+      type: INTEGER
+    - description: 'The number of the removed entries of the suffixed directories.
+
+        '
+      mode: NULLABLE
+      name: background_tasks_rmdir_quota_suffix_removal_count
+      type: INTEGER
+    mode: NULLABLE
+    name: quantity
+    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

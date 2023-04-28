@@ -601,6 +601,16 @@ fields:
       mode: NULLABLE
       name: cookie_banners_service_detect_only
       type: BOOLEAN
+    - description: 'Whether or not pull-to-refresh functionality
+
+        is enabled from Settings screen.
+
+        default: true
+
+        '
+      mode: NULLABLE
+      name: pull_to_refresh_in_browser_enabled
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD
@@ -2357,6 +2367,20 @@ fields:
       mode: REPEATED
       name: networking_speculative_connect_outcome
       type: RECORD
+    - description: 'Counts the number of times a cookie''s invalid timestamp was fixed
+        when reading it from the DB.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: networking_cookie_timestamp_fixed_count
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD
@@ -3211,6 +3235,54 @@ fields:
         type: RECORD
       mode: NULLABLE
       name: timer_thread_timers_fired_per_wakeup
+      type: RECORD
+    - description: 'If we fix up a cookie lastAccessed timestamp that is in the future
+        this metric records the number of seconds that timestamp was off from NOW.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: networking_cookie_access_fixup_diff
+      type: RECORD
+    - description: 'If we fix up a cookie creation timestamp that is in the future
+        this metric records the number of seconds that timestamp was off from NOW.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: networking_cookie_creation_fixup_diff
       type: RECORD
     mode: NULLABLE
     name: custom_distribution

@@ -319,6 +319,9 @@ fields:
     - mode: NULLABLE
       name: cookie_banners_service_detect_only
       type: BOOLEAN
+    - mode: NULLABLE
+      name: pull_to_refresh_in_browser_enabled
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD
@@ -857,6 +860,46 @@ fields:
         type: RECORD
       mode: NULLABLE
       name: timer_thread_timers_fired_per_wakeup
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: networking_cookie_access_fixup_diff
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: count
+        type: INTEGER
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: networking_cookie_creation_fixup_diff
       type: RECORD
     mode: NULLABLE
     name: custom_distribution
@@ -1671,6 +1714,16 @@ fields:
         type: INTEGER
       mode: REPEATED
       name: networking_speculative_connect_outcome
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: networking_cookie_timestamp_fixed_count
       type: RECORD
     mode: NULLABLE
     name: labeled_counter

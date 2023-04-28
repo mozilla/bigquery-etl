@@ -113,7 +113,8 @@ SELECT
       metrics.labeled_counter.network_data_size_pb_per_type,
       metrics.labeled_counter.network_data_size_per_type,
       metrics.labeled_counter.networking_speculative_connection_outcome,
-      metrics.labeled_counter.networking_speculative_connect_outcome
+      metrics.labeled_counter.networking_speculative_connect_outcome,
+      metrics.labeled_counter.networking_cookie_timestamp_fixed_count
     ) AS labeled_counter,
     metrics.quantity,
     metrics.string,
@@ -215,7 +216,8 @@ SELECT
       metrics.boolean.metrics_default_wallpaper,
       metrics.boolean.events_marketing_notification_allowed,
       metrics.boolean.metrics_notifications_allowed,
-      metrics.boolean.cookie_banners_service_detect_only
+      metrics.boolean.cookie_banners_service_detect_only,
+      metrics.boolean.pull_to_refresh_in_browser_enabled
     ) AS boolean,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -294,7 +296,9 @@ SELECT
       metrics.custom_distribution.search_terms_group_size_distribution,
       metrics.custom_distribution.power_battery_percentage_when_user_active,
       metrics.custom_distribution.pdfjs_time_to_view,
-      metrics.custom_distribution.timer_thread_timers_fired_per_wakeup
+      metrics.custom_distribution.timer_thread_timers_fired_per_wakeup,
+      metrics.custom_distribution.networking_cookie_access_fixup_diff,
+      metrics.custom_distribution.networking_cookie_creation_fixup_diff
     ) AS custom_distribution,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -377,7 +381,8 @@ SELECT
       metrics.labeled_counter.network_data_size_pb_per_type,
       metrics.labeled_counter.network_data_size_per_type,
       metrics.labeled_counter.networking_speculative_connection_outcome,
-      metrics.labeled_counter.networking_speculative_connect_outcome
+      metrics.labeled_counter.networking_speculative_connect_outcome,
+      metrics.labeled_counter.networking_cookie_timestamp_fixed_count
     ) AS labeled_counter,
     metrics.quantity,
     STRUCT(
@@ -648,7 +653,8 @@ SELECT
       metrics.boolean.metrics_default_wallpaper,
       metrics.boolean.events_marketing_notification_allowed,
       metrics.boolean.metrics_notifications_allowed,
-      metrics.boolean.cookie_banners_service_detect_only
+      metrics.boolean.cookie_banners_service_detect_only,
+      metrics.boolean.pull_to_refresh_in_browser_enabled
     ) AS boolean,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -727,7 +733,9 @@ SELECT
       metrics.custom_distribution.search_terms_group_size_distribution,
       metrics.custom_distribution.power_battery_percentage_when_user_active,
       metrics.custom_distribution.pdfjs_time_to_view,
-      metrics.custom_distribution.timer_thread_timers_fired_per_wakeup
+      metrics.custom_distribution.timer_thread_timers_fired_per_wakeup,
+      metrics.custom_distribution.networking_cookie_access_fixup_diff,
+      metrics.custom_distribution.networking_cookie_creation_fixup_diff
     ) AS custom_distribution,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -810,7 +818,8 @@ SELECT
       metrics.labeled_counter.network_data_size_pb_per_type,
       metrics.labeled_counter.network_data_size_per_type,
       metrics.labeled_counter.networking_speculative_connection_outcome,
-      metrics.labeled_counter.networking_speculative_connect_outcome
+      metrics.labeled_counter.networking_speculative_connect_outcome,
+      metrics.labeled_counter.networking_cookie_timestamp_fixed_count
     ) AS labeled_counter,
     metrics.quantity,
     STRUCT(
@@ -1100,7 +1109,8 @@ SELECT
       metrics.labeled_counter.network_data_size_pb_per_type,
       metrics.labeled_counter.network_data_size_per_type,
       metrics.labeled_counter.networking_speculative_connection_outcome,
-      metrics.labeled_counter.networking_speculative_connect_outcome
+      metrics.labeled_counter.networking_speculative_connect_outcome,
+      metrics.labeled_counter.networking_cookie_timestamp_fixed_count
     ) AS labeled_counter,
     metrics.quantity,
     metrics.string,

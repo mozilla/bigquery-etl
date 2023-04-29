@@ -441,6 +441,13 @@ fields:
     mode: NULLABLE
     name: quantity
     type: RECORD
+  - fields:
+    - mode: REPEATED
+      name: newtab_blocked_sponsors
+      type: STRING
+    mode: NULLABLE
+    name: string_list
+    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

@@ -35039,6 +35039,26 @@ fields:
           mode: REPEATED
           name: dom_parentprocess_process_launch_errors
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: urlbar_picked_searchmode_historymenu
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: urlbar_searchmode_historymenu
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD

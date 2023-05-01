@@ -3,9 +3,6 @@ fields:
     name: form_factor
     type: STRING
   - mode: NULLABLE
-    name: send_event
-    type: STRING
-  - mode: NULLABLE
     name: flagged_fraud
     type: BOOL
   - mode: NULLABLE
@@ -22,7 +19,7 @@ fields:
     type: STRING
   - mode: NULLABLE
     name: product_version
-    type: STRING
+    type: INTEGER
   - mode: NULLABLE
     name: impression_count
     type: INTEGER

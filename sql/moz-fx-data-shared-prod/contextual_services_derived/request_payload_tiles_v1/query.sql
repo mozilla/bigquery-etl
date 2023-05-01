@@ -11,15 +11,21 @@ WITH parsed AS (
 extracted AS (
   SELECT
     si.formFactor AS form_factor,
-    si.interactionType AS send_event,
     si.flaggedFraud AS flagged_fraud,
     DATE(submission_timestamp) AS submission_date,
-    TIMESTAMP_SECONDS(CAST(JSON_VALUE(si.parsedReportingUrl.params.begin_timestamp) AS INT)) AS begin_timestamp,
-    TIMESTAMP_SECONDS(CAST(JSON_VALUE(si.parsedReportingUrl.params.end_timestamp) AS INT)) AS end_timestamp,
+    TIMESTAMP_SECONDS(
+      CAST(JSON_VALUE(si.parsedReportingUrl.params.begin_timestamp) AS INT)
+    ) AS begin_timestamp,
+    TIMESTAMP_SECONDS(
+      CAST(JSON_VALUE(si.parsedReportingUrl.params.end_timestamp) AS INT)
+    ) AS end_timestamp,
     JSON_VALUE(si.parsedReportingUrl.params.country_code) AS country_code,
     JSON_VALUE(si.parsedReportingUrl.params.region_code) AS region_code,
     JSON_VALUE(si.parsedReportingUrl.params.os_family) AS os_family,
-    JSON_VALUE(si.parsedReportingUrl.params.product_version) AS product_version,
+    REGEXP_EXTRACT(
+      JSON_VALUE(si.parsedReportingUrl.params.product_version),
+      '[^_]*$'
+    ) AS product_version,
     IF(si.interactionType = 'impression', si.interactionCount, 0) AS impression_count,
     IF(si.interactionType = 'click', 1, 0) AS click_count
   FROM
@@ -31,4 +37,3 @@ SELECT
   *
 FROM
   extracted
-

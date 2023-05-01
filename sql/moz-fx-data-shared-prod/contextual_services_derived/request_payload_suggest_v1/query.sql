@@ -11,13 +11,14 @@ WITH parsed AS (
 extracted AS (
   SELECT
     si.formFactor AS form_factor,
-    si.interactionType AS send_event,
     si.flaggedFraud AS flagged_fraud,
     DATE(submission_timestamp) AS submission_date,
     JSON_VALUE(si.parsedReportingUrl.params.country_code) AS country_code,
     JSON_VALUE(si.parsedReportingUrl.params.region_code) AS region_code,
     JSON_VALUE(si.parsedReportingUrl.params.os_family) AS os_family,
-    JSON_VALUE(si.parsedReportingUrl.params.product_version) AS product_version,
+    CAST(
+      REGEXP_EXTRACT(JSON_VALUE(si.parsedReportingUrl.params.product_version), '[^_]*$') AS INT64
+    ) AS product_version,
     IF(si.interactionType = 'impression', si.interactionCount, 0) AS impression_count,
     IF(si.interactionType = 'click', 1, 0) AS click_count
   FROM

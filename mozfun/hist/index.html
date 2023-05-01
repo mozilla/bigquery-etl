@@ -1930,6 +1930,20 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#normalize-udf" class="md-nav__link">
+    normalize (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#merge-udf" class="md-nav__link">
+    merge (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#count-udf" class="md-nav__link">
     count (UDF)
   </a>
@@ -2284,6 +2298,20 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#normalize-udf" class="md-nav__link">
+    normalize (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#merge-udf" class="md-nav__link">
+    merge (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#count-udf" class="md-nav__link">
     count (UDF)
   </a>
@@ -2328,6 +2356,17 @@
 
 <h1 id="hist">hist</h1>
 <p>Functions for working with string encodings of histograms from desktop telemetry.</p>
+<h2 id="normalize-udf">normalize (UDF)</h2>
+<p>Normalize a histogram. Set sum to 1, and normalize to 1 the histogram bucket counts.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/normalize">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/normalize/metadata.yaml">Edit</a></p>
+<h2 id="merge-udf">merge (UDF)</h2>
+<p>Merge an array of histograms into a single histogram.</p>
+<ul>
+<li>The histogram values will be summed per-bucket</li>
+<li>The count will be summed</li>
+<li>Other fields will take the mode_last</li>
+</ul>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/merge">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/merge/metadata.yaml">Edit</a></p>
 <h2 id="count-udf">count (UDF)</h2>
 <p>Given histogram h, return the count of all measurements across all buckets.</p>
 <p>Given histogram h, return the count of all measurements across all buckets.</p>
@@ -2395,17 +2434,6 @@ formed, which gives us some flexibility.</p>
 <span class="c1">-- 5</span>
 </code></pre></div>
 <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/extract">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/extract/metadata.yaml">Edit</a></p>
-<h2 id="normalize-udf">normalize (UDF)</h2>
-<p>Normalize a histogram. Set sum to 1, and normalize to 1 the histogram bucket counts.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/normalize">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/normalize/metadata.yaml">Edit</a></p>
-<h2 id="merge-udf">merge (UDF)</h2>
-<p>Merge an array of histograms into a single histogram.</p>
-<ul>
-<li>The histogram values will be summed per-bucket</li>
-<li>The count will be summed</li>
-<li>Other fields will take the mode_last</li>
-</ul>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/merge">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/merge/metadata.yaml">Edit</a></p>
 
 
 

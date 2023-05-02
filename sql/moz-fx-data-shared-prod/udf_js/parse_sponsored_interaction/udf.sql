@@ -111,7 +111,7 @@ SELECT
   ),
   -- Event 2
   assert.equals("topsites", e2.`source`),
-  assert.null("desktop", e2.formFactor),
+  assert.null(e2.formFactor),
   assert.null(e2.scenario),
   assert.equals("click", e2.interactionType),
   assert.equals("{10679079-b1cd-45a3-9e40-cdfb364d3476}", e2.contextId),

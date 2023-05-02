@@ -1,4 +1,4 @@
-CREATE TABLE `moz-fx-data-shared-prod.dev_telemetry_derived.all_combos_test`
+CREATE TABLE `moz-fx-data-shared-prod.dev_telemetry_derived.clients_histogram_all_combos_v1`
 (
   channel STRING,
   sample_id INT64,

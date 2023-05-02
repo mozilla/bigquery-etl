@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.contextual_services_derived.request_payload_tiles_v1`
+  `moz-fx-data-shared-prod.contextual_services_derived.request_payload_tiles_v2`

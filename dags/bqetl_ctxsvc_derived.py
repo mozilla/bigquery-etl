@@ -130,9 +130,9 @@ with DAG(
         depends_on_past=False,
     )
 
-    contextual_services_derived__request_payload_suggest__v1 = bigquery_etl_query(
-        task_id="contextual_services_derived__request_payload_suggest__v1",
-        destination_table="request_payload_suggest_v1",
+    contextual_services_derived__request_payload_suggest__v2 = bigquery_etl_query(
+        task_id="contextual_services_derived__request_payload_suggest__v2",
+        destination_table="request_payload_suggest_v2",
         dataset_id="contextual_services_derived",
         project_id="moz-fx-data-shared-prod",
         owner="skahmann@mozilla.com",
@@ -147,9 +147,9 @@ with DAG(
         depends_on_past=False,
     )
 
-    contextual_services_derived__request_payload_tiles__v1 = bigquery_etl_query(
-        task_id="contextual_services_derived__request_payload_tiles__v1",
-        destination_table="request_payload_tiles_v1",
+    contextual_services_derived__request_payload_tiles__v2 = bigquery_etl_query(
+        task_id="contextual_services_derived__request_payload_tiles__v2",
+        destination_table="request_payload_tiles_v2",
         dataset_id="contextual_services_derived",
         project_id="moz-fx-data-shared-prod",
         owner="skahmann@mozilla.com",

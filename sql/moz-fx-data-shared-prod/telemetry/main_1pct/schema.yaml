@@ -16791,6 +16791,16 @@ fields:
       mode: REPEATED
       name: event_longtask
       type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: http_upload_bandwidth_mbps
+      type: RECORD
     mode: NULLABLE
     name: keyed_histograms
     type: RECORD

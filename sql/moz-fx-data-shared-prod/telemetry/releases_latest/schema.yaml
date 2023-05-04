@@ -1,17 +1,20 @@
 fields:
-- mode: NULLABLE
+- description: null
+  mode: NULLABLE
   name: date
   type: DATE
 - mode: NULLABLE
   name: product
   type: STRING
-- mode: NULLABLE
+- description: null
+  mode: NULLABLE
   name: category
   type: STRING
 - mode: NULLABLE
   name: channel
   type: STRING
-- mode: NULLABLE
+- description: null
+  mode: NULLABLE
   name: build_number
   type: INTEGER
 - mode: NULLABLE

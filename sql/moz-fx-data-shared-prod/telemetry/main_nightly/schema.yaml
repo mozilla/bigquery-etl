@@ -31236,6 +31236,26 @@ fields:
           mode: REPEATED
           name: event_longtask
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: eh_perf_first_contentful_paint_ms
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: eh_perf_page_load_time_ms
+          type: RECORD
         mode: NULLABLE
         name: keyed_histograms
         type: RECORD

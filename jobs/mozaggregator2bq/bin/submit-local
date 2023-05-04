@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -x
+
+export PYSPARK_PYTHON=python3
+export SPARK_HOME=$(python3 -c "import pyspark; print(pyspark.__path__[0])")
+spark-submit \
+    --master 'local[*]' \
+    --conf spark.driver.memory=8g \
+    --conf spark.sql.shuffle.partitions=16 \
+    "$@"

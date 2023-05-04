@@ -140,6 +140,20 @@ jobs:
             command: docker run app:build pytest --black
 
 
+  build-job-mozaggregator2bq:
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - compare-branch:
+          pattern: ^jobs/mozaggregator2bq/
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Build Docker image
+          command: docker build -t app:build jobs/mozaggregator2bq/
+
+
   build-job-pioneer-debug:
     docker:
       - image: docker:stable-git
@@ -300,6 +314,21 @@ workflows:
           image: kpi-forecasting_docker_etl
           requires:
             - build-job-kpi-forecasting
+          filters:
+            branches:
+              only: main
+
+
+  job-mozaggregator2bq:
+    jobs:
+      - build-job-mozaggregator2bq
+      - gcp-gcr/build-and-push-image:
+          context: data-eng-airflow-gcr
+          docker-context: jobs/mozaggregator2bq/
+          path: jobs/mozaggregator2bq/
+          image: mozaggregator2bq_docker_etl
+          requires:
+            - build-job-mozaggregator2bq
           filters:
             branches:
               only: main

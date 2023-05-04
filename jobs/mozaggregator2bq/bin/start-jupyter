@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -x
+
+export PYSPARK_PYTHON=python3
+export SPARK_HOME=$(python3 -c "import pyspark; print(pyspark.__path__[0])")
+export PYSPARK_DRIVER_PYTHON=jupyter
+export PYSPARK_DRIVER_PYTHON_OPTS=notebook
+pyspark \
+    --master 'local[*]' \
+    --conf spark.driver.memory=8g \
+    --conf spark.sql.shuffle.partitions=16

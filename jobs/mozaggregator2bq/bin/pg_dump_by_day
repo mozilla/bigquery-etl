@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+# DATA_DIR: The directory where the directory dumps will be written to
+# AGGREGATE_TYPE: One of "submission_date" or "build_id"
+# DS_NODASH: The datestring to process, without dashes e.g. 20191001
+
+data_dir=${DATA_DIR:-"data"}
+aggregate_type=${AGGREGATE_TYPE:-"submission_date"}
+ds_nodash=${DS_NODASH?Provide a data in YYYYMMDD format}
+
+output=$data_dir/$aggregate_type/$ds_nodash
+if [ -f "$output/toc.dat" ]; then
+    echo "dump already exists for $output"
+    exit
+fi
+rm -rf "$output"
+mkdir -p "$output"
+
+PGPASSWORD=$POSTGRES_PASS pg_dump \
+    --host "$POSTGRES_HOST" \
+    --username "$POSTGRES_USER" \
+    --dbname "$POSTGRES_DB" \
+    --table "${aggregate_type}_*_${ds_nodash}*" \
+    --format directory \
+    --verbose \
+    --file "$output"

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# script that exports credentials from the local aws credential files into the
+# environmnet for use within docker-compose.
+# Usage: source bin/export_aws_config
+
+keys=$(grep default -A2 < ~/.aws/credentials  | tail -n2 | awk '{print $3}')
+export AWS_ACCESS_KEY_ID=$(echo $keys | head -n1)
+export AWS_SECRET_ACCESS_KEY=$(echo $keys | tail -n1)

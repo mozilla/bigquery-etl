@@ -42,12 +42,16 @@ AS
       .map((kv) => kv.split(/=(.*)/s))
       .reduce((acc, [key, value]) => {
         key = key.trim("\\n");
+        value = value.trim();
         if (key == "submissionTimestamp") {
           value = new Date(value);
         }
         if (key == "reportingUrl") {
           acc["parsedReportingUrl"] = parseURL(value.repeat(1));
         }
+        if (value === "null" || value === "") {
+          value = null;
+       }
         acc[key] = value;
         return acc;
       }, {});
@@ -77,34 +81,53 @@ AS
 """;
 
 WITH events AS (
-  SELECT AS VALUE
-    "source\u003dtopsites, formFactor\u003ddesktop, scenario\u003dnull, interactionType\u003dclick, contextId\u003d{10679079-b1cd-45a3-9e40-cdfb364d3476}, reportingUrl\u003dhttps://bridge.sfo1.ap01.net/ctp?ci\u003d1681139740815.12791\u0026country-code\u003dDE\u0026ctag\u003dpd_sl_08aeb79c14ac3da0f8e9116cdcb0afadec2e24da616da802ba033bf6\u0026dma-code\u003d\u0026form-factor\u003ddesktop\u0026key\u003d1681139740400900002.1\u0026os-family\u003dWindows\u0026product-version\u003dfirefox_111\u0026region-code\u003dNW\u0026version\u003d16.0.0, requestId\u003dnull, submissionTimestamp\u003d2023-04-10T15:41:55Z, originalDocType\u003dtopsites-click, originalNamespace\u003dcontextual-services"
-),
-extracted AS (
   SELECT
-    udf_js.parse_sponsored_interaction(events) AS e
-  FROM
-    events
+    udf_js.parse_sponsored_interaction(
+      "source\u003dtopsites, formFactor\u003ddesktop, scenario\u003dnull, interactionType\u003dclick, contextId\u003d{10679079-b1cd-45a3-9e40-cdfb364d3476}, reportingUrl\u003dhttps://bridge.sfo1.ap01.net/ctp?ci\u003d1681139740815.12791\u0026country-code\u003dDE\u0026ctag\u003dpd_sl_08aeb79c14ac3da0f8e9116cdcb0afadec2e24da616da802ba033bf6\u0026dma-code\u003d\u0026form-factor\u003ddesktop\u0026key\u003d1681139740400900002.1\u0026os-family\u003dWindows\u0026product-version\u003dfirefox_111\u0026region-code\u003dNW\u0026version\u003d16.0.0, requestId\u003dnull, submissionTimestamp\u003d2023-04-10T15:41:55Z, originalDocType\u003dtopsites-click, originalNamespace\u003dcontextual-services"
+    ) AS e1,
+    udf_js.parse_sponsored_interaction(
+      "source\u003dtopsites , formFactor\u003d, scenario\u003dnull, interactionType\u003d click , contextId\u003d{10679079-b1cd-45a3-9e40-cdfb364d3476}, reportingUrl\u003dhttps://bridge.sfo1.ap01.net/ctp?ci\u003d1681139740815.12791\u0026country-code\u003dDE\u0026ctag\u003dpd_sl_08aeb79c14ac3da0f8e9116cdcb0afadec2e24da616da802ba033bf6\u0026dma-code\u003d\u0026form-factor\u003ddesktop\u0026key\u003d1681139740400900002.1\u0026os-family\u003dWindows\u0026product-version\u003dfirefox_111\u0026region-code\u003dNW\u0026version\u003d16.0.0, requestId\u003dnull, submissionTimestamp\u003d2023-04-10T15:41:55Z, originalDocType\u003dtopsites-click, originalNamespace\u003dcontextual-services"
+    ) AS e2
 )
 SELECT
-  assert.equals("topsites", e.`source`),
-  assert.equals("desktop", e.formFactor),
-  assert.equals("null", e.scenario),
-  assert.equals("click", e.interactionType),
-  assert.equals("{10679079-b1cd-45a3-9e40-cdfb364d3476}", e.contextId),
+  assert.equals("topsites", e1.`source`),
+  assert.equals("desktop", e1.formFactor),
+  assert.null(e1.scenario),
+  assert.equals("click", e1.interactionType),
+  assert.equals("{10679079-b1cd-45a3-9e40-cdfb364d3476}", e1.contextId),
   assert.equals(
     "https://bridge.sfo1.ap01.net/ctp?ci=1681139740815.12791&country-code=DE&ctag=pd_sl_08aeb79c14ac3da0f8e9116cdcb0afadec2e24da616da802ba033bf6&dma-code=&form-factor=desktop&key=1681139740400900002.1&os-family=Windows&product-version=firefox_111&region-code=NW&version=16.0.0",
-    e.reportingUrl
+    e1.reportingUrl
   ),
-  assert.equals("null", e.requestId),
-  assert.equals(TIMESTAMP("2023-04-10 15:41:55 UTC"), e.submissionTimestamp),
-  assert.equals("topsites-click", e.originalDocType),
-  assert.equals("contextual-services", e.originalNamespace),
-  assert.equals(1, e.interactionCount),
-  assert.false(e.flaggedFraud),
+  assert.null(e1.requestId),
+  assert.equals(TIMESTAMP("2023-04-10 15:41:55 UTC"), e1.submissionTimestamp),
+  assert.equals("topsites-click", e1.originalDocType),
+  assert.equals("contextual-services", e1.originalNamespace),
+  assert.equals(1, e1.interactionCount),
+  assert.false(e1.flaggedFraud),
   assert.equals(
     '{\"host\":\"bridge.sfo1.ap01.net\",\"params\":{\"ci\":\"1681139740815.12791\",\"country_code\":\"DE\",\"ctag\":\"pd_sl_08aeb79c14ac3da0f8e9116cdcb0afadec2e24da616da802ba033bf6\",\"dma_code\":\"\",\"form_factor\":\"desktop\",\"key\":\"1681139740400900002.1\",\"os_family\":\"Windows\",\"product_version\":\"firefox_111\",\"region_code\":\"NW\",\"version\":\"16.0.0\"},\"path\":\"ctp\",\"scheme\":\"https:\"}',
-    TO_JSON_STRING(e.parsedReportingUrl)
+    TO_JSON_STRING(e1.parsedReportingUrl)
+  ),
+  -- Event 2
+  assert.equals("topsites", e2.`source`),
+  assert.null(e2.formfactor),
+  assert.null(e2.scenario),
+  assert.equals("click", e2.interactionType),
+  assert.equals("{10679079-b1cd-45a3-9e40-cdfb364d3476}", e2.contextId),
+  assert.equals(
+    "https://bridge.sfo1.ap01.net/ctp?ci=1681139740815.12791&country-code=DE&ctag=pd_sl_08aeb79c14ac3da0f8e9116cdcb0afadec2e24da616da802ba033bf6&dma-code=&form-factor=desktop&key=1681139740400900002.1&os-family=Windows&product-version=firefox_111&region-code=NW&version=16.0.0",
+    e2.reportingUrl
+  ),
+  assert.null(e2.requestId),
+  assert.equals(TIMESTAMP("2023-04-10 15:41:55 UTC"), e2.submissionTimestamp),
+  assert.equals("topsites-click", e2.originalDocType),
+  assert.equals("contextual-services", e2.originalNamespace),
+  assert.equals(1, e2.interactionCount),
+  assert.false(e2.flaggedFraud),
+  assert.equals(
+    '{\"host\":\"bridge.sfo1.ap01.net\",\"params\":{\"ci\":\"1681139740815.12791\",\"country_code\":\"DE\",\"ctag\":\"pd_sl_08aeb79c14ac3da0f8e9116cdcb0afadec2e24da616da802ba033bf6\",\"dma_code\":\"\",\"form_factor\":\"desktop\",\"key\":\"1681139740400900002.1\",\"os_family\":\"Windows\",\"product_version\":\"firefox_111\",\"region_code\":\"NW\",\"version\":\"16.0.0\"},\"path\":\"ctp\",\"scheme\":\"https:\"}',
+    TO_JSON_STRING(e2.parsedReportingUrl)
   )
 FROM
-  extracted
+  events

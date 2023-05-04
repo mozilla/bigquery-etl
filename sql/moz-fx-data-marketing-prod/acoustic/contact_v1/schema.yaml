@@ -59,7 +59,7 @@ fields:
 
 - mode: NULLABLE
   name: fxa_created_date
-  type: DATETIME
+  type: DATE
   description: records the date/time a subscriber created a Firefox account
 
 - mode: NULLABLE

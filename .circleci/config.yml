@@ -151,6 +151,18 @@ jobs:
             echo $PATHS
             PATH="venv/bin:$PATH" script/bqetl dryrun --validate-schemas $PATHS
           # yamllint enable rule:line-length
+#  validate-backfills:
+#    docker: *docker
+#    steps:
+#      - checkout
+#      - *restore_venv_cache
+#      - *build
+#      - *attach_generated_sql
+#      - *copy_staged_sql
+#      - run:
+#          name: Verify that backfill files are valid
+#          command: |
+#            PATH="venv/bin:$PATH" script/bqetl backfill validate
   validate-metadata:
     docker: *docker
     steps:

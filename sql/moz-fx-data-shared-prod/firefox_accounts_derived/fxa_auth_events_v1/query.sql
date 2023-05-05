@@ -45,14 +45,19 @@ WHERE
     -- are redundant with cert_signed events;
     -- see https://github.com/mozilla/bigquery-etl/issues/348
     _oauth_client_id NOT IN (
-      '3332a18d142636cb', -- fennec sync
+      '3332a18d142636cb', -- fennec sync # we are no longer receiving events for this id.
       '5882386c6d801776', -- desktop sync
-      '1b1a3e44c54fbb58' -- ios sync
+      '1b1a3e44c54fbb58', -- ios sync
+      'a2270f727f45f648' -- fenix sync
     )
     -- We do want to let through some desktop sync events
     -- see https://github.com/mozilla/bigquery-etl/issues/573
     OR (
-      _oauth_client_id IN ('5882386c6d801776', '1b1a3e44c54fbb58')
+      _oauth_client_id IN (
+        '5882386c6d801776', -- desktop sync
+        '1b1a3e44c54fbb58', -- ios sync
+        'a2270f727f45f648' -- fenix sync
+      )
       AND jsonPayload.fields.event_type NOT IN (
         'fxa_activity - access_token_checked',
         'fxa_activity - access_token_created'

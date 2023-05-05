@@ -31,17 +31,37 @@ client_search AS (
     AND normalized_app_name = 'Fennec'
   GROUP BY
     client_id
+),
+-- we need to check if client_id already exists in the table
+-- to address an edge case where client_id's first_seen_date.
+--
+-- !!! This can result in variance between the first_seen_date
+-- value reported by firefox_ios.baseline_first_seen
+-- and this table !!!
+previous_client_entries AS (
+  SELECT
+    client_id
+  FROM
+    firefox_ios_derived.new_profile_activation_v2
+  WHERE
+    `date` < @submission_date
 )
 SELECT
   @submission_date AS `date`,
-  first_seen_date,
-  client_id,
-  sample_id,
+  dou.first_seen_date,
+  dou.client_id,
+  dou.sample_id,
   TRUE AS is_new_profile,
-  IF(days_2_7 > 1 AND COALESCE(search_count, 0) > 0, TRUE, FALSE) AS is_activated,
+  IF(dou.days_2_7 > 1 AND COALESCE(client_search.search_count, 0) > 0, TRUE, FALSE) AS is_activated,
 FROM
   dou
 LEFT JOIN
   client_search
 USING
   (client_id)
+LEFT JOIN
+  previous_client_entries
+USING
+  (client_id)
+WHERE
+  previous_client_entries.client_id IS NULL

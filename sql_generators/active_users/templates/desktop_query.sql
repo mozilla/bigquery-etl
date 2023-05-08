@@ -1,4 +1,5 @@
 --- Query generated via sql_generators.active_users_aggregates.
+--- Temporary comment to test change control.
 WITH todays_metrics AS (
   SELECT
     client_id,

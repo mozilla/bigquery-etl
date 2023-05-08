@@ -176,6 +176,10 @@ SKIP = {
         recursive=True,
     ),
     *glob.glob(
+        "sql/moz-fx-data-marketing-prod/adjust_derived/**/*.sql",
+        recursive=True,
+    ),
+    *glob.glob(
         "sql/moz-fx-data-shared-prod/monitoring_derived/airflow_*/*.sql",
         recursive=True,
     ),  # noqa E501

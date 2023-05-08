@@ -2,9 +2,8 @@
 # described in https://docs.google.com/document/d/1TTJi4ht7NuzX6BPG_KTr6omaZg70cEpxe9xlpfnHj9k/
 /sql/moz-fx-data-shared-prod/search_terms @whd @jasonthomas
 /sql/moz-fx-data-shared-prod/search_terms_derived @whd @jasonthomas
-/sql/moz-fx-data-shared-prod/fenix_derived/active_users_aggregates_v1 @mozilla/kpi_table_reviewers
-/sql/moz-fx-data-shared-prod/firefox_desktop_derived/active_users_aggregates_v1 @mozilla/kpi_table_reviewers
-/sql/moz-fx-data-shared-prod/focus_android_derived/active_users_aggregates_v1 @mozilla/kpi_table_reviewers
-/sql/moz-fx-data-shared-prod/focus_ios_derived/active_users_aggregates_v1 @mozilla/kpi_table_reviewers
-/sql/moz-fx-data-shared-prod/klar_ios_derived/active_users_aggregates_v1 @mozilla/kpi_table_reviewers
-/sql/moz-fx-data-shared-prod/firefox_ios_derived/active_users_aggregates_v1 @mozilla/kpi_table_reviewers
+[Active Users]
+active_users    @mozilla/kpi_table_reviewers
+# active_users/templates/desktop_query.sql @mozilla/kpi_table_reviewers
+# active_users/templates/mobile_query.sql @mozilla/kpi_table_reviewers
+# active_users/templates/focus_android_query.sql @mozilla/kpi_table_reviewers

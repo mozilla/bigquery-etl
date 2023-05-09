@@ -17,6 +17,7 @@ WITH app_data AS (
 )
 SELECT
   date,
+  channel,
   code AS country_code,
   country_details.name AS country_name,
   country_details.region_name AS region_name,

@@ -139,4 +139,4 @@ SELECT
   assert.equals("Windows 11", norm.get_windows_info("10.0.25145.1011").name),
   assert.equals("UNKNOWN", norm.get_windows_info("10.0.25145.1011").version_name),
   assert.equals(25145, norm.get_windows_info("10.0.25145.1011").version_number),
-  assert.equals(1011, norm.get_windows_info("10.0.25145.1011").build_number)
+  assert.equals(1011, norm.get_windows_info("10.0.25145.1011").build_number),

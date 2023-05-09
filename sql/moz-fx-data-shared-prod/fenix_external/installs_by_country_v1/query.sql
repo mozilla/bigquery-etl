@@ -31,6 +31,3 @@ LEFT JOIN
   mozdata.static.country_codes_v1 AS country_details
 USING
   (code)
-ORDER BY
-  country_code,
-  date

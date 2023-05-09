@@ -1,0 +1,8 @@
+friendly_name: Installs By Country
+description: |-
+  Please provide a description for the view
+owners:
+- example@mozilla.com
+labels: {}
+bigquery: null
+references: {}

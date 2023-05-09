@@ -13,7 +13,7 @@ RETURNS STRING AS (
 );
 
 SELECT
-  assert.equal(norm.firefox_android_package_name_to_channel("org.mozilla.firefox"), "release"),
-  assert.equal(norm.firefox_android_package_name_to_channel("org.mozilla.firefox_beta"), "beta"),
-  assert.equal(norm.firefox_android_package_name_to_channel("org.mozilla.fenix"), "nightly"),
-  assert.equal(norm.firefox_android_package_name_to_channel("org.mozilla.other"), NULL),
+  assert.equals(norm.firefox_android_package_name_to_channel("org.mozilla.firefox"), "release"),
+  assert.equals(norm.firefox_android_package_name_to_channel("org.mozilla.firefox_beta"), "beta"),
+  assert.equals(norm.firefox_android_package_name_to_channel("org.mozilla.fenix"), "nightly"),
+  assert.equals(norm.firefox_android_package_name_to_channel("org.mozilla.other"), NULL),

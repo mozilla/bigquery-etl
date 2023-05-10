@@ -31,10 +31,9 @@ def get_confidence_intervals(
             uncertainty_samples["ds"] > np.datetime64(final_observed_sample_date)
         ]
         .groupby("{}".format(aggregation_unit_of_time))
-        .sum()
+        .sum(numeric_only=True)
     )
 
-    print(samples_df_grouped.tail())
     # start the aggregated dataframe with the mean of the uncertainty samples
     uncertainty_samples_aggregated = samples_df_grouped.mean(axis=1).reset_index()
 
@@ -71,6 +70,8 @@ def get_confidence_intervals(
         columns={"y": "value"}
     ).sort_values(by="{}".format(aggregation_unit_of_time))
 
+    observed_aggregated = observed_aggregated.astype({"value": np.float64})
+
     # check if whether there are overlap in actual and forecast at the group level
     if (
         aggregation_unit_of_time == "ds_month"
@@ -83,10 +84,12 @@ def get_confidence_intervals(
         ).dayofyear
         != 1
     ):
-        uncertainty_samples_aggregated.at[0, 1:] = (
-            uncertainty_samples_aggregated.iloc[0, 1:]
-            + observed_aggregated.iloc[-1].value
-        )
+        # add observed samples from current time period to uncertainty samples for
+        # the remainder of the period.
+        uncertainty_samples_aggregated.iloc[0, 1:] += observed_aggregated["value"].iloc[
+            -1
+        ]
+
         observed_aggregated = observed_aggregated.loc[
             observed_aggregated[aggregation_unit_of_time]
             < observed_aggregated[aggregation_unit_of_time].max()

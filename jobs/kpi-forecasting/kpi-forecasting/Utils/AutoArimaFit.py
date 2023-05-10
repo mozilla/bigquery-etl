@@ -9,7 +9,6 @@ from statsforecast.models import AutoARIMA
 
 
 def run_forecast_arima(dataset: pd.DataFrame, config: dict) -> pd.DataFrame:
-
     fit_parameters = config[
         "forecast_parameters"
     ].copy()  # you must force a copy here or it assigns a reference to

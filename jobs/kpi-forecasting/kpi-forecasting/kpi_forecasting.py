@@ -50,7 +50,7 @@ def main() -> None:
             aggregation_unit_of_time=config["confidences"],
             asofdate=predictions["ds"].max(),
             final_observed_sample_date=dataset["ds"].max(),
-            target="desktop",
+            target=config["target"],
         )
 
         write_predictions_to_bigquery(predictions, config)

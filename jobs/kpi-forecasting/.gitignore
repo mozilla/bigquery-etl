@@ -1,3 +1,6 @@
+.cache
 .idea
-.vscode
+.local
 .python-version
+.python_history
+.vscode

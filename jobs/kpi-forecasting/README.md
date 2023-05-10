@@ -21,9 +21,9 @@ pip install -r requirements.txt
 Run the scripts with:
 
 ```sh
-python kpi_forecasting.py -c yaml/desktop.yaml
+python ~/kpi-forecasting/kpi_forecasting.py -c ~/kpi-forecasting/yaml/desktop_non_cumulative.yaml
 
-python kpi_forecasting.py -c yaml/mobile.yaml
+python ~/kpi-forecasting/kpi_forecasting.py -c ~/kpi-forecasting/yaml/mobile_non_cumulative.yaml
 ```
 
 ### On SQL Queries And Preprocessing

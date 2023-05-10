@@ -357,15 +357,15 @@ class Task:
         ):
             match metadata.bigquery.time_partitioning.type:
                 case PartitionType.YEAR:
-                    partition_template = '{{ dag_run.logical_date.strftime("%Y") }}'
+                    partition_template = '${{ dag_run.logical_date.strftime("%Y") }}'
                 case PartitionType.MONTH:
-                    partition_template = '{{ dag_run.logical_date.strftime("%Y%m") }}'
+                    partition_template = '${{ dag_run.logical_date.strftime("%Y%m") }}'
                 case PartitionType.DAY:
                     # skip for the default case of daily partitioning
                     partition_template = None
                 case PartitionType.HOUR:
                     partition_template = (
-                        '{{ dag_run.logical_date.strftime("%Y%m%d%H") }}'
+                        '${{ dag_run.logical_date.strftime("%Y%m%d%H") }}'
                     )
                 case _:
                     raise TaskParseException(

@@ -135,7 +135,11 @@ SELECT
       metrics.labeled_counter.network_data_size_per_type,
       metrics.labeled_counter.networking_speculative_connection_outcome,
       metrics.labeled_counter.networking_speculative_connect_outcome,
-      metrics.labeled_counter.networking_cookie_timestamp_fixed_count
+      metrics.labeled_counter.networking_cookie_timestamp_fixed_count,
+      metrics.labeled_counter.rtcrtpsender_setparameters_blame_length_changed,
+      metrics.labeled_counter.rtcrtpsender_setparameters_blame_no_getparameters,
+      metrics.labeled_counter.rtcrtpsender_setparameters_blame_no_transactionid,
+      metrics.labeled_counter.rtcrtpsender_setparameters_blame_stale_transactionid
     ) AS labeled_counter,
     metrics.labeled_rate,
     metrics.memory_distribution,
@@ -283,7 +287,11 @@ SELECT
       metrics.labeled_counter.network_data_size_per_type,
       metrics.labeled_counter.networking_speculative_connection_outcome,
       metrics.labeled_counter.networking_speculative_connect_outcome,
-      metrics.labeled_counter.networking_cookie_timestamp_fixed_count
+      metrics.labeled_counter.networking_cookie_timestamp_fixed_count,
+      metrics.labeled_counter.rtcrtpsender_setparameters_blame_length_changed,
+      metrics.labeled_counter.rtcrtpsender_setparameters_blame_no_getparameters,
+      metrics.labeled_counter.rtcrtpsender_setparameters_blame_no_transactionid,
+      metrics.labeled_counter.rtcrtpsender_setparameters_blame_stale_transactionid
     ) AS labeled_counter,
     metrics.labeled_rate,
     metrics.memory_distribution,

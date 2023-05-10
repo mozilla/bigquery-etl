@@ -1206,6 +1206,67 @@ fields:
       mode: REPEATED
       name: networking_cookie_timestamp_fixed_count
       type: RECORD
+    - description: 'The number of RTCRtpSenders that have warned at least once about
+        a `setParameters` call that attempted to change the number of encodings, broken
+        down by the eTLD+1 of the site. Collected only on EARLY_BETA_OR_EARLIER.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: rtcrtpsender_setparameters_blame_length_changed
+      type: RECORD
+    - description: 'The number of RTCRtpSenders that have warned at least once about
+        a `setParameters` call because `[[LastReturnedParameters]]` was not set, broken
+        down by the eTLD+1 of the site. (ie; there was not a recent enough call to
+        `getParameters`) Collected only on EARLY_BETA_OR_EARLIER.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: rtcrtpsender_setparameters_blame_no_getparameters
+      type: RECORD
+    - description: 'The number of RTCRtpSenders that have warned at least once about
+        a `setParameters` call that did not set the transactionId field, broken down
+        by the eTLD+1 of the site. Collected only on EARLY_BETA_OR_EARLIER.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: rtcrtpsender_setparameters_blame_no_transactionid
+      type: RECORD
+    - description: 'The number of RTCRtpSenders that have warned at least once about
+        a `setParameters` call that used a stale transaction id, broken down by the
+        eTLD+1 of the site. Collected only on EARLY_BETA_OR_EARLIER.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: rtcrtpsender_setparameters_blame_stale_transactionid
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

@@ -1725,6 +1725,46 @@ fields:
       mode: REPEATED
       name: networking_cookie_timestamp_fixed_count
       type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: rtcrtpsender_setparameters_blame_length_changed
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: rtcrtpsender_setparameters_blame_no_getparameters
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: rtcrtpsender_setparameters_blame_no_transactionid
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: rtcrtpsender_setparameters_blame_stale_transactionid
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

@@ -252,6 +252,13 @@ fields:
     mode: NULLABLE
     name: uuid
     type: RECORD
+  - fields:
+    - mode: NULLABLE
+      name: session_connection_health_stable_count
+      type: INTEGER
+    mode: NULLABLE
+    name: counter
+    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

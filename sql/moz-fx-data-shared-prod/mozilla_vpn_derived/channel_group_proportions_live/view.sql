@@ -4,8 +4,8 @@ AS
 WITH stage_1 AS (
   SELECT
     event_date AS subscription_start_date,
-    country_name,
     country,
+    country_name,
     utm_medium,
     utm_source,
     utm_campaign,
@@ -27,8 +27,8 @@ WITH stage_1 AS (
     event_type = "New"
   GROUP BY
     subscription_start_date,
-    country_name,
     country,
+    country_name,
     utm_medium,
     utm_source,
     utm_campaign,

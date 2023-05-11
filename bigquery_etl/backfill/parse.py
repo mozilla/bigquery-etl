@@ -4,7 +4,7 @@ import enum
 import os
 from collections import OrderedDict
 from datetime import date, datetime
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 import attr
 import yaml
@@ -46,8 +46,6 @@ class Backfill:
     Uses attrs to simplify the class definition and provide validation.
     Docs: https://www.attrs.org
     """
-
-    # TODO:  should there be a separate class for reason (link & description?)
 
     entry_date: Optional[datetime] = attr.ib()
     start_date: datetime = attr.ib()
@@ -101,11 +99,12 @@ class Backfill:
         if not value or len(value) == 0:
             raise ValueError(f"Invalid reason: {value}.")
 
-    @status.validator
-    def validate_status(self, attribute, value):
-        """Check that provided status is valid."""
-        if not hasattr(BackfillStatus, value):
-            raise ValueError(f"Invalid status: {value}.")
+# TODO: Fix error:  TypeError: hasattr(): attribute name must be string
+    #@status.validator
+    # def validate_status(self, attribute, value):
+    #     """Check that provided status is valid."""
+    #     if not hasattr(BackfillStatus, value):
+    #         raise ValueError(f"Invalid status: {value}.")
 
     @staticmethod
     def is_backfill_file(file_path) -> bool:
@@ -117,7 +116,8 @@ class Backfill:
         return os.path.basename(file_path) == BACKFILL_FILE
 
     @classmethod
-    def entries_from_file(cls, file) -> Dict[datetime, Backfill]:
+    def entries_from_file(cls, file):
+        # TODO: Resolve error  -> Dict[datetime, Backfill]
         """
         Parse all backfill entries from the provided yaml file.
 
@@ -137,6 +137,8 @@ class Backfill:
                     if "excluded_dates" not in entry:
                         entry["excluded_dates"] = []
 
+                    status = entry["status"].upper()
+
                     backfill = cls(
                         entry_date=entry_date,
                         start_date=entry["start_date"],
@@ -144,7 +146,7 @@ class Backfill:
                         excluded_dates=entry["excluded_dates"],
                         reason=entry["reason"],
                         watchers=entry["watchers"],
-                        status=entry["status"],
+                        status=BackfillStatus[status],
                     )
 
                     backfill_entries[entry_date] = backfill

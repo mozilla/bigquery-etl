@@ -5,7 +5,7 @@ import pytest
 import yaml
 from click.testing import CliRunner
 
-from bigquery_etl.backfill.parse_backfill import BackfillStatus
+from bigquery_etl.backfill.parse import BackfillStatus
 from bigquery_etl.cli.backfill import create
 
 DEFAULT_REASON = "Please provide a reason for the backfill and links to any related bugzilla or jira tickets"

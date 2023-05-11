@@ -11,8 +11,8 @@ import cattrs
 import click
 import yaml
 
-from ..backfill import validate_backfill
-from ..backfill.parse_backfill import Backfill
+from ..backfill import validate
+from ..backfill.parse import Backfill, BackfillStatus
 from ..cli.utils import sql_dir_option
 
 QUALIFIED_TABLE_NAME_RE = re.compile(
@@ -121,8 +121,8 @@ def create(
     backfills = OrderedDict()
 
     if backfill_file.exists():
-        backfills = Backfill.from_backfill_file(backfill_file)
-        validate_backfill.validate(backfill, backfills)
+        backfills = Backfill.entries_from_file(backfill_file)
+        validate.validate(backfill, backfills)
 
     backfills[entry_date] = backfill
     backfills.move_to_end(entry_date, last=False)
@@ -134,7 +134,7 @@ def create(
         entry = Backfill.clean(entry)
         backfills[entry_date] = entry
 
-    validate_backfill.validate_entries(backfills)
+    validate.validate_entries_are_sorted(backfills)
 
     backfill_file.write_text(
         yaml.dump(

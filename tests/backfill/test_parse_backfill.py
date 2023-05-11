@@ -4,7 +4,7 @@ from pathlib import Path
 import cattrs
 import pytest
 
-from bigquery_etl.backfill.parse_backfill import Backfill, BackfillStatus
+from bigquery_etl.backfill.parse import Backfill, BackfillStatus
 
 TEST_DIR = Path(__file__).parent.parent
 

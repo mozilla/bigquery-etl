@@ -28,7 +28,7 @@ def validate_reason(backfill):
         raise ValueError(f"Invalid Reason: {backfill.reason}.")
 
 
-def validate_entries(backfills):
+def validate_entries_are_sorted(backfills):
     """Validate list of backfill entries."""
     if not list(backfills.keys()) == sorted(backfills, reverse=True):
         raise ValueError("Backfill entries are not sorted")

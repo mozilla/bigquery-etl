@@ -38,15 +38,11 @@ todays_metrics_enriched AS (
   SELECT
     todays_metrics.* EXCEPT (locale),
     CASE
-    WHEN
-      locale IS NOT NULL
-      AND languages.language_name IS NULL
-    THEN
-      'Other'
-    ELSE
-      languages.language_name
-    END
-    AS language_name,
+      WHEN locale IS NOT NULL
+        AND languages.language_name IS NULL
+        THEN 'Other'
+      ELSE languages.language_name
+    END AS language_name,
   FROM
     todays_metrics
   LEFT JOIN
@@ -69,6 +65,16 @@ SELECT
   COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS dau,
   COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS wau,
   COUNT(DISTINCT client_id) AS mau,
+  COUNT(
+    DISTINCT IF(
+      days_since_seen = 0
+      AND app_name = 'Firefox Desktop'
+      AND active_hours_sum > 0
+      AND uri_count > 0,
+      client_id,
+      NULL
+    )
+  ) AS qdau_desktop,
   COUNT(DISTINCT IF(submission_date = first_seen_date, client_id, NULL)) AS new_profiles,
   SUM(ad_click) AS ad_clicks,
   SUM(organic_search_count) AS organic_search_count,

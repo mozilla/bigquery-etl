@@ -58,10 +58,19 @@ categorized_events AS (
       "is_sponsored"
     ) = "true" AS is_sponsored_topsite_impression,
     event_category = 'topsites'
+    AND event_name = 'impression'
+    AND mozfun.map.get_key(
+      event_details,
+      "is_sponsored"
+    ) = "false" AS is_organic_topsite_impression,
+    event_category = 'topsites'
     AND event_name = 'click' AS is_topsite_click,
     event_category = 'topsites'
     AND event_name = 'click'
     AND mozfun.map.get_key(event_details, "is_sponsored") = "true" AS is_sponsored_topsite_click,
+    event_category = 'topsites'
+    AND event_name = 'click'
+    AND mozfun.map.get_key(event_details, "is_sponsored") = "false" AS is_organic_topsite_click,
         -- Pocket
     event_category = 'pocket'
     AND event_name = 'click' AS is_pocket_click,
@@ -109,16 +118,25 @@ categorized_events AS (
     metrics.string.newtab_newtab_category,
     metrics.boolean.newtab_search_enabled,
     metrics.uuid.legacy_telemetry_client_id,
+    metrics.quantity.topsites_rows,
     ping_info.experiments,
         -- ??? private_browsing_mode
         -- Partially unique visit attributes
     mozfun.map.get_key(event_details, "telemetry_id") AS search_engine,
     mozfun.map.get_key(event_details, "search_access_point") AS search_access_point,
-    SAFE_CAST(
-      mozfun.map.get_key(event_details, "position") AS INT64
-    ) AS pocket_story_position, -- Note potential name-collision here with topsite position
+    IF(
+      event_category = "pocket",
+      SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64),
+      NULL
+    ) AS pocket_story_position,
+-- TODO:  Note: this greatly increases the cardinality of the table, this means we'll likely have to make a version two
+-- with more nesting.
+--     IF(
+--       event_category = "topsites",
+--       SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64),
+--       NULL
+--     ) AS topsite_position,
         -- ??? topsite_advertiser_id
-        -- ??? topsite_position
     submission_date
   FROM
     events_unnested
@@ -151,13 +169,16 @@ aggregated_newtab_activity AS (
     ANY_VALUE(newtab_homepage_category) AS newtab_homepage_category,
     ANY_VALUE(newtab_newtab_category) AS newtab_newtab_category,
     ANY_VALUE(newtab_search_enabled) AS newtab_search_enabled,
+    ANY_VALUE(topsites_rows) AS topsites_rows,
     MIN(newtab_visit_started_at) AS newtab_visit_started_at,
     MIN(newtab_visit_ended_at) AS newtab_visit_ended_at,
           -- Topsite
     COUNTIF(is_topsite_click) AS topsite_clicks,
     COUNTIF(is_sponsored_topsite_click) AS sponsored_topsite_clicks,
+    COUNTIF(is_organic_topsite_click) AS organic_topsite_clicks,
     COUNTIF(is_topsite_impression) AS topsite_impressions,
     COUNTIF(is_sponsored_topsite_impression) AS sponsored_topsite_impressions,
+    COUNTIF(is_organic_topsite_impression) AS organic_topsite_impressions,
           -- Search
     COUNTIF(is_search_issued) AS searches,
     COUNTIF(is_tagged_search_ad_click) AS tagged_search_ad_clicks,
@@ -184,6 +205,8 @@ aggregated_newtab_activity AS (
     COUNTIF(is_organic_pocket_save) AS organic_pocket_saves,
   FROM
     categorized_events
+  WHERE
+    newtab_visit_id IS NOT NULL
   GROUP BY
     newtab_visit_id,
     client_id,
@@ -201,17 +224,63 @@ client_profile_info AS (
     ANY_VALUE(is_new_profile) AS is_new_profile,
     ANY_VALUE(activity_segment) AS activity_segment
   FROM
-    telemetry_derived.unified_metrics_v1
+    `moz-fx-data-shared-prod.telemetry_derived.unified_metrics_v1`
   WHERE
     submission_date = @submission_date
   GROUP BY
     client_id
+),
+-- Newtab interactions may arrive in different pings so we attach the open details for a visit to all interactions.
+side_filled AS (
+  SELECT
+    * EXCEPT (newtab_open_source, newtab_visit_started_at, newtab_visit_ended_at),
+    FIRST_VALUE(newtab_open_source IGNORE NULLS) OVER (
+      PARTITION BY
+        newtab_visit_id
+      ORDER BY
+        submission_date ASC
+    ) AS newtab_open_source,
+    FIRST_VALUE(newtab_visit_started_at IGNORE NULLS) OVER (
+      PARTITION BY
+        newtab_visit_id
+      ORDER BY
+        submission_date ASC
+    ) AS newtab_visit_started_at,
+    FIRST_VALUE(newtab_visit_ended_at IGNORE NULLS) OVER (
+      PARTITION BY
+        newtab_visit_id
+      ORDER BY
+        submission_date ASC
+    ) AS newtab_visit_ended_at,
+    LOGICAL_OR(
+      searches > 0
+      OR tagged_search_ad_clicks > 0
+      OR tagged_search_ad_impressions > 0
+      OR follow_on_search_ad_clicks > 0
+      OR follow_on_search_ad_impressions > 0
+      OR topsite_impressions > 0
+      OR topsite_clicks > 0
+      OR pocket_impressions > 0
+      OR pocket_clicks > 0
+      OR pocket_saves > 0
+    ) OVER (
+      PARTITION BY
+        newtab_visit_id
+    ) AS visit_had_any_interaction -- Note this will have to be updated when other valid interactions are added.
+  FROM
+    aggregated_newtab_activity
+  LEFT JOIN
+    client_profile_info
+  USING
+    (legacy_telemetry_client_id)
 )
 SELECT
-  *
+  * EXCEPT (visit_had_any_interaction)
 FROM
-  aggregated_newtab_activity
-LEFT JOIN
-  client_profile_info
-USING
-  (legacy_telemetry_client_id)
+  side_filled
+WHERE
+   -- Keep only rows with interactions, unless we receive a valid newtab.opened event.
+   -- This is meant to drop only interactions that only have a newtab.closed event on the same partition
+   -- (these are suspected to be from pre-loaded tabs)
+  visit_had_any_interaction = TRUE
+  OR (visit_had_any_interaction = FALSE AND newtab_open_source IS NOT NULL)

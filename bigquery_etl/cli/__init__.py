@@ -14,6 +14,7 @@ from ..cli.format import format
 from ..cli.generate import generate
 from ..cli.query import query
 from ..cli.routine import mozfun, routine
+from ..cli.stage import stage
 from ..cli.view import view
 from ..copy_deduplicate import copy_deduplicate
 from ..dependency import dependency
@@ -43,6 +44,7 @@ def cli(prog_name=None):
         "static": static_,
         "docs": docs_,
         "copy_deduplicate": copy_deduplicate,
+        "stage": stage,
     }
 
     @click.group(commands=commands)

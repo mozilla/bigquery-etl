@@ -9,12 +9,14 @@ from typing import List, Optional, Tuple
 
 import attr
 import cattrs
+import click
 
 from bigquery_etl.dependency import extract_table_references_without_views
-from bigquery_etl.metadata.parse_metadata import Metadata
+from bigquery_etl.metadata.parse_metadata import Metadata, PartitionType
 from bigquery_etl.query_scheduling.utils import (
     is_date_string,
     is_email,
+    is_email_or_github_identity,
     is_schedule_interval,
     is_timedelta_string,
     is_valid_dag_name,
@@ -176,6 +178,7 @@ class Task:
     depends_on_past: bool = attr.ib(False)
     start_date: Optional[str] = attr.ib(None)
     date_partition_parameter: Optional[str] = "submission_date"
+    table_partition_template: Optional[str] = None
     # number of days date partition parameter should be offset
     date_partition_offset: Optional[int] = None
     # indicate whether data should be published as JSON
@@ -216,14 +219,16 @@ class Task:
     @owner.validator
     def validate_owner(self, attribute, value):
         """Check that owner is a valid email address."""
-        if not is_email(value):
-            raise ValueError(f"Invalid email for task owner: {value}.")
+        if not is_email_or_github_identity(value):
+            raise ValueError(
+                f"Invalid email or github identity for task owner: {value}."
+            )
 
     @email.validator
     def validate_email(self, attribute, value):
         """Check that provided email addresses are valid."""
-        if not all(map(lambda e: is_email(e), value)):
-            raise ValueError(f"Invalid email in DAG email: {value}.")
+        if not all(map(lambda e: is_email_or_github_identity(e), value)):
+            raise ValueError(f"Invalid email or github identity in DAG email: {value}.")
 
     @start_date.validator
     def validate_start_date(self, attribute, value):
@@ -337,12 +342,50 @@ class Task:
             if dag is not None:
                 default_email = dag.default_args.email
         email = task_config.get("email", default_email)
-        # owners get added to the email list
+        # Remove non-valid emails from owners e.g. Github identities and add to
+        # Airflow email list.
+        for owner in metadata.owners:
+            if not is_email(owner):
+                metadata.owners.remove(owner)
+                click.echo(
+                    f"{owner} removed from email list in DAG "
+                    f"{metadata.scheduling['dag_name']}, task: {metadata.scheduling['task_name']}"
+                )
         task_config["email"] = list(set(email + metadata.owners))
 
         # data processed in task should be published
         if metadata.is_public_json():
             task_config["public_json"] = True
+
+        # Override the table_partition_template if there is no `destination_table`
+        # set in the scheduling section of the metadata. If not then pass a jinja
+        # template that reformats the date string used for table partition decorator.
+        # See doc here for formatting conventions:
+        #  https://cloud.google.com/bigquery/docs/managing-partitioned-table-data#partition_decorators
+        if (
+            metadata.bigquery
+            and metadata.bigquery.time_partitioning
+            and metadata.scheduling.get("destination_table") is None
+        ):
+            match metadata.bigquery.time_partitioning.type:
+                case PartitionType.YEAR:
+                    partition_template = '${{ dag_run.logical_date.strftime("%Y") }}'
+                case PartitionType.MONTH:
+                    partition_template = '${{ dag_run.logical_date.strftime("%Y%m") }}'
+                case PartitionType.DAY:
+                    # skip for the default case of daily partitioning
+                    partition_template = None
+                case PartitionType.HOUR:
+                    partition_template = (
+                        '${{ dag_run.logical_date.strftime("%Y%m%d%H") }}'
+                    )
+                case _:
+                    raise TaskParseException(
+                        f"Invalid partition type: {metadata.bigquery.time_partitioning.type}"
+                    )
+
+            if partition_template:
+                task_config["table_partition_template"] = partition_template
 
         try:
             return converter.structure(task_config, cls)
@@ -474,6 +517,9 @@ class Task:
 
             if len(date_partition_offsets) > 0:
                 self.date_partition_offset = min(date_partition_offsets)
+                # unset the table_partition_template property if we have an offset
+                # as that will be overridden in the template via `destination_table`
+                self.table_partition_template = None
                 date_partition_offset_task_keys = [
                     dependency.task_key
                     for dependency in dependencies

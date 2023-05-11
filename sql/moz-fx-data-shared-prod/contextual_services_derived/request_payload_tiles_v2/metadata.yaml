@@ -1,0 +1,21 @@
+friendly_name: Contextual Services Tiles Request Payload
+description: |-
+  Derived dataset for contextual services tiles request payload
+owners:
+  - skahmann@mozilla.com
+  - akommasani@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  owner1: skahmann
+  owner2: akommasani
+scheduling:
+  dag_name: bqetl_ctxsvc_derived
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering: null
+references: {}

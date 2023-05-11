@@ -43,14 +43,17 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     sponsored_tiles_clients_daily_v1 = bigquery_etl_query(
         task_id="sponsored_tiles_clients_daily_v1",
         destination_table='sponsored_tiles_clients_daily_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="skahmann@mozilla.com",
-        email=["skahmann@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "cmorales@mozilla.com",
+            "skahmann@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],

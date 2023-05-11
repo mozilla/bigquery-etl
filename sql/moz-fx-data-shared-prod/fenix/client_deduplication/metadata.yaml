@@ -1,0 +1,8 @@
+friendly_name: Client Deduplication
+description: |-
+  A view over all client deduplication pings, from all channels.
+owners:
+- frank@mozilla.com
+labels: {}
+bigquery: null
+references: {}

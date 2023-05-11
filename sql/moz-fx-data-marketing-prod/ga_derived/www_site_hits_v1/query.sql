@@ -7,7 +7,7 @@ WITH hits AS (
     hit.page.pagePath AS page_path,
     hit.page.pagePathLevel1 AS page_path_level1,
     -- splitting the pagePath to make it easier to filter on pages in dashboards
-    SPLIT(split(hit.page.pagePath, '?')[offset(0)], '/') AS split_page_path,
+    SPLIT(SPLIT(hit.page.pagePath, '?')[OFFSET(0)], '/') AS split_page_path,
     hit.type AS hit_type,
     hit.isExit AS is_exit,
     hit.isEntrance AS is_entrance,
@@ -19,7 +19,7 @@ WITH hits AS (
     device.operatingSystem AS operating_system,
     device.language,
     device.browser,
-    SPLIT(device.browserVersion, '.')[offset(0)] AS browser_version,
+    SPLIT(device.browserVersion, '.')[OFFSET(0)] AS browser_version,
     geoNetwork.country,
     trafficSource.source,
     trafficSource.medium,

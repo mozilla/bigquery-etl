@@ -80,10 +80,10 @@ all_events AS (
       *
     FROM
       {{ app_dataset }}
-    {% if not loop.last %}    
+    {% if not loop.last %}
       UNION ALL
     {% endif %}
-  {% endfor %} 
+  {% endfor %}
 )
 SELECT
   experiment,
@@ -103,7 +103,7 @@ SELECT
 FROM
   all_events
 WHERE
-  date(submission_timestamp) = @submission_date
+  DATE(submission_timestamp) = @submission_date
 GROUP BY
   experiment,
   branch,

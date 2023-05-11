@@ -43,7 +43,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     telemetry_derived__smoot_usage_desktop__v2 = bigquery_etl_query(
         task_id="telemetry_derived__smoot_usage_desktop__v2",
         destination_table="smoot_usage_desktop_v2",

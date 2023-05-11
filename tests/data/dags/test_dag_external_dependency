@@ -40,7 +40,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     test__external_table__v1 = bigquery_etl_query(
         task_id="test__external_table__v1",
         destination_table="external_table_v1",

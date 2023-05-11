@@ -47,7 +47,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     ga_derived__blogs_daily_summary__v1 = bigquery_etl_query(
         task_id="ga_derived__blogs_daily_summary__v1",
         destination_table="blogs_daily_summary_v1",
@@ -105,6 +104,36 @@ with DAG(
         depends_on_past=False,
     )
 
+    ga_derived__downloads_with_attribution__v1 = bigquery_etl_query(
+        task_id="ga_derived__downloads_with_attribution__v1",
+        destination_table="downloads_with_attribution_v1",
+        dataset_id="ga_derived",
+        project_id="moz-fx-data-marketing-prod",
+        owner="gleonard@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "gleonard@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    ga_derived__firefox_whatsnew_summary__v1 = bigquery_etl_query(
+        task_id="ga_derived__firefox_whatsnew_summary__v1",
+        destination_table="firefox_whatsnew_summary_v1",
+        dataset_id="ga_derived",
+        project_id="moz-fx-data-marketing-prod",
+        owner="rbaffourawuah@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "rbaffourawuah@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     ga_derived__www_site_downloads__v1 = bigquery_etl_query(
         task_id="ga_derived__www_site_downloads__v1",
         destination_table="www_site_downloads_v1",
@@ -128,6 +157,19 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
         sql_file_path="sql/moz-fx-data-marketing-prod/ga_derived/www_site_empty_check_v1/query.sql",
     )
+
+    with TaskGroup(
+        "ga_derived__www_site_empty_check__v1_external"
+    ) as ga_derived__www_site_empty_check__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_download_funnel_attribution__wait_for_ga_derived__www_site_empty_check__v1",
+            external_dag_id="bqetl_download_funnel_attribution",
+            external_task_id="wait_for_ga_derived__www_site_empty_check__v1",
+        )
+
+        ga_derived__www_site_empty_check__v1_external.set_upstream(
+            ga_derived__www_site_empty_check__v1
+        )
 
     ga_derived__www_site_events_metrics__v1 = bigquery_etl_query(
         task_id="ga_derived__www_site_events_metrics__v1",
@@ -197,6 +239,12 @@ with DAG(
     )
 
     ga_derived__blogs_sessions__v1.set_upstream(ga_derived__blogs_empty_check__v1)
+
+    ga_derived__downloads_with_attribution__v1.set_upstream(
+        ga_derived__www_site_empty_check__v1
+    )
+
+    ga_derived__firefox_whatsnew_summary__v1.set_upstream(ga_derived__www_site_hits__v1)
 
     ga_derived__www_site_downloads__v1.set_upstream(ga_derived__www_site_hits__v1)
 

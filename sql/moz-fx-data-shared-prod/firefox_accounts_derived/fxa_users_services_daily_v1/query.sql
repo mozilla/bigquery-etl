@@ -50,7 +50,7 @@ WITH base AS (
   FROM
     `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
-    event_category IN ('content', 'auth', 'oauth')
+    fxa_log IN ('content', 'auth', 'oauth')
     AND user_id IS NOT NULL
     AND event_type NOT IN ( --
       'fxa_email - bounced',

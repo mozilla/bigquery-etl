@@ -1,0 +1,158 @@
+[
+  {
+    "mode": "NULLABLE",
+    "name": "visitId",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "date",
+    "type": "STRING"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "timeOnSite",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "NULLABLE",
+    "name": "totals",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "campaign",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "source",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "medium",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "adContent",
+        "type": "STRING"
+      }
+    ],
+    "mode": "NULLABLE",
+    "name": "trafficSource",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "browser",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "browserVersion",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "operatingSystem",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "language",
+        "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "deviceCategory",
+        "type": "STRING"
+      }
+    ],
+    "mode": "NULLABLE",
+    "name": "device",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "country",
+        "type": "STRING"
+      }
+    ],
+    "mode": "NULLABLE",
+    "name": "geoNetwork",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "mode": "NULLABLE",
+            "name": "pagePath",
+            "type": "STRING"
+          }
+        ],
+        "mode": "NULLABLE",
+        "name": "page",
+        "type": "RECORD"
+      },
+      {
+        "fields": [
+          {
+            "mode": "NULLABLE",
+            "name": "landingScreenName",
+            "type": "STRING"
+          }
+        ],
+        "mode": "NULLABLE",
+        "name": "appInfo",
+        "type": "RECORD"
+      },
+      {
+        "fields": [
+          {
+            "mode": "NULLABLE",
+            "name": "eventCategory",
+            "type": "STRING"
+          },
+          {
+            "mode": "NULLABLE",
+            "name": "eventAction",
+            "type": "STRING"
+          },
+          {
+            "mode": "NULLABLE",
+            "name": "eventLabel",
+            "type": "STRING"
+          }
+        ],
+        "mode": "NULLABLE",
+        "name": "eventInfo",
+        "type": "RECORD"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "type",
+        "type": "STRING"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "hits",
+    "type": "RECORD"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "clientId",
+    "type": "STRING"
+  }
+]

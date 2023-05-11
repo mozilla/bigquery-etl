@@ -26,7 +26,7 @@ default_args = {
     "owner": "wstuckey@mozilla.com",
     "start_date": datetime.datetime(2022, 10, 13, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "wstuckey@mozilla.com"],
+    "email": ["wstuckey@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -34,7 +34,7 @@ default_args = {
     "retries": 2,
 }
 
-tags = ["impact/tier_2", "repo/bigquery-etl"]
+tags = ["impact/tier_3", "repo/bigquery-etl", "triage/no_triage"]
 
 with DAG(
     "bqetl_domain_meta",
@@ -43,15 +43,14 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     domain_metadata_derived__top_domains__v1 = bigquery_etl_query(
         task_id="domain_metadata_derived__top_domains__v1",
         destination_table="top_domains_v1",
         dataset_id="domain_metadata_derived",
         project_id="moz-fx-data-shared-prod",
         owner="wstuckey@mozilla.com",
-        email=["telemetry-alerts@mozilla.com", "wstuckey@mozilla.com"],
+        email=["wstuckey@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template='${{ dag_run.logical_date.strftime("%Y%m") }}',
         depends_on_past=False,
-        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )

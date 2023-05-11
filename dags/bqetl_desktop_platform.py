@@ -44,7 +44,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     telemetry_derived__accessibility_clients__v1 = bigquery_etl_query(
         task_id="telemetry_derived__accessibility_clients__v1",
         destination_table="accessibility_clients_v1",

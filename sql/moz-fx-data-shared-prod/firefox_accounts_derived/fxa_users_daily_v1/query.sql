@@ -51,7 +51,7 @@ WITH windowed AS (
   FROM
     `firefox_accounts.fxa_all_events`
   WHERE
-    event_category IN ('auth', 'auth_bounce', 'content', 'oauth')
+    fxa_log IN ('auth', 'auth_bounce', 'content', 'oauth')
     AND user_id IS NOT NULL
     AND event_type NOT IN ( --
       'fxa_email - bounced',

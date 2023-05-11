@@ -19,6 +19,7 @@ SELECT
   CAST(NULL AS STRING) AS app_display_version,
   CAST(NULL AS STRING) AS architecture,
   CAST(NULL AS STRING) AS first_run_date,
+  CAST(NULL AS STRING) AS telemetry_agent,
   CAST(NULL AS STRING) AS telemetry_sdk_build,
   CAST(NULL AS STRING) AS locale,
   -- metadata

@@ -86,6 +86,9 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             {%+ elif task.date_partition_parameter == None or task.date_partition_parameter is string -%}
             date_partition_parameter={{ task.date_partition_parameter | format_optional_string }},
             {%+ endif -%}
+            {%+ if task.date_partition_parameter and task.table_partition_template -%}
+            table_partition_template='{{ task.table_partition_template }}',
+            {%+ endif -%}
             depends_on_past={{ task.depends_on_past }},
             {%+ if task.trigger_rule -%}
             trigger_rule="{{ task.trigger_rule }}",

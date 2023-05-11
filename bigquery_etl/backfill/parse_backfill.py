@@ -117,7 +117,7 @@ class Backfill:
         return os.path.basename(file_path) == BACKFILL_FILE
 
     @classmethod
-    def from_backfill_file(cls, file):
+    def entries_from_file(cls, file) -> Dict[datetime, Backfill]:
         """
         Parse all backfill entries from the provided yaml file.
 

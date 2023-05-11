@@ -9,7 +9,7 @@ def validate(backfill, backfills):
             validate_overlap_dates(backfill, entry)
 
 
-def validate_overlap_dates(backfill, entry):
+def validate_overlap_dates(entry_1: Backfill, entry_2: Backfill):
     """Check overlap dates between two backfill entries."""
     if max(backfill.start_date, entry.start_date) <= min(
         backfill.end_date, entry.end_date

@@ -12,7 +12,7 @@ import click
 import yaml
 
 from ..backfill import validate
-from ..backfill.parse import Backfill, BackfillStatus
+from ..backfill.parse import DEFAULT_REASON, Backfill, BackfillStatus
 from ..cli.utils import sql_dir_option
 
 QUALIFIED_TABLE_NAME_RE = re.compile(
@@ -113,7 +113,7 @@ def create(
         start_date=start_date.date(),
         end_date=end_date.date(),
         excluded_dates=[e.date() for e in list(exclude)],
-        reason="Please provide a reason for the backfill and links to any related bugzilla or jira tickets",
+        reason=DEFAULT_REASON,
         watchers=[watcher],
         status=BackfillStatus.DRAFTING,
     )

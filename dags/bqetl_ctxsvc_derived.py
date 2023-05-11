@@ -130,6 +130,40 @@ with DAG(
         depends_on_past=False,
     )
 
+    contextual_services_derived__request_payload_suggest__v2 = bigquery_etl_query(
+        task_id="contextual_services_derived__request_payload_suggest__v2",
+        destination_table="request_payload_suggest_v2",
+        dataset_id="contextual_services_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="skahmann@mozilla.com",
+        email=[
+            "akommasani@mozilla.com",
+            "ctroy@mozilla.com",
+            "skahmann@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    contextual_services_derived__request_payload_tiles__v2 = bigquery_etl_query(
+        task_id="contextual_services_derived__request_payload_tiles__v2",
+        destination_table="request_payload_tiles_v2",
+        dataset_id="contextual_services_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="skahmann@mozilla.com",
+        email=[
+            "akommasani@mozilla.com",
+            "ctroy@mozilla.com",
+            "skahmann@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     contextual_services_derived__adm_forecasting__v1.set_upstream(
         contextual_services_derived__event_aggregates__v1
     )

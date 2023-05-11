@@ -521,19 +521,19 @@ jobs:
     executor: ubuntu-machine-executor
     steps:
       - checkout
+      - *attach_generated_sql
+      - run:
+          name: Move generated-sql into place
+          command: |
+            rm -rf sql/
+            cp -r /tmp/workspace/private-generated-sql/sql sql
+      - gcp-gcr/gcr-auth
+      - gcp-gcr/build-image: &private-image
+          image: bigquery-etl
+          tag: ${CIRCLE_TAG:-latest}
       - when:
           condition: *deploy-condition
           steps:
-            - *attach_generated_sql
-            - run:
-                name: Move generated-sql into place
-                command: |
-                  rm -rf sql/
-                  cp -r /tmp/workspace/private-generated-sql/sql sql
-            - gcp-gcr/gcr-auth
-            - gcp-gcr/build-image: &private-image
-                image: bigquery-etl
-                tag: ${CIRCLE_TAG:-latest}
             - gcp-gcr/push-image: *private-image
   generate-diff:
     docker: *docker

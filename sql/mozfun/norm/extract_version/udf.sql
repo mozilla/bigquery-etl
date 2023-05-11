@@ -7,6 +7,8 @@ RETURNS NUMERIC AS (
       THEN CAST(REGEXP_EXTRACT(version_string, r"^[0-9]+[.]([0-9]+).*") AS NUMERIC)
     WHEN extraction_level = "major"
       THEN CAST(REGEXP_EXTRACT(version_string, r"^([0-9]+).*") AS NUMERIC)
+    WHEN extraction_level = "beta"
+      THEN CAST(REGEXP_EXTRACT(version_string, r"^[0-9\.]+[rc|b]+([0-9]+)$") AS NUMERIC)
     ELSE NULL
   END
 );
@@ -22,4 +24,9 @@ SELECT
   assert.equals(100, norm.extract_version("100.01.1", "major")),
   assert.equals(4, norm.extract_version("100.04.1", "minor")),
   assert.equals(5, norm.extract_version("5.1.5-ubuntu-foobar", "patch")),
-  assert.null(norm.extract_version("foo-bar", "minor"))
+  assert.null(norm.extract_version("foo-bar", "minor")),
+  assert.equals(1, norm.extract_version("100.04b1", "beta")),
+  assert.equals(4, norm.extract_version("100.04rc4", "beta")),
+  assert.null(norm.extract_version("100.04esr4", "beta")),
+  assert.null(norm.extract_version("100.04.1", "beta")),
+  assert.null(norm.extract_version("5.1.5-ubuntu-foobar", "beta"))

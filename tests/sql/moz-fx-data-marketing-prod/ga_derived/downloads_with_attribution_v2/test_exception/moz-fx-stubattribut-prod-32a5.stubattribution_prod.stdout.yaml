@@ -1,0 +1,189 @@
+- jsonPayload:
+    fields:
+      visit_id: client100
+      dltoken: ga_unresolve
+      session_id: session_1
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: client101
+      dltoken: normal
+      session_id: session_1
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: client102
+      dltoken: missing_ga_client
+      session_id: session_1
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: client103
+      dltoken: duplicate_token
+      session_id: session_1
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: client103
+      dltoken: duplicate_token
+      session_id: session_1
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: ''
+      dltoken: dl_visit_id_empty
+      session_id: session_1
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: a_visit_id
+      dltoken: dl_session_id_empty
+      session_id: ''
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: ''
+      dltoken: dl_both_empty
+      session_id: ''
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: "(not set)"
+      dltoken: dl_visit_id_not_set
+      session_id: session_1
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: a_visit_id
+      dltoken: dl_session_not_set
+      session_id: "(not set)"
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: "(not set)"
+      dltoken: dl_both_not_set
+      session_id: "(not set)"
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: something
+      dltoken: dl_visit_id_something
+      session_id: session_1
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: a_visit_id
+      dltoken: dl_session_something
+      session_id: something
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: something
+      dltoken: dl_both_something
+      session_id: something
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: client104
+      dltoken: no_dl_event
+      session_id: session_1
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: client105
+      dltoken: pageviews_test
+      session_id: session_1
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: client106
+      dltoken: browser_firefox
+      session_id: session_1
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: client107
+      dltoken: browser_null
+      session_id: session_4
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: client108
+      dltoken: browser_not_set
+      session_id: session_3
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: client109
+      dltoken: browser_other
+      session_id: session_2
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: client111
+      dltoken: null_time_on_site
+      session_id: session_b
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: client112
+      dltoken: valid_time_on_site
+      session_id: session_a
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: client113
+      dltoken: missing_hit_type_page
+      session_id: session_c
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: client114
+      dltoken: multi_download_1
+      session_id: session_1
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: client114
+      dltoken: multi_download_2
+      session_id: session_1
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: client115
+      dltoken: ga_unresolve_multi_download_1
+      session_id: session_1
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: client115
+      dltoken: ga_unresolve_multi_download_2
+      session_id: session_1
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC

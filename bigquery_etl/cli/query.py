@@ -1133,43 +1133,6 @@ def validate(
         validate_metadata.validate(query.parent)
         dataset_dirs.add(query.parent.parent)
 
-    if not query_files:
-        # run SQL generators if no matching query has been found.
-        ctx.invoke(
-            generate_all,
-            output_dir=ctx.obj["TMP_DIR"],
-            ignore=[
-                "country_code_lookup",
-                "derived_view_schemas",
-                "events_daily",
-                "experiment_monitoring",
-                "feature_usage",
-                "glean_usage",
-                "search",
-                "stable_views",
-            ],
-        )
-
-        query_files = paths_matching_name_pattern(
-            name, ctx.obj["TMP_DIR"], project_id, ["query.*"]
-        )
-
-        for query in query_files:
-            ctx.invoke(format, paths=[str(query)])
-
-            if not no_dryrun:
-                ctx.invoke(
-                    dryrun,
-                    paths=[str(query)],
-                    use_cloud_function=use_cloud_function,
-                    project=project_id,
-                    validate_schemas=validate_schemas,
-                    respect_skip=respect_dryrun_skip,
-                )
-
-            validate_metadata.validate(query.parent)
-            dataset_dirs.add(query.parent.parent)
-
     if no_dryrun:
         click.echo("Dry run skipped for query files.")
 

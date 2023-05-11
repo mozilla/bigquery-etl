@@ -21,3 +21,4 @@ fields:
   - mode: NULLABLE
     name: formatted_path_string
     type: STRING
+    description: Column name in information schema

@@ -33,9 +33,9 @@ yaml.add_representer(OrderedDict, Representer.represent_dict)
 class BackfillStatus(enum.Enum):
     """Represents backfill status types."""
 
-    Drafting = "Drafting"
-    Validating = "Validating"
-    Complete = "Complete"
+    DRAFTING = "Drafting"
+    VALIDATING = "Validating"
+    COMPLETE = "Complete"
 
 
 @attr.s(auto_attribs=True)

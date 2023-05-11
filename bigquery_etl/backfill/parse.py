@@ -5,7 +5,6 @@ import os
 from collections import OrderedDict
 from datetime import date, datetime
 from typing import List, Optional
-
 import attr
 import yaml
 from yaml.representer import Representer
@@ -48,7 +47,7 @@ class Backfill:
     Docs: https://www.attrs.org
     """
 
-    entry_date: Optional[datetime] = attr.ib()
+    entry_date: datetime = attr.ib()
     start_date: datetime = attr.ib()
     end_date: datetime = attr.ib()
     excluded_dates: Optional[List[datetime]] = attr.ib()
@@ -85,8 +84,8 @@ class Backfill:
     @excluded_dates.validator
     def validate_excluded_dates(self, attribute, value):
         """Check that provided excluded dates are valid."""
-        if not all(map(lambda e: self.start_date < e < self.end_date, value)):
-            raise ValueError(f"Invalid excluded date: {value}.")
+        # if not all(map(lambda e: self.start_date < e < self.end_date, value)):
+        #     raise ValueError(f"Invalid excluded date: {value}.")
 
     @watchers.validator
     def validate_watchers(self, attribute, value):
@@ -122,23 +121,19 @@ class Backfill:
         """
         Parse all backfill entries from the provided yaml file.
 
-        Create a dictionary to store all backfill entries.
+        Create a list to store all backfill entries.
         """
         if not cls.is_backfill_file(file):
             raise ValueError(f"Invalid file: {file}.")
 
-        backfill_entries = OrderedDict()
+
+        backfill_entries = []
 
         with open(file, "r") as yaml_stream:
             try:
-                backfills = yaml.safe_load(yaml_stream) or {}
+                backfills = yaml.safe_load(yaml_stream) or []
 
                 for entry_date, entry in backfills.items():
-
-                    if "excluded_dates" not in entry:
-                        entry["excluded_dates"] = []
-
-                    status = entry["status"].upper()
 
                     backfill = cls(
                         entry_date=entry_date,
@@ -147,24 +142,31 @@ class Backfill:
                         excluded_dates=entry["excluded_dates"],
                         reason=entry["reason"],
                         watchers=entry["watchers"],
-                        status=BackfillStatus[status],
+                        status=BackfillStatus[entry["status"].upper()],
                     )
 
-                    backfill_entries[entry_date] = backfill
+                    backfill_entries.append(backfill)
 
             except yaml.YAMLError as e:
                 raise e
 
             return backfill_entries
 
-    @staticmethod
-    def clean(backfill):
-        """Clean backfill before writing into yaml file."""
-        if "entry_date" in backfill:
-            del backfill["entry_date"]
+    def to_yaml(self) -> str:
+        """ Create dictionary version of yaml for writing to file"""
 
-        if "excluded_dates" in backfill:
-            if backfill["excluded_dates"] == []:
-                del backfill["excluded_dates"]
+        yaml_dict = {
+            self.entry_date:
+                {
+                "start_date": self.start_date,
+                "end_date": self.end_date,
+                "excluded_date": self.excluded_dates,
+                "reason": self.reason,
+                "watchers": self.watchers,
+                "status": self.status.value
+            }
+        }
 
-        return backfill
+        return yaml.dump(yaml_dict, sort_keys=False,)
+
+    # TODO: static method to parse excluded dates list into dates

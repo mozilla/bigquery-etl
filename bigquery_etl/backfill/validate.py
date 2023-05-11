@@ -1,10 +1,9 @@
 """Validate backfill entries."""
 from ..backfill.parse import DEFAULT_REASON, Backfill, BackfillStatus
 
-
-def validate(backfill, backfills):
+def validate_one(backfill, backfills):
     """Check new backfill entry against existing backfills."""
-    for entry_date, entry in backfills.items():
+    for entry in backfills:
         if entry.status == BackfillStatus.DRAFTING:
             validate_overlap_dates(backfill, entry)
 

@@ -5,10 +5,9 @@ import pytest
 import yaml
 from click.testing import CliRunner
 
-from bigquery_etl.backfill.parse import BackfillStatus
+from bigquery_etl.backfill.parse import BackfillStatus, DEFAULT_REASON
 from bigquery_etl.cli.backfill import create
 
-DEFAULT_REASON = "Please provide a reason for the backfill and links to any related bugzilla or jira tickets"
 DEFAULT_WATCHER = "example@mozilla.com"
 VALID_STATUS = BackfillStatus.Drafting.value
 

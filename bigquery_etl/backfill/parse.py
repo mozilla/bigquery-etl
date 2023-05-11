@@ -4,7 +4,7 @@ import enum
 import os
 from collections import OrderedDict
 from datetime import date, datetime
-from typing import List, Optional, Dict
+from typing import Dict, List, Optional
 
 import attr
 import yaml
@@ -99,8 +99,8 @@ class Backfill:
         if not value or len(value) == 0:
             raise ValueError(f"Invalid reason: {value}.")
 
-# TODO: Fix error:  TypeError: hasattr(): attribute name must be string
-    #@status.validator
+    # TODO: Fix error:  TypeError: hasattr(): attribute name must be string
+    # @status.validator
     # def validate_status(self, attribute, value):
     #     """Check that provided status is valid."""
     #     if not hasattr(BackfillStatus, value):

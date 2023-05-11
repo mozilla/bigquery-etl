@@ -554,7 +554,8 @@ SELECT
       metrics.timing_distribution.nimbus_health_fetch_experiments_time,
       metrics.timing_distribution.glean_upload_send_failure,
       metrics.timing_distribution.glean_upload_send_success,
-      metrics.timing_distribution.glean_validation_shutdown_wait
+      metrics.timing_distribution.glean_validation_shutdown_wait,
+      metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait
     ) AS timing_distribution,
     metrics.jwe,
     metrics.memory_distribution,
@@ -995,7 +996,8 @@ SELECT
       metrics.timing_distribution.nimbus_health_fetch_experiments_time,
       metrics.timing_distribution.glean_upload_send_failure,
       metrics.timing_distribution.glean_upload_send_success,
-      metrics.timing_distribution.glean_validation_shutdown_wait
+      metrics.timing_distribution.glean_validation_shutdown_wait,
+      metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait
     ) AS timing_distribution,
     metrics.jwe,
     metrics.memory_distribution,

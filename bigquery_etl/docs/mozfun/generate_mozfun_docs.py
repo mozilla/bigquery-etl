@@ -88,7 +88,134 @@ def generate_mozfun_docs(out_dir, project_dir):
                             dataset_doc_file.write(f"{formated}\n\n")
                         # Inject the contents of the README.md
                         dataset_doc_file.write(docfile_content)
-                        # Add links to source and edit
+                        if is_udf:
+                            found_input = False
+                            input_lines = []
+                            found_return = False
+                            return_lines = []
+                            with open(os.path.join(root, UDF_FILE), "r") as udf_sql:
+                                udf_content = [
+                                    line
+                                    for line in udf_sql.readlines()
+                                    if not line.startswith("#")
+                                ]
+
+                                FUNCTION_HEADER = (
+                                    f"CREATE OR REPLACE FUNCTION {dataset_name}.{name}("
+                                )
+                                for line in udf_content:
+                                    # FUNCTION_HEADER starts the UDF and then contains inputs in ()
+                                    if line.startswith(FUNCTION_HEADER) and len(
+                                        line.strip()
+                                    ) > len(FUNCTION_HEADER):
+                                        input_lines.append(line)
+                                    elif line.startswith(FUNCTION_HEADER):
+                                        found_input = True
+                                        input_lines.append(line)
+
+                                    if (
+                                        found_input
+                                        and ") AS (" not in line
+                                        and not line.startswith(FUNCTION_HEADER)
+                                        and "RETURNS" not in line
+                                    ):
+                                        input_lines.append(line)
+                                    elif found_input and (
+                                        ") AS (" in line or "RETURNS" in line
+                                    ):
+                                        found_input = False
+
+                                    # TODO: find_block function? def find_block(start_word, end_word)
+
+                                    # RETURNS has the output types
+                                    if line.startswith("RETURNS") and "AS" not in line:
+                                        found_return = True
+                                        return_lines.append(line)
+                                    elif (
+                                        "AS" in line
+                                        and not line.startswith(FUNCTION_HEADER)
+                                        and "RETURNS" in line
+                                    ):
+                                        return_lines.append(line)
+
+                                    if found_return and "AS" not in line:
+                                        return_lines.append(line)
+                                    elif found_return and "AS" in line:
+                                        found_return = False
+
+                            # assemble, format, write inputs and outputs
+                            if len(input_lines) > 0:
+                                formatted_inputs = ""
+                                for ip in input_lines:
+                                    if len(ip) < 5:
+                                        continue
+                                    if FUNCTION_HEADER in ip and ") AS (" in ip:
+                                        formatted_inputs = (
+                                            "\n"
+                                            + ip.strip()
+                                            .removeprefix(FUNCTION_HEADER)
+                                            .removesuffix(") AS (")
+                                        )
+                                    elif FUNCTION_HEADER in ip:
+                                        continue
+                                    elif "AS" in ip:
+                                        break
+                                    else:
+                                        formatted_inputs = (
+                                            formatted_inputs
+                                            + "\n"
+                                            + ip.strip().rstrip(",")
+                                        )
+
+                                formatted_inputs = f"```{formatted_inputs}\n```\n\n"
+
+                                dataset_doc_file.write("INPUTS\n\n")
+                                dataset_doc_file.write(formatted_inputs)
+                            else:
+                                formatted_inputs = None
+                                input_lines = []
+                                found_input = False
+
+                            if len(return_lines) > 0:
+                                # formatted_outputs = "\n".join(return_lines)
+
+                                formatted_outputs = ""
+                                for ol in return_lines:
+                                    if "RETURNS" in ol and " AS (" in ol:
+                                        formatted_outputs = (
+                                            ol.strip()
+                                            .removeprefix("RETURNS")
+                                            .removesuffix(" AS (")
+                                            .strip()
+                                        )
+                                    elif "RETURNS" in ol and len(ol) > len("RETURNS"):
+                                        formatted_outputs = (
+                                            ol.strip()
+                                            .removeprefix("RETURNS")
+                                            .removesuffix(" AS (")
+                                            .strip()
+                                        )
+                                    elif "RETURNS" in ol:
+                                        continue
+                                    elif "AS" in ol:
+                                        break
+                                    else:
+                                        formatted_outputs = (
+                                            formatted_outputs
+                                            + "\n"
+                                            + ol.strip().rstrip(",")
+                                        )
+
+                                formatted_outputs = f"```\n{formatted_outputs}\n```\n\n"
+
+                                dataset_doc_file.write("OUTPUTS\n\n")
+                                dataset_doc_file.write(formatted_outputs)
+                            else:
+                                formatted_outputs = None
+                                return_lines = []
+                                found_return = False
+
+                            # Add links to source and edit
                         sourced = add_source_and_edit(source_link, edit_link)
                         dataset_doc_file.write(f"{sourced}\n\n")
                 else:

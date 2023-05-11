@@ -6,7 +6,7 @@ import json
 import logging
 import os
 
-import click
+import rich_click as click
 from google.cloud import bigquery
 
 from bigquery_etl.cli.utils import project_id_option

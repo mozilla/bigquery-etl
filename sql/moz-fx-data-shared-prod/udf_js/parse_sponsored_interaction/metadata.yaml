@@ -1,0 +1,4 @@
+---
+description: Related to https://mozilla-hub.atlassian.net/browse/RS-682.
+  The function parses the sponsored interaction column from payload_error_bytes.contextual_services table.
+friendly_name: Extract string from bytes

@@ -6,24 +6,15 @@ Real implementation is in private-bigquery-etl
 */
 CREATE OR REPLACE FUNCTION udf.normalize_search_engine(engine STRING) AS (
   CASE
-  WHEN
-    engine IS NULL
-  THEN
-    NULL
-  WHEN
-    STARTS_WITH(LOWER(engine), 'engine1')
-  THEN
-    'Engine1'
-  WHEN
-    STARTS_WITH(LOWER(engine), 'engine2')
-  THEN
-    'Engine2'
-  WHEN
-    STARTS_WITH(LOWER(engine), 'engine3')
-  THEN
-    'Engine3'
-  ELSE
-    'Other'
+    WHEN engine IS NULL
+      THEN NULL
+    WHEN STARTS_WITH(LOWER(engine), 'engine1')
+      THEN 'Engine1'
+    WHEN STARTS_WITH(LOWER(engine), 'engine2')
+      THEN 'Engine2'
+    WHEN STARTS_WITH(LOWER(engine), 'engine3')
+      THEN 'Engine3'
+    ELSE 'Other'
   END
 );
 

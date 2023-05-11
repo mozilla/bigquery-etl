@@ -5,6 +5,7 @@ description: >
   aggregated across unique sets of dimensions and partitioned by day
 owners:
   - akomar@mozilla.com
+  - cmorales@mozilla.com
 labels:
   schedule: daily
 scheduling:

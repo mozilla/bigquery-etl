@@ -27,7 +27,7 @@ WITH compressed AS (
       country,
       NULL
     ) AS country,
-    substr(locale, 0, 2) AS locale,
+    SUBSTR(locale, 0, 2) AS locale,
     IF(os IN ('Windows_NT', 'Darwin', 'Linux'), os, 'Other') AS os,
     channel,
     attributed,

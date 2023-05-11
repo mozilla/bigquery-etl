@@ -10,7 +10,7 @@ OPTIONS
 AS
 SELECT
   CAST(NULL AS BYTES) AS days_seen_bytes,
-  *,
+  * EXCEPT (normalized_app_id),
 FROM
   fenix.baseline_clients_daily
 WHERE

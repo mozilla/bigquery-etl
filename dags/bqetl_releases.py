@@ -47,7 +47,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     org_mozilla_fenix_derived__releases__v1 = gke_command(
         task_id="org_mozilla_fenix_derived__releases__v1",
         command=[

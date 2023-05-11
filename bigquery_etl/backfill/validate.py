@@ -1,5 +1,5 @@
 """Validate backfill entries."""
-from ..backfill.parse import Backfill, BackfillStatus
+from ..backfill.parse import DEFAULT_REASON, Backfill, BackfillStatus
 
 
 def validate(backfill, backfills):
@@ -21,10 +21,7 @@ def validate_overlap_dates(entry_1: Backfill, entry_2: Backfill):
 
 def validate_reason(backfill):
     """Check is backfill reason is the same as placeholder."""
-    if (
-        backfill.reason
-        == "Please provide a reason for the backfill and links to any related bugzilla or jira tickets"
-    ):
+    if backfill.reason == DEFAULT_REASON:
         raise ValueError(f"Invalid Reason: {backfill.reason}.")
 
 

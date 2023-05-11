@@ -115,7 +115,7 @@ def create(
         excluded_dates=[e.date() for e in list(exclude)],
         reason="Please provide a reason for the backfill and links to any related bugzilla or jira tickets",
         watchers=[watcher],
-        status="Drafting",
+        status=BackfillStatus.DRAFTING
     )
 
     backfills = OrderedDict()

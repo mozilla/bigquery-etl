@@ -104,7 +104,7 @@ def create(
         click.echo(f"{project_id}.{dataset_id}.{table_id}" + " does not exist")
         sys.exit(1)
 
-    backfill_file = path / project_id / dataset_id / table_id / "backfill.yaml"
+    backfill_file = query_path / "backfill.yaml"
 
     entry_date = date.today()
 

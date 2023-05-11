@@ -108,7 +108,7 @@ class Backfill:
             raise ValueError(f"Invalid status: {value}.")
 
     @staticmethod
-    def is_backfill_file(file_path):
+    def is_backfill_file(file_path) -> bool:
         """
         Check if the provided file is a backfill file.
 

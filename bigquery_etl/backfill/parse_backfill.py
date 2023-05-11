@@ -55,7 +55,7 @@ class Backfill:
     excluded_dates: Optional[List[datetime]] = attr.ib()
     reason: str = attr.ib()
     watchers: List[str] = attr.ib()
-    status: str = attr.ib()
+    status: BackfillStatus = attr.ib()
 
     @entry_date.validator
     def validate_entry_date(self, attribute, value):

@@ -25,8 +25,6 @@ activations AS (
     is_activated,
   FROM
     firefox_ios_derived.new_profile_activation_v2
-  WHERE
-    `date` = @submission_date
 ),
 -- Find earliest data per client from the first_session ping.
 first_session_ping_base AS (
@@ -122,10 +120,17 @@ metrics_ping AS (
 ),
 _current AS (
   SELECT
-    * EXCEPT (adjust_info, is_activated, sample_id),
-    COALESCE(first_seen.sample_id, first_session.sample_id, metrics.sample_id) AS sample_id,
+    client_id,
+    sample_id,
+    first_seen_date,
+    first_reported_country,
+    first_reported_isp,
+    channel,
+    device_manufacturer,
+    device_model,
+    os_version,
+    app_version,
     COALESCE(first_session.adjust_info, metrics.adjust_info) AS adjust_info,
-    activations.is_activated AS is_activated,
     STRUCT(
       IF(first_session.client_id IS NULL, FALSE, TRUE) AS is_reported_first_session_ping,
       IF(metrics.client_id IS NULL, FALSE, TRUE) AS is_reported_metrics_ping,
@@ -147,10 +152,6 @@ _current AS (
     metrics_ping AS metrics
   USING
     (client_id, sample_id)
-  LEFT JOIN
-    activations
-  USING
-    (client_id)
   WHERE
     client_id IS NOT NULL
 ),
@@ -174,7 +175,7 @@ SELECT
   COALESCE(_previous.device_model, _current.device_model) AS device_model,
   COALESCE(_previous.os_version, _current.os_version) AS os_version,
   COALESCE(_previous.app_version, _current.app_version) AS app_version,
-  COALESCE(_previous.is_activated, _current.is_activated) AS is_activated,
+  activations.is_activated,
   -- below is to avoid mix and matching different adjust attributes
   -- from different records. This way we always treat them as a single "unit"
   IF(
@@ -213,3 +214,7 @@ FULL OUTER JOIN
   _previous
 USING
   (client_id, sample_id)
+LEFT JOIN
+  activations
+USING
+  (client_id)

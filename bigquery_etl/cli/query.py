@@ -1169,6 +1169,13 @@ def initialize(name, sql_dir, project_id, dry_run):
     else:
         query_files = paths_matching_name_pattern(name, sql_dir, project_id)
 
+    if not query_files:
+        click.echo(
+            f"Couldn't find directory matching `{name}`. Failed to initialize query.",
+            err=True,
+        )
+        sys.exit(1)
+
     for query_file in query_files:
         init_files = Path(query_file.parent).rglob("init.sql")
         client = bigquery.Client()

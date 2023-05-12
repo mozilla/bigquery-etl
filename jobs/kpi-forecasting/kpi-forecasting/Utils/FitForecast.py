@@ -1,16 +1,18 @@
-from datetime import datetime
+import holidays
+import numpy as np
+import pandas as pd
+import prophet
 import typing
 
-import pandas as pd
-
-import prophet
-
-import holidays
+from datetime import datetime
 
 
 def run_forecast(
     dataset: pd.DataFrame, config: dict
 ) -> typing.Tuple[pd.DataFrame, pd.DataFrame]:
+    # Set random seed to ensure forecast is deterministic
+    np.random.seed(42)
+
     target = config["target"]
 
     fit_parameters = config[

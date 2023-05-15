@@ -79,7 +79,6 @@ def backfill(ctx):
 )
 @click.pass_context
 def create(
-    ctx,
     qualified_table_name,
     sql_dir,
     start_date,
@@ -88,6 +87,7 @@ def create(
     watcher,
 ):
     """CLI command for creating a new backfill entry."""
+    # TODO: repalce with try catch statements:
     if not QUALIFIED_TABLE_NAME_RE.match(qualified_table_name):
         click.echo(
             "Qualified table name must be named like:" + " <project>.<dataset>.<table>"
@@ -137,20 +137,19 @@ def create(
 
 
 @backfill.command(
-    help="""Validate backfills
-    Checks formatting and content.
+    help="""Validate backfills format and content
 
     Examples:
 
     ./bqetl backfill validate mozdata.telemetry_derived.clients_daily_v6
 
     \b
-    validate all backfill.yaml files if table is not specified
+    # validate all backfill.yaml files if table is not specified
     """
 )
 @click.argument("qualified_table_name", required=False)
 @sql_dir_option
-@project_id_option
+@project_id_option("moz-fx-data-shared-prod")
 @click.pass_context
 def validate(
     ctx,
@@ -163,6 +162,7 @@ def validate(
 
     backfill_files = []
 
+    # TODO: use try statements?
     if qualified_table_name:
         if not QUALIFIED_TABLE_NAME_RE.match(qualified_table_name):
             click.echo(
@@ -188,10 +188,13 @@ def validate(
         )
 
     for file in backfill_files:
-        if backfill_file.exists():
-            validate_all_entries(Backfill.from_backfill_file(file))
+        if file.exists():
+            validate_all_entries(Backfill.entries_from_file(file))
         else:
             click.echo(
                 "Backfill.yaml does not exist for :" + " <project>.<dataset>.<table>"
             )
             sys.exit(1)
+
+    # TODO: update to different statements for one file vs all files
+    click.echo("All backfill.yaml files have been validated.")

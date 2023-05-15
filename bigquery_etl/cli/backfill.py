@@ -9,18 +9,14 @@ from pathlib import Path
 
 import click
 
+from ..backfill.parse import DEFAULT_REASON, Backfill, BackfillStatus
 from ..backfill.validate import validate_one
-from ..backfill.parse import DEFAULT_REASON, BackfillStatus
-
-from ..backfill.parse import Backfill
-from ..cli.utils import (
-    paths_matching_name_pattern,
-    sql_dir_option
-)
+from ..cli.utils import paths_matching_name_pattern, sql_dir_option
 
 QUALIFIED_TABLE_NAME_RE = re.compile(
     r"([a-zA-z0-9_-]+)\.([a-zA-z0-9_-]+)\.([a-zA-z0-9_-]+)"
 )
+
 
 @click.group(help="Commands for managing backfills.")
 @click.pass_context
@@ -64,7 +60,6 @@ def backfill(ctx):
     type=click.DateTime(formats=["%Y-%m-%d"]),
     default=str(date.today()),
 )
-# TODO: allow excluded dates to be list of type dates or strings (range: start_date..end_date)
 @click.option(
     "--exclude",
     "-x",
@@ -109,11 +104,8 @@ def create(
 
     backfill_file = query_path / "backfill.yaml"
 
-    entry_date = date.today()
-
-    #TODO: excluded dates v1. List of dates for now.
     backfill = Backfill(
-        entry_date=entry_date,
+        entry_date=date.today(),
         start_date=start_date.date(),
         end_date=end_date.date(),
         excluded_dates=[e.date() for e in list(exclude)],
@@ -122,20 +114,17 @@ def create(
         status=BackfillStatus.DRAFTING,
     )
 
-    # backfills = OrderedDict()
-
     backfills = []
 
     if backfill_file.exists():
         backfills = Backfill.entries_from_file(backfill_file)
-        #validate.validate_one(backfill, backfills)
+        # validate.validate_one(backfill, backfills)
 
     backfills.append(backfill)
 
-    # for backfill in backfills:
-    #     output_str = backfill.to_yaml()
-
-    sorted_backfills = sorted([backfill.to_yaml() for backfill in backfills], reverse=True)
+    sorted_backfills = sorted(
+        [backfill.to_yaml() for backfill in backfills], reverse=True
+    )
 
     # TODO: validate_all_backfills
 
@@ -165,12 +154,12 @@ def create(
 @sql_dir_option
 @click.pass_context
 # TODO: consider sql generators
-def validate(ctx,
-             qualified_table_name,
-             sql_dir,
+def validate(
+    ctx,
+    qualified_table_name,
+    sql_dir,
 ):
     """Validate backfills by..."""
-
     # validate all tables if none given
 
     if not QUALIFIED_TABLE_NAME_RE.match(qualified_table_name):
@@ -201,7 +190,7 @@ def validate(ctx,
         )
         sys.exit(1)
 
-    #validate_reason
+    # validate_reason
 
     validate.validate_entries(backfills)
 

@@ -5,6 +5,7 @@ import os
 from collections import OrderedDict
 from datetime import date, datetime
 from typing import List, Optional
+
 import attr
 import yaml
 from yaml.representer import Representer
@@ -64,11 +65,7 @@ class Backfill:
     @start_date.validator
     def validate_start_date(self, attribute, value):
         """Check that provided start date is valid."""
-        if (
-            value > self.end_date
-            or self.entry_date < self.start_date
-            or date.today() < self.start_date
-        ):
+        if self.end_date < value or self.entry_date < value or date.today() < value:
             raise ValueError(f"Invalid start date: {value}.")
 
     @end_date.validator
@@ -84,8 +81,8 @@ class Backfill:
     @excluded_dates.validator
     def validate_excluded_dates(self, attribute, value):
         """Check that provided excluded dates are valid."""
-        # if not all(map(lambda e: self.start_date < e < self.end_date, value)):
-        #     raise ValueError(f"Invalid excluded date: {value}.")
+        if not all(map(lambda e: self.start_date < e < self.end_date, value)):
+            raise ValueError(f"Invalid excluded date: {value}.")
 
     @watchers.validator
     def validate_watchers(self, attribute, value):
@@ -100,11 +97,11 @@ class Backfill:
             raise ValueError(f"Invalid reason: {value}.")
 
     # TODO: Fix error:  TypeError: hasattr(): attribute name must be string
-    # @status.validator
-    # def validate_status(self, attribute, value):
-    #     """Check that provided status is valid."""
-    #     if not hasattr(BackfillStatus, value):
-    #         raise ValueError(f"Invalid status: {value}.")
+    @status.validator
+    def validate_status(self, attribute, value):
+        """Check that provided status is valid."""
+        if not hasattr(BackfillStatus, value.name):
+            raise ValueError(f"Invalid status: {value.name}.")
 
     @staticmethod
     def is_backfill_file(file_path) -> bool:
@@ -117,7 +114,6 @@ class Backfill:
 
     @classmethod
     def entries_from_file(cls, file):
-        # TODO: Resolve error  -> Dict[datetime, Backfill]
         """
         Parse all backfill entries from the provided yaml file.
 
@@ -126,7 +122,6 @@ class Backfill:
         if not cls.is_backfill_file(file):
             raise ValueError(f"Invalid file: {file}.")
 
-
         backfill_entries = []
 
         with open(file, "r") as yaml_stream:
@@ -134,12 +129,15 @@ class Backfill:
                 backfills = yaml.safe_load(yaml_stream) or []
 
                 for entry_date, entry in backfills.items():
+                    excluded_dates = []
+                    if "excluded_dates" in entry:
+                        excluded_dates = entry["excluded_date"]
 
                     backfill = cls(
                         entry_date=entry_date,
                         start_date=entry["start_date"],
                         end_date=entry["end_date"],
-                        excluded_dates=entry["excluded_dates"],
+                        excluded_dates=excluded_dates,
                         reason=entry["reason"],
                         watchers=entry["watchers"],
                         status=BackfillStatus[entry["status"].upper()],
@@ -153,20 +151,22 @@ class Backfill:
             return backfill_entries
 
     def to_yaml(self) -> str:
-        """ Create dictionary version of yaml for writing to file"""
-
+        """Create dictionary version of yaml for writing to file."""
         yaml_dict = {
-            self.entry_date:
-                {
+            self.entry_date: {
                 "start_date": self.start_date,
                 "end_date": self.end_date,
-                "excluded_date": self.excluded_dates,
+                "excluded_dates": self.excluded_dates,
                 "reason": self.reason,
                 "watchers": self.watchers,
-                "status": self.status.value
+                "status": self.status.value,
             }
         }
 
-        return yaml.dump(yaml_dict, sort_keys=False,)
+        if yaml_dict[self.entry_date]["excluded_dates"] == []:
+            del yaml_dict[self.entry_date]["excluded_dates"]
 
-    # TODO: static method to parse excluded dates list into dates
+        return yaml.dump(
+            yaml_dict,
+            sort_keys=False,
+        )

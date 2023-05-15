@@ -92,6 +92,15 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
+    with TaskGroup("firefox_ios_clients_external") as firefox_ios_clients_external:
+        ExternalTaskMarker(
+            task_id="bqetl_org_mozilla_firefox_derived__wait_for_firefox_ios_clients",
+            external_dag_id="bqetl_org_mozilla_firefox_derived",
+            external_task_id="wait_for_firefox_ios_clients",
+        )
+
+        firefox_ios_clients_external.set_upstream(firefox_ios_clients)
+
     wait_for_baseline_clients_daily = ExternalTaskSensor(
         task_id="wait_for_baseline_clients_daily",
         external_dag_id="copy_deduplicate",

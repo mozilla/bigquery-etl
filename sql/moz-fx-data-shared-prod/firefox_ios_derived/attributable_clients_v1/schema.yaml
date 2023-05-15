@@ -20,18 +20,6 @@ fields:
     Sample ID to limit query results during an analysis.
 
 - mode: NULLABLE
-  name: cohort_date
-  type: DATE
-  description: |
-    TODO:
-
-- mode: NULLABLE
-  name: country
-  type: STRING
-  description: |
-    Unique ID for the client installation.
-
-- mode: NULLABLE
   name: adjust_adgroup
   type: STRING
   description: |
@@ -59,25 +47,19 @@ fields:
   name: searches
   type: INTEGER
   description: |
-    TODO:
+    The number of search interactions the user had on SERP pages.
 
 - mode: NULLABLE
   name: searches_with_ads
   type: INTEGER
   description: |
-    TODO:
+    The number of SERP pages with ads shown to the user.
 
 - mode: NULLABLE
   name: ad_clicks
   type: INTEGER
   description: |
-    TODO:
-
-- mode: NULLABLE
-  name: is_new_install
-  type: BOOLEAN
-  description: |
-    Determines if this is a brand new installation.
+    The number of times a user clicked on an ad on SERP pages.
 
 - mode: NULLABLE
   name: is_new_profile

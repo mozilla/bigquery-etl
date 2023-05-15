@@ -1,14 +1,13 @@
 2023-05-03:
-  start_date: 2021-03-01
+  start_date: 2023-01-03
   end_date: 2023-05-03
   excluded_dates:
-  - 2021-03-06
-  - 2021-03-09
+  - 2023-02-03
   reason: test_reason
   watchers:
-  - example@mozilla.com
   - test@example.org
-  status: Validating
+  status: Drafting
+
 2021-05-03:
   start_date: 2021-01-03
   end_date: 2021-05-03

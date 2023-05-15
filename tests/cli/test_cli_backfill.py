@@ -1,15 +1,16 @@
 import os
 from datetime import date
+from pathlib import Path
 
 import pytest
 import yaml
 from click.testing import CliRunner
 
-from bigquery_etl.backfill.parse import BackfillStatus, DEFAULT_REASON
+from bigquery_etl.backfill.parse import DEFAULT_REASON, Backfill, BackfillStatus
 from bigquery_etl.cli.backfill import create
 
 DEFAULT_WATCHER = "example@mozilla.com"
-VALID_STATUS = BackfillStatus.Drafting.value
+VALID_STATUS = BackfillStatus.DRAFTING
 
 
 class TestBackfill:
@@ -105,7 +106,6 @@ class TestBackfill:
 
     def test_create_backfill_entry(self, runner):
         with runner.isolated_filesystem():
-
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
             result = runner.invoke(
@@ -128,44 +128,61 @@ class TestBackfill:
                     backfills = yaml.safe_load(yaml_stream)
 
                     for entry_date, backfill in backfills.items():
-
                         assert backfill["start_date"] == date(2021, 3, 1)
                         assert backfill["end_date"] == date.today()
                         assert backfill["watchers"] == [DEFAULT_WATCHER]
                         assert backfill.get("reason", None) == DEFAULT_REASON
-                        assert backfill.get("status", None) == VALID_STATUS
+                        assert backfill.get("status", None) == VALID_STATUS.value
 
                 except yaml.YAMLError as e:
                     raise e
 
     def test_create_backfill_with_exsting_entries(self, runner):
-        pass
-        # with runner.isolated_filesystem():
-        #
-        #     SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
-        #     os.makedirs(SQL_DIR)
-        #     result_1 = runner.invoke(
-        #         create,
-        #         ["moz-fx-data-shared-prod.test.test_query_v1",
-        #          "--start_date=2021-03-01",
-        #          "--end_date=2021-03-10"]
-        #     )
-        #
-        #     assert result_1.exit_code == 0
-        #     assert "backfill.yaml" in os.listdir(
-        #         "sql/moz-fx-data-shared-prod/test/test_query_v1"
-        #     )
-        #
-        #     result_2 = runner.invoke(
-        #         create,
-        #         ["moz-fx-data-shared-prod.test.test_query_v1",
-        #          "--start_date=2021-04-01",
-        #          "--end_date=2021-05-10"]
-        #     )
-        #
-        #     assert result_2.exit_code == 0
-        #     assert "backfill.yaml" in os.listdir(
-        #         "sql/moz-fx-data-shared-prod/test/test_query_v1"
-        #     )
-        #
-        #     backfill_file = SQL_DIR + "/backfill.yaml"
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+
+            backfill_entry_1 = Backfill(
+                date(2021, 5, 3),
+                date(2021, 1, 3),
+                date(2021, 5, 3),
+                [date(2021, 2, 3)],
+                "test_reason",
+                ["test@example.org"],
+                BackfillStatus.DRAFTING,
+            )
+
+            backfill_entry_2 = Backfill(
+                date.today(),
+                date(2023, 3, 1),
+                date(2023, 3, 10),
+                [],
+                DEFAULT_REASON,
+                [DEFAULT_WATCHER],
+                BackfillStatus.DRAFTING,
+            )
+
+            backfill_file = (
+                Path("sql/moz-fx-data-shared-prod/test/test_query_v1") / "backfill.yaml"
+            )
+            backfill_file.write_text(backfill_entry_1.to_yaml())
+
+            assert "backfill.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+
+            result = runner.invoke(
+                create,
+                [
+                    "moz-fx-data-shared-prod.test.test_query_v1",
+                    "--start_date=2023-03-01",
+                    "--end_date=2023-03-10",
+                ],
+            )
+
+            assert result.exit_code == 0
+
+            backfills = Backfill.entries_from_file(backfill_file)
+
+            assert backfills[1] == backfill_entry_1
+            assert backfills[0] == backfill_entry_2

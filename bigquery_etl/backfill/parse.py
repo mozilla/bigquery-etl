@@ -96,7 +96,6 @@ class Backfill:
         if not value or len(value) == 0:
             raise ValueError(f"Invalid reason: {value}.")
 
-    # TODO: Fix error:  TypeError: hasattr(): attribute name must be string
     @status.validator
     def validate_status(self, attribute, value):
         """Check that provided status is valid."""
@@ -131,7 +130,7 @@ class Backfill:
                 for entry_date, entry in backfills.items():
                     excluded_dates = []
                     if "excluded_dates" in entry:
-                        excluded_dates = entry["excluded_date"]
+                        excluded_dates = entry["excluded_dates"]
 
                     backfill = cls(
                         entry_date=entry_date,

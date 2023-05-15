@@ -3,15 +3,18 @@
 import re
 import sys
 import tempfile
-from collections import OrderedDict
 from datetime import date
 from pathlib import Path
 
 import click
 
 from ..backfill.parse import DEFAULT_REASON, Backfill, BackfillStatus
-from ..backfill.validate import validate_one
-from ..cli.utils import paths_matching_name_pattern, sql_dir_option
+from ..backfill.validate import (
+    validate_all_entries,
+    validate_entries_are_sorted,
+    validate_overlap_dates,
+)
+from ..cli.utils import paths_matching_name_pattern, project_id_option, sql_dir_option
 
 QUALIFIED_TABLE_NAME_RE = re.compile(
     r"([a-zA-z0-9_-]+)\.([a-zA-z0-9_-]+)\.([a-zA-z0-9_-]+)"
@@ -74,7 +77,6 @@ def backfill(ctx):
     help="Watcher of the backfill (email address)",
     default="example@mozilla.com",
 )
-# TODO: consider other params (max_rows, no_partition, etc) see query.py backfill command
 @click.pass_context
 def create(
     ctx,
@@ -118,26 +120,22 @@ def create(
 
     if backfill_file.exists():
         backfills = Backfill.entries_from_file(backfill_file)
-        # validate.validate_one(backfill, backfills)
+        for entry in backfills:
+            if entry.status == BackfillStatus.DRAFTING:
+                validate_overlap_dates(backfill, entry)
 
     backfills.append(backfill)
 
-    sorted_backfills = sorted(
-        [backfill.to_yaml() for backfill in backfills], reverse=True
+    sorted_backfills = sorted(backfills, reverse=True)
+    validate_entries_are_sorted(sorted_backfills)
+
+    backfill_file.write_text(
+        "\n".join(backfill.to_yaml() for backfill in sorted_backfills)
     )
-
-    # TODO: validate_all_backfills
-
-    yaml_str = "\n".join(sorted_backfills)
-
-    backfill_file.write_text(yaml_str)
 
     click.echo(f"Created backfill entry in {backfill_file}")
 
 
-# TODO: call validate backfill from circle ci
-#  no tables passed in then validate all,
-#  if table passed in then validate only one table
 @backfill.command(
     help="""Validate backfills
     Checks formatting and content.
@@ -152,52 +150,48 @@ def create(
 )
 @click.argument("qualified_table_name", required=False)
 @sql_dir_option
+@project_id_option
 @click.pass_context
-# TODO: consider sql generators
 def validate(
     ctx,
     qualified_table_name,
     sql_dir,
+    project_id,
 ):
-    """Validate backfills by..."""
-    # validate all tables if none given
-
-    if not QUALIFIED_TABLE_NAME_RE.match(qualified_table_name):
-        click.echo(
-            "Qualified table name must be named like:" + " <project>.<dataset>.<table>"
-        )
-        sys.exit(1)
-
+    """Validate backfill files."""
     path = Path(sql_dir)
 
-    project_id, dataset_id, table_id = qualified_table_name.split(".")
+    backfill_files = []
 
-    query_path = path / project_id / dataset_id / table_id
+    if qualified_table_name:
+        if not QUALIFIED_TABLE_NAME_RE.match(qualified_table_name):
+            click.echo(
+                "Qualified table name must be named like:"
+                + " <project>.<dataset>.<table>"
+            )
+            sys.exit(1)
 
-    if not query_path.exists():
-        click.echo(f"{project_id}.{dataset_id}.{table_id}" + " does not exist")
-        sys.exit(1)
+        project_id, dataset_id, table_id = qualified_table_name.split(".")
+        query_path = path / project_id / dataset_id / table_id
 
-    backfill_file = path / project_id / dataset_id / table_id / "backfill.yaml"
+        if not query_path.exists():
+            click.echo(f"{project_id}.{dataset_id}.{table_id}" + " does not exist")
+            sys.exit(1)
 
-    backfills = OrderedDict()
+        backfill_file = path / project_id / dataset_id / table_id / "backfill.yaml"
 
-    if backfill_file.exists():
-        backfills = Backfill.from_backfill_file(backfill_file)
+        backfill_files.append(backfill_file)
+
     else:
-        click.echo(
-            "Backfill.yaml does not exist for :" + " <project>.<dataset>.<table>"
+        backfill_files = paths_matching_name_pattern(
+            None, sql_dir, project_id, ["backfill.yaml"]
         )
-        sys.exit(1)
 
-    # validate_reason
-
-    validate.validate_entries(backfills)
-
-    backfill_files = paths_matching_name_pattern(
-        None, sql_dir, project_id, ["backfill.yaml"]
-    )
-
-    # iterate through each file
-    # iterate through each backfill entry from each file
-    # validate each backfill entry
+    for file in backfill_files:
+        if backfill_file.exists():
+            validate_all_entries(Backfill.from_backfill_file(file))
+        else:
+            click.echo(
+                "Backfill.yaml does not exist for :" + " <project>.<dataset>.<table>"
+            )
+            sys.exit(1)

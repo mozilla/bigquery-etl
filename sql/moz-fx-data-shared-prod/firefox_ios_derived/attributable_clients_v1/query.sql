@@ -3,24 +3,22 @@ RETURNS INT64 AS (
   (SELECT SUM(value) FROM UNNEST(map))
 );
 
-WITH client_searches AS (
+WITH client_search_activity AS (
   SELECT
-    submission_date,
-    client_id,
+    DATE(submission_timestamp) AS submission_date,
     sample_id,
-    SUM(search_count) AS searches,
-    SUM(search_with_ads) AS searches_with_ads,
-    SUM(ad_click) AS ad_clicks
+    client_info.client_id,
+    SUM(sum_map_values(metrics.labeled_counter.search_in_content)) AS searches,
+    SUM(sum_map_values(metrics.labeled_counter.browser_search_with_ads)) AS searches_with_ads,
+    SUM(sum_map_values(metrics.labeled_counter.browser_search_ad_clicks)) AS ad_clicks,
   FROM
-    search_derived.mobile_search_clients_daily_v1
+    firefox_ios.baseline
   WHERE
-    submission_date = @submission_date
-    AND os = 'iOS'
-    AND normalized_app_name = 'Fennec'
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     submission_date,
-    client_id,
-    sample_id
+    sample_id,
+    client_id
 ),
 adjust_client_info AS (
   SELECT
@@ -35,7 +33,7 @@ adjust_client_info AS (
   FROM
     firefox_ios.firefox_ios_clients
   WHERE
-    adjust_network <> "Unknown"
+    adjust_network NOT IN ("Unknown", "Other")
 )
 SELECT
   submission_date,
@@ -46,13 +44,12 @@ SELECT
   adjust_adgroup,
   adjust_campaign,
   adjust_creative,
-  first_seen_date = submission_date AS is_new_install,
   first_seen_date = submission_date AS is_new_profile,
-  searches,
-  searches_with_ads,
-  ad_clicks,
+  COALESCE(searches, 0) AS searches,
+  COALESCE(searches_with_ads, 0) AS searches_with_ads,
+  COALESCE(ad_clicks, 0) AS ad_clicks,
 FROM
-  client_searches
+  client_search_activity
 INNER JOIN
   adjust_client_info
 USING

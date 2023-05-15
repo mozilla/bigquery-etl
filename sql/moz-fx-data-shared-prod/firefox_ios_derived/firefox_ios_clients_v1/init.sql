@@ -1,6 +1,10 @@
 ------
 -- PLEASE create the table using the ./bqetl deploy command
 -- then run this query and append the results to it.
+--
+-- Running init.sql to generate the initial table vs schema + backfill approach
+-- allows us to save a lot of time as we do not have to re-run the query for each partition date
+-- instead all partitions to date could be used to generate the table and have the ETL take over.
 ------
 -- Query first observations for Firefox iOS Clients.
 WITH first_seen AS (

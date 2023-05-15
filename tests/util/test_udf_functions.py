@@ -1,39 +1,341 @@
-from bigquery_etl.util import udf_functions
+from bigquery_etl.util.udf_functions import find_input, find_output, get_udf_parameters
 
 
 class TestUDFFunctions:
-    def test_input_parameters(self):
-        header1 = "CREATE OR REPLACE FUNCTION test_dataset.test_udf(input1 INT64, input2 INT64)"
-        header2 = """CREATE OR REPLACE FUNCTION test_dataset.test_udf(
-            input1 INT64, input2 INT64)"""
-        header3 = """CREATE OR REPLACE FUNCTION test_dataset.test_udf(
-                     input1 INT64,
-                     input2 INT64)"""
-        header4 = """CREATE OR REPLACE FUNCTION test_dataset.test_udf(
-                             input1 INT64,
-                             input2 INT64) AS ("""
-        header5 = """CREATE OR REPLACE FUNCTION test_dataset.test_udf(
-                                     input1 INT64,
-                                     input2 INT64
-                                     ) AS ("""
+    class TestFindInput:
+        def test_find_input_single_input(self):
+            assert (
+                find_input(
+                    "CREATE OR REPLACE FUNCTION test_dataset.test_udf(input1 INT64)"
+                )
+                == "input1 INT64"
+            )
 
-        assert udf_functions.get_parameters(header1) == [
-            "input1 INT64, input2 INT64",
-            "",
-        ], "Test 1"
-        assert udf_functions.get_parameters(header2) == [
-            "input1 INT64, input2 INT64",
-            "",
-        ], "test 2"
-        assert udf_functions.get_parameters(header3) == [
-            "input1 INT64, input2 INT64",
-            "",
-        ], "test 3"
-        assert udf_functions.get_parameters(header4) == [
-            "input1 INT64, input2 INT64",
-            "",
-        ], "test 4"
-        assert udf_functions.get_parameters(header5) == [
-            "input1 INT64, input2 INT64",
-            "",
-        ], "test 5"
+        def test_find_input_multiple_inputs(self):
+            assert (
+                find_input(
+                    "CREATE OR REPLACE FUNCTION test_thing.test_udf(input1 INT64, input2 FLOAT64, length INT64)"
+                )
+                == "input1 INT64, input2 FLOAT64, length INT64"
+            )
+
+        def test_find_input_array_struct_input(self):
+            assert (
+                find_input(
+                    """CREATE OR REPLACE FUNCTION glam.histogram_fill_buckets_dirichlet(input_map ARRAY<STRUCT<key STRING, value FLOAT64>>)"""
+                )
+                == "input_map ARRAY<STRUCT<key STRING, value FLOAT64>>"
+            )
+
+        def test_find_input_multiline_input(self):
+            assert (
+                find_input(
+                    """CREATE OR REPLACE FUNCTION glam.histogram_fill_buckets_dirichlet(
+                input_map ARRAY<STRUCT<key STRING, value FLOAT64>>,
+                buckets ARRAY<STRING>,
+                total_users INT64
+                )"""
+                )
+                == "input_map ARRAY<STRUCT<key STRING, value FLOAT64>>, buckets ARRAY<STRING>, total_users INT64"
+            )
+
+    class TestFindOutput:
+        def test_find_output_single_output(self):
+            assert find_output("RETURNS BOOLEAN AS (") == "BOOLEAN"
+
+        def test_find_output_array_struct_output(self):
+            assert (
+                find_output(
+                    "total_users INT64)RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS ("
+                )
+                == "ARRAY<STRUCT<key STRING, value FLOAT64>>"
+            )
+
+        def test_find_output_without_return(self):
+            assert (
+                find_output(
+                    """CREATE OR REPLACE FUNCTION bits28.from_string(s STRING) AS (
+                IF(
+                    REGEXP_CONTAINS(s, r"^[01]{1,28}$"),
+                    (
+                    SELECT
+                        SUM(CAST(c AS INT64) << (LENGTH(s) - 1 - bit))
+                    FROM
+                        UNNEST(SPLIT(s, '')) AS c
+                        WITH OFFSET bit
+                    ),
+                    ERROR(FORMAT("bits28_from_string expects a string of up to 28 0's and 1's but got: %s", s))
+                )
+                );"""
+                )
+                is None
+            )
+
+    class TestGetUDFParameters:
+        def test_get_udf_parameters_1(self):
+            sql_text = """CREATE OR REPLACE FUNCTION test_dataset.test_udf(input1 INT64, input2 FLOAT64) RETURNS INT64 AS SELECT 4"""
+
+            res = get_udf_parameters(sql_text)
+            assert res["input"] == "input1 INT64, input2 FLOAT64"
+            assert res["output"] == "INT64"
+
+        def test_get_udf_parameters_2(self):
+            sql_text = """/*
+
+                Return a boolean indicating if any bits are set in the specified range of a bit pattern.
+
+                The start_offset must be zero or a negative number indicating an offset from
+                the rightmost bit in the pattern.
+
+                n_bits is the number of bits to consider, counting right from the bit at start_offset.
+
+                See detailed docs for the bits28 suite of functions:
+                https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference
+
+                */
+                CREATE OR REPLACE FUNCTION bits28.active_in_range(bits INT64, start_offset INT64, n_bits INT64)
+                RETURNS BOOLEAN AS (
+                CASE
+                    WHEN start_offset > 0
+                    THEN ERROR(
+                        FORMAT(
+                            'start_offset must be <= 0 but was %i in call bits28_active_in_range(%i, %i, %i)',
+                            start_offset,
+                            bits,
+                            start_offset,
+                            n_bits
+                        )
+                        )
+                    WHEN n_bits > (1 - start_offset)
+                    THEN ERROR(
+                        FORMAT(
+                            'Reading %i bits from starting_offset %i exceeds end of bit pattern in call bits28_active_in_range(%i, %i, %i)',
+                            n_bits,
+                            start_offset,
+                            bits,
+                            start_offset,
+                            n_bits
+                        )
+                        )
+                    ELSE BIT_COUNT(bits28.range(bits, start_offset, n_bits)) > 0
+                END
+                );
+
+                -- Tests
+                SELECT
+                assert.true(bits28.active_in_range(1 << 10, -13, 7)),
+                assert.false(bits28.active_in_range(1 << 10, -6, 7)),
+                assert.true(bits28.active_in_range(1, 0, 1)),
+                assert.false(bits28.active_in_range(0, 0, 1));
+            """
+
+            res = get_udf_parameters(sql_text)
+            assert res["input"] == "bits INT64, start_offset INT64, n_bits INT64"
+            assert res["output"] == "BOOLEAN"
+
+        def test_get_udf_parameters_3(self):
+            sql_text = """-- udf_bucket
+                CREATE OR REPLACE FUNCTION glam.histogram_bucket_from_value(buckets ARRAY<STRING>, val FLOAT64)
+                RETURNS FLOAT64 AS (
+                -- Bucket `value` into a histogram with min_bucket, max_bucket and num_buckets
+                (
+                    SELECT
+                    MAX(CAST(bucket AS FLOAT64))
+                    FROM
+                    UNNEST(buckets) AS bucket
+                    WHERE
+                    val >= CAST(bucket AS FLOAT64)
+                )
+                );
+
+                --Tests
+                SELECT
+                assert.equals(2.0, glam.histogram_bucket_from_value(["1", "2", "3"], 2.333)),
+                assert.equals(NULL, glam.histogram_bucket_from_value(["1"], 0.99)),
+                assert.equals(0.0, glam.histogram_bucket_from_value(["0", "1"], 0.99)),
+                assert.equals(0.0, glam.histogram_bucket_from_value(["1", "0"], 0.99)),
+            """
+
+            res = get_udf_parameters(sql_text)
+            assert res["input"] == "buckets ARRAY<STRING>, val FLOAT64"
+            assert res["output"] == "FLOAT64"
+
+        def test_get_udf_parameters_4(self):
+            sql_text = """-- udf_fill_buckets
+                CREATE OR REPLACE FUNCTION glam.histogram_fill_buckets_dirichlet(
+                input_map ARRAY<STRUCT<key STRING, value FLOAT64>>,
+                buckets ARRAY<STRING>,
+                total_users INT64
+                )
+                RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
+                -- Given a MAP `input_map`, fill in any missing keys with value `0.0` and
+                -- transform values to estimate a Dirichlet distribution
+                ARRAY(
+                    SELECT AS STRUCT
+                    key,
+                    -- Dirichlet distribution density for each bucket in a histogram.
+                    -- Given client level {k1: p1, k2:p2, ... , kK: pK}
+                    -- where p’s are client proportions, and p1, p2, ... pK sum to 1,
+                    -- k1, k2, ... , kK are the buckets, and K is the total number of buckets.
+                    -- returns an array [] around a struct {k : v} such that
+                    -- [{k1: (P1+1/K) / (N_reporting+1), k2:(P2+1/K) / (N_reporting+1), ...}]
+                    -- where (capital) P1 is the sum of p1s, P2 for p2s, etc.:
+                    --   P1 = (p1_client1 + p1_client2 + ... + p1_clientN) & 0 < P1 < N
+                    -- and capital K is again the total number of buckets.
+                    -- For more information, please see:
+                    -- https://docs.google.com/document/d/1ipy1oFIKDvHr3R6Ku0goRjS11R1ZH1z2gygOGkSdqUg
+                    SAFE_DIVIDE(
+                        COALESCE(e.value, 0.0) + SAFE_DIVIDE(1, ARRAY_LENGTH(buckets)),
+                        total_users + 1
+                    ) AS value
+                    FROM
+                    UNNEST(buckets) AS key
+                    LEFT JOIN
+                    UNNEST(input_map) AS e
+                    ON
+                    key = e.key
+                    ORDER BY
+                    SAFE_CAST(key AS FLOAT64)
+                )
+                );
+
+                SELECT
+                -- fill in 1 with a value of 0
+                assert.array_equals(
+                    ARRAY<STRUCT<key STRING, value FLOAT64>>[
+                    ("0", (1 + (1 / 3)) / 3),
+                    ("1", 1 / 9),
+                    ("2", (2 + (1 / 3)) / 3)
+                    ],
+                    glam.histogram_fill_buckets_dirichlet(
+                    ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 1.0), ("2", 2.0)],
+                    ["0", "1", "2"],
+                    2
+                    )
+                ),
+                -- only keep values in specified in buckets
+                assert.array_equals(
+                    ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", (1 + 1) / 3)],
+                    glam.histogram_fill_buckets_dirichlet(
+                    ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 1.0), ("2", 1.0)],
+                    ["0"],
+                    2
+                    )
+                ),
+                -- keys may not non-integer values, so ordering is not well defined for strings
+                assert.array_equals(
+                    ARRAY<STRUCT<key STRING, value FLOAT64>>[
+                    ("foo", (1 + (1 / 2)) / 3),
+                    ("bar", (1 + (1 / 2)) / 3)
+                    ],
+                    glam.histogram_fill_buckets_dirichlet(
+                    ARRAY<STRUCT<key STRING, value FLOAT64>>[("foo", 1.0), ("bar", 1.0)],
+                    ["foo", "bar"],
+                    2
+                    )
+                ),
+                -- but ordering is guaranteed for integers/floats
+                assert.array_equals(
+                    ARRAY<STRUCT<key STRING, value FLOAT64>>[("2", (1 + (1 / 2)) / 3), ("11", (1 + (1 / 2)) / 3)],
+                    glam.histogram_fill_buckets_dirichlet(
+                    ARRAY<STRUCT<key STRING, value FLOAT64>>[("11", 1.0), ("2", 1.0)],
+                    ["11", "2"],
+                    2
+                    )
+                )
+            """
+            res = get_udf_parameters(sql_text)
+            assert (
+                res["input"]
+                == "input_map ARRAY<STRUCT<key STRING, value FLOAT64>>, buckets ARRAY<STRING>, total_users INT64"
+            )
+            assert res["output"] == "ARRAY<STRUCT<key STRING, value FLOAT64>>"
+
+        def test_get_udf_parameters_5(self):
+            sql_text = """-- udf_get_values
+                CREATE OR REPLACE FUNCTION glam.map_from_array_offsets(
+                required ARRAY<FLOAT64>,
+                `values` ARRAY<FLOAT64>
+                )
+                RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
+                (
+                    SELECT
+                    ARRAY_AGG(
+                        STRUCT<key STRING, value FLOAT64>(
+                        CAST(key AS STRING),
+                        `values`[OFFSET(SAFE_CAST(key AS INT64))]
+                        )
+                        ORDER BY
+                        key
+                    )
+                    FROM
+                    UNNEST(required) AS key
+                )
+                );
+
+                SELECT
+                assert.array_equals(
+                    ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 2.0), ("2", 4.0)],
+                    glam.map_from_array_offsets([0.0, 2.0], [2.0, 3.0, 4.0])
+                ),
+                -- required ordered
+                assert.array_equals(
+                    ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 2.0), ("2", 4.0)],
+                    glam.map_from_array_offsets([2.0, 0.0], [2.0, 3.0, 4.0])
+                ),
+                -- intended use-case, for approx_quantiles
+                assert.array_equals(
+                    ARRAY<STRUCT<key STRING, value FLOAT64>>[("25", 1.0), ("50", 2.0), ("75", 3.0)],
+                    glam.map_from_array_offsets(
+                    [25.0, 50.0, 75.0],
+                    (
+                        SELECT
+                        ARRAY_AGG(CAST(y * 1.0 AS FLOAT64) ORDER BY i)
+                        FROM
+                        UNNEST((SELECT APPROX_QUANTILES(x, 100) FROM UNNEST([1, 2, 3]) AS x)) AS y
+                        WITH OFFSET i
+                    )
+                    )
+                )
+            """
+
+            res = get_udf_parameters(sql_text)
+            assert res["input"] == "required ARRAY<FLOAT64>, `values` ARRAY<FLOAT64>"
+            assert res["output"] == "ARRAY<STRUCT<key STRING, value FLOAT64>>"
+
+        def test_get_udf_parameters_6(self):
+            sql_text = """/*
+
+                Convert a string representing individual bits into an INT64.
+
+                Implementation based on https://stackoverflow.com/a/51600210/1260237
+
+                See detailed docs for the bits28 suite of functions:
+                https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference
+
+                */
+                CREATE OR REPLACE FUNCTION bits28.from_string(s STRING) AS (
+                IF(
+                    REGEXP_CONTAINS(s, r"^[01]{1,28}$"),
+                    (
+                    SELECT
+                        SUM(CAST(c AS INT64) << (LENGTH(s) - 1 - bit))
+                    FROM
+                        UNNEST(SPLIT(s, '')) AS c
+                        WITH OFFSET bit
+                    ),
+                    ERROR(FORMAT("bits28_from_string expects a string of up to 28 0's and 1's but got: %s", s))
+                )
+                );
+
+                -- Tests
+                SELECT
+                assert.equals(1, bits28.from_string('1')),
+                assert.equals(1, bits28.from_string('01')),
+                assert.equals(1, bits28.from_string('0000000000000000000000000001')),
+                assert.equals(2, bits28.from_string('10')),
+                assert.equals(5, bits28.from_string('101'));
+            """
+            res = get_udf_parameters(sql_text)
+            assert res["input"] == "s STRING"
+            assert res["output"] is None

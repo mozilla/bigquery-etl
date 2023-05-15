@@ -3,23 +3,27 @@
 import re
 
 
-def get_parameters(sql_text):
+def find_input(sql_text):
+    """Extract input parameters from UDF sql code."""
+    sql_text = re.sub(r"\s{2,}|\\n", " ", sql_text)
+    return (
+        re.search(r"FUNCTION [a-z,0-9,_,.]+\s*\(\s*(.+?)\s*\)", sql_text)
+        .groups()[0]
+        .strip()
+    )
+
+
+def find_output(sql_text):
+    """Extract output parameters from UDF sql code."""
+    sql_text = re.sub(r"\s{2,}", " ", sql_text)
+    res = re.search(r"RETURNS (.+?) AS", sql_text)
+    if res is None:
+        return None
+    return res.groups()[0]
+
+
+def get_udf_parameters(sql_text):
     """Extract input and output parameters from UDF sql code."""
-    # TODO: Extract the input an output from sql_text and replace in the next 2 lines.
-    inputs = sql_text
-    outputs = ""
-
-    input_parameters = re.sub(
-        r"CREATE OR REPLACE FUNCTION [a-z,A-Z,_,.]+\s*\(\s*|\s*AS\s*|\(|\s*\)\s*",
-        "",
-        inputs,
-    )
-    input_parameters = re.sub(r"\s{2,}", " ", input_parameters)
-
-    # TODO: Correct the following code to extract output_parameters.
-    output_parameters = re.sub(
-        r"RETURNS [a-z,A-Z,_,.]+\s*\(\s*|\s*AS\s*|\(|\s*\)\s*", "", outputs
-    )
-    output_parameters = re.sub(r"\s{2,}", " ", output_parameters)
-
-    return [input_parameters, output_parameters]
+    input_part = find_input(sql_text)
+    output_part = find_output(sql_text)
+    return {"input": input_part, "output": output_part}

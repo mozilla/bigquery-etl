@@ -1,4 +1,4 @@
---- Query generated via sql_generators.active_users_aggregates.
+--- Query generated via sql_generators.active_users.
 WITH baseline AS (
   SELECT
     submission_date,

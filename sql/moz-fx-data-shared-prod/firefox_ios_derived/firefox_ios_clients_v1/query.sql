@@ -25,6 +25,8 @@ activations AS (
     is_activated,
   FROM
     firefox_ios_derived.new_profile_activation_v2
+  WHERE
+    `date` = @submission_date
 ),
 -- Find earliest data per client from the first_session ping.
 first_session_ping_base AS (

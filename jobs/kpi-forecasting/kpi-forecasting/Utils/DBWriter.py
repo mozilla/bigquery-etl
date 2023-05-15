@@ -23,7 +23,7 @@ def write_predictions_to_bigquery(
     predictions["target"] = config["target"]
     predictions["forecast_date"] = today
     predictions["forecast_parameters"] = str(forecast_parameters)
-    predictions["ds"] = pd.to_datetime(predictions["ds"])
+    predictions["ds"] = pd.to_datetime(predictions["ds"], utc=True)
 
     output_table = config["output_table"]
 

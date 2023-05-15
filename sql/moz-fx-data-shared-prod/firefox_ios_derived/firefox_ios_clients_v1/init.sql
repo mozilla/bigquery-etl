@@ -1,3 +1,11 @@
+------
+-- PLEASE create the table using the ./bqetl deploy command
+-- then run this query and append the results to it.
+--
+-- Running init.sql to generate the initial table vs schema + backfill approach
+-- allows us to save a lot of time as we do not have to re-run the query for each partition date
+-- instead all partitions to date could be used to generate the table and have the ETL take over.
+------
 -- Query first observations for Firefox iOS Clients.
 WITH first_seen AS (
   SELECT
@@ -15,7 +23,7 @@ WITH first_seen AS (
   FROM
     firefox_ios.baseline_clients_first_seen
   WHERE
-    submission_date = @submission_date
+    submission_date < CURRENT_DATE
     AND client_id IS NOT NULL
 ),
 -- Find the most recent activation record per client_id.
@@ -26,7 +34,7 @@ activations AS (
   FROM
     firefox_ios_derived.new_profile_activation_v2
   WHERE
-    `date` = @submission_date
+    `date` <= CURRENT_DATE
 ),
 -- Find earliest data per client from the first_session ping.
 first_session_ping_base AS (
@@ -41,7 +49,7 @@ first_session_ping_base AS (
   FROM
     firefox_ios.first_session
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) < CURRENT_DATE
     AND client_info.client_id IS NOT NULL
 ),
 first_session_ping AS (
@@ -87,7 +95,7 @@ metrics_ping_base AS (
   FROM
     firefox_ios.metrics AS fxa_metrics
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) < CURRENT_DATE
     AND client_info.client_id IS NOT NULL
 ),
 metrics_ping AS (
@@ -122,16 +130,8 @@ metrics_ping AS (
 ),
 _current AS (
   SELECT
-    client_id,
-    sample_id,
-    first_seen_date,
-    first_reported_country,
-    first_reported_isp,
-    channel,
-    device_manufacturer,
-    device_model,
-    os_version,
-    app_version,
+    * EXCEPT (adjust_info, sample_id),
+    COALESCE(first_seen.sample_id, first_session.sample_id, metrics.sample_id) AS sample_id,
     COALESCE(first_session.adjust_info, metrics.adjust_info) AS adjust_info,
     STRUCT(
       IF(first_session.client_id IS NULL, FALSE, TRUE) AS is_reported_first_session_ping,
@@ -156,66 +156,23 @@ _current AS (
     (client_id, sample_id)
   WHERE
     client_id IS NOT NULL
-),
-_previous AS (
-  SELECT
-    *
-  FROM
-    firefox_ios_derived.firefox_ios_clients_v1
 )
 SELECT
   client_id,
   sample_id,
-  COALESCE(_previous.first_seen_date, _current.first_seen_date) AS first_seen_date,
-  COALESCE(
-    _previous.first_reported_country,
-    _current.first_reported_country
-  ) AS first_reported_country,
-  COALESCE(_previous.first_reported_isp, _current.first_reported_isp) AS first_reported_isp,
-  COALESCE(_previous.channel, _current.channel) AS channel,
-  COALESCE(_previous.device_manufacturer, _current.device_manufacturer) AS device_manufacturer,
-  COALESCE(_previous.device_model, _current.device_model) AS device_model,
-  COALESCE(_previous.os_version, _current.os_version) AS os_version,
-  COALESCE(_previous.app_version, _current.app_version) AS app_version,
+  first_seen_date,
+  first_reported_country,
+  first_reported_isp,
+  channel,
+  device_manufacturer,
+  device_model,
+  os_version,
+  app_version,
+  adjust_info.*,
+  metadata,
   activations.is_activated,
-  -- below is to avoid mix and matching different adjust attributes
-  -- from different records. This way we always treat them as a single "unit"
-  IF(
-    _previous.adjust_ad_group IS NULL
-    AND _previous.adjust_campaign IS NULL
-    AND _previous.adjust_creative IS NULL
-    AND _previous.adjust_network IS NULL,
-    _current.adjust_info,
-    STRUCT(
-      _previous.submission_timestamp,
-      _previous.adjust_ad_group,
-      _previous.adjust_campaign,
-      _previous.adjust_creative,
-      _previous.adjust_network
-    )
-  ).*,
-  STRUCT(
-    COALESCE(
-      _previous.metadata.is_reported_first_session_ping
-      OR _current.metadata.is_reported_first_session_ping,
-      FALSE
-    ) AS is_reported_first_session_ping,
-    COALESCE(
-      _previous.metadata.is_reported_metrics_ping
-      OR _current.metadata.is_reported_metrics_ping,
-      FALSE
-    ) AS is_reported_metrics_ping,
-    COALESCE(
-      _previous.metadata.adjust_info__source_ping,
-      _current.metadata.adjust_info__source_ping
-    ) AS adjust_info__source_ping
-  ) AS metadata,
 FROM
   _current
-FULL OUTER JOIN
-  _previous
-USING
-  (client_id, sample_id)
 LEFT JOIN
   activations
 USING

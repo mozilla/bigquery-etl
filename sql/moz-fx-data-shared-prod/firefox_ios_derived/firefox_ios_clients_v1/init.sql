@@ -1,6 +1,7 @@
-CREATE TABLE IF NOT EXISTS
-  `moz-fx-data-shared-prod.firefox_ios_derived.firefox_ios_clients_v1`
-AS
+------
+-- PLEASE create the table using the ./bqetl deploy command
+-- then run this query and append the results to it.
+------
 -- Query first observations for Firefox iOS Clients.
 WITH first_seen AS (
   SELECT
@@ -28,6 +29,8 @@ activations AS (
     is_activated,
   FROM
     firefox_ios_derived.new_profile_activation_v2
+  WHERE
+    `date` <= CURRENT_DATE
 ),
 -- Find earliest data per client from the first_session ping.
 first_session_ping_base AS (

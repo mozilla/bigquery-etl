@@ -3,6 +3,8 @@
 import datetime
 import json
 import os.path
+from functools import partial
+from multiprocessing.pool import ThreadPool
 
 import pytest
 from google.api_core.exceptions import BadRequest
@@ -18,8 +20,8 @@ from .sql_test import (
     default_encoding,
     get_query_params,
     load,
-    load_tables,
-    load_views,
+    load_table,
+    load_view,
     print_and_test,
     read,
 )
@@ -167,8 +169,15 @@ class SqlTest(pytest.Item, pytest.File):
 
         bq = bigquery.Client()
         with dataset(bq, dataset_id) as default_dataset:
-            load_tables(bq, default_dataset, tables.values())
-            load_views(bq, default_dataset, views)
+            with ThreadPool(8) as pool:
+                pool.map(
+                    partial(load_table, bq, default_dataset),
+                    tables.values(),
+                    chunksize=1,
+                )
+                pool.starmap(
+                    partial(load_view, bq, default_dataset), views.items(), chunksize=1
+                )
 
             # configure job
             res_table = bigquery.TableReference(default_dataset, query_name)

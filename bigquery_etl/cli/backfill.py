@@ -79,6 +79,7 @@ def backfill(ctx):
 )
 @click.pass_context
 def create(
+    ctx,
     qualified_table_name,
     sql_dir,
     start_date,

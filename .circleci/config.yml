@@ -437,21 +437,15 @@ jobs:
     executor: ubuntu-machine-executor
     steps:
       - checkout
-      - when:
-          condition: &deploy-condition
-            or:
-              - equal: [main, << pipeline.git.branch >>]
-              - << pipeline.git.tag >>
-          steps:
-            - *attach_generated_sql
-            - *copy_generated_sql
-            - docker/check:
-                docker-password: DOCKER_PASS
-                docker-username: DOCKER_USER
-            - docker/build: &public-image
-                image: ${CIRCLE_PROJECT_USERNAME+$CIRCLE_PROJECT_USERNAME/}${CIRCLE_PROJECT_REPONAME:-bigquery-etl}
-                tag: ${CIRCLE_TAG:-latest}
-            - docker/push: *public-image
+      - *attach_generated_sql
+      - *copy_generated_sql
+      - docker/check:
+          docker-password: DOCKER_PASS
+          docker-username: DOCKER_USER
+      - docker/build: &public-image
+          image: ${CIRCLE_PROJECT_USERNAME+$CIRCLE_PROJECT_USERNAME/}${CIRCLE_PROJECT_REPONAME:-bigquery-etl}
+          tag: ${CIRCLE_TAG:-latest}
+      - docker/push: *public-image
   private-generate-sql:
     docker: *docker
     steps:
@@ -531,10 +525,7 @@ jobs:
       - gcp-gcr/build-image: &private-image
           image: bigquery-etl
           tag: ${CIRCLE_TAG:-latest}
-      - when:
-          condition: *deploy-condition
-          steps:
-            - gcp-gcr/push-image: *private-image
+      - gcp-gcr/push-image: *private-image
   generate-diff:
     docker: *docker
     steps:
@@ -716,6 +707,10 @@ workflows:
             # webhooks used in Ops logic. For details, see:
             # https://bugzilla.mozilla.org/show_bug.cgi?id=1715628#c0
             - deploy-to-private-gcr
+          filters:
+            branches:
+              only:
+                - main
       # The following "private" jobs are basically clones of the public jobs
       # for generate-sql, deploy, and push-generated-sql, except that they pull
       # in some additional content from an internal Mozilla repository for
@@ -739,6 +734,10 @@ workflows:
             # can't run in parallel because CIRCLE_BUILD_NUM is same
             - build
             - generate-sql
+          filters:
+            branches:
+              only:
+                - main
   nightly: # Run after schema-generator to ensure we are up-to-date
     triggers:
       - schedule:

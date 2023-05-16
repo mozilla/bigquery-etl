@@ -63,8 +63,7 @@ WITH clients_histogram_aggregates_new AS
 
 clients_histogram_aggregates_partition AS
   (SELECT *
-  FROM clients_histogram_aggregates_v2
-  WHERE submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)),
+  FROM clients_histogram_aggregates_v2),
 
 clients_histogram_aggregates_old AS
   (SELECT

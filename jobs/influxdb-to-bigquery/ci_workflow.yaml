@@ -1,0 +1,13 @@
+job-influxdb-to-bigquery:
+  jobs:
+    - build-job-influxdb-to-bigquery
+    - gcp-gcr/build-and-push-image:
+        context: data-eng-airflow-gcr
+        docker-context: jobs/influxdb-to-bigquery/
+        path: jobs/influxdb-to-bigquery/
+        image: influxdb-to-bigquery_docker_etl
+        requires:
+          - build-job-influxdb-to-bigquery
+        filters:
+          branches:
+            only: main

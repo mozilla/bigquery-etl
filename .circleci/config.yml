@@ -94,7 +94,6 @@ jobs:
           name: Test Code
           command: docker run app:build pytest --flake8 --black
 
-
   build-job-example_job:
     docker:
       - image: docker:stable-git
@@ -121,6 +120,20 @@ jobs:
       - run:
           name: Build Docker image
           command: docker build -t app:build jobs/experiments-monitoring-data-export/
+
+
+  build-job-influxdb-to-bigquery:
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - compare-branch:
+          pattern: ^jobs/influxdb-to-bigquery/
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Build Docker image
+          command: docker build -t app:build jobs/influxdb-to-bigquery/
 
 
   build-job-kpi-forecasting:
@@ -257,6 +270,7 @@ workflows:
             branches:
               only: main
 
+
   job-dap-collector:
     jobs:
       - build-job-dap-collector
@@ -274,7 +288,6 @@ workflows:
   job-desktop-mobile-mau-2020:
     jobs:
       - build-job-desktop-mobile-mau-2020
-
 
   job-example_job:
     jobs:
@@ -303,6 +316,21 @@ workflows:
           filters:
             branches:
               only: main
+
+  job-influxdb-to-bigquery:
+    jobs:
+      - build-job-influxdb-to-bigquery
+      - gcp-gcr/build-and-push-image:
+          context: data-eng-airflow-gcr
+          docker-context: jobs/influxdb-to-bigquery/
+          path: jobs/influxdb-to-bigquery/
+          image: influxdb-to-bigquery_docker_etl
+          requires:
+            - build-job-influxdb-to-bigquery
+          filters:
+            branches:
+              only: main
+
 
   job-kpi-forecasting:
     jobs:

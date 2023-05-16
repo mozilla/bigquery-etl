@@ -2,6 +2,7 @@
 import os
 import re
 from pathlib import Path
+from typing import List, Tuple
 
 import yaml
 
@@ -12,6 +13,7 @@ EDIT_URL = "https://github.com/mozilla/bigquery-etl/edit/generated-sql"
 UDF_FILE = "udf.sql"
 PROCEDURE_FILE = "stored_procedure.sql"
 SQL_REF_RE = r"@sql\((.+)\)"
+UDF_START = "CREATE OR REPLACE FUNCTION "
 
 
 def format_url(doc):
@@ -39,6 +41,60 @@ def load_with_examples(file):
 def add_source_and_edit(source_url, edit_url):
     """Add links to the function directory and metadata.yaml editor."""
     return f"[Source]({source_url})  |  [Edit]({edit_url})"
+
+
+def get_inputs_outputs_from_udf(
+    root: str, dataset_name: str, name: str
+) -> Tuple[List[str], List[str]]:
+    """Parse UDF SQL file and return lines containing inputs and outputs."""
+    found_input = False
+    input_lines = []
+    found_return = False
+    return_lines = []
+    FUNCTION_HEADER = f"{UDF_START}{dataset_name}.{name}("
+    with open(os.path.join(root, UDF_FILE), "r") as udf_sql:
+        udf_content = [line for line in udf_sql.readlines() if not line.startswith("#")]
+
+        for line in udf_content:
+            # FUNCTION_HEADER starts the UDF and then contains inputs in parens
+            if line.startswith(FUNCTION_HEADER) and len(line.strip()) > len(
+                FUNCTION_HEADER
+            ):
+                input_lines.append(line)
+            elif line.startswith(FUNCTION_HEADER):
+                found_input = True
+                input_lines.append(line)
+
+            if (
+                found_input
+                and ") AS (" not in line
+                and not line.startswith(FUNCTION_HEADER)
+                and "RETURNS" not in line
+            ):
+                input_lines.append(line)
+            elif found_input and (") AS (" in line or "RETURNS" in line):
+                # done with input
+                found_input = False
+
+            # RETURNS has the output types
+            if line.startswith("RETURNS") and "AS" not in line:
+                found_return = True
+                return_lines.append(line)
+            elif (
+                "AS" in line
+                and not line.startswith(FUNCTION_HEADER)
+                and "RETURNS" in line
+            ):
+                return_lines.append(line)
+
+            if found_return and "AS" not in line:
+                return_lines.append(line)
+            elif found_return and "AS" in line:
+                # done with output
+                return_lines.append(line)
+                found_return = False
+
+    return input_lines, return_lines
 
 
 def generate_mozfun_docs(out_dir, project_dir):
@@ -89,65 +145,17 @@ def generate_mozfun_docs(out_dir, project_dir):
                         # Inject the contents of the README.md
                         dataset_doc_file.write(docfile_content)
                         if is_udf:
-                            found_input = False
-                            input_lines = []
-                            found_return = False
-                            return_lines = []
-                            with open(os.path.join(root, UDF_FILE), "r") as udf_sql:
-                                udf_content = [
-                                    line
-                                    for line in udf_sql.readlines()
-                                    if not line.startswith("#")
-                                ]
-
-                                FUNCTION_HEADER = (
-                                    f"CREATE OR REPLACE FUNCTION {dataset_name}.{name}("
-                                )
-                                for line in udf_content:
-                                    # FUNCTION_HEADER starts the UDF and then contains inputs in ()
-                                    if line.startswith(FUNCTION_HEADER) and len(
-                                        line.strip()
-                                    ) > len(FUNCTION_HEADER):
-                                        input_lines.append(line)
-                                    elif line.startswith(FUNCTION_HEADER):
-                                        found_input = True
-                                        input_lines.append(line)
-
-                                    if (
-                                        found_input
-                                        and ") AS (" not in line
-                                        and not line.startswith(FUNCTION_HEADER)
-                                        and "RETURNS" not in line
-                                    ):
-                                        input_lines.append(line)
-                                    elif found_input and (
-                                        ") AS (" in line or "RETURNS" in line
-                                    ):
-                                        found_input = False
-
-                                    # TODO: find_block function? def find_block(start_word, end_word)
-
-                                    # RETURNS has the output types
-                                    if line.startswith("RETURNS") and "AS" not in line:
-                                        found_return = True
-                                        return_lines.append(line)
-                                    elif (
-                                        "AS" in line
-                                        and not line.startswith(FUNCTION_HEADER)
-                                        and "RETURNS" in line
-                                    ):
-                                        return_lines.append(line)
-
-                                    if found_return and "AS" not in line:
-                                        return_lines.append(line)
-                                    elif found_return and "AS" in line:
-                                        found_return = False
+                            FUNCTION_HEADER = f"{UDF_START}{dataset_name}.{name}("
+                            input_lines, return_lines = get_inputs_outputs_from_udf(
+                                root, dataset_name, name
+                            )
 
                             # assemble, format, write inputs and outputs
                             if len(input_lines) > 0:
                                 formatted_inputs = ""
                                 for ip in input_lines:
                                     if len(ip) < 5:
+                                        # too short to be an input
                                         continue
                                     if FUNCTION_HEADER in ip and ") AS (" in ip:
                                         formatted_inputs = (
@@ -156,8 +164,17 @@ def generate_mozfun_docs(out_dir, project_dir):
                                             .removeprefix(FUNCTION_HEADER)
                                             .removesuffix(") AS (")
                                         )
-                                    elif FUNCTION_HEADER in ip:
+                                    elif FUNCTION_HEADER in ip and len(
+                                        ip.strip()
+                                    ) == len(FUNCTION_HEADER):
                                         continue
+                                    elif FUNCTION_HEADER in ip:
+                                        formatted_inputs = (
+                                            "\n"
+                                            + ip.strip()
+                                            .removeprefix(FUNCTION_HEADER)
+                                            .removesuffix(")")
+                                        )
                                     elif "AS" in ip:
                                         break
                                     else:
@@ -167,18 +184,15 @@ def generate_mozfun_docs(out_dir, project_dir):
                                             + ip.strip().rstrip(",")
                                         )
 
+                                formatted_inputs = "\n".join(
+                                    formatted_inputs.split(", ")
+                                )
                                 formatted_inputs = f"```{formatted_inputs}\n```\n\n"
 
-                                dataset_doc_file.write("INPUTS\n\n")
+                                dataset_doc_file.write("\n#### INPUTS\n\n")
                                 dataset_doc_file.write(formatted_inputs)
-                            else:
-                                formatted_inputs = None
-                                input_lines = []
-                                found_input = False
 
                             if len(return_lines) > 0:
-                                # formatted_outputs = "\n".join(return_lines)
-
                                 formatted_outputs = ""
                                 for ol in return_lines:
                                     if "RETURNS" in ol and " AS (" in ol:
@@ -197,6 +211,18 @@ def generate_mozfun_docs(out_dir, project_dir):
                                         )
                                     elif "RETURNS" in ol:
                                         continue
+                                    elif ">" in ol and "AS" in ol:
+                                        formatted_outputs = (
+                                            formatted_outputs
+                                            + "\n"
+                                            + ol.strip().split("AS")[0]
+                                        )
+                                    elif ">" in ol and "," in ol:
+                                        formatted_outputs = (
+                                            formatted_outputs
+                                            + "\n"
+                                            + ol.strip().split(",")[0]
+                                        )
                                     elif "AS" in ol:
                                         break
                                     else:
@@ -206,16 +232,15 @@ def generate_mozfun_docs(out_dir, project_dir):
                                             + ol.strip().rstrip(",")
                                         )
 
+                                formatted_outputs = "\n".join(
+                                    formatted_outputs.split(", ")
+                                )
                                 formatted_outputs = f"```\n{formatted_outputs}\n```\n\n"
 
-                                dataset_doc_file.write("OUTPUTS\n\n")
+                                dataset_doc_file.write("\n#### OUTPUTS\n\n")
                                 dataset_doc_file.write(formatted_outputs)
-                            else:
-                                formatted_outputs = None
-                                return_lines = []
-                                found_return = False
 
-                            # Add links to source and edit
+                        # Add links to source and edit
                         sourced = add_source_and_edit(source_link, edit_link)
                         dataset_doc_file.write(f"{sourced}\n\n")
                 else:

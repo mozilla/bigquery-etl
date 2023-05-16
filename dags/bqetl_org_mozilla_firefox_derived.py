@@ -192,9 +192,6 @@ with DAG(
     firefox_ios_derived__attributable_clients__v1.set_upstream(
         wait_for_firefox_ios_clients
     )
-    firefox_ios_derived__attributable_clients__v1.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
-    )
 
     org_mozilla_fenix_derived__client_deduplication__v1.set_upstream(
         wait_for_copy_deduplicate_all

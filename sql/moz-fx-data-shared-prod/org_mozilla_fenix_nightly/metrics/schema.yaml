@@ -1139,6 +1139,12 @@ fields:
       mode: NULLABLE
       name: dotprint_requested
       type: INTEGER
+    - description: 'Opening the Android print dialog was requested via window.print.
+
+        '
+      mode: NULLABLE
+      name: dotprint_android_dialog_requested
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -2441,6 +2447,20 @@ fields:
         type: INTEGER
       mode: REPEATED
       name: rtcrtpsender_setparameters_blame_stale_transactionid
+      type: RECORD
+    - description: 'An error occured while setting up for printing. Default label
+        is ''unknown''.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: dotprint_failure
       type: RECORD
     mode: NULLABLE
     name: labeled_counter

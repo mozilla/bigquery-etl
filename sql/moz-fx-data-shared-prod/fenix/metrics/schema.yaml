@@ -497,6 +497,9 @@ fields:
     - mode: NULLABLE
       name: dotprint_requested
       type: INTEGER
+    - mode: NULLABLE
+      name: dotprint_android_dialog_requested
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -1764,6 +1767,16 @@ fields:
         type: INTEGER
       mode: REPEATED
       name: rtcrtpsender_setparameters_blame_stale_transactionid
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: dotprint_failure
       type: RECORD
     mode: NULLABLE
     name: labeled_counter

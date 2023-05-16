@@ -81,7 +81,8 @@ SELECT
       metrics.counter.pdfjs_used,
       metrics.counter.glean_upload_in_flight_pings_dropped,
       metrics.counter.glean_upload_missing_send_ids,
-      metrics.counter.dotprint_requested
+      metrics.counter.dotprint_requested,
+      metrics.counter.dotprint_android_dialog_requested
     ) AS counter,
     metrics.datetime,
     metrics.jwe,
@@ -139,7 +140,8 @@ SELECT
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_length_changed,
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_no_getparameters,
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_no_transactionid,
-      metrics.labeled_counter.rtcrtpsender_setparameters_blame_stale_transactionid
+      metrics.labeled_counter.rtcrtpsender_setparameters_blame_stale_transactionid,
+      metrics.labeled_counter.dotprint_failure
     ) AS labeled_counter,
     metrics.labeled_rate,
     metrics.memory_distribution,
@@ -233,7 +235,8 @@ SELECT
       metrics.counter.pdfjs_used,
       metrics.counter.glean_upload_in_flight_pings_dropped,
       metrics.counter.glean_upload_missing_send_ids,
-      metrics.counter.dotprint_requested
+      metrics.counter.dotprint_requested,
+      metrics.counter.dotprint_android_dialog_requested
     ) AS counter,
     metrics.datetime,
     metrics.jwe,
@@ -291,7 +294,8 @@ SELECT
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_length_changed,
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_no_getparameters,
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_no_transactionid,
-      metrics.labeled_counter.rtcrtpsender_setparameters_blame_stale_transactionid
+      metrics.labeled_counter.rtcrtpsender_setparameters_blame_stale_transactionid,
+      metrics.labeled_counter.dotprint_failure
     ) AS labeled_counter,
     metrics.labeled_rate,
     metrics.memory_distribution,

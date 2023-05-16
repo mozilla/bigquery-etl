@@ -1874,15 +1874,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#retention-udf" class="md-nav__link">
-    retention (UDF)
+  <a href="#to_string-udf" class="md-nav__link">
+    to_string (UDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#to_string-udf" class="md-nav__link">
-    to_string (UDF)
+  <a href="#retention-udf" class="md-nav__link">
+    retention (UDF)
   </a>
   
 </li>
@@ -2333,15 +2333,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#retention-udf" class="md-nav__link">
-    retention (UDF)
+  <a href="#to_string-udf" class="md-nav__link">
+    to_string (UDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#to_string-udf" class="md-nav__link">
-    to_string (UDF)
+  <a href="#retention-udf" class="md-nav__link">
+    retention (UDF)
   </a>
   
 </li>
@@ -2423,10 +2423,6 @@ logarithm; see <a href="https://stackoverflow.com/a/42747608/1260237">https://st
 <span class="c1">-- &gt;&gt; 1</span>
 </code></pre></div>
 <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/days_since_seen">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/days_since_seen/metadata.yaml">Edit</a></p>
-<h2 id="retention-udf">retention (UDF)</h2>
-<p>Return a nested struct providing booleans indicating whether a given client
-was active various time periods based on the passed bit pattern.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/retention">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/retention/metadata.yaml">Edit</a></p>
 <h2 id="to_string-udf">to_string (UDF)</h2>
 <p>Convert an INT64 field into a 28-character string representing
 the individual bits.</p>
@@ -2440,6 +2436,10 @@ the individual bits.</p>
 <span class="c1">--      &#39;0000000000000000000000000011&#39;]</span>
 </code></pre></div>
 <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/to_string">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/to_string/metadata.yaml">Edit</a></p>
+<h2 id="retention-udf">retention (UDF)</h2>
+<p>Return a nested struct providing booleans indicating whether a given client
+was active various time periods based on the passed bit pattern.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/retention">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/retention/metadata.yaml">Edit</a></p>
 <h2 id="active_in_range-udf">active_in_range (UDF)</h2>
 <p>Return a boolean indicating if any bits are set in the specified range
 of a bit pattern. The <code>start_offset</code> must be zero or a negative number

@@ -7,18 +7,27 @@ fields:
   mode: NULLABLE
   name: submission_date
   type: DATE
-- description: 'Unique ID for the client installation.
-
-    '
-  mode: NULLABLE
-  name: client_id
-  type: STRING
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
 - description: 'Sample ID to limit query results during an analysis.
 
     '
   mode: NULLABLE
   name: sample_id
   type: INTEGER
+- description: 'Unique ID for the client installation.
+
+    '
+  mode: NULLABLE
+  name: client_id
+  type: STRING
+- description: 'The type of source of a client installation.
+
+    '
+  mode: NULLABLE
+  name: adjust_network
+  type: STRING
 - description: 'Structure parameter for the the ad group of a campaign.
 
     '
@@ -37,12 +46,12 @@ fields:
   mode: NULLABLE
   name: adjust_creative
   type: STRING
-- description: 'The type of source of a client installation.
+- description: 'Determines if a client is a new profile.
 
     '
   mode: NULLABLE
-  name: adjust_network
-  type: STRING
+  name: is_new_profile
+  type: BOOLEAN
 - description: 'The number of search interactions the user had on SERP pages.
 
     '
@@ -61,12 +70,3 @@ fields:
   mode: NULLABLE
   name: ad_clicks
   type: INTEGER
-- description: 'Determines if a client is a new profile.
-
-    '
-  mode: NULLABLE
-  name: is_new_profile
-  type: BOOLEAN
-- mode: NULLABLE
-  name: first_seen_date
-  type: DATE

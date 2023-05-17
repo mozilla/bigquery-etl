@@ -126,6 +126,7 @@ topsites_events AS (
     mozfun.map.get_key(event_details, "newtab_visit_id") AS newtab_visit_id,
     SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64) AS topsite_position,
     mozfun.map.get_key(event_details, "advertiser_name") AS topsite_advertiser_name,
+    mozfun.map.get_key(event_details, "tile_id") AS topsite_tile_id,
     COUNTIF(event_name = 'impression') AS topsite_impressions,
     COUNTIF(event_name = 'click') AS topsite_clicks,
     COUNTIF(
@@ -151,7 +152,8 @@ topsites_events AS (
   GROUP BY
     newtab_visit_id,
     topsite_position,
-    topsite_advertiser_name
+    topsite_advertiser_name,
+    topsite_tile_id
 ),
 topsites_summary AS (
   SELECT
@@ -160,6 +162,7 @@ topsites_summary AS (
       STRUCT(
         topsite_advertiser_name,
         topsite_position,
+        topsite_tile_id,
         topsite_clicks,
         sponsored_topsite_clicks,
         organic_topsite_clicks,

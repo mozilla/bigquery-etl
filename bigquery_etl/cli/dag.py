@@ -215,7 +215,7 @@ def create(
 
 
 @dag.command(
-    help="""Generate Airflow DAGs from DAG definitions. Requires Java.
+    help="""Generate Airflow DAGs from DAG definitions.
 
     Examples:
 

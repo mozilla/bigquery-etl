@@ -129,13 +129,13 @@ all_event_property_indices AS (
     event,
     event_property.key AS event_property,
     event_property.index AS event_property_index,
-    MAX(COALESCE(VALUES .index, 0)) AS max_event_property_value_index
+    MAX(COALESCE(`values`.index, 0)) AS max_event_property_value_index
   FROM
     event_types
   LEFT JOIN
     UNNEST(event_properties) AS event_property
   LEFT JOIN
-    UNNEST(value) AS values
+    UNNEST(value) AS `values`
   GROUP BY
     category,
     event,
@@ -166,17 +166,17 @@ new_event_property_value_indices AS (
       SELECT
         event_types.* EXCEPT (event_properties),
         existing_event_property,
-      VALUES
+        `values`
       FROM
         event_types,
         UNNEST(event_properties) AS existing_event_property,
-        UNNEST(value) AS values
+        UNNEST(value) AS `values`
     ) AS existing_event_type_values
   ON
     current_events.category = existing_event_type_values.category
     AND current_events.event = existing_event_type_values.event
     AND event_property.key = existing_event_type_values.existing_event_property.key
-    AND event_property.value = existing_event_type_values.values.key
+    AND event_property.value = existing_event_type_values.`values`.key
   JOIN
     all_event_property_indices
   ON
@@ -204,14 +204,12 @@ all_event_property_value_indices AS (
     category,
     event,
     event_property.key AS event_property,
-  VALUES
-    .key AS event_property_value,
-  VALUES
-    .index AS event_property_value_index
+    `values`.key AS event_property_value,
+    `values`.index AS event_property_value_index
   FROM
     event_types,
     UNNEST(event_properties) AS event_property,
-    UNNEST(value) AS values
+    UNNEST(value) AS `values`
 ),
 per_event_property AS (
   SELECT
@@ -227,7 +225,7 @@ per_event_property AS (
       )
       ORDER BY
         event_property_value_index ASC
-    ) AS values,
+    ) AS `values`,
   FROM
     all_event_property_value_indices
   INNER JOIN
@@ -251,7 +249,7 @@ per_event AS (
       IF(
         event_property IS NULL,
         NULL,
-        STRUCT(event_property AS key, VALUES AS value, event_property_index AS index)
+        STRUCT(event_property AS key, `values` AS value, event_property_index AS index)
       ) IGNORE NULLS
       ORDER BY
         event_property_index ASC

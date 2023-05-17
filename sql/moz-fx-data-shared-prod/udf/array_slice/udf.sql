@@ -6,9 +6,9 @@ CREATE OR REPLACE FUNCTION udf.array_slice(arr ANY TYPE, start_index INT64, end_
       * EXCEPT (offset)
     FROM
       UNNEST(arr)
-      WITH OFFSET
+      WITH OFFSET AS offset_
     WHERE
-      offset
+      offset_
       BETWEEN start_index
       AND end_index
     ORDER BY

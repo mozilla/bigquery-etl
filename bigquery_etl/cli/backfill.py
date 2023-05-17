@@ -17,7 +17,7 @@ from ..backfill.validate import (
 from ..cli.utils import paths_matching_name_pattern, project_id_option, sql_dir_option
 
 QUALIFIED_TABLE_NAME_RE = re.compile(
-    r"([a-zA-z0-9_-]+)\.([a-zA-z0-9_-]+)\.([a-zA-z0-9_-]+)"
+    r"(?P<project_id>[a-zA-z0-9_-]+)\.(?P<dataset_id>[a-zA-z0-9_-]+)\.(?P<table_id>[a-zA-z0-9_-]+)"
 )
 
 
@@ -88,8 +88,12 @@ def create(
     watcher,
 ):
     """CLI command for creating a new backfill entry."""
-    # TODO: repalce with try catch statements:
-    if not QUALIFIED_TABLE_NAME_RE.match(qualified_table_name):
+    try:
+        match = QUALIFIED_TABLE_NAME_RE.match(qualified_table_name)
+        project_id = match.group("project_id")
+        dataset_id = match.group("dataset_id")
+        table_id = match.group("table_id")
+    except AttributeError:
         click.echo(
             "Qualified table name must be named like:" + " <project>.<dataset>.<table>"
         )
@@ -97,15 +101,11 @@ def create(
 
     path = Path(sql_dir)
 
-    project_id, dataset_id, table_id = qualified_table_name.split(".")
-
     query_path = path / project_id / dataset_id / table_id
 
     if not query_path.exists():
         click.echo(f"{project_id}.{dataset_id}.{table_id}" + " does not exist")
         sys.exit(1)
-
-    backfill_file = query_path / "backfill.yaml"
 
     backfill = Backfill(
         entry_date=date.today(),
@@ -118,6 +118,8 @@ def create(
     )
 
     backfills = []
+
+    backfill_file = query_path / "backfill.yaml"
 
     if backfill_file.exists():
         backfills = Backfill.entries_from_file(backfill_file)
@@ -159,20 +161,23 @@ def validate(
     project_id,
 ):
     """Validate backfill.yaml files."""
-    path = Path(sql_dir)
-
     backfill_files = []
 
-    # TODO: use try statements?
     if qualified_table_name:
-        if not QUALIFIED_TABLE_NAME_RE.match(qualified_table_name):
+        try:
+            match = QUALIFIED_TABLE_NAME_RE.match(qualified_table_name)
+            project_id = match.group("project_id")
+            dataset_id = match.group("dataset_id")
+            table_id = match.group("table_id")
+        except AttributeError:
             click.echo(
                 "Qualified table name must be named like:"
                 + " <project>.<dataset>.<table>"
             )
             sys.exit(1)
 
-        project_id, dataset_id, table_id = qualified_table_name.split(".")
+        path = Path(sql_dir)
+
         query_path = path / project_id / dataset_id / table_id
 
         if not query_path.exists():
@@ -189,13 +194,8 @@ def validate(
         )
 
     for file in backfill_files:
-        if file.exists():
-            validate_all_entries(Backfill.entries_from_file(file))
-        else:
-            click.echo(
-                "Backfill.yaml does not exist for :" + " <project>.<dataset>.<table>"
-            )
-            sys.exit(1)
-
-    # TODO: update to different statements for one file vs all files
-    click.echo("All backfill.yaml files have been validated.")
+        try:
+            backfills = Backfill.entries_from_file(file)
+            validate_all_entries(backfills)
+        except ValueError as e:
+            raise Exception("{0} contains the following error:\n {1}".format(file, e))

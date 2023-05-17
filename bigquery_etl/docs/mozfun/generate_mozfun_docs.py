@@ -6,6 +6,8 @@ from typing import List, Tuple
 
 import yaml
 
+from bigquery_etl.util.udf_functions import get_udf_parameters
+
 DOCS_FILE = "README.md"
 METADATA_FILE = "metadata.yaml"
 SOURCE_URL = "https://github.com/mozilla/bigquery-etl/blob/generated-sql"
@@ -13,7 +15,6 @@ EDIT_URL = "https://github.com/mozilla/bigquery-etl/edit/generated-sql"
 UDF_FILE = "udf.sql"
 PROCEDURE_FILE = "stored_procedure.sql"
 SQL_REF_RE = r"@sql\((.+)\)"
-UDF_START = "CREATE OR REPLACE FUNCTION "
 
 
 def format_url(doc):
@@ -43,58 +44,26 @@ def add_source_and_edit(source_url, edit_url):
     return f"[Source]({source_url})  |  [Edit]({edit_url})"
 
 
-def get_inputs_outputs_from_udf(
-    root: str, dataset_name: str, name: str
-) -> Tuple[List[str], List[str]]:
-    """Parse UDF SQL file and return lines containing inputs and outputs."""
-    found_input = False
+def get_inputs_outputs_from_udf(root: str) -> Tuple[List[str], List[str]]:
+    """Parse UDF SQL file and return inputs and outputs lists."""
+    with open(os.path.join(root, UDF_FILE), "r") as udf_file:
+        input_str, output_str = get_udf_parameters(udf_file.read())
+
     input_lines = []
-    found_return = False
-    return_lines = []
-    FUNCTION_HEADER = f"{UDF_START}{dataset_name}.{name}("
-    with open(os.path.join(root, UDF_FILE), "r") as udf_sql:
-        udf_content = [line for line in udf_sql.readlines() if not line.startswith("#")]
+    if input_str is not None:
+        if "<" in input_str and ">" in input_str:
+            # not attempting to split inputs for tricky cases like:
+            # `test STRING, STRUCT<name INT, type STRING>, number INT64`
+            input_lines.append(input_str)
+        else:
+            # split inputs into lines for formatting
+            input_lines = input_str.split(", ")
 
-        for line in udf_content:
-            # FUNCTION_HEADER starts the UDF and then contains inputs in parens
-            if line.startswith(FUNCTION_HEADER) and len(line.strip()) > len(
-                FUNCTION_HEADER
-            ):
-                input_lines.append(line)
-            elif line.startswith(FUNCTION_HEADER):
-                found_input = True
-                input_lines.append(line)
+    output_lines = []
+    if output_str is not None:
+        output_lines.append(output_str)
 
-            if (
-                found_input
-                and ") AS (" not in line
-                and not line.startswith(FUNCTION_HEADER)
-                and "RETURNS" not in line
-            ):
-                input_lines.append(line)
-            elif found_input and (") AS (" in line or "RETURNS" in line):
-                # done with input
-                found_input = False
-
-            # RETURNS has the output types
-            if line.startswith("RETURNS") and "AS" not in line:
-                found_return = True
-                return_lines.append(line)
-            elif (
-                "AS" in line
-                and not line.startswith(FUNCTION_HEADER)
-                and "RETURNS" in line
-            ):
-                return_lines.append(line)
-
-            if found_return and "AS" not in line:
-                return_lines.append(line)
-            elif found_return and "AS" in line:
-                # done with output
-                return_lines.append(line)
-                found_return = False
-
-    return input_lines, return_lines
+    return input_lines, output_lines
 
 
 def generate_mozfun_docs(out_dir, project_dir):
@@ -145,96 +114,20 @@ def generate_mozfun_docs(out_dir, project_dir):
                         # Inject the contents of the README.md
                         dataset_doc_file.write(docfile_content)
                         if is_udf:
-                            FUNCTION_HEADER = f"{UDF_START}{dataset_name}.{name}("
-                            input_lines, return_lines = get_inputs_outputs_from_udf(
-                                root, dataset_name, name
+                            input_lines, output_lines = get_inputs_outputs_from_udf(
+                                root
                             )
 
                             # assemble, format, write inputs and outputs
                             if len(input_lines) > 0:
-                                formatted_inputs = ""
-                                for ip in input_lines:
-                                    if len(ip) < 5:
-                                        # too short to be an input
-                                        continue
-                                    if FUNCTION_HEADER in ip and ") AS (" in ip:
-                                        formatted_inputs = (
-                                            "\n"
-                                            + ip.strip()
-                                            .removeprefix(FUNCTION_HEADER)
-                                            .removesuffix(") AS (")
-                                        )
-                                    elif FUNCTION_HEADER in ip and len(
-                                        ip.strip()
-                                    ) == len(FUNCTION_HEADER):
-                                        continue
-                                    elif FUNCTION_HEADER in ip:
-                                        formatted_inputs = (
-                                            "\n"
-                                            + ip.strip()
-                                            .removeprefix(FUNCTION_HEADER)
-                                            .removesuffix(")")
-                                        )
-                                    elif "AS" in ip:
-                                        break
-                                    else:
-                                        formatted_inputs = (
-                                            formatted_inputs
-                                            + "\n"
-                                            + ip.strip().rstrip(",")
-                                        )
-
-                                formatted_inputs = "\n".join(
-                                    formatted_inputs.split(", ")
-                                )
-                                formatted_inputs = f"```{formatted_inputs}\n```\n\n"
+                                formatted_inputs = "\n".join(input_lines)
+                                formatted_inputs = f"```\n{formatted_inputs}\n```\n\n"
 
                                 dataset_doc_file.write("\n#### INPUTS\n\n")
                                 dataset_doc_file.write(formatted_inputs)
 
-                            if len(return_lines) > 0:
-                                formatted_outputs = ""
-                                for ol in return_lines:
-                                    if "RETURNS" in ol and " AS (" in ol:
-                                        formatted_outputs = (
-                                            ol.strip()
-                                            .removeprefix("RETURNS")
-                                            .removesuffix(" AS (")
-                                            .strip()
-                                        )
-                                    elif "RETURNS" in ol and len(ol) > len("RETURNS"):
-                                        formatted_outputs = (
-                                            ol.strip()
-                                            .removeprefix("RETURNS")
-                                            .removesuffix(" AS (")
-                                            .strip()
-                                        )
-                                    elif "RETURNS" in ol:
-                                        continue
-                                    elif ">" in ol and "AS" in ol:
-                                        formatted_outputs = (
-                                            formatted_outputs
-                                            + "\n"
-                                            + ol.strip().split("AS")[0]
-                                        )
-                                    elif ">" in ol and "," in ol:
-                                        formatted_outputs = (
-                                            formatted_outputs
-                                            + "\n"
-                                            + ol.strip().split(",")[0]
-                                        )
-                                    elif "AS" in ol:
-                                        break
-                                    else:
-                                        formatted_outputs = (
-                                            formatted_outputs
-                                            + "\n"
-                                            + ol.strip().rstrip(",")
-                                        )
-
-                                formatted_outputs = "\n".join(
-                                    formatted_outputs.split(", ")
-                                )
+                            if len(output_lines) > 0:
+                                formatted_outputs = "\n".join(output_lines)
                                 formatted_outputs = f"```\n{formatted_outputs}\n```\n\n"
 
                                 dataset_doc_file.write("\n#### OUTPUTS\n\n")

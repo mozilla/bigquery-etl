@@ -124,6 +124,7 @@ class TestUDFFunctions:
             )
 
         def test_get_output_without_as(self):
+            # note that the odd string formatting below is intentional and spacing affects test results
             assert (
                 get_output(
                     """

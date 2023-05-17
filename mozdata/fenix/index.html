@@ -774,6 +774,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#gplay_installs_by_country" class="md-nav__link">
+    gplay_installs_by_country
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#history_sync" class="md-nav__link">
     history_sync
   </a>
@@ -783,13 +790,6 @@
         <li class="md-nav__item">
   <a href="#installation" class="md-nav__link">
     installation
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installs_by_country" class="md-nav__link">
-    installs_by_country
   </a>
   
 </li>
@@ -2684,6 +2684,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#gplay_installs_by_country" class="md-nav__link">
+    gplay_installs_by_country
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#history_sync" class="md-nav__link">
     history_sync
   </a>
@@ -2693,13 +2700,6 @@
         <li class="md-nav__item">
   <a href="#installation" class="md-nav__link">
     installation
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installs_by_country" class="md-nav__link">
-    installs_by_country
   </a>
   
 </li>
@@ -5230,6 +5230,30 @@ across all channels of the Glean application "Firefox for Android"
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fenix/fog_validation">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fenix/fog_validation/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fenix/fog_validation/metadata.yaml">Metadata File</a> </p>
 <hr />
+<h2 id="gplay_installs_by_country"><a href="#gplay_installs_by_country">gplay_installs_by_country</a></h2>
+<p><strong>Gplay Installs By Country</strong></p>
+<p><code>fenix.gplay_installs_by_country</code></p>
+<p>A view on Fenix Google Play Install Data by Country</p>
+<ul>
+<li>Owners:<p>- <a href="mailto:frank@mozilla.com">frank@mozilla.com</a></p>
+</li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fenix_external>fenix_external</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fenix_external/gplay_installs_by_country_v1>gplay_installs_by_country_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fenix/gplay_installs_by_country">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fenix/gplay_installs_by_country/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fenix/gplay_installs_by_country/metadata.yaml">Metadata File</a> </p>
+<hr />
 <h2 id="history_sync"><a href="#history_sync">history_sync</a></h2>
 <p><strong>App-specific view for Glean ping "history-sync"</strong></p>
 <p><code>fenix.history_sync</code></p>
@@ -5469,86 +5493,6 @@ across all channels of the Glean application "Firefox for Android"
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fenix/installation">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fenix/installation/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fenix/installation/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="installs_by_country"><a href="#installs_by_country">installs_by_country</a></h2>
-<p><strong>Installs By Country</strong></p>
-<p><code>fenix.installs_by_country</code></p>
-<p>Please provide a description for the view</p>
-<ul>
-<li>Owners:<p>- <a href="mailto:example@mozilla.com">example@mozilla.com</a></p>
-</li>
-</ul>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>date</td>
-        <td></td>
-        <td>Date</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>channel</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>country_code</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>country_name</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>region_name</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>subregion_name</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>install_count</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>uninstall_count</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>update_count</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fenix_external>fenix_external</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fenix_external/installs_by_country_v1>installs_by_country_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fenix/installs_by_country">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fenix/installs_by_country/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fenix/installs_by_country/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="logins_sync"><a href="#logins_sync">logins_sync</a></h2>
 <p><strong>App-specific view for Glean ping "logins-sync"</strong></p>

@@ -2,18 +2,18 @@
 
 import enum
 import os
-from collections import OrderedDict
-from datetime import date, datetime
+from datetime import date
 from typing import List, Optional
 
 import attr
 import yaml
-from yaml.representer import Representer
 
 from bigquery_etl.query_scheduling.utils import is_email_or_github_identity
 
 BACKFILL_FILE = "backfill.yaml"
+DEFAULT_WATCHER = "example@mozilla.com"
 DEFAULT_REASON = "Please provide a reason for the backfill and links to any related bugzilla or jira tickets"
+TODAY = date.today()
 
 
 class Literal(str):
@@ -28,7 +28,6 @@ def literal_presenter(dumper, data):
 
 
 yaml.add_representer(Literal, literal_presenter)
-yaml.add_representer(OrderedDict, Representer.represent_dict)
 
 
 class BackfillStatus(enum.Enum):
@@ -48,10 +47,10 @@ class Backfill:
     Docs: https://www.attrs.org
     """
 
-    entry_date: datetime = attr.ib()
-    start_date: datetime = attr.ib()
-    end_date: datetime = attr.ib()
-    excluded_dates: Optional[List[datetime]] = attr.ib()
+    entry_date: date = attr.ib()
+    start_date: date = attr.ib()
+    end_date: date = attr.ib()
+    excluded_dates: Optional[List[date]] = attr.ib()
     reason: str = attr.ib()
     watchers: List[str] = attr.ib()
     status: BackfillStatus = attr.ib()
@@ -59,13 +58,13 @@ class Backfill:
     @entry_date.validator
     def validate_entry_date(self, attribute, value):
         """Check that provided entry date is valid."""
-        if date.today() < value:
+        if TODAY < value:
             raise ValueError(f"Invalid entry date: {value}.")
 
     @start_date.validator
     def validate_start_date(self, attribute, value):
         """Check that provided start date is valid."""
-        if self.end_date < value or self.entry_date < value or date.today() < value:
+        if self.end_date < value or self.entry_date < value or TODAY < value:
             raise ValueError(f"Invalid start date: {value}.")
 
     @end_date.validator
@@ -74,7 +73,7 @@ class Backfill:
         if (
             value < self.start_date
             or self.entry_date < self.end_date
-            or date.today() < self.entry_date
+            or TODAY < self.entry_date
         ):
             raise ValueError(f"Invalid end date: {value}.")
 
@@ -104,11 +103,7 @@ class Backfill:
 
     @staticmethod
     def is_backfill_file(file_path) -> bool:
-        """
-        Check if the provided file is a backfill file.
-
-        Checks if the name and file format match the backfill file requirements.
-        """
+        """Check if the provided file is a backfill file."""
         return os.path.basename(file_path) == BACKFILL_FILE
 
     @classmethod
@@ -116,7 +111,7 @@ class Backfill:
         """
         Parse all backfill entries from the provided yaml file.
 
-        Create a list to store all backfill entries.
+        Create a list to store all backfill entries from yaml file.
         """
         if not cls.is_backfill_file(file):
             raise ValueError(f"Invalid file: {file}.")

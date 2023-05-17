@@ -6,13 +6,18 @@ import pytest
 import yaml
 from click.testing import CliRunner
 
-from bigquery_etl.backfill.parse import DEFAULT_REASON, Backfill, BackfillStatus
+from bigquery_etl.backfill.parse import (
+    DEFAULT_REASON,
+    DEFAULT_WATCHER,
+    Backfill,
+    BackfillStatus,
+)
 from bigquery_etl.cli.backfill import create
 
-DEFAULT_WATCHER = "example@mozilla.com"
 VALID_STATUS = BackfillStatus.DRAFTING
 
 
+# TODO: add tests for watchers & default end dates
 class TestBackfill:
     @pytest.fixture
     def runner(self):

@@ -3,12 +3,12 @@
 import re
 import sys
 import tempfile
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 
 import click
 
-from ..backfill.parse import DEFAULT_REASON, Backfill, BackfillStatus
+from ..backfill.parse import DEFAULT_REASON, DEFAULT_WATCHER, Backfill, BackfillStatus
 from ..backfill.validate import (
     validate_all_entries,
     validate_entries_are_sorted,
@@ -61,7 +61,7 @@ def backfill(ctx):
     "-e",
     help="Last date to be backfilled. Date format: yyyy-mm-dd",
     type=click.DateTime(formats=["%Y-%m-%d"]),
-    default=str(date.today()),
+    default=datetime.today(),
 )
 @click.option(
     "--exclude",
@@ -75,7 +75,7 @@ def backfill(ctx):
     "--watcher",
     "-w",
     help="Watcher of the backfill (email address)",
-    default="example@mozilla.com",
+    default=DEFAULT_WATCHER,
 )
 @click.pass_context
 def create(
@@ -138,7 +138,7 @@ def create(
 
 
 @backfill.command(
-    help="""Validate backfills format and content
+    help="""Validate backfill.yaml format and content.
 
     Examples:
 
@@ -158,7 +158,7 @@ def validate(
     sql_dir,
     project_id,
 ):
-    """Validate backfill files."""
+    """Validate backfill.yaml files."""
     path = Path(sql_dir)
 
     backfill_files = []

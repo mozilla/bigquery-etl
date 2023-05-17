@@ -142,7 +142,8 @@ class GleanAppPingViews(GleanTable):
                         select_expression=select_expression,
                         dataset=channel_dataset,
                         table=view_name,
-                        channel=app.get("app_channel")
+                        channel=app.get("app_channel"),
+                        app_name=release_app["app_name"]
                     )
                 )
 

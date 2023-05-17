@@ -2349,9 +2349,6 @@ python3.10<span class="w"> </span>-m<span class="w"> </span>venv<span class="w">
 <span class="c1"># install python dependencies with pip-sync (provided by pip-tools)</span>
 ./venv/bin/pip-sync<span class="w"> </span>--pip-args<span class="o">=</span>--no-deps<span class="w"> </span>requirements.txt
 
-<span class="c1"># build java dependencies with maven</span>
-mvn<span class="w"> </span>package
-
 <span class="c1"># run pytest with all linters and 8 workers in parallel</span>
 ./venv/bin/pytest<span class="w"> </span>--black<span class="w"> </span>--flake8<span class="w"> </span>--isort<span class="w"> </span>--mypy-ignore-missing-imports<span class="w"> </span>--pydocstyle<span class="w"> </span>-n<span class="w"> </span><span class="m">8</span>
 

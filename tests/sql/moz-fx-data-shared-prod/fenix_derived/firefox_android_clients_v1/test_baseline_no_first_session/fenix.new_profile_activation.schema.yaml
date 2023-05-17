@@ -1,0 +1,4 @@
+---
+- &activations
+  client_id: client-1
+  activated: 1

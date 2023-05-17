@@ -87,7 +87,7 @@ metrics_ping AS (
       SAFE_OFFSET(0)
     ] AS install_source
   FROM
-    org_mozilla_firefox.metrics AS org_mozilla_firefox_metrics
+    `moz-fx-data-shared-prod.org_mozilla_firefox.metrics` AS org_mozilla_firefox_metrics
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -215,7 +215,7 @@ SELECT
   COALESCE(_previous.install_source, _current.install_source) AS install_source,
   STRUCT(
     COALESCE(_previous.metadata.reported_first_session_ping, FALSE)
-    OR COALESCE()_current.metadata.reported_first_session_ping, FALSE) AS reported_first_session_ping,
+    OR COALESCE(_current.metadata.reported_first_session_ping, FALSE) AS reported_first_session_ping,
     COALESCE(_previous.metadata.reported_metrics_ping, FALSE)
     OR COALESCE(_current.metadata.reported_metrics_ping, FALSE) AS reported_metrics_ping,
     CASE

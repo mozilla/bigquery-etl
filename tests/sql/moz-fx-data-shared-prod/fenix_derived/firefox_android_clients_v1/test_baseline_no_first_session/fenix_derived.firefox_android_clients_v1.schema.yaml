@@ -1,0 +1,29 @@
+---
+- &_previous
+  client_id: client-1
+  sample_id: 54
+  first_seen_date:
+  submission_date: 2023-01-01
+  first_run_date: 2023-01-01
+  first_reported_country: XS
+  first_reported_isp: abc
+  channel: release
+  device_manufacturer: abc
+  device_model: abc
+  os_version: Android
+  app_version: 1
+  activated: true
+  adjust_campaign:
+  adjust_ad_group:
+  adjust_creative:
+  adjust_network:
+  install_source:
+  reported_first_session_ping: false
+  reported_metrics_ping: true
+  min_first_session_ping_submission_date:
+  min_metrics_ping_submission_date: 2023-01-01
+  min_first_session_ping_run_date:
+  adjust_network__source_ping:
+  install_source__source_ping:
+  adjust_network__source_ping_datetime:
+  install_source__source_ping_datetime:

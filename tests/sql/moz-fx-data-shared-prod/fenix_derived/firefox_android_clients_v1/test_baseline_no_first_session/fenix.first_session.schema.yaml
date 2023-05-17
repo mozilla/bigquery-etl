@@ -1,0 +1,10 @@
+---
+- &first_session_ping
+  client_info.client_id: client-2
+  sample_id:
+  submission_timestamp:
+  client_info.first_run_date:
+  metrics.string.first_session_campaign:
+  metrics.string.first_session_network:
+  metrics.string.first_session_adgroup:
+  metrics.string.first_session_creative:

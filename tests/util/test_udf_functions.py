@@ -1,35 +1,35 @@
-from bigquery_etl.util.udf_functions import find_input, find_output, get_udf_parameters
+from bigquery_etl.util.udf_functions import get_input, get_output, get_udf_parameters
 
 
 class TestUDFFunctions:
-    class TestFindInput:
-        def test_find_input_single_input(self):
+    class TestGetInput:
+        def test_get_input_single_input(self):
             assert (
-                find_input(
+                get_input(
                     "CREATE OR REPLACE FUNCTION test_dataset.test_udf(input1 INT64)"
                 )
                 == "input1 INT64"
             )
 
-        def test_find_input_multiple_inputs(self):
+        def test_get_input_multiple_inputs(self):
             assert (
-                find_input(
+                get_input(
                     "CREATE OR REPLACE FUNCTION test_thing.test_udf(input1 INT64, input2 FLOAT64, length INT64)"
                 )
                 == "input1 INT64, input2 FLOAT64, length INT64"
             )
 
-        def test_find_input_array_struct_input(self):
+        def test_get_input_array_struct_input(self):
             assert (
-                find_input(
+                get_input(
                     """CREATE OR REPLACE FUNCTION glam.histogram_fill_buckets_dirichlet(input_map ARRAY<STRUCT<key STRING, value FLOAT64>>)"""
                 )
                 == "input_map ARRAY<STRUCT<key STRING, value FLOAT64>>"
             )
 
-        def test_find_input_multiline_input(self):
+        def test_get_input_multiline_input(self):
             assert (
-                find_input(
+                get_input(
                     """CREATE OR REPLACE FUNCTION glam.histogram_fill_buckets_dirichlet(
                 input_map ARRAY<STRUCT<key STRING, value FLOAT64>>,
                 buckets ARRAY<STRING>,
@@ -39,24 +39,62 @@ class TestUDFFunctions:
                 == "input_map ARRAY<STRUCT<key STRING, value FLOAT64>>, buckets ARRAY<STRING>, total_users INT64"
             )
 
-        def test_find_input_none_input(self):
-            assert find_input("some other text") is None
-
-    class TestFindOutput:
-        def test_find_output_single_output(self):
-            assert find_output("RETURNS BOOLEAN AS (") == "BOOLEAN"
-
-        def test_find_output_array_struct_output(self):
+        def test_get_input_multiline_input_with_udf_body(self):
             assert (
-                find_output(
+                get_input(
+                    """CREATE OR REPLACE FUNCTION glam.histogram_fill_buckets_dirichlet(
+                input_map ARRAY<STRUCT<key STRING, value FLOAT64>>,
+                buckets ARRAY<STRING>,
+                total_users INT64
+                ) AS
+                SELECT 1"""
+                )
+                == "input_map ARRAY<STRUCT<key STRING, value FLOAT64>>, buckets ARRAY<STRING>, total_users INT64"
+            )
+
+        def test_get_input_none_input(self):
+            assert get_input("some other text") is None
+
+    class TestGetOutput:
+        def test_get_output_single_output(self):
+            assert get_output("RETURNS BOOLEAN AS (") == "BOOLEAN"
+
+        def test_get_output_array_struct_output(self):
+            assert (
+                get_output(
                     "total_users INT64)RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS ("
                 )
                 == "ARRAY<STRUCT<key STRING, value FLOAT64>>"
             )
 
-        def test_find_output_from_cast(self):
+        def test_get_output_with_udf_body_single_line(self):
             assert (
-                find_output(
+                get_output(
+                    """CREATE OR REPLACE FUNCTION glam.histogram_fill_buckets_dirichlet(
+                        input_map ARRAY<STRUCT<key STRING, value FLOAT64>>,
+                        buckets ARRAY<STRING>,
+                        total_users INT64
+                        ) RETURNS BOOLEAN AS SELECT 1"""
+                )
+                == "BOOLEAN"
+            )
+
+        def test_get_output_with_udf_body_multiline(self):
+            assert (
+                get_output(
+                    """CREATE OR REPLACE FUNCTION glam.histogram_fill_buckets_dirichlet(
+                    input_map ARRAY<STRUCT<key STRING, value FLOAT64>>,
+                    buckets ARRAY<STRING>,
+                    total_users INT64
+                    ) RETURNS BOOLEAN AS
+                    SELECT 1"""
+                )
+                == "BOOLEAN"
+            )
+
+        def test_get_output_from_cast(self):
+            assert (
+                get_output(
                     """CREATE OR REPLACE FUNCTION bits28.from_string(s STRING) AS (
                 IF(
                     REGEXP_CONTAINS(s, r"^[01]{1,28}$"),
@@ -74,12 +112,12 @@ class TestUDFFunctions:
                 == "INT64"
             )
 
-        def test_find_output_procedure(self):
+        def test_get_output_procedure(self):
             pass
 
-        def test_find_output_multiple_matches(self):
+        def test_get_output_multiple_matches(self):
             assert (
-                find_output(
+                get_output(
                     """CREATE OR REPLACE FUNCTION foo.bar(s STRING) RETURNS INT64 AS (
                         SELECT CAST(s AS FLOAT64)
                     )
@@ -442,3 +480,8 @@ class TestUDFFunctions:
             assert get_udf_parameters(
                 "CREATE OR REPLACE PROCEDURE foo.bar(s STRING, b BOOLEAN) AS ..."
             ) == ("s STRING, b BOOLEAN", None)
+
+        def test_get_udf_parameters_from_procedure_2(self):
+            assert get_udf_parameters(
+                "CREATE OR REPLACE PROCEDURE foo.bar(s STRING, b BOOLEAN, OUT sql STRING) AS ..."
+            ) == ("s STRING, b BOOLEAN", "sql STRING")

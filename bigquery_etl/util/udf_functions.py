@@ -4,7 +4,7 @@ import re
 from typing import Optional, Tuple
 
 
-def find_input(sql_text: str) -> Optional[str]:
+def get_input(sql_text: str) -> Optional[str]:
     """Extract input parameters from UDF sql code."""
     cleaned_sql_text = re.sub(r"\s{2,}|\\n", " ", sql_text)
     input_groups = re.search(
@@ -17,7 +17,7 @@ def find_input(sql_text: str) -> Optional[str]:
     return input_string
 
 
-def find_output(sql_text: str) -> Optional[str]:
+def get_output(sql_text: str) -> Optional[str]:
     """Extract output parameters from UDF sql code."""
     cleaned_sql_text = re.sub(r"\s{2,}", " ", sql_text)
     output_groups = re.search(
@@ -30,7 +30,10 @@ def find_output(sql_text: str) -> Optional[str]:
 
 
 def get_udf_parameters(sql_text: str) -> Tuple:
-    """Extract input and output parameters from UDF sql code."""
-    input_part = find_input(sql_text)
-    output_part = find_output(sql_text)
+    """Extract input and output parameters from UDF sql code.
+
+    The sql_text parameter can include UDF's header, body, tests & comments.
+    """
+    input_part = get_input(sql_text)
+    output_part = get_output(sql_text)
     return input_part, output_part

@@ -1465,6 +1465,10 @@ fields:
       mode: NULLABLE
       name: utility_actors_name
       type: STRING
+    - description: Optional, contains a string describing the reason the crash occurred
+      mode: NULLABLE
+      name: shutdown_reason
+      type: STRING
     mode: NULLABLE
     name: metadata
     type: RECORD

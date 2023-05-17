@@ -1211,6 +1211,10 @@ fields:
       mode: NULLABLE
       name: trust_flags
       type: INTEGER
+    - description: The debug ID (or breakpad ID) of the module.
+      mode: NULLABLE
+      name: debug_id
+      type: STRING
     mode: REPEATED
     name: modules
     type: RECORD

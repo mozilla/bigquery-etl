@@ -39,6 +39,9 @@ class TestUDFFunctions:
                 == "input_map ARRAY<STRUCT<key STRING, value FLOAT64>>, buckets ARRAY<STRING>, total_users INT64"
             )
 
+        def test_find_input_none_input(self):
+            assert find_input("some other text") is None
+
     class TestFindOutput:
         def test_find_output_single_output(self):
             assert find_output("RETURNS BOOLEAN AS (") == "BOOLEAN"

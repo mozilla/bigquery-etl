@@ -197,3 +197,6 @@ fields:
 - mode: NULLABLE
   name: activity_segment
   type: STRING
+- mode: NULLABLE
+  name: had_non_impression_engagement
+  type: BOOLEAN

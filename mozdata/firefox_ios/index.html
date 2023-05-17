@@ -2640,16 +2640,27 @@ when generating this record.
         <td>Date</td>
         <td>Yes</td>
     </tr><tr>
-        <td>client_id</td>
-        <td>Unique ID for the client installation.
-</td>
-        <td>String</td>
+        <td>first_seen_date</td>
+        <td></td>
+        <td>Date</td>
         <td>Yes</td>
     </tr><tr>
         <td>sample_id</td>
         <td>Sample ID to limit query results during an analysis.
 </td>
         <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_id</td>
+        <td>Unique ID for the client installation.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>adjust_network</td>
+        <td>The type of source of a client installation.
+</td>
+        <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>adjust_adgroup</td>
@@ -2670,10 +2681,10 @@ when generating this record.
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
-        <td>adjust_network</td>
-        <td>The type of source of a client installation.
+        <td>is_new_profile</td>
+        <td>Determines if a client is a new profile.
 </td>
-        <td>String</td>
+        <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
         <td>searches</td>
@@ -2692,17 +2703,6 @@ when generating this record.
         <td>The number of times a user clicked on an ad on SERP pages.
 </td>
         <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>is_new_profile</td>
-        <td>Determines if a client is a new profile.
-</td>
-        <td>Boolean</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>first_seen_date</td>
-        <td></td>
-        <td>Date</td>
         <td>Yes</td>
     </tr>
 </table>

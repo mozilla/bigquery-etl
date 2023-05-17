@@ -39,6 +39,9 @@ class TestUDFFunctions:
                 == "input_map ARRAY<STRUCT<key STRING, value FLOAT64>>, buckets ARRAY<STRING>, total_users INT64"
             )
 
+        def test_find_input_none_input(self):
+            assert find_input("some other text") is None
+
     class TestFindOutput:
         def test_find_output_single_output(self):
             assert find_output("RETURNS BOOLEAN AS (") == "BOOLEAN"
@@ -75,9 +78,9 @@ class TestUDFFunctions:
         def test_get_udf_parameters_1(self):
             sql_text = """CREATE OR REPLACE FUNCTION test_dataset.test_udf(input1 INT64, input2 FLOAT64) RETURNS INT64 AS SELECT 4"""
 
-            res = get_udf_parameters(sql_text)
-            assert res["input"] == "input1 INT64, input2 FLOAT64"
-            assert res["output"] == "INT64"
+            input_part, output_part = get_udf_parameters(sql_text)
+            assert input_part == "input1 INT64, input2 FLOAT64"
+            assert output_part == "INT64"
 
         def test_get_udf_parameters_2(self):
             sql_text = """/*
@@ -129,9 +132,9 @@ class TestUDFFunctions:
                 assert.false(bits28.active_in_range(0, 0, 1));
             """
 
-            res = get_udf_parameters(sql_text)
-            assert res["input"] == "bits INT64, start_offset INT64, n_bits INT64"
-            assert res["output"] == "BOOLEAN"
+            input_part, output_part = get_udf_parameters(sql_text)
+            assert input_part == "bits INT64, start_offset INT64, n_bits INT64"
+            assert output_part == "BOOLEAN"
 
         def test_get_udf_parameters_3(self):
             sql_text = """-- udf_bucket
@@ -156,9 +159,9 @@ class TestUDFFunctions:
                 assert.equals(0.0, glam.histogram_bucket_from_value(["1", "0"], 0.99)),
             """
 
-            res = get_udf_parameters(sql_text)
-            assert res["input"] == "buckets ARRAY<STRING>, val FLOAT64"
-            assert res["output"] == "FLOAT64"
+            input_part, output_part = get_udf_parameters(sql_text)
+            assert input_part == "buckets ARRAY<STRING>, val FLOAT64"
+            assert output_part == "FLOAT64"
 
         def test_get_udf_parameters_4(self):
             sql_text = """-- udf_fill_buckets
@@ -244,12 +247,12 @@ class TestUDFFunctions:
                     )
                 )
             """
-            res = get_udf_parameters(sql_text)
+            input_part, output_part = get_udf_parameters(sql_text)
             assert (
-                res["input"]
+                input_part
                 == "input_map ARRAY<STRUCT<key STRING, value FLOAT64>>, buckets ARRAY<STRING>, total_users INT64"
             )
-            assert res["output"] == "ARRAY<STRUCT<key STRING, value FLOAT64>>"
+            assert output_part == "ARRAY<STRUCT<key STRING, value FLOAT64>>"
 
         def test_get_udf_parameters_5(self):
             sql_text = """-- udf_get_values
@@ -299,9 +302,9 @@ class TestUDFFunctions:
                 )
             """
 
-            res = get_udf_parameters(sql_text)
-            assert res["input"] == "required ARRAY<FLOAT64>, `values` ARRAY<FLOAT64>"
-            assert res["output"] == "ARRAY<STRUCT<key STRING, value FLOAT64>>"
+            input_part, output_part = get_udf_parameters(sql_text)
+            assert input_part == "required ARRAY<FLOAT64>, `values` ARRAY<FLOAT64>"
+            assert output_part == "ARRAY<STRUCT<key STRING, value FLOAT64>>"
 
         def test_get_udf_parameters_6(self):
             sql_text = """/*
@@ -336,6 +339,6 @@ class TestUDFFunctions:
                 assert.equals(2, bits28.from_string('10')),
                 assert.equals(5, bits28.from_string('101'));
             """
-            res = get_udf_parameters(sql_text)
-            assert res["input"] == "s STRING"
-            assert res["output"] is None
+            input_part, output_part = get_udf_parameters(sql_text)
+            assert input_part == "s STRING"
+            assert output_part is None

@@ -1,4 +1,4 @@
-friendly_name: Installs By Country
+friendly_name: Gplay Installs By Country
 description: |-
   Google Play Store installs, broken down by country.
   Grain is (date, channel, country_code).

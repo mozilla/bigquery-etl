@@ -31,6 +31,13 @@ description: |-
   It is used by Looker.
 """
 
+# Fields that exist in the source dataset,
+# but are manually overriden in the constructed SQL.
+# MUST be kept in sync with the query in `app_ping_view.view.sql`
+OVERRIDEN_FIELDS = [
+    "normalized_channel"
+]
+
 PATH = Path(os.path.dirname(__file__))
 
 
@@ -135,6 +142,7 @@ class GleanAppPingViews(GleanTable):
                         select_expression=select_expression,
                         dataset=channel_dataset,
                         table=view_name,
+                        channel=app.get("app_channel")
                     )
                 )
 
@@ -197,8 +205,9 @@ class GleanAppPingViews(GleanTable):
                 # field exists in app schema
 
                 if node == app_schema_nodes[node_name]:
-                    # field (and all nested fields) are identical, so just query it
-                    select_expr.append(f"{'.'.join(path + [node_name])}")
+                    if node_name not in OVERRIDEN_FIELDS:
+                        # field (and all nested fields) are identical, so just query it
+                        select_expr.append(f"{'.'.join(path + [node_name])}")
                 else:
                     # fields, and/or nested fields are not identical
                     if dtype == "RECORD":

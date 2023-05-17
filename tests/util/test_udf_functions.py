@@ -54,7 +54,7 @@ class TestUDFFunctions:
                 == "ARRAY<STRUCT<key STRING, value FLOAT64>>"
             )
 
-        def test_find_output_without_return(self):
+        def test_find_output_from_cast(self):
             assert (
                 find_output(
                     """CREATE OR REPLACE FUNCTION bits28.from_string(s STRING) AS (
@@ -71,7 +71,21 @@ class TestUDFFunctions:
                 )
                 );"""
                 )
-                is None
+                == "INT64"
+            )
+
+        def test_find_output_procedure(self):
+            pass
+
+        def test_find_output_multiple_matches(self):
+            assert (
+                find_output(
+                    """CREATE OR REPLACE FUNCTION foo.bar(s STRING) RETURNS INT64 AS (
+                        SELECT CAST(s AS FLOAT64)
+                    )
+                    """
+                )
+                == "INT64"
             )
 
     class TestGetUDFParameters:
@@ -247,12 +261,10 @@ class TestUDFFunctions:
                     )
                 )
             """
-            input_part, output_part = get_udf_parameters(sql_text)
-            assert (
-                input_part
-                == "input_map ARRAY<STRUCT<key STRING, value FLOAT64>>, buckets ARRAY<STRING>, total_users INT64"
+            assert get_udf_parameters(sql_text) == (
+                "input_map ARRAY<STRUCT<key STRING, value FLOAT64>>, buckets ARRAY<STRING>, total_users INT64",
+                "ARRAY<STRUCT<key STRING, value FLOAT64>>",
             )
-            assert output_part == "ARRAY<STRUCT<key STRING, value FLOAT64>>"
 
         def test_get_udf_parameters_5(self):
             sql_text = """-- udf_get_values
@@ -302,9 +314,10 @@ class TestUDFFunctions:
                 )
             """
 
-            input_part, output_part = get_udf_parameters(sql_text)
-            assert input_part == "required ARRAY<FLOAT64>, `values` ARRAY<FLOAT64>"
-            assert output_part == "ARRAY<STRUCT<key STRING, value FLOAT64>>"
+            assert get_udf_parameters(sql_text) == (
+                "required ARRAY<FLOAT64>, `values` ARRAY<FLOAT64>",
+                "ARRAY<STRUCT<key STRING, value FLOAT64>>",
+            )
 
         def test_get_udf_parameters_6(self):
             sql_text = """/*
@@ -339,6 +352,93 @@ class TestUDFFunctions:
                 assert.equals(2, bits28.from_string('10')),
                 assert.equals(5, bits28.from_string('101'));
             """
-            input_part, output_part = get_udf_parameters(sql_text)
-            assert input_part == "s STRING"
-            assert output_part is None
+            assert get_udf_parameters(sql_text) == ("s STRING", "INT64")
+
+        def test_get_udf_parameters_procedure_1(self):
+            sql_text = """ CREATE OR REPLACE PROCEDURE
+                event_analysis.create_count_steps_query(
+                    project STRING,
+                    dataset STRING,
+                    events ARRAY<STRUCT<category STRING, event_name STRING>>,
+                    OUT sql STRING
+                )
+                BEGIN
+                DECLARE i INT64 DEFAULT 1;
+
+                DECLARE event STRUCT<category STRING, event_name STRING>;
+
+                DECLARE event_filter STRING;
+
+                DECLARE event_filters ARRAY<STRING> DEFAULT[];
+
+                WHILE
+                    i <= ARRAY_LENGTH(events)
+                DO
+                    SET event = events[ORDINAL(i)];
+
+                    SET event_filter = CONCAT(
+                    '(category = "',
+                    event.category,
+                    '"',
+                    ' AND event = "',
+                    event.event_name,
+                    '")'
+                    );
+
+                    SET event_filters = ARRAY_CONCAT(event_filters, [event_filter]);
+
+                    SET i = i + 1;
+                END WHILE;
+
+                SET sql = CONCAT(
+                    '\n  SELECT',
+                    '\n    event_analysis.aggregate_match_strings(ARRAY_AGG(event_analysis.event_index_to_match_string(index))) AS count_regex',
+                    '\n  FROM',
+                    '\n    `',
+                    project,
+                    '`.',
+                    dataset,
+                    '.event_types',
+                    '\n  WHERE',
+                    '\n    ',
+                    ARRAY_TO_STRING(event_filters, ' OR ')
+                );
+                END;
+
+                -- Tests
+                BEGIN
+                DECLARE result_sql STRING;
+
+                DECLARE expect STRING DEFAULT \"\"\"
+                SELECT
+                    event_analysis.aggregate_match_strings(ARRAY_AGG(event_analysis.event_index_to_match_string(index))) AS count_regex
+                FROM
+                    `moz-fx-data-shared-prod`.org_mozilla_firefox.event_types
+                WHERE
+                    (category = "collections" AND event = "saved") OR (category = "collections" AND event = "tabs_added")
+                \"\"\";
+
+                CALL event_analysis.create_count_steps_query(
+                    'moz-fx-data-shared-prod',
+                    'org_mozilla_firefox',
+                    [
+                    STRUCT('collections' AS category, 'saved' AS event_name),
+                    STRUCT('collections' AS category, 'tabs_added' AS event_name)
+                    ],
+                    result_sql
+                );
+
+                SELECT
+                    assert.sql_equals(expect, result_sql);
+                END;
+
+            """
+            assert get_udf_parameters(sql_text) == (
+                "project STRING, dataset STRING, events ARRAY<STRUCT<category STRING, event_name STRING>>",
+                "sql STRING",
+            )
+
+        def test_get_udf_parameters_from_procedure_1(self):
+            assert get_udf_parameters(
+                "CREATE OR REPLACE PROCEDURE foo.bar(s STRING, b BOOLEAN) AS ..."
+            ) == ("s STRING, b BOOLEAN", None)

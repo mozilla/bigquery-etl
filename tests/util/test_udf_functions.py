@@ -39,6 +39,19 @@ class TestUDFFunctions:
                 == "input_map ARRAY<STRUCT<key STRING, value FLOAT64>>, buckets ARRAY<STRING>, total_users INT64"
             )
 
+        def test_find_input_multiline_input_with_udf_body(self):
+            assert (
+                find_input(
+                    """CREATE OR REPLACE FUNCTION glam.histogram_fill_buckets_dirichlet(
+                input_map ARRAY<STRUCT<key STRING, value FLOAT64>>,
+                buckets ARRAY<STRING>,
+                total_users INT64
+                ) AS
+                SELECT 1"""
+                )
+                == "input_map ARRAY<STRUCT<key STRING, value FLOAT64>>, buckets ARRAY<STRING>, total_users INT64"
+            )
+
         def test_find_input_none_input(self):
             assert find_input("some other text") is None
 
@@ -52,6 +65,31 @@ class TestUDFFunctions:
                     "total_users INT64)RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS ("
                 )
                 == "ARRAY<STRUCT<key STRING, value FLOAT64>>"
+            )
+
+        def test_find_output_with_udf_body_single_line(self):
+            assert (
+                find_output(
+                    """CREATE OR REPLACE FUNCTION glam.histogram_fill_buckets_dirichlet(
+                        input_map ARRAY<STRUCT<key STRING, value FLOAT64>>,
+                        buckets ARRAY<STRING>,
+                        total_users INT64
+                        ) RETURNS BOOLEAN AS SELECT 1"""
+                )
+                == "BOOLEAN"
+            )
+
+        def test_find_output_with_udf_body_multiline(self):
+            assert (
+                find_output(
+                    """CREATE OR REPLACE FUNCTION glam.histogram_fill_buckets_dirichlet(
+                    input_map ARRAY<STRUCT<key STRING, value FLOAT64>>,
+                    buckets ARRAY<STRING>,
+                    total_users INT64
+                    ) RETURNS BOOLEAN AS
+                    SELECT 1"""
+                )
+                == "BOOLEAN"
             )
 
         def test_find_output_without_return(self):

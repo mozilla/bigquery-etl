@@ -26,7 +26,10 @@ def find_output(sql_text: str) -> Optional[str]:
 
 
 def get_udf_parameters(sql_text: str) -> Tuple:
-    """Extract input and output parameters from UDF sql code."""
+    """Extract input and output parameters from UDF sql code.
+
+    The sql_text parameter can include UDF's header, body, tests & comments.
+    """
     input_part = find_input(sql_text)
     output_part = find_output(sql_text)
     return input_part, output_part

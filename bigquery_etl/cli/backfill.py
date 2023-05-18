@@ -7,11 +7,19 @@ from datetime import date, datetime
 from pathlib import Path
 
 import click
+import yaml
 
-from ..backfill.parse import DEFAULT_REASON, DEFAULT_WATCHER, Backfill, BackfillStatus
+from ..backfill.parse import (
+    BACKFILL_FILE,
+    DEFAULT_REASON,
+    DEFAULT_WATCHER,
+    Backfill,
+    BackfillStatus,
+)
 from ..backfill.validate import (
-    validate_all_entries,
+    validate_duplicate_entry_dates,
     validate_entries_are_sorted,
+    validate_file,
     validate_overlap_dates,
 )
 from ..cli.utils import paths_matching_name_pattern, project_id_option, sql_dir_option
@@ -27,7 +35,6 @@ def backfill(ctx):
     """Create the CLI group for the backfill command."""
     # create temporary directory generated content is written to
     # the directory will be deleted automatically after the command exits
-    # TODO:  confirm if this is needed
     ctx.ensure_object(dict)
     ctx.obj["TMP_DIR"] = ctx.with_resource(tempfile.TemporaryDirectory())
 
@@ -39,7 +46,7 @@ def backfill(ctx):
     Examples:
 
     \b
-    ./bqetl backfill create mozdata.telemetry_derived.deviations_v1 \\
+    ./bqetl backfill create moz-fx-data-shared-prod.telemetry_derived.deviations_v1 \\
       --start_date=2021-03-01 \\
       --end_date=2021-03-31 \\
       --exclude=2021-03-03 \\
@@ -119,11 +126,12 @@ def create(
 
     backfills = []
 
-    backfill_file = query_path / "backfill.yaml"
+    backfill_file = query_path / BACKFILL_FILE
 
     if backfill_file.exists():
         backfills = Backfill.entries_from_file(backfill_file)
         for entry in backfills:
+            validate_duplicate_entry_dates(backfill, entry)
             if entry.status == BackfillStatus.DRAFTING:
                 validate_overlap_dates(backfill, entry)
 
@@ -140,14 +148,18 @@ def create(
 
 
 @backfill.command(
-    help="""Validate backfill.yaml format and content.
+    help="""Validate backfill.yaml file format and content.
+    Use the `--project_id` option to change the project the query is added to;
+    default is `moz-fx-data-shared-prod`.
 
     Examples:
 
-    ./bqetl backfill validate mozdata.telemetry_derived.clients_daily_v6
+    ./bqetl backfill validate moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
 
     \b
     # validate all backfill.yaml files if table is not specified
+
+    ./bqetl backfill validate
     """
 )
 @click.argument("qualified_table_name", required=False)
@@ -177,25 +189,35 @@ def validate(
             sys.exit(1)
 
         path = Path(sql_dir)
-
         query_path = path / project_id / dataset_id / table_id
 
         if not query_path.exists():
             click.echo(f"{project_id}.{dataset_id}.{table_id}" + " does not exist")
             sys.exit(1)
 
-        backfill_file = path / project_id / dataset_id / table_id / "backfill.yaml"
-
+        backfill_file = path / project_id / dataset_id / table_id / BACKFILL_FILE
         backfill_files.append(backfill_file)
 
     else:
         backfill_files = paths_matching_name_pattern(
-            None, sql_dir, project_id, ["backfill.yaml"]
+            None, sql_dir, project_id, [BACKFILL_FILE]
         )
 
     for file in backfill_files:
         try:
-            backfills = Backfill.entries_from_file(file)
-            validate_all_entries(backfills)
+            validate_file(file)
+        except yaml.YAMLError as e:
+            click.echo(f"{file} contains the following error:\n {e}")
+            sys.exit(1)
         except ValueError as e:
-            raise Exception("{0} contains the following error:\n {1}".format(file, e))
+            click.echo(f"{file} contains the following error:\n {e}")
+            sys.exit(1)
+
+    if qualified_table_name:
+        click.echo(
+            f"{BACKFILL_FILE} has been validated for {project_id}.{dataset_id}.{table_id} "
+        )
+    elif backfill_files:
+        click.echo(
+            f"All {BACKFILL_FILE} files have been validated for project {project_id}"
+        )

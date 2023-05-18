@@ -160,7 +160,7 @@ jobs:
 #      - *attach_generated_sql
 #      - *copy_staged_sql
 #      - run:
-#          name: Verify that backfill files are valid
+#          name: Verify that backfill.yaml files are valid
 #          command: |
 #            PATH="venv/bin:$PATH" script/bqetl backfill validate
   validate-metadata:
@@ -653,6 +653,7 @@ workflows:
           requires:
             - deploy-changes-to-stage
       - integration
+#      - validate-backfills
       - validate-dags:
           requires:
             - generate-dags

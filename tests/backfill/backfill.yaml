@@ -3,7 +3,7 @@
   end_date: 2021-05-03
   excluded_dates:
   - 2021-02-03
-  reason: test_reason
+  reason: Please provide a reason for the backfill and links to any related bugzilla or jira tickets
   watchers:
-  - test@example.org
+  - example@mozilla.com
   status: Drafting

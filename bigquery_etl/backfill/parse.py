@@ -16,6 +16,22 @@ DEFAULT_REASON = "Please provide a reason for the backfill and links to any rela
 TODAY = date.today()
 
 
+class UniqueKeyLoader(yaml.SafeLoader):
+    """YAML loader to check duplicate keys."""
+
+    def construct_mapping(self, node, deep=False):
+        """Create mapping while checking for duplicate keys."""
+        mapping = set()
+        for key_node, value_node in node.value:
+            key = self.construct_object(key_node, deep=deep)
+            if key in mapping:
+                raise ValueError(
+                    f"Backfill entry already exists with entry date: {key}."
+                )
+            mapping.add(key)
+        return super().construct_mapping(node, deep)
+
+
 class Literal(str):
     """Represents a YAML literal."""
 
@@ -81,19 +97,13 @@ class Backfill:
     def validate_excluded_dates(self, attribute, value):
         """Check that provided excluded dates are valid."""
         if not all(map(lambda e: self.start_date < e < self.end_date, value)):
-            raise ValueError(f"Invalid excluded date: {value}.")
+            raise ValueError(f"Invalid excluded dates: {value}.")
 
     @watchers.validator
     def validate_watchers(self, attribute, value):
         """Check that provided email addresses or github identities for owners are valid."""
         if not value or not all(map(lambda e: is_email_or_github_identity(e), value)):
-            raise ValueError(f"Invalid email or Github identity for watchers: {value}.")
-
-    @reason.validator
-    def validate_reason(self, attribute, value):
-        """Check that provided reason is not empty."""
-        if not value or len(value) == 0:
-            raise ValueError(f"Invalid reason: {value}.")
+            raise ValueError(f"Invalid Watchers: {value}.")
 
     @status.validator
     def validate_status(self, attribute, value):
@@ -120,7 +130,7 @@ class Backfill:
 
         with open(file, "r") as yaml_stream:
             try:
-                backfills = yaml.safe_load(yaml_stream) or []
+                backfills = yaml.load(yaml_stream, Loader=UniqueKeyLoader) or []
 
                 for entry_date, entry in backfills.items():
                     excluded_dates = []

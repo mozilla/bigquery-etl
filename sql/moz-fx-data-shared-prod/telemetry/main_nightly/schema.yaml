@@ -14159,6 +14159,12 @@ fields:
     - mode: NULLABLE
       name: webext_dnr_validate_rules_ms
       type: STRING
+    - mode: NULLABLE
+      name: use_counter2_css_property_baseline_source_document
+      type: STRING
+    - mode: NULLABLE
+      name: use_counter2_css_property_baseline_source_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -29391,6 +29397,12 @@ fields:
           type: STRING
         - mode: NULLABLE
           name: pwmgr_signup_form_detection_ms
+          type: STRING
+        - mode: NULLABLE
+          name: use_counter2_css_property_baseline_source_document
+          type: STRING
+        - mode: NULLABLE
+          name: use_counter2_css_property_baseline_source_page
           type: STRING
         mode: NULLABLE
         name: histograms

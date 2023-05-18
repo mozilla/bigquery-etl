@@ -1,4 +1,4 @@
-attrs==22.1.0
+attrs==23.1.0
 authlib==1.2.0
 black==23.1.0
 cattrs==22.2.0

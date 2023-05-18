@@ -224,3 +224,7 @@ with DAG(
     contextual_services_derived__event_aggregates_suggest__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
+    contextual_services_derived__request_payload_suggest__v2.set_upstream(
+        wait_for_copy_deduplicate_all
+    )

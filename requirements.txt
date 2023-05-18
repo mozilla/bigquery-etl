@@ -1257,9 +1257,9 @@ sqlglot==12.2.0 \
     --hash=sha256:89881765af75ffa1bca21d7957251f774083286cbe243f313ea856f7a4f5d84d \
     --hash=sha256:ae46c3b3bbddb5a180ed8e8a62c2a127a69165cc44a86149cf1266b8004225db
     # via -r requirements.in
-sqlparse==0.4.3 \
-    --hash=sha256:0323c0ec29cd52bceabc1b4d9d579e311f3e4961b98d174201d5622a23b85e34 \
-    --hash=sha256:69ca804846bb114d2ec380e4360a8a340db83f0ccf3afceeb1404df028f57268
+sqlparse==0.4.4 \
+    --hash=sha256:5430a4fe2ac7d0f93e66f1efc6e1338a41884b7ddf2a350cedd20ccc4d9d28f3 \
+    --hash=sha256:d446183e84b8349fa3061f0fe7f06ca94ba65b426946ffebe6e3e8295332420c
     # via -r requirements.in
 stripe==4.2.0 \
     --hash=sha256:8ce03bfc099465740e33890000c454e79316c8730e45ad1efbaec3d52a019d05 \

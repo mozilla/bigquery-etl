@@ -12,7 +12,7 @@ CREATE OR REPLACE FUNCTION udf.array_slice(arr ANY TYPE, start_index INT64, end_
       BETWEEN start_index
       AND end_index
     ORDER BY
-      offset
+      offset_
   )
 );
 

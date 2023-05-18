@@ -558,7 +558,9 @@ SELECT
       metrics.timing_distribution.glean_upload_send_failure,
       metrics.timing_distribution.glean_upload_send_success,
       metrics.timing_distribution.glean_validation_shutdown_wait,
-      metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait
+      metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
+      metrics.timing_distribution.first_session_adjust_attribution_time,
+      metrics.timing_distribution.play_store_attribution_attribution_time
     ) AS timing_distribution,
     metrics.jwe,
     metrics.memory_distribution,
@@ -1002,7 +1004,9 @@ SELECT
       metrics.timing_distribution.glean_upload_send_failure,
       metrics.timing_distribution.glean_upload_send_success,
       metrics.timing_distribution.glean_validation_shutdown_wait,
-      metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait
+      metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
+      metrics.timing_distribution.first_session_adjust_attribution_time,
+      metrics.timing_distribution.play_store_attribution_attribution_time
     ) AS timing_distribution,
     metrics.jwe,
     metrics.memory_distribution,

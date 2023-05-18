@@ -341,6 +341,36 @@ fields:
       mode: NULLABLE
       name: first_session_distribution_id
       type: STRING
+    - description: 'The name of the utm_campaign that is responsible for this installation.
+
+        '
+      mode: NULLABLE
+      name: play_store_attribution_campaign
+      type: STRING
+    - description: 'The name of the utm_content that is responsible for this installation.
+
+        '
+      mode: NULLABLE
+      name: play_store_attribution_content
+      type: STRING
+    - description: 'The name of the utm_medium that is responsible for this installation.
+
+        '
+      mode: NULLABLE
+      name: play_store_attribution_medium
+      type: STRING
+    - description: 'The name of the utm_source that is responsible for this installation.
+
+        '
+      mode: NULLABLE
+      name: play_store_attribution_source
+      type: STRING
+    - description: 'The name of the utm_term that is responsible for this installation.
+
+        '
+      mode: NULLABLE
+      name: play_store_attribution_term
+      type: STRING
     mode: NULLABLE
     name: string
     type: RECORD

@@ -241,6 +241,21 @@ fields:
     - mode: NULLABLE
       name: first_session_distribution_id
       type: STRING
+    - mode: NULLABLE
+      name: play_store_attribution_campaign
+      type: STRING
+    - mode: NULLABLE
+      name: play_store_attribution_content
+      type: STRING
+    - mode: NULLABLE
+      name: play_store_attribution_medium
+      type: STRING
+    - mode: NULLABLE
+      name: play_store_attribution_source
+      type: STRING
+    - mode: NULLABLE
+      name: play_store_attribution_term
+      type: STRING
     mode: NULLABLE
     name: string
     type: RECORD

@@ -9,6 +9,7 @@
   is_new_profile: true
   activity_segment: lots_of_activity
   browser_name: Firefox Desktop
+  had_non_impression_engagement: true
   search_interactions:
     - search_engine: engine1
       search_access_point: urlbar
@@ -22,6 +23,7 @@
   topsite_interactions:
     - topsite_advertiser_name: advertiser_1
       topsite_position: 1
+      topsite_tile_id: tile_1
       topsite_clicks: 1
       sponsored_topsite_clicks: 1
       organic_topsite_clicks: 0

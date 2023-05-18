@@ -3,6 +3,7 @@ authlib==1.2.0
 black==23.1.0
 cattrs==22.2.0
 click==8.1.3
+exceptiongroup==1.1.0 # for backwards compatibility with python < 3.11
 flake8<5 # pytest-flake8 does not support flake8 5+
 gcsfs==2022.5.0
 gcloud==0.18.3
@@ -23,18 +24,19 @@ pathos==0.2.9
 pip-tools==6.12.2
 pre-commit==2.20.0
 pyarrow==8.0.0
-pyjnius==1.4.2
 pytest-black==0.3.12
 pytest-flake8==1.1.1
 pytest-isort==3.1.0
 pytest-mypy==0.10.0
 pytest-pydocstyle==2.3.2
 pytest-xdist==3.0.2
-pytest==7.2.0
+pytest==7.3.1
 PyYAML==6.0
 smart_open==6.2.0
+sqlglot==12.2.0
 sqlparse==0.4.3
 stripe==4.2.0
+tomli==2.0.1 # for backwards compatibility with python < 3.11
 types-python-dateutil==2.8.19.2
 types-pytz==2022.6.0.1
 types-PyYAML==6.0.12.1
@@ -42,4 +44,4 @@ types-requests==2.28.11.2
 types-ujson==5.5.0
 typing==3.7.4.3
 ujson==5.5.0
-yamllint==1.28.0
+yamllint==1.31.0

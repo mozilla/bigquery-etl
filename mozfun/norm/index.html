@@ -1986,34 +1986,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#vpn_attribution-udf" class="md-nav__link">
-    vpn_attribution (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#os-udf" class="md-nav__link">
-    os (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#glean_baseline_client_info-udf" class="md-nav__link">
-    glean_baseline_client_info (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#glean_ping_info-udf" class="md-nav__link">
-    glean_ping_info (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#extract_version-udf" class="md-nav__link">
     extract_version (UDF)
   </a>
@@ -2030,6 +2002,13 @@
         <li class="md-nav__item">
   <a href="#diff_months-udf" class="md-nav__link">
     diff_months (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glean_ping_info-udf" class="md-nav__link">
+    glean_ping_info (UDF)
   </a>
   
 </li>
@@ -2319,34 +2298,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#vpn_attribution-udf" class="md-nav__link">
-    vpn_attribution (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#os-udf" class="md-nav__link">
-    os (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#glean_baseline_client_info-udf" class="md-nav__link">
-    glean_baseline_client_info (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#glean_ping_info-udf" class="md-nav__link">
-    glean_ping_info (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#extract_version-udf" class="md-nav__link">
     extract_version (UDF)
   </a>
@@ -2363,6 +2314,13 @@
         <li class="md-nav__item">
   <a href="#diff_months-udf" class="md-nav__link">
     diff_months (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glean_ping_info-udf" class="md-nav__link">
+    glean_ping_info (UDF)
   </a>
   
 </li>
@@ -2398,22 +2356,6 @@
 
 <h1 id="norm">norm</h1>
 <p>Functions for normalizing data.</p>
-<h2 id="vpn_attribution-udf">vpn_attribution (UDF)</h2>
-<p>Accepts vpn attribution fields as input and returns a struct of normalized fields.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/vpn_attribution">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/vpn_attribution/metadata.yaml">Edit</a></p>
-<h2 id="os-udf">os (UDF)</h2>
-<p>Normalize an operating system string to one of the three major desktop
-platforms, one of the two major mobile platforms, or "Other".</p>
-<p>This is a reimplementation of
-<a href="&lt;https://github.com/mozilla/gcp-ingestion/blob/a6928fb089f1652856147c4605df715f327edfcd/ingestion-beam/src/main/java/com/mozilla/telemetry/transforms/NormalizeAttributes.java#L52-L74">logic used in the data pipeline</a>&gt;
-  to populate <code>normalized_os</code>.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/os">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/os/metadata.yaml">Edit</a></p>
-<h2 id="glean_baseline_client_info-udf">glean_baseline_client_info (UDF)</h2>
-<p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_baseline_client_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_baseline_client_info/metadata.yaml">Edit</a></p>
-<h2 id="glean_ping_info-udf">glean_ping_info (UDF)</h2>
-<p>Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_ping_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_ping_info/metadata.yaml">Edit</a></p>
 <h2 id="extract_version-udf">extract_version (UDF)</h2>
 <p>Extracts numeric version data from a version string like
 <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code>.</p>
@@ -2498,61 +2440,37 @@ platforms, one of the two major mobile platforms, or "Other".</p>
 <span class="n">canonical</span><span class="w"> </span><span class="n">reference</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">whether</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">given</span><span class="w"> </span><span class="n">application</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">included</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">KPI</span>
 <span class="n">reporting</span><span class="p">.</span><span class="w"> </span><span class="n">Additional</span><span class="w"> </span><span class="n">fields</span><span class="w"> </span><span class="n">may</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">added</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="n">years</span><span class="p">.</span>
 
-<span class="n">The</span><span class="w"> </span><span class="o">`</span><span class="n">normalized_os</span><span class="o">`</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="n">that</span><span class="s1">&#39;s passed in should be the top-level</span>
-<span class="s1">`normalized_os` value present in any ping table or you may want</span>
-<span class="s1">to wrap a raw value in `mozfun.norm.os`</span>
-<span class="s1">like `mozfun.norm.product_info(app_name, mozfun.norm.os(os))`.</span>
+<span class="n">The</span><span class="w"> </span><span class="o">`</span><span class="n">normalized_os</span><span class="o">`</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="n">that</span><span class="err">&#39;</span><span class="n">s</span><span class="w"> </span><span class="n">passed</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">top</span><span class="o">-</span><span class="k">level</span>
+<span class="o">`</span><span class="n">normalized_os</span><span class="o">`</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="n">present</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">any</span><span class="w"> </span><span class="n">ping</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">may</span><span class="w"> </span><span class="n">want</span>
+<span class="k">to</span><span class="w"> </span><span class="n">wrap</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">raw</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">`</span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">os</span><span class="o">`</span>
+<span class="k">like</span><span class="w"> </span><span class="o">`</span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">product_info</span><span class="p">(</span><span class="n">app_name</span><span class="p">,</span><span class="w"> </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">os</span><span class="p">(</span><span class="n">os</span><span class="p">))</span><span class="o">`</span><span class="p">.</span>
 
-<span class="s1">This function also tolerates passing in a `product` value as</span>
-<span class="s1">`legacy_app_name` so that this function is still useful for derived tables</span>
-<span class="s1">which have thrown away the raw `app_name` value from legacy pings.</span>
-
-
-<span class="s1">The mappings are as follows:</span>
-
-<span class="s1">legacy_app_name  | normalized_os | app_name         | product          | canonical_app_name              | 2019  | 2020  | 2021</span>
-<span class="s1">---------------- | ------------- | ---------------- | ---------------- | ------------------------------- | ----- | ----  | ----</span>
-<span class="s1">Firefox          | *             | firefox_desktop  | Firefox          | Firefox for Desktop             | true  | true  | true</span>
-<span class="s1">Fenix            | Android       | fenix            | Fenix            | Firefox for Android (Fenix)     | true  | true  | true</span>
-<span class="s1">Fennec           | Android       | fennec           | Fennec           | Firefox for Android (Fennec)    | true  | true  | true</span>
-<span class="s1">Firefox Preview  | Android       | firefox_preview  | Firefox Preview  | Firefox Preview for Android     | true  | true  | true</span>
-<span class="s1">Fennec           | iOS           | firefox_ios      | Firefox iOS      | Firefox for iOS                 | true  | true  | true</span>
-<span class="s1">FirefoxForFireTV | Android       | firefox_fire_tv  | Firefox Fire TV  | Firefox for Fire TV             | false | false | false</span>
-<span class="s1">FirefoxConnect   | Android       | firefox_connect  | Firefox Echo     | Firefox for Echo Show           | true  | true  | false</span>
-<span class="s1">Zerda            | Android       | firefox_lite     | Firefox Lite     | Firefox Lite                    | true  | true  | false</span>
-<span class="s1">Zerda_cn         | Android       | firefox_lite_cn  | Firefox Lite CN  | Firefox Lite (China)            | false | false | false</span>
-<span class="s1">Focus            | Android       | focus_android    | Focus Android    | Firefox Focus for Android       | true  | true  | true</span>
-<span class="s1">Focus            | iOS           | focus_ios        | Focus iOS        | Firefox Focus for iOS           | true  | true  | true</span>
-<span class="s1">Klar             | Android       | klar_android     | Klar Android     | Firefox Klar for Android        | false | false | false</span>
-<span class="s1">Klar             | iOS           | klar_ios         | Klar iOS         | Firefox Klar for iOS            | false | false | false</span>
-<span class="s1">Lockbox          | Android       | lockwise_android | Lockwise Android | Lockwise for Android            | true  | true  | false</span>
-<span class="s1">Lockbox          | iOS           | lockwise_ios     | Lockwise iOS     | Lockwise for iOS                | true  | true  | false</span>
-<span class="s1">FirefoxReality*  | Android       | firefox_reality  | Firefox Reality  | Firefox Reality                 | false | false | false</span>
-<span class="s1">[Source](https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/product_info)  |  [Edit](https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/product_info/metadata.yaml)</span>
+<span class="n">This</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="n">also</span><span class="w"> </span><span class="n">tolerates</span><span class="w"> </span><span class="n">passing</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">`</span><span class="n">product</span><span class="o">`</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="k">as</span>
+<span class="o">`</span><span class="n">legacy_app_name</span><span class="o">`</span><span class="w"> </span><span class="n">so</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">still</span><span class="w"> </span><span class="n">useful</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">derived</span><span class="w"> </span><span class="n">tables</span>
+<span class="n">which</span><span class="w"> </span><span class="n">have</span><span class="w"> </span><span class="n">thrown</span><span class="w"> </span><span class="n">away</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">raw</span><span class="w"> </span><span class="o">`</span><span class="n">app_name</span><span class="o">`</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">legacy</span><span class="w"> </span><span class="n">pings</span><span class="p">.</span>
 
 
+<span class="n">The</span><span class="w"> </span><span class="n">mappings</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">follows</span><span class="p">:</span>
 
-<span class="s1">## truncate_version (UDF)</span>
-
-<span class="s1">Truncates a version string like `&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;` to</span>
-<span class="s1">either the major or minor version. The return value is `NUMERIC`,</span>
-<span class="s1">which means that you can sort the results without fear (e.g. 100</span>
-<span class="s1">will be categorized as greater than 80, which isn&#39;</span><span class="n">t</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">case</span><span class="w"> </span><span class="k">when</span>
-<span class="n">sorting</span><span class="w"> </span><span class="n">lexigraphically</span><span class="p">).</span>
-
-<span class="k">For</span><span class="w"> </span><span class="n">example</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;5.1.0&quot;</span><span class="w"> </span><span class="n">would</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">translated</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="o">`</span><span class="mi">5</span><span class="p">.</span><span class="mi">1</span><span class="o">`</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="k">is</span>
-<span class="ss">&quot;minor&quot;</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="o">`</span><span class="mi">5</span><span class="o">`</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">major</span><span class="p">.</span>
-
-<span class="k">If</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">version</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">major</span><span class="w"> </span><span class="k">and</span><span class="o">/</span><span class="k">or</span><span class="w"> </span><span class="n">minor</span><span class="w"> </span><span class="k">version</span><span class="p">,</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="k">left</span>
-<span class="n">unchanged</span><span class="w"> </span><span class="p">(</span><span class="k">for</span><span class="w"> </span><span class="n">example</span><span class="w"> </span><span class="ss">&quot;10&quot;</span><span class="w"> </span><span class="n">would</span><span class="w"> </span><span class="n">stay</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="o">`</span><span class="mi">10</span><span class="o">`</span><span class="w"> </span><span class="k">when</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="n">through</span><span class="w"> </span><span class="n">this</span>
-<span class="k">function</span><span class="p">,</span><span class="w"> </span><span class="k">no</span><span class="w"> </span><span class="n">matter</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">arguments</span><span class="p">).</span>
-
-<span class="n">This</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">useful</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="k">grouping</span><span class="w"> </span><span class="n">Linux</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">Mac</span><span class="w"> </span><span class="n">operating</span><span class="w"> </span><span class="k">system</span><span class="w"> </span><span class="k">versions</span><span class="w"> </span><span class="n">inside</span>
-<span class="k">aggregate</span><span class="w"> </span><span class="n">datasets</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="n">queries</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">there</span><span class="w"> </span><span class="n">may</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">many</span><span class="w"> </span><span class="n">different</span><span class="w"> </span><span class="n">patch</span>
-<span class="n">releases</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">field</span><span class="p">.</span>
-
-
-<span class="p">[</span><span class="k">Source</span><span class="p">](</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">mozilla</span><span class="o">/</span><span class="n">bigquery</span><span class="o">-</span><span class="n">etl</span><span class="o">/</span><span class="nb">blob</span><span class="o">/</span><span class="k">generated</span><span class="o">-</span><span class="k">sql</span><span class="o">/</span><span class="k">sql</span><span class="o">/</span><span class="n">mozfun</span><span class="o">/</span><span class="n">norm</span><span class="o">/</span><span class="n">truncate_version</span><span class="p">)</span><span class="w">  </span><span class="o">|</span><span class="w">  </span><span class="p">[</span><span class="n">Edit</span><span class="p">](</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">mozilla</span><span class="o">/</span><span class="n">bigquery</span><span class="o">-</span><span class="n">etl</span><span class="o">/</span><span class="n">edit</span><span class="o">/</span><span class="k">generated</span><span class="o">-</span><span class="k">sql</span><span class="o">/</span><span class="k">sql</span><span class="o">/</span><span class="n">mozfun</span><span class="o">/</span><span class="n">norm</span><span class="o">/</span><span class="n">truncate_version</span><span class="o">/</span><span class="n">metadata</span><span class="p">.</span><span class="n">yaml</span><span class="p">)</span>
+<span class="n">legacy_app_name</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">normalized_os</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">app_name</span><span class="w">         </span><span class="o">|</span><span class="w"> </span><span class="n">product</span><span class="w">          </span><span class="o">|</span><span class="w"> </span><span class="n">canonical_app_name</span><span class="w">              </span><span class="o">|</span><span class="w"> </span><span class="mi">2019</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="mi">2020</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="mi">2021</span>
+<span class="c1">---------------- | ------------- | ---------------- | ---------------- | ------------------------------- | ----- | ----  | ----</span>
+<span class="n">Firefox</span><span class="w">          </span><span class="o">|</span><span class="w"> </span><span class="o">*</span><span class="w">             </span><span class="o">|</span><span class="w"> </span><span class="n">firefox_desktop</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w">          </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Desktop</span><span class="w">             </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">true</span>
+<span class="n">Fenix</span><span class="w">            </span><span class="o">|</span><span class="w"> </span><span class="n">Android</span><span class="w">       </span><span class="o">|</span><span class="w"> </span><span class="n">fenix</span><span class="w">            </span><span class="o">|</span><span class="w"> </span><span class="n">Fenix</span><span class="w">            </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Android</span><span class="w"> </span><span class="p">(</span><span class="n">Fenix</span><span class="p">)</span><span class="w">     </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">true</span>
+<span class="n">Fennec</span><span class="w">           </span><span class="o">|</span><span class="w"> </span><span class="n">Android</span><span class="w">       </span><span class="o">|</span><span class="w"> </span><span class="n">fennec</span><span class="w">           </span><span class="o">|</span><span class="w"> </span><span class="n">Fennec</span><span class="w">           </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Android</span><span class="w"> </span><span class="p">(</span><span class="n">Fennec</span><span class="p">)</span><span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">true</span>
+<span class="n">Firefox</span><span class="w"> </span><span class="n">Preview</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">Android</span><span class="w">       </span><span class="o">|</span><span class="w"> </span><span class="n">firefox_preview</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="n">Preview</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="n">Preview</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Android</span><span class="w">     </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">true</span>
+<span class="n">Fennec</span><span class="w">           </span><span class="o">|</span><span class="w"> </span><span class="n">iOS</span><span class="w">           </span><span class="o">|</span><span class="w"> </span><span class="n">firefox_ios</span><span class="w">      </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="n">iOS</span><span class="w">      </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">iOS</span><span class="w">                 </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">true</span>
+<span class="n">FirefoxForFireTV</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Android</span><span class="w">       </span><span class="o">|</span><span class="w"> </span><span class="n">firefox_fire_tv</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="n">Fire</span><span class="w"> </span><span class="n">TV</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Fire</span><span class="w"> </span><span class="n">TV</span><span class="w">             </span><span class="o">|</span><span class="w"> </span><span class="k">false</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">false</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">false</span>
+<span class="n">FirefoxConnect</span><span class="w">   </span><span class="o">|</span><span class="w"> </span><span class="n">Android</span><span class="w">       </span><span class="o">|</span><span class="w"> </span><span class="n">firefox_connect</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="n">Echo</span><span class="w">     </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Echo</span><span class="w"> </span><span class="k">Show</span><span class="w">           </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">false</span>
+<span class="n">Zerda</span><span class="w">            </span><span class="o">|</span><span class="w"> </span><span class="n">Android</span><span class="w">       </span><span class="o">|</span><span class="w"> </span><span class="n">firefox_lite</span><span class="w">     </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="n">Lite</span><span class="w">     </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="n">Lite</span><span class="w">                    </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">false</span>
+<span class="n">Zerda_cn</span><span class="w">         </span><span class="o">|</span><span class="w"> </span><span class="n">Android</span><span class="w">       </span><span class="o">|</span><span class="w"> </span><span class="n">firefox_lite_cn</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="n">Lite</span><span class="w"> </span><span class="n">CN</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="n">Lite</span><span class="w"> </span><span class="p">(</span><span class="n">China</span><span class="p">)</span><span class="w">            </span><span class="o">|</span><span class="w"> </span><span class="k">false</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">false</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">false</span>
+<span class="n">Focus</span><span class="w">            </span><span class="o">|</span><span class="w"> </span><span class="n">Android</span><span class="w">       </span><span class="o">|</span><span class="w"> </span><span class="n">focus_android</span><span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="n">Focus</span><span class="w"> </span><span class="n">Android</span><span class="w">    </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="n">Focus</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Android</span><span class="w">       </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">true</span>
+<span class="n">Focus</span><span class="w">            </span><span class="o">|</span><span class="w"> </span><span class="n">iOS</span><span class="w">           </span><span class="o">|</span><span class="w"> </span><span class="n">focus_ios</span><span class="w">        </span><span class="o">|</span><span class="w"> </span><span class="n">Focus</span><span class="w"> </span><span class="n">iOS</span><span class="w">        </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="n">Focus</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">iOS</span><span class="w">           </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">true</span>
+<span class="n">Klar</span><span class="w">             </span><span class="o">|</span><span class="w"> </span><span class="n">Android</span><span class="w">       </span><span class="o">|</span><span class="w"> </span><span class="n">klar_android</span><span class="w">     </span><span class="o">|</span><span class="w"> </span><span class="n">Klar</span><span class="w"> </span><span class="n">Android</span><span class="w">     </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="n">Klar</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Android</span><span class="w">        </span><span class="o">|</span><span class="w"> </span><span class="k">false</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">false</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">false</span>
+<span class="n">Klar</span><span class="w">             </span><span class="o">|</span><span class="w"> </span><span class="n">iOS</span><span class="w">           </span><span class="o">|</span><span class="w"> </span><span class="n">klar_ios</span><span class="w">         </span><span class="o">|</span><span class="w"> </span><span class="n">Klar</span><span class="w"> </span><span class="n">iOS</span><span class="w">         </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="n">Klar</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">iOS</span><span class="w">            </span><span class="o">|</span><span class="w"> </span><span class="k">false</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">false</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">false</span>
+<span class="n">Lockbox</span><span class="w">          </span><span class="o">|</span><span class="w"> </span><span class="n">Android</span><span class="w">       </span><span class="o">|</span><span class="w"> </span><span class="n">lockwise_android</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Lockwise</span><span class="w"> </span><span class="n">Android</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Lockwise</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Android</span><span class="w">            </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">false</span>
+<span class="n">Lockbox</span><span class="w">          </span><span class="o">|</span><span class="w"> </span><span class="n">iOS</span><span class="w">           </span><span class="o">|</span><span class="w"> </span><span class="n">lockwise_ios</span><span class="w">     </span><span class="o">|</span><span class="w"> </span><span class="n">Lockwise</span><span class="w"> </span><span class="n">iOS</span><span class="w">     </span><span class="o">|</span><span class="w"> </span><span class="n">Lockwise</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">iOS</span><span class="w">                </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">true</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">false</span>
+<span class="n">FirefoxReality</span><span class="o">*</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">Android</span><span class="w">       </span><span class="o">|</span><span class="w"> </span><span class="n">firefox_reality</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="n">Reality</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">Firefox</span><span class="w"> </span><span class="n">Reality</span><span class="w">                 </span><span class="o">|</span><span class="w"> </span><span class="k">false</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">false</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">false</span>
+<span class="p">[</span><span class="k">Source</span><span class="p">](</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">mozilla</span><span class="o">/</span><span class="n">bigquery</span><span class="o">-</span><span class="n">etl</span><span class="o">/</span><span class="nb">blob</span><span class="o">/</span><span class="k">generated</span><span class="o">-</span><span class="k">sql</span><span class="o">/</span><span class="k">sql</span><span class="o">/</span><span class="n">mozfun</span><span class="o">/</span><span class="n">norm</span><span class="o">/</span><span class="n">product_info</span><span class="p">)</span><span class="w">  </span><span class="o">|</span><span class="w">  </span><span class="p">[</span><span class="n">Edit</span><span class="p">](</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">mozilla</span><span class="o">/</span><span class="n">bigquery</span><span class="o">-</span><span class="n">etl</span><span class="o">/</span><span class="n">edit</span><span class="o">/</span><span class="k">generated</span><span class="o">-</span><span class="k">sql</span><span class="o">/</span><span class="k">sql</span><span class="o">/</span><span class="n">mozfun</span><span class="o">/</span><span class="n">norm</span><span class="o">/</span><span class="n">product_info</span><span class="o">/</span><span class="n">metadata</span><span class="p">.</span><span class="n">yaml</span><span class="p">)</span>
 
 
 
@@ -2657,6 +2575,9 @@ and <code>org_mozilla_fenix_nightly</code></li>
 <p>Determine the number of whole months after grace period between start and end. Month is dependent on timezone, so start and end must both be datetimes, or both be dates, in the correct timezone. Grace period can be used to account for billing delay, usually 1 day, and is counted after months. When inclusive is FALSE, start and end are not included in whole months.
 For example, diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-01', grace_period =&gt; INTERVAL 0 day, inclusive =&gt; FALSE) returns 1, because start plus two months plus grace period is not less than end. Changing inclusive to TRUE returns 2, because start plus two months plus grace period is less than or equal to end. diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-02 00:00:00.000001', grace_period =&gt; INTERVAL 1 DAY, inclusive =&gt; FALSE) returns 2, because start plus two months plus grace period is less than end.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/diff_months">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/diff_months/metadata.yaml">Edit</a></p>
+<h2 id="glean_ping_info-udf">glean_ping_info (UDF)</h2>
+<p>Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_ping_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_ping_info/metadata.yaml">Edit</a></p>
 <h2 id="metadata-udf">metadata (UDF)</h2>
 <p>Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/metadata">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/metadata/metadata.yaml">Edit</a></p>
@@ -2886,6 +2807,34 @@ UTC midnight beginning 2014-12-28.</p>
 <p>After using this you may wish to <code>DATETIME_TRUNC(result, DAY)</code> for
 grouping by build date.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/fenix_build_to_datetime">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/fenix_build_to_datetime/metadata.yaml">Edit</a></p>
+<h2 id="truncate_version-udf">truncate_version (UDF)</h2>
+<p>Truncates a version string like <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code> to
+either the major or minor version. The return value is <code>NUMERIC</code>,
+which means that you can sort the results without fear (e.g. 100
+will be categorized as greater than 80, which isn't the case when
+sorting lexigraphically).</p>
+<p>For example, "5.1.0" would be translated to <code>5.1</code> if the parameter is
+"minor" or <code>5</code> if the parameter is major.</p>
+<p>If the version is only a major and/or minor version, then it will be left
+unchanged (for example "10" would stay as <code>10</code> when run through this
+function, no matter what the arguments).</p>
+<p>This is useful for grouping Linux and Mac operating system versions inside
+aggregate datasets or queries where there may be many different patch
+releases in the field.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/truncate_version">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/truncate_version/metadata.yaml">Edit</a></p>
+<h2 id="vpn_attribution-udf">vpn_attribution (UDF)</h2>
+<p>Accepts vpn attribution fields as input and returns a struct of normalized fields.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/vpn_attribution">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/vpn_attribution/metadata.yaml">Edit</a></p>
+<h2 id="os-udf">os (UDF)</h2>
+<p>Normalize an operating system string to one of the three major desktop
+platforms, one of the two major mobile platforms, or "Other".</p>
+<p>This is a reimplementation of
+<a href="&lt;https://github.com/mozilla/gcp-ingestion/blob/a6928fb089f1652856147c4605df715f327edfcd/ingestion-beam/src/main/java/com/mozilla/telemetry/transforms/NormalizeAttributes.java#L52-L74">logic used in the data pipeline</a>&gt;
+  to populate <code>normalized_os</code>.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/os">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/os/metadata.yaml">Edit</a></p>
+<h2 id="glean_baseline_client_info-udf">glean_baseline_client_info (UDF)</h2>
+<p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_baseline_client_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_baseline_client_info/metadata.yaml">Edit</a></p>
 
 
 

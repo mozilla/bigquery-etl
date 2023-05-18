@@ -1,3 +1,18 @@
+CREATE TEMP FUNCTION udf_use_old_data(old_aggs ANY TYPE)
+  RETURNS ARRAY<STRUCT<
+    first_bucket INT64,
+    last_bucket INT64,
+    num_buckets INT64,
+    metric STRING,
+    metric_type STRING,
+    key STRING,
+    process STRING,
+    agg_type STRING,
+    aggregates ARRAY<STRUCT<key STRING, value INT64>>>> AS (
+    (
+      SELECT old_aggs
+    )
+  );
 CREATE TEMP FUNCTION udf_merged_user_data(old_aggs ANY TYPE, new_aggs ANY TYPE)
   RETURNS ARRAY<STRUCT<
     first_bucket INT64,
@@ -67,6 +82,7 @@ clients_histogram_aggregates_partition AS
 
 clients_histogram_aggregates_old AS
   (SELECT
+    submission_date,
     sample_id,
     client_id,
     os,
@@ -82,6 +98,7 @@ clients_histogram_aggregates_old AS
 
 merged AS
   (SELECT
+    old_data.submission_date AS old_sub_date,
     COALESCE(old_data.sample_id, new_data.sample_id) AS sample_id,
     COALESCE(old_data.client_id, new_data.client_id) AS client_id,
     COALESCE(old_data.os, new_data.os) AS os,
@@ -114,5 +131,9 @@ SELECT
   app_version,
   app_build_id,
   channel,
-  udf_merged_user_data(old_aggs, new_aggs) AS histogram_aggregates
+  CASE old_sub_date
+    WHEN DATE_SUB(DATE(@submission_date), INTERVAL 1 DAY) THEN udf_merged_user_data(old_aggs, new_aggs)
+    ELSE udf_use_old_data(old_aggs)
+    END
+    AS histogram_aggregates
 FROM merged

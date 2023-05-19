@@ -3,7 +3,7 @@
 import re
 import sys
 import tempfile
-from datetime import date, datetime
+from datetime import datetime
 from pathlib import Path
 
 import click
@@ -13,12 +13,12 @@ from ..backfill.parse import (
     BACKFILL_FILE,
     DEFAULT_REASON,
     DEFAULT_WATCHER,
+    TODAY,
     Backfill,
     BackfillStatus,
 )
 from ..backfill.validate import (
     validate_duplicate_entry_dates,
-    validate_entries_are_sorted,
     validate_file,
     validate_overlap_dates,
 )
@@ -76,7 +76,7 @@ def backfill(ctx):
     multiple=True,
     help="Dates excluded from backfill. Date format: yyyy-mm-dd",
     type=click.DateTime(formats=["%Y-%m-%d"]),
-    default=[],
+    default=None,
 )
 @click.option(
     "--watcher",
@@ -94,7 +94,10 @@ def create(
     exclude,
     watcher,
 ):
-    """CLI command for creating a new backfill entry."""
+    """CLI command for creating a new backfill entry in backfill.yaml file.
+
+    A backfill.yaml file will be created if it does not already exist.
+    """
     try:
         match = QUALIFIED_TABLE_NAME_RE.match(qualified_table_name)
         project_id = match.group("project_id")
@@ -115,7 +118,7 @@ def create(
         sys.exit(1)
 
     backfill = Backfill(
-        entry_date=date.today(),
+        entry_date=TODAY,
         start_date=start_date.date(),
         end_date=end_date.date(),
         excluded_dates=[e.date() for e in list(exclude)],
@@ -137,11 +140,8 @@ def create(
 
     backfills.append(backfill)
 
-    sorted_backfills = sorted(backfills, reverse=True)
-    validate_entries_are_sorted(sorted_backfills)
-
     backfill_file.write_text(
-        "\n".join(backfill.to_yaml() for backfill in sorted_backfills)
+        "\n".join(backfill.to_yaml() for backfill in sorted(backfills, reverse=True))
     )
 
     click.echo(f"Created backfill entry in {backfill_file}")
@@ -149,8 +149,6 @@ def create(
 
 @backfill.command(
     help="""Validate backfill.yaml file format and content.
-    Use the `--project_id` option to change the project the query is added to;
-    default is `moz-fx-data-shared-prod`.
 
     Examples:
 
@@ -158,6 +156,10 @@ def create(
 
     \b
     # validate all backfill.yaml files if table is not specified
+    Use the `--project_id` option to change the project to be validated;
+    default is `moz-fx-data-shared-prod`.
+
+    Examples:
 
     ./bqetl backfill validate
     """

@@ -15,8 +15,6 @@ DEFAULT_STATUS = BackfillStatus.DRAFTING
 
 TEST_DIR = Path(__file__).parent.parent
 
-DEFAULT_STATUS = BackfillStatus.DRAFTING
-
 TEST_BACKFILL_1 = Backfill(
     date(2021, 5, 3),
     date(2021, 1, 3),
@@ -50,9 +48,25 @@ class TestParseBackfill(object):
         assert backfill.watchers == [DEFAULT_WATCHER]
         assert backfill.status == DEFAULT_STATUS
 
+    def test_invalid_watcher(self):
+        with pytest.raises(ValueError) as e:
+            invalid_watcher = ["test.org"]
+            Backfill(
+                TEST_BACKFILL_1.entry_date,
+                TEST_BACKFILL_1.start_date,
+                TEST_BACKFILL_1.end_date,
+                TEST_BACKFILL_1.excluded_dates,
+                TEST_BACKFILL_1.reason,
+                invalid_watcher,
+                TEST_BACKFILL_1.status,
+            )
+
+        assert "Invalid" in str(e.value)
+        assert "watchers" in str(e.value)
+
     def test_invalid_watchers(self):
-        with pytest.raises(ValueError):
-            invalid_watchers = ["test.org"]
+        with pytest.raises(ValueError) as e:
+            invalid_watchers = [DEFAULT_WATCHER, "test.org"]
             Backfill(
                 TEST_BACKFILL_1.entry_date,
                 TEST_BACKFILL_1.start_date,
@@ -63,9 +77,12 @@ class TestParseBackfill(object):
                 TEST_BACKFILL_1.status,
             )
 
+        assert "Invalid" in str(e.value)
+        assert "watchers" in str(e.value)
+
     def test_no_watchers(self):
-        with pytest.raises(ValueError):
-            invalid_watchers = []
+        with pytest.raises(ValueError) as e:
+            invalid_watchers = [""]
             Backfill(
                 TEST_BACKFILL_1.entry_date,
                 TEST_BACKFILL_1.start_date,
@@ -75,6 +92,9 @@ class TestParseBackfill(object):
                 invalid_watchers,
                 TEST_BACKFILL_1.status,
             )
+
+        assert "Invalid" in str(e.value)
+        assert "watchers" in str(e.value)
 
     def test_multiple_watchers(self):
         valid_watchers = TEST_BACKFILL_1.watchers + [
@@ -112,7 +132,7 @@ class TestParseBackfill(object):
             assert backfill.status.value == valid_status[i]
 
     def test_invalid_entry_date_greater_than_today(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError) as e:
             invalid_entry_date = date.today() + timedelta(days=1)
             Backfill(
                 invalid_entry_date,
@@ -124,9 +144,11 @@ class TestParseBackfill(object):
                 TEST_BACKFILL_1.status,
             )
 
-    def test_invalid_start_date_greater_than_today(self):
-        with pytest.raises(ValueError):
-            invalid_start_date = date.today() + timedelta(days=1)
+        assert "Invalid entry date" in str(e.value)
+
+    def test_invalid_start_date_greater_than_entry_date(self):
+        with pytest.raises(ValueError) as e:
+            invalid_start_date = TEST_BACKFILL_1.entry_date + timedelta(days=1)
             Backfill(
                 TEST_BACKFILL_1.entry_date,
                 invalid_start_date,
@@ -136,10 +158,12 @@ class TestParseBackfill(object):
                 TEST_BACKFILL_1.watchers,
                 TEST_BACKFILL_1.status,
             )
+
+        assert "Invalid start date" in str(e.value)
 
     def test_invalid_start_date_greater_than_end_date(self):
-        with pytest.raises(ValueError):
-            invalid_start_date = date(2023, 5, 4)
+        with pytest.raises(ValueError) as e:
+            invalid_start_date = TEST_BACKFILL_1.end_date + timedelta(days=1)
             Backfill(
                 TEST_BACKFILL_1.entry_date,
                 invalid_start_date,
@@ -150,9 +174,11 @@ class TestParseBackfill(object):
                 TEST_BACKFILL_1.status,
             )
 
-    def test_invalid_end_date_greater_than_today(self):
-        with pytest.raises(ValueError):
-            invalid_end_date = date.today() + timedelta(days=1)
+        assert "Invalid start date" in str(e.value)
+
+    def test_invalid_end_date_greater_than_entry_date(self):
+        with pytest.raises(ValueError) as e:
+            invalid_end_date = TEST_BACKFILL_1.entry_date + timedelta(days=1)
             Backfill(
                 TEST_BACKFILL_1.entry_date,
                 TEST_BACKFILL_1.start_date,
@@ -163,24 +189,26 @@ class TestParseBackfill(object):
                 TEST_BACKFILL_1.status,
             )
 
-    # TODO: Add tests for excluded_dates
+        assert "Invalid end date" in str(e.value)
 
-    def test_invalid_excluded_date_greater_than_end_date_one(self):
-        with pytest.raises(ValueError):
-            invalid_excluded_date = [TEST_BACKFILL_1.end_date + timedelta(days=1)]
+    def test_invalid_excluded_dates_greater_than_end_date(self):
+        with pytest.raises(ValueError) as e:
+            invalid_excluded_dates = [TEST_BACKFILL_1.end_date + timedelta(days=1)]
             Backfill(
                 TEST_BACKFILL_1.entry_date,
                 TEST_BACKFILL_1.start_date,
                 TEST_BACKFILL_1.end_date,
-                invalid_excluded_date,
+                invalid_excluded_dates,
                 TEST_BACKFILL_1.reason,
                 TEST_BACKFILL_1.watchers,
                 TEST_BACKFILL_1.status,
             )
 
-    def test_invalid_excluded_date_greater_than_end_date_multiple(self):
-        with pytest.raises(ValueError):
-            invalid_excluded_date = [
+        assert "Invalid excluded dates" in str(e.value)
+
+    def test_invalid_excluded_dates_greater_than_end_date_multiple(self):
+        with pytest.raises(ValueError) as e:
+            invalid_excluded_dates = [
                 TEST_BACKFILL_1.end_date,
                 TEST_BACKFILL_1.end_date + timedelta(days=1),
             ]
@@ -188,28 +216,32 @@ class TestParseBackfill(object):
                 TEST_BACKFILL_1.entry_date,
                 TEST_BACKFILL_1.start_date,
                 TEST_BACKFILL_1.end_date,
-                invalid_excluded_date,
+                invalid_excluded_dates,
                 TEST_BACKFILL_1.reason,
                 TEST_BACKFILL_1.watchers,
                 TEST_BACKFILL_1.status,
             )
 
-    def test_invalid_excluded_date_less_than_start_date_one(self):
-        with pytest.raises(ValueError):
-            invalid_excluded_date = [TEST_BACKFILL_1.start_date - timedelta(days=1)]
+        assert "Invalid excluded dates" in str(e.value)
+
+    def test_invalid_excluded_dates_less_than_start_date(self):
+        with pytest.raises(ValueError) as e:
+            invalid_excluded_dates = [TEST_BACKFILL_1.start_date - timedelta(days=1)]
             Backfill(
                 TEST_BACKFILL_1.entry_date,
                 TEST_BACKFILL_1.start_date,
                 TEST_BACKFILL_1.end_date,
-                invalid_excluded_date,
+                invalid_excluded_dates,
                 TEST_BACKFILL_1.reason,
                 TEST_BACKFILL_1.watchers,
                 TEST_BACKFILL_1.status,
             )
 
-    def test_invalid_excluded_date_less_than_start_date_multiple(self):
-        with pytest.raises(ValueError):
-            invalid_excluded_date = [
+        assert "Invalid excluded dates" in str(e.value)
+
+    def test_invalid_excluded_dates_less_than_start_date_multiple(self):
+        with pytest.raises(ValueError) as e:
+            invalid_excluded_dates = [
                 TEST_BACKFILL_1.start_date,
                 TEST_BACKFILL_1.start_date - timedelta(days=1),
             ]
@@ -217,11 +249,13 @@ class TestParseBackfill(object):
                 TEST_BACKFILL_1.entry_date,
                 TEST_BACKFILL_1.start_date,
                 TEST_BACKFILL_1.end_date,
-                invalid_excluded_date,
+                invalid_excluded_dates,
                 TEST_BACKFILL_1.reason,
                 TEST_BACKFILL_1.watchers,
                 TEST_BACKFILL_1.status,
             )
+
+        assert "Invalid excluded dates" in str(e.value)
 
     def test_invalid_status(self):
         with pytest.raises(AttributeError):
@@ -248,7 +282,6 @@ class TestParseBackfill(object):
 
     def test_of_backfill_file_one(self):
         backfill_file = TEST_DIR / "backfill" / BACKFILL_FILE
-
         backfills = Backfill.entries_from_file(backfill_file)
         backfill = backfills[0]
 
@@ -261,7 +294,7 @@ class TestParseBackfill(object):
         assert backfill.status == DEFAULT_STATUS
 
     def test_entries_from_file_multiple(self):
-        backfill_file = TEST_DIR / "backfill" / "test_dir" / BACKFILL_FILE
+        backfill_file = TEST_DIR / "backfill" / "test_dir_multiple" / BACKFILL_FILE
         backfills = Backfill.entries_from_file(backfill_file)
 
         backfill_1 = TEST_BACKFILL_1
@@ -272,14 +305,14 @@ class TestParseBackfill(object):
 
     def test_invalid_file(self):
         backfill_file = TEST_DIR / "test" / "invalid_file_name.yaml"
-
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError) as e:
             Backfill.entries_from_file(backfill_file)
 
-    def test_of_non_existing_table(self):
-        with pytest.raises(FileNotFoundError):
-            backfill_file = TEST_DIR / "non_exist_folder" / BACKFILL_FILE
+        assert "Invalid file" in str(e.value)
 
+    def test_of_non_existing_table(self):
+        backfill_file = TEST_DIR / "non_exist_folder" / BACKFILL_FILE
+        with pytest.raises(FileNotFoundError):
             Backfill.entries_from_file(backfill_file)
 
     def test_is_backfill_file(self):
@@ -299,14 +332,11 @@ class TestParseBackfill(object):
             "bugzilla\n"
             "    or jira tickets\n"
             "  watchers:\n"
-            "  - example@mozilla.com\n"
+            "  - nobody@mozilla.com\n"
             "  status: Drafting\n"
         )
 
         results = TEST_BACKFILL_1.to_yaml()
-
-        print(results)
-
         assert results == expected
 
     def test_to_yaml_no_excluded_dates(self):
@@ -318,12 +348,11 @@ class TestParseBackfill(object):
             "bugzilla\n"
             "    or jira tickets\n"
             "  watchers:\n"
-            "  - example@mozilla.com\n"
+            "  - nobody@mozilla.com\n"
             "  status: Drafting\n"
         )
 
         TEST_BACKFILL_1.excluded_dates = []
-
         results = TEST_BACKFILL_1.to_yaml()
 
         assert results == expected

@@ -3,7 +3,8 @@
 import enum
 import os
 from datetime import date
-from typing import List, Optional
+from pathlib import Path
+from typing import List
 
 import attr
 import yaml
@@ -11,7 +12,7 @@ import yaml
 from bigquery_etl.query_scheduling.utils import is_email_or_github_identity
 
 BACKFILL_FILE = "backfill.yaml"
-DEFAULT_WATCHER = "example@mozilla.com"
+DEFAULT_WATCHER = "nobody@mozilla.com"
 DEFAULT_REASON = "Please provide a reason for the backfill and links to any related bugzilla or jira tickets"
 TODAY = date.today()
 
@@ -66,7 +67,7 @@ class Backfill:
     entry_date: date = attr.ib()
     start_date: date = attr.ib()
     end_date: date = attr.ib()
-    excluded_dates: Optional[List[date]] = attr.ib()
+    excluded_dates: List[date] = attr.ib()
     reason: str = attr.ib()
     watchers: List[str] = attr.ib()
     status: BackfillStatus = attr.ib()
@@ -80,30 +81,28 @@ class Backfill:
     @start_date.validator
     def validate_start_date(self, attribute, value):
         """Check that provided start date is valid."""
-        if self.end_date < value or self.entry_date < value or TODAY < value:
+        if self.end_date < value or self.entry_date < value:
             raise ValueError(f"Invalid start date: {value}.")
 
     @end_date.validator
     def validate_end_date(self, attribute, value):
         """Check that provided end date is valid."""
-        if (
-            value < self.start_date
-            or self.entry_date < self.end_date
-            or TODAY < self.entry_date
-        ):
+        if value < self.start_date or self.entry_date < self.end_date:
             raise ValueError(f"Invalid end date: {value}.")
 
     @excluded_dates.validator
     def validate_excluded_dates(self, attribute, value):
-        """Check that provided excluded dates are valid."""
+        """Check that provided excluded date(s) is/are valid."""
         if not all(map(lambda e: self.start_date < e < self.end_date, value)):
             raise ValueError(f"Invalid excluded dates: {value}.")
 
     @watchers.validator
     def validate_watchers(self, attribute, value):
-        """Check that provided email addresses or github identities for owners are valid."""
-        if not value or not all(map(lambda e: is_email_or_github_identity(e), value)):
-            raise ValueError(f"Invalid Watchers: {value}.")
+        """Check that provided watchers are valid."""
+        if not value or not all(
+            map(lambda e: e and is_email_or_github_identity(e), value)
+        ):
+            raise ValueError(f"Invalid email or Github identity for watchers: {value}.")
 
     @status.validator
     def validate_status(self, attribute, value):
@@ -112,25 +111,25 @@ class Backfill:
             raise ValueError(f"Invalid status: {value.name}.")
 
     @staticmethod
-    def is_backfill_file(file_path) -> bool:
+    def is_backfill_file(file_path: Path) -> bool:
         """Check if the provided file is a backfill file."""
         return os.path.basename(file_path) == BACKFILL_FILE
 
     @classmethod
-    def entries_from_file(cls, file):
+    def entries_from_file(cls, file: Path) -> list:
         """
         Parse all backfill entries from the provided yaml file.
 
-        Create a list to store all backfill entries from yaml file.
+        Return a list with all backfill entries.
         """
         if not cls.is_backfill_file(file):
             raise ValueError(f"Invalid file: {file}.")
 
-        backfill_entries = []
+        backfill_entries: List[Backfill] = []
 
         with open(file, "r") as yaml_stream:
             try:
-                backfills = yaml.load(yaml_stream, Loader=UniqueKeyLoader) or []
+                backfills = yaml.load(yaml_stream, Loader=UniqueKeyLoader) or {}
 
                 for entry_date, entry in backfills.items():
                     excluded_dates = []
@@ -160,7 +159,7 @@ class Backfill:
             self.entry_date: {
                 "start_date": self.start_date,
                 "end_date": self.end_date,
-                "excluded_dates": self.excluded_dates,
+                "excluded_dates": sorted(self.excluded_dates),
                 "reason": self.reason,
                 "watchers": self.watchers,
                 "status": self.status.value,

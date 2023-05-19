@@ -211,9 +211,6 @@ def validate(
         except (yaml.YAMLError, ValueError) as e:
             click.echo(f"{file} contains the following error:\n {e}")
             sys.exit(1)
-        except ValueError as e:
-            click.echo(f"{file} contains the following error:\n {e}")
-            sys.exit(1)
 
     if qualified_table_name:
         click.echo(

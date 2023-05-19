@@ -67,12 +67,11 @@ def validate_entries(backfills: list) -> None:
         validate_reason(backfill_entry_1)
         validate_excluded_dates(backfill_entry_1)
 
-        for j, backfill_entry_2 in enumerate(backfills[i + 1 :]):
-            if (
-                backfill_entry_1.status == BackfillStatus.DRAFTING
-                and backfill_entry_2.status == BackfillStatus.DRAFTING
-            ):
-                validate_duplicate_entry_dates(backfill_entry_1, backfill_entry_2)
-                validate_overlap_dates(backfill_entry_1, backfill_entry_2)
+        # validate against other entries with drafting status
+        if backfill_entry_1.status == BackfillStatus.DRAFTING:
+            for j, backfill_entry_2 in enumerate(backfills[i + 1 :]):
+                if backfill_entry_2.status == BackfillStatus.DRAFTING:
+                    validate_duplicate_entry_dates(backfill_entry_1, backfill_entry_2)
+                    validate_overlap_dates(backfill_entry_1, backfill_entry_2)
 
     validate_entries_are_sorted(backfills)

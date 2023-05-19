@@ -1,0 +1,11 @@
+friendly_name: Organization Report (Apple)
+description: |-
+  Each record represents the daily ad performance of each organization.
+owners:
+- kik@mozilla.com
+labels:
+  authorized: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

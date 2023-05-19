@@ -617,7 +617,9 @@ workflows:
           requires:
             - deploy-changes-to-stage
       - integration
-      - validate-backfills
+      - validate-backfills:
+          requires:
+            - deploy-changes-to-stage
       - validate-dags:
           requires:
             - generate-dags

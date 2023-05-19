@@ -208,7 +208,7 @@ def validate(
     for file in backfill_files:
         try:
             validate_file(file)
-        except yaml.YAMLError as e:
+        except (yaml.YAMLError, ValueError) as e:
             click.echo(f"{file} contains the following error:\n {e}")
             sys.exit(1)
         except ValueError as e:

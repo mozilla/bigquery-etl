@@ -69,7 +69,7 @@ def validate_entries(backfills: list) -> None:
 
         # validate against other entries with drafting status
         if backfill_entry_1.status == BackfillStatus.DRAFTING:
-            for j, backfill_entry_2 in enumerate(backfills[i + 1 :]):
+            for backfill_entry_2 in backfills[i + 1 :]:
                 if backfill_entry_2.status == BackfillStatus.DRAFTING:
                     validate_duplicate_entry_dates(backfill_entry_1, backfill_entry_2)
                     validate_overlap_dates(backfill_entry_1, backfill_entry_2)

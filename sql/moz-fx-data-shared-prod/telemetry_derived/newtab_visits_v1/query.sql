@@ -52,12 +52,12 @@ visit_metadata AS (
       IF(event_name = "opened", mozfun.map.get_key(event_details, "source"), NULL)
     ) AS newtab_open_source,
     LOGICAL_OR(
-      event_name = "click" OR
-      event_name = "issued" OR
-      event_name = "save"
-    ) as had_non_impression_engagement
-    FROM
-      events_unnested
+      event_name = "click"
+      OR event_name = "issued"
+      OR event_name = "save"
+    ) AS had_non_impression_engagement
+  FROM
+    events_unnested
   GROUP BY
     newtab_visit_id,
     submission_date

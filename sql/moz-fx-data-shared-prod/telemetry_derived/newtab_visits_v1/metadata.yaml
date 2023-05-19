@@ -1,4 +1,4 @@
-friendly_name: Newtab Interactions
+friendly_name: Newtab Visits
 description: |-
   Visits on the newtab page, one row per visit per-day
   (identified by the visit id).

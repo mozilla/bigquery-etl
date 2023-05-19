@@ -1,0 +1,10 @@
+friendly_name: Apple Ads
+description: |-
+  User facing views for Apple Ads data ingested via Fivetran.
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

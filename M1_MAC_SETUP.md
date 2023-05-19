@@ -73,11 +73,10 @@ For tips on maintaining parallel stacks of python and homebrew running with and 
       pyenv uninstall 3.10.6  # (or whichever version you have installed)
       ```
 
-   2. If you installed pyenv, Java, or Maven already, uninstall them (this is
-      the Java setup I have; yours might be different):
+   2. If you installed pyenv, uninstall it:
 
       ```zsh
-      brewm1 uninstall pyenv openjdk maven temurin
+      brewm1 uninstall pyenv
       ```
 
    3. If you're using tmux or something like that, uninstall that too and
@@ -85,8 +84,7 @@ For tips on maintaining parallel stacks of python and homebrew running with and 
 5. Install the core `bigquery-etl` dependencies via `brew86`:
 
    ```zsh
-   brew86 install pyenv openjdk maven
-   brew86 install --cask temurin
+   brew86 install pyenv
    ```
 
 6. Install python; you'll need to install `xz` first

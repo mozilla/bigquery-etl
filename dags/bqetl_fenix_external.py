@@ -40,9 +40,9 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    fenix_external__installs_by_country__v1 = bigquery_etl_query(
-        task_id="fenix_external__installs_by_country__v1",
-        destination_table="installs_by_country_v1",
+    fenix_external__gplay_installs_by_country__v1 = bigquery_etl_query(
+        task_id="fenix_external__gplay_installs_by_country__v1",
+        destination_table="gplay_installs_by_country_v1",
         dataset_id="fenix_external",
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",
@@ -64,4 +64,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    fenix_external__installs_by_country__v1.set_upstream(wait_for_play_store_export)
+    fenix_external__gplay_installs_by_country__v1.set_upstream(
+        wait_for_play_store_export
+    )

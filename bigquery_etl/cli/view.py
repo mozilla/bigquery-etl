@@ -19,6 +19,7 @@ from ..cli.utils import (
     sql_dir_option,
     use_cloud_function_option,
 )
+from ..dryrun import SKIP as DRYRUN_SKIP
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..util.bigquery_id import sql_table_id
 from ..util.client_queue import ClientQueue
@@ -203,6 +204,7 @@ def _view_is_valid(view):
         " when they are removed from --sql-dir."
     ),
 )
+@respect_dryrun_skip_option(default=False)
 def publish(
     name,
     sql_dir,
@@ -215,6 +217,7 @@ def publish(
     skip_authorized,
     force,
     add_managed_label,
+    respect_dryrun_skip,
 ):
     """Publish views."""
     # set log level
@@ -224,6 +227,8 @@ def publish(
         raise click.ClickException(f"argument --log-level: {e}")
 
     views = _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized)
+    if respect_dryrun_skip:
+        views = [view for view in views if view.path not in DRYRUN_SKIP]
     if add_managed_label:
         for view in views:
             view.labels["managed"] = ""
@@ -248,6 +253,7 @@ def publish(
         try:
             result.append(views_by_id[view_id].publish(target_project, dry_run))
         except Exception:
+            print(f"Failed to publish view: {view_id}")
             print_exc()
             result.append(False)
 

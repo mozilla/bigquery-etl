@@ -47,14 +47,14 @@ jobs:
           command: PATH="venv/bin:$PATH" yamllint -c .yamllint.yaml .
       - run:
           name: PyTest with linters
-          # integration and java tests are run in a separate `integration` step;
+          # integration tests are run in a separate `integration` step;
           # SQL and routine tests are split out into a separate `test-sql` test
           # since those tests take the longest to run and running those tests
           # in parallel speeds up CI
           command: |
             PATH="venv/bin:$PATH" script/entrypoint --black --flake8 \
               --isort --mypy-ignore-missing-imports --pydocstyle \
-              -m "not (routine or sql or integration or java)" \
+              -m "not (routine or sql or integration)" \
               -n 8
       - save_cache:
           paths:
@@ -192,40 +192,17 @@ jobs:
             fi
       - *restore_venv_cache
       - *build
-      - &restore_mvn_cache
-        restore_cache:
-          keys:
-            # when lock files change, use increasingly general
-            # patterns to restore cache
-            - &mvn_cache_key
-              maven-packages-v1-{{ .Branch }}-{{ checksum "pom.xml" }}
-            - maven-packages-v1-{{ .Branch }}-
-            - maven-packages-v1-main-
-      - &java_deps
-        run:
-          name: Install maven and java and download dependencies
-          command: |
-            apt update
-            apt install -y maven default-jdk-headless
-            mvn package
-            venv/bin/pip-sync --pip-args=--no-deps requirements.txt
       - run:
           name: PyTest Integration Test
           # yamllint disable rule:line-length
           command: |
-            PATH="venv/bin:$PATH" script/entrypoint -m 'integration or java' -n 8
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: *mvn_cache_key
+            PATH="venv/bin:$PATH" script/entrypoint -m 'integration' -n 8
   generate-dags:
     docker: *docker
     steps:
       - checkout
       - *restore_venv_cache
       - *build
-      - *restore_mvn_cache
-      - *java_deps
       - *attach_generated_sql
       - *copy_generated_sql
       - run:
@@ -311,8 +288,6 @@ jobs:
       - checkout
       - *restore_venv_cache
       - *build
-      - *restore_mvn_cache
-      - *java_deps
       - *attach_generated_sql
       - *copy_staged_sql
       - run:
@@ -325,8 +300,6 @@ jobs:
       - *skip_forked_pr
       - *restore_venv_cache
       - *build
-      - *restore_mvn_cache
-      - *java_deps
       - *attach_generated_sql
       - add_ssh_keys:
           fingerprints: "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
@@ -345,8 +318,6 @@ jobs:
       - checkout
       - *restore_venv_cache
       - *build
-      - *restore_mvn_cache
-      - *java_deps
       - run:
           name: Generate SQL content
           command: |
@@ -374,8 +345,6 @@ jobs:
       - *skip_forked_pr
       - *restore_venv_cache
       - *build
-      - *restore_mvn_cache
-      - *java_deps
       - *attach_generated_sql
       - *copy_generated_sql
       - add_ssh_keys:
@@ -453,8 +422,6 @@ jobs:
       - *skip_forked_pr
       - *restore_venv_cache
       - *build
-      - *restore_mvn_cache
-      - *java_deps
       - add_ssh_keys:
           # deploy key to private-bigquery-etl
           fingerprints: "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
@@ -534,8 +501,6 @@ jobs:
           at: /tmp/workspace
       - *restore_venv_cache
       - *build
-      - *restore_mvn_cache
-      - *java_deps
       - run:
           name: Generate SQL content diff
           command: |
@@ -550,7 +515,6 @@ jobs:
 
             cd bigquery-etl-main
             pip install --no-deps -r requirements.txt
-            mvn package
             ./script/bqetl generate all \
               --target-project moz-fx-data-shared-prod
             ./script/bqetl dependency record \

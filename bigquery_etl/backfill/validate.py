@@ -55,7 +55,7 @@ def validate_entries_are_sorted(backfills: list) -> None:
 
 
 def validate_file(file: Path) -> None:
-    """Validate a given backfill.yaml file."""
+    """Validate all entries from a given backfill.yaml file."""
     backfills = Backfill.entries_from_file(file)
     validate_entries(backfills)
 
@@ -67,7 +67,7 @@ def validate_entries(backfills: list) -> None:
         validate_reason(backfill_entry_1)
         validate_excluded_dates(backfill_entry_1)
 
-        for j, backfill_entry_2 in enumerate(backfills[i + 1 :], start=i + 1):
+        for j, backfill_entry_2 in enumerate(backfills[i + 1 :]):
             if (
                 backfill_entry_1.status == BackfillStatus.DRAFTING
                 and backfill_entry_2.status == BackfillStatus.DRAFTING

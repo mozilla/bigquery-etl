@@ -1,4 +1,4 @@
-"""Parsing of backfill yaml files."""
+"""Parse backfill entries."""
 
 import enum
 import os
@@ -92,7 +92,7 @@ class Backfill:
 
     @excluded_dates.validator
     def validate_excluded_dates(self, attribute, value):
-        """Check that provided excluded date(s) is/are valid."""
+        """Check that provided excluded dates are valid."""
         if not all(map(lambda e: self.start_date < e < self.end_date, value)):
             raise ValueError(f"Invalid excluded dates: {value}.")
 

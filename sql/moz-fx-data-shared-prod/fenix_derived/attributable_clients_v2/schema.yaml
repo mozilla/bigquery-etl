@@ -1,0 +1,44 @@
+fields:
+- name: submission_date
+  type: DATE
+- name: cohort_date
+  type: DATE
+- name: sample_id
+  type: INTEGER
+- name: client_id
+  type: STRING
+- name: country
+  type: STRING
+- name: adjust_network
+  type: STRING
+- name: adjust_adgroup
+  type: STRING
+- name: adjust_campaign
+  type: STRING
+- name: adjust_creative
+  type: STRING
+- name: is_new_install
+  type: BOOLEAN
+- name: is_new_profile
+  type: BOOLEAN
+- name: is_activated
+  type: BOOLEAN
+- name: activations_count
+  type: INTEGER
+- name: active_day_count
+  type: INTEGER
+- name: searches
+  type: INTEGER
+- name: searches_with_ads
+  type: INTEGER
+- name: ad_clicks
+  type: INTEGER
+- fields:
+  - name: sent_baseline_ping
+    type: BOOLEAN
+  - name: sent_metrics_search_data
+    type: BOOLEAN
+  - name: activated_on_this_day
+    type: BOOLEAN
+  name: metadata
+  type: RECORD

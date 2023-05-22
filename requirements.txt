@@ -1376,9 +1376,9 @@ types-pytz==2022.6.0.1 \
     --hash=sha256:bea605ce5d5a5d52a8e1afd7656c9b42476e18a0f888de6be91587355313ddf4 \
     --hash=sha256:d078196374d1277e9f9984d49373ea043cf2c64d5d5c491fbc86c258557bd46f
     # via -r requirements.in
-types-pyyaml==6.0.12.1 \
-    --hash=sha256:70ccaafcf3fb404d57bffc1529fdd86a13e8b4f2cf9fc3ee81a6408ce0ad59d2 \
-    --hash=sha256:aaf5e51444c13bd34104695a89ad9c48412599a4f615d65a60e649109714f608
+types-pyyaml==6.0.12.10 \
+    --hash=sha256:662fa444963eff9b68120d70cda1af5a5f2aa57900003c2006d7626450eaae5f \
+    --hash=sha256:ebab3d0700b946553724ae6ca636ea932c1b0868701d4af121630e78d695fc97
     # via -r requirements.in
 types-requests==2.28.11.2 \
     --hash=sha256:14941f8023a80b16441b3b46caffcbfce5265fd14555844d6029697824b5a2ef \

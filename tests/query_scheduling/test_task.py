@@ -393,7 +393,6 @@ class TestTask:
             date_partition_parameter="import_date",
         )
 
-    @pytest.mark.java
     def test_task_get_dependencies_none(self, tmp_path):
         query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
         os.makedirs(query_file.parent)
@@ -409,7 +408,6 @@ class TestTask:
         assert task.upstream_dependencies == []
         assert task.downstream_dependencies == []
 
-    @pytest.mark.java
     def test_task_get_multiple_dependencies(self, tmp_path):
         query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
         os.makedirs(query_file.parent)
@@ -454,7 +452,6 @@ class TestTask:
         assert "test__table1__v1" in tables
         assert "test__table2__v1" in tables
 
-    @pytest.mark.java
     def test_task_date_partition_offset(self, tmp_path):
         query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
         os.makedirs(query_file.parent)
@@ -519,7 +516,6 @@ class TestTask:
         ] == [-1]
         assert task.date_partition_parameter == "submission_date"
 
-    @pytest.mark.java
     def test_task_date_partition_offset_recursive(self, tmp_path):
         query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
         os.makedirs(query_file.parent)
@@ -570,7 +566,6 @@ class TestTask:
         ] == [-2]
         assert task.date_partition_parameter == "submission_date"
 
-    @pytest.mark.java
     def test_multipart_task_get_dependencies(self, tmp_path):
         query_dir = tmp_path / "test-project" / "test" / "query_v1"
         os.makedirs(query_dir)
@@ -617,7 +612,6 @@ class TestTask:
         assert "test__table1__v1" in tables
         assert "test__table2__v1" in tables
 
-    @pytest.mark.java
     def test_task_get_view_dependencies(self, tmp_path):
         query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
         os.makedirs(query_file.parent)
@@ -669,7 +663,6 @@ class TestTask:
         assert "test__table1__v1" in tables
         assert "test__table2__v1" in tables
 
-    @pytest.mark.java
     def test_task_get_nested_view_dependencies(self, tmp_path):
         query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
         os.makedirs(query_file.parent)

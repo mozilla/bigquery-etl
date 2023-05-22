@@ -18,14 +18,6 @@ COPY requirements.txt ./
 # use --no-deps to work around https://github.com/pypa/pip/issues/9644
 RUN pip install --no-deps -r requirements.txt
 
-# download java dependencies in separate stage because it requires maven
-FROM base AS java-deps
-# man directory is removed in upstream debian:buster-slim, but needed by jdk install
-RUN mkdir -p /usr/share/man/man1 && apt-get update -qqy && apt-get install -qqy maven
-COPY pom.xml ./
-COPY src src
-RUN mvn package
-
 FROM google/cloud-sdk:${GOOGLE_CLOUD_SDK_VERSION}-alpine AS google-cloud-sdk
 
 FROM base
@@ -33,8 +25,6 @@ FROM base
 RUN mkdir -p /usr/share/man/man1 && apt-get update -qqy && apt-get install -qqy bash default-jdk-headless git
 COPY --from=google-cloud-sdk /google-cloud-sdk /google-cloud-sdk
 ENV PATH /google-cloud-sdk/bin:$PATH
-COPY --from=java-deps /app/target/dependency /app/target/dependency
-COPY --from=java-deps /app/target/*.jar /app/target/
 COPY --from=python-deps /usr/local /usr/local
 COPY .bigqueryrc /root/
 COPY . .

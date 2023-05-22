@@ -2,7 +2,6 @@
 import os
 import re
 from pathlib import Path
-from typing import List, Tuple
 
 import yaml
 
@@ -42,28 +41,6 @@ def load_with_examples(file):
 def add_source_and_edit(source_url, edit_url):
     """Add links to the function directory and metadata.yaml editor."""
     return f"[Source]({source_url})  |  [Edit]({edit_url})"
-
-
-def get_inputs_outputs_from_udf(root: str) -> Tuple[List[str], List[str]]:
-    """Parse UDF SQL file and return inputs and outputs lists."""
-    with open(os.path.join(root, UDF_FILE), "r") as udf_file:
-        input_str, output_str = get_udf_parameters(udf_file.read())
-
-    input_lines = []
-    if input_str is not None:
-        if "<" in input_str and ">" in input_str:
-            # not attempting to split inputs for tricky cases like:
-            # `test STRING, STRUCT<name INT, type STRING>, number INT64`
-            input_lines.append(input_str)
-        else:
-            # split inputs into lines for formatting
-            input_lines = input_str.split(", ")
-
-    output_lines = []
-    if output_str is not None:
-        output_lines.append(output_str)
-
-    return input_lines, output_lines
 
 
 def generate_mozfun_docs(out_dir, project_dir):
@@ -114,24 +91,21 @@ def generate_mozfun_docs(out_dir, project_dir):
                         # Inject the contents of the README.md
                         dataset_doc_file.write(docfile_content)
                         if is_udf:
-                            input_lines, output_lines = get_inputs_outputs_from_udf(
-                                root
-                            )
+                            with open(os.path.join(root, UDF_FILE), "r") as udf_file:
+                                input_str, output_str = get_udf_parameters(
+                                    udf_file.read()
+                                )
 
-                            # assemble, format, write inputs and outputs
-                            if len(input_lines) > 0:
-                                formatted_inputs = "\n".join(input_lines)
-                                formatted_inputs = f"```\n{formatted_inputs}\n```\n\n"
+                                # write inputs and outputs
+                                if len(input_str) > 0:
+                                    dataset_doc_file.write("\n#### INPUTS\n\n")
+                                    dataset_doc_file.write(f"```\n{input_str}\n```\n\n")
 
-                                dataset_doc_file.write("\n#### INPUTS\n\n")
-                                dataset_doc_file.write(formatted_inputs)
-
-                            if len(output_lines) > 0:
-                                formatted_outputs = "\n".join(output_lines)
-                                formatted_outputs = f"```\n{formatted_outputs}\n```\n\n"
-
-                                dataset_doc_file.write("\n#### OUTPUTS\n\n")
-                                dataset_doc_file.write(formatted_outputs)
+                                if len(output_str) > 0:
+                                    dataset_doc_file.write("\n#### OUTPUTS\n\n")
+                                    dataset_doc_file.write(
+                                        f"```\n{output_str}\n```\n\n"
+                                    )
 
                         # Add links to source and edit
                         sourced = add_source_and_edit(source_link, edit_link)

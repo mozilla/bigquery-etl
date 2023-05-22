@@ -1384,9 +1384,9 @@ types-requests==2.28.11.2 \
     --hash=sha256:14941f8023a80b16441b3b46caffcbfce5265fd14555844d6029697824b5a2ef \
     --hash=sha256:fdcd7bd148139fb8eef72cf4a41ac7273872cad9e6ada14b11ff5dfdeee60ed3
     # via -r requirements.in
-types-ujson==5.5.0 \
-    --hash=sha256:6051e6b80d71382f1f85b0f97b475d84621eae3e2789ed24c5721f784b0846e1 \
-    --hash=sha256:74bc0ec76e3caf3682625703aad4aa9999327517e39afae67bb5aa3100a39bb8
+types-ujson==5.7.0.5 \
+    --hash=sha256:7ff2a6776048e6ad6abc7ebedfd42ae1b6c005512affbae44caf3fb1e96b5d12 \
+    --hash=sha256:be07904f1ba1ba0a8b36315ec42393599fca0eb13892900f7ae322d11ce2c7ad
     # via -r requirements.in
 types-urllib3==1.26.25.4 \
     --hash=sha256:ed6b9e8a8be488796f72306889a06a3fc3cb1aa99af02ab8afb50144d7317e49 \

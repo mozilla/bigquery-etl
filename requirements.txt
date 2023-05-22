@@ -639,8 +639,9 @@ markdown==3.3.7 \
     #   mkdocs
     #   mkdocs-material
     #   pymdown-extensions
-markdown-include==0.7.0 \
-    --hash=sha256:a06183b7c7225e73112737acdc6fe0ac0686c39457234eeb5ede23881fed001d
+markdown-include==0.8.1 \
+    --hash=sha256:1d0623e0fc2757c38d35df53752768356162284259d259c486b4ab6285cdbbe3 \
+    --hash=sha256:32f0635b9cfef46997b307e2430022852529f7a5b87c0075c504283e7cc7db53
     # via -r requirements.in
 markupsafe==2.1.2 \
     --hash=sha256:0576fe974b40a400449768941d5d0858cc624e3249dfd1e0c33674e5c7ca7aed \

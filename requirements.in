@@ -32,7 +32,7 @@ pytest-pydocstyle==2.3.2
 pytest-xdist==3.3.1
 pytest==7.3.1
 PyYAML==6.0
-smart_open==6.2.0
+smart_open==6.3.0
 sqlglot==12.2.0
 sqlparse==0.4.4
 stripe==5.4.0

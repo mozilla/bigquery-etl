@@ -714,9 +714,9 @@ mkdocs==1.4.3 \
     #   -r requirements.in
     #   mkdocs-awesome-pages-plugin
     #   mkdocs-material
-mkdocs-awesome-pages-plugin==2.8.0 \
-    --hash=sha256:6b21ad4f41aecbe89e3a9a51f8837892cc7ce8ca0f9f4e0a355d56159ace3d68 \
-    --hash=sha256:af7e327e14b2eea3b2735c37428e33a528ecd2d9ae2296dc0f1632f0f3bc28f7
+mkdocs-awesome-pages-plugin==2.9.1 \
+    --hash=sha256:be65e36444f5d991f87a90dae37de64e932562f99e362078724c27124834b90a \
+    --hash=sha256:faf5241365f94c1f65ef3cad7ea9d6f0e7a436be7f06013c79c4045db0b2eafc
     # via -r requirements.in
 mkdocs-material==9.1.14 \
     --hash=sha256:1ae74cc5464ef2f64574d4884512efed7f4db386fb9bc6af20fd427d7a702f49 \

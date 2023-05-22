@@ -1,0 +1,11 @@
+[
+  {
+    "type": "STRING",
+    "name": "client_id"
+  },
+  {
+    "type": "INTEGER",
+    "name": "activated",
+    "mode": "NULLABLE"
+  }
+]

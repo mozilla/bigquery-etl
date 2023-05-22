@@ -1,0 +1,70 @@
+[
+  {
+    "type": "RECORD",
+    "name": "client_info",
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "client_id"
+      },
+      {
+        "type": "STRING",
+        "name": "first_run_date",
+        "mode": "NULLABLE"
+      }
+    ]
+  },
+  {
+    "type": "INTEGER",
+    "name": "sample_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "TIMESTAMP",
+    "name": "submission_timestamp"
+  },
+  {
+    "type": "RECORD",
+    "name": "ping_info",
+    "fields": [
+      {
+        "type": "INTEGER",
+        "name": "seq",
+        "mode": "NULLABLE"
+      }
+      ]
+  },
+  {
+    "type": "RECORD",
+    "name": "metrics",
+    "fields": [
+      {
+        "type": "RECORD",
+        "name": "string",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "first_session_campaign",
+            "mode": "NULLABLE"
+          },
+          {
+            "type": "STRING",
+            "name": "first_session_network",
+            "mode": "NULLABLE"
+          },
+          {
+            "type": "STRING",
+            "name": "first_session_adgroup",
+            "mode": "NULLABLE"
+          },
+          {
+            "type": "STRING",
+            "name": "first_session_creative",
+            "mode": "NULLABLE"
+          }
+        ]
+      }
+    ]
+  }
+]

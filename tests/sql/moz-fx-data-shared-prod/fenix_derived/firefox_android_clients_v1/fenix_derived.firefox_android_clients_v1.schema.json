@@ -1,0 +1,141 @@
+[
+  {
+    "type": "STRING",
+    "name": "client_id"
+  },
+  {
+    "type": "INTEGER",
+    "name": "sample_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "DATE",
+    "name": "first_seen_date",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "DATE",
+    "name": "submission_date"
+  },
+  {
+    "type": "DATE",
+    "name": "first_run_date",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "first_reported_country",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "first_reported_isp",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "channel",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "device_manufacturer",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "device_model",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "os_version",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "app_version",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "activated",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "adjust_campaign",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "adjust_ad_group",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "adjust_creative",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "adjust_network",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "install_source",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "RECORD",
+    "name": "metadata",
+    "fields": [
+      {
+        "type": "BOOLEAN",
+        "name": "reported_first_session_ping",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "reported_metrics_ping",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "DATE",
+        "name": "min_first_session_ping_submission_date",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "DATE",
+        "name": "min_first_session_ping_run_date",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "DATE",
+        "name": "min_metrics_ping_submission_date",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "STRING",
+        "name": "adjust_network__source_ping",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "STRING",
+        "name": "install_source__source_ping",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "DATETIME",
+        "name": "adjust_network__source_ping_datetime",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "DATETIME",
+        "name": "install_source__source_ping_datetime",
+        "mode": "NULLABLE"
+      }
+    ]
+  }
+]

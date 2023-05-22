@@ -1,21 +1,15 @@
 ---
 - client_id: client-1
   sample_id: 54
-  first_seen_date: 2023-01-01
-  submission_date: 2023-01-01
-  first_run_date: 2023-01-01
-  first_reported_country: XS
-  first_reported_isp: abc
-  channel: release
-  device_manufacturer: abc
-  device_model: abc
+  first_seen_date: '2023-01-01'
+  submission_date: '2023-01-01'
   os_version: Android
   app_version: 1
-  activated: true
+  activated: false
   adjust_network: Organic
   install_source: com.android.vending
-  reported_first_session_ping: false
-  reported_metrics_ping: true
-  min_metrics_ping_submission_date: 2023-01-01
-  adjust_network__source_ping: metrics
-  install_source__source_ping: metrics
+  metadata.reported_first_session_ping: false
+  metadata.reported_metrics_ping: true
+  metadata.min_metrics_ping_submission_date: '2023-01-01'
+  metadata.adjust_network__source_ping: first_session
+  metadata.install_source__source_ping: metrics

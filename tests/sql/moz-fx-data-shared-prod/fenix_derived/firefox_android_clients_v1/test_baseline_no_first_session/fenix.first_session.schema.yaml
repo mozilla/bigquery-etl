@@ -1,10 +1,8 @@
 ---
-- &first_session_ping
-  client_info.client_id: client-2
-  sample_id:
-  submission_timestamp:
-  client_info.first_run_date:
-  metrics.string.first_session_campaign:
-  metrics.string.first_session_network:
-  metrics.string.first_session_adgroup:
-  metrics.string.first_session_creative:
+- client_info:
+    client_id: client-2
+  submission_timestamp: 2023-01-01
+  metrics:
+    string:
+      first_session_network: Organic
+  ping_info.seq: 0

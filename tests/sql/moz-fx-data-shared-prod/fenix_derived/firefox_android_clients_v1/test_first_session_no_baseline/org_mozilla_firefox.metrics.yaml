@@ -1,0 +1,7 @@
+---
+- client_info:
+    client_id: client-5
+  submission_timestamp: '2023-05-01 12:55:49.862022 UTC'
+  metrics:
+    string:
+      metrics_install_source: test_source

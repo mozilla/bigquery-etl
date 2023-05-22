@@ -1,0 +1,20 @@
+---
+- client_id: client-3
+  sample_id: 50
+  first_seen_date: 2023-05-01
+  submission_date: 2023-05-01
+  first_reported_country: DE
+  first_reported_isp: Vodafone
+  channel: release
+  device_manufacturer: mac
+  device_model: test_model
+  os_version: Android
+  app_version: 100
+  activated: false
+  adjust_network: Organic
+  install_source: test_source
+  metadata.reported_first_session_ping: true
+  metadata.reported_metrics_ping: false
+  metadata.min_first_session_ping_submission_date: 2023-05-01
+  metadata.adjust_network__source_ping: first_session
+  metadata.install_source__source_ping: metrics

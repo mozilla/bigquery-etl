@@ -1,9 +1,6 @@
 ---
-- &first_seen
-  client_id: client-1
+- client_id: client-1
   sample_id: 54
   first_seen_date: 2023-01-01
-  adjust_network: Organic
-  install_source: com.android.vending
-  reported_first_session_ping: false
-  reported_metrics_session_ping: false
+  submission_date: 2023-01-01
+  normalized_channel: release

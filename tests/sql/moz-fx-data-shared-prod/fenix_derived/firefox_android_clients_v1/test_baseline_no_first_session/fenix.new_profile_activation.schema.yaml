@@ -1,4 +1,3 @@
 ---
-- &activations
-  client_id: client-1
-  activated: 1
+- client_id: client-1
+  activated: 0

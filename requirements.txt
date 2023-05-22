@@ -950,10 +950,9 @@ pandas==2.0.1 \
     --hash=sha256:f25e23a03f7ad7211ffa30cb181c3e5f6d96a8e4cb22898af462a7333f8a74eb \
     --hash=sha256:fe7914d8ddb2d54b900cec264c090b88d141a1eed605c9539a187dbc2547f022
     # via -r requirements.in
-pathos==0.2.9 \
-    --hash=sha256:1c44373d8692897d5d15a8aa3b3a442ddc0814c5e848f4ff0ded5491f34b1dac \
-    --hash=sha256:6a6ddb514ce2719f63fb88d5ec4f4490e436b636b54f1102d952c9f7c52f18e2 \
-    --hash=sha256:a8dbddcd3d9af32ada7c6dc088d845588c513a29a0ba19ab9f64c5cd83692934
+pathos==0.3.0 \
+    --hash=sha256:24fa8db51fbd9284da8e191794097c4bb2aa3fce411090e57af6385e61b97e09 \
+    --hash=sha256:b1f5a79b1c79a594330d451832642ee5bb61dd77dc75ba9e5c72087c77e8994c
     # via -r requirements.in
 pathspec==0.11.0 \
     --hash=sha256:3a66eb970cbac598f9e5ccb5b2cf58930cd8e3ed86d393d541eaf2d8b1705229 \

@@ -97,11 +97,11 @@ def generate_mozfun_docs(out_dir, project_dir):
                                 )
 
                                 # write inputs and outputs
-                                if len(input_str) > 0:
+                                if input_str is not None and len(input_str) > 0:
                                     dataset_doc_file.write("\n#### INPUTS\n\n")
                                     dataset_doc_file.write(f"```\n{input_str}\n```\n\n")
 
-                                if len(output_str) > 0:
+                                if output_str is not None and len(output_str) > 0:
                                     dataset_doc_file.write("\n#### OUTPUTS\n\n")
                                     dataset_doc_file.write(
                                         f"```\n{output_str}\n```\n\n"

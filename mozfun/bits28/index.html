@@ -1867,6 +1867,20 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#active_in_range-udf" class="md-nav__link">
+    active_in_range (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#range-udf" class="md-nav__link">
+    range (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#from_string-udf" class="md-nav__link">
     from_string (UDF)
   </a>
@@ -1895,22 +1909,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#active_in_range-udf" class="md-nav__link">
-    active_in_range (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#retention-udf" class="md-nav__link">
     retention (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#range-udf" class="md-nav__link">
-    range (UDF)
   </a>
   
 </li>
@@ -2328,6 +2328,20 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#active_in_range-udf" class="md-nav__link">
+    active_in_range (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#range-udf" class="md-nav__link">
+    range (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#from_string-udf" class="md-nav__link">
     from_string (UDF)
   </a>
@@ -2356,22 +2370,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#active_in_range-udf" class="md-nav__link">
-    active_in_range (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#retention-udf" class="md-nav__link">
     retention (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#range-udf" class="md-nav__link">
-    range (UDF)
   </a>
   
 </li>
@@ -2405,6 +2405,33 @@ metrics based on these usage histories, such as various retention definitions.</
 type of the field is a BigQuery INT64, but logically the integer
 represents an array of bits, with each 1 indicating a day where the given clients
 was active and each 0 indicating a day where the client was inactive.</p>
+<h2 id="active_in_range-udf">active_in_range (UDF)</h2>
+<p>Return a boolean indicating if any bits are set in the specified range
+of a bit pattern. The <code>start_offset</code> must be zero or a negative number
+indicating an offset from the rightmost bit in the pattern. n_bits is
+the number of bits to consider, counting right from the bit at
+<code>start_offset</code>.</p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/active_in_range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/active_in_range/metadata.yaml">Edit</a></p>
+<h2 id="range-udf">range (UDF)</h2>
+<p>Return an INT64 representing a range of bits from a source bit pattern.</p>
+<p>The start_offset must be zero or a negative number indicating an offset from
+the rightmost bit in the pattern.</p>
+<p>n_bits is the number of bits to consider, counting right from the bit at
+start_offset.</p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<p><div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">  </span><span class="c1">-- Signature is bits28.range(offset_to_day_0, start_bit, number_of_bits)</span>
+<span class="w">  </span><span class="n">mozfun</span><span class="p">.</span><span class="n">bits28</span><span class="p">.</span><span class="n">range</span><span class="p">(</span><span class="n">days_seen_bits</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">13</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">week_0_bits</span><span class="p">,</span>
+<span class="w">  </span><span class="n">mozfun</span><span class="p">.</span><span class="n">bits28</span><span class="p">.</span><span class="n">range</span><span class="p">(</span><span class="n">days_seen_bits</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">13</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">week_1_bits</span>
+<span class="k">FROM</span>
+<span class="w">  </span><span class="n">telemetry</span><span class="p">.</span><span class="n">clients_last_seen</span>
+<span class="k">WHERE</span>
+<span class="w">  </span><span class="n">submission_date</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="s1">&#39;2020-01-01&#39;</span>
+</code></pre></div>
+<a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/range/metadata.yaml">Edit</a></p>
 <h2 id="from_string-udf">from_string (UDF)</h2>
 <p>Convert a string representing individual bits into an INT64.</p>
 <p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>
@@ -2441,37 +2468,10 @@ logarithm; see <a href="https://stackoverflow.com/a/42747608/1260237">https://st
 <p>See detailed docs for the bits28 suite of functions:
 <a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/to_dates">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/to_dates/metadata.yaml">Edit</a></p>
-<h2 id="active_in_range-udf">active_in_range (UDF)</h2>
-<p>Return a boolean indicating if any bits are set in the specified range
-of a bit pattern. The <code>start_offset</code> must be zero or a negative number
-indicating an offset from the rightmost bit in the pattern. n_bits is
-the number of bits to consider, counting right from the bit at
-<code>start_offset</code>.</p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/active_in_range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/active_in_range/metadata.yaml">Edit</a></p>
 <h2 id="retention-udf">retention (UDF)</h2>
 <p>Return a nested struct providing booleans indicating whether a given client
 was active various time periods based on the passed bit pattern.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/retention">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/retention/metadata.yaml">Edit</a></p>
-<h2 id="range-udf">range (UDF)</h2>
-<p>Return an INT64 representing a range of bits from a source bit pattern.</p>
-<p>The start_offset must be zero or a negative number indicating an offset from
-the rightmost bit in the pattern.</p>
-<p>n_bits is the number of bits to consider, counting right from the bit at
-start_offset.</p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<p><div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
-<span class="w">  </span><span class="c1">-- Signature is bits28.range(offset_to_day_0, start_bit, number_of_bits)</span>
-<span class="w">  </span><span class="n">mozfun</span><span class="p">.</span><span class="n">bits28</span><span class="p">.</span><span class="n">range</span><span class="p">(</span><span class="n">days_seen_bits</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">13</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">week_0_bits</span><span class="p">,</span>
-<span class="w">  </span><span class="n">mozfun</span><span class="p">.</span><span class="n">bits28</span><span class="p">.</span><span class="n">range</span><span class="p">(</span><span class="n">days_seen_bits</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">13</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">week_1_bits</span>
-<span class="k">FROM</span>
-<span class="w">  </span><span class="n">telemetry</span><span class="p">.</span><span class="n">clients_last_seen</span>
-<span class="k">WHERE</span>
-<span class="w">  </span><span class="n">submission_date</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="s1">&#39;2020-01-01&#39;</span>
-</code></pre></div>
-<a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/range/metadata.yaml">Edit</a></p>
 
 
 

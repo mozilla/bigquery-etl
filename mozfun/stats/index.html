@@ -2021,16 +2021,49 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#mode_last_retain_nulls-udf" class="md-nav__link">
-    mode_last_retain_nulls (UDF)
+  <a href="#mode_last-udf" class="md-nav__link">
+    mode_last (UDF)
   </a>
+  
+    <nav class="md-nav" aria-label="mode_last (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inputs" class="md-nav__link">
+    INPUTS
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#mode_last-udf" class="md-nav__link">
-    mode_last (UDF)
+  <a href="#mode_last_retain_nulls-udf" class="md-nav__link">
+    mode_last_retain_nulls (UDF)
   </a>
+  
+    <nav class="md-nav" aria-label="mode_last_retain_nulls (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inputs_1" class="md-nav__link">
+    INPUTS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outputs" class="md-nav__link">
+    OUTPUTS
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2293,16 +2326,49 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#mode_last_retain_nulls-udf" class="md-nav__link">
-    mode_last_retain_nulls (UDF)
+  <a href="#mode_last-udf" class="md-nav__link">
+    mode_last (UDF)
   </a>
+  
+    <nav class="md-nav" aria-label="mode_last (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inputs" class="md-nav__link">
+    INPUTS
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#mode_last-udf" class="md-nav__link">
-    mode_last (UDF)
+  <a href="#mode_last_retain_nulls-udf" class="md-nav__link">
+    mode_last_retain_nulls (UDF)
   </a>
+  
+    <nav class="md-nav" aria-label="mode_last_retain_nulls (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inputs_1" class="md-nav__link">
+    INPUTS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outputs" class="md-nav__link">
+    OUTPUTS
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2323,20 +2389,29 @@
 
 <h1 id="stats">stats</h1>
 <p>Statistics functions.</p>
-<h2 id="mode_last_retain_nulls-udf">mode_last_retain_nulls (UDF)</h2>
-<p>Returns the most frequently occuring element in an array. In the case
-of multiple values tied for the highest count, it returns the
-value that appears latest in the array. Nulls are retained.
-See also: `stats.mode_last, which ignores
-nulls.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/stats/mode_last_retain_nulls">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/stats/mode_last_retain_nulls/metadata.yaml">Edit</a></p>
 <h2 id="mode_last-udf">mode_last (UDF)</h2>
 <p>Returns the most frequently occuring element in an array.</p>
 <p>In the case of multiple values tied for the highest count, it returns
 the value that appears latest in the array. Nulls are ignored.
 See also: <code>stats.mode_last_retain_nulls</code>,
 which retains nulls.</p>
+<h4 id="inputs">INPUTS</h4>
+<div class="highlight"><pre><span></span><code>list ANY TYPE
+</code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/stats/mode_last">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/stats/mode_last/metadata.yaml">Edit</a></p>
+<h2 id="mode_last_retain_nulls-udf">mode_last_retain_nulls (UDF)</h2>
+<p>Returns the most frequently occuring element in an array. In the case
+of multiple values tied for the highest count, it returns the
+value that appears latest in the array. Nulls are retained.
+See also: `stats.mode_last, which ignores
+nulls.</p>
+<h4 id="inputs_1">INPUTS</h4>
+<div class="highlight"><pre><span></span><code>list ANY TYPE
+</code></pre></div>
+<h4 id="outputs">OUTPUTS</h4>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/stats/mode_last_retain_nulls">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/stats/mode_last_retain_nulls/metadata.yaml">Edit</a></p>
 
 
 

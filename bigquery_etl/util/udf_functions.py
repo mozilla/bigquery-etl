@@ -21,7 +21,7 @@ def get_output(sql_text: str) -> Optional[str]:
     """Extract output parameters from UDF sql code."""
     cleaned_sql_text = re.sub(r"\s{2,}|\n", " ", sql_text)
     output_groups = re.search(
-        r"(?:RETURNS |CAST\([a-z,A-Z,0-9,_,.]+ AS |, OUT )(.+?)(?: AS|\s?\))",
+        r"(?:RETURNS |CAST\([a-z,A-Z,0-9,_,.]+ AS |, OUT )(.+?)(?: AS|\s?\)|\s?LANGUAGE)",
         cleaned_sql_text,
     )
     if output_groups is None:

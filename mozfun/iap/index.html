@@ -1965,11 +1965,11 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#parse_apple_receipt-udf" class="md-nav__link">
-    parse_apple_receipt (UDF)
+  <a href="#derive_apple_subscription_interval-udf" class="md-nav__link">
+    derive_apple_subscription_interval (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="parse_apple_receipt (UDF)">
+    <nav class="md-nav" aria-label="derive_apple_subscription_interval (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1992,11 +1992,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#derive_apple_subscription_interval-udf" class="md-nav__link">
-    derive_apple_subscription_interval (UDF)
+  <a href="#parse_apple_receipt-udf" class="md-nav__link">
+    parse_apple_receipt (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="derive_apple_subscription_interval (UDF)">
+    <nav class="md-nav" aria-label="parse_apple_receipt (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2400,11 +2400,11 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#parse_apple_receipt-udf" class="md-nav__link">
-    parse_apple_receipt (UDF)
+  <a href="#derive_apple_subscription_interval-udf" class="md-nav__link">
+    derive_apple_subscription_interval (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="parse_apple_receipt (UDF)">
+    <nav class="md-nav" aria-label="derive_apple_subscription_interval (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2427,11 +2427,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#derive_apple_subscription_interval-udf" class="md-nav__link">
-    derive_apple_subscription_interval (UDF)
+  <a href="#parse_apple_receipt-udf" class="md-nav__link">
+    parse_apple_receipt (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="derive_apple_subscription_interval (UDF)">
+    <nav class="md-nav" aria-label="parse_apple_receipt (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2536,24 +2536,24 @@
 
 
 <h1 id="iap">iap</h1>
-<h2 id="parse_apple_receipt-udf">parse_apple_receipt (UDF)</h2>
-<p>Used to parse provider_receipt_json in mozilla vpn subscriptions where provider is "APPLE". The content is documented at <a href="https://developer.apple.com/documentation/appstorereceipts/responsebody">https://developer.apple.com/documentation/appstorereceipts/responsebody</a></p>
-<h4 id="inputs">INPUTS</h4>
-<div class="highlight"><pre><span></span><code>provider_receipt_json STRING
-</code></pre></div>
-<h4 id="outputs">OUTPUTS</h4>
-<div class="highlight"><pre><span></span><code>STRUCT&lt; environment STRING, latest_receipt BYTES, latest_receipt_info ARRAY&lt; STRUCT&lt; cancellation_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; cancellation_date_ms INT64, cancellation_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; cancellation_reason STRING, expires_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; expires_date_ms INT64, expires_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; in_app_ownership_type STRING, is_in_intro_offer_period STRING, -- BOOL is_trial_period STRING, -- BOOL original_purchase_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; original_purchase_date_ms INT64, original_purchase_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; original_transaction_id STRING, product_id STRING, promotional_offer_id STRING, purchase_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; purchase_date_ms INT64, purchase_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; quantity INT64, subscription_group_identifier INT64, transaction_id INT64, web_order_line_item_id INT64 &gt; &gt;, pending_renewal_info ARRAY&lt; STRUCT&lt; auto_renew_product_id STRING, auto_renew_status INT64, expiration_intent INT64, is_in_billing_retry_period INT64, original_transaction_id STRING, product_id STRING &gt; &gt;, receipt STRUCT&lt; adam_id INT64, app_item_id INT64, application_version STRING, bundle_id STRING, download_id INT64, in_app ARRAY&lt; STRUCT&lt; cancellation_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; cancellation_date_ms INT64, cancellation_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; cancellation_reason STRING, expires_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; expires_date_ms INT64, expires_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; in_app_ownership_type STRING, is_in_intro_offer_period STRING, -- BOOL is_trial_period STRING, -- BOOL original_purchase_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; original_purchase_date_ms INT64, original_purchase_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; original_transaction_id STRING, product_id STRING, promotional_offer_id STRING, purchase_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; purchase_date_ms INT64, purchase_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; quantity INT64, subscription_group_identifier INT64, -- added to match schema with latest_receipt_info transaction_id INT64, web_order_line_item_id INT64 &gt; &gt;, original_application_version STRING, original_purchase_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; original_purchase_date_ms INT64, original_purchase_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; receipt_creation_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; receipt_creation_date_ms INT64, receipt_creation_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; receipt_type STRING, request_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; request_date_ms INT64, request_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; version_external_identifier INT64 &gt;, status INT64 &gt; DETERMINISTIC
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/iap/parse_apple_receipt">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/iap/parse_apple_receipt/metadata.yaml">Edit</a></p>
 <h2 id="derive_apple_subscription_interval-udf">derive_apple_subscription_interval (UDF)</h2>
 <p>Take output purchase_date and expires_date from mozfun.iap.parse_apple_receipt and return the subscription interval to use for accounting. Values must be DATETIME in America/Los_Angeles to get correct results because of how timezone and daylight savings impact the time of day and the length of a month.</p>
-<h4 id="inputs_1">INPUTS</h4>
+<h4 id="inputs">INPUTS</h4>
 <div class="highlight"><pre><span></span><code>start DATETIME, `end` DATETIME
 </code></pre></div>
-<h4 id="outputs_1">OUTPUTS</h4>
+<h4 id="outputs">OUTPUTS</h4>
 <div class="highlight"><pre><span></span><code>STRUCT&lt;`interval` STRING, interval_count INT64&gt;
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/iap/derive_apple_subscription_interval">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/iap/derive_apple_subscription_interval/metadata.yaml">Edit</a></p>
+<h2 id="parse_apple_receipt-udf">parse_apple_receipt (UDF)</h2>
+<p>Used to parse provider_receipt_json in mozilla vpn subscriptions where provider is "APPLE". The content is documented at <a href="https://developer.apple.com/documentation/appstorereceipts/responsebody">https://developer.apple.com/documentation/appstorereceipts/responsebody</a></p>
+<h4 id="inputs_1">INPUTS</h4>
+<div class="highlight"><pre><span></span><code>provider_receipt_json STRING
+</code></pre></div>
+<h4 id="outputs_1">OUTPUTS</h4>
+<div class="highlight"><pre><span></span><code>STRUCT&lt; environment STRING, latest_receipt BYTES, latest_receipt_info ARRAY&lt; STRUCT&lt; cancellation_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; cancellation_date_ms INT64, cancellation_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; cancellation_reason STRING, expires_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; expires_date_ms INT64, expires_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; in_app_ownership_type STRING, is_in_intro_offer_period STRING, -- BOOL is_trial_period STRING, -- BOOL original_purchase_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; original_purchase_date_ms INT64, original_purchase_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; original_transaction_id STRING, product_id STRING, promotional_offer_id STRING, purchase_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; purchase_date_ms INT64, purchase_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; quantity INT64, subscription_group_identifier INT64, transaction_id INT64, web_order_line_item_id INT64 &gt; &gt;, pending_renewal_info ARRAY&lt; STRUCT&lt; auto_renew_product_id STRING, auto_renew_status INT64, expiration_intent INT64, is_in_billing_retry_period INT64, original_transaction_id STRING, product_id STRING &gt; &gt;, receipt STRUCT&lt; adam_id INT64, app_item_id INT64, application_version STRING, bundle_id STRING, download_id INT64, in_app ARRAY&lt; STRUCT&lt; cancellation_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; cancellation_date_ms INT64, cancellation_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; cancellation_reason STRING, expires_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; expires_date_ms INT64, expires_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; in_app_ownership_type STRING, is_in_intro_offer_period STRING, -- BOOL is_trial_period STRING, -- BOOL original_purchase_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; original_purchase_date_ms INT64, original_purchase_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; original_transaction_id STRING, product_id STRING, promotional_offer_id STRING, purchase_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; purchase_date_ms INT64, purchase_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; quantity INT64, subscription_group_identifier INT64, -- added to match schema with latest_receipt_info transaction_id INT64, web_order_line_item_id INT64 &gt; &gt;, original_application_version STRING, original_purchase_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; original_purchase_date_ms INT64, original_purchase_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; receipt_creation_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; receipt_creation_date_ms INT64, receipt_creation_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; receipt_type STRING, request_date STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; request_date_ms INT64, request_date_pst STRING, -- TIMESTAMP &quot;%Y-%m-%d %H:%M:%E*S %Z&quot; version_external_identifier INT64 &gt;, status INT64 &gt; DETERMINISTIC
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/iap/parse_apple_receipt">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/iap/parse_apple_receipt/metadata.yaml">Edit</a></p>
 <h2 id="scrub_apple_receipt-udf">scrub_apple_receipt (UDF)</h2>
 <p>Take output from mozfun.iap.parse_apple_receipt and remove fields or reduce their granularity so that the returned value can be exposed to all employees via redash.</p>
 <h4 id="inputs_2">INPUTS</h4>

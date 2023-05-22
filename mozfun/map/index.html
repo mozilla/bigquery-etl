@@ -2040,6 +2040,26 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#sum-udf" class="md-nav__link">
+    sum (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="sum (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inputs_2" class="md-nav__link">
+    INPUTS
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#extract_keyed_scalar_sum-udf" class="md-nav__link">
     extract_keyed_scalar_sum (UDF)
   </a>
@@ -2380,6 +2400,26 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#sum-udf" class="md-nav__link">
+    sum (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="sum (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inputs_2" class="md-nav__link">
+    INPUTS
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#extract_keyed_scalar_sum-udf" class="md-nav__link">
     extract_keyed_scalar_sum (UDF)
   </a>
@@ -2422,6 +2462,12 @@ This version matches NULL keys as well.</p>
 <div class="highlight"><pre><span></span><code>entries ANY TYPE
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/map/mode_last">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/map/mode_last/metadata.yaml">Edit</a></p>
+<h2 id="sum-udf">sum (UDF)</h2>
+<p>Return the sum of values by key in an array of map entries. The expected schema for entries is ARRAY<STRUCT\<key ANY TYPE, value ANY TYPE>>, where the type for value must be supported by SUM, which allows numeric data types INT64, NUMERIC, and FLOAT64.</p>
+<h4 id="inputs_2">INPUTS</h4>
+<div class="highlight"><pre><span></span><code>entries ANY TYPE
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/map/sum">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/map/sum/metadata.yaml">Edit</a></p>
 <h2 id="extract_keyed_scalar_sum-udf">extract_keyed_scalar_sum (UDF)</h2>
 <p>Sums all values in a keyed scalar.</p>
 <h1 id="extract-keyed-scalar-sum">Extract Keyed Scalar Sum</h1>
@@ -2430,7 +2476,7 @@ the sum of all values it contains. The expected input
 type is <code>ARRAY&lt;STRUCT&lt;key STRING, value INT64&gt;&gt;</code></p>
 <p>The return type is <code>INT64</code>.</p>
 <p>The <code>key</code> field will be ignored.</p>
-<h4 id="inputs_2">INPUTS</h4>
+<h4 id="inputs_3">INPUTS</h4>
 <div class="highlight"><pre><span></span><code>keyed_scalar ARRAY&lt;STRUCT&lt;key STRING, value INT64&gt;&gt;
 </code></pre></div>
 <h4 id="outputs_1">OUTPUTS</h4>
@@ -2442,16 +2488,10 @@ type is <code>ARRAY&lt;STRUCT&lt;key STRING, value INT64&gt;&gt;</code></p>
 structs.</p>
 <p>Because map types aren't available in BigQuery, we model maps as arrays
 of structs instead, and this function provides map-like access to such fields.</p>
-<h4 id="inputs_3">INPUTS</h4>
+<h4 id="inputs_4">INPUTS</h4>
 <div class="highlight"><pre><span></span><code>map ANY TYPE, k ANY TYPE
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/map/get_key">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/map/get_key/metadata.yaml">Edit</a></p>
-<h2 id="sum-udf">sum (UDF)</h2>
-<p>Return the sum of values by key in an array of map entries. The expected schema for entries is ARRAY<STRUCT\<key ANY TYPE, value ANY TYPE>>, where the type for value must be supported by SUM, which allows numeric data types INT64, NUMERIC, and FLOAT64.</p>
-<h4 id="inputs_4">INPUTS</h4>
-<div class="highlight"><pre><span></span><code>entries ANY TYPE
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/map/sum">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/map/sum/metadata.yaml">Edit</a></p>
 
 
 

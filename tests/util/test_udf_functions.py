@@ -136,7 +136,7 @@ LANGUAGE js AS r\"\"\"
 \"\"\";
                     """
                 )
-                == "STRUCT<name STRING, version_name STRING, version_number DECIMAL, build_number INT64> LANGUAGE js"
+                == "STRUCT<name STRING, version_name STRING, version_number DECIMAL, build_number INT64>"
             )
 
     class TestGetUDFParameters:

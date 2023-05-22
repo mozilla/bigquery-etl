@@ -8,7 +8,7 @@ flake8<5 # pytest-flake8 does not support flake8 5+
 gcsfs==2023.5.0
 gcloud==0.18.3
 gitpython==3.1.30
-google-cloud-bigquery==3.5.0
+google-cloud-bigquery==3.10.0
 google-cloud-storage==2.5.0
 Jinja2==3.1.2
 jsonschema==4.17.3

@@ -5,6 +5,8 @@ from pathlib import Path
 
 import yaml
 
+from bigquery_etl.util.udf_functions import get_udf_parameters
+
 DOCS_FILE = "README.md"
 METADATA_FILE = "metadata.yaml"
 SOURCE_URL = "https://github.com/mozilla/bigquery-etl/blob/generated-sql"
@@ -88,6 +90,23 @@ def generate_mozfun_docs(out_dir, project_dir):
                             dataset_doc_file.write(f"{formated}\n\n")
                         # Inject the contents of the README.md
                         dataset_doc_file.write(docfile_content)
+                        if is_udf:
+                            with open(os.path.join(root, UDF_FILE), "r") as udf_file:
+                                input_str, output_str = get_udf_parameters(
+                                    udf_file.read()
+                                )
+
+                                # write inputs and outputs
+                                if len(input_str) > 0:
+                                    dataset_doc_file.write("\n#### INPUTS\n\n")
+                                    dataset_doc_file.write(f"```\n{input_str}\n```\n\n")
+
+                                if len(output_str) > 0:
+                                    dataset_doc_file.write("\n#### OUTPUTS\n\n")
+                                    dataset_doc_file.write(
+                                        f"```\n{output_str}\n```\n\n"
+                                    )
+
                         # Add links to source and edit
                         sourced = add_source_and_edit(source_link, edit_link)
                         dataset_doc_file.write(f"{sourced}\n\n")

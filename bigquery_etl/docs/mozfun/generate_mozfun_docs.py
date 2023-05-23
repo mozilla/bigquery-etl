@@ -5,7 +5,7 @@ from pathlib import Path
 
 import yaml
 
-from bigquery_etl.util.udf_functions import get_udf_parameters
+from bigquery_etl.util.mozfun_docs_functions import get_mozfun_parameters
 
 DOCS_FILE = "README.md"
 METADATA_FILE = "metadata.yaml"
@@ -92,7 +92,7 @@ def generate_mozfun_docs(out_dir, project_dir):
                         dataset_doc_file.write(docfile_content)
                         if is_udf:
                             with open(os.path.join(root, UDF_FILE), "r") as udf_file:
-                                input_str, output_str = get_udf_parameters(
+                                input_str, output_str = get_mozfun_parameters(
                                     udf_file.read()
                                 )
 

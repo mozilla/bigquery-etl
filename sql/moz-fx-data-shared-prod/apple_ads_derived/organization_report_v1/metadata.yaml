@@ -1,0 +1,23 @@
+friendly_name: Organization Report (Apple)
+description: |-
+  Each record represents the daily ad performance of each organization.
+owners:
+- kik@mozilla.com
+labels:
+  application: firefox_ios
+  incremental: false
+scheduling:
+  dag_name: bqetl_fivetran_apple_ads
+  date_partition_parameter: null
+  depends_on_past: false
+  referenced_tables: [
+    [
+      'moz-fx-data-bq-fivetran',
+      'dbt_fivetran_transformation_apple_search_ads',
+      'apple_search_ads__ad_group_report'
+    ]
+  ]
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

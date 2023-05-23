@@ -6,7 +6,7 @@ from typing import Optional, Tuple
 
 def get_input(sql_text: str) -> Optional[str]:
     """Extract input parameters from UDF sql code."""
-    cleaned_sql_text = re.sub(r"\s{2,}|\\n", " ", sql_text)
+    cleaned_sql_text = re.sub(r"\s{2,}|\n", " ", sql_text)
     input_groups = re.search(
         r"(?:FUNCTION|PROCEDURE) [a-z,0-9,_,.]+\s?\(\s?(.+?)(?:\s?\)|, OUT)",
         cleaned_sql_text,
@@ -19,9 +19,9 @@ def get_input(sql_text: str) -> Optional[str]:
 
 def get_output(sql_text: str) -> Optional[str]:
     """Extract output parameters from UDF sql code."""
-    cleaned_sql_text = re.sub(r"\s{2,}", " ", sql_text)
+    cleaned_sql_text = re.sub(r"\s{2,}|\n", " ", sql_text)
     output_groups = re.search(
-        r"(?:RETURNS |CAST\([a-z,A-Z,0-9,_,.]+ AS |, OUT )(.+?)(?: AS|\s?\))",
+        r"(?:RETURNS |CAST\([a-z,A-Z,0-9,_,.]+ AS |, OUT )(.+?)(?: AS|\s?\)|\s?LANGUAGE)",
         cleaned_sql_text,
     )
     if output_groups is None:

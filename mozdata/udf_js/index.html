@@ -1724,6 +1724,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#decode_uri_attribution" class="md-nav__link">
+    decode_uri_attribution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#extract_string_from_bytes" class="md-nav__link">
     extract_string_from_bytes
   </a>
@@ -2406,6 +2413,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#decode_uri_attribution" class="md-nav__link">
+    decode_uri_attribution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#extract_string_from_bytes" class="md-nav__link">
     extract_string_from_bytes
   </a>
@@ -2540,6 +2554,12 @@
 <p><code>udf_js.crc32</code></p>
 <p>Calculate the CRC-32 hash of an input string.  The implementation here could be optimized. In particular, it calculates a lookup table on every invocation which could be cached and reused. In practice, though, this implementation appears to be fast enough that further optimization is not yet warranted.  Based on https://stackoverflow.com/a/18639999/1260237 See https://en.wikipedia.org/wiki/Cyclic_redundancy_check</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf_js/crc32">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf_js/crc32/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="decode_uri_attribution"><a href="#decode_uri_attribution">decode_uri_attribution</a></h2>
+<p><strong>Decode Uri Attribution</strong></p>
+<p><code>udf_js.decode_uri_attribution</code></p>
+<p>URL decodes the raw firefox_installer.install.attribution string to a STRUCT.  The fields campaign, content, dlsource, dltoken, experiment, medium, source, ua, variation the string are extracted.  If any value is (not+set) it is converted to (not set) to match the text from GA when the fields are not set.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf_js/decode_uri_attribution">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf_js/decode_uri_attribution/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="extract_string_from_bytes"><a href="#extract_string_from_bytes">extract_string_from_bytes</a></h2>
 <p><strong>Extract string from bytes</strong></p>

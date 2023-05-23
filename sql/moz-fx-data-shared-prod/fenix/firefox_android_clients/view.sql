@@ -30,5 +30,6 @@ SELECT
       THEN 'Other'
     ELSE install_source
   END AS install_source,
+  REGEXP_REPLACE(client.adjust_campaign, "(\\S+).*", "\\1") AS normalized_adjust_campaign,
 FROM
   `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`

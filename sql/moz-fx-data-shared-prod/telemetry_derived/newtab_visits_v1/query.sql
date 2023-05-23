@@ -51,11 +51,7 @@ visit_metadata AS (
     ANY_VALUE(
       IF(event_name = "opened", mozfun.map.get_key(event_details, "source"), NULL)
     ) AS newtab_open_source,
-    LOGICAL_OR(
-      event_name = "click"
-      OR event_name = "issued"
-      OR event_name = "save"
-    ) AS had_non_impression_engagement
+    LOGICAL_OR(event_name IN ("click", "issued", "save")) AS had_non_impression_engagement
   FROM
     events_unnested
   GROUP BY
@@ -129,35 +125,35 @@ search_summary AS (
 topsites_events AS (
   SELECT
     mozfun.map.get_key(event_details, "newtab_visit_id") AS newtab_visit_id,
-    SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64) AS topsite_position,
-    mozfun.map.get_key(event_details, "advertiser_name") AS topsite_advertiser_name,
+    SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64) AS topsite_tile_position,
+    mozfun.map.get_key(event_details, "advertiser_name") AS topsite_tile_advertiser_name,
     mozfun.map.get_key(event_details, "tile_id") AS topsite_tile_id,
-    COUNTIF(event_name = 'impression') AS topsite_impressions,
-    COUNTIF(event_name = 'click') AS topsite_clicks,
+    COUNTIF(event_name = 'impression') AS topsite_tile_impressions,
+    COUNTIF(event_name = 'click') AS topsite_tile_clicks,
     COUNTIF(
       event_name = 'impression'
       AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
-    ) AS sponsored_topsite_impressions,
+    ) AS sponsored_topsite_tile_impressions,
     COUNTIF(
       event_name = 'impression'
       AND mozfun.map.get_key(event_details, "is_sponsored") = "false"
-    ) AS organic_topsite_impressions,
+    ) AS organic_topsite_tile_impressions,
     COUNTIF(
       event_name = 'click'
       AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
-    ) AS sponsored_topsite_clicks,
+    ) AS sponsored_topsite_tile_clicks,
     COUNTIF(
       event_name = 'click'
       AND mozfun.map.get_key(event_details, "is_sponsored") = "false"
-    ) AS organic_topsite_clicks,
+    ) AS organic_topsite_tile_clicks,
   FROM
     events_unnested
   WHERE
     event_category = 'topsites'
   GROUP BY
     newtab_visit_id,
-    topsite_position,
-    topsite_advertiser_name,
+    topsite_tile_position,
+    topsite_tile_advertiser_name,
     topsite_tile_id
 ),
 topsites_summary AS (
@@ -165,17 +161,17 @@ topsites_summary AS (
     newtab_visit_id,
     ARRAY_AGG(
       STRUCT(
-        topsite_advertiser_name,
-        topsite_position,
+        topsite_tile_advertiser_name,
+        topsite_tile_position,
         topsite_tile_id,
-        topsite_clicks,
-        sponsored_topsite_clicks,
-        organic_topsite_clicks,
-        topsite_impressions,
-        sponsored_topsite_impressions,
-        organic_topsite_impressions
+        topsite_tile_clicks,
+        sponsored_topsite_tile_clicks,
+        organic_topsite_tile_clicks,
+        topsite_tile_impressions,
+        sponsored_topsite_tile_impressions,
+        organic_topsite_tile_impressions
       )
-    ) AS topsite_interactions
+    ) AS topsite_tile_interactions
   FROM
     topsites_events
   GROUP BY
@@ -265,7 +261,7 @@ combined_newtab_activity AS (
    -- (these are suspected to be from pre-loaded tabs)
     newtab_open_source IS NOT NULL
     OR search_interactions IS NOT NULL
-    OR topsite_interactions IS NOT NULL
+    OR topsite_tile_interactions IS NOT NULL
     OR pocket_interactions IS NOT NULL
 ),
 client_profile_info AS (
@@ -280,7 +276,6 @@ client_profile_info AS (
   GROUP BY
     client_id
 )
--- Newtab interactions may arrive in different pings so we attach the open details for a visit to all interactions.
 SELECT
   *
 FROM

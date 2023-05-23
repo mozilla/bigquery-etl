@@ -95,6 +95,9 @@ fields:
 - mode: NULLABLE
   name: newtab_open_source
   type: STRING
+- mode: NULLABLE
+  name: had_non_impression_engagement
+  type: BOOLEAN
 - fields:
   - mode: NULLABLE
     name: search_engine
@@ -128,34 +131,34 @@ fields:
   type: RECORD
 - fields:
   - mode: NULLABLE
-    name: topsite_advertiser_name
+    name: topsite_tile_advertiser_name
     type: STRING
   - mode: NULLABLE
-    name: topsite_position
+    name: topsite_tile_position
     type: INTEGER
   - mode: NULLABLE
     name: topsite_tile_id
     type: STRING
   - mode: NULLABLE
-    name: topsite_clicks
+    name: topsite_tile_clicks
     type: INTEGER
   - mode: NULLABLE
-    name: sponsored_topsite_clicks
+    name: sponsored_topsite_tile_clicks
     type: INTEGER
   - mode: NULLABLE
-    name: organic_topsite_clicks
+    name: organic_topsite_tile_clicks
     type: INTEGER
   - mode: NULLABLE
-    name: topsite_impressions
+    name: topsite_tile_impressions
     type: INTEGER
   - mode: NULLABLE
-    name: sponsored_topsite_impressions
+    name: sponsored_topsite_tile_impressions
     type: INTEGER
   - mode: NULLABLE
-    name: organic_topsite_impressions
+    name: organic_topsite_tile_impressions
     type: INTEGER
   mode: REPEATED
-  name: topsite_interactions
+  name: topsite_tile_interactions
   type: RECORD
 - fields:
   - mode: NULLABLE
@@ -197,6 +200,3 @@ fields:
 - mode: NULLABLE
   name: activity_segment
   type: STRING
-- mode: NULLABLE
-  name: had_non_impression_engagement
-  type: BOOLEAN

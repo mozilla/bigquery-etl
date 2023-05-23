@@ -726,9 +726,9 @@ mkdocs-material-extensions==1.1.1 \
     --hash=sha256:9c003da71e2cc2493d910237448c672e00cefc800d3d6ae93d2fc69979e3bd93 \
     --hash=sha256:e41d9f38e4798b6617ad98ca8f7f1157b1e4385ac1459ca1e4ea219b556df945
     # via mkdocs-material
-mozilla-metric-config-parser==2023.4.2 \
-    --hash=sha256:183637ec38e5a92b0130eb695d078c02fa73e36480e5b8a6a207d78dc19ce4ab \
-    --hash=sha256:674214af52949a64dd8af0f4fba8bcdc9eb3135a6bcdae91113c94956bc91f80
+mozilla-metric-config-parser==2023.5.1 \
+    --hash=sha256:53da61e6168494692fdf975c06a82a583ecdfde17f900f88848da50a61a2e0df \
+    --hash=sha256:924d55d61744f68b3c709b9a355ea71d4528fbfa114cc2f5374349cc84dbaee0
     # via -r requirements.in
 mozilla-schema-generator==0.5.1 \
     --hash=sha256:77109d64d0fd55b2579568e9a8f7c52d8eeed7e2a254b3262dd206ed21ffad38 \

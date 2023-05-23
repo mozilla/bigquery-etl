@@ -2424,6 +2424,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#install" class="md-nav__link">
+    install
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#installation" class="md-nav__link">
     installation
   </a>
@@ -4431,6 +4438,13 @@
         <li class="md-nav__item">
   <a href="#heartbeat" class="md-nav__link">
     heartbeat
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install" class="md-nav__link">
+    install
   </a>
   
 </li>
@@ -26892,6 +26906,42 @@ and to contain only one row per distinct <code>document_id</code> within a given
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/heartbeat">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/heartbeat/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/heartbeat/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="install"><a href="#install">install</a></h2>
+<p><strong>Install</strong></p>
+<p><code>telemetry.install</code></p>
+<p>View based on firefox_installer.install table.  The attribution column in that table is a URL encoded string.  This
+view extracts the fields in the attribution column into
+STRUCT&lt;
+campaign STRING,
+content STRING,
+dlsource STRING,
+dltoken STRING,
+experiment STRING,
+medium STRING,
+source STRING,
+ua STRING,
+variation STRING</p>
+<blockquote></blockquote>
+<ul>
+<li>Owners:<p>- <a href="mailto:gleonard@mozilla.com">gleonard@mozilla.com</a></p>
+</li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_installer>firefox_installer</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_installer/install>install</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/install">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/install/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/install/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="installation"><a href="#installation">installation</a></h2>
 <p><strong>Historical Pings for <code>telemetry/installation</code></strong></p>

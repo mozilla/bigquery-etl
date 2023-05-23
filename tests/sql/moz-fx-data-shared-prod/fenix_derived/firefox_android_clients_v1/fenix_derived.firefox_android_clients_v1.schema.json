@@ -5,13 +5,11 @@
   },
   {
     "type": "INTEGER",
-    "name": "sample_id",
-    "mode": "NULLABLE"
+    "name": "sample_id"
   },
   {
     "type": "DATE",
-    "name": "first_seen_date",
-    "mode": "NULLABLE"
+    "name": "first_seen_date"
   },
   {
     "type": "DATE",
@@ -19,123 +17,100 @@
   },
   {
     "type": "DATE",
-    "name": "first_run_date",
-    "mode": "NULLABLE"
+    "name": "first_run_date"
   },
   {
     "type": "STRING",
-    "name": "first_reported_country",
-    "mode": "NULLABLE"
+    "name": "first_reported_country"
   },
   {
     "type": "STRING",
-    "name": "first_reported_isp",
-    "mode": "NULLABLE"
+    "name": "first_reported_isp"
   },
   {
     "type": "STRING",
-    "name": "channel",
-    "mode": "NULLABLE"
+    "name": "channel"
   },
   {
     "type": "STRING",
-    "name": "device_manufacturer",
-    "mode": "NULLABLE"
+    "name": "device_manufacturer"
   },
   {
     "type": "STRING",
-    "name": "device_model",
-    "mode": "NULLABLE"
+    "name": "device_model"
   },
   {
     "type": "STRING",
-    "name": "os_version",
-    "mode": "NULLABLE"
+    "name": "os_version"
   },
   {
     "type": "STRING",
-    "name": "app_version",
-    "mode": "NULLABLE"
+    "name": "app_version"
   },
   {
     "type": "BOOLEAN",
-    "name": "activated",
-    "mode": "NULLABLE"
+    "name": "activated"
   },
   {
     "type": "STRING",
-    "name": "adjust_campaign",
-    "mode": "NULLABLE"
+    "name": "adjust_campaign"
   },
   {
     "type": "STRING",
-    "name": "adjust_ad_group",
-    "mode": "NULLABLE"
+    "name": "adjust_ad_group"
   },
   {
     "type": "STRING",
-    "name": "adjust_creative",
-    "mode": "NULLABLE"
+    "name": "adjust_creative"
   },
   {
     "type": "STRING",
-    "name": "adjust_network",
-    "mode": "NULLABLE"
+    "name": "adjust_network"
   },
   {
     "type": "STRING",
-    "name": "install_source",
-    "mode": "NULLABLE"
+    "name": "install_source"
   },
   {
-    "type": "RECORD",
-    "name": "metadata",
     "fields": [
       {
         "type": "BOOLEAN",
-        "name": "reported_first_session_ping",
-        "mode": "NULLABLE"
+        "name": "reported_first_session_ping"
       },
       {
         "type": "BOOLEAN",
-        "name": "reported_metrics_ping",
-        "mode": "NULLABLE"
+        "name": "reported_metrics_ping"
       },
       {
         "type": "DATE",
-        "name": "min_first_session_ping_submission_date",
-        "mode": "NULLABLE"
+        "name": "min_first_session_ping_submission_date"
       },
       {
         "type": "DATE",
-        "name": "min_first_session_ping_run_date",
-        "mode": "NULLABLE"
+        "name": "min_first_session_ping_run_date"
       },
       {
         "type": "DATE",
-        "name": "min_metrics_ping_submission_date",
-        "mode": "NULLABLE"
+        "name": "min_metrics_ping_submission_date"
       },
       {
         "type": "STRING",
-        "name": "adjust_network__source_ping",
-        "mode": "NULLABLE"
+        "name": "adjust_network__source_ping"
       },
       {
         "type": "STRING",
-        "name": "install_source__source_ping",
-        "mode": "NULLABLE"
+        "name": "install_source__source_ping"
       },
       {
         "type": "DATETIME",
-        "name": "adjust_network__source_ping_datetime",
-        "mode": "NULLABLE"
+        "name": "adjust_network__source_ping_datetime"
       },
       {
         "type": "DATETIME",
-        "name": "install_source__source_ping_datetime",
-        "mode": "NULLABLE"
+        "name": "install_source__source_ping_datetime"
       }
-    ]
+    ],
+    "name": "metadata",
+    "type": "RECORD"
   }
 ]

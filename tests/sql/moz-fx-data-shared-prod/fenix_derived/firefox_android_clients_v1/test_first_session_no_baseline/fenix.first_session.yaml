@@ -3,12 +3,9 @@
     client_id: client-3
     first_run_date: '2023-05-01+08:00'
   sample_id: 50
-  submission_timestamp: '2023-05-01 12:55:49.862022 UTC'
+  submission_timestamp: '2023-05-01 12:55:49'
   ping_info:
     seq: 0
   metrics:
     string:
-      first_session_campaign: abc
       first_session_network: Organic
-      first_session_adgroup: abc
-      first_session_creative: abc

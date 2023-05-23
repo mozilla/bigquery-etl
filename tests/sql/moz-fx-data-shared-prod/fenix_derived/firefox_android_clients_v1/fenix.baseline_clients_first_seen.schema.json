@@ -1,18 +1,15 @@
 [
   {
     "type": "STRING",
-    "name": "client_id",
-    "mode": "REQUIRED"
+    "name": "client_id"
   },
   {
     "type": "INTEGER",
-    "name": "sample_id",
-    "mode": "NULLABLE"
+    "name": "sample_id"
   },
   {
     "type": "DATE",
-    "name": "first_seen_date",
-    "mode": "NULLABLE"
+    "name": "first_seen_date"
   },
   {
     "type": "DATE",
@@ -21,42 +18,34 @@
   },
   {
     "type": "STRING",
-    "name": "normalized_channel",
-    "mode": "NULLABLE"
+    "name": "normalized_channel"
   },
   {
     "type": "STRING",
-    "name": "country",
-    "mode": "NULLABLE"
+    "name": "country"
   },
   {
     "type": "STRING",
-    "name": "isp",
-    "mode": "NULLABLE"
+    "name": "isp"
   },
   {
     "type": "DATE",
-    "name": "first_run_date",
-    "mode": "NULLABLE"
+    "name": "first_run_date"
   },
   {
     "type": "STRING",
-    "name": "device_manufacturer",
-    "mode": "NULLABLE"
+    "name": "device_manufacturer"
   },
   {
     "type": "STRING",
-    "name": "device_model",
-    "mode": "NULLABLE"
+    "name": "device_model"
   },
   {
     "type": "STRING",
-    "name": "normalized_os_version",
-    "mode": "NULLABLE"
+    "name": "normalized_os_version"
   },
     {
     "type": "STRING",
-    "name": "app_display_version",
-    "mode": "NULLABLE"
+    "name": "app_display_version"
   }
 ]

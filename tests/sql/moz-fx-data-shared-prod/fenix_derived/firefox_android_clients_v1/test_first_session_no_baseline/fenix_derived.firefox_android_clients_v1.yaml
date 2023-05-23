@@ -3,10 +3,5 @@
   sample_id: 50
   first_seen_date: 2023-05-01
   submission_date: 2023-05-01
+  first_run_date: 2023-05-02
   activated: true
-  adjust_network: Organic
-  metadata:
-    reported_first_session_ping: true
-    reported_metrics_ping: false
-    adjust_network__source_ping: first_session
-    install_source__source_ping: first_session

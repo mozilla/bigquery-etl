@@ -1,14 +1,11 @@
 ---
-- client_id: client-1
-  sample_id: 54
+- client_id: client-9
   first_seen_date: 2023-01-01
   submission_date: 2023-01-01
-  first_run_date: 2023-01-02
   activated: false
-  adjust_network: Unknown
   install_source: com.android.vending
   metadata:
     reported_metrics_ping: true
     reported_first_session_ping: false
-    min_first_session_ping_submission_date: 2023-01-01
+    min_metrics_ping_submission_date: 2023-01-01
     install_source__source_ping: metrics

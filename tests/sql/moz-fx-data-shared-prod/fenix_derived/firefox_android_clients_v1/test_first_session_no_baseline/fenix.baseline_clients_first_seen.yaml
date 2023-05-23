@@ -3,11 +3,5 @@
   sample_id: 60
   first_seen_date: 2023-05-01
   submission_date: 2023-05-01
+  first_run_date: 2023-05-02
   normalized_channel: release
-  country: DE
-  isp: Vodafone
-  first_run_date: 2023-05-01
-  device_manufacturer: mac
-  device_model: test_model
-  normalized_os_version: Android
-  app_display_version: 100

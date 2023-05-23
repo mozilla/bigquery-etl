@@ -1,6 +1,6 @@
 ---
 - client_info:
-    client_id: client-2
+    client_id: client-1
   submission_timestamp: '2023-01-01 00:00:00'
   metrics:
     string:

@@ -1,9 +1,4 @@
--- This is an authorized view that allows us to read Apple Ads data
--- from a Fivetran project.
-CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.apple_ads.organization_report`
-AS
 SELECT
   *
 FROM
-  `moz-fx-data-bq-fivetran.dbt_fivetran_transformation_apple_search_ads.apple_search_ads__organization_report`
+  `moz-fx-data-bq-fivetran.apple_ads_derived.organization_report`

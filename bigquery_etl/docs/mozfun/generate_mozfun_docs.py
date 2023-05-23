@@ -107,10 +107,10 @@ def generate_mozfun_docs(out_dir, project_dir):
                         if input_str or output_str:
                             dataset_doc_file.write("\n### Parameters\n\n")
                             if input_str:
-                                dataset_doc_file.write("\nINPUTS\n\n")
+                                dataset_doc_file.write("\n**INPUTS**\n\n")
                                 dataset_doc_file.write(f"```\n{input_str}\n```\n\n")
                             if output_str:
-                                dataset_doc_file.write("\nOUTPUTS\n\n")
+                                dataset_doc_file.write("\n**OUTPUTS**\n\n")
                                 dataset_doc_file.write(f"```\n{output_str}\n```\n\n")
 
                         # Add links to source and edit

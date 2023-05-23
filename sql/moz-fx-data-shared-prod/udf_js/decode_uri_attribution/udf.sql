@@ -51,7 +51,7 @@ SELECT
       'whatsnew',
       '(not set)',
       'mozorg',
-      '19d1fd9b-ae19-4155-8d26-fd91aaa55953',
+      'test-download-token',
       '(not set)',
       'firefox-browser',
       'firefox-browser',
@@ -59,7 +59,7 @@ SELECT
       '(not set)'
     ),
     udf_js.decode_uri_attribution(
-      "campaign%3Dwhatsnew%26content%3D%2528not%2Bset%2529%26dlsource%3Dmozorg%26dltoken%3D19d1fd9b-ae19-4155-8d26-fd91aaa55953%26experiment%3D%2528not%2Bset%2529%26medium%3Dfirefox-browser%26source%3Dfirefox-browser%26ua%3Dfirefox%26variation%3D%2528not%2Bset%2529"
+      "campaign%3Dwhatsnew%26content%3D%2528not%2Bset%2529%26dlsource%3Dmozorg%26dltoken%3Dtest-download-token%26experiment%3D%2528not%2Bset%2529%26medium%3Dfirefox-browser%26source%3Dfirefox-browser%26ua%3Dfirefox%26variation%3D%2528not%2Bset%2529"
     )
   );
 
@@ -80,7 +80,7 @@ SELECT
       'whatsnew',
       '(not set)',
       'mozorg',
-      '19d1fd9b-ae19-4155-8d26-fd91aaa55953',
+      'test-download-token',
       NULL,
       'firefox-browser',
       'firefox-browser',
@@ -88,7 +88,7 @@ SELECT
       NULL
     ),
     udf_js.decode_uri_attribution(
-      "campaign%3Dwhatsnew%26content%3D%2528not%2Bset%2529%26dlsource%3Dmozorg%26dltoken%3D19d1fd9b-ae19-4155-8d26-fd91aaa55953%26medium%3Dfirefox-browser%26source%3Dfirefox-browser%26ua%3Dfirefox"
+      "campaign%3Dwhatsnew%26content%3D%2528not%2Bset%2529%26dlsource%3Dmozorg%26dltoken%3Dtest-download-token%26medium%3Dfirefox-browser%26source%3Dfirefox-browser%26ua%3Dfirefox"
     )
   );
 
@@ -99,7 +99,7 @@ SELECT
       'whatsnew',
       '(not set)',
       'mozorg',
-      '19d1fd9b-ae19-4155-8d26-fd91aaa55953',
+      'test-download-token',
       '(not set)',
       'firefox-browser',
       'firefox-browser',
@@ -107,7 +107,7 @@ SELECT
       '(not set)'
     ),
     udf_js.decode_uri_attribution(
-      "extra%3Dsomething%26campaign%3Dwhatsnew%26content%3D%2528not%2Bset%2529%26dlsource%3Dmozorg%26dltoken%3D19d1fd9b-ae19-4155-8d26-fd91aaa55953%26experiment%3D%2528not%2Bset%2529%26medium%3Dfirefox-browser%26source%3Dfirefox-browser%26ua%3Dfirefox%26variation%3D%2528not%2Bset%2529"
+      "extra%3Dsomething%26campaign%3Dwhatsnew%26content%3D%2528not%2Bset%2529%26dlsource%3Dmozorg%26dltoken%3Dtest-download-token%26experiment%3D%2528not%2Bset%2529%26medium%3Dfirefox-browser%26source%3Dfirefox-browser%26ua%3Dfirefox%26variation%3D%2528not%2Bset%2529"
     )
   );
 
@@ -152,7 +152,7 @@ SELECT
       'whatsnew',
       '(not set)',
       'mozorg',
-      '19d1fd9b-ae19-4155-8d26-fd91aaa55953',
+      'test-download-token',
       '(not set)',
       'firefox-browser',
       'firefox-browser',
@@ -160,6 +160,6 @@ SELECT
       '(not set)'
     ),
     udf_js.decode_uri_attribution(
-      "campaign=whatsnew&content=(not set)&dlsource=mozorg&dltoken=19d1fd9b-ae19-4155-8d26-fd91aaa55953&experiment=(not set)&medium=firefox-browser&source=firefox-browser&ua=firefox&variation=(not set)"
+      "campaign=whatsnew&content=(not set)&dlsource=mozorg&dltoken=test-download-token&experiment=(not set)&medium=firefox-browser&source=firefox-browser&ua=firefox&variation=(not set)"
     )
   );

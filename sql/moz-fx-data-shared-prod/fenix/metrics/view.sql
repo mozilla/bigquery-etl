@@ -119,7 +119,8 @@ SELECT
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_no_getparameters,
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_no_transactionid,
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_stale_transactionid,
-      metrics.labeled_counter.dotprint_failure
+      metrics.labeled_counter.dotprint_failure,
+      metrics.labeled_counter.pdfjs_geckoview
     ) AS labeled_counter,
     metrics.quantity,
     metrics.string,
@@ -393,7 +394,8 @@ SELECT
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_no_getparameters,
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_no_transactionid,
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_stale_transactionid,
-      metrics.labeled_counter.dotprint_failure
+      metrics.labeled_counter.dotprint_failure,
+      metrics.labeled_counter.pdfjs_geckoview
     ) AS labeled_counter,
     metrics.quantity,
     STRUCT(
@@ -839,7 +841,8 @@ SELECT
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_no_getparameters,
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_no_transactionid,
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_stale_transactionid,
-      metrics.labeled_counter.dotprint_failure
+      metrics.labeled_counter.dotprint_failure,
+      metrics.labeled_counter.pdfjs_geckoview
     ) AS labeled_counter,
     metrics.quantity,
     STRUCT(
@@ -1138,7 +1141,8 @@ SELECT
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_no_getparameters,
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_no_transactionid,
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_stale_transactionid,
-      metrics.labeled_counter.dotprint_failure
+      metrics.labeled_counter.dotprint_failure,
+      metrics.labeled_counter.pdfjs_geckoview
     ) AS labeled_counter,
     metrics.quantity,
     metrics.string,

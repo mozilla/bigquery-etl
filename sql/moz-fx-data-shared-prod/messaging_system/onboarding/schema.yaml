@@ -240,6 +240,11 @@ fields:
     mode: NULLABLE
     name: dltoken
     type: STRING
+  - description: Identifier that indicates where installations of Firefox originate,
+      see bug 1827238
+    mode: NULLABLE
+    name: dlsource
+    type: STRING
   mode: NULLABLE
   name: attribution
   type: RECORD

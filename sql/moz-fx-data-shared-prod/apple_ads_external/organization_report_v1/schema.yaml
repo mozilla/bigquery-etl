@@ -30,7 +30,8 @@ fields:
   name: new_downloads
   type: INTEGER
 - description: |
-    Number of user downloads where user deletes app and downloads the same app again following a tap on an ad on the App Store, or downloads the same app to an additional device of organization in a given day.
+    Number of user downloads where user deletes app and downloads the same app again following
+    a tap on an ad on the App Store, or downloads the same app to an additional device of organization in a given day.
   mode: NULLABLE
   name: redownloads
   type: INTEGER

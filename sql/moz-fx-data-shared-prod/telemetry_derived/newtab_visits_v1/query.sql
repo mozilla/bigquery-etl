@@ -63,7 +63,9 @@ visit_metadata AS (
 search_events AS (
   SELECT
     mozfun.map.get_key(event_details, "newtab_visit_id") AS newtab_visit_id,
-    mozfun.map.get_key(event_details, "telemetry_id") AS search_engine,
+    `moz-fx-data-shared-prod`.udf.normalize_search_engine(
+      mozfun.map.get_key(event_details, "telemetry_id")
+    ) AS search_engine,
     mozfun.map.get_key(event_details, "search_access_point") AS search_access_point,
     COUNTIF(event_name = "issued") AS searches,
     COUNTIF(

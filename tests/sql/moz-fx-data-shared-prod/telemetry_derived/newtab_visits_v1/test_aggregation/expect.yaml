@@ -11,7 +11,7 @@
   browser_name: Firefox Desktop
   had_non_impression_engagement: true
   search_interactions:
-    - search_engine: engine1
+    - search_engine: Engine1
       search_access_point: urlbar
       searches: 1
       follow_on_search_ad_clicks: 0

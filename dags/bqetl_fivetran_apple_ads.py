@@ -40,10 +40,10 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    apple_ads_derived__ad_group_report__v1 = bigquery_etl_query(
-        task_id="apple_ads_derived__ad_group_report__v1",
+    apple_ads_external__ad_group_report__v1 = bigquery_etl_query(
+        task_id="apple_ads_external__ad_group_report__v1",
         destination_table="ad_group_report_v1",
-        dataset_id="apple_ads_derived",
+        dataset_id="apple_ads_external",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
         email=["frank@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
@@ -52,10 +52,10 @@ with DAG(
         task_concurrency=1,
     )
 
-    apple_ads_derived__campaign_report__v1 = bigquery_etl_query(
-        task_id="apple_ads_derived__campaign_report__v1",
+    apple_ads_external__campaign_report__v1 = bigquery_etl_query(
+        task_id="apple_ads_external__campaign_report__v1",
         destination_table="campaign_report_v1",
-        dataset_id="apple_ads_derived",
+        dataset_id="apple_ads_external",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
         email=["frank@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
@@ -64,10 +64,10 @@ with DAG(
         task_concurrency=1,
     )
 
-    apple_ads_derived__keyword_report__v1 = bigquery_etl_query(
-        task_id="apple_ads_derived__keyword_report__v1",
+    apple_ads_external__keyword_report__v1 = bigquery_etl_query(
+        task_id="apple_ads_external__keyword_report__v1",
         destination_table="keyword_report_v1",
-        dataset_id="apple_ads_derived",
+        dataset_id="apple_ads_external",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
         email=["frank@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
@@ -76,10 +76,10 @@ with DAG(
         task_concurrency=1,
     )
 
-    apple_ads_derived__organization_report__v1 = bigquery_etl_query(
-        task_id="apple_ads_derived__organization_report__v1",
+    apple_ads_external__organization_report__v1 = bigquery_etl_query(
+        task_id="apple_ads_external__organization_report__v1",
         destination_table="organization_report_v1",
-        dataset_id="apple_ads_derived",
+        dataset_id="apple_ads_external",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
         email=["frank@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
@@ -88,10 +88,10 @@ with DAG(
         task_concurrency=1,
     )
 
-    apple_ads_derived__search_term_report__v1 = bigquery_etl_query(
-        task_id="apple_ads_derived__search_term_report__v1",
+    apple_ads_external__search_term_report__v1 = bigquery_etl_query(
+        task_id="apple_ads_external__search_term_report__v1",
         destination_table="search_term_report_v1",
-        dataset_id="apple_ads_derived",
+        dataset_id="apple_ads_external",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
         email=["frank@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],

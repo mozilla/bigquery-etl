@@ -88,7 +88,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/fivetran_costs_derived/incremental_mar_v1/query.sql",
     "sql/moz-fx-data-shared-prod/fivetran_costs_derived/monthly_costs_v1/query.sql",
     *glob.glob(
-        "sql/**/apple_ads_external*/**/query.sql",
+        "sql/moz-fx-data-shared-prod/apple_ads_external*/**/query.sql",
         recursive=True,
     ),
     "sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_update/view.sql",
@@ -684,7 +684,7 @@ def add_test_project_to_skip(sql_dir="sql", project=TEST_PROJECT):
             p
             for f in [Path(s) for s in SKIP]
             for p in glob.glob(
-                f"sql/{TEST_PROJECT}/{f.parent.parent.name}*/{f.parent.name}/{f.name}",
+                f"{sql_dir}/{project}/{f.parent.parent.name}*/{f.parent.name}/{f.name}",
                 recursive=True,
             )
         ]

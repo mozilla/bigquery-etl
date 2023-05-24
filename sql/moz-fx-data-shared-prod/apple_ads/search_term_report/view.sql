@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-bq-fivetran.apple_ads_derived.search_term_report_v1`
+  `moz-fx-data-shared-prod.apple_ads_derived.search_term_report_v1`

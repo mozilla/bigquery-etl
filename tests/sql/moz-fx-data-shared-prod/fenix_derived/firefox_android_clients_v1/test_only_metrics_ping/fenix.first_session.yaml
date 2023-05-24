@@ -1,9 +1,9 @@
 ---
 - client_info:
-    client_id: client-2
+    client_id: client-3
   submission_timestamp: '2023-01-01 00:00:00'
   metrics:
     string:
-      first_session_network: Organic
+      first_session_network: 'Test Adjust'
   ping_info:
     seq: 0

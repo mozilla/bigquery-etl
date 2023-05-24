@@ -6,5 +6,9 @@
   {
     "type": "INTEGER",
     "name": "activated"
+  },
+  {
+    "type": "DATE",
+    "name": "submission_date"
   }
 ]

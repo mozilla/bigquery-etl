@@ -88,7 +88,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/fivetran_costs_derived/incremental_mar_v1/query.sql",
     "sql/moz-fx-data-shared-prod/fivetran_costs_derived/monthly_costs_v1/query.sql",
     *glob.glob(
-        "sql/moz-fx-data-shared-prod/apple_ads/**/view.sql",
+        "sql/moz-fx-data-shared-prod/dryrun_debug_test_dummy/**/query.sql",
         recursive=True,
     ),
     "sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_update/view.sql",

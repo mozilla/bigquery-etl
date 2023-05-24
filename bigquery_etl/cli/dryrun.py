@@ -13,7 +13,7 @@ import click
 from google.cloud import bigquery
 
 from ..cli.utils import is_authenticated
-from ..dryrun import SKIP, DryRun
+from ..dryrun import SKIP, DryRun, add_test_project_to_skip
 
 
 @click.command(
@@ -98,6 +98,8 @@ def dryrun(
     if not use_cloud_function and not is_authenticated():
         click.echo("Not authenticated to GCP. Run `gcloud auth login` to login.")
         sys.exit(1)
+
+    add_test_project_to_skip()
 
     sql_file_valid = partial(
         _sql_file_valid, use_cloud_function, project, respect_skip, validate_schemas

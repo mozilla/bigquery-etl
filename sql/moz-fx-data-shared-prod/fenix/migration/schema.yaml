@@ -1,4 +1,8 @@
 fields:
+- description: App ID of the channel data was received from
+  mode: NULLABLE
+  name: normalized_app_id
+  type: STRING
 - mode: NULLABLE
   name: submission_date
   type: DATE

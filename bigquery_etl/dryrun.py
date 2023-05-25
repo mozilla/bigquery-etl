@@ -681,12 +681,8 @@ def add_test_project_to_skip(sql_dir="sql", project=TEST_PROJECT):
     """Update skip list to include renamed queries in stage."""
     SKIP.update(
         [
-            p
-            for f in [Path(s) for s in SKIP]
-            for p in glob.glob(
-                f"sql/{TEST_PROJECT}/{f.parent.parent.name}*/{f.parent.name}/{f.name}",
-                recursive=True,
-            )
+            f"{sql_dir}/{project}/{test_skip.parent.parent.name}*/{test_skip.parent.name}/{test_skip.name}"
+            for test_skip in [Path(skip) for skip in SKIP]
         ]
     )
 

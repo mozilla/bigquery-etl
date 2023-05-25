@@ -1,8 +1,9 @@
 import os
+from unittest import mock
 
 import pytest
 
-from bigquery_etl.dryrun import DryRun, Errors
+from bigquery_etl.dryrun import TEST_PROJECT, DryRun, Errors
 
 
 @pytest.fixture
@@ -192,3 +193,27 @@ class TestDryRun:
 
         dryrun = DryRun(sqlfile=str(query_file))
         assert dryrun.is_valid()
+
+
+MOCK_SKIP_LIST = {
+    "sql/moz-fx-data-shared-prod/dataset/telemetry_missing_columns_v1/view.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v2/query.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v2/init.sql",
+}
+
+
+@mock.patch("bigquery_etl.dryrun.SKIP", MOCK_SKIP_LIST)
+def test_add_test_project_to_skip():
+    """Update skip list to include renamed queries in stage."""
+
+    expected = {
+        *MOCK_SKIP_LIST,
+        f"sql/{TEST_PROJECT}/dataset*/telemetry_missing_columns_v1/view.sql",
+        f"sql/{TEST_PROJECT}/monitoring*/telemetry_missing_columns_v2/query.sql",
+        f"sql/{TEST_PROJECT}/monitoring*/telemetry_missing_columns_v2/init.sql",
+    }
+
+    from bigquery_etl.dryrun import SKIP, add_test_project_to_skip
+
+    add_test_project_to_skip()
+    assert SKIP == expected

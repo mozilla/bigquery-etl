@@ -14168,6 +14168,24 @@ fields:
     - mode: NULLABLE
       name: use_counter2_css_property_baseline_source_page
       type: STRING
+    - mode: NULLABLE
+      name: orb_block_initiator
+      type: STRING
+    - mode: NULLABLE
+      name: orb_block_reason
+      type: STRING
+    - mode: NULLABLE
+      name: use_counter2_domparser_parsefromstring_document
+      type: STRING
+    - mode: NULLABLE
+      name: use_counter2_domparser_parsefromstring_page
+      type: STRING
+    - mode: NULLABLE
+      name: use_counter2_range_createcontextualfragment_document
+      type: STRING
+    - mode: NULLABLE
+      name: use_counter2_range_createcontextualfragment_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -29406,6 +29424,18 @@ fields:
           type: STRING
         - mode: NULLABLE
           name: use_counter2_css_property_baseline_source_page
+          type: STRING
+        - mode: NULLABLE
+          name: use_counter2_domparser_parsefromstring_document
+          type: STRING
+        - mode: NULLABLE
+          name: use_counter2_domparser_parsefromstring_page
+          type: STRING
+        - mode: NULLABLE
+          name: use_counter2_range_createcontextualfragment_document
+          type: STRING
+        - mode: NULLABLE
+          name: use_counter2_range_createcontextualfragment_page
           type: STRING
         mode: NULLABLE
         name: histograms

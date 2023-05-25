@@ -506,6 +506,14 @@ fields:
       mode: NULLABLE
       name: dotprint_android_dialog_requested
       type: INTEGER
+    - description: 'How often something went awry within
+
+        `AboutWelcome.submitGleanPingForPing`, preventing ping submission.
+
+        '
+      mode: NULLABLE
+      name: messaging_system_glean_ping_for_ping_failures
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -1445,6 +1453,33 @@ fields:
         type: INTEGER
       mode: REPEATED
       name: pdfjs_geckoview
+      type: RECORD
+    - description: 'We received a ping with non-scalar data on a field of this name.
+
+        If this is existing pre-PingCentre-replacement data, you may need to
+
+        augment the logic in
+
+        `AboutWelcome.submitGleanPingForPing` like the other `handledKeys`.
+
+        If this is for new, post-PingCentre-replacement data, you should
+
+        probably prefer a flat structure.
+
+        If you''re unsure, please ask in
+
+        [the #glean channel](https://chat.mozilla.org/#/room/#glean:mozilla.org).
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: messaging_system_invalid_nested_data
       type: RECORD
     mode: NULLABLE
     name: labeled_counter

@@ -681,10 +681,15 @@ def find_next_word(target, source):
 
 def add_test_project_to_skip(sql_dir="sql", project=TEST_PROJECT):
     """Update skip list to include renamed queries in stage."""
+    global SKIP
     SKIP.update(
         [
-            f"{sql_dir}/{project}/{test_skip.parent.parent.name}*/{test_skip.parent.name}/{test_skip.name}"
-            for test_skip in [Path(skip) for skip in SKIP]
+            test_skip
+            for skip in [Path(skip) for skip in SKIP]
+            for test_skip in glob.glob(
+                f"{sql_dir}/{project}/{skip.parent.parent.name}*/{skip.parent.name}/{skip.name}",
+                recursive=True,
+            )
         ]
     )
 

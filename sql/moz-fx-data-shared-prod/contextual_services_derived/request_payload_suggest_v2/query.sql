@@ -58,7 +58,7 @@ SELECT
   country_code,
   region_code,
   os_family,
-  CAST(product_version AS INT64) as product_version,
+  CAST(product_version AS INT64) AS product_version,
   impression_count,
   click_count
 FROM

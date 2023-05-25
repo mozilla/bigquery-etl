@@ -175,6 +175,18 @@ class GleanAppPingViews(GleanTable):
                 )
 
                 schema_dir = get_table_dir(output_dir, full_view_id)
+
+                # normalized_app_id is not part of the underlying table the schemas are derived from,
+                # the field gets added as part of the view definition, so we have to add it manually to the schema
+                unioned_schema.schema["fields"].insert(
+                    0,
+                    {
+                        "name": "normalized_app_id",
+                        "mode": "NULLABLE",
+                        "type": "STRING",
+                        "description": "App ID of the channel data was received from",
+                    },
+                )
                 unioned_schema.to_yaml_file(schema_dir / "schema.yaml")
 
     def _generate_select_expression(

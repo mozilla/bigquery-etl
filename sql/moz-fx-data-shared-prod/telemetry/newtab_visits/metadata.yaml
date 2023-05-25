@@ -1,0 +1,6 @@
+friendly_name: Newtab Visits
+description: |-
+  Visits on the newtab page, one row per visit per-day
+  (identified by the visit id).
+owners:
+- anicholson@mozilla.com

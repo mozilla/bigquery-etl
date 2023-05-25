@@ -6,7 +6,5 @@
 /sql/moz-fx-data-shared-prod/search_terms @whd @jasonthomas
 /sql/moz-fx-data-shared-prod/search_terms_derived @whd @jasonthomas
 # Contextual Services
-/sql/moz-fx-data-shared-prod/contextual_services/request_payload_suggest @mozilla/request_payload_reviewers
-/sql/moz-fx-data-shared-prod/contextual_services/request_payload_tiles @mozilla/request_payload_reviewers
 /sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_suggest_v2 @mozilla/request_payload_reviewers
 /sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_tiles_v2 @mozilla/request_payload_reviewers

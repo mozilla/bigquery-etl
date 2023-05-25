@@ -214,10 +214,10 @@ SELECT
   COALESCE(_previous.adjust_network, _current.adjust_network) AS adjust_network,
   COALESCE(_previous.install_source, _current.install_source) AS install_source,
   STRUCT(
-    _previous.metadata.reported_first_session_ping
-    OR _current.metadata.reported_first_session_ping AS reported_first_session_ping,
-    _previous.metadata.reported_metrics_ping
-    OR _current.metadata.reported_metrics_ping AS reported_metrics_ping,
+    COALESCE(_previous.metadata.reported_first_session_ping, FALSE)
+    OR COALESCE(_current.metadata.reported_first_session_ping, FALSE) AS reported_first_session_ping,
+    COALESCE(_previous.metadata.reported_metrics_ping, FALSE)
+    OR COALESCE(_current.metadata.reported_metrics_ping, FALSE) AS reported_metrics_ping,
     CASE
       WHEN _previous.metadata.min_first_session_ping_submission_date IS NOT NULL
         AND _current.metadata.min_first_session_ping_submission_date IS NOT NULL

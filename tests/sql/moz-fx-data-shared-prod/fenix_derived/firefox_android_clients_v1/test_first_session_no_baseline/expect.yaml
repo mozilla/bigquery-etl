@@ -4,6 +4,7 @@
   adjust_network: Organic
   metadata:
     reported_first_session_ping: true
+    reported_metrics_ping: false
     min_first_session_ping_submission_date: 2023-05-02
     min_first_session_ping_run_date: 2023-05-02
     adjust_network__source_ping: first_session
@@ -18,6 +19,7 @@
   adjust_network: Untrusted Devices
   metadata:
     reported_first_session_ping: true
+    reported_metrics_ping: false
     min_first_session_ping_submission_date: 2023-05-02
     min_first_session_ping_run_date: 2023-05-02
     adjust_network__source_ping: first_session

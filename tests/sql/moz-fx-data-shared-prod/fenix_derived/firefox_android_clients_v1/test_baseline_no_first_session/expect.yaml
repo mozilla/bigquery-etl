@@ -9,6 +9,7 @@
   channel: release
   metadata:
     reported_metrics_ping: true
+    reported_first_session_ping: false
     min_metrics_ping_submission_date: 2023-01-01
     install_source__source_ping_datetime: '2023-01-01T00:00:00'
     install_source__source_ping: metrics
@@ -17,12 +18,14 @@
   adjust_network: Organic
   metadata:
     reported_metrics_ping: true
+    reported_first_session_ping: false
     min_metrics_ping_submission_date: 2023-01-01
     adjust_network__source_ping: metrics
     adjust_network__source_ping_datetime: '2023-01-01T00:00:00'
 - client_id: client-3
   adjust_network: Organic
   metadata:
+    reported_metrics_ping: false
     reported_first_session_ping: true
     min_first_session_ping_submission_date: 2023-01-01
     adjust_network__source_ping_datetime: '2023-01-01T00:00:00'

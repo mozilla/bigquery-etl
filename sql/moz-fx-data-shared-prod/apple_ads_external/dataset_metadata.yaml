@@ -10,8 +10,8 @@ description: |-
 
   More information on how these models are built can be found here:
   https://github.com/fivetran/dbt_apple_search_ads/blob/main/models/apple_search_ads.yml
-# dataset_base_acl: restricted
-# user_facing: false
+dataset_base_acl: derived
+user_facing: false
 labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer

@@ -704,7 +704,8 @@ workflows:
             branches:
               only:
                 - main
-  nightly: # Run after schema-generator to ensure we are up-to-date
+  nightly:
+    # Run after schema-generator to ensure we are up-to-date
     triggers:
       - schedule:
           cron: "0 5 * * *"

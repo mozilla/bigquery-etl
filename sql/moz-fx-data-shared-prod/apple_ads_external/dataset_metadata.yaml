@@ -1,0 +1,19 @@
+friendly_name: Apple Ads External
+description: |-
+  Queries for copying over Apple ads data from our Fivetran
+  project over to our data BQ project.
+
+  The fivetran tables being copied over are not raw ingested tables,
+  but instead tables that have been transformed using fivetran transformations
+  power by our DBT project:
+  https://github.com/mozilla/dbt-fivetran-transformations/
+
+  More information on how these models are built can be found here:
+  https://github.com/fivetran/dbt_apple_search_ads/blob/main/models/apple_search_ads.yml
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

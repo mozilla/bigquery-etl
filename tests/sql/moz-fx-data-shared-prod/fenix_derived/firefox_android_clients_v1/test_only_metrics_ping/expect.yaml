@@ -15,6 +15,7 @@
     adjust_network__source_ping: metrics
 - client_id: client-2
   install_source: 'Test Install Source'
+  sample_id: 40
   metadata:
     reported_first_session_ping: false
     reported_metrics_ping: true

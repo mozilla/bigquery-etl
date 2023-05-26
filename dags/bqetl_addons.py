@@ -21,15 +21,15 @@ Depends on `bqetl_search`, so is scheduled after that DAG.
 
 #### Owner
 
-jklukas@mozilla.com
+kik@mozilla.com
 """
 
 
 default_args = {
-    "owner": "jklukas@mozilla.com",
+    "owner": "kik@mozilla.com",
     "start_date": datetime.datetime(2018, 11, 27, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "kik@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -52,7 +52,11 @@ with DAG(
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "jklukas@mozilla.com",
+            "kik@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -63,7 +67,11 @@ with DAG(
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "jklukas@mozilla.com",
+            "kik@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -76,7 +84,11 @@ with DAG(
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "jklukas@mozilla.com",
+            "kik@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -101,7 +113,11 @@ with DAG(
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "jklukas@mozilla.com",
+            "kik@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

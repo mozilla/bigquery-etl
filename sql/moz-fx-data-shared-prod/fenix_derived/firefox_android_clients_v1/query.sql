@@ -14,7 +14,7 @@ WITH first_seen AS (
     normalized_os_version AS os_version,
     app_display_version AS app_version
   FROM
-    `moz-fx-data-shared-prod.fenix.baseline_clients_first_seen`
+    fenix.baseline_clients_first_seen
   WHERE
     submission_date = @submission_date
     AND normalized_channel = 'release'
@@ -25,7 +25,7 @@ activations AS (
     client_id,
     ARRAY_AGG(activated ORDER BY submission_date DESC)[SAFE_OFFSET(0)] > 0 AS activated
   FROM
-    `moz-fx-data-shared-prod.fenix.new_profile_activation`
+    fenix.new_profile_activation
   WHERE
     submission_date = @submission_date
   GROUP BY
@@ -51,7 +51,7 @@ first_session_ping AS (
       SAFE_OFFSET(0)
     ] AS adjust_creative
   FROM
-    `moz-fx-data-shared-prod.fenix.first_session` AS fenix_first_session
+    fenix.first_session AS fenix_first_session
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND ping_info.seq = 0 -- Pings are sent in sequence, this guarantees that the first one is returned.
@@ -214,10 +214,13 @@ SELECT
   COALESCE(_previous.adjust_network, _current.adjust_network) AS adjust_network,
   COALESCE(_previous.install_source, _current.install_source) AS install_source,
   STRUCT(
-    _previous.metadata.reported_first_session_ping
-    OR _current.metadata.reported_first_session_ping AS reported_first_session_ping,
-    _previous.metadata.reported_metrics_ping
-    OR _current.metadata.reported_metrics_ping AS reported_metrics_ping,
+    COALESCE(_previous.metadata.reported_first_session_ping, FALSE)
+    OR COALESCE(
+      _current.metadata.reported_first_session_ping,
+      FALSE
+    ) AS reported_first_session_ping,
+    COALESCE(_previous.metadata.reported_metrics_ping, FALSE)
+    OR COALESCE(_current.metadata.reported_metrics_ping, FALSE) AS reported_metrics_ping,
     CASE
       WHEN _previous.metadata.min_first_session_ping_submission_date IS NOT NULL
         AND _current.metadata.min_first_session_ping_submission_date IS NOT NULL

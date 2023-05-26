@@ -13,6 +13,12 @@ docs = """
 
 Built from bigquery-etl repo, [`dags/bqetl_fivetran_apple_ads.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_fivetran_apple_ads.py)
 
+#### Description
+
+Copies over apple_ads data coming from Fivetran
+into our data BQ project. Fivetran syncs this data
+every hour. We copy the data every 3 hours to our project.
+
 #### Owner
 
 kik@mozilla.com
@@ -21,7 +27,7 @@ kik@mozilla.com
 
 default_args = {
     "owner": "kik@mozilla.com",
-    "start_date": datetime.datetime(2023, 1, 1, 0, 0),
+    "start_date": datetime.datetime(2023, 5, 25, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com", "frank@mozilla.com", "kik@mozilla.com"],
     "depends_on_past": False,
@@ -36,7 +42,7 @@ tags = ["impact/tier_2", "repo/bigquery-etl"]
 with DAG(
     "bqetl_fivetran_apple_ads",
     default_args=default_args,
-    schedule_interval="0 */3 * * *",
+    schedule_interval="0 3 * * *",
     doc_md=docs,
     tags=tags,
 ) as dag:

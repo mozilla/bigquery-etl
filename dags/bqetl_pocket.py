@@ -52,12 +52,8 @@ with DAG(
         destination_table="rolling_monthly_active_user_counts_v1",
         dataset_id="pocket_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=[
-            "jklukas@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -72,12 +68,8 @@ with DAG(
         ]
         + ["--date", "{{ ds }}"],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="jklukas@mozilla.com",
-        email=[
-            "jklukas@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     pocket_derived__spoc_tile_ids__v1 = bigquery_etl_query(
@@ -85,12 +77,8 @@ with DAG(
         destination_table="spoc_tile_ids_v1",
         dataset_id="pocket_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=[
-            "jklukas@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -105,12 +93,8 @@ with DAG(
         ]
         + ["--date", "{{ ds }}"],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="jklukas@mozilla.com",
-        email=[
-            "jklukas@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     pocket_derived__twice_weekly_active_user_counts__v1 = bigquery_etl_query(
@@ -118,12 +102,8 @@ with DAG(
         destination_table="twice_weekly_active_user_counts_v1",
         dataset_id="pocket_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=[
-            "jklukas@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -138,12 +118,8 @@ with DAG(
         ]
         + ["--date", "{{ ds }}"],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="jklukas@mozilla.com",
-        email=[
-            "jklukas@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     pocket_derived__rolling_monthly_active_user_counts__v1.set_upstream(

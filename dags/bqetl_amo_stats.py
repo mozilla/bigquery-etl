@@ -52,12 +52,8 @@ with DAG(
         destination_table="amo_stats_dau_v2",
         dataset_id="amo_dev",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=[
-            "jklukas@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -67,12 +63,8 @@ with DAG(
         destination_table="amo_stats_installs_v3",
         dataset_id="amo_dev",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=[
-            "jklukas@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -82,12 +74,8 @@ with DAG(
         destination_table="amo_stats_dau_v2",
         dataset_id="amo_prod",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=[
-            "jklukas@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -97,12 +85,8 @@ with DAG(
         destination_table="amo_stats_installs_v3",
         dataset_id="amo_prod",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=[
-            "jklukas@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -112,12 +96,8 @@ with DAG(
         destination_table="desktop_addons_by_client_v1",
         dataset_id="amo_prod",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=[
-            "jklukas@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -127,12 +107,8 @@ with DAG(
         destination_table="fenix_addons_by_client_v1",
         dataset_id="amo_prod",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=[
-            "jklukas@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

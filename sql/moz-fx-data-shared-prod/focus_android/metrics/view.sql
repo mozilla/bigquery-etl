@@ -142,7 +142,8 @@ SELECT
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_no_transactionid,
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_stale_transactionid,
       metrics.labeled_counter.dotprint_failure,
-      metrics.labeled_counter.pdfjs_geckoview
+      metrics.labeled_counter.pdfjs_geckoview,
+      metrics.labeled_counter.network_cors_authorization_header
     ) AS labeled_counter,
     metrics.labeled_rate,
     metrics.memory_distribution,
@@ -297,7 +298,8 @@ SELECT
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_no_transactionid,
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_stale_transactionid,
       metrics.labeled_counter.dotprint_failure,
-      metrics.labeled_counter.pdfjs_geckoview
+      metrics.labeled_counter.pdfjs_geckoview,
+      metrics.labeled_counter.network_cors_authorization_header
     ) AS labeled_counter,
     metrics.labeled_rate,
     metrics.memory_distribution,

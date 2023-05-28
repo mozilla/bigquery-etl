@@ -16825,6 +16825,16 @@ fields:
       mode: REPEATED
       name: http_upload_bandwidth_mbps
       type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: fx_migration_cards_quantity
+      type: RECORD
     mode: NULLABLE
     name: keyed_histograms
     type: RECORD
@@ -35133,6 +35143,26 @@ fields:
             type: INTEGER
           mode: REPEATED
           name: urlbar_searchmode_historymenu
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: urlbar_picked_searchsuggestion_rich
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: urlbar_picked_trending_rich
           type: RECORD
         mode: NULLABLE
         name: keyed_scalars

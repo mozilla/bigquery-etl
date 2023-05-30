@@ -19,7 +19,7 @@ mkdocs-material==9.1.15
 mkdocs-awesome-pages-plugin==2.9.1
 mozilla-metric-config-parser==2023.5.1
 mozilla-schema-generator==0.5.1
-pandas==2.0.1
+pandas==2.0.2
 pathos==0.3.0
 pip-tools==6.13.0
 pre-commit==3.3.2

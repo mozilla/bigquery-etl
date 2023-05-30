@@ -4,7 +4,7 @@ description: >
   Monthly active users with non-desktop clients aggregated across
   unique sets of dimensions.
 owners:
-  - jklukas@mozilla.com
+  - ascholtz@mozilla.com
 labels:
   application: nondesktop
   schedule: daily

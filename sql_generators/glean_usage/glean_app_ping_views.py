@@ -34,9 +34,7 @@ description: |-
 # Fields that exist in the source dataset,
 # but are manually overriden in the constructed SQL.
 # MUST be kept in sync with the query in `app_ping_view.view.sql`
-OVERRIDEN_FIELDS = [
-    "normalized_channel"
-]
+OVERRIDDEN_FIELDS = {"normalized_channel"}
 
 PATH = Path(os.path.dirname(__file__))
 
@@ -143,7 +141,7 @@ class GleanAppPingViews(GleanTable):
                         dataset=channel_dataset,
                         table=view_name,
                         channel=app.get("app_channel"),
-                        app_name=release_app["app_name"]
+                        app_name=release_app["app_name"],
                     )
                 )
 
@@ -185,17 +183,31 @@ class GleanAppPingViews(GleanTable):
 
                 schema_dir = get_table_dir(output_dir, full_view_id)
 
+                # remove overridden fields from schema
+                # it's assumed that these fields are added separately, or ignored completely
+                unioned_schema.schema["fields"] = [
+                    field
+                    for field in unioned_schema.schema["fields"]
+                    if field["name"] not in OVERRIDDEN_FIELDS
+                ]
+
                 # normalized_app_id is not part of the underlying table the schemas are derived from,
                 # the field gets added as part of the view definition, so we have to add it manually to the schema
-                unioned_schema.schema["fields"].insert(
-                    0,
+                unioned_schema.schema["fields"] = [
                     {
                         "name": "normalized_app_id",
                         "mode": "NULLABLE",
                         "type": "STRING",
                         "description": "App ID of the channel data was received from",
                     },
-                )
+                    {
+                        "name": "normalized_channel",
+                        "mode": "NULLABLE",
+                        "type": "STRING",
+                        "description": "Normalized channel name",
+                    },
+                ] + unioned_schema.schema["fields"]
+
                 unioned_schema.to_yaml_file(schema_dir / "schema.yaml")
 
     def _generate_select_expression(
@@ -218,7 +230,7 @@ class GleanAppPingViews(GleanTable):
                 # field exists in app schema
 
                 if node == app_schema_nodes[node_name]:
-                    if node_name not in OVERRIDEN_FIELDS:
+                    if node_name not in OVERRIDDEN_FIELDS:
                         # field (and all nested fields) are identical, so just query it
                         select_expr.append(f"{'.'.join(path + [node_name])}")
                 else:

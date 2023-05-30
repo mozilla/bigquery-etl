@@ -293,14 +293,14 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
                 re.compile(
                     rf"(?<![\._])`?{original_dataset}`?\.`?{name_pattern}(?![a-zA-Z0-9_])`?"
                 ),
-                f"`{deployed_project}`.{deployed_dataset}.{name}",
+                f"`{deployed_project}.{deployed_dataset}.{name}`",
             )
         )
         # replace fully qualified references (like "moz-fx-data-shared-prod.telemetry.main")
         replace_references.append(
             (
                 rf"(?<![a-zA-Z0-9_])`?{original_project}`?\.`?{original_dataset}`?\.`?{name_pattern}(?![a-zA-Z0-9_])`?",
-                f"`{deployed_project}`.{deployed_dataset}.{name}",
+                f"`{deployed_project}.{deployed_dataset}.{name}`",
             )
         )
 
@@ -393,11 +393,12 @@ def create_dataset_if_not_exists(project_id, dataset, suffix=None):
     dataset = bigquery.Dataset(f"{project_id}.{dataset}")
     dataset.location = "US"
     dataset = client.create_dataset(dataset, exists_ok=True)
-    dataset.default_table_expiration_ms = 60 * 60 * 1000  # ms
+    dataset.default_table_expiration_ms = 60 * 60 * 1000 * 12  # ms
 
-    # mark dataset as expired 1 hour from now; can be removed by CI
+    # mark dataset as expired 12 hours from now; can be removed by CI
     expiration = int(
-        ((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() + 60 * 60) * 1000
+        ((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() + 60 * 60 * 12)
+        * 1000
     )
     dataset.labels = {"expires_on": expiration}
     if suffix:

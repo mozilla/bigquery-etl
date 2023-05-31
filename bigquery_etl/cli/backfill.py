@@ -137,7 +137,7 @@ def create(
             if entry.status == BackfillStatus.DRAFTING:
                 validate_overlap_dates(backfill, entry)
 
-    backfills.append(backfill)
+    backfills.insert(0, backfill)
 
     backfill_file.write_text(
         "\n".join(backfill.to_yaml() for backfill in sorted(backfills, reverse=True))
@@ -198,7 +198,7 @@ def validate(
             sys.exit(1)
 
         backfill_file = path / project_id / dataset_id / table_id / BACKFILL_FILE
-        backfill_files.insert(0, backfill_file)
+        backfill_files.append(backfill_file)
 
     else:
         backfill_files = paths_matching_name_pattern(

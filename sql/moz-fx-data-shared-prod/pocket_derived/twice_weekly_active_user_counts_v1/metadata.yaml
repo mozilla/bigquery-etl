@@ -3,7 +3,7 @@ description: |-
   Count of twice weekly active users (T-WAU) for Pocket,
   measured each calendar week.
 owners:
-  - jklukas@mozilla.com
+  - kik@mozilla.com
 labels:
   incremental: false
 scheduling:

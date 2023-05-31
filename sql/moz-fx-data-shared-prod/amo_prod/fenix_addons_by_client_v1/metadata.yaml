@@ -5,7 +5,7 @@ description: >-
   that records only the dimensions and addon info necessary to power the daily
   amo_stats_dau_v2 query.
 owners:
-  - jklukas@mozilla.com
+  - kik@mozilla.com
 labels:
   application: amo
   incremental: true

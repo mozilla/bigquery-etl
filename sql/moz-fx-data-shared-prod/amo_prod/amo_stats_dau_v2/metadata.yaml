@@ -8,7 +8,7 @@ description: |-
   and provides all the information needed to populate the various
   "Daily Users" plots for the AMO stats dashboard.
 owners:
-  - jklukas@mozilla.com
+  - kik@mozilla.com
 labels:
   application: amo
   incremental: true

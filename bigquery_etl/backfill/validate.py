@@ -40,11 +40,8 @@ def validate_reason(entry: Backfill) -> None:
 
 def validate_watchers(entry: Backfill) -> None:
     """Check if backfill watcher is the same as default or duplicated."""
-    watcher_set = set()
-    for watcher in entry.watchers:
-        if watcher in watcher_set or watcher == DEFAULT_WATCHER:
-            raise ValueError(f"Invalid Watcher: {watcher}.")
-        watcher_set.add(watcher)
+    if DEFAULT_WATCHER in entry.watchers or len(entry.watchers) != len(set(entry.watchers)):
+        raise ValueError(f"Duplicate or default watcher in ({entry.watchers}).")
 
 
 def validate_entries_are_sorted(backfills: List[Backfill]) -> None:

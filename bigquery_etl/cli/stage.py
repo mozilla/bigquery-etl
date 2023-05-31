@@ -263,6 +263,12 @@ def _view_dependencies(artifact_files, sql_dir):
                     (path / QUERY_SCRIPT).write_text("")
                     view_dependencies.add(path / QUERY_SCRIPT)
 
+            # extract UDF references from view definition
+            raw_routines = read_routine_dir()
+            for udf_dependency in view.udf_references:
+                routine = raw_routines[udf_dependency]
+                view_dependencies.add(Path(routine.filepath))
+
     return view_dependencies
 
 

@@ -336,8 +336,7 @@ class Task:
             if not is_email(owner):
                 metadata.owners.remove(owner)
                 click.echo(
-                    f"{owner} removed from email list in DAG "
-                    f"{metadata.scheduling['dag_name']}, task: {metadata.scheduling['task_name']}"
+                    f"{owner} removed from email list in DAG {metadata.scheduling['dag_name']}"
                 )
         task_config["email"] = list(set(email + metadata.owners))
 

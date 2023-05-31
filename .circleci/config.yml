@@ -493,42 +493,51 @@ jobs:
           image: bigquery-etl
           tag: ${CIRCLE_TAG:-latest}
       - gcp-gcr/push-image: *private-image
-  generate-diff:
+  main-generate-sql-and-dags:
     docker: *docker
     steps:
       - checkout
+      - run:
+          name: Switch to main branch
+          command: |
+            git remote add mozilla git@github.com:mozilla/bigquery-etl
+            git fetch mozilla main
+            git checkout mozilla/main
       - attach_workspace:
           at: /tmp/workspace
       - *restore_venv_cache
       - *build
       - run:
-          name: Generate SQL content diff
+          name: Generate SQL content
           command: |
-            # compare a branch against the main branch,
-            # or skip if we're already on the main branch
-            if [[ "$CIRCLE_BRANCH" == "main" ]]; then
-              circleci-agent step halt
-            fi
-            git clone --single-branch --branch main \
-              git@github.com:mozilla/bigquery-etl \
-              bigquery-etl-main
-
-            cd bigquery-etl-main
-            pip install --no-deps -r requirements.txt
+            export PATH="venv/bin:$PATH"
             ./script/bqetl generate all \
               --target-project moz-fx-data-shared-prod
             ./script/bqetl dependency record \
               --skip-existing \
               "sql/"
-
             ./script/bqetl dag generate
 
-            cd ..
+            mkdir -p /tmp/workspace/main-generated-sql
+            cp -r sql/ /tmp/workspace/main-generated-sql/sql
+            cp -r dags/ /tmp/workspace/main-generated-sql/dags
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - main-generated-sql
+  generate-diff:
+    docker: *docker
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Generate diff
+          command: |
             diff -bur --no-dereference \
-              bigquery-etl-main/sql/ /tmp/workspace/generated-sql/sql/ \
+              /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
               > /tmp/workspace/generated-sql/sql.diff || true
             diff -bur --no-dereference \
-              bigquery-etl-main/dags/ /tmp/workspace/generated-sql/dags/ \
+              /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
               >> /tmp/workspace/generated-sql/sql.diff || true
       - persist_to_workspace:
           root: /tmp/workspace
@@ -630,9 +639,14 @@ workflows:
           requires:
             - deploy-changes-to-stage
       - generate-sql
+      - main-generate-sql-and-dags:
+          filters:
+            branches:
+              ignore: main
       - generate-diff:
           requires:
             - generate-dags
+            - main-generate-sql-and-dags
           filters:
             branches:
               ignore: main
@@ -705,7 +719,8 @@ workflows:
             branches:
               only:
                 - main
-  nightly: # Run after schema-generator to ensure we are up-to-date
+  nightly:
+    # Run after schema-generator to ensure we are up-to-date
     triggers:
       - schedule:
           cron: "0 5 * * *"

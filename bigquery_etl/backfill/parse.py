@@ -116,7 +116,7 @@ class Backfill:
         return os.path.basename(file_path) == BACKFILL_FILE
 
     @classmethod
-    def entries_from_file(cls, file: Path) -> list:
+    def entries_from_file(cls, file: Path) -> List[Backfill]:
         """
         Parse all backfill entries from the provided yaml file.
 

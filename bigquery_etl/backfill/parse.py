@@ -14,7 +14,6 @@ from bigquery_etl.query_scheduling.utils import is_email_or_github_identity
 BACKFILL_FILE = "backfill.yaml"
 DEFAULT_WATCHER = "nobody@mozilla.com"
 DEFAULT_REASON = "Please provide a reason for the backfill and links to any related bugzilla or jira tickets"
-TODAY = date.today()
 
 
 class UniqueKeyLoader(yaml.SafeLoader):
@@ -75,7 +74,7 @@ class Backfill:
     @entry_date.validator
     def validate_entry_date(self, attribute, value):
         """Check that provided entry date is valid."""
-        if TODAY < value:
+        if date.today() < value:
             raise ValueError(f"Backfill entry {value} can't be in the future.")
 
     @start_date.validator
@@ -116,7 +115,7 @@ class Backfill:
         return os.path.basename(file_path) == BACKFILL_FILE
 
     @classmethod
-    def entries_from_file(cls, file: Path) -> List[Backfill]:
+    def entries_from_file(cls, file: Path) -> List["Backfill"]:
         """
         Parse all backfill entries from the provided yaml file.
 

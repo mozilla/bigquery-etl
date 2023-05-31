@@ -1,5 +1,6 @@
 """Validate backfill entries."""
 from pathlib import Path
+from typing import List
 
 from ..backfill.parse import DEFAULT_REASON, DEFAULT_WATCHER, Backfill, BackfillStatus
 
@@ -40,7 +41,9 @@ def validate_reason(entry: Backfill) -> None:
 
 def validate_watchers(entry: Backfill) -> None:
     """Check if backfill watcher is the same as default or duplicated."""
-    if DEFAULT_WATCHER in entry.watchers or len(entry.watchers) != len(set(entry.watchers)):
+    if DEFAULT_WATCHER in entry.watchers or len(entry.watchers) != len(
+        set(entry.watchers)
+    ):
         raise ValueError(f"Duplicate or default watcher in ({entry.watchers}).")
 
 

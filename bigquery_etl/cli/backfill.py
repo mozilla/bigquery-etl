@@ -3,7 +3,7 @@
 import re
 import sys
 import tempfile
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 
 import click
@@ -13,7 +13,6 @@ from ..backfill.parse import (
     BACKFILL_FILE,
     DEFAULT_REASON,
     DEFAULT_WATCHER,
-    TODAY,
     Backfill,
     BackfillStatus,
 )
@@ -118,7 +117,7 @@ def create(
         sys.exit(1)
 
     backfill = Backfill(
-        entry_date=TODAY,
+        entry_date=date.today(),
         start_date=start_date.date(),
         end_date=end_date.date(),
         excluded_dates=[e.date() for e in list(exclude)],
@@ -177,6 +176,7 @@ def validate(
     """Validate backfill.yaml files."""
     backfill_files = []
 
+    # TODO: this code can potentially be a util
     if qualified_table_name:
         try:
             match = QUALIFIED_TABLE_NAME_RE.match(qualified_table_name)
@@ -198,7 +198,7 @@ def validate(
             sys.exit(1)
 
         backfill_file = path / project_id / dataset_id / table_id / BACKFILL_FILE
-        backfill_files.append(backfill_file)
+        backfill_files.insert(0, backfill_file)
 
     else:
         backfill_files = paths_matching_name_pattern(

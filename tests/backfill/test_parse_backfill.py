@@ -144,7 +144,7 @@ class TestParseBackfill(object):
                 TEST_BACKFILL_1.status,
             )
 
-        assert "Invalid entry date" in str(e.value)
+        assert "can't be in the future" in str(e.value)
 
     def test_invalid_start_date_greater_than_entry_date(self):
         with pytest.raises(ValueError) as e:

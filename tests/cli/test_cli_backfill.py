@@ -9,7 +9,6 @@ from bigquery_etl.backfill.parse import (
     BACKFILL_FILE,
     DEFAULT_REASON,
     DEFAULT_WATCHER,
-    TODAY,
     Backfill,
     BackfillStatus,
 )
@@ -65,9 +64,9 @@ class TestBackfill:
             backfill_file = SQL_DIR + "/" + BACKFILL_FILE
             backfill = Backfill.entries_from_file(backfill_file)[0]
 
-            assert backfill.entry_date == TODAY
+            assert backfill.entry_date == date.today()
             assert backfill.start_date == date(2021, 3, 1)
-            assert backfill.end_date == TODAY
+            assert backfill.end_date == date.today()
             assert backfill.watchers == [DEFAULT_WATCHER]
             assert backfill.reason == DEFAULT_REASON
             assert backfill.status == DEFAULT_STATUS
@@ -191,7 +190,7 @@ class TestBackfill:
             )
 
             backfill_entry_2 = Backfill(
-                TODAY,
+                date.today(),
                 date(2023, 3, 1),
                 date(2023, 3, 10),
                 [],
@@ -384,7 +383,7 @@ class TestBackfill:
                 ],
             )
             assert validate_backfill_result.exit_code == 1
-            assert "Invalid Watcher" in validate_backfill_result.output
+            assert "Duplicate or default watcher" in validate_backfill_result.output
 
     def test_validate_backfill_invalid_status(self, runner):
         with runner.isolated_filesystem():
@@ -438,7 +437,7 @@ class TestBackfill:
             os.makedirs(SQL_DIR)
 
             backfill_file = Path(SQL_DIR) / BACKFILL_FILE
-            invalid_entry_date = (TODAY + timedelta(days=1)).strftime("%Y-%m-%d")
+            invalid_entry_date = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
             backfill_file.write_text(
                 BACKFILL_YAML_TEMPLATE.replace("2021-05-04", invalid_entry_date)
             )
@@ -452,7 +451,7 @@ class TestBackfill:
                 ],
             )
             assert validate_backfill_result.exit_code == 1
-            assert "Invalid entry date" in validate_backfill_result.output
+            assert "can't be in the future" in validate_backfill_result.output
 
     def test_validate_backfill_invalid_start_date_greater_than_end_date(self, runner):
         with runner.isolated_filesystem():

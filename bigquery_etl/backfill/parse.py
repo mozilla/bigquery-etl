@@ -76,7 +76,7 @@ class Backfill:
     def validate_entry_date(self, attribute, value):
         """Check that provided entry date is valid."""
         if TODAY < value:
-            raise ValueError(f"Invalid entry date: {value}.")
+            raise ValueError(f"Backfill entry {value} can't be in the future.")
 
     @start_date.validator
     def validate_start_date(self, attribute, value):

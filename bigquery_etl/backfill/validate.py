@@ -47,7 +47,7 @@ def validate_watchers(entry: Backfill) -> None:
         watcher_set.add(watcher)
 
 
-def validate_entries_are_sorted(backfills: list) -> None:
+def validate_entries_are_sorted(backfills: List[Backfill]) -> None:
     """Check if list of backfill entries are sorted."""
     entry_dates = [backfill.entry_date for backfill in backfills]
     if not entry_dates == sorted(entry_dates, reverse=True):

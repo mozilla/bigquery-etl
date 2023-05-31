@@ -137,15 +137,15 @@ fields:
   mode: NULLABLE
   name: last_reported_adjust_network
   type: STRING
-- description:
+- description: Last reported campaign name.
   mode: NULLABLE
   name: last_reported_adjust_creative
   type: STRING
-- description:
+- description: Last reported campaign ad group.
   mode: NULLABLE
   name: last_reported_adjust_ad_group
   type: STRING
-- description:
+- description: Last reported campaign name.
   mode: NULLABLE
   name: last_reported_adjust_campaign
   type: STRING

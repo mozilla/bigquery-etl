@@ -18,15 +18,15 @@ Built from bigquery-etl repo, [`dags/bqetl_firefox_ios.py`](https://github.com/m
 Schedule daily ios firefox ETL
 #### Owner
 
-amiyaguchi@mozilla.com
+kik@mozilla.com
 """
 
 
 default_args = {
-    "owner": "amiyaguchi@mozilla.com",
+    "owner": "kik@mozilla.com",
     "start_date": datetime.datetime(2021, 3, 18, 0, 0),
     "end_date": None,
-    "email": ["amiyaguchi@mozilla.com", "telemetry-alerts@mozilla.com"],
+    "email": ["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -51,6 +51,6 @@ with DAG(
         ]
         + [],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="amiyaguchi@mozilla.com",
-        email=["amiyaguchi@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
     )

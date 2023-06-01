@@ -29,6 +29,7 @@ QUERY_FILE_RE = re.compile(
     r"([a-zA-Z0-9_]+)_(v[0-9]+)/(?:query\.sql|part1\.sql|script\.sql|query\.py)$"
 )
 DEFAULT_DESTINATION_TABLE_STR = "use-default-destination-table"
+MAX_TASK_NAME_LENGTH = 250
 
 
 class TaskParseException(Exception):
@@ -249,10 +250,10 @@ class Task:
     def validate_task_name(self, attribute, value):
         """Validate the task name."""
         if value is not None:
-            if len(value) < 1 or len(value) > 250:
+            if len(value) < 1 or len(value) > MAX_TASK_NAME_LENGTH:
                 raise ValueError(
                     f"Invalid task name {value}. "
-                    + "The task name has to be 1 to 250 characters long."
+                    f"The task name has to be 1 to {MAX_TASK_NAME_LENGTH} characters long."
                 )
 
     @retry_delay.validator
@@ -275,7 +276,9 @@ class Task:
 
             if self.task_name is None:
                 # limiting task name to allow longer dataset names
-                self.task_name = f"{self.dataset}__{self.table}__{self.version}"[-250:]
+                self.task_name = f"{self.dataset}__{self.table}__{self.version}"[
+                    -MAX_TASK_NAME_LENGTH:
+                ]
                 self.validate_task_name(None, self.task_name)
 
             if self.destination_table == DEFAULT_DESTINATION_TABLE_STR:

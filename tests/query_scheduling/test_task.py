@@ -7,6 +7,7 @@ import pytest
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
 from bigquery_etl.query_scheduling.task import (
+    MAX_TASK_NAME_LENGTH,
     Task,
     TaskParseException,
     TaskRef,
@@ -193,7 +194,7 @@ class TestTask:
         scheduling = {
             "dag_name": "bqetl_test_dag",
             "default_args": {"owner": "test@example.org"},
-            "task_name": "a" * 251,
+            "task_name": "a" * (MAX_TASK_NAME_LENGTH + 1),
         }
 
         metadata = Metadata("test", "test", ["test@example.org"], {}, scheduling)
@@ -215,13 +216,13 @@ class TestTask:
         scheduling = {
             "dag_name": "bqetl_test_dag",
             "default_args": {"owner": "test@example.org"},
-            "task_name": "a" * 250,
+            "task_name": "a" * MAX_TASK_NAME_LENGTH,
         }
 
         metadata = Metadata("test", "test", ["test@example.org"], {}, scheduling)
 
         task = Task.of_query(query_file, metadata)
-        assert task.task_name == "a" * 250
+        assert task.task_name == "a" * MAX_TASK_NAME_LENGTH
 
     def test_validate_task_name(self):
         query_file = (
@@ -230,7 +231,7 @@ class TestTask:
             / "test_sql"
             / "moz-fx-data-test-project"
             / "test"
-            / (("a" * 250) + "_v1")
+            / (("a" * MAX_TASK_NAME_LENGTH) + "_v1")
             / "query.sql"
         )
 
@@ -242,10 +243,10 @@ class TestTask:
         metadata = Metadata("test", "test", ["test@example.org"], {}, scheduling)
 
         task = Task.of_query(query_file, metadata)
-        assert task.task_name == "a" * 246 + "__v1"
+        assert task.task_name == ("a" * (MAX_TASK_NAME_LENGTH - 4)) + "__v1"
 
         with pytest.raises(ValueError):
-            task.task_name = "a" * 250 + "__v1"
+            task.task_name = ("a" * MAX_TASK_NAME_LENGTH) + "__v1"
             Task.validate_task_name(task, "task_name", task.task_name)
 
     def test_dag_name_validation(self):

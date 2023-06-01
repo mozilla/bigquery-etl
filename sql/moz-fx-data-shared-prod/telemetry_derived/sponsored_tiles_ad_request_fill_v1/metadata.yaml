@@ -1,6 +1,0 @@
-description: Server-side telemetry tracking ad requests, empty ad responses, and number of advertisers sent with each ad request.
-friendly_name: Sponsored Tiles Ad Request Fill
-labels:
-  incremental: true
-owners:
-- skahmann@mozilla.com

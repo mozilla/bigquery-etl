@@ -1869,8 +1869,13 @@ def _deploy_external_data(
             _attach_metadata(metadata_file_path, table)
 
             if not table.created:
-                if metadata.external_data.format == ExternalDataFormat.GOOGLE_SHEET:
-                    external_config = bigquery.ExternalConfig("GOOGLE_SHEETS")
+                if metadata.external_data.format in (
+                    ExternalDataFormat.GOOGLE_SHEET,
+                    ExternalDataFormat.CSV,
+                ):
+                    external_config = bigquery.ExternalConfig(
+                        metadata.external_data.format.value.upper()
+                    )
                     external_config.source_uris = metadata.external_data.source_uris
                     external_config.ignore_unknown_values = True
                     external_config.autodetect = False
@@ -1881,6 +1886,7 @@ def _deploy_external_data(
                     table.external_data_configuration = external_config
                     table = client.create_table(table)
                     click.echo(f"Destination table {full_table_id} created.")
+
                 else:
                     click.echo(
                         f"External data format {metadata.external_data.format} unsupported."

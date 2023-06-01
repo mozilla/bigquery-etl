@@ -26,7 +26,7 @@ WITH
     FROM
       `moz-fx-data-shared-prod.telemetry_derived.client_probe_counts`
     WHERE
-      channel = 'beta'
+      channel = @channel
       AND app_version IS NOT NULL
       AND total_users > 375
     GROUP BY
@@ -68,7 +68,7 @@ WITH
       AND fsc1.channel = fsc2.channel
       AND fsc1.process = fsc2.process
     WHERE
-      fsc1.channel = 'beta' )
+      fsc1.channel = @channel )
 SELECT
   cp.app_version,
   cp.os,

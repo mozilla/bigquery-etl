@@ -1,6 +1,8 @@
 --- User-facing view. Generated via sql_generators.active_users.
+--- Query generated via sql_generators.active_users.
+--- This view returns Glean data for the full history. See https://mozilla-hub.atlassian.net/browse/DENG-970
 CREATE OR REPLACE VIEW
-  `{{ project_id }}.{{ app_name }}.active_users_aggregates`
+  `moz-fx-data-shared-prod.analysis.lvargas_focus_android_active_users_aggregates`
 AS
 SELECT
   * EXCEPT (app_version, app_name),
@@ -12,10 +14,6 @@ SELECT
   `mozfun.norm.browser_version_info`(app_version).is_major_release AS app_version_is_major_release,
   `mozfun.norm.os`(os) AS os_grouped
 FROM
-  `{{ project_id }}.{{ app_name }}_derived.active_users_aggregates_v1`
+  `moz-fx-data-shared-prod.focus_android_derived.active_users_aggregates_v1`
 WHERE
-  (
-    app_name IN ('Focus Android Glean', 'Focus Android Glean BrowserStack')
-    AND submission_date >= '2023-01-01'
-  )
-  OR (app_name IN ('Focus Android') AND submission_date < '2023-01-01')
+  app_name IN ('Focus Android Glean', 'Focus Android Glean BrowserStack')

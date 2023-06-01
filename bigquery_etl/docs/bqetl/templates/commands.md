@@ -11,7 +11,7 @@
 **Usage**
 
 ```bash
-$ ./bqetl{{ cmd.path }} [OPTIONS]
+$ ./bqetl{{ cmd.path }} [OPTIONS]  
 {%- for arg in cmd.arguments -%}
 {{ "" }} [{{ arg.name }}]
 {%- endfor %}

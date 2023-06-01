@@ -719,7 +719,7 @@ def backfill(
 
 
 @query.command(
-    help="""Run a query. Additional parameters will get passed to bq.
+    help="""Run a query. Additional parameters will get passed to bq. chnan
 
     Examples:
 

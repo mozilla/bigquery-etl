@@ -35,6 +35,7 @@ Commands:
   routine     Commands for managing routines.
   stripe      Commands for Stripe ETL.
   view        Commands for managing views.
+  backfill    Commands for managing backfills.
 ```
 
 

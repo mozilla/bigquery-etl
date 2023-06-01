@@ -193,7 +193,7 @@ class TestTask:
         scheduling = {
             "dag_name": "bqetl_test_dag",
             "default_args": {"owner": "test@example.org"},
-            "task_name": "a" * 63,
+            "task_name": "a" * 251,
         }
 
         metadata = Metadata("test", "test", ["test@example.org"], {}, scheduling)
@@ -215,13 +215,13 @@ class TestTask:
         scheduling = {
             "dag_name": "bqetl_test_dag",
             "default_args": {"owner": "test@example.org"},
-            "task_name": "a" * 62,
+            "task_name": "a" * 250,
         }
 
         metadata = Metadata("test", "test", ["test@example.org"], {}, scheduling)
 
         task = Task.of_query(query_file, metadata)
-        assert task.task_name == "a" * 62
+        assert task.task_name == "a" * 250
 
     def test_validate_task_name(self):
         query_file = (

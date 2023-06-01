@@ -4,13 +4,13 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   "org_mozilla_tv_firefox" AS normalized_app_id,
+  normalized_channel,
   additional_properties,
   client_info,
   document_id,
   events,
   metadata,
   normalized_app_name,
-  normalized_channel,
   normalized_country_code,
   normalized_os,
   normalized_os_version,

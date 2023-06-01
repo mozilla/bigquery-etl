@@ -4,6 +4,7 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   "org_mozilla_focus" AS normalized_app_id,
+  "release" AS normalized_channel,
   additional_properties,
   client_info,
   document_id,
@@ -11,7 +12,6 @@ SELECT
   metadata,
   metrics,
   normalized_app_name,
-  normalized_channel,
   normalized_country_code,
   normalized_os,
   normalized_os_version,
@@ -23,6 +23,7 @@ FROM
 UNION ALL
 SELECT
   "org_mozilla_focus_beta" AS normalized_app_id,
+  "beta" AS normalized_channel,
   additional_properties,
   client_info,
   document_id,
@@ -37,7 +38,6 @@ SELECT
     metrics.text
   ) AS metrics,
   normalized_app_name,
-  normalized_channel,
   normalized_country_code,
   normalized_os,
   normalized_os_version,
@@ -49,6 +49,7 @@ FROM
 UNION ALL
 SELECT
   "org_mozilla_focus_nightly" AS normalized_app_id,
+  "nightly" AS normalized_channel,
   additional_properties,
   client_info,
   document_id,
@@ -63,7 +64,6 @@ SELECT
     metrics.text
   ) AS metrics,
   normalized_app_name,
-  normalized_channel,
   normalized_country_code,
   normalized_os,
   normalized_os_version,

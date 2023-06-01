@@ -3,6 +3,10 @@ fields:
   mode: NULLABLE
   name: normalized_app_id
   type: STRING
+- description: Normalized channel name
+  mode: NULLABLE
+  name: normalized_channel
+  type: STRING
 - mode: NULLABLE
   name: additional_properties
   type: STRING
@@ -310,9 +314,6 @@ fields:
   type: RECORD
 - mode: NULLABLE
   name: normalized_app_name
-  type: STRING
-- mode: NULLABLE
-  name: normalized_channel
   type: STRING
 - mode: NULLABLE
   name: normalized_country_code

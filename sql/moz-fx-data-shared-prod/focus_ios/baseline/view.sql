@@ -4,6 +4,7 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   "org_mozilla_ios_focus" AS normalized_app_id,
+  normalized_channel,
   additional_properties,
   client_info,
   document_id,
@@ -11,7 +12,6 @@ SELECT
   metadata,
   metrics,
   normalized_app_name,
-  normalized_channel,
   normalized_country_code,
   normalized_os,
   normalized_os_version,

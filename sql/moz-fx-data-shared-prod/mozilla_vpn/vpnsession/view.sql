@@ -4,6 +4,7 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   "mozillavpn" AS normalized_app_id,
+  "release" AS normalized_channel,
   additional_properties,
   client_info,
   document_id,
@@ -11,7 +12,6 @@ SELECT
   metadata,
   metrics,
   normalized_app_name,
-  normalized_channel,
   normalized_country_code,
   normalized_os,
   normalized_os_version,
@@ -23,6 +23,7 @@ FROM
 UNION ALL
 SELECT
   "org_mozilla_firefox_vpn" AS normalized_app_id,
+  "release" AS normalized_channel,
   additional_properties,
   client_info,
   document_id,
@@ -30,7 +31,6 @@ SELECT
   metadata,
   metrics,
   normalized_app_name,
-  normalized_channel,
   normalized_country_code,
   normalized_os,
   normalized_os_version,
@@ -42,6 +42,7 @@ FROM
 UNION ALL
 SELECT
   "org_mozilla_ios_firefoxvpn" AS normalized_app_id,
+  "release" AS normalized_channel,
   additional_properties,
   client_info,
   document_id,
@@ -49,7 +50,6 @@ SELECT
   metadata,
   metrics,
   normalized_app_name,
-  normalized_channel,
   normalized_country_code,
   normalized_os,
   normalized_os_version,

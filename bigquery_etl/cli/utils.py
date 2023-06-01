@@ -16,6 +16,10 @@ QUERY_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
     r"(?:query\.sql|part1\.sql|script\.sql|query\.py|view\.sql|metadata\.yaml)$"
 )
+CHECKS_FILE_RE = re.compile(
+    r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
+    r"(?:checks\.sql)$"
+)
 TEST_PROJECT = "bigquery-etl-integration-test"
 MOZDATA = "mozdata"
 PIONEER_NONPROD = "moz-fx-data-pioneer-nonprod"
@@ -79,7 +83,25 @@ def table_matches_patterns(pattern, invert, table):
     return matching != invert
 
 
-def paths_matching_name_pattern(pattern, sql_path, project_id, files=["*.sql"]):
+def paths_matching_checks_pattern(pattern, sql_path, project_id):
+    """Return single path to checks.sql matching the name pattern."""
+    checks_files = paths_matching_name_pattern(
+        pattern, sql_path, project_id, ["checks.sql"], CHECKS_FILE_RE
+    )
+    assert len(checks_files) < 2  # should only have 0 or 1 file.
+
+    if len(checks_files) == 1:
+        match = CHECKS_FILE_RE.match(str(checks_files[0]))
+        if match:
+            project = match.group(1)
+            dataset = match.group(2)
+            table = match.group(3)
+        return checks_files[0], project, dataset, table
+
+
+def paths_matching_name_pattern(
+    pattern, sql_path, project_id, files=["*.sql"], file_regex=QUERY_FILE_RE
+):
     """Return paths to queries matching the name pattern."""
     matching_files = []
 
@@ -103,7 +125,7 @@ def paths_matching_name_pattern(pattern, sql_path, project_id, files=["*.sql"]):
             all_matching_files.extend(Path(sql_path).rglob(file))
 
         for query_file in all_matching_files:
-            match = QUERY_FILE_RE.match(str(query_file))
+            match = file_regex.match(str(query_file))
             if match:
                 project = match.group(1)
                 dataset = match.group(2)

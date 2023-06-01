@@ -182,6 +182,16 @@ class View:
 
         return extract_table_references(self.content)
 
+    @cached_property
+    def udf_references(self):
+        """List of UDF references in this view."""
+        from bigquery_etl.routine.parse_routine import routine_usages_in_text
+
+        # routine_usages_in_text automatically includes mozfun UDFs
+        return routine_usages_in_text(
+            self.content, Path(self.path).parent.parent.parent
+        )
+
     def _valid_fully_qualified_references(self):
         """Check that referenced tables and views are fully qualified."""
         for table in self.table_references:

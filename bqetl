@@ -24,11 +24,6 @@ if [ "$CMD" == "bootstrap" ]; then
         python3 -m venv venv
     fi
 
-    # set this so we don't attempt to recompile pandas and numpy on more recent versions of Mac
-    # may be unnecessary once Mac OS X 11 wheels become commonplace
-    # see e.g. https://github.com/scipy/scipy/issues/13102#issuecomment-788160041
-    export SYSTEM_VERSION_COMPAT=1
-
     venv/bin/pip install --no-deps -r requirements.txt
     venv/bin/pip install -e .
     echo "bqetl configured! It should now be ready for use."

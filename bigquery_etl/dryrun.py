@@ -87,12 +87,18 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/fivetran_costs_derived/destinations_v1/query.sql",
     "sql/moz-fx-data-shared-prod/fivetran_costs_derived/incremental_mar_v1/query.sql",
     "sql/moz-fx-data-shared-prod/fivetran_costs_derived/monthly_costs_v1/query.sql",
+    *glob.glob(
+        "sql/**/apple_ads_external*/**/query.sql",
+        recursive=True,
+    ),
     "sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_update/view.sql",
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_all/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_structured/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_stub_installer/view.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_telemetry/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_error_structured/view.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_error_all/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/shredder_progress/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/shredder_progress/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_distinct_docids_v1/query.sql",
@@ -157,6 +163,8 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/init.sql",
     "sql/moz-fx-data-shared-prod/contextual_services_derived/adm_forecasting_v1/query.sql",
     "sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_summary/view.sql",
+    "sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_suggest_v2/query.sql",
+    "sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_tiles_v2/query.sql",
     *glob.glob(
         "sql/moz-fx-data-shared-prod/regrets_reporter_derived/regrets_reporter_summary_v1/*.sql",  # noqa E501
         recursive=True,
@@ -174,6 +182,10 @@ SKIP = {
         recursive=True,
     ),
     *glob.glob(
+        "sql/moz-fx-data-marketing-prod/adjust_derived/**/*.sql",
+        recursive=True,
+    ),
+    *glob.glob(
         "sql/moz-fx-data-shared-prod/monitoring_derived/airflow_*/*.sql",
         recursive=True,
     ),  # noqa E501
@@ -186,6 +198,9 @@ SKIP = {
         recursive=True,
     ),
     "sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v1/query.sql",
+    "sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v2/query.sql",
+    "sql/moz-fx-data-shared-prod/fenix_external/installs_by_country_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/fenix/installs_by_country/view.sql",
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501
@@ -228,6 +243,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry_derived/latest_versions/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/italy_covid19_outage_v1/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/main_nightly_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/telemetry_derived/main_nightly_v1/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/main_1pct_v1/init.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/main_1pct_v1/query.sql",
     # Query parameter not found
@@ -262,16 +278,6 @@ SKIP = {
     # Tests
     "sql/moz-fx-data-test-project/test/simple_view/view.sql",
 }
-SKIP.update(
-    [
-        p
-        for f in [Path(s) for s in SKIP]
-        for p in glob.glob(
-            f"sql/{TEST_PROJECT}/{f.parent.parent.name}*/{f.parent.name}/{f.name}",
-            recursive=True,
-        )
-    ]
-)
 
 
 class Errors(Enum):
@@ -669,3 +675,21 @@ def find_next_word(target, source):
         if w == target:
             # get the next word, and remove quotations from column name
             return split[i + 1].replace("'", "")
+
+
+def add_test_project_to_skip(sql_dir="sql", project=TEST_PROJECT):
+    """Update skip list to include renamed queries in stage."""
+    SKIP.update(
+        [
+            p
+            for f in [Path(s) for s in SKIP]
+            for p in glob.glob(
+                f"sql/{TEST_PROJECT}/{f.parent.parent.name}*/{f.parent.name}/{f.name}",
+                recursive=True,
+            )
+        ]
+    )
+
+
+# detect test files on startup
+add_test_project_to_skip()

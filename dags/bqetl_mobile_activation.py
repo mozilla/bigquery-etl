@@ -77,8 +77,22 @@ with DAG(
             "vsabino@mozilla.com",
         ],
         date_partition_parameter="submission_date",
-        depends_on_past=False,
+        depends_on_past=True,
     )
+
+    with TaskGroup(
+        "firefox_ios_derived__new_profile_activation__v2_external"
+    ) as firefox_ios_derived__new_profile_activation__v2_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_tables__wait_for_firefox_ios_derived__new_profile_activation__v2",
+            external_dag_id="bqetl_analytics_tables",
+            external_task_id="wait_for_firefox_ios_derived__new_profile_activation__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
+        )
+
+        firefox_ios_derived__new_profile_activation__v2_external.set_upstream(
+            firefox_ios_derived__new_profile_activation__v2
+        )
 
     wait_for_baseline_clients_last_seen = ExternalTaskSensor(
         task_id="wait_for_baseline_clients_last_seen",

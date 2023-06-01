@@ -59,13 +59,11 @@ class TestView:
         with pytest.raises(ValueError):
             View(path="test", name="test", dataset="test", project="test")
 
-    @pytest.mark.java
     def test_view_valid(self, runner):
         with runner.isolated_filesystem():
             view = View.create("moz-fx-data-test-project", "test", "view", "sql")
             assert view.is_valid()
 
-    @pytest.mark.java
     def test_view_invalid(self, runner):
         with runner.isolated_filesystem():
             view = View.create("moz-fx-data-test-project", "test", "view", "sql")
@@ -82,7 +80,6 @@ class TestView:
             )
             assert view.is_valid() is False
 
-    @pytest.mark.java
     def test_view_do_not_publish_invalid(self, runner):
         with runner.isolated_filesystem():
             view = View.create("moz-fx-data-test-project", "test", "view", "sql")

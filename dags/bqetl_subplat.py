@@ -828,6 +828,82 @@ with DAG(
         task_concurrency=1,
     )
 
+    subscription_platform_derived__apple_subscriptions__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__apple_subscriptions__v1",
+        destination_table="apple_subscriptions_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    subscription_platform_derived__google_subscriptions__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__google_subscriptions__v1",
+        destination_table="google_subscriptions_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    subscription_platform_derived__nonprod_apple_subscriptions__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__nonprod_apple_subscriptions__v1",
+        destination_table="nonprod_apple_subscriptions_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    subscription_platform_derived__nonprod_google_subscriptions__v1 = (
+        bigquery_etl_query(
+            task_id="subscription_platform_derived__nonprod_google_subscriptions__v1",
+            destination_table="nonprod_google_subscriptions_v1",
+            dataset_id="subscription_platform_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="srose@mozilla.com",
+            email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+            date_partition_parameter=None,
+            depends_on_past=False,
+            task_concurrency=1,
+        )
+    )
+
+    subscription_platform_derived__stripe_subscriptions__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__stripe_subscriptions__v1",
+        destination_table="stripe_subscriptions_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    subscription_platform_derived__stripe_subscriptions_history__v1 = (
+        bigquery_etl_query(
+            task_id="subscription_platform_derived__stripe_subscriptions_history__v1",
+            destination_table="stripe_subscriptions_history_v1",
+            dataset_id="subscription_platform_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="srose@mozilla.com",
+            email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+            date_partition_parameter=None,
+            depends_on_past=False,
+            task_concurrency=1,
+        )
+    )
+
     wait_for_firefox_accounts_derived__fxa_auth_events__v1 = ExternalTaskSensor(
         task_id="wait_for_firefox_accounts_derived__fxa_auth_events__v1",
         external_dag_id="bqetl_fxa_events",
@@ -882,30 +958,16 @@ with DAG(
 
     cjms_bigquery__subscriptions__v1.set_upstream(cjms_bigquery__flows__v1)
 
-    cjms_bigquery__subscriptions__v1.set_upstream(stripe_external__card__v1)
-
-    cjms_bigquery__subscriptions__v1.set_upstream(stripe_external__charge__v1)
-
     cjms_bigquery__subscriptions__v1.set_upstream(stripe_external__coupon__v1)
-
-    cjms_bigquery__subscriptions__v1.set_upstream(stripe_external__customer__v1)
 
     cjms_bigquery__subscriptions__v1.set_upstream(stripe_external__invoice__v1)
 
     cjms_bigquery__subscriptions__v1.set_upstream(stripe_external__invoice_discount__v1)
 
-    cjms_bigquery__subscriptions__v1.set_upstream(stripe_external__plan__v1)
-
-    cjms_bigquery__subscriptions__v1.set_upstream(stripe_external__product__v1)
-
     cjms_bigquery__subscriptions__v1.set_upstream(stripe_external__promotion_code__v1)
 
     cjms_bigquery__subscriptions__v1.set_upstream(
-        stripe_external__subscription_history__v1
-    )
-
-    cjms_bigquery__subscriptions__v1.set_upstream(
-        stripe_external__subscription_item__v1
+        subscription_platform_derived__stripe_subscriptions__v1
     )
 
     hubs_derived__active_subscription_ids__v1.set_upstream(
@@ -924,29 +986,9 @@ with DAG(
 
     hubs_derived__subscription_events__v1.set_upstream(hubs_derived__subscriptions__v1)
 
-    hubs_derived__subscriptions__v1.set_upstream(stripe_external__card__v1)
-
-    hubs_derived__subscriptions__v1.set_upstream(stripe_external__charge__v1)
-
-    hubs_derived__subscriptions__v1.set_upstream(stripe_external__coupon__v1)
-
-    hubs_derived__subscriptions__v1.set_upstream(stripe_external__customer__v1)
-
-    hubs_derived__subscriptions__v1.set_upstream(stripe_external__invoice__v1)
-
-    hubs_derived__subscriptions__v1.set_upstream(stripe_external__invoice_discount__v1)
-
-    hubs_derived__subscriptions__v1.set_upstream(stripe_external__plan__v1)
-
-    hubs_derived__subscriptions__v1.set_upstream(stripe_external__product__v1)
-
-    hubs_derived__subscriptions__v1.set_upstream(stripe_external__promotion_code__v1)
-
     hubs_derived__subscriptions__v1.set_upstream(
-        stripe_external__subscription_history__v1
+        subscription_platform_derived__stripe_subscriptions_history__v1
     )
-
-    hubs_derived__subscriptions__v1.set_upstream(stripe_external__subscription_item__v1)
 
     mozilla_vpn_derived__active_subscription_ids__v1.set_upstream(
         mozilla_vpn_derived__all_subscriptions__v1
@@ -965,47 +1007,19 @@ with DAG(
     )
 
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
-        mozilla_vpn_derived__guardian_apple_events__v1
-    )
-
-    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
         mozilla_vpn_derived__users__v1
     )
 
-    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(stripe_external__card__v1)
-
-    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(stripe_external__charge__v1)
-
-    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(stripe_external__coupon__v1)
-
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
-        stripe_external__customer__v1
+        subscription_platform_derived__apple_subscriptions__v1
     )
 
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
-        stripe_external__invoice__v1
+        subscription_platform_derived__google_subscriptions__v1
     )
 
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
-        stripe_external__invoice_discount__v1
-    )
-
-    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(stripe_external__plan__v1)
-
-    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
-        stripe_external__product__v1
-    )
-
-    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
-        stripe_external__promotion_code__v1
-    )
-
-    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
-        stripe_external__subscription_history__v1
-    )
-
-    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
-        stripe_external__subscription_item__v1
+        subscription_platform_derived__stripe_subscriptions_history__v1
     )
 
     mozilla_vpn_derived__channel_group_proportions__v1.set_upstream(
@@ -1122,30 +1136,8 @@ with DAG(
         relay_derived__subscriptions__v1
     )
 
-    relay_derived__subscriptions__v1.set_upstream(stripe_external__card__v1)
-
-    relay_derived__subscriptions__v1.set_upstream(stripe_external__charge__v1)
-
-    relay_derived__subscriptions__v1.set_upstream(stripe_external__coupon__v1)
-
-    relay_derived__subscriptions__v1.set_upstream(stripe_external__customer__v1)
-
-    relay_derived__subscriptions__v1.set_upstream(stripe_external__invoice__v1)
-
-    relay_derived__subscriptions__v1.set_upstream(stripe_external__invoice_discount__v1)
-
-    relay_derived__subscriptions__v1.set_upstream(stripe_external__plan__v1)
-
-    relay_derived__subscriptions__v1.set_upstream(stripe_external__product__v1)
-
-    relay_derived__subscriptions__v1.set_upstream(stripe_external__promotion_code__v1)
-
     relay_derived__subscriptions__v1.set_upstream(
-        stripe_external__subscription_history__v1
-    )
-
-    relay_derived__subscriptions__v1.set_upstream(
-        stripe_external__subscription_item__v1
+        subscription_platform_derived__stripe_subscriptions_history__v1
     )
 
     fivetran_stripe_sync_start = FivetranOperator(
@@ -1187,3 +1179,59 @@ with DAG(
     stripe_external__subscription_history__v1.set_upstream(fivetran_stripe_sync_wait)
 
     stripe_external__subscription_item__v1.set_upstream(fivetran_stripe_sync_wait)
+
+    subscription_platform_derived__apple_subscriptions__v1.set_upstream(
+        mozilla_vpn_derived__guardian_apple_events__v1
+    )
+
+    subscription_platform_derived__nonprod_apple_subscriptions__v1.set_upstream(
+        mozilla_vpn_derived__guardian_apple_events__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions__v1.set_upstream(
+        subscription_platform_derived__stripe_subscriptions_history__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__card__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__charge__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__coupon__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__customer__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__invoice__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__invoice_discount__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__plan__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__product__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__promotion_code__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__subscription_history__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__subscription_item__v1
+    )

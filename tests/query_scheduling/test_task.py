@@ -230,7 +230,7 @@ class TestTask:
             / "test_sql"
             / "moz-fx-data-test-project"
             / "test"
-            / (("a" * 63) + "_v1")
+            / (("a" * 250) + "_v1")
             / "query.sql"
         )
 
@@ -242,10 +242,10 @@ class TestTask:
         metadata = Metadata("test", "test", ["test@example.org"], {}, scheduling)
 
         task = Task.of_query(query_file, metadata)
-        assert task.task_name == "a" * 58 + "__v1"
+        assert task.task_name == "a" * 246 + "__v1"
 
         with pytest.raises(ValueError):
-            task.task_name = "a" * 64
+            task.task_name = "a" * 250 + "__v1"
             Task.validate_task_name(task, "task_name", task.task_name)
 
     def test_dag_name_validation(self):

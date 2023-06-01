@@ -249,10 +249,10 @@ class Task:
     def validate_task_name(self, attribute, value):
         """Validate the task name."""
         if value is not None:
-            if len(value) < 1 or len(value) > 62:
+            if len(value) < 1 or len(value) > 250:
                 raise ValueError(
                     f"Invalid task name {value}. "
-                    + "The task name has to be 1 to 62 characters long."
+                    + "The task name has to be 1 to 250 characters long."
                 )
 
     @retry_delay.validator
@@ -275,7 +275,7 @@ class Task:
 
             if self.task_name is None:
                 # limiting task name to allow longer dataset names
-                self.task_name = f"{self.dataset}__{self.table}__{self.version}"[-62:]
+                self.task_name = f"{self.dataset}__{self.table}__{self.version}"[-250:]
                 self.validate_task_name(None, self.task_name)
 
             if self.destination_table == DEFAULT_DESTINATION_TABLE_STR:

@@ -4,7 +4,7 @@ description: |-
   Addon usages by clients, aggregated across unique sets of dimensions
   and partitioned by day.
 owners:
-  - jklukas@mozilla.com
+  - kik@mozilla.com
 labels:
   application: addons
   schedule: daily

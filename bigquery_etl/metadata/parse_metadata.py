@@ -118,6 +118,7 @@ class ExternalDataFormat(enum.Enum):
     """Represents the external types fo data that are supported to be integrated."""
 
     GOOGLE_SHEET = "google_sheet"
+    CSV = "csv"
 
 
 @attr.s(auto_attribs=True)

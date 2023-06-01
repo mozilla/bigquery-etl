@@ -231,6 +231,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/migrated_clients_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/incline_executive_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox/migrated_clients/view.sql",
+    "sql/moz-fx-data-shared-prod/telemetry/sponsored_tiles_ad_request_fill/view.sql",
     # No matching signature for function IF
     "sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_last_seen/query.sql",
     # Duplicate UDF

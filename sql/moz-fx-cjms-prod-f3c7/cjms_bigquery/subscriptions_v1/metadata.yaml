@@ -21,4 +21,4 @@ references:
   - moz-fx-data-shared-prod.stripe_external.invoice_discount_v1
   - moz-fx-data-shared-prod.stripe_external.invoice_v1
   - moz-fx-data-shared-prod.stripe_external.promotion_code_v1
-  - moz-fx-data-shared-prod.subscription_platform.stripe_subscriptions
+  - moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_v1

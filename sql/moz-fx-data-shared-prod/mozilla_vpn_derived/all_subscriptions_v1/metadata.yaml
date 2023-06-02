@@ -18,6 +18,6 @@ references:
   - moz-fx-data-shared-prod.mozilla_vpn.users
   - moz-fx-data-shared-prod.mozilla_vpn_derived.fxa_attribution_v1
   - moz-fx-data-shared-prod.static.third_party_standardized_country_names
-  - moz-fx-data-shared-prod.subscription_platform.apple_subscriptions
-  - moz-fx-data-shared-prod.subscription_platform.stripe_subscriptions_history
-  - moz-fx-fxa-prod-0712.firestore_export.iap_google_raw_changelog
+  - moz-fx-data-shared-prod.subscription_platform_derived.apple_subscriptions_v1
+  - moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_v1
+  - moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v1

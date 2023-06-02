@@ -22,4 +22,4 @@ references:
   - moz-fx-data-shared-prod.stripe_external.nonprod_invoice_discount_v1
   - moz-fx-data-shared-prod.stripe_external.nonprod_invoice_v1
   - moz-fx-data-shared-prod.stripe_external.nonprod_promotion_code_v1
-  - moz-fx-data-shared-prod.subscription_platform.nonprod_stripe_subscriptions
+  - moz-fx-data-shared-prod.subscription_platform_derived.nonprod_stripe_subscriptions_v1

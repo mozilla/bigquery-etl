@@ -36476,6 +36476,9 @@ fields:
         - mode: NULLABLE
           name: places_previousday_visits
           type: INTEGER
+        - mode: NULLABLE
+          name: a11y_use_system_colors
+          type: BOOLEAN
         mode: NULLABLE
         name: scalars
         type: RECORD

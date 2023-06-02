@@ -8,9 +8,9 @@ RETURNS STRUCT<
 > AS (
   STRUCT(
     version_string AS version,
-    norm.truncate_version(version_string, 'major') AS major_version,
-    norm.extract_version(version_string, 'minor') AS minor_version,
-    norm.extract_version(version_string, 'patch') AS patch_revision,
+    mozfun.norm.truncate_version(version_string, 'major') AS major_version,
+    mozfun.norm.extract_version(version_string, 'minor') AS minor_version,
+    mozfun.norm.extract_version(version_string, 'patch') AS patch_revision,
     (
       ARRAY_LENGTH(SPLIT(version_string, '.')) = 2
       AND ENDS_WITH(version_string, '.0')

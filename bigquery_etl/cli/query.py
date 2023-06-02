@@ -66,31 +66,13 @@ PUBLIC_PROJECT_ID = "mozilla-public-data"
 
 
 @click.group(help="Commands for managing queries.")
-@click.option("--log-level", "log_level", default=logging.INFO, type=str)
 @click.pass_context
-def query(ctx, log_level):
+def query(ctx):
     """Create the CLI group for the query command."""
     # create temporary directory generated content is written to
     # the directory will be deleted automatically after the command exits
     ctx.ensure_object(dict)
     ctx.obj["TMP_DIR"] = ctx.with_resource(tempfile.TemporaryDirectory())
-
-    # TODO: we could consider having this in util or some other shared module
-    log_level_mapping = {
-        "debug": logging.DEBUG,
-        "info": logging.INFO,
-        "error": logging.ERROR,
-        "critical": logging.CRITICAL,
-    }
-
-    try:
-        logging.root.setLevel(level=log_level_mapping[log_level.lower()])
-    except KeyError:
-        # TODO: maybe have a custom exception defined here for incorrect log level
-        raise Exception(
-            "Invalid logging option passed, valid options include: %s"
-            % log_level_mapping.keys()
-        )
 
 
 @query.command(

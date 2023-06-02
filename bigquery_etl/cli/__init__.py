@@ -24,6 +24,7 @@ from ..glam.cli import glam
 from ..static import static_
 from ..stripe import stripe_
 from ..subplat.apple import apple
+import logging
 
 
 def cli(prog_name=None):
@@ -51,9 +52,27 @@ def cli(prog_name=None):
 
     @click.group(commands=commands)
     @click.version_option(version=__version__)
-    def group():
+    @click.option("--log-level", "log_level", default="info", type=str)
+    def group(log_level):
         """CLI tools for working with bigquery-etl."""
-        pass
+
+        log_level_mapping = {
+            "debug": logging.DEBUG,
+            "info": logging.INFO,
+            "error": logging.ERROR,
+            "critical": logging.CRITICAL,
+        }
+
+        print(log_level)
+
+        try:
+            logging.root.setLevel(level=log_level_mapping[log_level.lower()])
+        except KeyError:
+            # TODO: maybe have a custom exception defined here for incorrect log level
+            raise Exception(
+                "Invalid logging option passed, valid options include: %s"
+                % log_level_mapping.keys()
+            )
 
     warnings.filterwarnings(
         "ignore", "Your application has authenticated using end user credentials"

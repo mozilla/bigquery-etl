@@ -1,4 +1,4 @@
---- User-facing view for all mobile apps. Generated via sql_generators.active_users_aggregates.
+--- User-facing view for all mobile apps. Generated via sql_generators.active_users.
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.active_users_aggregates_mobile`
 AS

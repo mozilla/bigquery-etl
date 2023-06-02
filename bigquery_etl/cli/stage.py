@@ -28,6 +28,7 @@ from ..view import View
 
 VIEW_FILE = "view.sql"
 QUERY_FILE = "query.sql"
+INIT_FILE = "init.sql"
 QUERY_SCRIPT = "query.py"
 ROOT = Path(__file__).parent.parent.parent
 TEST_DIR = ROOT / "tests" / "sql"
@@ -338,7 +339,7 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
     query_files = [
         file
         for file in artifact_files
-        if file.name in [QUERY_FILE, QUERY_SCRIPT]
+        if file.name in [INIT_FILE, QUERY_FILE, QUERY_SCRIPT]
         # don't attempt to deploy wildcard or metadata tables
         and "*" not in file.parent.name and file.parent.name != "INFORMATION_SCHEMA"
     ]

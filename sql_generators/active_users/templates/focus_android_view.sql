@@ -1,6 +1,5 @@
 --- User-facing view. Generated via sql_generators.active_users.
---- Query generated via sql_generators.active_users.
---- This view returns Glean data for the full history. See https://mozilla-hub.atlassian.net/browse/DENG-970
+--- This view returns Glean data for the full history: https://mozilla-hub.atlassian.net/browse/DENG-970
 CREATE OR REPLACE VIEW
   `{{ project_id }}.{{ app_name }}.active_users_aggregates`
 AS

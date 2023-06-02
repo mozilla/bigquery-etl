@@ -57,6 +57,7 @@ from ..util.common import random_str
 from ..util.common import render as render_template
 from .dryrun import dryrun
 from .generate import generate_all
+import logging
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
 VERSION_RE = re.compile(r"_v[0-9]+")
@@ -65,13 +66,31 @@ PUBLIC_PROJECT_ID = "mozilla-public-data"
 
 
 @click.group(help="Commands for managing queries.")
+@click.option("--log-level", "log_level", default=logging.INFO, type=str)
 @click.pass_context
-def query(ctx):
+def query(ctx, log_level):
     """Create the CLI group for the query command."""
     # create temporary directory generated content is written to
     # the directory will be deleted automatically after the command exits
     ctx.ensure_object(dict)
     ctx.obj["TMP_DIR"] = ctx.with_resource(tempfile.TemporaryDirectory())
+
+    # TODO: we could consider having this in util or some other shared module
+    log_level_mapping = {
+        "debug": logging.DEBUG,
+        "info": logging.INFO,
+        "error": logging.ERROR,
+        "critical": logging.CRITICAL,
+    }
+
+    try:
+        logging.root.setLevel(level=log_level_mapping[log_level.lower()])
+    except KeyError:
+        # TODO: maybe have a custom exception defined here for incorrect log level
+        raise Exception(
+            "Invalid logging option passed, valid options include: %s"
+            % log_level_mapping.keys()
+        )
 
 
 @query.command(
@@ -326,7 +345,7 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
                 metadata.scheduling["task_name"] = task_name
 
             metadata.write(query_file.parent / METADATA_FILE)
-            print(
+            logging.info(
                 f"Updated {query_file.parent / METADATA_FILE} with scheduling"
                 " information. For more information about scheduling queries see: "
                 "https://github.com/mozilla/bigquery-etl#scheduling-queries-in-airflow"
@@ -346,7 +365,7 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
     # re-run DAG generation for the affected DAG
     for d in dags_to_be_generated:
         existing_dag = dags.dag_by_name(d)
-        print(f"Running DAG generation for {existing_dag.name}")
+        logging.info(f"Running DAG generation for {existing_dag.name}")
         output_dir = sql_dir.parent / "dags"
         dags.dag_to_airflow(output_dir, existing_dag)
 
@@ -852,10 +871,10 @@ def _run_query(
                     )
                     sys.exit(1)
         except yaml.YAMLError as e:
-            print(e)
+            logging.error(e)
             sys.exit(1)
         except FileNotFoundError:
-            print("INFO: No metadata.yaml found for {}", query_file)
+            logging.warning("No metadata.yaml found for {}", query_file)
 
         if not use_public_table and destination_table is not None:
             # destination table was parsed by argparse, however if it wasn't modified to
@@ -1038,13 +1057,15 @@ def run_multipart(
                 ),
             )
             job.result()
-            print(f"Processed {job.total_bytes_processed:,d} bytes to combine results")
+            logging.info(
+                f"Processed {job.total_bytes_processed:,d} bytes to combine results"
+            )
             total_bytes += job.total_bytes_processed
-            print(f"Processed {total_bytes:,d} bytes in total")
+            logging.info(f"Processed {total_bytes:,d} bytes in total")
         finally:
             for _, job in parts:
                 client.delete_table(sql_table_id(job.destination).split("$")[0])
-            print(f"Deleted {len(parts)} temporary tables")
+            logging.info(f"Deleted {len(parts)} temporary tables")
 
 
 def _run_part(
@@ -1064,10 +1085,10 @@ def _run_part(
     )
     job = client.query(query=query, job_config=job_config)
     if job.dry_run:
-        print(f"Would process {job.total_bytes_processed:,d} bytes for {part}")
+        logging.info(f"Would process {job.total_bytes_processed:,d} bytes for {part}")
     else:
         job.result()
-        print(f"Processed {job.total_bytes_processed:,d} bytes for {part}")
+        logging.info(f"Processed {job.total_bytes_processed:,d} bytes for {part}")
     return part, job
 
 

@@ -1,10 +1,12 @@
 {{ header }}
 SELECT
-    channel,
-    MAX(major_version)
+  build.`target`.channel AS channel,
+  MAX(mozfun.norm.extract_version(build.`target`.version,
+  'major')) AS latest_version
 FROM
-    `moz-fx-data-shared-prod.telemetry.releases_latest`
+  `moz-fx-data-shared-prod.telemetry.buildhub2`
 WHERE
-    channel={{ app_id_channel }}
+  build.`source`.product = "firefox"
+  AND    build.`target`.channel = {{ app_id_channel }}
 GROUP BY
-    channel
+  build.`target`.channel

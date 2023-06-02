@@ -28,10 +28,13 @@ class TemplateResult:
     query_text: str
 
 
-APP_ID_TO_CHANNELS = {
+APP_PREFIX_CHANNELS = {
     "firefox_desktop_glam_nightly": "nightly",
     "firefox_desktop_glam_beta": "beta",
     "firefox_desktop_glam_release": "release",
+    "org_mozilla_fenix_glam_nightly": "nightly",
+    "org_mozilla_fenix_glam_beta": "beta",
+    "org_mozilla_fenix_glam_release": "release",
 }
 
 
@@ -220,7 +223,7 @@ def main():
     [
         table(
             "latest_versions_v1",
-            **dict(app_id_channel=(f"'{APP_ID_TO_CHANNELS[args.prefix]}'")),
+            **dict(app_id_channel=(f"'{APP_PREFIX_CHANNELS[args.prefix]}'")),
         ),
         init(
             "clients_scalar_aggregates_v1",

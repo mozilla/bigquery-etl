@@ -268,9 +268,15 @@ def _view_dependencies(artifact_files, sql_dir):
 
             # extract UDF references from view definition
             raw_routines = read_routine_dir()
+            udf_dependencies = set()
+
             for udf_dependency in view.udf_references:
                 routine = raw_routines[udf_dependency]
-                view_dependencies.add(Path(routine.filepath))
+                udf_dependencies.add(Path(routine.filepath))
+
+            # determine UDF dependencies recursively
+            view_dependencies.update(_udf_dependencies(udf_dependencies))
+            view_dependencies.update(udf_dependencies)
 
     return view_dependencies
 

@@ -1,0 +1,23 @@
+---
+friendly_name: Data from external source Adjust
+description: >
+  This table represents CSVs downloaded from Adjust
+owners:
+  - mhirose@mozilla.com
+labels:
+  incremental: false
+scheduling:
+  dag_name: adjust_derived
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+external_data:
+  format: csv
+  source_uris:
+    -
+  options:
+    skip_leading_rows: 1

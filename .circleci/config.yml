@@ -372,8 +372,8 @@ jobs:
           name: Copy generated SQL to temporary stage directory
           command: |
             mkdir -p /tmp/workspace/staged-generated-sql
-            cp -r sql/ /tmp/workspace/staged-generated-sql
-            cp -r tests/ /tmp/workspace/staged-generated-sql
+            cp -r sql/ /tmp/workspace/staged-generated-sql/sql
+            cp -r tests/ /tmp/workspace/staged-generated-sql/tests
       - persist_to_workspace:
           root: /tmp/workspace
           paths:

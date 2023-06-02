@@ -175,7 +175,9 @@ def deploy(
                             name += ".schema"
                         name += file_suffix
 
-                        test_file_path.rename(test_file_path.parent / name)
+                        test_file_path_dest = test_file_path.parent / name
+                        if not test_file_path_dest.exists():
+                            test_file_path.rename(test_file_path_dest)
 
     # remove artifacts from the "prod" folders
     if remove_updated_artifacts:

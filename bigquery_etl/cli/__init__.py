@@ -1,5 +1,6 @@
 """bigquery-etl CLI."""
 
+import logging
 import warnings
 
 import click
@@ -24,7 +25,6 @@ from ..glam.cli import glam
 from ..static import static_
 from ..stripe import stripe_
 from ..subplat.apple import apple
-import logging
 
 
 def cli(prog_name=None):
@@ -55,15 +55,12 @@ def cli(prog_name=None):
     @click.option("--log-level", "log_level", default="info", type=str)
     def group(log_level):
         """CLI tools for working with bigquery-etl."""
-
         log_level_mapping = {
             "debug": logging.DEBUG,
             "info": logging.INFO,
             "error": logging.ERROR,
             "critical": logging.CRITICAL,
         }
-
-        print(log_level)
 
         try:
             logging.root.setLevel(level=log_level_mapping[log_level.lower()])

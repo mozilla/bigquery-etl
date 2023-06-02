@@ -1,6 +1,7 @@
 """bigquery-etl CLI query command."""
 
 import copy
+import logging
 import os
 import re
 import string
@@ -57,7 +58,6 @@ from ..util.common import random_str
 from ..util.common import render as render_template
 from .dryrun import dryrun
 from .generate import generate_all
-import logging
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
 VERSION_RE = re.compile(r"_v[0-9]+")

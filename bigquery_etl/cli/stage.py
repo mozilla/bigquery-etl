@@ -310,11 +310,15 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
             ),
             # fully qualified references (like "moz-fx-data-shared-prod.telemetry.main")
             (
-                rf"`{original_project}\.{original_dataset}\.{name_pattern}`",
+                re.compile(
+                    rf"`{original_project}\.{original_dataset}\.{name_pattern}`"
+                ),
                 f"`{deployed_project}.{deployed_dataset}.{name}`",
             ),
             (
-                rf"(?<![a-zA-Z0-9_])`?{original_project}`?\.`?{original_dataset}`?\.`?{name_pattern}(?![a-zA-Z0-9_])`?",
+                re.compile(
+                    rf"(?<![a-zA-Z0-9_])`?{original_project}`?\.`?{original_dataset}`?\.`?{name_pattern}(?![a-zA-Z0-9_])`?"
+                ),
                 f"`{deployed_project}`.`{deployed_dataset}`.`{name}`",
             ),
         ]

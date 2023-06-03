@@ -299,9 +299,7 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
         replace_references += [
             # partially qualified references (like "telemetry.main")
             (
-                re.compile(
-                    rf"(?<![\._])`{original_dataset}\.{name_pattern}(?![a-zA-Z0-9_])`"
-                ),
+                re.compile(rf"(?<![\._])`{original_dataset}\.{name_pattern}`"),
                 f"`{deployed_project}.{deployed_dataset}.{name}`",
             ),
             (
@@ -312,7 +310,7 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
             ),
             # fully qualified references (like "moz-fx-data-shared-prod.telemetry.main")
             (
-                rf"(?<![a-zA-Z0-9_])`{original_project}\.{original_dataset}\.{name_pattern}(?![a-zA-Z0-9_])`",
+                rf"`{original_project}\.{original_dataset}\.{name_pattern}`",
                 f"`{deployed_project}.{deployed_dataset}.{name}`",
             ),
             (

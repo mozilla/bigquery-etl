@@ -448,7 +448,8 @@ SELECT
       metrics.string.geckoview_validation_version,
       metrics.string.metrics_install_source,
       metrics.string.customize_home_opening_screen,
-      metrics.string.preferences_etp_custom_cookies_selection
+      metrics.string.preferences_etp_custom_cookies_selection,
+      metrics.string.blocklist_mlbf_source
     ) AS string,
     metrics.string_list,
     STRUCT(
@@ -899,7 +900,8 @@ SELECT
       metrics.string.geckoview_validation_version,
       metrics.string.metrics_install_source,
       metrics.string.customize_home_opening_screen,
-      metrics.string.preferences_etp_custom_cookies_selection
+      metrics.string.preferences_etp_custom_cookies_selection,
+      metrics.string.blocklist_mlbf_source
     ) AS string,
     metrics.string_list,
     STRUCT(

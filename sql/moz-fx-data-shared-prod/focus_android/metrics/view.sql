@@ -155,7 +155,8 @@ SELECT
       metrics.string.preferences_user_theme,
       metrics.string.browser_install_source,
       metrics.string.geckoview_validation_build_id,
-      metrics.string.geckoview_validation_version
+      metrics.string.geckoview_validation_version,
+      metrics.string.blocklist_mlbf_source
     ) AS string,
     metrics.url,
     metrics.text,
@@ -311,7 +312,8 @@ SELECT
       metrics.string.preferences_user_theme,
       metrics.string.browser_install_source,
       metrics.string.geckoview_validation_build_id,
-      metrics.string.geckoview_validation_version
+      metrics.string.geckoview_validation_version,
+      metrics.string.blocklist_mlbf_source
     ) AS string,
     metrics.url,
     metrics.text,

@@ -1952,6 +1952,9 @@ fields:
     - mode: NULLABLE
       name: preferences_etp_custom_cookies_selection
       type: STRING
+    - mode: NULLABLE
+      name: blocklist_mlbf_source
+      type: STRING
     mode: NULLABLE
     name: string
     type: RECORD

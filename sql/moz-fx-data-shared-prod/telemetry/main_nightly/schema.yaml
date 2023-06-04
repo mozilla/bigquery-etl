@@ -14183,6 +14183,9 @@ fields:
     - mode: NULLABLE
       name: use_counter2_range_createcontextualfragment_page
       type: STRING
+    - mode: NULLABLE
+      name: search_service_init2_ms
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD

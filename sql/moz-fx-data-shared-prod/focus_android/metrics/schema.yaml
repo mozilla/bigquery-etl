@@ -1064,6 +1064,9 @@ fields:
     - mode: NULLABLE
       name: geckoview_validation_version
       type: STRING
+    - mode: NULLABLE
+      name: blocklist_mlbf_source
+      type: STRING
     mode: NULLABLE
     name: string
     type: RECORD

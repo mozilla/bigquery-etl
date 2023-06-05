@@ -52,24 +52,16 @@ def cli(prog_name=None):
 
     @click.group(commands=commands)
     @click.version_option(version=__version__)
-@click.option(
-    "--log-level",
-    "--log_level",
-    help="Log level.",
-    default=logging.getLevelName(logging.INFO),
-    type=str.upper,
-)
+    @click.option(
+        "--log-level",
+        "--log_level",
+        help="Log level.",
+        default=logging.getLevelName(logging.INFO),
+        type=str.upper,
+    )
     def group(log_level):
         """CLI tools for working with bigquery-etl."""
-
-        try:
-            logging.root.setLevel(level=log_level_mapping[log_level.lower()])
-        except KeyError:
-            # TODO: maybe have a custom exception defined here for incorrect log level
-            raise Exception(
-                "Invalid logging option passed, valid options include: %s"
-                % log_level_mapping.keys()
-            )
+        logging.root.setLevel(level=log_level)
 
     warnings.filterwarnings(
         "ignore", "Your application has authenticated using end user credentials"

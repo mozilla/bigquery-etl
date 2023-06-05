@@ -19,7 +19,7 @@ stripe_subscriptions_history AS (
       )
     ) AS subscription_sequence_id
   FROM
-    `moz-fx-data-shared-prod.subscription_platform.stripe_subscriptions_history`
+    `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v1`
   WHERE
     -- Only include the current history records and the last history records for previous plans.
     (valid_to IS NULL OR plan_ended_at IS NOT NULL)

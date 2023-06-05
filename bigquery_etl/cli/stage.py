@@ -28,6 +28,7 @@ from ..view import View
 
 VIEW_FILE = "view.sql"
 QUERY_FILE = "query.sql"
+INIT_FILE = "init.sql"
 QUERY_SCRIPT = "query.py"
 ROOT = Path(__file__).parent.parent.parent
 TEST_DIR = ROOT / "tests" / "sql"
@@ -175,7 +176,9 @@ def deploy(
                             name += ".schema"
                         name += file_suffix
 
-                        test_file_path.rename(test_file_path.parent / name)
+                        test_file_path_dest = test_file_path.parent / name
+                        if not test_file_path_dest.exists():
+                            test_file_path.rename(test_file_path_dest)
 
     # remove artifacts from the "prod" folders
     if remove_updated_artifacts:
@@ -266,9 +269,15 @@ def _view_dependencies(artifact_files, sql_dir):
 
             # extract UDF references from view definition
             raw_routines = read_routine_dir()
+            udf_dependencies = set()
+
             for udf_dependency in view.udf_references:
                 routine = raw_routines[udf_dependency]
-                view_dependencies.add(Path(routine.filepath))
+                udf_dependencies.add(Path(routine.filepath))
+
+            # determine UDF dependencies recursively
+            view_dependencies.update(_udf_dependencies(udf_dependencies))
+            view_dependencies.update(udf_dependencies)
 
     return view_dependencies
 
@@ -330,7 +339,7 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
     query_files = [
         file
         for file in artifact_files
-        if file.name in [QUERY_FILE, QUERY_SCRIPT]
+        if file.name in [INIT_FILE, QUERY_FILE, QUERY_SCRIPT]
         # don't attempt to deploy wildcard or metadata tables
         and "*" not in file.parent.name and file.parent.name != "INFORMATION_SCHEMA"
     ]

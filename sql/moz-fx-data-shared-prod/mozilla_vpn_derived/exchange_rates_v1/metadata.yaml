@@ -50,6 +50,13 @@ scheduling:
       "THB",
       "TZS",
       "UAH",
+      # Starting 2023-06-01:
+      "BGN",
+      "CZK",
+      "DKK",
+      "HUF",
+      "PLN",
+      "RON",
     ]
 bigquery:
   time_partitioning:

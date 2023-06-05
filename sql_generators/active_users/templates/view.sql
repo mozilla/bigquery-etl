@@ -1,4 +1,4 @@
---- User-facing view. Generated via sql_generators.active_users_aggregates.
+--- User-facing view. Generated via sql_generators.active_users.
 CREATE OR REPLACE VIEW
   `{{ project_id }}.{{ app_name }}.active_users_aggregates`
 AS

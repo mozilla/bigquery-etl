@@ -61,12 +61,6 @@ def cli(prog_name=None):
 )
     def group(log_level):
         """CLI tools for working with bigquery-etl."""
-        log_level_mapping = {
-            "debug": logging.DEBUG,
-            "info": logging.INFO,
-            "error": logging.ERROR,
-            "critical": logging.CRITICAL,
-        }
 
         try:
             logging.root.setLevel(level=log_level_mapping[log_level.lower()])

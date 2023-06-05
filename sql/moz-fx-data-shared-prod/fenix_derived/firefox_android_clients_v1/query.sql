@@ -12,7 +12,8 @@ WITH first_seen AS (
     device_manufacturer,
     device_model,
     normalized_os_version AS os_version,
-    app_display_version AS app_version
+    app_display_version AS app_version,
+    locale,
   FROM
     fenix.baseline_clients_first_seen
   WHERE
@@ -85,9 +86,53 @@ metrics_ping AS (
     )[SAFE_OFFSET(0)] AS adjust_creative,
     ARRAY_AGG(metrics.string.metrics_install_source IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
-    ] AS install_source
+    ] AS install_source,
+    ARRAY_AGG(
+      metrics.string.metrics_adjust_ad_group IGNORE NULLS
+      ORDER BY
+        submission_timestamp DESC
+    )[SAFE_OFFSET(0)] AS last_reported_adjust_ad_group,
+    ARRAY_AGG(
+      metrics.string.metrics_adjust_creative IGNORE NULLS
+      ORDER BY
+        submission_timestamp DESC
+    )[SAFE_OFFSET(0)] AS last_reported_adjust_creative,
+    ARRAY_AGG(
+      metrics.string.metrics_adjust_network IGNORE NULLS
+      ORDER BY
+        submission_timestamp DESC
+    )[SAFE_OFFSET(0)] AS last_reported_adjust_network,
+    ARRAY_AGG(
+      metrics.string.metrics_adjust_campaign IGNORE NULLS
+      ORDER BY
+        submission_timestamp DESC
+    )[SAFE_OFFSET(0)] AS last_reported_adjust_campaign,
   FROM
     org_mozilla_firefox.metrics AS org_mozilla_firefox_metrics
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    client_id
+),
+-- Find most recent client details from the baseline ping.
+baseline_ping AS (
+  SELECT
+    client_info.client_id,
+    DATE(MAX(submission_timestamp)) AS last_reported_date,
+    ARRAY_AGG(normalized_country_code IGNORE NULLS ORDER BY submission_timestamp DESC)[
+      SAFE_OFFSET(0)
+    ] AS last_reported_country,
+    ARRAY_AGG(client_info.device_model IGNORE NULLS ORDER BY submission_timestamp DESC)[
+      SAFE_OFFSET(0)
+    ] AS last_reported_device_model,
+    ARRAY_AGG(client_info.device_manufacturer IGNORE NULLS ORDER BY submission_timestamp DESC)[
+      SAFE_OFFSET(0)
+    ] AS last_reported_device_manufacturer,
+    ARRAY_AGG(client_info.locale IGNORE NULLS ORDER BY submission_timestamp DESC)[
+      SAFE_OFFSET(0)
+    ] AS last_reported_locale,
+  FROM
+    org_mozilla_firefox.baseline AS org_mozilla_firefox_baseline
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -107,12 +152,22 @@ _current AS (
     first_seen.device_model AS device_model,
     first_seen.os_version AS os_version,
     first_seen.app_version AS app_version,
+    first_seen.locale AS locale,
     activated AS activated,
     COALESCE(first_session.adjust_campaign, metrics.adjust_campaign) AS adjust_campaign,
     COALESCE(first_session.adjust_ad_group, metrics.adjust_ad_group) AS adjust_ad_group,
     COALESCE(first_session.adjust_creative, metrics.adjust_creative) AS adjust_creative,
     COALESCE(first_session.adjust_network, metrics.adjust_network) AS adjust_network,
     metrics.install_source AS install_source,
+    metrics.last_reported_adjust_campaign AS last_reported_adjust_campaign,
+    metrics.last_reported_adjust_ad_group AS last_reported_adjust_ad_group,
+    metrics.last_reported_adjust_creative AS last_reported_adjust_creative,
+    metrics.last_reported_adjust_network AS last_reported_adjust_network,
+    baseline.last_reported_date AS last_reported_date,
+    baseline.last_reported_country AS last_reported_country,
+    baseline.last_reported_device_model AS last_reported_device_model,
+    baseline.last_reported_device_manufacturer AS last_reported_device_manufacturer,
+    baseline.last_reported_locale AS last_reported_locale,
     STRUCT(
       CASE
         WHEN first_session.client_id IS NULL
@@ -177,6 +232,10 @@ _current AS (
     metrics_ping AS metrics
   USING
     (client_id)
+  FULL OUTER JOIN
+    baseline_ping AS baseline
+  USING
+    (client_id)
   LEFT JOIN
     activations
   USING
@@ -207,12 +266,43 @@ SELECT
   COALESCE(_previous.device_model, _current.device_model) AS device_model,
   COALESCE(_previous.os_version, _current.os_version) AS os_version,
   COALESCE(_previous.app_version, _current.app_version) AS app_version,
+  COALESCE(_previous.locale, _current.locale) AS locale,
   COALESCE(_previous.activated, _current.activated) AS activated,
   COALESCE(_previous.adjust_campaign, _current.adjust_campaign) AS adjust_campaign,
   COALESCE(_previous.adjust_ad_group, _current.adjust_ad_group) AS adjust_ad_group,
   COALESCE(_previous.adjust_creative, _current.adjust_creative) AS adjust_creative,
   COALESCE(_previous.adjust_network, _current.adjust_network) AS adjust_network,
   COALESCE(_previous.install_source, _current.install_source) AS install_source,
+  COALESCE(
+    _current.last_reported_adjust_campaign,
+    _previous.last_reported_adjust_campaign
+  ) AS last_reported_adjust_campaign,
+  COALESCE(
+    _current.last_reported_adjust_ad_group,
+    _previous.last_reported_adjust_ad_group
+  ) AS last_reported_adjust_ad_group,
+  COALESCE(
+    _current.last_reported_adjust_creative,
+    _previous.last_reported_adjust_creative
+  ) AS last_reported_adjust_creative,
+  COALESCE(
+    _current.last_reported_adjust_network,
+    _previous.adjust_network
+  ) AS last_reported_adjust_network,
+  COALESCE(_current.last_reported_date, _previous.last_reported_date) AS last_reported_date,
+  COALESCE(
+    _current.last_reported_country,
+    _previous.last_reported_country
+  ) AS last_reported_country,
+  COALESCE(
+    _current.last_reported_device_model,
+    _previous.last_reported_device_model
+  ) AS last_reported_device_model,
+  COALESCE(
+    _current.last_reported_device_manufacturer,
+    _previous.device_manufacturer
+  ) AS last_reported_device_manufacturer,
+  COALESCE(_current.last_reported_locale, _previous.locale) AS last_reported_locale,
   STRUCT(
     COALESCE(_previous.metadata.reported_first_session_ping, FALSE)
     OR COALESCE(

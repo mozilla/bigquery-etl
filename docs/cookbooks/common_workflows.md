@@ -291,6 +291,7 @@ To generate and check the docs locally:
 Each code files in the bigquery-etl repository can have a set of owners who are responsible to review and approve changes, and are automatically assigned as PR reviewers.
 The query files in the repo also benefit from the metadata labels to be able to validate and identify the data that is change controlled.
 
+Here is a [sample PR with the implementation of change control for contextual services data](https://github.com/mozilla/bigquery-etl/pull/3833).
 1. Select or create a [Github team or identity](https://docs.github.com/en/organizations/organizing-members-into-teams/creating-a-team) and add the GitHub emails of the query codeowners. A GitHub identity is particularly useful when you need to include non @mozilla emails or to randomly assign PR reviewers from the team members. This team requires edit permissions to bigquery-etl, to achieve this, inherit the team from one that has the required permissions e.g. `mozilla > telemetry`.
 1. Open the `metadata.yaml` for the query where you want to apply change control:
    * In the section `owners`, add the selected GitHub identity, along with the list of owners' emails.

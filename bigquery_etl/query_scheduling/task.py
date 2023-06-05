@@ -438,7 +438,7 @@ class Task:
         )
 
     def _get_referenced_tables(self):
-        """Use zetasql to get tables the query depends on."""
+        """Use sqlglot to get tables the query depends on."""
         logging.info(f"Get dependencies for {self.task_key}")
 
         if self.is_python_script:

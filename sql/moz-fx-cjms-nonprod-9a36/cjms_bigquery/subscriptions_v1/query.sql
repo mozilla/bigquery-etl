@@ -74,9 +74,6 @@ initial_invoices AS (
     `moz-fx-data-shared-prod`.stripe_external.nonprod_invoice_v1 AS invoices
   USING
     (subscription_id)
-  -- ZetaSQL requires QUALIFY to be used in conjunction with WHERE, GROUP BY, or HAVING.
-  WHERE
-    TRUE
   QUALIFY
     1 = ROW_NUMBER() OVER (PARTITION BY subscription_id ORDER BY invoices.created)
 ),

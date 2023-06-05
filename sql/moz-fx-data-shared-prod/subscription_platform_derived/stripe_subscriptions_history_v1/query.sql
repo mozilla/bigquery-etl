@@ -119,9 +119,6 @@ subscription_items AS (
     plan_id,
   FROM
     `moz-fx-data-shared-prod`.stripe_external.subscription_item_v1
-  -- ZetaSQL requires QUALIFY to be used in conjunction with WHERE, GROUP BY, or HAVING.
-  WHERE
-    TRUE
   QUALIFY
     -- With how our subscription platform currently works each Stripe subscription should
     -- only have one subscription item, and we enforce that so the ETL can rely on it.

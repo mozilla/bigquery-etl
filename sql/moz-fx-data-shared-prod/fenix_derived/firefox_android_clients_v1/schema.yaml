@@ -1,8 +1,4 @@
 fields:
-- description: Date when the app first reported a baseline ping for the client.
-  mode: NULLABLE
-  name: first_seen_date
-  type: DATE
 - description: Unique ID for the client installation.
   mode: NULLABLE
   name: client_id
@@ -11,6 +7,10 @@ fields:
   mode: NULLABLE
   name: sample_id
   type: INTEGER
+- description: Date when the app first reported a baseline ping for the client.
+  mode: NULLABLE
+  name: first_seen_date
+  type: DATE
 - description: Date when the server first received a baseline ping for the client.
   mode: NULLABLE
   name: submission_date
@@ -64,6 +64,14 @@ fields:
   mode: NULLABLE
   name: adjust_creative
   type: STRING
+- description: Structure parameter for the network of a campaign.
+  mode: NULLABLE
+  name: adjust_network
+  type: STRING
+- description: The source of a client installation.
+  mode: NULLABLE
+  name: install_source
+  type: STRING
 - fields:
   - description: True if the client ever reported a first_session ping.
     mode: NULLABLE
@@ -105,11 +113,3 @@ fields:
   mode: NULLABLE
   name: metadata
   type: RECORD
-- description: Structure parameter for the network of a campaign.
-  mode: NULLABLE
-  name: adjust_network
-  type: STRING
-- description: The source of a client installation.
-  mode: NULLABLE
-  name: install_source
-  type: STRING

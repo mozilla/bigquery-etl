@@ -1265,7 +1265,7 @@ def render(name, sql_dir, output_dir):
             click.echo(rendered_sql)
 
 
-def _parse_partition_date(partition_date):
+def _parse_partition_setting(partition_date):
     params = partition_date.split(":")
     if len(params) != 3:
         return None
@@ -1284,13 +1284,12 @@ def _parse_partition_date(partition_date):
 def _validate_partition_date(ctx, param, partition_date):
     """Process the CLI parameter check_date and set the parameter for BigQuery."""
     # Will be None if launched from Airflow.  Also ctx.args is not populated at this stage.
-    if partition_date is None:
-        return None
-    else:
-        parsed = _parse_partition_date(partition_date)
+    if partition_date:
+        parsed = _parse_partition_setting(partition_date)
         if parsed is None:
             raise click.BadParameter("Format must be <column-name>::<yyyy-mm-dd>")
         return parsed
+    return None
 
 
 def _parse_check_output(output: str) -> str:
@@ -1370,7 +1369,7 @@ def _check_query(
         for parameter in query_arguments:
             if parameter.startswith("--parameter"):
                 param_value = parameter.split("=")[1]
-                partition = _parse_partition_date(param_value)
+                partition = _parse_partition_setting(param_value)
                 # once we have a value that passed the date check stop checking.
                 if partition is not None:
                     break

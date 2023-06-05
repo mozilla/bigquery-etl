@@ -47,6 +47,10 @@ fields:
   mode: NULLABLE
   name: app_version
   type: STRING
+- description: Client locale.
+  mode: NULLABLE
+  name: locale
+  type: STRING
 - description: Determines if a client is activated based on the activation metric
     and a 7 day lag.
   mode: NULLABLE

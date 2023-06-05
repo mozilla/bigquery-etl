@@ -152,6 +152,7 @@ _current AS (
     first_seen.device_model AS device_model,
     first_seen.os_version AS os_version,
     first_seen.app_version AS app_version,
+    first_seen.locale AS locale,
     activated AS activated,
     COALESCE(first_session.adjust_campaign, metrics.adjust_campaign) AS adjust_campaign,
     COALESCE(first_session.adjust_ad_group, metrics.adjust_ad_group) AS adjust_ad_group,
@@ -265,6 +266,7 @@ SELECT
   COALESCE(_previous.device_model, _current.device_model) AS device_model,
   COALESCE(_previous.os_version, _current.os_version) AS os_version,
   COALESCE(_previous.app_version, _current.app_version) AS app_version,
+  COALESCE(_previous.locale, _current.locale) AS locale,
   COALESCE(_previous.activated, _current.activated) AS activated,
   COALESCE(_previous.adjust_campaign, _current.adjust_campaign) AS adjust_campaign,
   COALESCE(_previous.adjust_ad_group, _current.adjust_ad_group) AS adjust_ad_group,
@@ -297,7 +299,7 @@ SELECT
     _current.last_reported_device_manufacturer,
     _previous.device_manufacturer
   ) AS last_reported_device_manufacturer,
-  COALESCE(_current.last_reported_locale, _previous.locale) AS locale,
+  COALESCE(_current.last_reported_locale, _previous.locale) AS last_reported_locale,
   STRUCT(
     COALESCE(_previous.metadata.reported_first_session_ping, FALSE)
     OR COALESCE(

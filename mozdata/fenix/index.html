@@ -5034,22 +5034,22 @@ across all channels of the Glean application "Firefox for Android"
         <td>Yes</td>
     </tr><tr>
         <td>activated</td>
-        <td></td>
+        <td>Determines if a client is activated based on the activation metric and a 7 day lag.</td>
         <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
         <td>adjust_campaign</td>
-        <td></td>
+        <td>Structure parameter for the campaign name.</td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>adjust_ad_group</td>
-        <td></td>
+        <td>Structure parameter for the the ad group of a campaign.</td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>adjust_creative</td>
-        <td></td>
+        <td>Structure parameter for the creative content of a campaign.</td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -5058,13 +5058,63 @@ across all channels of the Glean application "Firefox for Android"
         <td>Record</td>
         <td>Yes</td>
     </tr><tr>
+        <td>locale</td>
+        <td>Client locale.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>last_reported_locale</td>
+        <td>Last reported client locale.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>last_reported_device_manufacturer</td>
+        <td>Last reported client device manufacturer.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>last_reported_device_model</td>
+        <td>Last reported client device model.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>last_reported_country</td>
+        <td>Last reported client country.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>last_reported_date</td>
+        <td>Last date client seen.</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>last_reported_adjust_network</td>
+        <td>Last reported client campaign network.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>last_reported_adjust_creative</td>
+        <td>Last reported campaign name.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>last_reported_adjust_ad_group</td>
+        <td>Last reported campaign ad group.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>last_reported_adjust_campaign</td>
+        <td>Last reported campaign name.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>adjust_network</td>
-        <td></td>
+        <td>Structure parameter for the network of a campaign.</td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>install_source</td>
-        <td></td>
+        <td>The source of a client installation.</td>
         <td>String</td>
         <td>Yes</td>
     </tr>

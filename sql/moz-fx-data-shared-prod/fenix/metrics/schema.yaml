@@ -6902,6 +6902,30 @@ fields:
     type: RECORD
   - fields:
     - mode: NULLABLE
+      name: blocklist_last_modified_rs_addons_mblf
+      type: TIMESTAMP
+    - mode: NULLABLE
+      name: raw_blocklist_last_modified_rs_addons_mblf
+      type: STRING
+    - mode: NULLABLE
+      name: blocklist_mlbf_generation_time
+      type: TIMESTAMP
+    - mode: NULLABLE
+      name: raw_blocklist_mlbf_generation_time
+      type: STRING
+    - mode: NULLABLE
+      name: blocklist_mlbf_stash_time_newest
+      type: TIMESTAMP
+    - mode: NULLABLE
+      name: raw_blocklist_mlbf_stash_time_newest
+      type: STRING
+    - mode: NULLABLE
+      name: blocklist_mlbf_stash_time_oldest
+      type: TIMESTAMP
+    - mode: NULLABLE
+      name: raw_blocklist_mlbf_stash_time_oldest
+      type: STRING
+    - mode: NULLABLE
       name: glean_validation_first_run_hour
       type: TIMESTAMP
     - mode: NULLABLE

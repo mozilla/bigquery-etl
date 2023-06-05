@@ -2880,17 +2880,25 @@ To generate and check the docs locally:</p>
 <h2 id="setting-up-change-control-to-code-files">Setting up change control to code files</h2>
 <p>Each code files in the bigquery-etl repository can have a set of owners who are responsible to review and approve changes, and are automatically assigned as PR reviewers.
 The query files in the repo also benefit from the metadata labels to be able to validate and identify the data that is change controlled.</p>
-<p>Here is a <a href="https://github.com/mozilla/bigquery-etl/pull/3833">sample PR with the implementation of change control for contextual services data</a>.
-1. Select or create a <a href="https://docs.github.com/en/organizations/organizing-members-into-teams/creating-a-team">Github team or identity</a> and add the GitHub emails of the query codeowners. A GitHub identity is particularly useful when you need to include non @mozilla emails or to randomly assign PR reviewers from the team members. This team requires edit permissions to bigquery-etl, to achieve this, inherit the team from one that has the required permissions e.g. <code>mozilla &gt; telemetry</code>.
-1. Open the <code>metadata.yaml</code> for the query where you want to apply change control:
-   * In the section <code>owners</code>, add the selected GitHub identity, along with the list of owners' emails.
-   * In the section <code>labels</code>, add <code>change_controlled: true</code>. This enables identifying change controlled data in the BigQuery console and in the Data Catalog.
-1. Setup the <code>CODEOWNERS</code>:
-   * Open the <code>CODEOWNERS</code> file located in the root of the repo.
-   * Add a new row with the path and owners for the query. You can place it in the corresponding section or create a new section in the file, e.g. <code>/sql_generators/active_users/templates/ @mozilla/kpi_table_reviewers</code>.
-1. The queries labeled change_controlled are automatically validated in the CI. To run the validation locally:
-   * Run the command <code>script/bqetl query validate &lt;query_path&gt;</code>.
-   * If the query is generated using the <code>/sql-generators</code>, first run <code>./script/bqetl generate &lt;path&gt;</code> and then run <code>script/bqetl query validate &lt;query_path&gt;</code>.</p>
+<p>Here is a <a href="https://github.com/mozilla/bigquery-etl/pull/3833">sample PR with the implementation of change control for contextual services data</a>.</p>
+<ol>
+<li>Select or create a <a href="https://docs.github.com/en/organizations/organizing-members-into-teams/creating-a-team">Github team or identity</a> and add the GitHub emails of the query codeowners. A GitHub identity is particularly useful when you need to include non @mozilla emails or to randomly assign PR reviewers from the team members. This team requires edit permissions to bigquery-etl, to achieve this, inherit the team from one that has the required permissions e.g. <code>mozilla &gt; telemetry</code>.</li>
+<li>Open the <code>metadata.yaml</code> for the query where you want to apply change control:<ul>
+<li>In the section <code>owners</code>, add the selected GitHub identity, along with the list of owners' emails.</li>
+<li>In the section <code>labels</code>, add <code>change_controlled: true</code>. This enables identifying change controlled data in the BigQuery console and in the Data Catalog.</li>
+</ul>
+</li>
+<li>Setup the <code>CODEOWNERS</code>:<ul>
+<li>Open the <code>CODEOWNERS</code> file located in the root of the repo.</li>
+<li>Add a new row with the path and owners for the query. You can place it in the corresponding section or create a new section in the file, e.g. <code>/sql_generators/active_users/templates/ @mozilla/kpi_table_reviewers</code>.</li>
+</ul>
+</li>
+<li>The queries labeled change_controlled are automatically validated in the CI. To run the validation locally:<ul>
+<li>Run the command <code>script/bqetl query validate &lt;query_path&gt;</code>.</li>
+<li>If the query is generated using the <code>/sql-generators</code>, first run <code>./script/bqetl generate &lt;path&gt;</code> and then run <code>script/bqetl query validate &lt;query_path&gt;</code>.</li>
+</ul>
+</li>
+</ol>
 
 
 

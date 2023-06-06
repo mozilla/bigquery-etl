@@ -12,31 +12,70 @@ from ..cli.utils import is_authenticated, paths_matching_checks_pattern, sql_dir
 from ..util.common import render as render_template
 
 
-def _parse_partition_setting(partition_date):
-    params = partition_date.split(":")
-    if len(params) != 3:
-        return None
+def _build_query_arguments(parameters):
+    """
+    Convert a dict of parameters (from CLI) into query arguments.
 
-    # Check date format
-    try:
-        datetime.datetime.strptime(params[2], "%Y-%m-%d").date()
-    except ValueError:
-        return None
-
-    # Check column name
-    if re.match(r"^\w+$", params[0]):
-        return {params[0]: params[2]}
+    Opposite of _build_query_arguments.
+    """
+    if parameters is None:
+        return []
+    return [f"--parameter={key}::{value}" for key, value in parameters.items()]
 
 
-def _validate_partition_date(ctx, param, partition_date):
-    """Process the CLI parameter check_date and set the parameter for BigQuery."""
-    # Will be None if launched from Airflow.  Also ctx.args is not populated at this stage.
-    if partition_date:
-        parsed = _parse_partition_setting(partition_date)
-        if parsed is None:
-            raise click.BadParameter("Format must be <column-name>::<yyyy-mm-dd>")
-        return parsed
-    return None
+def _parse_query_arguments(query_args):
+    parameters = []
+    for query_arg in query_args:
+        if query_arg.startswith("--parameter=") and len(query_arg.split("=")) == 2:
+            parameters.append(query_arg.split("=")[1])
+        else:
+            raise ValueError("argument must start with --parameter")
+    return _build_parameters(None, None, parameters)
+
+
+def _build_parameters(ctx=None, param=None, parameters=None):
+    """
+    Convert the list of parameters from format <param-name>::<param-value> to dict.
+
+    If an invalid parameter is found, empty dict is returned.  Opposite of _build_query_arguments.
+    """
+    result = {}
+    detected_partition = False
+
+    if parameters is None:
+        return {}
+
+    for param in parameters:
+        params = param.split(":")
+        if len(params) != 3:
+            raise ValueError(
+                f"parameter: {param} is not a valid parameter.  Please use format: <param-name>::<param-value>, exiting"
+            )
+
+        # If the param value smells like a date then check if it is a valid date.
+        if re.match(r"^[0-9-]+$", params[2]):
+            try:
+                datetime.datetime.strptime(params[2], "%Y-%m-%d").date()
+                detected_partition = True
+                print(f"Found date parameter:  {param}")
+            except ValueError:
+                raise ValueError(
+                    f"parameter: {params[0]} with value: {params[2]} is not a valid date, exiting."
+                )
+
+        # Check column name
+        if re.match(r"^\w+$", params[0]):
+            result[params[0]] = params[2]
+        else:
+            raise ValueError(
+                f"parameter: {params[0]} with value: {params[2]} is not a value parameter name."
+            )
+
+        if not detected_partition:
+            print(
+                "WARNING: No date specified for partition, attempting to check entire table"
+            )
+    return result
 
 
 def _parse_check_output(output: str) -> str:
@@ -69,7 +108,7 @@ def check(ctx):
 s    \b
 
     Example:
-     ./bqetl check run ga_derived.downloads_with_attribution_v2 --partition download_date::2023-05-01
+     ./bqetl check run ga_derived.downloads_with_attribution_v2 --parameter download_date::2023-05-01
     """,
     context_settings=dict(
         ignore_unknown_options=True,
@@ -79,15 +118,18 @@ s    \b
 @click.argument("name")
 @sql_dir_option
 @click.option(
-    "--partition",
+    "--parameter",
     "-p",
-    help="Partition to check, format <column-name>::<yyy-mm-dd>, must be provided if not executing in Airflow ",
+    help="Parameters required for processing including partition. If table is partitioned then the "
+    " format <column-name>::<yyy-mm-dd>, must be provided if not executing in Airflow. "
+    " Since some tables are not partitioned parameters are not required. ",
     type=click.UNPROCESSED,
-    callback=_validate_partition_date,
+    callback=_build_parameters,
+    multiple=True,
     required=False,
 )
 @click.pass_context
-def run(ctx, name, sql_dir, partition):
+def run(ctx, name, sql_dir, parameter):
     """Run a check."""
     if not is_authenticated():
         click.echo(
@@ -100,22 +142,22 @@ def run(ctx, name, sql_dir, partition):
         name, sql_dir, project_id=None
     )
 
-    _check_query(
+    _run_check(
         checks_file,
         project_id,
         dataset_id,
         table,
-        partition,
+        parameter,
         ctx.args,
     )
 
 
-def _check_query(
+def _run_check(
     checks_file,
     project_id,
     dataset_id,
     table,
-    partition,
+    parameters,
     query_arguments,
 ):
     """Run the check."""
@@ -123,28 +165,16 @@ def _check_query(
     if project_id is not None:
         query_arguments.append(f"--project_id={project_id}")
 
-    # Partition will be None if from Airflow
-    if partition is None:
-        # Need to check the query_arguments for the value
-        for parameter in query_arguments:
-            if parameter.startswith("--parameter"):
-                param_value = parameter.split("=")[1]
-                partition = _parse_partition_setting(param_value)
-                # once we have a value that passed the date check stop checking.
-                if partition is not None:
-                    break
+    if parameters is None:
+        # Convert all the Airflow params to jinja usable dict.
+        parameters = _parse_query_arguments(query_arguments)
     else:
-        # We have a partition value from the CLI so add to the query_arguments.
-        # There should only be 1
-        key, value = next(iter(partition.items()))
-        query_arguments.append(f"--parameter={key}::{value}")
-
-    if partition is None:
-        raise ValueError("No partition specified to check.")
+        # Convert all CLI parameters to BQ query args.
+        query_arguments += _build_query_arguments(parameters)
 
     jinja_params = {
         **{"project_id": project_id, "dataset_id": dataset_id, "table_name": table},
-        **partition,
+        **parameters,
     }
 
     with tempfile.NamedTemporaryFile(mode="w+") as query_stream:

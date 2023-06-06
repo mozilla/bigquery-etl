@@ -100,8 +100,6 @@ SELECT
   sample_id,
   client_id
 FROM _joined
-WHERE
-  TRUE
 QUALIFY
   IF(
     COUNT(*) OVER (PARTITION BY client_id) > 1,

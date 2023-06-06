@@ -44,8 +44,12 @@
     "type": "STRING",
     "name": "normalized_os_version"
   },
-    {
+  {
     "type": "STRING",
     "name": "app_display_version"
+  },
+  {
+    "type": "STRING",
+    "name": "locale"
   }
 ]

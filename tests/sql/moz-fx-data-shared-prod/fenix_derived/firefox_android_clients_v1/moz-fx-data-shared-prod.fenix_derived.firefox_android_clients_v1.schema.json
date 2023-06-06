@@ -48,6 +48,10 @@
     "name": "app_version"
   },
   {
+    "type": "STRING",
+    "name": "locale"
+  },
+  {
     "type": "BOOLEAN",
     "name": "activated"
   },
@@ -112,5 +116,41 @@
     ],
     "name": "metadata",
     "type": "RECORD"
+  },
+  {
+    "type": "STRING",
+    "name": "last_reported_locale"
+  },
+  {
+    "type": "STRING",
+    "name": "last_reported_device_manufacturer"
+  },
+  {
+    "type": "STRING",
+    "name": "last_reported_device_model"
+  },
+  {
+    "type": "STRING",
+    "name": "last_reported_country"
+  },
+  {
+    "type": "DATE",
+    "name": "last_reported_date"
+  },
+  {
+    "type": "STRING",
+    "name": "last_reported_adjust_network"
+  },
+  {
+    "type": "STRING",
+    "name": "last_reported_adjust_creative"
+  },
+  {
+    "type": "STRING",
+    "name": "last_reported_adjust_ad_group"
+  },
+  {
+    "type": "STRING",
+    "name": "last_reported_adjust_campaign"
   }
 ]

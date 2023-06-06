@@ -19,8 +19,6 @@ Derived tables built on Adjust data.
 #### Owner
 
 rbaffourawuah@mozilla.com
-
-modified by: mhirose@mozilla.com
 """
 
 
@@ -28,11 +26,7 @@ default_args = {
     "owner": "rbaffourawuah@mozilla.com",
     "start_date": datetime.datetime(2023, 4, 25, 0, 0),
     "end_date": None,
-    "email": [
-        "telemetry-alerts@mozilla.com",
-        "rbaffourawuah@mozilla.com",
-        "mhirose@mozilla.com",
-    ],
+    "email": ["telemetry-alerts@mozilla.com", "rbaffourawuah@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -49,17 +43,29 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    adjust_derived__adjust_derived__v1 = bigquery_etl_query(
-        task_id="adjust_derived__firefox_mobile_installs__v1",
-        destination_table="mhirose_adjust_derived",
-        dataset_id="analysis",
-        project_id="moz-fx-data-shared-prod",
-        owner="rbaffourawuah@mozilla.com",
+    adjust_derived__adjust_derived__v1 = gke_command(
+        task_id="adjust_derived__adjust_derived__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/adjust_derived/adjust_derived_v1/query.py",
+        ]
+        + [],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="mhirose@mozilla.com",
         email=[
+            "mhirose@mozilla.com",
             "rbaffourawuah@mozilla.com",
             "telemetry-alerts@mozilla.com",
-            "mhirose@mozilla.com",
         ],
+    )
+
+    adjust_derived__firefox_mobile_installs__v1 = bigquery_etl_query(
+        task_id="adjust_derived__firefox_mobile_installs__v1",
+        destination_table="firefox_mobile_installs_v1",
+        dataset_id="adjust_derived",
+        project_id="moz-fx-data-marketing-prod",
+        owner="rbaffourawuah@mozilla.com",
+        email=["rbaffourawuah@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,

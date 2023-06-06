@@ -58,5 +58,11 @@ fields:
   name: device_type
   type: STRING
 - mode: NULLABLE
+  name: store
+  type: STRING
+- mode: NULLABLE
+  name: activity_type
+  type: STRING
+- mode: NULLABLE
   name: submission_date
   type: DATE

@@ -27,6 +27,11 @@ WITH base AS (
           )
       ) AS jsonPayload
     )
+  -- this query is still "using" sharded instead of partitioned source table
+  -- as it is no longer active and currently kept for "archiving" reasons.
+  --
+  -- TODO: we should check if we can just delete this query file, and
+  -- only keep the table itself.
   FROM
     `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_oauth_20*`
   WHERE

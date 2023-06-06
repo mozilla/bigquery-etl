@@ -22,8 +22,8 @@ parser.add_argument("--date", required=True)  # expect string with format yyyy-m
 parser.add_argument("--project", default="moz-fx-data-shared-prod ")
 parser.add_argument("--bucket", default="moz-fx-data-prod-external-adjust-data")
 parser.add_argument("--prefix", default="")
-parser.add_argument("--dataset", default="adjust")
-parser.add_argument("--table", default="adjust_raw_v1")
+parser.add_argument("--dataset", default="analysis")
+parser.add_argument("--table", default="mhirose_adjust_derived_v1")
 
 
 def main():

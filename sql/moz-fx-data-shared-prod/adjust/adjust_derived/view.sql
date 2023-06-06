@@ -1,6 +1,6 @@
 CREATE OR REPLACE VIEW
-    `moz-fx-data-shared-prod.adjust.table_name`
+    `moz-fx-data-shared-prod.analysis.adjust_derived_v1`
 AS
 SELECT
     *
-FROM `moz-fx-data-shared-prod.analysis.mhirose_adjust_derived_v1_v1`
+FROM `moz-fx-data-shared-prod.analysis.mhirose_adjust_derived_raw`

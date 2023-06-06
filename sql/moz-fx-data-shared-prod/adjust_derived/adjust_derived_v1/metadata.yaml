@@ -7,7 +7,7 @@ owners:
 labels:
   incremental: false
 scheduling:
-  dag_name: adjust_derived
+  dag_name: bqetl_adjust_derived
   date_partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
 bigquery:

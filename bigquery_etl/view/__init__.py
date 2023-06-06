@@ -353,6 +353,12 @@ class View:
                     print(f"Could not update field descriptions for {target_view}: {e}")
 
                 table = client.get_table(target_view)
+                if not self.metadata:
+                    return
+
+                table.description = self.metadata.description
+                table.friendly_name = self.metadata.friendly_name
+
                 if table.labels != self.labels:
                     labels = self.labels.copy()
                     for key in table.labels:

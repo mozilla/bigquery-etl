@@ -1,4 +1,5 @@
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import pytest
 from click.testing import CliRunner
@@ -87,3 +88,20 @@ class TestView:
             view.path.write_text("SELECT 1")
             assert view.is_valid() is False
             assert view.publish() is False
+
+    @patch("google.cloud.bigquery.Client", autospec=True)
+    def test_publish_valid_view(self, mock_bigquery_client):
+        mock_client = MagicMock()
+        mock_bigquery_client.return_value = mock_client
+        view = View.from_file(
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "test"
+            / "view_with_metadata"
+            / "view.sql"
+        )
+
+        assert view.is_valid()
+        assert view.publish()

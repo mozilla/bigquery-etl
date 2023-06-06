@@ -47,6 +47,10 @@ fields:
   mode: NULLABLE
   name: app_version
   type: STRING
+- description: Client locale.
+  mode: NULLABLE
+  name: locale
+  type: STRING
 - description: Determines if a client is activated based on the activation metric
     and a 7 day lag.
   mode: NULLABLE
@@ -63,6 +67,42 @@ fields:
 - description: Structure parameter for the creative content of a campaign.
   mode: NULLABLE
   name: adjust_creative
+  type: STRING
+- description: Last reported campaign name.
+  mode: NULLABLE
+  name: last_reported_adjust_campaign
+  type: STRING
+- description: Last reported campaign ad group.
+  mode: NULLABLE
+  name: last_reported_adjust_ad_group
+  type: STRING
+- description: Last reported campaign name.
+  mode: NULLABLE
+  name: last_reported_adjust_creative
+  type: STRING
+- description: Last reported client campaign network.
+  mode: NULLABLE
+  name: last_reported_adjust_network
+  type: STRING
+- description: Last date client seen.
+  mode: NULLABLE
+  name: last_reported_date
+  type: DATE
+- description: Last reported client country.
+  mode: NULLABLE
+  name: last_reported_country
+  type: STRING
+- description: Last reported client device model.
+  mode: NULLABLE
+  name: last_reported_device_model
+  type: STRING
+- description: Last reported client device manufacturer.
+  mode: NULLABLE
+  name: last_reported_device_manufacturer
+  type: STRING
+- description: Last reported client locale.
+  mode: NULLABLE
+  name: last_reported_locale
   type: STRING
 - fields:
   - description: True if the client ever reported a first_session ping.
@@ -105,46 +145,6 @@ fields:
   mode: NULLABLE
   name: metadata
   type: RECORD
-- description: Client locale.
-  mode: NULLABLE
-  name: locale
-  type: STRING
-- description: Last reported client locale.
-  mode: NULLABLE
-  name: last_reported_locale
-  type: STRING
-- description: Last reported client device manufacturer.
-  mode: NULLABLE
-  name: last_reported_device_manufacturer
-  type: STRING
-- description: Last reported client device model.
-  mode: NULLABLE
-  name: last_reported_device_model
-  type: STRING
-- description: Last reported client country.
-  mode: NULLABLE
-  name: last_reported_country
-  type: STRING
-- description: Last date client seen.
-  mode: NULLABLE
-  name: last_reported_date
-  type: DATE
-- description: Last reported client campaign network.
-  mode: NULLABLE
-  name: last_reported_adjust_network
-  type: STRING
-- description: Last reported campaign name.
-  mode: NULLABLE
-  name: last_reported_adjust_creative
-  type: STRING
-- description: Last reported campaign ad group.
-  mode: NULLABLE
-  name: last_reported_adjust_ad_group
-  type: STRING
-- description: Last reported campaign name.
-  mode: NULLABLE
-  name: last_reported_adjust_campaign
-  type: STRING
 - description: Structure parameter for the network of a campaign.
   mode: NULLABLE
   name: adjust_network

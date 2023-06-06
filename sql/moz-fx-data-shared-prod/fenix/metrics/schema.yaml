@@ -508,6 +508,9 @@ fields:
     - mode: NULLABLE
       name: dotprint_android_dialog_requested
       type: INTEGER
+    - mode: NULLABLE
+      name: translations_requests_count
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -7183,6 +7186,16 @@ fields:
         type: INTEGER
       mode: NULLABLE
       name: rtcrtpsender_used_sendencodings
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: denominator
+        type: INTEGER
+      - mode: NULLABLE
+        name: numerator
+        type: INTEGER
+      mode: NULLABLE
+      name: translations_error_rate
       type: RECORD
     mode: NULLABLE
     name: rate

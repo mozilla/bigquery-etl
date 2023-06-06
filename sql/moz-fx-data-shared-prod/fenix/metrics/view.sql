@@ -294,7 +294,8 @@ SELECT
       metrics.counter.glean_upload_in_flight_pings_dropped,
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.dotprint_requested,
-      metrics.counter.dotprint_android_dialog_requested
+      metrics.counter.dotprint_android_dialog_requested,
+      metrics.counter.translations_requests_count
     ) AS counter,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -746,7 +747,8 @@ SELECT
       metrics.counter.glean_upload_in_flight_pings_dropped,
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.dotprint_requested,
-      metrics.counter.dotprint_android_dialog_requested
+      metrics.counter.dotprint_android_dialog_requested,
+      metrics.counter.translations_requests_count
     ) AS counter,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,

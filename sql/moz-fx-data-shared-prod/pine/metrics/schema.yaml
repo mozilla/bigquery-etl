@@ -514,6 +514,12 @@ fields:
       mode: NULLABLE
       name: messaging_system_glean_ping_for_ping_failures
       type: INTEGER
+    - description: 'The count of translation requests.
+
+        '
+      mode: NULLABLE
+      name: translations_requests_count
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -3190,6 +3196,19 @@ fields:
         type: INTEGER
       mode: NULLABLE
       name: rtcrtpsender_used_sendencodings
+      type: RECORD
+    - description: 'The rate of failed translations requests.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: denominator
+        type: INTEGER
+      - mode: NULLABLE
+        name: numerator
+        type: INTEGER
+      mode: NULLABLE
+      name: translations_error_rate
       type: RECORD
     mode: NULLABLE
     name: rate

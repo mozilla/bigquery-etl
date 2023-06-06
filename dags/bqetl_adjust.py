@@ -43,7 +43,7 @@ default_args = {
 tags = ["impact/tier_2", "repo/bigquery-etl"]
 
 with DAG(
-    "bqetl_adjust_derived",
+    "bqetl_adjust",
     default_args=default_args,
     schedule_interval="0 4 * * *",
     doc_md=docs,

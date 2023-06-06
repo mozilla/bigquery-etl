@@ -92,8 +92,6 @@ metrics_windowed AS (
   FROM
     metrics_unioned,
     UNNEST(metrics)
-  WHERE
-    TRUE
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY channel, metric_name) = 1
 ),
@@ -187,8 +185,6 @@ baseline_windowed AS (
   FROM
     baseline_unioned,
     UNNEST(metrics)
-  WHERE
-    TRUE
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY channel, metric_name) = 1
 ),
@@ -285,8 +281,6 @@ windowed AS (
   FROM
     unioned,
     UNNEST(metrics)
-  WHERE
-    TRUE
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY channel, metric_name) = 1
 )

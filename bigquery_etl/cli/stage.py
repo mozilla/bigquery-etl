@@ -296,22 +296,33 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
         original_project = artifact_file.parent.parent.parent.name
         deployed_project = project_id
 
-        # replace partially qualified references (like "telemetry.main")
-        replace_references.append(
+        # Replace references, preserving fully quoted references.
+        replace_references += [
+            # partially qualified references (like "telemetry.main")
+            (
+                re.compile(rf"(?<![\._])`{original_dataset}\.{name_pattern}`"),
+                f"`{deployed_project}.{deployed_dataset}.{name}`",
+            ),
             (
                 re.compile(
                     rf"(?<![\._])`?{original_dataset}`?\.`?{name_pattern}(?![a-zA-Z0-9_])`?"
                 ),
-                f"`{deployed_project}.{deployed_dataset}.{name}`",
-            )
-        )
-        # replace fully qualified references (like "moz-fx-data-shared-prod.telemetry.main")
-        replace_references.append(
+                f"`{deployed_project}`.`{deployed_dataset}`.`{name}`",
+            ),
+            # fully qualified references (like "moz-fx-data-shared-prod.telemetry.main")
             (
-                rf"(?<![a-zA-Z0-9_])`?{original_project}`?\.`?{original_dataset}`?\.`?{name_pattern}(?![a-zA-Z0-9_])`?",
+                re.compile(
+                    rf"`{original_project}\.{original_dataset}\.{name_pattern}`"
+                ),
                 f"`{deployed_project}.{deployed_dataset}.{name}`",
-            )
-        )
+            ),
+            (
+                re.compile(
+                    rf"(?<![a-zA-Z0-9_])`?{original_project}`?\.`?{original_dataset}`?\.`?{name_pattern}(?![a-zA-Z0-9_])`?"
+                ),
+                f"`{deployed_project}`.`{deployed_dataset}`.`{name}`",
+            ),
+        ]
 
     for path in Path(sql_dir).rglob("*.sql"):
         # apply substitutions

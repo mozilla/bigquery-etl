@@ -1,12 +1,36 @@
 {{ header }}
+WITH extracted AS (
+  SELECT
+    client_id,
+    channel,
+    app_version
+  FROM
+    {{ source_table }}
+  WHERE
+    submission_date
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 28 DAY)
+    AND @submission_date
+    AND channel IS NOT NULL
+),
+transformed AS (
+  SELECT
+    channel,
+    app_version
+  FROM
+    extracted
+  GROUP BY
+    channel,
+    app_version
+  HAVING
+    COUNT(DISTINCT client_id) > 5
+  ORDER BY
+    channel,
+    app_version DESC
+)
 SELECT
-  build.`target`.channel AS channel,
-  MAX(mozfun.norm.extract_version(build.`target`.version,
-  'major')) AS latest_version
+  channel,
+  MAX(app_version) AS latest_version
 FROM
-  `moz-fx-data-shared-prod.telemetry.buildhub2`
-WHERE
-  build.`source`.product = "firefox"
-  AND    build.`target`.channel = {{ app_id_channel }}
+  transformed
 GROUP BY
-  build.`target`.channel
+  channel

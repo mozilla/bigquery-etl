@@ -3,4 +3,4 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
     *
-FROM `moz-fx-data-shared-prod.adjust_derived.table_name_v1`
+FROM `moz-fx-data-shared-prod.analysis.mhirose_adjust_derived_v1_v1`

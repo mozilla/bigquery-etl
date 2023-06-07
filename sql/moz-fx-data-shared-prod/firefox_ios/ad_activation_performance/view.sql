@@ -1,3 +1,6 @@
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.firefox_ios.ad_activation_performance`
+AS
 WITH client_activation_per_campaign AS (
   SELECT
     first_seen_date,

@@ -3,8 +3,11 @@
 import fnmatch
 import os
 import re
+import sys
+from collections import defaultdict
 from fnmatch import fnmatchcase
 from pathlib import Path
+from typing import List, Tuple
 
 import click
 from google.auth.exceptions import DefaultCredentialsError
@@ -12,9 +15,14 @@ from google.cloud import bigquery
 
 from bigquery_etl.util.common import TempDatasetReference, project_dirs
 
+from ..backfill.parse import BACKFILL_FILE, Backfill
+
 QUERY_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
     r"(?:query\.sql|part1\.sql|script\.sql|query\.py|view\.sql|metadata\.yaml|backfill\.yaml)$"
+)
+QUALIFIED_TABLE_NAME_RE = re.compile(
+    r"(?P<project_id>[a-zA-z0-9_-]+)\.(?P<dataset_id>[a-zA-z0-9_-]+)\.(?P<table_id>[a-zA-z0-9_-]+)"
 )
 TEST_PROJECT = "bigquery-etl-integration-test"
 MOZDATA = "mozdata"
@@ -118,6 +126,56 @@ def paths_matching_name_pattern(pattern, sql_path, project_id, files=["*.sql"]):
         print(f"No files matching: {pattern}")
 
     return matching_files
+
+
+def qualified_table_name_matching(qualified_table_name) -> Tuple[str, str, str]:
+    """Match qualified table name pattern."""
+    if match := QUALIFIED_TABLE_NAME_RE.match(qualified_table_name):
+        project_id = match.group("project_id")
+        dataset_id = match.group("dataset_id")
+        table_id = match.group("table_id")
+    else:
+        raise AttributeError(
+            "Qualified table name must be named like:" + " <project>.<dataset>.<table>"
+        )
+
+    return (project_id, dataset_id, table_id)
+
+
+def backfills_matching_name_pattern(
+    sql_dir, project_id, qualified_table_name
+) -> defaultdict[Path, List[Backfill]]:
+    """Return backfills with name pattern."""
+    backfills_dict = defaultdict(list)
+
+    table_id = None
+
+    if qualified_table_name:
+        try:
+            (project_id, dataset_id, table_id) = qualified_table_name_matching(
+                qualified_table_name
+            )
+
+            path = Path(sql_dir)
+            query_path = path / project_id / dataset_id / table_id
+
+            if not query_path.exists():
+                click.echo(f"{project_id}.{dataset_id}.{table_id}" + " does not exist")
+                sys.exit(1)
+
+        except AttributeError as e:
+            click.echo(e)
+            sys.exit(1)
+
+    backfill_files = paths_matching_name_pattern(
+        table_id, sql_dir, project_id, [BACKFILL_FILE]
+    )
+
+    for file in backfill_files:
+        backfills = Backfill.entries_from_file(file)
+        backfills_dict[file].extend(backfills)
+
+    return backfills_dict
 
 
 sql_dir_option = click.option(

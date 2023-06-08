@@ -16,9 +16,10 @@ WITH baseline_clients AS (
     locale,
     is_new_profile,
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox.baseline_clients_daily`
+    `moz-fx-data-shared-prod.fenix.baseline_clients_daily`
   WHERE
     submission_date = @submission_date
+    AND normalized_channel = 'release'
 ),
 first_seen AS (
   SELECT

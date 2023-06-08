@@ -250,7 +250,8 @@ def validate(
 @project_id_option("moz-fx-data-shared-prod")
 @click.option(
     "--status",
-    help="Status of backfill: " + ", ".join([s.value for s in BackfillStatus]),
+    type=click.Choice([s.value for s in BackfillStatus])
+    help="Filter to backfills with this status."
     default="all",
 )
 @click.pass_context

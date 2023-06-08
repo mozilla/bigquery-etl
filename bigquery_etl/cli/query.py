@@ -14,7 +14,6 @@ from functools import partial
 from graphlib import TopologicalSorter
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
-from subprocess import CalledProcessError
 from tempfile import NamedTemporaryFile
 from traceback import print_exc
 
@@ -29,7 +28,6 @@ from ..cli.utils import (
     is_authenticated,
     is_valid_project,
     no_dryrun_option,
-    paths_matching_checks_pattern,
     paths_matching_name_pattern,
     project_id_option,
     respect_dryrun_skip_option,
@@ -1300,116 +1298,6 @@ def _parse_check_output(output: str) -> str:
     if "ETL Data Check Failed:" in output:
         return f"ETL Data Check Failed:{output.split('ETL Data Check Failed:')[1]}"
     return output
-
-
-@query.command(
-    help="""
-    \b
-    UNDER ACTIVE DEVELOPMENT See https://mozilla-hub.atlassian.net/browse/DENG-919
-
-    Run ETL checks.
-    \b
-
-    Example:
-
-     ./bqetl query check ga_derived.downloads_with_attribution_v2 --partition download_date::2023-05-01
-    """,
-    context_settings=dict(
-        ignore_unknown_options=True,
-        allow_extra_args=True,
-    ),
-)
-@click.argument("name")
-@sql_dir_option
-@click.option(
-    "--partition",
-    "-p",
-    help="Partition to check, format <column-name>::<yyy-mm-dd>, must be provided if not executing in Airflow ",
-    type=click.UNPROCESSED,
-    callback=_validate_partition_date,
-    required=False,
-)
-@click.pass_context
-def check(ctx, name, sql_dir, partition):
-    """Run a check."""
-    if not is_authenticated():
-        click.echo(
-            "Authentication to GCP required. Run `gcloud auth login` "
-            "and check that the project is set correctly."
-        )
-        sys.exit(1)
-
-    checks_file, project_id, dataset_id, table = paths_matching_checks_pattern(
-        name, sql_dir, project_id=None
-    )
-
-    _check_query(
-        checks_file,
-        project_id,
-        dataset_id,
-        table,
-        partition,
-        ctx.args,
-    )
-
-
-def _check_query(
-    checks_file,
-    project_id,
-    dataset_id,
-    table,
-    partition,
-    query_arguments,
-):
-    """Run the check."""
-    query_arguments.append("--use_legacy_sql=false")
-    if project_id is not None:
-        query_arguments.append(f"--project_id={project_id}")
-
-    # Partition will be None if from Airflow
-    if partition is None:
-        # Need to check the query_arguments for the value
-        for parameter in query_arguments:
-            if parameter.startswith("--parameter"):
-                param_value = parameter.split("=")[1]
-                partition = _parse_partition_setting(param_value)
-                # once we have a value that passed the date check stop checking.
-                if partition is not None:
-                    break
-    else:
-        # We have a partition value from the CLI so add to the query_arguments.
-        # There should only be 1
-        key, value = next(iter(partition.items()))
-        query_arguments.append(f"--parameter={key}::{value}")
-
-    if partition is None:
-        raise ValueError("No partition specified to check.")
-
-    jinja_params = {
-        **{"project_id": project_id, "dataset_id": dataset_id, "table_name": table},
-        **partition,
-    }
-
-    with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
-        query_stream.write(
-            render_template(
-                checks_file.name,
-                template_folder=str(checks_file.parent),
-                templates_dir="",
-                format=False,
-                **jinja_params,
-            )
-        )
-        query_stream.seek(0)
-
-        # run the query as shell command so that passed parameters can be used as is
-        try:
-            subprocess.check_output(
-                ["bq", "query"] + query_arguments, stdin=query_stream, encoding="UTF-8"
-            )
-        except CalledProcessError as e:
-            print(_parse_check_output(e.output))
-            sys.exit(1)
 
 
 @query.group(help="Commands for managing query schemas.")

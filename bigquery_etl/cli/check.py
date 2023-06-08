@@ -52,16 +52,6 @@ def _build_parameters(ctx=None, param=None, parameters=None):
                 f"parameter: {param} is not a valid parameter.  Please use format: <param-name>::<param-value>, exiting"
             )
 
-        # If the param value smells like a date then check if it is a valid date.
-        if re.match(r"^[0-9-]+$", params[2]):
-            try:
-                datetime.datetime.strptime(params[2], "%Y-%m-%d").date()
-                detected_partition = True
-                print(f"Found date parameter:  {param}")
-            except ValueError:
-                raise ValueError(
-                    f"parameter: {params[0]} with value: {params[2]} is not a valid date, exiting."
-                )
 
         # Check column name
         if re.match(r"^\w+$", params[0]):

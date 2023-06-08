@@ -1,0 +1,15 @@
+[
+  {
+    "type": "STRING",
+    "name": "client_id"
+  },
+  {
+    "type": "INTEGER",
+    "name": "sample_id"
+  },
+  {
+    "type": "TIMESTAMP",
+    "name": "submission_timestamp",
+    "mode": "REQUIRED"
+  }
+]

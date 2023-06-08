@@ -1,26 +1,18 @@
 ---
-friendly_name: FxA Users Services First Seen
-description: Usage aggregations describing when each FxA user was first seen
+friendly_name: FxA Users Services First Seen (deprecated)
+description: |
+  This version of the table has been deprecated, firefox_accounts_derived.fxa_users_services_first_seen_v2
+  should be used instead.
+
+  Original description:
+  Usage aggregations describing when each FxA user was first seen
 owners:
   - dthorn@mozilla.com
 labels:
   application: fxa
   incremental: true
   schedule: daily
-# # Descheduled. Last run was 2021-01-23.
-# # See https://github.com/mozilla/bigquery-etl/issues/1713
-# scheduling:
-#   dag_name: bqetl_fxa_events
-#   # We completely recreate this table every day;
-#   # making it incremental is possible but nuanced since it windows over
-#   # events that may cross the midnight boundary.
-#   date_partition_parameter: null
-bigquery:
-  time_partitioning:
-    type: day
-    field: first_service_timestamp
-    require_partition_filter: false
-  clustering:
-    fields:
-      - service
-      - user_id
+  status: deprecated  # would this be a good way to also propegate this information to BQ and the data catalog?
+# Deprecated on 2023-06-08
+# Descheduled, last run was on 2021-01-23.
+# See https://github.com/mozilla/bigquery-etl/issues/1713

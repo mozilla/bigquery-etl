@@ -16,17 +16,13 @@ from ..backfill.parse import (
     Backfill,
     BackfillStatus,
 )
+from ..backfill.utils import get_backfill_file_to_entries_map
 from ..backfill.validate import (
     validate_duplicate_entry_dates,
     validate_file,
     validate_overlap_dates,
 )
-from ..cli.utils import (
-    backfills_matching_name_pattern,
-    paths_matching_name_pattern,
-    project_id_option,
-    sql_dir_option,
-)
+from ..cli.utils import paths_matching_name_pattern, project_id_option, sql_dir_option
 from ..util import extract_from_query_path
 
 QUALIFIED_TABLE_NAME_RE = re.compile(
@@ -251,13 +247,13 @@ def validate(
 @click.option(
     "--status",
     type=click.Choice([s.value.lower() for s in BackfillStatus]),
-    help="Filter to backfills with this status.",
+    help="Filter backfills with this status.",
     default=None,
 )
 @click.pass_context
 def info(ctx, qualified_table_name, sql_dir, project_id, status):
     """Return backfill(s) information from all or specific table(s)."""
-    backfills = backfills_matching_name_pattern(
+    backfills = get_backfill_file_to_entries_map(
         sql_dir, project_id, qualified_table_name
     )
 

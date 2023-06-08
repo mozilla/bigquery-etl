@@ -173,7 +173,8 @@ def backfills_matching_name_pattern(
 
     for file in backfill_files:
         backfills = Backfill.entries_from_file(file)
-        backfills_dict[file].extend(backfills)
+        if backfills:
+            backfills_dict[file].extend(backfills)
 
     return backfills_dict
 

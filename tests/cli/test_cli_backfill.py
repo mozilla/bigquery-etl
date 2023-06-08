@@ -783,7 +783,7 @@ class TestBackfill:
 
             result = runner.invoke(
                 info,
-                [qualified_table_name, "--status=Drafting"],
+                [qualified_table_name, "--status=drafting"],
             )
 
             assert result.exit_code == 0
@@ -912,3 +912,31 @@ class TestBackfill:
 
             assert result.exit_code == 1
             assert "Qualified table name must be named like:" in result.output
+
+    def test_backfill_info_one_table_invalid_status(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+            qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+            backfill_file.write_text(
+                BACKFILL_YAML_TEMPLATE + "\n"
+                "2021-05-03:\n"
+                "  start_date: 2021-01-03\n"
+                "  end_date: 2021-05-03\n"
+                "  reason: test_reason\n"
+                "  watchers:\n"
+                "  - test@example.org\n"
+                "  status: Validating\n"
+            )
+
+            assert BACKFILL_FILE in os.listdir(SQL_DIR)
+
+            result = runner.invoke(
+                info,
+                [qualified_table_name, "--status=testing"],
+            )
+
+            assert result.exit_code == 2
+            assert "Invalid value for '--status'" in result.output

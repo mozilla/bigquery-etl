@@ -250,9 +250,9 @@ def validate(
 @project_id_option("moz-fx-data-shared-prod")
 @click.option(
     "--status",
-    type=click.Choice([s.value for s in BackfillStatus])
-    help="Filter to backfills with this status."
-    default="all",
+    type=click.Choice([s.value.lower() for s in BackfillStatus]),
+    help="Filter to backfills with this status.",
+    default=None,
 )
 @click.pass_context
 def info(ctx, qualified_table_name, sql_dir, project_id, status):
@@ -264,38 +264,43 @@ def info(ctx, qualified_table_name, sql_dir, project_id, status):
     total_backfills_count = 0
 
     for file, entries in backfills.items():
-        if status != "all":
+        if status is None:
+            status_str = "all"
+        else:
             entries = [e for e in entries if e.status.value.lower() == status.lower()]
+            status_str = status
 
         entries_count = len(entries)
-        total_backfills_count += entries_count
 
-        project, dataset, table = extract_from_query_path(file)
+        if entries_count:
+            total_backfills_count += entries_count
 
-        click.echo(
-            f"""
-            \n\n{project}.{dataset}.{table} has {entries_count} backfill(s) with {status} status:
-        """
-        )
+            project, dataset, table = extract_from_query_path(file)
 
-        for entry in entries:
-            backfill_str = f"""
-                entry_date = {entry.entry_date}
-                start_date = {entry.start_date}
-                end_date = {entry.end_date}
-                """.rstrip()
+            click.echo(
+                f"""
+                \n\n{project}.{dataset}.{table} has {entries_count} backfill(s) with {status_str} status:
+            """
+            )
 
-            if entry.excluded_dates:
+            for entry in entries:
+                backfill_str = f"""
+                    entry_date = {entry.entry_date}
+                    start_date = {entry.start_date}
+                    end_date = {entry.end_date}
+                    """.rstrip()
+
+                if entry.excluded_dates:
+                    backfill_str += f"""
+                    excluded_dates = {entry.excluded_dates}
+                    """.rstrip()
+
                 backfill_str += f"""
-                excluded_dates = {entry.excluded_dates}
-                """.rstrip()
+                    reason = {entry.reason}
+                    watcher(s) = {entry.watchers}
+                    status = {entry.status.value}
+                    """
 
-            backfill_str += f"""
-                reason = {entry.reason}
-                watcher(s) = {entry.watchers}
-                status = {entry.status.value}
-                """
-
-            click.echo(backfill_str)
+                click.echo(backfill_str)
 
     click.echo(f"\nThere are a total of {total_backfills_count} backfill(s)")

@@ -284,23 +284,6 @@ def info(ctx, qualified_table_name, sql_dir, project_id, status):
             )
 
             for entry in entries:
-                backfill_str = f"""
-                    entry_date = {entry.entry_date}
-                    start_date = {entry.start_date}
-                    end_date = {entry.end_date}
-                    """.rstrip()
-
-                if entry.excluded_dates:
-                    backfill_str += f"""
-                    excluded_dates = {entry.excluded_dates}
-                    """.rstrip()
-
-                backfill_str += f"""
-                    reason = {entry.reason}
-                    watcher(s) = {entry.watchers}
-                    status = {entry.status.value}
-                    """
-
-                click.echo(backfill_str)
+                click.echo(str(entry))
 
     click.echo(f"\nThere are a total of {total_backfills_count} backfill(s)")

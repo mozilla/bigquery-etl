@@ -189,7 +189,7 @@ SELECT
   JSON_VALUE(event_properties, "$.subscription_id") AS subscription_id,
   JSON_VALUE(event_properties, "$.plan_id") AS plan_id,
   JSON_VALUE(event_properties, "$.previous_plan_id") AS previous_plan_id,
-  SPLIT(JSON_VALUE(event_properties, "$.subscribed_plan_ids")) AS subscribed_plan_ids,
+  JSON_VALUE(event_properties, "$.subscribed_plan_ids") AS subscribed_plan_ids,
   JSON_VALUE(event_properties, "$.product_id") AS product_id,
   JSON_VALUE(event_properties, "$.previous_product_id") AS previous_product_id,
   -- `promotionCode` was renamed `promotion_code` in stdout logs.

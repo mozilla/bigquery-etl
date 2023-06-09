@@ -6,7 +6,7 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
 AS
-WITH fxa_auth_events AS (
+WITH auth_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
@@ -23,12 +23,13 @@ WITH fxa_auth_events AS (
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     jsonPayload.fields.device_id,
+    "auth" AS fxa_log,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_auth_events_v1`
 ),
   -- This table doesn't include any user events that are considered "active",
   -- but should always be included for a complete raw event log.
-fxa_auth_bounce_events AS (
+auth_bounce_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
@@ -47,10 +48,11 @@ fxa_auth_bounce_events AS (
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     CAST(NULL AS STRING) AS device_id,
+    "auth_bounce" AS fxa_log,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_auth_bounce_events_v1`
 ),
-fxa_content_events AS (
+content_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
@@ -67,11 +69,12 @@ fxa_content_events AS (
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     jsonPayload.fields.device_id,
+    "content" AS fxa_log,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_content_events_v1`
 ),
 -- oauth events, see the note on top
-fxa_oauth_events AS (
+oauth_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
@@ -88,10 +91,11 @@ fxa_oauth_events AS (
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     CAST(NULL AS STRING) AS device_id,
+    "oauth" AS fxa_log,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_oauth_events_v1`
 ),
-fxa_stdout_events AS (
+stdout_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
@@ -108,40 +112,61 @@ fxa_stdout_events AS (
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     jsonPayload.fields.device_id,
+    "stdout" AS fxa_log,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_stdout_events_v1`
 ),
+-- New fxa event table (prod) includes, content and auth events
+server_events AS (
+  SELECT
+    `timestamp`,
+    receiveTimestamp,
+    jsonPayload.fields.user_id,
+    jsonPayload.fields.country,
+    jsonPayload.fields.language,
+    jsonPayload.fields.app_version,
+    jsonPayload.fields.os_name,
+    jsonPayload.fields.os_version,
+    jsonPayload.fields.event_type,
+    jsonPayload.logger,
+    jsonPayload.fields.user_properties,
+    jsonPayload.fields.event_properties,
+    jsonPayload.fields.device_id,
+    fxa_log,
+  FROM
+    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_server_events_v1`
+),
 unioned AS (
   SELECT
-    *,
-    'auth' AS fxa_log,
+    *
   FROM
-    fxa_auth_events
+    auth_events
   UNION ALL
   SELECT
-    *,
-    'auth_bounce' AS fxa_log,
+    *
   FROM
-    fxa_auth_bounce_events
+    auth_bounce_events
   UNION ALL
   SELECT
-    *,
-    'content' AS fxa_log,
+    *
   FROM
-    fxa_content_events
+    content_events
   UNION ALL
   -- oauth events, see the note on top
   SELECT
-    *,
-    'oauth' AS fxa_log,
+    *
   FROM
-    fxa_oauth_events
+    oauth_events
   UNION ALL
   SELECT
-    *,
-    'stdout' AS fxa_log,
+    *
   FROM
-    fxa_stdout_events
+    stdout_events
+  UNION ALL
+  SELECT
+    *
+  FROM
+    server_events
 )
 SELECT
   `timestamp`,

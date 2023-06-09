@@ -5,6 +5,7 @@ import os
 import re
 from fnmatch import fnmatchcase
 from pathlib import Path
+from typing import Tuple
 
 import click
 from google.auth.exceptions import DefaultCredentialsError
@@ -15,6 +16,9 @@ from bigquery_etl.util.common import TempDatasetReference, project_dirs
 QUERY_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
     r"(?:query\.sql|part1\.sql|script\.sql|query\.py|view\.sql|metadata\.yaml|backfill\.yaml)$"
+)
+QUALIFIED_TABLE_NAME_RE = re.compile(
+    r"(?P<project_id>[a-zA-z0-9_-]+)\.(?P<dataset_id>[a-zA-z0-9_-]+)\.(?P<table_id>[a-zA-z0-9_-]+)"
 )
 TEST_PROJECT = "bigquery-etl-integration-test"
 MOZDATA = "mozdata"
@@ -118,6 +122,20 @@ def paths_matching_name_pattern(pattern, sql_path, project_id, files=["*.sql"]):
         print(f"No files matching: {pattern}")
 
     return matching_files
+
+
+def qualified_table_name_matching(qualified_table_name) -> Tuple[str, str, str]:
+    """Match qualified table name pattern."""
+    if match := QUALIFIED_TABLE_NAME_RE.match(qualified_table_name):
+        project_id = match.group("project_id")
+        dataset_id = match.group("dataset_id")
+        table_id = match.group("table_id")
+    else:
+        raise AttributeError(
+            "Qualified table name must be named like:" + " <project>.<dataset>.<table>"
+        )
+
+    return (project_id, dataset_id, table_id)
 
 
 sql_dir_option = click.option(

@@ -51,5 +51,9 @@
   {
     "type": "STRING",
     "name": "locale"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "is_new_profile"
   }
 ]

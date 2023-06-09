@@ -1878,7 +1878,7 @@ def _deploy_external_data(
 
             if not table.created:
                 if metadata.external_data.format in (
-                    ExternalDataFormat.GOOGLE_SHEET,
+                    ExternalDataFormat.GOOGLE_SHEETS,
                     ExternalDataFormat.CSV,
                 ):
                     external_config = bigquery.ExternalConfig(

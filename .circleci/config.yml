@@ -151,6 +151,18 @@ jobs:
             echo $PATHS
             PATH="venv/bin:$PATH" script/bqetl dryrun --validate-schemas $PATHS
           # yamllint enable rule:line-length
+  validate-backfills:
+    docker: *docker
+    steps:
+      - checkout
+      - *restore_venv_cache
+      - *build
+      - *attach_generated_sql
+      - *copy_staged_sql
+      - run:
+          name: Verify that backfill.yaml files are valid
+          command: |
+            PATH="venv/bin:$PATH" script/bqetl backfill validate
   validate-metadata:
     docker: *docker
     steps:
@@ -360,8 +372,8 @@ jobs:
           name: Copy generated SQL to temporary stage directory
           command: |
             mkdir -p /tmp/workspace/staged-generated-sql
-            cp -r sql/ /tmp/workspace/staged-generated-sql
-            cp -r tests/ /tmp/workspace/staged-generated-sql
+            cp -r sql/ /tmp/workspace/staged-generated-sql/sql
+            cp -r tests/ /tmp/workspace/staged-generated-sql/tests
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -614,6 +626,9 @@ workflows:
           requires:
             - deploy-changes-to-stage
       - integration
+      - validate-backfills:
+          requires:
+            - deploy-changes-to-stage
       - validate-dags:
           requires:
             - generate-dags

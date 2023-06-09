@@ -1,0 +1,32 @@
+---
+friendly_name: FxA Server Events (prod)
+description: |
+  FxA server events extracted from accounts server stdout logs.
+  This new table is the direct result of FxA migration from AWS to GCP
+  (see: OPST-296 for more context).
+  Effective x (TODO: add a date here prior to merging) date the events from the following servers will land in this table:
+  - auth    (previous table: `fxa_auth_events_v1`)
+  - content (previous table: `fxa_content_events_v1`)
+  Payment server events will continue landing inside: `fxa_stdout_events_v1`
+owners:
+  - kik@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_fxa_events
+  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']  # after initing the table with one column this should just add all the other fields automatically
+bigquery:
+  time_partitioning:
+    type: day
+    field: timestamp
+    require_partition_filter: true
+  # cannot set clustering via this config file as no schema.yaml
+  # file due to how volatile the table schema can be.
+  # To mitigate this we create the table using the init.sql file
+  # which creates an empty table with the following fields and configuration:
+  # - timestamp TIMESTAMP - partition field
+  # - fxa_log STRING - cluster field
+  # the argument ALLOW_FIELD_ADDITION takes care of adding all the missing field
+  # as part of the ETL execution.

@@ -10,6 +10,7 @@ WITH fxa_auth_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
+    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS time,
     jsonPayload.fields.user_id,
     jsonPayload.fields.country,
     JSON_VALUE(jsonPayload.fields.event_properties, "$.country_code") AS country_code,
@@ -19,7 +20,6 @@ WITH fxa_auth_events AS (
     jsonPayload.fields.os_version,
     jsonPayload.fields.event_type,
     jsonPayload.logger,
-    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS time,
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     jsonPayload.fields.device_id,
@@ -32,6 +32,7 @@ fxa_auth_bounce_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
+    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS time,
     jsonPayload.fields.user_id,
     CAST(
       NULL AS STRING
@@ -43,7 +44,6 @@ fxa_auth_bounce_events AS (
     CAST(NULL AS STRING) AS os_version,
     jsonPayload.fields.event_type,
     jsonPayload.logger,
-    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS time,
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     CAST(NULL AS STRING) AS device_id,
@@ -54,6 +54,7 @@ fxa_content_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
+    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS time,
     jsonPayload.fields.user_id,
     jsonPayload.fields.country,
     CAST(NULL AS STRING) AS country_code,
@@ -63,7 +64,6 @@ fxa_content_events AS (
     jsonPayload.fields.os_version,
     jsonPayload.fields.event_type,
     jsonPayload.logger,
-    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS time,
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     jsonPayload.fields.device_id,
@@ -75,6 +75,7 @@ fxa_oauth_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
+    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS time,
     jsonPayload.fields.user_id,
     CAST(NULL AS STRING) AS country,
     CAST(NULL AS STRING) AS country_code,
@@ -84,7 +85,6 @@ fxa_oauth_events AS (
     CAST(NULL AS STRING) AS os_version,
     jsonPayload.fields.event_type,
     jsonPayload.logger,
-    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS time,
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     CAST(NULL AS STRING) AS device_id,
@@ -95,6 +95,7 @@ fxa_stdout_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
+    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS time,
     jsonPayload.fields.user_id,
     CAST(NULL AS STRING) AS country,
     jsonPayload.fields.country_code,
@@ -104,7 +105,6 @@ fxa_stdout_events AS (
     jsonPayload.fields.os_version,
     jsonPayload.fields.event_type,
     jsonPayload.logger,
-    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS time,
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     jsonPayload.fields.device_id,
@@ -146,6 +146,7 @@ unioned AS (
 SELECT
   `timestamp`,
   receiveTimestamp,
+  time,
   fxa_log,
   event_type,
   user_id,
@@ -156,7 +157,6 @@ SELECT
   app_version,
   os_name,
   os_version,
-  time,
   user_properties,
   event_properties,
   -- extract user properties

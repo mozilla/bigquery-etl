@@ -34,13 +34,13 @@ WITH content AS (
     jsonPayload.fields.country,
     CAST(NULL AS STRING) AS country_code,
     jsonPayload.fields.language,
-    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS time,
     jsonPayload.fields.user_id,
     jsonPayload.fields.device_id,
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     `timestamp`,
     receiveTimestamp,
+    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS time,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_content_events_v1`
 ),
@@ -55,13 +55,13 @@ auth AS (
     jsonPayload.fields.country,
     JSON_VALUE(jsonPayload.fields.event_properties, "$.country_code") AS country_code,
     jsonPayload.fields.language,
-    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS time,
     jsonPayload.fields.user_id,
     jsonPayload.fields.device_id,
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     `timestamp`,
     receiveTimestamp,
+    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS time,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_auth_events_v1`
 ),
@@ -76,13 +76,13 @@ stdout AS (
     CAST(NULL AS STRING) AS country,
     jsonPayload.fields.country_code,
     jsonPayload.fields.language,
-    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS time,
     jsonPayload.fields.user_id,
     jsonPayload.fields.device_id,
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     `timestamp`,
     receiveTimestamp,
+    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS time,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_stdout_events_v1`
 ),

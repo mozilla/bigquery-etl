@@ -22,7 +22,7 @@ from ..backfill.validate import (
     validate_file,
     validate_overlap_dates,
 )
-from ..cli.utils import paths_matching_name_pattern, project_id_option, sql_dir_option
+from ..cli.utils import project_id_option, qualified_table_name_matching, sql_dir_option
 from ..util import extract_from_query_path
 
 QUALIFIED_TABLE_NAME_RE = re.compile(
@@ -56,6 +56,7 @@ def backfill(ctx):
 )
 @click.argument("qualified_table_name")
 @sql_dir_option
+@project_id_option("moz-fx-data-shared-prod")
 @click.option(
     "--start_date",
     "--start-date",
@@ -91,6 +92,7 @@ def create(
     ctx,
     qualified_table_name,
     sql_dir,
+    project_id,
     start_date,
     end_date,
     exclude,
@@ -100,24 +102,9 @@ def create(
 
     A backfill.yaml file will be created if it does not already exist.
     """
-    try:
-        match = QUALIFIED_TABLE_NAME_RE.match(qualified_table_name)
-        project_id = match.group("project_id")
-        dataset_id = match.group("dataset_id")
-        table_id = match.group("table_id")
-    except AttributeError:
-        click.echo(
-            "Qualified table name must be named like:" + " <project>.<dataset>.<table>"
-        )
-        sys.exit(1)
-
-    path = Path(sql_dir)
-
-    query_path = path / project_id / dataset_id / table_id
-
-    if not query_path.exists():
-        click.echo(f"{project_id}.{dataset_id}.{table_id}" + " does not exist")
-        sys.exit(1)
+    backfills_dict = get_backfill_file_to_entries_map(
+        sql_dir, project_id, qualified_table_name
+    )
 
     backfill = Backfill(
         entry_date=date.today(),
@@ -131,14 +118,26 @@ def create(
 
     backfills = []
 
-    backfill_file = query_path / BACKFILL_FILE
+    if backfills_dict:
+        # There should only be one backfill file with entries
+        backfill_file = list(backfills_dict.keys())[0]
+        entries = backfills_dict[backfill_file]
 
-    if backfill_file.exists():
-        backfills = Backfill.entries_from_file(backfill_file)
-        for entry in backfills:
+        for entry in entries:
             validate_duplicate_entry_dates(backfill, entry)
             if entry.status == BackfillStatus.DRAFTING:
                 validate_overlap_dates(backfill, entry)
+
+        backfills = entries
+
+    else:
+        (project_id, dataset_id, table_id) = qualified_table_name_matching(
+            qualified_table_name
+        )
+
+        path = Path(sql_dir)
+        query_path = path / project_id / dataset_id / table_id
+        backfill_file = query_path / BACKFILL_FILE
 
     backfills.insert(0, backfill)
 
@@ -146,7 +145,7 @@ def create(
         "\n".join(backfill.to_yaml() for backfill in sorted(backfills, reverse=True))
     )
 
-    click.echo(f"Created backfill entry in {backfill_file}")
+    click.echo(f"Created backfill entry in {backfill_file}.")
 
 
 @backfill.command(
@@ -177,50 +176,24 @@ def validate(
     project_id,
 ):
     """Validate backfill.yaml files."""
-    backfill_files = []
+    backfills_dict = get_backfill_file_to_entries_map(
+        sql_dir, project_id, qualified_table_name
+    )
 
-    if qualified_table_name:
+    backfill_files = list(backfills_dict.keys())
+
+    for backfill_file in backfill_files:
         try:
-            match = QUALIFIED_TABLE_NAME_RE.match(qualified_table_name)
-            project_id = match.group("project_id")
-            dataset_id = match.group("dataset_id")
-            table_id = match.group("table_id")
-        except AttributeError:
-            click.echo(
-                "Qualified table name must be named like:"
-                + " <project>.<dataset>.<table>"
-            )
-            sys.exit(1)
-
-        path = Path(sql_dir)
-        query_path = path / project_id / dataset_id / table_id
-
-        if not query_path.exists():
-            click.echo(f"{project_id}.{dataset_id}.{table_id}" + " does not exist")
-            sys.exit(1)
-
-        backfill_file = path / project_id / dataset_id / table_id / BACKFILL_FILE
-        backfill_files.append(backfill_file)
-
-    else:
-        backfill_files = paths_matching_name_pattern(
-            None, sql_dir, project_id, [BACKFILL_FILE]
-        )
-
-    for file in backfill_files:
-        try:
-            validate_file(file)
+            validate_file(backfill_file)
         except (yaml.YAMLError, ValueError) as e:
-            click.echo(f"{file} contains the following error:\n {e}")
+            click.echo(f"{backfill_file} contains the following error:\n {e}")
             sys.exit(1)
 
     if qualified_table_name:
-        click.echo(
-            f"{BACKFILL_FILE} has been validated for {project_id}.{dataset_id}.{table_id} "
-        )
+        click.echo(f"{BACKFILL_FILE} has been validated for {qualified_table_name}.")
     elif backfill_files:
         click.echo(
-            f"All {BACKFILL_FILE} files have been validated for project {project_id}"
+            f"All {BACKFILL_FILE} files have been validated for project {project_id}."
         )
 
 
@@ -258,7 +231,7 @@ def info(ctx, qualified_table_name, sql_dir, project_id, status):
 
     total_backfills_count = 0
 
-    for file, entries in backfills.items():
+    for backfill_file, entries in backfills.items():
         if status is not None:
             entries = [e for e in entries if e.status.value.lower() == status.lower()]
 
@@ -267,7 +240,7 @@ def info(ctx, qualified_table_name, sql_dir, project_id, status):
         if entries_count:
             total_backfills_count += entries_count
 
-            project, dataset, table = extract_from_query_path(file)
+            project, dataset, table = extract_from_query_path(backfill_file)
 
             status_str = f" with {status} status" if status is not None else ""
             click.echo(
@@ -277,4 +250,4 @@ def info(ctx, qualified_table_name, sql_dir, project_id, status):
             for entry in entries:
                 click.echo(str(entry))
 
-    click.echo(f"\nThere are a total of {total_backfills_count} backfill(s)")
+    click.echo(f"\nThere are a total of {total_backfills_count} backfill(s).")

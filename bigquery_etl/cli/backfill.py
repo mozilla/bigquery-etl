@@ -220,6 +220,7 @@ def validate(
 @click.option(
     "--status",
     type=click.Choice([s.value.lower() for s in BackfillStatus]),
+    help="Filter backfills with this status.",
 )
 @click.pass_context
 def info(ctx, qualified_table_name, sql_dir, project_id, status):

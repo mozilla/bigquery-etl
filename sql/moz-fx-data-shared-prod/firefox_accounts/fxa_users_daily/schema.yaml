@@ -1,61 +1,64 @@
 fields:
-- description: 'Represents ETL job date.
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: 'Represents ETL job date.
 
     Also, used for table partitioning.
 
     '
+- name: user_id
+  type: STRING
   mode: NULLABLE
-  name: submission_date
-  type: DATE
-- description: 'A 36 char long hash value representing
+  description: 'A 36 char long hash value representing
 
     User ID (registered user).
 
     Also, used as a clustering field.
 
     '
-  mode: NULLABLE
-  name: user_id
+- name: country
   type: STRING
-- description: 'User''s country where activity took place.
+  mode: NULLABLE
+  description: 'User''s country where activity took place.
 
     See: UDF mozdata.stats.mode_last for more
 
     info on how the function operates.
 
     '
-  mode: NULLABLE
-  name: country
+- name: language
   type: STRING
-- description: 'User''s language.
+  mode: NULLABLE
+  description: 'User''s language.
 
     '
-  mode: NULLABLE
-  name: language
+- name: app_version
   type: STRING
-- description: 'Mozilla app version,
+  mode: NULLABLE
+  description: 'Mozilla app version,
 
     follows format: major.minor.patch (e.g. 99.3.3).
 
     '
-  mode: NULLABLE
-  name: app_version
+- name: os_name
   type: STRING
-- description: 'OS on which the app was running.
+  mode: NULLABLE
+  description: 'OS on which the app was running.
 
     For example: Android.
 
     '
-  mode: NULLABLE
-  name: os_name
+- name: os_version
   type: STRING
-- description: 'Version of the OS the device was using.
+  mode: NULLABLE
+  description: 'Version of the OS the device was using.
 
     '
+- name: seen_in_tier1_country
+  type: BOOLEAN
   mode: NULLABLE
-  name: os_version
-  type: STRING
-- description: 'Set to True if a user sent an event from
+  description: 'Set to True if a user sent an event from
 
     one of the following countries for
 
@@ -66,26 +69,23 @@ fields:
     ''Germany'',''United Kingdom'',''Canada'')
 
     '
-  mode: NULLABLE
-  name: seen_in_tier1_country
+- name: registered
   type: BOOLEAN
-- description: 'Set to True if the user submitted
+  mode: NULLABLE
+  description: 'Set to True if the user submitted
 
     the event_type of `fxa_reg - complete`
 
     event on the specific submission_date.
 
     '
-  mode: NULLABLE
-  name: registered
+- name: monitor_only
   type: BOOLEAN
-- description: 'Set to True if the user contains events of
+  mode: NULLABLE
+  description: 'Set to True if the user contains events of
 
     event_type `fxa_rp - engage` only
 
     for service `fx-monitor`.
 
     '
-  mode: NULLABLE
-  name: monitor_only
-  type: BOOLEAN

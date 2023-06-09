@@ -1,22 +1,22 @@
 fields:
-- mode: NULLABLE
-  name: name
+- name: name
   type: STRING
-- mode: NULLABLE
-  name: code
+  mode: NULLABLE
+- name: code
   type: STRING
-- mode: NULLABLE
-  name: region_name
+  mode: NULLABLE
+- name: region_name
   type: STRING
-- mode: NULLABLE
-  name: subregion_name
+  mode: NULLABLE
+- name: subregion_name
   type: STRING
-- mode: NULLABLE
-  name: intermediate_region_name
+  mode: NULLABLE
+- name: intermediate_region_name
   type: STRING
-- mode: NULLABLE
-  name: pocket_available_on_newtab
+  mode: NULLABLE
+- name: pocket_available_on_newtab
   type: BOOLEAN
-- mode: NULLABLE
-  name: mozilla_vpn_available
+  mode: NULLABLE
+- name: mozilla_vpn_available
   type: BOOLEAN
+  mode: NULLABLE

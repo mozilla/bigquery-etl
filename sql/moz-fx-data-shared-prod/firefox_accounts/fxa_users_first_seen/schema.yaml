@@ -1,10 +1,10 @@
 fields:
-- mode: NULLABLE
-  name: user_id
+- name: user_id
   type: STRING
-- mode: NULLABLE
-  name: first_seen_date
+  mode: NULLABLE
+- name: first_seen_date
   type: DATE
-- mode: REPEATED
-  name: services_used
+  mode: NULLABLE
+- name: services_used
   type: STRING
+  mode: REPEATED

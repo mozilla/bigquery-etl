@@ -1,25 +1,25 @@
 fields:
-- mode: NULLABLE
-  name: submission_date
+- name: submission_date
   type: DATE
-- mode: NULLABLE
-  name: impression_id
+  mode: NULLABLE
+- name: impression_id
   type: STRING
-- mode: NULLABLE
-  name: client_id
+  mode: NULLABLE
+- name: client_id
   type: STRING
-- mode: NULLABLE
-  name: seen_whats_new
+  mode: NULLABLE
+- name: seen_whats_new
   type: BOOLEAN
-- mode: NULLABLE
-  name: release_channel
+  mode: NULLABLE
+- name: release_channel
   type: STRING
-- mode: NULLABLE
-  name: locale
+  mode: NULLABLE
+- name: locale
   type: STRING
-- mode: NULLABLE
-  name: country
+  mode: NULLABLE
+- name: country
   type: STRING
-- mode: NULLABLE
-  name: version
+  mode: NULLABLE
+- name: version
   type: STRING
+  mode: NULLABLE

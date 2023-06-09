@@ -1,156 +1,156 @@
 fields:
-- mode: NULLABLE
-  name: submission_date
+- name: submission_date
   type: DATE
-- mode: NULLABLE
-  name: client_id
+  mode: NULLABLE
+- name: client_id
   type: STRING
-- mode: NULLABLE
-  name: sample_id
+  mode: NULLABLE
+- name: sample_id
   type: INTEGER
-- mode: NULLABLE
-  name: country
+  mode: NULLABLE
+- name: country
   type: STRING
-- mode: NULLABLE
-  name: app_version
+  mode: NULLABLE
+- name: app_version
   type: STRING
-- mode: NULLABLE
-  name: distribution_id
+  mode: NULLABLE
+- name: distribution_id
   type: STRING
-- mode: NULLABLE
-  name: locale
+  mode: NULLABLE
+- name: locale
   type: STRING
-- mode: NULLABLE
-  name: search_cohort
+  mode: NULLABLE
+- name: search_cohort
   type: STRING
-- mode: NULLABLE
-  name: addon_version
+  mode: NULLABLE
+- name: addon_version
   type: STRING
-- mode: NULLABLE
-  name: os
+  mode: NULLABLE
+- name: os
   type: STRING
-- mode: NULLABLE
-  name: channel
+  mode: NULLABLE
+- name: channel
   type: STRING
-- mode: NULLABLE
-  name: profile_creation_date
+  mode: NULLABLE
+- name: profile_creation_date
   type: INTEGER
-- mode: NULLABLE
-  name: default_search_engine
+  mode: NULLABLE
+- name: default_search_engine
   type: STRING
-- mode: NULLABLE
-  name: default_search_engine_data_load_path
+  mode: NULLABLE
+- name: default_search_engine_data_load_path
   type: STRING
-- mode: NULLABLE
-  name: default_search_engine_data_submission_url
+  mode: NULLABLE
+- name: default_search_engine_data_submission_url
   type: STRING
-- mode: NULLABLE
-  name: profile_age_in_days
+  mode: NULLABLE
+- name: profile_age_in_days
   type: INTEGER
-- mode: NULLABLE
-  name: active_addons_count_mean
+  mode: NULLABLE
+- name: active_addons_count_mean
   type: FLOAT
-- mode: NULLABLE
-  name: user_pref_browser_search_region
+  mode: NULLABLE
+- name: user_pref_browser_search_region
   type: STRING
-- mode: NULLABLE
-  name: os_version
+  mode: NULLABLE
+- name: os_version
   type: STRING
-- mode: NULLABLE
-  name: max_concurrent_tab_count_max
+  mode: NULLABLE
+- name: max_concurrent_tab_count_max
   type: INTEGER
-- mode: NULLABLE
-  name: tab_open_event_count_sum
+  mode: NULLABLE
+- name: tab_open_event_count_sum
   type: INTEGER
-- mode: NULLABLE
-  name: active_hours_sum
+  mode: NULLABLE
+- name: active_hours_sum
   type: FLOAT
-- mode: NULLABLE
-  name: subsession_hours_sum
+  mode: NULLABLE
+- name: subsession_hours_sum
   type: FLOAT
-- mode: NULLABLE
-  name: sessions_started_on_this_day
+  mode: NULLABLE
+- name: sessions_started_on_this_day
   type: INTEGER
-- mode: NULLABLE
-  name: organic
+  mode: NULLABLE
+- name: organic
   type: INTEGER
-- mode: NULLABLE
-  name: sap
+  mode: NULLABLE
+- name: sap
   type: INTEGER
-- mode: NULLABLE
-  name: unknown
+  mode: NULLABLE
+- name: unknown
   type: INTEGER
-- mode: NULLABLE
-  name: tagged_sap
+  mode: NULLABLE
+- name: tagged_sap
   type: INTEGER
-- mode: NULLABLE
-  name: tagged_follow_on
+  mode: NULLABLE
+- name: tagged_follow_on
   type: INTEGER
-- mode: NULLABLE
-  name: ad_click
+  mode: NULLABLE
+- name: ad_click
   type: INTEGER
-- mode: NULLABLE
-  name: search_with_ads
+  mode: NULLABLE
+- name: search_with_ads
   type: INTEGER
-- mode: NULLABLE
-  name: tagged_searches
+  mode: NULLABLE
+- name: tagged_searches
   type: INTEGER
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - fields:
-    - mode: REPEATED
-      name: total_searches
-      type: INTEGER
-    - mode: REPEATED
-      name: tagged_searches
-      type: INTEGER
-    - mode: REPEATED
-      name: search_with_ads
-      type: INTEGER
-    - mode: REPEATED
-      name: ad_click
-      type: INTEGER
-    mode: NULLABLE
-    name: value
-    type: RECORD
-  mode: REPEATED
-  name: engine_searches
+  mode: NULLABLE
+- name: engine_searches
   type: RECORD
-- mode: NULLABLE
-  name: days_seen_bytes
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: total_searches
+      type: INTEGER
+      mode: REPEATED
+    - name: tagged_searches
+      type: INTEGER
+      mode: REPEATED
+    - name: search_with_ads
+      type: INTEGER
+      mode: REPEATED
+    - name: ad_click
+      type: INTEGER
+      mode: REPEATED
+- name: days_seen_bytes
   type: BYTES
-- mode: NULLABLE
-  name: days_searched_bytes
+  mode: NULLABLE
+- name: days_searched_bytes
   type: BYTES
-- mode: NULLABLE
-  name: days_tagged_searched_bytes
+  mode: NULLABLE
+- name: days_tagged_searched_bytes
   type: BYTES
-- mode: NULLABLE
-  name: days_searched_with_ads_bytes
+  mode: NULLABLE
+- name: days_searched_with_ads_bytes
   type: BYTES
-- mode: NULLABLE
-  name: days_clicked_ads_bytes
+  mode: NULLABLE
+- name: days_clicked_ads_bytes
   type: BYTES
-- mode: NULLABLE
-  name: days_created_profile_bytes
+  mode: NULLABLE
+- name: days_created_profile_bytes
   type: BYTES
-- mode: NULLABLE
-  name: days_since_seen
+  mode: NULLABLE
+- name: days_since_seen
   type: INTEGER
-- mode: NULLABLE
-  name: days_since_searched
+  mode: NULLABLE
+- name: days_since_searched
   type: INTEGER
-- mode: NULLABLE
-  name: days_since_tagged_searched
+  mode: NULLABLE
+- name: days_since_tagged_searched
   type: INTEGER
-- mode: NULLABLE
-  name: days_since_searched_with_ads
+  mode: NULLABLE
+- name: days_since_searched_with_ads
   type: INTEGER
-- mode: NULLABLE
-  name: days_since_clicked_ad
+  mode: NULLABLE
+- name: days_since_clicked_ad
   type: INTEGER
-- mode: NULLABLE
-  name: days_since_created_profile
+  mode: NULLABLE
+- name: days_since_created_profile
   type: INTEGER
+  mode: NULLABLE

@@ -1,231 +1,231 @@
 fields:
-- description: A JSON string containing any payload properties not present in the
+- name: additional_properties
+  type: STRING
+  mode: NULLABLE
+  description: A JSON string containing any payload properties not present in the
     schema
-  mode: NULLABLE
-  name: additional_properties
-  type: STRING
-- fields:
-  - mode: NULLABLE
-    name: architecture
-    type: STRING
-  - mode: NULLABLE
-    name: build_id
-    type: STRING
-  - mode: NULLABLE
-    name: channel
-    type: STRING
-  - mode: NULLABLE
-    name: display_version
-    type: STRING
-  - mode: NULLABLE
-    name: name
-    type: STRING
-  - mode: NULLABLE
-    name: platform_version
-    type: STRING
-  - mode: NULLABLE
-    name: vendor
-    type: STRING
-  - mode: NULLABLE
-    name: version
-    type: STRING
-  - mode: NULLABLE
-    name: xpcom_abi
-    type: STRING
-  mode: NULLABLE
-  name: application
+- name: application
   type: RECORD
-- mode: NULLABLE
-  name: client_id
-  type: STRING
-- mode: NULLABLE
-  name: creation_date
-  type: STRING
-- description: The document ID specified in the URI when the client sent this message
   mode: NULLABLE
-  name: document_id
+  fields:
+  - name: architecture
+    type: STRING
+    mode: NULLABLE
+  - name: build_id
+    type: STRING
+    mode: NULLABLE
+  - name: channel
+    type: STRING
+    mode: NULLABLE
+  - name: display_version
+    type: STRING
+    mode: NULLABLE
+  - name: name
+    type: STRING
+    mode: NULLABLE
+  - name: platform_version
+    type: STRING
+    mode: NULLABLE
+  - name: vendor
+    type: STRING
+    mode: NULLABLE
+  - name: version
+    type: STRING
+    mode: NULLABLE
+  - name: xpcom_abi
+    type: STRING
+    mode: NULLABLE
+- name: client_id
   type: STRING
-- mode: NULLABLE
-  name: id
+  mode: NULLABLE
+- name: creation_date
   type: STRING
-- fields:
-  - description: Results of a geographic lookup based on the client's IP address
+  mode: NULLABLE
+- name: document_id
+  type: STRING
+  mode: NULLABLE
+  description: The document ID specified in the URI when the client sent this message
+- name: id
+  type: STRING
+  mode: NULLABLE
+- name: metadata
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: geo
+    type: RECORD
+    mode: NULLABLE
     fields:
-    - mode: NULLABLE
-      name: city
+    - name: city
       type: STRING
-    - description: An ISO 3166-1 alpha-2 country code
       mode: NULLABLE
-      name: country
+    - name: country
       type: STRING
-    - description: The specific geo database version used for this lookup
       mode: NULLABLE
-      name: db_version
+      description: An ISO 3166-1 alpha-2 country code
+    - name: db_version
       type: STRING
-    - description: First major country subdivision, typically a state, province, or
+      mode: NULLABLE
+      description: The specific geo database version used for this lookup
+    - name: subdivision1
+      type: STRING
+      mode: NULLABLE
+      description: First major country subdivision, typically a state, province, or
         county
-      mode: NULLABLE
-      name: subdivision1
+    - name: subdivision2
       type: STRING
-    - description: Second major country subdivision; not applicable for most countries
       mode: NULLABLE
-      name: subdivision2
-      type: STRING
-    mode: NULLABLE
-    name: geo
+      description: Second major country subdivision; not applicable for most countries
+    description: Results of a geographic lookup based on the client's IP address
+  - name: header
     type: RECORD
-  - description: Headers included in the client's HTTP request
+    mode: NULLABLE
     fields:
-    - description: Date HTTP header
-      mode: NULLABLE
-      name: date
+    - name: date
       type: STRING
-    - description: DNT (Do Not Track) HTTP header
       mode: NULLABLE
-      name: dnt
+      description: Date HTTP header
+    - name: dnt
       type: STRING
-    - description: X-Debug-Id HTTP header
       mode: NULLABLE
-      name: x_debug_id
+      description: DNT (Do Not Track) HTTP header
+    - name: x_debug_id
       type: STRING
-    - description: X-PingSender-Version HTTP header
       mode: NULLABLE
-      name: x_pingsender_version
+      description: X-Debug-Id HTTP header
+    - name: x_pingsender_version
       type: STRING
-    - description: X-Source-Tags HTTP header
       mode: NULLABLE
-      name: x_source_tags
+      description: X-PingSender-Version HTTP header
+    - name: x_source_tags
       type: STRING
-    - description: X-Telemetry-Agent HTTP header
       mode: NULLABLE
-      name: x_telemetry_agent
+      description: X-Source-Tags HTTP header
+    - name: x_telemetry_agent
       type: STRING
-    - description: X-Foxsec-IP-Reputation header
       mode: NULLABLE
-      name: x_foxsec_ip_reputation
+      description: X-Telemetry-Agent HTTP header
+    - name: x_foxsec_ip_reputation
       type: STRING
-    - description: X-LB-Tags HTTP header
       mode: NULLABLE
-      name: x_lb_tags
+      description: X-Foxsec-IP-Reputation header
+    - name: x_lb_tags
       type: STRING
-    - mode: NULLABLE
-      name: parsed_date
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
+    - name: parsed_date
       type: TIMESTAMP
-    - mode: REPEATED
-      name: parsed_x_source_tags
-      type: STRING
-    - fields:
-      - mode: NULLABLE
-        name: tls_version
-        type: STRING
-      - mode: NULLABLE
-        name: tls_cipher_hex
-        type: STRING
       mode: NULLABLE
-      name: parsed_x_lb_tags
+    - name: parsed_x_source_tags
+      type: STRING
+      mode: REPEATED
+    - name: parsed_x_lb_tags
       type: RECORD
-    mode: NULLABLE
-    name: header
-    type: RECORD
-  - description: Components of the URI to which this ping was sent
-    fields:
-    - mode: NULLABLE
-      name: app_build_id
-      type: STRING
-    - mode: NULLABLE
-      name: app_name
-      type: STRING
-    - mode: NULLABLE
-      name: app_update_channel
-      type: STRING
-    - mode: NULLABLE
-      name: app_version
-      type: STRING
-    mode: NULLABLE
-    name: uri
-    type: RECORD
-  - description: Parsed components of the client's user agent string
-    fields:
-    - mode: NULLABLE
-      name: browser
-      type: STRING
-    - mode: NULLABLE
-      name: os
-      type: STRING
-    - mode: NULLABLE
-      name: version
-      type: STRING
-    mode: NULLABLE
-    name: user_agent
-    type: RECORD
-  - description: Results of ISP lookup based on the client's IP address
-    fields:
-    - description: The specific geo ISP database version used for this lookup
       mode: NULLABLE
-      name: db_version
+      fields:
+      - name: tls_version
+        type: STRING
+        mode: NULLABLE
+      - name: tls_cipher_hex
+        type: STRING
+        mode: NULLABLE
+    description: Headers included in the client's HTTP request
+  - name: uri
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: app_build_id
       type: STRING
-    - description: The name of the ISP associated with the client's IP address
       mode: NULLABLE
-      name: name
+    - name: app_name
       type: STRING
-    - description: The name of a specific business entity associated with the client's
+      mode: NULLABLE
+    - name: app_update_channel
+      type: STRING
+      mode: NULLABLE
+    - name: app_version
+      type: STRING
+      mode: NULLABLE
+    description: Components of the URI to which this ping was sent
+  - name: user_agent
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+    - name: os
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+    description: Parsed components of the client's user agent string
+  - name: isp
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: db_version
+      type: STRING
+      mode: NULLABLE
+      description: The specific geo ISP database version used for this lookup
+    - name: name
+      type: STRING
+      mode: NULLABLE
+      description: The name of the ISP associated with the client's IP address
+    - name: organization
+      type: STRING
+      mode: NULLABLE
+      description: The name of a specific business entity associated with the client's
         IP address when available; otherwise the ISP name
-      mode: NULLABLE
-      name: organization
-      type: STRING
-    mode: NULLABLE
-    name: isp
-    type: RECORD
+    description: Results of ISP lookup based on the client's IP address
+- name: normalized_app_name
+  type: STRING
   mode: NULLABLE
-  name: metadata
+  description: Set to "Other" if this message contained an unrecognized app name
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: Set to "Other" if this message contained an unrecognized channel name
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+  description: An ISO 3166-1 alpha-2 country code
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description: Set to "Other" if this message contained an unrecognized OS name
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+- name: payload
   type: RECORD
-- description: Set to "Other" if this message contained an unrecognized app name
   mode: NULLABLE
-  name: normalized_app_name
-  type: STRING
-- description: Set to "Other" if this message contained an unrecognized channel name
-  mode: NULLABLE
-  name: normalized_channel
-  type: STRING
-- description: An ISO 3166-1 alpha-2 country code
-  mode: NULLABLE
-  name: normalized_country_code
-  type: STRING
-- description: Set to "Other" if this message contained an unrecognized OS name
-  mode: NULLABLE
-  name: normalized_os
-  type: STRING
-- mode: NULLABLE
-  name: normalized_os_version
-  type: STRING
-- fields:
-  - mode: NULLABLE
-    name: button
+  fields:
+  - name: button
     type: FLOAT
-  - mode: NULLABLE
-    name: has_sync
+    mode: NULLABLE
+  - name: has_sync
     type: BOOLEAN
-  - mode: NULLABLE
-    name: last_build_id
+    mode: NULLABLE
+  - name: last_build_id
     type: STRING
-  - mode: NULLABLE
-    name: last_version
+    mode: NULLABLE
+  - name: last_version
     type: STRING
-  mode: NULLABLE
-  name: payload
-  type: RECORD
-- description: Hashed version of client_id (if present) useful for partitioning; ranges
-    from 0 to 99
-  mode: NULLABLE
-  name: sample_id
+    mode: NULLABLE
+- name: sample_id
   type: INTEGER
-- description: Time when the ingestion edge server accepted this message
   mode: NULLABLE
-  name: submission_timestamp
+  description: Hashed version of client_id (if present) useful for partitioning; ranges
+    from 0 to 99
+- name: submission_timestamp
   type: TIMESTAMP
-- mode: NULLABLE
-  name: type
+  mode: NULLABLE
+  description: Time when the ingestion edge server accepted this message
+- name: type
   type: STRING
-- mode: NULLABLE
-  name: version
+  mode: NULLABLE
+- name: version
   type: FLOAT
+  mode: NULLABLE

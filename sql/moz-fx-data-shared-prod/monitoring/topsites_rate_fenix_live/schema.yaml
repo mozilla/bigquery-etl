@@ -1,16 +1,16 @@
 fields:
-- mode: NULLABLE
-  name: submission_minute
+- name: submission_minute
   type: TIMESTAMP
-- mode: NULLABLE
-  name: n_click
+  mode: NULLABLE
+- name: n_click
   type: INTEGER
-- mode: NULLABLE
-  name: n_impression
+  mode: NULLABLE
+- name: n_impression
   type: INTEGER
-- mode: NULLABLE
-  name: n_click_release
+  mode: NULLABLE
+- name: n_click_release
   type: INTEGER
-- mode: NULLABLE
-  name: n_impression_release
+  mode: NULLABLE
+- name: n_impression_release
   type: INTEGER
+  mode: NULLABLE

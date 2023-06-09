@@ -1,7 +1,7 @@
 fields:
-- mode: NULLABLE
-  name: metric
+- name: metric
   type: STRING
-- mode: REPEATED
-  name: processes
+  mode: NULLABLE
+- name: processes
   type: STRING
+  mode: REPEATED

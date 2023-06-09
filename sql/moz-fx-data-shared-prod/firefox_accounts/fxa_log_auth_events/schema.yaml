@@ -1,40 +1,40 @@
 fields:
-- mode: NULLABLE
-  name: timestamp
+- name: timestamp
   type: TIMESTAMP
-- mode: NULLABLE
-  name: event
+  mode: NULLABLE
+- name: event
   type: STRING
-- mode: NULLABLE
-  name: flow_id
+  mode: NULLABLE
+- name: flow_id
   type: STRING
-- mode: NULLABLE
-  name: entrypoint
+  mode: NULLABLE
+- name: entrypoint
   type: STRING
-- mode: NULLABLE
-  name: service
+  mode: NULLABLE
+- name: service
   type: STRING
-- mode: NULLABLE
-  name: useragent
+  mode: NULLABLE
+- name: useragent
   type: STRING
-- mode: NULLABLE
-  name: os_version
+  mode: NULLABLE
+- name: os_version
   type: STRING
-- mode: NULLABLE
-  name: utm_source
+  mode: NULLABLE
+- name: utm_source
   type: STRING
-- mode: NULLABLE
-  name: utm_campaign
+  mode: NULLABLE
+- name: utm_campaign
   type: STRING
-- mode: NULLABLE
-  name: utm_content
+  mode: NULLABLE
+- name: utm_content
   type: STRING
-- mode: NULLABLE
-  name: utm_medium
+  mode: NULLABLE
+- name: utm_medium
   type: STRING
-- mode: NULLABLE
-  name: utm_term
+  mode: NULLABLE
+- name: utm_term
   type: STRING
-- mode: NULLABLE
-  name: device_id
+  mode: NULLABLE
+- name: device_id
   type: STRING
+  mode: NULLABLE

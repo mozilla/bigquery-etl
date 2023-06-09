@@ -1,43 +1,43 @@
 fields:
-- mode: NULLABLE
-  name: submission_date
+- name: submission_date
   type: DATE
-- mode: NULLABLE
-  name: cdou
+  mode: NULLABLE
+- name: cdou
   type: INTEGER
-- mode: NULLABLE
-  name: wau
+  mode: NULLABLE
+- name: wau
   type: INTEGER
-- mode: NULLABLE
-  name: mau
+  mode: NULLABLE
+- name: mau
   type: INTEGER
-- mode: NULLABLE
-  name: dau
+  mode: NULLABLE
+- name: dau
   type: INTEGER
-- mode: NULLABLE
-  name: id_bucket
+  mode: NULLABLE
+- name: id_bucket
   type: INTEGER
-- mode: NULLABLE
-  name: app_name
+  mode: NULLABLE
+- name: app_name
   type: STRING
-- mode: NULLABLE
-  name: canonical_app_name
+  mode: NULLABLE
+- name: canonical_app_name
   type: STRING
-- mode: NULLABLE
-  name: channel
+  mode: NULLABLE
+- name: channel
   type: STRING
-- mode: NULLABLE
-  name: os
+  mode: NULLABLE
+- name: os
   type: STRING
-- mode: NULLABLE
-  name: campaign
+  mode: NULLABLE
+- name: campaign
   type: STRING
-- mode: NULLABLE
-  name: country
+  mode: NULLABLE
+- name: country
   type: STRING
-- mode: NULLABLE
-  name: country_name
+  mode: NULLABLE
+- name: country_name
   type: STRING
-- mode: NULLABLE
-  name: distribution_id
+  mode: NULLABLE
+- name: distribution_id
   type: STRING
+  mode: NULLABLE

@@ -1,28 +1,28 @@
 fields:
-- mode: NULLABLE
-  name: dau
+- name: dau
   type: INTEGER
-- mode: NULLABLE
-  name: wau
+  mode: NULLABLE
+- name: wau
   type: INTEGER
-- mode: NULLABLE
-  name: new_users
+  mode: NULLABLE
+- name: new_users
   type: INTEGER
-- mode: NULLABLE
-  name: date
+  mode: NULLABLE
+- name: date
   type: DATE
-- mode: NULLABLE
-  name: experiment_arm
+  mode: NULLABLE
+- name: experiment_arm
   type: STRING
-- mode: NULLABLE
-  name: ui_arm
+  mode: NULLABLE
+- name: ui_arm
   type: STRING
-- mode: NULLABLE
-  name: country
+  mode: NULLABLE
+- name: country
   type: STRING
-- mode: NULLABLE
-  name: browser
+  mode: NULLABLE
+- name: browser
   type: STRING
-- mode: NULLABLE
-  name: activities
+  mode: NULLABLE
+- name: activities
   type: INTEGER
+  mode: NULLABLE

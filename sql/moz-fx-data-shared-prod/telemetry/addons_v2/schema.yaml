@@ -1,70 +1,70 @@
 fields:
-- mode: NULLABLE
-  name: submission_date_s3
+- name: submission_date_s3
   type: DATE
-- mode: NULLABLE
-  name: submission_date
+  mode: NULLABLE
+- name: submission_date
   type: DATE
-- mode: NULLABLE
-  name: sample_id
+  mode: NULLABLE
+- name: sample_id
   type: INTEGER
-- mode: NULLABLE
-  name: document_id
+  mode: NULLABLE
+- name: document_id
   type: STRING
-- mode: NULLABLE
-  name: client_id
+  mode: NULLABLE
+- name: client_id
   type: STRING
-- mode: NULLABLE
-  name: subsession_start_date
+  mode: NULLABLE
+- name: subsession_start_date
   type: STRING
-- mode: NULLABLE
-  name: normalized_channel
+  mode: NULLABLE
+- name: normalized_channel
   type: STRING
-- mode: NULLABLE
-  name: addon_id
+  mode: NULLABLE
+- name: addon_id
   type: STRING
-- mode: NULLABLE
-  name: blocklisted
+  mode: NULLABLE
+- name: blocklisted
   type: BOOLEAN
-- mode: NULLABLE
-  name: name
+  mode: NULLABLE
+- name: name
   type: STRING
-- mode: NULLABLE
-  name: user_disabled
+  mode: NULLABLE
+- name: user_disabled
   type: BOOLEAN
-- mode: NULLABLE
-  name: app_disabled
+  mode: NULLABLE
+- name: app_disabled
   type: BOOLEAN
-- mode: NULLABLE
-  name: version
+  mode: NULLABLE
+- name: version
   type: STRING
-- mode: NULLABLE
-  name: scope
+  mode: NULLABLE
+- name: scope
   type: INTEGER
-- mode: NULLABLE
-  name: type
+  mode: NULLABLE
+- name: type
   type: STRING
-- mode: NULLABLE
-  name: foreign_install
+  mode: NULLABLE
+- name: foreign_install
   type: BOOLEAN
-- mode: NULLABLE
-  name: has_binary_components
+  mode: NULLABLE
+- name: has_binary_components
   type: BOOLEAN
-- mode: NULLABLE
-  name: install_day
+  mode: NULLABLE
+- name: install_day
   type: INTEGER
-- mode: NULLABLE
-  name: update_day
+  mode: NULLABLE
+- name: update_day
   type: INTEGER
-- mode: NULLABLE
-  name: signed_state
+  mode: NULLABLE
+- name: signed_state
   type: INTEGER
-- mode: NULLABLE
-  name: is_system
+  mode: NULLABLE
+- name: is_system
   type: BOOLEAN
-- mode: NULLABLE
-  name: is_web_extension
+  mode: NULLABLE
+- name: is_web_extension
   type: BOOLEAN
-- mode: NULLABLE
-  name: multiprocess_compatible
+  mode: NULLABLE
+- name: multiprocess_compatible
   type: BOOLEAN
+  mode: NULLABLE

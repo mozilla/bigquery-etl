@@ -1,2321 +1,2321 @@
 fields:
-- description: App ID of the channel data was received from
+- name: normalized_app_id
   mode: NULLABLE
-  name: normalized_app_id
   type: STRING
-- description: Normalized channel name
+  description: App ID of the channel data was received from
+- name: normalized_channel
   mode: NULLABLE
-  name: normalized_channel
   type: STRING
-- mode: NULLABLE
-  name: additional_properties
+  description: Normalized channel name
+- name: additional_properties
   type: STRING
-- fields:
-  - mode: NULLABLE
-    name: android_sdk_version
-    type: STRING
-  - mode: NULLABLE
-    name: app_build
-    type: STRING
-  - mode: NULLABLE
-    name: app_channel
-    type: STRING
-  - mode: NULLABLE
-    name: app_display_version
-    type: STRING
-  - mode: NULLABLE
-    name: architecture
-    type: STRING
-  - mode: NULLABLE
-    name: client_id
-    type: STRING
-  - mode: NULLABLE
-    name: device_manufacturer
-    type: STRING
-  - mode: NULLABLE
-    name: device_model
-    type: STRING
-  - mode: NULLABLE
-    name: first_run_date
-    type: STRING
-  - mode: NULLABLE
-    name: locale
-    type: STRING
-  - mode: NULLABLE
-    name: os
-    type: STRING
-  - mode: NULLABLE
-    name: os_version
-    type: STRING
-  - mode: NULLABLE
-    name: telemetry_sdk_build
-    type: STRING
-  - mode: NULLABLE
-    name: build_date
-    type: STRING
-  - mode: NULLABLE
-    name: windows_build_number
-    type: INTEGER
   mode: NULLABLE
-  name: client_info
+- name: client_info
   type: RECORD
-- mode: NULLABLE
-  name: document_id
-  type: STRING
-- fields:
-  - mode: NULLABLE
-    name: category
+  mode: NULLABLE
+  fields:
+  - name: android_sdk_version
     type: STRING
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: extra
-    type: RECORD
-  - mode: NULLABLE
-    name: name
+    mode: NULLABLE
+  - name: app_build
     type: STRING
-  - mode: NULLABLE
-    name: timestamp
+    mode: NULLABLE
+  - name: app_channel
+    type: STRING
+    mode: NULLABLE
+  - name: app_display_version
+    type: STRING
+    mode: NULLABLE
+  - name: architecture
+    type: STRING
+    mode: NULLABLE
+  - name: client_id
+    type: STRING
+    mode: NULLABLE
+  - name: device_manufacturer
+    type: STRING
+    mode: NULLABLE
+  - name: device_model
+    type: STRING
+    mode: NULLABLE
+  - name: first_run_date
+    type: STRING
+    mode: NULLABLE
+  - name: locale
+    type: STRING
+    mode: NULLABLE
+  - name: os
+    type: STRING
+    mode: NULLABLE
+  - name: os_version
+    type: STRING
+    mode: NULLABLE
+  - name: telemetry_sdk_build
+    type: STRING
+    mode: NULLABLE
+  - name: build_date
+    type: STRING
+    mode: NULLABLE
+  - name: windows_build_number
     type: INTEGER
+    mode: NULLABLE
+- name: document_id
+  type: STRING
+  mode: NULLABLE
+- name: events
+  type: RECORD
   mode: REPEATED
-  name: events
-  type: RECORD
-- fields:
-  - fields:
-    - mode: NULLABLE
-      name: city
-      type: STRING
-    - mode: NULLABLE
-      name: country
-      type: STRING
-    - mode: NULLABLE
-      name: db_version
-      type: STRING
-    - mode: NULLABLE
-      name: subdivision1
-      type: STRING
-    - mode: NULLABLE
-      name: subdivision2
-      type: STRING
-    mode: NULLABLE
-    name: geo
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: date
-      type: STRING
-    - mode: NULLABLE
-      name: dnt
-      type: STRING
-    - mode: NULLABLE
-      name: x_debug_id
-      type: STRING
-    - mode: NULLABLE
-      name: x_foxsec_ip_reputation
-      type: STRING
-    - mode: NULLABLE
-      name: x_pingsender_version
-      type: STRING
-    - mode: NULLABLE
-      name: x_source_tags
-      type: STRING
-    - mode: NULLABLE
-      name: x_telemetry_agent
-      type: STRING
-    - mode: NULLABLE
-      name: x_lb_tags
-      type: STRING
-    - mode: NULLABLE
-      name: parsed_date
-      type: TIMESTAMP
-    - mode: REPEATED
-      name: parsed_x_source_tags
-      type: STRING
-    - fields:
-      - mode: NULLABLE
-        name: tls_version
-        type: STRING
-      - mode: NULLABLE
-        name: tls_cipher_hex
-        type: STRING
-      mode: NULLABLE
-      name: parsed_x_lb_tags
-      type: RECORD
-    mode: NULLABLE
-    name: header
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: db_version
-      type: STRING
-    - mode: NULLABLE
-      name: name
-      type: STRING
-    - mode: NULLABLE
-      name: organization
-      type: STRING
-    mode: NULLABLE
-    name: isp
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: browser
-      type: STRING
-    - mode: NULLABLE
-      name: os
-      type: STRING
-    - mode: NULLABLE
-      name: version
-      type: STRING
-    mode: NULLABLE
-    name: user_agent
-    type: RECORD
-  mode: NULLABLE
-  name: metadata
-  type: RECORD
-- fields:
-  - fields:
-    - mode: NULLABLE
-      name: browser_is_default
-      type: BOOLEAN
-    - mode: NULLABLE
-      name: glean_core_migration_successful
-      type: BOOLEAN
-    - mode: NULLABLE
-      name: glean_error_preinit_tasks_timeout
-      type: BOOLEAN
-    - mode: NULLABLE
-      name: tracking_protection_has_advertising_blocked
-      type: BOOLEAN
-    - mode: NULLABLE
-      name: tracking_protection_has_analytics_blocked
-      type: BOOLEAN
-    - mode: NULLABLE
-      name: tracking_protection_has_content_blocked
-      type: BOOLEAN
-    - mode: NULLABLE
-      name: tracking_protection_has_ever_changed_etp
-      type: BOOLEAN
-    - mode: NULLABLE
-      name: tracking_protection_has_social_blocked
-      type: BOOLEAN
-    - mode: NULLABLE
-      name: mozilla_products_has_fenix_installed
-      type: BOOLEAN
-    - mode: NULLABLE
-      name: mozilla_products_is_fenix_default_browser
-      type: BOOLEAN
-    - mode: NULLABLE
-      name: browser_ui_proton_enabled
-      type: BOOLEAN
-    - mode: NULLABLE
-      name: fog_failed_idle_registration
-      type: BOOLEAN
-    - mode: NULLABLE
-      name: gifft_validation_main_ping_assembling
-      type: BOOLEAN
-    - mode: NULLABLE
-      name: metrics_start_reason_activity_error
-      type: BOOLEAN
-    - mode: NULLABLE
-      name: metrics_start_reason_process_error
-      type: BOOLEAN
-    - mode: NULLABLE
-      name: metrics_search_widget_installed
-      type: BOOLEAN
-    - mode: NULLABLE
-      name: notifications_permission_granted
-      type: BOOLEAN
-    - mode: NULLABLE
-      name: cookie_banners_service_detect_only
-      type: BOOLEAN
-    mode: NULLABLE
-    name: boolean
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: glean_error_io
-      type: INTEGER
-    - mode: NULLABLE
-      name: glean_error_preinit_tasks_overflow
-      type: INTEGER
-    - mode: NULLABLE
-      name: glean_time_invalid_timezone_offset
-      type: INTEGER
-    - mode: NULLABLE
-      name: glean_upload_deleted_pings_after_quota_hit
-      type: INTEGER
-    - mode: NULLABLE
-      name: glean_upload_pending_pings
-      type: INTEGER
-    - mode: NULLABLE
-      name: glean_validation_app_forceclosed_count
-      type: INTEGER
-    - mode: NULLABLE
-      name: glean_validation_baseline_ping_count
-      type: INTEGER
-    - mode: NULLABLE
-      name: glean_validation_foreground_count
-      type: INTEGER
-    - mode: NULLABLE
-      name: settings_screen_whats_new_tapped
-      type: INTEGER
-    - mode: NULLABLE
-      name: settings_screen_autocomplete_domain_added
-      type: INTEGER
-    - mode: NULLABLE
-      name: shortcuts_shortcut_added_counter
-      type: INTEGER
-    - mode: NULLABLE
-      name: shortcuts_shortcut_opened_counter
-      type: INTEGER
-    - mode: NULLABLE
-      name: tracking_protection_toolbar_shield_clicked
-      type: INTEGER
-    - mode: NULLABLE
-      name: browser_total_uri_count
-      type: INTEGER
-    - mode: NULLABLE
-      name: autocomplete_domain_added
-      type: INTEGER
-    - mode: NULLABLE
-      name: autocomplete_domain_removed
-      type: INTEGER
-    - mode: NULLABLE
-      name: autocomplete_list_order_changed
-      type: INTEGER
-    - mode: NULLABLE
-      name: browser_report_site_issue_counter
-      type: INTEGER
-    - mode: NULLABLE
-      name: fog_ipc_flush_failures
-      type: INTEGER
-    - mode: NULLABLE
-      name: fog_ipc_replay_failures
-      type: INTEGER
-    - mode: NULLABLE
-      name: fog_ipc_shutdown_registration_failures
-      type: INTEGER
-    - mode: NULLABLE
-      name: power_cpu_time_bogus_values
-      type: INTEGER
-    - mode: NULLABLE
-      name: power_gpu_time_bogus_values
-      type: INTEGER
-    - mode: NULLABLE
-      name: power_total_cpu_time_ms
-      type: INTEGER
-    - mode: NULLABLE
-      name: power_total_gpu_time_ms
-      type: INTEGER
-    - mode: NULLABLE
-      name: power_total_thread_wakeups
-      type: INTEGER
-    - mode: NULLABLE
-      name: rtcrtpsender_count
-      type: INTEGER
-    - mode: NULLABLE
-      name: rtcrtpsender_count_setparameters_compat
-      type: INTEGER
-    - mode: NULLABLE
-      name: pdfjs_used
-      type: INTEGER
-    - mode: NULLABLE
-      name: glean_upload_in_flight_pings_dropped
-      type: INTEGER
-    - mode: NULLABLE
-      name: glean_upload_missing_send_ids
-      type: INTEGER
-    - mode: NULLABLE
-      name: dotprint_requested
-      type: INTEGER
-    - mode: NULLABLE
-      name: dotprint_android_dialog_requested
-      type: INTEGER
-    - mode: NULLABLE
-      name: translations_requests_count
-      type: INTEGER
-    mode: NULLABLE
-    name: counter
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: blocklist_last_modified_rs_addons_mblf
-      type: TIMESTAMP
-    - mode: NULLABLE
-      name: raw_blocklist_last_modified_rs_addons_mblf
-      type: STRING
-    - mode: NULLABLE
-      name: blocklist_mlbf_generation_time
-      type: TIMESTAMP
-    - mode: NULLABLE
-      name: raw_blocklist_mlbf_generation_time
-      type: STRING
-    - mode: NULLABLE
-      name: blocklist_mlbf_stash_time_newest
-      type: TIMESTAMP
-    - mode: NULLABLE
-      name: raw_blocklist_mlbf_stash_time_newest
-      type: STRING
-    - mode: NULLABLE
-      name: blocklist_mlbf_stash_time_oldest
-      type: TIMESTAMP
-    - mode: NULLABLE
-      name: raw_blocklist_mlbf_stash_time_oldest
-      type: STRING
-    - mode: NULLABLE
-      name: glean_validation_first_run_hour
-      type: TIMESTAMP
-    - mode: NULLABLE
-      name: raw_glean_validation_first_run_hour
-      type: STRING
-    mode: NULLABLE
-    name: datetime
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: jwe
-    type: RECORD
-  - fields:
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: crash_metrics_crash_count
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: glean_error_invalid_label
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: glean_error_invalid_overflow
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: glean_error_invalid_state
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: glean_error_invalid_value
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: glean_upload_ping_upload_failure
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: glean_validation_pings_submitted
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: browser_search_ad_clicks
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: browser_search_in_content
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: browser_search_with_ads
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: shortcuts_shortcut_removed_counter
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: browser_search_search_count
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: gmp_update_xml_fetch_result
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: power_cpu_ms_per_thread_content_background
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: power_cpu_ms_per_thread_content_foreground
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: power_cpu_ms_per_thread_gpu_process
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: power_cpu_ms_per_thread_parent_active
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: power_cpu_ms_per_thread_parent_inactive
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: power_cpu_time_per_process_type_ms
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: power_gpu_time_per_process_type_ms
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: power_wakeups_per_process_type
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: power_wakeups_per_thread_content_background
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: power_wakeups_per_thread_content_foreground
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: power_wakeups_per_thread_gpu_process
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: power_wakeups_per_thread_parent_active
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: power_wakeups_per_thread_parent_inactive
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: perf_startup_startup_type
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: netwerk_early_hints
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: netwerk_eh_link_type
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: cookie_banners_click_result
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: power_cpu_time_per_tracker_type_ms
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: ipc_received_messages_content_background
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: ipc_received_messages_content_foreground
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: ipc_received_messages_gpu_process
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: ipc_received_messages_parent_active
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: ipc_received_messages_parent_inactive
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: ipc_sent_messages_content_background
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: ipc_sent_messages_content_foreground
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: ipc_sent_messages_gpu_process
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: ipc_sent_messages_parent_active
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: ipc_sent_messages_parent_inactive
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: cookie_banners_rule_lookup_by_domain
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: cookie_banners_rule_lookup_by_load
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: pdfjs_buttons
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: pdfjs_editing
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: network_data_size_pb_per_type
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: network_data_size_per_type
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: networking_speculative_connection_outcome
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: networking_speculative_connect_outcome
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: networking_cookie_timestamp_fixed_count
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: rtcrtpsender_setparameters_blame_length_changed
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: rtcrtpsender_setparameters_blame_no_getparameters
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: rtcrtpsender_setparameters_blame_no_transactionid
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: rtcrtpsender_setparameters_blame_stale_transactionid
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: dotprint_failure
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: pdfjs_geckoview
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: network_cors_authorization_header
-      type: RECORD
-    mode: NULLABLE
-    name: labeled_counter
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - fields:
-        - mode: NULLABLE
-          name: denominator
-          type: INTEGER
-        - mode: NULLABLE
-          name: numerator
-          type: INTEGER
-        mode: NULLABLE
-        name: value
-        type: RECORD
-      mode: REPEATED
-      name: value
-      type: RECORD
-    mode: REPEATED
-    name: labeled_rate
-    type: RECORD
-  - fields:
-    - fields:
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      mode: NULLABLE
-      name: glean_database_size
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      mode: NULLABLE
-      name: glean_upload_discarded_exceeding_pings_size
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      mode: NULLABLE
-      name: glean_upload_pending_pings_directory_size
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      mode: NULLABLE
-      name: fog_ipc_buffer_sizes
-      type: RECORD
-    mode: NULLABLE
-    name: memory_distribution
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: browser_default_search_engine
-      type: STRING
-    - mode: NULLABLE
-      name: browser_locale_override
-      type: STRING
-    - mode: NULLABLE
-      name: ping_reason
-      type: STRING
-    - mode: NULLABLE
-      name: preferences_user_theme
-      type: STRING
-    - mode: NULLABLE
-      name: browser_install_source
-      type: STRING
-    - mode: NULLABLE
-      name: geckoview_validation_build_id
-      type: STRING
-    - mode: NULLABLE
-      name: geckoview_validation_version
-      type: STRING
-    - mode: NULLABLE
-      name: blocklist_mlbf_source
-      type: STRING
-    mode: NULLABLE
-    name: string
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: url
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: text
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: shortcuts_shortcuts_on_home_number
-      type: INTEGER
-    mode: NULLABLE
-    name: quantity
-    type: RECORD
-  - fields:
-    - fields:
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      mode: NULLABLE
-      name: tab_count_app_backgrounded
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      mode: NULLABLE
-      name: power_battery_percentage_when_user_active
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      mode: NULLABLE
-      name: pdfjs_time_to_view
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      mode: NULLABLE
-      name: timer_thread_timers_fired_per_wakeup
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      mode: NULLABLE
-      name: networking_cookie_access_fixup_diff
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      mode: NULLABLE
-      name: networking_cookie_creation_fixup_diff
-      type: RECORD
-    mode: NULLABLE
-    name: custom_distribution
-    type: RECORD
-  - fields:
-    - fields:
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: NULLABLE
-      name: nimbus_experiments_nimbus_initial_fetch
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: NULLABLE
-      name: fog_initialization
-      type: RECORD
-    mode: NULLABLE
-    name: timespan
-    type: RECORD
-  - fields:
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      mode: NULLABLE
-      name: fog_ipc_flush_durations
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      mode: NULLABLE
-      name: paint_build_displaylist_time
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      mode: NULLABLE
-      name: wr_framebuild_time
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      mode: NULLABLE
-      name: wr_rasterize_glyphs_time
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      mode: NULLABLE
-      name: wr_scenebuild_time
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      mode: NULLABLE
-      name: wr_sceneswap_time
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      mode: NULLABLE
-      name: wr_rasterize_blobs_time
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      mode: NULLABLE
-      name: wr_gpu_wait_time
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      mode: NULLABLE
-      name: wr_renderer_time
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      mode: NULLABLE
-      name: wr_texture_cache_update_time
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      mode: NULLABLE
-      name: wr_time_to_frame_build
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      mode: NULLABLE
-      name: wr_time_to_render_start
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      mode: NULLABLE
-      name: wr_renderer_time_no_sc
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      mode: NULLABLE
-      name: network_open_to_transaction_pending
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      mode: NULLABLE
-      name: cookie_banners_click_handle_duration
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      mode: NULLABLE
-      name: nimbus_health_apply_pending_experiments_time
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      mode: NULLABLE
-      name: nimbus_health_fetch_experiments_time
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      mode: NULLABLE
-      name: glean_upload_send_failure
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      mode: NULLABLE
-      name: glean_upload_send_success
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      mode: NULLABLE
-      name: glean_validation_shutdown_wait
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: bucket_count
-        type: INTEGER
-      - mode: NULLABLE
-        name: count
-        type: INTEGER
-      - mode: NULLABLE
-        name: histogram_type
-        type: STRING
-      - mode: NULLABLE
-        name: overflow
-        type: INTEGER
-      - mode: REPEATED
-        name: range
-        type: FLOAT
-      - mode: NULLABLE
-        name: sum
-        type: INTEGER
-      - mode: NULLABLE
-        name: time_unit
-        type: STRING
-      - mode: NULLABLE
-        name: underflow
-        type: INTEGER
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: INTEGER
-        mode: REPEATED
-        name: values
-        type: RECORD
-      mode: NULLABLE
-      name: glean_validation_shutdown_dispatcher_wait
-      type: RECORD
-    mode: NULLABLE
-    name: timing_distribution
-    type: RECORD
-  - fields:
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: BOOLEAN
-      mode: REPEATED
-      name: cookie_banners_normal_window_service_mode
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: BOOLEAN
-      mode: REPEATED
-      name: cookie_banners_private_window_service_mode
-      type: RECORD
-    mode: NULLABLE
-    name: labeled_boolean
-    type: RECORD
-  - fields:
-    - fields:
-      - mode: NULLABLE
-        name: denominator
-        type: INTEGER
-      - mode: NULLABLE
-        name: numerator
-        type: INTEGER
-      mode: NULLABLE
-      name: rtcrtpsender_setparameters_fail_length_changed
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: denominator
-        type: INTEGER
-      - mode: NULLABLE
-        name: numerator
-        type: INTEGER
-      mode: NULLABLE
-      name: rtcrtpsender_setparameters_fail_no_encodings
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: denominator
-        type: INTEGER
-      - mode: NULLABLE
-        name: numerator
-        type: INTEGER
-      mode: NULLABLE
-      name: rtcrtpsender_setparameters_fail_no_getparameters
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: denominator
-        type: INTEGER
-      - mode: NULLABLE
-        name: numerator
-        type: INTEGER
-      mode: NULLABLE
-      name: rtcrtpsender_setparameters_fail_no_transactionid
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: denominator
-        type: INTEGER
-      - mode: NULLABLE
-        name: numerator
-        type: INTEGER
-      mode: NULLABLE
-      name: rtcrtpsender_setparameters_fail_other
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: denominator
-        type: INTEGER
-      - mode: NULLABLE
-        name: numerator
-        type: INTEGER
-      mode: NULLABLE
-      name: rtcrtpsender_setparameters_fail_rid_changed
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: denominator
-        type: INTEGER
-      - mode: NULLABLE
-        name: numerator
-        type: INTEGER
-      mode: NULLABLE
-      name: rtcrtpsender_setparameters_fail_stale_transactionid
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: denominator
-        type: INTEGER
-      - mode: NULLABLE
-        name: numerator
-        type: INTEGER
-      mode: NULLABLE
-      name: rtcrtpsender_setparameters_warn_length_changed
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: denominator
-        type: INTEGER
-      - mode: NULLABLE
-        name: numerator
-        type: INTEGER
-      mode: NULLABLE
-      name: rtcrtpsender_setparameters_warn_no_getparameters
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: denominator
-        type: INTEGER
-      - mode: NULLABLE
-        name: numerator
-        type: INTEGER
-      mode: NULLABLE
-      name: rtcrtpsender_setparameters_warn_no_transactionid
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: denominator
-        type: INTEGER
-      - mode: NULLABLE
-        name: numerator
-        type: INTEGER
-      mode: NULLABLE
-      name: rtcrtpsender_setparameters_warn_rid_changed
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: denominator
-        type: INTEGER
-      - mode: NULLABLE
-        name: numerator
-        type: INTEGER
-      mode: NULLABLE
-      name: rtcrtpsender_setparameters_warn_stale_transactionid
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: denominator
-        type: INTEGER
-      - mode: NULLABLE
-        name: numerator
-        type: INTEGER
-      mode: NULLABLE
-      name: rtcrtpsender_used_sendencodings
-      type: RECORD
-    - fields:
-      - mode: NULLABLE
-        name: denominator
-        type: INTEGER
-      - mode: NULLABLE
-        name: numerator
-        type: INTEGER
-      mode: NULLABLE
-      name: translations_error_rate
-      type: RECORD
-    mode: NULLABLE
-    name: rate
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: legacy_ids_client_id
-      type: STRING
-    mode: NULLABLE
-    name: uuid
-    type: RECORD
-  mode: NULLABLE
-  name: metrics
-  type: RECORD
-- mode: NULLABLE
-  name: normalized_app_name
-  type: STRING
-- mode: NULLABLE
-  name: normalized_country_code
-  type: STRING
-- mode: NULLABLE
-  name: normalized_os
-  type: STRING
-- mode: NULLABLE
-  name: normalized_os_version
-  type: STRING
-- fields:
-  - mode: NULLABLE
-    name: end_time
+  fields:
+  - name: category
     type: STRING
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - fields:
-      - mode: NULLABLE
-        name: branch
-        type: STRING
-      - fields:
-        - mode: NULLABLE
-          name: type
-          type: STRING
-        - mode: NULLABLE
-          name: enrollment_id
-          type: STRING
-        mode: NULLABLE
-        name: extra
-        type: RECORD
-      mode: NULLABLE
-      name: value
-      type: RECORD
-    mode: REPEATED
-    name: experiments
+    mode: NULLABLE
+  - name: extra
     type: RECORD
-  - mode: NULLABLE
-    name: ping_type
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+    - name: value
+      type: STRING
+      mode: NULLABLE
+  - name: name
     type: STRING
-  - mode: NULLABLE
-    name: reason
-    type: STRING
-  - mode: NULLABLE
-    name: seq
+    mode: NULLABLE
+  - name: timestamp
     type: INTEGER
-  - mode: NULLABLE
-    name: start_time
-    type: STRING
-  - mode: NULLABLE
-    name: parsed_start_time
-    type: TIMESTAMP
-  - mode: NULLABLE
-    name: parsed_end_time
-    type: TIMESTAMP
-  mode: NULLABLE
-  name: ping_info
+    mode: NULLABLE
+- name: metadata
   type: RECORD
-- mode: NULLABLE
-  name: sample_id
+  mode: NULLABLE
+  fields:
+  - name: geo
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: city
+      type: STRING
+      mode: NULLABLE
+    - name: country
+      type: STRING
+      mode: NULLABLE
+    - name: db_version
+      type: STRING
+      mode: NULLABLE
+    - name: subdivision1
+      type: STRING
+      mode: NULLABLE
+    - name: subdivision2
+      type: STRING
+      mode: NULLABLE
+  - name: header
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: date
+      type: STRING
+      mode: NULLABLE
+    - name: dnt
+      type: STRING
+      mode: NULLABLE
+    - name: x_debug_id
+      type: STRING
+      mode: NULLABLE
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+    - name: x_pingsender_version
+      type: STRING
+      mode: NULLABLE
+    - name: x_source_tags
+      type: STRING
+      mode: NULLABLE
+    - name: x_telemetry_agent
+      type: STRING
+      mode: NULLABLE
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+    - name: parsed_date
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: parsed_x_source_tags
+      type: STRING
+      mode: REPEATED
+    - name: parsed_x_lb_tags
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: tls_version
+        type: STRING
+        mode: NULLABLE
+      - name: tls_cipher_hex
+        type: STRING
+        mode: NULLABLE
+  - name: isp
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: db_version
+      type: STRING
+      mode: NULLABLE
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: organization
+      type: STRING
+      mode: NULLABLE
+  - name: user_agent
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+    - name: os
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+- name: metrics
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser_is_default
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: glean_core_migration_successful
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: glean_error_preinit_tasks_timeout
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: tracking_protection_has_advertising_blocked
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: tracking_protection_has_analytics_blocked
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: tracking_protection_has_content_blocked
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: tracking_protection_has_ever_changed_etp
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: tracking_protection_has_social_blocked
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: mozilla_products_has_fenix_installed
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: mozilla_products_is_fenix_default_browser
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: browser_ui_proton_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: fog_failed_idle_registration
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: gifft_validation_main_ping_assembling
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: metrics_start_reason_activity_error
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: metrics_start_reason_process_error
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: metrics_search_widget_installed
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: notifications_permission_granted
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: cookie_banners_service_detect_only
+      type: BOOLEAN
+      mode: NULLABLE
+  - name: counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_error_io
+      type: INTEGER
+      mode: NULLABLE
+    - name: glean_error_preinit_tasks_overflow
+      type: INTEGER
+      mode: NULLABLE
+    - name: glean_time_invalid_timezone_offset
+      type: INTEGER
+      mode: NULLABLE
+    - name: glean_upload_deleted_pings_after_quota_hit
+      type: INTEGER
+      mode: NULLABLE
+    - name: glean_upload_pending_pings
+      type: INTEGER
+      mode: NULLABLE
+    - name: glean_validation_app_forceclosed_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: glean_validation_baseline_ping_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: glean_validation_foreground_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: settings_screen_whats_new_tapped
+      type: INTEGER
+      mode: NULLABLE
+    - name: settings_screen_autocomplete_domain_added
+      type: INTEGER
+      mode: NULLABLE
+    - name: shortcuts_shortcut_added_counter
+      type: INTEGER
+      mode: NULLABLE
+    - name: shortcuts_shortcut_opened_counter
+      type: INTEGER
+      mode: NULLABLE
+    - name: tracking_protection_toolbar_shield_clicked
+      type: INTEGER
+      mode: NULLABLE
+    - name: browser_total_uri_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: autocomplete_domain_added
+      type: INTEGER
+      mode: NULLABLE
+    - name: autocomplete_domain_removed
+      type: INTEGER
+      mode: NULLABLE
+    - name: autocomplete_list_order_changed
+      type: INTEGER
+      mode: NULLABLE
+    - name: browser_report_site_issue_counter
+      type: INTEGER
+      mode: NULLABLE
+    - name: fog_ipc_flush_failures
+      type: INTEGER
+      mode: NULLABLE
+    - name: fog_ipc_replay_failures
+      type: INTEGER
+      mode: NULLABLE
+    - name: fog_ipc_shutdown_registration_failures
+      type: INTEGER
+      mode: NULLABLE
+    - name: power_cpu_time_bogus_values
+      type: INTEGER
+      mode: NULLABLE
+    - name: power_gpu_time_bogus_values
+      type: INTEGER
+      mode: NULLABLE
+    - name: power_total_cpu_time_ms
+      type: INTEGER
+      mode: NULLABLE
+    - name: power_total_gpu_time_ms
+      type: INTEGER
+      mode: NULLABLE
+    - name: power_total_thread_wakeups
+      type: INTEGER
+      mode: NULLABLE
+    - name: rtcrtpsender_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: rtcrtpsender_count_setparameters_compat
+      type: INTEGER
+      mode: NULLABLE
+    - name: pdfjs_used
+      type: INTEGER
+      mode: NULLABLE
+    - name: glean_upload_in_flight_pings_dropped
+      type: INTEGER
+      mode: NULLABLE
+    - name: glean_upload_missing_send_ids
+      type: INTEGER
+      mode: NULLABLE
+    - name: dotprint_requested
+      type: INTEGER
+      mode: NULLABLE
+    - name: dotprint_android_dialog_requested
+      type: INTEGER
+      mode: NULLABLE
+    - name: translations_requests_count
+      type: INTEGER
+      mode: NULLABLE
+  - name: datetime
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: blocklist_last_modified_rs_addons_mblf
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: raw_blocklist_last_modified_rs_addons_mblf
+      type: STRING
+      mode: NULLABLE
+    - name: blocklist_mlbf_generation_time
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: raw_blocklist_mlbf_generation_time
+      type: STRING
+      mode: NULLABLE
+    - name: blocklist_mlbf_stash_time_newest
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: raw_blocklist_mlbf_stash_time_newest
+      type: STRING
+      mode: NULLABLE
+    - name: blocklist_mlbf_stash_time_oldest
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: raw_blocklist_mlbf_stash_time_oldest
+      type: STRING
+      mode: NULLABLE
+    - name: glean_validation_first_run_hour
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: raw_glean_validation_first_run_hour
+      type: STRING
+      mode: NULLABLE
+  - name: jwe
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+    - name: value
+      type: STRING
+      mode: NULLABLE
+  - name: labeled_counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: crash_metrics_crash_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: glean_error_invalid_label
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: glean_error_invalid_overflow
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: glean_error_invalid_state
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: glean_error_invalid_value
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: glean_upload_ping_upload_failure
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: glean_validation_pings_submitted
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: browser_search_ad_clicks
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: browser_search_in_content
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: browser_search_with_ads
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: shortcuts_shortcut_removed_counter
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: browser_search_search_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: gmp_update_xml_fetch_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: power_cpu_ms_per_thread_content_background
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: power_cpu_ms_per_thread_content_foreground
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: power_cpu_ms_per_thread_gpu_process
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: power_cpu_ms_per_thread_parent_active
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: power_cpu_ms_per_thread_parent_inactive
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: power_cpu_time_per_process_type_ms
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: power_gpu_time_per_process_type_ms
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: power_wakeups_per_process_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: power_wakeups_per_thread_content_background
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: power_wakeups_per_thread_content_foreground
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: power_wakeups_per_thread_gpu_process
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: power_wakeups_per_thread_parent_active
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: power_wakeups_per_thread_parent_inactive
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: perf_startup_startup_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: netwerk_early_hints
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: netwerk_eh_link_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: cookie_banners_click_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: power_cpu_time_per_tracker_type_ms
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: ipc_received_messages_content_background
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: ipc_received_messages_content_foreground
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: ipc_received_messages_gpu_process
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: ipc_received_messages_parent_active
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: ipc_received_messages_parent_inactive
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: ipc_sent_messages_content_background
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: ipc_sent_messages_content_foreground
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: ipc_sent_messages_gpu_process
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: ipc_sent_messages_parent_active
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: ipc_sent_messages_parent_inactive
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: cookie_banners_rule_lookup_by_domain
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: cookie_banners_rule_lookup_by_load
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: pdfjs_buttons
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: pdfjs_editing
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: network_data_size_pb_per_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: network_data_size_per_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: networking_speculative_connection_outcome
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: networking_speculative_connect_outcome
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: networking_cookie_timestamp_fixed_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: rtcrtpsender_setparameters_blame_length_changed
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: rtcrtpsender_setparameters_blame_no_getparameters
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: rtcrtpsender_setparameters_blame_no_transactionid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: rtcrtpsender_setparameters_blame_stale_transactionid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: dotprint_failure
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: pdfjs_geckoview
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: network_cors_authorization_header
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+  - name: labeled_rate
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+    - name: value
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: denominator
+          type: INTEGER
+          mode: NULLABLE
+        - name: numerator
+          type: INTEGER
+          mode: NULLABLE
+  - name: memory_distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_database_size
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+    - name: glean_upload_discarded_exceeding_pings_size
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+    - name: glean_upload_pending_pings_directory_size
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+    - name: fog_ipc_buffer_sizes
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser_default_search_engine
+      type: STRING
+      mode: NULLABLE
+    - name: browser_locale_override
+      type: STRING
+      mode: NULLABLE
+    - name: ping_reason
+      type: STRING
+      mode: NULLABLE
+    - name: preferences_user_theme
+      type: STRING
+      mode: NULLABLE
+    - name: browser_install_source
+      type: STRING
+      mode: NULLABLE
+    - name: geckoview_validation_build_id
+      type: STRING
+      mode: NULLABLE
+    - name: geckoview_validation_version
+      type: STRING
+      mode: NULLABLE
+    - name: blocklist_mlbf_source
+      type: STRING
+      mode: NULLABLE
+  - name: url
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+    - name: value
+      type: STRING
+      mode: NULLABLE
+  - name: text
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+    - name: value
+      type: STRING
+      mode: NULLABLE
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: shortcuts_shortcuts_on_home_number
+      type: INTEGER
+      mode: NULLABLE
+  - name: custom_distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: tab_count_app_backgrounded
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+    - name: power_battery_percentage_when_user_active
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+    - name: pdfjs_time_to_view
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: timer_thread_timers_fired_per_wakeup
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: networking_cookie_access_fixup_diff
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: networking_cookie_creation_fixup_diff
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+  - name: timespan
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: nimbus_experiments_nimbus_initial_fetch
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: fog_initialization
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+  - name: timing_distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: fog_ipc_flush_durations
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+    - name: paint_build_displaylist_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+    - name: wr_framebuild_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+    - name: wr_rasterize_glyphs_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+    - name: wr_scenebuild_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+    - name: wr_sceneswap_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+    - name: wr_rasterize_blobs_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+    - name: wr_gpu_wait_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+    - name: wr_renderer_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+    - name: wr_texture_cache_update_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+    - name: wr_time_to_frame_build
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+    - name: wr_time_to_render_start
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+    - name: wr_renderer_time_no_sc
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+    - name: network_open_to_transaction_pending
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+    - name: cookie_banners_click_handle_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: nimbus_health_apply_pending_experiments_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: nimbus_health_fetch_experiments_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: glean_upload_send_failure
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: glean_upload_send_success
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: glean_validation_shutdown_wait
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: glean_validation_shutdown_dispatcher_wait
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+  - name: labeled_boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: cookie_banners_normal_window_service_mode
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+    - name: cookie_banners_private_window_service_mode
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+  - name: rate
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: rtcrtpsender_setparameters_fail_length_changed
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: rtcrtpsender_setparameters_fail_no_encodings
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: rtcrtpsender_setparameters_fail_no_getparameters
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: rtcrtpsender_setparameters_fail_no_transactionid
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: rtcrtpsender_setparameters_fail_other
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: rtcrtpsender_setparameters_fail_rid_changed
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: rtcrtpsender_setparameters_fail_stale_transactionid
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: rtcrtpsender_setparameters_warn_length_changed
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: rtcrtpsender_setparameters_warn_no_getparameters
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: rtcrtpsender_setparameters_warn_no_transactionid
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: rtcrtpsender_setparameters_warn_rid_changed
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: rtcrtpsender_setparameters_warn_stale_transactionid
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: rtcrtpsender_used_sendencodings
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: translations_error_rate
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+  - name: uuid
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: legacy_ids_client_id
+      type: STRING
+      mode: NULLABLE
+- name: normalized_app_name
+  type: STRING
+  mode: NULLABLE
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+- name: ping_info
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: end_time
+    type: STRING
+    mode: NULLABLE
+  - name: experiments
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+    - name: value
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: branch
+        type: STRING
+        mode: NULLABLE
+      - name: extra
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: type
+          type: STRING
+          mode: NULLABLE
+        - name: enrollment_id
+          type: STRING
+          mode: NULLABLE
+  - name: ping_type
+    type: STRING
+    mode: NULLABLE
+  - name: reason
+    type: STRING
+    mode: NULLABLE
+  - name: seq
+    type: INTEGER
+    mode: NULLABLE
+  - name: start_time
+    type: STRING
+    mode: NULLABLE
+  - name: parsed_start_time
+    type: TIMESTAMP
+    mode: NULLABLE
+  - name: parsed_end_time
+    type: TIMESTAMP
+    mode: NULLABLE
+- name: sample_id
   type: INTEGER
-- mode: NULLABLE
-  name: submission_timestamp
+  mode: NULLABLE
+- name: submission_timestamp
   type: TIMESTAMP
+  mode: NULLABLE

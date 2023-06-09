@@ -1,41 +1,41 @@
 fields:
-- description: null
-  mode: NULLABLE
-  name: build_number
+- name: build_number
   type: INTEGER
-- description: null
   mode: NULLABLE
-  name: category
+  description: null
+- name: category
   type: STRING
-- description: null
   mode: NULLABLE
-  name: date
+  description: null
+- name: date
   type: DATE
-- description: null
   mode: NULLABLE
-  name: description
+  description: null
+- name: description
   type: STRING
-- description: null
   mode: NULLABLE
-  name: is_security_driven
+  description: null
+- name: is_security_driven
   type: BOOLEAN
-- description: null
   mode: NULLABLE
-  name: product
+  description: null
+- name: product
   type: STRING
-- description: null
   mode: NULLABLE
-  name: version
+  description: null
+- name: version
   type: STRING
-- mode: NULLABLE
-  name: major_version
+  mode: NULLABLE
+  description: null
+- name: major_version
   type: NUMERIC
-- mode: NULLABLE
-  name: minor_version
+  mode: NULLABLE
+- name: minor_version
   type: NUMERIC
-- mode: NULLABLE
-  name: patch_version
+  mode: NULLABLE
+- name: patch_version
   type: NUMERIC
-- mode: NULLABLE
-  name: beta_version
+  mode: NULLABLE
+- name: beta_version
   type: NUMERIC
+  mode: NULLABLE

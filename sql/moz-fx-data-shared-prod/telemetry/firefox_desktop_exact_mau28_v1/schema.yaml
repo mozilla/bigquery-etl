@@ -1,31 +1,31 @@
 fields:
-- mode: NULLABLE
-  name: submission_date
+- name: submission_date
   type: DATE
-- mode: NULLABLE
-  name: mau
+  mode: NULLABLE
+- name: mau
   type: INTEGER
-- mode: NULLABLE
-  name: wau
+  mode: NULLABLE
+- name: wau
   type: INTEGER
-- mode: NULLABLE
-  name: dau
+  mode: NULLABLE
+- name: dau
   type: INTEGER
-- mode: NULLABLE
-  name: tier1_mau
+  mode: NULLABLE
+- name: tier1_mau
   type: INTEGER
-- mode: NULLABLE
-  name: tier1_wau
+  mode: NULLABLE
+- name: tier1_wau
   type: INTEGER
-- mode: NULLABLE
-  name: tier1_dau
+  mode: NULLABLE
+- name: tier1_dau
   type: INTEGER
-- mode: NULLABLE
-  name: visited_5_uri_mau
+  mode: NULLABLE
+- name: visited_5_uri_mau
   type: INTEGER
-- mode: NULLABLE
-  name: visited_5_uri_wau
+  mode: NULLABLE
+- name: visited_5_uri_wau
   type: INTEGER
-- mode: NULLABLE
-  name: visited_5_uri_dau
+  mode: NULLABLE
+- name: visited_5_uri_dau
   type: INTEGER
+  mode: NULLABLE

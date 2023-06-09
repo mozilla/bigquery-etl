@@ -1,29 +1,29 @@
 fields:
-- description: Airflow DAG id
-  mode: NULLABLE
-  name: dag_id
+- name: dag_id
   type: STRING
-- description: manual, scheduled or backfill
   mode: NULLABLE
-  name: run_type
+  description: Airflow DAG id
+- name: run_type
   type: STRING
-- description: Indicates if the DAG was triggered externally
   mode: NULLABLE
-  name: external_trigger
+  description: manual, scheduled or backfill
+- name: external_trigger
   type: BOOLEAN
-- description: State of the DAG run instance (e.g. success)
   mode: NULLABLE
-  name: state
+  description: Indicates if the DAG was triggered externally
+- name: state
   type: STRING
-- description: Execution date of the DAG Run instance
   mode: NULLABLE
-  name: execution_date
+  description: State of the DAG run instance (e.g. success)
+- name: execution_date
   type: TIMESTAMP
-- description: When the DAG run started
   mode: NULLABLE
-  name: start_date
+  description: Execution date of the DAG Run instance
+- name: start_date
   type: TIMESTAMP
-- description: When the DAG run finished
   mode: NULLABLE
-  name: end_date
+  description: When the DAG run started
+- name: end_date
   type: TIMESTAMP
+  mode: NULLABLE
+  description: When the DAG run finished

@@ -1,7 +1,7 @@
 fields:
-- mode: NULLABLE
-  name: os_name
+- name: os_name
   type: STRING
-- mode: NULLABLE
-  name: normalized_os_name
+  mode: NULLABLE
+- name: normalized_os_name
   type: STRING
+  mode: NULLABLE

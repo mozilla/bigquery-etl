@@ -1,10 +1,10 @@
 fields:
-- mode: NULLABLE
-  name: build_hour
+- name: build_hour
   type: DATETIME
-- mode: NULLABLE
-  name: geckoview_major_version
+  mode: NULLABLE
+- name: geckoview_major_version
   type: INTEGER
-- mode: NULLABLE
-  name: n_pings
+  mode: NULLABLE
+- name: n_pings
   type: INTEGER
+  mode: NULLABLE

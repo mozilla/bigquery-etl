@@ -1,39 +1,39 @@
 fields:
-- description: 'Name of the destination warehouse.
-
-    '
-  mode: NULLABLE
-  name: destination
+- name: destination
   type: STRING
-- description: 'Date of when the active row measurement was made.
+  mode: NULLABLE
+  description: 'Name of the destination warehouse.
 
     '
-  mode: NULLABLE
-  name: measured_date
+- name: measured_date
   type: DATE
-- description: 'The name of the connector being measured.
+  mode: NULLABLE
+  description: 'Date of when the active row measurement was made.
 
     '
-  mode: NULLABLE
-  name: connector
+- name: connector
   type: STRING
-- description: 'Information on how the active rows got billed, paid or free.
+  mode: NULLABLE
+  description: 'The name of the connector being measured.
 
     '
-  mode: NULLABLE
-  name: billing_type
+- name: billing_type
   type: STRING
-- description: 'The number of new distinct primary keys on the current day synced
+  mode: NULLABLE
+  description: 'Information on how the active rows got billed, paid or free.
+
+    '
+- name: active_rows
+  type: INTEGER
+  mode: NULLABLE
+  description: 'The number of new distinct primary keys on the current day synced
     for the connector.
 
     '
+- name: cost_in_usd
+  type: BIGNUMERIC
   mode: NULLABLE
-  name: active_rows
-  type: INTEGER
-- description: 'Costs in USD for that row. This value is not rounded to the cent but
+  description: 'Costs in USD for that row. This value is not rounded to the cent but
     contains fractional cents for later calculations.
 
     '
-  mode: NULLABLE
-  name: cost_in_usd
-  type: BIGNUMERIC

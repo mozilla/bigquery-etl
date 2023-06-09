@@ -1,69 +1,69 @@
 fields:
-- mode: NULLABLE
-  name: submission_date
+- name: submission_date
   type: DATE
-- mode: NULLABLE
-  name: device
-  type: STRING
-- mode: NULLABLE
-  name: client_id
-  type: STRING
-- fields:
-  - mode: NULLABLE
-    name: version
-    type: STRING
-  - mode: NULLABLE
-    name: major_version
-    type: NUMERIC
-  - mode: NULLABLE
-    name: minor_version
-    type: NUMERIC
-  - mode: NULLABLE
-    name: patch_revision
-    type: NUMERIC
-  - mode: NULLABLE
-    name: is_major_release
-    type: BOOLEAN
   mode: NULLABLE
-  name: browser_version_info
+- name: device
+  type: STRING
+  mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: browser_version_info
   type: RECORD
-- mode: NULLABLE
-  name: country
+  mode: NULLABLE
+  fields:
+  - name: version
+    type: STRING
+    mode: NULLABLE
+  - name: major_version
+    type: NUMERIC
+    mode: NULLABLE
+  - name: minor_version
+    type: NUMERIC
+    mode: NULLABLE
+  - name: patch_revision
+    type: NUMERIC
+    mode: NULLABLE
+  - name: is_major_release
+    type: BOOLEAN
+    mode: NULLABLE
+- name: country
   type: STRING
-- mode: NULLABLE
-  name: locale
+  mode: NULLABLE
+- name: locale
   type: STRING
-- mode: NULLABLE
-  name: normalized_channel
+  mode: NULLABLE
+- name: normalized_channel
   type: STRING
-- mode: NULLABLE
-  name: normalized_os
+  mode: NULLABLE
+- name: normalized_os
   type: STRING
-- mode: NULLABLE
-  name: is_new_profile
+  mode: NULLABLE
+- name: is_new_profile
   type: BOOLEAN
-- mode: NULLABLE
-  name: sample_id
+  mode: NULLABLE
+- name: sample_id
   type: INTEGER
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - mode: NULLABLE
-    name: value
-    type: STRING
-  mode: REPEATED
-  name: experiments
+  mode: NULLABLE
+- name: experiments
   type: RECORD
-- mode: NULLABLE
-  name: sponsored_tiles_click_count
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: STRING
+    mode: NULLABLE
+- name: sponsored_tiles_click_count
   type: INTEGER
-- mode: NULLABLE
-  name: sponsored_tiles_impression_count
+  mode: NULLABLE
+- name: sponsored_tiles_impression_count
   type: INTEGER
-- mode: NULLABLE
-  name: sponsored_tiles_dismissal_count
+  mode: NULLABLE
+- name: sponsored_tiles_dismissal_count
   type: INTEGER
-- mode: NULLABLE
-  name: sponsored_tiles_disable_count
+  mode: NULLABLE
+- name: sponsored_tiles_disable_count
   type: INTEGER
+  mode: NULLABLE

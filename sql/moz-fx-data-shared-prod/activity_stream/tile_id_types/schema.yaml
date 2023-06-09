@@ -1,7 +1,7 @@
 fields:
-- mode: NULLABLE
-  name: tile_id
+- name: tile_id
   type: INTEGER
-- mode: NULLABLE
-  name: type
+  mode: NULLABLE
+- name: type
   type: STRING
+  mode: NULLABLE

@@ -1,75 +1,75 @@
 fields:
-- description: 'Processing date, this indicates which date partiion was used
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: 'Processing date, this indicates which date partiion was used
 
     when generating this record.
 
     '
-  mode: NULLABLE
-  name: submission_date
+- name: first_seen_date
   type: DATE
-- description: 'Date when we observed the user for the first time.
+  mode: NULLABLE
+  description: 'Date when we observed the user for the first time.
 
     '
-  mode: NULLABLE
-  name: first_seen_date
-  type: DATE
-- description: 'Sample ID to limit query results during an analysis.
-
-    '
-  mode: NULLABLE
-  name: sample_id
+- name: sample_id
   type: INTEGER
-- description: 'Unique ID for the client installation.
+  mode: NULLABLE
+  description: 'Sample ID to limit query results during an analysis.
 
     '
-  mode: NULLABLE
-  name: client_id
+- name: client_id
   type: STRING
-- description: 'The type of source of a client installation.
+  mode: NULLABLE
+  description: 'Unique ID for the client installation.
 
     '
-  mode: NULLABLE
-  name: adjust_network
+- name: adjust_network
   type: STRING
-- description: 'Structure parameter for the the ad group of a campaign.
+  mode: NULLABLE
+  description: 'The type of source of a client installation.
 
     '
-  mode: NULLABLE
-  name: adjust_adgroup
+- name: adjust_adgroup
   type: STRING
-- description: 'Structure parameter for the campaign name.
+  mode: NULLABLE
+  description: 'Structure parameter for the the ad group of a campaign.
 
     '
-  mode: NULLABLE
-  name: adjust_campaign
+- name: adjust_campaign
   type: STRING
-- description: 'Structure parameter for the creative content of a campaign.
+  mode: NULLABLE
+  description: 'Structure parameter for the campaign name.
 
     '
-  mode: NULLABLE
-  name: adjust_creative
+- name: adjust_creative
   type: STRING
-- description: 'Determines if a client is a new profile.
+  mode: NULLABLE
+  description: 'Structure parameter for the creative content of a campaign.
 
     '
-  mode: NULLABLE
-  name: is_new_profile
+- name: is_new_profile
   type: BOOLEAN
-- description: 'The number of search interactions the user had on SERP pages.
+  mode: NULLABLE
+  description: 'Determines if a client is a new profile.
 
     '
-  mode: NULLABLE
-  name: searches
+- name: searches
   type: INTEGER
-- description: 'The number of SERP pages with ads shown to the user.
+  mode: NULLABLE
+  description: 'The number of search interactions the user had on SERP pages.
 
     '
-  mode: NULLABLE
-  name: searches_with_ads
+- name: searches_with_ads
   type: INTEGER
-- description: 'The number of times a user clicked on an ad on SERP pages.
+  mode: NULLABLE
+  description: 'The number of SERP pages with ads shown to the user.
 
     '
-  mode: NULLABLE
-  name: ad_clicks
+- name: ad_clicks
   type: INTEGER
+  mode: NULLABLE
+  description: 'The number of times a user clicked on an ad on SERP pages.
+
+    '

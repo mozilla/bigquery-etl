@@ -1,19 +1,19 @@
 fields:
-- mode: NULLABLE
-  name: submission_date
+- name: submission_date
   type: DATE
-- mode: NULLABLE
-  name: creation_time
+  mode: NULLABLE
+- name: creation_time
   type: TIMESTAMP
-- mode: NULLABLE
-  name: dataset
+  mode: NULLABLE
+- name: dataset
   type: STRING
-- mode: NULLABLE
-  name: table
+  mode: NULLABLE
+- name: table
   type: STRING
-- mode: NULLABLE
-  name: cost_usd
+  mode: NULLABLE
+- name: cost_usd
   type: FLOAT
-- mode: NULLABLE
-  name: total_bytes_processed
+  mode: NULLABLE
+- name: total_bytes_processed
   type: INTEGER
+  mode: NULLABLE

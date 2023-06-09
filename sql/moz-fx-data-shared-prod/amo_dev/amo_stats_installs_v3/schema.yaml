@@ -1,50 +1,50 @@
 fields:
-- mode: NULLABLE
-  name: submission_date
+- name: submission_date
   type: DATE
-- mode: NULLABLE
-  name: hashed_addon_id
+  mode: NULLABLE
+- name: hashed_addon_id
   type: STRING
-- mode: NULLABLE
-  name: total_downloads
+  mode: NULLABLE
+- name: total_downloads
   type: INTEGER
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - mode: NULLABLE
-    name: value
-    type: INTEGER
-  mode: REPEATED
-  name: downloads_per_source
+  mode: NULLABLE
+- name: downloads_per_source
   type: RECORD
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - mode: NULLABLE
-    name: value
-    type: INTEGER
   mode: REPEATED
-  name: downloads_per_content
-  type: RECORD
-- fields:
-  - mode: NULLABLE
-    name: key
+  fields:
+  - name: key
     type: STRING
-  - mode: NULLABLE
-    name: value
+    mode: NULLABLE
+  - name: value
     type: INTEGER
-  mode: REPEATED
-  name: downloads_per_medium
+    mode: NULLABLE
+- name: downloads_per_content
   type: RECORD
-- fields:
-  - mode: NULLABLE
-    name: key
+  mode: REPEATED
+  fields:
+  - name: key
     type: STRING
-  - mode: NULLABLE
-    name: value
+    mode: NULLABLE
+  - name: value
     type: INTEGER
-  mode: REPEATED
-  name: downloads_per_campaign
+    mode: NULLABLE
+- name: downloads_per_medium
   type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: INTEGER
+    mode: NULLABLE
+- name: downloads_per_campaign
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: INTEGER
+    mode: NULLABLE

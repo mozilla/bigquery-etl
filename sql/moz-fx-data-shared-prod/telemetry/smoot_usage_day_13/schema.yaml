@@ -1,55 +1,55 @@
 fields:
-- mode: NULLABLE
-  name: date
+- name: date
   type: DATE
-- mode: NULLABLE
-  name: usage
+  mode: NULLABLE
+- name: usage
   type: STRING
-- mode: NULLABLE
-  name: new_profiles
+  mode: NULLABLE
+- name: new_profiles
   type: INTEGER
-- mode: NULLABLE
-  name: active_in_week_0
+  mode: NULLABLE
+- name: active_in_week_0
   type: INTEGER
-- mode: NULLABLE
-  name: active_in_week_1
+  mode: NULLABLE
+- name: active_in_week_1
   type: INTEGER
-- mode: NULLABLE
-  name: active_in_weeks_0_and_1
+  mode: NULLABLE
+- name: active_in_weeks_0_and_1
   type: INTEGER
-- mode: NULLABLE
-  name: new_profile_active_in_week_0
+  mode: NULLABLE
+- name: new_profile_active_in_week_0
   type: INTEGER
-- mode: NULLABLE
-  name: new_profile_active_in_week_1
+  mode: NULLABLE
+- name: new_profile_active_in_week_1
   type: INTEGER
-- mode: NULLABLE
-  name: new_profile_active_in_weeks_0_and_1
+  mode: NULLABLE
+- name: new_profile_active_in_weeks_0_and_1
   type: INTEGER
-- mode: NULLABLE
-  name: id_bucket
+  mode: NULLABLE
+- name: id_bucket
   type: INTEGER
-- mode: NULLABLE
-  name: app_name
+  mode: NULLABLE
+- name: app_name
   type: STRING
-- mode: NULLABLE
-  name: app_version
+  mode: NULLABLE
+- name: app_version
   type: STRING
-- mode: NULLABLE
-  name: country
+  mode: NULLABLE
+- name: country
   type: STRING
-- mode: NULLABLE
-  name: locale
+  mode: NULLABLE
+- name: locale
   type: STRING
-- mode: NULLABLE
-  name: os
+  mode: NULLABLE
+- name: os
   type: STRING
-- mode: NULLABLE
-  name: os_version
+  mode: NULLABLE
+- name: os_version
   type: STRING
-- mode: NULLABLE
-  name: channel
+  mode: NULLABLE
+- name: channel
   type: STRING
-- mode: NULLABLE
-  name: attributed
+  mode: NULLABLE
+- name: attributed
   type: BOOLEAN
+  mode: NULLABLE

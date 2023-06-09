@@ -1,5 +1,8 @@
 fields:
-- description: 'Corresponds to the submission_date of the record
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: 'Corresponds to the submission_date of the record
 
     used from fxa_users_services_daily_v2.
 
@@ -17,104 +20,101 @@ fields:
     DATE(first_service_flow_timestamp) = "DAY".
 
     '
+- name: user_id
+  type: STRING
   mode: NULLABLE
-  name: submission_date
-  type: DATE
-- description: '36-char long hash randomly assigned when the account
+  description: '36-char long hash randomly assigned when the account
 
     is created.
 
     '
-  mode: NULLABLE
-  name: user_id
+- name: service
   type: STRING
-- description: 'The service identifier. For Sync it may be empty or sync.
+  mode: NULLABLE
+  description: 'The service identifier. For Sync it may be empty or sync.
 
     For OAuth reliers it is their hex client id.
 
     Example: sync
 
     '
+- name: did_register
+  type: BOOLEAN
   mode: NULLABLE
-  name: service
-  type: STRING
-- description: 'Set to True if the user submitted
+  description: 'Set to True if the user submitted
 
     the event_type of `fxa_reg - complete`
 
     event on the specific submission_date.
 
     '
+- name: first_service_os_name
+  type: STRING
   mode: NULLABLE
-  name: did_register
-  type: BOOLEAN
-- description: 'Name of the operating system the device was using.
+  description: 'Name of the operating system the device was using.
 
     E.g. Android
 
     '
-  mode: NULLABLE
-  name: first_service_os_name
+- name: first_service_os_version
   type: STRING
-- description: 'Version of the OS the device was using.
+  mode: NULLABLE
+  description: 'Version of the OS the device was using.
 
     '
-  mode: NULLABLE
-  name: first_service_os_version
+- name: first_service_app_version
   type: STRING
-- description: 'Mozilla app version,
+  mode: NULLABLE
+  description: 'Mozilla app version,
 
     follows format: major.minor.patch (e.g. 99.3.3).
 
     '
-  mode: NULLABLE
-  name: first_service_app_version
+- name: first_service_country
   type: STRING
-- description: '2 char string representing the country where the device was located.
+  mode: NULLABLE
+  description: '2 char string representing the country where the device was located.
 
     '
-  mode: NULLABLE
-  name: first_service_country
+- name: first_service_language
   type: STRING
-- description: 'Language settings used by the device.
+  mode: NULLABLE
+  description: 'Language settings used by the device.
 
     '
-  mode: NULLABLE
-  name: first_service_language
+- name: first_service_ua_version
   type: STRING
-- description: 'The user''s browser version.
+  mode: NULLABLE
+  description: 'The user''s browser version.
 
     '
-  mode: NULLABLE
-  name: first_service_ua_version
+- name: first_service_ua_browser
   type: STRING
-- description: 'The user''s web browser, e.g. ''Firefox'' or ''Chrome''.
+  mode: NULLABLE
+  description: 'The user''s web browser, e.g. ''Firefox'' or ''Chrome''.
 
     '
-  mode: NULLABLE
-  name: first_service_ua_browser
-  type: STRING
-- mode: NULLABLE
-  name: first_service_flow_timestamp
+- name: first_service_flow_timestamp
   type: TIMESTAMP
-- mode: NULLABLE
-  name: first_service_flow_entrypoint
+  mode: NULLABLE
+- name: first_service_flow_entrypoint
   type: STRING
-- mode: NULLABLE
-  name: first_service_flow_utm_term
+  mode: NULLABLE
+- name: first_service_flow_utm_term
   type: STRING
-- mode: NULLABLE
-  name: first_service_flow_utm_medium
+  mode: NULLABLE
+- name: first_service_flow_utm_medium
   type: STRING
-- mode: NULLABLE
-  name: first_service_flow_utm_source
+  mode: NULLABLE
+- name: first_service_flow_utm_source
   type: STRING
-- mode: NULLABLE
-  name: first_service_flow_utm_campaign
+  mode: NULLABLE
+- name: first_service_flow_utm_campaign
   type: STRING
-- mode: NULLABLE
-  name: first_service_flow_utm_content
+  mode: NULLABLE
+- name: first_service_flow_utm_content
   type: STRING
-- mode: NULLABLE
-  name: first_service_flow_id
+  mode: NULLABLE
+- name: first_service_flow_id
   type: STRING
+  mode: NULLABLE

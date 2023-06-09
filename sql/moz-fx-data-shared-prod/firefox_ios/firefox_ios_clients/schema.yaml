@@ -1,123 +1,123 @@
 fields:
-- description: 'Unique ID for the client installation.
-
-    '
-  mode: NULLABLE
-  name: client_id
+- name: client_id
   type: STRING
-- description: 'Sample ID to limit query results during an analysis.
+  mode: NULLABLE
+  description: 'Unique ID for the client installation.
 
     '
-  mode: NULLABLE
-  name: sample_id
+- name: sample_id
   type: INTEGER
-- description: 'Date when the app first reported a baseline ping for the client.
+  mode: NULLABLE
+  description: 'Sample ID to limit query results during an analysis.
 
     '
-  mode: NULLABLE
-  name: first_seen_date
+- name: first_seen_date
   type: DATE
-- description: 'First reported country for the client installation.
+  mode: NULLABLE
+  description: 'Date when the app first reported a baseline ping for the client.
 
     '
-  mode: NULLABLE
-  name: first_reported_country
+- name: first_reported_country
   type: STRING
-- description: 'Name of the first reported isp (Internet Service Provider).
+  mode: NULLABLE
+  description: 'First reported country for the client installation.
 
     '
-  mode: NULLABLE
-  name: first_reported_isp
+- name: first_reported_isp
   type: STRING
-- description: 'Channel where the browser is released.
+  mode: NULLABLE
+  description: 'Name of the first reported isp (Internet Service Provider).
 
     '
-  mode: NULLABLE
-  name: channel
+- name: channel
   type: STRING
-- description: 'Manufacturer of the device where the client is installed.
+  mode: NULLABLE
+  description: 'Channel where the browser is released.
 
     '
-  mode: NULLABLE
-  name: device_manufacturer
+- name: device_manufacturer
   type: STRING
-- description: 'Model of the device where the client is installed.
+  mode: NULLABLE
+  description: 'Manufacturer of the device where the client is installed.
 
     '
-  mode: NULLABLE
-  name: device_model
+- name: device_model
   type: STRING
-- description: 'Version of the Operating System where the client is originally installed.
+  mode: NULLABLE
+  description: 'Model of the device where the client is installed.
 
     '
-  mode: NULLABLE
-  name: os_version
+- name: os_version
   type: STRING
-- description: 'App display version for this client installation.
+  mode: NULLABLE
+  description: 'Version of the Operating System where the client is originally installed.
 
     '
-  mode: NULLABLE
-  name: app_version
+- name: app_version
   type: STRING
-- description: 'Determines if a client is activated based on the activation metric
+  mode: NULLABLE
+  description: 'App display version for this client installation.
+
+    '
+- name: is_activated
+  type: BOOLEAN
+  mode: NULLABLE
+  description: 'Determines if a client is activated based on the activation metric
     and a 7 day lag.
 
     '
-  mode: NULLABLE
-  name: is_activated
-  type: BOOLEAN
-- description: 'Timestamp of the ping which contained the adjust information.
-
-    '
-  mode: NULLABLE
-  name: submission_timestamp
+- name: submission_timestamp
   type: TIMESTAMP
-- description: 'Structure parameter for the the ad group of a campaign.
+  mode: NULLABLE
+  description: 'Timestamp of the ping which contained the adjust information.
 
     '
-  mode: NULLABLE
-  name: adjust_ad_group
+- name: adjust_ad_group
   type: STRING
-- description: 'Structure parameter for the campaign name.
+  mode: NULLABLE
+  description: 'Structure parameter for the the ad group of a campaign.
 
     '
-  mode: NULLABLE
-  name: adjust_campaign
+- name: adjust_campaign
   type: STRING
-- description: 'Structure parameter for the creative content of a campaign.
+  mode: NULLABLE
+  description: 'Structure parameter for the campaign name.
 
     '
-  mode: NULLABLE
-  name: adjust_creative
+- name: adjust_creative
   type: STRING
-- description: 'The type of source of a client installation.
+  mode: NULLABLE
+  description: 'Structure parameter for the creative content of a campaign.
 
     '
-  mode: NULLABLE
-  name: adjust_network
+- name: adjust_network
   type: STRING
-- description: 'Additional context around the source of this record.
+  mode: NULLABLE
+  description: 'The type of source of a client installation.
 
     '
-  fields:
-  - description: 'True if the client ever reported a first_session ping.
-
-      '
-    mode: NULLABLE
-    name: is_reported_first_session_ping
-    type: BOOLEAN
-  - description: 'True if the client ever reported a metrics ping.
-
-      '
-    mode: NULLABLE
-    name: is_reported_metrics_ping
-    type: BOOLEAN
-  - description: 'Ping from which the adjust_info values originate.
-
-      '
-    mode: NULLABLE
-    name: adjust_info__source_ping
-    type: STRING
-  mode: NULLABLE
-  name: metadata
+- name: metadata
   type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: is_reported_first_session_ping
+    type: BOOLEAN
+    mode: NULLABLE
+    description: 'True if the client ever reported a first_session ping.
+
+      '
+  - name: is_reported_metrics_ping
+    type: BOOLEAN
+    mode: NULLABLE
+    description: 'True if the client ever reported a metrics ping.
+
+      '
+  - name: adjust_info__source_ping
+    type: STRING
+    mode: NULLABLE
+    description: 'Ping from which the adjust_info values originate.
+
+      '
+  description: 'Additional context around the source of this record.
+
+    '

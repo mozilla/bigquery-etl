@@ -1,19 +1,19 @@
 fields:
-- mode: NULLABLE
-  name: id
+- name: id
   type: INTEGER
-- mode: NULLABLE
-  name: user_id
+  mode: NULLABLE
+- name: user_id
   type: INTEGER
-- mode: NULLABLE
-  name: created_at
+  mode: NULLABLE
+- name: created_at
   type: TIMESTAMP
-- mode: NULLABLE
-  name: updated_at
+  mode: NULLABLE
+- name: updated_at
   type: TIMESTAMP
-- mode: NULLABLE
-  name: platform
+  mode: NULLABLE
+- name: platform
   type: STRING
-- mode: NULLABLE
-  name: useragent
+  mode: NULLABLE
+- name: useragent
   type: STRING
+  mode: NULLABLE

@@ -1,22 +1,22 @@
 fields:
-- mode: NULLABLE
-  name: start_date
+- name: start_date
   type: DATE
-- mode: NULLABLE
-  name: end_date
+  mode: NULLABLE
+- name: end_date
   type: DATE
-- mode: NULLABLE
-  name: incident
+  mode: NULLABLE
+- name: incident
   type: STRING
-- mode: NULLABLE
-  name: description
+  mode: NULLABLE
+- name: description
   type: STRING
-- mode: NULLABLE
-  name: bug
+  mode: NULLABLE
+- name: bug
   type: STRING
-- mode: NULLABLE
-  name: product
+  mode: NULLABLE
+- name: product
   type: STRING
-- mode: NULLABLE
-  name: version
+  mode: NULLABLE
+- name: version
   type: STRING
+  mode: NULLABLE

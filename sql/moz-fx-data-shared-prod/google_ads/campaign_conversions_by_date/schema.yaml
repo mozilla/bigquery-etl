@@ -1,16 +1,16 @@
 fields:
-- mode: NULLABLE
-  name: date
+- name: date
   type: DATE
-- mode: NULLABLE
-  name: campaign_name
+  mode: NULLABLE
+- name: campaign_name
   type: STRING
-- mode: NULLABLE
-  name: campaign_id
+  mode: NULLABLE
+- name: campaign_id
   type: INTEGER
-- mode: NULLABLE
-  name: installs
+  mode: NULLABLE
+- name: installs
   type: FLOAT
-- mode: NULLABLE
-  name: conversions
+  mode: NULLABLE
+- name: conversions
   type: FLOAT
+  mode: NULLABLE

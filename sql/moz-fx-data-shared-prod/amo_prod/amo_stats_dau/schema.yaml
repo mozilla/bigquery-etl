@@ -1,70 +1,70 @@
 fields:
-- mode: NULLABLE
-  name: submission_date
+- name: submission_date
   type: DATE
-- mode: NULLABLE
-  name: addon_id
+  mode: NULLABLE
+- name: addon_id
   type: STRING
-- mode: NULLABLE
-  name: dau
+  mode: NULLABLE
+- name: dau
   type: INTEGER
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - mode: NULLABLE
-    name: value
-    type: INTEGER
-  mode: REPEATED
-  name: dau_by_addon_version
+  mode: NULLABLE
+- name: dau_by_addon_version
   type: RECORD
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - mode: NULLABLE
-    name: value
-    type: INTEGER
   mode: REPEATED
-  name: dau_by_app_os
-  type: RECORD
-- fields:
-  - mode: NULLABLE
-    name: key
+  fields:
+  - name: key
     type: STRING
-  - mode: NULLABLE
-    name: value
+    mode: NULLABLE
+  - name: value
     type: INTEGER
-  mode: REPEATED
-  name: dau_by_app_version
+    mode: NULLABLE
+- name: dau_by_app_os
   type: RECORD
-- fields:
-  - mode: NULLABLE
-    name: key
+  mode: REPEATED
+  fields:
+  - name: key
     type: STRING
-  - mode: NULLABLE
-    name: value
+    mode: NULLABLE
+  - name: value
     type: INTEGER
-  mode: REPEATED
-  name: dau_by_fenix_build
+    mode: NULLABLE
+- name: dau_by_app_version
   type: RECORD
-- fields:
-  - mode: NULLABLE
-    name: key
+  mode: REPEATED
+  fields:
+  - name: key
     type: STRING
-  - mode: NULLABLE
-    name: value
+    mode: NULLABLE
+  - name: value
     type: INTEGER
-  mode: REPEATED
-  name: dau_by_country
+    mode: NULLABLE
+- name: dau_by_fenix_build
   type: RECORD
-- fields:
-  - mode: NULLABLE
-    name: key
+  mode: REPEATED
+  fields:
+  - name: key
     type: STRING
-  - mode: NULLABLE
-    name: value
+    mode: NULLABLE
+  - name: value
     type: INTEGER
-  mode: REPEATED
-  name: dau_by_locale
+    mode: NULLABLE
+- name: dau_by_country
   type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: INTEGER
+    mode: NULLABLE
+- name: dau_by_locale
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: INTEGER
+    mode: NULLABLE

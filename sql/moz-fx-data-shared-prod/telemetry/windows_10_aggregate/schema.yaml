@@ -1,28 +1,28 @@
 fields:
-- mode: NULLABLE
-  name: name
+- name: name
   type: STRING
-- mode: NULLABLE
-  name: version
+  mode: NULLABLE
+- name: version
   type: STRING
-- mode: NULLABLE
-  name: build_number
+  mode: NULLABLE
+- name: build_number
   type: INTEGER
-- mode: NULLABLE
-  name: ubr
+  mode: NULLABLE
+- name: ubr
   type: STRING
-- mode: NULLABLE
-  name: build_group
+  mode: NULLABLE
+- name: build_group
   type: STRING
-- mode: NULLABLE
-  name: ff_build_version
+  mode: NULLABLE
+- name: ff_build_version
   type: STRING
-- mode: NULLABLE
-  name: normalized_channel
+  mode: NULLABLE
+- name: normalized_channel
   type: STRING
-- mode: NULLABLE
-  name: count
+  mode: NULLABLE
+- name: count
   type: INTEGER
-- mode: NULLABLE
-  name: total_obs
+  mode: NULLABLE
+- name: total_obs
   type: INTEGER
+  mode: NULLABLE

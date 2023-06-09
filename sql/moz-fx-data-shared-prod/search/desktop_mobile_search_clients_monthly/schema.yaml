@@ -1,40 +1,40 @@
 fields:
-- mode: NULLABLE
-  name: client_id
+- name: client_id
   type: STRING
-- mode: NULLABLE
-  name: submission_month
+  mode: NULLABLE
+- name: submission_month
   type: DATE
-- mode: NULLABLE
-  name: device
+  mode: NULLABLE
+- name: device
   type: STRING
-- mode: NULLABLE
-  name: normalized_engine
+  mode: NULLABLE
+- name: normalized_engine
   type: STRING
-- mode: NULLABLE
-  name: normalized_app_name
+  mode: NULLABLE
+- name: normalized_app_name
   type: STRING
-- mode: NULLABLE
-  name: os
+  mode: NULLABLE
+- name: os
   type: STRING
-- mode: NULLABLE
-  name: country
+  mode: NULLABLE
+- name: country
   type: STRING
-- mode: NULLABLE
-  name: days_of_use
+  mode: NULLABLE
+- name: days_of_use
   type: INTEGER
-- mode: NULLABLE
-  name: searches
+  mode: NULLABLE
+- name: searches
   type: INTEGER
-- mode: NULLABLE
-  name: search_with_ads
+  mode: NULLABLE
+- name: search_with_ads
   type: INTEGER
-- mode: NULLABLE
-  name: ad_click
+  mode: NULLABLE
+- name: ad_click
   type: INTEGER
-- mode: NULLABLE
-  name: tagged_follow_on
+  mode: NULLABLE
+- name: tagged_follow_on
   type: INTEGER
-- mode: NULLABLE
-  name: tagged_sap
+  mode: NULLABLE
+- name: tagged_sap
   type: INTEGER
+  mode: NULLABLE

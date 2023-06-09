@@ -1,10 +1,10 @@
 fields:
-- mode: NULLABLE
-  name: campaign_id
+- name: campaign_id
   type: INTEGER
-- mode: NULLABLE
-  name: campaign_name
+  mode: NULLABLE
+- name: campaign_name
   type: STRING
-- mode: NULLABLE
-  name: is_most_recent_record
+  mode: NULLABLE
+- name: is_most_recent_record
   type: BOOLEAN
+  mode: NULLABLE

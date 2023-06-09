@@ -1,25 +1,25 @@
 fields:
-- mode: NULLABLE
-  name: date
+- name: date
   type: DATE
-- mode: NULLABLE
-  name: mozregression_version
+  mode: NULLABLE
+- name: mozregression_version
   type: STRING
-- mode: NULLABLE
-  name: mozregression_variant
+  mode: NULLABLE
+- name: mozregression_variant
   type: STRING
-- mode: NULLABLE
-  name: app_used
+  mode: NULLABLE
+- name: app_used
   type: STRING
-- mode: NULLABLE
-  name: os
+  mode: NULLABLE
+- name: os
   type: STRING
-- mode: NULLABLE
-  name: os_version
+  mode: NULLABLE
+- name: os_version
   type: NUMERIC
-- mode: NULLABLE
-  name: distinct_clients
+  mode: NULLABLE
+- name: distinct_clients
   type: INTEGER
-- mode: NULLABLE
-  name: total_uses
+  mode: NULLABLE
+- name: total_uses
   type: INTEGER
+  mode: NULLABLE

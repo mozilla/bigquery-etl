@@ -1,46 +1,46 @@
 fields:
-- mode: NULLABLE
-  name: active_date
+- name: active_date
   type: DATE
-- mode: NULLABLE
-  name: plan_id
+  mode: NULLABLE
+- name: plan_id
   type: STRING
-- mode: NULLABLE
-  name: country
+  mode: NULLABLE
+- name: country
   type: STRING
-- mode: NULLABLE
-  name: country_name
+  mode: NULLABLE
+- name: country_name
   type: STRING
-- mode: NULLABLE
-  name: provider
+  mode: NULLABLE
+- name: provider
   type: STRING
-- mode: NULLABLE
-  name: plan_amount
+  mode: NULLABLE
+- name: plan_amount
   type: INTEGER
-- mode: NULLABLE
-  name: plan_currency
+  mode: NULLABLE
+- name: plan_currency
   type: STRING
-- mode: NULLABLE
-  name: plan_interval
+  mode: NULLABLE
+- name: plan_interval
   type: STRING
-- mode: NULLABLE
-  name: plan_interval_count
+  mode: NULLABLE
+- name: plan_interval_count
   type: INTEGER
-- mode: NULLABLE
-  name: product_id
+  mode: NULLABLE
+- name: product_id
   type: STRING
-- mode: NULLABLE
-  name: product_name
+  mode: NULLABLE
+- name: product_name
   type: STRING
-- mode: NULLABLE
-  name: pricing_plan
+  mode: NULLABLE
+- name: pricing_plan
   type: STRING
-- mode: REPEATED
-  name: promotion_codes
+  mode: NULLABLE
+- name: promotion_codes
   type: STRING
-- mode: NULLABLE
-  name: promotion_discounts_amount
+  mode: REPEATED
+- name: promotion_discounts_amount
   type: INTEGER
-- mode: NULLABLE
-  name: count
+  mode: NULLABLE
+- name: count
   type: INTEGER
+  mode: NULLABLE

@@ -1,53 +1,53 @@
 fields:
-- mode: NULLABLE
-  name: os
+- name: os
   type: STRING
-- mode: NULLABLE
-  name: app_version
+  mode: NULLABLE
+- name: app_version
   type: INTEGER
-- mode: NULLABLE
-  name: app_build_id
+  mode: NULLABLE
+- name: app_build_id
   type: STRING
-- mode: NULLABLE
-  name: channel
+  mode: NULLABLE
+- name: channel
   type: STRING
-- mode: NULLABLE
-  name: metric
+  mode: NULLABLE
+- name: metric
   type: STRING
-- mode: NULLABLE
-  name: metric_type
+  mode: NULLABLE
+- name: metric_type
   type: STRING
-- mode: NULLABLE
-  name: key
+  mode: NULLABLE
+- name: key
   type: STRING
-- mode: NULLABLE
-  name: process
+  mode: NULLABLE
+- name: process
   type: STRING
-- mode: NULLABLE
-  name: first_bucket
+  mode: NULLABLE
+- name: first_bucket
   type: INTEGER
-- mode: NULLABLE
-  name: last_bucket
+  mode: NULLABLE
+- name: last_bucket
   type: INTEGER
-- mode: NULLABLE
-  name: num_buckets
+  mode: NULLABLE
+- name: num_buckets
   type: INTEGER
-- mode: NULLABLE
-  name: client_agg_type
+  mode: NULLABLE
+- name: client_agg_type
   type: STRING
-- mode: NULLABLE
-  name: agg_type
+  mode: NULLABLE
+- name: agg_type
   type: STRING
-- mode: NULLABLE
-  name: total_users
+  mode: NULLABLE
+- name: total_users
   type: INTEGER
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - mode: NULLABLE
-    name: value
-    type: FLOAT
-  mode: REPEATED
-  name: aggregates
+  mode: NULLABLE
+- name: aggregates
   type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: FLOAT
+    mode: NULLABLE

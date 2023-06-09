@@ -88,7 +88,6 @@ def paths_matching_checks_pattern(pattern, sql_path, project_id):
     checks_files = paths_matching_name_pattern(
         pattern, sql_path, project_id, ["checks.sql"], CHECKS_FILE_RE
     )
-    assert len(checks_files) < 2  # should only have 0 or 1 file.
 
     if len(checks_files) == 1:
         match = CHECKS_FILE_RE.match(str(checks_files[0]))
@@ -97,6 +96,9 @@ def paths_matching_checks_pattern(pattern, sql_path, project_id):
             dataset = match.group(2)
             table = match.group(3)
         return checks_files[0], project, dataset, table
+    else:
+        print(f"No checks.sql file found in {sql_path}/{project_id}/{pattern}")
+        return None, None, None, None
 
 
 def paths_matching_name_pattern(

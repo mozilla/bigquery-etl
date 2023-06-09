@@ -180,6 +180,16 @@ fields:
   type: RECORD
 - fields:
   - fields:
+    - mode: NULLABLE
+      name: glean_validation_first_run_hour
+      type: TIMESTAMP
+    - mode: NULLABLE
+      name: raw_glean_validation_first_run_hour
+      type: STRING
+    mode: NULLABLE
+    name: datetime
+    type: RECORD
+  - fields:
     - fields:
       - mode: NULLABLE
         name: key
@@ -220,12 +230,43 @@ fields:
       mode: REPEATED
       name: glean_error_invalid_value
       type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: glean_validation_pings_submitted
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD
   - fields:
     - mode: NULLABLE
-      name: session_connection_health_stable_count
+      name: glean_baseline_locale
+      type: STRING
+    mode: NULLABLE
+    name: string
+    type: RECORD
+  - fields:
+    - fields:
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: NULLABLE
+      name: glean_baseline_duration
+      type: RECORD
+    mode: NULLABLE
+    name: timespan
+    type: RECORD
+  - fields:
+    - mode: NULLABLE
+      name: glean_validation_metrics_ping_count
       type: INTEGER
     mode: NULLABLE
     name: counter

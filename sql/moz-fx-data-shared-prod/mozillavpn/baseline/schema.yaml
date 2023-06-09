@@ -226,6 +226,19 @@ fields:
   type: RECORD
 - fields:
   - fields:
+    - description: 'The hour of the first run of the application.
+
+        '
+      mode: NULLABLE
+      name: glean_validation_first_run_hour
+      type: TIMESTAMP
+    - mode: NULLABLE
+      name: raw_glean_validation_first_run_hour
+      type: STRING
+    mode: NULLABLE
+    name: datetime
+    type: RECORD
+  - fields:
     - description: 'Counts the number of times a metric was set with an invalid label.
 
         The labels are the `category.name` identifier of the metric.
@@ -286,20 +299,57 @@ fields:
       mode: REPEATED
       name: glean_error_invalid_value
       type: RECORD
+    - description: "A count of the pings submitted, by ping type.\n\nThis metric appears\
+        \ in both the metrics and baseline pings.\n\n- On the metrics ping, the counts\
+        \ include the number of pings sent since\n  the last metrics ping (including\
+        \ the last metrics ping)\n- On the baseline ping, the counts include the number\
+        \ of pings send since\n  the last baseline ping (including the last baseline\
+        \ ping)\n"
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: glean_validation_pings_submitted
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD
   - fields:
-    - description: 'Count of times that the connection health check succeeds.
+    - description: 'The locale of the application during initialization (e.g. "es-ES").
 
-        Collected only on mobile apps.
+        If the locale can''t be determined on the system, the value is
+
+        ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
+
+        to indicate "undetermined".
 
         '
       mode: NULLABLE
-      name: session_connection_health_stable_count
-      type: INTEGER
+      name: glean_baseline_locale
+      type: STRING
     mode: NULLABLE
-    name: counter
+    name: string
+    type: RECORD
+  - fields:
+    - description: 'The duration of the last foreground session.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: NULLABLE
+      name: glean_baseline_duration
+      type: RECORD
+    mode: NULLABLE
+    name: timespan
     type: RECORD
   mode: NULLABLE
   name: metrics

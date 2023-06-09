@@ -289,6 +289,18 @@ fields:
     mode: NULLABLE
     name: labeled_counter
     type: RECORD
+  - fields:
+    - description: 'Count of times that the connection health check succeeds.
+
+        Collected only on mobile apps.
+
+        '
+      mode: NULLABLE
+      name: session_connection_health_stable_count
+      type: INTEGER
+    mode: NULLABLE
+    name: counter
+    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

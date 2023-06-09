@@ -260,11 +260,8 @@ def info(ctx, qualified_table_name, sql_dir, project_id, status):
     total_backfills_count = 0
 
     for file, entries in backfills.items():
-        if status is None:
-            status_str = "all"
-        else:
+        if status is not None:
             entries = [e for e in entries if e.status.value.lower() == status.lower()]
-            status_str = status
 
         entries_count = len(entries)
 

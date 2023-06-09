@@ -12,13 +12,13 @@ from bigquery_etl.backfill.parse import (
     Backfill,
     BackfillStatus,
 )
-from bigquery_etl.cli.backfill import create, validate
+from bigquery_etl.cli.backfill import create, info, validate
 
 DEFAULT_STATUS = BackfillStatus.DRAFTING
 VALID_REASON = "test_reason"
 VALID_WATCHER = "test@example.org"
 VALID_BACKFILL = Backfill(
-    date(2021, 5, 3),
+    date(2021, 5, 4),
     date(2021, 1, 3),
     date(2021, 5, 3),
     [date(2021, 2, 3)],
@@ -712,3 +712,231 @@ class TestBackfill:
                 ],
             )
             assert validate_backfill_result.exit_code == 0
+
+    def test_backfill_info_one_table_all_status(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+            qualified_table_name_1 = "moz-fx-data-shared-prod.test.test_query_v1"
+
+            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+            backfill_file.write_text(
+                BACKFILL_YAML_TEMPLATE + "\n"
+                "2021-05-03:\n"
+                "  start_date: 2021-01-03\n"
+                "  end_date: 2021-05-03\n"
+                "  reason: test_reason\n"
+                "  watchers:\n"
+                "  - test@example.org\n"
+                "  status: Validating\n"
+            )
+
+            assert BACKFILL_FILE in os.listdir(SQL_DIR)
+
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v2"
+            os.makedirs(SQL_DIR)
+            qualified_table_name_2 = "moz-fx-data-shared-prod.test.test_query_v2"
+
+            result = runner.invoke(
+                create,
+                [
+                    qualified_table_name_2,
+                    "--start_date=2021-04-01",
+                ],
+            )
+
+            assert result.exit_code == 0
+            assert BACKFILL_FILE in os.listdir(SQL_DIR)
+
+            result = runner.invoke(
+                info,
+                [qualified_table_name_1],
+            )
+
+            assert result.exit_code == 0
+            assert qualified_table_name_1 in result.output
+            assert BackfillStatus.DRAFTING.value in result.output
+            assert BackfillStatus.VALIDATING.value in result.output
+            assert "total of 2 backfill(s)" in result.output
+            assert qualified_table_name_2 not in result.output
+            assert BackfillStatus.COMPLETE.value not in result.output
+
+    def test_backfill_info_one_table_drafting_status(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+            qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+            backfill_file.write_text(
+                BACKFILL_YAML_TEMPLATE + "\n"
+                "2021-05-03:\n"
+                "  start_date: 2021-01-03\n"
+                "  end_date: 2021-05-03\n"
+                "  reason: test_reason\n"
+                "  watchers:\n"
+                "  - test@example.org\n"
+                "  status: Validating\n"
+            )
+
+            assert BACKFILL_FILE in os.listdir(SQL_DIR)
+
+            result = runner.invoke(
+                info,
+                [qualified_table_name, "--status=drafting"],
+            )
+
+            assert result.exit_code == 0
+            assert qualified_table_name in result.output
+            assert BackfillStatus.DRAFTING.value in result.output
+            assert "total of 1 backfill(s)" in result.output
+            assert BackfillStatus.VALIDATING.value not in result.output
+            assert BackfillStatus.COMPLETE.value not in result.output
+
+    def test_backfill_info_all_tables_all_status(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+            qualified_table_name_1 = "moz-fx-data-shared-prod.test.test_query_v1"
+
+            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+            backfill_file.write_text(
+                BACKFILL_YAML_TEMPLATE + "\n"
+                "2021-05-03:\n"
+                "  start_date: 2021-01-03\n"
+                "  end_date: 2021-05-03\n"
+                "  reason: test_reason\n"
+                "  watchers:\n"
+                "  - test@example.org\n"
+                "  status: Validating\n"
+            )
+
+            assert BACKFILL_FILE in os.listdir(SQL_DIR)
+
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v2"
+            os.makedirs(SQL_DIR)
+            qualified_table_name_2 = "moz-fx-data-shared-prod.test.test_query_v2"
+
+            result = runner.invoke(
+                create,
+                [
+                    qualified_table_name_2,
+                    "--start_date=2021-04-01",
+                ],
+            )
+
+            assert result.exit_code == 0
+            assert BACKFILL_FILE in os.listdir(SQL_DIR)
+
+            result = runner.invoke(
+                info,
+                [],
+            )
+
+            assert result.exit_code == 0
+            assert qualified_table_name_1 in result.output
+            assert qualified_table_name_2 in result.output
+            assert BackfillStatus.DRAFTING.value in result.output
+            assert BackfillStatus.VALIDATING.value in result.output
+            assert "total of 3 backfill(s)" in result.output
+            assert BackfillStatus.COMPLETE.value not in result.output
+
+    def test_backfill_info_all_tables_with_validating_status(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            qualified_table_name_1 = "moz-fx-data-shared-prod.test.test_query_v1"
+            os.makedirs(SQL_DIR)
+
+            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+            backfill_file.write_text(
+                BACKFILL_YAML_TEMPLATE + "\n"
+                "2021-05-03:\n"
+                "  start_date: 2021-01-03\n"
+                "  end_date: 2021-05-03\n"
+                "  reason: test_reason\n"
+                "  watchers:\n"
+                "  - test@example.org\n"
+                "  status: Validating\n"
+            )
+
+            assert BACKFILL_FILE in os.listdir(SQL_DIR)
+
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v2"
+            qualified_table_name_2 = "moz-fx-data-shared-prod.test.test_query_v2"
+            os.makedirs(SQL_DIR)
+
+            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+            backfill_file.write_text(
+                BACKFILL_YAML_TEMPLATE + "\n"
+                "2021-05-03:\n"
+                "  start_date: 2021-01-03\n"
+                "  end_date: 2021-05-03\n"
+                "  reason: test_reason\n"
+                "  watchers:\n"
+                "  - test@example.org\n"
+                "  status: Validating\n"
+            )
+
+            assert BACKFILL_FILE in os.listdir(SQL_DIR)
+
+            result = runner.invoke(
+                info,
+                [
+                    "--status=validating",
+                ],
+            )
+
+            assert result.exit_code == 0
+            assert qualified_table_name_1 in result.output
+            assert qualified_table_name_2 in result.output
+            assert BackfillStatus.VALIDATING.value in result.output
+            assert "total of 2 backfill(s)" in result.output
+            assert BackfillStatus.DRAFTING.value not in result.output
+            assert BackfillStatus.COMPLETE.value not in result.output
+
+    def test_backfill_info_with_invalid_path(self, runner):
+        with runner.isolated_filesystem():
+            invalid_path = "moz-fx-data-shared-prod.test.test_query_v2"
+            result = runner.invoke(info, [invalid_path])
+
+            assert result.exit_code == 2
+            assert "Invalid" in result.output
+            assert "path" in result.output
+
+    def test_backfill_info_with_invalid_qualified_table_name(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+            invalid_qualified_table_name = "mozdata.test_query_v2"
+            result = runner.invoke(info, [invalid_qualified_table_name])
+
+            assert result.exit_code == 1
+            assert "Qualified table name must be named like:" in result.output
+
+    def test_backfill_info_one_table_invalid_status(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+            qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+            backfill_file.write_text(
+                BACKFILL_YAML_TEMPLATE + "\n"
+                "2021-05-03:\n"
+                "  start_date: 2021-01-03\n"
+                "  end_date: 2021-05-03\n"
+                "  reason: test_reason\n"
+                "  watchers:\n"
+                "  - test@example.org\n"
+                "  status: Validating\n"
+            )
+
+            assert BACKFILL_FILE in os.listdir(SQL_DIR)
+
+            result = runner.invoke(
+                info,
+                [qualified_table_name, "--status=testing"],
+            )
+
+            assert result.exit_code == 2
+            assert "Invalid value for '--status'" in result.output

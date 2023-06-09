@@ -339,6 +339,21 @@ class TestParseBackfill(object):
         results = TEST_BACKFILL_1.to_yaml()
         assert results == expected
 
+    def test_backfill_str(self):
+        backfill = TEST_BACKFILL_1
+        actual_backfill_str = str(backfill)
+        expected_backfill_str = """
+            entry_date = 2021-05-03
+            start_date = 2021-01-03
+            end_date = 2021-05-03
+            excluded_dates = [2021-02-03]
+            reason = Please provide a reason for the backfill and links to any related bugzilla or jira tickets
+            watcher(s) = [nobody@mozilla.com]
+            status = Drafting
+            """
+
+        assert actual_backfill_str == expected_backfill_str
+
     def test_to_yaml_no_excluded_dates(self):
         expected = (
             "2021-05-03:\n"

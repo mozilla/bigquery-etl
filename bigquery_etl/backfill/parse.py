@@ -71,6 +71,27 @@ class Backfill:
     watchers: List[str] = attr.ib()
     status: BackfillStatus = attr.ib()
 
+    def __str__(self):
+        """Return print friendly string of backfill object."""
+        backfill_str = f"""
+            entry_date = {self.entry_date}
+            start_date = {self.start_date}
+            end_date = {self.end_date}
+            """.rstrip()
+
+        if self.excluded_dates:
+            backfill_str += f"""
+            excluded_dates = {[str(e) for e in self.excluded_dates]}
+            """.rstrip()
+
+        backfill_str += f"""
+            reason = {self.reason}
+            watcher(s) = {self.watchers}
+            status = {self.status.value}
+            """
+
+        return backfill_str.replace("'", "")
+
     @entry_date.validator
     def validate_entry_date(self, attribute, value):
         """Check that provided entry date is valid."""

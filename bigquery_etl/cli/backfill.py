@@ -270,9 +270,10 @@ def info(ctx, qualified_table_name, sql_dir, project_id, status):
 
             project, dataset, table = extract_from_query_path(file)
 
+            status_str = f" with {status} status" if status is not None else "" 
             click.echo(
                 f"""
-                \n\n{project}.{dataset}.{table} has {entries_count} backfill(s) with {status_str} status:
+                \n\n{project}.{dataset}.{table} has {entries_count} backfill(s){status_str}:
             """
             )
 

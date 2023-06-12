@@ -180,9 +180,7 @@ def validate(
         sql_dir, project_id, qualified_table_name
     )
 
-    backfill_files = list(backfills_dict.keys())
-
-    for backfill_file in backfill_files:
+    for backfill_file in backfills_dict:
         try:
             validate_file(backfill_file)
         except (yaml.YAMLError, ValueError) as e:
@@ -191,7 +189,7 @@ def validate(
 
     if qualified_table_name:
         click.echo(f"{BACKFILL_FILE} has been validated for {qualified_table_name}.")
-    elif backfill_files:
+    elif backfills_dict:
         click.echo(
             f"All {BACKFILL_FILE} files have been validated for project {project_id}."
         )

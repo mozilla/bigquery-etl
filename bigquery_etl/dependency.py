@@ -19,7 +19,7 @@ stable_views = None
 
 def _raw_table_name(table: sqlglot.exp.Table) -> str:
     return (
-        table.sql("bigquery")
+        table.sql("bigquery", comments=False)
         # remove alias
         .split(" AS ", 1)[0]
         # remove quotes

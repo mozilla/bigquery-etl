@@ -106,19 +106,21 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized_v1/query.sql",
     *glob.glob("sql/moz-fx-data-shared-prod/stripe_derived/**/*.sql", recursive=True),
     *glob.glob("sql/moz-fx-data-shared-prod/stripe_external/**/*.sql", recursive=True),
-    *glob.glob("sql/moz-fx-cjms-*/**/*.sql", recursive=True),
-    "sql/moz-fx-data-shared-prod/subscription_platform/stripe_subscriptions/view.sql",
-    "sql/moz-fx-data-shared-prod/subscription_platform/stripe_subscriptions_history/view.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/subscription_platform/nonprod_stripe_subscriptions/view.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/subscription_platform/nonprod_stripe_subscriptions_history/view.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/subscription_platform/apple_subscriptions/view.sql",
-    "sql/moz-fx-data-shared-prod/subscription_platform/nonprod_apple_subscriptions/view.sql",  # noqa E501
+    "sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/flows_live/view.sql",
+    "sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/flows_v1/query.sql",
+    "sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/refunds_v1/query.sql",
+    "sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/subscriptions_v1/query.sql",
+    "sql/moz-fx-cjms-prod-f3c7/cjms_bigquery/flows_v1/query.sql",
+    "sql/moz-fx-cjms-prod-f3c7/cjms_bigquery/refunds_v1/query.sql",
+    "sql/moz-fx-cjms-prod-f3c7/cjms_bigquery/subscriptions_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/subscription_platform_derived/apple_subscriptions_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/subscription_platform_derived/google_subscriptions_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_apple_subscriptions_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_google_subscriptions_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_stripe_subscriptions_history_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/stripe/itemized_payout_reconciliation/view.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscriptions_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscription_ids_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/all_subscriptions_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/channel_group_proportions_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/devices_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/fxa_attribution_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/funnel_product_page_to_subscribed_v1/query.sql",  # noqa E501
@@ -128,7 +130,6 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/site_metrics_empty_check_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/site_metrics_summary_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/subscriptions_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/subscription_events_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/users_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/subscriptions_v1/query.sql",
@@ -140,8 +141,6 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/protected_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/hubs_derived/subscriptions_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/relay_derived/subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/fenix_derived/google_ads_campaign_cost_breakdowns_v1/query.sql",
     *glob.glob("sql/moz-fx-data-shared-prod/search_terms*/**/*.sql", recursive=True),
     "sql/moz-fx-data-bq-performance/release_criteria/dashboard_health_v1/query.sql",
@@ -231,6 +230,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/migrated_clients_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/incline_executive_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox/migrated_clients/view.sql",
+    "sql/moz-fx-data-shared-prod/telemetry/sponsored_tiles_ad_request_fill/view.sql",
     # No matching signature for function IF
     "sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_last_seen/query.sql",
     # Duplicate UDF

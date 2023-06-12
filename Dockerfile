@@ -21,8 +21,8 @@ RUN pip install --no-deps -r requirements.txt
 FROM google/cloud-sdk:${GOOGLE_CLOUD_SDK_VERSION}-alpine AS google-cloud-sdk
 
 FROM base
-# add bash for entrypoint and jdk for jni access to zetasql
-RUN mkdir -p /usr/share/man/man1 && apt-get update -qqy && apt-get install -qqy bash default-jdk-headless git
+# add bash for entrypoint
+RUN mkdir -p /usr/share/man/man1 && apt-get update -qqy && apt-get install -qqy bash git
 COPY --from=google-cloud-sdk /google-cloud-sdk /google-cloud-sdk
 ENV PATH /google-cloud-sdk/bin:$PATH
 COPY --from=python-deps /usr/local /usr/local

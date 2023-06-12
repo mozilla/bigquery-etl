@@ -44,8 +44,16 @@
     "type": "STRING",
     "name": "normalized_os_version"
   },
-    {
+  {
     "type": "STRING",
     "name": "app_display_version"
+  },
+  {
+    "type": "STRING",
+    "name": "locale"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "is_new_profile"
   }
 ]

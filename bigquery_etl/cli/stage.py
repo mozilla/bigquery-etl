@@ -4,6 +4,7 @@ import re
 import shutil
 import tempfile
 from datetime import datetime
+from multiprocessing.pool import ThreadPool
 from pathlib import Path
 
 import click
@@ -27,6 +28,7 @@ from ..view import View
 
 VIEW_FILE = "view.sql"
 QUERY_FILE = "query.sql"
+INIT_FILE = "init.sql"
 QUERY_SCRIPT = "query.py"
 ROOT = Path(__file__).parent.parent.parent
 TEST_DIR = ROOT / "tests" / "sql"
@@ -174,7 +176,9 @@ def deploy(
                             name += ".schema"
                         name += file_suffix
 
-                        test_file_path.rename(test_file_path.parent / name)
+                        test_file_path_dest = test_file_path.parent / name
+                        if not test_file_path_dest.exists():
+                            test_file_path.rename(test_file_path_dest)
 
     # remove artifacts from the "prod" folders
     if remove_updated_artifacts:
@@ -265,9 +269,15 @@ def _view_dependencies(artifact_files, sql_dir):
 
             # extract UDF references from view definition
             raw_routines = read_routine_dir()
+            udf_dependencies = set()
+
             for udf_dependency in view.udf_references:
                 routine = raw_routines[udf_dependency]
-                view_dependencies.add(Path(routine.filepath))
+                udf_dependencies.add(Path(routine.filepath))
+
+            # determine UDF dependencies recursively
+            view_dependencies.update(_udf_dependencies(udf_dependencies))
+            view_dependencies.update(udf_dependencies)
 
     return view_dependencies
 
@@ -286,22 +296,33 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
         original_project = artifact_file.parent.parent.parent.name
         deployed_project = project_id
 
-        # replace partially qualified references (like "telemetry.main")
-        replace_references.append(
+        # Replace references, preserving fully quoted references.
+        replace_references += [
+            # partially qualified references (like "telemetry.main")
+            (
+                re.compile(rf"(?<![\._])`{original_dataset}\.{name_pattern}`"),
+                f"`{deployed_project}.{deployed_dataset}.{name}`",
+            ),
             (
                 re.compile(
                     rf"(?<![\._])`?{original_dataset}`?\.`?{name_pattern}(?![a-zA-Z0-9_])`?"
                 ),
-                f"`{deployed_project}`.{deployed_dataset}.{name}",
-            )
-        )
-        # replace fully qualified references (like "moz-fx-data-shared-prod.telemetry.main")
-        replace_references.append(
+                f"`{deployed_project}`.`{deployed_dataset}`.`{name}`",
+            ),
+            # fully qualified references (like "moz-fx-data-shared-prod.telemetry.main")
             (
-                rf"(?<![a-zA-Z0-9_])`?{original_project}`?\.`?{original_dataset}`?\.`?{name_pattern}(?![a-zA-Z0-9_])`?",
-                f"`{deployed_project}`.{deployed_dataset}.{name}",
-            )
-        )
+                re.compile(
+                    rf"`{original_project}\.{original_dataset}\.{name_pattern}`"
+                ),
+                f"`{deployed_project}.{deployed_dataset}.{name}`",
+            ),
+            (
+                re.compile(
+                    rf"(?<![a-zA-Z0-9_])`?{original_project}`?\.`?{original_dataset}`?\.`?{name_pattern}(?![a-zA-Z0-9_])`?"
+                ),
+                f"`{deployed_project}`.`{deployed_dataset}`.`{name}`",
+            ),
+        ]
 
     for path in Path(sql_dir).rglob("*.sql"):
         # apply substitutions
@@ -329,15 +350,19 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
     query_files = [
         file
         for file in artifact_files
-        if file.name in [QUERY_FILE, QUERY_SCRIPT]
+        if file.name in [INIT_FILE, QUERY_FILE, QUERY_SCRIPT]
         # don't attempt to deploy wildcard or metadata tables
         and "*" not in file.parent.name and file.parent.name != "INFORMATION_SCHEMA"
     ]
+
+    # checking and creating datasets needs to happen sequentially
     for query_file in query_files:
         dataset = query_file.parent.parent.name
         create_dataset_if_not_exists(
             project_id=project_id, dataset=dataset, suffix=dataset_suffix
         )
+
+    def _deploy_schema(query_file):
         ctx.invoke(
             update_query_schema,
             name=str(query_file),
@@ -354,6 +379,9 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
             respect_dryrun_skip=False,
             skip_external_data=True,
         )
+
+    with ThreadPool(8) as p:
+        p.map(_deploy_schema, query_files)
 
     # deploy views
     view_files = [
@@ -385,11 +413,12 @@ def create_dataset_if_not_exists(project_id, dataset, suffix=None):
     dataset = bigquery.Dataset(f"{project_id}.{dataset}")
     dataset.location = "US"
     dataset = client.create_dataset(dataset, exists_ok=True)
-    dataset.default_table_expiration_ms = 60 * 60 * 1000  # ms
+    dataset.default_table_expiration_ms = 60 * 60 * 1000 * 12  # ms
 
-    # mark dataset as expired 1 hour from now; can be removed by CI
+    # mark dataset as expired 12 hours from now; can be removed by CI
     expiration = int(
-        ((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() + 60 * 60) * 1000
+        ((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() + 60 * 60 * 12)
+        * 1000
     )
     dataset.labels = {"expires_on": expiration}
     if suffix:

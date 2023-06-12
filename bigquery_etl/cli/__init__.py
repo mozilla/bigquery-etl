@@ -1,5 +1,6 @@
 """bigquery-etl CLI."""
 
+import logging
 import warnings
 
 import click
@@ -8,6 +9,7 @@ from .._version import __version__
 
 # We rename the import, otherwise it affects monkeypatching in tests
 from ..cli.alchemer import alchemer as alchemer_
+from ..cli.backfill import backfill
 from ..cli.dag import dag
 from ..cli.dryrun import dryrun
 from ..cli.format import format
@@ -45,13 +47,21 @@ def cli(prog_name=None):
         "docs": docs_,
         "copy_deduplicate": copy_deduplicate,
         "stage": stage,
+        "backfill": backfill,
     }
 
     @click.group(commands=commands)
     @click.version_option(version=__version__)
-    def group():
+    @click.option(
+        "--log-level",
+        "--log_level",
+        help="Log level.",
+        default=logging.getLevelName(logging.INFO),
+        type=str.upper,
+    )
+    def group(log_level):
         """CLI tools for working with bigquery-etl."""
-        pass
+        logging.root.setLevel(level=log_level)
 
     warnings.filterwarnings(
         "ignore", "Your application has authenticated using end user credentials"

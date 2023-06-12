@@ -37,9 +37,9 @@ bqetl_amo_stats:
     See the [post on the Add-Ons Blog](https://blog.mozilla.org/addons/2020/06/10/improvements-to-statistics-processing-on-amo/).
   # yamllint enable rule:line-length
   default_args:
-    owner: jklukas@mozilla.com
+    owner: kik@mozilla.com
     start_date: "2020-06-01"
-    email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "kik@mozilla.com"]
     retries: 2
     retry_delay: 30m
   tags:
@@ -220,9 +220,11 @@ bqetl_addons:
 
     Depends on `bqetl_search`, so is scheduled after that DAG.
   default_args:
-    owner: jklukas@mozilla.com
+    owner: kik@mozilla.com
     start_date: "2018-11-27"
-    email: ["telemetry-alerts@mozilla.com"]
+    email:
+      - "telemetry-alerts@mozilla.com"
+      - "kik@mozilla.com"
     retries: 2
     retry_delay: 30m
   tags:
@@ -525,11 +527,11 @@ bqetl_pocket:
   default_args:
     depends_on_past: false
     email:
-      - jklukas@mozilla.com
+      - kik@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
-    owner: jklukas@mozilla.com
+    owner: kik@mozilla.com
     # Retry more than normal because the files from Pocket may not always be available on time.
     retries: 10
     retry_delay: 60m
@@ -565,12 +567,12 @@ bqetl_firefox_ios:
   default_args:
     depends_on_past: false
     email:
-      - amiyaguchi@mozilla.com
+      - kik@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: amiyaguchi@mozilla.com
+    owner: kik@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: "2021-03-18"

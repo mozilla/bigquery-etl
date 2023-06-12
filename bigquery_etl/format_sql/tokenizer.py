@@ -30,10 +30,15 @@ TOP_LEVEL_KEYWORDS = [
     "MERGE",
     "UPDATE",
     # scripting
+    "BEGIN TRANSACTION",
     "BREAK",
+    "COMMIT TRANSACTION",
+    "COMMIT",
     "CONTINUE",
     "ITERATE",
     "LEAVE",
+    "ROLLBACK TRANSACTION",
+    "ROLLBACK",
     # SQL
     "AS",  # only when not identified as an AliasSeparator
     "CROSS JOIN",
@@ -646,7 +651,9 @@ class BlockEndKeyword(BlockKeyword):
 class BlockMiddleKeyword(BlockStartKeyword, BlockEndKeyword):
     """Keyword that ends one indented block and starts another."""
 
-    pattern = _keyword_pattern(["BEGIN", "EXCEPTION WHEN ERROR THEN", "ELSEIF", "DO"])
+    pattern = _keyword_pattern(
+        [r"BEGIN(?!\s+TRANSACTION\b)", "EXCEPTION WHEN ERROR THEN", "ELSEIF", "DO"]
+    )
 
 
 class AliasSeparator(SpaceBeforeBracketKeyword):

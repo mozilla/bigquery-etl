@@ -863,6 +863,15 @@ def _run_query(
             # point to a public table it needs to be passed as parameter for the query
             query_arguments.append("--destination_table={}".format(destination_table))
 
+        if bool(list(filter(lambda x: x.startswith("--parameter"), query_arguments))):
+            # need to do this as parameters are not supported with legacy sql
+            query_arguments.append("--use_legacy_sql=False")
+
+        # this assumed query command should always be passed inside query_arguments
+        # also dedup the query_arguments in case the same option is passed multiple times.
+        if "query" not in query_arguments:
+            query_arguments = ["query"] + list(set(query_arguments))
+
         # write rendered query to a temporary file;
         # query string cannot be passed directly to bq as SQL comments will be interpreted as CLI arguments
         with tempfile.NamedTemporaryFile(mode="w+") as query_stream:

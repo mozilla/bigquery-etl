@@ -9,6 +9,7 @@ import string
 import subprocess
 import sys
 import tempfile
+import typing
 from datetime import date, timedelta
 from functools import partial
 from graphlib import TopologicalSorter
@@ -811,7 +812,7 @@ def _run_query(
     destination_table,
     dataset_id,
     query_arguments,
-    addl_templates: dict,
+    addl_templates: typing.Optional[dict] = None,
 ):
     """Run a query."""
     if dataset_id is not None:
@@ -821,6 +822,9 @@ def _run_query(
 
     if project_id is not None:
         query_arguments.append(f"--project_id={project_id}")
+
+    if addl_templates is None:
+        addl_templates = {}
 
     for query_file in query_files:
         use_public_table = False

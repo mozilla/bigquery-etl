@@ -6,7 +6,8 @@ description: |
   This new table is the direct result of FxA migration from AWS to GCP
   (see: OPST-296 for more context).
 
-  Effective x (TODO: add a date here prior to merging) date the events from the following servers will land in this table:
+  Effective 2023-05-26 the events from the following servers land in this table
+  (existing data will remain in those tables):
   - auth    (previous table: `nonprod_fxa_auth_events_v1`)
   - content (previous table: `nonprod_fxa_content_events_v1`)
 

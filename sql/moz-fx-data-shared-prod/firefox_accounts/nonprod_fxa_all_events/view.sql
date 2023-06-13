@@ -20,6 +20,8 @@ WITH auth_events AS (
     "auth" AS fxa_log
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_auth_events_v1`
+  WHERE
+    DATE(`timestamp`) < "2023-05-26"
 ),
 content_events AS (
   SELECT
@@ -39,6 +41,8 @@ content_events AS (
     "content" AS fxa_log
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_content_events_v1`
+  WHERE
+    DATE(`timestamp`) < "2023-05-26"
 ),
 stdout_events AS (
   SELECT
@@ -78,6 +82,8 @@ server_events AS (
     fxa_log,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_server_events_v1`
+  WHERE
+    DATE(`timestamp`) >= "2023-05-26"
 ),
 unioned AS (
   SELECT

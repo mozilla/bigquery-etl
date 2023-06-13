@@ -358,6 +358,7 @@ jobs:
               generated-sql
       - run:
           name: Deploy changes to stage
+          no_output_timeout: 30m
           command: |
             export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
             echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"

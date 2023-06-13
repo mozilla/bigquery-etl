@@ -5,9 +5,11 @@
   submission_date: 2023-05-02
   first_run_date: 2023-05-02
   normalized_channel: release
+  is_new_profile: true
 - client_id: client-3
   sample_id: 60
   first_seen_date: 2023-05-02
   submission_date: 2023-05-02
   first_run_date: 2023-05-02
   normalized_channel: release
+  is_new_profile: true

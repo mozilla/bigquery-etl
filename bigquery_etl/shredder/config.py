@@ -271,15 +271,33 @@ DELETE_TARGETS: DeleteIndex = {
     fxa_user_id_target(table="firefox_accounts_derived.fxa_content_events_v1"): FXA_SRC,
     fxa_user_id_target(table="firefox_accounts_derived.fxa_oauth_events_v1"): FXA_SRC,
     user_id_target(table="firefox_accounts_derived.fxa_users_daily_v1"): FXA_SRC,
+    user_id_target(table="firefox_accounts_derived.fxa_users_daily_v2"): FXA_SRC,
+    user_id_target(table="firefox_accounts_derived.fxa_users_first_seen_v1"): FXA_SRC,
+    user_id_target(table="firefox_accounts_derived.fxa_users_first_seen_v2"): FXA_SRC,
     user_id_target(table="firefox_accounts_derived.fxa_users_last_seen_v1"): FXA_SRC,
     user_id_target(
         table="firefox_accounts_derived.fxa_users_services_daily_v1"
     ): FXA_SRC,
     user_id_target(
+        table="firefox_accounts_derived.fxa_users_services_daily_v2"
+    ): FXA_SRC,
+    user_id_target(
         table="firefox_accounts_derived.fxa_users_services_first_seen_v1"
     ): FXA_SRC,
     user_id_target(
+        table="firefox_accounts_derived.fxa_users_services_first_seen_v2"
+    ): FXA_SRC,
+    user_id_target(
         table="firefox_accounts_derived.fxa_users_services_last_seen_v1"
+    ): FXA_SRC,
+    user_id_target(
+        table="firefox_accounts_derived.fxa_users_services_devices_daily_v1"
+    ): FXA_SRC,
+    user_id_target(
+        table="firefox_accounts_derived.fxa_users_services_devices_first_seen_v1"
+    ): FXA_SRC,
+    user_id_target(
+        table="firefox_accounts_derived.fxa_users_services_devices_last_seen_v1"
     ): FXA_SRC,
     context_id_target(
         table="contextual_services_stable.topsites_click_v1"

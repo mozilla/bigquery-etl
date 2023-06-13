@@ -17,7 +17,9 @@ WITH client_days AS (
   FROM
     `moz-fx-data-shared-prod`.fenix.baseline
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    {% if is_init() %}
+    DATE(submission_timestamp) >= "2021-08-01" {% else %}
+    DATE(submission_timestamp) = @submission_date {% endif %}
   GROUP BY
     submission_date,
     sample_id,
@@ -35,7 +37,9 @@ searches AS (
   FROM
     `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
   WHERE
-    submission_date = @submission_date
+    {% if is_init() %}
+    submission_date >= "2021-08-01" {% else %}
+    submission_date = @submission_date {% endif %}
     AND normalized_app_name = 'Fenix'
     AND os = 'Android'
   GROUP BY
@@ -43,56 +47,24 @@ searches AS (
     client_id,
     sample_id
 ),
-adjust_clients AS (
-  SELECT
-    client_id,
-    adjust_network,
-    adjust_ad_group AS adjust_adgroup,
-    adjust_campaign,
-    adjust_creative,
-    metadata.reported_first_session_ping,
-    first_seen_date,
-    first_reported_country AS country,
-  FROM
-    `moz-fx-data-shared-prod`.fenix.firefox_android_clients
-),
-activations AS (
+new_activations AS (
   SELECT
     client_id,
     sample_id,
-    submission_date AS activation_date,
+    submission_date,
     activated > 0 AS activated,
   FROM
     `moz-fx-data-shared-prod`.fenix.new_profile_activation
   WHERE
-    submission_date >= "2010-01-01"
-),
-new_activations AS (
-  SELECT
-    *,
-    activation_date AS submission_date,
-  FROM
-    activations
-  WHERE
-    activation_date = @submission_date
-    AND activated
+    {% if is_init() %}
+    submission_date >= "2021-08-01" {% else %}
+    submission_date = @submission_date {% endif %}
 )
 SELECT
   submission_date,
-  first_seen_date AS cohort_date,
   sample_id,
   client_id,
-  -- Dimensions
-  country,
-  adjust_network,
-  adjust_adgroup,
-  adjust_campaign,
-  adjust_creative,
-  first_seen_date = submission_date
-  AND reported_first_session_ping AS is_new_install,
-  first_seen_date = submission_date AS is_new_profile,
-  COALESCE(activations.activated, FALSE) AS is_activated,
-  -- Metrics / Facts
+  -- Metrics
   IF(COALESCE(new_activations.activated, FALSE), 1, 0) AS activations_count,
   IF(COALESCE(client_days.client_id IS NOT NULL, FALSE), 1, 0) AS active_day_count,
   CASE
@@ -132,11 +104,3 @@ FULL OUTER JOIN
   new_activations
 USING
   (client_id, sample_id, submission_date)
-JOIN
-  adjust_clients
-USING
-  (client_id)
-LEFT JOIN
-  activations
-USING
-  (client_id, sample_id)

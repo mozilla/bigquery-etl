@@ -64,6 +64,7 @@ def render(
     sql_filename,
     template_folder=".",
     format=True,
+    is_init=lambda: False,
     **kwargs,
 ) -> str:
     """Render a given template query using Jinja."""
@@ -90,9 +91,9 @@ def render(
         env = Environment(loader=file_loader)
         main_sql = env.get_template(sql_filename)
         if "metrics" not in kwargs:
-            rendered = main_sql.render(**kwargs, metrics=MetricHub())
+            rendered = main_sql.render(**kwargs, is_init=is_init, metrics=MetricHub())
         else:
-            rendered = main_sql.render(**kwargs)
+            rendered = main_sql.render(**kwargs, is_init=is_init)
 
     if format:
         rendered = reformat(rendered)

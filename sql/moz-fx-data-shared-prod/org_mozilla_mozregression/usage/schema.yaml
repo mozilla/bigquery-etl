@@ -316,6 +316,41 @@ fields:
         ...)
 
         '
+    - name: usage_linux_distro
+      type: STRING
+      mode: NULLABLE
+      description: 'The name of the Linux distribution that mozregression is running
+        on (e.g., ubuntu). This is fetched using the `distro` package (`distro.info`).
+
+        '
+    - name: usage_linux_version
+      type: STRING
+      mode: NULLABLE
+      description: 'The version of the Linux distribution that mozregression is running
+        on (e.g., 22.04). This is fetched using the `distro` package (`distro.info`).
+
+        '
+    - name: usage_mac_version
+      type: STRING
+      mode: NULLABLE
+      description: 'The version of macOS that mozregression is running on (e.g., 13.0).
+        This is fetched using the `platform` module (`platform.mac_ver`).
+
+        '
+    - name: usage_python_version
+      type: STRING
+      mode: NULLABLE
+      description: 'The version of the Python mozregression is running on (e.g., 3.11).
+        This is fetched using the `platform` module (`platform.python_version`).
+
+        '
+    - name: usage_windows_version
+      type: STRING
+      mode: NULLABLE
+      description: 'The version of Windows that mozregression is running on (e.g.,
+        11). This is fetched using the `platform` module (`platform.win32_ver`).
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE

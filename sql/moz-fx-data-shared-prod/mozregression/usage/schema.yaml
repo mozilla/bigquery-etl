@@ -239,6 +239,21 @@ fields:
     - name: usage_build_type
       type: STRING
       mode: NULLABLE
+    - name: usage_linux_distro
+      type: STRING
+      mode: NULLABLE
+    - name: usage_linux_version
+      type: STRING
+      mode: NULLABLE
+    - name: usage_mac_version
+      type: STRING
+      mode: NULLABLE
+    - name: usage_python_version
+      type: STRING
+      mode: NULLABLE
+    - name: usage_windows_version
+      type: STRING
+      mode: NULLABLE
   - name: datetime
     type: RECORD
     mode: NULLABLE

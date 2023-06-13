@@ -868,9 +868,8 @@ def _run_query(
             query_arguments.append("--use_legacy_sql=False")
 
         # this assumed query command should always be passed inside query_arguments
-        # also dedup the query_arguments in case the same option is passed multiple times.
         if "query" not in query_arguments:
-            query_arguments = ["query"] + list(set(query_arguments))
+            query_arguments = ["query"] + query_arguments
 
         # write rendered query to a temporary file;
         # query string cannot be passed directly to bq as SQL comments will be interpreted as CLI arguments

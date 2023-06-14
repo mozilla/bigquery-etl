@@ -6,6 +6,9 @@ WITH
     MAX(mozfun.norm.extract_version(build.`target`.version,
         'major')) AS latest_version,
   FROM
+  -- We use buildhub2 data for both Desktop and Android
+  -- because they roughly follow the same release schedule,
+  -- and we don't have a comprehensive source for Fenix releases yet.
     `moz-fx-data-shared-prod.telemetry.buildhub2`
   WHERE
     build.`source`.product = "firefox"

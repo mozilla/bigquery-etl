@@ -10,7 +10,7 @@ WITH histogram_data AS (
     h1.agg_type,
     h1.aggregates
   FROM
-    telemetry_derived.clients_histogram_aggregates_v1,
+    clients_histogram_aggregates_v2,
     UNNEST(histogram_aggregates) h1
   WHERE
     submission_date = @submission_date
@@ -23,7 +23,7 @@ scalars_data AS (
     channel,
     scalar_aggregates
   FROM
-    telemetry_derived.clients_scalar_aggregates_v1
+    clients_scalar_aggregates_v1
   WHERE
     submission_date = @submission_date
 )

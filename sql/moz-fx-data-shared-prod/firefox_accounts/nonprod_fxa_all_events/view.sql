@@ -21,7 +21,7 @@ WITH auth_events AS (
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_auth_events_v1`
   WHERE
-    DATE(`timestamp`) < "2023-05-26"
+    DATE(`timestamp`) <= "2023-05-26"
 ),
 content_events AS (
   SELECT
@@ -42,7 +42,7 @@ content_events AS (
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_content_events_v1`
   WHERE
-    DATE(`timestamp`) < "2023-05-26"
+    DATE(`timestamp`) <= "2023-05-26"
 ),
 stdout_events AS (
   SELECT

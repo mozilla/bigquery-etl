@@ -1,36 +1,23 @@
-{{ header }}
-WITH extracted AS (
+  {{ header }}
+WITH
+  extracted AS (
   SELECT
-    client_id,
-    channel,
-    app_version
+    build.`target`.channel AS channel,
+    MAX(mozfun.norm.extract_version(build.`target`.version,
+        'major')) AS latest_version,
   FROM
-    {{ source_table }}
+  -- We use buildhub2 data for both Desktop and Android
+  -- because they roughly follow the same release schedule,
+  -- and we don't have a comprehensive source for Fenix releases yet.
+    `moz-fx-data-shared-prod.telemetry.buildhub2`
   WHERE
-    submission_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 28 DAY)
-    AND @submission_date
-    AND channel IS NOT NULL
-),
-transformed AS (
-  SELECT
-    channel,
-    app_version
-  FROM
-    extracted
+    build.`source`.product = "firefox"
+    AND build.`target`.channel = {{ app_id_channel }}
+    AND DATE(build.build.date) <= @submission_date
   GROUP BY
-    channel,
-    app_version
-  HAVING
-    COUNT(DISTINCT client_id) > 5
-  ORDER BY
-    channel,
-    app_version DESC
-)
+    build.`target`.channel)
 SELECT
-  channel,
-  MAX(app_version) AS latest_version
+  * EXCEPT (channel),
+  "*" AS channel
 FROM
-  transformed
-GROUP BY
-  channel
+  extracted

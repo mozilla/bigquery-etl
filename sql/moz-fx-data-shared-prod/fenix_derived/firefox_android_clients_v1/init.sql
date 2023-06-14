@@ -1,23 +1,45 @@
 -- Initialization query first observations for Firefox Android Clients.
-WITH first_seen AS (
+WITH baseline_clients AS (
   SELECT
     client_id,
     sample_id,
     first_seen_date,
     submission_date,
-    country AS first_reported_country,
+    country,
     isp AS first_reported_isp,
     DATETIME(first_run_date) AS first_run_datetime,
     normalized_channel AS channel,
     device_manufacturer,
     device_model,
     normalized_os_version AS os_version,
-    app_display_version AS app_version
+    app_display_version AS app_version,
+    locale,
+    is_new_profile,
   FROM
-    `moz-fx-data-shared-prod.fenix.baseline_clients_first_seen`
+    `moz-fx-data-shared-prod.fenix.baseline_clients_daily`
   WHERE
-    submission_date >= '2019-01-01'
+    submission_date >= '2020-01-21'
     AND normalized_channel = 'release'
+),
+first_seen AS (
+  SELECT
+    client_id,
+    sample_id,
+    first_seen_date,
+    submission_date,
+    country AS first_reported_country,
+    first_reported_isp,
+    first_run_datetime,
+    channel,
+    device_manufacturer,
+    device_model,
+    os_version,
+    app_version,
+    locale
+  FROM
+    baseline_clients
+  WHERE
+    is_new_profile
 ),
 -- Find the most recent activation record per client_id. Data available since '2021-12-01'
 activations AS (
@@ -85,11 +107,53 @@ metrics_ping AS (
     )[SAFE_OFFSET(0)] AS adjust_creative,
     ARRAY_AGG(metrics.string.metrics_install_source IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
-    ] AS install_source
+    ] AS install_source,
+    ARRAY_AGG(
+      metrics.string.metrics_adjust_ad_group IGNORE NULLS
+      ORDER BY
+        submission_timestamp DESC
+    )[SAFE_OFFSET(0)] AS last_reported_adjust_ad_group,
+    ARRAY_AGG(
+      metrics.string.metrics_adjust_creative IGNORE NULLS
+      ORDER BY
+        submission_timestamp DESC
+    )[SAFE_OFFSET(0)] AS last_reported_adjust_creative,
+    ARRAY_AGG(
+      metrics.string.metrics_adjust_network IGNORE NULLS
+      ORDER BY
+        submission_timestamp DESC
+    )[SAFE_OFFSET(0)] AS last_reported_adjust_network,
+    ARRAY_AGG(
+      metrics.string.metrics_adjust_campaign IGNORE NULLS
+      ORDER BY
+        submission_timestamp DESC
+    )[SAFE_OFFSET(0)] AS last_reported_adjust_campaign,
   FROM
     org_mozilla_firefox.metrics AS org_mozilla_firefox_metrics
   WHERE
     DATE(submission_timestamp) >= '2019-01-01'
+  GROUP BY
+    client_id
+),
+-- Find most recent client details from the baseline ping.
+baseline_ping AS (
+  SELECT
+    client_id,
+    MAX(submission_date) AS last_reported_date,
+    ARRAY_AGG(country IGNORE NULLS ORDER BY submission_date DESC)[
+      SAFE_OFFSET(0)
+    ] AS last_reported_country,
+    ARRAY_AGG(device_model IGNORE NULLS ORDER BY submission_date DESC)[
+      SAFE_OFFSET(0)
+    ] AS last_reported_device_model,
+    ARRAY_AGG(device_manufacturer IGNORE NULLS ORDER BY submission_date DESC)[
+      SAFE_OFFSET(0)
+    ] AS last_reported_device_manufacturer,
+    ARRAY_AGG(locale IGNORE NULLS ORDER BY submission_date DESC)[
+      SAFE_OFFSET(0)
+    ] AS last_reported_locale,
+  FROM
+    baseline_clients
   GROUP BY
     client_id
 )
@@ -106,12 +170,43 @@ SELECT
   first_seen.device_model AS device_model,
   first_seen.os_version AS os_version,
   first_seen.app_version AS app_version,
+  first_seen.locale AS locale,
   activated AS activated,
   COALESCE(first_session.adjust_campaign, metrics.adjust_campaign) AS adjust_campaign,
   COALESCE(first_session.adjust_ad_group, metrics.adjust_ad_group) AS adjust_ad_group,
   COALESCE(first_session.adjust_creative, metrics.adjust_creative) AS adjust_creative,
   COALESCE(first_session.adjust_network, metrics.adjust_network) AS adjust_network,
   metrics.install_source AS install_source,
+  COALESCE(
+    metrics.last_reported_adjust_campaign,
+    first_session.adjust_campaign
+  ) AS last_reported_adjust_campaign,
+  COALESCE(
+    metrics.last_reported_adjust_ad_group,
+    first_session.adjust_ad_group
+  ) AS last_reported_adjust_ad_group,
+  COALESCE(
+    metrics.last_reported_adjust_creative,
+    first_session.adjust_creative
+  ) AS last_reported_adjust_creative,
+  COALESCE(
+    metrics.last_reported_adjust_network,
+    first_session.adjust_network
+  ) AS last_reported_adjust_network,
+  COALESCE(baseline.last_reported_date, first_seen.first_seen_date) AS last_reported_date,
+  COALESCE(
+    baseline.last_reported_country,
+    first_seen.first_reported_country
+  ) AS last_reported_country,
+  COALESCE(
+    baseline.last_reported_device_model,
+    first_seen.device_model
+  ) AS last_reported_device_model,
+  COALESCE(
+    baseline.last_reported_device_manufacturer,
+    first_seen.device_manufacturer
+  ) AS last_reported_device_manufacturer,
+  COALESCE(baseline.last_reported_locale, first_seen.locale) AS last_reported_locale,
   STRUCT(
     CASE
       WHEN first_session.client_id IS NULL
@@ -174,6 +269,10 @@ USING
   (client_id)
 FULL OUTER JOIN
   metrics_ping AS metrics
+USING
+  (client_id)
+FULL OUTER JOIN
+  baseline_ping AS baseline
 USING
   (client_id)
 LEFT JOIN

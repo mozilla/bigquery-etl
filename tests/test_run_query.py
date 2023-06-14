@@ -36,6 +36,7 @@ class TestRunQuery:
             assert mock_call.call_args.args == (
                 [
                     "bq",
+                    "query",
                     "--dataset_id=test",
                     "--destination_table=query_v1",
                 ],
@@ -71,6 +72,7 @@ class TestRunQuery:
             assert mock_call.call_args.args == (
                 [
                     "bq",
+                    "query",
                     "--dataset_id=test",
                     "--destination_table=mozilla-public-data:test.query_v1",
                 ],

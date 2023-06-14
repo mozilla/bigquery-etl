@@ -1,14 +1,14 @@
 attrs==23.1.0
 authlib==1.2.0
 black==23.3.0
-cattrs==23.1.1
+cattrs==23.1.2
 click==8.1.3
 exceptiongroup==1.1.1 # for backwards compatibility with python < 3.11
 flake8<5 # pytest-flake8 does not support flake8 5+
-gcsfs==2023.5.0
+gcsfs==2023.6.0
 gcloud==0.18.3
 gitpython==3.1.31
-google-cloud-bigquery==3.10.0
+google-cloud-bigquery==3.11.0
 google-cloud-storage==2.9.0
 Jinja2==3.1.2
 jsonschema==4.17.3
@@ -17,7 +17,7 @@ mdx_truly_sane_lists==1.3
 mkdocs==1.4.3
 mkdocs-material==9.1.15
 mkdocs-awesome-pages-plugin==2.9.1
-mozilla-metric-config-parser==2023.5.1
+mozilla-metric-config-parser==2023.6.3
 mozilla-schema-generator==0.5.1
 pandas==2.0.2
 pathos==0.3.0
@@ -30,7 +30,7 @@ pytest-isort==3.1.0
 pytest-mypy==0.10.3
 pytest-pydocstyle==2.3.2
 pytest-xdist==3.3.1
-pytest==7.3.1
+pytest==7.3.2
 PyYAML==6.0
 smart_open==6.3.0
 sqlglot==14.1.1
@@ -41,7 +41,7 @@ types-python-dateutil==2.8.19.13
 types-pytz==2023.3.0.0
 types-PyYAML==6.0.12.10
 types-requests==2.31.0.1
-types-ujson==5.7.0.5
+types-ujson==5.8.0.0
 typing==3.7.4.3
-ujson==5.7.0
+ujson==5.8.0
 yamllint==1.32.0

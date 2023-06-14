@@ -1,7 +1,11 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_accounts.nonprod_fxa_content_auth_stdout_events`
 AS
-  -- TODO: we should look into deleting this view.
+  -- TODO: we should look into deleting this view
+  -- as we should use firefox_accounts.fxa_all_events instead
+  -- to access fxa event data.
+  -- Keeping this around until we can ensure all downstream
+  -- tools are updated to use the new view (see: DENG-627).
 WITH content AS (
   SELECT
     jsonPayload.logger,

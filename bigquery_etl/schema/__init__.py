@@ -62,7 +62,7 @@ class Schema:
         query = f"SELECT * FROM `{project}.{dataset}.{table}`"
 
         if partitioned_by:
-            query += f" WHERE DATE({partitioned_by}) = DATE('2020-01-01')"
+            query += f" WHERE DATE(`{partitioned_by}`) = DATE('2020-01-01')"
 
         try:
             return cls(

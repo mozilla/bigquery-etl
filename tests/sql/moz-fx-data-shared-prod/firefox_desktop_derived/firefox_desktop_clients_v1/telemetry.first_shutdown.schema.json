@@ -1,0 +1,53 @@
+[
+  {
+    "type": "STRING",
+    "name": "client_id"
+  },
+  {
+    "type": "TIMESTAMP",
+    "name": "submission_timestamp",
+    "mode": "REQUIRED"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "fields": [
+              {
+                "type": "STRING",
+                "name": "campaign"
+              },
+              {
+                "type": "STRING",
+                "name": "content"
+              },
+              {
+                "type": "STRING",
+                "name": "experiment"
+              },
+              {
+                "type": "STRING",
+                "name": "medium"
+              },
+              {
+                "type": "STRING",
+                "name": "source"
+              },
+              {
+                "type": "STRING",
+                "name": "dltoken"
+              }
+            ],
+          "name": "attribution",
+          "type": "RECORD"
+          }
+        ],
+        "name": "settings",
+        "type": "RECORD"
+      }
+    ],
+    "name": "environment",
+    "type": "RECORD"
+  }
+]

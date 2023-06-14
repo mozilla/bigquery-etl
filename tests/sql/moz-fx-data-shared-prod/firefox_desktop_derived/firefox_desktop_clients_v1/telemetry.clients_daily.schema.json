@@ -1,0 +1,40 @@
+[
+  {
+    "type": "STRING",
+    "name": "client_id"
+  },
+  {
+    "type": "DATE",
+    "name": "submission_date"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "campaign"
+      },
+      {
+        "type": "STRING",
+        "name": "content"
+      },
+      {
+        "type": "STRING",
+        "name": "experiment"
+      },
+      {
+        "type": "STRING",
+        "name": "medium"
+      },
+      {
+        "type": "STRING",
+        "name": "source"
+      },
+      {
+        "type": "STRING",
+        "name": "dltoken"
+      }
+    ],
+    "name": "attribution",
+    "type": "RECORD"
+  }
+]

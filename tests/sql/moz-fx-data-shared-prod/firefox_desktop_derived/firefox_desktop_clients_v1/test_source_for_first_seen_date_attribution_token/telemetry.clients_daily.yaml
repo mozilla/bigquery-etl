@@ -1,0 +1,7 @@
+---
+- client_id: client-1
+  submission_date: 2023-06-01
+- client_id: client-2
+  submission_date: 2023-06-02
+  attribution:
+    campaign: campaign

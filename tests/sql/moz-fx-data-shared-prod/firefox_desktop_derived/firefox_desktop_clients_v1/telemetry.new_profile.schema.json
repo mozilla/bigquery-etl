@@ -1,16 +1,20 @@
 [
   {
-    "type": "TIMESTAMP",
-    "name": "submission_timestamp",
-    "mode": "REQUIRED"
-  },
-  {
     "type": "STRING",
     "name": "client_id"
   },
   {
     "type": "INTEGER",
     "name": "sample_id"
+  },
+  {
+    "type": "TIMESTAMP",
+    "name": "submission_timestamp",
+    "mode": "REQUIRED"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_app_name"
   },
   {
     "fields": [
@@ -32,11 +36,11 @@
       },
       {
         "type": "STRING",
-        "name": "name"
+        "name": "platform_version"
       },
       {
         "type": "STRING",
-        "name": "platform_version"
+        "name": "vendor"
       },
       {
         "type": "STRING",
@@ -49,10 +53,6 @@
     ],
     "name": "application",
     "type": "RECORD"
-  },
-  {
-    "type": "STRING",
-    "name": "creation_date"
   },
   {
     "type": "STRING",
@@ -74,6 +74,10 @@
               },
               {
                 "type": "STRING",
+                "name": "enrollment_id"
+              },
+              {
+                "type": "STRING",
                 "name": "type"
               }
             ],
@@ -82,7 +86,8 @@
           }
         ],
         "name": "experiments",
-        "type": "RECORD"
+        "type": "RECORD",
+        "mode": "REPEATED"
       },
       {
         "fields": [
@@ -133,6 +138,10 @@
               {
                 "type": "STRING",
                 "name": "source"
+              },
+              {
+                "type": "STRING",
+                "name": "dltoken"
               }
             ],
           "name": "attribution",
@@ -193,10 +202,6 @@
           {
             "type": "STRING",
             "name": "subdivision1"
-          },
-          {
-            "type": "STRING",
-            "name": "subdivision2"
           }
         ],
         "type": "RECORD",
@@ -205,10 +210,6 @@
     ],
     "type": "RECORD",
     "name": "metadata"
-  },
-  {
-    "type": "STRING",
-    "name": "normalized_app_name"
   },
   {
     "type": "STRING",

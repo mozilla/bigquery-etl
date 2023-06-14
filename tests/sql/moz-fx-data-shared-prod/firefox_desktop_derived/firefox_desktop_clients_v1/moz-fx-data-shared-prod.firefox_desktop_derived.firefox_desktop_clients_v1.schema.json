@@ -1,19 +1,15 @@
 [
   {
-    "type": "DATE",
-    "name": "first_seen_date"
-  },
-  {
-    "type": "STRING",
-    "name": "first_seen_date_source_ping"
-  },
-  {
     "type": "STRING",
     "name": "client_id"
   },
   {
     "type": "INTEGER",
     "name": "sample_id"
+  },
+  {
+    "type": "DATE",
+    "name": "first_seen_date"
   },
   {
     "type": "STRING",
@@ -37,10 +33,6 @@
   },
   {
     "type": "STRING",
-    "name": "platform_version"
-  },
-  {
-    "type": "STRING",
     "name": "vendor"
   },
   {
@@ -50,10 +42,6 @@
   {
     "type": "BOOLEAN",
     "name": "xpcom_abi"
-  },
-  {
-    "type": "DATE",
-    "name": "profile_creation_date"
   },
   {
     "type": "STRING",
@@ -70,6 +58,10 @@
   {
     "type": "STRING",
     "name": "experiments_enrollment_id"
+  },
+  {
+    "type": "STRING",
+    "name": "experiments_type"
   },
   {
     "type": "STRING",
@@ -90,26 +82,6 @@
   {
     "type": "STRING",
     "name": "partner_id"
-  },
-  {
-    "type": "STRING",
-    "name": "attribution_campaign"
-  },
-  {
-    "type": "STRING",
-    "name": "attribution_content"
-  },
-  {
-    "type": "STRING",
-    "name": "attribution_experiment"
-  },
-  {
-    "type": "STRING",
-    "name": "attribution_medium"
-  },
-  {
-    "type": "STRING",
-    "name": "attribution_source"
   },
   {
     "type": "STRING",
@@ -137,19 +109,7 @@
   },
   {
     "type": "STRING",
-    "name": "db_version"
-  },
-  {
-    "type": "STRING",
     "name": "subdivision1"
-  },
-  {
-    "type": "STRING",
-    "name": "subdivision2"
-  },
-  {
-    "type": "STRING",
-    "name": "normalized_app_name"
   },
   {
     "type": "STRING",
@@ -172,7 +132,59 @@
     "name": "startup_profile_selection_reason"
   },
   {
+    "type": "STRING",
+    "name": "attribution_campaign"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_content"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_experiment"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_medium"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_source"
+  },
+  {
+    "type": "STRING",
+    "name": "download_token"
+  },
+  {
     "fields": [
+      {
+        "type": "STRING",
+        "name": "first_seen_date_source"
+      },
+      {
+        "type": "STRING",
+        "name": "attribution_campaign_source"
+      },
+      {
+        "type": "STRING",
+        "name": "attribution_content_source"
+      },
+      {
+        "type": "STRING",
+        "name": "attribution_experiment_source"
+      },
+      {
+        "type": "STRING",
+        "name": "attribution_medium_source"
+      },
+      {
+        "type": "STRING",
+        "name": "attribution_source_source"
+      },
+      {
+        "type": "STRING",
+        "name": "download_token_source"
+      },
       {
         "type": "BOOLEAN",
         "name": "reported_new_profile_ping"
@@ -182,7 +194,7 @@
         "name": "reported_shutdown_ping"
       },
       {
-        "type": "DATE",
+        "type": "BOOLEAN",
         "name": "reported_main_ping"
       },
       {

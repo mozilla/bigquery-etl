@@ -50,7 +50,7 @@ class BackfillStatus(enum.Enum):
     """Represents backfill status types."""
 
     DRAFTING = "Drafting"
-    VALIDATING = "Validating"
+    VALIDATED = "Validated"
     COMPLETE = "Complete"
 
 

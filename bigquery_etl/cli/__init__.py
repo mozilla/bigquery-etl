@@ -10,6 +10,7 @@ from .._version import __version__
 # We rename the import, otherwise it affects monkeypatching in tests
 from ..cli.alchemer import alchemer as alchemer_
 from ..cli.backfill import backfill
+from ..cli.check import check
 from ..cli.dag import dag
 from ..cli.dryrun import dryrun
 from ..cli.format import format
@@ -48,6 +49,7 @@ def cli(prog_name=None):
         "copy_deduplicate": copy_deduplicate,
         "stage": stage,
         "backfill": backfill,
+        "check": check,
     }
 
     @click.group(commands=commands)

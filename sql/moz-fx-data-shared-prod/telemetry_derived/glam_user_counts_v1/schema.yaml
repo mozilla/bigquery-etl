@@ -1,0 +1,25 @@
+fields:
+- mode: NULLABLE
+  name: os
+  type: STRING
+  description: fill_me
+
+- mode: NULLABLE
+  name: app_version
+  type: INT64
+  description: fill_me
+
+- mode: NULLABLE
+  name: app_build_id
+  type: STRING
+  description: fill_me
+
+- mode: NULLABLE
+  name: channel
+  type: STRING
+  description: fill_me
+
+- mode: NULLABLE
+  name: total_users
+  type: INT64
+  description: fill_me

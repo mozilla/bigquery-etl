@@ -71,7 +71,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#baseline" class="md-skip">
+        <a href="#addresses_sync" class="md-skip">
           Skip to content
         </a>
       
@@ -800,6 +800,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#addresses_sync" class="md-nav__link">
+    addresses_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#baseline" class="md-nav__link">
     baseline
   </a>
@@ -828,8 +835,22 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#bookmarks_sync" class="md-nav__link">
+    bookmarks_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#clients_last_seen_joined" class="md-nav__link">
     clients_last_seen_joined
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creditcards_sync" class="md-nav__link">
+    creditcards_sync
   </a>
   
 </li>
@@ -851,6 +872,20 @@
         <li class="md-nav__item">
   <a href="#events_unnested" class="md-nav__link">
     events_unnested
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#history_sync" class="md-nav__link">
+    history_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logins_sync" class="md-nav__link">
+    logins_sync
   </a>
   
 </li>
@@ -879,6 +914,20 @@
         <li class="md-nav__item">
   <a href="#session_end" class="md-nav__link">
     session_end
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sync" class="md-nav__link">
+    sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tabs_sync" class="md-nav__link">
+    tabs_sync
   </a>
   
 </li>
@@ -2385,6 +2434,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#addresses_sync" class="md-nav__link">
+    addresses_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#baseline" class="md-nav__link">
     baseline
   </a>
@@ -2413,8 +2469,22 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#bookmarks_sync" class="md-nav__link">
+    bookmarks_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#clients_last_seen_joined" class="md-nav__link">
     clients_last_seen_joined
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creditcards_sync" class="md-nav__link">
+    creditcards_sync
   </a>
   
 </li>
@@ -2436,6 +2506,20 @@
         <li class="md-nav__item">
   <a href="#events_unnested" class="md-nav__link">
     events_unnested
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#history_sync" class="md-nav__link">
+    history_sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logins_sync" class="md-nav__link">
+    logins_sync
   </a>
   
 </li>
@@ -2468,6 +2552,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#sync" class="md-nav__link">
+    sync
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tabs_sync" class="md-nav__link">
+    tabs_sync
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2487,6 +2585,115 @@
 
 <p>Views on data from firefox_reality</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality">Source Directory</a></p>
+<h2 id="addresses_sync"><a href="#addresses_sync">addresses_sync</a></h2>
+<p><strong>App-specific view for Glean ping "addresses-sync"</strong></p>
+<p><code>firefox_reality.addresses_sync</code></p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Reality"
+(org_mozilla_vrbrowser.addresses_sync).</p>
+<p>It is used by Looker.</p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>normalized_app_id</td>
+        <td>App ID of the channel data was received from</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Normalized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>additional_properties</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>events</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metrics</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser>org_mozilla_vrbrowser</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser/addresses_sync>addresses_sync</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/addresses_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/addresses_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/addresses_sync/metadata.yaml">Metadata File</a> </p>
+<hr />
 <h2 id="baseline"><a href="#baseline">baseline</a></h2>
 <p><strong>App-specific view for Glean ping "baseline"</strong></p>
 <p><code>firefox_reality.baseline</code></p>
@@ -2649,6 +2856,115 @@ across all channels of the Glean application "Firefox Reality"
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/baseline_clients_last_seen">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/baseline_clients_last_seen/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/baseline_clients_last_seen/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="bookmarks_sync"><a href="#bookmarks_sync">bookmarks_sync</a></h2>
+<p><strong>App-specific view for Glean ping "bookmarks-sync"</strong></p>
+<p><code>firefox_reality.bookmarks_sync</code></p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Reality"
+(org_mozilla_vrbrowser.bookmarks_sync).</p>
+<p>It is used by Looker.</p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>normalized_app_id</td>
+        <td>App ID of the channel data was received from</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Normalized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>additional_properties</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>events</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metrics</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser>org_mozilla_vrbrowser</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser/bookmarks_sync>bookmarks_sync</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/bookmarks_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/bookmarks_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/bookmarks_sync/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="clients_last_seen_joined"><a href="#clients_last_seen_joined">clients_last_seen_joined</a></h2>
 <p><code>firefox_reality.clients_last_seen_joined</code></p>
@@ -2843,6 +3159,115 @@ across all channels of the Glean application "Firefox Reality"
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/clients_last_seen_joined">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/clients_last_seen_joined/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/clients_last_seen_joined/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="creditcards_sync"><a href="#creditcards_sync">creditcards_sync</a></h2>
+<p><strong>App-specific view for Glean ping "creditcards-sync"</strong></p>
+<p><code>firefox_reality.creditcards_sync</code></p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Reality"
+(org_mozilla_vrbrowser.creditcards_sync).</p>
+<p>It is used by Looker.</p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>normalized_app_id</td>
+        <td>App ID of the channel data was received from</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Normalized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>additional_properties</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>events</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metrics</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser>org_mozilla_vrbrowser</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser/creditcards_sync>creditcards_sync</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/creditcards_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/creditcards_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/creditcards_sync/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="deletion_request"><a href="#deletion_request">deletion_request</a></h2>
 <p><strong>App-specific view for Glean ping "deletion-request"</strong></p>
@@ -3079,6 +3504,224 @@ across all channels of the Glean application "Firefox Reality"
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/events_unnested">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/events_unnested/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/events_unnested/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="history_sync"><a href="#history_sync">history_sync</a></h2>
+<p><strong>App-specific view for Glean ping "history-sync"</strong></p>
+<p><code>firefox_reality.history_sync</code></p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Reality"
+(org_mozilla_vrbrowser.history_sync).</p>
+<p>It is used by Looker.</p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>normalized_app_id</td>
+        <td>App ID of the channel data was received from</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Normalized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>additional_properties</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>events</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metrics</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser>org_mozilla_vrbrowser</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser/history_sync>history_sync</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/history_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/history_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/history_sync/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="logins_sync"><a href="#logins_sync">logins_sync</a></h2>
+<p><strong>App-specific view for Glean ping "logins-sync"</strong></p>
+<p><code>firefox_reality.logins_sync</code></p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Reality"
+(org_mozilla_vrbrowser.logins_sync).</p>
+<p>It is used by Looker.</p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>normalized_app_id</td>
+        <td>App ID of the channel data was received from</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Normalized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>additional_properties</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>events</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metrics</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser>org_mozilla_vrbrowser</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser/logins_sync>logins_sync</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/logins_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/logins_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/logins_sync/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="metrics"><a href="#metrics">metrics</a></h2>
 <p><strong>App-specific view for Glean ping "metrics"</strong></p>
@@ -3415,6 +4058,224 @@ across all channels of the Glean application "Firefox Reality"
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/session_end">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/session_end/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/session_end/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="sync"><a href="#sync">sync</a></h2>
+<p><strong>App-specific view for Glean ping "sync"</strong></p>
+<p><code>firefox_reality.sync</code></p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Reality"
+(org_mozilla_vrbrowser.sync).</p>
+<p>It is used by Looker.</p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>normalized_app_id</td>
+        <td>App ID of the channel data was received from</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Normalized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>additional_properties</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>events</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metrics</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser>org_mozilla_vrbrowser</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser/sync>sync</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/sync/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="tabs_sync"><a href="#tabs_sync">tabs_sync</a></h2>
+<p><strong>App-specific view for Glean ping "tabs-sync"</strong></p>
+<p><code>firefox_reality.tabs_sync</code></p>
+<p>This a view that UNIONs the stable ping tables
+across all channels of the Glean application "Firefox Reality"
+(org_mozilla_vrbrowser.tabs_sync).</p>
+<p>It is used by Looker.</p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>normalized_app_id</td>
+        <td>App ID of the channel data was received from</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_channel</td>
+        <td>Normalized channel name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>additional_properties</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>events</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metrics</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_name</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_country_code</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_os_version</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ping_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_timestamp</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser>org_mozilla_vrbrowser</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser/tabs_sync>tabs_sync</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/tabs_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/tabs_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_reality/tabs_sync/metadata.yaml">Metadata File</a> </p>
 <hr />
 
 

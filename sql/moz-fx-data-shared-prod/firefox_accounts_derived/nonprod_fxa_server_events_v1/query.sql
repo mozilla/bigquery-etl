@@ -12,7 +12,7 @@ SELECT
         )
     ) AS jsonPayload
   ),
-  SPLIT(jsonPayload.logger, "-")[OFFSET(1)] fxa_log,
+  SPLIT(jsonPayload.logger, "-")[OFFSET(1)] AS fxa_log,
 FROM
   `moz-fx-fxa-nonprod.gke_fxa_stage_log.stdout`
 WHERE

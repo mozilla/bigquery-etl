@@ -312,11 +312,37 @@ fields:
         system paths.
 
         '
+    - name: sync_v2_failure_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+      description: 'Records a global sync failure: either due to an authentication
+        error, unexpected exception, or other error that caused the sync to fail.
+        Error strings are truncated and sanitized to omit PII, like URLs and file
+        system paths.
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE
     fields:
     - name: sync_sync_uuid
+      type: STRING
+      mode: NULLABLE
+      description: 'Unique identifier for this sync, used to correlate together individual
+        pings for data types that were synchronized together (history, bookmarks,
+        logins). If a data type is synchronized by itself via the legacy ''sync''
+        API (as opposed to the Sync Manager), then this field will not be set on the
+        corresponding ping.
+
+        '
+    - name: sync_v2_sync_uuid
       type: STRING
       mode: NULLABLE
       description: 'Unique identifier for this sync, used to correlate together individual

@@ -17,7 +17,15 @@ SELECT
             mozfun.glean.parse_datetime(
               metrics.datetime.bookmarks_sync_started_at
             ) AS bookmarks_sync_started_at,
-            metrics.datetime.bookmarks_sync_started_at AS raw_bookmarks_sync_started_at
+            metrics.datetime.bookmarks_sync_started_at AS raw_bookmarks_sync_started_at,
+            mozfun.glean.parse_datetime(
+              metrics.datetime.bookmarks_sync_v2_finished_at
+            ) AS bookmarks_sync_v2_finished_at,
+            metrics.datetime.bookmarks_sync_v2_finished_at AS raw_bookmarks_sync_v2_finished_at,
+            mozfun.glean.parse_datetime(
+              metrics.datetime.bookmarks_sync_v2_started_at
+            ) AS bookmarks_sync_v2_started_at,
+            metrics.datetime.bookmarks_sync_v2_started_at AS raw_bookmarks_sync_v2_started_at
           ) AS datetime
         )
     ) AS metrics

@@ -17,7 +17,15 @@ SELECT
             mozfun.glean.parse_datetime(
               metrics.datetime.tabs_sync_started_at
             ) AS tabs_sync_started_at,
-            metrics.datetime.tabs_sync_started_at AS raw_tabs_sync_started_at
+            metrics.datetime.tabs_sync_started_at AS raw_tabs_sync_started_at,
+            mozfun.glean.parse_datetime(
+              metrics.datetime.tabs_sync_v2_finished_at
+            ) AS tabs_sync_v2_finished_at,
+            metrics.datetime.tabs_sync_v2_finished_at AS raw_tabs_sync_v2_finished_at,
+            mozfun.glean.parse_datetime(
+              metrics.datetime.tabs_sync_v2_started_at
+            ) AS tabs_sync_v2_started_at,
+            metrics.datetime.tabs_sync_v2_started_at AS raw_tabs_sync_v2_started_at
           ) AS datetime
         )
     ) AS metrics

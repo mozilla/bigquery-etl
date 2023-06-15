@@ -240,11 +240,24 @@ fields:
       - name: value
         type: STRING
         mode: NULLABLE
+    - name: sync_v2_failure_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
   - name: uuid
     type: RECORD
     mode: NULLABLE
     fields:
     - name: sync_sync_uuid
+      type: STRING
+      mode: NULLABLE
+    - name: sync_v2_sync_uuid
       type: STRING
       mode: NULLABLE
   - name: jwe

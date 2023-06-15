@@ -152,19 +152,6 @@ fields:
       - name: tls_cipher_hex
         type: STRING
         mode: NULLABLE
-  - name: isp
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: db_version
-      type: STRING
-      mode: NULLABLE
-    - name: name
-      type: STRING
-      mode: NULLABLE
-    - name: organization
-      type: STRING
-      mode: NULLABLE
   - name: user_agent
     type: RECORD
     mode: NULLABLE
@@ -178,6 +165,19 @@ fields:
     - name: version
       type: STRING
       mode: NULLABLE
+  - name: isp
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: db_version
+      type: STRING
+      mode: NULLABLE
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: organization
+      type: STRING
+      mode: NULLABLE
 - name: metrics
   type: RECORD
   mode: NULLABLE
@@ -186,33 +186,26 @@ fields:
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: tabs_sync_outgoing_batches
+    - name: logins_sync_outgoing_batches
+      type: INTEGER
+      mode: NULLABLE
+    - name: logins_sync_v2_outgoing_batches
       type: INTEGER
       mode: NULLABLE
   - name: datetime
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: tabs_sync_finished_at
+    - name: logins_sync_finished_at
       type: TIMESTAMP
       mode: NULLABLE
-    - name: raw_tabs_sync_finished_at
+    - name: raw_logins_sync_finished_at
       type: STRING
       mode: NULLABLE
-    - name: tabs_sync_started_at
+    - name: logins_sync_started_at
       type: TIMESTAMP
       mode: NULLABLE
-    - name: raw_tabs_sync_started_at
-      type: STRING
-      mode: NULLABLE
-  - name: jwe
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
+    - name: raw_logins_sync_started_at
       type: STRING
       mode: NULLABLE
   - name: labeled_counter
@@ -259,7 +252,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-    - name: tabs_sync_incoming
+    - name: logins_sync_incoming
       type: RECORD
       mode: REPEATED
       fields:
@@ -269,7 +262,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-    - name: tabs_sync_outgoing
+    - name: logins_sync_outgoing
       type: RECORD
       mode: REPEATED
       fields:
@@ -279,6 +272,80 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: logins_sync_v2_incoming
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: logins_sync_v2_outgoing
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+  - name: labeled_string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: logins_sync_failure_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+    - name: logins_sync_v2_failure_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: logins_sync_uid
+      type: STRING
+      mode: NULLABLE
+    - name: logins_sync_v2_uid
+      type: STRING
+      mode: NULLABLE
+  - name: uuid
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: sync_sync_uuid
+      type: STRING
+      mode: NULLABLE
+    - name: sync_v2_sync_uuid
+      type: STRING
+      mode: NULLABLE
+  - name: jwe
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+    - name: value
+      type: STRING
+      mode: NULLABLE
   - name: labeled_rate
     type: RECORD
     mode: REPEATED
@@ -303,27 +370,6 @@ fields:
         - name: numerator
           type: INTEGER
           mode: NULLABLE
-  - name: labeled_string
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: tabs_sync_failure_reason
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: STRING
-        mode: NULLABLE
-  - name: string
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: tabs_sync_uid
-      type: STRING
-      mode: NULLABLE
   - name: url
     type: RECORD
     mode: REPEATED

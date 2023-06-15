@@ -189,6 +189,9 @@ fields:
     - name: tabs_sync_outgoing_batches
       type: INTEGER
       mode: NULLABLE
+    - name: tabs_sync_v2_outgoing_batches
+      type: INTEGER
+      mode: NULLABLE
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -279,6 +282,26 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: tabs_sync_v2_incoming
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: tabs_sync_v2_outgoing
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: labeled_rate
     type: RECORD
     mode: REPEATED
@@ -317,11 +340,24 @@ fields:
       - name: value
         type: STRING
         mode: NULLABLE
+    - name: tabs_sync_v2_failure_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
   - name: string
     type: RECORD
     mode: NULLABLE
     fields:
     - name: tabs_sync_uid
+      type: STRING
+      mode: NULLABLE
+    - name: tabs_sync_v2_uid
       type: STRING
       mode: NULLABLE
   - name: url

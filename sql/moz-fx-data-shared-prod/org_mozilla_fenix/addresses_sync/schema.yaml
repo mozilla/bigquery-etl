@@ -241,6 +241,15 @@ fields:
         syncs may require multiple batches.
 
         '
+    - name: addresses_sync_v2_outgoing_batches
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records the number of batches needed to upload all outgoing records.
+        The Sync server has a hard limit on the number of records (and request body
+        bytes) on the number of records that can fit into a single batch, and large
+        syncs may require multiple batches.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -262,6 +271,25 @@ fields:
 
         '
     - name: raw_addresses_sync_started_at
+      type: STRING
+      mode: NULLABLE
+    - name: addresses_sync_v2_finished_at
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'Records when the addresses sync finished. This includes the time
+        to download, apply, and upload all records.
+
+        '
+    - name: raw_addresses_sync_v2_finished_at
+      type: STRING
+      mode: NULLABLE
+    - name: addresses_sync_v2_started_at
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'Records when the addresses sync started.
+
+        '
+    - name: raw_addresses_sync_v2_started_at
       type: STRING
       mode: NULLABLE
   - name: jwe
@@ -370,6 +398,38 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
+    - name: addresses_sync_v2_incoming
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records incoming addresses record counts. `applied` is the number
+        of incoming records that were successfully stored or updated in the local
+        database. `failed_to_apply` is the number of records that were ignored due
+        to errors. `reconciled` is the number of merged records.
+
+        '
+    - name: addresses_sync_v2_outgoing
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records outgoing addresses record counts. `uploaded` is the number
+        of records that were successfully sent to the server. `failed_to_upload` is
+        the number of records that weren''t uploaded, and will be retried on the next
+        sync.
+
+        '
   - name: labeled_rate
     type: RECORD
     mode: REPEATED
@@ -413,11 +473,32 @@ fields:
         and sanitized to omit PII, like URLs and file system paths.
 
         '
+    - name: addresses_sync_v2_failure_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+      description: 'Records why the addresses sync failed: either due to an authentication
+        error, unexpected exception, or other error. The error strings are truncated
+        and sanitized to omit PII, like URLs and file system paths.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
     fields:
     - name: addresses_sync_uid
+      type: STRING
+      mode: NULLABLE
+      description: 'The user''s hashed Firefox Account ID.
+
+        '
+    - name: addresses_sync_v2_uid
       type: STRING
       mode: NULLABLE
       description: 'The user''s hashed Firefox Account ID.

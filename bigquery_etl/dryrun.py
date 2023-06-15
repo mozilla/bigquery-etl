@@ -355,28 +355,28 @@ class DryRun:
             sql = self.content
         else:
             sql = self.get_sql()
-            if self.metadata:
-                # use metadata to rewrite date-type query params as submission_date
-                date_params = [
-                    query_param
-                    for query_param in (
-                        self.metadata.scheduling.get("date_partition_parameter"),
-                        *(
-                            param.split(":", 1)[0]
-                            for param in self.metadata.scheduling.get("parameters", [])
-                            if re.fullmatch(r"[^:]+:DATE:{{\s*ds\s*}}", param)
-                        ),
-                    )
-                    if query_param and query_param != "submission_date"
-                ]
-                if date_params:
-                    pattern = re.compile(
-                        "@("
-                        + "|".join(date_params)
-                        # match whole query parameter names
-                        + ")(?![a-zA-Z0-9_])"
-                    )
-                    sql = pattern.sub("@submission_date", sql)
+        if self.metadata:
+            # use metadata to rewrite date-type query params as submission_date
+            date_params = [
+                query_param
+                for query_param in (
+                    self.metadata.scheduling.get("date_partition_parameter"),
+                    *(
+                        param.split(":", 1)[0]
+                        for param in self.metadata.scheduling.get("parameters", [])
+                        if re.fullmatch(r"[^:]+:DATE:{{\s*ds\s*}}", param)
+                    ),
+                )
+                if query_param and query_param != "submission_date"
+            ]
+            if date_params:
+                pattern = re.compile(
+                    "@("
+                    + "|".join(date_params)
+                    # match whole query parameter names
+                    + ")(?![a-zA-Z0-9_])"
+                )
+                sql = pattern.sub("@submission_date", sql)
         dataset = basename(dirname(dirname(self.sqlfile)))
         try:
             if self.use_cloud_function:

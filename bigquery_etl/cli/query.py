@@ -25,11 +25,13 @@ from google.cloud.exceptions import NotFound
 
 from ..cli.format import format
 from ..cli.utils import (
+    QUALIFIED_TABLE_NAME_RE,
     is_authenticated,
     is_valid_project,
     no_dryrun_option,
     paths_matching_name_pattern,
     project_id_option,
+    qualified_table_name_matching,
     respect_dryrun_skip_option,
     sql_dir_option,
     temp_dataset_option,
@@ -468,6 +470,7 @@ def _backfill_query(
     args,
     partitioning_type,
     backfill_date,
+    destination_table,
 ):
     """Run a query backfill for a specific date."""
     project, dataset, table = extract_from_query_path(query_file_path)
@@ -482,10 +485,11 @@ def _backfill_query(
 
     backfill_date = backfill_date.strftime("%Y-%m-%d")
     if backfill_date not in exclude:
-        if no_partition:
+        if destination_table is None:
             destination_table = table
-        else:
-            destination_table = f"{table}${partition}"
+
+        if not no_partition:
+            destination_table = f"{destination_table}${partition}"
 
         click.echo(
             f"Run backfill for {project}.{dataset}.{destination_table} "
@@ -596,6 +600,15 @@ def _backfill_query(
     default=False,
     help="Disable writing results to a partition. Overwrites entire destination table.",
 )
+@click.option(
+    "--destination_table",
+    "--destination-table",
+    required=False,
+    help=(
+        "Destination table name results are written to. "
+        + "If not set, determines destination table based on query."
+    ),
+)
 @click.pass_context
 def backfill(
     ctx,
@@ -609,6 +622,7 @@ def backfill(
     max_rows,
     parallelism,
     no_partition,
+    destination_table,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -706,6 +720,7 @@ def backfill(
             no_partition,
             ctx.args,
             partitioning_type,
+            destination_table=destination_table,
         )
 
         if not depends_on_past:
@@ -862,6 +877,13 @@ def _run_query(
         if not use_public_table and destination_table is not None:
             # destination table was parsed by argparse, however if it wasn't modified to
             # point to a public table it needs to be passed as parameter for the query
+
+            if re.match(QUALIFIED_TABLE_NAME_RE, destination_table):
+                project, dataset, table = qualified_table_name_matching(
+                    destination_table
+                )
+                destination_table = "{}:{}.{}".format(project, dataset, table)
+
             query_arguments.append("--destination_table={}".format(destination_table))
 
         if bool(list(filter(lambda x: x.startswith("--parameter"), query_arguments))):
@@ -1686,6 +1708,15 @@ def _update_query_schema(
     default=False,
     is_flag=True,
 )
+@click.option(
+    "--destination_table",
+    "--destination-table",
+    required=False,
+    help=(
+        "Destination table name results are written to. "
+        + "If not set, determines destination table based on query."
+    ),
+)
 @click.pass_context
 def deploy(
     ctx,
@@ -1697,6 +1728,7 @@ def deploy(
     respect_dryrun_skip,
     skip_existing,
     skip_external_data,
+    destination_table,
 ):
     """CLI command for deploying destination table schemas."""
     if not is_authenticated():
@@ -1737,7 +1769,10 @@ def deploy(
             dataset_name = query_file_path.parent.parent.name
             project_name = query_file_path.parent.parent.parent.name
 
-            full_table_id = f"{project_name}.{dataset_name}.{table_name}"
+            if destination_table:
+                full_table_id = destination_table
+            else:
+                full_table_id = f"{project_name}.{dataset_name}.{table_name}"
 
             existing_schema = Schema.from_schema_file(existing_schema_path)
 

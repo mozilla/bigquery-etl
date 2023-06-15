@@ -6,6 +6,7 @@ import tempfile
 from subprocess import CalledProcessError
 
 import click
+import sqlparse
 
 from ..cli.utils import (
     is_authenticated,
@@ -130,7 +131,7 @@ def _run_check(
         format=False,
         **jinja_params,
     )
-    checks = rendered_result.split(";")
+    checks = sqlparse.split(rendered_result)
     seek_location = 0
     check_failed = False
 

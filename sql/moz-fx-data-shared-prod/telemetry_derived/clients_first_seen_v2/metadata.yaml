@@ -1,0 +1,23 @@
+friendly_name: Clients First Seen
+description: |-
+  Picks out just the first and second observations per client based on the
+  new_profile ping, except for attribution which is retrieved from the ping
+  that reports first.
+
+  It should be accessed through the user-facing view
+  `telemetry.clients_first_seen`.
+owners:
+- lvargas@mozilla.com
+labels:
+  application: firefox
+  incremental: true
+  schedule: daily
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id

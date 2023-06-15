@@ -29,6 +29,7 @@ from ..cli.utils import (
     is_authenticated,
     is_valid_project,
     no_dryrun_option,
+    parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
     respect_dryrun_skip_option,
@@ -1727,6 +1728,7 @@ def _update_query_schema(
     default=False,
     is_flag=True,
 )
+@parallelism_option
 @click.pass_context
 def deploy(
     ctx,
@@ -1738,6 +1740,7 @@ def deploy(
     respect_dryrun_skip,
     skip_existing,
     skip_external_data,
+    parallelism,
 ):
     """CLI command for deploying destination table schemas."""
     if not is_authenticated():
@@ -1760,18 +1763,17 @@ def deploy(
             name, ctx.obj["TMP_DIR"], project_id, ["query.*"]
         )
 
-    failed_deploys = []
-    for query_file in query_files:
+    def _deploy(query_file):
         if respect_dryrun_skip and str(query_file) in SKIP:
             click.echo(f"{query_file} dry runs are skipped. Cannot validate schemas.")
-            continue
+            return
 
         query_file_path = Path(query_file)
         existing_schema_path = query_file_path.parent / SCHEMA_FILE
 
         if not existing_schema_path.is_file():
             click.echo(f"No schema file found for {query_file}")
-            continue
+            return
 
         try:
             table_name = query_file_path.parent.name
@@ -1829,7 +1831,10 @@ def deploy(
                 click.echo(f"Schema (and metadata) updated for {full_table_id}.")
         except Exception:
             print_exc()
-            failed_deploys.append(query_file)
+            return query_file
+
+    with ThreadPool(parallelism) as pool:
+        failed_deploys = [r for r in pool.map(_deploy, query_files) if r]
 
     if not skip_external_data:
         failed_external_deploys = _deploy_external_data(

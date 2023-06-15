@@ -86,8 +86,8 @@ class RawRoutine:
 
         if value is None or value != persistent_name:
             raise ValueError(
-                f"Expected a function named {persistent_name} or {temp_name} "
-                f"to be defined."
+                f"Expected a function named {persistent_name} "
+                f"or {temp_name} to be defined."
             )
         if not UDF_NAME_RE.match(name):
             raise ValueError(
@@ -146,6 +146,7 @@ class RawRoutine:
         dataset = filepath.parent.parent.name
         project = filepath.parent.parent.parent
 
+        persistent_name_re = rf"`?{dataset}`?.`?{name}`?"
         persistent_name = f"{dataset}.{name}"
         temp_name = f"{dataset}_{name}"
         internal_name = None
@@ -160,7 +161,7 @@ class RawRoutine:
             normalized_statement = " ".join(s.lower().split())
             if normalized_statement.startswith("create or replace function"):
                 definitions.append(s)
-                if persistent_name in normalized_statement:
+                if re.search(persistent_name_re, normalized_statement):
                     internal_name = persistent_name
 
             elif normalized_statement.startswith("create temp function"):
@@ -172,7 +173,7 @@ class RawRoutine:
                 is_stored_procedure = True
                 definitions.append(s)
                 tests.append(s)
-                if persistent_name in normalized_statement:
+                if re.search(persistent_name_re, normalized_statement):
                     internal_name = persistent_name
 
             else:

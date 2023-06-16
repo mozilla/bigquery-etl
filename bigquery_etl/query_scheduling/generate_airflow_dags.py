@@ -2,13 +2,16 @@
 
 import logging
 import os
+import copy
 from argparse import ArgumentParser
 from pathlib import Path
+from bigquery_etl.cli.utils import CHECKS_FILE_RE
 
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
-from bigquery_etl.query_scheduling.task import Task, UnscheduledTask
+from bigquery_etl.query_scheduling.task import Task, TaskRef, UnscheduledTask
 from bigquery_etl.util import standard_args
 from bigquery_etl.util.common import project_dirs
+
 
 DEFAULT_DAGS_FILE = "dags.yaml"
 QUERY_FILE = "query.sql"
@@ -17,6 +20,7 @@ SCRIPT_FILE = "script.sql"
 PYTHON_SCRIPT_FILE = "query.py"
 DEFAULT_DAGS_DIR = "dags"
 TELEMETRY_AIRFLOW_GITHUB = "https://github.com/mozilla/telemetry-airflow.git"
+CHECKS_FILE = "checks.sql"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -52,15 +56,15 @@ def get_dags(project_id, dags_config):
     """Return all configured DAGs including associated tasks."""
     tasks = []
     dag_collection = DagCollection.from_file(dags_config)
-
     for project_dir in project_dirs(project_id):
         # parse metadata.yaml to retrieve scheduling information
         if os.path.isdir(project_dir):
             for root, dirs, files in os.walk(project_dir):
                 try:
+                    checks_task = None
                     if QUERY_FILE in files:
-                        query_file = os.path.join(root, QUERY_FILE)
-                        task = Task.of_query(query_file, dag_collection=dag_collection)
+                            query_file = os.path.join(root, QUERY_FILE)
+                            task = Task.of_query(query_file, dag_collection=dag_collection)
                     elif QUERY_PART_FILE in files:
                         # multipart query
                         query_file = os.path.join(root, QUERY_PART_FILE)
@@ -93,7 +97,21 @@ def get_dags(project_id, dags_config):
                     logging.error(f"Error processing task for query {query_file}")
                     raise e
                 else:
+                    print(files)
+                    if CHECKS_FILE in files:
+                        checks_file = os.path.join(root, CHECKS_FILE)
+                        checks_task = copy.deepcopy(Task.of_dq_check(checks_file, dag_collection=dag_collection))
+                        # checks_task = Task.of_dq_check(checks_file, dag_collection=dag_collection)
+                        # print(str(checks_task))
+                        tasks.append(checks_task)
+                        task_ref = copy.deepcopy(TaskRef(dag_name=task.dag_name,task_id=task.task_name,))
+                        print("Task ref is" + str(task_ref))
+                        checks_task.depends_on.append(task_ref)
+                        print(checks_task.depends_on)
+                        print("Checks task name " + checks_task.task_name)
+                        
                     tasks.append(task)
+                    print("task name " + task.task_name)
 
         else:
             logging.error(
@@ -104,7 +122,6 @@ def get_dags(project_id, dags_config):
                     project_dir
                 )
             )
-
     return dag_collection.with_tasks(tasks)
 
 

@@ -116,7 +116,6 @@ class DagCollection:
                             _task.to_ref(self)
                         )
             self._downstream_dependencies = downstream_dependencies
-
         return self._downstream_dependencies[task.task_key]
 
     def dag_to_airflow(self, output_dir, dag):

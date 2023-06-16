@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod`.fenix.attributable_clients_v2
+  `moz-fx-data-shared-prod.fenix.attributable_clients_v2`
 AS
 SELECT
   attributable_clients_v2.submission_date,
@@ -27,10 +27,10 @@ SELECT
   COALESCE(new_profile_activation.activated = 1, FALSE) AS is_activated,
   attributable_clients_v2.metadata,
 FROM
-  `moz-fx-data-shared-prod`.fenix_derived.attributable_clients_v2
+  `moz-fx-data-shared-prod.fenix_derived.attributable_clients_v2`
 JOIN
-  `moz-fx-data-shared-prod`.fenix.firefox_android_clients
+  `moz-fx-data-shared-prod.fenix.firefox_android_clients`
   USING (client_id)
 JOIN
-  `moz-fx-data-shared-prod`.fenix.new_profile_activation
+  `moz-fx-data-shared-prod.fenix.new_profile_activation`
   USING (client_id)

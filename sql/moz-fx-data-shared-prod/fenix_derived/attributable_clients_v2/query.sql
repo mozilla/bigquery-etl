@@ -15,7 +15,7 @@ WITH client_days AS (
     SUM(sum_map_values(metrics.labeled_counter.browser_search_with_ads)) AS searches_with_ads,
     SUM(sum_map_values(metrics.labeled_counter.browser_search_ad_clicks)) AS ad_clicks,
   FROM
-    `moz-fx-data-shared-prod`.fenix.baseline
+    fenix.baseline
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= "2021-08-01"
@@ -37,7 +37,7 @@ searches AS (
     SUM(search_with_ads) AS searches_with_ads,
     SUM(ad_click) AS ad_clicks
   FROM
-    `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
+    search_derived.mobile_search_clients_daily_v1
   WHERE
     {% if is_init() %}
       submission_date >= "2021-08-01"
@@ -58,7 +58,7 @@ new_activations AS (
     submission_date,
     activated > 0 AS activated,
   FROM
-    `moz-fx-data-shared-prod`.fenix.new_profile_activation
+    fenix.new_profile_activation
   WHERE
     {% if is_init() %}
       submission_date >= "2021-08-01"

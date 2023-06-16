@@ -32,6 +32,7 @@ SELECT
   firefox_android_clients.first_seen_date = attributable_clients_v2.submission_date AS is_new_profile,
   COALESCE(unfiltered_activations.activated = 1, FALSE) AS is_activated,
   attributable_clients_v2.metadata,
+  firefox_android_clients.metadata AS firefox_android_clients_metadata,
 FROM
   `moz-fx-data-shared-prod`.fenix_derived.attributable_clients_v2
 JOIN

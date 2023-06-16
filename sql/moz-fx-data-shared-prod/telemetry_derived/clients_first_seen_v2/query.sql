@@ -187,7 +187,7 @@ _current AS(
     client_id,
     new_profile.sample_id AS sample_id,
     DATE (
-      mozdata.analysis.get_earliest_value(
+      mozfun.norm.get_earliest_value(
         [
         (STRUCT(CAST(new_profile.submission_timestamp AS STRING), 'new_profile', DATETIME(new_profile.submission_timestamp))),
         (STRUCT(CAST(shutdown.submission_timestamp AS STRING), 'shutdown', DATETIME(shutdown.submission_timestamp))),
@@ -195,7 +195,7 @@ _current AS(
         ]
       ).earliest_date
         ) AS first_seen_date,
-      mozdata.analysis.get_earliest_value(
+      mozfun.norm.get_earliest_value(
         [
         (STRUCT(CAST(new_profile.submission_timestamp AS STRING), 'new_profile', DATETIME(new_profile.submission_timestamp))),
         (STRUCT(CAST(shutdown.submission_timestamp AS STRING), 'shutdown', DATETIME(shutdown.submission_timestamp))),
@@ -234,35 +234,35 @@ _current AS(
     new_profile.startup_profile_selection_reason AS startup_profile_selection_reason,
     new_profile.download_token AS download_token,
     new_profile.download_source AS download_source,
-    mozdata.analysis.get_earliest_value(
+    mozfun.norm.get_earliest_value(
       [
         (STRUCT(new_profile.attribution_campaign, 'new_profile', DATETIME(new_profile.submission_timestamp))),
         (STRUCT(shutdown.attribution_campaign, 'shutdown', DATETIME(shutdown.submission_timestamp))),
         (STRUCT(main.attribution_campaign, 'main', DATETIME(main.submission_timestamp)))
       ]
     ).earliest_value AS attribution_campaign,
-    mozdata.analysis.get_earliest_value(
+    mozfun.norm.get_earliest_value(
       [
         (STRUCT(new_profile.attribution_content, 'new_profile', DATETIME(new_profile.submission_timestamp))),
         (STRUCT(shutdown.attribution_content, 'shutdown', DATETIME(shutdown.submission_timestamp))),
         (STRUCT(main.attribution_content, 'main', DATETIME(main.submission_timestamp)))
       ]
     ).earliest_value AS attribution_content,
-    mozdata.analysis.get_earliest_value(
+    mozfun.norm.get_earliest_value(
       [
         (STRUCT(new_profile.attribution_experiment, 'new_profile', DATETIME(new_profile.submission_timestamp))),
         (STRUCT(shutdown.attribution_experiment, 'shutdown', DATETIME(shutdown.submission_timestamp))),
         (STRUCT(main.attribution_experiment, 'main', DATETIME(main.submission_timestamp)))
       ]
     ).earliest_value AS attribution_experiment,
-    mozdata.analysis.get_earliest_value(
+    mozfun.norm.get_earliest_value(
       [
         (STRUCT(new_profile.attribution_medium, 'new_profile', DATETIME(new_profile.submission_timestamp))),
         (STRUCT(shutdown.attribution_medium, 'shutdown', DATETIME(shutdown.submission_timestamp))),
         (STRUCT(main.attribution_medium, 'main', DATETIME(main.submission_timestamp)))
       ]
     ).earliest_value AS attribution_medium,
-    mozdata.analysis.get_earliest_value(
+    mozfun.norm.get_earliest_value(
       [
         (STRUCT(new_profile.attribution_source, 'new_profile', DATETIME(new_profile.submission_timestamp))),
         (STRUCT(shutdown.attribution_source, 'shutdown', DATETIME(shutdown.submission_timestamp))),
@@ -270,42 +270,42 @@ _current AS(
       ]
     ).earliest_value AS attribution_source,
     STRUCT(
-      mozdata.analysis.get_earliest_value(
+      mozfun.norm.get_earliest_value(
         [
           (STRUCT(CAST(new_profile.submission_timestamp AS STRING), 'new_profile', DATETIME(new_profile.submission_timestamp))),
           (STRUCT(CAST(shutdown.submission_timestamp AS STRING), 'shutdown', DATETIME(shutdown.submission_timestamp))),
           (STRUCT(CAST(main.submission_timestamp AS STRING), 'main', DATETIME(main.submission_timestamp)))
         ]
         ).earliest_value_source AS first_seen_date__source_ping,
-      mozdata.analysis.get_earliest_value(
+      mozfun.norm.get_earliest_value(
         [
           (STRUCT(new_profile.attribution_campaign, 'new_profile', DATETIME(new_profile.submission_timestamp))),
           (STRUCT(shutdown.attribution_campaign, 'shutdown', DATETIME(shutdown.submission_timestamp))),
           (STRUCT(main.attribution_campaign, 'main', DATETIME(main.submission_timestamp)))
         ]
       ).earliest_value_source AS attribution_campaign__source_ping,
-      mozdata.analysis.get_earliest_value(
+      mozfun.norm.get_earliest_value(
         [
           (STRUCT(new_profile.attribution_content, 'new_profile', DATETIME(new_profile.submission_timestamp))),
           (STRUCT(shutdown.attribution_content, 'shutdown', DATETIME(shutdown.submission_timestamp))),
           (STRUCT(main.attribution_content, 'main', DATETIME(main.submission_timestamp)))
         ]
       ).earliest_value_source AS attribution_content__source_ping,
-      mozdata.analysis.get_earliest_value(
+      mozfun.norm.get_earliest_value(
         [
           (STRUCT(new_profile.attribution_experiment, 'new_profile', DATETIME(new_profile.submission_timestamp))),
           (STRUCT(shutdown.attribution_experiment, 'shutdown', DATETIME(shutdown.submission_timestamp))),
           (STRUCT(main.attribution_experiment, 'main', DATETIME(main.submission_timestamp)))
         ]
       ).earliest_value_source AS attribution_experiment__source_ping,
-      mozdata.analysis.get_earliest_value(
+      mozfun.norm.get_earliest_value(
         [
           (STRUCT(new_profile.attribution_medium, 'new_profile', DATETIME(new_profile.submission_timestamp))),
           (STRUCT(shutdown.attribution_medium, 'shutdown', DATETIME(shutdown.submission_timestamp))),
           (STRUCT(main.attribution_medium, 'main', DATETIME(main.submission_timestamp)))
         ]
       ).earliest_value_source AS attribution_medium__source_ping,
-      mozdata.analysis.get_earliest_value(
+      mozfun.norm.get_earliest_value(
         [
           (STRUCT(new_profile.attribution_source, 'new_profile', DATETIME(new_profile.submission_timestamp))),
           (STRUCT(shutdown.attribution_source, 'shutdown', DATETIME(shutdown.submission_timestamp))),

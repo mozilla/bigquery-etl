@@ -45,4 +45,4 @@ fields:
 
 - mode: NULLABLE
   name: aggregates
-  type: INTEGER
+  type: STRING

@@ -62,6 +62,6 @@ fields:
   - mode: NULLABLE
     name: value
     type: FLOAT
-  mode: NULLABLE
+  mode: REPEATED
   name: aggregates
   type: RECORD

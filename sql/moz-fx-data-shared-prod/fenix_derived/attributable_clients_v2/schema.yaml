@@ -1,0 +1,38 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+- mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+- mode: NULLABLE
+  name: activations_count
+  type: INTEGER
+- mode: NULLABLE
+  name: active_day_count
+  type: INTEGER
+- mode: NULLABLE
+  name: searches
+  type: INTEGER
+- mode: NULLABLE
+  name: searches_with_ads
+  type: INTEGER
+- mode: NULLABLE
+  name: ad_clicks
+  type: INTEGER
+- fields:
+  - mode: NULLABLE
+    name: sent_baseline_ping
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: sent_metrics_search_data
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: activated_on_this_day
+    type: BOOLEAN
+  mode: NULLABLE
+  name: metadata
+  type: RECORD

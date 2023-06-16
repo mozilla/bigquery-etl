@@ -33,6 +33,7 @@ SKIP_RENDER = {
     # uses {%s} which results in unknown tag exception
     "sql/mozfun/hist/string_to_json/udf.sql",
 }
+DEFAULT_QUERY_TEMPLATE_VARS = {"is_init": lambda: False, "metrics": MetricHub()}
 
 
 def snake_case(line: str) -> str:
@@ -89,10 +90,8 @@ def render(
         file_loader = FileSystemLoader(f"{template_folder}")
         env = Environment(loader=file_loader)
         main_sql = env.get_template(sql_filename)
-        if "metrics" not in kwargs:
-            rendered = main_sql.render(**kwargs, metrics=MetricHub())
-        else:
-            rendered = main_sql.render(**kwargs)
+        template_vars = DEFAULT_QUERY_TEMPLATE_VARS | kwargs
+        rendered = main_sql.render(**template_vars)
 
     if format:
         rendered = reformat(rendered)

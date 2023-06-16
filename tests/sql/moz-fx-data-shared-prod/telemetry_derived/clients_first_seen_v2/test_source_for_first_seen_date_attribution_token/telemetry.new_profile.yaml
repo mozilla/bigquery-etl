@@ -9,3 +9,7 @@
   submission_timestamp: '2023-06-01 14:03:00'
   application:
     channel: beta
+  environment:
+    settings:
+      attribution:
+        dltoken: token

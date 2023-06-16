@@ -23,7 +23,6 @@
   channel: beta
   metadata:
     first_seen_date_source: shutdown_ping
-    download_token_source: shutdown_ping
     reported_new_profile_ping: false
     reported_shutdown_ping: true
     reported_main_ping: true
@@ -35,7 +34,6 @@
   download_token: token4
   metadata:
     first_seen_date_source: shutdown_ping
-    download_token_source: shutdown_ping
     reported_new_profile_ping: false
     reported_shutdown_ping: true
     reported_main_ping: true

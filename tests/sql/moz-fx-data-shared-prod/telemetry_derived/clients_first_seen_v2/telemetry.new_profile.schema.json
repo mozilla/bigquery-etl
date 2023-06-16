@@ -142,6 +142,10 @@
               {
                 "type": "STRING",
                 "name": "dltoken"
+              },
+              {
+                "type": "STRING",
+                "name": "dlsource"
               }
             ],
           "name": "attribution",

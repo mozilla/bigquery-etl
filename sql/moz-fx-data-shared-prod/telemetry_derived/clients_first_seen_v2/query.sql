@@ -149,10 +149,7 @@ shutdown_ping AS
     ] AS attribution_medium,
     ARRAY_AGG(environment.settings.attribution.source IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
-    ] AS attribution_source,
-    ARRAY_AGG(environment.settings.attribution.dltoken IGNORE NULLS ORDER BY submission_timestamp ASC)[
-      SAFE_OFFSET(0)
-    ] AS download_token
+    ] AS attribution_source
   FROM
     telemetry.first_shutdown
   WHERE
@@ -178,10 +175,7 @@ main_ping AS
     ] AS attribution_medium,
     ARRAY_AGG(attribution.source IGNORE NULLS ORDER BY submission_date ASC)[
       SAFE_OFFSET(0)
-    ] AS attribution_source,
-    ARRAY_AGG(attribution.dltoken IGNORE NULLS ORDER BY submission_date ASC)[
-      SAFE_OFFSET(0)
-    ] AS download_token
+    ] AS attribution_source
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
@@ -239,7 +233,7 @@ _current AS(
     new_profile.normalized_os_version AS normalized_os_version,
     new_profile.startup_profile_selection_reason AS startup_profile_selection_reason,
     new_profile.download_token AS download_token,
-    new_profile.download_token AS download_source,
+    new_profile.download_source AS download_source,
     analysis.get_earliest_value(
       [
         (STRUCT(new_profile.attribution_campaign, 'new_profile_ping', DATETIME(new_profile.submission_timestamp))),

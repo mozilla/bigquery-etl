@@ -74,6 +74,6 @@ fields:
     mode: NULLABLE
     name: aggregates
     type: RECORD
-  mode: NULLABLE
+  mode: REPEATED
   name: histogram_aggregates
   type: RECORD

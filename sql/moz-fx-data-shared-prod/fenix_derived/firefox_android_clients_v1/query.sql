@@ -206,14 +206,14 @@ _current AS (
           (
             STRUCT(
               CAST(first_session.adjust_network AS STRING),
-              'first_session_ping',
+              'first_session',
               first_session.min_submission_datetime
             )
           ),
           (
             STRUCT(
               CAST(metrics.adjust_network AS STRING),
-              'metrics_ping',
+              'metrics',
               metrics.min_submission_datetime
             )
           )
@@ -229,14 +229,14 @@ _current AS (
           (
             STRUCT(
               CAST(first_session.adjust_network AS STRING),
-              'first_session_ping',
+              'first_session',
               first_session.min_submission_datetime
             )
           ),
           (
             STRUCT(
               CAST(metrics.adjust_network AS STRING),
-              'metrics_ping',
+              'metrics',
               metrics.min_submission_datetime
             )
           )

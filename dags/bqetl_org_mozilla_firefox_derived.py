@@ -181,6 +181,21 @@ with DAG(
     firefox_ios_derived__attributable_clients__v1.set_upstream(
         wait_for_baseline_clients_daily
     )
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    firefox_ios_derived__attributable_clients__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
     wait_for_firefox_ios_clients = ExternalTaskSensor(
         task_id="wait_for_firefox_ios_clients",
         external_dag_id="bqetl_analytics_tables",
@@ -194,18 +209,6 @@ with DAG(
 
     firefox_ios_derived__attributable_clients__v1.set_upstream(
         wait_for_firefox_ios_clients
-    )
-
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     org_mozilla_fenix_derived__client_deduplication__v1.set_upstream(

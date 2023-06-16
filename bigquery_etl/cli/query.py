@@ -1,6 +1,7 @@
 """bigquery-etl CLI query command."""
 
 import copy
+import datetime
 import logging
 import os
 import re
@@ -873,6 +874,14 @@ def _run_query(
             # point to a public table it needs to be passed as parameter for the query
             query_arguments.append("--destination_table={}".format(destination_table))
 
+        if bool(list(filter(lambda x: x.startswith("--parameter"), query_arguments))):
+            # need to do this as parameters are not supported with legacy sql
+            query_arguments.append("--use_legacy_sql=False")
+
+        # this assumed query command should always be passed inside query_arguments
+        if "query" not in query_arguments:
+            query_arguments = ["query"] + query_arguments
+
         # write rendered query to a temporary file;
         # query string cannot be passed directly to bq as SQL comments will be interpreted as CLI arguments
         with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
@@ -1273,6 +1282,40 @@ def render(name, sql_dir, output_dir):
         else:
             click.echo(query_file)
             click.echo(rendered_sql)
+
+
+def _parse_partition_setting(partition_date):
+    params = partition_date.split(":")
+    if len(params) != 3:
+        return None
+
+    # Check date format
+    try:
+        datetime.datetime.strptime(params[2], "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
+    # Check column name
+    if re.match(r"^\w+$", params[0]):
+        return {params[0]: params[2]}
+
+
+def _validate_partition_date(ctx, param, partition_date):
+    """Process the CLI parameter check_date and set the parameter for BigQuery."""
+    # Will be None if launched from Airflow.  Also ctx.args is not populated at this stage.
+    if partition_date:
+        parsed = _parse_partition_setting(partition_date)
+        if parsed is None:
+            raise click.BadParameter("Format must be <column-name>::<yyyy-mm-dd>")
+        return parsed
+    return None
+
+
+def _parse_check_output(output: str) -> str:
+    output = output.replace("\n", " ")
+    if "ETL Data Check Failed:" in output:
+        return f"ETL Data Check Failed:{output.split('ETL Data Check Failed:')[1]}"
+    return output
 
 
 @query.group(help="Commands for managing query schemas.")

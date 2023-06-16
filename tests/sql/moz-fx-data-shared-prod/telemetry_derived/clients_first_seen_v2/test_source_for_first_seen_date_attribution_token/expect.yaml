@@ -16,7 +16,7 @@
     reported_new_profile_ping: true
     reported_shutdown_ping: true
     reported_main_ping: false
-  sample_id: 30
+  sample_id: 30expect.yaml
   submission_timestamp: '2023-06-01T11:03:00'
 - attribution_campaign: campaign
   client_id: client-4

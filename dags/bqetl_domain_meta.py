@@ -51,6 +51,6 @@ with DAG(
         owner="wstuckey@mozilla.com",
         email=["wstuckey@mozilla.com"],
         date_partition_parameter="submission_date",
-        table_partition_template='{{ dag_run.logical_date.strftime("%Y%m") }}',
+        table_partition_template='${{ dag_run.logical_date.strftime("%Y%m") }}',
         depends_on_past=False,
     )

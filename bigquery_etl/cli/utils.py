@@ -5,6 +5,7 @@ import os
 import re
 from fnmatch import fnmatchcase
 from pathlib import Path
+from typing import Tuple
 
 import click
 from google.auth.exceptions import DefaultCredentialsError
@@ -14,7 +15,14 @@ from bigquery_etl.util.common import TempDatasetReference, project_dirs
 
 QUERY_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
-    r"(?:query\.sql|part1\.sql|script\.sql|query\.py|view\.sql|metadata\.yaml)$"
+    r"(?:query\.sql|part1\.sql|script\.sql|query\.py|view\.sql|metadata\.yaml|backfill\.yaml)$"
+)
+CHECKS_FILE_RE = re.compile(
+    r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
+    r"(?:checks\.sql)$"
+)
+QUALIFIED_TABLE_NAME_RE = re.compile(
+    r"(?P<project_id>[a-zA-z0-9_-]+)\.(?P<dataset_id>[a-zA-z0-9_-]+)\.(?P<table_id>[a-zA-z0-9_-]+)"
 )
 TEST_PROJECT = "bigquery-etl-integration-test"
 MOZDATA = "mozdata"
@@ -79,7 +87,27 @@ def table_matches_patterns(pattern, invert, table):
     return matching != invert
 
 
-def paths_matching_name_pattern(pattern, sql_path, project_id, files=["*.sql"]):
+def paths_matching_checks_pattern(pattern, sql_path, project_id):
+    """Return single path to checks.sql matching the name pattern."""
+    checks_files = paths_matching_name_pattern(
+        pattern, sql_path, project_id, ["checks.sql"], CHECKS_FILE_RE
+    )
+
+    if len(checks_files) == 1:
+        match = CHECKS_FILE_RE.match(str(checks_files[0]))
+        if match:
+            project = match.group(1)
+            dataset = match.group(2)
+            table = match.group(3)
+        return checks_files[0], project, dataset, table
+    else:
+        print(f"No checks.sql file found in {sql_path}/{project_id}/{pattern}")
+        return None, None, None, None
+
+
+def paths_matching_name_pattern(
+    pattern, sql_path, project_id, files=["*.sql"], file_regex=QUERY_FILE_RE
+):
     """Return paths to queries matching the name pattern."""
     matching_files = []
 
@@ -103,7 +131,7 @@ def paths_matching_name_pattern(pattern, sql_path, project_id, files=["*.sql"]):
             all_matching_files.extend(Path(sql_path).rglob(file))
 
         for query_file in all_matching_files:
-            match = QUERY_FILE_RE.match(str(query_file))
+            match = file_regex.match(str(query_file))
             if match:
                 project = match.group(1)
                 dataset = match.group(2)
@@ -118,6 +146,20 @@ def paths_matching_name_pattern(pattern, sql_path, project_id, files=["*.sql"]):
         print(f"No files matching: {pattern}")
 
     return matching_files
+
+
+def qualified_table_name_matching(qualified_table_name) -> Tuple[str, str, str]:
+    """Match qualified table name pattern."""
+    if match := QUALIFIED_TABLE_NAME_RE.match(qualified_table_name):
+        project_id = match.group("project_id")
+        dataset_id = match.group("dataset_id")
+        table_id = match.group("table_id")
+    else:
+        raise AttributeError(
+            "Qualified table name must be named like:" + " <project>.<dataset>.<table>"
+        )
+
+    return (project_id, dataset_id, table_id)
 
 
 sql_dir_option = click.option(

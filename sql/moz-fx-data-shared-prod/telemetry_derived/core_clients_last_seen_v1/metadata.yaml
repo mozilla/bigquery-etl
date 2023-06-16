@@ -4,7 +4,7 @@ description: >
   Captures history of activity of each client sending core pings in 28 day
   windows for each submission date.
 owners:
-  - jklukas@mozilla.com
+  - ascholtz@mozilla.com
 labels:
   schedule: daily
 scheduling:

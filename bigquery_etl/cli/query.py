@@ -1,6 +1,8 @@
 """bigquery-etl CLI query command."""
 
 import copy
+import datetime
+import logging
 import os
 import re
 import string
@@ -326,7 +328,7 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
                 metadata.scheduling["task_name"] = task_name
 
             metadata.write(query_file.parent / METADATA_FILE)
-            print(
+            logging.info(
                 f"Updated {query_file.parent / METADATA_FILE} with scheduling"
                 " information. For more information about scheduling queries see: "
                 "https://github.com/mozilla/bigquery-etl#scheduling-queries-in-airflow"
@@ -346,7 +348,7 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
     # re-run DAG generation for the affected DAG
     for d in dags_to_be_generated:
         existing_dag = dags.dag_by_name(d)
-        print(f"Running DAG generation for {existing_dag.name}")
+        logging.info(f"Running DAG generation for {existing_dag.name}")
         output_dir = sql_dir.parent / "dags"
         dags.dag_to_airflow(output_dir, existing_dag)
 
@@ -852,15 +854,23 @@ def _run_query(
                     )
                     sys.exit(1)
         except yaml.YAMLError as e:
-            print(e)
+            logging.error(e)
             sys.exit(1)
         except FileNotFoundError:
-            print("INFO: No metadata.yaml found for {}", query_file)
+            logging.warning("No metadata.yaml found for {}", query_file)
 
         if not use_public_table and destination_table is not None:
             # destination table was parsed by argparse, however if it wasn't modified to
             # point to a public table it needs to be passed as parameter for the query
             query_arguments.append("--destination_table={}".format(destination_table))
+
+        if bool(list(filter(lambda x: x.startswith("--parameter"), query_arguments))):
+            # need to do this as parameters are not supported with legacy sql
+            query_arguments.append("--use_legacy_sql=False")
+
+        # this assumed query command should always be passed inside query_arguments
+        if "query" not in query_arguments:
+            query_arguments = ["query"] + query_arguments
 
         # write rendered query to a temporary file;
         # query string cannot be passed directly to bq as SQL comments will be interpreted as CLI arguments
@@ -1038,13 +1048,15 @@ def run_multipart(
                 ),
             )
             job.result()
-            print(f"Processed {job.total_bytes_processed:,d} bytes to combine results")
+            logging.info(
+                f"Processed {job.total_bytes_processed:,d} bytes to combine results"
+            )
             total_bytes += job.total_bytes_processed
-            print(f"Processed {total_bytes:,d} bytes in total")
+            logging.info(f"Processed {total_bytes:,d} bytes in total")
         finally:
             for _, job in parts:
                 client.delete_table(sql_table_id(job.destination).split("$")[0])
-            print(f"Deleted {len(parts)} temporary tables")
+            logging.info(f"Deleted {len(parts)} temporary tables")
 
 
 def _run_part(
@@ -1064,10 +1076,10 @@ def _run_part(
     )
     job = client.query(query=query, job_config=job_config)
     if job.dry_run:
-        print(f"Would process {job.total_bytes_processed:,d} bytes for {part}")
+        logging.info(f"Would process {job.total_bytes_processed:,d} bytes for {part}")
     else:
         job.result()
-        print(f"Processed {job.total_bytes_processed:,d} bytes for {part}")
+        logging.info(f"Processed {job.total_bytes_processed:,d} bytes for {part}")
     return part, job
 
 
@@ -1133,43 +1145,6 @@ def validate(
         validate_metadata.validate(query.parent)
         dataset_dirs.add(query.parent.parent)
 
-    if not query_files:
-        # run SQL generators if no matching query has been found.
-        ctx.invoke(
-            generate_all,
-            output_dir=ctx.obj["TMP_DIR"],
-            ignore=[
-                "country_code_lookup",
-                "derived_view_schemas",
-                "events_daily",
-                "experiment_monitoring",
-                "feature_usage",
-                "glean_usage",
-                "search",
-                "stable_views",
-            ],
-        )
-
-        query_files = paths_matching_name_pattern(
-            name, ctx.obj["TMP_DIR"], project_id, ["query.*"]
-        )
-
-        for query in query_files:
-            ctx.invoke(format, paths=[str(query)])
-
-            if not no_dryrun:
-                ctx.invoke(
-                    dryrun,
-                    paths=[str(query)],
-                    use_cloud_function=use_cloud_function,
-                    project=project_id,
-                    validate_schemas=validate_schemas,
-                    respect_skip=respect_dryrun_skip,
-                )
-
-            validate_metadata.validate(query.parent)
-            dataset_dirs.add(query.parent.parent)
-
     if no_dryrun:
         click.echo("Dry run skipped for query files.")
 
@@ -1205,6 +1180,13 @@ def initialize(name, sql_dir, project_id, dry_run):
         query_files = [Path(name)]
     else:
         query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+
+    if not query_files:
+        click.echo(
+            f"Couldn't find directory matching `{name}`. Failed to initialize query.",
+            err=True,
+        )
+        sys.exit(1)
 
     for query_file in query_files:
         init_files = Path(query_file.parent).rglob("init.sql")
@@ -1290,6 +1272,40 @@ def render(name, sql_dir, output_dir):
         else:
             click.echo(query_file)
             click.echo(rendered_sql)
+
+
+def _parse_partition_setting(partition_date):
+    params = partition_date.split(":")
+    if len(params) != 3:
+        return None
+
+    # Check date format
+    try:
+        datetime.datetime.strptime(params[2], "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
+    # Check column name
+    if re.match(r"^\w+$", params[0]):
+        return {params[0]: params[2]}
+
+
+def _validate_partition_date(ctx, param, partition_date):
+    """Process the CLI parameter check_date and set the parameter for BigQuery."""
+    # Will be None if launched from Airflow.  Also ctx.args is not populated at this stage.
+    if partition_date:
+        parsed = _parse_partition_setting(partition_date)
+        if parsed is None:
+            raise click.BadParameter("Format must be <column-name>::<yyyy-mm-dd>")
+        return parsed
+    return None
+
+
+def _parse_check_output(output: str) -> str:
+    output = output.replace("\n", " ")
+    if "ETL Data Check Failed:" in output:
+        return f"ETL Data Check Failed:{output.split('ETL Data Check Failed:')[1]}"
+    return output
 
 
 @query.group(help="Commands for managing query schemas.")
@@ -1869,8 +1885,13 @@ def _deploy_external_data(
             _attach_metadata(metadata_file_path, table)
 
             if not table.created:
-                if metadata.external_data.format == ExternalDataFormat.GOOGLE_SHEET:
-                    external_config = bigquery.ExternalConfig("GOOGLE_SHEETS")
+                if metadata.external_data.format in (
+                    ExternalDataFormat.GOOGLE_SHEETS,
+                    ExternalDataFormat.CSV,
+                ):
+                    external_config = bigquery.ExternalConfig(
+                        metadata.external_data.format.value.upper()
+                    )
                     external_config.source_uris = metadata.external_data.source_uris
                     external_config.ignore_unknown_values = True
                     external_config.autodetect = False
@@ -1881,6 +1902,7 @@ def _deploy_external_data(
                     table.external_data_configuration = external_config
                     table = client.create_table(table)
                     click.echo(f"Destination table {full_table_id} created.")
+
                 else:
                     click.echo(
                         f"External data format {metadata.external_data.format} unsupported."

@@ -154,25 +154,67 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
             )
         else:
             metrics_source = "metrics"
-        if metrics_datetime_fields := [
-            metrics_datetime_field["name"]
-            for field in schema.schema
-            if field["name"] == "metrics"
-            for metrics_field in field["fields"]
-            if metrics_field["name"] == "datetime"
-            for metrics_datetime_field in metrics_field["fields"]
-        ]:
-            replacements += [
-                f"(SELECT AS STRUCT {metrics_source}.* REPLACE (STRUCT("
-                + ", ".join(
-                    field_select
-                    for field in metrics_datetime_fields
-                    for field_select in (
-                        f"mozfun.glean.parse_datetime(metrics.datetime.{field}) AS {field}",
-                        f"metrics.datetime.{field} AS raw_{field}",
+
+        datetime_replacements_clause = ""
+        metrics_2_aliases = []
+        metrics_2_exclusions = []
+
+        if metrics_struct := next(
+            (field for field in schema.schema if field["name"] == "metrics"), None
+        ):
+            if metrics_datetime_fields := [
+                metrics_datetime_field["name"]
+                for metrics_field in metrics_struct["fields"]
+                if metrics_field["name"] == "datetime"
+                for metrics_datetime_field in metrics_field["fields"]
+            ]:
+                datetime_replacements_clause = (
+                    f"REPLACE (STRUCT("
+                    + ", ".join(
+                        field_select
+                        for field in metrics_datetime_fields
+                        for field_select in (
+                            f"mozfun.glean.parse_datetime(metrics.datetime.{field}) AS {field}",
+                            f"metrics.datetime.{field} AS raw_{field}",
+                        )
                     )
+                    + ") AS datetime)"
                 )
-                + ") AS datetime)) AS metrics"
+
+            # The following metrics were incorrectly deployed as repeated key/value fields and are suffixed with `2`
+            # at ingestion to match deployed schemas
+            # (see https://github.com/mozilla/gcp-ingestion/blob/9911895cf49ed6364b1b2fb8008310fb60ff9c8e/ingestion-core/src/main/java/com/mozilla/telemetry/ingestion/core/transform/PubsubMessageToObjectNode.java#L376-L384) # noqa E501
+            # We're aliasing them to their original names in views
+            # (see https://bugzilla.mozilla.org/show_bug.cgi?id=1741487)
+            # Later, after consumers switch to aliased fields we'll remove the `2`-suffixed fields
+            metrics_2_types_to_rename = {
+                "url2": "url",
+                "text2": "text",
+                "jwe2": "jwe",
+                "labeled_rate2": "labeled_rate",
+            }
+
+            # We have to handle these fields in two stages via `EXCEPT` and aliases instead of
+            # a single `REPLACE` because there are some tables that have `url2` field but not `url` field.
+            for metrics_field in metrics_struct["fields"]:
+                if metrics_field["name"] in metrics_2_types_to_rename:
+                    metrics_2_aliases += [
+                        f"metrics.{metrics_field['name']} AS {metrics_2_types_to_rename[metrics_field['name']]}"
+                    ]
+                elif metrics_field["name"] in metrics_2_types_to_rename.values():
+                    metrics_2_exclusions += [metrics_field["name"]]
+
+        if datetime_replacements_clause or metrics_2_aliases or metrics_2_exclusions:
+            except_clause = ""
+            if metrics_2_exclusions:
+                except_clause = "EXCEPT (" + ", ".join(metrics_2_exclusions) + ")"
+            else:
+                except_clause = ""
+
+            replacements += [
+                f"(SELECT AS STRUCT {metrics_source}.* {except_clause} {datetime_replacements_clause},"
+                + ", ".join(metrics_2_aliases)
+                + ") AS metrics"
             ]
         elif metrics_source != "metrics":
             replacements += [f"{metrics_source} AS metrics"]

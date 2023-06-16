@@ -1481,7 +1481,7 @@ def update(
 
                     for d in dependencies:
                         click.echo(f"Update downstream dependency schema for {d}")
-                        query_files.append(d)
+                        query_files_ordered.append(d)
         except Exception:
             print_exc()
 

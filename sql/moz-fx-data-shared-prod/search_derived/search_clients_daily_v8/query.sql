@@ -54,7 +54,7 @@ clients_with_adblocker_addons AS (
 ),
 combined_access_point AS (
   SELECT
-    *,
+    * EXCEPT (has_adblocker_addon),
     COALESCE(has_adblocker_addon, FALSE) AS has_adblocker_addon,
     ARRAY_CONCAT(
       add_access_point(search_content_urlbar_sum, 'urlbar'),

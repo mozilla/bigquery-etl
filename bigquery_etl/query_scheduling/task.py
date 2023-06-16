@@ -3,6 +3,7 @@
 import logging
 import os
 import re
+from enum import Enum
 from fnmatch import fnmatchcase
 from pathlib import Path
 from typing import List, Optional, Tuple
@@ -20,7 +21,6 @@ from bigquery_etl.query_scheduling.utils import (
     is_schedule_interval,
     is_timedelta_string,
     is_valid_dag_name,
-    is_valid_trigger_rule,
     schedule_interval_delta,
 )
 
@@ -30,6 +30,19 @@ QUERY_FILE_RE = re.compile(
     r"([a-zA-Z0-9_]+)_(v[0-9]+)/(?:query\.sql|part1\.sql|script\.sql|query\.py)$"
 )
 DEFAULT_DESTINATION_TABLE_STR = "use-default-destination-table"
+
+
+class TriggerRule(Enum):
+    """Options for task trigger rules."""
+
+    ALL_SUCCESS = "all_success"
+    ALL_FAILED = "all_failed"
+    ALL_DONE = "all_done"
+    ONE_FAILED = "one_failed"
+    ONE_SUCCESS = "one_success"
+    NONE_FAILED = "none_failed"
+    NONE_SKIPPED = "none_skipped"
+    DUMMY = "dummy"
 
 
 class TaskParseException(Exception):
@@ -261,7 +274,7 @@ class Task:
     @trigger_rule.validator
     def validate_trigger_rule(self, attribute, value):
         """Check that trigger_rule is a valid option."""
-        if value is not None and not is_valid_trigger_rule(value):
+        if value is not None and value not in set(rule.value for rule in TriggerRule):
             raise ValueError(
                 f"Invalid trigger rule {value}. "
                 "See https://airflow.apache.org/docs/apache-airflow/1.10.3/concepts.html#trigger-rules for list of trigger rules"

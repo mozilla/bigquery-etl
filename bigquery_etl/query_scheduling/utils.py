@@ -48,20 +48,6 @@ def is_valid_dag_name(name):
     return DAG_NAME_RE.match(name)
 
 
-def is_valid_trigger_rule(s):
-    """Check whether the trigger_rule is a valid option."""
-    return s in (
-        "all_success",
-        "all_failed",
-        "all_done",
-        "one_failed",
-        "one_success",
-        "none_failed",
-        "none_skipped",
-        "dummy",
-    )
-
-
 # https://stackoverflow.com/questions/14203122/create-a-regular-expression-for-cron-statement
 SCHEDULE_INTERVAL_RE = re.compile(
     r"^(once|hourly|daily|weekly|monthly|yearly|"

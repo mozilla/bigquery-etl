@@ -63,8 +63,8 @@ def get_dags(project_id, dags_config):
                 try:
                     checks_task = None
                     if QUERY_FILE in files:
-                            query_file = os.path.join(root, QUERY_FILE)
-                            task = Task.of_query(query_file, dag_collection=dag_collection)
+                        query_file = os.path.join(root, QUERY_FILE)
+                        task = Task.of_query(query_file, dag_collection=dag_collection)
                     elif QUERY_PART_FILE in files:
                         # multipart query
                         query_file = os.path.join(root, QUERY_PART_FILE)
@@ -97,21 +97,13 @@ def get_dags(project_id, dags_config):
                     logging.error(f"Error processing task for query {query_file}")
                     raise e
                 else:
-                    print(files)
                     if CHECKS_FILE in files:
                         checks_file = os.path.join(root, CHECKS_FILE)
                         checks_task = copy.deepcopy(Task.of_dq_check(checks_file, dag_collection=dag_collection))
-                        # checks_task = Task.of_dq_check(checks_file, dag_collection=dag_collection)
-                        # print(str(checks_task))
                         tasks.append(checks_task)
-                        task_ref = copy.deepcopy(TaskRef(dag_name=task.dag_name,task_id=task.task_name,))
-                        print("Task ref is" + str(task_ref))
+                        task_ref = TaskRef(dag_name=task.dag_name,task_id=task.task_name,)
                         checks_task.depends_on.append(task_ref)
-                        print(checks_task.depends_on)
-                        print("Checks task name " + checks_task.task_name)
-                        
                     tasks.append(task)
-                    print("task name " + task.task_name)
 
         else:
             logging.error(

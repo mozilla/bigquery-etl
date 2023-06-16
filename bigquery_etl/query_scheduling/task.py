@@ -11,7 +11,6 @@ from typing import List, Optional, Tuple
 import attr
 import cattrs
 import click
-from bigquery_etl.cli.utils import CHECKS_FILE_RE
 
 from bigquery_etl.dependency import extract_table_references_without_views
 from bigquery_etl.metadata.parse_metadata import Metadata, PartitionType
@@ -450,6 +449,7 @@ class Task:
         task = cls.of_query(query_file, metadata, dag_collection)
         task.query_file_path = query_file
         task.is_dq_check = True
+        task.depends_on_fivetran = []
         return task
 
     def to_ref(self, dag_collection):

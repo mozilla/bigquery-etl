@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_query
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 {% set ns = namespace(uses_fivetran=False) -%}
 {% for task in tasks -%}
@@ -60,9 +60,16 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
        {{ task.task_name }} = bigquery_dq_check(
             task_id='{{ task.task_name }}',
             {#+ TODO when Airflow is updated to 2.2+ use ds_nodash instead of ds_format -#}
+            destination_table={%+ if task.date_partition_offset -%}'{{ task.destination_table }}${% raw %}{{{% endraw %} macros.ds_format(macros.ds_add(ds, {{ task.date_partition_offset }}), "%Y-%m-%d", "%Y%m%d") {% raw %}}}{% endraw %}'
+                            {%+ elif task.destination_table -%}'{{ task.destination_table }}'
+                            {%+ else -%}None
+                            {%+ endif -%},
             {%+ if task.query_project -%}
             dataset_id='{{ task.project }}:{{ task.dataset }}',
             project_id='{{ task.query_project }}',
+            {%+ if not task.query_file_path -%}
+            sql_file_path="sql/{{task.project}}/{{task.dataset}}/{{task.destination_table}}/checks.sql",
+            {%+ endif -%}
             {%+ else -%}
             dataset_id='{{ task.dataset }}',
             project_id='{{ task.project }}',
@@ -87,6 +94,12 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             {%+ endif -%}
             {%+ if task.arguments | length > 0 -%}
             arguments={{ task.arguments }},
+            {%+ endif -%}
+            {%+ if task.parameters | length > 0 -%}
+            parameters={{ task.parameters }},
+            {%+ endif -%}
+            {%+ if task.query_file_path -%}
+            sql_file_path={{ task.query_file_path | format_repr }},
             {%+ endif -%}
     {%+ else -%}
         {{ task.task_name }} = bigquery_etl_query(
@@ -240,6 +253,8 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 
     {% if dependency.dag_name != name -%}
     {{ task.task_name }}.set_upstream(wait_for_{{ dependency.task_id | replace('-', '_') }})
+    {% else -%}
+    {{ task.task_name }}.set_upstream({{ dependency.task_id | replace('-', '_') }})
     {% endif -%}
     {% endif -%}
     {% endfor -%}

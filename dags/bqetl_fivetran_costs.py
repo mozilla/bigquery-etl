@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_query
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 from fivetran_provider.operators.fivetran import FivetranOperator
 from fivetran_provider.sensors.fivetran import FivetranSensor
@@ -50,12 +50,14 @@ with DAG(
 ) as dag:
     checks__fivetran_costs_derived__monthly_costs__v1 = bigquery_dq_check(
         task_id="checks__fivetran_costs_derived__monthly_costs__v1",
+        destination_table="monthly_costs_v1",
         dataset_id="fivetran_costs_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lschiestl@mozilla.com",
         email=["lschiestl@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
+        sql_file_path="sql/moz-fx-data-shared-prod/fivetran_costs_derived/monthly_costs_v1/checks.sql",
     )
 
     fivetran_costs_derived__daily_connector_costs__v1 = bigquery_etl_query(
@@ -106,6 +108,22 @@ with DAG(
         task_concurrency=1,
     )
 
+    checks__fivetran_costs_derived__monthly_costs__v1.set_upstream(
+        fivetran_costs_derived__monthly_costs__v1
+    )
+
+    fivetran_costs_derived__daily_connector_costs__v1.set_upstream(
+        checks__fivetran_costs_derived__monthly_costs__v1
+    )
+
+    fivetran_costs_derived__daily_connector_costs__v1.set_upstream(
+        fivetran_costs_derived__destinations__v1
+    )
+
+    fivetran_costs_derived__daily_connector_costs__v1.set_upstream(
+        fivetran_costs_derived__incremental_mar__v1
+    )
+
     fivetran_log_prod_sync_start = FivetranOperator(
         connector_id="{{ var.value.fivetran_log_prod_connector_id }}",
         task_id="fivetran_log_prod_task",
@@ -121,22 +139,6 @@ with DAG(
     )
 
     fivetran_log_prod_sync_wait.set_upstream(fivetran_log_prod_sync_start)
-
-    checks__fivetran_costs_derived__monthly_costs__v1.set_upstream(
-        fivetran_log_prod_sync_wait
-    )
-
-    fivetran_costs_derived__daily_connector_costs__v1.set_upstream(
-        checks__fivetran_costs_derived__monthly_costs__v1
-    )
-
-    fivetran_costs_derived__daily_connector_costs__v1.set_upstream(
-        fivetran_costs_derived__destinations__v1
-    )
-
-    fivetran_costs_derived__daily_connector_costs__v1.set_upstream(
-        fivetran_costs_derived__incremental_mar__v1
-    )
 
     fivetran_costs_derived__destinations__v1.set_upstream(fivetran_log_prod_sync_wait)
 

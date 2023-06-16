@@ -187,19 +187,19 @@ _current AS(
     client_id,
     new_profile.sample_id AS sample_id,
     DATE (
-      analysis.get_earliest_value(
+      mozdata.analysis.get_earliest_value(
         [
-        (STRUCT(CAST(new_profile.submission_timestamp AS STRING), 'new_profile_ping', DATETIME(new_profile.submission_timestamp))),
-        (STRUCT(CAST(shutdown.submission_timestamp AS STRING), 'shutdown_ping', DATETIME(shutdown.submission_timestamp))),
-        (STRUCT(CAST(main.submission_timestamp AS STRING), 'main_ping', DATETIME(main.submission_timestamp)))
+        (STRUCT(CAST(new_profile.submission_timestamp AS STRING), 'new_profile', DATETIME(new_profile.submission_timestamp))),
+        (STRUCT(CAST(shutdown.submission_timestamp AS STRING), 'shutdown', DATETIME(shutdown.submission_timestamp))),
+        (STRUCT(CAST(main.submission_timestamp AS STRING), 'main', DATETIME(main.submission_timestamp)))
         ]
       ).earliest_date
-    ) AS first_seen_date,
-    analysis.get_earliest_value(
+        ) AS first_seen_date,
+      mozdata.analysis.get_earliest_value(
         [
-        (STRUCT(CAST(new_profile.submission_timestamp AS STRING), 'new_profile_ping', DATETIME(new_profile.submission_timestamp))),
-        (STRUCT(CAST(shutdown.submission_timestamp AS STRING), 'shutdown_ping', DATETIME(shutdown.submission_timestamp))),
-        (STRUCT(CAST(main.submission_timestamp AS STRING), 'main_ping', DATETIME(main.submission_timestamp)))
+        (STRUCT(CAST(new_profile.submission_timestamp AS STRING), 'new_profile', DATETIME(new_profile.submission_timestamp))),
+        (STRUCT(CAST(shutdown.submission_timestamp AS STRING), 'shutdown', DATETIME(shutdown.submission_timestamp))),
+        (STRUCT(CAST(main.submission_timestamp AS STRING), 'main', DATETIME(main.submission_timestamp)))
         ]
       ).earliest_date AS submission_timestamp,
     new_profile.architecture AS architecture,
@@ -234,84 +234,84 @@ _current AS(
     new_profile.startup_profile_selection_reason AS startup_profile_selection_reason,
     new_profile.download_token AS download_token,
     new_profile.download_source AS download_source,
-    analysis.get_earliest_value(
+    mozdata.analysis.get_earliest_value(
       [
-        (STRUCT(new_profile.attribution_campaign, 'new_profile_ping', DATETIME(new_profile.submission_timestamp))),
-        (STRUCT(shutdown.attribution_campaign, 'shutdown_ping', DATETIME(shutdown.submission_timestamp))),
-        (STRUCT(main.attribution_campaign, 'main_ping', DATETIME(main.submission_timestamp)))
+        (STRUCT(new_profile.attribution_campaign, 'new_profile', DATETIME(new_profile.submission_timestamp))),
+        (STRUCT(shutdown.attribution_campaign, 'shutdown', DATETIME(shutdown.submission_timestamp))),
+        (STRUCT(main.attribution_campaign, 'main', DATETIME(main.submission_timestamp)))
       ]
     ).earliest_value AS attribution_campaign,
-    analysis.get_earliest_value(
+    mozdata.analysis.get_earliest_value(
       [
-        (STRUCT(new_profile.attribution_content, 'new_profile_ping', DATETIME(new_profile.submission_timestamp))),
-        (STRUCT(shutdown.attribution_content, 'shutdown_ping', DATETIME(shutdown.submission_timestamp))),
-        (STRUCT(main.attribution_content, 'main_ping', DATETIME(main.submission_timestamp)))
+        (STRUCT(new_profile.attribution_content, 'new_profile', DATETIME(new_profile.submission_timestamp))),
+        (STRUCT(shutdown.attribution_content, 'shutdown', DATETIME(shutdown.submission_timestamp))),
+        (STRUCT(main.attribution_content, 'main', DATETIME(main.submission_timestamp)))
       ]
     ).earliest_value AS attribution_content,
-    analysis.get_earliest_value(
+    mozdata.analysis.get_earliest_value(
       [
-        (STRUCT(new_profile.attribution_experiment, 'new_profile_ping', DATETIME(new_profile.submission_timestamp))),
-        (STRUCT(shutdown.attribution_experiment, 'shutdown_ping', DATETIME(shutdown.submission_timestamp))),
-        (STRUCT(main.attribution_experiment, 'main_ping', DATETIME(main.submission_timestamp)))
+        (STRUCT(new_profile.attribution_experiment, 'new_profile', DATETIME(new_profile.submission_timestamp))),
+        (STRUCT(shutdown.attribution_experiment, 'shutdown', DATETIME(shutdown.submission_timestamp))),
+        (STRUCT(main.attribution_experiment, 'main', DATETIME(main.submission_timestamp)))
       ]
     ).earliest_value AS attribution_experiment,
-    analysis.get_earliest_value(
+    mozdata.analysis.get_earliest_value(
       [
-        (STRUCT(new_profile.attribution_medium, 'new_profile_ping', DATETIME(new_profile.submission_timestamp))),
-        (STRUCT(shutdown.attribution_medium, 'shutdown_ping', DATETIME(shutdown.submission_timestamp))),
-        (STRUCT(main.attribution_medium, 'main_ping', DATETIME(main.submission_timestamp)))
+        (STRUCT(new_profile.attribution_medium, 'new_profile', DATETIME(new_profile.submission_timestamp))),
+        (STRUCT(shutdown.attribution_medium, 'shutdown', DATETIME(shutdown.submission_timestamp))),
+        (STRUCT(main.attribution_medium, 'main', DATETIME(main.submission_timestamp)))
       ]
     ).earliest_value AS attribution_medium,
-    analysis.get_earliest_value(
+    mozdata.analysis.get_earliest_value(
       [
-        (STRUCT(new_profile.attribution_source, 'new_profile_ping', DATETIME(new_profile.submission_timestamp))),
-        (STRUCT(shutdown.attribution_source, 'shutdown_ping', DATETIME(shutdown.submission_timestamp))),
-        (STRUCT(main.attribution_source, 'main_ping', DATETIME(main.submission_timestamp)))
+        (STRUCT(new_profile.attribution_source, 'new_profile', DATETIME(new_profile.submission_timestamp))),
+        (STRUCT(shutdown.attribution_source, 'shutdown', DATETIME(shutdown.submission_timestamp))),
+        (STRUCT(main.attribution_source, 'main', DATETIME(main.submission_timestamp)))
       ]
     ).earliest_value AS attribution_source,
     STRUCT(
-      analysis.get_earliest_value(
+      mozdata.analysis.get_earliest_value(
         [
-          (STRUCT(CAST(new_profile.submission_timestamp AS STRING), 'new_profile_ping', DATETIME(new_profile.submission_timestamp))),
-          (STRUCT(CAST(shutdown.submission_timestamp AS STRING), 'shutdown_ping', DATETIME(shutdown.submission_timestamp))),
-          (STRUCT(CAST(shutdown.submission_timestamp AS STRING), 'main_ping', DATETIME(main.submission_timestamp)))
+          (STRUCT(CAST(new_profile.submission_timestamp AS STRING), 'new_profile', DATETIME(new_profile.submission_timestamp))),
+          (STRUCT(CAST(shutdown.submission_timestamp AS STRING), 'shutdown', DATETIME(shutdown.submission_timestamp))),
+          (STRUCT(CAST(main.submission_timestamp AS STRING), 'main', DATETIME(main.submission_timestamp)))
         ]
-        ).earliest_value_source AS first_seen_date_source,
-      analysis.get_earliest_value(
+        ).earliest_value_source AS first_seen_date__source_ping,
+      mozdata.analysis.get_earliest_value(
         [
-          (STRUCT(new_profile.attribution_campaign, 'new_profile_ping', DATETIME(new_profile.submission_timestamp))),
-          (STRUCT(shutdown.attribution_campaign, 'shutdown_ping', DATETIME(shutdown.submission_timestamp))),
-          (STRUCT(main.attribution_campaign, 'main_ping', DATETIME(main.submission_timestamp)))
+          (STRUCT(new_profile.attribution_campaign, 'new_profile', DATETIME(new_profile.submission_timestamp))),
+          (STRUCT(shutdown.attribution_campaign, 'shutdown', DATETIME(shutdown.submission_timestamp))),
+          (STRUCT(main.attribution_campaign, 'main', DATETIME(main.submission_timestamp)))
         ]
-      ).earliest_value_source AS attribution_campaign_source,
-      analysis.get_earliest_value(
+      ).earliest_value_source AS attribution_campaign__source_ping,
+      mozdata.analysis.get_earliest_value(
         [
-          (STRUCT(new_profile.attribution_content, 'new_profile_ping', DATETIME(new_profile.submission_timestamp))),
-          (STRUCT(shutdown.attribution_content, 'shutdown_ping', DATETIME(shutdown.submission_timestamp))),
-          (STRUCT(main.attribution_content, 'main_ping', DATETIME(main.submission_timestamp)))
+          (STRUCT(new_profile.attribution_content, 'new_profile', DATETIME(new_profile.submission_timestamp))),
+          (STRUCT(shutdown.attribution_content, 'shutdown', DATETIME(shutdown.submission_timestamp))),
+          (STRUCT(main.attribution_content, 'main', DATETIME(main.submission_timestamp)))
         ]
-      ).earliest_value_source AS attribution_content_source,
-      analysis.get_earliest_value(
+      ).earliest_value_source AS attribution_content__source_ping,
+      mozdata.analysis.get_earliest_value(
         [
-          (STRUCT(new_profile.attribution_experiment, 'new_profile_ping', DATETIME(new_profile.submission_timestamp))),
-          (STRUCT(shutdown.attribution_experiment, 'shutdown_ping', DATETIME(shutdown.submission_timestamp))),
-          (STRUCT(main.attribution_experiment, 'main_ping', DATETIME(main.submission_timestamp)))
+          (STRUCT(new_profile.attribution_experiment, 'new_profile', DATETIME(new_profile.submission_timestamp))),
+          (STRUCT(shutdown.attribution_experiment, 'shutdown', DATETIME(shutdown.submission_timestamp))),
+          (STRUCT(main.attribution_experiment, 'main', DATETIME(main.submission_timestamp)))
         ]
-      ).earliest_value_source AS attribution_experiment_source,
-      analysis.get_earliest_value(
+      ).earliest_value_source AS attribution_experiment__source_ping,
+      mozdata.analysis.get_earliest_value(
         [
-          (STRUCT(new_profile.attribution_medium, 'new_profile_ping', DATETIME(new_profile.submission_timestamp))),
-          (STRUCT(shutdown.attribution_medium, 'shutdown_ping', DATETIME(shutdown.submission_timestamp))),
-          (STRUCT(main.attribution_medium, 'main_ping', DATETIME(main.submission_timestamp)))
+          (STRUCT(new_profile.attribution_medium, 'new_profile', DATETIME(new_profile.submission_timestamp))),
+          (STRUCT(shutdown.attribution_medium, 'shutdown', DATETIME(shutdown.submission_timestamp))),
+          (STRUCT(main.attribution_medium, 'main', DATETIME(main.submission_timestamp)))
         ]
-      ).earliest_value_source AS attribution_medium_source,
-      analysis.get_earliest_value(
+      ).earliest_value_source AS attribution_medium__source_ping,
+      mozdata.analysis.get_earliest_value(
         [
-          (STRUCT(new_profile.attribution_source, 'new_profile_ping', DATETIME(new_profile.submission_timestamp))),
-          (STRUCT(shutdown.attribution_source, 'shutdown_ping', DATETIME(shutdown.submission_timestamp))),
-          (STRUCT(main.attribution_source, 'main_ping', DATETIME(main.submission_timestamp)))
+          (STRUCT(new_profile.attribution_source, 'new_profile', DATETIME(new_profile.submission_timestamp))),
+          (STRUCT(shutdown.attribution_source, 'shutdown', DATETIME(shutdown.submission_timestamp))),
+          (STRUCT(main.attribution_source, 'main', DATETIME(main.submission_timestamp)))
         ]
-      ).earliest_value_source AS attribution_source_source,
+      ).earliest_value_source AS attribution_source__source_ping,
       CASE
         WHEN new_profile.client_id IS NULL
           THEN FALSE
@@ -360,11 +360,11 @@ SELECT
   COALESCE(_previous.vendor, _current.vendor) AS vendor,
   COALESCE(_previous.app_version, _current.app_version) AS app_version,
   COALESCE(_previous.xpcom_abi, _current.xpcom_abi) AS xpcom_abi,
-  COALESCE(_previous.document_id, _current.document_id) AS document_id,
   COALESCE(_previous.experiments_key, _current.experiments_key) AS experiments_key,
   COALESCE(_previous.experiments_branch, _current.experiments_branch) AS experiments_branch,
   COALESCE(_previous.experiments_enrollment_id, _current.experiments_enrollment_id) AS experiments_enrollment_id,
   COALESCE(_previous.experiments_type, _current.experiments_type) AS experiments_type,
+  COALESCE(_previous.document_id, _current.document_id) AS document_id,
   COALESCE(_previous.distribution_id, _current.distribution_id) AS distribution_id,
   COALESCE(_previous.partner_distribution_version, _current.partner_distribution_version) AS partner_distribution_version,
   COALESCE(_previous.partner_distributor, _current.partner_distributor) AS partner_distributor,
@@ -391,29 +391,29 @@ SELECT
   COALESCE(_previous.download_source, _current.download_source) AS download_source,
   STRUCT(
     COALESCE(
-        _previous.metadata.first_seen_date_source,
-        _current.metadata.first_seen_date_source
-      ) AS first_seen_date_source,
+        _previous.metadata.first_seen_date__source_ping,
+        _current.metadata.first_seen_date__source_ping
+      ) AS first_seen_date__source_ping,
     COALESCE(
-          _previous.metadata.attribution_campaign_source,
-          _current.metadata.attribution_campaign_source
-        ) AS attribution_campaign_source,
+          _previous.metadata.attribution_campaign__source_ping,
+          _current.metadata.attribution_campaign__source_ping
+        ) AS attribution_campaign__source_ping,
     COALESCE(
-          _previous.metadata.attribution_content_source,
-          _current.metadata.attribution_content_source
-        ) AS attribution_content_source,
+          _previous.metadata.attribution_content__source_ping,
+          _current.metadata.attribution_content__source_ping
+        ) AS attribution_content__source_ping,
     COALESCE(
-          _previous.metadata.attribution_experiment_source,
-          _current.metadata.attribution_experiment_source
-        ) AS attribution_experiment_source,
+          _previous.metadata.attribution_experiment__source_ping,
+          _current.metadata.attribution_experiment__source_ping
+        ) AS attribution_experiment__source_ping,
     COALESCE(
-          _previous.metadata.attribution_medium_source,
-          _current.metadata.attribution_medium_source
-        ) AS attribution_medium_source,
+          _previous.metadata.attribution_medium__source_ping,
+          _current.metadata.attribution_medium__source_ping
+        ) AS attribution_medium__source_ping,
     COALESCE(
-          _previous.metadata.attribution_source_source,
-          _current.metadata.attribution_source_source
-        ) AS attribution_source_source,
+          _previous.metadata.attribution_source__source_ping,
+          _current.metadata.attribution_source__source_ping
+        ) AS attribution_source__source_ping,
     COALESCE(
           _previous.metadata.reported_new_profile_ping,
           _current.metadata.reported_new_profile_ping

@@ -12,6 +12,10 @@
     "name": "first_seen_date"
   },
   {
+    "type": "DATETIME",
+    "name": "submission_timestamp"
+  },
+  {
     "type": "STRING",
     "name": "architecture"
   },
@@ -40,7 +44,7 @@
     "name": "app_version"
   },
   {
-    "type": "BOOLEAN",
+    "type": "string",
     "name": "xpcom_abi"
   },
   {
@@ -156,34 +160,38 @@
     "name": "download_token"
   },
   {
+    "type": "STRING",
+    "name": "download_source"
+  },
+  {
     "fields": [
       {
         "type": "STRING",
-        "name": "first_seen_date_source"
+        "name": "first_seen_date__source_ping"
       },
       {
         "type": "STRING",
-        "name": "attribution_campaign_source"
+        "name": "attribution_campaign__source_ping"
       },
       {
         "type": "STRING",
-        "name": "attribution_content_source"
+        "name": "attribution_content__source_ping"
       },
       {
         "type": "STRING",
-        "name": "attribution_experiment_source"
+        "name": "attribution_experiment__source_ping"
       },
       {
         "type": "STRING",
-        "name": "attribution_medium_source"
+        "name": "attribution_medium__source_ping"
       },
       {
         "type": "STRING",
-        "name": "attribution_source_source"
+        "name": "attribution_source__source_ping"
       },
       {
         "type": "STRING",
-        "name": "download_token_source"
+        "name": "download_token__source_ping"
       },
       {
         "type": "BOOLEAN",

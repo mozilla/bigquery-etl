@@ -1,39 +1,34 @@
 ---
 - client_id: client-1
-  sample_id:
   first_seen_date: 2023-06-01
   metadata:
-    first_seen_date_source: main_ping
+    first_seen_date__source_ping: main
+    last_updated_date: '2023-06-16'
+    reported_main_ping: true
     reported_new_profile_ping: false
     reported_shutdown_ping: false
-    reported_main_ping: true
-- client_id: client-2
-  first_seen_date: 2023-06-02
-  attribution_campaign: campaign
-  metadata:
-    first_seen_date_source: new_profile_ping
-    attribution_campaign_source: main_ping
-    reported_new_profile_ping: true
-    reported_shutdown_ping: false
-    reported_main_ping: false
+  submission_timestamp: '2023-06-01T00:00:00'
 - client_id: client-3
-  sample_id: 30
-  first_seen_date: 2023-06-01
   download_token: token3
+  first_seen_date: 2023-06-01
   channel: beta
   metadata:
-    first_seen_date_source: shutdown_ping
-    reported_new_profile_ping: false
+    first_seen_date__source_ping: shutdown
+    reported_new_profile_ping: true
     reported_shutdown_ping: true
-    reported_main_ping: true
-- client_id: client-4
-  sample_id: 40
-  first_seen_date: 2023-05-14
+    reported_main_ping: false
+    last_updated_date: '2023-06-16'
+  sample_id: 30
+  submission_timestamp: '2023-06-01T11:03:00'
+- attribution_campaign: campaign
   channel: nightly
-  attribution_campaign: campaign
+  client_id: client-4
   download_token: token4
+  first_seen_date: 2023-05-14
   metadata:
-    first_seen_date_source: shutdown_ping
-    reported_new_profile_ping: false
-    reported_shutdown_ping: true
+    attribution_campaign__source_ping: new_profile
+    first_seen_date__source_ping: shutdown
     reported_main_ping: true
+    reported_new_profile_ping: true
+    reported_shutdown_ping: true
+  sample_id: 40

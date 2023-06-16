@@ -4,9 +4,10 @@
   first_seen_date: 2023-05-14
   channel: nightly
   attribution_campaign: campaign
-  download_token: token**
+  download_token: token4
   metadata:
-    attribution_campaign_source: new_profile_ping
+    first_seen_date__source_ping: shutdown
+    attribution_campaign__source_ping: new_profile
     reported_main_ping: true
     reported_new_profile_ping: true
     reported_shutdown_ping: true

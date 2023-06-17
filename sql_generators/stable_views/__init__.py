@@ -208,12 +208,13 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
             except_clause = ""
             if metrics_2_exclusions:
                 except_clause = "EXCEPT (" + ", ".join(metrics_2_exclusions) + ")"
-            else:
-                except_clause = ""
+            metrics_select = (
+                f"{metrics_source}.* {except_clause} {datetime_replacements_clause}"
+            )
 
             replacements += [
-                f"(SELECT AS STRUCT {metrics_source}.* {except_clause} {datetime_replacements_clause},"
-                + ", ".join(metrics_2_aliases)
+                f"(SELECT AS STRUCT "
+                + ", ".join([metrics_select] + metrics_2_aliases)
                 + ") AS metrics"
             ]
         elif metrics_source != "metrics":

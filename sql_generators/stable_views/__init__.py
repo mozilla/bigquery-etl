@@ -136,6 +136,7 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
     full_source_id = f"{target_project}.{schema.stable_table}"
     full_view_id = f"{target_project}.{schema.user_facing_view}"
     replacements = ["mozfun.norm.metadata(metadata) AS metadata"]
+    key_value_metrics_removed = False
     if schema.schema_id == "moz://mozilla.org/schemas/glean/ping/1":
         replacements += ["mozfun.norm.glean_ping_info(ping_info) AS ping_info"]
         if schema.bq_table == "baseline_v1":
@@ -203,6 +204,7 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
                     ]
                 elif metrics_field["name"] in metrics_2_types_to_rename.values():
                     metrics_2_exclusions += [metrics_field["name"]]
+                    key_value_metrics_removed = True
 
         if datetime_replacements_clause or metrics_2_aliases or metrics_2_exclusions:
             except_clause = ""
@@ -262,10 +264,16 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
             view_schema = Schema.from_query_file(target_file, content=content)
 
             stable_table_schema = Schema.from_json({"fields": schema.schema})
+
+            # This is needed if we removed any of the `url`, `text`, `jwe`, or `labeled_rate`
+            # from the view schema since these fields exist in the source table
+            ignore_missing_fields = key_value_metrics_removed
+
             view_schema.merge(
                 stable_table_schema,
                 attributes=["description"],
                 add_missing_fields=False,
+                ignore_missing_fields=ignore_missing_fields,
             )
             view_schema.to_yaml_file(target_dir / "schema.yaml")
         except Exception as e:

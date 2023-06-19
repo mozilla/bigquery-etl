@@ -1755,7 +1755,8 @@ def _update_query_schema(
     required=False,
     help=(
         "Destination table name results are written to. "
-        + "If not set, determines destination table based on query."
+        + "If not set, determines destination table based on query.  "
+        + "Must be fully qualified (project.dataset.table)."
     ),
 )
 @click.pass_context

@@ -575,7 +575,7 @@ bqetl_firefox_ios:
     owner: kik@mozilla.com
     retries: 2
     retry_delay: 30m
-    start_date: "2021-03-18"
+    start_date: "2023-06-18"  # old start_date "2021-03-18", updated to prevent new model from "backfilling" that requires depends_on_past
   description: Schedule daily ios firefox ETL
   schedule_interval: 0 4 * * *
   tags:

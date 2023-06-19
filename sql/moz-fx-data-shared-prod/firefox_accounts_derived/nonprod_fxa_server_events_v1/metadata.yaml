@@ -31,5 +31,5 @@ bigquery:
     expiration_days: null
   clustering:
     fields:
-    - fxa_log
+    - fxa_server
 references: {}

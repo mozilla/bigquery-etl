@@ -1,5 +1,5 @@
 fields:
-- name: fxa_log
+- name: fxa_server
   type: STRING
   mode: NULLABLE
 - name: resource

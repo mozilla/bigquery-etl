@@ -12,7 +12,7 @@ SELECT
         )
     ) AS jsonPayload
   ),
-  SPLIT(jsonPayload.logger, "-")[OFFSET(1)] AS fxa_log,
+  SPLIT(jsonPayload.logger, "-")[OFFSET(1)] AS fxa_server,
 FROM
   `moz-fx-fxa-nonprod.gke_fxa_stage_log.stdout`
 WHERE
@@ -37,7 +37,7 @@ SELECT
         )
     ) AS jsonPayload
   ),
-  SPLIT(jsonPayload.logger, "-")[OFFSET(1)] AS fxa_log,
+  SPLIT(jsonPayload.logger, "-")[OFFSET(1)] AS fxa_server,
 FROM
   `moz-fx-fxa-nonprod-375e.fxa_stage_logs.stdout`
 WHERE

@@ -1,6 +1,7 @@
 """bigquery-etl CLI query command."""
 
 import copy
+import datetime
 import logging
 import os
 import re
@@ -8,6 +9,7 @@ import string
 import subprocess
 import sys
 import tempfile
+import typing
 from datetime import date, timedelta
 from functools import partial
 from graphlib import TopologicalSorter
@@ -810,6 +812,7 @@ def _run_query(
     destination_table,
     dataset_id,
     query_arguments,
+    addl_templates: typing.Optional[dict] = None,
 ):
     """Run a query."""
     if dataset_id is not None:
@@ -819,6 +822,9 @@ def _run_query(
 
     if project_id is not None:
         query_arguments.append(f"--project_id={project_id}")
+
+    if addl_templates is None:
+        addl_templates = {}
 
     for query_file in query_files:
         use_public_table = False
@@ -868,9 +874,8 @@ def _run_query(
             query_arguments.append("--use_legacy_sql=False")
 
         # this assumed query command should always be passed inside query_arguments
-        # also dedup the query_arguments in case the same option is passed multiple times.
         if "query" not in query_arguments:
-            query_arguments = ["query"] + list(set(query_arguments))
+            query_arguments = ["query"] + query_arguments
 
         # write rendered query to a temporary file;
         # query string cannot be passed directly to bq as SQL comments will be interpreted as CLI arguments
@@ -881,6 +886,7 @@ def _run_query(
                     template_folder=str(query_file.parent),
                     templates_dir="",
                     format=False,
+                    **addl_templates,
                 )
             )
             query_stream.seek(0)
@@ -1189,34 +1195,64 @@ def initialize(name, sql_dir, project_id, dry_run):
         sys.exit(1)
 
     for query_file in query_files:
-        init_files = Path(query_file.parent).rglob("init.sql")
-        client = bigquery.Client()
+        sql_content = query_file.read_text()
 
-        for init_file in init_files:
-            project = init_file.parent.parent.parent.name
+        # Enable init from query.sql files
+        # First deploys the schema, then runs the init
+        # This does not currently verify the accuracy of the schema
+        if "is_init()" in sql_content:
+            project = query_file.parent.parent.parent.name
+            dataset = query_file.parent.parent.name
+            destination_table = query_file.parent.name
+            Schema.from_schema_file(query_file.parent / SCHEMA_FILE).deploy(
+                f"{project}.{dataset}.{destination_table}"
+            )
+            arguments = [
+                "query",
+                "--use_legacy_sql=false",
+                "--replace",
+                "--format=none",
+            ]
+            _run_query(
+                query_files=[query_file],
+                project_id=project,
+                public_project_id=None,
+                destination_table=destination_table,
+                dataset_id=dataset,
+                query_arguments=arguments,
+                addl_templates={
+                    "is_init": lambda: True,
+                },
+            )
+        else:
+            init_files = Path(query_file.parent).rglob("init.sql")
+            client = bigquery.Client()
 
-            with open(init_file) as init_file_stream:
-                init_sql = init_file_stream.read()
-                dataset = Path(init_file).parent.parent.name
-                job_config = bigquery.QueryJobConfig(
-                    dry_run=dry_run,
-                    default_dataset=f"{project}.{dataset}",
-                )
+            for init_file in init_files:
+                project = init_file.parent.parent.parent.name
 
-                if "CREATE MATERIALIZED VIEW" in init_sql:
-                    click.echo(f"Create materialized view for {init_file}")
-                    # existing materialized view have to be deleted before re-creation
-                    view_name = query_file.parent.name
-                    client.delete_table(
-                        f"{project}.{dataset}.{view_name}", not_found_ok=True
+                with open(init_file) as init_file_stream:
+                    init_sql = init_file_stream.read()
+                    dataset = Path(init_file).parent.parent.name
+                    job_config = bigquery.QueryJobConfig(
+                        dry_run=dry_run,
+                        default_dataset=f"{project}.{dataset}",
                     )
-                else:
-                    click.echo(f"Create destination table for {init_file}")
 
-                job = client.query(init_sql, job_config=job_config)
+                    if "CREATE MATERIALIZED VIEW" in init_sql:
+                        click.echo(f"Create materialized view for {init_file}")
+                        # existing materialized view have to be deleted before re-creation
+                        view_name = query_file.parent.name
+                        client.delete_table(
+                            f"{project}.{dataset}.{view_name}", not_found_ok=True
+                        )
+                    else:
+                        click.echo(f"Create destination table for {init_file}")
 
-                if not dry_run:
-                    job.result()
+                    job = client.query(init_sql, job_config=job_config)
+
+                    if not dry_run:
+                        job.result()
 
 
 @query.command(
@@ -1272,6 +1308,40 @@ def render(name, sql_dir, output_dir):
         else:
             click.echo(query_file)
             click.echo(rendered_sql)
+
+
+def _parse_partition_setting(partition_date):
+    params = partition_date.split(":")
+    if len(params) != 3:
+        return None
+
+    # Check date format
+    try:
+        datetime.datetime.strptime(params[2], "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
+    # Check column name
+    if re.match(r"^\w+$", params[0]):
+        return {params[0]: params[2]}
+
+
+def _validate_partition_date(ctx, param, partition_date):
+    """Process the CLI parameter check_date and set the parameter for BigQuery."""
+    # Will be None if launched from Airflow.  Also ctx.args is not populated at this stage.
+    if partition_date:
+        parsed = _parse_partition_setting(partition_date)
+        if parsed is None:
+            raise click.BadParameter("Format must be <column-name>::<yyyy-mm-dd>")
+        return parsed
+    return None
+
+
+def _parse_check_output(output: str) -> str:
+    output = output.replace("\n", " ")
+    if "ETL Data Check Failed:" in output:
+        return f"ETL Data Check Failed:{output.split('ETL Data Check Failed:')[1]}"
+    return output
 
 
 @query.group(help="Commands for managing query schemas.")
@@ -1500,7 +1570,12 @@ def _update_query_schema(
                 existing_schema.to_yaml_file(existing_schema_path)
 
     # replace temporary table references
-    sql_content = query_file_path.read_text()
+    sql_content = render_template(
+        query_file_path.name,
+        template_folder=str(query_file_path.parent),
+        templates_dir="",
+        format=False,
+    )
 
     for orig_table, tmp_table in tmp_tables.items():
         table_parts = orig_table.split(".")

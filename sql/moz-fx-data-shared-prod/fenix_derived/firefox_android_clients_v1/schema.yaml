@@ -76,6 +76,42 @@ fields:
   mode: NULLABLE
   name: install_source
   type: STRING
+- description: Last reported client locale.
+  mode: NULLABLE
+  name: last_reported_locale
+  type: STRING
+- description: Last reported client device manufacturer.
+  mode: NULLABLE
+  name: last_reported_device_manufacturer
+  type: STRING
+- description: Last reported client device model.
+  mode: NULLABLE
+  name: last_reported_device_model
+  type: STRING
+- description: Last reported client country.
+  mode: NULLABLE
+  name: last_reported_country
+  type: STRING
+- description: Last date client seen.
+  mode: NULLABLE
+  name: last_reported_date
+  type: DATE
+- description: Last reported client campaign network.
+  mode: NULLABLE
+  name: last_reported_adjust_network
+  type: STRING
+- description: Last reported campaign name.
+  mode: NULLABLE
+  name: last_reported_adjust_creative
+  type: STRING
+- description: Last reported campaign ad group.
+  mode: NULLABLE
+  name: last_reported_adjust_ad_group
+  type: STRING
+- description: Last reported campaign name.
+  mode: NULLABLE
+  name: last_reported_adjust_campaign
+  type: STRING
 - fields:
   - description: True if the client ever reported a first_session ping.
     mode: NULLABLE
@@ -117,39 +153,3 @@ fields:
   mode: NULLABLE
   name: metadata
   type: RECORD
-- description: Last reported client locale.
-  mode: NULLABLE
-  name: last_reported_locale
-  type: STRING
-- description: Last reported client device manufacturer.
-  mode: NULLABLE
-  name: last_reported_device_manufacturer
-  type: STRING
-- description: Last reported client device model.
-  mode: NULLABLE
-  name: last_reported_device_model
-  type: STRING
-- description: Last reported client country.
-  mode: NULLABLE
-  name: last_reported_country
-  type: STRING
-- description: Last date client seen.
-  mode: NULLABLE
-  name: last_reported_date
-  type: DATE
-- description: Last reported client campaign network.
-  mode: NULLABLE
-  name: last_reported_adjust_network
-  type: STRING
-- description: Last reported campaign name.
-  mode: NULLABLE
-  name: last_reported_adjust_creative
-  type: STRING
-- description: Last reported campaign ad group.
-  mode: NULLABLE
-  name: last_reported_adjust_ad_group
-  type: STRING
-- description: Last reported campaign name.
-  mode: NULLABLE
-  name: last_reported_adjust_campaign
-  type: STRING

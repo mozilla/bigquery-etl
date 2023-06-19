@@ -328,7 +328,7 @@ class TestTask:
             email=["test@example.org", "test2@example.org"],
         )
 
-    def test_start_date_and_end_date_validation(self):
+    def test_start_date_validation(self):
         query_file = (
             TEST_DIR
             / "data"
@@ -361,14 +361,6 @@ class TestTask:
             owner="test@example.com",
             start_date="2020-01-01",
         )
-
-        with pytest.raises(ValueError):
-            assert Task(
-                dag_name="bqetl_test_dag",
-                query_file=str(query_file),
-                owner="test@example.com",
-                end_date="2020-13-12",
-            )
 
     def test_date_partition_parameter(self):
         query_file = (

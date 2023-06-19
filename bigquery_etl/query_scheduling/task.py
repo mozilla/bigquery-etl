@@ -177,6 +177,7 @@ class Task:
     version: str = attr.ib(init=False)
     depends_on_past: bool = attr.ib(False)
     start_date: Optional[str] = attr.ib(None)
+    end_date: Optional[str] = attr.ib(None)
     date_partition_parameter: Optional[str] = "submission_date"
     table_partition_template: Optional[str] = None
     # number of days date partition parameter should be offset
@@ -228,9 +229,10 @@ class Task:
         if not all(map(lambda e: is_email_or_github_identity(e), value)):
             raise ValueError(f"Invalid email or github identity in DAG email: {value}.")
 
+    @end_date.validator
     @start_date.validator
-    def validate_start_date(self, attribute, value):
-        """Check that start_date has YYYY-MM-DD format."""
+    def validate_date(self, attribute, value):
+        """Check that start_date and end_date has YYYY-MM-DD format."""
         if value is not None and not is_date_string(value):
             raise ValueError(
                 f"Invalid date definition for {attribute}: {value}."

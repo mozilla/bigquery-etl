@@ -13,10 +13,6 @@
     "mode": "REQUIRED"
   },
   {
-    "type": "STRING",
-    "name": "normalized_app_name"
-  },
-  {
     "fields": [
       {
         "type": "STRING",
@@ -24,27 +20,7 @@
       },
       {
         "type": "STRING",
-        "name": "build_id"
-      },
-      {
-        "type": "STRING",
-        "name": "channel"
-      },
-      {
-        "type": "STRING",
-        "name": "display_version"
-      },
-      {
-        "type": "STRING",
         "name": "platform_version"
-      },
-      {
-        "type": "STRING",
-        "name": "vendor"
-      },
-      {
-        "type": "STRING",
-        "name": "version"
       },
       {
         "type": "STRING",
@@ -91,10 +67,6 @@
       },
       {
         "fields": [
-          {
-            "type": "STRING",
-            "name": "distribution_id"
-          },
           {
             "type": "STRING",
             "name": "distribution_version"
@@ -195,17 +167,9 @@
     "fields": [
       {
         "fields": [
-           {
-             "type": "STRING",
-             "name": "city"
-           },
           {
             "type": "STRING",
             "name": "db_version"
-          },
-          {
-            "type": "STRING",
-            "name": "subdivision1"
           }
         ],
         "type": "RECORD",
@@ -214,22 +178,6 @@
     ],
     "type": "RECORD",
     "name": "metadata"
-  },
-  {
-    "type": "STRING",
-    "name": "normalized_channel"
-  },
-  {
-    "type": "STRING",
-    "name": "normalized_country_code"
-  },
-  {
-    "type": "STRING",
-    "name": "normalized_os"
-  },
-  {
-    "type": "STRING",
-    "name": "normalized_os_version"
   },
   {
     "fields": [

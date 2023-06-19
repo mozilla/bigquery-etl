@@ -37,6 +37,10 @@
   },
   {
     "type": "STRING",
+    "name": "platform_version"
+  },
+  {
+    "type": "STRING",
     "name": "vendor"
   },
   {
@@ -44,7 +48,7 @@
     "name": "app_version"
   },
   {
-    "type": "string",
+    "type": "STRING",
     "name": "xpcom_abi"
   },
   {
@@ -137,6 +141,14 @@
   },
   {
     "type": "STRING",
+    "name": "download_token"
+  },
+  {
+    "type": "STRING",
+    "name": "download_source"
+  },
+  {
+    "type": "STRING",
     "name": "attribution_campaign"
   },
   {
@@ -154,14 +166,6 @@
   {
     "type": "STRING",
     "name": "attribution_source"
-  },
-  {
-    "type": "STRING",
-    "name": "download_token"
-  },
-  {
-    "type": "STRING",
-    "name": "download_source"
   },
   {
     "fields": [
@@ -194,6 +198,10 @@
         "name": "download_token__source_ping"
       },
       {
+        "type": "STRING",
+        "name": "download_source__source_ping"
+      },
+      {
         "type": "BOOLEAN",
         "name": "reported_new_profile_ping"
       },
@@ -204,10 +212,6 @@
       {
         "type": "BOOLEAN",
         "name": "reported_main_ping"
-      },
-      {
-        "type": "DATE",
-        "name": "last_updated_date"
       }
     ],
     "name": "metadata",

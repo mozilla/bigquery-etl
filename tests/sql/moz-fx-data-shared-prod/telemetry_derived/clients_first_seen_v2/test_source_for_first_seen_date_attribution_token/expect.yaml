@@ -8,25 +8,23 @@
     reported_new_profile_ping: false
     reported_shutdown_ping: false
 - client_id: client-3
-  download_token: token3
   first_seen_date: 2023-06-01
-  channel: beta
+  submission_timestamp: '2023-06-01T11:03:00'
+  download_token: token3
   metadata:
+    download_token__source_ping: new_profile
     first_seen_date__source_ping: shutdown
     reported_new_profile_ping: true
     reported_shutdown_ping: true
     reported_main_ping: false
-  sample_id: 30expect.yaml
-  submission_timestamp: '2023-06-01T11:03:00'
-- attribution_campaign: campaign
-  client_id: client-4
-  download_token: token4
+- client_id: client-4
+  sample_id: 40
   first_seen_date: 2023-05-14
+  attribution_campaign: campaign
+  download_token: token4
   metadata:
     attribution_campaign__source_ping: new_profile
     first_seen_date__source_ping: shutdown
     reported_main_ping: true
     reported_new_profile_ping: true
     reported_shutdown_ping: true
-  sample_id: 40
-  channel: nightly

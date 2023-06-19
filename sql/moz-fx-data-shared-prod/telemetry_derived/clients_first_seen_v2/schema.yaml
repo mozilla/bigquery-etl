@@ -26,6 +26,9 @@ fields:
 - name: app_name
   type: STRING
   mode: NULLABLE
+- name: platform_version
+  type: STRING
+  mode: NULLABLE
 - name: vendor
   type: STRING
   mode: NULLABLE
@@ -126,22 +129,28 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
-  - name: first_seen_date_source
+  - name: first_seen_date__source_ping
     type: STRING
     mode: NULLABLE
-  - name: attribution_campaign_source
+  - name: attribution_campaign__source_ping
     type: STRING
     mode: NULLABLE
-  - name: attribution_content_source
+  - name: download_token__source_ping
     type: STRING
     mode: NULLABLE
-  - name: attribution_experiment_source
+  - name: download_source__source_ping
     type: STRING
     mode: NULLABLE
-  - name: attribution_medium_source
+  - name: attribution_content__source_ping
     type: STRING
     mode: NULLABLE
-  - name: attribution_source_source
+  - name: attribution_experiment__source_ping
+    type: STRING
+    mode: NULLABLE
+  - name: attribution_medium__source_ping
+    type: STRING
+    mode: NULLABLE
+  - name: attribution_source__source_ping
     type: STRING
     mode: NULLABLE
   - name: reported_new_profile_ping
@@ -152,7 +161,4 @@ fields:
     mode: NULLABLE
   - name: reported_main_ping
     type: BOOLEAN
-    mode: NULLABLE
-  - name: last_updated_date
-    type: DATE
     mode: NULLABLE

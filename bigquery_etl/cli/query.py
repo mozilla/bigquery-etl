@@ -3,6 +3,7 @@
 import copy
 import datetime
 import logging
+import multiprocessing
 import os
 import re
 import string
@@ -12,7 +13,6 @@ import tempfile
 import typing
 from datetime import date, timedelta
 from functools import partial
-from graphlib import TopologicalSorter
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -59,6 +59,7 @@ from ..util import extract_from_query_path
 from ..util.bigquery_id import sql_table_id
 from ..util.common import random_str
 from ..util.common import render as render_template
+from ..util.parallel_topological_sorter import ParallelTopologicalSorter
 from .dryrun import dryrun
 from .generate import generate_all
 
@@ -1388,6 +1389,7 @@ def schema():
 )
 @use_cloud_function_option
 @respect_dryrun_skip_option(default=True)
+@parallelism_option
 def update(
     name,
     sql_dir,
@@ -1396,6 +1398,7 @@ def update(
     tmp_dataset,
     use_cloud_function,
     respect_dryrun_skip,
+    parallelism,
 ):
     """CLI command for generating the query schema."""
     if not is_authenticated():
@@ -1408,7 +1411,8 @@ def update(
         name, sql_dir, project_id, files=["query.sql"]
     )
     dependency_graph = get_dependency_graph([sql_dir], without_views=True)
-    tmp_tables = {}
+    manager = multiprocessing.Manager()
+    tmp_tables = manager.dict({})
 
     # order query files to make sure derived_from dependencies are resolved
     query_file_graph = {}
@@ -1431,65 +1435,90 @@ def update(
         except FileNotFoundError:
             query_file_graph[query_file] = []
 
-    ts = TopologicalSorter(query_file_graph)
-    query_files_ordered = ts.static_order()
-
-    for query_file in query_files_ordered:
-        try:
-            changed = _update_query_schema(
-                query_file,
-                sql_dir,
-                project_id,
-                tmp_dataset,
-                tmp_tables,
-                use_cloud_function,
-                respect_dryrun_skip,
-            )
-
-            if update_downstream:
-                # update downstream dependencies
-                if changed:
-                    if not is_authenticated():
-                        click.echo(
-                            "Cannot update downstream dependencies."
-                            "Authentication to GCP required. Run `gcloud auth login` "
-                            "and check that the project is set correctly."
-                        )
-                        sys.exit(1)
-
-                    project, dataset, table = extract_from_query_path(query_file)
-                    identifier = f"{project}.{dataset}.{table}"
-                    tmp_identifier = f"{project}.{tmp_dataset}.{table}_{random_str(12)}"
-
-                    # create temporary table with updated schema
-                    if identifier not in tmp_tables:
-                        schema = Schema.from_schema_file(
-                            query_file.parent / SCHEMA_FILE
-                        )
-                        schema.deploy(tmp_identifier)
-                        tmp_tables[identifier] = tmp_identifier
-
-                    # get downstream dependencies that will be updated in the next iteration
-                    dependencies = [
-                        p
-                        for k, refs in dependency_graph.items()
-                        for p in paths_matching_name_pattern(
-                            k, sql_dir, project_id, files=("query.sql",)
-                        )
-                        if identifier in refs
-                    ]
-
-                    for d in dependencies:
-                        click.echo(f"Update downstream dependency schema for {d}")
-                        query_files_ordered.append(d)
-        except Exception:
-            print_exc()
+    ts = ParallelTopologicalSorter(
+        query_file_graph, parallelism=parallelism, with_follow_up=update_downstream
+    )
+    ts.map(
+        partial(
+            _update_query_schema_with_downstream,
+            sql_dir,
+            project_id,
+            tmp_dataset,
+            dependency_graph,
+            tmp_tables,
+            use_cloud_function,
+            respect_dryrun_skip,
+            update_downstream,
+        )
+    )
 
     if len(tmp_tables) > 0:
         client = bigquery.Client()
         # delete temporary tables
         for _, table in tmp_tables.items():
             client.delete_table(table, not_found_ok=True)
+
+
+def _update_query_schema_with_downstream(
+    sql_dir,
+    project_id,
+    tmp_dataset,
+    dependency_graph,
+    tmp_tables={},
+    use_cloud_function=True,
+    respect_dryrun_skip=True,
+    update_downstream=False,
+    query_file=None,
+    follow_up_queue=None,
+):
+    try:
+        changed = _update_query_schema(
+            query_file,
+            sql_dir,
+            project_id,
+            tmp_dataset,
+            tmp_tables,
+            use_cloud_function,
+            respect_dryrun_skip,
+        )
+
+        if update_downstream:
+            # update downstream dependencies
+            if changed:
+                if not is_authenticated():
+                    click.echo(
+                        "Cannot update downstream dependencies."
+                        "Authentication to GCP required. Run `gcloud auth login` "
+                        "and check that the project is set correctly."
+                    )
+                    sys.exit(1)
+
+                project, dataset, table = extract_from_query_path(query_file)
+                identifier = f"{project}.{dataset}.{table}"
+                tmp_identifier = f"{project}.{tmp_dataset}.{table}_{random_str(12)}"
+
+                # create temporary table with updated schema
+                if identifier not in tmp_tables:
+                    schema = Schema.from_schema_file(query_file.parent / SCHEMA_FILE)
+                    schema.deploy(tmp_identifier)
+                    tmp_tables[identifier] = tmp_identifier
+
+                # get downstream dependencies that will be updated in the next iteration
+                dependencies = [
+                    p
+                    for k, refs in dependency_graph.items()
+                    for p in paths_matching_name_pattern(
+                        k, sql_dir, project_id, files=("query.sql",)
+                    )
+                    if identifier in refs
+                ]
+
+                for d in dependencies:
+                    click.echo(f"Update downstream dependency schema for {d}")
+                    if follow_up_queue:
+                        follow_up_queue.put(d)
+    except Exception:
+        print_exc()
 
 
 def _update_query_schema(

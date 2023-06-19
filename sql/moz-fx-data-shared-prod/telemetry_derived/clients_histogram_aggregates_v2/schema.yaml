@@ -71,7 +71,7 @@ fields:
     - mode: NULLABLE
       name: value
       type: INTEGER
-    mode: NULLABLE
+    mode: REPEATED
     name: aggregates
     type: RECORD
   mode: REPEATED

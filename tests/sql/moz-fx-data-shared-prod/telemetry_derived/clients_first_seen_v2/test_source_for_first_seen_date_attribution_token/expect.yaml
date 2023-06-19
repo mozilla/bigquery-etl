@@ -1,7 +1,8 @@
 ---
 - client_id: client-1
   first_seen_date: 2023-06-01
-  submission_timestamp: '2023-06-01T00:00:00'
+  submission_timestamp: '2023-06-01T00:03:00'
+  city: test_city
   metadata:
     first_seen_date__source_ping: main
     reported_main_ping: true

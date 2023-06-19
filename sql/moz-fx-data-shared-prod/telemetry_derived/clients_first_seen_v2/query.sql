@@ -149,7 +149,8 @@ main_ping AS (
   SELECT
     client_id AS client_id,
     MIN(sample_id) AS sample_id,
-    TIMESTAMP(MIN(submission_date)) AS submission_timestamp,
+    MIN(submission_date) AS submission_date,
+    MIN(submission_timestamp_min) AS submission_timestamp,
     ARRAY_AGG(app_build_id IGNORE NULLS ORDER BY submission_date ASC)[
       SAFE_OFFSET(0)
     ] AS app_build_id,

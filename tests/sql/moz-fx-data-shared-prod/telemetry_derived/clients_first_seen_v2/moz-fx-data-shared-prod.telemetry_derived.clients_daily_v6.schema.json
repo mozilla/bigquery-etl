@@ -12,6 +12,10 @@
     "name": "submission_date"
   },
   {
+    "type": "TIMESTAMP",
+    "name": "submission_timestamp_min"
+  },
+  {
     "type": "STRING",
     "name": "app_build_id"
   },

@@ -1,6 +1,6 @@
 friendly_name: FxA Server Events (nonprod)
 description: |
-  FxA server events extracted from accounts server stdout logs.
+  FxA server events extracted from accounts server stdout logs (auth, content servers)
 
   This new table is the direct result of FxA migration from AWS to GCP
   (see: OPST-296 for more context).

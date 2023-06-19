@@ -10,7 +10,6 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_fxa_events
-  end_date: "2023-05-26"  # descheduling this task as nonprod_fxa_server_events_v1 should be pulling them in instead.
   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
 bigquery:
   time_partitioning:

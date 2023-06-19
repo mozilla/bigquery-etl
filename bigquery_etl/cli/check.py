@@ -6,6 +6,7 @@ import tempfile
 from subprocess import CalledProcessError
 
 import click
+import sqlparse
 
 from ..cli.utils import (
     is_authenticated,
@@ -123,24 +124,37 @@ def _run_check(
         **{"dataset_id": dataset_id, "table_name": table},
         **parameters,
     }
+    rendered_result = render_template(
+        checks_file.name,
+        template_folder=str(checks_file.parent),
+        templates_dir="",
+        format=False,
+        **jinja_params,
+    )
+    checks = sqlparse.split(rendered_result)
+    seek_location = 0
+    check_failed = False
 
     with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
-        query_stream.write(
-            render_template(
-                checks_file.name,
-                template_folder=str(checks_file.parent),
-                templates_dir="",
-                format=False,
-                **jinja_params,
-            )
-        )
-        query_stream.seek(0)
+        for rendered_check in checks:
+            # since the last check will end with ; the last entry will be empty string.
+            if len(rendered_check) == 0:
+                continue
+            rendered_check = rendered_check.strip()
+            query_stream.write(rendered_check)
+            query_stream.seek(seek_location)
+            seek_location += len(rendered_check)
 
-        # run the query as shell command so that passed parameters can be used as is
-        try:
-            subprocess.check_output(
-                ["bq", "query"] + query_arguments, stdin=query_stream, encoding="UTF-8"
-            )
-        except CalledProcessError as e:
-            print(_parse_check_output(e.output))
-            sys.exit(1)
+            # run the query as shell command so that passed parameters can be used as is
+            try:
+                subprocess.check_output(
+                    ["bq", "query"] + query_arguments,
+                    stdin=query_stream,
+                    encoding="UTF-8",
+                )
+            except CalledProcessError as e:
+                print(_parse_check_output(e.output))
+                check_failed = True
+
+    if check_failed:
+        sys.exit(1)

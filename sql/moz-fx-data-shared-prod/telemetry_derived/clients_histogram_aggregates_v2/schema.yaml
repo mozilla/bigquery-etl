@@ -70,10 +70,10 @@ fields:
       type: STRING
     - mode: NULLABLE
       name: value
-      type: FLOAT
+      type: INTEGER
     mode: NULLABLE
     name: aggregates
     type: RECORD
-  mode: NULLABLE
+  mode: REPEATED
   name: histogram_aggregates
   type: RECORD

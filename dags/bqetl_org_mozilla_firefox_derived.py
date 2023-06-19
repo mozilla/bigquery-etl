@@ -65,6 +65,17 @@ with DAG(
             fenix_derived__attributable_clients__v1
         )
 
+    fenix_derived__attributable_clients__v2 = bigquery_etl_query(
+        task_id="fenix_derived__attributable_clients__v2",
+        destination_table="attributable_clients_v2",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     fenix_derived__clients_yearly__v1 = bigquery_etl_query(
         task_id="fenix_derived__clients_yearly__v1",
         destination_table="clients_yearly_v1",
@@ -155,6 +166,13 @@ with DAG(
     )
 
     fenix_derived__attributable_clients__v1.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v1
+    )
+
+    fenix_derived__attributable_clients__v2.set_upstream(
+        wait_for_baseline_clients_daily
+    )
+    fenix_derived__attributable_clients__v2.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )
 

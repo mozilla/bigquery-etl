@@ -62,8 +62,11 @@ stdout_events AS (
     "payments" AS fxa_log
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_stdout_events_v1`
+  WHERE
+    DATE(`timestamp`) <= "2023-05-26"
 ),
 -- New fxa event table (nonprod) includes, content and auth events
+-- this also includes "payments" events.
 server_events AS (
   SELECT
     `timestamp`,

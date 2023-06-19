@@ -1,4 +1,3 @@
----
 friendly_name: FxA Server Events (nonprod)
 description: |
   FxA server events extracted from accounts server stdout logs.
@@ -12,21 +11,25 @@ description: |
   - content (previous table: `nonprod_fxa_content_events_v1`)
 
   Payment server events will continue landing inside: `nonprod_fxa_stdout_events_v1`
-
 owners:
-  - kik@mozilla.com
+- kik@mozilla.com
 labels:
   application: fxa
   incremental: true
   schedule: daily
+  owner: kik
 scheduling:
   dag_name: bqetl_fxa_events
-  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']  # takes care of adding all the missing field found in the source table as part of the ETL execution.
+  start_date: "2023-05-26"
+  arguments:
+  - --schema_update_option=ALLOW_FIELD_ADDITION
 bigquery:
   time_partitioning:
     type: day
     field: timestamp
     require_partition_filter: true
+    expiration_days: null
   clustering:
     fields:
-      - fxa_log
+    - fxa_log
+references: {}

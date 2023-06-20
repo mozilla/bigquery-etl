@@ -192,6 +192,9 @@ fields:
     - name: joierrors
       type: STRING
       mode: NULLABLE
+    - name: country
+      type: STRING
+      mode: NULLABLE
     - name: countrycode
       type: STRING
       mode: NULLABLE

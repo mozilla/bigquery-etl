@@ -2,9 +2,10 @@
 
 import enum
 import os
+import sys
 from datetime import date
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 import attr
 import yaml
@@ -136,11 +137,16 @@ class Backfill:
         return os.path.basename(file_path) == BACKFILL_FILE
 
     @classmethod
-    def entries_from_file(cls, file: Path) -> List["Backfill"]:
+    def entries_from_file(
+        cls, file: Path, status: Optional[str] = None
+    ) -> List["Backfill"]:
         """
         Parse all backfill entries from the provided yaml file.
 
         Return a list with all backfill entries.
+
+        @param status:  optional status param for filtering backfill entries with specific status.
+        If status is not provided, all backfill entries will be returned.
         """
         if not cls.is_backfill_file(file):
             raise ValueError(f"Invalid file: {file}.")
@@ -152,24 +158,26 @@ class Backfill:
                 backfills = yaml.load(yaml_stream, Loader=UniqueKeyLoader) or {}
 
                 for entry_date, entry in backfills.items():
-                    excluded_dates = []
-                    if "excluded_dates" in entry:
-                        excluded_dates = entry["excluded_dates"]
+                    if status is None or entry["status"].lower() == status.lower():
+                        excluded_dates = []
+                        if "excluded_dates" in entry:
+                            excluded_dates = entry["excluded_dates"]
 
-                    backfill = cls(
-                        entry_date=entry_date,
-                        start_date=entry["start_date"],
-                        end_date=entry["end_date"],
-                        excluded_dates=excluded_dates,
-                        reason=entry["reason"],
-                        watchers=entry["watchers"],
-                        status=BackfillStatus[entry["status"].upper()],
-                    )
+                        backfill = cls(
+                            entry_date=entry_date,
+                            start_date=entry["start_date"],
+                            end_date=entry["end_date"],
+                            excluded_dates=excluded_dates,
+                            reason=entry["reason"],
+                            watchers=entry["watchers"],
+                            status=BackfillStatus[entry["status"].upper()],
+                        )
 
-                    backfill_entries.append(backfill)
+                        backfill_entries.append(backfill)
 
             except yaml.YAMLError as e:
-                raise e
+                print(e)
+                sys.exit(1)
 
             return backfill_entries
 

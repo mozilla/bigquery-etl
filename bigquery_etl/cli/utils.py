@@ -22,7 +22,7 @@ CHECKS_FILE_RE = re.compile(
     r"(?:checks\.sql)$"
 )
 QUALIFIED_TABLE_NAME_RE = re.compile(
-    r"(?P<project_id>[a-zA-z0-9_-]+)\.(?P<dataset_id>[a-zA-z0-9_-]+)\.(?P<table_id>[a-zA-z0-9_-]+)"
+    r"(?P<project_id>[a-zA-z0-9_-]+)\.(?P<dataset_id>[a-zA-z0-9_-]+)\.(?P<table_id>[a-zA-Z0-9-_$]+)"
 )
 TEST_PROJECT = "bigquery-etl-integration-test"
 MOZDATA = "mozdata"
@@ -159,7 +159,7 @@ def qualified_table_name_matching(qualified_table_name) -> Tuple[str, str, str]:
             "Qualified table name must be named like:" + " <project>.<dataset>.<table>"
         )
 
-    return (project_id, dataset_id, table_id)
+    return project_id, dataset_id, table_id
 
 
 sql_dir_option = click.option(

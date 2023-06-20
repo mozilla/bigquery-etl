@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_main_summary
@@ -297,13 +297,6 @@ with DAG(
     with TaskGroup(
         "telemetry_derived__clients_last_seen__v1_external"
     ) as telemetry_derived__clients_last_seen__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_telemetry_derived__clients_last_seen__v1",
-            external_dag_id="bqetl_analytics_aggregations",
-            external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
-        )
-
         ExternalTaskMarker(
             task_id="bqetl_search_dashboard__wait_for_telemetry_derived__clients_last_seen__v1",
             external_dag_id="bqetl_search_dashboard",

@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_analytics_tables
@@ -116,19 +116,6 @@ with DAG(
     firefox_android_clients.set_upstream(wait_for_baseline_clients_daily)
 
     firefox_ios_clients.set_upstream(wait_for_baseline_clients_daily)
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    firefox_ios_clients.set_upstream(wait_for_copy_deduplicate_all)
     wait_for_firefox_ios_derived__new_profile_activation__v2 = ExternalTaskSensor(
         task_id="wait_for_firefox_ios_derived__new_profile_activation__v2",
         external_dag_id="bqetl_mobile_activation",

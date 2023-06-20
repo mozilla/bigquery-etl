@@ -227,14 +227,14 @@ SELECT
           STRUCT(
             CAST(first_session.adjust_network AS STRING),
             'first_session_ping',
-            first_session.min_submission_datetime
+            DATETIME(first_session.min_submission_datetime)
           )
         ),
         (
           STRUCT(
             CAST(metrics.adjust_network AS STRING),
             'metrics_ping',
-            metrics.min_submission_datetime
+            DATETIME(metrics.min_submission_datetime)
           )
         )
       ]
@@ -250,14 +250,14 @@ SELECT
           STRUCT(
             CAST(first_session.adjust_network AS STRING),
             'first_session_ping',
-            first_session.min_submission_datetime
+            DATETIME(first_session.min_submission_datetime)
           )
         ),
         (
           STRUCT(
             CAST(metrics.adjust_network AS STRING),
             'metrics_ping',
-            metrics.min_submission_datetime
+            DATETIME(metrics.min_submission_datetime)
           )
         )
       ]

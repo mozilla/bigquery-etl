@@ -96,6 +96,26 @@ SELECT
       ]
     )
   ),
+  assert.equals(
+    STRUCT(
+      CAST('2022-12-13' AS STRING) AS earliest_value,
+      'first_session' AS earliest_value_source,
+      DATETIME('2022-12-13T00:00:00') AS earliest_date
+    ),
+    norm.get_earliest_value(
+      [
+        (STRUCT(CAST('2022-12-14' AS STRING), CAST(NULL AS STRING), DATETIME('2022-12-14'))),
+        (
+          STRUCT(
+            CAST('2022-12-13' AS STRING),
+            CAST('first_session' AS STRING),
+            DATETIME('2022-12-13')
+          )
+        ),
+        (STRUCT(CAST('2022-12-13' AS STRING), CAST('abc' AS STRING), DATETIME('2022-12-13')))
+      ]
+    )
+  ),
   assert.null(
     norm.get_earliest_value(
       [

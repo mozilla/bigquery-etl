@@ -1,8 +1,16 @@
 {{ config_header }}
 version: 2.1
 
+parameters:
+  docker-version:
+    type: string
+    default: 20.10.18
+  git-image:
+    type: string
+    default: docker:24.0.2-git
+
 orbs:
-  gcp-gcr: circleci/gcp-gcr@0.12.0
+  gcp-gcr: circleci/gcp-gcr@0.15.1
 
 commands:
   compare-branch:
@@ -28,20 +36,24 @@ commands:
 jobs:
   build-docker-etl:
     docker:
-      - image: docker:stable-git
+      - image: << pipeline.parameters.git-image >>
     steps:
       - checkout
       - run:
           name: Checkout git submodules
           command: git submodule update --init --recursive
       - setup_remote_docker:
-          version: 19.03.13
+          version: << pipeline.parameters.docker-version >>
       - run:
           name: Build Docker image
           command: docker build -t docker-etl:build .
       - run:
           name: Test Code
-          command: docker run docker-etl:build pytest --black --flake8 docker_etl/ tests/
+          command: |
+            docker run docker-etl:build /bin/bash -c \
+            "python -m pytest docker_etl/ tests/; \
+            flake8 docker_etl/ tests/;\
+            black docker_etl/ tests/"
       - run:
           name: Verify jobs have required files
           command: docker run docker-etl:build script/verify_files

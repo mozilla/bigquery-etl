@@ -4,8 +4,16 @@
 ###
 version: 2.1
 
+parameters:
+  docker-version:
+    type: string
+    default: 20.10.18
+  git-image:
+    type: string
+    default: docker:24.0.2-git
+
 orbs:
-  gcp-gcr: circleci/gcp-gcr@0.12.0
+  gcp-gcr: circleci/gcp-gcr@0.15.1
 
 commands:
   compare-branch:
@@ -31,20 +39,24 @@ commands:
 jobs:
   build-docker-etl:
     docker:
-      - image: docker:stable-git
+      - image: << pipeline.parameters.git-image >>
     steps:
       - checkout
       - run:
           name: Checkout git submodules
           command: git submodule update --init --recursive
       - setup_remote_docker:
-          version: 19.03.13
+          version: << pipeline.parameters.docker-version >>
       - run:
           name: Build Docker image
           command: docker build -t docker-etl:build .
       - run:
           name: Test Code
-          command: docker run docker-etl:build pytest --black --flake8 docker_etl/ tests/
+          command: |
+            docker run docker-etl:build /bin/bash -c \
+            "python -m pytest docker_etl/ tests/; \
+            flake8 docker_etl/ tests/;\
+            black docker_etl/ tests/"
       - run:
           name: Verify jobs have required files
           command: docker run docker-etl:build script/verify_files
@@ -54,39 +66,39 @@ jobs:
 
   build-job-bq2sftp:
     docker:
-      - image: docker:stable-git
+      - image: << pipeline.parameters.git-image >>
     steps:
       - checkout
       - compare-branch:
           pattern: ^jobs/bq2sftp/
       - setup_remote_docker:
-          version: 19.03.13
+          version: << pipeline.parameters.docker-version >>
       - run:
           name: Build Docker image
           command: docker build -t app:build jobs/bq2sftp/
 
   build-job-dap-collector:
     docker:
-      - image: docker:stable-git
+      - image: << pipeline.parameters.git-image >>
     steps:
       - checkout
       - compare-branch:
           pattern: ^jobs/dap-collector/
       - setup_remote_docker:
-          version: 19.03.13
+          version: << pipeline.parameters.docker-version >>
       - run:
           name: Build Docker image
           command: docker build -t app:build jobs/dap-collector/
 
   build-job-desktop-mobile-mau-2020:
     docker:
-      - image: docker:stable-git
+      - image: << pipeline.parameters.git-image >>
     steps:
       - checkout
       - compare-branch:
           pattern: ^jobs/desktop-mobile-mau-2020/
       - setup_remote_docker:
-          version: 19.03.13
+          version: << pipeline.parameters.docker-version >>
       - run:
           name: Build Docker image
           command: docker build -t app:build jobs/desktop-mobile-mau-2020/
@@ -96,13 +108,13 @@ jobs:
 
   build-job-example_job:
     docker:
-      - image: docker:stable-git
+      - image: << pipeline.parameters.git-image >>
     steps:
       - checkout
       - compare-branch:
           pattern: ^jobs/example_job/
       - setup_remote_docker:
-          version: 19.03.13
+          version: << pipeline.parameters.docker-version >>
       - run:
           name: Build Docker image
           command: docker build -t app:build jobs/example_job/
@@ -110,13 +122,13 @@ jobs:
 
   build-job-experiments-monitoring-data-export:
     docker:
-      - image: docker:stable-git
+      - image: << pipeline.parameters.git-image >>
     steps:
       - checkout
       - compare-branch:
           pattern: ^jobs/experiments-monitoring-data-export/
       - setup_remote_docker:
-          version: 19.03.13
+          version: << pipeline.parameters.docker-version >>
       - run:
           name: Build Docker image
           command: docker build -t app:build jobs/experiments-monitoring-data-export/
@@ -124,13 +136,13 @@ jobs:
 
   build-job-influxdb-to-bigquery:
     docker:
-      - image: docker:stable-git
+      - image: << pipeline.parameters.git-image >>
     steps:
       - checkout
       - compare-branch:
           pattern: ^jobs/influxdb-to-bigquery/
       - setup_remote_docker:
-          version: 19.03.13
+          version: << pipeline.parameters.docker-version >>
       - run:
           name: Build Docker image
           command: docker build -t app:build jobs/influxdb-to-bigquery/
@@ -138,13 +150,13 @@ jobs:
 
   build-job-kpi-forecasting:
     docker:
-      - image: docker:stable-git
+      - image: << pipeline.parameters.git-image >>
     steps:
       - checkout
       - compare-branch:
           pattern: ^jobs/kpi-forecasting/
       - setup_remote_docker:
-          version: 19.03.13
+          version: << pipeline.parameters.docker-version >>
       - run:
           name: Build Docker image
           command: docker build -t app:build jobs/kpi-forecasting/
@@ -155,13 +167,13 @@ jobs:
 
   build-job-mozaggregator2bq:
     docker:
-      - image: docker:stable-git
+      - image: << pipeline.parameters.git-image >>
     steps:
       - checkout
       - compare-branch:
           pattern: ^jobs/mozaggregator2bq/
       - setup_remote_docker:
-          version: 19.03.13
+          version: << pipeline.parameters.docker-version >>
       - run:
           name: Build Docker image
           command: docker build -t app:build jobs/mozaggregator2bq/
@@ -169,26 +181,26 @@ jobs:
 
   build-job-pioneer-debug:
     docker:
-      - image: docker:stable-git
+      - image: << pipeline.parameters.git-image >>
     steps:
       - checkout
       - compare-branch:
           pattern: ^jobs/pioneer-debug/
       - setup_remote_docker:
-          version: 19.03.13
+          version: << pipeline.parameters.docker-version >>
       - run:
           name: Build Docker image
           command: docker build -t app:build jobs/pioneer-debug/
 
   build-play-store-export:
     docker:
-      - image: docker:stable-git
+      - image: << pipeline.parameters.git-image >>
     steps:
       - checkout
       - compare-branch:
           pattern: ^jobs/play-store-export/
       - setup_remote_docker:
-          version: 19.03.13
+          version: << pipeline.parameters.docker-version >>
       - run:
           name: Build Docker image
           command: docker build -t app:build jobs/play-store-export
@@ -202,13 +214,13 @@ jobs:
 
   build-job-quicksuggest2bq:
     docker:
-      - image: docker:stable-git
+      - image: << pipeline.parameters.git-image >>
     steps:
       - checkout
       - compare-branch:
           pattern: ^jobs/quicksuggest2bq/
       - setup_remote_docker:
-          version: 19.03.13
+          version: << pipeline.parameters.docker-version >>
       - run:
           name: Build Docker image
           command: docker build -t app:build jobs/quicksuggest2bq/
@@ -222,13 +234,13 @@ jobs:
 
   build-job-search-alert:
     docker:
-      - image: docker:stable-git
+      - image: << pipeline.parameters.git-image >>
     steps:
       - checkout
       - compare-branch:
           pattern: ^jobs/search-alert/
       - setup_remote_docker:
-          version: 19.03.13
+          version: << pipeline.parameters.docker-version >>
       - run:
           name: Build Docker image
           command: docker build -t app:build jobs/search-alert/
@@ -236,13 +248,13 @@ jobs:
 
   build-job-search-term-data-validation:
     docker:
-      - image: docker:stable-git
+      - image: << pipeline.parameters.git-image >>
     steps:
       - checkout
       - compare-branch:
           pattern: ^jobs/search-term-data-validation/
       - setup_remote_docker:
-          version: 19.03.13
+          version: << pipeline.parameters.docker-version >>
       - run:
           name: Build Docker image
           command: docker build -t app:build jobs/search-term-data-validation/

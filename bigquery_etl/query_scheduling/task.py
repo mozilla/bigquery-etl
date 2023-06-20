@@ -5,7 +5,6 @@ import os
 import re
 from fnmatch import fnmatchcase
 from pathlib import Path
-from tabnanny import check
 from typing import List, Optional, Tuple
 
 import attr
@@ -287,13 +286,14 @@ class Task:
                     -MAX_TASK_NAME_LENGTH:
                 ]
                 self.validate_task_name(None, self.task_name)
-            
-            if check_file_re is not None:
-                self.task_name = f"checks__{self.dataset}__{self.table}__{self.version}"[
-                    -MAX_TASK_NAME_LENGTH:
-                ]
-                self.validate_task_name(None, self.task_name)
 
+            if check_file_re is not None:
+                self.task_name = (
+                    f"checks__{self.dataset}__{self.table}__{self.version}"[
+                        -MAX_TASK_NAME_LENGTH:
+                    ]
+                )
+                self.validate_task_name(None, self.task_name)
 
             if self.destination_table == DEFAULT_DESTINATION_TABLE_STR:
                 self.destination_table = f"{self.table}_{self.version}"
@@ -398,7 +398,6 @@ class Task:
                 f"Invalid scheduling information format for {query_file}: {e}"
             )
 
-
     @classmethod
     def of_multipart_query(cls, query_file, metadata=None, dag_collection=None):
         """
@@ -440,12 +439,10 @@ class Task:
         task.query_file_path = query_file
         task.is_python_script = True
         return task
-    
+
     @classmethod
     def of_dq_check(cls, query_file, metadata=None, dag_collection=None):
-        """
-        Create a task that schedules DQ check file in Airflow.
-        """
+        """Create a task that schedules DQ check file in Airflow."""
         task = cls.of_query(query_file, metadata, dag_collection)
         task.query_file_path = query_file
         task.is_dq_check = True

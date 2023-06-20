@@ -1,17 +1,15 @@
 """Generates Airflow DAGs for scheduled queries."""
 
+import copy
 import logging
 import os
-import copy
 from argparse import ArgumentParser
 from pathlib import Path
-from bigquery_etl.cli.utils import CHECKS_FILE_RE
 
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
 from bigquery_etl.query_scheduling.task import Task, TaskRef, UnscheduledTask
 from bigquery_etl.util import standard_args
 from bigquery_etl.util.common import project_dirs
-
 
 DEFAULT_DAGS_FILE = "dags.yaml"
 QUERY_FILE = "query.sql"
@@ -99,9 +97,14 @@ def get_dags(project_id, dags_config):
                 else:
                     if CHECKS_FILE in files:
                         checks_file = os.path.join(root, CHECKS_FILE)
-                        checks_task = copy.deepcopy(Task.of_dq_check(checks_file, dag_collection=dag_collection))
+                        checks_task = copy.deepcopy(
+                            Task.of_dq_check(checks_file, dag_collection=dag_collection)
+                        )
                         tasks.append(checks_task)
-                        task_ref = TaskRef(dag_name=task.dag_name,task_id=task.task_name,)
+                        task_ref = TaskRef(
+                            dag_name=task.dag_name,
+                            task_id=task.task_name,
+                        )
                         checks_task.depends_on.append(task_ref)
                     tasks.append(task)
 

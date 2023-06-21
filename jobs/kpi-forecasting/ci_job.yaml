@@ -11,5 +11,5 @@ build-job-kpi-forecasting:
         name: Build Docker image
         command: docker build -t app:build jobs/kpi-forecasting/
     - run:
-          name: Test Code
-          command: docker run app:build pytest --black
+        name: Test Code
+        command: docker run app:build black .

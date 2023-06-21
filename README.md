@@ -123,7 +123,7 @@ and the output config should be re-generated.
 Each job has a `ci_job.yaml` and a `ci_workflow.yaml` which define the steps
 that will go into the jobs and workflow sections of the CircleCI config.
 Any changes to these files should be followed by updating the global config
-via `scripts/update_ci_config`.
+via `script/update_ci_config`.
 When a job is created, the CI files are created based on the
 `ci_*.template.yaml` files in the template directory.
 

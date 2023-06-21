@@ -1,66 +1,85 @@
-# Desktop, Mobile and Pocket KPI Forecast Automation
+# KPI and other Metric Forecasting
 
-This job contains scripts for projecting year-end KPI values for Desktop
-and Mobile DAU.
+This job forecasts [Metric Hub](https://mozilla.github.io/metric-hub/) metrics based on YAML configs defined in `.kpi-forecasting/configs`.
 
-## Usage
+# Usage
 
-This script is intended to be run in a docker container.
-Build the docker image with:
+### Docker Container
+
+This job is intended to be run in a Docker container. If you're not familiar with Docker, it can be helpful to first install
+[Docker Desktop](https://docs.docker.com/desktop/) which provides a GUI.
+
+First, ensure that you have `CLOUDSDK_CONFIG` set as a environment variable for your shell so that Docker can find your gcloud credentials.
+The default is `~/.config/gcloud`:
 
 ```sh
-docker build -t kpi-forecasting .
+export CLOUDSDK_CONFIG="~/.config/gcloud"
 ```
 
-To run locally, install dependencies with:
+To [build or re-build the Docker image](https://docs.docker.com/engine/reference/commandline/compose_build/), run the following command from the top-level `kpi-forecasting`. To force Docker to rebuild from scratch, pass the `--no-cache` flag.
 
 ```sh
+docker compose build
+```
+
+Start a container from the Docker image with the following command:
+
+```sh
+docker compose up
+```
+
+A metric can be forecasted by using a command line argument that passes the relevant YAML file to the `kpi_forecasting.py` script.
+[Here are approaches for accessing a Docker container's terminal](https://docs.docker.com/desktop/use-desktop/container/#integrated-terminal).
+
+For example, the following command forecasts Desktop DAU numbers:
+
+```sh
+python ~/kpi-forecasting/kpi_forecasting.py -c ~/kpi-forecasting/configs/dau_desktop.yaml
+```
+
+### Local Python
+
+You can also run the code outside of a Docker container. The code below creates a new Conda environment called `kpi-forecasting-dev`.
+It assumes you have Conda installed. If you'd like to run the code in a Jupyter notebook, it is handy to install Jupyter in your `base` environment.
+The `ipykernel` commands below will ensure that the `kpi-forecasting-dev` environment is made available to Jupyter.
+
+```sh
+conda create --name kpi-forecasting-dev python=3.10 pip ipykernel
+conda activate kpi-forecasting-dev
+ipython kernel install --name kpi-forecasting-dev --user
 pip install -r requirements.txt
+conda deactivate
 ```
 
-Run the scripts with:
+If you're running on an M1 Mac, there are [currently some additional steps](https://github.com/facebook/prophet/issues/2250#issuecomment-1317709209) that you'll need to take to get Prophet running. From within your python environment, run the following (making sure to update the path appropriately):
+
+```python
+import cmdstanpy
+cmdstanpy.install_cmdstan(overwrite=True, compiler=True, dir='/PATH/TO/CONDA/envs/kpi-forecasting-dev/lib/')
+```
+
+and then from the command line:
 
 ```sh
-python ~/kpi-forecasting/kpi_forecasting.py -c ~/kpi-forecasting/yaml/desktop_non_cumulative.yaml
-
-python ~/kpi-forecasting/kpi_forecasting.py -c ~/kpi-forecasting/yaml/mobile_non_cumulative.yaml
+cd ~/PATH/TO/CONDA/envs/kpi-forecasting-dev/lib/python3.10/site-packages/prophet/stan_model
+install_name_tool -add_rpath /PATH/TO/CONDA/envs/kpi-forecasting-dev/lib/cmdstan-2.32.2/stan/lib/stan_math/lib/tbb prophet_model.bin
 ```
 
-### On SQL Queries And Preprocessing
+# YAML Configs
 
-One of the challenges in automating multiple forecasts is that data formats may not always be consistent. This is a challenge precisely because Prophet demands that data conform to a very strict standard of two columns; 'ds' and 'y' as its primary inputs. Other columns can be added as regressors, but often these are trivial to implement in Python but challenging to implement in SQL, or vice versa, depending on their specifics.
+Each of the sections in the YAML files contains a list of arguments that are passed to their relevant objects or methods.
+Definitions should be documented in the code.
 
-Rather than try and force things to conform to an ultra-strict standard to solve a wide variety of forecasts, this repo focuses ONLY on KPIs, and is organized in such a way to make that easier to maintain.
+# Development
 
-The idiomatic way to handle this is to use the "columns" key in the YAML to specify which columns to bring into the FitForecast section of this stack, and to write a specific handler for regressors in that section. Your query should return things in this column order:
+- `./kpi-forecasting/kpi_forecasting.py` is the main control script.
+- `./kpi-forecasting/configs` contains configuration YAML files.
+- `./kpi-forecasting/models` contains the forecasting models.
 
-| date | variable to predict | regressor_00 | regressor_01 | etc |
-| ---- | ------------------- | ------------ | ------------ | --- |
+This repo was designed to make it simple to add new forecasting models in the future. In general, a model needs to inherit
+the `models.base_forecast.BaseForecast` class and to implement the `_fit` and `_predict` methods. Output from the `_fit` method will automatically be validated by `BaseForecast._validate_forecast_df`.
 
-Failure to conform to this order will result in failure as prophet model inputs are taken by POSITION, rather than by key. You will want to maintain this order in your YAML columns list as well.
+One caveat is that, in order for aggregations over time periods to work (e.g. monthly forecasts), the `_predict` method must generate a number
+of simulated timeseries. This enables the measurement of variation across a range of possible outcomes. This number is set by `BaseForecast.number_of_simulations`.
 
-Is this generic? No. Nor does it try to be. However, because of the limited number of cases, it makes more sense to handle the cases this repo is trying to cover rather than hypothetical future ones.
-
-### YAML Configs
-
-For consistency, keys are lowercased
-
-- target: platform you wish to run, current accepted values are 'desktop' and 'mobile'
-- query_name: the name of the .sql file in the sql_queries folder to use to pull data from
-- columns: will cut down query to only the columns included in this list. Rather than try to be so supremely flexible that it ends up making more work down the road to comply to an API spec, this repo is set up to handle the desktop and mobile scripts as they currently exist. If you wish to add a new forecast, model it after Mobile
-- forecast_parameters: model fit parameters, must conform to prophet API spec
-- dataset_project: the project to use for pulling data from, e.g. mozdata
-- write_project: project that results will be written too, e.g. moz-fx-data-bq-data-science
-- output_table: table to write results to, if testing consider something like {your-name}.automation_experiment
-- confidences_table: table to write confidences too, if confidences is not None. if it is, will be ignored
-- forecast_variable: the variable you are actually forecasting, e.g. QDOU or DAU
-- holidays: boolean - include holidays (if set to False holidays will always show zero, but the columns will still exist)
-- stop_date: date to stop the forecast at
-- confidences: aggregation unit for confidence intervals, can be ds_month, ds_year or None
-
-## Development
-
-./kpi_forecasting.py is the main control script
-/Utils contains the bulk of the python code
-/yaml contains configuration yaml files
-/sql_queries contains the queries to pull data from bigquery
+When testing locally, be sure to modify any config files to use non-production `project` and `dataset` values that you have write access to; otherwise the `write_output` step will fail.

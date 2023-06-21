@@ -4,6 +4,7 @@ AS
 -- Existing fxa event tables (stage)
 WITH auth_events AS (
   SELECT
+    "auth" AS fxa_server,
     `timestamp`,
     receiveTimestamp,
     jsonPayload.fields.user_id,
@@ -17,7 +18,6 @@ WITH auth_events AS (
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     jsonPayload.fields.device_id,
-    "auth" AS fxa_server
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_auth_events_v1`
   WHERE
@@ -25,6 +25,7 @@ WITH auth_events AS (
 ),
 content_events AS (
   SELECT
+    "content" AS fxa_server,
     `timestamp`,
     receiveTimestamp,
     jsonPayload.fields.user_id,
@@ -38,7 +39,6 @@ content_events AS (
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     CAST(NULL AS STRING) AS device_id,
-    "content" AS fxa_server
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_content_events_v1`
   WHERE
@@ -46,6 +46,7 @@ content_events AS (
 ),
 stdout_events AS (
   SELECT
+    "payments" AS fxa_server,
     `timestamp`,
     receiveTimestamp,
     jsonPayload.fields.user_id,
@@ -59,14 +60,13 @@ stdout_events AS (
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     jsonPayload.fields.device_id,
-    "payments" AS fxa_server
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_stdout_events_v1`
 ),
 -- New fxa event table (nonprod) includes, content and auth events
--- this also includes "payments" events.
 server_events AS (
   SELECT
+    fxa_server,
     `timestamp`,
     receiveTimestamp,
     jsonPayload.fields.user_id,
@@ -80,7 +80,6 @@ server_events AS (
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     jsonPayload.fields.device_id,
-    fxa_server,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_server_events_v1`
   WHERE
@@ -108,10 +107,10 @@ unioned AS (
     server_events
 )
 SELECT
+  fxa_server,
   `timestamp`,
   receiveTimestamp,
   logger,
-  fxa_server,
   event_type,
   user_id,
   device_id,

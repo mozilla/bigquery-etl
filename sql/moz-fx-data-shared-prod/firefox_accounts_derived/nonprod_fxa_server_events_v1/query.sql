@@ -1,4 +1,5 @@
 SELECT
+  SPLIT(jsonPayload.logger, "-")[OFFSET(1)] AS fxa_server,
   * REPLACE (
     (
       SELECT AS STRUCT
@@ -12,7 +13,6 @@ SELECT
         )
     ) AS jsonPayload
   ),
-  SPLIT(jsonPayload.logger, "-")[OFFSET(1)] AS fxa_server,
 FROM
   `moz-fx-fxa-nonprod.gke_fxa_stage_log.stdout`
 WHERE

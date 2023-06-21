@@ -8,6 +8,7 @@ CREATE OR REPLACE VIEW
 AS
 WITH auth_events AS (
   SELECT
+    "auth" AS fxa_server,
     `timestamp`,
     receiveTimestamp,
     SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
@@ -23,7 +24,6 @@ WITH auth_events AS (
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     jsonPayload.fields.device_id,
-    "auth" AS fxa_log,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_auth_events_v1`
 ),
@@ -31,6 +31,7 @@ WITH auth_events AS (
   -- but should always be included for a complete raw event log.
 auth_bounce_events AS (
   SELECT
+    "auth_bounce" AS fxa_server,
     `timestamp`,
     receiveTimestamp,
     SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
@@ -48,12 +49,12 @@ auth_bounce_events AS (
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     CAST(NULL AS STRING) AS device_id,
-    "auth_bounce" AS fxa_log,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_auth_bounce_events_v1`
 ),
 content_events AS (
   SELECT
+    "content" AS fxa_server,
     `timestamp`,
     receiveTimestamp,
     SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
@@ -69,13 +70,13 @@ content_events AS (
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     jsonPayload.fields.device_id,
-    "content" AS fxa_log,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_content_events_v1`
 ),
 -- oauth events, see the note on top
 oauth_events AS (
   SELECT
+    "oauth" AS fxa_server,
     `timestamp`,
     receiveTimestamp,
     SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
@@ -91,12 +92,12 @@ oauth_events AS (
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     CAST(NULL AS STRING) AS device_id,
-    "oauth" AS fxa_log,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_oauth_events_v1`
 ),
 stdout_events AS (
   SELECT
+    "stdout" AS fxa_server,  -- TODO: should we rename this to "payments"?
     `timestamp`,
     receiveTimestamp,
     SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
@@ -112,13 +113,13 @@ stdout_events AS (
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     jsonPayload.fields.device_id,
-    "stdout" AS fxa_log,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_stdout_events_v1`
 ),
--- New fxa event table (prod) includes, content and auth events
+-- New fxa event table (prod) includes, content and auth events (TODO: confirm what about auth_bounce)
 server_events AS (
   SELECT
+    fxa_server,
     `timestamp`,
     receiveTimestamp,
     jsonPayload.fields.user_id,
@@ -132,7 +133,6 @@ server_events AS (
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     jsonPayload.fields.device_id,
-    fxa_log,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_server_events_v1`
 ),
@@ -169,11 +169,11 @@ unioned AS (
     server_events
 )
 SELECT
+  fxa_server AS fxa_log,  -- TODO: remove this aliasing, this will require changes downstream why broken down into multiple changes / PRs
   `timestamp`,
   receiveTimestamp,
   event_time,
   logger,
-  fxa_log,
   event_type,
   user_id,
   device_id,

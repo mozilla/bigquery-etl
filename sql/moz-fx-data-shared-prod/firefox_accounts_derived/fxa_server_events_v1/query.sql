@@ -1,4 +1,5 @@
 SELECT
+  SPLIT(jsonPayload.logger, "-")[OFFSET(1)] fxa_server,  -- example expected input: fxa-auth-server
   * REPLACE (
     (
       SELECT AS STRUCT
@@ -12,7 +13,6 @@ SELECT
         )
     ) AS jsonPayload
   ),
-  SPLIT(jsonPayload.logger, "-")[OFFSET(1)] fxa_log,  -- example expected input: fxa-auth-server
 FROM
   `moz-fx-fxa-prod.gke_fxa_prod_log.stdout`
 WHERE

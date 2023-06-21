@@ -3,15 +3,16 @@
 import copy
 import datetime
 import logging
+import multiprocessing
 import os
 import re
 import string
 import subprocess
 import sys
 import tempfile
+import typing
 from datetime import date, timedelta
 from functools import partial
-from graphlib import TopologicalSorter
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -25,11 +26,14 @@ from google.cloud.exceptions import NotFound
 
 from ..cli.format import format
 from ..cli.utils import (
+    QUALIFIED_TABLE_NAME_RE,
     is_authenticated,
     is_valid_project,
     no_dryrun_option,
+    parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
+    qualified_table_name_matching,
     respect_dryrun_skip_option,
     sql_dir_option,
     temp_dataset_option,
@@ -57,6 +61,7 @@ from ..util import extract_from_query_path
 from ..util.bigquery_id import sql_table_id
 from ..util.common import random_str
 from ..util.common import render as render_template
+from ..util.parallel_topological_sorter import ParallelTopologicalSorter
 from .dryrun import dryrun
 from .generate import generate_all
 
@@ -468,6 +473,7 @@ def _backfill_query(
     args,
     partitioning_type,
     backfill_date,
+    destination_table,
 ):
     """Run a query backfill for a specific date."""
     project, dataset, table = extract_from_query_path(query_file_path)
@@ -482,10 +488,11 @@ def _backfill_query(
 
     backfill_date = backfill_date.strftime("%Y-%m-%d")
     if backfill_date not in exclude:
-        if no_partition:
+        if destination_table is None:
             destination_table = table
-        else:
-            destination_table = f"{table}${partition}"
+
+        if not no_partition:
+            destination_table = f"{destination_table}${partition}"
 
         click.echo(
             f"Run backfill for {project}.{dataset}.{destination_table} "
@@ -596,6 +603,15 @@ def _backfill_query(
     default=False,
     help="Disable writing results to a partition. Overwrites entire destination table.",
 )
+@click.option(
+    "--destination_table",
+    "--destination-table",
+    required=False,
+    help=(
+        "Destination table name results are written to. "
+        + "If not set, determines destination table based on query."
+    ),
+)
 @click.pass_context
 def backfill(
     ctx,
@@ -609,6 +625,7 @@ def backfill(
     max_rows,
     parallelism,
     no_partition,
+    destination_table,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -706,6 +723,7 @@ def backfill(
             no_partition,
             ctx.args,
             partitioning_type,
+            destination_table=destination_table,
         )
 
         if not depends_on_past:
@@ -823,6 +841,7 @@ def _run_query(
     destination_table,
     dataset_id,
     query_arguments,
+    addl_templates: typing.Optional[dict] = None,
 ):
     """Run a query."""
     if dataset_id is not None:
@@ -832,6 +851,9 @@ def _run_query(
 
     if project_id is not None:
         query_arguments.append(f"--project_id={project_id}")
+
+    if addl_templates is None:
+        addl_templates = {}
 
     for query_file in query_files:
         use_public_table = False
@@ -874,6 +896,13 @@ def _run_query(
         if not use_public_table and destination_table is not None:
             # destination table was parsed by argparse, however if it wasn't modified to
             # point to a public table it needs to be passed as parameter for the query
+
+            if re.match(QUALIFIED_TABLE_NAME_RE, destination_table):
+                project, dataset, table = qualified_table_name_matching(
+                    destination_table
+                )
+                destination_table = "{}:{}.{}".format(project, dataset, table)
+
             query_arguments.append("--destination_table={}".format(destination_table))
 
         if bool(list(filter(lambda x: x.startswith("--parameter"), query_arguments))):
@@ -893,6 +922,7 @@ def _run_query(
                     template_folder=str(query_file.parent),
                     templates_dir="",
                     format=False,
+                    **addl_templates,
                 )
             )
             query_stream.seek(0)
@@ -1201,34 +1231,64 @@ def initialize(name, sql_dir, project_id, dry_run):
         sys.exit(1)
 
     for query_file in query_files:
-        init_files = Path(query_file.parent).rglob("init.sql")
-        client = bigquery.Client()
+        sql_content = query_file.read_text()
 
-        for init_file in init_files:
-            project = init_file.parent.parent.parent.name
+        # Enable init from query.sql files
+        # First deploys the schema, then runs the init
+        # This does not currently verify the accuracy of the schema
+        if "is_init()" in sql_content:
+            project = query_file.parent.parent.parent.name
+            dataset = query_file.parent.parent.name
+            destination_table = query_file.parent.name
+            Schema.from_schema_file(query_file.parent / SCHEMA_FILE).deploy(
+                f"{project}.{dataset}.{destination_table}"
+            )
+            arguments = [
+                "query",
+                "--use_legacy_sql=false",
+                "--replace",
+                "--format=none",
+            ]
+            _run_query(
+                query_files=[query_file],
+                project_id=project,
+                public_project_id=None,
+                destination_table=destination_table,
+                dataset_id=dataset,
+                query_arguments=arguments,
+                addl_templates={
+                    "is_init": lambda: True,
+                },
+            )
+        else:
+            init_files = Path(query_file.parent).rglob("init.sql")
+            client = bigquery.Client()
 
-            with open(init_file) as init_file_stream:
-                init_sql = init_file_stream.read()
-                dataset = Path(init_file).parent.parent.name
-                job_config = bigquery.QueryJobConfig(
-                    dry_run=dry_run,
-                    default_dataset=f"{project}.{dataset}",
-                )
+            for init_file in init_files:
+                project = init_file.parent.parent.parent.name
 
-                if "CREATE MATERIALIZED VIEW" in init_sql:
-                    click.echo(f"Create materialized view for {init_file}")
-                    # existing materialized view have to be deleted before re-creation
-                    view_name = query_file.parent.name
-                    client.delete_table(
-                        f"{project}.{dataset}.{view_name}", not_found_ok=True
+                with open(init_file) as init_file_stream:
+                    init_sql = init_file_stream.read()
+                    dataset = Path(init_file).parent.parent.name
+                    job_config = bigquery.QueryJobConfig(
+                        dry_run=dry_run,
+                        default_dataset=f"{project}.{dataset}",
                     )
-                else:
-                    click.echo(f"Create destination table for {init_file}")
 
-                job = client.query(init_sql, job_config=job_config)
+                    if "CREATE MATERIALIZED VIEW" in init_sql:
+                        click.echo(f"Create materialized view for {init_file}")
+                        # existing materialized view have to be deleted before re-creation
+                        view_name = query_file.parent.name
+                        client.delete_table(
+                            f"{project}.{dataset}.{view_name}", not_found_ok=True
+                        )
+                    else:
+                        click.echo(f"Create destination table for {init_file}")
 
-                if not dry_run:
-                    job.result()
+                    job = client.query(init_sql, job_config=job_config)
+
+                    if not dry_run:
+                        job.result()
 
 
 @query.command(
@@ -1363,6 +1423,7 @@ def schema():
 )
 @use_cloud_function_option
 @respect_dryrun_skip_option(default=True)
+@parallelism_option
 def update(
     name,
     sql_dir,
@@ -1371,6 +1432,7 @@ def update(
     tmp_dataset,
     use_cloud_function,
     respect_dryrun_skip,
+    parallelism,
 ):
     """CLI command for generating the query schema."""
     if not is_authenticated():
@@ -1383,7 +1445,8 @@ def update(
         name, sql_dir, project_id, files=["query.sql"]
     )
     dependency_graph = get_dependency_graph([sql_dir], without_views=True)
-    tmp_tables = {}
+    manager = multiprocessing.Manager()
+    tmp_tables = manager.dict({})
 
     # order query files to make sure derived_from dependencies are resolved
     query_file_graph = {}
@@ -1406,65 +1469,90 @@ def update(
         except FileNotFoundError:
             query_file_graph[query_file] = []
 
-    ts = TopologicalSorter(query_file_graph)
-    query_files_ordered = ts.static_order()
-
-    for query_file in query_files_ordered:
-        try:
-            changed = _update_query_schema(
-                query_file,
-                sql_dir,
-                project_id,
-                tmp_dataset,
-                tmp_tables,
-                use_cloud_function,
-                respect_dryrun_skip,
-            )
-
-            if update_downstream:
-                # update downstream dependencies
-                if changed:
-                    if not is_authenticated():
-                        click.echo(
-                            "Cannot update downstream dependencies."
-                            "Authentication to GCP required. Run `gcloud auth login` "
-                            "and check that the project is set correctly."
-                        )
-                        sys.exit(1)
-
-                    project, dataset, table = extract_from_query_path(query_file)
-                    identifier = f"{project}.{dataset}.{table}"
-                    tmp_identifier = f"{project}.{tmp_dataset}.{table}_{random_str(12)}"
-
-                    # create temporary table with updated schema
-                    if identifier not in tmp_tables:
-                        schema = Schema.from_schema_file(
-                            query_file.parent / SCHEMA_FILE
-                        )
-                        schema.deploy(tmp_identifier)
-                        tmp_tables[identifier] = tmp_identifier
-
-                    # get downstream dependencies that will be updated in the next iteration
-                    dependencies = [
-                        p
-                        for k, refs in dependency_graph.items()
-                        for p in paths_matching_name_pattern(
-                            k, sql_dir, project_id, files=("query.sql",)
-                        )
-                        if identifier in refs
-                    ]
-
-                    for d in dependencies:
-                        click.echo(f"Update downstream dependency schema for {d}")
-                        query_files.append(d)
-        except Exception:
-            print_exc()
+    ts = ParallelTopologicalSorter(
+        query_file_graph, parallelism=parallelism, with_follow_up=update_downstream
+    )
+    ts.map(
+        partial(
+            _update_query_schema_with_downstream,
+            sql_dir,
+            project_id,
+            tmp_dataset,
+            dependency_graph,
+            tmp_tables,
+            use_cloud_function,
+            respect_dryrun_skip,
+            update_downstream,
+        )
+    )
 
     if len(tmp_tables) > 0:
         client = bigquery.Client()
         # delete temporary tables
         for _, table in tmp_tables.items():
             client.delete_table(table, not_found_ok=True)
+
+
+def _update_query_schema_with_downstream(
+    sql_dir,
+    project_id,
+    tmp_dataset,
+    dependency_graph,
+    tmp_tables={},
+    use_cloud_function=True,
+    respect_dryrun_skip=True,
+    update_downstream=False,
+    query_file=None,
+    follow_up_queue=None,
+):
+    try:
+        changed = _update_query_schema(
+            query_file,
+            sql_dir,
+            project_id,
+            tmp_dataset,
+            tmp_tables,
+            use_cloud_function,
+            respect_dryrun_skip,
+        )
+
+        if update_downstream:
+            # update downstream dependencies
+            if changed:
+                if not is_authenticated():
+                    click.echo(
+                        "Cannot update downstream dependencies."
+                        "Authentication to GCP required. Run `gcloud auth login` "
+                        "and check that the project is set correctly."
+                    )
+                    sys.exit(1)
+
+                project, dataset, table = extract_from_query_path(query_file)
+                identifier = f"{project}.{dataset}.{table}"
+                tmp_identifier = f"{project}.{tmp_dataset}.{table}_{random_str(12)}"
+
+                # create temporary table with updated schema
+                if identifier not in tmp_tables:
+                    schema = Schema.from_schema_file(query_file.parent / SCHEMA_FILE)
+                    schema.deploy(tmp_identifier)
+                    tmp_tables[identifier] = tmp_identifier
+
+                # get downstream dependencies that will be updated in the next iteration
+                dependencies = [
+                    p
+                    for k, refs in dependency_graph.items()
+                    for p in paths_matching_name_pattern(
+                        k, sql_dir, project_id, files=("query.sql",)
+                    )
+                    if identifier in refs
+                ]
+
+                for d in dependencies:
+                    click.echo(f"Update downstream dependency schema for {d}")
+                    if follow_up_queue:
+                        follow_up_queue.put(d)
+    except Exception:
+        print_exc()
 
 
 def _update_query_schema(
@@ -1546,7 +1634,12 @@ def _update_query_schema(
                 existing_schema.to_yaml_file(existing_schema_path)
 
     # replace temporary table references
-    sql_content = query_file_path.read_text()
+    sql_content = render_template(
+        query_file_path.name,
+        template_folder=str(query_file_path.parent),
+        templates_dir="",
+        format=False,
+    )
 
     for orig_table, tmp_table in tmp_tables.items():
         table_parts = orig_table.split(".")
@@ -1698,6 +1791,17 @@ def _update_query_schema(
     default=False,
     is_flag=True,
 )
+@click.option(
+    "--destination_table",
+    "--destination-table",
+    required=False,
+    help=(
+        "Destination table name results are written to. "
+        + "If not set, determines destination table based on query.  "
+        + "Must be fully qualified (project.dataset.table)."
+    ),
+)
+@parallelism_option
 @click.pass_context
 def deploy(
     ctx,
@@ -1709,6 +1813,8 @@ def deploy(
     respect_dryrun_skip,
     skip_existing,
     skip_external_data,
+    destination_table,
+    parallelism,
 ):
     """CLI command for deploying destination table schemas."""
     if not is_authenticated():
@@ -1731,25 +1837,27 @@ def deploy(
             name, ctx.obj["TMP_DIR"], project_id, ["query.*"]
         )
 
-    failed_deploys = []
-    for query_file in query_files:
+    def _deploy(query_file):
         if respect_dryrun_skip and str(query_file) in SKIP:
             click.echo(f"{query_file} dry runs are skipped. Cannot validate schemas.")
-            continue
+            return
 
         query_file_path = Path(query_file)
         existing_schema_path = query_file_path.parent / SCHEMA_FILE
 
         if not existing_schema_path.is_file():
             click.echo(f"No schema file found for {query_file}")
-            continue
+            return
 
         try:
             table_name = query_file_path.parent.name
             dataset_name = query_file_path.parent.parent.name
             project_name = query_file_path.parent.parent.parent.name
 
-            full_table_id = f"{project_name}.{dataset_name}.{table_name}"
+            if destination_table:
+                full_table_id = destination_table
+            else:
+                full_table_id = f"{project_name}.{dataset_name}.{table_name}"
 
             existing_schema = Schema.from_schema_file(existing_schema_path)
 
@@ -1800,7 +1908,10 @@ def deploy(
                 click.echo(f"Schema (and metadata) updated for {full_table_id}.")
         except Exception:
             print_exc()
-            failed_deploys.append(query_file)
+            return query_file
+
+    with ThreadPool(parallelism) as pool:
+        failed_deploys = [r for r in pool.map(_deploy, query_files) if r]
 
     if not skip_external_data:
         failed_external_deploys = _deploy_external_data(

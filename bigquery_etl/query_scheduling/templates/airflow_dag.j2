@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 {% set ns = namespace(uses_fivetran=False) -%}
 {% for task in tasks -%}
@@ -56,6 +56,51 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             docker_image='gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest',
             owner='{{ task.owner }}',
             email={{ task.email | sort }},
+    {% elif task.is_dq_check -%}
+       {{ task.task_name }} = bigquery_dq_check(
+            task_id='{{ task.task_name }}',
+            {#+ TODO when Airflow is updated to 2.2+ use ds_nodash instead of ds_format -#}
+            destination_table={%+ if task.date_partition_offset -%}'{{ task.destination_table }}${% raw %}{{{% endraw %} macros.ds_format(macros.ds_add(ds, {{ task.date_partition_offset }}), "%Y-%m-%d", "%Y%m%d") {% raw %}}}{% endraw %}'
+                            {%+ elif task.destination_table -%}'{{ task.destination_table }}'
+                            {%+ else -%}None
+                            {%+ endif -%},
+            {%+ if task.query_project -%}
+            dataset_id='{{ task.project }}:{{ task.dataset }}',
+            project_id='{{ task.query_project }}',
+            {%+ if not task.query_file_path -%}
+            sql_file_path="sql/{{task.project}}/{{task.dataset}}/{{task.destination_table}}/checks.sql",
+            {%+ endif -%}
+            {%+ else -%}
+            dataset_id='{{ task.dataset }}',
+            project_id='{{ task.project }}',
+            {%+ endif -%}
+            owner='{{ task.owner }}',
+            {%+ if task.email | length > 0 -%}
+            email={{ task.email | sort }},
+            {%+ endif -%}
+            {%+ if task.start_date -%}
+            start_date={{ task.start_date | format_date | format_repr }},
+            {%+ endif -%}
+            depends_on_past={{ task.depends_on_past }},
+            {%+ if (
+                task.destination_table
+                and not task.date_partition_parameter
+                and not '$' in task.destination_table
+                and not task.depends_on_past
+                and not task.task_concurrency
+            ) -%}
+            {#+ Avoid having concurrent tasks for ETLs that target the whole table. -#}
+            task_concurrency=1,
+            {%+ endif -%}
+            {%+ if task.arguments | length > 0 -%}
+            arguments={{ task.arguments }},
+            {%+ endif -%}
+            {%+ if task.parameters | length > 0 -%}
+            parameters={{ task.parameters }},
+            {%+ endif -%}
+            {%+ if task.query_file_path -%}
+            sql_file_path={{ task.query_file_path | format_repr }},
+            {%+ endif -%}
     {%+ else -%}
         {{ task.task_name }} = bigquery_etl_query(
             task_id='{{ task.task_name }}',
@@ -184,12 +229,12 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 {% set fivetran_seen = [] -%}
 {% for task in tasks | sort(attribute='task_name') %}
     {% for dependency in (task.upstream_dependencies + task.depends_on) | sort(attribute='task_id') -%}
-    {% if dependency.dag_name == name and dependency not in task.depends_on -%}
+    {% if dependency.dag_name == name and dependency not in task.depends_on-%}
     {% if dependency.task_id != task.task_name %}
     {{ task.task_name }}.set_upstream({{ dependency.task_id }})
     {% endif -%}
     {% else -%}
-    {% if dependency.task_key not in wait_for_seen -%}
+    {% if dependency.task_key not in wait_for_seen and dependency.dag_name != name -%}
     wait_for_{{ dependency.task_id | replace('-', '_') }} = ExternalTaskSensor(
         task_id='wait_for_{{ dependency.task_id }}',
         external_dag_id='{{ dependency.dag_name }}',
@@ -206,7 +251,11 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     {% do wait_for_seen.append(dependency.task_key) %}
     {% endif -%}
 
+    {% if dependency.dag_name != name -%}
     {{ task.task_name }}.set_upstream(wait_for_{{ dependency.task_id | replace('-', '_') }})
+    {% else -%}
+    {{ task.task_name }}.set_upstream({{ dependency.task_id | replace('-', '_') }})
+    {% endif -%}
     {% endif -%}
     {% endfor -%}
 

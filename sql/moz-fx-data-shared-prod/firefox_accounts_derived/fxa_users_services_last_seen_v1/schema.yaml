@@ -13,7 +13,6 @@ fields:
   mode: NULLABLE
 - name: resurrected_same_service
   type: BOOLEAN
-  type: BOOLEAN
   mode: NULLABLE
 - name: resurrected_any_service
   type: BOOLEAN

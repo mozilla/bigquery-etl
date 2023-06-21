@@ -69,6 +69,7 @@ with DAG(
     checks__ga_derived__downloads_with_attribution__v2.set_upstream(
         ga_derived__downloads_with_attribution__v2
     )
+
     wait_for_ga_derived__www_site_empty_check__v1 = ExternalTaskSensor(
         task_id="wait_for_ga_derived__www_site_empty_check__v1",
         external_dag_id="bqetl_google_analytics_derived",
@@ -78,10 +79,6 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    checks__ga_derived__downloads_with_attribution__v2.set_upstream(
-        wait_for_ga_derived__www_site_empty_check__v1
     )
 
     ga_derived__downloads_with_attribution__v2.set_upstream(

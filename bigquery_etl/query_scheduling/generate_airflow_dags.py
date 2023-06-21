@@ -104,7 +104,7 @@ def get_dags(project_id, dags_config):
                             dag_name=task.dag_name,
                             task_id=task.task_name,
                         )
-                        checks_task.depends_on.append(task_ref)
+                        checks_task.upstream_dependencies.append(task_ref)
                     tasks.append(task)
 
         else:

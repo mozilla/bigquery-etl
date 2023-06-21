@@ -101,6 +101,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_firefox_ios__wait_for_search_derived__mobile_search_clients_daily__v1",
+            external_dag_id="bqetl_firefox_ios",
+            external_task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_search_dashboard__wait_for_search_derived__mobile_search_clients_daily__v1",
             external_dag_id="bqetl_search_dashboard",
             external_task_id="wait_for_search_derived__mobile_search_clients_daily__v1",

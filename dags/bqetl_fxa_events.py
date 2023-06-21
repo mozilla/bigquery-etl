@@ -207,6 +207,39 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefox_accounts_derived__fxa_server_events__v1 = bigquery_etl_query(
+        task_id="firefox_accounts_derived__fxa_server_events__v1",
+        destination_table="fxa_server_events_v1",
+        dataset_id="firefox_accounts_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["dthorn@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+    )
+
+    with TaskGroup(
+        "firefox_accounts_derived__fxa_server_events__v1_external"
+    ) as firefox_accounts_derived__fxa_server_events__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_subplat__wait_for_firefox_accounts_derived__fxa_server_events__v1",
+            external_dag_id="bqetl_subplat",
+            external_task_id="wait_for_firefox_accounts_derived__fxa_server_events__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_event_rollup__wait_for_firefox_accounts_derived__fxa_server_events__v1",
+            external_dag_id="bqetl_event_rollup",
+            external_task_id="wait_for_firefox_accounts_derived__fxa_server_events__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
+        )
+
+        firefox_accounts_derived__fxa_server_events__v1_external.set_upstream(
+            firefox_accounts_derived__fxa_server_events__v1
+        )
+
     firefox_accounts_derived__fxa_stdout_events__v1 = bigquery_etl_query(
         task_id="firefox_accounts_derived__fxa_stdout_events__v1",
         destination_table="fxa_stdout_events_v1",
@@ -423,6 +456,10 @@ with DAG(
     )
 
     firefox_accounts_derived__fxa_users_daily__v1.set_upstream(
+        firefox_accounts_derived__fxa_server_events__v1
+    )
+
+    firefox_accounts_derived__fxa_users_daily__v1.set_upstream(
         firefox_accounts_derived__fxa_stdout_events__v1
     )
 
@@ -432,6 +469,10 @@ with DAG(
 
     firefox_accounts_derived__fxa_users_first_seen__v1.set_upstream(
         firefox_accounts_derived__fxa_content_events__v1
+    )
+
+    firefox_accounts_derived__fxa_users_first_seen__v1.set_upstream(
+        firefox_accounts_derived__fxa_server_events__v1
     )
 
     firefox_accounts_derived__fxa_users_first_seen__v1.set_upstream(
@@ -451,6 +492,10 @@ with DAG(
     )
 
     firefox_accounts_derived__fxa_users_services_daily__v1.set_upstream(
+        firefox_accounts_derived__fxa_server_events__v1
+    )
+
+    firefox_accounts_derived__fxa_users_services_daily__v1.set_upstream(
         firefox_accounts_derived__fxa_stdout_events__v1
     )
 
@@ -463,6 +508,10 @@ with DAG(
     )
 
     firefox_accounts_derived__fxa_users_services_daily__v2.set_upstream(
+        firefox_accounts_derived__fxa_server_events__v1
+    )
+
+    firefox_accounts_derived__fxa_users_services_daily__v2.set_upstream(
         firefox_accounts_derived__fxa_stdout_events__v1
     )
 
@@ -472,6 +521,10 @@ with DAG(
 
     firefox_accounts_derived__fxa_users_services_devices_daily__v1.set_upstream(
         firefox_accounts_derived__fxa_content_events__v1
+    )
+
+    firefox_accounts_derived__fxa_users_services_devices_daily__v1.set_upstream(
+        firefox_accounts_derived__fxa_server_events__v1
     )
 
     firefox_accounts_derived__fxa_users_services_devices_daily__v1.set_upstream(

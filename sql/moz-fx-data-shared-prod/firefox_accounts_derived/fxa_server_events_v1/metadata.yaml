@@ -10,15 +10,17 @@ description: |
 
   Payment server events will continue landing inside: `fxa_stdout_events_v1`
 owners:
-  - kik@mozilla.com
+- kik@mozilla.com
 labels:
   application: fxa
   incremental: true
   schedule: daily
+  owner1: kik
 scheduling:
   dag_name: bqetl_fxa_events
   # start_date: '2023-05-26'  # TODO: confirm from when we start getting data
-  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+  arguments:
+  - --schema_update_option=ALLOW_FIELD_ADDITION
 bigquery:
   time_partitioning:
     type: day

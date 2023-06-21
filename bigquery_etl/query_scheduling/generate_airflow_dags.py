@@ -59,7 +59,6 @@ def get_dags(project_id, dags_config):
         if os.path.isdir(project_dir):
             for root, dirs, files in os.walk(project_dir):
                 try:
-                    checks_task = None
                     if QUERY_FILE in files:
                         query_file = os.path.join(root, QUERY_FILE)
                         task = Task.of_query(query_file, dag_collection=dag_collection)

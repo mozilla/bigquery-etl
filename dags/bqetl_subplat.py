@@ -603,7 +603,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=[
-            "external_database_query:STRING: SELECT\n  id,\n  user_id,\n  is_active,\n  mullvad_token,\n  mullvad_account_created_at,\n  mullvad_account_expiration_date,\n  ended_at,\n  created_at,\n  updated_at,\n  type,\n  fxa_last_changed_at,\n  provider,\n  provider_product_id,\n  provider_original_purchase_token,\n  provider_receipt_raw,\n  provider_receipt_json,\n  provider_expiration_date,\n  fxa_migration_note\nFROM subscriptions WHERE DATE(updated_at) = DATE '{{ds}}'"
+            "external_database_query:STRING: SELECT\n  id,\n  user_id,\n  is_active,\n  mullvad_token,\n  mullvad_account_created_at,\n  mullvad_account_expiration_date,\n  ended_at,\n  created_at,\n  updated_at,\n  type,\n  fxa_last_changed_at,\n  fxa_migration_note\nFROM subscriptions WHERE DATE(updated_at) = DATE '{{ds}}'"
         ],
     )
 
@@ -1137,10 +1137,6 @@ with DAG(
     )
     mozilla_vpn_derived__fxa_attribution__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_stdout_events__v1
-    )
-
-    mozilla_vpn_derived__guardian_apple_events__v1.set_upstream(
-        mozilla_vpn_external__subscriptions__v1
     )
 
     mozilla_vpn_derived__guardian_apple_events__v1.set_upstream(

@@ -40,7 +40,7 @@ WITH content AS (
     jsonPayload.fields.event_properties,
     `timestamp`,
     receiveTimestamp,
-    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS time,
+    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS event_time,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_content_events_v1`
 ),
@@ -61,7 +61,7 @@ auth AS (
     jsonPayload.fields.event_properties,
     `timestamp`,
     receiveTimestamp,
-    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS time,
+    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS event_time,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_auth_events_v1`
 ),
@@ -82,7 +82,7 @@ stdout AS (
     jsonPayload.fields.event_properties,
     `timestamp`,
     receiveTimestamp,
-    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS time,
+    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS event_time,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_stdout_events_v1`
 ),

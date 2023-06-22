@@ -1,22 +1,23 @@
 """Utility functions used by backfills."""
 
+import re
 import sys
 from collections import defaultdict
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 
 import click
 
 from bigquery_etl.backfill.parse import BACKFILL_FILE, Backfill
-from bigquery_etl.cli.utils import (
-    paths_matching_name_pattern,
-    qualified_table_name_matching,
-)
 from bigquery_etl.docs.derived_datasets.generate_derived_dataset_docs import (
     _get_metadata,
 )
 from bigquery_etl.metadata.parse_metadata import DATASET_METADATA_FILE
 from bigquery_etl.util import extract_from_query_path
+
+QUALIFIED_TABLE_NAME_RE = re.compile(
+    r"(?P<project_id>[a-zA-z0-9_-]+)\.(?P<dataset_id>[a-zA-z0-9_-]+)\.(?P<table_id>[a-zA-Z0-9-_$]+)"
+)
 
 BACKFILL_DESTINATION_PROJECT = "moz-fx-data-shared-prod"
 BACKFILL_DESTINATION_DATASET = "backfills_staging_derived"
@@ -27,8 +28,9 @@ def get_qualifed_table_name_to_entries_map(
 ) -> defaultdict[str, List[Backfill]]:
     """Return backfill entries from qualified table name."""
     backfills_dict = defaultdict(list)
+    backfill_files: list[Path] = []
 
-    table_id = None
+    search_path = Path(sql_dir) / project_id
 
     if qualified_table_name:
         try:
@@ -36,10 +38,9 @@ def get_qualifed_table_name_to_entries_map(
                 qualified_table_name
             )
 
-            path = Path(sql_dir)
-            query_path = path / project_id / dataset_id / table_id
+            search_path = search_path / dataset_id / table_id
 
-            if not query_path.exists():
+            if not search_path.exists():
                 click.echo(f"{project_id}.{dataset_id}.{table_id}" + " does not exist")
                 sys.exit(1)
 
@@ -47,9 +48,7 @@ def get_qualifed_table_name_to_entries_map(
             click.echo(e)
             sys.exit(1)
 
-    backfill_files = paths_matching_name_pattern(
-        table_id, sql_dir, project_id, [BACKFILL_FILE]
-    )
+    backfill_files.extend(Path(search_path).rglob(BACKFILL_FILE))
 
     for backfill_file in backfill_files:
         project, dataset, table = extract_from_query_path(backfill_file)
@@ -82,31 +81,50 @@ def get_backfill_staging_qualified_table_name(qualified_table_name, entry_date) 
 
 
 def validate_metadata_workgroups(qualified_table_name, sql_dir) -> bool:
-    """Check if metadata workgroup is mozilla-confidential or empty."""
+    """Return True if metadata workgroup is mozilla-confidential or empty."""
     valid_workgroup = ["workgroup:mozilla-confidential"]
 
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
-    query_files = paths_matching_name_pattern(table, sql_dir, project)
+    dataset_path = Path(sql_dir) / project / dataset
+
+    query_files: list[Path] = []
+    query_files.extend(Path(dataset_path).rglob("*.sql"))
 
     for query_file in query_files:
         try:
             # check table level metadata
             table_path = query_file.parent
             table_metadata = _get_metadata(table_path)
-            table_workgroup_access = table_metadata.workgroup_access
-            for table_workgroup in table_workgroup_access:
-                if table_workgroup.members != valid_workgroup:
-                    return False
+            if table_metadata:
+                table_workgroup_access = table_metadata.workgroup_access
+                for table_workgroup in table_workgroup_access:
+                    if table_workgroup.members != valid_workgroup:
+                        return False
 
             # check dataset level metadata
-            dataset_path = query_file.parent.parent
+            # dataset_path = query_file.parent.parent
             dataset_metadata = _get_metadata(dataset_path, DATASET_METADATA_FILE)
-            dataset_workgroup_access = dataset_metadata.workgroup_access
-            for dataset_workgroup in dataset_workgroup_access:
-                if dataset_workgroup["members"] != valid_workgroup:
-                    return False
+            if dataset_metadata:
+                dataset_workgroup_access = dataset_metadata.workgroup_access
+                for dataset_workgroup in dataset_workgroup_access:
+                    if dataset_workgroup["members"] != valid_workgroup:
+                        return False
 
         except FileNotFoundError:
             click.echo("No metadata.yaml found for {}", qualified_table_name)
 
     return True
+
+
+def qualified_table_name_matching(qualified_table_name) -> Tuple[str, str, str]:
+    """Match qualified table name pattern."""
+    if match := QUALIFIED_TABLE_NAME_RE.match(qualified_table_name):
+        project_id = match.group("project_id")
+        dataset_id = match.group("dataset_id")
+        table_id = match.group("table_id")
+    else:
+        raise AttributeError(
+            "Qualified table name must be named like:" + " <project>.<dataset>.<table>"
+        )
+
+    return project_id, dataset_id, table_id

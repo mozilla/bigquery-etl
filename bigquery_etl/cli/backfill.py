@@ -20,6 +20,7 @@ from ..backfill.utils import (
     get_backfill_file_from_qualified_table_name,
     get_backfill_staging_qualified_table_name,
     get_qualifed_table_name_to_entries_map,
+    qualified_table_name_matching,
     validate_metadata_workgroups,
 )
 from ..backfill.validate import (
@@ -29,12 +30,7 @@ from ..backfill.validate import (
 )
 from ..cli.query import backfill as query_backfill
 from ..cli.query import deploy
-from ..cli.utils import (
-    is_authenticated,
-    project_id_option,
-    qualified_table_name_matching,
-    sql_dir_option,
-)
+from ..cli.utils import is_authenticated, project_id_option, sql_dir_option
 
 
 @click.group(help="Commands for managing backfills.")

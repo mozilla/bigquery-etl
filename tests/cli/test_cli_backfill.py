@@ -3,6 +3,7 @@ from datetime import date, timedelta
 from pathlib import Path
 
 import pytest
+import yaml
 from click.testing import CliRunner
 
 from bigquery_etl.backfill.parse import (
@@ -11,6 +12,15 @@ from bigquery_etl.backfill.parse import (
     DEFAULT_WATCHER,
     Backfill,
     BackfillStatus,
+)
+from bigquery_etl.backfill.utils import (
+    BACKFILL_DESTINATION_DATASET,
+    BACKFILL_DESTINATION_PROJECT,
+    get_backfill_file_from_qualified_table_name,
+    get_backfill_staging_qualified_table_name,
+    get_qualifed_table_name_to_entries_map,
+    qualified_table_name_matching,
+    validate_metadata_workgroups,
 )
 from bigquery_etl.cli.backfill import create, info, validate
 
@@ -940,3 +950,236 @@ class TestBackfill:
 
             assert result.exit_code == 2
             assert "Invalid value for '--status'" in result.output
+
+    def test_get_qualifed_table_name_to_entries_map_one(self, runner):
+        with runner.isolated_filesystem():
+            qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+            result = runner.invoke(
+                create,
+                [
+                    qualified_table_name,
+                    "--start_date=2021-03-01",
+                ],
+            )
+
+            assert result.exit_code == 0
+            assert BACKFILL_FILE in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+
+            backfill_file = SQL_DIR + "/" + BACKFILL_FILE
+            backfill = Backfill.entries_from_file(backfill_file)[0]
+
+            assert backfill.entry_date == date.today()
+            assert backfill.start_date == date(2021, 3, 1)
+            assert backfill.end_date == date.today()
+            assert backfill.watchers == [DEFAULT_WATCHER]
+            assert backfill.reason == DEFAULT_REASON
+            assert backfill.status == DEFAULT_STATUS
+
+            backfills_dict = get_qualifed_table_name_to_entries_map(
+                "sql", "moz-fx-data-shared-prod", qualified_table_name
+            )
+
+            expected_backfill = Backfill(
+                date.today(),
+                date(2021, 3, 1),
+                date.today(),
+                [],
+                DEFAULT_REASON,
+                [DEFAULT_WATCHER],
+                DEFAULT_STATUS,
+            )
+
+            assert qualified_table_name in backfills_dict
+            assert backfills_dict[qualified_table_name] == [expected_backfill]
+
+    def test_get_backfill_file_from_qualified_table_name(self, runner):
+        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        actual_backfill_file = get_backfill_file_from_qualified_table_name(
+            "sql", qualified_table_name
+        )
+        expected_backfill_file = Path(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/backfill.yaml"
+        )
+
+        assert actual_backfill_file == expected_backfill_file
+
+    def test_get_backfill_staging_qualified_table_name(self, runner):
+        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        backfill_table_id = "test_query_v1_2023_05_30"
+
+        actual_backfill_staging = get_backfill_staging_qualified_table_name(
+            qualified_table_name, "2023-05-30"
+        )
+        expected_backfill_staging = f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{backfill_table_id}"
+
+        assert actual_backfill_staging == expected_backfill_staging
+
+    def test_validate_metadata_workgroups_empty_table_workgroup(self, runner):
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/test/query_v1")
+            with open("sql/moz-fx-data-shared-prod/test/query_v1/query.sql", "w") as f:
+                f.write("SELECT 1")
+
+            assert "query.sql" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/query_v1"
+            )
+
+            qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+            valid_workgroup_access = []
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "workgroup_access": valid_workgroup_access,
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(metadata_conf))
+
+            assert "metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/query_v1"
+            )
+
+            result = validate_metadata_workgroups(qualified_table_name, "sql")
+            assert result
+
+    def test_validate_metadata_workgroups_valid_table_workgroup(self, runner):
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/test/query_v1")
+            with open("sql/moz-fx-data-shared-prod/test/query_v1/query.sql", "w") as f:
+                f.write("SELECT 1")
+
+            assert "query.sql" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/query_v1"
+            )
+
+            qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+            valid_workgroup_access = [
+                dict(
+                    role="roles/bigquery.dataViewer",
+                    members=["workgroup:mozilla-confidential"],
+                )
+            ]
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "workgroup_access": valid_workgroup_access,
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(metadata_conf))
+
+            assert "metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/query_v1"
+            )
+
+            result = validate_metadata_workgroups(qualified_table_name, "sql")
+            assert result
+
+    def test_validate_metadata_workgroups_invalid_table_workgroup(self, runner):
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/test/query_v1")
+            with open("sql/moz-fx-data-shared-prod/test/query_v1/query.sql", "w") as f:
+                f.write("SELECT 1")
+
+            assert "query.sql" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/query_v1"
+            )
+
+            qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+            invalid_workgroup_access = [
+                dict(
+                    role="roles/bigquery.dataViewer",
+                    members=["workgroup:invalid_workgroup"],
+                )
+            ]
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "workgroup_access": invalid_workgroup_access,
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(metadata_conf))
+
+            assert "metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/query_v1"
+            )
+
+            result = validate_metadata_workgroups(qualified_table_name, "sql")
+            assert not result
+
+    def test_validate_metadata_workgroups_invalid_dataset_workgroup(self, runner):
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/test/query_v1")
+            with open("sql/moz-fx-data-shared-prod/test/query_v1/query.sql", "w") as f:
+                f.write("SELECT 1")
+
+            assert "query.sql" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/query_v1"
+            )
+
+            qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+            invalid_workgroup_access = [
+                dict(role="roles/bigquery.dataViewer", members=["workgroup:invalid"])
+            ]
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "dataset_base_acl": "derived",
+                "workgroup_access": invalid_workgroup_access,
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(metadata_conf))
+
+            assert "dataset_metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test"
+            )
+
+            result = validate_metadata_workgroups(qualified_table_name, "sql")
+            assert not result
+
+    def test_qualified_table_name_matching(self, runner):
+        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        project_id, dataset_id, table_id = qualified_table_name_matching(
+            qualified_table_name
+        )
+
+        assert project_id == "moz-fx-data-shared-prod"
+        assert dataset_id == "test"
+        assert table_id == "test_query_v1"
+
+    def test_qualified_table_name_matching_invalid_name(self, runner):
+        with pytest.raises(AttributeError) as e:
+            invalid_name = "test.test_query_v1"
+            qualified_table_name_matching(invalid_name)
+
+        assert "Qualified table name must be named like" in str(e.value)

@@ -23,8 +23,8 @@ summarize:
   percentiles: [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95]
 
 write_results:
-  project: "moz-fx-data-shared_prod"
-  project_legacy: "moz-fx-data-shared_prod"
+  project: "moz-fx-data-shared-prod"
+  project_legacy: "moz-fx-data-shared-prod"
   dataset: "telemetry_derived"
   dataset_legacy: "telemetry_derived"
   table: "kpi_forecasts_v0"

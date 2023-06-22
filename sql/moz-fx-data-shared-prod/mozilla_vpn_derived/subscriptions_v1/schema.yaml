@@ -1,0 +1,64 @@
+fields:
+- name: id
+  type: INTEGER
+  mode: NULLABLE
+- name: user_id
+  type: INTEGER
+  mode: NULLABLE
+- name: is_active
+  type: BOOLEAN
+  mode: NULLABLE
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: ended_at
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: updated_at
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: type
+  type: STRING
+  mode: NULLABLE
+- name: provider
+  type: STRING
+  mode: NULLABLE
+- name: apple_receipt
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: environment
+    type: STRING
+    mode: NULLABLE
+  - name: active_period
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: start_date
+      type: DATE
+      mode: NULLABLE
+    - name: end_date
+      type: DATE
+      mode: NULLABLE
+    - name: start_time
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: end_time
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: interval
+      type: STRING
+      mode: NULLABLE
+    - name: interval_count
+      type: INTEGER
+      mode: NULLABLE
+  - name: trial_period
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: start_time
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: end_time
+      type: TIMESTAMP
+      mode: NULLABLE

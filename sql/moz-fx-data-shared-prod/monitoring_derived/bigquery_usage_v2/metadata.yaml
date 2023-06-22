@@ -14,6 +14,6 @@ bigquery:
     field: creation_date
     require_partition_filter: true
 workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:mozilla-confidential
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

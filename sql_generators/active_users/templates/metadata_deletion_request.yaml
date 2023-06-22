@@ -1,0 +1,26 @@
+friendly_name: {{ app_value }} Active Users Aggregates for deletion requests
+description: |-
+  Prototype.
+
+  KPIs calcuylated for deletion requests.
+owners:
+  - lvargas@mozilla.com
+labels:
+  incremental: true
+  change_controlled: true
+scheduling:
+  dag_name: bqetl_kpis_shredder
+  task_name: {{ app_name }}_active_users_aggregates_for_deletion_requests
+  date_partition_parameter: partition_date
+  {% raw %}parameters: ["end_date:DATE:{{macros.ds_add(ds, 27)}}", "start_date:DATE:{{macros.ds_add(ds, 27-28*4)}}"]{% endraw %}
+bigquery:
+  time_partitioning:
+    type: day
+    field: partition_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - country
+      - app_name
+      - attribution_medium
+      - channel

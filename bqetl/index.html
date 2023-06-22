@@ -2990,12 +2990,12 @@ Options:
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>create<span class="w"> </span>telemetry_derived.deviations_v1<span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>--owner<span class="o">=</span>example@mozilla.com
+<span class="w">  </span>--owner<span class="o">=</span>example@mozilla.com
 
 
-<span class="w">    </span><span class="c1"># The query version gets autocompleted to v1. Queries are created in the</span>
-<span class="w">    </span><span class="c1"># _derived dataset and accompanying views in the public dataset.</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>create<span class="w"> </span>telemetry.deviations<span class="w"> </span>--owner<span class="o">=</span>example@mozilla.com
+<span class="c1"># The query version gets autocompleted to v1. Queries are created in the</span>
+<span class="c1"># _derived dataset and accompanying views in the public dataset.</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>create<span class="w"> </span>telemetry.deviations<span class="w"> </span>--owner<span class="o">=</span>example@mozilla.com
 </code></pre></div>
 <h4 id="schedule"><code>schedule</code></h4>
 <p>Schedule an existing query</p>
@@ -3012,13 +3012,13 @@ Options:
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schedule<span class="w"> </span>telemetry_derived.deviations_v1<span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>--dag<span class="o">=</span>bqetl_deviations
+<span class="w">  </span>--dag<span class="o">=</span>bqetl_deviations
 
 
-<span class="w">    </span><span class="c1"># Set a specific name for the task</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>schedule<span class="w"> </span>telemetry_derived.deviations_v1<span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>--dag<span class="o">=</span>bqetl_deviations<span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>--task-name<span class="o">=</span>deviations
+<span class="c1"># Set a specific name for the task</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>schedule<span class="w"> </span>telemetry_derived.deviations_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dag<span class="o">=</span>bqetl_deviations<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--task-name<span class="o">=</span>deviations
 </code></pre></div>
 <h4 id="info"><code>info</code></h4>
 <p>Get information about all or specific queries.</p>
@@ -3034,12 +3034,12 @@ Options:
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Get info for specific queries</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>info<span class="w"> </span>telemetry_derived.*
+./bqetl<span class="w"> </span>query<span class="w"> </span>info<span class="w"> </span>telemetry_derived.*
 
 
-<span class="w">    </span><span class="c1"># Get cost and last update timestamp information</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>info<span class="w"> </span>telemetry_derived.clients_daily_v6<span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>--cost<span class="w"> </span>--last_updated
+<span class="c1"># Get cost and last update timestamp information</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>info<span class="w"> </span>telemetry_derived.clients_daily_v6<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--cost<span class="w"> </span>--last_updated
 </code></pre></div>
 <h4 id="backfill"><code>backfill</code></h4>
 <p>Run a backfill for a query. Additional parameters will get passed to bq.</p>
@@ -3061,21 +3061,27 @@ Options:
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Backfill for specific date range</span>
-<span class="w">    </span><span class="c1"># second comment line</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span>telemetry_derived.ssl_ratios_v1<span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>--start_date<span class="o">=</span><span class="m">2021</span>-03-01<span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>--end_date<span class="o">=</span><span class="m">2021</span>-03-31
+<span class="c1"># second comment line</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span>telemetry_derived.ssl_ratios_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--start_date<span class="o">=</span><span class="m">2021</span>-03-01<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--end_date<span class="o">=</span><span class="m">2021</span>-03-31
 
 
-<span class="w">    </span><span class="c1"># Dryrun backfill for specific date range and exclude date</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span>telemetry_derived.ssl_ratios_v1<span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>--start_date<span class="o">=</span><span class="m">2021</span>-03-01<span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>--end_date<span class="o">=</span><span class="m">2021</span>-03-31<span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>--exclude<span class="o">=</span><span class="m">2021</span>-03-03<span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>--dry_run
+<span class="c1"># Dryrun backfill for specific date range and exclude date</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span>telemetry_derived.ssl_ratios_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--start_date<span class="o">=</span><span class="m">2021</span>-03-01<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--end_date<span class="o">=</span><span class="m">2021</span>-03-31<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--exclude<span class="o">=</span><span class="m">2021</span>-03-03<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dry_run
 </code></pre></div>
 <h4 id="run"><code>run</code></h4>
-<p>Run a query. Additional parameters will get passed to bq.</p>
+<p>Run a query. Additional parameters will get passed to bq.<br />
+    If a destination_table is set, the query result will be written to BigQuery. Without a destination_table specified, the results are not stored.<br />
+    If the <code>name</code> is not found within the <code>sql/</code> folder bqetl assumes it hasn't been generated yet
+    and will start the generating process for all <code>sql_generators/</code> files.
+    This generation process will take some time and run dryrun calls against BigQuery but this is expected. <br />
+    Additional parameters (all parameters that are not specified in the Options) must come after the query-name.
+    Otherwise the first parameter that is not an option is interpreted as the query-name and since it can't be found the generation process will start.</p>
 <p><strong>Usage</strong></p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>run<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
@@ -3084,17 +3090,20 @@ Options:
 --sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
 --project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
 --public_project_id:<span class="w"> </span>Project<span class="w"> </span>with<span class="w"> </span>publicly<span class="w"> </span>accessible<span class="w"> </span>data
---destination_table:<span class="w"> </span>Destination<span class="w"> </span>table<span class="w"> </span>name<span class="w"> </span>results<span class="w"> </span>are<span class="w"> </span>written<span class="w"> </span>to.<span class="w"> </span>If<span class="w"> </span>not<span class="w"> </span>set,<span class="w"> </span>determines<span class="w"> </span>destination<span class="w"> </span>table<span class="w"> </span>based<span class="w"> </span>on<span class="w"> </span>query.
+--destination_table:<span class="w"> </span>Destination<span class="w"> </span>table<span class="w"> </span>name<span class="w"> </span>results<span class="w"> </span>are<span class="w"> </span>written<span class="w"> </span>to.<span class="w"> </span>If<span class="w"> </span>not<span class="w"> </span>set,<span class="w"> </span>the<span class="w"> </span>query<span class="w"> </span>result<span class="w"> </span>will<span class="w"> </span>not<span class="w"> </span>be<span class="w"> </span>written<span class="w"> </span>to<span class="w"> </span>BigQuery.
 --dataset_id:<span class="w"> </span>Destination<span class="w"> </span>dataset<span class="w"> </span>results<span class="w"> </span>are<span class="w"> </span>written<span class="w"> </span>to.<span class="w"> </span>If<span class="w"> </span>not<span class="w"> </span>set,<span class="w"> </span>determines<span class="w"> </span>destination<span class="w"> </span>dataset<span class="w"> </span>based<span class="w"> </span>on<span class="w"> </span>query.
 </code></pre></div>
 <p><strong>Examples</strong></p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Backfill for specific date range</span>
-<span class="w">    </span><span class="c1"># second comment line</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>run<span class="w"> </span>telemetry_derived.ssl_ratios_v1
+<div class="highlight"><pre><span></span><code><span class="c1"># Run a query by name</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>run<span class="w"> </span>telemetry_derived.ssl_ratios_v1
 
 
-<span class="w">    </span><span class="c1"># Run a query file</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>run<span class="w"> </span>/path/to/query.sql
+<span class="c1"># Run a query file</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>run<span class="w"> </span>/path/to/query.sql
+
+
+<span class="c1"># Run a query and save the result to BigQuery</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>run<span class="w"> </span>telemetry_derived.ssl_ratios_v1<span class="w">         </span>--project_id<span class="o">=</span>moz-fx-data-shared-prod<span class="w">         </span>--dataset_id<span class="o">=</span>telemetry_derived<span class="w">         </span>--destination_table<span class="o">=</span>ssl_ratios_v1
 </code></pre></div>
 <h4 id="run-multipart"><code>run-multipart</code></h4>
 <p>Run a multipart query.</p>
@@ -3118,7 +3127,7 @@ Options:
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Run a multipart query</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>run_multipart<span class="w"> </span>/path/to/query.sql
+./bqetl<span class="w"> </span>query<span class="w"> </span>run_multipart<span class="w"> </span>/path/to/query.sql
 </code></pre></div>
 <h4 id="validate"><code>validate</code></h4>
 <p>Validate a query.
@@ -3139,11 +3148,11 @@ Options:
 <div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>validate<span class="w"> </span>telemetry_derived.clients_daily_v6
 
 
-<span class="w">    </span><span class="c1"># Validate query not in shared-prod</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>validate<span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>--use_cloud_function<span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>--project_id<span class="o">=</span>moz-fx-data-marketing-prod<span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>ga_derived.blogs_goals_v1
+<span class="c1"># Validate query not in shared-prod</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>validate<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--use_cloud_function<span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--project_id<span class="o">=</span>moz-fx-data-marketing-prod<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>ga_derived.blogs_goals_v1
 </code></pre></div>
 <h4 id="initialize"><code>initialize</code></h4>
 <p>Create and initialize the destination table for the query.
@@ -3172,7 +3181,7 @@ Options:
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>render<span class="w"> </span>telemetry_derived.ssl_ratios_v1<span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>--output-dir<span class="o">=</span>/tmp
+<span class="w">  </span>--output-dir<span class="o">=</span>/tmp
 </code></pre></div>
 <h4 id="schema"><code>schema</code></h4>
 <p>Commands for managing query schemas.</p>
@@ -3195,8 +3204,8 @@ Options:
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>update<span class="w"> </span>telemetry_derived.clients_daily_v6
 
-<span class="w">    </span><span class="c1"># Update schema including downstream dependencies (requires GCP)</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>update<span class="w"> </span>telemetry_derived.clients_daily_v6<span class="w"> </span>--update-downstream
+<span class="c1"># Update schema including downstream dependencies (requires GCP)</span>
+./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>update<span class="w"> </span>telemetry_derived.clients_daily_v6<span class="w"> </span>--update-downstream
 </code></pre></div>
 <h5 id="deploy"><code>deploy</code></h5>
 <p>Deploy the query schema.</p>
@@ -3247,13 +3256,13 @@ Options:
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Get information about all available DAGs</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>info
+./bqetl<span class="w"> </span>dag<span class="w"> </span>info
 
-<span class="w">    </span><span class="c1"># Get information about a specific DAG</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>info<span class="w"> </span>bqetl_ssl_ratios
+<span class="c1"># Get information about a specific DAG</span>
+./bqetl<span class="w"> </span>dag<span class="w"> </span>info<span class="w"> </span>bqetl_ssl_ratios
 
-<span class="w">    </span><span class="c1"># Get information about a specific DAG including scheduled tasks</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>info<span class="w"> </span>--with_tasks<span class="w"> </span>bqetl_ssl_ratios
+<span class="c1"># Get information about a specific DAG including scheduled tasks</span>
+./bqetl<span class="w"> </span>dag<span class="w"> </span>info<span class="w"> </span>--with_tasks<span class="w"> </span>bqetl_ssl_ratios
 </code></pre></div>
 <h4 id="create_1"><code>create</code></h4>
 <p>Create a new DAG with name bqetl_<dag_name>, for example: bqetl_search
@@ -3276,23 +3285,23 @@ Options:
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>dag<span class="w"> </span>create<span class="w"> </span>bqetl_core<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--schedule-interval<span class="o">=</span><span class="s2">&quot;0 2 * * *&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--owner<span class="o">=</span>example@mozilla.com<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--description<span class="o">=</span><span class="s2">&quot;Tables derived from `core` pings sent by mobile applications.&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--tag<span class="o">=</span>impact/tier_1<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--start-date<span class="o">=</span><span class="m">2019</span>-07-25
+--schedule-interval<span class="o">=</span><span class="s2">&quot;0 2 * * *&quot;</span><span class="w"> </span><span class="se">\</span>
+--owner<span class="o">=</span>example@mozilla.com<span class="w"> </span><span class="se">\</span>
+--description<span class="o">=</span><span class="s2">&quot;Tables derived from `core` pings sent by mobile applications.&quot;</span><span class="w"> </span><span class="se">\</span>
+--tag<span class="o">=</span>impact/tier_1<span class="w"> </span><span class="se">\</span>
+--start-date<span class="o">=</span><span class="m">2019</span>-07-25
 
 
-<span class="w">    </span><span class="c1"># Create DAG and overwrite default settings</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>create<span class="w"> </span>bqetl_ssl_ratios<span class="w"> </span>--schedule-interval<span class="o">=</span><span class="s2">&quot;0 2 * * *&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--owner<span class="o">=</span>example@mozilla.com<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--description<span class="o">=</span><span class="s2">&quot;The DAG schedules SSL ratios queries.&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--tag<span class="o">=</span>impact/tier_1<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--start-date<span class="o">=</span><span class="m">2019</span>-07-20<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--email<span class="o">=</span>example2@mozilla.com<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--email<span class="o">=</span>example3@mozilla.com<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--retries<span class="o">=</span><span class="m">2</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--retry_delay<span class="o">=</span>30m
+<span class="c1"># Create DAG and overwrite default settings</span>
+./bqetl<span class="w"> </span>dag<span class="w"> </span>create<span class="w"> </span>bqetl_ssl_ratios<span class="w"> </span>--schedule-interval<span class="o">=</span><span class="s2">&quot;0 2 * * *&quot;</span><span class="w"> </span><span class="se">\</span>
+--owner<span class="o">=</span>example@mozilla.com<span class="w"> </span><span class="se">\</span>
+--description<span class="o">=</span><span class="s2">&quot;The DAG schedules SSL ratios queries.&quot;</span><span class="w"> </span><span class="se">\</span>
+--tag<span class="o">=</span>impact/tier_1<span class="w"> </span><span class="se">\</span>
+--start-date<span class="o">=</span><span class="m">2019</span>-07-20<span class="w"> </span><span class="se">\</span>
+--email<span class="o">=</span>example2@mozilla.com<span class="w"> </span><span class="se">\</span>
+--email<span class="o">=</span>example3@mozilla.com<span class="w"> </span><span class="se">\</span>
+--retries<span class="o">=</span><span class="m">2</span><span class="w"> </span><span class="se">\</span>
+--retry_delay<span class="o">=</span>30m
 </code></pre></div>
 <h4 id="generate"><code>generate</code></h4>
 <p>Generate Airflow DAGs from DAG definitions.</p>
@@ -3306,10 +3315,10 @@ Options:
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Generate all DAGs</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>generate
+./bqetl<span class="w"> </span>dag<span class="w"> </span>generate
 
-<span class="w">    </span><span class="c1"># Generate a specific DAG</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>generate<span class="w"> </span>bqetl_ssl_ratios
+<span class="c1"># Generate a specific DAG</span>
+./bqetl<span class="w"> </span>dag<span class="w"> </span>generate<span class="w"> </span>bqetl_ssl_ratios
 </code></pre></div>
 <h4 id="remove"><code>remove</code></h4>
 <p>Remove a DAG.
@@ -3325,7 +3334,7 @@ Options:
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Remove a specific DAG</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>dag<span class="w"> </span>remove<span class="w"> </span>bqetl_vrbrowser
+./bqetl<span class="w"> </span>dag<span class="w"> </span>remove<span class="w"> </span>bqetl_vrbrowser
 </code></pre></div>
 <h3 id="dependency"><code>dependency</code></h3>
 <p>Build and use query dependency graphs.</p>
@@ -3357,10 +3366,10 @@ Options:
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code>Examples:
-<span class="w">    </span>./bqetl<span class="w"> </span>dryrun<span class="w"> </span>sql/moz-fx-data-shared-prod/telemetry_derived/
+./bqetl<span class="w"> </span>dryrun<span class="w"> </span>sql/moz-fx-data-shared-prod/telemetry_derived/
 
-<span class="w">    </span><span class="c1"># Dry run SQL with tables that are not in shared prod</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>dryrun<span class="w"> </span>--use-cloud-function<span class="o">=</span><span class="nb">false</span><span class="w"> </span>sql/moz-fx-data-marketing-prod/
+<span class="c1"># Dry run SQL with tables that are not in shared prod</span>
+./bqetl<span class="w"> </span>dryrun<span class="w"> </span>--use-cloud-function<span class="o">=</span><span class="nb">false</span><span class="w"> </span>sql/moz-fx-data-marketing-prod/
 </code></pre></div>
 <h3 id="format"><code>format</code></h3>
 <p>Format SQL files.</p>
@@ -3369,13 +3378,13 @@ Options:
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Format a specific file</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>format<span class="w"> </span>sql/moz-fx-data-shared-prod/telemetry/core/view.sql
+./bqetl<span class="w"> </span>format<span class="w"> </span>sql/moz-fx-data-shared-prod/telemetry/core/view.sql
 
-<span class="w">    </span><span class="c1"># Format all SQL files in `sql/`</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>format<span class="w"> </span>sql
+<span class="c1"># Format all SQL files in `sql/`</span>
+./bqetl<span class="w"> </span>format<span class="w"> </span>sql
 
-<span class="w">    </span><span class="c1"># Format standard in (will write to standard out)</span>
-<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;SELECT 1,2,3&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>./bqetl<span class="w"> </span>format
+<span class="c1"># Format standard in (will write to standard out)</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;SELECT 1,2,3&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>./bqetl<span class="w"> </span>format
 </code></pre></div>
 <h3 id="routine"><code>routine</code></h3>
 <p>Commands for managing routines for internal use.</p>
@@ -3394,15 +3403,15 @@ Options:
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Create a UDF</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>create<span class="w"> </span>--udf<span class="w"> </span>udf.array_slice
+./bqetl<span class="w"> </span>routine<span class="w"> </span>create<span class="w"> </span>--udf<span class="w"> </span>udf.array_slice
 
 
-<span class="w">    </span><span class="c1"># Create a stored procedure</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>create<span class="w"> </span>--stored_procedure<span class="w"> </span>udf.events_daily
+<span class="c1"># Create a stored procedure</span>
+./bqetl<span class="w"> </span>routine<span class="w"> </span>create<span class="w"> </span>--stored_procedure<span class="w"> </span>udf.events_daily
 
 
-<span class="w">    </span><span class="c1"># Create a UDF in a project other than shared-prod</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>create<span class="w"> </span>--udf<span class="w"> </span>udf.active_last_week<span class="w"> </span>--project<span class="o">=</span>moz-fx-data-marketing-prod
+<span class="c1"># Create a UDF in a project other than shared-prod</span>
+./bqetl<span class="w"> </span>routine<span class="w"> </span>create<span class="w"> </span>--udf<span class="w"> </span>udf.active_last_week<span class="w"> </span>--project<span class="o">=</span>moz-fx-data-marketing-prod
 </code></pre></div>
 <h4 id="info_2"><code>info</code></h4>
 <p>Get routine information.</p>
@@ -3417,11 +3426,11 @@ Options:
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Get information about all internal routines in a specific dataset</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>info<span class="w"> </span>udf.*
+./bqetl<span class="w"> </span>routine<span class="w"> </span>info<span class="w"> </span>udf.*
 
 
-<span class="w">    </span><span class="c1"># Get usage information of specific routine</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>info<span class="w"> </span>--usages<span class="w"> </span>udf.get_key
+<span class="c1"># Get usage information of specific routine</span>
+./bqetl<span class="w"> </span>routine<span class="w"> </span>info<span class="w"> </span>--usages<span class="w"> </span>udf.get_key
 </code></pre></div>
 <h4 id="validate_2"><code>validate</code></h4>
 <p>Validate formatting of routines and run tests.</p>
@@ -3436,11 +3445,11 @@ Options:
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Validate all routines</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>validate
+./bqetl<span class="w"> </span>routine<span class="w"> </span>validate
 
 
-<span class="w">    </span><span class="c1"># Validate selected routines</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>validate<span class="w"> </span>udf.*
+<span class="c1"># Validate selected routines</span>
+./bqetl<span class="w"> </span>routine<span class="w"> </span>validate<span class="w"> </span>udf.*
 </code></pre></div>
 <h4 id="publish"><code>publish</code></h4>
 <p>Publish routines to BigQuery. Requires service account access.</p>
@@ -3457,11 +3466,11 @@ Options:
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Publish all routines</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>publish
+./bqetl<span class="w"> </span>routine<span class="w"> </span>publish
 
 
-<span class="w">    </span><span class="c1"># Publish selected routines</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>validate<span class="w"> </span>udf.*
+<span class="c1"># Publish selected routines</span>
+./bqetl<span class="w"> </span>routine<span class="w"> </span>validate<span class="w"> </span>udf.*
 </code></pre></div>
 <h4 id="rename"><code>rename</code></h4>
 <p>Rename routine or routine dataset. Replaces all usages in queries with
@@ -3476,11 +3485,11 @@ Options:
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Rename routine</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>rename<span class="w"> </span>udf.array_slice<span class="w"> </span>udf.list_slice
+./bqetl<span class="w"> </span>routine<span class="w"> </span>rename<span class="w"> </span>udf.array_slice<span class="w"> </span>udf.list_slice
 
 
-<span class="w">    </span><span class="c1"># Rename routine matching a specific pattern</span>
-<span class="w">    </span>./bqetl<span class="w"> </span>routine<span class="w"> </span>rename<span class="w"> </span>udf.array_*<span class="w"> </span>udf.list_*
+<span class="c1"># Rename routine matching a specific pattern</span>
+./bqetl<span class="w"> </span>routine<span class="w"> </span>rename<span class="w"> </span>udf.array_*<span class="w"> </span>udf.list_*
 </code></pre></div>
 <h3 id="mozfun"><code>mozfun</code></h3>
 <p>Commands for managing public mozfun routines.</p>

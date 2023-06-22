@@ -136,6 +136,7 @@ unioned AS (
 SELECT
   `timestamp`,
   receiveTimestamp,
+  logger,
   fxa_log,
   event_type,
   user_id,

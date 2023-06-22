@@ -18,12 +18,11 @@ WITH filtered_data AS (
     os = 'Windows'
     AND channel = 'release' AS sampled
   FROM
-    clients_histogram_aggregates_v1
+    clients_histogram_aggregates_v2
   CROSS JOIN
     UNNEST(histogram_aggregates)
   WHERE
-    submission_date = @submission_date
-    AND first_bucket IS NOT NULL
+    first_bucket IS NOT NULL
     AND sample_id >= @min_sample_id
     AND sample_id <= @max_sample_id
 ),

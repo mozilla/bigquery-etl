@@ -1,4 +1,7 @@
 fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
 - name: logName
   type: STRING
   mode: NULLABLE
@@ -13,10 +16,10 @@ fields:
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: zone
+    - name: instance_id
       type: STRING
       mode: NULLABLE
-    - name: instance_id
+    - name: zone
       type: STRING
       mode: NULLABLE
     - name: project_id
@@ -29,68 +32,62 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
+  - name: timestamp
+    type: FLOAT
+    mode: NULLABLE
+  - name: type
+    type: STRING
+    mode: NULLABLE
   - name: fields
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: flow_id
-      type: STRING
-      mode: NULLABLE
-    - name: type
+    - name: domain
       type: STRING
       mode: NULLABLE
     - name: locale
       type: STRING
       mode: NULLABLE
-    - name: domain
+    - name: template
       type: STRING
       mode: NULLABLE
-    - name: bounced
-      type: BOOLEAN
+    - name: flow_id
+      type: STRING
       mode: NULLABLE
     - name: templateversion
       type: STRING
       mode: NULLABLE
-    - name: template
+    - name: type
       type: STRING
       mode: NULLABLE
     - name: email
       type: STRING
       mode: NULLABLE
-    - name: uid
-      type: STRING
+    - name: processingtimemillis
+      type: FLOAT
       mode: NULLABLE
     - name: event
       type: STRING
       mode: NULLABLE
-    - name: flow_time
-      type: FLOAT
-      mode: NULLABLE
     - name: time
       type: FLOAT
       mode: NULLABLE
-    - name: bounce
-      type: BOOLEAN
+    - name: flow_time
+      type: FLOAT
       mode: NULLABLE
-    - name: status
+    - name: flowid
       type: STRING
       mode: NULLABLE
-    - name: diagnosticcode
+    - name: templatename
       type: STRING
       mode: NULLABLE
-    - name: lang
+    - name: flowbegintime
       type: STRING
       mode: NULLABLE
-    - name: action
-      type: STRING
+    - name: currenttime
+      type: FLOAT
       mode: NULLABLE
-    - name: bouncetype
-      type: STRING
-      mode: NULLABLE
-    - name: bouncesubtype
-      type: STRING
-      mode: NULLABLE
-    - name: err
+    - name: event_type
       type: STRING
       mode: NULLABLE
     - name: session_id
@@ -102,32 +99,47 @@ fields:
     - name: event_properties
       type: STRING
       mode: NULLABLE
+    - name: op
+      type: STRING
+      mode: NULLABLE
     - name: app_version
       type: STRING
       mode: NULLABLE
     - name: language
       type: STRING
       mode: NULLABLE
-    - name: op
+    - name: bounced
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: action
       type: STRING
       mode: NULLABLE
-    - name: event_type
+    - name: bouncetype
       type: STRING
       mode: NULLABLE
-    - name: processingtimemillis
-      type: FLOAT
+    - name: bounce
+      type: BOOLEAN
       mode: NULLABLE
-    - name: templatename
+    - name: status
       type: STRING
       mode: NULLABLE
-    - name: flowbegintime
+    - name: bouncesubtype
       type: STRING
       mode: NULLABLE
-    - name: currenttime
-      type: FLOAT
-      mode: NULLABLE
-    - name: flowid
+    - name: lang
       type: STRING
+      mode: NULLABLE
+    - name: diagnosticcode
+      type: STRING
+      mode: NULLABLE
+    - name: uid
+      type: STRING
+      mode: NULLABLE
+    - name: err
+      type: STRING
+      mode: NULLABLE
+    - name: complaint
+      type: BOOLEAN
       mode: NULLABLE
     - name: complaintfeedbacktype
       type: STRING
@@ -135,10 +147,16 @@ fields:
     - name: complaintuseragent
       type: STRING
       mode: NULLABLE
-    - name: complaint
-      type: BOOLEAN
-      mode: NULLABLE
     - name: url
+      type: STRING
+      mode: NULLABLE
+    - name: user_id
+      type: STRING
+      mode: NULLABLE
+    - name: config
+      type: STRING
+      mode: NULLABLE
+    - name: amplitudeevent
       type: STRING
       mode: NULLABLE
     - name: host
@@ -153,34 +171,19 @@ fields:
     - name: port
       type: FLOAT
       mode: NULLABLE
-    - name: user_id
-      type: STRING
-      mode: NULLABLE
     - name: device_id
       type: STRING
       mode: NULLABLE
-    - name: config
-      type: STRING
-      mode: NULLABLE
-    - name: amplitudeevent
-      type: STRING
-      mode: NULLABLE
-  - name: envversion
-    type: STRING
+  - name: severity
+    type: FLOAT
     mode: NULLABLE
   - name: logger
     type: STRING
     mode: NULLABLE
-  - name: pid
-    type: FLOAT
-    mode: NULLABLE
-  - name: type
+  - name: envversion
     type: STRING
     mode: NULLABLE
-  - name: severity
-    type: FLOAT
-    mode: NULLABLE
-  - name: timestamp
+  - name: pid
     type: FLOAT
     mode: NULLABLE
 - name: timestamp
@@ -245,9 +248,6 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
-  - name: application
-    type: STRING
-    mode: NULLABLE
   - name: env
     type: STRING
     mode: NULLABLE
@@ -258,6 +258,9 @@ fields:
     type: STRING
     mode: NULLABLE
   - name: compute_googleapis_com_resource_name
+    type: STRING
+    mode: NULLABLE
+  - name: application
     type: STRING
     mode: NULLABLE
   - name: pro

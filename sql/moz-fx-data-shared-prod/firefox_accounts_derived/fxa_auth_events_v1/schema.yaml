@@ -1,4 +1,7 @@
 fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
 - name: logName
   type: STRING
   mode: NULLABLE
@@ -465,6 +468,36 @@ fields:
     - name: uaosversion
       type: STRING
       mode: NULLABLE
+    - name: isboom
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: isserver
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: output
+      type: STRING
+      mode: NULLABLE
+    - name: details
+      type: STRING
+      mode: NULLABLE
+    - name: _original
+      type: STRING
+      mode: NULLABLE
+    - name: param
+      type: STRING
+      mode: NULLABLE
+    - name: rawtype
+      type: STRING
+      mode: NULLABLE
+    - name: raw
+      type: STRING
+      mode: NULLABLE
+    - name: requestid
+      type: STRING
+      mode: NULLABLE
+    - name: headers
+      type: STRING
+      mode: NULLABLE
     - name: user_id
       type: STRING
       mode: NULLABLE
@@ -575,9 +608,6 @@ fields:
       mode: NULLABLE
     - name: marketingoptin
       type: BOOLEAN
-      mode: NULLABLE
-    - name: headers
-      type: STRING
       mode: NULLABLE
     - name: valid
       type: BOOLEAN

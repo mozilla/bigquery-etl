@@ -29,7 +29,7 @@ Options:
 **Examples**
 
 ```bash
-{{ cmd.examples }}
+{{ cmd.examples | replace("\n    ", "\n") }}
 ```
 {% endif -%}
 {% endif -%}

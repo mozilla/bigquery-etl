@@ -21,12 +21,6 @@ FROM
       updated_at,
       type,
       fxa_last_changed_at,
-      provider,
-      provider_product_id,
-      provider_original_purchase_token,
-      provider_receipt_raw,
-      provider_receipt_json,
-      provider_expiration_date,
       fxa_migration_note
     FROM subscriptions
     """

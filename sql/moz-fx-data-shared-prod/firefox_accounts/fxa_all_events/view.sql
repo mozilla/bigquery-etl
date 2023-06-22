@@ -147,6 +147,7 @@ SELECT
   `timestamp`,
   receiveTimestamp,
   time,
+  logger,
   fxa_log,
   event_type,
   user_id,

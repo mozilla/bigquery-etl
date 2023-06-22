@@ -80,6 +80,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_auth_events_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_content_events_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_stdout_events_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_server_events_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v1/init.sql",  # noqa E501
@@ -118,6 +119,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_apple_subscriptions_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_google_subscriptions_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_stripe_subscriptions_history_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_changelog_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/stripe/itemized_payout_reconciliation/view.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/query.sql",
@@ -256,9 +258,12 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_histogram_aggregates_parent_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_histogram_aggregates_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v2/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_bucket_counts_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/glam_client_probe_counts_extract_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/scalar_percentiles_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/telemetry_derived/glam_sample_counts_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/glam_user_counts_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/scalar_percentiles_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_scalar_probe_counts_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_etl_sql_run_check_v1/query.sql",  # noqa E501
     # Dataset sql/glam-fenix-dev:glam_etl was not found
@@ -350,28 +355,28 @@ class DryRun:
             sql = self.content
         else:
             sql = self.get_sql()
-            if self.metadata:
-                # use metadata to rewrite date-type query params as submission_date
-                date_params = [
-                    query_param
-                    for query_param in (
-                        self.metadata.scheduling.get("date_partition_parameter"),
-                        *(
-                            param.split(":", 1)[0]
-                            for param in self.metadata.scheduling.get("parameters", [])
-                            if re.fullmatch(r"[^:]+:DATE:{{\s*ds\s*}}", param)
-                        ),
-                    )
-                    if query_param and query_param != "submission_date"
-                ]
-                if date_params:
-                    pattern = re.compile(
-                        "@("
-                        + "|".join(date_params)
-                        # match whole query parameter names
-                        + ")(?![a-zA-Z0-9_])"
-                    )
-                    sql = pattern.sub("@submission_date", sql)
+        if self.metadata:
+            # use metadata to rewrite date-type query params as submission_date
+            date_params = [
+                query_param
+                for query_param in (
+                    self.metadata.scheduling.get("date_partition_parameter"),
+                    *(
+                        param.split(":", 1)[0]
+                        for param in self.metadata.scheduling.get("parameters", [])
+                        if re.fullmatch(r"[^:]+:DATE:{{\s*ds\s*}}", param)
+                    ),
+                )
+                if query_param and query_param != "submission_date"
+            ]
+            if date_params:
+                pattern = re.compile(
+                    "@("
+                    + "|".join(date_params)
+                    # match whole query parameter names
+                    + ")(?![a-zA-Z0-9_])"
+                )
+                sql = pattern.sub("@submission_date", sql)
         dataset = basename(dirname(dirname(self.sqlfile)))
         try:
             if self.use_cloud_function:

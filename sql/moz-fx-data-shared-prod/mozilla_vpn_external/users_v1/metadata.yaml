@@ -29,8 +29,6 @@ scheduling:
         id,
         email,
         fxa_uid,
-        fxa_access_token,
-        fxa_refresh_token,
         fxa_profile_json,
         created_at,
         updated_at,
@@ -49,9 +47,8 @@ bigquery:
 references:
   init.sql:
   - "EXTERNAL_QUERY('moz-fx-guardian-prod-bfc7.us.guardian-sql-prod', '\n    SELECT\n\
-    \      id,\n      email,\n      fxa_uid,\n      fxa_access_token,\n      fxa_refresh_token,\n\
-    \      fxa_profile_json,\n      created_at,\n      updated_at,\n      display_name,\n\
-    \      avatar\n    FROM users\n    ')"
+    \      id,\n      email,\n      fxa_uid,\n      fxa_profile_json,\n      created_at,\n\
+    \      updated_at,\n      display_name,\n      avatar\n    FROM users\n    ')"
   query.sql:
   - EXTERNAL_QUERY('moz-fx-guardian-prod-bfc7.us.guardian-sql-prod', @external_database_query)
   - users_v1

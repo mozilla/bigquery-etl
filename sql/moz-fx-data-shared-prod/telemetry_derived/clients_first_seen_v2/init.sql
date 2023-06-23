@@ -1,16 +1,10 @@
 -- Query to initialize clients_first_seen_v2
 -- Earliest ping dates for each ping used in the query.
--- DECLARE new_profile_ping_earliest_date DATE DEFAULT '2017-06-26';
+DECLARE new_profile_ping_earliest_date DATE DEFAULT '2017-06-26';
 
--- DECLARE shutdown_ping_earliest_date DATE DEFAULT '2018-10-30';
+DECLARE shutdown_ping_earliest_date DATE DEFAULT '2018-10-30';
 
--- DECLARE main_ping_earliest_date DATE DEFAULT '2016-03-12';
-
-DECLARE new_profile_ping_earliest_date DATE DEFAULT '2023-06-01';
-
-DECLARE shutdown_ping_earliest_date DATE DEFAULT '2023-06-01';
-
-DECLARE main_ping_earliest_date DATE DEFAULT '2023-06-01';
+DECLARE main_ping_earliest_date DATE DEFAULT '2016-03-12';
 
 -- Names of pings to store in the metadata.
 DECLARE new_profile_ping_name STRING DEFAULT 'new_profile';
@@ -20,9 +14,14 @@ DECLARE shutdown_ping_name STRING DEFAULT 'shutdown';
 DECLARE main_ping_name STRING DEFAULT 'main';
 
 CREATE OR REPLACE TABLE
-  `moz-fx-data-shared-prod.analysis.clients_first_seen_v2_jun21`
+  `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
 PARTITION BY
   first_seen_date
+CLUSTER BY
+  normalized_channel,
+  sample_id,
+  country,
+  normalized_os
 AS
 WITH new_profile_ping AS (
   SELECT
@@ -35,9 +34,6 @@ WITH new_profile_ping AS (
     ARRAY_AGG(application.build_id IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
     ] AS app_build_id,
-    ARRAY_AGG(application.channel IGNORE NULLS ORDER BY submission_timestamp ASC)[
-      SAFE_OFFSET(0)
-    ] AS channel,
     ARRAY_AGG(normalized_app_name IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
     ] AS app_name,
@@ -172,7 +168,7 @@ WITH new_profile_ping AS (
         submission_timestamp ASC
     )[SAFE_OFFSET(0)] AS download_source
   FROM
-    telemetry.new_profile
+    `moz-fx-data-shared-prod.telemetry.new_profile`
   LEFT JOIN
     UNNEST(environment.experiments) AS experiments
   WHERE
@@ -191,9 +187,6 @@ shutdown_ping AS (
     ARRAY_AGG(application.build_id IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
     ] AS app_build_id,
-    ARRAY_AGG(normalized_channel IGNORE NULLS ORDER BY submission_timestamp ASC)[
-      SAFE_OFFSET(0)
-    ] AS channel,
     ARRAY_AGG(normalized_app_name IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
     ] AS app_name,
@@ -328,7 +321,7 @@ shutdown_ping AS (
         submission_timestamp ASC
     )[SAFE_OFFSET(0)] AS download_source
   FROM
-    telemetry.first_shutdown
+    `moz-fx-data-shared-prod.telemetry.first_shutdown`
   LEFT JOIN
     UNNEST(environment.experiments) AS experiments
   WHERE
@@ -344,15 +337,9 @@ main_ping AS (
     ARRAY_AGG(app_build_id IGNORE NULLS ORDER BY submission_date ASC)[
       SAFE_OFFSET(0)
     ] AS app_build_id,
-    ARRAY_AGG(normalized_channel IGNORE NULLS ORDER BY submission_date ASC)[
-      SAFE_OFFSET(0)
-    ] AS channel,
     ARRAY_AGG(app_name IGNORE NULLS ORDER BY submission_date ASC)[SAFE_OFFSET(0)] AS app_name,
     ARRAY_AGG(vendor IGNORE NULLS ORDER BY submission_date ASC)[SAFE_OFFSET(0)] AS vendor,
     ARRAY_AGG(app_version IGNORE NULLS ORDER BY submission_date ASC)[SAFE_OFFSET(0)] AS app_version,
-    ARRAY_AGG(experiments.key IGNORE NULLS ORDER BY submission_date ASC)[
-      SAFE_OFFSET(0)
-    ] AS experiments_key,
     ARRAY_AGG(distribution_id IGNORE NULLS ORDER BY submission_date ASC)[
       SAFE_OFFSET(0)
     ] AS distribution_id,
@@ -399,9 +386,7 @@ main_ping AS (
       SAFE_OFFSET(0)
     ] AS download_token
   FROM
-    telemetry.clients_daily_v6
-  LEFT JOIN
-    UNNEST(experiments) AS experiments
+    `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
     submission_date >= main_ping_earliest_date
   GROUP BY
@@ -479,13 +464,6 @@ SELECT
   ).earliest_value AS app_build_id,
   mozfun.norm.get_earliest_value(
     [
-      (STRUCT(new_profile.channel, '', DATETIME(new_profile.submission_timestamp))),
-      (STRUCT(shutdown.channel, '', DATETIME(shutdown.submission_timestamp))),
-      (STRUCT(main.channel, '', DATETIME(main.submission_timestamp)))
-    ]
-  ).earliest_value AS channel,
-  mozfun.norm.get_earliest_value(
-    [
       (STRUCT(new_profile.app_name, '', DATETIME(new_profile.submission_timestamp))),
       (STRUCT(shutdown.app_name, '', DATETIME(shutdown.submission_timestamp))),
       (STRUCT(main.app_name, '', DATETIME(main.submission_timestamp)))
@@ -527,7 +505,6 @@ SELECT
     [
       (STRUCT(new_profile.experiments_key, '', DATETIME(new_profile.submission_timestamp))),
       (STRUCT(shutdown.experiments_key, '', DATETIME(shutdown.submission_timestamp))),
-      (STRUCT(main.experiments_key, '', DATETIME(main.submission_timestamp)))
     ]
   ).earliest_value AS experiments_key,
   mozfun.norm.get_earliest_value(
@@ -794,43 +771,6 @@ SELECT
       [
         (
           STRUCT(
-            new_profile.download_token,
-            new_profile_ping_name,
-            DATETIME(new_profile.submission_timestamp)
-          )
-        ),
-        (
-          STRUCT(
-            shutdown.download_token,
-            shutdown_ping_name,
-            DATETIME(shutdown.submission_timestamp)
-          )
-        ),
-        (STRUCT(main.download_token, main_ping_name, DATETIME(main.submission_timestamp)))
-      ]
-    ).earliest_value_source AS download_token__source_ping,
-    mozfun.norm.get_earliest_value(
-      [
-        (
-          STRUCT(
-            new_profile.download_source,
-            new_profile_ping_name,
-            DATETIME(new_profile.submission_timestamp)
-          )
-        ),
-        (
-          STRUCT(
-            shutdown.download_source,
-            shutdown_ping_name,
-            DATETIME(shutdown.submission_timestamp)
-          )
-        )
-      ]
-    ).earliest_value_source AS download_source__source_ping,
-    mozfun.norm.get_earliest_value(
-      [
-        (
-          STRUCT(
             new_profile.attribution_content,
             new_profile_ping_name,
             DATETIME(new_profile.submission_timestamp)
@@ -903,6 +843,43 @@ SELECT
         (STRUCT(main.attribution_source, main_ping_name, DATETIME(main.submission_timestamp)))
       ]
     ).earliest_value_source AS attribution_source__source_ping,
+    mozfun.norm.get_earliest_value(
+      [
+        (
+          STRUCT(
+            new_profile.download_token,
+            new_profile_ping_name,
+            DATETIME(new_profile.submission_timestamp)
+          )
+        ),
+        (
+          STRUCT(
+            shutdown.download_token,
+            shutdown_ping_name,
+            DATETIME(shutdown.submission_timestamp)
+          )
+        ),
+        (STRUCT(main.download_token, main_ping_name, DATETIME(main.submission_timestamp)))
+      ]
+    ).earliest_value_source AS download_token__source_ping,
+    mozfun.norm.get_earliest_value(
+      [
+        (
+          STRUCT(
+            new_profile.download_source,
+            new_profile_ping_name,
+            DATETIME(new_profile.submission_timestamp)
+          )
+        ),
+        (
+          STRUCT(
+            shutdown.download_source,
+            shutdown_ping_name,
+            DATETIME(shutdown.submission_timestamp)
+          )
+        )
+      ]
+    ).earliest_value_source AS download_source__source_ping,
     CASE
       WHEN new_profile.client_id IS NULL
         THEN FALSE

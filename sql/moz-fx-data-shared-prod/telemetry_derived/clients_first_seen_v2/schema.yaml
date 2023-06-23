@@ -135,12 +135,6 @@ fields:
   - name: attribution_campaign__source_ping
     type: STRING
     mode: NULLABLE
-  - name: download_token__source_ping
-    type: STRING
-    mode: NULLABLE
-  - name: download_source__source_ping
-    type: STRING
-    mode: NULLABLE
   - name: attribution_content__source_ping
     type: STRING
     mode: NULLABLE
@@ -151,6 +145,12 @@ fields:
     type: STRING
     mode: NULLABLE
   - name: attribution_source__source_ping
+    type: STRING
+    mode: NULLABLE
+  - name: download_token__source_ping
+    type: STRING
+    mode: NULLABLE
+  - name: download_source__source_ping
     type: STRING
     mode: NULLABLE
   - name: reported_new_profile_ping

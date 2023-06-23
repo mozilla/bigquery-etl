@@ -1,0 +1,26 @@
+---
+- client_id: client-1
+  sample_id: 10
+  first_seen_date: 2023-06-01
+  normalized_channel: release
+  attribution_source: source1
+  download_token: token1
+  metadata:
+    first_seen_date__source_ping: shutdown
+    attribution_source__source_ping: new_profile
+    download_token__source_ping: new_profile
+    reported_main_ping: false
+    reported_new_profile_ping: true
+    reported_shutdown_ping: true
+- client_id: client-2
+  sample_id: 20
+  first_seen_date: 2023-06-10
+  normalized_channel: nightly
+  startup_profile_selection_reason: reason2
+  download_source: source2
+  metadata:
+    first_seen_date__source_ping: main
+    download_source__source_ping: main
+    reported_main_ping: true
+    reported_new_profile_ping: true
+    reported_shutdown_ping: true

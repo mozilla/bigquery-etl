@@ -2,8 +2,8 @@
 - client_id: client-4
   sample_id: 40
   first_seen_date: 2023-05-14
-  channel: nightly
-  attribution_campaign: campaign
+  normalized_channel: nightly
+  attribution_campaign: campaign4
   download_token: token4
   metadata:
     first_seen_date__source_ping: shutdown

@@ -25,14 +25,6 @@
   },
   {
     "type": "STRING",
-    "name": "channel"
-  },
-  {
-    "type": "STRING",
-    "name": "app_display_version"
-  },
-  {
-    "type": "STRING",
     "name": "app_name"
   },
   {

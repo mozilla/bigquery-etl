@@ -9,12 +9,23 @@ description: |-
 
   It should be accessed through the user-facing view
   `telemetry.clients_first_seen`.
+
+  The query for this table overwrites the whole table instead of writing to
+  a single partition, so manual backfills must use parameter --no_partition.
 owners:
 - lvargas@mozilla.com
 labels:
   application: firefox
   incremental: true
   schedule: daily
+  depends_on_past: true
+scheduling:
+  dag_name: bqetl_analytics_tables
+  task_name: clients_first_seen_v2
+  depends_on_past: true
+  date_partition_parameter: null
+  parameters:
+  - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     type: day
@@ -24,3 +35,5 @@ bigquery:
     fields:
     - normalized_channel
     - sample_id
+    - country
+    - normalized_os

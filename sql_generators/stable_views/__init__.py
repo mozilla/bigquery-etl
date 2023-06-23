@@ -227,7 +227,10 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
             replacements += [
                 "'Firefox' AS normalized_app_name",
             ]
-    elif schema.schema_id.startswith("moz://mozilla.org/schemas/main/ping/"):
+    elif (
+        schema.schema_id.startswith("moz://mozilla.org/schemas/main/ping/")
+        and "_use_counter_" not in schema.stable_table
+    ):
         replacements += [
             "`moz-fx-data-shared-prod`.udf.normalize_main_payload(payload) AS payload"
         ]

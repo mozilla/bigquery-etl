@@ -37,6 +37,3 @@ fields:
   - name: index
     type: INTEGER
     mode: NULLABLE
-- name: submission_date
-  type: DATE
-  mode: NULLABLE

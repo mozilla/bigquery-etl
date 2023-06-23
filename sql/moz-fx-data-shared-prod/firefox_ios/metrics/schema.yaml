@@ -234,6 +234,12 @@ fields:
     - name: firefox_home_page_pocket_stories_visible
       type: BOOLEAN
       mode: NULLABLE
+    - name: preferences_sync_notifs
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: preferences_tips_and_features_notifs
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE

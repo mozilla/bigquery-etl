@@ -1157,6 +1157,35 @@ fields:
       description: 'The count of translation requests.
 
         '
+    - name: app_menu_sign_into_sync
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times a user has clicked "sign into sync"
+        from the settings page.
+
+        '
+    - name: metrics_private_tabs_open_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter that indicates how many PRIVATE tabs a user has open.
+        This
+
+        value will only be set if the user has at least *one* open tab. If they
+
+        have 0, this ping will not get sent, resulting in a null value. To
+
+        disambiguate between a failed `private_tabs_open_count` ping and 0 open tabs,
+
+        please see `has_open_tabs`
+
+        '
+    - name: settings_sign_into_sync
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times a user has clicked "sign into sync"
+        from the settings page.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -2500,6 +2529,84 @@ fields:
         mode: NULLABLE
       description: 'Count how many times we see `Authorization` header in `Access-Control-Request-Headers`
         header and the possible outcomes.
+
+        '
+    - name: metrics_bookmarks_add
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A counter that indicates how many bookmarks a user has added.
+
+
+        The label for this counter is `<source>`.
+
+
+        `source` will be: `page_action_menu` as that is the only
+
+        entry point right now to add bookmarks.
+
+        '
+    - name: metrics_bookmarks_delete
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A counter that indicates how many bookmarks a user has deleted.
+
+
+        The label for this counter is `<source>`.
+
+
+        `source` will be: `add_bookmark_toast` or `bookmark_panel`.
+
+        '
+    - name: metrics_bookmarks_edit
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A counter that indicates how many bookmarks a user has edited.
+
+
+        The label for this counter is `<source>`.
+
+
+        `source` will be: `bookmark_edit_page` or `bookmark_panel`.
+
+        '
+    - name: metrics_bookmarks_open
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A counter that indicates how many bookmarks a user has opened.
+
+
+        The label for this counter is `<source>`.
+
+
+        `source` will be: `top_sites`, `awesomebar_results`, `bookmark_panel`.
 
         '
   - name: string

@@ -128,7 +128,11 @@ SELECT
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_stale_transactionid,
       metrics.labeled_counter.dotprint_failure,
       metrics.labeled_counter.pdfjs_geckoview,
-      metrics.labeled_counter.network_cors_authorization_header
+      metrics.labeled_counter.network_cors_authorization_header,
+      metrics.labeled_counter.metrics_bookmarks_add,
+      metrics.labeled_counter.metrics_bookmarks_delete,
+      metrics.labeled_counter.metrics_bookmarks_edit,
+      metrics.labeled_counter.metrics_bookmarks_open
     ) AS labeled_counter,
     metrics.quantity,
     metrics.string,
@@ -295,7 +299,10 @@ SELECT
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.dotprint_requested,
       metrics.counter.dotprint_android_dialog_requested,
-      metrics.counter.translations_requests_count
+      metrics.counter.translations_requests_count,
+      metrics.counter.app_menu_sign_into_sync,
+      metrics.counter.metrics_private_tabs_open_count,
+      metrics.counter.settings_sign_into_sync
     ) AS counter,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -408,7 +415,11 @@ SELECT
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_stale_transactionid,
       metrics.labeled_counter.dotprint_failure,
       metrics.labeled_counter.pdfjs_geckoview,
-      metrics.labeled_counter.network_cors_authorization_header
+      metrics.labeled_counter.network_cors_authorization_header,
+      metrics.labeled_counter.metrics_bookmarks_add,
+      metrics.labeled_counter.metrics_bookmarks_delete,
+      metrics.labeled_counter.metrics_bookmarks_edit,
+      metrics.labeled_counter.metrics_bookmarks_open
     ) AS labeled_counter,
     metrics.quantity,
     STRUCT(
@@ -748,7 +759,10 @@ SELECT
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.dotprint_requested,
       metrics.counter.dotprint_android_dialog_requested,
-      metrics.counter.translations_requests_count
+      metrics.counter.translations_requests_count,
+      metrics.counter.app_menu_sign_into_sync,
+      metrics.counter.metrics_private_tabs_open_count,
+      metrics.counter.settings_sign_into_sync
     ) AS counter,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -861,7 +875,11 @@ SELECT
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_stale_transactionid,
       metrics.labeled_counter.dotprint_failure,
       metrics.labeled_counter.pdfjs_geckoview,
-      metrics.labeled_counter.network_cors_authorization_header
+      metrics.labeled_counter.network_cors_authorization_header,
+      metrics.labeled_counter.metrics_bookmarks_add,
+      metrics.labeled_counter.metrics_bookmarks_delete,
+      metrics.labeled_counter.metrics_bookmarks_edit,
+      metrics.labeled_counter.metrics_bookmarks_open
     ) AS labeled_counter,
     metrics.quantity,
     STRUCT(
@@ -1166,7 +1184,11 @@ SELECT
       metrics.labeled_counter.rtcrtpsender_setparameters_blame_stale_transactionid,
       metrics.labeled_counter.dotprint_failure,
       metrics.labeled_counter.pdfjs_geckoview,
-      metrics.labeled_counter.network_cors_authorization_header
+      metrics.labeled_counter.network_cors_authorization_header,
+      metrics.labeled_counter.metrics_bookmarks_add,
+      metrics.labeled_counter.metrics_bookmarks_delete,
+      metrics.labeled_counter.metrics_bookmarks_edit,
+      metrics.labeled_counter.metrics_bookmarks_open
     ) AS labeled_counter,
     metrics.quantity,
     metrics.string,

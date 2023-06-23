@@ -517,6 +517,15 @@ fields:
     - name: translations_requests_count
       type: INTEGER
       mode: NULLABLE
+    - name: app_menu_sign_into_sync
+      type: INTEGER
+      mode: NULLABLE
+    - name: metrics_private_tabs_open_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: settings_sign_into_sync
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -1806,6 +1815,46 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: network_cors_authorization_header
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: metrics_bookmarks_add
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: metrics_bookmarks_delete
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: metrics_bookmarks_edit
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: metrics_bookmarks_open
       type: RECORD
       mode: REPEATED
       fields:

@@ -338,6 +338,19 @@ fields:
       description: 'Measures the state of the show Pocket stories preference.
 
         '
+    - name: preferences_sync_notifs
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if notifications for sync are allowed, otherwise false.
+
+        '
+    - name: preferences_tips_and_features_notifs
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if notifications for tips and features are allowed, otherwise
+        false.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

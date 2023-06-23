@@ -739,18 +739,30 @@ def backfill(
 
 
 @query.command(
-    help="""Run a query. Additional parameters will get passed to bq.
+    help="""Run a query. Additional parameters will get passed to bq.<br />
+    If a destination_table is set, the query result will be written to BigQuery. Without a destination_table specified, the results are not stored.<br />
+    If the `name` is not found within the `sql/` folder bqetl assumes it hasn't been generated yet
+    and will start the generating process for all `sql_generators/` files.
+    This generation process will take some time and run dryrun calls against BigQuery but this is expected. <br />
+    Additional parameters (all parameters that are not specified in the Options) must come after the query-name.
+    Otherwise the first parameter that is not an option is interpreted as the query-name and since it can't be found the generation process will start.
 
     Examples:
 
     \b
-    # Backfill for specific date range
-    # second comment line
+    # Run a query by name
     ./bqetl query run telemetry_derived.ssl_ratios_v1
 
     \b
     # Run a query file
     ./bqetl query run /path/to/query.sql
+
+    \b
+    # Run a query and save the result to BigQuery
+    ./bqetl query run telemetry_derived.ssl_ratios_v1 \
+        --project_id=moz-fx-data-shared-prod \
+        --dataset_id=telemetry_derived \
+        --destination_table=ssl_ratios_v1
     """,
     context_settings=dict(
         ignore_unknown_options=True,
@@ -772,7 +784,7 @@ def backfill(
     required=False,
     help=(
         "Destination table name results are written to. "
-        + "If not set, determines destination table based on query."
+        + "If not set, the query result will not be written to BigQuery."
     ),
 )
 @click.option(

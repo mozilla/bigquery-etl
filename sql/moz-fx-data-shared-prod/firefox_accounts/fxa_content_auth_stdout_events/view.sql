@@ -32,12 +32,15 @@ WITH content AS (
     jsonPayload.fields.os_name,
     jsonPayload.fields.os_version,
     jsonPayload.fields.country,
+    CAST(NULL AS STRING) AS country_code,
     jsonPayload.fields.language,
     jsonPayload.fields.user_id,
+    jsonPayload.fields.device_id,
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     `timestamp`,
     receiveTimestamp,
+    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS event_time,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_content_events_v1`
 ),
@@ -50,12 +53,15 @@ auth AS (
     jsonPayload.fields.os_name,
     jsonPayload.fields.os_version,
     jsonPayload.fields.country,
+    JSON_VALUE(jsonPayload.fields.event_properties, "$.country_code") AS country_code,
     jsonPayload.fields.language,
     jsonPayload.fields.user_id,
+    jsonPayload.fields.device_id,
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     `timestamp`,
     receiveTimestamp,
+    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS event_time,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_auth_events_v1`
 ),
@@ -68,12 +74,15 @@ stdout AS (
     jsonPayload.fields.os_name,
     jsonPayload.fields.os_version,
     CAST(NULL AS STRING) AS country,
+    jsonPayload.fields.country_code,
     jsonPayload.fields.language,
     jsonPayload.fields.user_id,
+    jsonPayload.fields.device_id,
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
     `timestamp`,
     receiveTimestamp,
+    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS event_time,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_stdout_events_v1`
 ),
@@ -122,12 +131,28 @@ SELECT
   JSON_VALUE(event_properties, "$.email_service") AS email_service,
   JSON_VALUE(event_properties, "$.email_template") AS email_template,
   JSON_VALUE(event_properties, "$.email_version") AS email_version,
+  JSON_VALUE(event_properties, "$.subscription_id") AS subscription_id,
   JSON_VALUE(event_properties, "$.plan_id") AS plan_id,
+  JSON_VALUE(event_properties, "$.previous_plan_id") AS previous_plan_id,
+  JSON_VALUE(event_properties, "$.subscribed_plan_ids") AS subscribed_plan_ids,
   JSON_VALUE(event_properties, "$.product_id") AS product_id,
-  JSON_VALUE(event_properties, "$.promotionCode") AS promotion_code,
+  JSON_VALUE(event_properties, "$.previous_product_id") AS previous_product_id,
+  -- `promotionCode` was renamed `promotion_code` in stdout logs.
+  COALESCE(
+    JSON_VALUE(event_properties, "$.promotion_code"),
+    JSON_VALUE(event_properties, "$.promotionCode")
+  ) AS promotion_code,
   JSON_VALUE(event_properties, "$.payment_provider") AS payment_provider,
+  JSON_VALUE(event_properties, "$.provider_event_id") AS provider_event_id,
   JSON_VALUE(event_properties, "$.checkout_type") AS checkout_type,
   JSON_VALUE(event_properties, "$.source_country") AS source_country,
+  -- `source_country` was renamed `country_code_source` in stdout logs.
+  COALESCE(
+    JSON_VALUE(event_properties, "$.country_code_source"),
+    JSON_VALUE(event_properties, "$.source_country")
+  ) AS country_code_source,
+  JSON_VALUE(event_properties, "$.error_id") AS error_id,
+  CAST(JSON_VALUE(event_properties, "$.voluntary_cancellation") AS BOOL) AS voluntary_cancellation,
 FROM
   unioned
 -- Commented out for now, to restore FxA Looker dashboards

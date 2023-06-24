@@ -132,7 +132,8 @@ SELECT
       metrics.labeled_counter.metrics_bookmarks_add,
       metrics.labeled_counter.metrics_bookmarks_delete,
       metrics.labeled_counter.metrics_bookmarks_edit,
-      metrics.labeled_counter.metrics_bookmarks_open
+      metrics.labeled_counter.metrics_bookmarks_open,
+      metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries
     ) AS labeled_counter,
     metrics.quantity,
     metrics.string,
@@ -419,7 +420,8 @@ SELECT
       metrics.labeled_counter.metrics_bookmarks_add,
       metrics.labeled_counter.metrics_bookmarks_delete,
       metrics.labeled_counter.metrics_bookmarks_edit,
-      metrics.labeled_counter.metrics_bookmarks_open
+      metrics.labeled_counter.metrics_bookmarks_open,
+      metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries
     ) AS labeled_counter,
     metrics.quantity,
     STRUCT(
@@ -587,7 +589,15 @@ SELECT
       metrics.timing_distribution.glean_validation_shutdown_wait,
       metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
       metrics.timing_distribution.first_session_adjust_attribution_time,
-      metrics.timing_distribution.play_store_attribution_attribution_time
+      metrics.timing_distribution.play_store_attribution_attribution_time,
+      metrics.timing_distribution.extensions_apis_dnr_evaluate_rules_time,
+      metrics.timing_distribution.extensions_apis_dnr_startup_cache_read_time,
+      metrics.timing_distribution.extensions_apis_dnr_startup_cache_write_time,
+      metrics.timing_distribution.extensions_apis_dnr_validate_rules_time,
+      metrics.timing_distribution.networking_dns_failed_lookup_time,
+      metrics.timing_distribution.networking_dns_lookup_time,
+      metrics.timing_distribution.networking_dns_renewal_time,
+      metrics.timing_distribution.networking_dns_renewal_time_for_ttl
     ) AS timing_distribution,
     metrics.jwe,
     metrics.memory_distribution,
@@ -879,7 +889,8 @@ SELECT
       metrics.labeled_counter.metrics_bookmarks_add,
       metrics.labeled_counter.metrics_bookmarks_delete,
       metrics.labeled_counter.metrics_bookmarks_edit,
-      metrics.labeled_counter.metrics_bookmarks_open
+      metrics.labeled_counter.metrics_bookmarks_open,
+      metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries
     ) AS labeled_counter,
     metrics.quantity,
     STRUCT(
@@ -1047,7 +1058,15 @@ SELECT
       metrics.timing_distribution.glean_validation_shutdown_wait,
       metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
       metrics.timing_distribution.first_session_adjust_attribution_time,
-      metrics.timing_distribution.play_store_attribution_attribution_time
+      metrics.timing_distribution.play_store_attribution_attribution_time,
+      metrics.timing_distribution.extensions_apis_dnr_evaluate_rules_time,
+      metrics.timing_distribution.extensions_apis_dnr_startup_cache_read_time,
+      metrics.timing_distribution.extensions_apis_dnr_startup_cache_write_time,
+      metrics.timing_distribution.extensions_apis_dnr_validate_rules_time,
+      metrics.timing_distribution.networking_dns_failed_lookup_time,
+      metrics.timing_distribution.networking_dns_lookup_time,
+      metrics.timing_distribution.networking_dns_renewal_time,
+      metrics.timing_distribution.networking_dns_renewal_time_for_ttl
     ) AS timing_distribution,
     metrics.jwe,
     metrics.memory_distribution,
@@ -1188,7 +1207,8 @@ SELECT
       metrics.labeled_counter.metrics_bookmarks_add,
       metrics.labeled_counter.metrics_bookmarks_delete,
       metrics.labeled_counter.metrics_bookmarks_edit,
-      metrics.labeled_counter.metrics_bookmarks_open
+      metrics.labeled_counter.metrics_bookmarks_open,
+      metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries
     ) AS labeled_counter,
     metrics.quantity,
     metrics.string,

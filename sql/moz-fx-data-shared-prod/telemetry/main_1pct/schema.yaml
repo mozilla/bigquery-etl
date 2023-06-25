@@ -16844,6 +16844,16 @@ fields:
       - name: value
         type: STRING
         mode: NULLABLE
+    - name: fx_migration_extensions_quantity
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -35170,6 +35180,26 @@ fields:
             type: INTEGER
             mode: NULLABLE
         - name: urlbar_picked_trending_rich
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+        - name: urlbar_picked_bookmark_adaptive
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+        - name: urlbar_picked_history_adaptive
           type: RECORD
           mode: REPEATED
           fields:

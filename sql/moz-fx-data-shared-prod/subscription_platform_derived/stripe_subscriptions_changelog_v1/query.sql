@@ -3,6 +3,7 @@ WITH subscriptions_history AS (
     -- Synthesize a primary key column to make identifying rows and doing joins easier.
     CONCAT(id, '-', FORMAT_TIMESTAMP('%FT%H:%M:%E6S', _fivetran_start)) AS id,
     id AS subscription_id,
+    _fivetran_synced,
     _fivetran_start,
     _fivetran_end,
     _fivetran_active,
@@ -192,6 +193,7 @@ subscriptions_history_latest_discounts AS (
 SELECT
   subscriptions_history.id,
   subscriptions_history._fivetran_start AS `timestamp`,
+  subscriptions_history._fivetran_synced AS synced_at,
   STRUCT(
     subscriptions_history.subscription_id AS id,
     subscriptions_history.billing_cycle_anchor,

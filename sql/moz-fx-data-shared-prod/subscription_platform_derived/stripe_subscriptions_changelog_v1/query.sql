@@ -5,7 +5,6 @@ WITH subscriptions_history AS (
     id AS subscription_id,
     _fivetran_synced,
     _fivetran_start,
-    _fivetran_end,
     _fivetran_active,
     billing_cycle_anchor,
     cancel_at,
@@ -143,7 +142,7 @@ subscriptions_history_tax_rates AS (
     `moz-fx-data-shared-prod`.stripe_external.tax_rate_v1 AS tax_rates
   ON
     subscription_tax_rates.tax_rate_id = tax_rates.id
-    AND subscriptions_history._fivetran_end >= tax_rates.created
+    AND subscriptions_history._fivetran_start >= tax_rates.created
   GROUP BY
     subscriptions_history.id
 ),
@@ -182,7 +181,7 @@ subscriptions_history_latest_discounts AS (
     `moz-fx-data-shared-prod`.stripe_external.subscription_discount_v1 AS subscription_discounts
   ON
     subscriptions_history.subscription_id = subscription_discounts.subscription_id
-    AND subscriptions_history._fivetran_end >= subscription_discounts.start
+    AND subscriptions_history._fivetran_start >= subscription_discounts.start
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.coupon_v1 AS coupons
   ON

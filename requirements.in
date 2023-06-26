@@ -1,5 +1,5 @@
 attrs==23.1.0
-authlib==1.2.0
+authlib==1.2.1
 black==23.3.0
 cattrs==23.1.2
 click==8.1.3

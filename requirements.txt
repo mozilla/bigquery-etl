@@ -111,9 +111,9 @@ attrs==23.1.0 \
     #   jsonschema
     #   mozilla-metric-config-parser
     #   pytest-mypy
-authlib==1.2.0 \
-    --hash=sha256:4ddf4fd6cfa75c9a460b361d4bd9dac71ffda0be879dbe4292a02e92349ad55a \
-    --hash=sha256:4fa3e80883a5915ef9f5bc28630564bc4ed5b5af39812a3ff130ec76bd631e9d
+authlib==1.2.1 \
+    --hash=sha256:421f7c6b468d907ca2d9afede256f068f87e34d23dd221c07d13d4c234726afb \
+    --hash=sha256:c88984ea00149a90e3537c964327da930779afa4564e354edfd98410bea01911
     # via -r requirements.in
 black==23.3.0 \
     --hash=sha256:064101748afa12ad2291c2b91c960be28b817c0c7eaa35bec09cc63aa56493c5 \

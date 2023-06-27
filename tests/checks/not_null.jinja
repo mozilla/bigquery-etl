@@ -16,5 +16,5 @@
    (SELECT ARRAY_LENGTH(checks) FROM non_null_checks) > 0,
    ERROR(CONCAT("Columns with NULL values: ", (SELECT ARRAY_TO_STRING(checks, ", ") FROM non_null_checks))),
    NULL
-  )
+  );
 {% endmacro %}

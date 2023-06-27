@@ -17,9 +17,6 @@ from ..cli.utils import (
 )
 from ..util.common import render as render_template
 
-ROOT = Path(__file__).parent.parent.parent
-CHECKS_MACROS_DIR = ROOT / "tests" / "checks"
-
 
 def _build_jinja_parameters(query_args):
     """Convert the bqetl parameters to a dictionary for use by the Jinja template."""
@@ -131,24 +128,13 @@ def _run_check(
         **parameters,
     }
 
-    # make macros available by creating a temporary file and pasting macro definition
-    # alongside checks.
-    # it is not possible to use `include` or `import` since the macros live in a different
-    # directory than the checks Jinja template.
-    with tempfile.NamedTemporaryFile(mode="w+") as checks_template:
-        macro_imports = "\n".join(
-            [macro_file.read_text() for macro_file in CHECKS_MACROS_DIR.glob("*")]
-        )
-        checks_template = Path(checks_template.name)
-        checks_template.write_text(macro_imports + "\n" + checks_file.read_text())
-
-        rendered_result = render_template(
-            checks_template.name,
-            template_folder=str(checks_template.parent),
-            templates_dir="",
-            format=False,
-            **jinja_params,
-        )
+    rendered_result = render_template(
+        checks_file.name,
+        template_folder=str(checks_file.parent),
+        templates_dir="",
+        format=False,
+        **jinja_params,
+    )
 
     checks = sqlparse.split(rendered_result)
     seek_location = 0

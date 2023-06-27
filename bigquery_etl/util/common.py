@@ -65,6 +65,7 @@ def render(
     sql_filename,
     template_folder=".",
     format=True,
+    imports=[],
     **kwargs,
 ) -> str:
     """Render a given template query using Jinja."""

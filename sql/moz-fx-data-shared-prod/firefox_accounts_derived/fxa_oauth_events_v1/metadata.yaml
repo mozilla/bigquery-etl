@@ -4,3 +4,8 @@ description: |-
   [DESCRIPTION_MISSING]
 owners:
 - data-platform-infra-wg@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    field: timestamp
+    require_partition_filter: false

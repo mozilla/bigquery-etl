@@ -48,7 +48,7 @@ args = parser.parse_args()
 quotes = set()
 for base_currency in args.base_currencies:
     response = requests.get(
-        "https://www.oanda.com/fx-for-business/historical-rates/api/data/update/",
+        "https://fxds-hcc.oanda.com/api/data/update/",
         params={
             "source": "OANDA",
             "adjustment": "0",

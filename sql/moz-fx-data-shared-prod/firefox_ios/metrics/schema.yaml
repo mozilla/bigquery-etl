@@ -240,6 +240,9 @@ fields:
     - name: preferences_tips_and_features_notifs
       type: BOOLEAN
       mode: NULLABLE
+    - name: preferences_fxa_logged_in
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE

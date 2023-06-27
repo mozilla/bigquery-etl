@@ -351,6 +351,12 @@ fields:
         false.
 
         '
+    - name: preferences_fxa_logged_in
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Measures the state of the fxa login.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

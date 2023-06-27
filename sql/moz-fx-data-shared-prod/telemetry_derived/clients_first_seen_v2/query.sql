@@ -2,7 +2,7 @@
 WITH new_profile_ping AS (
   SELECT
     client_id AS client_id,
-    MIN(sample_id) AS sample_id,
+    sample_id AS sample_id,
     MIN(submission_timestamp) AS submission_timestamp,
     ARRAY_AGG(application.architecture IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
@@ -148,14 +148,19 @@ WITH new_profile_ping AS (
   LEFT JOIN
     UNNEST(environment.experiments) AS experiments
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    {% if is_init() %}
+      DATE(submission_timestamp) >= '2017-06-26'
+    {% else %}
+      DATE(submission_timestamp) = @submission_date
+    {% endif %}
   GROUP BY
-    client_id
+    client_id,
+    sample_id
 ),
 shutdown_ping AS (
   SELECT
     client_id AS client_id,
-    MIN(sample_id) AS sample_id,
+    sample_id AS sample_id,
     MIN(submission_timestamp) AS submission_timestamp,
     ARRAY_AGG(application.architecture IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
@@ -301,14 +306,19 @@ shutdown_ping AS (
   LEFT JOIN
     UNNEST(environment.experiments) AS experiments
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    {% if is_init() %}
+      DATE(submission_timestamp) >= '2018-10-30'
+    {% else %}
+      DATE(submission_timestamp) = @submission_date
+    {% endif %}
   GROUP BY
-    client_id
+    client_id,
+    sample_id
 ),
 main_ping AS (
   SELECT
     client_id AS client_id,
-    MIN(sample_id) AS sample_id,
+    sample_id AS sample_id,
     MIN(submission_timestamp_min) AS submission_timestamp,
     ARRAY_AGG(app_build_id IGNORE NULLS ORDER BY submission_date ASC)[
       SAFE_OFFSET(0)
@@ -364,9 +374,14 @@ main_ping AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
-    submission_date = @submission_date
+    {% if is_init() %}
+      submission_date >= '2016-03-12'
+    {% else %}
+      submission_date = @submission_date
+    {% endif %}
   GROUP BY
-    client_id
+    client_id,
+    sample_id
 ),
 _current AS (
   SELECT
@@ -866,11 +881,11 @@ _current AS (
   FULL OUTER JOIN
     shutdown_ping AS shutdown
   USING
-    (client_id)
+    (client_id, sample_id)
   FULL OUTER JOIN
     main_ping AS main
   USING
-    (client_id)
+    (client_id, sample_id)
   WHERE
     client_id IS NOT NULL
 ),
@@ -880,7 +895,7 @@ _previous AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
   WHERE
-    first_seen_date < @submission_date
+    first_seen_date < CURRENT_DATE()
 )
 SELECT
   IF(_previous.client_id IS NOT NULL, _previous, _current).* REPLACE (

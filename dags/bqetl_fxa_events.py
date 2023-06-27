@@ -344,6 +344,36 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefox_accounts_derived__fxa_users_services_devices_first_seen__v1 = bigquery_etl_query(
+        task_id="firefox_accounts_derived__fxa_users_services_devices_first_seen__v1",
+        destination_table="fxa_users_services_devices_first_seen_v1",
+        dataset_id="firefox_accounts_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kignasiak@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "kignasiak@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+    )
+
+    firefox_accounts_derived__fxa_users_services_devices_last_seen__v1 = bigquery_etl_query(
+        task_id="firefox_accounts_derived__fxa_users_services_devices_last_seen__v1",
+        destination_table="fxa_users_services_devices_last_seen_v1",
+        dataset_id="firefox_accounts_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kignasiak@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "kignasiak@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+    )
+
     firefox_accounts_derived__fxa_users_services_first_seen__v2 = bigquery_etl_query(
         task_id="firefox_accounts_derived__fxa_users_services_first_seen__v2",
         destination_table="fxa_users_services_first_seen_v2",
@@ -383,6 +413,19 @@ with DAG(
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
+    firefox_accounts_derived__nonprod_fxa_server_events__v1 = bigquery_etl_query(
+        task_id="firefox_accounts_derived__nonprod_fxa_server_events__v1",
+        destination_table="nonprod_fxa_server_events_v1",
+        dataset_id="firefox_accounts_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["dthorn@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        start_date=datetime.datetime(2023, 5, 26, 0, 0),
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+    )
+
     firefox_accounts_derived__nonprod_fxa_stdout_events__v1 = bigquery_etl_query(
         task_id="firefox_accounts_derived__nonprod_fxa_stdout_events__v1",
         destination_table="nonprod_fxa_stdout_events_v1",
@@ -393,36 +436,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-    )
-
-    fox_accounts_derived__fxa_users_services_devices_last_seen__v1 = bigquery_etl_query(
-        task_id="fox_accounts_derived__fxa_users_services_devices_last_seen__v1",
-        destination_table="fxa_users_services_devices_last_seen_v1",
-        dataset_id="firefox_accounts_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kignasiak@mozilla.com",
-        email=[
-            "dthorn@mozilla.com",
-            "kignasiak@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=True,
-    )
-
-    ox_accounts_derived__fxa_users_services_devices_first_seen__v1 = bigquery_etl_query(
-        task_id="ox_accounts_derived__fxa_users_services_devices_first_seen__v1",
-        destination_table="fxa_users_services_devices_first_seen_v1",
-        dataset_id="firefox_accounts_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kignasiak@mozilla.com",
-        email=[
-            "dthorn@mozilla.com",
-            "kignasiak@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=True,
     )
 
     firefox_accounts_derived__exact_mau28__v1.set_upstream(
@@ -493,14 +506,14 @@ with DAG(
         firefox_accounts_derived__fxa_stdout_events__v1
     )
 
+    firefox_accounts_derived__fxa_users_services_devices_first_seen__v1.set_upstream(
+        firefox_accounts_derived__fxa_users_services_devices_daily__v1
+    )
+
+    firefox_accounts_derived__fxa_users_services_devices_last_seen__v1.set_upstream(
+        firefox_accounts_derived__fxa_users_services_devices_daily__v1
+    )
+
     firefox_accounts_derived__fxa_users_services_first_seen__v2.set_upstream(
         firefox_accounts_derived__fxa_users_services_daily__v2
-    )
-
-    fox_accounts_derived__fxa_users_services_devices_last_seen__v1.set_upstream(
-        firefox_accounts_derived__fxa_users_services_devices_daily__v1
-    )
-
-    ox_accounts_derived__fxa_users_services_devices_first_seen__v1.set_upstream(
-        firefox_accounts_derived__fxa_users_services_devices_daily__v1
     )

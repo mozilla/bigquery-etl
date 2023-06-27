@@ -1,0 +1,21 @@
+SELECT
+  date_day,
+  organization_id,
+  organization_name,
+  campaign_id,
+  campaign_name,
+  ad_group_id,
+  ad_group_name,
+  keyword_id,
+  keyword_text,
+  search_term_text,
+  match_type,
+  currency,
+  taps,
+  new_downloads,
+  redownloads,
+  total_downloads,
+  impressions,
+  spend,
+FROM
+  `moz-fx-data-bq-fivetran.dbt_fivetran_transformation_apple_search_ads.apple_search_ads__search_term_report`

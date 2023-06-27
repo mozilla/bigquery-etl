@@ -1,23 +1,45 @@
 -- Query first observations for Firefox Android Clients.
-WITH first_seen AS (
+WITH baseline_clients AS (
   SELECT
     client_id,
     sample_id,
     first_seen_date,
     submission_date,
-    country AS first_reported_country,
+    country,
     isp AS first_reported_isp,
     DATETIME(first_run_date) AS first_run_datetime,
     normalized_channel AS channel,
     device_manufacturer,
     device_model,
     normalized_os_version AS os_version,
-    app_display_version AS app_version
+    app_display_version AS app_version,
+    locale,
+    is_new_profile,
   FROM
-    `moz-fx-data-shared-prod.fenix.baseline_clients_first_seen`
+    `moz-fx-data-shared-prod.fenix.baseline_clients_daily`
   WHERE
     submission_date = @submission_date
     AND normalized_channel = 'release'
+),
+first_seen AS (
+  SELECT
+    client_id,
+    sample_id,
+    first_seen_date,
+    submission_date,
+    country AS first_reported_country,
+    first_reported_isp,
+    first_run_datetime,
+    channel,
+    device_manufacturer,
+    device_model,
+    os_version,
+    app_version,
+    locale
+  FROM
+    baseline_clients
+  WHERE
+    is_new_profile
 ),
 -- Find the most recent activation record per client_id.
 activations AS (
@@ -25,7 +47,7 @@ activations AS (
     client_id,
     ARRAY_AGG(activated ORDER BY submission_date DESC)[SAFE_OFFSET(0)] > 0 AS activated
   FROM
-    `moz-fx-data-shared-prod.fenix.new_profile_activation`
+    fenix.new_profile_activation
   WHERE
     submission_date = @submission_date
   GROUP BY
@@ -51,7 +73,7 @@ first_session_ping AS (
       SAFE_OFFSET(0)
     ] AS adjust_creative
   FROM
-    `moz-fx-data-shared-prod.fenix.first_session` AS fenix_first_session
+    fenix.first_session AS fenix_first_session
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND ping_info.seq = 0 -- Pings are sent in sequence, this guarantees that the first one is returned.
@@ -85,11 +107,53 @@ metrics_ping AS (
     )[SAFE_OFFSET(0)] AS adjust_creative,
     ARRAY_AGG(metrics.string.metrics_install_source IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
-    ] AS install_source
+    ] AS install_source,
+    ARRAY_AGG(
+      metrics.string.metrics_adjust_ad_group IGNORE NULLS
+      ORDER BY
+        submission_timestamp DESC
+    )[SAFE_OFFSET(0)] AS last_reported_adjust_ad_group,
+    ARRAY_AGG(
+      metrics.string.metrics_adjust_creative IGNORE NULLS
+      ORDER BY
+        submission_timestamp DESC
+    )[SAFE_OFFSET(0)] AS last_reported_adjust_creative,
+    ARRAY_AGG(
+      metrics.string.metrics_adjust_network IGNORE NULLS
+      ORDER BY
+        submission_timestamp DESC
+    )[SAFE_OFFSET(0)] AS last_reported_adjust_network,
+    ARRAY_AGG(
+      metrics.string.metrics_adjust_campaign IGNORE NULLS
+      ORDER BY
+        submission_timestamp DESC
+    )[SAFE_OFFSET(0)] AS last_reported_adjust_campaign,
   FROM
     org_mozilla_firefox.metrics AS org_mozilla_firefox_metrics
   WHERE
     DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    client_id
+),
+-- Find most recent client details from the baseline ping.
+baseline_ping AS (
+  SELECT
+    client_id,
+    MAX(submission_date) AS last_reported_date,
+    ARRAY_AGG(country IGNORE NULLS ORDER BY submission_date DESC)[
+      SAFE_OFFSET(0)
+    ] AS last_reported_country,
+    ARRAY_AGG(device_model IGNORE NULLS ORDER BY submission_date DESC)[
+      SAFE_OFFSET(0)
+    ] AS last_reported_device_model,
+    ARRAY_AGG(device_manufacturer IGNORE NULLS ORDER BY submission_date DESC)[
+      SAFE_OFFSET(0)
+    ] AS last_reported_device_manufacturer,
+    ARRAY_AGG(locale IGNORE NULLS ORDER BY submission_date DESC)[
+      SAFE_OFFSET(0)
+    ] AS last_reported_locale,
+  FROM
+    baseline_clients
   GROUP BY
     client_id
 ),
@@ -107,12 +171,22 @@ _current AS (
     first_seen.device_model AS device_model,
     first_seen.os_version AS os_version,
     first_seen.app_version AS app_version,
+    first_seen.locale AS locale,
     activated AS activated,
     COALESCE(first_session.adjust_campaign, metrics.adjust_campaign) AS adjust_campaign,
     COALESCE(first_session.adjust_ad_group, metrics.adjust_ad_group) AS adjust_ad_group,
     COALESCE(first_session.adjust_creative, metrics.adjust_creative) AS adjust_creative,
     COALESCE(first_session.adjust_network, metrics.adjust_network) AS adjust_network,
     metrics.install_source AS install_source,
+    metrics.last_reported_adjust_campaign AS last_reported_adjust_campaign,
+    metrics.last_reported_adjust_ad_group AS last_reported_adjust_ad_group,
+    metrics.last_reported_adjust_creative AS last_reported_adjust_creative,
+    metrics.last_reported_adjust_network AS last_reported_adjust_network,
+    baseline.last_reported_date AS last_reported_date,
+    baseline.last_reported_country AS last_reported_country,
+    baseline.last_reported_device_model AS last_reported_device_model,
+    baseline.last_reported_device_manufacturer AS last_reported_device_manufacturer,
+    baseline.last_reported_locale AS last_reported_locale,
     STRUCT(
       CASE
         WHEN first_session.client_id IS NULL
@@ -127,24 +201,24 @@ _current AS (
       DATE(first_session.min_submission_datetime) AS min_first_session_ping_submission_date,
       DATE(first_session.first_run_datetime) AS min_first_session_ping_run_date,
       DATE(metrics.min_submission_datetime) AS min_metrics_ping_submission_date,
-      CASE
-        mozfun.norm.get_earliest_value(
-          [
-            (
-              STRUCT(
-                CAST(first_session.adjust_network AS STRING),
-                first_session.min_submission_datetime
-              )
-            ),
-            (STRUCT(CAST(metrics.adjust_network AS STRING), metrics.min_submission_datetime))
-          ]
-        )
-        WHEN STRUCT(first_session.adjust_network, first_session.min_submission_datetime)
-          THEN 'first_session'
-        WHEN STRUCT(metrics.adjust_network, metrics.min_submission_datetime)
-          THEN 'metrics'
-        ELSE NULL
-      END AS adjust_network__source_ping,
+      mozfun.norm.get_earliest_value(
+        [
+          (
+            STRUCT(
+              CAST(first_session.adjust_network AS STRING),
+              'first_session',
+              DATETIME(first_session.min_submission_datetime)
+            )
+          ),
+          (
+            STRUCT(
+              CAST(metrics.adjust_network AS STRING),
+              'metrics',
+              DATETIME(metrics.min_submission_datetime)
+            )
+          )
+        ]
+      ).earliest_value_source AS adjust_network__source_ping,
       CASE
         WHEN metrics.install_source IS NOT NULL
           THEN 'metrics'
@@ -155,10 +229,17 @@ _current AS (
           (
             STRUCT(
               CAST(first_session.adjust_network AS STRING),
-              first_session.min_submission_datetime
+              'first_session',
+              DATETIME(first_session.min_submission_datetime)
             )
           ),
-          (STRUCT(CAST(metrics.adjust_network AS STRING), metrics.min_submission_datetime))
+          (
+            STRUCT(
+              CAST(metrics.adjust_network AS STRING),
+              'metrics',
+              DATETIME(metrics.min_submission_datetime)
+            )
+          )
         ]
       ).earliest_date AS adjust_network__source_ping_datetime,
       CASE
@@ -175,6 +256,10 @@ _current AS (
     (client_id)
   FULL OUTER JOIN
     metrics_ping AS metrics
+  USING
+    (client_id)
+  FULL OUTER JOIN
+    baseline_ping AS baseline
   USING
     (client_id)
   LEFT JOIN
@@ -207,17 +292,51 @@ SELECT
   COALESCE(_previous.device_model, _current.device_model) AS device_model,
   COALESCE(_previous.os_version, _current.os_version) AS os_version,
   COALESCE(_previous.app_version, _current.app_version) AS app_version,
+  COALESCE(_previous.locale, _current.locale) AS locale,
   COALESCE(_previous.activated, _current.activated) AS activated,
   COALESCE(_previous.adjust_campaign, _current.adjust_campaign) AS adjust_campaign,
   COALESCE(_previous.adjust_ad_group, _current.adjust_ad_group) AS adjust_ad_group,
   COALESCE(_previous.adjust_creative, _current.adjust_creative) AS adjust_creative,
   COALESCE(_previous.adjust_network, _current.adjust_network) AS adjust_network,
   COALESCE(_previous.install_source, _current.install_source) AS install_source,
+  COALESCE(
+    _current.last_reported_adjust_campaign,
+    _previous.last_reported_adjust_campaign
+  ) AS last_reported_adjust_campaign,
+  COALESCE(
+    _current.last_reported_adjust_ad_group,
+    _previous.last_reported_adjust_ad_group
+  ) AS last_reported_adjust_ad_group,
+  COALESCE(
+    _current.last_reported_adjust_creative,
+    _previous.last_reported_adjust_creative
+  ) AS last_reported_adjust_creative,
+  COALESCE(
+    _current.last_reported_adjust_network,
+    _previous.adjust_network
+  ) AS last_reported_adjust_network,
+  COALESCE(_current.last_reported_date, _previous.last_reported_date) AS last_reported_date,
+  COALESCE(
+    _current.last_reported_country,
+    _previous.last_reported_country
+  ) AS last_reported_country,
+  COALESCE(
+    _current.last_reported_device_model,
+    _previous.last_reported_device_model
+  ) AS last_reported_device_model,
+  COALESCE(
+    _current.last_reported_device_manufacturer,
+    _previous.device_manufacturer
+  ) AS last_reported_device_manufacturer,
+  COALESCE(_current.last_reported_locale, _previous.locale) AS last_reported_locale,
   STRUCT(
-    _previous.metadata.reported_first_session_ping
-    OR _current.metadata.reported_first_session_ping AS reported_first_session_ping,
-    _previous.metadata.reported_metrics_ping
-    OR _current.metadata.reported_metrics_ping AS reported_metrics_ping,
+    COALESCE(_previous.metadata.reported_first_session_ping, FALSE)
+    OR COALESCE(
+      _current.metadata.reported_first_session_ping,
+      FALSE
+    ) AS reported_first_session_ping,
+    COALESCE(_previous.metadata.reported_metrics_ping, FALSE)
+    OR COALESCE(_current.metadata.reported_metrics_ping, FALSE) AS reported_metrics_ping,
     CASE
       WHEN _previous.metadata.min_first_session_ping_submission_date IS NOT NULL
         AND _current.metadata.min_first_session_ping_submission_date IS NOT NULL

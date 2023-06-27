@@ -11,12 +11,12 @@ bigquery:
   time_partitioning:
     type: day
     field: date
-    require_partition_filter: true
+    require_partition_filter: false
     expiration_days: null
   clustering:
     fields:
     - sample_id
 scheduling:
-  dag_name: bqetl_mobile_activation
+  dag_name: bqetl_firefox_ios
   date_partition_parameter: submission_date
   depends_on_past: true

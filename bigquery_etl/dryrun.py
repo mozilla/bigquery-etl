@@ -80,6 +80,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_auth_events_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_content_events_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_stdout_events_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_server_events_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v1/init.sql",  # noqa E501
@@ -87,12 +88,18 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/fivetran_costs_derived/destinations_v1/query.sql",
     "sql/moz-fx-data-shared-prod/fivetran_costs_derived/incremental_mar_v1/query.sql",
     "sql/moz-fx-data-shared-prod/fivetran_costs_derived/monthly_costs_v1/query.sql",
+    *glob.glob(
+        "sql/**/apple_ads_external*/**/query.sql",
+        recursive=True,
+    ),
     "sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_update/view.sql",
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_all/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_structured/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_stub_installer/view.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_telemetry/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_error_structured/view.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_error_all/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/shredder_progress/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/shredder_progress/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_distinct_docids_v1/query.sql",
@@ -100,19 +107,22 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized_v1/query.sql",
     *glob.glob("sql/moz-fx-data-shared-prod/stripe_derived/**/*.sql", recursive=True),
     *glob.glob("sql/moz-fx-data-shared-prod/stripe_external/**/*.sql", recursive=True),
-    *glob.glob("sql/moz-fx-cjms-*/**/*.sql", recursive=True),
-    "sql/moz-fx-data-shared-prod/subscription_platform/stripe_subscriptions/view.sql",
-    "sql/moz-fx-data-shared-prod/subscription_platform/stripe_subscriptions_history/view.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/subscription_platform/nonprod_stripe_subscriptions/view.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/subscription_platform/nonprod_stripe_subscriptions_history/view.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/subscription_platform/apple_subscriptions/view.sql",
-    "sql/moz-fx-data-shared-prod/subscription_platform/nonprod_apple_subscriptions/view.sql",  # noqa E501
+    "sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/flows_live/view.sql",
+    "sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/flows_v1/query.sql",
+    "sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/refunds_v1/query.sql",
+    "sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/subscriptions_v1/query.sql",
+    "sql/moz-fx-cjms-prod-f3c7/cjms_bigquery/flows_v1/query.sql",
+    "sql/moz-fx-cjms-prod-f3c7/cjms_bigquery/refunds_v1/query.sql",
+    "sql/moz-fx-cjms-prod-f3c7/cjms_bigquery/subscriptions_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/subscription_platform_derived/apple_subscriptions_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/subscription_platform_derived/google_subscriptions_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_apple_subscriptions_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_google_subscriptions_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_stripe_subscriptions_history_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_changelog_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/stripe/itemized_payout_reconciliation/view.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscriptions_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscription_ids_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/all_subscriptions_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/channel_group_proportions_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/devices_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/fxa_attribution_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/funnel_product_page_to_subscribed_v1/query.sql",  # noqa E501
@@ -122,7 +132,6 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/site_metrics_empty_check_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/site_metrics_summary_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/subscriptions_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/subscription_events_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/users_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/subscriptions_v1/query.sql",
@@ -134,8 +143,6 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/protected_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/hubs_derived/subscriptions_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/relay_derived/subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/fenix_derived/google_ads_campaign_cost_breakdowns_v1/query.sql",
     *glob.glob("sql/moz-fx-data-shared-prod/search_terms*/**/*.sql", recursive=True),
     "sql/moz-fx-data-bq-performance/release_criteria/dashboard_health_v1/query.sql",
@@ -225,6 +232,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/migrated_clients_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/incline_executive_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox/migrated_clients/view.sql",
+    "sql/moz-fx-data-shared-prod/telemetry/sponsored_tiles_ad_request_fill/view.sql",
     # No matching signature for function IF
     "sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_last_seen/query.sql",
     # Duplicate UDF
@@ -237,6 +245,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry_derived/latest_versions/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/italy_covid19_outage_v1/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/main_nightly_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/telemetry_derived/main_nightly_v1/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/main_1pct_v1/init.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/main_1pct_v1/query.sql",
     # Query parameter not found
@@ -249,9 +258,12 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_histogram_aggregates_parent_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_histogram_aggregates_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v2/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_bucket_counts_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/glam_client_probe_counts_extract_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/scalar_percentiles_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/telemetry_derived/glam_sample_counts_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/glam_user_counts_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/scalar_percentiles_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_scalar_probe_counts_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_etl_sql_run_check_v1/query.sql",  # noqa E501
     # Dataset sql/glam-fenix-dev:glam_etl was not found
@@ -271,16 +283,6 @@ SKIP = {
     # Tests
     "sql/moz-fx-data-test-project/test/simple_view/view.sql",
 }
-SKIP.update(
-    [
-        p
-        for f in [Path(s) for s in SKIP]
-        for p in glob.glob(
-            f"sql/{TEST_PROJECT}/{f.parent.parent.name}*/{f.parent.name}/{f.name}",
-            recursive=True,
-        )
-    ]
-)
 
 
 class Errors(Enum):
@@ -353,28 +355,28 @@ class DryRun:
             sql = self.content
         else:
             sql = self.get_sql()
-            if self.metadata:
-                # use metadata to rewrite date-type query params as submission_date
-                date_params = [
-                    query_param
-                    for query_param in (
-                        self.metadata.scheduling.get("date_partition_parameter"),
-                        *(
-                            param.split(":", 1)[0]
-                            for param in self.metadata.scheduling.get("parameters", [])
-                            if re.fullmatch(r"[^:]+:DATE:{{\s*ds\s*}}", param)
-                        ),
-                    )
-                    if query_param and query_param != "submission_date"
-                ]
-                if date_params:
-                    pattern = re.compile(
-                        "@("
-                        + "|".join(date_params)
-                        # match whole query parameter names
-                        + ")(?![a-zA-Z0-9_])"
-                    )
-                    sql = pattern.sub("@submission_date", sql)
+        if self.metadata:
+            # use metadata to rewrite date-type query params as submission_date
+            date_params = [
+                query_param
+                for query_param in (
+                    self.metadata.scheduling.get("date_partition_parameter"),
+                    *(
+                        param.split(":", 1)[0]
+                        for param in self.metadata.scheduling.get("parameters", [])
+                        if re.fullmatch(r"[^:]+:DATE:{{\s*ds\s*}}", param)
+                    ),
+                )
+                if query_param and query_param != "submission_date"
+            ]
+            if date_params:
+                pattern = re.compile(
+                    "@("
+                    + "|".join(date_params)
+                    # match whole query parameter names
+                    + ")(?![a-zA-Z0-9_])"
+                )
+                sql = pattern.sub("@submission_date", sql)
         dataset = basename(dirname(dirname(self.sqlfile)))
         try:
             if self.use_cloud_function:
@@ -678,3 +680,21 @@ def find_next_word(target, source):
         if w == target:
             # get the next word, and remove quotations from column name
             return split[i + 1].replace("'", "")
+
+
+def add_test_project_to_skip(sql_dir="sql", project=TEST_PROJECT):
+    """Update skip list to include renamed queries in stage."""
+    SKIP.update(
+        [
+            p
+            for f in [Path(s) for s in SKIP]
+            for p in glob.glob(
+                f"sql/{TEST_PROJECT}/{f.parent.parent.name}*/{f.parent.name}/{f.name}",
+                recursive=True,
+            )
+        ]
+    )
+
+
+# detect test files on startup
+add_test_project_to_skip()

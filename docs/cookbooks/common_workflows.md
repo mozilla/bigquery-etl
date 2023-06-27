@@ -284,3 +284,22 @@ To generate and check the docs locally:
 1. Run `./bqetl docs generate --output_dir generated_docs`
 1. Navigate to the `generated_docs` directory
 1. Run `mkdocs serve` to start a local `mkdocs` server.
+
+
+## Setting up change control to code files
+
+Each code files in the bigquery-etl repository can have a set of owners who are responsible to review and approve changes, and are automatically assigned as PR reviewers.
+The query files in the repo also benefit from the metadata labels to be able to validate and identify the data that is change controlled.
+
+Here is a [sample PR with the implementation of change control for contextual services data](https://github.com/mozilla/bigquery-etl/pull/3833).
+
+1. Select or create a [Github team or identity](https://docs.github.com/en/organizations/organizing-members-into-teams/creating-a-team) and add the GitHub emails of the query codeowners. A GitHub identity is particularly useful when you need to include non @mozilla emails or to randomly assign PR reviewers from the team members. This team requires edit permissions to bigquery-etl, to achieve this, inherit the team from one that has the required permissions e.g. `mozilla > telemetry`.
+1. Open the `metadata.yaml` for the query where you want to apply change control:
+   * In the section `owners`, add the selected GitHub identity, along with the list of owners' emails.
+   * In the section `labels`, add `change_controlled: true`. This enables identifying change controlled data in the BigQuery console and in the Data Catalog.
+1. Setup the `CODEOWNERS`:
+   * Open the `CODEOWNERS` file located in the root of the repo.
+   * Add a new row with the path and owners for the query. You can place it in the corresponding section or create a new section in the file, e.g. `/sql_generators/active_users/templates/ @mozilla/kpi_table_reviewers`.
+1. The queries labeled change_controlled are automatically validated in the CI. To run the validation locally:
+   * Run the command `script/bqetl query validate <query_path>`.
+   * If the query is generated using the `/sql-generators`, first run `./script/bqetl generate <path>` and then run `script/bqetl query validate <query_path>`.

@@ -1,7 +1,4 @@
 fields:
-- mode: NULLABLE
-  name: submission_date
-  type: DATE
 - name: category
   type: STRING
   mode: NULLABLE

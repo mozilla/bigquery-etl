@@ -111,9 +111,9 @@ attrs==23.1.0 \
     #   jsonschema
     #   mozilla-metric-config-parser
     #   pytest-mypy
-authlib==1.2.0 \
-    --hash=sha256:4ddf4fd6cfa75c9a460b361d4bd9dac71ffda0be879dbe4292a02e92349ad55a \
-    --hash=sha256:4fa3e80883a5915ef9f5bc28630564bc4ed5b5af39812a3ff130ec76bd631e9d
+authlib==1.2.1 \
+    --hash=sha256:421f7c6b468d907ca2d9afede256f068f87e34d23dd221c07d13d4c234726afb \
+    --hash=sha256:c88984ea00149a90e3537c964327da930779afa4564e354edfd98410bea01911
     # via -r requirements.in
 black==23.3.0 \
     --hash=sha256:064101748afa12ad2291c2b91c960be28b817c0c7eaa35bec09cc63aa56493c5 \
@@ -435,9 +435,9 @@ google-auth-oauthlib==0.8.0 \
     --hash=sha256:40cc612a13c3336d5433e94e2adb42a0c88f6feb6c55769e44500fc70043a576 \
     --hash=sha256:81056a310fb1c4a3e5a7e1a443e1eb96593c6bbc55b26c0261e4d3295d3e6593
     # via gcsfs
-google-cloud-bigquery==3.11.1 \
-    --hash=sha256:738ae717f26bd7567f826f29f65be266f49bc3db0b069ac6030894fd8895ed6f \
-    --hash=sha256:cfe1158bc5818276ba765959da8a27afdcdaa11fa3fa9eed097d5639297dfe74
+google-cloud-bigquery==3.11.2 \
+    --hash=sha256:72f307c761312784d1a020fbf415ed81975472adde526d6b2d11468539310f7e \
+    --hash=sha256:a0f0d0492fff4c9c911cab27640e690dd14b442eda833319b11190042b2f7469
     # via -r requirements.in
 google-cloud-core==2.3.2 \
     --hash=sha256:8417acf6466be2fa85123441696c4badda48db314c607cf1e5d543fa8bdc22fe \
@@ -445,9 +445,9 @@ google-cloud-core==2.3.2 \
     # via
     #   google-cloud-bigquery
     #   google-cloud-storage
-google-cloud-storage==2.9.0 \
-    --hash=sha256:83a90447f23d5edd045e0037982c270302e3aeb45fc1288d2c2ca713d27bad94 \
-    --hash=sha256:9b6ae7b509fc294bdacb84d0f3ea8e20e2c54a8b4bbe39c5707635fec214eff3
+google-cloud-storage==2.10.0 \
+    --hash=sha256:934b31ead5f3994e5360f9ff5750982c5b6b11604dc072bc452c25965e076dc7 \
+    --hash=sha256:9433cf28801671de1c80434238fb1e7e4a1ba3087470e90f70c928ea77c2b9d7
     # via
     #   -r requirements.in
     #   gcsfs
@@ -714,17 +714,17 @@ mkdocs-awesome-pages-plugin==2.9.1 \
     --hash=sha256:be65e36444f5d991f87a90dae37de64e932562f99e362078724c27124834b90a \
     --hash=sha256:faf5241365f94c1f65ef3cad7ea9d6f0e7a436be7f06013c79c4045db0b2eafc
     # via -r requirements.in
-mkdocs-material==9.1.16 \
-    --hash=sha256:1021bfea20f00a9423530c8c2ae9be3c78b80f5a527b3f822e6de3d872e5ab79 \
-    --hash=sha256:f9e62558a6b01ffac314423cbc223d970c25fbc78999860226245b64e64d6751
+mkdocs-material==9.1.17 \
+    --hash=sha256:5a076524625047bf4ee4da1509ec90626f8fce915839dc07bdae6b59ff4f36f9 \
+    --hash=sha256:809ed68427fbab0330b0b07bc93175824c3b98f4187060a5c7b46aa8ae398a75
     # via -r requirements.in
 mkdocs-material-extensions==1.1.1 \
     --hash=sha256:9c003da71e2cc2493d910237448c672e00cefc800d3d6ae93d2fc69979e3bd93 \
     --hash=sha256:e41d9f38e4798b6617ad98ca8f7f1157b1e4385ac1459ca1e4ea219b556df945
     # via mkdocs-material
-mozilla-metric-config-parser==2023.6.4 \
-    --hash=sha256:36f264e89fc7a72d2aad2e024cd7af5b3c5df77409818930a0131dbd9046bcaa \
-    --hash=sha256:86c4e8d89da1be0cd3b4a62017b19351a0b9c966bf30cb64a3c3a0860461b786
+mozilla-metric-config-parser==2023.6.5 \
+    --hash=sha256:b1d00ae8a03ef6dfd6cbd744ade46350285f88eeee22637ec41c2b1b3194c8d8 \
+    --hash=sha256:f64d5229ba05a191cbd3455cc09ee434b4de57d5ed62feb212fb2c22e8c263bd
     # via -r requirements.in
 mozilla-schema-generator==0.5.1 \
     --hash=sha256:77109d64d0fd55b2579568e9a8f7c52d8eeed7e2a254b3262dd206ed21ffad38 \
@@ -1109,9 +1109,9 @@ pyrsistent==0.19.3 \
     --hash=sha256:f0774bf48631f3a20471dd7c5989657b639fd2d285b861237ea9e82c36a415a9 \
     --hash=sha256:f0e7c4b2f77593871e918be000b96c8107da48444d57005b6a6bc61fb4331b2c
     # via jsonschema
-pytest==7.3.2 \
-    --hash=sha256:cdcbd012c9312258922f8cd3f1b62a6580fdced17db6014896053d47cddf9295 \
-    --hash=sha256:ee990a3cc55ba808b80795a79944756f315c67c12b56abd3ac993a7b8c17030b
+pytest==7.4.0 \
+    --hash=sha256:78bf16451a2eb8c7a2ea98e32dc119fd2aa758f1d5d66dbf0a59d69a3969df32 \
+    --hash=sha256:b4bf8c45bd59934ed84001ad51e11b4ee40d40a1229d2c79f9c592b0a3f6bd8a
     # via
     #   -r requirements.in
     #   pytest-black
@@ -1341,9 +1341,9 @@ snowballstemmer==2.2.0 \
     --hash=sha256:09b16deb8547d3412ad7b590689584cd0fe25ec8db3be37788be3810cbf19cb1 \
     --hash=sha256:c8e1716e83cc398ae16824e5572ae04e0d9fc2c6b985fb0f900f5f0c96ecba1a
     # via pydocstyle
-sqlglot==16.3.1 \
-    --hash=sha256:177d42f4bf6eaa5778638e7292ebb69ccab254eb8546325e8f0dfaf07ed6bf86 \
-    --hash=sha256:bb3b1cf143bc1dc020808c86c98653a6cf7ef09f0763d50a49d90d4d632198d7
+sqlglot==16.4.2 \
+    --hash=sha256:6b5ab908063fafb8961343e0ec8311891ed820cf084e6d9d68693b5b3994f373 \
+    --hash=sha256:bf8faa83d0bd40fa219491736fa451584897d4a4dd07713a70cfc5cf89c0054b
     # via -r requirements.in
 sqlparse==0.4.4 \
     --hash=sha256:5430a4fe2ac7d0f93e66f1efc6e1338a41884b7ddf2a350cedd20ccc4d9d28f3 \

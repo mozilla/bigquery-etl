@@ -49,22 +49,6 @@
   },
   {
     "type": "STRING",
-    "name": "experiments_key"
-  },
-  {
-    "type": "STRING",
-    "name": "experiments_branch"
-  },
-  {
-    "type": "STRING",
-    "name": "experiments_enrollment_id"
-  },
-  {
-    "type": "STRING",
-    "name": "experiments_type"
-  },
-  {
-    "type": "STRING",
     "name": "distribution_id"
   },
   {

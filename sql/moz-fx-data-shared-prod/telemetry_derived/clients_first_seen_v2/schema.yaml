@@ -41,18 +41,6 @@ fields:
 - name: document_id
   type: STRING
   mode: NULLABLE
-- name: experiments_key
-  type: STRING
-  mode: NULLABLE
-- name: experiments_branch
-  type: STRING
-  mode: NULLABLE
-- name: experiments_enrollment_id
-  type: STRING
-  mode: NULLABLE
-- name: experiments_type
-  type: STRING
-  mode: NULLABLE
 - name: distribution_id
   type: STRING
   mode: NULLABLE

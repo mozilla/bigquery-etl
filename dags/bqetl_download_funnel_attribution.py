@@ -51,7 +51,6 @@ with DAG(
         owner="gleonard@mozilla.com",
         email=["gleonard@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        sql_file_path="sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v2/checks.sql",
     )
 
     ga_derived__downloads_with_attribution__v2 = bigquery_etl_query(

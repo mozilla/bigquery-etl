@@ -29472,6 +29472,9 @@ fields:
         - name: use_counter2_range_createcontextualfragment_page
           type: STRING
           mode: NULLABLE
+        - name: fingerprinting_protection_canvas_noise_calculate_time_ms
+          type: STRING
+          mode: NULLABLE
       - name: keyed_histograms
         type: RECORD
         mode: NULLABLE

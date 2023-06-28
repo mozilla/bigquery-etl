@@ -28,7 +28,6 @@ def get_qualifed_table_name_to_entries_map(
 ) -> defaultdict[str, List[Backfill]]:
     """Return backfill entries from qualified table name."""
     backfills_dict = defaultdict(list)
-    backfill_files: list[Path] = []
 
     search_path = Path(sql_dir) / project_id
 
@@ -48,7 +47,7 @@ def get_qualifed_table_name_to_entries_map(
             click.echo(e)
             sys.exit(1)
 
-    backfill_files.extend(Path(search_path).rglob(BACKFILL_FILE))
+    backfill_files = Path(search_path).rglob(BACKFILL_FILE)
 
     for backfill_file in backfill_files:
         project, dataset, table = extract_from_query_path(backfill_file)
@@ -87,8 +86,7 @@ def validate_metadata_workgroups(qualified_table_name, sql_dir) -> bool:
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
     dataset_path = Path(sql_dir) / project / dataset
 
-    query_files: list[Path] = []
-    query_files.extend(Path(dataset_path).rglob("*.sql"))
+    query_files = Path(dataset_path).rglob("*.sql")
 
     for query_file in query_files:
         try:
@@ -102,7 +100,6 @@ def validate_metadata_workgroups(qualified_table_name, sql_dir) -> bool:
                         return False
 
             # check dataset level metadata
-            # dataset_path = query_file.parent.parent
             dataset_metadata = _get_metadata(dataset_path, DATASET_METADATA_FILE)
             if dataset_metadata:
                 dataset_workgroup_access = dataset_metadata.workgroup_access

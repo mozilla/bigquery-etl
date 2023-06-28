@@ -9,10 +9,12 @@ from typing import List, Tuple
 import click
 
 from bigquery_etl.backfill.parse import BACKFILL_FILE, Backfill
-from bigquery_etl.docs.derived_datasets.generate_derived_dataset_docs import (
-    _get_metadata,
+from bigquery_etl.metadata.parse_metadata import (
+    DATASET_METADATA_FILE,
+    METADATA_FILE,
+    DatasetMetadata,
+    Metadata,
 )
-from bigquery_etl.metadata.parse_metadata import DATASET_METADATA_FILE
 from bigquery_etl.util import extract_from_query_path
 
 QUALIFIED_TABLE_NAME_RE = re.compile(
@@ -80,7 +82,12 @@ def get_backfill_staging_qualified_table_name(qualified_table_name, entry_date) 
 
 
 def validate_metadata_workgroups(qualified_table_name, sql_dir) -> bool:
-    """Return True if metadata workgroup is mozilla-confidential or empty."""
+    """
+    Return True if metadata workgroup is mozilla-confidential or None.
+
+    The backfill staging dataset currently only support backfilling tables for workgroup:mozilla-confidential.
+    When workgroup is None, the default (workgroup:mozilla-confidential) will be applied.
+    """
     valid_workgroup = ["workgroup:mozilla-confidential"]
 
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
@@ -91,18 +98,27 @@ def validate_metadata_workgroups(qualified_table_name, sql_dir) -> bool:
     for query_file in query_files:
         try:
             # check table level metadata
-            table_path = query_file.parent
-            table_metadata = _get_metadata(table_path)
-            if table_metadata:
-                table_workgroup_access = table_metadata.workgroup_access
+            table_metadata_path = query_file.parent / METADATA_FILE
+            table_metadata = Metadata.from_file(table_metadata_path)
+            table_workgroup_access = table_metadata.workgroup_access
+
+            if table_workgroup_access is not None:
+                if not table_workgroup_access:
+                    return False
+
                 for table_workgroup in table_workgroup_access:
                     if table_workgroup.members != valid_workgroup:
                         return False
 
             # check dataset level metadata
-            dataset_metadata = _get_metadata(dataset_path, DATASET_METADATA_FILE)
-            if dataset_metadata:
-                dataset_workgroup_access = dataset_metadata.workgroup_access
+            dataset_metadata_path = dataset_path / DATASET_METADATA_FILE
+            dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
+            dataset_workgroup_access = dataset_metadata.workgroup_access
+
+            if dataset_workgroup_access is not None:
+                if not dataset_workgroup_access:
+                    return False
+
                 for dataset_workgroup in dataset_workgroup_access:
                     if dataset_workgroup["members"] != valid_workgroup:
                         return False

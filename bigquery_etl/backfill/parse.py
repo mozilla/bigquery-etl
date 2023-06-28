@@ -2,7 +2,6 @@
 
 import enum
 import os
-import sys
 from datetime import date
 from pathlib import Path
 from typing import List, Optional
@@ -176,7 +175,7 @@ class Backfill:
                         backfill_entries.append(backfill)
 
             except yaml.YAMLError as e:
-                raise ValueError(f'Unable to parse Backfill file {file}') from e
+                raise ValueError(f"Unable to parse Backfill file {file}") from e
 
             return backfill_entries
 

@@ -48,6 +48,13 @@ BACKFILL_YAML_TEMPLATE = (
     "  status: Drafting\n"
 )
 
+VALID_WORKGROUP_ACCESS = [
+    dict(
+        role="roles/bigquery.dataViewer",
+        members=["workgroup:mozilla-confidential"],
+    )
+]
+
 
 class TestBackfill:
     @pytest.fixture
@@ -1019,7 +1026,7 @@ class TestBackfill:
 
         assert actual_backfill_staging == expected_backfill_staging
 
-    def test_validate_metadata_workgroups_empty_table_workgroup(self, runner):
+    def test_validate_metadata_workgroups_valid_workgroups(self, runner):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod/test/query_v1")
             with open("sql/moz-fx-data-shared-prod/test/query_v1/query.sql", "w") as f:
@@ -1031,24 +1038,34 @@ class TestBackfill:
 
             qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
 
-            valid_workgroup_access = []
-
-            metadata_conf = {
+            table_metadata_conf = {
                 "friendly_name": "test",
                 "description": "test",
                 "owners": ["test@example.org"],
-                "workgroup_access": valid_workgroup_access,
+                "workgroup_access": VALID_WORKGROUP_ACCESS,
             }
 
             with open(
                 "sql/moz-fx-data-shared-prod/test/query_v1/metadata.yaml",
                 "w",
             ) as f:
-                f.write(yaml.dump(metadata_conf))
+                f.write(yaml.dump(table_metadata_conf))
 
             assert "metadata.yaml" in os.listdir(
                 "sql/moz-fx-data-shared-prod/test/query_v1"
             )
+
+            dataset_metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "dataset_base_acl": "derived",
+                "workgroup_access": VALID_WORKGROUP_ACCESS,
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(dataset_metadata_conf))
 
             result = validate_metadata_workgroups(qualified_table_name, "sql")
             assert result
@@ -1065,28 +1082,37 @@ class TestBackfill:
 
             qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
 
-            valid_workgroup_access = [
-                dict(
-                    role="roles/bigquery.dataViewer",
-                    members=["workgroup:mozilla-confidential"],
-                )
-            ]
-
-            metadata_conf = {
+            table_metadata_conf = {
                 "friendly_name": "test",
                 "description": "test",
                 "owners": ["test@example.org"],
-                "workgroup_access": valid_workgroup_access,
+                "workgroup_access": VALID_WORKGROUP_ACCESS,
             }
 
             with open(
                 "sql/moz-fx-data-shared-prod/test/query_v1/metadata.yaml",
                 "w",
             ) as f:
-                f.write(yaml.dump(metadata_conf))
+                f.write(yaml.dump(table_metadata_conf))
 
             assert "metadata.yaml" in os.listdir(
                 "sql/moz-fx-data-shared-prod/test/query_v1"
+            )
+
+            dataset_metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "dataset_base_acl": "derived",
+                "workgroup_access": None,
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(dataset_metadata_conf))
+
+            assert "dataset_metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test"
             )
 
             result = validate_metadata_workgroups(qualified_table_name, "sql")
@@ -1111,7 +1137,7 @@ class TestBackfill:
                 )
             ]
 
-            metadata_conf = {
+            table_metadata_conf = {
                 "friendly_name": "test",
                 "description": "test",
                 "owners": ["test@example.org"],
@@ -1122,10 +1148,26 @@ class TestBackfill:
                 "sql/moz-fx-data-shared-prod/test/query_v1/metadata.yaml",
                 "w",
             ) as f:
-                f.write(yaml.dump(metadata_conf))
+                f.write(yaml.dump(table_metadata_conf))
 
             assert "metadata.yaml" in os.listdir(
                 "sql/moz-fx-data-shared-prod/test/query_v1"
+            )
+
+            dataset_metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "dataset_base_acl": "derived",
+                "workgroup_access": None,
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(dataset_metadata_conf))
+
+            assert "dataset_metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test"
             )
 
             result = validate_metadata_workgroups(qualified_table_name, "sql")
@@ -1144,10 +1186,30 @@ class TestBackfill:
             qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
 
             invalid_workgroup_access = [
-                dict(role="roles/bigquery.dataViewer", members=["workgroup:invalid"])
+                dict(
+                    role="roles/bigquery.dataViewer",
+                    members=["workgroup:invalid_workgroup"],
+                )
             ]
 
-            metadata_conf = {
+            table_metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "workgroup_access": VALID_WORKGROUP_ACCESS,
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(table_metadata_conf))
+
+            assert "metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/query_v1"
+            )
+
+            dataset_metadata_conf = {
                 "friendly_name": "test",
                 "description": "test",
                 "dataset_base_acl": "derived",
@@ -1155,10 +1217,109 @@ class TestBackfill:
             }
 
             with open(
-                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml",
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(dataset_metadata_conf))
+
+            assert "dataset_metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test"
+            )
+
+            result = validate_metadata_workgroups(qualified_table_name, "sql")
+            assert not result
+
+    def test_validate_metadata_workgroups_table_workgroup_empty_list(self, runner):
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/test/query_v1")
+            with open("sql/moz-fx-data-shared-prod/test/query_v1/query.sql", "w") as f:
+                f.write("SELECT 1")
+
+            assert "query.sql" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/query_v1"
+            )
+
+            qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+            invalid_workgroup_access = []
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "workgroup_access": invalid_workgroup_access,
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/query_v1/metadata.yaml",
                 "w",
             ) as f:
                 f.write(yaml.dump(metadata_conf))
+
+            assert "metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/query_v1"
+            )
+
+            dataset_metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "dataset_base_acl": "derived",
+                "workgroup_access": None,
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(dataset_metadata_conf))
+
+            assert "dataset_metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test"
+            )
+
+            result = validate_metadata_workgroups(qualified_table_name, "sql")
+            assert not result
+
+    def test_validate_metadata_workgroups_dataset_workgroup_empty_list(self, runner):
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/test/query_v1")
+            with open("sql/moz-fx-data-shared-prod/test/query_v1/query.sql", "w") as f:
+                f.write("SELECT 1")
+
+            assert "query.sql" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/query_v1"
+            )
+
+            qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+            invalid_workgroup_access = []
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "workgroup_access": VALID_WORKGROUP_ACCESS,
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(metadata_conf))
+
+            assert "metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/query_v1"
+            )
+
+            dataset_metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "dataset_base_acl": "derived",
+                "workgroup_access": invalid_workgroup_access,
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(dataset_metadata_conf))
 
             assert "dataset_metadata.yaml" in os.listdir(
                 "sql/moz-fx-data-shared-prod/test"

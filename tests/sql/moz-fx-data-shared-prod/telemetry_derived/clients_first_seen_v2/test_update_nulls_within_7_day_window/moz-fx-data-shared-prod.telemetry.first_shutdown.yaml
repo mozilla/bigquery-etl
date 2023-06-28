@@ -1,7 +1,10 @@
 ---
 - client_id: client-2
-  submission_timestamp: '2023-06-11 11:03:00'
+  submission_timestamp: '2023-06-15 11:00:00'
+  sample_id: 20
+  normalized_channel: release
   environment:
     settings:
       attribution:
-        source: source2
+        source: asource2
+        dltoken: dtoken2

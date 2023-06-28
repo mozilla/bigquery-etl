@@ -550,8 +550,9 @@ SELECT
       WHEN _previous.client_id IS NULL
         THEN _current.app_name
       WHEN _previous.client_id IS NOT NULL
-        AND _previous.first_seen_date >= DATE_SUB(_current.first_seen_date, INTERVAL 7 DAY)
-        AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+        AND _current.first_seen_date
+        BETWEEN _previous.first_seen_date
+        AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
         THEN COALESCE(_previous.app_name, _current.app_name)
       ELSE _previous.app_name
     END AS app_name,
@@ -559,7 +560,9 @@ SELECT
       WHEN _previous.client_id IS NULL
         THEN _current.app_version
       WHEN _previous.client_id IS NOT NULL
-        AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+        AND _current.first_seen_date
+        BETWEEN _previous.first_seen_date
+        AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
         THEN COALESCE(_previous.app_version, _current.app_version)
       ELSE _previous.app_version
     END AS app_version,
@@ -567,7 +570,9 @@ SELECT
       WHEN _previous.client_id IS NULL
         THEN _current.city
       WHEN _previous.client_id IS NOT NULL
-        AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+        AND _current.first_seen_date
+        BETWEEN _previous.first_seen_date
+        AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
         THEN COALESCE(_previous.city, _current.city)
       ELSE _previous.city
     END AS city,
@@ -575,7 +580,9 @@ SELECT
       WHEN _previous.client_id IS NULL
         THEN _current.normalized_channel
       WHEN _previous.client_id IS NOT NULL
-        AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+        AND _current.first_seen_date
+        BETWEEN _previous.first_seen_date
+        AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
         THEN COALESCE(_previous.normalized_channel, _current.normalized_channel)
       ELSE _previous.normalized_channel
     END AS normalized_channel,
@@ -583,7 +590,9 @@ SELECT
       WHEN _previous.client_id IS NULL
         THEN _current.country
       WHEN _previous.client_id IS NOT NULL
-        AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+        AND _current.first_seen_date
+        BETWEEN _previous.first_seen_date
+        AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
         THEN COALESCE(_previous.country, _current.country)
       ELSE _previous.country
     END AS country,
@@ -591,7 +600,9 @@ SELECT
       WHEN _previous.client_id IS NULL
         THEN _current.normalized_os
       WHEN _previous.client_id IS NOT NULL
-        AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+        AND _current.first_seen_date
+        BETWEEN _previous.first_seen_date
+        AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
         THEN COALESCE(_previous.normalized_os, _current.normalized_os)
       ELSE _previous.normalized_os
     END AS normalized_os,
@@ -599,7 +610,9 @@ SELECT
       WHEN _previous.client_id IS NULL
         THEN _current.normalized_os_version
       WHEN _previous.client_id IS NOT NULL
-        AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+        AND _current.first_seen_date
+        BETWEEN _previous.first_seen_date
+        AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
         THEN COALESCE(_previous.normalized_os_version, _current.normalized_os_version)
       ELSE _previous.normalized_os_version
     END AS normalized_os_version,
@@ -607,7 +620,9 @@ SELECT
       WHEN _previous.client_id IS NULL
         THEN _current.startup_profile_selection_reason
       WHEN _previous.client_id IS NOT NULL
-        AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+        AND _current.first_seen_date
+        BETWEEN _previous.first_seen_date
+        AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
         THEN COALESCE(
             _previous.startup_profile_selection_reason,
             _current.startup_profile_selection_reason
@@ -618,7 +633,9 @@ SELECT
       WHEN _previous.client_id IS NULL
         THEN _current.download_token
       WHEN _previous.client_id IS NOT NULL
-        AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+        AND _current.first_seen_date
+        BETWEEN _previous.first_seen_date
+        AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
         THEN COALESCE(_previous.download_token, _current.download_token)
       ELSE _previous.download_token
     END AS download_token,
@@ -626,7 +643,9 @@ SELECT
       WHEN _previous.client_id IS NULL
         THEN _current.download_source
       WHEN _previous.client_id IS NOT NULL
-        AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+        AND _current.first_seen_date
+        BETWEEN _previous.first_seen_date
+        AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
         THEN COALESCE(_previous.download_source, _current.download_source)
       ELSE _previous.download_source
     END AS download_source,
@@ -634,7 +653,9 @@ SELECT
       WHEN _previous.client_id IS NULL
         THEN _current.attribution_campaign
       WHEN _previous.client_id IS NOT NULL
-        AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+        AND _current.first_seen_date
+        BETWEEN _previous.first_seen_date
+        AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
         THEN COALESCE(_previous.attribution_campaign, _current.attribution_campaign)
       ELSE _previous.attribution_campaign
     END AS attribution_campaign,
@@ -642,7 +663,9 @@ SELECT
       WHEN _previous.client_id IS NULL
         THEN _current.attribution_content
       WHEN _previous.client_id IS NOT NULL
-        AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+        AND _current.first_seen_date
+        BETWEEN _previous.first_seen_date
+        AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
         THEN COALESCE(_previous.attribution_content, _current.attribution_content)
       ELSE _previous.attribution_content
     END AS attribution_content,
@@ -650,7 +673,9 @@ SELECT
       WHEN _previous.client_id IS NULL
         THEN _current.attribution_experiment
       WHEN _previous.client_id IS NOT NULL
-        AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+        AND _current.first_seen_date
+        BETWEEN _previous.first_seen_date
+        AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
         THEN COALESCE(_previous.attribution_experiment, _current.attribution_experiment)
       ELSE _previous.attribution_experiment
     END AS attribution_experiment,
@@ -658,7 +683,9 @@ SELECT
       WHEN _previous.client_id IS NULL
         THEN _current.attribution_medium
       WHEN _previous.client_id IS NOT NULL
-        AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+        AND _current.first_seen_date
+        BETWEEN _previous.first_seen_date
+        AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
         THEN COALESCE(_previous.attribution_medium, _current.attribution_medium)
       ELSE _previous.attribution_medium
     END AS attribution_medium,
@@ -666,7 +693,9 @@ SELECT
       WHEN _previous.client_id IS NULL
         THEN _current.attribution_source
       WHEN _previous.client_id IS NOT NULL
-        AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+        AND _current.first_seen_date
+        BETWEEN _previous.first_seen_date
+        AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
         THEN COALESCE(_previous.attribution_source, _current.attribution_source)
       ELSE _previous.attribution_source
     END AS attribution_source,
@@ -675,7 +704,9 @@ SELECT
         WHEN _previous.client_id IS NULL
           THEN _current.metadata.attribution_campaign__source_ping
         WHEN _previous.client_id IS NOT NULL
-          AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+          AND _current.first_seen_date
+          BETWEEN _previous.first_seen_date
+          AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
           THEN COALESCE(
               _previous.metadata.attribution_campaign__source_ping,
               _current.metadata.attribution_campaign__source_ping
@@ -686,7 +717,9 @@ SELECT
         WHEN _previous.client_id IS NULL
           THEN _current.metadata.attribution_content__source_ping
         WHEN _previous.client_id IS NOT NULL
-          AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+          AND _current.first_seen_date
+          BETWEEN _previous.first_seen_date
+          AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
           THEN COALESCE(
               _previous.metadata.attribution_content__source_ping,
               _current.metadata.attribution_content__source_ping
@@ -697,7 +730,9 @@ SELECT
         WHEN _previous.client_id IS NULL
           THEN _current.metadata.attribution_experiment__source_ping
         WHEN _previous.client_id IS NOT NULL
-          AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+          AND _current.first_seen_date
+          BETWEEN _previous.first_seen_date
+          AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
           THEN COALESCE(
               _previous.metadata.attribution_experiment__source_ping,
               _current.metadata.attribution_experiment__source_ping
@@ -708,7 +743,9 @@ SELECT
         WHEN _previous.client_id IS NULL
           THEN _current.metadata.attribution_medium__source_ping
         WHEN _previous.client_id IS NOT NULL
-          AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+          AND _current.first_seen_date
+          BETWEEN _previous.first_seen_date
+          AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
           THEN COALESCE(
               _previous.metadata.attribution_medium__source_ping,
               _current.metadata.attribution_medium__source_ping
@@ -719,7 +756,9 @@ SELECT
         WHEN _previous.client_id IS NULL
           THEN _current.metadata.attribution_source__source_ping
         WHEN _previous.client_id IS NOT NULL
-          AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+          AND _current.first_seen_date
+          BETWEEN _previous.first_seen_date
+          AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
           THEN COALESCE(
               _previous.metadata.attribution_source__source_ping,
               _current.metadata.attribution_source__source_ping
@@ -730,7 +769,9 @@ SELECT
         WHEN _previous.client_id IS NULL
           THEN _current.metadata.download_token__source_ping
         WHEN _previous.client_id IS NOT NULL
-          AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+          AND _current.first_seen_date
+          BETWEEN _previous.first_seen_date
+          AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
           THEN COALESCE(
               _previous.metadata.download_token__source_ping,
               _current.metadata.download_token__source_ping
@@ -741,7 +782,9 @@ SELECT
         WHEN _previous.client_id IS NULL
           THEN _current.metadata.download_source__source_ping
         WHEN _previous.client_id IS NOT NULL
-          AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+          AND _current.first_seen_date
+          BETWEEN _previous.first_seen_date
+          AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
           THEN COALESCE(
               _previous.metadata.download_source__source_ping,
               _current.metadata.download_source__source_ping
@@ -752,31 +795,43 @@ SELECT
         WHEN _previous.client_id IS NULL
           THEN _current.metadata.reported_new_profile_ping
         WHEN _previous.client_id IS NOT NULL
-          AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
-          THEN COALESCE(
-              _previous.metadata.reported_new_profile_ping,
-              _current.metadata.reported_new_profile_ping
+          AND _current.first_seen_date
+          BETWEEN _previous.first_seen_date
+          AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+          THEN IF(
+              _previous.metadata.reported_new_profile_ping IS NULL
+              OR _previous.metadata.reported_new_profile_ping = FALSE,
+              _current.metadata.reported_new_profile_ping,
+              _previous.metadata.reported_new_profile_ping
             )
-        ELSE _previous.metadata.reported_new_profile_ping
       END AS reported_new_profile_ping,
       CASE
         WHEN _previous.client_id IS NULL
           THEN _current.metadata.reported_shutdown_ping
         WHEN _previous.client_id IS NOT NULL
-          AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
-          THEN COALESCE(
-              _previous.metadata.reported_shutdown_ping,
-              _current.metadata.reported_shutdown_ping
+          AND _current.first_seen_date
+          BETWEEN _previous.first_seen_date
+          AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+          THEN IF(
+              _previous.metadata.reported_shutdown_ping IS NULL
+              OR _previous.metadata.reported_shutdown_ping = FALSE,
+              _current.metadata.reported_shutdown_ping,
+              _previous.metadata.reported_shutdown_ping
             )
-        ELSE _previous.metadata.reported_shutdown_ping
       END AS reported_shutdown_ping,
       CASE
         WHEN _previous.client_id IS NULL
           THEN _current.metadata.reported_main_ping
         WHEN _previous.client_id IS NOT NULL
-          AND _current.first_seen_date >= _previous.first_seen_date AND _current.first_seen_date <= DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
-          THEN COALESCE(_previous.metadata.reported_main_ping, _current.metadata.reported_main_ping)
-        ELSE _previous.metadata.reported_main_ping
+          AND _current.first_seen_date
+          BETWEEN _previous.first_seen_date
+          AND DATE_ADD(_previous.first_seen_date, INTERVAL 7 DAY)
+          THEN IF(
+              _previous.metadata.reported_main_ping IS NULL
+              OR _previous.metadata.reported_main_ping = FALSE,
+              _current.metadata.reported_main_ping,
+              _previous.metadata.reported_main_ping
+            )
       END AS reported_main_ping
     ) AS metadata
   )

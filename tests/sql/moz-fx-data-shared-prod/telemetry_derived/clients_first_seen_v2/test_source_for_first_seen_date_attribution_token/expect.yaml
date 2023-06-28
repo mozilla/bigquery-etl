@@ -25,6 +25,3 @@
   download_token: token4
   metadata:
     attribution_campaign__source_ping: new_profile
-    reported_main_ping: true
-    reported_new_profile_ping: true
-    reported_shutdown_ping: true

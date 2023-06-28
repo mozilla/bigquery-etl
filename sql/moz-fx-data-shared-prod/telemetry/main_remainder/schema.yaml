@@ -22578,6 +22578,10 @@ fields:
           mode: NULLABLE
           description: Whether or not a user has the zoomed view (a.k.a. "Magnify
             small areas") enabled.
+        - name: fingerprinting_protection_canvas_noise_calculate_time_ms
+          type: STRING
+          mode: NULLABLE
+          description: Counts how long to generate canvas random noises.
       - name: keyed_histograms
         type: RECORD
         mode: NULLABLE

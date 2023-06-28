@@ -303,7 +303,10 @@ SELECT
       metrics.counter.translations_requests_count,
       metrics.counter.app_menu_sign_into_sync,
       metrics.counter.metrics_private_tabs_open_count,
-      metrics.counter.settings_sign_into_sync
+      metrics.counter.settings_sign_into_sync,
+      metrics.counter.logins_deleted,
+      metrics.counter.logins_modified,
+      metrics.counter.logins_saved
     ) AS counter,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -597,7 +600,8 @@ SELECT
       metrics.timing_distribution.networking_dns_failed_lookup_time,
       metrics.timing_distribution.networking_dns_lookup_time,
       metrics.timing_distribution.networking_dns_renewal_time,
-      metrics.timing_distribution.networking_dns_renewal_time_for_ttl
+      metrics.timing_distribution.networking_dns_renewal_time_for_ttl,
+      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time
     ) AS timing_distribution,
     metrics.jwe,
     metrics.memory_distribution,
@@ -772,7 +776,10 @@ SELECT
       metrics.counter.translations_requests_count,
       metrics.counter.app_menu_sign_into_sync,
       metrics.counter.metrics_private_tabs_open_count,
-      metrics.counter.settings_sign_into_sync
+      metrics.counter.settings_sign_into_sync,
+      metrics.counter.logins_deleted,
+      metrics.counter.logins_modified,
+      metrics.counter.logins_saved
     ) AS counter,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1066,7 +1073,8 @@ SELECT
       metrics.timing_distribution.networking_dns_failed_lookup_time,
       metrics.timing_distribution.networking_dns_lookup_time,
       metrics.timing_distribution.networking_dns_renewal_time,
-      metrics.timing_distribution.networking_dns_renewal_time_for_ttl
+      metrics.timing_distribution.networking_dns_renewal_time_for_ttl,
+      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time
     ) AS timing_distribution,
     metrics.jwe,
     metrics.memory_distribution,

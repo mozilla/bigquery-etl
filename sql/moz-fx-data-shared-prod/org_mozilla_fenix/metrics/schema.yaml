@@ -1186,6 +1186,25 @@ fields:
         from the settings page.
 
         '
+    - name: logins_deleted
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counter of number of passwords that have been deleted by user.
+
+        '
+    - name: logins_modified
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counter of number of passwords that have been modified by user.
+
+        '
+    - name: logins_saved
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counter of number of passwords that have been saved by user (including
+        deleted).
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -3608,6 +3627,26 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'Max amount of DNR rules being evaluated.
+
+        '
+    - name: addresses_saved_all
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter of the number of all addresses that are currently saved
+        by user.
+
+        '
+    - name: credit_cards_saved_all
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counter of number of credit cards that are currently stored by
+        user.
+
+        '
+    - name: logins_saved_all
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counter of number of passwords currently saved by user.
 
         '
   - name: timing_distribution
@@ -9218,6 +9257,47 @@ fields:
           mode: NULLABLE
       description: 'Time for a DNS OS resolution (msec) used to get TTL | Migrated
         from Firefox Telemetry''s `DNS_RENEWAL_TIME_FOR_TTL`.
+
+        '
+    - name: fingerprinting_protection_canvas_noise_calculate_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Counts how long to generate canvas random noises.
 
         '
   - name: jwe

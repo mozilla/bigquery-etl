@@ -81,18 +81,16 @@ class DryRun:
 
         # update skip list to include renamed queries in stage.
         test_project = ConfigLoader.get("dry_run", "test_project", fallback="")
-        file_pattern_re = re.compile(r"sql/([^\/]+)/([^/]+)(/?.*|$)")
         skip_files.update(
             [
-                file
-                for skip in ConfigLoader.get("dry_run", "skip", fallback=[])
-                for file in glob.glob(
-                    file_pattern_re.sub(f"sql/{test_project}/\\2*\\3", skip),
+                p
+                for f in [Path(s) for s in skip_files]
+                for p in glob.glob(
+                    f"sql/{test_project}/{f.parent.parent.name}*/{f.parent.name}/{f.name}",
                     recursive=True,
                 )
             ]
         )
-
         return skip_files
 
     def skip(self):

@@ -384,7 +384,7 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
     view_files = [
         file
         for file in artifact_files
-        if file.name == VIEW_FILE and str(file) not in DryRun.skipped_files()
+        if file.name == VIEW_FILE and str(file) not in dryrun.DryRun.skipped_files()
     ]
     for view_file in view_files:
         dataset = view_file.parent.parent.name

@@ -27,7 +27,11 @@ from bigquery_etl.query_scheduling.utils import (
 AIRFLOW_TASK_TEMPLATE = "airflow_task.j2"
 QUERY_FILE_RE = re.compile(
     r"^(?:.*/)?([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/"
-    r"([a-zA-Z0-9_]+)_(v[0-9]+)/(?:query\.sql|part1\.sql|script\.sql|query\.py)$"
+    r"([a-zA-Z0-9_]+)_(v[0-9]+)/(?:query\.sql|part1\.sql|script\.sql|query\.py|checks\.sql)$"
+)
+CHECKS_FILE_RE = re.compile(
+    r"^(?:.*/)?([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/"
+    r"([a-zA-Z0-9_]+)_(v[0-9]+)/(?:checks\.sql)$"
 )
 DEFAULT_DESTINATION_TABLE_STR = "use-default-destination-table"
 MAX_TASK_NAME_LENGTH = 250
@@ -215,6 +219,7 @@ class Task:
     referenced_tables: Optional[List[Tuple[str, str, str]]] = attr.ib(None)
     destination_table: Optional[str] = attr.ib(default=DEFAULT_DESTINATION_TABLE_STR)
     is_python_script: bool = attr.ib(False)
+    is_dq_check: bool = attr.ib(False)
     task_concurrency: Optional[int] = attr.ib(None)
     retry_delay: Optional[str] = attr.ib(None)
     retries: Optional[int] = attr.ib(None)
@@ -293,6 +298,7 @@ class Task:
     def __attrs_post_init__(self):
         """Extract information from the query file name."""
         query_file_re = re.search(QUERY_FILE_RE, self.query_file)
+        check_file_re = re.search(CHECKS_FILE_RE, self.query_file)
         if query_file_re:
             self.project = query_file_re.group(1)
             self.dataset = query_file_re.group(2)
@@ -304,6 +310,14 @@ class Task:
                 self.task_name = f"{self.dataset}__{self.table}__{self.version}"[
                     -MAX_TASK_NAME_LENGTH:
                 ]
+                self.validate_task_name(None, self.task_name)
+
+            if check_file_re is not None:
+                self.task_name = (
+                    f"checks__{self.dataset}__{self.table}__{self.version}"[
+                        -MAX_TASK_NAME_LENGTH:
+                    ]
+                )
                 self.validate_task_name(None, self.task_name)
 
             if self.destination_table == DEFAULT_DESTINATION_TABLE_STR:
@@ -449,6 +463,15 @@ class Task:
         task = cls.of_query(query_file, metadata, dag_collection)
         task.query_file_path = query_file
         task.is_python_script = True
+        return task
+
+    @classmethod
+    def of_dq_check(cls, query_file, metadata=None, dag_collection=None):
+        """Create a task that schedules DQ check file in Airflow."""
+        task = cls.of_query(query_file, metadata, dag_collection)
+        task.query_file_path = query_file
+        task.is_dq_check = True
+        task.depends_on_fivetran = []
         return task
 
     def to_ref(self, dag_collection):

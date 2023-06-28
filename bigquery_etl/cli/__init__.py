@@ -2,6 +2,7 @@
 
 import logging
 import warnings
+from pathlib import Path
 
 import click
 
@@ -19,6 +20,7 @@ from ..cli.query import query
 from ..cli.routine import mozfun, routine
 from ..cli.stage import stage
 from ..cli.view import view
+from ..config import ConfigLoader
 from ..copy_deduplicate import copy_deduplicate
 from ..dependency import dependency
 from ..docs import docs_
@@ -73,4 +75,5 @@ def cli(prog_name=None):
 
 
 if __name__ == "__main__":
+    ConfigLoader.set_project_dir(Path().absolute())
     cli()

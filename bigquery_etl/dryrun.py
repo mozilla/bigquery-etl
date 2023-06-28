@@ -22,6 +22,7 @@ from urllib.request import Request, urlopen
 import click
 from google.cloud import bigquery
 
+from .config import ConfigLoader
 from .metadata.parse_metadata import Metadata
 from .util.common import render
 
@@ -299,12 +300,6 @@ class Errors(Enum):
 class DryRun:
     """Dry run SQL files."""
 
-    # todo: support different dry run endpoints for different projects
-    DRY_RUN_URL = (
-        "https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/"
-        "bigquery-etl-dryrun"
-    )
-
     def __init__(
         self,
         sqlfile,
@@ -321,14 +316,41 @@ class DryRun:
         self.use_cloud_function = use_cloud_function
         self.client = client if use_cloud_function or client else bigquery.Client()
         self.respect_skip = respect_skip
+        self.dry_run_url = ConfigLoader.get("dry_run", "function")
         try:
             self.metadata = Metadata.of_query_file(self.sqlfile)
         except FileNotFoundError:
             self.metadata = None
 
+    @staticmethod
+    def skipped_files() -> Set[str]:
+        """Return files skipped by dry run."""
+        skip_files = {
+            file
+            for skip in ConfigLoader.get("dry_run", "skip", fallback=[])
+            for file in glob.glob(
+                skip,
+                recursive=True,
+            )
+        }
+
+        # update skip list to include renamed queries in stage.
+        test_project = ConfigLoader.get("dry_run", "test_project", fallback="")
+        skip_files.update(
+            [
+                p
+                for f in [Path(s) for s in skip_files]
+                for p in glob.glob(
+                    f"sql/{test_project}/{f.parent.parent.name}*/{f.parent.name}/{f.name}",
+                    recursive=True,
+                )
+            ]
+        )
+        return skip_files
+
     def skip(self):
         """Determine if dry run should be skipped."""
-        return self.respect_skip and self.sqlfile in SKIP
+        return self.respect_skip and self.sqlfile in self.skipped_files()
 
     def get_sql(self):
         """Get SQL content."""
@@ -385,7 +407,7 @@ class DryRun:
             if self.use_cloud_function:
                 r = urlopen(
                     Request(
-                        self.DRY_RUN_URL,
+                        self.dry_run_url,
                         headers={"Content-Type": "application/json"},
                         data=json.dumps(
                             {
@@ -683,21 +705,3 @@ def find_next_word(target, source):
         if w == target:
             # get the next word, and remove quotations from column name
             return split[i + 1].replace("'", "")
-
-
-def add_test_project_to_skip(sql_dir="sql", project=TEST_PROJECT):
-    """Update skip list to include renamed queries in stage."""
-    SKIP.update(
-        [
-            p
-            for f in [Path(s) for s in SKIP]
-            for p in glob.glob(
-                f"sql/{TEST_PROJECT}/{f.parent.parent.name}*/{f.parent.name}/{f.name}",
-                recursive=True,
-            )
-        ]
-    )
-
-
-# detect test files on startup
-add_test_project_to_skip()

@@ -1,3 +1,76 @@
+CREATE TEMP FUNCTION synthesize_subscription(subscription ANY TYPE, effective_at TIMESTAMP) AS (
+  -- Generate a synthetic subscription record from an existing subscription record
+  -- to simulate how the subscription was at the specified `effective_at` timestamp,
+  -- which is presumed to be before the subscription ended.
+  (
+    SELECT AS STRUCT
+      subscription.* REPLACE (
+        IF(
+          subscription.cancel_at_period_end
+          AND subscription.canceled_at <= effective_at,
+          subscription.cancel_at,
+          NULL
+        ) AS cancel_at,
+        IF(
+          subscription.cancel_at_period_end
+          AND subscription.canceled_at <= effective_at,
+          TRUE,
+          FALSE
+        ) AS cancel_at_period_end,
+        IF(subscription.canceled_at <= effective_at, subscription.canceled_at, NULL) AS canceled_at,
+        IF(
+          subscription.current_period_start <= effective_at,
+          subscription.current_period_end,
+          NULL
+        ) AS current_period_end,
+        IF(
+          subscription.current_period_start <= effective_at,
+          subscription.current_period_start,
+          NULL
+        ) AS current_period_start,
+        IF(subscription.discount.start <= effective_at, subscription.discount, NULL) AS discount,
+        CAST(NULL AS TIMESTAMP) AS ended_at,
+        IF(
+          subscription.current_period_start <= effective_at,
+          subscription.latest_invoice_id,
+          NULL
+        ) AS latest_invoice_id,
+        STRUCT(
+          subscription.metadata.appliedPromotionCode,
+          IF(
+            subscription.metadata.cancelled_for_customer_at <= effective_at,
+            subscription.metadata.cancelled_for_customer_at,
+            NULL
+          ) AS cancelled_for_customer_at,
+          IF(
+            subscription.metadata.plan_change_date <= effective_at,
+            subscription.metadata.plan_change_date,
+            NULL
+          ) AS plan_change_date,
+          IF(
+            subscription.metadata.plan_change_date <= effective_at,
+            subscription.metadata.previous_plan_id,
+            NULL
+          ) AS previous_plan_id
+        ) AS metadata,
+        CASE
+          WHEN subscription.status IN ('incomplete', 'incomplete_expired')
+            THEN 'incomplete'
+          WHEN effective_at >= subscription.trial_start
+            AND effective_at < subscription.trial_end
+            THEN 'trialing'
+          -- Only consider canceled subscriptions to have been active if they lasted for at least a day.
+          WHEN subscription.status = 'canceled'
+            AND TIMESTAMP_DIFF(subscription.ended_at, subscription.start_date, HOUR) < 24
+            THEN 'incomplete'
+          ELSE 'active'
+        END AS status,
+        IF(subscription.trial_start <= effective_at, subscription.trial_end, NULL) AS trial_end,
+        IF(subscription.trial_start <= effective_at, subscription.trial_start, NULL) AS trial_start
+      )
+  )
+);
+
 WITH original_changelog AS (
   SELECT
     id,
@@ -77,61 +150,7 @@ synthetic_subscription_start_changelog AS (
     'synthetic_subscription_start' AS type,
     original_id,
     `timestamp`,
-    (
-      SELECT AS STRUCT
-        subscription.* REPLACE (
-          CAST(NULL AS TIMESTAMP) AS cancel_at,
-          FALSE AS cancel_at_period_end,
-          CAST(NULL AS TIMESTAMP) AS canceled_at,
-          IF(
-            subscription.current_period_start = subscription.start_date,
-            subscription.current_period_end,
-            NULL
-          ) AS current_period_end,
-          IF(
-            subscription.current_period_start = subscription.start_date,
-            subscription.current_period_start,
-            NULL
-          ) AS current_period_start,
-          IF(
-            subscription.discount.start <= subscription.start_date,
-            subscription.discount,
-            NULL
-          ) AS discount,
-          CAST(NULL AS TIMESTAMP) AS ended_at,
-          IF(
-            subscription.current_period_start = subscription.start_date,
-            subscription.latest_invoice_id,
-            NULL
-          ) AS latest_invoice_id,
-          STRUCT(
-            subscription.metadata.appliedPromotionCode,
-            CAST(NULL AS TIMESTAMP) AS cancelled_for_customer_at,
-            CAST(NULL AS TIMESTAMP) AS plan_change_date,
-            CAST(NULL AS STRING) AS previous_plan_id
-          ) AS metadata,
-          CASE
-            WHEN subscription.status IN ('incomplete', 'incomplete_expired')
-              THEN 'incomplete'
-            WHEN subscription.status = 'canceled'
-              AND TIMESTAMP_DIFF(subscription.ended_at, subscription.start_date, HOUR) < 24
-              THEN 'incomplete'
-            WHEN subscription.trial_start = subscription.start_date
-              THEN 'trialing'
-            ELSE 'active'
-          END AS status,
-          IF(
-            subscription.trial_start = subscription.start_date,
-            subscription.trial_end,
-            NULL
-          ) AS trial_end,
-          IF(
-            subscription.trial_start = subscription.start_date,
-            subscription.trial_start,
-            NULL
-          ) AS trial_start
-        )
-    ) AS subscription,
+    synthesize_subscription(subscription, effective_at => subscription.start_date) AS subscription,
     IF(
       subscription.metadata.previous_plan_id IS NOT NULL
       AND subscription.metadata.plan_change_date IS NOT NULL,
@@ -146,74 +165,9 @@ synthetic_plan_change_changelog AS (
     'synthetic_plan_change' AS type,
     original_id,
     subscription.metadata.plan_change_date AS `timestamp`,
-    (
-      SELECT AS STRUCT
-        subscription.* REPLACE (
-          IF(
-            subscription.cancel_at_period_end
-            AND subscription.canceled_at <= subscription.metadata.plan_change_date,
-            subscription.cancel_at,
-            NULL
-          ) AS cancel_at,
-          IF(
-            subscription.cancel_at_period_end
-            AND subscription.canceled_at <= subscription.metadata.plan_change_date,
-            TRUE,
-            FALSE
-          ) AS cancel_at_period_end,
-          IF(
-            subscription.canceled_at <= subscription.metadata.plan_change_date,
-            subscription.canceled_at,
-            NULL
-          ) AS canceled_at,
-          IF(
-            subscription.current_period_start <= subscription.metadata.plan_change_date,
-            subscription.current_period_end,
-            NULL
-          ) AS current_period_end,
-          IF(
-            subscription.current_period_start <= subscription.metadata.plan_change_date,
-            subscription.current_period_start,
-            NULL
-          ) AS current_period_start,
-          IF(
-            subscription.discount.start <= subscription.metadata.plan_change_date,
-            subscription.discount,
-            NULL
-          ) AS discount,
-          CAST(NULL AS TIMESTAMP) AS ended_at,
-          IF(
-            subscription.current_period_start <= subscription.metadata.plan_change_date,
-            subscription.latest_invoice_id,
-            NULL
-          ) AS latest_invoice_id,
-          STRUCT(
-            subscription.metadata.appliedPromotionCode,
-            IF(
-              subscription.metadata.cancelled_for_customer_at <= subscription.metadata.plan_change_date,
-              subscription.metadata.cancelled_for_customer_at,
-              NULL
-            ) AS cancelled_for_customer_at,
-            subscription.metadata.plan_change_date,
-            subscription.metadata.previous_plan_id
-          ) AS metadata,
-          IF(
-            subscription.metadata.plan_change_date >= subscription.trial_start
-            AND subscription.metadata.plan_change_date < subscription.trial_end,
-            'trialing',
-            'active'
-          ) AS status,
-          IF(
-            subscription.trial_start <= subscription.metadata.plan_change_date,
-            subscription.trial_end,
-            NULL
-          ) AS trial_end,
-          IF(
-            subscription.trial_start <= subscription.metadata.plan_change_date,
-            subscription.trial_start,
-            NULL
-          ) AS trial_start
-        )
+    synthesize_subscription(
+      subscription,
+      effective_at => subscription.metadata.plan_change_date
     ) AS subscription,
     subscription_plan_id
   FROM
@@ -227,69 +181,7 @@ synthetic_trial_start_changelog AS (
     'synthetic_trial_start' AS type,
     original_id,
     subscription.trial_start AS `timestamp`,
-    (
-      SELECT AS STRUCT
-        subscription.* REPLACE (
-          IF(
-            subscription.cancel_at_period_end
-            AND subscription.canceled_at <= subscription.trial_start,
-            subscription.cancel_at,
-            NULL
-          ) AS cancel_at,
-          IF(
-            subscription.cancel_at_period_end
-            AND subscription.canceled_at <= subscription.trial_start,
-            TRUE,
-            FALSE
-          ) AS cancel_at_period_end,
-          IF(
-            subscription.canceled_at <= subscription.trial_start,
-            subscription.canceled_at,
-            NULL
-          ) AS canceled_at,
-          IF(
-            subscription.current_period_start <= subscription.trial_start,
-            subscription.current_period_end,
-            NULL
-          ) AS current_period_end,
-          IF(
-            subscription.current_period_start <= subscription.trial_start,
-            subscription.current_period_start,
-            NULL
-          ) AS current_period_start,
-          IF(
-            subscription.discount.start <= subscription.trial_start,
-            subscription.discount,
-            NULL
-          ) AS discount,
-          CAST(NULL AS TIMESTAMP) AS ended_at,
-          IF(
-            subscription.current_period_start <= subscription.trial_start,
-            subscription.latest_invoice_id,
-            NULL
-          ) AS latest_invoice_id,
-          STRUCT(
-            subscription.metadata.appliedPromotionCode,
-            IF(
-              subscription.metadata.cancelled_for_customer_at <= subscription.trial_start,
-              subscription.metadata.cancelled_for_customer_at,
-              NULL
-            ) AS cancelled_for_customer_at,
-            IF(
-              subscription.metadata.plan_change_date <= subscription.trial_start,
-              subscription.metadata.plan_change_date,
-              NULL
-            ) AS plan_change_date,
-            IF(
-              subscription.metadata.plan_change_date <= subscription.trial_start,
-              subscription.metadata.previous_plan_id,
-              NULL
-            ) AS previous_plan_id
-          ) AS metadata,
-          'trialing' AS status
-          -- Leave `trial_end` and `trial_start` as is.
-        )
-    ) AS subscription,
+    synthesize_subscription(subscription, effective_at => subscription.trial_start) AS subscription,
     IF(
       subscription.metadata.previous_plan_id IS NOT NULL
       AND subscription.trial_start < subscription.metadata.plan_change_date,
@@ -306,69 +198,7 @@ synthetic_trial_end_changelog AS (
     'synthetic_trial_end' AS type,
     original_id,
     subscription.trial_end AS `timestamp`,
-    (
-      SELECT AS STRUCT
-        subscription.* REPLACE (
-          IF(
-            subscription.cancel_at_period_end
-            AND subscription.canceled_at <= subscription.trial_end,
-            subscription.cancel_at,
-            NULL
-          ) AS cancel_at,
-          IF(
-            subscription.cancel_at_period_end
-            AND subscription.canceled_at <= subscription.trial_end,
-            TRUE,
-            FALSE
-          ) AS cancel_at_period_end,
-          IF(
-            subscription.canceled_at <= subscription.trial_end,
-            subscription.canceled_at,
-            NULL
-          ) AS canceled_at,
-          IF(
-            subscription.current_period_start <= subscription.trial_end,
-            subscription.current_period_end,
-            NULL
-          ) AS current_period_end,
-          IF(
-            subscription.current_period_start <= subscription.trial_end,
-            subscription.current_period_start,
-            NULL
-          ) AS current_period_start,
-          IF(
-            subscription.discount.start <= subscription.trial_end,
-            subscription.discount,
-            NULL
-          ) AS discount,
-          CAST(NULL AS TIMESTAMP) AS ended_at,
-          IF(
-            subscription.current_period_start <= subscription.trial_end,
-            subscription.latest_invoice_id,
-            NULL
-          ) AS latest_invoice_id,
-          STRUCT(
-            subscription.metadata.appliedPromotionCode,
-            IF(
-              subscription.metadata.cancelled_for_customer_at <= subscription.trial_end,
-              subscription.metadata.cancelled_for_customer_at,
-              NULL
-            ) AS cancelled_for_customer_at,
-            IF(
-              subscription.metadata.plan_change_date <= subscription.trial_end,
-              subscription.metadata.plan_change_date,
-              NULL
-            ) AS plan_change_date,
-            IF(
-              subscription.metadata.plan_change_date <= subscription.trial_end,
-              subscription.metadata.previous_plan_id,
-              NULL
-            ) AS previous_plan_id
-          ) AS metadata,
-          'active' AS status
-          -- Leave `trial_end` and `trial_start` as is.
-        )
-    ) AS subscription,
+    synthesize_subscription(subscription, effective_at => subscription.trial_end) AS subscription,
     IF(
       subscription.metadata.previous_plan_id IS NOT NULL
       AND subscription.trial_end < subscription.metadata.plan_change_date,
@@ -390,67 +220,7 @@ synthetic_cancel_at_period_end_changelog AS (
     'synthetic_cancel_at_period_end' AS type,
     original_id,
     subscription.canceled_at AS `timestamp`,
-    (
-      SELECT AS STRUCT
-        subscription.* REPLACE (
-          -- Leave `cancel_at`, `cancel_at_period_end`, and `canceled_at` as is.
-          IF(
-            subscription.current_period_start <= subscription.canceled_at,
-            subscription.current_period_end,
-            NULL
-          ) AS current_period_end,
-          IF(
-            subscription.current_period_start <= subscription.canceled_at,
-            subscription.current_period_start,
-            NULL
-          ) AS current_period_start,
-          IF(
-            subscription.discount.start <= subscription.canceled_at,
-            subscription.discount,
-            NULL
-          ) AS discount,
-          CAST(NULL AS TIMESTAMP) AS ended_at,
-          IF(
-            subscription.current_period_start <= subscription.canceled_at,
-            subscription.latest_invoice_id,
-            NULL
-          ) AS latest_invoice_id,
-          STRUCT(
-            subscription.metadata.appliedPromotionCode,
-            IF(
-              subscription.metadata.cancelled_for_customer_at <= subscription.canceled_at,
-              subscription.metadata.cancelled_for_customer_at,
-              NULL
-            ) AS cancelled_for_customer_at,
-            IF(
-              subscription.metadata.plan_change_date <= subscription.canceled_at,
-              subscription.metadata.plan_change_date,
-              NULL
-            ) AS plan_change_date,
-            IF(
-              subscription.metadata.plan_change_date <= subscription.canceled_at,
-              subscription.metadata.previous_plan_id,
-              NULL
-            ) AS previous_plan_id
-          ) AS metadata,
-          IF(
-            subscription.canceled_at >= subscription.trial_start
-            AND subscription.canceled_at < subscription.trial_end,
-            'trialing',
-            'active'
-          ) AS status,
-          IF(
-            subscription.trial_start <= subscription.canceled_at,
-            subscription.trial_end,
-            NULL
-          ) AS trial_end,
-          IF(
-            subscription.trial_start <= subscription.canceled_at,
-            subscription.trial_start,
-            NULL
-          ) AS trial_start
-        )
-    ) AS subscription,
+    synthesize_subscription(subscription, effective_at => subscription.canceled_at) AS subscription,
     IF(
       subscription.metadata.previous_plan_id IS NOT NULL
       AND subscription.canceled_at < subscription.metadata.plan_change_date,
@@ -500,12 +270,12 @@ synthetic_changelog_with_plans AS (
     changelog.type,
     changelog.original_id,
     changelog.`timestamp`,
-    (
-      SELECT AS STRUCT
-        changelog.subscription.* REPLACE (
-          IF(
-            changelog.subscription_plan_id = changelog.subscription.items[0].plan.id,
-            changelog.subscription.items,
+    IF(
+      changelog.subscription_plan_id = changelog.subscription.items[0].plan.id,
+      changelog.subscription,
+      (
+        SELECT AS STRUCT
+          changelog.subscription.* REPLACE (
             [
               STRUCT(
                 changelog.subscription.items[0].id,
@@ -529,9 +299,9 @@ synthetic_changelog_with_plans AS (
                 ) AS plan,
                 changelog.subscription.items[0].quantity
               )
-            ]
-          ) AS items
-        )
+            ] AS items
+          )
+      )
     ) AS subscription
   FROM
     synthetic_changelog_union AS changelog
@@ -544,6 +314,8 @@ adjusted_resync_changelog AS (
   SELECT
     'adjusted_resync' AS type,
     original_id,
+    -- For canceled subscriptions adjust the questionable resync change to represent when the subscription ended.
+    -- For all other subscriptions adjust the questionable resync change to the time of the resync.
     COALESCE(subscription.ended_at, synced_at) AS `timestamp`,
     subscription
   FROM

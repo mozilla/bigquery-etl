@@ -1,6 +1,7 @@
-friendly_name: Suggest Foreasting
+friendly_name: Suggest Revenue Levers Daily
 description: |-
-  dataset with fields needed for Suggest revenue forecasting
+  Daily metrics identified as Suggest revenue levers, including DOU,
+  urlbar search volume, Suggest impressions & Suggest ad impressions, and Suggest ad clicks.
 owners:
 - skahmann@mozilla.com
 labels:

@@ -130,7 +130,7 @@ class TestView:
         }
         assert (
             mock_bigquery_client()
-            .get_table("moz-fx-data-test-project.test.view_with_metadata.friendly_name")
+            .get_table("moz-fx-data-test-project.test.view_with_metadata")
             .friendly_name
             == "Test metadata file"
         )

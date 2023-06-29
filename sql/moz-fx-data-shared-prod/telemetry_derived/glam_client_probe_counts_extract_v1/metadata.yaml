@@ -1,6 +1,6 @@
 friendly_name: |-
   Telemetry Derived - Glam Client Probe Counts Extract
 description: |-
-  [DESCRIPTION_MISSING]
+  Holds data to be exported to GLAM in its final format
 owners:
-- data-platform-infra-wg@mozilla.com
+- efilho@mozilla.com

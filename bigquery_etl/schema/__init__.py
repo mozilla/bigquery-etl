@@ -62,7 +62,7 @@ class Schema:
         query = f"SELECT * FROM `{project}.{dataset}.{table}`"
 
         if partitioned_by:
-            query += f" WHERE DATE({partitioned_by}) = DATE('2020-01-01')"
+            query += f" WHERE DATE(`{partitioned_by}`) = DATE('2020-01-01')"
 
         try:
             return cls(
@@ -270,7 +270,7 @@ class Schema:
     def to_yaml_file(self, yaml_path: Path):
         """Write schema to the YAML file path."""
         with open(yaml_path, "w") as out:
-            yaml.dump(self.schema, out, default_flow_style=False)
+            yaml.dump(self.schema, out, default_flow_style=False, sort_keys=False)
 
     def to_json_file(self, json_path: Path):
         """Write schema to the JSON file path."""

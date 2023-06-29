@@ -7,16 +7,16 @@ WITH all_clients AS (
     channel
   FROM clients_scalar_aggregates_v1
   WHERE submission_date = @submission_date
-  
+
   UNION ALL
-  
+
   SELECT
     client_id,
     os,
     app_version,
     app_build_id,
     channel
-  FROM clients_histogram_aggregates_v1
+  FROM clients_histogram_aggregates_v2
   WHERE submission_date = @submission_date
 )
 

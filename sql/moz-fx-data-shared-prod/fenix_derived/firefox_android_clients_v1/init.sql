@@ -1,11 +1,11 @@
 -- Initialization query first observations for Firefox Android Clients.
-WITH first_seen AS (
+WITH baseline_clients AS (
   SELECT
     client_id,
     sample_id,
     first_seen_date,
     submission_date,
-    country AS first_reported_country,
+    country,
     isp AS first_reported_isp,
     DATETIME(first_run_date) AS first_run_datetime,
     normalized_channel AS channel,
@@ -13,12 +13,33 @@ WITH first_seen AS (
     device_model,
     normalized_os_version AS os_version,
     app_display_version AS app_version,
+    locale,
+    is_new_profile,
+  FROM
+    `moz-fx-data-shared-prod.fenix.baseline_clients_daily`
+  WHERE
+    submission_date >= '2020-01-21'
+    AND normalized_channel = 'release'
+),
+first_seen AS (
+  SELECT
+    client_id,
+    sample_id,
+    first_seen_date,
+    submission_date,
+    country AS first_reported_country,
+    first_reported_isp,
+    first_run_datetime,
+    channel,
+    device_manufacturer,
+    device_model,
+    os_version,
+    app_version,
     locale
   FROM
-    `moz-fx-data-shared-prod.fenix.baseline_clients_first_seen`
+    baseline_clients
   WHERE
-    submission_date >= '2019-01-01'
-    AND normalized_channel = 'release'
+    is_new_profile
 ),
 -- Find the most recent activation record per client_id. Data available since '2021-12-01'
 activations AS (
@@ -117,24 +138,22 @@ metrics_ping AS (
 -- Find most recent client details from the baseline ping.
 baseline_ping AS (
   SELECT
-    client_info.client_id,
-    DATE(MAX(submission_timestamp)) AS last_reported_date,
-    ARRAY_AGG(normalized_country_code IGNORE NULLS ORDER BY submission_timestamp DESC)[
+    client_id,
+    MAX(submission_date) AS last_reported_date,
+    ARRAY_AGG(country IGNORE NULLS ORDER BY submission_date DESC)[
       SAFE_OFFSET(0)
     ] AS last_reported_country,
-    ARRAY_AGG(client_info.device_model IGNORE NULLS ORDER BY submission_timestamp DESC)[
+    ARRAY_AGG(device_model IGNORE NULLS ORDER BY submission_date DESC)[
       SAFE_OFFSET(0)
     ] AS last_reported_device_model,
-    ARRAY_AGG(client_info.device_manufacturer IGNORE NULLS ORDER BY submission_timestamp DESC)[
+    ARRAY_AGG(device_manufacturer IGNORE NULLS ORDER BY submission_date DESC)[
       SAFE_OFFSET(0)
     ] AS last_reported_device_manufacturer,
-    ARRAY_AGG(client_info.locale IGNORE NULLS ORDER BY submission_timestamp DESC)[
+    ARRAY_AGG(locale IGNORE NULLS ORDER BY submission_date DESC)[
       SAFE_OFFSET(0)
     ] AS last_reported_locale,
   FROM
-    org_mozilla_firefox.baseline AS org_mozilla_firefox_baseline
-  WHERE
-    DATE(submission_timestamp) >= '2019-01-01'
+    baseline_clients
   GROUP BY
     client_id
 )
@@ -202,24 +221,24 @@ SELECT
     DATE(first_session.min_submission_datetime) AS min_first_session_ping_submission_date,
     DATE(first_session.first_run_datetime) AS min_first_session_ping_run_date,
     DATE(metrics.min_submission_datetime) AS min_metrics_ping_submission_date,
-    CASE
-      mozfun.norm.get_earliest_value(
-        [
-          (
-            STRUCT(
-              CAST(first_session.adjust_network AS STRING),
-              first_session.min_submission_datetime
-            )
-          ),
-          (STRUCT(CAST(metrics.adjust_network AS STRING), metrics.min_submission_datetime))
-        ]
-      )
-      WHEN STRUCT(first_session.adjust_network, first_session.min_submission_datetime)
-        THEN 'first_session'
-      WHEN STRUCT(metrics.adjust_network, metrics.min_submission_datetime)
-        THEN 'metrics'
-      ELSE NULL
-    END AS adjust_network__source_ping,
+    mozfun.norm.get_earliest_value(
+      [
+        (
+          STRUCT(
+            CAST(first_session.adjust_network AS STRING),
+            'first_session_ping',
+            DATETIME(first_session.min_submission_datetime)
+          )
+        ),
+        (
+          STRUCT(
+            CAST(metrics.adjust_network AS STRING),
+            'metrics_ping',
+            DATETIME(metrics.min_submission_datetime)
+          )
+        )
+      ]
+    ).earliest_value_source AS adjust_network__source_ping,
     CASE
       WHEN metrics.install_source IS NOT NULL
         THEN 'metrics'
@@ -230,10 +249,17 @@ SELECT
         (
           STRUCT(
             CAST(first_session.adjust_network AS STRING),
-            first_session.min_submission_datetime
+            'first_session_ping',
+            DATETIME(first_session.min_submission_datetime)
           )
         ),
-        (STRUCT(CAST(metrics.adjust_network AS STRING), metrics.min_submission_datetime))
+        (
+          STRUCT(
+            CAST(metrics.adjust_network AS STRING),
+            'metrics_ping',
+            DATETIME(metrics.min_submission_datetime)
+          )
+        )
       ]
     ).earliest_date AS adjust_network__source_ping_datetime,
     CASE

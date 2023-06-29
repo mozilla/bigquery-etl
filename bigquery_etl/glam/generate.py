@@ -28,16 +28,6 @@ class TemplateResult:
     query_text: str
 
 
-APP_PREFIX_CHANNELS = {
-    "firefox_desktop_glam_nightly": "nightly",
-    "firefox_desktop_glam_beta": "beta",
-    "firefox_desktop_glam_release": "release",
-    "org_mozilla_fenix_glam_nightly": "nightly",
-    "org_mozilla_fenix_glam_beta": "beta",
-    "org_mozilla_fenix_glam_release": "release",
-}
-
-
 def from_template(
     query_type: QueryType,
     template_name: str,
@@ -215,6 +205,15 @@ def main():
             "minimum_client_count": 0,
         },
     }
+
+    channel_prefixes = {
+        "firefox_desktop_glam_nightly": "nightly",
+        "firefox_desktop_glam_beta": "beta",
+        "firefox_desktop_glam_release": "release",
+        "org_mozilla_fenix_glam_nightly": "nightly",
+        "org_mozilla_fenix_glam_beta": "beta",
+        "org_mozilla_fenix_glam_release": "release",
+    }
     validate(instance=config, schema=config_schema)
 
     if not config.get(args.prefix, {}).get("build_date_udf"):
@@ -223,7 +222,7 @@ def main():
     [
         table(
             "latest_versions_v1",
-            **dict(app_id_channel=(f"'{APP_PREFIX_CHANNELS[args.prefix]}'")),
+            **dict(app_id_channel=(f"'{channel_prefixes[args.prefix]}'")),
         ),
         init(
             "clients_scalar_aggregates_v1",

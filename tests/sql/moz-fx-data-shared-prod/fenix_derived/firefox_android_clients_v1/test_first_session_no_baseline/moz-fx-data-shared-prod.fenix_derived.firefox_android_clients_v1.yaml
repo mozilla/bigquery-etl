@@ -1,10 +1,10 @@
 ---
 - client_id: client-3
   sample_id: 70
-  first_seen_date: 2023-05-02
+  first_seen_date: 2023-05-01
   submission_date: 2023-05-02
-  first_run_date: 2023-05-02
-  last_reported_date: 2023-05-01
+  first_run_date: 2023-05-01
+  last_reported_date: 2023-05-02
   activated: false
   metadata:
     reported_first_session_ping: false

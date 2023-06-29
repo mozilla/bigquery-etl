@@ -4,11 +4,14 @@ import re
 import sys
 from collections import defaultdict
 from pathlib import Path
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 
 import click
+from google.auth.exceptions import DefaultCredentialsError
+from google.cloud import bigquery
+from google.cloud.exceptions import NotFound
 
-from bigquery_etl.backfill.parse import BACKFILL_FILE, Backfill
+from bigquery_etl.backfill.parse import BACKFILL_FILE, Backfill, BackfillStatus
 from bigquery_etl.metadata.parse_metadata import (
     DATASET_METADATA_FILE,
     METADATA_FILE,
@@ -154,3 +157,63 @@ def qualified_table_name_matching(qualified_table_name) -> Tuple[str, str, str]:
         )
 
     return project_id, dataset_id, table_id
+
+
+def get_backfill_entries_to_process_dict(
+    sql_dir, project, qualified_table_name=None
+) -> Dict[str, Backfill]:
+    """Return backfill entries that require processing."""
+    try:
+        bigquery.Client(project="")
+    except DefaultCredentialsError:
+        click.echo(
+            "Authentication to GCP required. Run `gcloud auth login` "
+            "and check that the project is set correctly."
+        )
+        sys.exit(1)
+    client = bigquery.Client(project=project)
+
+    status = BackfillStatus.DRAFTING.value
+
+    if qualified_table_name:
+        backfills_dict = get_qualified_table_name_to_entries_dict(
+            sql_dir, qualified_table_name, status
+        )
+    else:
+        backfills_dict = get_qualified_table_name_to_entries_map_by_project(
+            sql_dir, project, status
+        )
+
+    backfills_to_process_dict = {}
+
+    for qualified_table_name, entries in backfills_dict.items():
+        if (len(entries)) > 1:
+            click.echo(
+                f"There should not be more than one entry with status: {status} for {qualified_table_name} "
+            )
+            sys.exit(1)
+
+        if not validate_metadata_workgroups(sql_dir, qualified_table_name):
+            continue
+
+        if entries:
+            entry_to_process = entries[0]
+
+            backfill_staging_qualified_table_name = (
+                get_backfill_staging_qualified_table_name(
+                    qualified_table_name, entry_to_process.entry_date
+                )
+            )
+
+            try:
+                client.get_table(backfill_staging_qualified_table_name)
+                click.echo(
+                    f"""
+                    Backfill staging table already exists for {qualified_table_name}: {backfill_staging_qualified_table_name}.
+                    Backfills will not be processed for this table.
+                    """
+                )
+            except NotFound:
+                backfills_to_process_dict[qualified_table_name] = entry_to_process
+
+    return backfills_to_process_dict

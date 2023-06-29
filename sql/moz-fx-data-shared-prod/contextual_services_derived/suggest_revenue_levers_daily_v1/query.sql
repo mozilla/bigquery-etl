@@ -143,20 +143,11 @@ SELECT
   device,
   eligible_clients / NULLIF(global_clients, 0) AS eligible_share_country,
   live_market_dau,
-  urlbar_search_dau / live_market_dau AS perc_engaged_urlbar_search,
   urlbar_search_dau,
-  COALESCE(suggest_exposed_clients, 0) / COALESCE(
-    urlbar_search_dau,
-    0
-  ) AS perc_urlbar_dau_exposed_suggest,
   COALESCE(suggest_exposed_clients, 0) AS suggest_exposed_clients,
   urlbar_search,
-  total_impressions / urlbar_search AS perc_search_suggest_shown,
   total_impressions,
-  spons_impressions / total_impressions AS perc_spons_impressions,
   spons_impressions,
-  spons_impressions / urlbar_search_dau AS imp_by_engaged,
-  spons_clicks / spons_impressions AS CTR,
   spons_clicks
 FROM
   desktop_population
@@ -182,26 +173,3 @@ ORDER BY
   submission_date,
   country,
   device
--- to agg to monthly
--- SELECT
---   date_trunc(submission_date, MONTH) as ds_month,
---   country,
---   device,
---   SUM(live_market_dau) as live_market_dau,
---   SUM(urlbar_search_dau)/ SUM(live_market_dau) AS perc_engaged_urlbar_search,
---   SUM(urlbar_search_dau) AS urlbar_search_dau,
---   COALESCE(SUM(suggest_exposed_clients), 0) / COALESCE(
---     SUM(urlbar_search_dau),
---     0
---   ) AS perc_urlbar_dau_exposed_suggest,
---   COALESCE(SUM(suggest_exposed_clients), 0) AS suggest_exposed_clients,
---   SUM(urlbar_search) as urlbar_search,
---   SUM(total_impressions)/ SUM(urlbar_search) AS perc_search_suggest_shown,
---   SUM(total_impressions) AS total_impressions,
---   SUM(spons_impressions) / SUM(total_impressions) AS perc_spons_impressions,
---   SUM(spons_impressions) AS spons_impressions,
---   SUM(spons_impressions) / SUM(urlbar_search_dau) as imp_by_engaged,
---   SUM(spons_clicks)/ SUM(spons_impressions) as CTR,
---   SUM(spons_clicks) AS spons_clicks
--- FROM daily
--- GROUP BY 1, 2, 3

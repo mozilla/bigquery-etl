@@ -44,8 +44,6 @@ def create_query(date, source_project):
           destination_table.dataset_id AS  destination_dataset_id,
           destination_table.table_id AS  destination_table_id,
           user_email,
-          REGEXP_EXTRACT(query, r"Username: (.*?),") AS username,
-          REGEXP_EXTRACT(query, r"Query ID: (\\w+), ") AS query_id,
           end_time-start_time as task_duration,
           ROUND(total_bytes_processed / 1024 / 1024 / 1024 / 1024, 4)
           AS total_terabytes_processed,

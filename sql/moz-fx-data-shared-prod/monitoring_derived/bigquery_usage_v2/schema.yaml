@@ -71,16 +71,6 @@ fields:
   description: Email address or service account of the user who ran the job
 
 - mode: NULLABLE
-  name: username
-  type: STRING
-  description: Email address of the user who ran the query
-
-- mode: NULLABLE
-  name: query_id
-  type: STRING
-  description: query id of the job
-
-- mode: NULLABLE
   name: task_duration
   type: INTERVAL
   description: The time it took to run the job

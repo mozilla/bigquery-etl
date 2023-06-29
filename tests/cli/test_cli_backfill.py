@@ -18,7 +18,8 @@ from bigquery_etl.backfill.utils import (
     BACKFILL_DESTINATION_PROJECT,
     get_backfill_file_from_qualified_table_name,
     get_backfill_staging_qualified_table_name,
-    get_qualifed_table_name_to_entries_map,
+    get_qualifed_table_name_to_entries_dict,
+    get_qualifed_table_name_to_entries_map_by_project,
     qualified_table_name_matching,
     validate_metadata_workgroups,
 )
@@ -274,7 +275,7 @@ class TestBackfill:
             assert result.exit_code == 1
             assert (
                 "Qualified table name must be named like: <project>.<dataset>.<table>"
-                in result.output
+                in str(result.exception)
             )
 
     def test_validate_backfill_non_existing_table_name(self, runner):
@@ -928,7 +929,7 @@ class TestBackfill:
             result = runner.invoke(info, [invalid_qualified_table_name])
 
             assert result.exit_code == 1
-            assert "Qualified table name must be named like:" in result.output
+            assert "Qualified table name must be named like:" in str(result.exception)
 
     def test_backfill_info_one_table_invalid_status(self, runner):
         with runner.isolated_filesystem():
@@ -958,7 +959,7 @@ class TestBackfill:
             assert result.exit_code == 2
             assert "Invalid value for '--status'" in result.output
 
-    def test_get_qualifed_table_name_to_entries_map_one(self, runner):
+    def test_get_qualifed_table_name_to_entries_dict(self, runner):
         with runner.isolated_filesystem():
             qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
 
@@ -987,8 +988,8 @@ class TestBackfill:
             assert backfill.reason == DEFAULT_REASON
             assert backfill.status == DEFAULT_STATUS
 
-            backfills_dict = get_qualifed_table_name_to_entries_map(
-                "sql", "moz-fx-data-shared-prod", qualified_table_name
+            backfills_dict = get_qualifed_table_name_to_entries_dict(
+                "sql", qualified_table_name
             )
 
             expected_backfill = Backfill(
@@ -1003,6 +1004,58 @@ class TestBackfill:
 
             assert qualified_table_name in backfills_dict
             assert backfills_dict[qualified_table_name] == [expected_backfill]
+
+    def test_get_qualifed_table_name_to_entries_map_by_project(self, runner):
+        with runner.isolated_filesystem():
+            qualified_table_name_1 = "moz-fx-data-shared-prod.test.test_query_v1"
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+            result = runner.invoke(
+                create,
+                [
+                    qualified_table_name_1,
+                    "--start_date=2021-03-01",
+                ],
+            )
+
+            assert result.exit_code == 0
+            assert BACKFILL_FILE in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+
+            qualified_table_name_2 = "moz-fx-data-shared-prod.test.test_query_v2"
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v2"
+            os.makedirs(SQL_DIR)
+            result = runner.invoke(
+                create,
+                [
+                    qualified_table_name_2,
+                    "--start_date=2021-03-01",
+                ],
+            )
+
+            assert result.exit_code == 0
+            assert BACKFILL_FILE in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v2"
+            )
+
+            backfills_dict = get_qualifed_table_name_to_entries_map_by_project(
+                "sql", "moz-fx-data-shared-prod"
+            )
+
+            expected_backfill = Backfill(
+                date.today(),
+                date(2021, 3, 1),
+                date.today(),
+                [],
+                DEFAULT_REASON,
+                [DEFAULT_WATCHER],
+                DEFAULT_STATUS,
+            )
+
+            assert qualified_table_name_1 in backfills_dict
+            assert backfills_dict[qualified_table_name_1] == [expected_backfill]
+            assert qualified_table_name_2 in backfills_dict
 
     def test_get_backfill_file_from_qualified_table_name(self, runner):
         qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
@@ -1067,7 +1120,7 @@ class TestBackfill:
             ) as f:
                 f.write(yaml.dump(dataset_metadata_conf))
 
-            result = validate_metadata_workgroups(qualified_table_name, "sql")
+            result = validate_metadata_workgroups("sql", qualified_table_name)
             assert result
 
     def test_validate_metadata_workgroups_valid_table_workgroup(self, runner):
@@ -1115,7 +1168,7 @@ class TestBackfill:
                 "sql/moz-fx-data-shared-prod/test"
             )
 
-            result = validate_metadata_workgroups(qualified_table_name, "sql")
+            result = validate_metadata_workgroups("sql", qualified_table_name)
             assert result
 
     def test_validate_metadata_workgroups_invalid_table_workgroup(self, runner):
@@ -1170,7 +1223,7 @@ class TestBackfill:
                 "sql/moz-fx-data-shared-prod/test"
             )
 
-            result = validate_metadata_workgroups(qualified_table_name, "sql")
+            result = validate_metadata_workgroups("sql", qualified_table_name)
             assert not result
 
     def test_validate_metadata_workgroups_invalid_dataset_workgroup(self, runner):
@@ -1225,7 +1278,7 @@ class TestBackfill:
                 "sql/moz-fx-data-shared-prod/test"
             )
 
-            result = validate_metadata_workgroups(qualified_table_name, "sql")
+            result = validate_metadata_workgroups("sql", qualified_table_name)
             assert not result
 
     def test_validate_metadata_workgroups_table_workgroup_empty_list(self, runner):
@@ -1275,7 +1328,7 @@ class TestBackfill:
                 "sql/moz-fx-data-shared-prod/test"
             )
 
-            result = validate_metadata_workgroups(qualified_table_name, "sql")
+            result = validate_metadata_workgroups("sql", qualified_table_name)
             assert not result
 
     def test_validate_metadata_workgroups_dataset_workgroup_empty_list(self, runner):
@@ -1325,7 +1378,7 @@ class TestBackfill:
                 "sql/moz-fx-data-shared-prod/test"
             )
 
-            result = validate_metadata_workgroups(qualified_table_name, "sql")
+            result = validate_metadata_workgroups("sql", qualified_table_name)
             assert not result
 
     def test_qualified_table_name_matching(self, runner):

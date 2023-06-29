@@ -25,41 +25,54 @@ BACKFILL_DESTINATION_PROJECT = "moz-fx-data-shared-prod"
 BACKFILL_DESTINATION_DATASET = "backfills_staging_derived"
 
 
-def get_qualifed_table_name_to_entries_map(
-    sql_dir, project_id, qualified_table_name, status=None
+def get_qualifed_table_name_to_entries_dict(
+    sql_dir, qualified_table_name, status=None
 ) -> defaultdict[str, List[Backfill]]:
     """Return backfill entries from qualified table name."""
     backfills_dict = defaultdict(list)
 
+    project_id, dataset_id, table_id = qualified_table_name_matching(
+        qualified_table_name
+    )
+
+    table_path = Path(sql_dir) / project_id / dataset_id / table_id
+
+    if not table_path.exists():
+        click.echo(f"{project_id}.{dataset_id}.{table_id}" + " does not exist")
+        sys.exit(1)
+
+    backfill_file = get_backfill_file_from_qualified_table_name(
+        sql_dir, qualified_table_name
+    )
+
+    if backfill_file.exists():
+        backfills = Backfill.entries_from_file(backfill_file, status)
+        if backfills:
+            backfills_dict[qualified_table_name] = backfills
+
+    return backfills_dict
+
+
+def get_qualifed_table_name_to_entries_map_by_project(
+    sql_dir, project_id, status=None
+) -> defaultdict[str, List[Backfill]]:
+    """Return backfill entries from project."""
+    backfills_dict_all: defaultdict = defaultdict(list)
+
     search_path = Path(sql_dir) / project_id
-
-    if qualified_table_name:
-        try:
-            project_id, dataset_id, table_id = qualified_table_name_matching(
-                qualified_table_name
-            )
-
-            search_path = search_path / dataset_id / table_id
-
-            if not search_path.exists():
-                click.echo(f"{project_id}.{dataset_id}.{table_id}" + " does not exist")
-                sys.exit(1)
-
-        except AttributeError as e:
-            click.echo(e)
-            sys.exit(1)
-
     backfill_files = Path(search_path).rglob(BACKFILL_FILE)
 
     for backfill_file in backfill_files:
         project, dataset, table = extract_from_query_path(backfill_file)
         qualified_table_name = f"{project}.{dataset}.{table}"
-        backfills = Backfill.entries_from_file(backfill_file, status)
 
-        if backfills:
-            backfills_dict[qualified_table_name].extend(backfills)
+        backfills_dict = get_qualifed_table_name_to_entries_dict(
+            sql_dir, qualified_table_name, status
+        )
 
-    return backfills_dict
+        backfills_dict_all.update(backfills_dict)
+
+    return backfills_dict_all
 
 
 def get_backfill_file_from_qualified_table_name(sql_dir, qualified_table_name) -> Path:
@@ -81,7 +94,7 @@ def get_backfill_staging_qualified_table_name(qualified_table_name, entry_date) 
     return f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{backfill_table_id}"
 
 
-def validate_metadata_workgroups(qualified_table_name, sql_dir) -> bool:
+def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
     """
     Return True if metadata workgroup is mozilla-confidential or None.
 

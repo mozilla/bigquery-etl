@@ -19,8 +19,8 @@ from ..backfill.parse import (
 from ..backfill.utils import (
     get_backfill_file_from_qualified_table_name,
     get_backfill_staging_qualified_table_name,
-    get_qualifed_table_name_to_entries_dict,
-    get_qualifed_table_name_to_entries_map_by_project,
+    get_qualified_table_name_to_entries_dict,
+    get_qualified_table_name_to_entries_map_by_project,
     qualified_table_name_matching,
     validate_metadata_workgroups,
 )
@@ -105,7 +105,7 @@ def create(
 
     A backfill.yaml file will be created if it does not already exist.
     """
-    backfills_dict = get_qualifed_table_name_to_entries_dict(
+    backfills_dict = get_qualified_table_name_to_entries_dict(
         sql_dir, qualified_table_name
     )
 
@@ -175,11 +175,11 @@ def validate(
 ):
     """Validate backfill.yaml files."""
     if qualified_table_name:
-        backfills_dict = get_qualifed_table_name_to_entries_dict(
+        backfills_dict = get_qualified_table_name_to_entries_dict(
             sql_dir, qualified_table_name
         )
     else:
-        backfills_dict = get_qualifed_table_name_to_entries_map_by_project(
+        backfills_dict = get_qualified_table_name_to_entries_map_by_project(
             sql_dir, project_id
         )
 
@@ -248,11 +248,11 @@ def info(ctx, qualified_table_name, sql_dir, project_id, status, processed):
     client = bigquery.Client(project=project_id)
 
     if qualified_table_name:
-        backfills_dict = get_qualifed_table_name_to_entries_dict(
+        backfills_dict = get_qualified_table_name_to_entries_dict(
             sql_dir, qualified_table_name, status
         )
     else:
-        backfills_dict = get_qualifed_table_name_to_entries_map_by_project(
+        backfills_dict = get_qualified_table_name_to_entries_map_by_project(
             sql_dir, project_id, status
         )
 
@@ -348,11 +348,11 @@ def process(ctx, qualified_table_name, sql_dir, project_id, force, dry_run):
     status = BackfillStatus.DRAFTING
 
     if qualified_table_name:
-        backfills_dict = get_qualifed_table_name_to_entries_dict(
+        backfills_dict = get_qualified_table_name_to_entries_dict(
             sql_dir, qualified_table_name, status.value
         )
     else:
-        backfills_dict = get_qualifed_table_name_to_entries_map_by_project(
+        backfills_dict = get_qualified_table_name_to_entries_map_by_project(
             sql_dir, project_id, status.value
         )
 

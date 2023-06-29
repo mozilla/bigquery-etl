@@ -25,7 +25,7 @@ BACKFILL_DESTINATION_PROJECT = "moz-fx-data-shared-prod"
 BACKFILL_DESTINATION_DATASET = "backfills_staging_derived"
 
 
-def get_qualifed_table_name_to_entries_dict(
+def get_qualified_table_name_to_entries_dict(
     sql_dir, qualified_table_name, status=None
 ) -> defaultdict[str, List[Backfill]]:
     """Return backfill entries from qualified table name."""
@@ -53,7 +53,7 @@ def get_qualifed_table_name_to_entries_dict(
     return backfills_dict
 
 
-def get_qualifed_table_name_to_entries_map_by_project(
+def get_qualified_table_name_to_entries_map_by_project(
     sql_dir, project_id, status=None
 ) -> defaultdict[str, List[Backfill]]:
     """Return backfill entries from project."""
@@ -66,7 +66,7 @@ def get_qualifed_table_name_to_entries_map_by_project(
         project, dataset, table = extract_from_query_path(backfill_file)
         qualified_table_name = f"{project}.{dataset}.{table}"
 
-        backfills_dict = get_qualifed_table_name_to_entries_dict(
+        backfills_dict = get_qualified_table_name_to_entries_dict(
             sql_dir, qualified_table_name, status
         )
 

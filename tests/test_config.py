@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from bigquery_etl.config import ConfigLoader
 
 TEST_DIR = Path(__file__).parent
@@ -16,7 +17,10 @@ class TestConfig:
         assert "test_project" in ConfigLoader.get("dry_run")
         assert "skip" in ConfigLoader.get("dry_run")
 
-        assert ConfigLoader.get("dry_run", "test_project") == "bigquery-etl-integration-test"
+        assert (
+            ConfigLoader.get("dry_run", "test_project")
+            == "bigquery-etl-integration-test"
+        )
         assert len(ConfigLoader.get("dry_run", "skip")) == 2
 
         assert "dry_run" in ConfigLoader.get()

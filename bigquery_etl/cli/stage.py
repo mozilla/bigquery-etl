@@ -10,12 +10,12 @@ from pathlib import Path
 import click
 from google.cloud import bigquery
 
-from .. import dryrun
 from ..cli.query import deploy as deploy_query_schema
 from ..cli.query import update as update_query_schema
 from ..cli.routine import publish as publish_routine
 from ..cli.utils import paths_matching_name_pattern, sql_dir_option
 from ..cli.view import publish as publish_view
+from ..dryrun import DryRun
 from ..routine.parse_routine import (
     UDF_FILE,
     RawRoutine,
@@ -384,7 +384,7 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
     view_files = [
         file
         for file in artifact_files
-        if file.name == VIEW_FILE and str(file) not in dryrun.DryRun.skipped_files()
+        if file.name == VIEW_FILE and str(file) not in DryRun.skipped_files()
     ]
     for view_file in view_files:
         dataset = view_file.parent.parent.name

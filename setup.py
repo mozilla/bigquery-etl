@@ -55,6 +55,7 @@ setup(
         "ujson",
         "stripe",
         "authlib",
+        "mozilla-metric-config-parser",
     ],
     long_description="Tooling for building derived datasets in BigQuery",
     long_description_content_type="text/markdown",

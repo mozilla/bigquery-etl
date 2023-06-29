@@ -187,14 +187,18 @@ def get_backfill_entries_to_process_dict(
     backfills_to_process_dict = {}
 
     for qualified_table_name, entries in backfills_dict.items():
+        # do not return backfill if not mozilla-confidential
+        if not validate_metadata_workgroups(sql_dir, qualified_table_name):
+            click.echo(
+                f"Only mozilla-confidential workgroups are supported.  {qualified_table_name} contain workgroup access that is not supported"
+            )
+            sys.exit(1)
+
         if (len(entries)) > 1:
             click.echo(
                 f"There should not be more than one entry with status: {status} for {qualified_table_name} "
             )
             sys.exit(1)
-
-        if not validate_metadata_workgroups(sql_dir, qualified_table_name):
-            continue
 
         if entries:
             entry_to_process = entries[0]

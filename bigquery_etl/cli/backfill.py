@@ -336,13 +336,6 @@ def process(ctx, qualified_table_name, sql_dir, project_id, dry_run):
     )
 
     for qualified_table_name, entry_to_process in backfills_to_process_dict.items():
-        # do not process backfill if not mozilla-confidential
-        if not validate_metadata_workgroups(sql_dir, qualified_table_name):
-            click.echo(
-                f"Only mozilla-confidential workgroups are supported.  {qualified_table_name} contain workgroup access that is not supported"
-            )
-            sys.exit(1)
-
         backfill_staging_qualified_table_name = (
             get_backfill_staging_qualified_table_name(
                 qualified_table_name, entry_to_process.entry_date

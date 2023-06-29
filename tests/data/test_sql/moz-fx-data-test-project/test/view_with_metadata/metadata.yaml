@@ -1,0 +1,20 @@
+---
+friendly_name: "Test metadata file"
+description: "Test description"
+owners:
+  - test1@mozilla.com
+  - test2@example.com
+  - mozilla/test_group
+labels:
+  schedule: daily
+  public_json: true
+  incremental: true
+  incremental_export: true
+  1232341234: valid
+  1234_abcd: valid
+  number_value: 1234234
+  number_string: 1234abcde
+  123-432: valid
+references:
+  query.sql:
+    - project.dataset_derived.table_v1

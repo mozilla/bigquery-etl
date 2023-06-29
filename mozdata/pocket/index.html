@@ -2406,6 +2406,52 @@
 <h2 id="events"><a href="#events">events</a></h2>
 <p><code>pocket.events</code></p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>submission_timestamp</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>normalized_app_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_info</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>event</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>event_timestamp</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>event_extra</td>
+        <td></td>
+        <td>Json</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>

@@ -8,9 +8,3 @@ updates:
     reviewers:
       - relud
       - quiiver
-  - package-ecosystem: maven
-    directory: /
-    schedule:
-      interval: daily
-    reviewers:
-      - relud

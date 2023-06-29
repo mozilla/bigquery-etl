@@ -131,6 +131,11 @@ when
 then
 else
 end;
+begin transaction;
+commit transaction;
+commit;
+rollback transaction;
+rollback;
 -- top level keywords
 alter table if exists;
 alter table;

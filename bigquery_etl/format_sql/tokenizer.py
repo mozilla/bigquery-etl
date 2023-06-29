@@ -30,10 +30,15 @@ TOP_LEVEL_KEYWORDS = [
     "MERGE",
     "UPDATE",
     # scripting
+    "BEGIN TRANSACTION",
     "BREAK",
+    "COMMIT TRANSACTION",
+    "COMMIT",
     "CONTINUE",
     "ITERATE",
     "LEAVE",
+    "ROLLBACK TRANSACTION",
+    "ROLLBACK",
     # SQL
     "AS",  # only when not identified as an AliasSeparator
     "CROSS JOIN",
@@ -646,7 +651,9 @@ class BlockEndKeyword(BlockKeyword):
 class BlockMiddleKeyword(BlockStartKeyword, BlockEndKeyword):
     """Keyword that ends one indented block and starts another."""
 
-    pattern = _keyword_pattern(["BEGIN", "EXCEPTION WHEN ERROR THEN", "ELSEIF", "DO"])
+    pattern = _keyword_pattern(
+        [r"BEGIN(?!\s+TRANSACTION\b)", "EXCEPTION WHEN ERROR THEN", "ELSEIF", "DO"]
+    )
 
 
 class AliasSeparator(SpaceBeforeBracketKeyword):
@@ -754,6 +761,28 @@ class JinjaStatement(Token):
     pattern = re.compile(r"{%.*?%}", re.DOTALL)
 
 
+class JinjaBlockStatement(JinjaStatement):
+    """Statements that start and/or end Jinja blocks."""
+
+
+class JinjaBlockStart(JinjaBlockStatement):
+    """Jinja block starts get their own line followed by increased indent."""
+
+    pattern = re.compile(r"{% *(block|call|filter|for|if|macro)\b.*?%}", re.DOTALL)
+
+
+class JinjaBlockEnd(JinjaBlockStatement):
+    """Jinja block ends get their own line preceded by decreased indent."""
+
+    pattern = re.compile(r"{% *end(block|call|filter|for|if|macro)\b.*?%}", re.DOTALL)
+
+
+class JinjaBlockMiddle(JinjaBlockEnd, JinjaBlockStart):
+    """Ends one indented Jinja block and starts another."""
+
+    pattern = re.compile(r"{% *(elif|else)\b.*?%}", re.DOTALL)
+
+
 class JinjaComment(Token):
     """Jinja comment delimiters {# #}.
 
@@ -843,6 +872,9 @@ BIGQUERY_TOKEN_PRIORITY = [
     Whitespace,
     JinjaComment,
     JinjaExpression,
+    JinjaBlockStart,
+    JinjaBlockMiddle,
+    JinjaBlockEnd,
     JinjaStatement,
     MaybeCaseSubclause,
     CaseSubclause,

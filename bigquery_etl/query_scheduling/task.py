@@ -3,6 +3,7 @@
 import logging
 import os
 import re
+from enum import Enum
 from fnmatch import fnmatchcase
 from pathlib import Path
 from typing import List, Optional, Tuple
@@ -26,9 +27,27 @@ from bigquery_etl.query_scheduling.utils import (
 AIRFLOW_TASK_TEMPLATE = "airflow_task.j2"
 QUERY_FILE_RE = re.compile(
     r"^(?:.*/)?([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/"
-    r"([a-zA-Z0-9_]+)_(v[0-9]+)/(?:query\.sql|part1\.sql|script\.sql|query\.py)$"
+    r"([a-zA-Z0-9_]+)_(v[0-9]+)/(?:query\.sql|part1\.sql|script\.sql|query\.py|checks\.sql)$"
+)
+CHECKS_FILE_RE = re.compile(
+    r"^(?:.*/)?([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/"
+    r"([a-zA-Z0-9_]+)_(v[0-9]+)/(?:checks\.sql)$"
 )
 DEFAULT_DESTINATION_TABLE_STR = "use-default-destination-table"
+MAX_TASK_NAME_LENGTH = 250
+
+
+class TriggerRule(Enum):
+    """Options for task trigger rules."""
+
+    ALL_SUCCESS = "all_success"
+    ALL_FAILED = "all_failed"
+    ALL_DONE = "all_done"
+    ONE_FAILED = "one_failed"
+    ONE_SUCCESS = "one_success"
+    NONE_FAILED = "none_failed"
+    NONE_SKIPPED = "none_skipped"
+    DUMMY = "dummy"
 
 
 class TaskParseException(Exception):
@@ -185,6 +204,8 @@ class Task:
     # manually specified upstream dependencies
     depends_on: List[TaskRef] = attr.ib([])
     depends_on_fivetran: List[FivetranTask] = attr.ib([])
+    # task trigger rule, used to override default of "all_success"
+    trigger_rule: Optional[str] = attr.ib(None)
     # manually specified downstream depdencies
     external_downstream_tasks: List[TaskRef] = attr.ib([])
     # automatically determined upstream and downstream dependencies
@@ -198,6 +219,7 @@ class Task:
     referenced_tables: Optional[List[Tuple[str, str, str]]] = attr.ib(None)
     destination_table: Optional[str] = attr.ib(default=DEFAULT_DESTINATION_TABLE_STR)
     is_python_script: bool = attr.ib(False)
+    is_dq_check: bool = attr.ib(False)
     task_concurrency: Optional[int] = attr.ib(None)
     retry_delay: Optional[str] = attr.ib(None)
     retries: Optional[int] = attr.ib(None)
@@ -249,11 +271,20 @@ class Task:
     def validate_task_name(self, attribute, value):
         """Validate the task name."""
         if value is not None:
-            if len(value) < 1 or len(value) > 62:
+            if len(value) < 1 or len(value) > MAX_TASK_NAME_LENGTH:
                 raise ValueError(
                     f"Invalid task name {value}. "
-                    + "The task name has to be 1 to 62 characters long."
+                    f"The task name has to be 1 to {MAX_TASK_NAME_LENGTH} characters long."
                 )
+
+    @trigger_rule.validator
+    def validate_trigger_rule(self, attribute, value):
+        """Check that trigger_rule is a valid option."""
+        if value is not None and value not in set(rule.value for rule in TriggerRule):
+            raise ValueError(
+                f"Invalid trigger rule {value}. "
+                "See https://airflow.apache.org/docs/apache-airflow/1.10.3/concepts.html#trigger-rules for list of trigger rules"
+            )
 
     @retry_delay.validator
     def validate_retry_delay(self, attribute, value):
@@ -267,6 +298,7 @@ class Task:
     def __attrs_post_init__(self):
         """Extract information from the query file name."""
         query_file_re = re.search(QUERY_FILE_RE, self.query_file)
+        check_file_re = re.search(CHECKS_FILE_RE, self.query_file)
         if query_file_re:
             self.project = query_file_re.group(1)
             self.dataset = query_file_re.group(2)
@@ -275,7 +307,17 @@ class Task:
 
             if self.task_name is None:
                 # limiting task name to allow longer dataset names
-                self.task_name = f"{self.dataset}__{self.table}__{self.version}"[-62:]
+                self.task_name = f"{self.dataset}__{self.table}__{self.version}"[
+                    -MAX_TASK_NAME_LENGTH:
+                ]
+                self.validate_task_name(None, self.task_name)
+
+            if check_file_re is not None:
+                self.task_name = (
+                    f"checks__{self.dataset}__{self.table}__{self.version}"[
+                        -MAX_TASK_NAME_LENGTH:
+                    ]
+                )
                 self.validate_task_name(None, self.task_name)
 
             if self.destination_table == DEFAULT_DESTINATION_TABLE_STR:
@@ -336,8 +378,7 @@ class Task:
             if not is_email(owner):
                 metadata.owners.remove(owner)
                 click.echo(
-                    f"{owner} removed from email list in DAG "
-                    f"{metadata.scheduling['dag_name']}, task: {metadata.scheduling['task_name']}"
+                    f"{owner} removed from email list in DAG {metadata.scheduling['dag_name']}"
                 )
         task_config["email"] = list(set(email + metadata.owners))
 
@@ -357,15 +398,15 @@ class Task:
         ):
             match metadata.bigquery.time_partitioning.type:
                 case PartitionType.YEAR:
-                    partition_template = '{{ dag_run.logical_date.strftime("%Y") }}'
+                    partition_template = '${{ dag_run.logical_date.strftime("%Y") }}'
                 case PartitionType.MONTH:
-                    partition_template = '{{ dag_run.logical_date.strftime("%Y%m") }}'
+                    partition_template = '${{ dag_run.logical_date.strftime("%Y%m") }}'
                 case PartitionType.DAY:
                     # skip for the default case of daily partitioning
                     partition_template = None
                 case PartitionType.HOUR:
                     partition_template = (
-                        '{{ dag_run.logical_date.strftime("%Y%m%d%H") }}'
+                        '${{ dag_run.logical_date.strftime("%Y%m%d%H") }}'
                     )
                 case _:
                     raise TaskParseException(
@@ -424,6 +465,15 @@ class Task:
         task.is_python_script = True
         return task
 
+    @classmethod
+    def of_dq_check(cls, query_file, metadata=None, dag_collection=None):
+        """Create a task that schedules DQ check file in Airflow."""
+        task = cls.of_query(query_file, metadata, dag_collection)
+        task.query_file_path = query_file
+        task.is_dq_check = True
+        task.depends_on_fivetran = []
+        return task
+
     def to_ref(self, dag_collection):
         """Return the task as `TaskRef`."""
         return TaskRef(
@@ -436,7 +486,7 @@ class Task:
         )
 
     def _get_referenced_tables(self):
-        """Use zetasql to get tables the query depends on."""
+        """Use sqlglot to get tables the query depends on."""
         logging.info(f"Get dependencies for {self.task_key}")
 
         if self.is_python_script:

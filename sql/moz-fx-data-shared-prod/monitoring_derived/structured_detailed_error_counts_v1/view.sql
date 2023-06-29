@@ -17,7 +17,7 @@ WITH error_examples AS (
   FROM
     `moz-fx-data-shared-prod.monitoring.payload_bytes_error_structured`
   WHERE
-    submission_timestamp >= TIMESTAMP_SUB(current_timestamp, INTERVAL 28 * 24 HOUR)
+    submission_timestamp >= TIMESTAMP_SUB(current_timestamp, INTERVAL(28 * 24) HOUR)
   GROUP BY
     hour,
     document_namespace,

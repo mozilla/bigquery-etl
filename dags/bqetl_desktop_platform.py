@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_desktop_platform
@@ -15,17 +15,17 @@ Built from bigquery-etl repo, [`dags/bqetl_desktop_platform.py`](https://github.
 
 #### Owner
 
-jklukas@mozilla.com
+ascholtz@mozilla.com
 """
 
 
 default_args = {
-    "owner": "jklukas@mozilla.com",
+    "owner": "ascholtz@mozilla.com",
     "start_date": datetime.datetime(2018, 11, 1, 0, 0),
     "end_date": None,
     "email": [
         "telemetry-alerts@mozilla.com",
-        "jklukas@mozilla.com",
+        "ascholtz@mozilla.com",
         "yzenevich@mozilla.com",
     ],
     "depends_on_past": False,
@@ -51,7 +51,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="yzenevich@mozilla.com",
         email=[
-            "jklukas@mozilla.com",
+            "ascholtz@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "yzenevich@mozilla.com",
         ],

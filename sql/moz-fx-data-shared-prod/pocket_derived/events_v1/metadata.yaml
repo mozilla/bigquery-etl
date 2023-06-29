@@ -1,0 +1,17 @@
+friendly_name: Pocket Events
+description: |-
+  Event data from Pocket Web
+owners:
+- jrediger@mozilla.com
+- efixler@mozilla.com
+labels:
+  incremental: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: false
+scheduling:
+  dag_name: bqetl_pocket
+  arguments: ["--date", "{{ ds }}"]
+  referenced_tables: []

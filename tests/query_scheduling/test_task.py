@@ -7,6 +7,7 @@ import pytest
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
 from bigquery_etl.query_scheduling.task import (
+    MAX_TASK_NAME_LENGTH,
     Task,
     TaskParseException,
     TaskRef,
@@ -193,7 +194,7 @@ class TestTask:
         scheduling = {
             "dag_name": "bqetl_test_dag",
             "default_args": {"owner": "test@example.org"},
-            "task_name": "a" * 63,
+            "task_name": "a" * (MAX_TASK_NAME_LENGTH + 1),
         }
 
         metadata = Metadata("test", "test", ["test@example.org"], {}, scheduling)
@@ -215,13 +216,13 @@ class TestTask:
         scheduling = {
             "dag_name": "bqetl_test_dag",
             "default_args": {"owner": "test@example.org"},
-            "task_name": "a" * 62,
+            "task_name": "a" * MAX_TASK_NAME_LENGTH,
         }
 
         metadata = Metadata("test", "test", ["test@example.org"], {}, scheduling)
 
         task = Task.of_query(query_file, metadata)
-        assert task.task_name == "a" * 62
+        assert task.task_name == "a" * MAX_TASK_NAME_LENGTH
 
     def test_validate_task_name(self):
         query_file = (
@@ -230,7 +231,7 @@ class TestTask:
             / "test_sql"
             / "moz-fx-data-test-project"
             / "test"
-            / (("a" * 63) + "_v1")
+            / (("a" * MAX_TASK_NAME_LENGTH) + "_v1")
             / "query.sql"
         )
 
@@ -242,10 +243,10 @@ class TestTask:
         metadata = Metadata("test", "test", ["test@example.org"], {}, scheduling)
 
         task = Task.of_query(query_file, metadata)
-        assert task.task_name == "a" * 58 + "__v1"
+        assert task.task_name == ("a" * (MAX_TASK_NAME_LENGTH - 4)) + "__v1"
 
         with pytest.raises(ValueError):
-            task.task_name = "a" * 64
+            task.task_name = ("a" * MAX_TASK_NAME_LENGTH) + "__v1"
             Task.validate_task_name(task, "task_name", task.task_name)
 
     def test_dag_name_validation(self):
@@ -393,7 +394,6 @@ class TestTask:
             date_partition_parameter="import_date",
         )
 
-    @pytest.mark.java
     def test_task_get_dependencies_none(self, tmp_path):
         query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
         os.makedirs(query_file.parent)
@@ -409,7 +409,6 @@ class TestTask:
         assert task.upstream_dependencies == []
         assert task.downstream_dependencies == []
 
-    @pytest.mark.java
     def test_task_get_multiple_dependencies(self, tmp_path):
         query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
         os.makedirs(query_file.parent)
@@ -454,7 +453,6 @@ class TestTask:
         assert "test__table1__v1" in tables
         assert "test__table2__v1" in tables
 
-    @pytest.mark.java
     def test_task_date_partition_offset(self, tmp_path):
         query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
         os.makedirs(query_file.parent)
@@ -519,7 +517,6 @@ class TestTask:
         ] == [-1]
         assert task.date_partition_parameter == "submission_date"
 
-    @pytest.mark.java
     def test_task_date_partition_offset_recursive(self, tmp_path):
         query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
         os.makedirs(query_file.parent)
@@ -570,7 +567,6 @@ class TestTask:
         ] == [-2]
         assert task.date_partition_parameter == "submission_date"
 
-    @pytest.mark.java
     def test_multipart_task_get_dependencies(self, tmp_path):
         query_dir = tmp_path / "test-project" / "test" / "query_v1"
         os.makedirs(query_dir)
@@ -617,7 +613,6 @@ class TestTask:
         assert "test__table1__v1" in tables
         assert "test__table2__v1" in tables
 
-    @pytest.mark.java
     def test_task_get_view_dependencies(self, tmp_path):
         query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
         os.makedirs(query_file.parent)
@@ -669,7 +664,6 @@ class TestTask:
         assert "test__table1__v1" in tables
         assert "test__table2__v1" in tables
 
-    @pytest.mark.java
     def test_task_get_nested_view_dependencies(self, tmp_path):
         query_file = tmp_path / "test-project" / "test" / "query_v1" / "query.sql"
         os.makedirs(query_file.parent)
@@ -762,6 +756,34 @@ class TestTask:
         assert task.depends_on[1].dag_name == "external_dag2"
         assert task.depends_on[1].task_id == "external_task2"
         assert task.depends_on[1].execution_delta == "15m"
+
+    def test_task_trigger_rule(self):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        task = Task(
+            dag_name="bqetl_test_dag",
+            owner="test@example.org",
+            query_file=str(query_file),
+            trigger_rule="all_success",
+        )
+
+        assert task.trigger_rule == "all_success"
+
+        with pytest.raises(ValueError, match=r"Invalid trigger rule an_invalid_rule"):
+            assert Task(
+                dag_name="bqetl_test_dag",
+                owner="test@example.org",
+                query_file=str(query_file),
+                trigger_rule="an_invalid_rule",
+            )
 
     def test_task_ref(self):
         task_ref = TaskRef(dag_name="test_dag", task_id="task")

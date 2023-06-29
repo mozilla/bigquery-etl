@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_org_mozilla_firefox_derived
@@ -64,6 +64,17 @@ with DAG(
         fenix_derived__attributable_clients__v1_external.set_upstream(
             fenix_derived__attributable_clients__v1
         )
+
+    fenix_derived__attributable_clients__v2 = bigquery_etl_query(
+        task_id="fenix_derived__attributable_clients__v2",
+        destination_table="attributable_clients_v2",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
 
     fenix_derived__clients_yearly__v1 = bigquery_etl_query(
         task_id="fenix_derived__clients_yearly__v1",
@@ -140,6 +151,13 @@ with DAG(
     )
 
     fenix_derived__attributable_clients__v1.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v1
+    )
+
+    fenix_derived__attributable_clients__v2.set_upstream(
+        wait_for_baseline_clients_daily
+    )
+    fenix_derived__attributable_clients__v2.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )
 

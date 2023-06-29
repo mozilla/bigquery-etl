@@ -1,0 +1,36 @@
+fields:
+- mode: NULLABLE
+  name: os
+  type: STRING
+
+- mode: NULLABLE
+  name: app_version
+  type: INTEGER
+
+- mode: NULLABLE
+  name: app_build_id
+  type: STRING
+
+- mode: NULLABLE
+  name: channel
+  type: STRING
+
+- mode: NULLABLE
+  name: metric
+  type: STRING
+
+- mode: NULLABLE
+  name: process
+  type: STRING
+
+- mode: NULLABLE
+  name: key
+  type: STRING
+
+- mode: NULLABLE
+  name: agg_type
+  type: STRING
+
+- mode: NULLABLE
+  name: total_sample
+  type: FLOAT

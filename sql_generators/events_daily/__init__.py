@@ -18,6 +18,7 @@ TEMPLATED_FILES = {
     "stored_procedure.sql",
     "udf.sql",
     "view.sql",
+    "schema.yaml",
 }
 
 

@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 from fivetran_provider.operators.fivetran import FivetranOperator
 from fivetran_provider.sensors.fivetran import FivetranSensor
@@ -233,6 +233,32 @@ with DAG(
         task_concurrency=1,
     )
 
+    subscription_platform_derived__nonprod_stripe_subscriptions__v1 = (
+        bigquery_etl_query(
+            task_id="subscription_platform_derived__nonprod_stripe_subscriptions__v1",
+            destination_table="nonprod_stripe_subscriptions_v1",
+            dataset_id="subscription_platform_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="srose@mozilla.com",
+            email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+            date_partition_parameter=None,
+            depends_on_past=False,
+            task_concurrency=1,
+        )
+    )
+
+    subscription_platform_derived__nonprod_stripe_subscriptions_history__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__nonprod_stripe_subscriptions_history__v1",
+        destination_table="nonprod_stripe_subscriptions_history_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     cjms_bigquery__refunds__v1.set_upstream(stripe_external__nonprod_charge__v1)
 
     cjms_bigquery__refunds__v1.set_upstream(stripe_external__nonprod_invoice__v1)
@@ -241,13 +267,7 @@ with DAG(
 
     cjms_bigquery__subscriptions__v1.set_upstream(cjms_bigquery__flows__v1)
 
-    cjms_bigquery__subscriptions__v1.set_upstream(stripe_external__nonprod_card__v1)
-
-    cjms_bigquery__subscriptions__v1.set_upstream(stripe_external__nonprod_charge__v1)
-
     cjms_bigquery__subscriptions__v1.set_upstream(stripe_external__nonprod_coupon__v1)
-
-    cjms_bigquery__subscriptions__v1.set_upstream(stripe_external__nonprod_customer__v1)
 
     cjms_bigquery__subscriptions__v1.set_upstream(stripe_external__nonprod_invoice__v1)
 
@@ -255,20 +275,12 @@ with DAG(
         stripe_external__nonprod_invoice_discount__v1
     )
 
-    cjms_bigquery__subscriptions__v1.set_upstream(stripe_external__nonprod_plan__v1)
-
-    cjms_bigquery__subscriptions__v1.set_upstream(stripe_external__nonprod_product__v1)
-
     cjms_bigquery__subscriptions__v1.set_upstream(
         stripe_external__nonprod_promotion_code__v1
     )
 
     cjms_bigquery__subscriptions__v1.set_upstream(
-        stripe_external__nonprod_subscription_history__v1
-    )
-
-    cjms_bigquery__subscriptions__v1.set_upstream(
-        stripe_external__nonprod_subscription_item__v1
+        subscription_platform_derived__nonprod_stripe_subscriptions__v1
     )
 
     fivetran_stripe_nonprod_sync_start = FivetranOperator(
@@ -319,4 +331,52 @@ with DAG(
 
     stripe_external__nonprod_subscription_item__v1.set_upstream(
         fivetran_stripe_nonprod_sync_wait
+    )
+
+    subscription_platform_derived__nonprod_stripe_subscriptions__v1.set_upstream(
+        subscription_platform_derived__nonprod_stripe_subscriptions_history__v1
+    )
+
+    subscription_platform_derived__nonprod_stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__nonprod_card__v1
+    )
+
+    subscription_platform_derived__nonprod_stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__nonprod_charge__v1
+    )
+
+    subscription_platform_derived__nonprod_stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__nonprod_coupon__v1
+    )
+
+    subscription_platform_derived__nonprod_stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__nonprod_customer__v1
+    )
+
+    subscription_platform_derived__nonprod_stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__nonprod_invoice__v1
+    )
+
+    subscription_platform_derived__nonprod_stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__nonprod_invoice_discount__v1
+    )
+
+    subscription_platform_derived__nonprod_stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__nonprod_plan__v1
+    )
+
+    subscription_platform_derived__nonprod_stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__nonprod_product__v1
+    )
+
+    subscription_platform_derived__nonprod_stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__nonprod_promotion_code__v1
+    )
+
+    subscription_platform_derived__nonprod_stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__nonprod_subscription_history__v1
+    )
+
+    subscription_platform_derived__nonprod_stripe_subscriptions_history__v1.set_upstream(
+        stripe_external__nonprod_subscription_item__v1
     )

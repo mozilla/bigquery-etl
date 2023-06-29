@@ -154,12 +154,14 @@ unified_metrics AS (
       )
       OR (
         normalized_app_name = "Firefox iOS"
-        AND country = "US"
+        AND (country IN UNNEST(["US"]))
+        OR (country IN UNNEST(["DE"]) AND submission_date >= "2022-12-05")
         AND browser_version_info.major_version >= 101
       )
       OR (
         normalized_app_name = "Fenix"
-        AND country = "US"
+        AND (country IN UNNEST(["US"]))
+        OR (country IN UNNEST(["DE"]) AND submission_date >= "2022-12-05")
         AND browser_version_info.major_version >= 100
       )
     )

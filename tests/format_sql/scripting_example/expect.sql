@@ -5,6 +5,8 @@ CREATE PROCEDURE
     INOUT bidirectional INT64,
   )
 BEGIN
+  BEGIN TRANSACTION;
+
   CREATE TEMP TABLE
     data_for_target_date
   AS
@@ -55,4 +57,6 @@ BEGIN
   LOOP
     LEAVE;
   END LOOP;
+
+  COMMIT TRANSACTION;
 END;

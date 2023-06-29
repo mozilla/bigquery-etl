@@ -1,6 +1,4 @@
---- Query generated via sql_generators.active_users_aggregates.
---- Glean data is used after 2023-01-01, based on announcement:
---- https://groups.google.com/a/mozilla.org/g/fx-data-dev/c/jqbrzb1PTyE
+--- Query generated via sql_generators.active_users.
 WITH baseline AS (
   SELECT
     submission_date,

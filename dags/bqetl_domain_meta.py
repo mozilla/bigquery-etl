@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_domain_meta
@@ -51,6 +51,6 @@ with DAG(
         owner="wstuckey@mozilla.com",
         email=["wstuckey@mozilla.com"],
         date_partition_parameter="submission_date",
-        table_partition_template='{{ dag_run.logical_date.strftime("%Y%m") }}',
+        table_partition_template='${{ dag_run.logical_date.strftime("%Y%m") }}',
         depends_on_past=False,
     )

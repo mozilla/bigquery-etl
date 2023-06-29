@@ -215,7 +215,6 @@ class TestDagCollection:
                 }
             ).with_tasks(tasks)
 
-    @pytest.mark.java
     def test_to_airflow(self, tmp_path):
         query_file = (
             TEST_DIR
@@ -316,7 +315,6 @@ class TestDagCollection:
 
         assert result == expected
 
-    @pytest.mark.java
     def test_to_airflow_with_upstream_dependencies(self, tmp_path):
         query_file_path = tmp_path / "test-project" / "test" / "query_v1"
         os.makedirs(query_file_path)
@@ -423,7 +421,6 @@ class TestDagCollection:
         assert dag_with_upstream_dependencies == expected_dag_with_upstream_dependencies
         assert dag_external_dependency == expected_dag_external_dependency
 
-    @pytest.mark.java
     def test_public_json_dag_to_airflow(self, tmp_path):
         query_file = (
             TEST_DIR
@@ -468,7 +465,6 @@ class TestDagCollection:
 
         assert result == expected_dag
 
-    @pytest.mark.java
     def test_to_airflow_duplicate_dependencies(self, tmp_path):
         query_file = (
             TEST_DIR

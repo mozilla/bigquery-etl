@@ -1,0 +1,43 @@
+---
+- submission_date: 2021-09-01
+  newtab_visit_id: visit_id_1
+  newtab_open_source: about:newtab
+  client_id: client_id_1
+  legacy_telemetry_client_id: legacy_id_1
+  experiments: []
+  newtab_blocked_sponsors: []
+  is_new_profile: true
+  activity_segment: lots_of_activity
+  browser_name: Firefox Desktop
+  had_non_impression_engagement: true
+  search_interactions:
+    - search_engine: Engine1
+      search_access_point: urlbar
+      searches: 1
+      follow_on_search_ad_clicks: 0
+      follow_on_search_ad_impressions: 0
+      tagged_follow_on_search_ad_clicks: 0
+      tagged_follow_on_search_ad_impressions: 0
+      tagged_search_ad_clicks: 1
+      tagged_search_ad_impressions: 0
+  topsite_tile_interactions:
+    - topsite_tile_advertiser_name: advertiser_1
+      topsite_tile_position: 1
+      topsite_tile_id: tile_1
+      topsite_tile_clicks: 1
+      sponsored_topsite_tile_clicks: 1
+      organic_topsite_tile_clicks: 0
+      topsite_tile_impressions: 0
+      sponsored_topsite_tile_impressions: 0
+      organic_topsite_tile_impressions: 0
+  pocket_interactions:
+    - pocket_story_position: 1
+      pocket_impressions: 1
+      sponsored_pocket_impressions: 0
+      organic_pocket_impressions: 1
+      pocket_clicks: 0
+      sponsored_pocket_clicks: 0
+      organic_pocket_clicks: 0
+      pocket_saves: 0
+      sponsored_pocket_saves: 0
+      organic_pocket_saves: 0

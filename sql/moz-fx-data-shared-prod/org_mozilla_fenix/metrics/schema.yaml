@@ -617,6 +617,11 @@ fields:
         default: true
 
         '
+    - name: metrics_ram_more_than_threshold
+      type: BOOLEAN
+      mode: NULLABLE
+      description: True if the device's asserted 'advertised' RAM is more than the
+        given threshold.
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -2643,6 +2648,17 @@ fields:
         DNR rules for extensions loaded on application startup.
 
         '
+    - name: pwmgr_form_autofill_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: The result of auto-filling a login form.
   - name: string
     type: RECORD
     mode: NULLABLE

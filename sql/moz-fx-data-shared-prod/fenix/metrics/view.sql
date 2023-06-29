@@ -133,7 +133,8 @@ SELECT
       metrics.labeled_counter.metrics_bookmarks_delete,
       metrics.labeled_counter.metrics_bookmarks_edit,
       metrics.labeled_counter.metrics_bookmarks_open,
-      metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries
+      metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries,
+      metrics.labeled_counter.pwmgr_form_autofill_result
     ) AS labeled_counter,
     metrics.quantity,
     metrics.string,
@@ -239,7 +240,8 @@ SELECT
       metrics.boolean.events_marketing_notification_allowed,
       metrics.boolean.metrics_notifications_allowed,
       metrics.boolean.cookie_banners_service_detect_only,
-      metrics.boolean.pull_to_refresh_in_browser_enabled
+      metrics.boolean.pull_to_refresh_in_browser_enabled,
+      metrics.boolean.metrics_ram_more_than_threshold
     ) AS boolean,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -424,7 +426,8 @@ SELECT
       metrics.labeled_counter.metrics_bookmarks_delete,
       metrics.labeled_counter.metrics_bookmarks_edit,
       metrics.labeled_counter.metrics_bookmarks_open,
-      metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries
+      metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries,
+      metrics.labeled_counter.pwmgr_form_autofill_result
     ) AS labeled_counter,
     metrics.quantity,
     STRUCT(
@@ -712,7 +715,8 @@ SELECT
       metrics.boolean.events_marketing_notification_allowed,
       metrics.boolean.metrics_notifications_allowed,
       metrics.boolean.cookie_banners_service_detect_only,
-      metrics.boolean.pull_to_refresh_in_browser_enabled
+      metrics.boolean.pull_to_refresh_in_browser_enabled,
+      metrics.boolean.metrics_ram_more_than_threshold
     ) AS boolean,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -897,7 +901,8 @@ SELECT
       metrics.labeled_counter.metrics_bookmarks_delete,
       metrics.labeled_counter.metrics_bookmarks_edit,
       metrics.labeled_counter.metrics_bookmarks_open,
-      metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries
+      metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries,
+      metrics.labeled_counter.pwmgr_form_autofill_result
     ) AS labeled_counter,
     metrics.quantity,
     STRUCT(
@@ -1216,7 +1221,8 @@ SELECT
       metrics.labeled_counter.metrics_bookmarks_delete,
       metrics.labeled_counter.metrics_bookmarks_edit,
       metrics.labeled_counter.metrics_bookmarks_open,
-      metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries
+      metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries,
+      metrics.labeled_counter.pwmgr_form_autofill_result
     ) AS labeled_counter,
     metrics.quantity,
     metrics.string,

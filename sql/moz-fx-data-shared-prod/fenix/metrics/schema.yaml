@@ -336,6 +336,9 @@ fields:
     - name: pull_to_refresh_in_browser_enabled
       type: BOOLEAN
       mode: NULLABLE
+    - name: metrics_ram_more_than_threshold
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -1874,6 +1877,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: extensions_apis_dnr_startup_cache_entries
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: pwmgr_form_autofill_result
       type: RECORD
       mode: REPEATED
       fields:

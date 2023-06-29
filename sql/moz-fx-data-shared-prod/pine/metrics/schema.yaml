@@ -1548,6 +1548,17 @@ fields:
         header and the possible outcomes.
 
         '
+    - name: pwmgr_form_autofill_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: The result of auto-filling a login form.
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

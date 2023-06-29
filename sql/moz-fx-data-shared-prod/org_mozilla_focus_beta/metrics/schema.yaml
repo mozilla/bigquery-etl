@@ -1651,6 +1651,17 @@ fields:
         DNR rules for extensions loaded on application startup.
 
         '
+    - name: pwmgr_form_autofill_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: The result of auto-filling a login form.
   - name: labeled_rate
     type: RECORD
     mode: REPEATED

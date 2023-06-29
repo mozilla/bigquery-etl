@@ -146,7 +146,8 @@ SELECT
       metrics.labeled_counter.dotprint_failure,
       metrics.labeled_counter.pdfjs_geckoview,
       metrics.labeled_counter.network_cors_authorization_header,
-      metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries
+      metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries,
+      metrics.labeled_counter.pwmgr_form_autofill_result
     ) AS labeled_counter,
     metrics.labeled_rate,
     metrics.memory_distribution,
@@ -305,7 +306,8 @@ SELECT
       metrics.labeled_counter.dotprint_failure,
       metrics.labeled_counter.pdfjs_geckoview,
       metrics.labeled_counter.network_cors_authorization_header,
-      metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries
+      metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries,
+      metrics.labeled_counter.pwmgr_form_autofill_result
     ) AS labeled_counter,
     metrics.labeled_rate,
     metrics.memory_distribution,

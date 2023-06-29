@@ -342,7 +342,7 @@ SELECT
   CONCAT(subscription.id, '-', FORMAT_TIMESTAMP('%FT%H:%M:%E6S', `timestamp`)) AS id,
   `timestamp`,
   type,
-  original_id AS stripe_subscriptions_raw_changelog_id,
+  original_id AS stripe_subscriptions_changelog_id,
   subscription
 FROM
   changelog_union

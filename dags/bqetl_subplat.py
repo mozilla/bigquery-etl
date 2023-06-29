@@ -959,6 +959,17 @@ with DAG(
         )
     )
 
+    subscription_platform_derived__stripe_subscriptions_revised_changelog__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__stripe_subscriptions_revised_changelog__v1",
+        destination_table="stripe_subscriptions_revised_changelog_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="date",
+        depends_on_past=False,
+    )
+
     wait_for_firefox_accounts_derived__fxa_auth_events__v1 = ExternalTaskSensor(
         task_id="wait_for_firefox_accounts_derived__fxa_auth_events__v1",
         external_dag_id="bqetl_fxa_events",
@@ -1319,4 +1330,12 @@ with DAG(
 
     subscription_platform_derived__stripe_subscriptions_history__v1.set_upstream(
         stripe_external__subscription_item__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions_revised_changelog__v1.set_upstream(
+        stripe_external__plan__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions_revised_changelog__v1.set_upstream(
+        subscription_platform_derived__stripe_subscriptions_changelog__v1
     )

@@ -121,6 +121,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_stripe_subscriptions_history_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_changelog_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_revised_changelog_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/stripe/itemized_payout_reconciliation/view.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/devices_v1/query.sql",

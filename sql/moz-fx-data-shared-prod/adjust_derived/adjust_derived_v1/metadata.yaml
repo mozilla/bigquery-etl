@@ -1,7 +1,7 @@
 ---
 friendly_name: Data from external source Adjust
 description: >
-  This table represents CSVs downloaded from Adjust
+  This table represents data downloaded from Adjust
 owners:
   - mhirose@mozilla.com
 labels:

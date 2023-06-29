@@ -8,18 +8,15 @@ fields:
   type: TIMESTAMP
 - mode: NULLABLE
   name: install_begin_time
-  type: DATETIME
+  type: TIMESTAMP
 - mode: NULLABLE
   name: installed_at
-  type: DATETIME
+  type: TIMESTAMP
 - mode: NULLABLE
   name: conversion_duration
   type: integer
 - mode: NULLABLE
   name: app_name
-  type: STRING
-- mode: NULLABLE
-  name: app_token
   type: STRING
 - mode: NULLABLE
   name: app_version

@@ -48,7 +48,7 @@ args = parser.parse_args()
 quotes = set()
 for base_currency in args.base_currencies:
     response = requests.get(
-        "https://www.oanda.com/fx-for-business/historical-rates/api/data/update/",
+        "https://fxds-hcc.oanda.com/api/data/update/",
         params={
             "source": "OANDA",
             "adjustment": "0",
@@ -73,7 +73,7 @@ for base_currency in args.base_currencies:
                 quote_currency=currency_pair["quoteCurrency"],
                 base_currency=currency_pair["baseCurrency"],
                 price_type=currency_pair["type"],
-                price=price,
+                price=round(Decimal(price), 9),
             )
             for currency_pair in response.json()["widget"]
             for millis, price in currency_pair["data"]

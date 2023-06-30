@@ -12,6 +12,11 @@ CREATE TEMP FUNCTION synthesize_subscription(
     SELECT AS STRUCT
       subscription.* REPLACE (
         IF(
+          subscription.billing_cycle_anchor <= effective_at,
+          subscription.billing_cycle_anchor,
+          NULL
+        ) AS billing_cycle_anchor,
+        IF(
           subscription.cancel_at_period_end
           AND subscription.canceled_at <= effective_at,
           subscription.cancel_at,

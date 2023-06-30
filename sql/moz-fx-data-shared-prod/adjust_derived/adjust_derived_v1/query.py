@@ -194,7 +194,7 @@ def clean_json(adjust_response_text, adjust_list_part):
                                                     "maus": device["kpi_values"][8],
                                                 }
                                                 fields_list.append(field_dict)
-    # print(f'finished filling up list for {adjust_list_part["app_name"]}')
+
     return fields_list
 
 
@@ -262,11 +262,9 @@ def main():
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--date", required=True)
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
-    parser.add_argument("--dataset", default="analysis")
+    parser.add_argument("--dataset", default="adjust_derived")
 
     args = parser.parse_args()
-
-    # print("Something might be happening")
 
     app_list = json.loads(APP_TOKEN_LIST)
 

@@ -8,7 +8,7 @@ labels:
   incremental: false
 scheduling:
   dag_name: bqetl_adjust
-  date_partition_parameter: null
+  date_partition_parameter: submission_date
   parameters: ["submission_date:DATE:{{ds}}"]
 bigquery:
   time_partitioning:

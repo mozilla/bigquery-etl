@@ -1,4 +1,10 @@
-CREATE TEMP FUNCTION synthesize_subscription(subscription ANY TYPE, effective_at TIMESTAMP) AS (
+CREATE TEMP FUNCTION synthesize_subscription(
+  subscription ANY TYPE,
+  effective_at TIMESTAMP,
+  plan ANY TYPE,
+  plan_start TIMESTAMP,
+  previous_plan_id STRING
+) AS (
   -- Generate a synthetic subscription record from an existing subscription record
   -- to simulate how the subscription was at the specified `effective_at` timestamp,
   -- which is presumed to be before the subscription ended.
@@ -31,6 +37,11 @@ CREATE TEMP FUNCTION synthesize_subscription(subscription ANY TYPE, effective_at
         IF(subscription.discount.start <= effective_at, subscription.discount, NULL) AS discount,
         CAST(NULL AS TIMESTAMP) AS ended_at,
         IF(
+          subscription.items[0].plan.id = plan.id,
+          subscription.items,
+          [(SELECT AS STRUCT subscription.items[0].* REPLACE (plan AS plan))]
+        ) AS items,
+        IF(
           subscription.current_period_start <= effective_at,
           subscription.latest_invoice_id,
           NULL
@@ -42,16 +53,8 @@ CREATE TEMP FUNCTION synthesize_subscription(subscription ANY TYPE, effective_at
             subscription.metadata.cancelled_for_customer_at,
             NULL
           ) AS cancelled_for_customer_at,
-          IF(
-            subscription.metadata.plan_change_date <= effective_at,
-            subscription.metadata.plan_change_date,
-            NULL
-          ) AS plan_change_date,
-          IF(
-            subscription.metadata.plan_change_date <= effective_at,
-            subscription.metadata.previous_plan_id,
-            NULL
-          ) AS previous_plan_id
+          IF(plan_start > subscription.start_date, plan_start, NULL) AS plan_change_date,
+          previous_plan_id
         ) AS metadata,
         CASE
           WHEN subscription.status IN ('incomplete', 'incomplete_expired')
@@ -77,13 +80,13 @@ WITH original_changelog AS (
     `timestamp`,
     synced_at,
     subscription,
-    ROW_NUMBER() OVER subscription_changes AS subscription_change_number,
-    LEAD(`timestamp`) OVER subscription_changes AS next_subscription_change_at,
-    LAG(subscription.ended_at) OVER subscription_changes AS previous_subscription_ended_at
+    ROW_NUMBER() OVER subscription_changes_asc AS subscription_change_number,
+    LEAD(`timestamp`) OVER subscription_changes_asc AS next_subscription_change_at,
+    LAG(subscription.ended_at) OVER subscription_changes_asc AS previous_subscription_ended_at
   FROM
     `moz-fx-data-shared-prod`.subscription_platform_derived.stripe_subscriptions_changelog_v1
   WINDOW
-    subscription_changes AS (
+    subscription_changes_asc AS (
       PARTITION BY
         subscription.id
       ORDER BY
@@ -105,7 +108,7 @@ adjusted_original_changelog AS (
           AND subscription_change_number > 1
           AND subscription.ended_at < `timestamp`
           THEN STRUCT(subscription.ended_at AS `timestamp`, 'adjusted_subscription_end' AS type)
-        ELSE STRUCT(`timestamp` AS `timestamp`, 'original' AS type)
+        ELSE STRUCT(`timestamp`, 'original' AS type)
       END
     ).*,
     * EXCEPT (id, `timestamp`)
@@ -119,110 +122,220 @@ adjusted_original_changelog AS (
 -- As a result, we have to adjust and synthesize records to more accurately reconstruct history.
 questionable_resync_changelog AS (
   SELECT
-    original_id,
-    `timestamp`,
-    synced_at,
-    subscription,
-    subscription.items[0].plan.id AS subscription_plan_id,
-    next_subscription_change_at
+    *
   FROM
     adjusted_original_changelog
   WHERE
     (DATE(synced_at) BETWEEN '2023-02-24' AND '2023-02-26')
     AND subscription_change_number = 1
 ),
+questionable_subscription_plan_changes AS (
+  -- The most recent plan changes at the time of the resync.
+  SELECT
+    subscription.id AS subscription_id,
+    subscription.items[0].plan.id AS plan_id,
+    COALESCE(
+      subscription.metadata.plan_change_date,
+      subscription.start_date
+    ) AS subscription_plan_start
+  FROM
+    questionable_resync_changelog
+  UNION ALL
+  -- Any additional previous plan changes.
+  SELECT
+    invoice_line_items.subscription_id,
+    invoice_line_items.plan_id,
+    COALESCE(
+      TIMESTAMP_SECONDS(
+        CAST(JSON_VALUE(invoice_line_items.metadata, '$.plan_change_date') AS INT64)
+      ),
+      invoice_line_items.period_start
+    ) AS subscription_plan_start
+  FROM
+    questionable_resync_changelog AS changelog
+  JOIN
+    `moz-fx-data-shared-prod`.stripe_external.invoice_line_item_v1 AS invoice_line_items
+  ON
+    changelog.subscription.id = invoice_line_items.subscription_id
+    AND invoice_line_items.type = 'subscription'
+    AND invoice_line_items.period_start < changelog.subscription.metadata.plan_change_date
+  WHERE
+    changelog.subscription.metadata.plan_change_date IS NOT NULL
+  QUALIFY
+    invoice_line_items.plan_id IS DISTINCT FROM LAG(invoice_line_items.plan_id) OVER (
+      PARTITION BY
+        invoice_line_items.subscription_id
+      ORDER BY
+        invoice_line_items.period_start
+    )
+),
+questionable_subscription_plans_history AS (
+  SELECT
+    plan_changes.subscription_id,
+    STRUCT(
+      plan_changes.plan_id AS id,
+      plans.aggregate_usage,
+      plans.amount,
+      plans.billing_scheme,
+      plans.created,
+      plans.currency,
+      plans.`interval`,
+      plans.interval_count,
+      PARSE_JSON(plans.metadata) AS metadata,
+      plans.nickname,
+      plans.product_id,
+      plans.tiers_mode,
+      plans.trial_period_days,
+      plans.usage_type
+    ) AS plan,
+    LAG(plan_changes.plan_id) OVER subscription_plan_changes_asc AS previous_plan_id,
+    plan_changes.subscription_plan_start AS valid_from,
+    COALESCE(
+      LEAD(plan_changes.subscription_plan_start) OVER subscription_plan_changes_asc,
+      '9999-12-31 23:59:59.999999'
+    ) AS valid_to
+  FROM
+    questionable_subscription_plan_changes AS plan_changes
+  LEFT JOIN
+    `moz-fx-data-shared-prod`.stripe_external.plan_v1 AS plans
+  ON
+    plan_changes.plan_id = plans.id
+  WINDOW
+    subscription_plan_changes_asc AS (
+      PARTITION BY
+        plan_changes.subscription_id
+      ORDER BY
+        plan_changes.subscription_plan_start
+    )
+),
 synthetic_subscription_start_changelog AS (
   SELECT
     'synthetic_subscription_start' AS type,
-    original_id,
-    `timestamp`,
-    synthesize_subscription(subscription, effective_at => subscription.start_date) AS subscription,
-    IF(
-      subscription.metadata.previous_plan_id IS NOT NULL
-      AND subscription.metadata.plan_change_date IS NOT NULL,
-      subscription.metadata.previous_plan_id,
-      subscription_plan_id
-    ) AS subscription_plan_id
+    changelog.original_id,
+    changelog.`timestamp`,
+    synthesize_subscription(
+      changelog.subscription,
+      effective_at => changelog.subscription.start_date,
+      plan => plans_history.plan,
+      plan_start => changelog.subscription.start_date,
+      previous_plan_id => CAST(NULL AS STRING)
+    ) AS subscription
   FROM
-    questionable_resync_changelog
+    questionable_resync_changelog AS changelog
+  LEFT JOIN
+    questionable_subscription_plans_history AS plans_history
+  ON
+    changelog.subscription.id = plans_history.subscription_id
+    AND changelog.subscription.start_date >= plans_history.valid_from
+    AND changelog.subscription.start_date < plans_history.valid_to
 ),
 synthetic_plan_change_changelog AS (
   SELECT
     'synthetic_plan_change' AS type,
-    original_id,
-    subscription.metadata.plan_change_date AS `timestamp`,
+    changelog.original_id,
+    plans_history.valid_from AS `timestamp`,
     synthesize_subscription(
-      subscription,
-      effective_at => subscription.metadata.plan_change_date
-    ) AS subscription,
-    subscription_plan_id
+      changelog.subscription,
+      effective_at => plans_history.valid_from,
+      plan => plans_history.plan,
+      plan_start => plans_history.valid_from,
+      previous_plan_id => plans_history.previous_plan_id
+    ) AS subscription
   FROM
-    questionable_resync_changelog
+    questionable_subscription_plans_history AS plans_history
+  JOIN
+    questionable_resync_changelog AS changelog
+  ON
+    plans_history.subscription_id = changelog.subscription.id
   WHERE
-    subscription.metadata.previous_plan_id IS NOT NULL
-    AND subscription.metadata.plan_change_date IS NOT NULL
+    plans_history.valid_from > changelog.subscription.start_date
 ),
 synthetic_trial_start_changelog AS (
   SELECT
     'synthetic_trial_start' AS type,
-    original_id,
-    subscription.trial_start AS `timestamp`,
-    synthesize_subscription(subscription, effective_at => subscription.trial_start) AS subscription,
-    IF(
-      subscription.metadata.previous_plan_id IS NOT NULL
-      AND subscription.trial_start < subscription.metadata.plan_change_date,
-      subscription.metadata.previous_plan_id,
-      subscription_plan_id
-    ) AS subscription_plan_id
+    changelog.original_id,
+    changelog.subscription.trial_start AS `timestamp`,
+    synthesize_subscription(
+      changelog.subscription,
+      effective_at => changelog.subscription.trial_start,
+      plan => plans_history.plan,
+      plan_start => plans_history.valid_from,
+      previous_plan_id => plans_history.previous_plan_id
+    ) AS subscription
   FROM
-    questionable_resync_changelog
+    questionable_resync_changelog AS changelog
+  LEFT JOIN
+    questionable_subscription_plans_history AS plans_history
+  ON
+    changelog.subscription.id = plans_history.subscription_id
+    AND changelog.subscription.trial_start >= plans_history.valid_from
+    AND changelog.subscription.trial_start < plans_history.valid_to
   WHERE
-    subscription.trial_start > subscription.start_date
+    changelog.subscription.trial_start > changelog.subscription.start_date
 ),
 synthetic_trial_end_changelog AS (
   SELECT
     'synthetic_trial_end' AS type,
-    original_id,
-    subscription.trial_end AS `timestamp`,
-    synthesize_subscription(subscription, effective_at => subscription.trial_end) AS subscription,
-    IF(
-      subscription.metadata.previous_plan_id IS NOT NULL
-      AND subscription.trial_end < subscription.metadata.plan_change_date,
-      subscription.metadata.previous_plan_id,
-      subscription_plan_id
-    ) AS subscription_plan_id
+    changelog.original_id,
+    changelog.subscription.trial_end AS `timestamp`,
+    synthesize_subscription(
+      changelog.subscription,
+      effective_at => changelog.subscription.trial_end,
+      plan => plans_history.plan,
+      plan_start => plans_history.valid_from,
+      previous_plan_id => plans_history.previous_plan_id
+    ) AS subscription
   FROM
-    questionable_resync_changelog
+    questionable_resync_changelog AS changelog
+  LEFT JOIN
+    questionable_subscription_plans_history AS plans_history
+  ON
+    changelog.subscription.id = plans_history.subscription_id
+    AND changelog.subscription.trial_end >= plans_history.valid_from
+    AND changelog.subscription.trial_end < plans_history.valid_to
   WHERE
-    subscription.trial_end < synced_at
+    changelog.subscription.trial_end < changelog.synced_at
     -- Only consider the subscription active after the trial ended if it continued for at least a day.
     AND (
-      subscription.ended_at IS NULL
-      OR TIMESTAMP_DIFF(subscription.ended_at, subscription.trial_end, HOUR) >= 24
+      changelog.subscription.ended_at IS NULL
+      OR TIMESTAMP_DIFF(
+        changelog.subscription.ended_at,
+        changelog.subscription.trial_end,
+        HOUR
+      ) >= 24
     )
 ),
 synthetic_cancel_at_period_end_changelog AS (
   SELECT
     'synthetic_cancel_at_period_end' AS type,
-    original_id,
-    subscription.canceled_at AS `timestamp`,
-    synthesize_subscription(subscription, effective_at => subscription.canceled_at) AS subscription,
-    IF(
-      subscription.metadata.previous_plan_id IS NOT NULL
-      AND subscription.canceled_at < subscription.metadata.plan_change_date,
-      subscription.metadata.previous_plan_id,
-      subscription_plan_id
-    ) AS subscription_plan_id
+    changelog.original_id,
+    changelog.subscription.canceled_at AS `timestamp`,
+    synthesize_subscription(
+      changelog.subscription,
+      effective_at => changelog.subscription.canceled_at,
+      plan => plans_history.plan,
+      plan_start => plans_history.valid_from,
+      previous_plan_id => plans_history.previous_plan_id
+    ) AS subscription
   FROM
-    questionable_resync_changelog
+    questionable_resync_changelog AS changelog
+  LEFT JOIN
+    questionable_subscription_plans_history AS plans_history
+  ON
+    changelog.subscription.id = plans_history.subscription_id
+    AND changelog.subscription.canceled_at >= plans_history.valid_from
+    AND changelog.subscription.canceled_at < plans_history.valid_to
   WHERE
-    subscription.cancel_at_period_end
-    AND subscription.canceled_at IS NOT NULL
-    AND (subscription.ended_at IS NULL OR subscription.canceled_at < subscription.ended_at)
+    changelog.subscription.cancel_at_period_end
+    AND changelog.subscription.canceled_at IS NOT NULL
+    AND (
+      changelog.subscription.ended_at IS NULL
+      OR changelog.subscription.canceled_at < changelog.subscription.ended_at
+    )
     -- Don't adjust questionable resync changes that would conflict with subsequent actual changes.
     AND (
-      next_subscription_change_at IS NULL
-      OR subscription.canceled_at < next_subscription_change_at
+      changelog.next_subscription_change_at IS NULL
+      OR changelog.subscription.canceled_at < changelog.next_subscription_change_at
     )
 ),
 synthetic_changelog_union AS (
@@ -250,51 +363,6 @@ synthetic_changelog_union AS (
     *
   FROM
     synthetic_cancel_at_period_end_changelog
-),
-synthetic_changelog_with_plans AS (
-  SELECT
-    changelog.type,
-    changelog.original_id,
-    changelog.`timestamp`,
-    IF(
-      changelog.subscription_plan_id = changelog.subscription.items[0].plan.id,
-      changelog.subscription,
-      (
-        SELECT AS STRUCT
-          changelog.subscription.* REPLACE (
-            [
-              STRUCT(
-                changelog.subscription.items[0].id,
-                changelog.subscription.items[0].created,
-                changelog.subscription.items[0].metadata,
-                STRUCT(
-                  changelog.subscription_plan_id AS id,
-                  plans.aggregate_usage,
-                  plans.amount,
-                  plans.billing_scheme,
-                  plans.created,
-                  plans.currency,
-                  plans.`interval`,
-                  plans.interval_count,
-                  PARSE_JSON(plans.metadata) AS metadata,
-                  plans.nickname,
-                  plans.product_id,
-                  plans.tiers_mode,
-                  plans.trial_period_days,
-                  plans.usage_type
-                ) AS plan,
-                changelog.subscription.items[0].quantity
-              )
-            ] AS items
-          )
-      )
-    ) AS subscription
-  FROM
-    synthetic_changelog_union AS changelog
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.stripe_external.plan_v1 AS plans
-  ON
-    changelog.subscription_plan_id = plans.id
 ),
 adjusted_resync_changelog AS (
   SELECT
@@ -328,7 +396,7 @@ changelog_union AS (
     `timestamp`,
     subscription
   FROM
-    synthetic_changelog_with_plans
+    synthetic_changelog_union
   UNION ALL
   SELECT
     type,

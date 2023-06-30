@@ -1,0 +1,28 @@
+friendly_name: Stripe subscriptions revised changelog
+description: |-
+  Changes to Stripe subscriptions as recorded by Fivetran, with revisions to improve historical accuracy.
+
+  Between 2023-02-24 and 2023-02-26 Fivetran did a full resync of the `subscription_history` table,
+  overwriting/deleting existing history records for most subscriptions and replacing them with a
+  single history record per subscription purporting to be in effect from the start of the subscription,
+  but actually reflecting the current state of the subscription at the time it was resynced (DENG-754).
+  As a result, we've had to adjust and synthesize records to more accurately reconstruct history.
+
+  This table's schema closely mirrors Stripe's subscriptions API (https://stripe.com/docs/api/subscriptions/object).
+  Fields which Fivetran doesn't sync and fields specific to Stripe Connect have been omitted.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  date_partition_parameter: date
+bigquery:
+  time_partitioning:
+    type: day
+    field: timestamp
+    require_partition_filter: false
+    expiration_days: null
+  clustering: null
+references: {}

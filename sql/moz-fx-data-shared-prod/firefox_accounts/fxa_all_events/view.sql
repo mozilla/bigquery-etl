@@ -10,8 +10,10 @@ WITH fxa_auth_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
+    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS event_time,
     jsonPayload.fields.user_id,
     jsonPayload.fields.country,
+    JSON_VALUE(jsonPayload.fields.event_properties, "$.country_code") AS country_code,
     jsonPayload.fields.language,
     jsonPayload.fields.app_version,
     jsonPayload.fields.os_name,
@@ -30,10 +32,12 @@ fxa_auth_bounce_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
+    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS event_time,
     jsonPayload.fields.user_id,
     CAST(
       NULL AS STRING
     ) AS country,  -- No country field in auth_bounces
+    CAST(NULL AS STRING) AS country_code,
     jsonPayload.fields.language,
     jsonPayload.fields.app_version,
     CAST(NULL AS STRING) AS os_name,
@@ -50,8 +54,10 @@ fxa_content_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
+    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS event_time,
     jsonPayload.fields.user_id,
     jsonPayload.fields.country,
+    CAST(NULL AS STRING) AS country_code,
     jsonPayload.fields.language,
     jsonPayload.fields.app_version,
     jsonPayload.fields.os_name,
@@ -69,8 +75,10 @@ fxa_oauth_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
+    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS event_time,
     jsonPayload.fields.user_id,
     CAST(NULL AS STRING) AS country,
+    CAST(NULL AS STRING) AS country_code,
     CAST(NULL AS STRING) AS language,
     jsonPayload.fields.app_version,
     CAST(NULL AS STRING) AS os_name,
@@ -87,8 +95,10 @@ fxa_stdout_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
+    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS event_time,
     jsonPayload.fields.user_id,
     CAST(NULL AS STRING) AS country,
+    jsonPayload.fields.country_code,
     jsonPayload.fields.language,
     jsonPayload.fields.app_version,
     jsonPayload.fields.os_name,
@@ -136,12 +146,14 @@ unioned AS (
 SELECT
   `timestamp`,
   receiveTimestamp,
+  event_time,
   logger,
   fxa_log,
   event_type,
   user_id,
   device_id,
   country,
+  country_code,
   `language`,
   app_version,
   os_name,
@@ -175,11 +187,27 @@ SELECT
   JSON_VALUE(event_properties, "$.email_service") AS email_service,
   JSON_VALUE(event_properties, "$.email_template") AS email_template,
   JSON_VALUE(event_properties, "$.email_version") AS email_version,
+  JSON_VALUE(event_properties, "$.subscription_id") AS subscription_id,
   JSON_VALUE(event_properties, "$.plan_id") AS plan_id,
+  JSON_VALUE(event_properties, "$.previous_plan_id") AS previous_plan_id,
+  JSON_VALUE(event_properties, "$.subscribed_plan_ids") AS subscribed_plan_ids,
   JSON_VALUE(event_properties, "$.product_id") AS product_id,
-  JSON_VALUE(event_properties, "$.promotionCode") AS promotion_code,
+  JSON_VALUE(event_properties, "$.previous_product_id") AS previous_product_id,
+  -- `promotionCode` was renamed `promotion_code` in stdout logs.
+  COALESCE(
+    JSON_VALUE(event_properties, "$.promotion_code"),
+    JSON_VALUE(event_properties, "$.promotionCode")
+  ) AS promotion_code,
   JSON_VALUE(event_properties, "$.payment_provider") AS payment_provider,
+  JSON_VALUE(event_properties, "$.provider_event_id") AS provider_event_id,
   JSON_VALUE(event_properties, "$.checkout_type") AS checkout_type,
   JSON_VALUE(event_properties, "$.source_country") AS source_country,
+  -- `source_country` was renamed `country_code_source` in stdout logs.
+  COALESCE(
+    JSON_VALUE(event_properties, "$.country_code_source"),
+    JSON_VALUE(event_properties, "$.source_country")
+  ) AS country_code_source,
+  JSON_VALUE(event_properties, "$.error_id") AS error_id,
+  CAST(JSON_VALUE(event_properties, "$.voluntary_cancellation") AS BOOL) AS voluntary_cancellation,
 FROM
   unioned

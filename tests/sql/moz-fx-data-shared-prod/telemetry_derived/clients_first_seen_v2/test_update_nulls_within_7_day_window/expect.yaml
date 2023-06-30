@@ -6,6 +6,7 @@
   attribution_source: source1
   download_token: token1
   metadata:
+    first_seen_date__source_ping: shutdown
     attribution_source__source_ping: new_profile
     download_token__source_ping: new_profile
 - client_id: client-2
@@ -20,6 +21,7 @@
     download_source__source_ping: main
     download_token__source_ping: shutdown
     attribution_source__source_ping: shutdown
+    first_seen_date__source_ping: main
     reported_main_ping: true
     reported_new_profile_ping: true
     reported_shutdown_ping: true

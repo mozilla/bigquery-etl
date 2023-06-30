@@ -693,6 +693,11 @@ SELECT
       ELSE _previous.attribution_source
     END AS attribution_source,
     STRUCT(
+      IF(
+        _previous.client_id IS NULL,
+        _current.metadata.first_seen_date__source_ping,
+        _previous.metadata.first_seen_date__source_ping
+      ) AS first_seen_date__source_ping,
       CASE
         WHEN _previous.client_id IS NULL
           THEN _current.metadata.attribution_campaign__source_ping

@@ -357,6 +357,22 @@ fields:
       description: 'Measures the state of the fxa login.
 
         '
+    - name: credit_card_autofill_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Recorded on startup to check if credit card
+
+        autofill settings are enabled
+
+        '
+    - name: credit_card_sync_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Recorded on startup to check if credit card
+
+        sync settings are enabled
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

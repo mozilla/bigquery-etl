@@ -243,6 +243,12 @@ fields:
     - name: preferences_fxa_logged_in
       type: BOOLEAN
       mode: NULLABLE
+    - name: credit_card_autofill_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: credit_card_sync_enabled
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE

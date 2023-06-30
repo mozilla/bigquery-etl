@@ -39,6 +39,14 @@ CREATE TEMP FUNCTION synthesize_subscription(
           subscription.current_period_start,
           NULL
         ) AS current_period_start,
+        ARRAY(
+          SELECT AS STRUCT
+            *
+          FROM
+            UNNEST(subscription.default_tax_rates) AS default_tax_rates
+          WHERE
+            default_tax_rates.created <= effective_at
+        ) AS default_tax_rates,
         IF(subscription.discount.start <= effective_at, subscription.discount, NULL) AS discount,
         CAST(NULL AS TIMESTAMP) AS ended_at,
         IF(

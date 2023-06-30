@@ -741,6 +741,18 @@ with DAG(
         task_concurrency=1,
     )
 
+    stripe_external__invoice_line_item__v1 = bigquery_etl_query(
+        task_id="stripe_external__invoice_line_item__v1",
+        destination_table="invoice_line_item_v1",
+        dataset_id="stripe_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     stripe_external__itemized_payout_reconciliation__v5 = gke_command(
         task_id="stripe_external__itemized_payout_reconciliation__v5",
         command=[
@@ -1244,6 +1256,8 @@ with DAG(
 
     stripe_external__invoice_discount__v1.set_upstream(fivetran_stripe_sync_wait)
 
+    stripe_external__invoice_line_item__v1.set_upstream(fivetran_stripe_sync_wait)
+
     stripe_external__plan__v1.set_upstream(fivetran_stripe_sync_wait)
 
     stripe_external__product__v1.set_upstream(fivetran_stripe_sync_wait)
@@ -1348,6 +1362,10 @@ with DAG(
 
     subscription_platform_derived__stripe_subscriptions_history__v2.set_upstream(
         subscription_platform_derived__stripe_subscriptions_revised_changelog__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions_revised_changelog__v1.set_upstream(
+        stripe_external__invoice_line_item__v1
     )
 
     subscription_platform_derived__stripe_subscriptions_revised_changelog__v1.set_upstream(

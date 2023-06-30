@@ -1,17 +1,21 @@
 friendly_name: Clients First Seen
 description: |-
-  Picks out just the first observations per client based on:
-  - Main ping for most attributes.
-  - New profile ping for attributes that are not available in
-  the main ping.
-  - The earliest value for attribution and download token from
-  the pings: main, new_profile and first_shutdown.
+  Picks out just the first observations per client.
+  - Each attribute is retrieved from the ping that reports it
+  first: Main, New profile or First Shutdown ping.
 
-  It should be accessed through the user-facing view
+  - A subset of the attributes are updated from NULL to the
+  value reported within a 7-day window.
+
+  This table should be accessed through the user-facing view
   `telemetry.clients_first_seen`.
 
   The query for this table overwrites the whole table instead of writing to
   a single partition, so manual backfills must use parameter --no_partition.
+
+  To initialize the table:
+  - Deploy the schema if required.
+  - Run bqetl query initialize <path>/clients_first_seen_v2.query.sql
 owners:
 - lvargas@mozilla.com
 labels:
@@ -19,6 +23,7 @@ labels:
   incremental: true
   schedule: daily
   depends_on_past: true
+  owner1: lvargas
 scheduling:
   dag_name: bqetl_analytics_tables
   task_name: clients_first_seen_v2
@@ -31,9 +36,11 @@ bigquery:
     type: day
     field: first_seen_date
     require_partition_filter: false
+    expiration_days: null
   clustering:
     fields:
     - normalized_channel
     - sample_id
     - country
     - normalized_os
+references: {}

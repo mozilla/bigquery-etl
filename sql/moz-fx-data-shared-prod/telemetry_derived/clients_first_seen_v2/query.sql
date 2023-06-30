@@ -328,11 +328,6 @@ _current AS (
       ).earliest_date
     ) AS first_seen_date,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(
-        STRUCT(CAST(submission_timestamp AS STRING), ping_source, DATETIME(submission_timestamp))
-      )
-    ).earliest_date AS submission_timestamp,
-    mozfun.norm.get_earliest_value(
       ARRAY_AGG(STRUCT(CAST(architecture AS STRING), ping_source, DATETIME(submission_timestamp)))
     ).earliest_value AS architecture,
     mozfun.norm.get_earliest_value(
@@ -541,8 +536,6 @@ _previous AS (
     *
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
-  WHERE
-    first_seen_date < CURRENT_DATE()
 )
 SELECT
   IF(_previous.client_id IS NOT NULL, _previous, _current).* REPLACE (

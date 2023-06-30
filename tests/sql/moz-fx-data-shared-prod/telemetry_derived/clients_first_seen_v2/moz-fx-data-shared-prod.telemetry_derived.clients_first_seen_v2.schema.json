@@ -12,10 +12,6 @@
     "name": "first_seen_date"
   },
   {
-    "type": "DATETIME",
-    "name": "submission_timestamp"
-  },
-  {
     "type": "STRING",
     "name": "architecture"
   },

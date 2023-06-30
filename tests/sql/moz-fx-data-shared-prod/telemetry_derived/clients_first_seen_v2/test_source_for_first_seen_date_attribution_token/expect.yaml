@@ -1,7 +1,6 @@
 ---
 - client_id: client-1
   first_seen_date: 2023-06-01
-  submission_timestamp: '2023-06-01T00:03:00'
   city: city1
   metadata:
     reported_main_ping: true
@@ -9,7 +8,6 @@
     reported_shutdown_ping: false
 - client_id: client-3
   first_seen_date: 2023-06-01
-  submission_timestamp: '2023-06-01T11:03:00'
   download_token: token3
   sample_id: 30
   metadata:

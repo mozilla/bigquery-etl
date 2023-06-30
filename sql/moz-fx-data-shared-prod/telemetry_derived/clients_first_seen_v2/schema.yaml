@@ -1,152 +1,200 @@
 fields:
-- name: client_id
+- description: Unique ID for the client installation.
+  name: client_id
   type: STRING
   mode: NULLABLE
-- name: sample_id
+- description: Sample ID to limit query results during an analysis.
+  name: sample_id
   type: INTEGER
   mode: NULLABLE
-- name: first_seen_date
+- description: Date when the server first received either of the 3 pings from this client.
+  name: first_seen_date
   type: DATE
   mode: NULLABLE
-- name: submission_timestamp
-  type: DATETIME
-  mode: NULLABLE
-- name: architecture
+- description: The application architecture reported by the client.
+  name: architecture
   type: STRING
   mode: NULLABLE
-- name: app_build_id
+- description: The application build reported by the client.
+  name: app_build_id
   type: STRING
   mode: NULLABLE
-- name: channel
+- description: Name of the installed app/browser.
+  name: app_name
   type: STRING
   mode: NULLABLE
-- name: app_display_version
+- description: The appliction platform version reported by the client.
+  name: platform_version
   type: STRING
   mode: NULLABLE
-- name: app_name
+- description: The application vendor.
+  name: vendor
   type: STRING
   mode: NULLABLE
-- name: platform_version
+- description: The application version.
+  name: app_version
   type: STRING
   mode: NULLABLE
-- name: vendor
+- description: 'A string tag identifying the binary ABI of the current processor and compiler vtable, as taken from the TARGET_XPCOM_ABI configure variable.
+  It may not be available on all platforms, especially unusual processor or compiler combinations. The result takes the form <processor>-<compilerABI>,
+  eg. x86-msvc, ppc-gcc3. This value should almost always be used in combination with the OS.'
+  name: xpcom_abi
   type: STRING
   mode: NULLABLE
-- name: app_version
+- description: The document ID specified in the URI when the client sent this message.
+  name: document_id
   type: STRING
   mode: NULLABLE
-- name: xpcom_abi
+- description: The value of the `distribution.id` preference that identifies the Firefox distribution.
+  name: distribution_id
   type: STRING
   mode: NULLABLE
-- name: document_id
+- description: The value selected for the `distribution.version` preference in the Partner Distribution Configuration File.
+  name: partner_distribution_version
   type: STRING
   mode: NULLABLE
-- name: distribution_id
+- description: The value of the `app.distributor` preference in the Partner Distribution Configuration File.
+  name: partner_distributor
   type: STRING
   mode: NULLABLE
-- name: partner_distribution_version
+- description: The value of the `app.distributor.channel` preference in the Partner Distribution Configuration File.
+  name: partner_distributor_channel
   type: STRING
   mode: NULLABLE
-- name: partner_distributor
+- description: The value of the `mozilla.partner.id` preference in the Partner Distribution Configuration File.
+  name: partner_id
   type: STRING
   mode: NULLABLE
-- name: partner_distributor_channel
+- description: The anonymized path of the engine xml file. For details on the components refer to the metadata for telemetry.new_profile.
+  name: engine_data_load_path
   type: STRING
   mode: NULLABLE
-- name: partner_id
+- description: The name of the default search engine.
+  name: engine_data_name
   type: STRING
   mode: NULLABLE
-- name: engine_data_load_path
+- description: 'The origin of the search engine. The value will be default for engines that are built-in or from distribution partners,
+  verified for user-installed engines with valid verification hashes, unverified for non-default engines without verification hash,
+  and invalid for engines with broken verification hashes.'
+  name: engine_data_origin
   type: STRING
   mode: NULLABLE
-- name: engine_data_name
+- description: The HTTP url we would use to search. For privacy, we don’t record this for user-installed engines.
+  name: engine_data_submission_url
   type: STRING
   mode: NULLABLE
-- name: engine_data_origin
+- description: The model IDs for Apple desktop devices. Applies to Mac only.
+  name: apple_model_id
   type: STRING
   mode: NULLABLE
-- name: engine_data_submission_url
+- description: City retrieved as a result of a geographic lookup based on the client's IP address.
+  name: city
   type: STRING
   mode: NULLABLE
-- name: apple_model_id
+- description: First major country subdivision, typically a state, province, or county.
+  name: subdivision1
   type: STRING
   mode: NULLABLE
-- name: city
+- description: The Firefox channel, set to Other for unrecognized channel names.
+  name: normalized_channel
   type: STRING
   mode: NULLABLE
-- name: subdivision1
+- description: The ISO 3166-1 alpha-2 country code.
+  name: country
   type: STRING
   mode: NULLABLE
-- name: normalized_channel
+- description: The OS name, set to Other for unrecognized OS names.
+  name: normalized_os
   type: STRING
   mode: NULLABLE
-- name: country
+- description: The OS version.
+  name: normalized_os_version
   type: STRING
   mode: NULLABLE
-- name: normalized_os
+- description: 'How the profile was selected during startup. Possible reasons are:
+   unknown: Generally should not happen, set as a default in case no other reason occurred. profile-manager: The profile was selected by the profile manager.
+   profile-reset: The profile was selected for reset, normally this would mean a restart. restart: The user restarted the application,
+   the same profile as previous will be used. argument-profile: The profile was selected by the --profile command line argument.
+   argument-p: The profile was selected by the -p command line argument. firstrun-claimed-default: A first run of a dedicated profiles build chose the old
+   default profile to be the default for this install. firstrun-skipped-default: A first run of a dedicated profiles build skipped over the old default profile
+   and created a new profile. restart-claimed-default: A first run of a dedicated profiles build after a restart chose the old default.'
+  name: startup_profile_selection_reason
   type: STRING
   mode: NULLABLE
-- name: normalized_os_version
+- description: Unique token created at Firefox download time.
+  name: download_token
   type: STRING
   mode: NULLABLE
-- name: startup_profile_selection_reason
+- description: Identifier that indicates where installations of Firefox originated.
+  name: download_source
   type: STRING
   mode: NULLABLE
-- name: download_token
+- description: Identifier of the particular campaign that led to the download of the product.
+  name: attribution_campaign
   type: STRING
   mode: NULLABLE
-- name: download_source
+- description: Identifier to indicate the particular link within a campaign.
+  name: attribution_content
   type: STRING
   mode: NULLABLE
-- name: attribution_campaign
+- description: Funnel experiment parameters.
+  name: attribution_experiment
   type: STRING
   mode: NULLABLE
-- name: attribution_content
+- description: Category of the source, such as 'organic' for a search engine.
+  name: attribution_medium
   type: STRING
   mode: NULLABLE
-- name: attribution_experiment
+- description: Referring partner domain, when install happens via a known partner.
+  name: attribution_source
   type: STRING
   mode: NULLABLE
-- name: attribution_medium
-  type: STRING
-  mode: NULLABLE
-- name: attribution_source
-  type: STRING
-  mode: NULLABLE
-- name: metadata
+- description:
+  name: metadata
   type: RECORD
   mode: NULLABLE
   fields:
-  - name: first_seen_date__source_ping
+  - description: Date when the server first received either of the 3 pings for this clients (main, first_shutdown, new_profile).
+    name: first_seen_date__source_ping
     type: STRING
     mode: NULLABLE
-  - name: attribution_campaign__source_ping
+  - description: Ping that first reported a NOT NULL value for the attribution campaign.
+    name: attribution_campaign__source_ping
     type: STRING
     mode: NULLABLE
-  - name: attribution_content__source_ping
+  - description: Ping that first reported a NOT NULL value for the attribution content.
+    name: attribution_content__source_ping
     type: STRING
     mode: NULLABLE
-  - name: attribution_experiment__source_ping
+  - description: Ping that first reported a NOT NULL value for the attribution experiment.
+    name: attribution_experiment__source_ping
     type: STRING
     mode: NULLABLE
-  - name: attribution_medium__source_ping
+  - description: Ping that first reported a NOT NULL value for the attribution medium.
+    name: attribution_medium__source_ping
     type: STRING
     mode: NULLABLE
-  - name: attribution_source__source_ping
+  - description: Ping that first reported a NOT NULL value for the attribution source.
+    name: attribution_source__source_ping
     type: STRING
     mode: NULLABLE
-  - name: download_token__source_ping
+  - description: Ping that first reported a NOT NULL value for the download token.
+    name: download_token__source_ping
     type: STRING
     mode: NULLABLE
-  - name: download_source__source_ping
+  - description: Ping that first reported a NOT NULL value for the download source.
+    name: download_source__source_ping
     type: STRING
     mode: NULLABLE
-  - name: reported_new_profile_ping
+  - description: Indicates wether the client reported a new profile ping on the first seen date and up to 7 days after.
+    name: reported_new_profile_ping
     type: BOOLEAN
     mode: NULLABLE
-  - name: reported_shutdown_ping
+  - description: Indicates wether the client reported a first shutdown ping on the first seen date and up to 7 days after.
+    name: reported_shutdown_ping
     type: BOOLEAN
     mode: NULLABLE
-  - name: reported_main_ping
+  - description: Indicates wether the client reported a main ping on the first seen date and up to 7 days after.
+    name: reported_main_ping
     type: BOOLEAN
     mode: NULLABLE

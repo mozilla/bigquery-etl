@@ -1038,6 +1038,10 @@ fields:
         - name: screen_width
           type: INTEGER
           mode: NULLABLE
+      - name: target_frame_rate
+        type: INTEGER
+        mode: NULLABLE
+        description: Frame rate in Hz, typically 60 or more, see bug 1840381
     - name: hdd
       type: RECORD
       mode: NULLABLE

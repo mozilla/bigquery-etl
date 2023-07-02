@@ -718,6 +718,9 @@ fields:
       - name: embedded_in_firefox_reality
         type: BOOLEAN
         mode: NULLABLE
+      - name: target_frame_rate
+        type: INTEGER
+        mode: NULLABLE
     - name: hdd
       type: RECORD
       mode: NULLABLE

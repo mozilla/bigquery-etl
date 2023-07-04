@@ -8,7 +8,8 @@ SELECT
             SELECT AS STRUCT
               jsonPayload.fields.* EXCEPT (device_id, user_id),
               TO_HEX(SHA256(jsonPayload.fields.user_id)) AS user_id,
-              TO_HEX(SHA256(jsonPayload.fields.device_id)) AS device_id
+              TO_HEX(SHA256(jsonPayload.fields.device_id)) AS device_id,
+              CAST(jsonPayload.fields.t AS STRING) AS t
           ) AS fields
         )
     ) AS jsonPayload

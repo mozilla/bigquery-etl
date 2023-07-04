@@ -1,3 +1,8 @@
+CREATE OR REPLACE TABLE
+`tmp.kik_fxa_flows`
+CLUSTER BY
+  flow_id
+AS
 WITH
   base AS (
     SELECT
@@ -23,7 +28,7 @@ WITH
       DATE(`timestamp`)
         BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY)
         AND @submission_date
-      AND event_category IN ('content', 'auth', 'oauth')
+      AND fxa_log IN ('content', 'auth', 'oauth')
       AND event_type NOT IN (
       'fxa_email - bounced',
       'fxa_email - click',
@@ -42,27 +47,31 @@ WITH
   ),
   flow_attributes AS (
     -- @loines: any other attributes we may want to keep?
-    SELECT DISTINCT
+    SELECT
       flow_id,
-      FIRST_VALUE(`timestamp` IGNORE NULLS) OVER(w1) AS flow_start_timestamp,
-      FIRST_VALUE(country IGNORE NULLS) OVER(w1) AS country,
-      FIRST_VALUE(os_name IGNORE NULLS) OVER(w1) AS os_name,
-      FIRST_VALUE(ua_browser IGNORE NULLS) OVER(w1) AS browser_name, -- we keep this as ua_browser in fxa users tables, should we keep it the same here for consistency?
-      FIRST_VALUE(ua_version IGNORE NULLS) OVER(w1) AS browser_version,
+      ARRAY_AGG(
+      IF(
+        `timestamp` IS NOT NULL
+        AND (
+          country IS NOT NULL
+          OR os_name IS NOT NULL
+          OR ua_browser IS NOT NULL
+          OR ua_version IS NOT NULL
+        ),
+        STRUCT(`timestamp` AS flow_start_timestamp, country AS flow_country, os_name AS flow_os_name, ua_browser AS flow_ua_browser, ua_version AS flow_ua_version),
+        NULL
+      ) IGNORE NULLS
+      ORDER BY
+        `timestamp`
+      LIMIT
+        1
+    )[SAFE_OFFSET(0)] AS flow_info,
     FROM
       base
     WHERE
       flow_id IS NOT NULL
-    WINDOW
-      w1 AS (
-          PARTITION BY
-          flow_id
-        ORDER BY
-          `timestamp`
-        ROWS BETWEEN
-          UNBOUNDED PRECEDING
-          AND UNBOUNDED FOLLOWING
-      )
+    GROUP BY
+      flow_id
   ),
   flow_entrypoints AS (
   SELECT
@@ -87,7 +96,7 @@ WITH
   GROUP BY
     flow_id
 ),
-  flow_utms AS (
+flow_utms AS (
   SELECT
     flow_id,
     ARRAY_AGG(
@@ -117,9 +126,9 @@ flow_events AS (
     flow_id,
     ARRAY_AGG(
       STRUCT(
-        `timestamp`,
-        SPLIT(event_type, ' - ')[OFFSET(0)] AS category,  -- should we rename event_category in fxa_all_events? Maybe to something like fxa_log (it's a technical field anyways so that should be ok)
-        SPLIT(event_type, ' - ')[OFFSET(1)] AS `event`
+        `timestamp` AS event_timestamp,
+        SPLIT(event_type, ' - ')[OFFSET(0)] AS event_category,
+        SPLIT(event_type, ' - ')[OFFSET(1)] AS event_name
       ) ORDER BY `timestamp`
     ) AS flow_events, -- maybe this event_type split should happen earlier in the pipeline?
   FROM base
@@ -129,7 +138,9 @@ flow_events AS (
 
 SELECT
   @submission_date AS submission_date,
-  *
+  flow_info.*,
+  utm_info.*,
+  flow_events.*,
 FROM
   flow_attributes
 LEFT JOIN

@@ -106,7 +106,7 @@ class TestView:
 
         assert view.is_valid()
         assert view.publish()
-        assert mock_bigquery_client().update_table.call_count == 2
+        assert mock_bigquery_client().update_table.call_count == 1
         assert (
             mock_bigquery_client().update_table.call_args[0][0].friendly_name
             == "Test metadata file"

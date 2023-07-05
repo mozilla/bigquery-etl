@@ -77,6 +77,22 @@ jobs:
           name: Build Docker image
           command: docker build -t app:build jobs/bq2sftp/
 
+  build-job-client-regeneration:
+    docker:
+      - image: << pipeline.parameters.git-image >>
+    steps:
+      - checkout
+      - compare-branch:
+          pattern: ^jobs/client-regeneration/
+      - setup_remote_docker:
+          version: << pipeline.parameters.docker-version >>
+      - run:
+          name: Build Docker image
+          command: docker build -t app:build jobs/client-regeneration/
+      - run:
+          name: Test Code
+          command: docker run app:build pytest --flake8 --black
+
   build-job-dap-collector:
     docker:
       - image: << pipeline.parameters.git-image >>
@@ -282,6 +298,20 @@ workflows:
             branches:
               only: main
 
+
+  job-client-regeneration:
+    jobs:
+      - build-job-client-regeneration
+      - gcp-gcr/build-and-push-image:
+          context: data-eng-airflow-gcr
+          docker-context: jobs/client-regeneration/
+          path: jobs/client-regeneration/
+          image: client-regeneration_docker_etl
+          requires:
+            - build-job-client-regeneration
+          filters:
+            branches:
+              only: main
 
   job-dap-collector:
     jobs:

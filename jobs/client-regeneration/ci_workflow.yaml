@@ -1,0 +1,13 @@
+job-client-regeneration:
+  jobs:
+    - build-job-client-regeneration
+    - gcp-gcr/build-and-push-image:
+        context: data-eng-airflow-gcr
+        docker-context: jobs/client-regeneration/
+        path: jobs/client-regeneration/
+        image: client-regeneration_docker_etl
+        requires:
+          - build-job-client-regeneration
+        filters:
+          branches:
+            only: main

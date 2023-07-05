@@ -310,6 +310,19 @@ fields:
         post-install/early-startup in Firefox.
 
         '
+    - name: first_startup_delete_tasks_time
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of milliseconds until TaskScheduler.deleteAllTasks resolved
+        in FirstStartup.
+
+        '
+    - name: first_startup_normandy_init_time
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of milliseconds until Normandy.init resolved in FirstStartup.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

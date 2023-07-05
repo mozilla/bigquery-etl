@@ -18,12 +18,9 @@ DEFAULT_PROJECTS = [
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True)  # expect string with format yyyy-mm-dd
 parser.add_argument("--project", default="moz-fx-data-shared-prod")
-# projects queries were run from that access table
 parser.add_argument("--source_projects", nargs="+", default=DEFAULT_PROJECTS)
 parser.add_argument("--destination_dataset", default="monitoring_derived")
 parser.add_argument("--destination_table", default="bigquery_usage_v2")
-
-# total_bytes_billed a minimum of 10MB per table total_bytes_processed
 
 
 def create_query(date, source_project):
@@ -37,6 +34,8 @@ def create_query(date, source_project):
           reservation_id,
           cache_hit,
           state,
+          statement_type,
+          project_id AS project_id,
           referenced_tables.project_id AS reference_project_id,
           dataset_id AS reference_dataset_id,
           table_id AS reference_table_id,
@@ -47,9 +46,13 @@ def create_query(date, source_project):
           end_time-start_time as task_duration,
           ROUND(total_bytes_processed / 1024 / 1024 / 1024 / 1024, 4)
           AS total_terabytes_processed,
+          total_slot_ms,
           error_result.location AS error_location,
           error_result.reason AS error_reason,
           error_result.message AS error_message,
+          query_info.resource_warning AS resource_warning,
+          query_info.performance_insights AS performance_insights,
+          materialized_view_statistics,
         FROM
           `{source_project}.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION`
         LEFT JOIN

@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.monitoring.bigquery_usage_by_org`
+  `moz-fx-data-shared-prod.monitoring.bigquery_usage_jobs_by_org`
 AS
 SELECT
   *

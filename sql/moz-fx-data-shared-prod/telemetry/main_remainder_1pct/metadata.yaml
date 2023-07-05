@@ -1,9 +1,9 @@
 ---
-friendly_name: Main 1 percent
+friendly_name: Main Remainder 1 percent
 description: |-
-  A materialized 1 percent sample of main pings without use counters
-  intended as a performance optimization for exploratory queries.
-  It contains only the most recent six months of data.
+  A materialized 1 percent sample of main pings without use counter data
+  intended as a performance optimization for exploratory queries. It contains
+  only the most recent six months of data.
 
   Queries on this table are logically equivalent to queries on top of `main_remainder_v4`
   with a filter on `sample_id = 0`, but this table has a few advantages.

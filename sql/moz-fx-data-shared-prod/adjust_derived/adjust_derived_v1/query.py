@@ -200,7 +200,7 @@ def clean_json(adjust_response_text, adjust_list_part):
 
 def upload_to_bigquery(csv_data, project, dataset, adjust_list_part, date):
     """Upload the data to bigquery."""
-    print("writing json to csv")
+    print(f"writing json to csv for {adjust_list_part}")
 
     partition = f"{date}".replace("-", "")
 
@@ -248,7 +248,7 @@ def upload_to_bigquery(csv_data, project, dataset, adjust_list_part, date):
             )
 
             # Table names are based on the app name seen in the Adjust dashboard"
-            destination = f'{project}.{dataset}.adjust_deliverables_{adjust_list_part["app_name"]}_v1_${partition}'
+            destination = f"{project}.{dataset}.adjust_deliverables_v1_${partition}"
             print(destination)
 
             job = client.load_table_from_file(f_csv, destination, job_config=job_config)

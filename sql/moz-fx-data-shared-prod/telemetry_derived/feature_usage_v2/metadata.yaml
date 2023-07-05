@@ -29,4 +29,4 @@ references:
   - telemetry.addons
   - telemetry.clients_last_seen
   - telemetry.events
-  - telemetry.main_1pct
+  - telemetry.main_remainder_1pct

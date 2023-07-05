@@ -2,6 +2,9 @@ fields:
 - name: fxa_server
   type: STRING
   mode: NULLABLE
+- name: logName
+  type: STRING
+  mode: NULLABLE
 - name: resource
   type: RECORD
   mode: NULLABLE
@@ -97,7 +100,7 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: t
-      type: STRING
+      type: FLOAT
       mode: NULLABLE
     - name: method
       type: STRING
@@ -213,6 +216,135 @@ fields:
     - name: device_id
       type: STRING
       mode: NULLABLE
+    - name: code
+      type: FLOAT
+      mode: NULLABLE
+    - name: errno
+      type: FLOAT
+      mode: NULLABLE
+    - name: agent
+      type: STRING
+      mode: NULLABLE
+    - name: client_id
+      type: STRING
+      mode: NULLABLE
+    - name: uid
+      type: STRING
+      mode: NULLABLE
+    - name: violated
+      type: STRING
+      mode: NULLABLE
+    - name: referrer
+      type: STRING
+      mode: NULLABLE
+    - name: source
+      type: STRING
+      mode: NULLABLE
+    - name: blocked
+      type: STRING
+      mode: NULLABLE
+    - name: column
+      type: FLOAT
+      mode: NULLABLE
+    - name: line
+      type: FLOAT
+      mode: NULLABLE
+    - name: region
+      type: STRING
+      mode: NULLABLE
+    - name: sample
+      type: STRING
+      mode: NULLABLE
+    - name: stack
+      type: STRING
+      mode: NULLABLE
+    - name: result
+      type: STRING
+      mode: NULLABLE
+    - name: reason
+      type: STRING
+      mode: NULLABLE
+    - name: api
+      type: FLOAT
+      mode: NULLABLE
+    - name: error
+      type: STRING
+      mode: NULLABLE
+    - name: poolstats
+      type: STRING
+      mode: NULLABLE
+    - name: url
+      type: STRING
+      mode: NULLABLE
+    - name: signal
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+    - name: header
+      type: STRING
+      mode: NULLABLE
+    - name: usergroupheader_notnull
+      type: STRING
+      mode: NULLABLE
+    - name: usergroupheader
+      type: STRING
+      mode: NULLABLE
+    - name: duration
+      type: FLOAT
+      mode: NULLABLE
+    - name: config
+      type: STRING
+      mode: NULLABLE
+    - name: cause
+      type: STRING
+      mode: NULLABLE
+    - name: info
+      type: STRING
+      mode: NULLABLE
+    - name: request
+      type: STRING
+      mode: NULLABLE
+    - name: detail
+      type: STRING
+      mode: NULLABLE
+    - name: email
+      type: STRING
+      mode: NULLABLE
+    - name: user
+      type: STRING
+      mode: NULLABLE
+    - name: auto_completed
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: search_type
+      type: STRING
+      mode: NULLABLE
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: closed
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: host
+      type: STRING
+      mode: NULLABLE
+    - name: reqtime
+      type: FLOAT
+      mode: NULLABLE
+    - name: rp
+      type: STRING
+      mode: NULLABLE
+    - name: assertion_verification_time
+      type: FLOAT
+      mode: NULLABLE
+    - name: trustedissuers
+      type: STRING
+      mode: NULLABLE
+    - name: assertion
+      type: STRING
+      mode: NULLABLE
   - name: logger
     type: STRING
     mode: NULLABLE
@@ -324,6 +456,18 @@ fields:
     type: STRING
     mode: NULLABLE
   - name: k8s_pod_k8s_app
+    type: STRING
+    mode: NULLABLE
+  - name: k8s_pod_env_code
+    type: STRING
+    mode: NULLABLE
+  - name: k8s_pod_deployment
+    type: STRING
+    mode: NULLABLE
+  - name: k8s_pod_job_name
+    type: STRING
+    mode: NULLABLE
+  - name: k8s_pod_controller_uid
     type: STRING
     mode: NULLABLE
 - name: operation

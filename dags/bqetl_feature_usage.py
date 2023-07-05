@@ -137,10 +137,10 @@ with DAG(
     telemetry_derived__feature_usage__v2.set_upstream(
         wait_for_telemetry_derived__clients_last_seen__v1
     )
-    wait_for_telemetry_derived__main_1pct__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__main_1pct__v1",
+    wait_for_telemetry_derived__main_remainder_1pct__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__main_remainder_1pct__v1",
         external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__main_1pct__v1",
+        external_task_id="telemetry_derived__main_remainder_1pct__v1",
         execution_delta=datetime.timedelta(seconds=10800),
         check_existence=True,
         mode="reschedule",
@@ -150,5 +150,5 @@ with DAG(
     )
 
     telemetry_derived__feature_usage__v2.set_upstream(
-        wait_for_telemetry_derived__main_1pct__v1
+        wait_for_telemetry_derived__main_remainder_1pct__v1
     )

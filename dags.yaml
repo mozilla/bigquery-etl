@@ -1066,6 +1066,28 @@ bqetl_adjust:
     - impact/tier_2
     - repo/bigquery-etl
 
+
+bqetl_adjust_derived:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - mhirose@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: mhirose@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-07-05'
+  description: Derived tables built on Adjust data downloaded from https://api.adjust.com/kpis/v1/<app_token>. Using mhirose's API token
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_2
+    - repo/bigquery-etl
+
+
 bqetl_download_funnel_attribution:
   description: Daily aggregations of data exported from Google Analytics joined with Firefox download data.
   default_args:

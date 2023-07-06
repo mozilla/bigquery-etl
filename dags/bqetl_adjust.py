@@ -11,22 +11,24 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_adjust
 
-Built from bigquery-etl repo, [`dags/bqetl_adjust.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_adjust.py)
+Built from bigquery-etl repo, [`dags/bqetl_adjust_derived.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_adjust_derived.py)
 
 #### Description
 
-Derived tables built on Adjust data.
+Derived tables built on Adjust data downloaded from https://api.adjust.com/kpis/v1/<app_token>. Using mhirose's API token
+
 #### Owner
 
 rbaffourawuah@mozilla.com
+mhirose@mozilla.com
 """
 
 
 default_args = {
-    "owner": "rbaffourawuah@mozilla.com",
-    "start_date": datetime.datetime(2023, 4, 25, 0, 0),
+    "owner": ["mhirose@mozilla.com"],
+    "start_date": datetime.datetime(2023, 7, 6, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "rbaffourawuah@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "mhirose@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -43,14 +45,14 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    adjust_derived__firefox_mobile_installs__v1 = bigquery_etl_query(
-        task_id="adjust_derived__firefox_mobile_installs__v1",
-        destination_table="firefox_mobile_installs_v1",
-        dataset_id="adjust_derived",
-        project_id="moz-fx-data-marketing-prod",
-        owner="rbaffourawuah@mozilla.com",
-        email=["rbaffourawuah@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        task_concurrency=1,
+    adjust_derived__adjust_derived__v1 = gke_command(
+        task_id="adjust_derived__adjust_derived__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/adjust_derived/adjust_derived_v1/query.py",
+        ]
+        + [],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="mhirose@mozilla.com",
+        email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )

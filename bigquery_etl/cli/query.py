@@ -40,7 +40,7 @@ from ..cli.utils import (
     use_cloud_function_option,
 )
 from ..dependency import get_dependency_graph
-from ..dryrun import SKIP, DryRun
+from ..dryrun import DryRun
 from ..format_sql.format import SKIP as SKIP_FORMAT
 from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
@@ -1569,7 +1569,7 @@ def _update_query_schema(
 
     Return True if the schema changed, False if it is unchanged.
     """
-    if respect_dryrun_skip and str(query_file) in SKIP:
+    if respect_dryrun_skip and str(query_file) in DryRun.skipped_files():
         click.echo(f"{query_file} dry runs are skipped. Cannot update schemas.")
         return
 
@@ -1838,7 +1838,7 @@ def deploy(
         )
 
     def _deploy(query_file):
-        if respect_dryrun_skip and str(query_file) in SKIP:
+        if respect_dryrun_skip and str(query_file) in DryRun.skipped_files():
             click.echo(f"{query_file} dry runs are skipped. Cannot validate schemas.")
             return
 

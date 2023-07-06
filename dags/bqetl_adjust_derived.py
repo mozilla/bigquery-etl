@@ -12,6 +12,8 @@ docs = """
 
 Derived tables built on Adjust data downloaded from https://api.adjust.com/kpis/v1/<app_token>".
 app_tokens are stored in the Airflow variable ADJUST_APP_TOKEN_LIST
+
+API token used is Marlene's personal API token
 #### Owner
 
 mhirose@mozilla.com

@@ -12,15 +12,16 @@ API_URI = "api.adjust.com"
 ENDPOINT = "kpis"
 API_VERSION = "v1"
 
-"""This is a list of dictionaries.
+"""The APP_TOKEN_LIST is a list of dictionaries.
 Keys are the app_name, and app_token in the form:
 {"app_name":"<specific app name from Adjust dash>". "app_token":"<unique Adjust app token>}"
-Mozilla has 16 apps on Adjust.
+Look here to see the apps we are tracking: https://dash.adjust.com/#/.
+It is important to maintain this list in order for the script to work especially in the case of new apps
+being added to track in Adjust
 """
 
 APP_TOKEN_LIST = os.environ.get("ADJUST_APP_TOKEN_LIST")
 
-"""This is Marlene's personal Adjust API Token. We don't have a special service account API Token."""
 API_TOKEN = os.environ.get("ADJUST_API_TOKEN")
 
 CSV_FIELDS = [
@@ -104,102 +105,88 @@ def download_adjust_kpi_data(date, api_token, app_token):
     return response
 
 
-def clean_json(adjust_response_text, adjust_list_part):
-    """JSON sometimes has missing keys, need to clean up the data."""
-    fields_list = []
+def check_json(adjust_response_text):
+    """Script will return an empty dictionary for apps on days when there is no data. Check for that here."""
     with tempfile.NamedTemporaryFile() as tmp_json:
         with open(tmp_json.name, "w") as f_json:
             f_json.write(adjust_response_text)
+            try:
+                query_export = read_json(f_json.name)
+            except (
+                ValueError
+            ):  # ex. json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+                return None
 
-            query_export = read_json(f_json.name)
+    return query_export
 
-            for date in query_export["result_set"]["dates"]:
-                r_date = date["date"]
-                for app in date["apps"]:
-                    r_app = app["name"]
-                    r_app_token = app["token"]
-                    for network in app["networks"]:
-                        try:
-                            r_network = network["name"]
-                            r_network_token = network["token"]
-                        except KeyError:
-                            r_network = "no network name"
-                            r_network_token = network["token"]
-                        for campaign in network["campaigns"]:
-                            try:
-                                r_campaign = campaign["name"]
-                                r_campaign_token = campaign["token"]
-                            except KeyError:
-                                r_campaign = "no campaign name"
-                                r_campaign_token = campaign["token"]
-                            for adgroup in campaign["adgroups"]:
-                                try:
-                                    r_adgroup = adgroup["name"]
-                                    r_adgroup_token = adgroup["token"]
-                                except KeyError:
-                                    r_adgroup = "no adgroup name"
-                                    r_adgroup_token = adgroup["token"]
 
-                                for creative in adgroup["creatives"]:
-                                    try:
-                                        r_creative = creative["name"]
-                                        r_creative_token = creative["token"]
-                                    except KeyError:
-                                        r_creative = "no creative name"
-                                        r_creative_token = creative["token"]
-                                    for country in creative["countries"]:
-                                        r_country = country["country"]
-                                        for os_name in country["os_names"]:
-                                            r_os_name = os_name["os_name"]
-                                            for device in os_name["device_types"]:
-                                                r_device = device["device_type"]
-                                                field_dict = {
-                                                    "date": (r_date),
-                                                    "app": (r_app),
-                                                    "app_token": (r_app_token),
-                                                    "network": (r_network),
-                                                    "network_token": (r_network_token),
-                                                    "campaign": (r_campaign),
-                                                    "campaign_token": (
-                                                        r_campaign_token
-                                                    ),
-                                                    "adgroup": (r_adgroup),
-                                                    "adgroup_token": (r_adgroup_token),
-                                                    "creative": (r_creative),
-                                                    "creative_token": (
-                                                        r_creative_token
-                                                    ),
-                                                    "country": (r_country),
-                                                    "os": (r_os_name),
-                                                    "device": (r_device),
-                                                    "clicks": device["kpi_values"][0],
-                                                    "installs": device["kpi_values"][1],
-                                                    "limit_ad_tracking_install_rate": device[
-                                                        "kpi_values"
-                                                    ][
-                                                        2
-                                                    ],
-                                                    "click_conversion_rate": device[
-                                                        "kpi_values"
-                                                    ][3],
-                                                    "impression_conversion_rate": device[
-                                                        "kpi_values"
-                                                    ][
-                                                        4
-                                                    ],
-                                                    "sessions": device["kpi_values"][5],
-                                                    "daus": device["kpi_values"][6],
-                                                    "waus": device["kpi_values"][7],
-                                                    "maus": device["kpi_values"][8],
-                                                }
-                                                fields_list.append(field_dict)
+def clean_json(query_export):
+    """JSON sometimes has missing keys, need to clean up the data."""
+    fields_list = []
+    for date in query_export["result_set"]["dates"]:
+        r_date = date["date"]
+        for app in date["apps"]:
+            r_app = app.get("name", "no_app_name")
+            r_app_token = app.get("token", "no_app_token")
+            for network in app["networks"]:
+                r_network = network.get("name", "no_network_name")
+                r_network_token = network.get("token", "no_network_token")
+                for campaign in network["campaigns"]:
+                    r_campaign = campaign.get("name", "no_campaign_name")
+                    r_campaign_token = campaign.get("token", "no_campaign_token")
+                    for adgroup in campaign["adgroups"]:
+                        r_adgroup = adgroup.get("name", "no_ad_group_name")
+                        r_adgroup_token = adgroup.get("token", "no_adgroup_token")
+                        for creative in adgroup["creatives"]:
+                            r_creative = creative.get("name", "no_creative_name")
+                            r_creative_token = creative.get(
+                                "token", "no_creative_token"
+                            )
+                            for country in creative["countries"]:
+                                r_country = country["country"]
+                                for os_name in country["os_names"]:
+                                    r_os_name = os_name["os_name"]
+                                    for device in os_name["device_types"]:
+                                        r_device = device["device_type"]
+                                        field_dict = {
+                                            "date": (r_date),
+                                            "app": (r_app),
+                                            "app_token": (r_app_token),
+                                            "network": (r_network),
+                                            "network_token": (r_network_token),
+                                            "campaign": (r_campaign),
+                                            "campaign_token": (r_campaign_token),
+                                            "adgroup": (r_adgroup),
+                                            "adgroup_token": (r_adgroup_token),
+                                            "creative": (r_creative),
+                                            "creative_token": (r_creative_token),
+                                            "country": (r_country),
+                                            "os": (r_os_name),
+                                            "device": (r_device),
+                                            "clicks": device["kpi_values"][0],
+                                            "installs": device["kpi_values"][1],
+                                            "limit_ad_tracking_install_rate": device[
+                                                "kpi_values"
+                                            ][2],
+                                            "click_conversion_rate": device[
+                                                "kpi_values"
+                                            ][3],
+                                            "impression_conversion_rate": device[
+                                                "kpi_values"
+                                            ][4],
+                                            "sessions": device["kpi_values"][5],
+                                            "daus": device["kpi_values"][6],
+                                            "waus": device["kpi_values"][7],
+                                            "maus": device["kpi_values"][8],
+                                        }
+                                        fields_list.append(field_dict)
 
     return fields_list
 
 
-def upload_to_bigquery(csv_data, project, dataset, adjust_list_part, date):
+def upload_to_bigquery(csv_data, project, dataset, adjust_app_name, date):
     """Upload the data to bigquery."""
-    print(f"writing json to csv for {adjust_list_part}")
+    print(f"writing json to csv for {adjust_app_name}")
 
     partition = f"{date}".replace("-", "")
 
@@ -208,8 +195,6 @@ def upload_to_bigquery(csv_data, project, dataset, adjust_list_part, date):
             write_dict_to_csv(csv_data, f_csv.name)
 
             client = bigquery.Client(project)
-
-            print("hey, I'm about to config the job\n")
 
             job_config = bigquery.LoadJobConfig(
                 create_disposition="CREATE_IF_NEEDED",
@@ -248,11 +233,12 @@ def upload_to_bigquery(csv_data, project, dataset, adjust_list_part, date):
 
             # Table names are based on the app name seen in the Adjust dashboard"
             destination = f"{project}.{dataset}.adjust_deliverables_v1_${partition}"
-            print(destination)
 
             job = client.load_table_from_file(f_csv, destination, job_config=job_config)
 
-            print(f"Writing adjust data for all apps to {destination}. BigQuery job ID: {job.job_id}")
+            print(
+                f"Writing adjust data for all apps to {destination}. BigQuery job ID: {job.job_id}"
+            )
             job.result()
 
 
@@ -268,33 +254,27 @@ def main():
     app_list = json.loads(APP_TOKEN_LIST)
 
     # Cycle through the apps to get the relevant kpi data
-    for num in range(len(app_list)):
-        print(
-            f'This is data for {app_list[num]["app_name"]} - {app_list[num]["app_token"]}'
-        )
-
+    for app in app_list:
+        print(f'This is data for {app["app_name"]} - {app["app_token"]}')
         # Ping the Adjust URL and get a response
-        json_file = download_adjust_kpi_data(
-            args.date, API_TOKEN, app_list[num]["app_token"]
-        )
-
-        """ Gather the data and clean where necessary. Some campaigns, adgroups and creative
-            are missing keys such as 'name'. This next section cleans that up and stores the
-            results into a tmp file """
+        json_file = download_adjust_kpi_data(args.date, API_TOKEN, app["app_token"])
 
         data = []
-        if json_file.text:
-            data = clean_json(json_file.text, app_list[num])
+
+        query_export = check_json(json_file.text)
+
+        if query_export:
+            data = clean_json(query_export)
             print("finished json_read")
         else:
-            print(f'no data for {app_list[num]["app_name"]} today')
+            print(f'no data for {app["app_name"]} today')
             continue
 
         """ This section writes the tmp json data into a temp CSV file which will then
             be put into a BigQuery table"""
         if data:
             upload_to_bigquery(
-                data, args.project, args.dataset, app_list[num], args.date
+                data, args.project, args.dataset, app["app_name"], args.date
             )
         else:
             print("no data to upload")

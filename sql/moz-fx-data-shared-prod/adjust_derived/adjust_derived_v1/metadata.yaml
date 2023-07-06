@@ -1,7 +1,7 @@
 ---
 friendly_name: Data from external source Adjust
 description: >
-  This table represents data downloaded from Adjust
+  This table represents data downloaded from Adjust. Please note that the API token used is Marlene Hirose's personal Adjust API token
 owners:
   - mhirose@mozilla.com
 labels:
@@ -9,7 +9,7 @@ labels:
 scheduling:
   dag_name: bqetl_adjust_derived
   date_partition_parameter: submission_date
-  parameters: ["submission_date:DATE:{{ds}}"]
+  parameters:
 bigquery:
   time_partitioning:
     type: day

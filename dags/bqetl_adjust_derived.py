@@ -42,7 +42,7 @@ with DAG(
     tags=tags,
 ) as dag:
     adjust_derived__v1 = bigquery_etl_query(
-        task_id="adjust_derived__firefox_mobile_installs__v1",
+        task_id="adjust_derived_v1",
         destination_table="adjust_derived_v1",
         dataset_id="adjust_derived",
         project_id="moz-fx-data-shared-prod",

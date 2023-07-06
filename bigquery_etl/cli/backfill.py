@@ -110,7 +110,7 @@ def create(
         sql_dir, qualified_table_name
     )
 
-    backfill = Backfill(
+    new_backfill = Backfill(
         entry_date=date.today(),
         start_date=start_date.date(),
         end_date=end_date.date(),
@@ -120,24 +120,26 @@ def create(
         status=BackfillStatus.DRAFTING,
     )
 
-    backfills = []
+    existing_backfills = []
 
     if backfills_dict:
-        backfills = backfills_dict[qualified_table_name]
+        existing_backfills = backfills_dict[qualified_table_name]
 
-        for entry in backfills:
-            validate_duplicate_entry_dates(backfill, entry)
-            if entry.status == BackfillStatus.DRAFTING:
-                validate_overlap_dates(backfill, entry)
+        for existing_entry in existing_backfills:
+            validate_duplicate_entry_dates(new_backfill, existing_entry)
+            if existing_entry.status == BackfillStatus.DRAFTING:
+                validate_overlap_dates(new_backfill, existing_entry)
 
-    backfills.insert(0, backfill)
+    existing_backfills.insert(0, new_backfill)
 
     backfill_file = get_backfill_file_from_qualified_table_name(
         sql_dir, qualified_table_name
     )
 
     backfill_file.write_text(
-        "\n".join(backfill.to_yaml() for backfill in sorted(backfills, reverse=True))
+        "\n".join(
+            backfill.to_yaml() for backfill in sorted(existing_backfills, reverse=True)
+        )
     )
 
     click.echo(f"Created backfill entry in {backfill_file}.")
@@ -292,6 +294,7 @@ def scheduled(ctx, qualified_table_name, sql_dir, project_id):
 
         click.echo(f"Backfill entry scheduled for {qualified_table_name}:")
 
+        # For future us: this will probably end up being a write to something machine-readable for automation to pick up
         click.echo(str(entry_to_process))
 
     click.echo(
@@ -350,14 +353,14 @@ def process(ctx, qualified_table_name, sql_dir, project_id, dry_run):
         ctx.invoke(
             deploy,
             name=f"{dataset}.{table}",
-            project_id=project_id,
+            project_id=project,
             destination_table=backfill_staging_qualified_table_name,
         )
 
         ctx.invoke(
             query_backfill,
             name=f"{dataset}.{table}",
-            project_id=project_id,
+            project_id=project,
             start_date=entry_to_process.start_date,
             end_date=entry_to_process.end_date,
             exclude=entry_to_process.excluded_dates,

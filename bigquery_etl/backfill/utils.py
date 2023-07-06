@@ -88,6 +88,7 @@ def get_backfill_file_from_qualified_table_name(sql_dir, qualified_table_name) -
     return backfill_file
 
 
+# TODO: It would be better to take in a backfill object.
 def get_backfill_staging_qualified_table_name(qualified_table_name, entry_date) -> str:
     """Return full table name where processed backfills are stored."""
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
@@ -173,15 +174,13 @@ def get_backfill_entries_to_process_dict(
         sys.exit(1)
     client = bigquery.Client(project=project)
 
-    status = BackfillStatus.DRAFTING.value
-
     if qualified_table_name:
         backfills_dict = get_qualified_table_name_to_entries_dict(
-            sql_dir, qualified_table_name, status
+            sql_dir, qualified_table_name, BackfillStatus.DRAFTING.value
         )
     else:
         backfills_dict = get_qualified_table_name_to_entries_map_by_project(
-            sql_dir, project, status
+            sql_dir, project, BackfillStatus.DRAFTING.value
         )
 
     backfills_to_process_dict = {}
@@ -196,28 +195,27 @@ def get_backfill_entries_to_process_dict(
 
         if (len(entries)) > 1:
             click.echo(
-                f"There should not be more than one entry with status: {status} for {qualified_table_name} "
+                f"There should not be more than one entry with drafting status: for {qualified_table_name} "
             )
             sys.exit(1)
 
-        if entries:
-            entry_to_process = entries[0]
+        entry_to_process = entries[0]
 
-            backfill_staging_qualified_table_name = (
-                get_backfill_staging_qualified_table_name(
-                    qualified_table_name, entry_to_process.entry_date
-                )
+        backfill_staging_qualified_table_name = (
+            get_backfill_staging_qualified_table_name(
+                qualified_table_name, entry_to_process.entry_date
             )
+        )
 
-            try:
-                client.get_table(backfill_staging_qualified_table_name)
-                click.echo(
-                    f"""
-                    Backfill staging table already exists for {qualified_table_name}: {backfill_staging_qualified_table_name}.
-                    Backfills will not be processed for this table.
-                    """
-                )
-            except NotFound:
-                backfills_to_process_dict[qualified_table_name] = entry_to_process
+        try:
+            client.get_table(backfill_staging_qualified_table_name)
+            click.echo(
+                f"""
+                Backfill staging table already exists for {qualified_table_name}: {backfill_staging_qualified_table_name}.
+                Backfills will not be processed for this table.
+                """
+            )
+        except NotFound:
+            backfills_to_process_dict[qualified_table_name] = entry_to_process
 
     return backfills_to_process_dict

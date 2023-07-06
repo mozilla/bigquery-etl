@@ -53,13 +53,3 @@ with DAG(
         owner="mhirose@mozilla.com",
         email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
-
-    adjust_derived_v1 = bigquery_etl_query(
-        task_id="adjust_derived_v1",
-        destination_table="adjust_derived_v1",
-        dataset_id="adjust_derived",
-        project_id="moz-fx-data-shared-prod",
-        date_partition_parameter="submission_date:DATE:{{ds}}",
-        depends_on_past=False,
-        task_concurrency=1,
-    )

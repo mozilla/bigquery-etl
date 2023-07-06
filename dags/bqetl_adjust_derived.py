@@ -41,13 +41,23 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    adjust_derived__v1 = bigquery_etl_query(
+    adjust_derived__adjust_derived__v1 = gke_command(
+        task_id="adjust_derived__adjust_derived__v__download",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/adjust_derived/adjust_derived_v1/query.py",
+        ]
+        + [],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="mhirose@mozilla.com",
+        email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
+    )
+
+    adjust_derived_v1 = bigquery_etl_query(
         task_id="adjust_derived_v1",
         destination_table="adjust_derived_v1",
         dataset_id="adjust_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="mhirose@mozilla.com",
-        email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date:DATE:{{ds}}",
         depends_on_past=False,
         task_concurrency=1,

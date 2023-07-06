@@ -19,7 +19,7 @@ from ..cli.utils import (
     sql_dir_option,
     use_cloud_function_option,
 )
-from ..dryrun import SKIP as DRYRUN_SKIP
+from ..dryrun import DryRun
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..util.bigquery_id import sql_table_id
 from ..util.client_queue import ClientQueue
@@ -228,7 +228,7 @@ def publish(
 
     views = _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized)
     if respect_dryrun_skip:
-        views = [view for view in views if view.path not in DRYRUN_SKIP]
+        views = [view for view in views if view.path not in DryRun.skipped_files()]
     if add_managed_label:
         for view in views:
             view.labels["managed"] = ""

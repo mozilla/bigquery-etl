@@ -23,7 +23,6 @@ APP_TOKEN_LIST = os.environ.get("ADJUST_APP_TOKEN_LIST")
 """This is Marlene's personal Adjust API Token. We don't have a special service account API Token."""
 API_TOKEN = os.environ.get("ADJUST_API_TOKEN")
 
-CSV_FIELDS = []
 CSV_FIELDS = [
     "date",
     "app",

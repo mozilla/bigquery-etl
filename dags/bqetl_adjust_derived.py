@@ -10,6 +10,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_adjust_derived
+
 Built from bigquery-etl repo, [`dags/bqetl_adjust_derived.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_adjust_derived.py)
 
 #### Description

@@ -65,8 +65,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_distinct_docids_v1/query.sql
   - sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized/query.sql
   - sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized_v1/query.sql
-  - sql/moz-fx-data-shared-prod/stripe_derived/**/*.sql,
-  - sql/moz-fx-data-shared-prod/stripe_external/**/*.sql,
+  - sql/moz-fx-data-shared-prod/stripe_derived/**/*.sql
+  - sql/moz-fx-data-shared-prod/stripe_external/**/*.sql
   - sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/flows_live/view.sql
   - sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/flows_v1/query.sql
   - sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/refunds_v1/query.sql

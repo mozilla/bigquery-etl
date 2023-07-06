@@ -2,15 +2,28 @@ fields:
 - name: id
   type: STRING
   mode: NULLABLE
-  description: Changelog ID.
+  description: Revised changelog ID.
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE
   description: When the change occurred.
-- name: synced_at
-  type: TIMESTAMP
+- name: type
+  type: STRING
   mode: NULLABLE
-  description: When the change was synced to BigQuery.
+  description: 'Type of revised changelog.
+
+    "original" indicates the changelog wasn''t altered from what Fivetran synced.
+
+    "adjusted_..." indicates a minor adjustment was made, like altering when the change
+    was considered to have occurred.
+
+    "synthetic_..." indicates the changelog was synthesized based on other available
+    data.'
+- name: stripe_subscriptions_changelog_id
+  type: STRING
+  mode: NULLABLE
+  description: ID of the `stripe_subscriptions_changelog_v1` record this changelog was
+    derived from.
 - name: subscription
   type: RECORD
   mode: NULLABLE

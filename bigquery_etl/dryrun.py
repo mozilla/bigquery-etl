@@ -121,6 +121,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_stripe_subscriptions_history_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_changelog_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_revised_changelog_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/stripe/itemized_payout_reconciliation/view.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/devices_v1/query.sql",
@@ -202,6 +203,8 @@ SKIP = {
     "sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v2/query.sql",
     "sql/moz-fx-data-shared-prod/fenix_external/installs_by_country_v1/query.sql",
     "sql/moz-fx-data-shared-prod/fenix/installs_by_country/view.sql",
+    "sql/moz-fx-data-shared-prod/firefox_desktop/top_sites/view.sql",
+    "sql/moz-fx-data-shared-prod/firefox_desktop/quick_suggest/view.sql",
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501

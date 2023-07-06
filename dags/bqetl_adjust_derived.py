@@ -9,11 +9,12 @@ from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
+### bqetl_adjust_derived
+Built from bigquery-etl repo, [`dags/bqetl_adjust_derived.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_adjust_derived.py)
 
-Derived tables built on Adjust data downloaded from https://api.adjust.com/kpis/v1/<app_token>".
-app_tokens are stored in the Airflow variable ADJUST_APP_TOKEN_LIST
+#### Description
 
-API token used is Marlene's personal API token
+Derived tables built on Adjust data downloaded from https://api.adjust.com/kpis/v1/<app_token>. Using mhirose's API token
 #### Owner
 
 mhirose@mozilla.com
@@ -32,7 +33,7 @@ default_args = {
     "retries": 2,
 }
 
-tags = ["impact/tier_2"]
+tags = ["impact/tier_2", "repo/bigquery-etl"]
 
 with DAG(
     "bqetl_adjust_derived",
@@ -42,7 +43,7 @@ with DAG(
     tags=tags,
 ) as dag:
     adjust_derived__adjust_derived__v1 = gke_command(
-        task_id="adjust_derived__adjust_derived__v__download",
+        task_id="adjust_derived__adjust_derived__v1",
         command=[
             "python",
             "sql/moz-fx-data-shared-prod/adjust_derived/adjust_derived_v1/query.py",

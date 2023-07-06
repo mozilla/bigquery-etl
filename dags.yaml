@@ -1080,7 +1080,9 @@ bqetl_adjust_derived:
     retries: 2
     retry_delay: 30m
     start_date: '2023-07-06'
-  description: Derived tables built on Adjust data downloaded from https://api.adjust.com/kpis/v1/<app_token>. Using mhirose's API token
+  description: |
+    Derived tables built on Adjust data downloaded from https://api.adjust.com/kpis/v1/<app_token>.
+    Using mhirose's API token. No Adjust API token for service accounts, just users.
   repo: bigquery-etl
   schedule_interval: 0 4 * * *
   tags:

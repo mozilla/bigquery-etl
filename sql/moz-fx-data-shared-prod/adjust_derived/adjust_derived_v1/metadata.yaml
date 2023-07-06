@@ -9,6 +9,7 @@ labels:
 scheduling:
   dag_name: bqetl_adjust
   date_partition_parameter: submission_date
+  parameters:
 bigquery:
   time_partitioning:
     type: day

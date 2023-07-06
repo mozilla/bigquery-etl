@@ -51,9 +51,8 @@ with DAG(
         ]
         + [],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="mhirose@mozilla.com",
+        owner="rbaffourawuah@mozilla.com",
         email=[
-            "mhirose@mozilla.com",
             "rbaffourawuah@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],

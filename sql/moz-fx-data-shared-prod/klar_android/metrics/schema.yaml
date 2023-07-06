@@ -1190,6 +1190,9 @@ fields:
     - name: extensions_apis_dnr_evaluate_rules_count_max
       type: INTEGER
       mode: NULLABLE
+    - name: extensions_quarantined_domains_listsize
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

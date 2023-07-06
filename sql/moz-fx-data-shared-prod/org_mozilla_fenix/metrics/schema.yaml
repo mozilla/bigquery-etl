@@ -3665,6 +3665,13 @@ fields:
       description: 'Counter of number of passwords currently saved by user.
 
         '
+    - name: extensions_quarantined_domains_listsize
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of domains listed in the quarantined domains list pref
+        for the client during this session.
+
+        '
   - name: timing_distribution
     type: RECORD
     mode: NULLABLE

@@ -3099,6 +3099,13 @@ fields:
       description: 'Max amount of DNR rules being evaluated.
 
         '
+    - name: extensions_quarantined_domains_listsize
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of domains listed in the quarantined domains list pref
+        for the client during this session.
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE

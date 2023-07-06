@@ -34414,6 +34414,41 @@ fields:
           description: 'The version of Gtk 3 in use.
 
             '
+        - name: extensions_quarantined_domains_listsize
+          type: INTEGER
+          mode: NULLABLE
+          description: 'Number of domains listed in the quarantined domains list pref
+            for the client during this session.
+
+            '
+        - name: first_startup_delete_tasks_time
+          type: INTEGER
+          mode: NULLABLE
+          description: 'Number of milliseconds until TaskScheduler.deleteAllTasks
+            resolved in FirstStartup.
+
+            '
+        - name: first_startup_normandy_init_time
+          type: INTEGER
+          mode: NULLABLE
+          description: 'Number of milliseconds until Normandy.init resolved in FirstStartup.
+
+            '
+        - name: migration_time_to_produce_legacy_migrator_list
+          type: INTEGER
+          mode: NULLABLE
+          description: 'The amount of time it took in milliseconds to produce the
+            list of migrators in the legacy migration wizard.
+
+            '
+        - name: migration_time_to_produce_migrator_list
+          type: INTEGER
+          mode: NULLABLE
+          description: 'The amount of time it took in milliseconds to produce the
+            list of migrators and profiles for the first time the migration wizard
+            opened during the process lifetime.
+
+            '
     - name: socket
       type: RECORD
       mode: NULLABLE

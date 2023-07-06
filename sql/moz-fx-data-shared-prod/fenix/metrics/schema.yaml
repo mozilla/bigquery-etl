@@ -1936,6 +1936,9 @@ fields:
     - name: logins_saved_all
       type: INTEGER
       mode: NULLABLE
+    - name: extensions_quarantined_domains_listsize
+      type: INTEGER
+      mode: NULLABLE
   - name: string
     type: RECORD
     mode: NULLABLE

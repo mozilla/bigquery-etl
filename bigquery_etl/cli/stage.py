@@ -116,7 +116,7 @@ def deploy(
                 for p in paths_matching_name_pattern(
                     path, sql_dir, None, files=["*.sql", "*.py"]
                 )
-                if p.suffix in [".sql", ".py"]
+                if p.suffix in [".sql", ".py"] and p.name != "checks.sql"
             ]
         )
 

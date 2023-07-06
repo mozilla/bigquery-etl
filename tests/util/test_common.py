@@ -85,3 +85,25 @@ class TestUtilCommon:
         assert r"{{" not in rendered_sql
         assert "main" in rendered_sql
         assert 'submission_date = "2023-01-01"' in rendered_sql
+
+    def test_checks_render(self, tmp_path):
+        file_path = tmp_path / "checks.sql"
+        file_path.write_text(
+            r"""
+            {{ min_rows(1, "submission_date = @submission_date") }}
+        """
+        )
+        kwargs = {
+            "project_id": "project",
+            "dataset_id": "dataset",
+            "table_name": "table",
+        }
+        rendered_sql = render(
+            file_path.name, template_folder=file_path.parent, **kwargs
+        )
+        assert (
+            r"""{{ min_rows(1, "submission_date = @submission_date") }}"""
+            not in rendered_sql
+        )
+        assert "SELECT" in rendered_sql
+        assert "`project.dataset.table`" in rendered_sql

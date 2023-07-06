@@ -1322,12 +1322,25 @@ def render(name, sql_dir, output_dir):
     query_files = paths_matching_name_pattern(name, sql_dir, project_id=None)
     resolved_sql_dir = Path(sql_dir).resolve()
     for query_file in query_files:
+        table_name = query_file.parent.name
+        dataset_id = query_file.parent.parent.name
+        project_id = query_file.parent.parent.parent.name
+
+        jinja_params = {
+            **{
+                "project_id": project_id,
+                "dataset_id": dataset_id,
+                "table_name": table_name,
+            },
+        }
+
         rendered_sql = (
             render_template(
                 query_file.name,
                 template_folder=query_file.parent,
                 templates_dir="",
                 format=False,
+                **jinja_params,
             )
             + "\n"
         )

@@ -253,7 +253,7 @@ def upload_to_bigquery(csv_data, project, dataset, adjust_list_part, date):
 
             job = client.load_table_from_file(f_csv, destination, job_config=job_config)
 
-            print(f"Running job {job.job_id}")
+            print(f"Writing adjust data for all apps to {destination}. BigQuery job ID: {job.job_id}")
             job.result()
 
 

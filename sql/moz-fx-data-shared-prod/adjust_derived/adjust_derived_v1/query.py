@@ -266,6 +266,7 @@ def main():
             print(f'no data for {app["app_name"]} today')
             continue
         else:
+            # This section writes the tmp json data into a temp CSV file which will then be put into a BigQuery table
             data = clean_json(query_export)
             print("finished json_read")
             upload_to_bigquery(

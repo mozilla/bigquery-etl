@@ -22,7 +22,7 @@ mhirose@mozilla.com
 
 default_args = {
     "owner": "mhirose@mozilla.com",
-    "start_date": datetime.datetime(2023, 4, 25, 0, 0),
+    "start_date": datetime.datetime(2023, 7, 6, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com", "mhirose@mozilla.com"],
     "depends_on_past": False,
@@ -32,7 +32,7 @@ default_args = {
     "retries": 2,
 }
 
-tags = ["impact/tier_2", "repo/bigquery-etl"]
+tags = ["impact/tier_2"]
 
 with DAG(
     "bqetl_adjust_derived",

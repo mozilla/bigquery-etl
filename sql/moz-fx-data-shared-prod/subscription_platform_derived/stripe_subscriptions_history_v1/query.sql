@@ -208,6 +208,7 @@ customers AS (
       JSON_VALUE(pre_fivetran_customers.metadata, "$.fxa_uid")
     ) AS fxa_uid,
     COALESCE(customers.address_country, pre_fivetran_customers.address_country) AS address_country,
+    customers.shipping_address_country,
   FROM
     `moz-fx-data-shared-prod`.stripe_external.customer_v1 AS customers
   FULL JOIN
@@ -252,15 +253,12 @@ invoices_provider_country AS (
   WHERE
     invoices.status = "paid"
 ),
-subscriptions_history_provider_country AS (
+subscriptions_history_invoice_provider_country AS (
   SELECT
     subscriptions_history.subscription_id,
     subscriptions_history.valid_from,
     ARRAY_AGG(
-      STRUCT(
-        invoices_provider_country.provider,
-        LOWER(invoices_provider_country.country) AS country
-      )
+      STRUCT(invoices_provider_country.provider, invoices_provider_country.country)
       ORDER BY
         -- prefer rows with country
         IF(invoices_provider_country.country IS NULL, 0, 1) DESC,
@@ -353,8 +351,27 @@ SELECT
   plans.plan_interval,
   plans.plan_interval_count,
   "Etc/UTC" AS plan_interval_timezone,
-  subscriptions_history_provider_country.provider,
-  subscriptions_history_provider_country.country,
+  subscriptions_history_invoice_provider_country.provider,
+  LOWER(
+    -- Use the same address hierarchy as Stripe Tax after we enabled Stripe Tax (FXA-5457).
+    -- https://stripe.com/docs/tax/customer-locations#address-hierarchy
+    IF(
+      (
+        DATE(subscriptions_history.valid_to) >= "2022-12-01"
+        OR subscriptions_history.valid_to IS NULL
+      )
+      AND (
+        DATE(subscriptions_history.ended_at) >= "2022-12-01"
+        OR subscriptions_history.ended_at IS NULL
+      ),
+      COALESCE(
+        NULLIF(customers.shipping_address_country, ""),
+        NULLIF(customers.address_country, ""),
+        subscriptions_history_invoice_provider_country.country
+      ),
+      subscriptions_history_invoice_provider_country.country
+    )
+  ) AS country,
   subscriptions_history_promotions.promotion_codes,
   subscriptions_history_promotions.promotion_discounts_amount,
 FROM
@@ -368,7 +385,7 @@ LEFT JOIN
 USING
   (customer_id)
 LEFT JOIN
-  subscriptions_history_provider_country
+  subscriptions_history_invoice_provider_country
 USING
   (subscription_id, valid_from)
 LEFT JOIN

@@ -262,16 +262,16 @@ def main():
 
         query_export = check_json(json_file.text)
 
-        if query_export is None:
-            print(f'no data for {app["app_name"]} today')
-            continue
-        else:
+        if query_export is not None:
             # This section writes the tmp json data into a temp CSV file which will then be put into a BigQuery table
             data = clean_json(query_export)
             print("finished json_read")
             upload_to_bigquery(
                 data, args.project, args.dataset, app["app_name"], args.date
             )
+        else:
+            print(f'no data for {app["app_name"]} today')
+            continue
 
 
 if __name__ == "__main__":

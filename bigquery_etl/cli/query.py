@@ -39,7 +39,7 @@ from ..cli.utils import (
     use_cloud_function_option,
 )
 from ..dependency import get_dependency_graph
-from ..dryrun import SKIP, DryRun
+from ..dryrun import DryRun
 from ..format_sql.format import SKIP as SKIP_FORMAT
 from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
@@ -1321,12 +1321,25 @@ def render(name, sql_dir, output_dir):
     query_files = paths_matching_name_pattern(name, sql_dir, project_id=None)
     resolved_sql_dir = Path(sql_dir).resolve()
     for query_file in query_files:
+        table_name = query_file.parent.name
+        dataset_id = query_file.parent.parent.name
+        project_id = query_file.parent.parent.parent.name
+
+        jinja_params = {
+            **{
+                "project_id": project_id,
+                "dataset_id": dataset_id,
+                "table_name": table_name,
+            },
+        }
+
         rendered_sql = (
             render_template(
                 query_file.name,
                 template_folder=query_file.parent,
                 templates_dir="",
                 format=False,
+                **jinja_params,
             )
             + "\n"
         )
@@ -1568,7 +1581,7 @@ def _update_query_schema(
 
     Return True if the schema changed, False if it is unchanged.
     """
-    if respect_dryrun_skip and str(query_file) in SKIP:
+    if respect_dryrun_skip and str(query_file) in DryRun.skipped_files():
         click.echo(f"{query_file} dry runs are skipped. Cannot update schemas.")
         return
 
@@ -1837,7 +1850,7 @@ def deploy(
         )
 
     def _deploy(query_file):
-        if respect_dryrun_skip and str(query_file) in SKIP:
+        if respect_dryrun_skip and str(query_file) in DryRun.skipped_files():
             click.echo(f"{query_file} dry runs are skipped. Cannot validate schemas.")
             return
 

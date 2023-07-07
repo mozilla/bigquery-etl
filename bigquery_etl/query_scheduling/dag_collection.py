@@ -91,7 +91,9 @@ class DagCollection:
                 )
             dag.add_tasks(list(group))
 
-        public_json_tasks = [task for task in tasks if task.public_json]
+        public_json_tasks = [
+            task for task in tasks if task.public_json and not task.is_dq_check
+        ]
         if public_json_tasks:
             for dag in self.dags:
                 if dag.__class__ == PublicDataJsonDag:

@@ -9,7 +9,7 @@ labels:
 scheduling:
   dag_name: bqetl_adjust
   date_partition_parameter: submission_date
-  arguments: ["--date", "{{ ds }}", --project", "moz-fx-data-shared-prod", "--data_set", "adjust_derived"]
+  arguments: ["--date", "{{ ds }}"]
 bigquery:
   time_partitioning:
     type: day

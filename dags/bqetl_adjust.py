@@ -11,24 +11,28 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_adjust
 
-Built from bigquery-etl repo, [`dags/bqetl_adjust_derived.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_adjust_derived.py)
+Built from bigquery-etl repo, [`dags/bqetl_adjust.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_adjust.py)
 
 #### Description
 
-Derived tables built on Adjust data downloaded from https://api.adjust.com/kpis/v1/<app_token>. Using mhirose's API token
+Derived tables built on Adjust data downloaded from https://api.adjust.com/kpis/v1/<app_token>.
+Using mhirose's API token
 
 #### Owner
 
-rbaffourawuah@mozilla.com
 mhirose@mozilla.com
 """
 
 
 default_args = {
-    "owner": ["mhirose@mozilla.com"],
+    "owner": "mhirose@mozilla.com",
     "start_date": datetime.datetime(2023, 7, 6, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "mhirose@mozilla.com"],
+    "email": [
+        "telemetry-alerts@mozilla.com",
+        "rbaffourawuah@mozilla.com",
+        "mhirose@mozilla.com",
+    ],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -51,8 +55,12 @@ with DAG(
             "python",
             "sql/moz-fx-data-shared-prod/adjust_derived/adjust_derived_v1/query.py",
         ]
-        + [],
+        + ["--date", "{{ ds }}"],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="mhirose@mozilla.com",
-        email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "mhirose@mozilla.com",
+            "rbaffourawuah@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
     )

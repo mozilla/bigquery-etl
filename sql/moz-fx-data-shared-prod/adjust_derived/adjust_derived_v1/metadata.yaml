@@ -15,9 +15,3 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
-external_data:
-  format: csv
-  source_uris:
-    -
-  options:
-    skip_leading_rows: 1

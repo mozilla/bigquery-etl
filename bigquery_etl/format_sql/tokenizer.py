@@ -749,7 +749,7 @@ class JinjaExpression(Token):
     May be followed by no whitespace or a new line and increased indent.
     """
 
-    pattern = re.compile(r"{{.*?}}", re.DOTALL)
+    pattern = re.compile(r"{{.*?}}\n?", re.DOTALL)
 
 
 class JinjaStatement(Token):

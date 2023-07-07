@@ -30,7 +30,6 @@ default_args = {
     "end_date": None,
     "email": [
         "telemetry-alerts@mozilla.com",
-        "rbaffourawuah@mozilla.com",
         "mhirose@mozilla.com",
     ],
     "depends_on_past": False,

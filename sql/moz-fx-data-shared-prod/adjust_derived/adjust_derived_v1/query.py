@@ -271,7 +271,6 @@ def main():
             )
         else:
             print(f'no data for {app["app_name"]} today')
-            continue
 
 
 if __name__ == "__main__":

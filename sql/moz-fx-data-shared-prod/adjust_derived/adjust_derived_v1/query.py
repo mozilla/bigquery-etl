@@ -21,7 +21,6 @@ being added to track in Adjust
 """
 
 APP_TOKEN_LIST = os.environ.get("ADJUST_APP_TOKEN_LIST")
-
 API_TOKEN = os.environ.get("ADJUST_API_TOKEN")
 
 CSV_FIELDS = [

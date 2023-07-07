@@ -1051,7 +1051,6 @@ bqetl_adjust:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - rbaffourawuah@mozilla.com
       - mhirose@mozilla.com
     email_on_failure: true
     email_on_retry: true

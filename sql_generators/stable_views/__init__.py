@@ -198,6 +198,9 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
             # We have to handle these fields in two stages via `EXCEPT` and aliases instead of
             # a single `REPLACE` because there are some tables that have `url2` field but not `url` field.
             for metrics_field in metrics_struct["fields"]:
+                # TODO:
+                # here we probably need to check with both field2 and the corresponding field exist before doing a replace
+
                 if metrics_field["name"] in metrics_2_types_to_rename:
                     metrics_2_aliases += [
                         f"metrics.{metrics_field['name']} AS {metrics_2_types_to_rename[metrics_field['name']]}"

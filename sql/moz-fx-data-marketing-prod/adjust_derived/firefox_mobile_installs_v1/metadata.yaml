@@ -5,9 +5,6 @@ labels:
   schedule: daily
 owners:
   - rbaffourawuah@mozilla.com
-scheduling:
-  dag_name: bqetl_adjust
-  date_partition_parameter: null
 bigquery:
   time_partitioning:
     type: day

@@ -107,30 +107,33 @@ def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
     dataset_path = Path(sql_dir) / project / dataset
 
-    query_files = Path(dataset_path).rglob("*.sql")
+    query_file = Path(sql_dir) / project / dataset / table / "query.sql"
 
-    for query_file in query_files:
-        try:
-            # check table level metadata
-            table_metadata_path = query_file.parent / METADATA_FILE
-            table_metadata = Metadata.from_file(table_metadata_path)
-            table_workgroup_access = table_metadata.workgroup_access
+    if not query_file.exists():
+        click.echo("No query.sql file found for {}", qualified_table_name)
+        sys.exit(1)
 
-            if not _validate_workgroup_members(table_workgroup_access, METADATA_FILE):
-                return False
+    try:
+        # check table level metadata
+        table_metadata_path = query_file.parent / METADATA_FILE
+        table_metadata = Metadata.from_file(table_metadata_path)
+        table_workgroup_access = table_metadata.workgroup_access
 
-            # check dataset level metadata
-            dataset_metadata_path = dataset_path / DATASET_METADATA_FILE
-            dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
-            dataset_workgroup_access = dataset_metadata.workgroup_access
+        if not _validate_workgroup_members(table_workgroup_access, METADATA_FILE):
+            return False
 
-            if not _validate_workgroup_members(
-                dataset_workgroup_access, DATASET_METADATA_FILE
-            ):
-                return False
+        # check dataset level metadata
+        dataset_metadata_path = dataset_path / DATASET_METADATA_FILE
+        dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
+        dataset_workgroup_access = dataset_metadata.workgroup_access
 
-        except FileNotFoundError:
-            click.echo("No metadata.yaml found for {}", qualified_table_name)
+        if not _validate_workgroup_members(
+            dataset_workgroup_access, DATASET_METADATA_FILE
+        ):
+            return False
+
+    except FileNotFoundError:
+        click.echo("No metadata.yaml found for {}", qualified_table_name)
 
     return True
 

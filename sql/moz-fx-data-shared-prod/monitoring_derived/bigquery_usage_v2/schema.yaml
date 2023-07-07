@@ -41,11 +41,6 @@ fields:
   description: The type of query statement
 
 - mode: NULLABLE
-  name: project_id
-  type: STRING
-  description: The ID of the project
-
-- mode: NULLABLE
   name: reference_project_id
   type: STRING
   description: The ID of the project referenced by the job
@@ -91,7 +86,12 @@ fields:
   description: Total terabytes processed by the job
 
 - mode: NULLABLE
-  name: total_slow_ms
+  name: total_terabytes_billed
+  type: FLOAT
+  description: Total terabytes billed by the job if on-demand pricing is used
+
+- mode: NULLABLE
+  name: total_slot_ms
   type: INTEGER
   description: Slot milliseconds for the job over its entire duration
 

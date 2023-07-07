@@ -60,7 +60,9 @@ def create_query(date, project):
           UNNEST(referenced_tables) AS referenced_tables
         WHERE
           DATE(creation_time) = '{date}'
-          AND t1.project_id IN UNNEST({SOURCE_PROJECTS})
+          AND (t1.project_id IN UNNEST({SOURCE_PROJECTS})
+            OR referenced_tables.project_id IN UNNEST({SOURCE_PROJECTS})
+            OR destination_table.project_id IN UNNEST({SOURCE_PROJECTS}))
     """
 
 

@@ -15,6 +15,7 @@ DEFAULT_PROJECTS = [
     "mozdata",
     "moz-fx-data-shared-prod",
     "moz-fx-data-marketing-prod",
+    "moz-fx-data-bq-data-science",
 ]
 
 parser = ArgumentParser(description=__doc__)

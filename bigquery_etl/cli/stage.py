@@ -10,12 +10,12 @@ from pathlib import Path
 import click
 from google.cloud import bigquery
 
-from .. import dryrun
 from ..cli.query import deploy as deploy_query_schema
 from ..cli.query import update as update_query_schema
 from ..cli.routine import publish as publish_routine
 from ..cli.utils import paths_matching_name_pattern, sql_dir_option
 from ..cli.view import publish as publish_view
+from ..dryrun import DryRun
 from ..routine.parse_routine import (
     UDF_FILE,
     RawRoutine,
@@ -116,7 +116,7 @@ def deploy(
                 for p in paths_matching_name_pattern(
                     path, sql_dir, None, files=["*.sql", "*.py"]
                 )
-                if p.suffix in [".sql", ".py"]
+                if p.suffix in [".sql", ".py"] and p.name != "checks.sql"
             ]
         )
 
@@ -185,9 +185,6 @@ def deploy(
         for artifact_file in artifact_files:
             if artifact_file.parent.exists():
                 shutil.rmtree(artifact_file.parent)
-
-    # update dryrun skip list
-    dryrun.add_test_project_to_skip(sql_dir, project_id)
 
     # deploy to stage
     _deploy_artifacts(ctx, updated_artifact_files, project_id, dataset_suffix, sql_dir)
@@ -368,7 +365,7 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
             name=str(query_file),
             sql_dir=sql_dir,
             project_id=project_id,
-            respect_dryrun_skip=False,
+            respect_dryrun_skip=True,
         )
         ctx.invoke(
             deploy_query_schema,
@@ -387,7 +384,7 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
     view_files = [
         file
         for file in artifact_files
-        if file.name == VIEW_FILE and str(file) not in dryrun.SKIP
+        if file.name == VIEW_FILE and str(file) not in DryRun.skipped_files()
     ]
     for view_file in view_files:
         dataset = view_file.parent.parent.name

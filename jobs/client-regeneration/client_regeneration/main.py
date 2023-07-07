@@ -37,8 +37,8 @@ def init_regen_pool(client, seed, start_date):
     # init a new version of the regen pool, write table to BQ and name it with the random seed that will be used in
     # the sampling
     # TODO: Can we get rid of this DECLARE?
-    q = f"""DECLARE start_date DATE DEFAULT DATE("{start_date}"); CREATE OR REPLACE TABLE 
-    mozdata.analysis.regen_sim_regen_pool_{seed} PARTITION BY regen_date AS SELECT * FROM 
+    q = f"""DECLARE start_date DATE DEFAULT DATE("{start_date}"); CREATE OR REPLACE TABLE
+    mozdata.analysis.regen_sim_regen_pool_{seed} PARTITION BY regen_date AS SELECT * FROM
     mozdata.analysis.regen_sim_regen_pool_v2 WHERE regen_date >= start_date;"""
 
     job = client.query(q)
@@ -48,8 +48,8 @@ def init_regen_pool(client, seed, start_date):
 def init_churn_pool(client, seed, start_date, lookback):
     # init a new version of the churn pool, write table to BQ and name it with the random seed that will be used in
     # the sampling
-    q = f"""CREATE OR REPLACE TABLE mozdata.analysis.regen_sim_churn_pool_{seed} PARTITION BY last_reported_date AS 
-    SELECT * FROM mozdata.analysis.regen_sim_churn_pool_v2 WHERE last_reported_date >= DATE_SUB(DATE("{start_date}"), 
+    q = f"""CREATE OR REPLACE TABLE mozdata.analysis.regen_sim_churn_pool_{seed} PARTITION BY last_reported_date AS
+    SELECT * FROM mozdata.analysis.regen_sim_churn_pool_v2 WHERE last_reported_date >= DATE_SUB(DATE("{start_date}"),
     INTERVAL {lookback + 1}  DAY);"""
 
     job = client.query(q)
@@ -62,32 +62,32 @@ def sample_for_replacement_bq(client, date, column_list, seed, lookback):
     INSERT INTO mozdata.analysis.regen_sim_client_replacements_{str(seed)}
     WITH
       churned AS (
-        SELECT 
+        SELECT
           *,
           CONCAT({", '_', ".join(column_list)}) AS bucket,
-        FROM 
-            mozdata.analysis.regen_sim_churn_pool_{str(seed)} 
-        WHERE 
+        FROM
+            mozdata.analysis.regen_sim_churn_pool_{str(seed)}
+        WHERE
             last_reported_date BETWEEN DATE_SUB(DATE("{date}"), INTERVAL ({lookback}) DAY) AND DATE("{date}")
       ),
 
       churned_numbered AS (
-        SELECT 
+        SELECT
           *,
-          -- number the clients randomly within bucket. adding the seed makes the sort order reproducable. 
+          -- number the clients randomly within bucket. adding the seed makes the sort order reproducable.
           ROW_NUMBER() OVER (PARTITION BY bucket ORDER BY FARM_FINGERPRINT(CONCAT(client_id, {str(seed)}))) AS rn,
         FROM churned
       ),
 
       regen AS (
-        SELECT 
-          *, 
+        SELECT
+          *,
           CONCAT({", '_', ".join(column_list)}) AS bucket,
         FROM mozdata.analysis.regen_sim_regen_pool_{str(seed)} WHERE regen_date = DATE("{date}")
       ),
 
       regen_numbered AS (
-        SELECT 
+        SELECT
           *,
           -- this will always sort the clients that will be replaced in the same order. we randomize the order of the
           -- churned clients (see above)
@@ -117,31 +117,32 @@ def update_churn_pool(client, seed, date):
     -- get the replacements for the given day
     -- WITH replacements AS (
     --   SELECT *
-    -- FROM 
+    -- FROM
     --  `mozdata.analysis.regen_sim_client_replacements_{str(seed)}`
-    -- WHERE 
+    -- WHERE
     --  regen_date = "{str(date)}"
     -- )
 
-    -- remove the clients used as replacements from the churn pool (we only want them to serve as one client's 
+    -- remove the clients used as replacements from the churn pool (we only want them to serve as one client's
     -- replacement)
     DELETE FROM `mozdata.analysis.regen_sim_churn_pool_{str(seed)}`
     WHERE client_id IN (
         SELECT replacement_id
         FROM ( SELECT replacement_id
           FROM `mozdata.analysis.regen_sim_client_replacements_{str(seed)}`
-          WHERE regen_date = "{str(date)}" 
+          WHERE regen_date = "{str(date)}"
           AND replacement_id IS NOT NULL )
     );
 
-    -- find cases where the regenerated IDs are also in the churn pool - replace them with their sampled replacement 
+    -- find cases where the regenerated IDs are also in the churn pool - replace them with their sampled replacement
     -- client.
     UPDATE `mozdata.analysis.regen_sim_churn_pool_{str(seed)}` c
-    SET client_id = r.replacement_id
+    SET client_id = r.replacement_id,
+        first_seen_date = r.first_seen_date
     FROM
-      (SELECT client_id, replacement_id
+      (SELECT client_id, replacement_id, first_seen_date
       FROM `mozdata.analysis.regen_sim_client_replacements_{str(seed)}`
-      WHERE regen_date = "{str(date)}" 
+      WHERE regen_date = "{str(date)}"
       AND replacement_id IS NOT NULL ) r
     WHERE c.client_id = r.client_id;
     """

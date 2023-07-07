@@ -7,4 +7,4 @@ labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential  # TODO: @marlene please make sure this is the correct access group.
+  - workgroup:mozilla-confidential

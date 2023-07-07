@@ -54,5 +54,5 @@ with DAG(
         + ["--date", "{{ ds }}"],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="mhirose@mozilla.com",
-        email=["telemetry-alerts@mozilla.com", "mhirose@mozilla.com"],
+        email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )

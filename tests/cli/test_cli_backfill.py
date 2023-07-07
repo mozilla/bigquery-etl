@@ -18,7 +18,7 @@ from bigquery_etl.backfill.utils import (
     BACKFILL_DESTINATION_PROJECT,
     get_backfill_file_from_qualified_table_name,
     get_backfill_staging_qualified_table_name,
-    get_qualified_table_name_to_entries_dict,
+    get_entries_from_qualified_table_name,
     get_qualified_table_name_to_entries_map_by_project,
     qualified_table_name_matching,
     validate_metadata_workgroups,
@@ -959,7 +959,7 @@ class TestBackfill:
             assert result.exit_code == 2
             assert "Invalid value for '--status'" in result.output
 
-    def test_get_qualified_table_name_to_entries_dict(self, runner):
+    def test_get_entries_from_qualified_table_name(self, runner):
         with runner.isolated_filesystem():
             qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
 
@@ -988,7 +988,7 @@ class TestBackfill:
             assert backfill.reason == DEFAULT_REASON
             assert backfill.status == DEFAULT_STATUS
 
-            backfills_dict = get_qualified_table_name_to_entries_dict(
+            backfills = get_entries_from_qualified_table_name(
                 "sql", qualified_table_name
             )
 
@@ -1002,8 +1002,7 @@ class TestBackfill:
                 DEFAULT_STATUS,
             )
 
-            assert qualified_table_name in backfills_dict
-            assert backfills_dict[qualified_table_name] == [expected_backfill]
+            assert backfills == [expected_backfill]
 
     def test_get_qualified_table_name_to_entries_map_by_project(self, runner):
         with runner.isolated_filesystem():

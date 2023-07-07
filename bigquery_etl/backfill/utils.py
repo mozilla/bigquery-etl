@@ -28,11 +28,11 @@ BACKFILL_DESTINATION_PROJECT = "moz-fx-data-shared-prod"
 BACKFILL_DESTINATION_DATASET = "backfills_staging_derived"
 
 
-def get_qualified_table_name_to_entries_dict(
+def get_entries_from_qualified_table_name(
     sql_dir, qualified_table_name, status=None
-) -> defaultdict[str, List[Backfill]]:
+) -> List[Backfill]:
     """Return backfill entries from qualified table name."""
-    backfills_dict = defaultdict(list)
+    backfills = []
 
     project_id, dataset_id, table_id = qualified_table_name_matching(
         qualified_table_name
@@ -50,10 +50,8 @@ def get_qualified_table_name_to_entries_dict(
 
     if backfill_file.exists():
         backfills = Backfill.entries_from_file(backfill_file, status)
-        if backfills:
-            backfills_dict[qualified_table_name] = backfills
 
-    return backfills_dict
+    return backfills
 
 
 def get_qualified_table_name_to_entries_map_by_project(
@@ -69,9 +67,11 @@ def get_qualified_table_name_to_entries_map_by_project(
         project, dataset, table = extract_from_query_path(backfill_file)
         qualified_table_name = f"{project}.{dataset}.{table}"
 
-        backfills_dict = get_qualified_table_name_to_entries_dict(
-            sql_dir, qualified_table_name, status
-        )
+        backfills_dict = {
+            qualified_table_name: get_entries_from_qualified_table_name(
+                sql_dir, qualified_table_name, status
+            )
+        }
 
         backfills_dict_all.update(backfills_dict)
 
@@ -191,9 +191,11 @@ def get_backfill_entries_to_process_dict(
     client = bigquery.Client(project=project)
 
     if qualified_table_name:
-        backfills_dict = get_qualified_table_name_to_entries_dict(
-            sql_dir, qualified_table_name, BackfillStatus.DRAFTING.value
-        )
+        backfills_dict = {
+            qualified_table_name: get_entries_from_qualified_table_name(
+                sql_dir, qualified_table_name, BackfillStatus.DRAFTING.value
+            )
+        }
     else:
         backfills_dict = get_qualified_table_name_to_entries_map_by_project(
             sql_dir, project, BackfillStatus.DRAFTING.value

@@ -18,7 +18,7 @@ from ..backfill.utils import (
     get_backfill_entries_to_process_dict,
     get_backfill_file_from_qualified_table_name,
     get_backfill_staging_qualified_table_name,
-    get_qualified_table_name_to_entries_dict,
+    get_entries_from_qualified_table_name,
     get_qualified_table_name_to_entries_map_by_project,
     qualified_table_name_matching,
     validate_metadata_workgroups,
@@ -106,11 +106,11 @@ def create(
         click.echo("Only mozilla-confidential workgroups are supported.")
         sys.exit(1)
 
-    backfills_dict = get_qualified_table_name_to_entries_dict(
+    existing_backfills = get_entries_from_qualified_table_name(
         sql_dir, qualified_table_name
     )
 
-    new_backfill = Backfill(
+    new_entry = Backfill(
         entry_date=date.today(),
         start_date=start_date.date(),
         end_date=end_date.date(),
@@ -120,17 +120,12 @@ def create(
         status=BackfillStatus.DRAFTING,
     )
 
-    existing_backfills = []
+    for existing_entry in existing_backfills:
+        validate_duplicate_entry_dates(new_entry, existing_entry)
+        if existing_entry.status == BackfillStatus.DRAFTING:
+            validate_overlap_dates(new_entry, existing_entry)
 
-    if backfills_dict:
-        existing_backfills = backfills_dict[qualified_table_name]
-
-        for existing_entry in existing_backfills:
-            validate_duplicate_entry_dates(new_backfill, existing_entry)
-            if existing_entry.status == BackfillStatus.DRAFTING:
-                validate_overlap_dates(new_backfill, existing_entry)
-
-    existing_backfills.insert(0, new_backfill)
+    existing_backfills.insert(0, new_entry)
 
     backfill_file = get_backfill_file_from_qualified_table_name(
         sql_dir, qualified_table_name
@@ -174,9 +169,11 @@ def validate(
 ):
     """Validate backfill.yaml files."""
     if qualified_table_name:
-        backfills_dict = get_qualified_table_name_to_entries_dict(
-            sql_dir, qualified_table_name
-        )
+        backfills_dict = {
+            qualified_table_name: get_entries_from_qualified_table_name(
+                sql_dir, qualified_table_name
+            )
+        }
     else:
         backfills_dict = get_qualified_table_name_to_entries_map_by_project(
             sql_dir, project_id
@@ -237,9 +234,11 @@ def validate(
 def info(ctx, qualified_table_name, sql_dir, project_id, status):
     """Return backfill(s) information from all or specific table(s)."""
     if qualified_table_name:
-        backfills_dict = get_qualified_table_name_to_entries_dict(
-            sql_dir, qualified_table_name, status
-        )
+        backfills_dict = {
+            qualified_table_name: get_entries_from_qualified_table_name(
+                sql_dir, qualified_table_name, status
+            )
+        }
     else:
         backfills_dict = get_qualified_table_name_to_entries_map_by_project(
             sql_dir, project_id, status

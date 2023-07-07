@@ -1120,3 +1120,21 @@ bqetl_fivetran_apple_ads:
   schedule_interval: 0 3 * * *
   tags:
     - impact/tier_2
+bqetl_fivetran_copied_tables:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - frank@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: frank@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-07-04'
+  description: |
+    Copy over Fivetran data to shared-prod.
+  schedule_interval: 0 3 * * *
+  tags:
+    - impact/tier_2

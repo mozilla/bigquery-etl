@@ -3,6 +3,7 @@ import re
 import subprocess
 import sys
 import tempfile
+from pathlib import Path
 from subprocess import CalledProcessError
 
 import click
@@ -113,6 +114,8 @@ def _run_check(
     if checks_file is None:
         return
 
+    checks_file = Path(checks_file)
+
     query_arguments.append("--use_legacy_sql=false")
     if project_id is not None:
         query_arguments.append(f"--project_id={project_id}")
@@ -124,6 +127,7 @@ def _run_check(
         **{"dataset_id": dataset_id, "table_name": table},
         **parameters,
     }
+
     rendered_result = render_template(
         checks_file.name,
         template_folder=str(checks_file.parent),
@@ -131,6 +135,7 @@ def _run_check(
         format=False,
         **jinja_params,
     )
+
     checks = sqlparse.split(rendered_result)
     seek_location = 0
     check_failed = False

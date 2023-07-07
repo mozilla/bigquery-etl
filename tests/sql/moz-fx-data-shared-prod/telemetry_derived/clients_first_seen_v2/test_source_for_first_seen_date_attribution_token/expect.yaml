@@ -26,3 +26,6 @@
   metadata:
     first_seen_date__source_ping: shutdown
     attribution_campaign__source_ping: new_profile
+    reported_main_ping: true
+    reported_new_profile_ping: true
+    reported_shutdown_ping: true

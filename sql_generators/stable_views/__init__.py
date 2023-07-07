@@ -187,7 +187,7 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
             # (see https://github.com/mozilla/gcp-ingestion/blob/9911895cf49ed6364b1b2fb8008310fb60ff9c8e/ingestion-core/src/main/java/com/mozilla/telemetry/ingestion/core/transform/PubsubMessageToObjectNode.java#L376-L384) # noqa E501
             # We're aliasing them to their original names in views
             # (see https://bugzilla.mozilla.org/show_bug.cgi?id=1741487)
-            # Later, after consumers switch to aliased fields we'll remove the `2`-suffixed fields
+            # TODO: Later, after consumers switch to aliased fields we'll remove the `2`-suffixed fields
             metrics_2_types_to_rename = {
                 "url2": "url",
                 "text2": "text",
@@ -195,19 +195,25 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
                 "labeled_rate2": "labeled_rate",
             }
 
+            # Due to past error in the deployment all of the following fields are considered invalid (`url`, `text`, `jwe`, `labeled_rate`)
+            # after the issue has been resolved these fields were corrected and have the suffix `2`.
+            # This suffix is automatically added by the ingestion pipeline and is a hidden detail from the data producers.
+            # For this reason, all of the mentioned fields without the suffix can be excluded from the view
+            # and any of the suffixed fields can have the suffix removed to make the data available more consistent with how it is provided.
+            #
             # We have to handle these fields in two stages via `EXCEPT` and aliases instead of
             # a single `REPLACE` because there are some tables that have `url2` field but not `url` field.
             for metrics_field in metrics_struct["fields"]:
-                # TODO:
-                # here we probably need to check with both field2 and the corresponding field exist before doing a replace
+                # Excluding non-suffixed fields are they are considered invalid
+                if metrics_field["name"] in metrics_2_types_to_rename.values():
+                    metrics_2_exclusions += [metrics_field["name"]]
+                    key_value_metrics_removed = True
 
+                # Using aliasing to remove the suffix from the valid fields
                 if metrics_field["name"] in metrics_2_types_to_rename:
                     metrics_2_aliases += [
                         f"metrics.{metrics_field['name']} AS {metrics_2_types_to_rename[metrics_field['name']]}"
                     ]
-                elif metrics_field["name"] in metrics_2_types_to_rename.values():
-                    metrics_2_exclusions += [metrics_field["name"]]
-                    key_value_metrics_removed = True
 
         if datetime_replacements_clause or metrics_2_aliases or metrics_2_exclusions:
             except_clause = ""

@@ -97,7 +97,7 @@ WITH original_changelog AS (
     LEAD(`timestamp`) OVER subscription_changes_asc AS next_subscription_change_at,
     LAG(subscription.ended_at) OVER subscription_changes_asc AS previous_subscription_ended_at
   FROM
-    `moz-fx-data-shared-prod`.subscription_platform_derived.stripe_subscriptions_changelog_v1
+    `moz-fx-data-shared-prod`.stripe_external.subscriptions_changelog_v1
   WINDOW
     subscription_changes_asc AS (
       PARTITION BY

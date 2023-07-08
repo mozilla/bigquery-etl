@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.adjust.adjust_derived`
+  `moz-fx-data-shared-prod.adjust.adjust_kpi_deliverables`
 AS
 SELECT
   *

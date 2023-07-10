@@ -19,11 +19,12 @@ from ..cli.utils import (
     sql_dir_option,
     use_cloud_function_option,
 )
+from ..config import ConfigLoader
 from ..dryrun import DryRun
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..util.bigquery_id import sql_table_id
 from ..util.client_queue import ClientQueue
-from ..view import NON_USER_FACING_DATASET_SUFFIXES, View, broken_views
+from ..view import View, broken_views
 from .dryrun import dryrun
 
 VIEW_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
@@ -365,7 +366,11 @@ def clean(
             dataset
             for dataset in client.list_datasets(target_project)
             if not user_facing_only
-            or not dataset.dataset_id.endswith(NON_USER_FACING_DATASET_SUFFIXES)
+            or not dataset.dataset_id.endswith(
+                ConfigLoader.get(
+                    "default", "non_user_facing_dataset_suffixes", fallback=[]
+                )
+            )
         ]
     with ThreadPool(parallelism) as p:
         managed_view_ids = {

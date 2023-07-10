@@ -4,6 +4,7 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dependency import extract_table_references
 from bigquery_etl.metadata.parse_metadata import DatasetMetadata, Metadata
 from bigquery_etl.schema import Schema
@@ -15,12 +16,6 @@ METADATA_FILE = "metadata.yaml"
 SCHEMA_FILE = "schema.yaml"
 DATASET_METADATA_FILE = "dataset_metadata.yaml"
 README_FILE = "README.md"
-NON_USER_FACING_DATASET_SUFFIXES = (
-    "_derived",
-    "_external",
-    "_bi",
-    "_restricted",
-)
 SOURCE_URL = "https://github.com/mozilla/bigquery-etl/blob/generated-sql"
 
 
@@ -125,7 +120,9 @@ def generate_derived_dataset_docs(out_dir, project_dir):
             if dataset_path.is_dir()
             and all(
                 suffix not in str(dataset_path)
-                for suffix in NON_USER_FACING_DATASET_SUFFIXES
+                for suffix in ConfigLoader.get(
+                    "default", "non_user_facing_dataset_suffixes", fallback=[]
+                )
             )
         ]
     )

@@ -1,7 +1,7 @@
 -- This is counting how many times a specific event in a flow occured,
 -- this is not proper funnel analysis.
+-- TODO: perhaps this live inside Looker so that we can do these counts across dimensions such as country, etc.
 SELECT
-  @submission_date AS submission_date,
   flow_id,
   COUNT(flow_event) AS total_flow_events_count,
   COUNTIF(
@@ -25,7 +25,5 @@ SELECT
 FROM
   firefox_accounts_derived.fxa_flows_v1,
   UNNEST(flow_events) AS flow_event
-WHERE
-  submission_date = @submission_date
 GROUP BY
   flow_id

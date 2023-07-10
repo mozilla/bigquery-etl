@@ -6,16 +6,12 @@ description: |
   and how many of those specifically were related to
   email, registration and login views and completes
   (engage for email).
+# At some point we may want to consider making this an incremental query
 owners:
   - kignasiak@mozilla.com
 labels:
   application: fxa
-  incremental: true
+  incremental: false
   schedule: daily
-scheduling:
-  dag_name: bqetl_fxa_events
-bigquery:
-  time_partitioning:
-    type: day
-    field: submission_date
-    require_partition_filter: false
+# scheduling:
+#   dag_name: bqetl_fxa_events

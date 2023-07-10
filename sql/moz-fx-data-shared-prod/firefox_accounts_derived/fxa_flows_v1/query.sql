@@ -1,8 +1,3 @@
-CREATE OR REPLACE TABLE
-`tmp.kik_fxa_flows`
-CLUSTER BY
-  flow_id
-AS
 WITH
   base AS (
     SELECT
@@ -24,10 +19,7 @@ WITH
     FROM
         `firefox_accounts.fxa_all_events`
     WHERE
-      -- TODO: need to come up with a way to handle this 2 day window better to avoid including the same events twice
-      DATE(`timestamp`)
-        BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY)
-        AND @submission_date
+      DATE(`timestamp`) >= DATE("2022-09-01")
       AND fxa_log IN ('content', 'auth', 'oauth')
       AND event_type NOT IN (
       'fxa_email - bounced',
@@ -137,7 +129,6 @@ flow_events AS (
 )
 
 SELECT
-  @submission_date AS submission_date,
   flow_info.*,
   utm_info.*,
   flow_events.*,

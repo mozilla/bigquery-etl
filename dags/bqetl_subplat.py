@@ -717,6 +717,31 @@ with DAG(
         task_concurrency=1,
     )
 
+    stripe_external__customer_discount__v1 = bigquery_etl_query(
+        task_id="stripe_external__customer_discount__v1",
+        destination_table="customer_discount_v1",
+        dataset_id="stripe_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    stripe_external__customers_changelog__v1 = bigquery_etl_query(
+        task_id="stripe_external__customers_changelog__v1",
+        destination_table="customers_changelog_v1",
+        dataset_id="stripe_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+        arguments=["--append_table"],
+    )
+
     stripe_external__invoice__v1 = bigquery_etl_query(
         task_id="stripe_external__invoice__v1",
         destination_table="invoice_v1",
@@ -1251,6 +1276,16 @@ with DAG(
     stripe_external__coupon__v1.set_upstream(fivetran_stripe_sync_wait)
 
     stripe_external__customer__v1.set_upstream(fivetran_stripe_sync_wait)
+
+    stripe_external__customer_discount__v1.set_upstream(fivetran_stripe_sync_wait)
+
+    stripe_external__customers_changelog__v1.set_upstream(stripe_external__coupon__v1)
+
+    stripe_external__customers_changelog__v1.set_upstream(stripe_external__customer__v1)
+
+    stripe_external__customers_changelog__v1.set_upstream(
+        stripe_external__customer_discount__v1
+    )
 
     stripe_external__invoice__v1.set_upstream(fivetran_stripe_sync_wait)
 

@@ -6,7 +6,7 @@
   city: city1
 - client_id: client-2
   sample_id: 20
-  submission_date: '2023-06-02'
-  submission_timestamp_min: '2023-06-02 00:03:00'
+  submission_date: '2023-05-28'
+  submission_timestamp_min: '2023-05-28 00:03:00'
   attribution:
     campaign: campaign2

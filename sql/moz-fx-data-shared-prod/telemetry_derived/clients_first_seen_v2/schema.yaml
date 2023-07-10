@@ -186,15 +186,15 @@ fields:
     name: download_source__source_ping
     type: STRING
     mode: NULLABLE
+  - description: Indicates wether the client reported a main ping on the first seen date and up to 7 days after.
+    name: reported_main_ping
+    type: BOOLEAN
+    mode: NULLABLE
   - description: Indicates wether the client reported a new profile ping on the first seen date and up to 7 days after.
     name: reported_new_profile_ping
     type: BOOLEAN
     mode: NULLABLE
   - description: Indicates wether the client reported a first shutdown ping on the first seen date and up to 7 days after.
     name: reported_shutdown_ping
-    type: BOOLEAN
-    mode: NULLABLE
-  - description: Indicates wether the client reported a main ping on the first seen date and up to 7 days after.
-    name: reported_main_ping
     type: BOOLEAN
     mode: NULLABLE

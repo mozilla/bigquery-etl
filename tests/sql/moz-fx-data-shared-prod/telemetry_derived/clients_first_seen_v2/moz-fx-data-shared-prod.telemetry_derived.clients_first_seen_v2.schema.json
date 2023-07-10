@@ -175,15 +175,15 @@
       },
       {
         "type": "BOOLEAN",
+        "name": "reported_main_ping"
+      },
+      {
+        "type": "BOOLEAN",
         "name": "reported_new_profile_ping"
       },
       {
         "type": "BOOLEAN",
         "name": "reported_shutdown_ping"
-      },
-      {
-        "type": "BOOLEAN",
-        "name": "reported_main_ping"
       }
     ],
     "name": "metadata",

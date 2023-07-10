@@ -1,4 +1,4 @@
--- Query for telemetry_derived.clients_first_seen_v1
+-- Query for telemetry_derived.clients_first_seen_v2
 WITH new_profile_ping AS (
   SELECT
     client_id AS client_id,

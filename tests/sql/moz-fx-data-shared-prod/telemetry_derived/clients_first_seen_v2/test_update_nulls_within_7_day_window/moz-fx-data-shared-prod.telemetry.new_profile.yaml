@@ -1,9 +1,0 @@
----
-- client_id: client-1
-  submission_timestamp: '2023-06-15 14:03:00'
-  environment:
-    settings:
-      attribution:
-        campaign: campaign1
-        dltoken: token1
-        dlsource: source1

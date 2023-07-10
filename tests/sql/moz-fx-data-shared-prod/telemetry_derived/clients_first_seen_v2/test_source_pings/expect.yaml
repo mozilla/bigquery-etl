@@ -2,6 +2,7 @@
 - client_id: client-1
   first_seen_date: 2023-06-01
   city: city1
+  sample_id: 10
   metadata:
     first_seen_date__source_ping: main
     reported_main_ping: true
@@ -12,11 +13,11 @@
   download_token: token3
   sample_id: 30
   metadata:
-    first_seen_date__source_ping: shutdown
+    first_seen_date__source_ping: new_profile
     download_token__source_ping: new_profile
+    reported_main_ping: false
     reported_new_profile_ping: true
     reported_shutdown_ping: true
-    reported_main_ping: false
 - client_id: client-4
   sample_id: 40
   first_seen_date: 2023-05-14

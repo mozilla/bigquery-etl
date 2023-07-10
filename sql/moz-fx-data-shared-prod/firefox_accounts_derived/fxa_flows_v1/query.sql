@@ -1,27 +1,26 @@
-WITH
-  base AS (
-    SELECT
-      flow_id,
-      event_type,
-      `timestamp`,
-      entrypoint,
-      entrypoint_experiment,
-      entrypoint_variation,
-      utm_source,
-      utm_medium,
-      utm_term,
-      utm_campaign,
-      utm_content,
-      country,
-      ua_browser,
-      ua_version,
-      os_name,
-    FROM
-        `firefox_accounts.fxa_all_events`
-    WHERE
-      DATE(`timestamp`) >= DATE("2022-09-01")
-      AND fxa_log IN ('content', 'auth', 'oauth')
-      AND event_type NOT IN (
+WITH base AS (
+  SELECT
+    flow_id,
+    event_type,
+    `timestamp`,
+    entrypoint,
+    entrypoint_experiment,
+    entrypoint_variation,
+    utm_source,
+    utm_medium,
+    utm_term,
+    utm_campaign,
+    utm_content,
+    country,
+    ua_browser,
+    ua_version,
+    os_name,
+  FROM
+    `firefox_accounts.fxa_all_events`
+  WHERE
+    DATE(`timestamp`) >= DATE("2022-09-01")
+    AND fxa_log IN ('content', 'auth', 'oauth')
+    AND event_type NOT IN (
       'fxa_email - bounced',
       'fxa_email - click',
       'fxa_email - sent',
@@ -36,12 +35,12 @@ WITH
       'sync - repair_success',
       'sync - repair_triggered'
     )
-  ),
-  flow_attributes AS (
+),
+flow_attributes AS (
     -- @loines: any other attributes we may want to keep?
-    SELECT
-      flow_id,
-      ARRAY_AGG(
+  SELECT
+    flow_id,
+    ARRAY_AGG(
       IF(
         `timestamp` IS NOT NULL
         AND (
@@ -50,7 +49,13 @@ WITH
           OR ua_browser IS NOT NULL
           OR ua_version IS NOT NULL
         ),
-        STRUCT(`timestamp` AS flow_start_timestamp, country AS flow_country, os_name AS flow_os_name, ua_browser AS flow_ua_browser, ua_version AS flow_ua_version),
+        STRUCT(
+          `timestamp` AS flow_start_timestamp,
+          country AS flow_country,
+          os_name AS flow_os_name,
+          ua_browser AS flow_ua_browser,
+          ua_version AS flow_ua_version
+        ),
         NULL
       ) IGNORE NULLS
       ORDER BY
@@ -58,18 +63,18 @@ WITH
       LIMIT
         1
     )[SAFE_OFFSET(0)] AS flow_info,
-    FROM
-      base
-    WHERE
-      flow_id IS NOT NULL
-    GROUP BY
-      flow_id
-  ),
-  flow_entrypoints AS (
+  FROM
+    base
+  WHERE
+    flow_id IS NOT NULL
+  GROUP BY
+    flow_id
+),
+flow_entrypoints AS (
   SELECT
     flow_id,
     ARRAY_AGG(
-       IF(
+      IF(
         entrypoint IS NOT NULL
         OR entrypoint_experiment IS NOT NULL
         OR entrypoint_variation IS NOT NULL,
@@ -121,13 +126,17 @@ flow_events AS (
         `timestamp` AS event_timestamp,
         SPLIT(event_type, ' - ')[OFFSET(0)] AS event_category,
         SPLIT(event_type, ' - ')[OFFSET(1)] AS event_name
-      ) ORDER BY `timestamp`
+      )
+      ORDER BY
+        `timestamp`
     ) AS flow_events, -- maybe this event_type split should happen earlier in the pipeline?
-  FROM base
-  WHERE flow_id IS NOT NULL
-  GROUP BY flow_id
+  FROM
+    base
+  WHERE
+    flow_id IS NOT NULL
+  GROUP BY
+    flow_id
 )
-
 SELECT
   flow_info.*,
   utm_info.*,
@@ -135,8 +144,14 @@ SELECT
 FROM
   flow_attributes
 LEFT JOIN
-  flow_utms USING(flow_id)
+  flow_utms
+USING
+  (flow_id)
 LEFT JOIN
-  flow_entrypoints USING(flow_id)
+  flow_entrypoints
+USING
+  (flow_id)
 LEFT JOIN
-  flow_events USING(flow_id)
+  flow_events
+USING
+  (flow_id)

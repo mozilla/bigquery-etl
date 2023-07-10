@@ -210,7 +210,7 @@ def respect_dryrun_skip_option(default=True):
     flags = {True: "--respect-dryrun-skip", False: "--ignore-dryrun-skip"}
     return click.option(
         f"{flags[True]}/{flags[False]}",
-        help="Respect or ignore dry run SKIP configuration. "
+        help="Respect or ignore dry run skip configuration. "
         f"Default is {flags[default]}.",
         default=default,
     )

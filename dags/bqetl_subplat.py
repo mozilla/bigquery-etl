@@ -739,7 +739,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
-        arguments=["--append_table"],
+        arguments=["--append_table", "--noreplace"],
     )
 
     stripe_external__invoice__v1 = bigquery_etl_query(

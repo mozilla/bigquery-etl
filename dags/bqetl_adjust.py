@@ -53,7 +53,8 @@ with DAG(
         ]
         + [
             "--date",
-            "{{ ds }}," "--adjust_api_token",
+            "{{ ds }}",
+            "--adjust_api_token",
             "{{ var.value.ADJUST_API_TOKEN}}",
             "--adjust_app_list",
             "{{ var.value.ADJUST_APP_TOKEN_LIST}}",

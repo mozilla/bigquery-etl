@@ -316,6 +316,13 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Regret feedback text
+  - name: text
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: regret_details_feedback_text
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

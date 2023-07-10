@@ -353,6 +353,13 @@ fields:
         pings.
 
         '
+  - name: url
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: top_sites_reporting_url
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

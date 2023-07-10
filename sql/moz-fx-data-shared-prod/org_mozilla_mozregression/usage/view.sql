@@ -8,7 +8,7 @@ SELECT
     mozfun.norm.glean_ping_info(ping_info) AS ping_info,
     (
       SELECT AS STRUCT
-        metrics.* REPLACE (
+        metrics.* EXCEPT (jwe, labeled_rate, text, url) REPLACE(
           STRUCT(
             mozfun.glean.parse_datetime(metrics.datetime.usage_bad_date) AS usage_bad_date,
             metrics.datetime.usage_bad_date AS raw_usage_bad_date,

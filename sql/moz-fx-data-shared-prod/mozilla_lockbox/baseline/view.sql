@@ -9,7 +9,7 @@ SELECT
     mozfun.norm.glean_baseline_client_info(client_info, metrics) AS client_info,
     (
       SELECT AS STRUCT
-        metrics.* REPLACE (
+        metrics.* EXCEPT (jwe, labeled_rate, text, url) REPLACE(
           STRUCT(
             mozfun.glean.parse_datetime(
               metrics.datetime.glean_validation_first_run_hour

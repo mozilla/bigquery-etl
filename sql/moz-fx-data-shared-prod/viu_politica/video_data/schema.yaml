@@ -348,6 +348,13 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Video description
+  - name: text
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: video_data_description
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

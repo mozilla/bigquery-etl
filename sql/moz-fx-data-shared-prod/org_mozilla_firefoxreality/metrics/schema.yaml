@@ -318,16 +318,6 @@ fields:
         respectively) due to an inconsistency in our internal bookkeeping?
 
         '
-  - name: jwe
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
-      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -527,50 +517,6 @@ fields:
 
         '
     - name: raw_glean_validation_first_run_hour
-      type: STRING
-      mode: NULLABLE
-  - name: labeled_rate
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: RECORD
-        mode: NULLABLE
-        fields:
-        - name: denominator
-          type: INTEGER
-          mode: NULLABLE
-        - name: numerator
-          type: INTEGER
-          mode: NULLABLE
-  - name: url
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
-      mode: NULLABLE
-  - name: text
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
       type: STRING
       mode: NULLABLE
   - name: timing_distribution

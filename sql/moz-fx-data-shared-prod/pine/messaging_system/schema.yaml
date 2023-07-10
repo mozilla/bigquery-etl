@@ -607,6 +607,19 @@ fields:
       description: 'The unique impression identifier for a specific client.
 
         '
+  - name: text
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: messaging_system_cfr_action
+      type: STRING
+      mode: NULLABLE
+    - name: messaging_system_event_context
+      type: STRING
+      mode: NULLABLE
+    - name: messaging_system_message_id
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

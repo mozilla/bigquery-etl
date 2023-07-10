@@ -430,16 +430,6 @@ fields:
         metric, see `framework_primary`
 
         '
-  - name: jwe
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
-      mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -455,50 +445,6 @@ fields:
         the `framework_primary/secondary` metrics.
 
         '
-  - name: labeled_rate
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: RECORD
-        mode: NULLABLE
-        fields:
-        - name: denominator
-          type: INTEGER
-          mode: NULLABLE
-        - name: numerator
-          type: INTEGER
-          mode: NULLABLE
-  - name: url
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
-      mode: NULLABLE
-  - name: text
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
-      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

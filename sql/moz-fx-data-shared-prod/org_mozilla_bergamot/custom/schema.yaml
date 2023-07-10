@@ -280,40 +280,6 @@ fields:
       description: 'Language pair of user and website languages is not supported.
 
         '
-  - name: jwe
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
-      mode: NULLABLE
-  - name: labeled_rate
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: RECORD
-        mode: NULLABLE
-        fields:
-        - name: denominator
-          type: INTEGER
-          mode: NULLABLE
-        - name: numerator
-          type: INTEGER
-          mode: NULLABLE
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -622,26 +588,6 @@ fields:
       description: 'Time spent on translation by the translation engine.
 
         '
-  - name: url
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
-      mode: NULLABLE
-  - name: text
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
-      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

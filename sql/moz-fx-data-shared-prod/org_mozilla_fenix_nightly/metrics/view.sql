@@ -8,7 +8,7 @@ SELECT
     mozfun.norm.glean_ping_info(ping_info) AS ping_info,
     (
       SELECT AS STRUCT
-        metrics.* REPLACE (
+        metrics.* EXCEPT (jwe, labeled_rate, text, url) REPLACE(
           STRUCT(
             mozfun.glean.parse_datetime(
               metrics.datetime.blocklist_last_modified_rs_addons_mblf
@@ -31,7 +31,8 @@ SELECT
             ) AS glean_validation_first_run_hour,
             metrics.datetime.glean_validation_first_run_hour AS raw_glean_validation_first_run_hour
           ) AS datetime
-        )
+        ),
+        metrics.url2 AS url
     ) AS metrics
   )
 FROM

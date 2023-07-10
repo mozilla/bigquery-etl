@@ -35,7 +35,8 @@ SELECT
             ) AS glean_validation_first_run_hour,
             metrics.datetime.glean_validation_first_run_hour AS raw_glean_validation_first_run_hour
           ) AS datetime
-        )
+        ),
+        metrics.url2 AS url
     ) AS metrics
   )
 FROM

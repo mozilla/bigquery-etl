@@ -3450,6 +3450,16 @@ fields:
     - name: background_update_reasons_to_not_update
       type: STRING
       mode: REPEATED
+  - name: url
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: search_engine_default_submission_url
+      type: STRING
+      mode: NULLABLE
+    - name: search_engine_private_submission_url
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

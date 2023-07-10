@@ -534,16 +534,6 @@ fields:
       description: 'The count of translation requests.
 
         '
-  - name: jwe
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
-      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -3023,50 +3013,6 @@ fields:
       description: 'Counts how long to generate canvas random noises.
 
         '
-  - name: labeled_rate
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: RECORD
-        mode: NULLABLE
-        fields:
-        - name: denominator
-          type: INTEGER
-          mode: NULLABLE
-        - name: numerator
-          type: INTEGER
-          mode: NULLABLE
-  - name: url
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
-      mode: NULLABLE
-  - name: text
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
-      mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -3538,6 +3484,16 @@ fields:
     - name: background_update_reasons_to_not_update
       type: STRING
       mode: REPEATED
+  - name: url
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: search_engine_default_submission_url
+      type: STRING
+      mode: NULLABLE
+    - name: search_engine_private_submission_url
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

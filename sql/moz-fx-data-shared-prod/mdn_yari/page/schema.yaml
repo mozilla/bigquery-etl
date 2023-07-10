@@ -364,6 +364,16 @@ fields:
         expressed as a percentage.
 
         '
+  - name: url
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: page_path
+      type: STRING
+      mode: NULLABLE
+    - name: page_referrer
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

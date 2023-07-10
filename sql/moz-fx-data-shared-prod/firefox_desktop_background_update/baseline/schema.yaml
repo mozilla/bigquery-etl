@@ -241,16 +241,6 @@ fields:
     - name: raw_glean_validation_first_run_hour
       type: STRING
       mode: NULLABLE
-  - name: jwe
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
-      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -331,30 +321,6 @@ fields:
         \ the last metrics ping)\n- On the baseline ping, the counts include the number\
         \ of pings send since\n  the last baseline ping (including the last baseline\
         \ ping)\n"
-  - name: labeled_rate
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: RECORD
-        mode: NULLABLE
-        fields:
-        - name: denominator
-          type: INTEGER
-          mode: NULLABLE
-        - name: numerator
-          type: INTEGER
-          mode: NULLABLE
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -388,26 +354,6 @@ fields:
       description: 'The duration of the last foreground session.
 
         '
-  - name: url
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
-      mode: NULLABLE
-  - name: text
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
-      mode: NULLABLE
   - name: uuid
     type: RECORD
     mode: NULLABLE

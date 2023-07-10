@@ -35,6 +35,10 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The architecture of the device, (e.g. "arm", "x86").
+  - name: build_date
+    type: STRING
+    mode: NULLABLE
+    description: The date & time the application was built
   - name: client_id
     type: STRING
     mode: NULLABLE
@@ -74,10 +78,6 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The version of the Glean SDK
-  - name: build_date
-    type: STRING
-    mode: NULLABLE
-    description: The date & time the application was built
   - name: windows_build_number
     type: INTEGER
     mode: NULLABLE
@@ -155,6 +155,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -167,14 +175,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -192,20 +192,6 @@ fields:
         type: STRING
         mode: NULLABLE
     description: Headers included in the client's HTTP request
-  - name: user_agent
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: browser
-      type: STRING
-      mode: NULLABLE
-    - name: os
-      type: STRING
-      mode: NULLABLE
-    - name: version
-      type: STRING
-      mode: NULLABLE
-    description: Parsed components of the client's user agent string
   - name: isp
     type: RECORD
     mode: NULLABLE
@@ -224,10 +210,46 @@ fields:
       description: The name of a specific business entity associated with the client's
         IP address when available; otherwise the ISP name
     description: Results of ISP lookup based on the client's IP address
+  - name: user_agent
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+    - name: os
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+    description: Parsed components of the client's user agent string
 - name: metrics
   type: RECORD
   mode: NULLABLE
   fields:
+  - name: datetime
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: session_session_end
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'The time the user ends a VPN session from the app
+
+        '
+    - name: raw_session_session_end
+      type: STRING
+      mode: NULLABLE
+    - name: session_session_start
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'The time the user starts a VPN session from the app
+
+        '
+    - name: raw_session_session_start
+      type: STRING
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -292,6 +314,74 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: session_apps_excluded
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of apps the user is excluding from the VPN tunnel
+
+        '
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: session_dns_type
+      type: STRING
+      mode: NULLABLE
+      description: 'The type of DNS a user has active:
+
+        - NoCustomDNSAvailable: Custom DNS app feature isn''t available
+
+        - Default: App''s default DNS server
+
+        - Custom: User has provided a custom valid IP address for their DNS
+
+        - BlockAds: One of app''s privacy DNS options
+
+        - BlockTrackers: One of app''s privacy DNS options
+
+        - BlockAdsAndTrackers: One of app''s privacy DNS options
+
+        - BlockMalware: One of app''s privacy DNS options
+
+        - BlockMalwareAndAds: One of app''s privacy DNS options
+
+        - BlockMalwareAndTrackers: One of app''s privacy DNS options
+
+        - BlockMalwareAndAdsAndTrackers: One of app''s privacy DNS options
+
+        '
+  - name: uuid
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: session_session_id
+      type: STRING
+      mode: NULLABLE
+      description: 'A unique identifier for each session, shared with the daemon instance
+
+        of Glean. This is used to connect unique VPN sessions across pings, and
+
+        as a safety check on edge cases of VPN activation/deactivation, such as
+
+        a session being started/ended from mobile system settings.
+
+        '
+  - name: counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: session_connection_health_stable_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count of times that the connection health check succeeds.
+
+        Collected only on mobile apps.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
@@ -336,10 +426,10 @@ fields:
         type: RECORD
         mode: NULLABLE
         fields:
-        - name: type
+        - name: enrollment_id
           type: STRING
           mode: NULLABLE
-        - name: enrollment_id
+        - name: type
           type: STRING
           mode: NULLABLE
   - name: ping_type

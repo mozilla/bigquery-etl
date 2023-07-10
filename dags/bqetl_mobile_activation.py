@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_mobile_activation
@@ -65,35 +65,6 @@ with DAG(
         depends_on_past=False,
     )
 
-    firefox_ios_derived__new_profile_activation__v2 = bigquery_etl_query(
-        task_id="firefox_ios_derived__new_profile_activation__v2",
-        destination_table="new_profile_activation_v2",
-        dataset_id="firefox_ios_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="vsabino@mozilla.com",
-        email=[
-            "kignasiak@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-            "vsabino@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=True,
-    )
-
-    with TaskGroup(
-        "firefox_ios_derived__new_profile_activation__v2_external"
-    ) as firefox_ios_derived__new_profile_activation__v2_external:
-        ExternalTaskMarker(
-            task_id="bqetl_analytics_tables__wait_for_firefox_ios_derived__new_profile_activation__v2",
-            external_dag_id="bqetl_analytics_tables",
-            external_task_id="wait_for_firefox_ios_derived__new_profile_activation__v2",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
-        )
-
-        firefox_ios_derived__new_profile_activation__v2_external.set_upstream(
-            firefox_ios_derived__new_profile_activation__v2
-        )
-
     wait_for_baseline_clients_last_seen = ExternalTaskSensor(
         task_id="wait_for_baseline_clients_last_seen",
         external_dag_id="copy_deduplicate",
@@ -144,12 +115,5 @@ with DAG(
         wait_for_baseline_clients_last_seen
     )
     firefox_ios_derived__new_profile_activation__v1.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
-    )
-
-    firefox_ios_derived__new_profile_activation__v2.set_upstream(
-        wait_for_baseline_clients_last_seen
-    )
-    firefox_ios_derived__new_profile_activation__v2.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )

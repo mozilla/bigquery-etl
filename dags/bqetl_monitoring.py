@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_monitoring
@@ -122,6 +122,18 @@ with DAG(
         command=[
             "python",
             "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v1/query.py",
+        ]
+        + ["--date", "{{ ds }}"],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="wichan@mozilla.com",
+        email=["ascholtz@mozilla.com", "wichan@mozilla.com"],
+    )
+
+    monitoring_derived__bigquery_usage__v2 = gke_command(
+        task_id="monitoring_derived__bigquery_usage__v2",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v2/query.py",
         ]
         + ["--date", "{{ ds }}"],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",

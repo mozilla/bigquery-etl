@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_fxa_events
@@ -408,6 +408,19 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+    )
+
+    firefox_accounts_derived__nonprod_fxa_server_events__v1 = bigquery_etl_query(
+        task_id="firefox_accounts_derived__nonprod_fxa_server_events__v1",
+        destination_table="nonprod_fxa_server_events_v1",
+        dataset_id="firefox_accounts_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["dthorn@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        start_date=datetime.datetime(2023, 5, 26, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],

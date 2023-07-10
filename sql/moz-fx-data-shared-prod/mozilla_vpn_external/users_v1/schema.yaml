@@ -8,12 +8,6 @@ fields:
 - name: fxa_uid
   type: STRING
   mode: NULLABLE
-- name: fxa_access_token
-  type: STRING
-  mode: NULLABLE
-- name: fxa_refresh_token
-  type: STRING
-  mode: NULLABLE
 - name: fxa_profile_json
   type: STRING
   mode: NULLABLE

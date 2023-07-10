@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 from fivetran_provider.operators.fivetran import FivetranOperator
 from fivetran_provider.sensors.fivetran import FivetranSensor
@@ -603,7 +603,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=[
-            "external_database_query:STRING: SELECT\n  id,\n  user_id,\n  is_active,\n  mullvad_token,\n  mullvad_account_created_at,\n  mullvad_account_expiration_date,\n  ended_at,\n  created_at,\n  updated_at,\n  type,\n  fxa_last_changed_at,\n  provider,\n  provider_product_id,\n  provider_original_purchase_token,\n  provider_receipt_raw,\n  provider_receipt_json,\n  provider_expiration_date,\n  fxa_migration_note\nFROM subscriptions WHERE DATE(updated_at) = DATE '{{ds}}'"
+            "external_database_query:STRING: SELECT\n  id,\n  user_id,\n  is_active,\n  mullvad_token,\n  mullvad_account_created_at,\n  mullvad_account_expiration_date,\n  ended_at,\n  created_at,\n  updated_at,\n  type,\n  fxa_last_changed_at,\n  fxa_migration_note\nFROM subscriptions WHERE DATE(updated_at) = DATE '{{ds}}'"
         ],
     )
 
@@ -617,7 +617,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=[
-            "external_database_query:STRING: SELECT\n  id,\n  email,\n  fxa_uid,\n  fxa_access_token,\n  fxa_refresh_token,\n  fxa_profile_json,\n  created_at,\n  updated_at,\n  display_name,\n  avatar\nFROM users WHERE DATE(updated_at) = DATE '{{ds}}'"
+            "external_database_query:STRING: SELECT\n  id,\n  email,\n  fxa_uid,\n  fxa_profile_json,\n  created_at,\n  updated_at,\n  display_name,\n  avatar\nFROM users WHERE DATE(updated_at) = DATE '{{ds}}'"
         ],
     )
 
@@ -732,6 +732,18 @@ with DAG(
     stripe_external__invoice_discount__v1 = bigquery_etl_query(
         task_id="stripe_external__invoice_discount__v1",
         destination_table="invoice_discount_v1",
+        dataset_id="stripe_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    stripe_external__invoice_line_item__v1 = bigquery_etl_query(
+        task_id="stripe_external__invoice_line_item__v1",
+        destination_table="invoice_line_item_v1",
         dataset_id="stripe_external",
         project_id="moz-fx-data-shared-prod",
         owner="srose@mozilla.com",
@@ -959,6 +971,31 @@ with DAG(
         )
     )
 
+    subscription_platform_derived__stripe_subscriptions_history__v2 = (
+        bigquery_etl_query(
+            task_id="subscription_platform_derived__stripe_subscriptions_history__v2",
+            destination_table="stripe_subscriptions_history_v2",
+            dataset_id="subscription_platform_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="srose@mozilla.com",
+            email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+            date_partition_parameter=None,
+            depends_on_past=False,
+            task_concurrency=1,
+        )
+    )
+
+    subscription_platform_derived__stripe_subscriptions_revised_changelog__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__stripe_subscriptions_revised_changelog__v1",
+        destination_table="stripe_subscriptions_revised_changelog_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="date",
+        depends_on_past=False,
+    )
+
     wait_for_firefox_accounts_derived__fxa_auth_events__v1 = ExternalTaskSensor(
         task_id="wait_for_firefox_accounts_derived__fxa_auth_events__v1",
         external_dag_id="bqetl_fxa_events",
@@ -1140,10 +1177,6 @@ with DAG(
     )
 
     mozilla_vpn_derived__guardian_apple_events__v1.set_upstream(
-        mozilla_vpn_external__subscriptions__v1
-    )
-
-    mozilla_vpn_derived__guardian_apple_events__v1.set_upstream(
         mozilla_vpn_external__users__v1
     )
 
@@ -1222,6 +1255,8 @@ with DAG(
     stripe_external__invoice__v1.set_upstream(fivetran_stripe_sync_wait)
 
     stripe_external__invoice_discount__v1.set_upstream(fivetran_stripe_sync_wait)
+
+    stripe_external__invoice_line_item__v1.set_upstream(fivetran_stripe_sync_wait)
 
     stripe_external__plan__v1.set_upstream(fivetran_stripe_sync_wait)
 
@@ -1323,4 +1358,20 @@ with DAG(
 
     subscription_platform_derived__stripe_subscriptions_history__v1.set_upstream(
         stripe_external__subscription_item__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions_history__v2.set_upstream(
+        subscription_platform_derived__stripe_subscriptions_revised_changelog__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions_revised_changelog__v1.set_upstream(
+        stripe_external__invoice_line_item__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions_revised_changelog__v1.set_upstream(
+        stripe_external__plan__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions_revised_changelog__v1.set_upstream(
+        subscription_platform_derived__stripe_subscriptions_changelog__v1
     )

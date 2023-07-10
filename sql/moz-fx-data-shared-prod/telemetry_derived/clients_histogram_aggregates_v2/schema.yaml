@@ -60,10 +60,6 @@ fields:
     name: agg_type
     type: STRING
 
-  - mode: NULLABLE
-    name: total_users
-    type: INTEGER
-
   - fields:
     - mode: NULLABLE
       name: key
@@ -71,7 +67,7 @@ fields:
     - mode: NULLABLE
       name: value
       type: INTEGER
-    mode: NULLABLE
+    mode: REPEATED
     name: aggregates
     type: RECORD
   mode: REPEATED

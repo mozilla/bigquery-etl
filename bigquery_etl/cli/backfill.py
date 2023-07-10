@@ -302,7 +302,7 @@ def scheduled(ctx, qualified_table_name, sql_dir, project_id):
 
 
 @backfill.command(
-    help="""Process backfill.yaml with Drafting status that has not yet been processed.
+    help="""Process entry in backfill.yaml with Drafting status that has not yet been processed.
 
     Examples:
 
@@ -310,15 +310,11 @@ def scheduled(ctx, qualified_table_name, sql_dir, project_id):
     # Process backfill entry for specific table
     ./bqetl backfill process moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
 
-    \b
-    # Process entries from all backfill.yaml files if table is not specified
-    ./bqetl backfill process
-
     Use the `--project_id` option to change the project;
     default project_id is `moz-fx-data-shared-prod`.
     """
 )
-@click.argument("qualified_table_name", required=False)
+@click.argument("qualified_table_name")
 @sql_dir_option
 @project_id_option("moz-fx-data-shared-prod")
 @click.option(
@@ -331,13 +327,13 @@ def process(ctx, qualified_table_name, sql_dir, project_id, dry_run):
     """Process backfill entry with drafting status in backfill.yaml file(s)."""
     click.echo("Backfill processing initiated....")
 
-    total_backfills_processed = 0
-
     backfills_to_process_dict = get_backfill_entries_to_process_dict(
         sql_dir, project_id, qualified_table_name
     )
 
-    for qualified_table_name, entry_to_process in backfills_to_process_dict.items():
+    if backfills_to_process_dict:
+        entry_to_process = backfills_to_process_dict[qualified_table_name]
+
         backfill_staging_qualified_table_name = (
             get_backfill_staging_qualified_table_name(
                 qualified_table_name, entry_to_process.entry_date
@@ -346,8 +342,9 @@ def process(ctx, qualified_table_name, sql_dir, project_id, dry_run):
 
         project, dataset, table = qualified_table_name_matching(qualified_table_name)
 
-        # todo: send notification to watcher(s) that backill for file been initiated
         click.echo(f"Processing backfills for {qualified_table_name}:")
+
+        # todo: send notification to watcher(s) that backill for file been initiated
 
         ctx.invoke(
             deploy,
@@ -356,6 +353,7 @@ def process(ctx, qualified_table_name, sql_dir, project_id, dry_run):
             destination_table=backfill_staging_qualified_table_name,
         )
 
+        # in the long-run we should remove the query backfill command and require a backfill entry for all backfills
         ctx.invoke(
             query_backfill,
             name=f"{dataset}.{table}",
@@ -367,12 +365,6 @@ def process(ctx, qualified_table_name, sql_dir, project_id, dry_run):
             dry_run=dry_run,
         )
 
-        total_backfills_processed += 1
-
         # todo: send notification to watcher(s) that backill for file has been completed
 
-    click.echo(
-        f"""
-               \nTotal number of backfill entry processed: {total_backfills_processed}
-               """
-    )
+        click.echo("Backfill processing completed.")

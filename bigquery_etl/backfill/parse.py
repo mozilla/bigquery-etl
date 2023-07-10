@@ -159,21 +159,22 @@ class Backfill:
                 for entry_date, entry in backfills.items():
                     if status is not None and entry["status"].lower() != status.lower():
                         continue
-                        excluded_dates = []
-                        if "excluded_dates" in entry:
-                            excluded_dates = entry["excluded_dates"]
 
-                        backfill = cls(
-                            entry_date=entry_date,
-                            start_date=entry["start_date"],
-                            end_date=entry["end_date"],
-                            excluded_dates=excluded_dates,
-                            reason=entry["reason"],
-                            watchers=entry["watchers"],
-                            status=BackfillStatus[entry["status"].upper()],
-                        )
+                    excluded_dates = []
+                    if "excluded_dates" in entry:
+                        excluded_dates = entry["excluded_dates"]
 
-                        backfill_entries.append(backfill)
+                    backfill = cls(
+                        entry_date=entry_date,
+                        start_date=entry["start_date"],
+                        end_date=entry["end_date"],
+                        excluded_dates=excluded_dates,
+                        reason=entry["reason"],
+                        watchers=entry["watchers"],
+                        status=BackfillStatus[entry["status"].upper()],
+                    )
+
+                    backfill_entries.append(backfill)
 
             except yaml.YAMLError as e:
                 raise ValueError(f"Unable to parse Backfill file {file}") from e

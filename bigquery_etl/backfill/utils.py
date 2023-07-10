@@ -2,7 +2,6 @@
 
 import re
 import sys
-from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List, Tuple
 
@@ -58,7 +57,7 @@ def get_qualified_table_name_to_entries_map_by_project(
     sql_dir, project_id, status=None
 ) -> Dict[str, List[Backfill]]:
     """Return backfill entries from project."""
-    backfills_dict_all: defaultdict = defaultdict(list)
+    backfills_dict: dict = {}
 
     search_path = Path(sql_dir) / project_id
     backfill_files = Path(search_path).rglob(BACKFILL_FILE)
@@ -67,15 +66,11 @@ def get_qualified_table_name_to_entries_map_by_project(
         project, dataset, table = extract_from_query_path(backfill_file)
         qualified_table_name = f"{project}.{dataset}.{table}"
 
-        backfills_dict = {
-            qualified_table_name: get_entries_from_qualified_table_name(
-                sql_dir, qualified_table_name, status
-            )
-        }
+        backfills_dict[qualified_table_name] = get_entries_from_qualified_table_name(
+            sql_dir, qualified_table_name, status
+        )
 
-        backfills_dict_all.update(backfills_dict)
-
-    return backfills_dict_all
+    return backfills_dict
 
 
 def get_backfill_file_from_qualified_table_name(sql_dir, qualified_table_name) -> Path:
@@ -145,11 +140,10 @@ def _validate_workgroup_members(workgroup_access, metadata_filename):
     When workgroup is None, the default (workgroup:mozilla-confidential) will be applied.
     Empty list should return False.
     """
-    # checks if workgroup access is an empty list
-
     valid_workgroup = ["workgroup:mozilla-confidential"]
 
     if workgroup_access is not None:
+        # checks if workgroup access is an empty list
         if not workgroup_access:
             return False
 

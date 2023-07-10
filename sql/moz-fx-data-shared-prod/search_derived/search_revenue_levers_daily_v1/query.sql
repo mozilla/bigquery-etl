@@ -75,7 +75,9 @@ desktop_data_ddg AS (
     SUM(IF(engine IN ('ddg', 'duckduckgo'), ad_click, 0)) AS ddg_ad_click,
     SUM(IF(engine IN ('ddg', 'duckduckgo'), organic, 0)) AS ddg_organic,
     SUM(IF(engine IN ('ddg', 'duckduckgo'), ad_click_organic, 0)) AS ddg_ad_click_organic,
-    SUM(IF(engine IN ('ddg', 'duckduckgo'), search_with_ads_organic, 0)) AS ddg_search_with_ads_organic,
+    SUM(
+      IF(engine IN ('ddg', 'duckduckgo'), search_with_ads_organic, 0)
+    ) AS ddg_search_with_ads_organic,
     SUM(IF(engine IN ('ddg', 'duckduckgo') AND is_sap_monetizable, sap, 0)) AS ddg_monetizable_sap,
     -- in-content probes not available for addon so these metrics although being here will be zero
     COUNT(
@@ -88,7 +90,9 @@ desktop_data_ddg AS (
     SUM(IF(engine IN ('ddg-addon'), ad_click, 0)) AS ddgaddon_ad_click,
     SUM(IF(engine IN ('ddg-addon'), organic, 0)) AS ddgaddon_organic,
     SUM(IF(engine IN ('ddg-addon'), ad_click_organic, 0)) AS ddgaddon_ad_click_organic,
-    SUM(IF(engine IN ('ddg-addon'), search_with_ads_organic, 0)) AS ddgaddon_search_with_ads_organic,
+    SUM(
+      IF(engine IN ('ddg-addon'), search_with_ads_organic, 0)
+    ) AS ddgaddon_search_with_ads_organic,
     SUM(IF(engine IN ('ddg-addon') AND is_sap_monetizable, sap, 0)) AS ddgaddon_monetizable_sap
   FROM
     `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`

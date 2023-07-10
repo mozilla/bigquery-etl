@@ -88,20 +88,7 @@ SELECT
     ) AS labeled_counter,
     metrics.string,
     metrics.timespan,
-    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS jwe,
-    metrics.datetime,
-    CAST(
-      NULL
-      AS
-        ARRAY<
-          STRUCT<
-            key STRING,
-            value ARRAY<STRUCT<key STRING, value STRUCT<denominator INTEGER, numerator INTEGER>>>
-          >
-        >
-    ) AS labeled_rate,
-    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS url,
-    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS text
+    metrics.datetime
   ) AS metrics,
   normalized_app_name,
   normalized_country_code,
@@ -164,11 +151,7 @@ SELECT
     ) AS labeled_counter,
     metrics.string,
     metrics.timespan,
-    metrics.jwe,
-    metrics.datetime,
-    metrics.labeled_rate,
-    metrics.url,
-    metrics.text
+    metrics.datetime
   ) AS metrics,
   normalized_app_name,
   normalized_country_code,

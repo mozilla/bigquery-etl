@@ -277,66 +277,12 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-  - name: jwe
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
-      mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE
     fields:
     - name: startup_timeline_clock_ticks_per_second_v2
       type: INTEGER
-      mode: NULLABLE
-  - name: labeled_rate
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: RECORD
-        mode: NULLABLE
-        fields:
-        - name: denominator
-          type: INTEGER
-          mode: NULLABLE
-        - name: numerator
-          type: INTEGER
-          mode: NULLABLE
-  - name: url
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
-      mode: NULLABLE
-  - name: text
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
       mode: NULLABLE
 - name: normalized_app_name
   type: STRING

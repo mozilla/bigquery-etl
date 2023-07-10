@@ -7150,16 +7150,6 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-  - name: jwe
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
-      mode: NULLABLE
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -7472,53 +7462,6 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-  - name: labeled_rate
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: RECORD
-        mode: NULLABLE
-        fields:
-        - name: denominator
-          type: INTEGER
-          mode: NULLABLE
-        - name: numerator
-          type: INTEGER
-          mode: NULLABLE
-  - name: url
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
-      mode: NULLABLE
-    - name: search_default_engine_search_url
-      type: STRING
-      mode: NULLABLE
-  - name: text
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
-      mode: NULLABLE
   - name: url2
     type: RECORD
     mode: NULLABLE
@@ -7699,6 +7642,13 @@ fields:
     mode: NULLABLE
     fields:
     - name: metrics_shared_prefs_uuid
+      type: STRING
+      mode: NULLABLE
+  - name: url
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: search_default_engine_search_url
       type: STRING
       mode: NULLABLE
 - name: normalized_app_name

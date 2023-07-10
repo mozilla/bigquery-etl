@@ -57,26 +57,7 @@ SELECT
   document_id,
   events,
   metadata,
-  STRUCT(
-    metrics.boolean,
-    metrics.counter,
-    metrics.labeled_counter,
-    metrics.timespan,
-    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS jwe,
-    metrics.quantity,
-    CAST(
-      NULL
-      AS
-        ARRAY<
-          STRUCT<
-            key STRING,
-            value ARRAY<STRUCT<key STRING, value STRUCT<denominator INTEGER, numerator INTEGER>>>
-          >
-        >
-    ) AS labeled_rate,
-    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS url,
-    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS text
-  ) AS metrics,
+  metrics,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

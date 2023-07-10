@@ -13,11 +13,7 @@ SELECT
   document_id,
   events,
   metadata,
-  STRUCT(
-    metrics.labeled_counter,
-    metrics.text2,
-    CAST(NULL AS STRUCT<pocket_spoc_shim STRING>) AS text
-  ) AS metrics,
+  metrics,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -39,11 +35,7 @@ SELECT
   document_id,
   events,
   metadata,
-  STRUCT(
-    metrics.labeled_counter,
-    metrics.text2,
-    CAST(NULL AS STRUCT<pocket_spoc_shim STRING>) AS text
-  ) AS metrics,
+  metrics,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -87,11 +79,7 @@ SELECT
   document_id,
   events,
   metadata,
-  STRUCT(
-    metrics.labeled_counter,
-    metrics.text2,
-    CAST(NULL AS STRUCT<pocket_spoc_shim STRING>) AS text
-  ) AS metrics,
+  metrics,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -113,11 +101,7 @@ SELECT
   document_id,
   events,
   metadata,
-  STRUCT(
-    metrics.labeled_counter,
-    metrics.text2,
-    CAST(NULL AS STRUCT<pocket_spoc_shim STRING>) AS text
-  ) AS metrics,
+  metrics,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

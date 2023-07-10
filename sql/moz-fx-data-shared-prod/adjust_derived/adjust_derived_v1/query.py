@@ -226,7 +226,7 @@ def upload_to_bigquery(csv_data, project, dataset, adjust_app_name, date):
             )
 
             # Table names are based on the app name seen in the Adjust dashboard"
-            destination = f"{project}.{dataset}.adjust_deliverables_v1_${partition}"
+            destination = f"{project}.{dataset}.adjust_deliverables_v1${partition}"
 
             job = client.load_table_from_file(f_csv, destination, job_config=job_config)
 

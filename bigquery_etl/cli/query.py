@@ -41,7 +41,7 @@ from ..cli.utils import (
 )
 from ..dependency import get_dependency_graph
 from ..dryrun import DryRun
-from ..format_sql.format import SKIP as SKIP_FORMAT
+from ..format_sql.format import skip_format
 from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
 from ..metadata.parse_metadata import (
@@ -1345,7 +1345,7 @@ def render(name, sql_dir, output_dir):
             + "\n"
         )
 
-        if not any(s in str(query_file) for s in SKIP_FORMAT):
+        if not any(s in str(query_file) for s in skip_format()):
             rendered_sql = reformat(rendered_sql, trailing_newline=True)
 
         if output_dir:

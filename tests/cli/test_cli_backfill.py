@@ -3,6 +3,7 @@ from datetime import date, timedelta
 from pathlib import Path
 
 import pytest
+import yaml
 from click.testing import CliRunner
 
 from bigquery_etl.backfill.parse import (
@@ -11,6 +12,16 @@ from bigquery_etl.backfill.parse import (
     DEFAULT_WATCHER,
     Backfill,
     BackfillStatus,
+)
+from bigquery_etl.backfill.utils import (
+    BACKFILL_DESTINATION_DATASET,
+    BACKFILL_DESTINATION_PROJECT,
+    get_backfill_file_from_qualified_table_name,
+    get_backfill_staging_qualified_table_name,
+    get_entries_from_qualified_table_name,
+    get_qualified_table_name_to_entries_map_by_project,
+    qualified_table_name_matching,
+    validate_metadata_workgroups,
 )
 from bigquery_etl.cli.backfill import create, info, validate
 
@@ -38,6 +49,27 @@ BACKFILL_YAML_TEMPLATE = (
     "  status: Drafting\n"
 )
 
+VALID_WORKGROUP_ACCESS = [
+    dict(
+        role="roles/bigquery.dataViewer",
+        members=["workgroup:mozilla-confidential"],
+    )
+]
+
+TABLE_METADATA_CONF = {
+    "friendly_name": "test",
+    "description": "test",
+    "owners": ["test@example.org"],
+    "workgroup_access": VALID_WORKGROUP_ACCESS,
+}
+
+DATASET_METADATA_CONF = {
+    "friendly_name": "test",
+    "description": "test",
+    "dataset_base_acl": "derived",
+    "workgroup_access": VALID_WORKGROUP_ACCESS,
+}
+
 
 class TestBackfill:
     @pytest.fixture
@@ -48,6 +80,23 @@ class TestBackfill:
         with runner.isolated_filesystem():
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
             result = runner.invoke(
                 create,
                 [
@@ -74,6 +123,23 @@ class TestBackfill:
     def test_create_backfill_with_invalid_watcher(self, runner):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod/test/test_query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
             invalid_watcher = "test.org"
             result = runner.invoke(
                 create,
@@ -100,6 +166,23 @@ class TestBackfill:
     ):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod/test/test_query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
             invalid_start_date = "2021-05-01"
             result = runner.invoke(
                 create,
@@ -117,6 +200,23 @@ class TestBackfill:
     ):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod/test/test_query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
             invalid_exclude_date = "2021-03-01"
             result = runner.invoke(
                 create,
@@ -132,6 +232,22 @@ class TestBackfill:
     def test_create_backfill_with_excluded_dates_after_end_date(self, runner):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod/test/test_query_v1")
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
             invalid_exclude_date = "2021-07-01"
             result = runner.invoke(
                 create,
@@ -149,6 +265,22 @@ class TestBackfill:
         with runner.isolated_filesystem():
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
             result = runner.invoke(
                 create,
                 [
@@ -178,6 +310,22 @@ class TestBackfill:
         with runner.isolated_filesystem():
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
 
             backfill_entry_1 = Backfill(
                 date(2021, 5, 3),
@@ -231,6 +379,22 @@ class TestBackfill:
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
 
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
             backfill_file = Path(SQL_DIR) / BACKFILL_FILE
             backfill_file.write_text(BACKFILL_YAML_TEMPLATE)
             assert BACKFILL_FILE in os.listdir(SQL_DIR)
@@ -257,7 +421,7 @@ class TestBackfill:
             assert result.exit_code == 1
             assert (
                 "Qualified table name must be named like: <project>.<dataset>.<table>"
-                in result.output
+                in str(result.exception)
             )
 
     def test_validate_backfill_non_existing_table_name(self, runner):
@@ -279,6 +443,22 @@ class TestBackfill:
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
 
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
             backfill_file = Path(SQL_DIR) / BACKFILL_FILE
             invalid_backfill = BACKFILL_YAML_TEMPLATE.replace(
                 VALID_REASON, DEFAULT_REASON
@@ -299,6 +479,22 @@ class TestBackfill:
         with runner.isolated_filesystem():
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
 
             backfill_file = Path(SQL_DIR) / BACKFILL_FILE
             invalid_reason = ""
@@ -367,6 +563,22 @@ class TestBackfill:
         with runner.isolated_filesystem():
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
 
             backfill_file = Path(SQL_DIR) / BACKFILL_FILE
             invalid_watchers = "  - test@example.org\n" "  - test@example.org\n"
@@ -573,6 +785,22 @@ class TestBackfill:
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
 
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
             backfill_file = Path(SQL_DIR) / BACKFILL_FILE
             duplicate_excluded_dates = "  - 2021-02-03\n" "  - 2021-02-03\n"
             backfill_file.write_text(
@@ -605,6 +833,22 @@ class TestBackfill:
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
 
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
             backfill_file = Path(SQL_DIR) / BACKFILL_FILE
             duplicate_excluded_dates = "  - 2021-02-04\n" "  - 2021-02-03\n"
             backfill_file.write_text(
@@ -635,6 +879,22 @@ class TestBackfill:
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
 
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
             backfill_file = Path(SQL_DIR) / BACKFILL_FILE
             backfill_file.write_text(
                 BACKFILL_YAML_TEMPLATE + "\n"
@@ -662,6 +922,22 @@ class TestBackfill:
         with runner.isolated_filesystem():
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
 
             backfill_file = Path(SQL_DIR) / BACKFILL_FILE
             backfill_file.write_text(
@@ -691,6 +967,22 @@ class TestBackfill:
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
 
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
             backfill_file = Path(SQL_DIR) / BACKFILL_FILE
             backfill_file.write_text(
                 BACKFILL_YAML_TEMPLATE + "\n"
@@ -717,6 +1009,23 @@ class TestBackfill:
         with runner.isolated_filesystem():
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
             qualified_table_name_1 = "moz-fx-data-shared-prod.test.test_query_v1"
 
             backfill_file = Path(SQL_DIR) / BACKFILL_FILE
@@ -735,6 +1044,23 @@ class TestBackfill:
 
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v2"
             os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v2/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v2/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
             qualified_table_name_2 = "moz-fx-data-shared-prod.test.test_query_v2"
 
             result = runner.invoke(
@@ -797,6 +1123,23 @@ class TestBackfill:
         with runner.isolated_filesystem():
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
             qualified_table_name_1 = "moz-fx-data-shared-prod.test.test_query_v1"
 
             backfill_file = Path(SQL_DIR) / BACKFILL_FILE
@@ -815,6 +1158,23 @@ class TestBackfill:
 
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v2"
             os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v2/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v2/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
             qualified_table_name_2 = "moz-fx-data-shared-prod.test.test_query_v2"
 
             result = runner.invoke(
@@ -911,7 +1271,7 @@ class TestBackfill:
             result = runner.invoke(info, [invalid_qualified_table_name])
 
             assert result.exit_code == 1
-            assert "Qualified table name must be named like:" in result.output
+            assert "Qualified table name must be named like:" in str(result.exception)
 
     def test_backfill_info_one_table_invalid_status(self, runner):
         with runner.isolated_filesystem():
@@ -940,3 +1300,470 @@ class TestBackfill:
 
             assert result.exit_code == 2
             assert "Invalid value for '--status'" in result.output
+
+    def test_get_entries_from_qualified_table_name(self, runner):
+        with runner.isolated_filesystem():
+            qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
+            result = runner.invoke(
+                create,
+                [
+                    qualified_table_name,
+                    "--start_date=2021-03-01",
+                ],
+            )
+
+            assert result.exit_code == 0
+            assert BACKFILL_FILE in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+
+            backfill_file = SQL_DIR + "/" + BACKFILL_FILE
+            backfill = Backfill.entries_from_file(backfill_file)[0]
+
+            assert backfill.entry_date == date.today()
+            assert backfill.start_date == date(2021, 3, 1)
+            assert backfill.end_date == date.today()
+            assert backfill.watchers == [DEFAULT_WATCHER]
+            assert backfill.reason == DEFAULT_REASON
+            assert backfill.status == DEFAULT_STATUS
+
+            backfills = get_entries_from_qualified_table_name(
+                "sql", qualified_table_name
+            )
+
+            expected_backfill = Backfill(
+                date.today(),
+                date(2021, 3, 1),
+                date.today(),
+                [],
+                DEFAULT_REASON,
+                [DEFAULT_WATCHER],
+                DEFAULT_STATUS,
+            )
+
+            assert backfills == [expected_backfill]
+
+    def test_get_qualified_table_name_to_entries_map_by_project(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
+            qualified_table_name_1 = "moz-fx-data-shared-prod.test.test_query_v1"
+
+            result = runner.invoke(
+                create,
+                [
+                    qualified_table_name_1,
+                    "--start_date=2021-03-01",
+                ],
+            )
+
+            assert result.exit_code == 0
+            assert BACKFILL_FILE in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+
+            qualified_table_name_2 = "moz-fx-data-shared-prod.test.test_query_v2"
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v2"
+            os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v2/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v2/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
+            result = runner.invoke(
+                create,
+                [
+                    qualified_table_name_2,
+                    "--start_date=2021-03-01",
+                ],
+            )
+
+            assert result.exit_code == 0
+            assert BACKFILL_FILE in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v2"
+            )
+
+            backfills_dict = get_qualified_table_name_to_entries_map_by_project(
+                "sql", "moz-fx-data-shared-prod"
+            )
+
+            expected_backfill = Backfill(
+                date.today(),
+                date(2021, 3, 1),
+                date.today(),
+                [],
+                DEFAULT_REASON,
+                [DEFAULT_WATCHER],
+                DEFAULT_STATUS,
+            )
+
+            assert qualified_table_name_1 in backfills_dict
+            assert backfills_dict[qualified_table_name_1] == [expected_backfill]
+            assert qualified_table_name_2 in backfills_dict
+
+    def test_get_backfill_file_from_qualified_table_name(self, runner):
+        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        actual_backfill_file = get_backfill_file_from_qualified_table_name(
+            "sql", qualified_table_name
+        )
+        expected_backfill_file = Path(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/backfill.yaml"
+        )
+
+        assert actual_backfill_file == expected_backfill_file
+
+    def test_get_backfill_staging_qualified_table_name(self, runner):
+        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        backfill_table_id = "test_query_v1_2023_05_30"
+
+        actual_backfill_staging = get_backfill_staging_qualified_table_name(
+            qualified_table_name, "2023-05-30"
+        )
+        expected_backfill_staging = f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{backfill_table_id}"
+
+        assert actual_backfill_staging == expected_backfill_staging
+
+    def test_validate_metadata_workgroups_valid_workgroups(self, runner):
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/test/test_query_v1")
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            assert "query.sql" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+
+            qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            assert "metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
+            result = validate_metadata_workgroups("sql", qualified_table_name)
+            assert result
+
+    def test_validate_metadata_workgroups_valid_table_workgroup(self, runner):
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/test/test_query_v1")
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            assert "query.sql" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+
+            qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            assert "metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+
+            dataset_metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "dataset_base_acl": "derived",
+                "workgroup_access": None,
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(dataset_metadata_conf))
+
+            assert "dataset_metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test"
+            )
+
+            result = validate_metadata_workgroups("sql", qualified_table_name)
+            assert result
+
+    def test_validate_metadata_workgroups_invalid_table_workgroup(self, runner):
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/test/test_query_v1")
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            assert "query.sql" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+
+            qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+            invalid_workgroup_access = [
+                dict(
+                    role="roles/bigquery.dataViewer",
+                    members=["workgroup:invalid_workgroup"],
+                )
+            ]
+
+            table_metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "workgroup_access": invalid_workgroup_access,
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(table_metadata_conf))
+
+            assert "metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+
+            dataset_metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "dataset_base_acl": "derived",
+                "workgroup_access": None,
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(dataset_metadata_conf))
+
+            assert "dataset_metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test"
+            )
+
+            result = validate_metadata_workgroups("sql", qualified_table_name)
+            assert not result
+
+    def test_validate_metadata_workgroups_invalid_dataset_workgroup(self, runner):
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/test/test_query_v1")
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            assert "query.sql" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+
+            qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+            invalid_workgroup_access = [
+                dict(
+                    role="roles/bigquery.dataViewer",
+                    members=["workgroup:invalid_workgroup"],
+                )
+            ]
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            assert "metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+
+            dataset_metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "dataset_base_acl": "derived",
+                "workgroup_access": invalid_workgroup_access,
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(dataset_metadata_conf))
+
+            assert "dataset_metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test"
+            )
+
+            result = validate_metadata_workgroups("sql", qualified_table_name)
+            assert not result
+
+    def test_validate_metadata_workgroups_table_workgroup_empty_list(self, runner):
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/test/test_query_v1")
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            assert "query.sql" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+
+            qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+            invalid_workgroup_access = []
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "workgroup_access": invalid_workgroup_access,
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(metadata_conf))
+
+            assert "metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+
+            dataset_metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "dataset_base_acl": "derived",
+                "workgroup_access": None,
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(dataset_metadata_conf))
+
+            assert "dataset_metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test"
+            )
+
+            result = validate_metadata_workgroups("sql", qualified_table_name)
+            assert not result
+
+    def test_validate_metadata_workgroups_dataset_workgroup_empty_list(self, runner):
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/test/test_query_v1")
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            assert "query.sql" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+
+            qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+            invalid_workgroup_access = []
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            assert "metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+
+            dataset_metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "dataset_base_acl": "derived",
+                "workgroup_access": invalid_workgroup_access,
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(dataset_metadata_conf))
+
+            assert "dataset_metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test"
+            )
+
+            result = validate_metadata_workgroups("sql", qualified_table_name)
+            assert not result
+
+    def test_qualified_table_name_matching(self, runner):
+        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        project_id, dataset_id, table_id = qualified_table_name_matching(
+            qualified_table_name
+        )
+
+        assert project_id == "moz-fx-data-shared-prod"
+        assert dataset_id == "test"
+        assert table_id == "test_query_v1"
+
+    def test_qualified_table_name_matching_invalid_name(self, runner):
+        with pytest.raises(AttributeError) as e:
+            invalid_name = "test.test_query_v1"
+            qualified_table_name_matching(invalid_name)
+
+        assert "Qualified table name must be named like" in str(e.value)

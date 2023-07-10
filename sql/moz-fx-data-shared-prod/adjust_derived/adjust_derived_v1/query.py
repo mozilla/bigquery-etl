@@ -1,7 +1,6 @@
 """Adjust data - download deliverables, clean and upload to BigQuery."""
 import csv
 import json
-import os
 import tempfile
 from argparse import ArgumentParser
 
@@ -19,9 +18,6 @@ Look here to see the apps we are tracking: https://dash.adjust.com/#/.
 It is important to maintain this list in order for the script to work especially in the case of new apps
 being added to track in Adjust
 """
-
-APP_TOKEN_LIST = os.environ.get("ADJUST_APP_TOKEN_LIST")
-API_TOKEN = os.environ.get("ADJUST_API_TOKEN")
 
 CSV_FIELDS = [
     "date",
@@ -244,18 +240,22 @@ def main():
     """Input data, call functions, get stuff done."""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--date", required=True)
+    parser.add_argument("--adjust_api_token", required=True)
+    parser.add_argument("--adjust_app_list", required=True)
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
     parser.add_argument("--dataset", default="adjust_derived")
 
     args = parser.parse_args()
 
-    app_list = json.loads(APP_TOKEN_LIST)
+    app_list = json.loads(args.adjust_app_list)
 
     # Cycle through the apps to get the relevant kpi data
     for app in app_list:
         print(f'This is data for {app["app_name"]} - {app["app_token"]}')
         # Ping the Adjust URL and get a response
-        json_file = download_adjust_kpi_data(args.date, API_TOKEN, app["app_token"])
+        json_file = download_adjust_kpi_data(
+            args.date, args.api_token, app["app_token"]
+        )
 
         data = []
 

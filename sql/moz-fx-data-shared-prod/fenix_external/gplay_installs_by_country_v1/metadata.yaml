@@ -1,0 +1,22 @@
+friendly_name: Gplay Installs By Country
+description: |-
+  Google Play Store installs, broken down by country.
+  Grain is (date, channel, country_code).
+owners:
+- frank@mozilla.com
+labels:
+  application: firefox_android
+  incremental: false
+  schedule: daily
+scheduling:
+  dag_name: bqetl_fenix_external
+  depends_on_past: false
+  date_partition_parameter: null
+  depends_on:
+  - task_id: play_store_export
+    dag_name: play_store_export
+    execution_delta: 2h
+bigquery:
+  clustering:
+    fields: [channel, date]
+references: {}

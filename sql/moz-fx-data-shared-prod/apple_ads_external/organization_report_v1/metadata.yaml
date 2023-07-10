@@ -1,0 +1,11 @@
+friendly_name: Organization Report (Apple)
+description: |-
+  Each record represents the daily ad performance of each organization.
+owners:
+- kik@mozilla.com
+labels:
+  incremental: false
+scheduling:
+  dag_name: bqetl_fivetran_apple_ads
+  date_partition_parameter: null
+  depends_on_past: false

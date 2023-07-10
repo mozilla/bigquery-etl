@@ -1,4 +1,5 @@
---- User-facing view. Generated via sql_generators.active_users_aggregates.
+--- User-facing view. Generated via sql_generators.active_users.
+--- This view returns Glean data for the full history: https://mozilla-hub.atlassian.net/browse/DENG-970
 CREATE OR REPLACE VIEW
   `{{ project_id }}.{{ app_name }}.active_users_aggregates`
 AS
@@ -14,8 +15,4 @@ SELECT
 FROM
   `{{ project_id }}.{{ app_name }}_derived.active_users_aggregates_v1`
 WHERE
-  (
-    app_name IN ('Focus Android Glean', 'Focus Android Glean BrowserStack')
-    AND submission_date >= '2023-01-01'
-  )
-  OR (app_name IN ('Focus Android') AND submission_date < '2023-01-01')
+  app_name IN ('Focus Android Glean', 'Focus Android Glean BrowserStack')

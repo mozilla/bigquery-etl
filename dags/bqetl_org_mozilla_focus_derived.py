@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_org_mozilla_focus_derived
@@ -40,15 +40,17 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    g_mozilla_focus_beta_derived__additional_deletion_requests__v1 = bigquery_etl_query(
-        task_id="g_mozilla_focus_beta_derived__additional_deletion_requests__v1",
-        destination_table="additional_deletion_requests_v1",
-        dataset_id="org_mozilla_focus_beta_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
+    org_mozilla_focus_beta_derived__additional_deletion_requests__v1 = (
+        bigquery_etl_query(
+            task_id="org_mozilla_focus_beta_derived__additional_deletion_requests__v1",
+            destination_table="additional_deletion_requests_v1",
+            dataset_id="org_mozilla_focus_beta_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="dthorn@mozilla.com",
+            email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+            date_partition_parameter="submission_date",
+            depends_on_past=False,
+        )
     )
 
     org_mozilla_focus_derived__additional_deletion_requests__v1 = bigquery_etl_query(
@@ -62,8 +64,8 @@ with DAG(
         depends_on_past=False,
     )
 
-    ozilla_focus_nightly_derived__additional_deletion_requests__v1 = bigquery_etl_query(
-        task_id="ozilla_focus_nightly_derived__additional_deletion_requests__v1",
+    org_mozilla_focus_nightly_derived__additional_deletion_requests__v1 = bigquery_etl_query(
+        task_id="org_mozilla_focus_nightly_derived__additional_deletion_requests__v1",
         destination_table="additional_deletion_requests_v1",
         dataset_id="org_mozilla_focus_nightly_derived",
         project_id="moz-fx-data-shared-prod",
@@ -85,7 +87,7 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    g_mozilla_focus_beta_derived__additional_deletion_requests__v1.set_upstream(
+    org_mozilla_focus_beta_derived__additional_deletion_requests__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
@@ -93,6 +95,6 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
-    ozilla_focus_nightly_derived__additional_deletion_requests__v1.set_upstream(
+    org_mozilla_focus_nightly_derived__additional_deletion_requests__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )

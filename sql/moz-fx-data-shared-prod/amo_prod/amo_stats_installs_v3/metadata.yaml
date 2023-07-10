@@ -8,7 +8,7 @@ description: >
   and addon_id values are sometimes too long. The AMO stats application
   looks up records in this table based on the hashed_addon_id.
 owners:
-  - jklukas@mozilla.com
+  - kik@mozilla.com
 labels:
   application: amo
   incremental: true

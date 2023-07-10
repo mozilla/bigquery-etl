@@ -36,7 +36,7 @@ fields:
   description: TRUE = has opted-out (exclude them from email sends)\
    FALSE = can send emails
 
-- mode: STRING
+- mode: NULLABLE
   name: email_lang
   type: STRING
   description: preferred email language
@@ -59,7 +59,7 @@ fields:
 
 - mode: NULLABLE
   name: fxa_created_date
-  type: DATETIME
+  type: DATE
   description: records the date/time a subscriber created a Firefox account
 
 - mode: NULLABLE

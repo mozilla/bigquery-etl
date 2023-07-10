@@ -10,7 +10,7 @@ import cattrs
 import yaml
 from google.cloud import bigquery
 
-from bigquery_etl.query_scheduling.utils import is_email_or_github_identity
+from bigquery_etl.query_scheduling.utils import is_email, is_email_or_github_identity
 
 METADATA_FILE = "metadata.yaml"
 DATASET_METADATA_FILE = "dataset_metadata.yaml"
@@ -117,7 +117,8 @@ class WorkgroupAccessMetadata:
 class ExternalDataFormat(enum.Enum):
     """Represents the external types fo data that are supported to be integrated."""
 
-    GOOGLE_SHEET = "google_sheet"
+    GOOGLE_SHEETS = "google_sheets"
+    CSV = "csv"
 
 
 @attr.s(auto_attribs=True)
@@ -255,11 +256,12 @@ class Metadata:
 
                 if "owners" in metadata:
                     owners = metadata["owners"]
-                    for i, owner in enumerate(metadata["owners"]):
+                    owner_idx = 1
+                    for owner in filter(is_email, owners):
                         label = owner.split("@")[0]
-                        if not Metadata.is_valid_label(label):
-                            label = ""
-                        labels[f"owner{i+1}"] = label
+                        if Metadata.is_valid_label(label):
+                            labels[f"owner{owner_idx}"] = label
+                            owner_idx += 1
 
                 if "schema" in metadata:
                     converter = cattrs.BaseConverter()

@@ -85,7 +85,7 @@ enumerated_build_hours AS (
       GENERATE_TIMESTAMP_ARRAY(
         TIMESTAMP_SUB(
           TIMESTAMP_TRUNC(CAST(@submission_date AS timestamp), HOUR),
-          INTERVAL 14 + 2 DAY
+          INTERVAL(14 + 2) DAY
         ),
         TIMESTAMP_TRUNC(CAST(@submission_date AS timestamp), HOUR),
         INTERVAL 1 HOUR

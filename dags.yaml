@@ -37,9 +37,9 @@ bqetl_amo_stats:
     See the [post on the Add-Ons Blog](https://blog.mozilla.org/addons/2020/06/10/improvements-to-statistics-processing-on-amo/).
   # yamllint enable rule:line-length
   default_args:
-    owner: jklukas@mozilla.com
+    owner: kik@mozilla.com
     start_date: "2020-06-01"
-    email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "kik@mozilla.com"]
     retries: 2
     retry_delay: 30m
   tags:
@@ -51,9 +51,9 @@ bqetl_core:
     Tables derived from the legacy telemetry `core` ping sent by various
     mobile applications.
   default_args:
-    owner: jklukas@mozilla.com
+    owner: ascholtz@mozilla.com
     start_date: "2019-07-25"
-    email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "ascholtz@mozilla.com"]
     retries: 1
     retry_delay: 5m
   tags:
@@ -62,7 +62,7 @@ bqetl_core:
 bqetl_nondesktop:
   schedule_interval: 0 3 * * *
   default_args:
-    owner: "jklukas@mozilla.com"
+    owner: "ascholtz@mozilla.com"
     start_date: "2019-07-25"
     email: [
       "telemetry-alerts@mozilla.com",
@@ -190,9 +190,9 @@ bqetl_activity_stream:
     namespace by desktop Firefox. These are largely related to activity
     on the newtab page and engagement with Pocket content.
   default_args:
-    owner: jklukas@mozilla.com
+    owner: anicholson@mozilla.com
     start_date: "2019-07-25"
-    email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "anicholson@mozilla.com"]
     retries: 1
     retry_delay: 5m
   tags:
@@ -220,9 +220,11 @@ bqetl_addons:
 
     Depends on `bqetl_search`, so is scheduled after that DAG.
   default_args:
-    owner: jklukas@mozilla.com
+    owner: kik@mozilla.com
     start_date: "2018-11-27"
-    email: ["telemetry-alerts@mozilla.com"]
+    email:
+      - "telemetry-alerts@mozilla.com"
+      - "kik@mozilla.com"
     retries: 2
     retry_delay: 30m
   tags:
@@ -233,9 +235,9 @@ bqetl_devtools:
   description: |
     Summarizes usage of the Dev Tools component of desktop Firefox.
   default_args:
-    owner: jklukas@mozilla.com
+    owner: ascholtz@mozilla.com
     start_date: "2018-11-27"
-    email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "ascholtz@mozilla.com"]
     retries: 2
     retry_delay: 30m
   tags:
@@ -475,12 +477,12 @@ bqetl_search_dashboard:
 bqetl_desktop_platform:
   schedule_interval: 0 3 * * *
   default_args:
-    owner: jklukas@mozilla.com
+    owner: ascholtz@mozilla.com
     start_date: "2018-11-01"
     email:
       [
         "telemetry-alerts@mozilla.com",
-        "jklukas@mozilla.com",
+        "ascholtz@mozilla.com",
         "yzenevich@mozilla.com",
       ]
     retries: 2
@@ -525,11 +527,11 @@ bqetl_pocket:
   default_args:
     depends_on_past: false
     email:
-      - jklukas@mozilla.com
+      - kik@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
-    owner: jklukas@mozilla.com
+    owner: kik@mozilla.com
     # Retry more than normal because the files from Pocket may not always be available on time.
     retries: 10
     retry_delay: 60m
@@ -565,12 +567,12 @@ bqetl_firefox_ios:
   default_args:
     depends_on_past: false
     email:
-      - amiyaguchi@mozilla.com
+      - kik@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: amiyaguchi@mozilla.com
+    owner: kik@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: "2021-03-18"
@@ -1042,3 +1044,98 @@ bqetl_status_check:
   schedule_interval: "1h"
   tags:
     - impact/tier_1
+
+
+bqetl_adjust:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - mhirose@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: mhirose@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-07-06'
+  description: |
+    Derived tables built on Adjust data downloaded from https://api.adjust.com/kpis/v1/<app_token>
+    Using mhirose's API token - no Adjust API token for service accounts, just users.
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_2
+    - repo/bigquery-etl
+
+bqetl_download_funnel_attribution:
+  description: Daily aggregations of data exported from Google Analytics joined with Firefox download data.
+  default_args:
+    depends_on_past: false
+    email:
+      - gleonard@mozilla.com
+      - telemetry-alerts@mozilla.com
+    end_date: null
+    owner: gleonard@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-04-10'
+  schedule_interval: 0 23 * * *
+  tags:
+    - impact/tier_1
+
+bqetl_fenix_external:
+  schedule_interval: 0 2 * * *
+  default_args:
+    depends_on_past: false
+    email:
+      - frank@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    owner: frank@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: "2023-05-07"
+  tags:
+    - impact/tier_1
+    - repo/bigquery-etl
+bqetl_fivetran_apple_ads:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - frank@mozilla.com
+      - kik@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: kik@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-05-25'
+  description: |
+    Copies over apple_ads data coming from Fivetran
+    into our data BQ project. Fivetran syncs this data
+    every hour. We copy the data every 3 hours to our project.
+  schedule_interval: 0 3 * * *
+  tags:
+    - impact/tier_2
+bqetl_fivetran_copied_tables:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - frank@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: frank@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-07-04'
+  description: |
+    Copy over Fivetran data to shared-prod.
+  schedule_interval: 0 3 * * *
+  tags:
+    - impact/tier_2

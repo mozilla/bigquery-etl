@@ -15,6 +15,9 @@ from .tokenizer import (
     ExpressionSeparator,
     FieldAccessOperator,
     Identifier,
+    JinjaBlockEnd,
+    JinjaBlockStart,
+    JinjaBlockStatement,
     JinjaComment,
     JinjaExpression,
     JinjaStatement,
@@ -71,6 +74,10 @@ def simple_format(tokens, indent="  "):
             while indent_types and indent_types.pop() is not BlockKeyword:
                 pass
             prev_was_statement_separator = False
+        elif isinstance(token, JinjaBlockEnd):
+            # decrease indent to match last JinjaBlockStart
+            while indent_types and indent_types.pop() is not JinjaBlockStart:
+                pass
         elif isinstance(token, CaseSubclause):
             if token.value.upper() in ("WHEN", "ELSE"):
                 # Have WHEN and ELSE clauses indented one level more than CASE.
@@ -96,7 +103,10 @@ def simple_format(tokens, indent="  "):
                 yield Whitespace("\n")
         elif (
             require_newline_before_next_token
-            or isinstance(token, (NewlineKeyword, ClosingBracket, BlockKeyword))
+            or isinstance(
+                token,
+                (NewlineKeyword, ClosingBracket, BlockKeyword, JinjaBlockStatement),
+            )
             or prev_was_statement_separator
         ):
             if prev_was_statement_separator:
@@ -159,6 +169,9 @@ def simple_format(tokens, indent="  "):
         elif isinstance(token, BlockStartKeyword):
             # increase indent
             indent_types.append(BlockKeyword)
+        elif isinstance(token, JinjaBlockStart):
+            # increase indent
+            indent_types.append(JinjaBlockStart)
         elif isinstance(token, (TopLevelKeyword, OpeningBracket, CaseSubclause)):
             # increase indent
             indent_types.append(type(token))

@@ -182,6 +182,16 @@ class View:
 
         return extract_table_references(self.content)
 
+    @cached_property
+    def udf_references(self):
+        """List of UDF references in this view."""
+        from bigquery_etl.routine.parse_routine import routine_usages_in_text
+
+        # routine_usages_in_text automatically includes mozfun UDFs
+        return routine_usages_in_text(
+            self.content, Path(self.path).parent.parent.parent
+        )
+
     def _valid_fully_qualified_references(self):
         """Check that referenced tables and views are fully qualified."""
         for table in self.table_references:
@@ -343,6 +353,12 @@ class View:
                     print(f"Could not update field descriptions for {target_view}: {e}")
 
                 table = client.get_table(target_view)
+                if not self.metadata:
+                    print(f"Missing metadata for {self.path}")
+
+                table.description = self.metadata.description
+                table.friendly_name = self.metadata.friendly_name
+
                 if table.labels != self.labels:
                     labels = self.labels.copy()
                     for key in table.labels:
@@ -354,7 +370,11 @@ class View:
                         for key, value in labels.items()
                         if isinstance(value, str)
                     }
-                    client.update_table(table, ["labels"])
+                    client.update_table(
+                        table, ["labels", "description", "friendly_name"]
+                    )
+                else:
+                    client.update_table(table, ["description", "friendly_name"])
 
                 print(f"Published view {target_view}")
         else:

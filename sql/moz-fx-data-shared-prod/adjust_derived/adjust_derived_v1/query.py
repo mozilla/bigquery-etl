@@ -254,7 +254,7 @@ def main():
         print(f'This is data for {app["app_name"]} - {app["app_token"]}')
         # Ping the Adjust URL and get a response
         json_file = download_adjust_kpi_data(
-            args.date, args.api_token, app["app_token"]
+            args.date, args.adjust_api_token, app["app_token"]
         )
 
         data = []

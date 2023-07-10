@@ -1,11 +1,14 @@
 """bigquery-etl CLI backfill command."""
 
+import subprocess
 import sys
 import tempfile
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 import click
 import yaml
+from google.cloud import bigquery
+from google.cloud.exceptions import NotFound
 
 from ..backfill.parse import (
     BACKFILL_FILE,
@@ -15,6 +18,8 @@ from ..backfill.parse import (
     BackfillStatus,
 )
 from ..backfill.utils import (
+    BACKFILL_DESTINATION_DATASET,
+    BACKFILL_DESTINATION_PROJECT,
     get_backfill_entries_to_process_dict,
     get_backfill_file_from_qualified_table_name,
     get_backfill_staging_qualified_table_name,
@@ -30,7 +35,7 @@ from ..backfill.validate import (
 )
 from ..cli.query import backfill as query_backfill
 from ..cli.query import deploy
-from ..cli.utils import project_id_option, sql_dir_option
+from ..cli.utils import is_authenticated, project_id_option, sql_dir_option
 
 
 @click.group(help="Commands for managing backfills.")
@@ -307,6 +312,7 @@ def scheduled(ctx, qualified_table_name, sql_dir, project_id):
     Examples:
 
     \b
+
     # Process backfill entry for specific table
     ./bqetl backfill process moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
 
@@ -368,3 +374,142 @@ def process(ctx, qualified_table_name, sql_dir, project_id, dry_run):
         # todo: send notification to watcher(s) that backill for file has been completed
 
         click.echo("Backfill processing completed.")
+
+
+@backfill.command(
+    help="""Complete entry in backfill.yaml with Validated status.
+
+    Examples:
+
+    \b
+
+    # Complete backfill entry for specific table
+    ./bqetl backfill complete moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+
+    Use the `--project_id` option to change the project;
+    default project_id is `moz-fx-data-shared-prod`.
+    """
+)
+@click.argument("qualified_table_name")
+@sql_dir_option
+@project_id_option("moz-fx-data-shared-prod")
+@click.pass_context
+def complete(ctx, qualified_table_name, sql_dir, project_id):
+    """Complete backfill entry in backfill.yaml file(s)."""
+    if not is_authenticated():
+        click.echo(
+            "Authentication to GCP required. Run `gcloud auth login` "
+            "and check that the project is set correctly."
+        )
+        sys.exit(1)
+    client = bigquery.Client(project=project_id)
+
+    entries = get_entries_from_qualified_table_name(
+        sql_dir, qualified_table_name, BackfillStatus.VALIDATED.value
+    )
+
+    if not entries:
+        click.echo(f"No backfill to complete for table: {qualified_table_name} ")
+        sys.exit(1)
+    elif len(entries) > 1:
+        click.echo(
+            f"There should not be more than one entry in backfill.yaml file with status: {BackfillStatus.VALIDATED} "
+        )
+        sys.exit(1)
+
+    entry_to_complete = entries[0]
+    click.echo(
+        f"Completing backfill for {qualified_table_name} with entry date {entry_to_complete.entry_date}:"
+    )
+
+    backfill_staging_qualified_table_name = get_backfill_staging_qualified_table_name(
+        qualified_table_name, entry_to_complete.entry_date
+    )
+
+    # do not complete backfill when staging table does not exist
+    try:
+        client.get_table(backfill_staging_qualified_table_name)
+    except NotFound:
+        click.echo(
+            f"""
+            Backfill staging table does not exists for {qualified_table_name}:"
+            {backfill_staging_qualified_table_name}
+            """
+        )
+        sys.exit(1)
+
+    project, dataset, table = qualified_table_name_matching(qualified_table_name)
+
+    _clone_table(qualified_table_name, entry_to_complete.entry_date, client)
+
+    # copy backfill data to production data
+    start_date = entry_to_complete.start_date
+    end_date = entry_to_complete.end_date
+    dates = [start_date + timedelta(i) for i in range((end_date - start_date).days + 1)]
+
+    backfill_table_id = f"{table}_{entry_to_complete.entry_date}".replace("-", "_")
+
+    for backfill_date in dates:
+        partition = backfill_date.strftime("%Y%m%d")
+        if backfill_date not in entry_to_complete.excluded_dates:
+            cp_query_arguments = ["cp"]
+            cp_query_arguments.append("-f")
+            cp_query_arguments.append(
+                f"{BACKFILL_DESTINATION_PROJECT}:{BACKFILL_DESTINATION_DATASET}.{backfill_table_id}${partition}"
+            )
+            cp_query_arguments.append(f"{project}:{dataset}.{table}${partition}")
+            subprocess.check_call(["bq"] + cp_query_arguments)
+
+    # delete backfill staging table
+    client.delete_table(backfill_staging_qualified_table_name)
+    click.echo(
+        f"Backfill staging table deleted: {backfill_staging_qualified_table_name}"
+    )
+
+    click.echo(
+        f"Completed backfill for {qualified_table_name} with entry date {entry_to_complete.entry_date}:"
+    )
+
+
+def _clone_table(qualified_table_name: str, entry_date: str, client) -> None:
+    """Clone table with given name."""
+    project, dataset, table = qualified_table_name_matching(qualified_table_name)
+
+    # check if clone table already exists
+    cloned_table_id = f"{table}_cloned_{entry_date}".replace("-", "_")
+    cloned_table_full_name = f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
+
+    try:
+        client.get_table(cloned_table_full_name)
+        click.echo(
+            f"""
+                Cloned table already exists for {qualified_table_name}:"
+                {cloned_table_full_name}
+                """
+        )
+        sys.exit(1)
+    except NotFound:
+        # clone production table
+        clone_query_arguments = ["cp"]
+        clone_query_arguments.append("--clone")
+        clone_query_arguments.append("-n")
+        clone_query_arguments.append(f"{project}:{dataset}.{table}")
+        clone_query_arguments.append(
+            f"{BACKFILL_DESTINATION_PROJECT}:{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
+        )
+        subprocess.check_call(["bq"] + clone_query_arguments)
+
+    # confirm that production table was cloned
+    try:
+        cloned_table = client.get_table(cloned_table_full_name)
+        # set expiration date of cloned table to 30 days
+        cloned_table.expires = datetime.now() + timedelta(days=30)
+        client.update_table(cloned_table, ["expires"])
+    except NotFound:
+        click.echo(
+            f"""
+                Cloned table do not exist for {qualified_table_name}:"
+                {cloned_table_full_name}
+                """
+        )
+        sys.exit(1)

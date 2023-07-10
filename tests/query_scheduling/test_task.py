@@ -757,6 +757,34 @@ class TestTask:
         assert task.depends_on[1].task_id == "external_task2"
         assert task.depends_on[1].execution_delta == "15m"
 
+    def test_task_trigger_rule(self):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        task = Task(
+            dag_name="bqetl_test_dag",
+            owner="test@example.org",
+            query_file=str(query_file),
+            trigger_rule="all_success",
+        )
+
+        assert task.trigger_rule == "all_success"
+
+        with pytest.raises(ValueError, match=r"Invalid trigger rule an_invalid_rule"):
+            assert Task(
+                dag_name="bqetl_test_dag",
+                owner="test@example.org",
+                query_file=str(query_file),
+                trigger_rule="an_invalid_rule",
+            )
+
     def test_task_ref(self):
         task_ref = TaskRef(dag_name="test_dag", task_id="task")
 

@@ -51,7 +51,13 @@ with DAG(
             "python",
             "sql/moz-fx-data-shared-prod/adjust_derived/adjust_derived_v1/query.py",
         ]
-        + ["--date", "{{ ds }}"],
+        + [
+            "--date",
+            "{{ ds }}," "--adjust_api_token",
+            "{{ var.value.ADJUST_API_TOKEN }}",
+            "--adjust_app_list",
+            "{{ var.value.ADJUST_APP_TOKEN_LIST }}",
+        ],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="mhirose@mozilla.com",
         email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],

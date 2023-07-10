@@ -418,3 +418,7 @@ fields:
   - name: totalSplits
     type: INTEGER
     mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: DO NOT USE! This column was added accidentally and isn't populated.

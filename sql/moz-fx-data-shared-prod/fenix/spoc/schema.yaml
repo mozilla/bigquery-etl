@@ -233,6 +233,13 @@ fields:
     - name: pocket_spoc_shim
       type: STRING
       mode: NULLABLE
+  - name: text
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: pocket_spoc_shim
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

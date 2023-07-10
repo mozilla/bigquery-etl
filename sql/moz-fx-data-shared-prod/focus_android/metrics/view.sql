@@ -10,7 +10,34 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    metrics.boolean,
+    metrics.counter,
+    metrics.datetime,
+    metrics.labeled_counter,
+    metrics.memory_distribution,
+    metrics.string,
+    metrics.quantity,
+    metrics.custom_distribution,
+    metrics.timespan,
+    metrics.timing_distribution,
+    metrics.labeled_boolean,
+    metrics.rate,
+    metrics.uuid,
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS jwe,
+    CAST(
+      NULL
+      AS
+        ARRAY<
+          STRUCT<
+            key STRING,
+            value ARRAY<STRUCT<key STRING, value STRUCT<denominator INTEGER, numerator INTEGER>>>
+          >
+        >
+    ) AS labeled_rate,
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS text,
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS url
+  ) AS metrics,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -87,7 +114,6 @@ SELECT
       metrics.counter.translations_requests_count
     ) AS counter,
     metrics.datetime,
-    metrics.jwe,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
       metrics.labeled_counter.glean_error_invalid_label,
@@ -149,7 +175,6 @@ SELECT
       metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries,
       metrics.labeled_counter.pwmgr_form_autofill_result
     ) AS labeled_counter,
-    metrics.labeled_rate,
     metrics.memory_distribution,
     STRUCT(
       metrics.string.browser_default_search_engine,
@@ -161,15 +186,17 @@ SELECT
       metrics.string.geckoview_validation_version,
       metrics.string.blocklist_mlbf_source
     ) AS string,
-    metrics.url,
-    metrics.text,
     metrics.quantity,
     metrics.custom_distribution,
     metrics.timespan,
     metrics.timing_distribution,
     metrics.labeled_boolean,
     metrics.rate,
-    metrics.uuid
+    metrics.uuid,
+    metrics.jwe,
+    metrics.labeled_rate,
+    metrics.text,
+    metrics.url
   ) AS metrics,
   normalized_app_name,
   normalized_country_code,
@@ -247,7 +274,6 @@ SELECT
       metrics.counter.translations_requests_count
     ) AS counter,
     metrics.datetime,
-    metrics.jwe,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
       metrics.labeled_counter.glean_error_invalid_label,
@@ -309,7 +335,6 @@ SELECT
       metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries,
       metrics.labeled_counter.pwmgr_form_autofill_result
     ) AS labeled_counter,
-    metrics.labeled_rate,
     metrics.memory_distribution,
     STRUCT(
       metrics.string.browser_default_search_engine,
@@ -321,15 +346,17 @@ SELECT
       metrics.string.geckoview_validation_version,
       metrics.string.blocklist_mlbf_source
     ) AS string,
-    metrics.url,
-    metrics.text,
     metrics.quantity,
     metrics.custom_distribution,
     metrics.timespan,
     metrics.timing_distribution,
     metrics.labeled_boolean,
     metrics.rate,
-    metrics.uuid
+    metrics.uuid,
+    metrics.jwe,
+    metrics.labeled_rate,
+    metrics.text,
+    metrics.url
   ) AS metrics,
   normalized_app_name,
   normalized_country_code,

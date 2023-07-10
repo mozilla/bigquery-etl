@@ -35,7 +35,27 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    metrics.counter,
+    metrics.datetime,
+    metrics.labeled_counter,
+    metrics.labeled_string,
+    metrics.string,
+    metrics.uuid,
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS jwe,
+    CAST(
+      NULL
+      AS
+        ARRAY<
+          STRUCT<
+            key STRING,
+            value ARRAY<STRUCT<key STRING, value STRUCT<denominator INTEGER, numerator INTEGER>>>
+          >
+        >
+    ) AS labeled_rate,
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS url,
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS text
+  ) AS metrics,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -91,10 +111,19 @@ SELECT
     metrics.labeled_string,
     metrics.string,
     metrics.uuid,
-    metrics.jwe,
-    metrics.labeled_rate,
-    metrics.url,
-    metrics.text
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS jwe,
+    CAST(
+      NULL
+      AS
+        ARRAY<
+          STRUCT<
+            key STRING,
+            value ARRAY<STRUCT<key STRING, value STRUCT<denominator INTEGER, numerator INTEGER>>>
+          >
+        >
+    ) AS labeled_rate,
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS url,
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS text
   ) AS metrics,
   normalized_app_name,
   normalized_country_code,

@@ -13,7 +13,34 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    metrics.boolean,
+    metrics.counter,
+    metrics.custom_distribution,
+    metrics.labeled_counter,
+    metrics.quantity,
+    metrics.string,
+    metrics.string_list,
+    metrics.timing_distribution,
+    metrics.jwe,
+    metrics.memory_distribution,
+    metrics.datetime,
+    metrics.timespan,
+    metrics.labeled_rate,
+    (
+      SELECT
+        ARRAY_AGG(
+          STRUCT(url.key, url.value, CAST(NULL AS STRING) AS search_default_engine_search_url)
+        )
+      FROM
+        UNNEST(metrics.url) AS url
+    ) AS url,
+    metrics.text,
+    metrics.url2,
+    metrics.labeled_boolean,
+    metrics.rate,
+    metrics.uuid
+  ) AS metrics,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -140,13 +167,33 @@ SELECT
     metrics.string,
     metrics.string_list,
     metrics.timing_distribution,
-    metrics.jwe,
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS jwe,
     metrics.memory_distribution,
     metrics.datetime,
     metrics.timespan,
-    metrics.labeled_rate,
-    metrics.url,
-    metrics.text,
+    CAST(
+      NULL
+      AS
+        ARRAY<
+          STRUCT<
+            key STRING,
+            value ARRAY<STRUCT<key STRING, value STRUCT<denominator INTEGER, numerator INTEGER>>>
+          >
+        >
+    ) AS labeled_rate,
+    (
+      SELECT
+        ARRAY_AGG(
+          STRUCT(
+            CAST(NULL AS STRING) AS key,
+            CAST(NULL AS STRING) AS value,
+            url.search_default_engine_search_url
+          )
+        )
+      FROM
+        UNNEST(metrics.url) AS url
+    ) AS url,
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS text,
     metrics.url2,
     metrics.labeled_boolean,
     metrics.rate,
@@ -606,13 +653,33 @@ SELECT
       metrics.timing_distribution.networking_dns_renewal_time_for_ttl,
       metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time
     ) AS timing_distribution,
-    metrics.jwe,
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS jwe,
     metrics.memory_distribution,
     metrics.datetime,
     metrics.timespan,
-    metrics.labeled_rate,
-    metrics.url,
-    metrics.text,
+    CAST(
+      NULL
+      AS
+        ARRAY<
+          STRUCT<
+            key STRING,
+            value ARRAY<STRUCT<key STRING, value STRUCT<denominator INTEGER, numerator INTEGER>>>
+          >
+        >
+    ) AS labeled_rate,
+    (
+      SELECT
+        ARRAY_AGG(
+          STRUCT(
+            CAST(NULL AS STRING) AS key,
+            CAST(NULL AS STRING) AS value,
+            url.search_default_engine_search_url
+          )
+        )
+      FROM
+        UNNEST(metrics.url) AS url
+    ) AS url,
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS text,
     metrics.url2,
     metrics.labeled_boolean,
     metrics.rate,
@@ -1086,7 +1153,14 @@ SELECT
     metrics.datetime,
     metrics.timespan,
     metrics.labeled_rate,
-    metrics.url,
+    (
+      SELECT
+        ARRAY_AGG(
+          STRUCT(url.key, url.value, CAST(NULL AS STRING) AS search_default_engine_search_url)
+        )
+      FROM
+        UNNEST(metrics.url) AS url
+    ) AS url,
     metrics.text,
     metrics.url2,
     metrics.labeled_boolean,
@@ -1233,7 +1307,14 @@ SELECT
     metrics.datetime,
     metrics.timespan,
     metrics.labeled_rate,
-    metrics.url,
+    (
+      SELECT
+        ARRAY_AGG(
+          STRUCT(url.key, url.value, CAST(NULL AS STRING) AS search_default_engine_search_url)
+        )
+      FROM
+        UNNEST(metrics.url) AS url
+    ) AS url,
     metrics.text,
     metrics.url2,
     metrics.labeled_boolean,

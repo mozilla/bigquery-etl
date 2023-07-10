@@ -182,16 +182,6 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
-  - name: jwe
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
-      type: STRING
-      mode: NULLABLE
-    - name: value
-      type: STRING
-      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -236,6 +226,26 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+  - name: uuid
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: activation_activation_id
+      type: STRING
+      mode: NULLABLE
+    - name: legacy_ids_client_id
+      type: STRING
+      mode: NULLABLE
+  - name: jwe
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+    - name: value
+      type: STRING
+      mode: NULLABLE
   - name: labeled_rate
     type: RECORD
     mode: REPEATED
@@ -260,7 +270,7 @@ fields:
         - name: numerator
           type: INTEGER
           mode: NULLABLE
-  - name: url
+  - name: text
     type: RECORD
     mode: REPEATED
     fields:
@@ -270,17 +280,7 @@ fields:
     - name: value
       type: STRING
       mode: NULLABLE
-  - name: uuid
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: activation_activation_id
-      type: STRING
-      mode: NULLABLE
-    - name: legacy_ids_client_id
-      type: STRING
-      mode: NULLABLE
-  - name: text
+  - name: url
     type: RECORD
     mode: REPEATED
     fields:

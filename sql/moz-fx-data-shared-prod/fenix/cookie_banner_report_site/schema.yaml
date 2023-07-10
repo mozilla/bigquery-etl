@@ -233,6 +233,13 @@ fields:
     - name: cookie_banners_report_site_domain
       type: STRING
       mode: NULLABLE
+  - name: url
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: cookie_banners_report_site_domain
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

@@ -35,7 +35,22 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    metrics.labeled_counter,
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS jwe,
+    CAST(
+      NULL
+      AS
+        ARRAY<
+          STRUCT<
+            key STRING,
+            value ARRAY<STRUCT<key STRING, value STRUCT<denominator INTEGER, numerator INTEGER>>>
+          >
+        >
+    ) AS labeled_rate,
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS url,
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS text
+  ) AS metrics,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -81,10 +96,19 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_value,
       metrics.labeled_counter.wallpapers_new_wallpaper_applied
     ) AS labeled_counter,
-    metrics.jwe,
-    metrics.labeled_rate,
-    metrics.url,
-    metrics.text
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS jwe,
+    CAST(
+      NULL
+      AS
+        ARRAY<
+          STRUCT<
+            key STRING,
+            value ARRAY<STRUCT<key STRING, value STRUCT<denominator INTEGER, numerator INTEGER>>>
+          >
+        >
+    ) AS labeled_rate,
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS url,
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS text
   ) AS metrics,
   normalized_app_name,
   normalized_country_code,

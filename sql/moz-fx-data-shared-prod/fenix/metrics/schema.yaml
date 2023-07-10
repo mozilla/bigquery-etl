@@ -7506,6 +7506,9 @@ fields:
     - name: value
       type: STRING
       mode: NULLABLE
+    - name: search_default_engine_search_url
+      type: STRING
+      mode: NULLABLE
   - name: text
     type: RECORD
     mode: REPEATED

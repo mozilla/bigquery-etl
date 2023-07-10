@@ -266,6 +266,16 @@ fields:
     - name: top_sites_context_id
       type: STRING
       mode: NULLABLE
+  - name: url
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: top_site_contile_reporting_url
+      type: STRING
+      mode: NULLABLE
+    - name: top_sites_contile_reporting_url
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

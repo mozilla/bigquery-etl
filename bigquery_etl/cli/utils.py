@@ -10,6 +10,7 @@ import click
 from google.auth.exceptions import DefaultCredentialsError
 from google.cloud import bigquery
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.util.common import TempDatasetReference, project_dirs
 
 QUERY_FILE_RE = re.compile(
@@ -20,7 +21,6 @@ CHECKS_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
     r"(?:checks\.sql)$"
 )
-TEST_PROJECT = "bigquery-etl-integration-test"
 MOZDATA = "mozdata"
 PIONEER_NONPROD = "moz-fx-data-pioneer-nonprod"
 PIONEER_PROD = "moz-fx-data-pioneer-prod"
@@ -57,7 +57,7 @@ def is_valid_project(ctx, param, value):
         or value
         in [Path(p).name for p in project_dirs()]
         + [
-            TEST_PROJECT,
+            ConfigLoader.get("default", "test_project"),
             MOZDATA,
             PIONEER_NONPROD,
             PIONEER_PROD,
@@ -149,7 +149,7 @@ sql_dir_option = click.option(
     "--sql-dir",
     help="Path to directory which contains queries.",
     type=click.Path(file_okay=False),
-    default="sql",
+    default=ConfigLoader.get("default", "sql_dir", fallback="sql"),
     callback=is_valid_dir,
 )
 

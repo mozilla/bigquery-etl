@@ -157,7 +157,8 @@ class Backfill:
                 backfills = yaml.load(yaml_stream, Loader=UniqueKeyLoader) or {}
 
                 for entry_date, entry in backfills.items():
-                    if status is None or entry["status"].lower() == status.lower():
+                    if status is not None and entry["status"].lower() != status.lower():
+                        continue
                         excluded_dates = []
                         if "excluded_dates" in entry:
                             excluded_dates = entry["excluded_dates"]

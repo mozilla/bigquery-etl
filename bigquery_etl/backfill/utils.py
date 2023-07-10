@@ -56,7 +56,7 @@ def get_entries_from_qualified_table_name(
 
 def get_qualified_table_name_to_entries_map_by_project(
     sql_dir, project_id, status=None
-) -> defaultdict[str, List[Backfill]]:
+) -> Dict[str, List[Backfill]]:
     """Return backfill entries from project."""
     backfills_dict_all: defaultdict = defaultdict(list)
 

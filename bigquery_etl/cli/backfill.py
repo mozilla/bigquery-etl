@@ -448,7 +448,8 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
     dates = [start_date + timedelta(i) for i in range((end_date - start_date).days + 1)]
 
     backfill_table_id = f"{table}_{entry_to_complete.entry_date}".replace("-", "_")
-
+ 
+    # Replace partitions that have been backfilled
     for backfill_date in dates:
         partition = backfill_date.strftime("%Y%m%d")
         if backfill_date not in entry_to_complete.excluded_dates:

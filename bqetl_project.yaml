@@ -100,6 +100,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/mozilla_vpn_external/subscriptions_v1/query.sql
   - sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v3/query.sql
+  - sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns/view.sql
   - sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql
   - sql/moz-fx-data-shared-prod/mozilla_vpn_external/subscriptions_v1/init.sql
   - sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/init.sql

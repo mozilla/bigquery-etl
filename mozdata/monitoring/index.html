@@ -2959,23 +2959,28 @@ including views on <code>payload_bytes</code> tables</p>
         <td>Yes</td>
     </tr><tr>
         <td>is_paused</td>
-        <td></td>
+        <td>Indicates if the DAG is currently paused</td>
         <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
         <td>has_task_concurrency_limits</td>
-        <td></td>
+        <td>Indicates if DAG has concurrency limit set</td>
         <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
         <td>concurrency</td>
-        <td></td>
+        <td>Cuncerrency settings for the DAG</td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>max_active_runs</td>
-        <td></td>
+        <td>Max number of active DAG runs allowed</td>
         <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>is_active</td>
+        <td>Indicates if the DAG is active</td>
+        <td>Boolean</td>
         <td>Yes</td>
     </tr>
 </table>

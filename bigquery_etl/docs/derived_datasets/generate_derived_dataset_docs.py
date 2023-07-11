@@ -8,6 +8,7 @@ from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dependency import extract_table_references
 from bigquery_etl.metadata.parse_metadata import DatasetMetadata, Metadata
 from bigquery_etl.schema import Schema
+from bigquery_etl.config import ConfigLoader
 
 logging.basicConfig(format="%(levelname)s (%(filename)s:%(lineno)d) - %(message)s")
 
@@ -16,7 +17,6 @@ METADATA_FILE = "metadata.yaml"
 SCHEMA_FILE = "schema.yaml"
 DATASET_METADATA_FILE = "dataset_metadata.yaml"
 README_FILE = "README.md"
-SOURCE_URL = "https://github.com/mozilla/bigquery-etl/blob/generated-sql"
 
 
 def _get_metadata(path, metadata_filename=METADATA_FILE):
@@ -75,20 +75,21 @@ def _get_schema(table_path):
 
 
 def _iter_table_markdown(table_paths, template):
+    source_url = ConfigLoader.get("docs", "source_url")
     for table_path in table_paths:
-        source_urls = {"Source Directory": f"{SOURCE_URL}/{str(table_path)}"}
+        source_urls = {"Source Directory": f"{source_url}/{str(table_path)}"}
 
         referenced_tables = _get_referenced_tables_from_view(table_path)
         if referenced_tables:
             source_urls[
                 "View Definition"
-            ] = f"{SOURCE_URL}/{str(table_path / VIEW_FILE)}"
+            ] = f"{source_url}/{str(table_path / VIEW_FILE)}"
 
         metadata = _get_metadata(table_path)
         if metadata:
             source_urls[
                 "Metadata File"
-            ] = f"{SOURCE_URL}/{str(table_path / METADATA_FILE)}"
+            ] = f"{source_url}/{str(table_path / METADATA_FILE)}"
 
         readme_content = _get_readme_content(table_path)
         schema = _get_schema(table_path)
@@ -101,7 +102,7 @@ def _iter_table_markdown(table_paths, template):
             qualified_table_name=f"{table_path.parent.name}.{table_path.name}",
             source_urls=source_urls,
             referenced_tables=referenced_tables,
-            project_url=f"{SOURCE_URL}/sql",
+            project_url=f"{source_url}/sql",
         )
 
         yield output
@@ -150,7 +151,7 @@ def generate_derived_dataset_docs(out_dir, project_dir):
                 else dataset_path.name,
                 description=dataset_metadata.description if dataset_metadata else None,
                 readme_content=dataset_readme_content,
-                source_url=f"{SOURCE_URL}/{str(dataset_path)}",
+                source_url=f"{ConfigLoader.get('docs', 'source_url')}/{str(dataset_path)}",
             )
 
             dataset_doc.write(dataset_header)

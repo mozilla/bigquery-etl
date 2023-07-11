@@ -360,3 +360,11 @@ schema:
   skip_prefixes:
   - pioneer
   - rally
+
+docs:
+  docs_dir: docs
+  default_projects: 
+  - mozfun
+  - moz-fx-data-shared-prod
+  source_url: https://github.com/mozilla/bigquery-etl/blob/generated-sql
+  edit_url: https://github.com/mozilla/bigquery-etl/edit/generated-sql

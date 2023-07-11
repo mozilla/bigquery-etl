@@ -24,16 +24,15 @@ from dateutil.rrule import MONTHLY, rrule
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
+from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_matching
 from ..cli.format import format
 from ..cli.utils import (
-    QUALIFIED_TABLE_NAME_RE,
     is_authenticated,
     is_valid_project,
     no_dryrun_option,
     parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
-    qualified_table_name_matching,
     respect_dryrun_skip_option,
     sql_dir_option,
     temp_dataset_option,

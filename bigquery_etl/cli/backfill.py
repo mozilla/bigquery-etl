@@ -473,7 +473,7 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
 
 
 def _clone_table(qualified_table_name: str, entry_date: str, client) -> None:
-    """Clone table with given name."""
+    """Clone (previous) production data for backup before swapping stage data into production."""
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
 
     # check if clone table already exists

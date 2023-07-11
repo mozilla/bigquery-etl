@@ -43,6 +43,17 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+    checks__telemetry_derived__ssl_ratios__v1 = bigquery_dq_check(
+        task_id="checks__telemetry_derived__ssl_ratios__v1",
+        source_table="ssl_ratios_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="chutten@mozilla.com",
+        email=["chutten@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
     telemetry_derived__ssl_ratios__v1 = bigquery_etl_query(
         task_id="telemetry_derived__ssl_ratios__v1",
         destination_table="ssl_ratios_v1",
@@ -52,6 +63,10 @@ with DAG(
         email=["chutten@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    checks__telemetry_derived__ssl_ratios__v1.set_upstream(
+        telemetry_derived__ssl_ratios__v1
     )
 
     wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(

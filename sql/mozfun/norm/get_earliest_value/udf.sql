@@ -104,13 +104,7 @@ SELECT
     ),
     norm.get_earliest_value(
       [
-        (
-          STRUCT(
-            CAST('2022-12-14' AS STRING),
-            CAST(NULL AS STRING),
-            DATETIME('2022-12-14')
-          )
-        ),
+        (STRUCT(CAST('2022-12-14' AS STRING), CAST(NULL AS STRING), DATETIME('2022-12-14'))),
         (
           STRUCT(
             CAST('2022-12-13' AS STRING),
@@ -118,13 +112,7 @@ SELECT
             DATETIME('2022-12-13')
           )
         ),
-        (
-          STRUCT(
-            CAST('2022-12-13' AS STRING),
-            CAST('abc' AS STRING),
-            DATETIME('2022-12-13')
-          )
-        )
+        (STRUCT(CAST('2022-12-13' AS STRING), CAST('abc' AS STRING), DATETIME('2022-12-13')))
       ]
     )
   ),

@@ -24,24 +24,23 @@ from dateutil.rrule import MONTHLY, rrule
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
+from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_matching
 from ..cli.format import format
 from ..cli.utils import (
-    QUALIFIED_TABLE_NAME_RE,
     is_authenticated,
     is_valid_project,
     no_dryrun_option,
     parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
-    qualified_table_name_matching,
     respect_dryrun_skip_option,
     sql_dir_option,
     temp_dataset_option,
     use_cloud_function_option,
 )
 from ..dependency import get_dependency_graph
-from ..dryrun import SKIP, DryRun
-from ..format_sql.format import SKIP as SKIP_FORMAT
+from ..dryrun import DryRun
+from ..format_sql.format import skip_format
 from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
 from ..metadata.parse_metadata import (
@@ -1322,17 +1321,30 @@ def render(name, sql_dir, output_dir):
     query_files = paths_matching_name_pattern(name, sql_dir, project_id=None)
     resolved_sql_dir = Path(sql_dir).resolve()
     for query_file in query_files:
+        table_name = query_file.parent.name
+        dataset_id = query_file.parent.parent.name
+        project_id = query_file.parent.parent.parent.name
+
+        jinja_params = {
+            **{
+                "project_id": project_id,
+                "dataset_id": dataset_id,
+                "table_name": table_name,
+            },
+        }
+
         rendered_sql = (
             render_template(
                 query_file.name,
                 template_folder=query_file.parent,
                 templates_dir="",
                 format=False,
+                **jinja_params,
             )
             + "\n"
         )
 
-        if not any(s in str(query_file) for s in SKIP_FORMAT):
+        if not any(s in str(query_file) for s in skip_format()):
             rendered_sql = reformat(rendered_sql, trailing_newline=True)
 
         if output_dir:
@@ -1569,7 +1581,7 @@ def _update_query_schema(
 
     Return True if the schema changed, False if it is unchanged.
     """
-    if respect_dryrun_skip and str(query_file) in SKIP:
+    if respect_dryrun_skip and str(query_file) in DryRun.skipped_files():
         click.echo(f"{query_file} dry runs are skipped. Cannot update schemas.")
         return
 
@@ -1838,7 +1850,7 @@ def deploy(
         )
 
     def _deploy(query_file):
-        if respect_dryrun_skip and str(query_file) in SKIP:
+        if respect_dryrun_skip and str(query_file) in DryRun.skipped_files():
             click.echo(f"{query_file} dry runs are skipped. Cannot validate schemas.")
             return
 

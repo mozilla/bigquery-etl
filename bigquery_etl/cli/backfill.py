@@ -477,7 +477,7 @@ def _clone_table(qualified_table_name: str, entry_date: str, client) -> None:
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
 
     # check if clone table already exists
-    cloned_table_id = f"{table}_cloned_{entry_date}".replace("-", "_")
+    cloned_table_id = f"{table}_backup_{entry_date}".replace("-", "_")
     cloned_table_full_name = f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
 
     try:

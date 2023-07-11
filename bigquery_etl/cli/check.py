@@ -39,6 +39,9 @@ def _build_jinja_parameters(query_args):
                 if param_and_value[0].startswith("--"):
                     parameters[param_and_value[0].strip("--")] = param_and_value[1]
         else:
+            if query_arg == "--dry_run":
+                continue
+
             print(f"parameter {query_arg} will not be used to render Jinja template.")
     return parameters
 
@@ -163,8 +166,15 @@ s    \b
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
+@click.option(
+    "--dry_run",
+    "--dry-run",
+    is_flag=True,
+    default=False,
+    help="To dry run the query to make sure it is valid",
+)
 @click.pass_context
-def run(ctx, name, project_id, sql_dir):
+def run(ctx, name, project_id, sql_dir, dry_run):
     """Run a check."""
     if not is_authenticated():
         click.echo(
@@ -183,6 +193,7 @@ def run(ctx, name, project_id, sql_dir):
         dataset_id,
         table,
         ctx.args,
+        dry_run=dry_run,
     )
 
 
@@ -192,6 +203,7 @@ def _run_check(
     dataset_id,
     table,
     query_arguments,
+    dry_run=False,
 ):
     """Run the check."""
     if checks_file is None:
@@ -202,6 +214,9 @@ def _run_check(
     query_arguments.append("--use_legacy_sql=false")
     if project_id is not None:
         query_arguments.append(f"--project_id={project_id}")
+
+    if dry_run is True:
+        query_arguments.append("--dry_run")
 
     # Convert all the Airflow params to jinja usable dict.
     parameters = _build_jinja_parameters(query_arguments)

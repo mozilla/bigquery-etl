@@ -1,6 +1,10 @@
+default:
+  project: moz-fx-data-shared-prod
+  sql_dir: sql/
+  test_project: bigquery-etl-integration-test
+
 dry_run:
   function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun
-  test_project: bigquery-etl-integration-test
   skip:
   # Access Denied
   - sql/moz-fx-data-shared-prod/account_ecosystem_derived/ecosystem_client_id_lookup_v1/query.sql
@@ -301,3 +305,14 @@ format:
   - sql/moz-fx-data-shared-prod/udf_legacy/date_trunc.sql
   - sql/moz-fx-data-shared-prod/udf_legacy/to_iso8601.sql
   - stored_procedures/safe_crc32_uuid.sql
+
+routine:
+  dependency_dir: udf_js_lib/
+  publish:
+    gcs_bucket: moz-fx-data-prod-bigquery-etl
+    gcs_path: ""
+    skip:
+    - sql/moz-fx-data-shared-prod/udf/main_summary_scalars/udf.sql
+  assert_udf_dir: tests/assert
+  example_dir: examples
+  project: mozfun

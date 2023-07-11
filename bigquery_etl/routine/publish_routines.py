@@ -93,7 +93,7 @@ def skipped_routines():
     """Get skipped routines from config."""
     return {
         file
-        for skip in ConfigLoader.get("dry_run", "skip", fallback=[])
+        for skip in ConfigLoader.get("routine", "publish", "skip", fallback=[])
         for file in glob.glob(
             skip,
             recursive=True,

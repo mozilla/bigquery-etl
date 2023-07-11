@@ -1,7 +1,7 @@
 ---
-friendly_name: Stripe itemized payout reconciliation report
+friendly_name: Stripe itemized tax transactions report
 description: >
-  Import itemized payout reconciliation report from the Stripe API.
+  Import itemized tax transactions report from the Stripe API.
 owners:
   - srose@mozilla.com
 labels:

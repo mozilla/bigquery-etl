@@ -345,28 +345,10 @@ fields:
     mode: NULLABLE
     description: ID of the most recent invoice this subscription has generated.
   - name: metadata
-    type: RECORD
+    type: JSON
     mode: NULLABLE
-    description: Set of key-value pairs attached to the subscription.
-    fields:
-    - name: appliedPromotionCode
-      type: STRING
-      mode: NULLABLE
-      description: Promotion code applied to the subscription (if any).
-    - name: cancelled_for_customer_at
-      type: TIMESTAMP
-      mode: NULLABLE
-      description: When the customer canceled the subscription, if they've done so.
-    - name: plan_change_date
-      type: TIMESTAMP
-      mode: NULLABLE
-      description: The most recent time when the subscription plan was changed (if
-        any).
-    - name: previous_plan_id
-      type: STRING
-      mode: NULLABLE
-      description: ID of the previous plan the customer was subscribed to via this
-        subscription (if any).
+    description: Set of key-value pairs attached to the subscription, stored as a
+      JSON object.
   - name: pending_setup_intent_id
     type: STRING
     mode: NULLABLE

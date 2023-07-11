@@ -739,7 +739,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
-        arguments=["--append_table"],
+        arguments=["--append_table", "--noreplace"],
     )
 
     stripe_external__invoice__v1 = bigquery_etl_query(
@@ -790,6 +790,27 @@ with DAG(
             "--report-type=payout_reconciliation.itemized.5",
             "--table=moz-fx-data-shared-prod.stripe_external.itemized_payout_reconciliation_v5",
             "--time-partitioning-field=automatic_payout_effective_at",
+        ],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        retry_delay=datetime.timedelta(seconds=1800),
+        retries=47,
+        email_on_retry=False,
+    )
+
+    stripe_external__itemized_tax_transactions__v1 = gke_command(
+        task_id="stripe_external__itemized_tax_transactions__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/stripe_external/itemized_tax_transactions_v1/query.py",
+        ]
+        + [
+            "--date={{ ds }}",
+            "--api-key={{ var.value.stripe_api_key }}",
+            "--report-type=tax.transactions.itemized.1",
+            "--table=moz-fx-data-shared-prod.stripe_external.itemized_tax_transactions_v1",
+            "--time-partitioning-field=transaction_date_utc",
         ],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="srose@mozilla.com",

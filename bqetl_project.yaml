@@ -122,6 +122,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_summary/view.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_suggest_v2/query.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_tiles_v2/query.sql
+  - sql/moz-fx-data-shared-prod/contextual_services_derived/suggest_revenue_levers_daily_v1/query.sql
   - sql/moz-fx-data-shared-prod/regrets_reporter_derived/regrets_reporter_summary_v1/*.sql
   - sql/moz-fx-data-shared-prod/mlhackweek_search/**/*.sql
   - sql/moz-fx-data-shared-prod/regrets_reporter_ucs/**/*.sql

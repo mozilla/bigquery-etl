@@ -21,16 +21,7 @@ WITH subscriptions_history AS (
     default_source_id,
     ended_at,
     latest_invoice_id,
-    STRUCT(
-      JSON_VALUE(metadata, '$.appliedPromotionCode') AS appliedPromotionCode,
-      TIMESTAMP_SECONDS(
-        CAST(JSON_VALUE(metadata, '$.cancelled_for_customer_at') AS INT64)
-      ) AS cancelled_for_customer_at,
-      TIMESTAMP_SECONDS(
-        CAST(JSON_VALUE(metadata, '$.plan_change_date') AS INT64)
-      ) AS plan_change_date,
-      JSON_VALUE(metadata, '$.previous_plan_id') AS previous_plan_id
-    ) AS metadata,
+    PARSE_JSON(metadata) AS metadata,
     pending_setup_intent_id,
     start_date,
     status,
@@ -75,10 +66,11 @@ plans AS (
   FROM
     `moz-fx-data-shared-prod`.stripe_external.plan_v1
 ),
-subscriptions_history_with_lead_plan_metadata AS (
+subscriptions_history_with_plan_metadata AS (
   SELECT
     *,
-    LEAD(metadata.previous_plan_id) OVER (
+    JSON_VALUE(metadata.previous_plan_id) AS previous_plan_id,
+    LEAD(JSON_VALUE(metadata.previous_plan_id)) OVER (
       PARTITION BY
         subscription_id
       ORDER BY
@@ -96,12 +88,12 @@ subscriptions_history_with_end_plan_ids AS (
       WHEN subscriptions_history._fivetran_active
         THEN subscription_items.plan_id
       -- A new `previous_plan_id` value means the previous record was the last record with that plan.
-      WHEN subscriptions_history.lead_previous_plan_id IS DISTINCT FROM subscriptions_history.metadata.previous_plan_id
+      WHEN subscriptions_history.lead_previous_plan_id IS DISTINCT FROM subscriptions_history.previous_plan_id
         THEN subscriptions_history.lead_previous_plan_id
       ELSE NULL
     END AS end_plan_id
   FROM
-    subscriptions_history_with_lead_plan_metadata AS subscriptions_history
+    subscriptions_history_with_plan_metadata AS subscriptions_history
   JOIN
     subscription_items
   ON

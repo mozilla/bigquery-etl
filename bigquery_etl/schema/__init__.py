@@ -100,6 +100,7 @@ class Schema:
         add_missing_fields=True,
         attributes: Optional[List[str]] = None,
         ignore_incompatible_fields: bool = False,
+        ignore_missing_fields: bool = False,
     ):
         """Merge another schema into the schema."""
         if "fields" in other.schema and "fields" in self.schema:
@@ -112,6 +113,7 @@ class Schema:
                 add_missing_fields=add_missing_fields,
                 attributes=attributes,
                 ignore_incompatible_fields=ignore_incompatible_fields,
+                ignore_missing_fields=ignore_missing_fields,
             )
 
     def equal(self, other: "Schema") -> bool:

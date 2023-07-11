@@ -28,11 +28,7 @@ default_args = {
     "owner": "mhirose@mozilla.com",
     "start_date": datetime.datetime(2023, 7, 6, 0, 0),
     "end_date": None,
-    "email": [
-        "telemetry-alerts@mozilla.com",
-        "rbaffourawuah@mozilla.com",
-        "mhirose@mozilla.com",
-    ],
+    "email": ["telemetry-alerts@mozilla.com", "mhirose@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -55,12 +51,15 @@ with DAG(
             "python",
             "sql/moz-fx-data-shared-prod/adjust_derived/adjust_derived_v1/query.py",
         ]
-        + ["--date", "{{ ds }}"],
+        + [
+            "--date",
+            "{{ ds }}",
+            "--adjust_api_token",
+            "{{ var.value.ADJUST_API_TOKEN}}",
+            "--adjust_app_list",
+            "{{ var.value.ADJUST_APP_TOKEN_LIST}}",
+        ],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="mhirose@mozilla.com",
-        email=[
-            "mhirose@mozilla.com",
-            "rbaffourawuah@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )

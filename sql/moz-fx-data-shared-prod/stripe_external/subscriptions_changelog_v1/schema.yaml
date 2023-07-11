@@ -138,9 +138,9 @@ fields:
   - name: discount
     type: RECORD
     mode: NULLABLE
-    description: Describes the current discount applied to this subscription, if there
-      is one. When billing, a discount applied to a subscription overrides a discount
-      applied on a customer-wide basis.
+    description: The current discount applied to this subscription, if there is one.
+      When billing, a discount applied to a subscription overrides a discount applied
+      on a customer-wide basis.
     fields:
     - name: id
       type: STRING

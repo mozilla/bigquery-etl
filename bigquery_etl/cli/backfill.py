@@ -1,10 +1,8 @@
 """bigquery-etl CLI backfill command."""
 
-import re
 import sys
 import tempfile
 from datetime import date, datetime
-from pathlib import Path
 
 import click
 import yaml
@@ -16,21 +14,25 @@ from ..backfill.parse import (
     Backfill,
     BackfillStatus,
 )
-from ..backfill.utils import get_backfill_file_to_entries_map
+from ..backfill.utils import (
+    get_backfill_entries_to_process_dict,
+    get_backfill_file_from_qualified_table_name,
+    get_backfill_staging_qualified_table_name,
+    get_entries_from_qualified_table_name,
+    get_qualified_table_name_to_entries_map_by_project,
+    qualified_table_name_matching,
+    validate_metadata_workgroups,
+)
 from ..backfill.validate import (
     validate_duplicate_entry_dates,
     validate_file,
     validate_overlap_dates,
 )
-from ..cli.utils import project_id_option, qualified_table_name_matching, sql_dir_option
-from ..util import extract_from_query_path
-
-QUALIFIED_TABLE_NAME_RE = re.compile(
-    r"(?P<project_id>[a-zA-z0-9_-]+)\.(?P<dataset_id>[a-zA-z0-9_-]+)\.(?P<table_id>[a-zA-z0-9_-]+)"
-)
+from ..cli.query import backfill as query_backfill
+from ..cli.query import deploy
+from ..cli.utils import project_id_option, sql_dir_option
 
 
-# todo: refractor create & validate commands to use backfills_matching_name_pattern method
 @click.group(help="Commands for managing backfills.")
 @click.pass_context
 def backfill(ctx):
@@ -56,7 +58,6 @@ def backfill(ctx):
 )
 @click.argument("qualified_table_name")
 @sql_dir_option
-@project_id_option("moz-fx-data-shared-prod")
 @click.option(
     "--start_date",
     "--start-date",
@@ -92,7 +93,6 @@ def create(
     ctx,
     qualified_table_name,
     sql_dir,
-    project_id,
     start_date,
     end_date,
     exclude,
@@ -102,11 +102,15 @@ def create(
 
     A backfill.yaml file will be created if it does not already exist.
     """
-    backfills_dict = get_backfill_file_to_entries_map(
-        sql_dir, project_id, qualified_table_name
+    if not validate_metadata_workgroups(sql_dir, qualified_table_name):
+        click.echo("Only mozilla-confidential workgroups are supported.")
+        sys.exit(1)
+
+    existing_backfills = get_entries_from_qualified_table_name(
+        sql_dir, qualified_table_name
     )
 
-    backfill = Backfill(
+    new_entry = Backfill(
         entry_date=date.today(),
         start_date=start_date.date(),
         end_date=end_date.date(),
@@ -116,33 +120,21 @@ def create(
         status=BackfillStatus.DRAFTING,
     )
 
-    backfills = []
+    for existing_entry in existing_backfills:
+        validate_duplicate_entry_dates(new_entry, existing_entry)
+        if existing_entry.status == BackfillStatus.DRAFTING:
+            validate_overlap_dates(new_entry, existing_entry)
 
-    if backfills_dict:
-        # There should only be one backfill file with entries
-        backfill_file = list(backfills_dict.keys())[0]
-        entries = backfills_dict[backfill_file]
+    existing_backfills.insert(0, new_entry)
 
-        for entry in entries:
-            validate_duplicate_entry_dates(backfill, entry)
-            if entry.status == BackfillStatus.DRAFTING:
-                validate_overlap_dates(backfill, entry)
-
-        backfills = entries
-
-    else:
-        (project_id, dataset_id, table_id) = qualified_table_name_matching(
-            qualified_table_name
-        )
-
-        path = Path(sql_dir)
-        query_path = path / project_id / dataset_id / table_id
-        backfill_file = query_path / BACKFILL_FILE
-
-    backfills.insert(0, backfill)
+    backfill_file = get_backfill_file_from_qualified_table_name(
+        sql_dir, qualified_table_name
+    )
 
     backfill_file.write_text(
-        "\n".join(backfill.to_yaml() for backfill in sorted(backfills, reverse=True))
+        "\n".join(
+            backfill.to_yaml() for backfill in sorted(existing_backfills, reverse=True)
+        )
     )
 
     click.echo(f"Created backfill entry in {backfill_file}.")
@@ -176,15 +168,33 @@ def validate(
     project_id,
 ):
     """Validate backfill.yaml files."""
-    backfills_dict = get_backfill_file_to_entries_map(
-        sql_dir, project_id, qualified_table_name
-    )
+    if qualified_table_name:
+        backfills_dict = {
+            qualified_table_name: get_entries_from_qualified_table_name(
+                sql_dir, qualified_table_name
+            )
+        }
+    else:
+        backfills_dict = get_qualified_table_name_to_entries_map_by_project(
+            sql_dir, project_id
+        )
 
-    for backfill_file in backfills_dict:
+    for qualified_table_name in backfills_dict:
+        if not validate_metadata_workgroups(sql_dir, qualified_table_name):
+            click.echo(
+                f"Only mozilla-confidential workgroups are supported.  {qualified_table_name} contain workgroup access that is not supported"
+            )
+            sys.exit(1)
+
         try:
+            backfill_file = get_backfill_file_from_qualified_table_name(
+                sql_dir, qualified_table_name
+            )
             validate_file(backfill_file)
         except (yaml.YAMLError, ValueError) as e:
-            click.echo(f"{backfill_file} contains the following error:\n {e}")
+            click.echo(
+                f"Backfill.yaml file for {qualified_table_name} contains the following error:\n {e}"
+            )
             sys.exit(1)
 
     if qualified_table_name:
@@ -223,29 +233,138 @@ def validate(
 @click.pass_context
 def info(ctx, qualified_table_name, sql_dir, project_id, status):
     """Return backfill(s) information from all or specific table(s)."""
-    backfills = get_backfill_file_to_entries_map(
-        sql_dir, project_id, qualified_table_name
-    )
+    if qualified_table_name:
+        backfills_dict = {
+            qualified_table_name: get_entries_from_qualified_table_name(
+                sql_dir, qualified_table_name, status
+            )
+        }
+    else:
+        backfills_dict = get_qualified_table_name_to_entries_map_by_project(
+            sql_dir, project_id, status
+        )
 
     total_backfills_count = 0
 
-    for backfill_file, entries in backfills.items():
-        if status is not None:
-            entries = [e for e in entries if e.status.value.lower() == status.lower()]
-
+    for qualified_table_name, entries in backfills_dict.items():
         entries_count = len(entries)
 
-        if entries_count:
-            total_backfills_count += entries_count
+        total_backfills_count += entries_count
 
-            project, dataset, table = extract_from_query_path(backfill_file)
+        project, dataset, table = qualified_table_name_matching(qualified_table_name)
+        status_str = f" with {status} status" if status is not None else ""
+        click.echo(
+            f"""{project}.{dataset}.{table} has {entries_count} backfill(s){status_str}:"""
+        )
 
-            status_str = f" with {status} status" if status is not None else ""
-            click.echo(
-                f"""{project}.{dataset}.{table} has {entries_count} backfill(s){status_str}:"""
-            )
-
-            for entry in entries:
-                click.echo(str(entry))
+        for entry in entries:
+            click.echo(str(entry))
 
     click.echo(f"\nThere are a total of {total_backfills_count} backfill(s).")
+
+
+@backfill.command(
+    help="""Get information on backfill(s) that require processing.
+
+    Examples:
+
+    # Get info for specific table.
+    ./bqetl backfill scheduled moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+
+    \b
+    # Get info for all tables.
+    ./bqetl backfill scheduled
+    """,
+)
+@click.argument("qualified_table_name", required=False)
+@sql_dir_option
+@project_id_option("moz-fx-data-shared-prod")
+@click.pass_context
+def scheduled(ctx, qualified_table_name, sql_dir, project_id):
+    """Return list of backfill(s) that require processing."""
+    total_backfills_count = 0
+
+    backfills_to_process_dict = get_backfill_entries_to_process_dict(
+        sql_dir, project_id, qualified_table_name
+    )
+
+    for qualified_table_name, entry_to_process in backfills_to_process_dict.items():
+        total_backfills_count += 1
+
+        click.echo(f"Backfill entry scheduled for {qualified_table_name}:")
+
+        # For future us: this will probably end up being a write to something machine-readable for automation to pick up
+        click.echo(str(entry_to_process))
+
+    click.echo(
+        f"\nThere are a total of {total_backfills_count} backfill(s) that require processing."
+    )
+
+
+@backfill.command(
+    help="""Process entry in backfill.yaml with Drafting status that has not yet been processed.
+
+    Examples:
+
+    \b
+    # Process backfill entry for specific table
+    ./bqetl backfill process moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+
+    Use the `--project_id` option to change the project;
+    default project_id is `moz-fx-data-shared-prod`.
+    """
+)
+@click.argument("qualified_table_name")
+@sql_dir_option
+@project_id_option("moz-fx-data-shared-prod")
+@click.option(
+    "--dry_run/--no_dry_run",
+    "--dry-run/--no-dry-run",
+    help="Dry run the backfill.  Note that staging table(s) will be deployed during dry run",
+)
+@click.pass_context
+def process(ctx, qualified_table_name, sql_dir, project_id, dry_run):
+    """Process backfill entry with drafting status in backfill.yaml file(s)."""
+    click.echo("Backfill processing initiated....")
+
+    backfills_to_process_dict = get_backfill_entries_to_process_dict(
+        sql_dir, project_id, qualified_table_name
+    )
+
+    if backfills_to_process_dict:
+        entry_to_process = backfills_to_process_dict[qualified_table_name]
+
+        backfill_staging_qualified_table_name = (
+            get_backfill_staging_qualified_table_name(
+                qualified_table_name, entry_to_process.entry_date
+            )
+        )
+
+        project, dataset, table = qualified_table_name_matching(qualified_table_name)
+
+        click.echo(f"Processing backfills for {qualified_table_name}:")
+
+        # todo: send notification to watcher(s) that backill for file been initiated
+
+        ctx.invoke(
+            deploy,
+            name=f"{dataset}.{table}",
+            project_id=project,
+            destination_table=backfill_staging_qualified_table_name,
+        )
+
+        # in the long-run we should remove the query backfill command and require a backfill entry for all backfills
+        ctx.invoke(
+            query_backfill,
+            name=f"{dataset}.{table}",
+            project_id=project,
+            start_date=entry_to_process.start_date,
+            end_date=entry_to_process.end_date,
+            exclude=entry_to_process.excluded_dates,
+            destination_table=backfill_staging_qualified_table_name,
+            dry_run=dry_run,
+        )
+
+        # todo: send notification to watcher(s) that backill for file has been completed
+
+        click.echo("Backfill processing completed.")

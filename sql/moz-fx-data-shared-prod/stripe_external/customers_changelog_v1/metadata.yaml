@@ -1,0 +1,29 @@
+friendly_name: Stripe customers changelog
+description: |-
+  Changes to Stripe customers as recorded by Fivetran (https://fivetran.com/docs/applications/stripe).
+
+  IMPORTANT: This table should not be rebuilt from scratch because the underlying Fivetran table doesn't preserve historical changes.
+  This table is only truly accurate from the most recent full rebuild from scratch (2023-07-10) going forward.
+
+  This table's schema closely mirrors Stripe's customers API (https://stripe.com/docs/api/customers/object).
+  Fields which Fivetran doesn't sync and fields we've specifically chosen not to sync (e.g. PII) have been omitted.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  # The table as a whole is appended to each time, not a specific date partition.
+  date_partition_parameter: null
+  arguments:
+  - --append_table
+  - --noreplace
+bigquery:
+  time_partitioning:
+    type: day
+    field: timestamp
+    require_partition_filter: false
+    expiration_days: null
+  clustering: null
+references: {}

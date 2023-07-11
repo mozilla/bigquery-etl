@@ -7,8 +7,8 @@ from io import BytesIO
 from itertools import groupby
 from typing import List
 
-from bigquery_etl.dryrun import DryRun
 from bigquery_etl.config import ConfigLoader
+from bigquery_etl.dryrun import DryRun
 
 
 @dataclass

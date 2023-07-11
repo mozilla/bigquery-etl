@@ -51,7 +51,9 @@ def view():
 )
 @click.argument("name")
 @sql_dir_option
-@project_id_option("moz-fx-data-shared-prod")
+@project_id_option(
+    ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
+)
 @click.option(
     "--owner",
     "-o",

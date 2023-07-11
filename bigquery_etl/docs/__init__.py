@@ -9,11 +9,11 @@ from pathlib import Path
 
 import click
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.docs.derived_datasets.generate_derived_dataset_docs import (
     generate_derived_dataset_docs,
 )
 from bigquery_etl.dryrun import DryRun
-from bigquery_etl.config import ConfigLoader
 
 EXAMPLE_DIR = "examples"
 INDEX_MD = "index.md"

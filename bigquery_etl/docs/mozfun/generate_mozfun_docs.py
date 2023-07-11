@@ -5,8 +5,8 @@ from pathlib import Path
 
 import yaml
 
-from bigquery_etl.util.mozfun_docs_functions import get_mozfun_parameters
 from bigquery_etl.config import ConfigLoader
+from bigquery_etl.util.mozfun_docs_functions import get_mozfun_parameters
 
 DOCS_FILE = "README.md"
 METADATA_FILE = "metadata.yaml"
@@ -62,7 +62,9 @@ def generate_mozfun_docs(out_dir, project_dir):
                 description = None
                 if METADATA_FILE in files:
                     source_link = f"{ConfigLoader.get('docs', 'source_url')}/{root}"
-                    edit_link = f"{ConfigLoader.get('docs', 'edit_url')}/{root}/{METADATA_FILE}"
+                    edit_link = (
+                        f"{ConfigLoader.get('docs', 'edit_url')}/{root}/{METADATA_FILE}"
+                    )
 
                     with open(os.path.join(root, METADATA_FILE)) as stream:
                         try:

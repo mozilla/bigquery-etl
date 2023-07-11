@@ -8,6 +8,12 @@ default:
   - _bi
   - _restricted
   - glam_etl
+  user_facing_project: mozdata
+  backfill_project: moz-fx-data-backfill
+  additional_projects: # additional valid projects managed outside of bigquery-etl
+  - moz-fx-data-pioneer-nonprod
+  - moz-fx-data-pioneer-prod
+  public_project: mozilla-public-data
 
 
 dry_run:
@@ -363,8 +369,19 @@ schema:
 
 docs:
   docs_dir: docs
-  default_projects: 
+  default_projects:
   - mozfun
   - moz-fx-data-shared-prod
   source_url: https://github.com/mozilla/bigquery-etl/blob/generated-sql
   edit_url: https://github.com/mozilla/bigquery-etl/edit/generated-sql
+
+public_data:
+  bucket: mozilla-public-data-http
+  api_version: v1
+  endpoint: https://public-data.telemetry.mozilla.org/
+  review_link: https://bugzilla.mozilla.org/show_bug.cgi?id=
+
+render:
+  skip:
+  # uses {%s} which results in unknown tag exception
+  - sql/mozfun/hist/string_to_json/udf.sql

@@ -66,7 +66,11 @@ class View:
     def is_user_facing(self):
         """Return whether the view is user-facing."""
         return not self.dataset.endswith(
-            ConfigLoader.get("default", "non_user_facing_dataset_suffixes", fallback=[])
+            tuple(
+                ConfigLoader.get(
+                    "default", "non_user_facing_dataset_suffixes", fallback=[]
+                )
+            )
         )
 
     @cached_property

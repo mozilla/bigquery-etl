@@ -8,7 +8,6 @@ from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dependency import extract_table_references
 from bigquery_etl.metadata.parse_metadata import DatasetMetadata, Metadata
 from bigquery_etl.schema import Schema
-from bigquery_etl.config import ConfigLoader
 
 logging.basicConfig(format="%(levelname)s (%(filename)s:%(lineno)d) - %(message)s")
 
@@ -110,7 +109,9 @@ def _iter_table_markdown(table_paths, template):
 
 def generate_derived_dataset_docs(out_dir, project_dir):
     """Generate documentation for derived datasets."""
-    output_path = Path(out_dir) / "mozdata"
+    output_path = Path(out_dir) / ConfigLoader.get(
+        "default", "user_facing_project", fallback="mozdata"
+    )
     project_path = Path(project_dir)
 
     # get a list of all user-facing datasets

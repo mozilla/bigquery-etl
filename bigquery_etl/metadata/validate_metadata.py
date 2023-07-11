@@ -38,7 +38,9 @@ def validate_change_control(
     file_path,
     metadata,
     codeowners_file,
-    project_id="moz-fx-data-shared-prod",
+    project_id=ConfigLoader.get(
+        "default", "project", fallback="moz-fx-data-shared-prod"
+    ),
     sql_dir=ConfigLoader.get("default", "sql_dir", fallback="sql"),
 ):
     """Verify that a query is correctly setup for change control."""

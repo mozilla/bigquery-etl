@@ -79,7 +79,9 @@ def main():
         publish(
             args.target,
             args.project_id,
-            os.path.join(ConfigLoader.get("sql_dir"), project, args.dependency_dir),
+            os.path.join(
+                ConfigLoader.get("default", "sql_dir"), project, args.dependency_dir
+            ),
             args.gcs_bucket,
             args.gcs_path,
             args.public,

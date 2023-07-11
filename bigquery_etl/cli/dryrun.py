@@ -13,6 +13,7 @@ import click
 from google.cloud import bigquery
 
 from ..cli.utils import is_authenticated
+from ..config import ConfigLoader
 from ..dryrun import DryRun
 
 
@@ -61,7 +62,7 @@ from ..dryrun import DryRun
 @click.option(
     "--project",
     help="GCP project to perform dry run in when --use_cloud_function=False",
-    default="moz-fx-data-shared-prod",
+    default=ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod"),
 )
 def dryrun(
     paths: List[str],

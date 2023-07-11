@@ -30,7 +30,11 @@ WITH subscriptions_history AS (
   FROM
     `moz-fx-data-shared-prod`.stripe_external.subscription_history_v1
   WHERE
-    DATE(_fivetran_start) >= @date
+    {% if is_init() %}
+      TRUE
+    {% else %}
+      DATE(_fivetran_start) >= @date
+    {% endif %}
 ),
 subscription_items AS (
   SELECT
@@ -263,4 +267,8 @@ LEFT JOIN
 ON
   subscriptions_history.id = subscriptions_history_latest_discounts.subscription_history_id
 WHERE
-  DATE(subscriptions_history._fivetran_start) = @date
+  {% if is_init() %}
+    DATE(subscriptions_history._fivetran_start) < CURRENT_DATE()
+  {% else %}
+    DATE(subscriptions_history._fivetran_start) = @date
+  {% endif %}

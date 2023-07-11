@@ -8,6 +8,10 @@ Running some commands, for example to create or query tables, will [require Mozi
 
 Follow the [Quick Start](https://github.com/mozilla/bigquery-etl#quick-start) to set up bigquery-etl and the bqetl CLI.
 
+## Configuration
+
+`bqetl` can be configured via the `bqetl_project.yaml` file. See [Configuration](https://mozilla.github.io/bigquery-etl/reference/configuration/) to find available configuration options.
+
 ## Commands
 
 To list all available commands in the bqetl CLI:

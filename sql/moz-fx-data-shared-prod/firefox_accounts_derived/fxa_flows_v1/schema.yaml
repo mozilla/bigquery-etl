@@ -1,12 +1,5 @@
 fields:
 - mode: NULLABLE
-  name: submission_date
-  type: DATE
-  description: |
-    Represents ETL job date.
-    Also, used for table partitioning.
-
-- mode: NULLABLE
   name: flow_id
   type: STRING
   description: |

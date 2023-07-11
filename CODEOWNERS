@@ -14,3 +14,4 @@
 # Contextual Services
 /sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_suggest_v2 @mozilla/request_payload_reviewers
 /sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_tiles_v2 @mozilla/request_payload_reviewers
+/sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v2 @mozilla/dataops

@@ -1,6 +1,5 @@
 """bigquery-etl CLI backfill command."""
 
-import subprocess
 import sys
 import tempfile
 from datetime import date, datetime, timedelta
@@ -432,7 +431,7 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
     except NotFound:
         click.echo(
             f"""
-            Backfill staging table does not exists for {qualified_table_name}:"
+            Backfill staging table does not exists for {qualified_table_name}:
             {backfill_staging_qualified_table_name}
             """
         )
@@ -440,26 +439,23 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
 
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
 
-    _clone_table(qualified_table_name, entry_to_complete.entry_date, client)
+    # clone production table
+    cloned_table_id = f"{table}_backup_{entry_to_complete.entry_date}".replace("-", "_")
+    cloned_table_full_name = f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
+    _copy_table(qualified_table_name, cloned_table_full_name, client, True)
 
     # copy backfill data to production data
     start_date = entry_to_complete.start_date
     end_date = entry_to_complete.end_date
     dates = [start_date + timedelta(i) for i in range((end_date - start_date).days + 1)]
 
-    backfill_table_id = f"{table}_{entry_to_complete.entry_date}".replace("-", "_")
- 
-    # Replace partitions that have been backfilled
+    # replace partitions in production table that have been backfilled
     for backfill_date in dates:
         partition = backfill_date.strftime("%Y%m%d")
         if backfill_date not in entry_to_complete.excluded_dates:
-            cp_query_arguments = ["cp"]
-            cp_query_arguments.append("-f")
-            cp_query_arguments.append(
-                f"{BACKFILL_DESTINATION_PROJECT}:{BACKFILL_DESTINATION_DATASET}.{backfill_table_id}${partition}"
-            )
-            cp_query_arguments.append(f"{project}:{dataset}.{table}${partition}")
-            subprocess.check_call(["bq"] + cp_query_arguments)
+            production_table = f"{qualified_table_name}${partition}"
+            backfill_table = f"{backfill_staging_qualified_table_name}${partition}"
+            _copy_table(backfill_table, production_table, client)
 
     # delete backfill staging table
     client.delete_table(backfill_staging_qualified_table_name)
@@ -468,49 +464,45 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
     )
 
     click.echo(
-        f"Completed backfill for {qualified_table_name} with entry date {entry_to_complete.entry_date}:"
+        f"Completed backfill for {qualified_table_name} with entry date {entry_to_complete.entry_date}"
     )
 
 
-def _clone_table(qualified_table_name: str, entry_date: str, client) -> None:
-    """Clone (previous) production data for backup before swapping stage data into production."""
-    project, dataset, table = qualified_table_name_matching(qualified_table_name)
+def _copy_table(
+    source_table: str, destination_table: str, client, clone: bool = False
+) -> None:
+    """
+    Copy and overwrite table from source to destination table.
 
-    # check if clone table already exists
-    cloned_table_id = f"{table}_backup_{entry_date}".replace("-", "_")
-    cloned_table_full_name = f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
+    If clone is True, clone (previous) production data for backup before swapping stage data into production.
+    """
+    job_type_str = "copied"
+
+    if clone:
+        copy_config = bigquery.CopyJobConfig(
+            write_disposition=bigquery.WriteDisposition.WRITE_EMPTY,
+            operation_type=bigquery.job.copy_.OperationType.CLONE,
+            destination_expiration_time=(datetime.now() + timedelta(days=30)).strftime(
+                "%Y-%m-%dT%H:%M:%SZ"
+            ),
+        )
+        job_type_str = "cloned"
+    else:
+        copy_config = bigquery.CopyJobConfig(
+            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+            operation_type=bigquery.job.copy_.OperationType.COPY,
+        )
 
     try:
-        client.get_table(cloned_table_full_name)
-        click.echo(
-            f"""
-                Cloned table already exists for {qualified_table_name}:"
-                {cloned_table_full_name}
-                """
-        )
+        client.copy_table(
+            source_table,
+            destination_table,
+            job_config=copy_config,
+        ).result()
+    except Exception as e:
+        print(f"Unable to clone table {source_table} with error: {e}")
         sys.exit(1)
-    except NotFound:
-        # clone production table
-        clone_query_arguments = ["cp"]
-        clone_query_arguments.append("--clone")
-        clone_query_arguments.append("-n")
-        clone_query_arguments.append(f"{project}:{dataset}.{table}")
-        clone_query_arguments.append(
-            f"{BACKFILL_DESTINATION_PROJECT}:{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
-        )
-        subprocess.check_call(["bq"] + clone_query_arguments)
 
-    # confirm that production table was cloned
-    try:
-        cloned_table = client.get_table(cloned_table_full_name)
-        # set expiration date of cloned table to 30 days
-        cloned_table.expires = datetime.now() + timedelta(days=30)
-        client.update_table(cloned_table, ["expires"])
-    except NotFound:
-        click.echo(
-            f"""
-                Cloned table do not exist for {qualified_table_name}:"
-                {cloned_table_full_name}
-                """
-        )
-        sys.exit(1)
+    click.echo(
+        f"Table {source_table} successfully {job_type_str} to {destination_table}"
+    )

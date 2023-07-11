@@ -31,7 +31,7 @@ project_dirs_option = click.option(
     help="Directories of projects documentation is generated for.",
     multiple=True,
     default=[
-        ConfigLoader.get("default", "sql_dir") + "/" + project
+        ConfigLoader.get("default", "sql_dir") + "/" + project + "/"
         for project in ConfigLoader.get("docs", "default_projects")
     ],
 )

@@ -17,7 +17,6 @@ QUERY_PART_FILE = "part1.sql"
 SCRIPT_FILE = "script.sql"
 PYTHON_SCRIPT_FILE = "query.py"
 DEFAULT_DAGS_DIR = "dags"
-TELEMETRY_AIRFLOW_GITHUB = "https://github.com/mozilla/telemetry-airflow.git"
 CHECKS_FILE = "checks.sql"
 
 parser = ArgumentParser(description=__doc__)

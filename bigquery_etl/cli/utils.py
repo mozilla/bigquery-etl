@@ -21,10 +21,6 @@ CHECKS_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
     r"(?:checks\.sql)$"
 )
-MOZDATA = "mozdata"
-PIONEER_NONPROD = "moz-fx-data-pioneer-nonprod"
-PIONEER_PROD = "moz-fx-data-pioneer-prod"
-MOZ_FX_DATA_BACKFILL = "moz-fx-data-backfill"
 
 
 def is_valid_dir(ctx, param, value):
@@ -58,11 +54,10 @@ def is_valid_project(ctx, param, value):
         in [Path(p).name for p in project_dirs()]
         + [
             ConfigLoader.get("default", "test_project"),
-            MOZDATA,
-            PIONEER_NONPROD,
-            PIONEER_PROD,
+            ConfigLoader.get("default", "user_facing_project", fallback="mozdata"),
         ]
-        or value.startswith(MOZ_FX_DATA_BACKFILL)
+        + ConfigLoader.get("default", "additional_projects", fallback=[])
+        or value.startswith(ConfigLoader.get("default", "backfill_project"))
     ):
         return value
     raise click.BadParameter(f"Invalid project {value}")
@@ -209,14 +204,16 @@ def no_dryrun_option(default=False):
     )
 
 
-def temp_dataset_option(default="moz-fx-data-shared-prod.tmp"):
+def temp_dataset_option(
+    default=f"{ConfigLoader.get('default', 'project', fallback='moz-fx-data-shared-prod')}.tmp",
+):
     """Generate a temp-dataset option."""
     return click.option(
         "--temp-dataset",
         "--temp_dataset",
         "--temporary-dataset",
         "--temporary_dataset",
-        default="moz-fx-data-shared-prod.tmp",
+        default=default,
         type=TempDatasetReference.from_string,
         help="Dataset where intermediate query results will be temporarily stored, "
         "formatted as PROJECT_ID.DATASET_ID",

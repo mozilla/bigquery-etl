@@ -363,6 +363,9 @@ view:
     - sql/glam-fenix-dev/glam_etl/**/view.sql
     # tests
     - sql/moz-fx-data-test-project/test/simple_view/view.sql
+  override: # Skip automatically updating the following views
+    skip:
+    - sql/moz-fx-data-shared-prod/mozilla_vpn/**/view.sql
 
 schema:
   mozilla_pipeline_schemas_uri: https://github.com/mozilla-services/mozilla-pipeline-schemas

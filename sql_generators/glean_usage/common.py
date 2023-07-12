@@ -10,7 +10,9 @@ from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 
 from bigquery_etl.dryrun import DryRun
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
-from bigquery_etl.util.common import render, write_sql
+from bigquery_etl.util.common import render, write_sql, get_table_dir
+from bigquery_etl.config import ConfigLoader
+import glob
 
 APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
 PATH = Path(os.path.dirname(__file__))
@@ -223,6 +225,17 @@ class GleanTable:
             return
 
         if output_dir:
+            override_skip = [
+                file
+                for skip in ConfigLoader.get("view", "override", fallback=[])
+                for file in glob.glob(
+                    skip,
+                    recursive=True,
+                )
+            ]
+
+            skip_existing = get_table_dir(output_dir, view)
+
             write_sql(
                 output_dir, view, "metadata.yaml", view_metadata, skip_existing=True
             )

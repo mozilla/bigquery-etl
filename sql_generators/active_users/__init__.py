@@ -131,20 +131,20 @@ def generate(target_project, output_dir, use_cloud_function):
                 skip_existing=False,
             )
 
-        write_sql(
-            output_dir=output_dir,
-            full_table_id=f"{target_project}.{DATASET_FOR_UNIONED_VIEWS}.{TABLE_NAME}_mobile",
-            basename="view.sql",
-            sql=reformat(
-                mobile_view_template.render(
-                    project_id=target_project,
-                    dataset_id=DATASET_FOR_UNIONED_VIEWS,
-                    fenix_dataset=Browsers("Fenix").name,
-                    focus_ios_dataset=Browsers("Focus iOS").name,
-                    focus_android_dataset=Browsers("Focus Android").name,
-                    firefox_ios_dataset=Browsers("Firefox iOS").name,
-                    klar_ios_dataset=Browsers("Klar iOS").name,
-                )
-            ),
-            skip_existing=False,
-        )
+    write_sql(
+        output_dir=output_dir,
+        full_table_id=f"{target_project}.{DATASET_FOR_UNIONED_VIEWS}.{TABLE_NAME}_mobile",
+        basename="view.sql",
+        sql=reformat(
+            mobile_view_template.render(
+                project_id=target_project,
+                dataset_id=DATASET_FOR_UNIONED_VIEWS,
+                fenix_dataset=Browsers("Fenix").name,
+                focus_ios_dataset=Browsers("Focus iOS").name,
+                focus_android_dataset=Browsers("Focus Android").name,
+                firefox_ios_dataset=Browsers("Firefox iOS").name,
+                klar_ios_dataset=Browsers("Klar iOS").name,
+            )
+        ),
+        skip_existing=False,
+    )

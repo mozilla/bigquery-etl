@@ -12,7 +12,6 @@ from bigquery_etl.util.common import render, write_sql
 
 THIS_PATH = Path(os.path.dirname(__file__))
 TABLE_NAME = "active_users_aggregates"
-TABLE_NAME_DELETION_REQUEST = "active_users_aggregates_deletion_request"
 DATASET_FOR_UNIONED_VIEWS = "telemetry"
 
 
@@ -51,11 +50,7 @@ def generate(target_project, output_dir, use_cloud_function):
     mobile_query_template = env.get_template("mobile_query.sql")
     desktop_query_template = env.get_template("desktop_query.sql")
     focus_android_query_template = env.get_template("focus_android_query.sql")
-    mobile_deletion_request_query_template = env.get_template(
-        "mobile_deletion_request_query.sql"
-    )
     metadata_template = "metadata.yaml"
-    metadata_deletion_request_template = "metadata_deletion_request.yaml"
     view_template = env.get_template("view.sql")
     focus_android_view_template = env.get_template("focus_android_view.sql")
     mobile_view_template = env.get_template("mobile_view.sql")
@@ -153,34 +148,3 @@ def generate(target_project, output_dir, use_cloud_function):
             ),
             skip_existing=False,
         )
-
-        # Templates for Active Users aggregates calculated for client_ids with deletion requests.
-
-        if browser.name != "focus_android" and browser.name != "firefox_desktop":
-            write_sql(
-                output_dir=output_dir,
-                full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME_DELETION_REQUEST}_v1",
-                basename="query.sql",
-                sql=reformat(
-                    mobile_deletion_request_query_template.render(
-                        project_id=target_project,
-                        app_value=browser.value,
-                        app_name=browser.name,
-                    )
-                ),
-                skip_existing=False,
-            )
-
-            write_sql(
-                output_dir=output_dir,
-                full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME_DELETION_REQUEST}_v1",
-                basename="metadata.yaml",
-                sql=render(
-                    metadata_deletion_request_template,
-                    template_folder=THIS_PATH / "templates",
-                    app_value=browser.value,
-                    app_name=browser.name,
-                    format=False,
-                ),
-                skip_existing=False,
-            )

@@ -1,6 +1,23 @@
+default:
+  project: moz-fx-data-shared-prod
+  sql_dir: sql/
+  test_project: bigquery-etl-integration-test
+  non_user_facing_dataset_suffixes: # suffixes of datasets with non-user-facing views
+  - _derived
+  - _external
+  - _bi
+  - _restricted
+  - glam_etl
+  user_facing_project: mozdata
+  backfill_project: moz-fx-data-backfill
+  additional_projects: # additional valid projects managed outside of bigquery-etl
+  - moz-fx-data-pioneer-nonprod
+  - moz-fx-data-pioneer-prod
+  public_project: mozilla-public-data
+
+
 dry_run:
   function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun
-  test_project: bigquery-etl-integration-test
   skip:
   # Access Denied
   - sql/moz-fx-data-shared-prod/account_ecosystem_derived/ecosystem_client_id_lookup_v1/query.sql
@@ -82,7 +99,6 @@ dry_run:
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_google_subscriptions_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_stripe_subscriptions_history_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_revised_changelog_v1/query.sql
-  - sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_changelog_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/query.sql
   - sql/moz-fx-data-shared-prod/stripe/itemized_payout_reconciliation/view.sql
   - sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/query.sql
@@ -100,6 +116,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/mozilla_vpn_external/subscriptions_v1/query.sql
   - sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v3/query.sql
+  - sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns/view.sql
   - sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql
   - sql/moz-fx-data-shared-prod/mozilla_vpn_external/subscriptions_v1/init.sql
   - sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/init.sql
@@ -301,3 +318,71 @@ format:
   - sql/moz-fx-data-shared-prod/udf_legacy/date_trunc.sql
   - sql/moz-fx-data-shared-prod/udf_legacy/to_iso8601.sql
   - stored_procedures/safe_crc32_uuid.sql
+
+routine:
+  dependency_dir: udf_js_lib/
+  publish:
+    gcs_bucket: moz-fx-data-prod-bigquery-etl
+    gcs_path: ""
+    skip:
+    - sql/moz-fx-data-shared-prod/udf/main_summary_scalars/udf.sql
+  assert_udf_dir: tests/assert
+  example_dir: examples
+  project: mozfun
+
+view:
+  validation:
+    skip:
+    # tests
+    - sql/moz-fx-data-test-project/test/simple_view/view.sql
+    # Access Denied
+    - sql/moz-fx-data-shared-prod/telemetry/experiment_enrollment_cumulative_population_estimate/view.sql
+    - sql/moz-fx-data-shared-prod/mlhackweek_search/events/view.sql
+    - sql/moz-fx-data-shared-prod/regrets_reporter_ucs/deletion_request/view.sql
+    - sql/moz-fx-data-shared-prod/mlhackweek_search/custom/view.sql
+    - sql/moz-fx-data-shared-prod/regrets_reporter_ucs/regret_details/view.sql
+    - sql/moz-fx-data-shared-prod/regrets_reporter_ucs/video_data/view.sql
+    - sql/moz-fx-data-shared-prod/mlhackweek_search/deletion_request/view.sql
+    - sql/moz-fx-data-shared-prod/mlhackweek_search/baseline/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry/regrets_reporter_update/view.sql
+    - sql/moz-fx-data-shared-prod/regrets_reporter_ucs/video_index/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry/xfocsp_error_report/view.sql
+    - sql/moz-fx-data-shared-prod/mlhackweek_search/metrics/view.sql
+    - sql/moz-fx-data-shared-prod/regrets_reporter_ucs/main_events/view.sql
+    - sql/moz-fx-data-shared-prod/mlhackweek_search/action/view.sql
+    - sql/moz-fx-data-shared-prod/**/client_deduplication/view.sql
+  publish:
+    skip:
+    - sql/activity_stream/tile_id_types/view.sql
+    - sql/pocket/pocket_reach_mau/view.sql
+    - sql/telemetry/buildhub2/view.sql
+    # Dataset glam-fenix-dev:glam_etl was not found
+    # TODO: this should be removed if views are to be automatically deployed
+    - sql/glam-fenix-dev/glam_etl/**/view.sql
+    # tests
+    - sql/moz-fx-data-test-project/test/simple_view/view.sql
+
+schema:
+  mozilla_pipeline_schemas_uri: https://github.com/mozilla-services/mozilla-pipeline-schemas
+  skip_prefixes:
+  - pioneer
+  - rally
+
+docs:
+  docs_dir: docs
+  default_projects:
+  - mozfun
+  - moz-fx-data-shared-prod
+  source_url: https://github.com/mozilla/bigquery-etl/blob/generated-sql
+  edit_url: https://github.com/mozilla/bigquery-etl/edit/generated-sql
+
+public_data:
+  bucket: mozilla-public-data-http
+  api_version: v1
+  endpoint: https://public-data.telemetry.mozilla.org/
+  review_link: https://bugzilla.mozilla.org/show_bug.cgi?id=
+
+render:
+  skip:
+  # uses {%s} which results in unknown tag exception
+  - sql/mozfun/hist/string_to_json/udf.sql

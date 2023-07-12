@@ -14,6 +14,7 @@ import attr
 import sqlparse
 import yaml
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE
 from bigquery_etl.util.common import render
 
@@ -21,7 +22,6 @@ UDF_CHAR = "[a-zA-Z0-9_]"
 UDF_FILE = "udf.sql"
 PROCEDURE_FILE = "stored_procedure.sql"
 ROUTINE_FILE = (UDF_FILE, PROCEDURE_FILE)
-EXAMPLE_DIR = "examples"
 TEMP_UDF_RE = re.compile(f"(?:udf|assert)_{UDF_CHAR}+")
 PERSISTENT_UDF_PREFIX_RE_STR = (
     r"CREATE\s+(?:OR\s+REPLACE\s+)?(?:FUNCTION|PROCEDURE)(?:\s+IF\s+NOT\s+EXISTS)?"
@@ -33,8 +33,6 @@ PERSISTENT_UDF_RE = re.compile(
 )
 UDF_NAME_RE = re.compile(r"^([a-zA-Z0-9_]+\.)?[a-zA-Z][a-zA-Z0-9_]{0,255}$")
 GENERIC_DATASET = "_generic_dataset_"
-SQL_DIR = Path("sql/")
-ASSERT_UDF_DIR = "tests/assert"
 
 raw_routines = {}
 
@@ -57,8 +55,10 @@ def get_routines(project):
     """Return all routines that could be referenced by the project."""
     return (
         get_routines_from_dir(project)
-        + get_routines_from_dir(SQL_DIR / "mozfun")
-        + get_routines_from_dir(ASSERT_UDF_DIR)
+        + get_routines_from_dir(
+            Path(ConfigLoader.get("default", "sql_dir", fallback="sql")) / "mozfun"
+        )
+        + get_routines_from_dir(ConfigLoader.get("routine", "assert_udf_dir"))
     )  # assert UDFs used for testing
 
 
@@ -227,14 +227,17 @@ def read_routine_dir(*project_dirs):
     global raw_routines
 
     if not project_dirs:
-        project_dirs = (SQL_DIR, ASSERT_UDF_DIR)
+        project_dirs = (
+            ConfigLoader.get("default", "sql_dir"),
+            ConfigLoader.get("routine", "assert_udf_dir"),
+        )
 
     if project_dirs not in raw_routines:
         raw_routines[project_dirs] = {
             raw_routine.name: raw_routine
             for project_dir in project_dirs
             for root, dirs, files in os.walk(project_dir)
-            if os.path.basename(root) != EXAMPLE_DIR
+            if os.path.basename(root) != ConfigLoader.get("routine", "example_dir")
             for filename in files
             if filename in ROUTINE_FILE
             for raw_routine in (RawRoutine.from_file(os.path.join(root, filename)),)
@@ -246,7 +249,11 @@ def read_routine_dir(*project_dirs):
 def parse_routines(project_dir):
     """Read routine contents of the project dir into ParsedRoutine instances."""
     # collect udfs to parse
-    raw_routines = read_routine_dir(project_dir, SQL_DIR / "mozfun", ASSERT_UDF_DIR)
+    raw_routines = read_routine_dir(
+        project_dir,
+        Path(ConfigLoader.get("default", "sql_dir", fallback="sql")) / "mozfun",
+        ConfigLoader.get("routine", "assert_udf_dir"),
+    )
 
     # prepend udf definitions to tests
     for raw_routine in raw_routines.values():

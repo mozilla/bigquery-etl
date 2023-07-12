@@ -352,9 +352,9 @@ view:
     - sql/moz-fx-data-shared-prod/**/client_deduplication/view.sql
   publish:
     skip:
-    - sql/activity_stream/tile_id_types/view.sql
-    - sql/pocket/pocket_reach_mau/view.sql
-    - sql/telemetry/buildhub2/view.sql
+    - sql/moz-fx-data-shared-prod/activity_stream/tile_id_types/view.sql
+    - sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry/buildhub2/view.sql
     # Dataset glam-fenix-dev:glam_etl was not found
     # TODO: this should be removed if views are to be automatically deployed
     - sql/glam-fenix-dev/glam_etl/**/view.sql

@@ -164,6 +164,23 @@ with DAG(
         depends_on_past=False,
     )
 
+    contextual_services_derived__suggest_revenue_levers_daily__v1 = bigquery_etl_query(
+        task_id="contextual_services_derived__suggest_revenue_levers_daily__v1",
+        destination_table='suggest_revenue_levers_daily_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="contextual_services_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="skahmann@mozilla.com",
+        email=[
+            "ctroy@mozilla.com",
+            "skahmann@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
+    )
+
     contextual_services_derived__adm_forecasting__v1.set_upstream(
         contextual_services_derived__event_aggregates__v1
     )
@@ -227,4 +244,37 @@ with DAG(
 
     contextual_services_derived__request_payload_suggest__v2.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    wait_for_search_derived__search_clients_daily__v8 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__search_clients_daily__v8",
+        external_dag_id="bqetl_search",
+        external_task_id="search_derived__search_clients_daily__v8",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    contextual_services_derived__suggest_revenue_levers_daily__v1.set_upstream(
+        wait_for_search_derived__search_clients_daily__v8
+    )
+    wait_for_telemetry_derived__suggest_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__suggest_clients_daily__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__suggest_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    contextual_services_derived__suggest_revenue_levers_daily__v1.set_upstream(
+        wait_for_telemetry_derived__suggest_clients_daily__v1
+    )
+    contextual_services_derived__suggest_revenue_levers_daily__v1.set_upstream(
+        wait_for_telemetry_derived__unified_metrics__v1
     )

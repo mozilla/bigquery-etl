@@ -226,7 +226,7 @@ def upload_to_bigquery(csv_data, project, dataset, date):
             )
 
             # Table names are based on the app name seen in the Adjust dashboard"
-            destination = f"{project}.{dataset}.adjust_deliverables_v1_${partition}"
+            destination = f"{project}.{dataset}.adjust_deliverables_v1${partition}"
 
             job = client.load_table_from_file(f_csv, destination, job_config=job_config)
 
@@ -258,7 +258,6 @@ def main():
         json_file = download_adjust_kpi_data(
             args.date, args.adjust_api_token, app["app_token"]
         )
-
 
         query_export = check_json(json_file.text)
 

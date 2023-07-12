@@ -369,8 +369,10 @@ def clean(
             for dataset in client.list_datasets(target_project)
             if not user_facing_only
             or not dataset.dataset_id.endswith(
-                ConfigLoader.get(
-                    "default", "non_user_facing_dataset_suffixes", fallback=[]
+                tuple(
+                    ConfigLoader.get(
+                        "default", "non_user_facing_dataset_suffixes", fallback=[]
+                    )
                 )
             )
         ]

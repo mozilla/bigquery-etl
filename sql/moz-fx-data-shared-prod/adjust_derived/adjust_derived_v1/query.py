@@ -178,9 +178,9 @@ def clean_json(query_export):
     return fields_list
 
 
-def upload_to_bigquery(csv_data, project, dataset, adjust_app_name, date):
+def upload_to_bigquery(csv_data, project, dataset, date):
     """Upload the data to bigquery."""
-    print(f"writing json to csv for {adjust_app_name}")
+    print("writing json to csv")
 
     partition = f"{date}".replace("-", "")
 
@@ -226,7 +226,7 @@ def upload_to_bigquery(csv_data, project, dataset, adjust_app_name, date):
             )
 
             # Table names are based on the app name seen in the Adjust dashboard"
-            destination = f"{project}.{dataset}.adjust_deliverables_v1_${partition}"
+            destination = f"{project}.{dataset}.adjust_deliverables_v1${partition}"
 
             job = client.load_table_from_file(f_csv, destination, job_config=job_config)
 
@@ -249,6 +249,8 @@ def main():
 
     app_list = json.loads(args.adjust_app_list)
 
+    data = []
+
     # Cycle through the apps to get the relevant kpi data
     for app in app_list:
         print(f'This is data for {app["app_name"]}')
@@ -257,18 +259,16 @@ def main():
             args.date, args.adjust_api_token, app["app_token"]
         )
 
-        data = []
-
         query_export = check_json(json_file.text)
 
         if query_export is not None:
             # This section writes the tmp json data into a temp CSV file which will then be put into a BigQuery table
-            data = clean_json(query_export)
-            upload_to_bigquery(
-                data, args.project, args.dataset, app["app_name"], args.date
-            )
+            adjust_data = clean_json(query_export)
+            data.append(adjust_data)
         else:
             print(f'no data for {app["app_name"]} today')
+
+    upload_to_bigquery(data, args.project, args.dataset, args.date)
 
 
 if __name__ == "__main__":

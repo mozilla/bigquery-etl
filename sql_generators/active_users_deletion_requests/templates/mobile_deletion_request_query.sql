@@ -133,8 +133,7 @@ baseline_with_searches AS (
     search.organic_search_count,
     search.search_count,
     search.search_with_ads,
-    NULL AS active_hours_sum,
-    @partition_date AS partition_date
+    NULL AS active_hours_sum
   FROM
     baseline
   LEFT JOIN
@@ -172,8 +171,7 @@ todays_metrics AS (
     search_count,
     search_with_ads,
     uri_count,
-    active_hours_sum,
-    partition_date,
+    active_hours_sum
   FROM
     baseline_with_searches
 ),
@@ -203,8 +201,7 @@ SELECT
     search_with_ads,
     uri_count,
     active_hours_sum,
-    first_seen_date,
-    partition_date
+    first_seen_date
   ),
   COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS dau,
   COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS wau,
@@ -216,7 +213,7 @@ SELECT
   SUM(search_with_ads) AS search_with_ads,
   SUM(uri_count) AS uri_count,
   SUM(active_hours_sum) AS active_hours,
-  partition_date,
+  @partition_date AS partition_date,
 FROM
   todays_metrics_enriched
 GROUP BY
@@ -237,5 +234,4 @@ GROUP BY
   os_version_major,
   os_version_minor,
   submission_date,
-  segment,
-  partition_date
+  segment

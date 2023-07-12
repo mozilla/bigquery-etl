@@ -259,7 +259,6 @@ def main():
             args.date, args.adjust_api_token, app["app_token"]
         )
 
-        adjust_data = []
 
         query_export = check_json(json_file.text)
 

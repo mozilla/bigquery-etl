@@ -3,8 +3,8 @@ WITH subscriptions_history AS (
     -- Synthesize a primary key column to make identifying rows and doing joins easier.
     CONCAT(id, '-', FORMAT_TIMESTAMP('%FT%H:%M:%E6S', _fivetran_start)) AS id,
     id AS subscription_id,
+    _fivetran_synced,
     _fivetran_start,
-    _fivetran_end,
     _fivetran_active,
     billing_cycle_anchor,
     cancel_at,
@@ -30,7 +30,11 @@ WITH subscriptions_history AS (
   FROM
     `moz-fx-data-shared-prod`.stripe_external.subscription_history_v1
   WHERE
-    DATE(_fivetran_start) >= @date
+    {% if is_init() %}
+      TRUE
+    {% else %}
+      DATE(_fivetran_start) >= @date
+    {% endif %}
 ),
 subscription_items AS (
   SELECT
@@ -142,7 +146,7 @@ subscriptions_history_tax_rates AS (
     `moz-fx-data-shared-prod`.stripe_external.tax_rate_v1 AS tax_rates
   ON
     subscription_tax_rates.tax_rate_id = tax_rates.id
-    AND subscriptions_history._fivetran_end >= tax_rates.created
+    AND subscriptions_history._fivetran_start >= tax_rates.created
   GROUP BY
     subscriptions_history.id
 ),
@@ -181,7 +185,7 @@ subscriptions_history_latest_discounts AS (
     `moz-fx-data-shared-prod`.stripe_external.subscription_discount_v1 AS subscription_discounts
   ON
     subscriptions_history.subscription_id = subscription_discounts.subscription_id
-    AND subscriptions_history._fivetran_end >= subscription_discounts.start
+    AND subscriptions_history._fivetran_start >= subscription_discounts.start
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.coupon_v1 AS coupons
   ON
@@ -192,6 +196,7 @@ subscriptions_history_latest_discounts AS (
 SELECT
   subscriptions_history.id,
   subscriptions_history._fivetran_start AS `timestamp`,
+  subscriptions_history._fivetran_synced AS synced_at,
   STRUCT(
     subscriptions_history.subscription_id AS id,
     subscriptions_history.billing_cycle_anchor,
@@ -262,4 +267,8 @@ LEFT JOIN
 ON
   subscriptions_history.id = subscriptions_history_latest_discounts.subscription_history_id
 WHERE
-  DATE(subscriptions_history._fivetran_start) = @date
+  {% if is_init() %}
+    DATE(subscriptions_history._fivetran_start) < CURRENT_DATE()
+  {% else %}
+    DATE(subscriptions_history._fivetran_start) = @date
+  {% endif %}

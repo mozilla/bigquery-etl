@@ -7,13 +7,16 @@ from argparse import ArgumentParser
 import yaml
 from google.cloud import bigquery
 
+from ..config import ConfigLoader
 from ..util import standard_args
 from ..util.bigquery_tables import get_tables_matching_patterns
 from ..util.common import project_dirs
 from .parse_metadata import Metadata
 
 METADATA_FILE = "metadata.yaml"
-DEFAULT_PATTERN = "moz-fx-data-shared-prod:*.*"
+DEFAULT_PATTERN = (
+    f"{ConfigLoader.get('default', 'project', fallback='moz-fx-data-shared-prod')}:*.*"
+)
 
 
 parser = ArgumentParser(description=__doc__)

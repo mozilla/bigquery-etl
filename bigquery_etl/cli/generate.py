@@ -6,6 +6,7 @@ from pathlib import Path
 import click
 
 from bigquery_etl.cli.utils import is_valid_project, use_cloud_function_option
+from bigquery_etl.config import ConfigLoader
 
 SQL_GENERATORS_DIR = "sql_generators"
 GENERATE_COMMAND = "generate"
@@ -61,7 +62,7 @@ generate = generate_group()
     "--target-project",
     "--target_project",
     help="GCP project ID",
-    default="moz-fx-data-shared-prod",
+    default=ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod"),
     callback=is_valid_project,
 )
 @click.option(

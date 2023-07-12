@@ -1,0 +1,116 @@
+fields:
+
+- mode: NULLABLE
+  name: source_project
+  type: STRING
+  description: Project used for executing job
+
+- mode: NULLABLE
+  name: creation_date
+  type: DATE
+  description: Job creation date
+
+- mode: NULLABLE
+  name: job_id
+  type: STRING
+  description: ID of job
+
+- mode: NULLABLE
+  name: job_type
+  type: STRING
+  description: The type of the job
+
+- mode: NULLABLE
+  name: reservation_id
+  type: STRING
+  description: Name of the primary reservation (slots for distributing resources) assigned to this job
+
+- mode: NULLABLE
+  name: cache_hit
+  type: BOOLEAN
+  description: Whether the query results of this job were from a cache
+
+- mode: NULLABLE
+  name: state
+  type: STRING
+  description: Running state of the job
+
+- mode: NULLABLE
+  name: statement_type
+  type: STRING
+  description: The type of query statement
+
+- mode: NULLABLE
+  name: reference_project_id
+  type: STRING
+  description: The ID of the project referenced by the job
+
+- mode: NULLABLE
+  name: reference_dataset_id
+  type: STRING
+  description: The ID of the dataset referenced by the job
+
+- mode: NULLABLE
+  name: reference_table_id
+  type: STRING
+  description: The ID of the table referenced by the job
+
+- mode: NULLABLE
+  name: destination_project_id
+  type: STRING
+  description: The ID of the project containing the destination table
+
+- mode: NULLABLE
+  name: destination_dataset_id
+  type: STRING
+  description: The ID of the dataset containing the destination table
+
+- mode: NULLABLE
+  name: destination_table_id
+  type: STRING
+  description: The ID of the destination table
+
+- mode: NULLABLE
+  name: user_email
+  type: STRING
+  description: Email address or service account of the user who ran the job
+
+- mode: NULLABLE
+  name: task_duration
+  type: INTERVAL
+  description: The time it took to run the job
+
+- mode: NULLABLE
+  name: total_terabytes_processed
+  type: FLOAT
+  description: Total terabytes processed by the job
+
+- mode: NULLABLE
+  name: total_terabytes_billed
+  type: FLOAT
+  description: Total terabytes billed by the job if on-demand pricing is used
+
+- mode: NULLABLE
+  name: total_slot_ms
+  type: INTEGER
+  description: Slot milliseconds for the job over its entire duration
+
+- mode: NULLABLE
+  name: error_location
+  type: STRING
+  description: Specifies where the error occurred, if present
+
+- mode: NULLABLE
+  name: error_reason
+  type: STRING
+  description: A short error code that summarizes the error
+
+- mode: NULLABLE
+  name: error_message
+  type: STRING
+  description: A human-readable description of the error
+
+- mode: NULLABLE
+  name: resource_warning
+  type: STRING
+  description: The warning message that appears if the resource usage is above the internal threshold of the system

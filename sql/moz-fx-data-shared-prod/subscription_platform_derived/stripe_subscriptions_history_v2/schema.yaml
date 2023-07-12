@@ -2,15 +2,28 @@ fields:
 - name: id
   type: STRING
   mode: NULLABLE
-  description: Change ID.
-- name: timestamp
+  description: History record ID.
+- name: valid_from
   type: TIMESTAMP
   mode: NULLABLE
-  description: When the change occurred.
+  description: Start of the time range this history record is considered valid for
+    (inclusive).
+- name: valid_to
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: End of the time range this history record is considered valid for (non-inclusive).
+    Open-ended history records will have this set to the max timestamp value (9999-12-31
+    23:59:59.999999).
+- name: stripe_subscriptions_revised_changelog_id
+  type: STRING
+  mode: NULLABLE
+  description: ID of the `stripe_subscriptions_revised_changelog_v1` record this history
+    record was derived from.
 - name: subscription
   type: RECORD
   mode: NULLABLE
-  description: Stripe subscription.
+  description: Stripe subscription as it ostensibly was during the time range this
+    history record is considered valid for.
   fields:
   - name: id
     type: STRING
@@ -341,10 +354,28 @@ fields:
     mode: NULLABLE
     description: ID of the most recent invoice this subscription has generated.
   - name: metadata
-    type: JSON
+    type: RECORD
     mode: NULLABLE
-    description: Set of key-value pairs attached to the subscription, stored as a
-      JSON object.
+    description: Set of key-value pairs attached to the subscription.
+    fields:
+    - name: appliedPromotionCode
+      type: STRING
+      mode: NULLABLE
+      description: Promotion code applied to the subscription (if any).
+    - name: cancelled_for_customer_at
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: When the customer canceled the subscription, if they've done so.
+    - name: plan_change_date
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: The most recent time when the subscription plan was changed (if
+        any).
+    - name: previous_plan_id
+      type: STRING
+      mode: NULLABLE
+      description: ID of the previous plan the customer was subscribed to via this
+        subscription (if any).
   - name: pending_setup_intent_id
     type: STRING
     mode: NULLABLE

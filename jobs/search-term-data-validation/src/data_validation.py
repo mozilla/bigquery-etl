@@ -217,7 +217,7 @@ def range_check(
         q=[range_lower_bound, range_upper_bound]
     )
 
-    should_trigger = len(test_range[metric]) is not 0 and (
+    should_trigger = len(test_range[metric]) != 0 and (
         all(test_range[metric] > range_upper) or all(test_range[metric] < range_lower)
     )
 
@@ -307,7 +307,7 @@ def mean_check(
     )
 
     test_moving_averages = test_range[x_day_moving_average]
-    should_trigger = len(test_moving_averages) is not 0 and (
+    should_trigger = len(test_moving_averages) != 0 and (
         all(test_moving_averages > mean_upper) or all(test_moving_averages < mean_lower)
     )
     num_moving_averages_compared = int(

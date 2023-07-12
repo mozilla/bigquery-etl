@@ -363,9 +363,6 @@ view:
     - sql/glam-fenix-dev/glam_etl/**/view.sql
     # tests
     - sql/moz-fx-data-test-project/test/simple_view/view.sql
-  override: # Skip automatically updating the following views
-    skip:
-    - sql/moz-fx-data-shared-prod/mozilla_vpn/**/view.sql
 
 schema:
   mozilla_pipeline_schemas_uri: https://github.com/mozilla-services/mozilla-pipeline-schemas
@@ -391,3 +388,8 @@ render:
   skip:
   # uses {%s} which results in unknown tag exception
   - sql/mozfun/hist/string_to_json/udf.sql
+
+glean_usage:
+  override: # Skip automatically updating the following artifacts
+    skip:
+    - sql/moz-fx-data-shared-prod/mozilla_vpn/**

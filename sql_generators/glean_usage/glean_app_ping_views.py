@@ -162,7 +162,8 @@ class GleanAppPingViews(GleanTable):
                     full_view_id,
                     "view.sql",
                     rendered_view,
-                    skip_existing=True,
+                    skip_existing=get_table_dir(output_dir, full_view_id) / "view.sql"
+                    in self.override_skip(),
                 )
 
                 app_channels = [
@@ -178,7 +179,9 @@ class GleanAppPingViews(GleanTable):
                         app_name=release_app["canonical_app_name"],
                         app_channels=", ".join(app_channels),
                     ),
-                    skip_existing=True,
+                    skip_existing=get_table_dir(output_dir, full_view_id)
+                    / "metadata.yaml"
+                    in self.override_skip(),
                 )
 
                 schema_dir = get_table_dir(output_dir, full_view_id)

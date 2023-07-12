@@ -226,7 +226,7 @@ def upload_to_bigquery(csv_data, project, dataset, adjust_app_name, date):
             )
 
             # Table names are based on the app name seen in the Adjust dashboard"
-            destination = f"{project}.{dataset}.adjust_deliverables_v1${partition}"
+            destination = f"{project}.{dataset}.adjust_deliverables_v1_${partition}"
 
             job = client.load_table_from_file(f_csv, destination, job_config=job_config)
 
@@ -251,7 +251,7 @@ def main():
 
     # Cycle through the apps to get the relevant kpi data
     for app in app_list:
-        print(f'This is data for {app["app_name"]} - {app["app_token"]}')
+        print(f'This is data for {app["app_name"]}')
         # Ping the Adjust URL and get a response
         json_file = download_adjust_kpi_data(
             args.date, args.adjust_api_token, app["app_token"]

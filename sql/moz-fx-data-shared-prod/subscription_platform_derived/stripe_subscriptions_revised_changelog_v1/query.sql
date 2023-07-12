@@ -442,4 +442,8 @@ SELECT
 FROM
   changelog_union
 WHERE
-  DATE(`timestamp`) = @date
+  {% if is_init() %}
+    DATE(`timestamp`) < CURRENT_DATE()
+  {% else %}
+    DATE(`timestamp`) = @date
+  {% endif %}

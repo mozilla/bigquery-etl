@@ -22,8 +22,8 @@ fields:
 - name: stripe_subscriptions_changelog_id
   type: STRING
   mode: NULLABLE
-  description: ID of the `stripe_subscriptions_changelog_v1` record this changelog was
-    derived from.
+  description: ID of the `stripe_external.subscriptions_changelog_v1` record this
+    changelog was derived from.
 - name: subscription
   type: RECORD
   mode: NULLABLE

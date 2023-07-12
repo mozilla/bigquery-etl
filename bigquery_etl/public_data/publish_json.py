@@ -13,6 +13,7 @@ import smart_open
 from google.cloud import storage  # type: ignore
 from google.cloud import bigquery
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.metadata.validate_metadata import validate_public_data
 
@@ -23,8 +24,6 @@ MAX_JSON_SIZE = 1 * 1024 * 1024 * 1024  # 1 GB as max. size of exported JSON fil
 MAX_FILE_COUNT = 10_000
 # exported file name format: 000000000000.json, 000000000001.json, ...
 MAX_JSON_NAME_LENGTH = 12
-DEFAULT_BUCKET = "mozilla-public-data-http"
-DEFAULT_API_VERSION = "v1"
 
 logging.basicConfig(
     level=logging.DEBUG, format="%(asctime)s: %(levelname)s: %(message)s"
@@ -285,7 +284,9 @@ parser = ArgumentParser(description=__doc__)
 parser.add_argument(
     "--target-bucket",
     "--target_bucket",
-    default=DEFAULT_BUCKET,
+    default=ConfigLoader.get(
+        "public_data", "bucket", fallback="mozilla-public-data-http"
+    ),
     help="GCP bucket JSON data is exported to",
 )
 parser.add_argument(
@@ -297,7 +298,7 @@ parser.add_argument(
 parser.add_argument(
     "--api_version",
     "--api-version",
-    default=DEFAULT_API_VERSION,
+    default=ConfigLoader.get("public_data", "api_version", fallback="v1"),
     help="API version data is published under in the storage bucket",
 )
 parser.add_argument(

@@ -32,10 +32,8 @@ WITH baseline AS (
   ON
     client_info.client_id = client_id
   WHERE
-    submission_date <= @end_date
-    AND DATE(submission_timestamp)
-    BETWEEN @start_date
-    AND @end_date
+    joined.submission_date <= @submission_date
+    AND DATE(request.submission_timestamp) BETWEEN DATE_SUB(@submission_date, INTERVAL 28 DAY) AND @submission_date
 ),
 search_clients AS (
   SELECT
@@ -48,7 +46,7 @@ search_clients AS (
   FROM
     `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
   WHERE
-    submission_date = @submission_date
+    submission_date  <= @submission_date
     AND app_name = '{{ app_value }}'
 ),
 search_metrics AS (

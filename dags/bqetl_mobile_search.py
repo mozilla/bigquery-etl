@@ -81,10 +81,9 @@ with DAG(
         "search_derived__mobile_search_clients_daily__v1_external"
     ) as search_derived__mobile_search_clients_daily__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_search_derived__mobile_search_clients_daily__v1",
-            external_dag_id="bqetl_analytics_aggregations",
+            task_id="bqetl_kpis_shredder__wait_for_search_derived__mobile_search_clients_daily__v1",
+            external_dag_id="bqetl_kpis_shredder",
             external_task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
         )
 
         ExternalTaskMarker(

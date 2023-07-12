@@ -12,7 +12,6 @@ scheduling:
   dag_name: bqetl_kpis_shredder
   task_name: {{ app_name }}_active_users_aggregates_for_deletion_requests
   date_partition_parameter: partition_date
-  {% raw %}parameters: ["end_date:DATE:{{macros.ds_add(ds, 27)}}", "start_date:DATE:{{macros.ds_add(ds, 27-28*4)}}"]{% endraw %}
 bigquery:
   time_partitioning:
     type: day

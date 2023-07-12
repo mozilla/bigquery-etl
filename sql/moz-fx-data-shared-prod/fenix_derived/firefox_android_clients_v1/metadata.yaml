@@ -40,8 +40,7 @@ scheduling:
   - task_id: baseline_clients_daily
     dag_name: copy_deduplicate
     execution_delta: 1h
-  parameters:
-  - submission_date:DATE:{{ds}}
+  parameters: ['submission_date:DATE:{{ds}}']
 bigquery:
   time_partitioning:
     type: day

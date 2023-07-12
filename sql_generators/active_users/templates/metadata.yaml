@@ -30,7 +30,7 @@ bigquery:
     require_partition_filter: true
   clustering:
     fields:
-      - country
-      - app_name
-      - attribution_medium
-      - channel
+    - country
+    - app_name
+    - attribution_medium
+    - channel

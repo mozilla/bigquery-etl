@@ -1,0 +1,17 @@
+friendly_name: Suggest Revenue Levers Daily
+description: |-
+  Daily metrics identified as Suggest revenue levers, including DOU,
+  urlbar search volume, Suggest impressions & Suggest ad impressions, and Suggest ad clicks.
+owners:
+- skahmann@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_ctxsvc_derived
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null

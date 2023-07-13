@@ -7,7 +7,6 @@ owners:
   - lvargas@mozilla.com
 labels:
   incremental: true
-  change_controlled: true
 scheduling:
   dag_name: bqetl_kpis_shredder
   task_name: {{ app_name }}_active_users_aggregates_for_deletion_requests
@@ -19,7 +18,7 @@ bigquery:
     require_partition_filter: true
   clustering:
     fields:
-    - country
-    - app_name
-    - attribution_medium
-    - channel
+      - country
+      - app_name
+      - attribution_medium
+      - channel

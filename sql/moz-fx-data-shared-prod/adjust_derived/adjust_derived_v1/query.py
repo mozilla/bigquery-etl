@@ -264,11 +264,12 @@ def main():
         if query_export is not None:
             # This section writes the tmp json data into a temp CSV file which will then be put into a BigQuery table
             adjust_data = clean_json(query_export)
-            data.append(adjust_data)
+            for datum in adjust_data:
+                data.append(datum)
         else:
             print(f'no data for {app["app_name"]} today')
 
-    upload_to_bigquery(data, args.project, args.dataset, args.date)
+    # upload_to_bigquery(data, args.project, args.dataset, args.date)
 
 
 if __name__ == "__main__":

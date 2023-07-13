@@ -451,11 +451,14 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
 
     # replace partitions in production table that have been backfilled
     for backfill_date in dates:
+        if backfill_date in entry_to_complete.excluded_dates:
+            click.echo(f"Skipping excluded date: {backfill_date})
+            continue
+            
         partition = backfill_date.strftime("%Y%m%d")
-        if backfill_date not in entry_to_complete.excluded_dates:
-            production_table = f"{qualified_table_name}${partition}"
-            backfill_table = f"{backfill_staging_qualified_table_name}${partition}"
-            _copy_table(backfill_table, production_table, client)
+        production_table = f"{qualified_table_name}${partition}"
+        backfill_table = f"{backfill_staging_qualified_table_name}${partition}"
+        _copy_table(backfill_table, production_table, client)
 
     # delete backfill staging table
     client.delete_table(backfill_staging_qualified_table_name)

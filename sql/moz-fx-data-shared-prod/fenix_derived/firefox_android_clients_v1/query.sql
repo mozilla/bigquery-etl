@@ -202,7 +202,7 @@ _current AS (
         WHEN baseline.client_id IS NULL
           THEN FALSE
         ELSE TRUE
-      END AS reported_baseline_ping
+      END AS reported_baseline_ping,
       DATE(first_session.min_submission_datetime) AS min_first_session_ping_submission_date,
       DATE(first_session.first_run_datetime) AS min_first_session_ping_run_date,
       DATE(metrics.min_submission_datetime) AS min_metrics_ping_submission_date,

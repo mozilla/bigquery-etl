@@ -7,7 +7,7 @@ from datetime import date, datetime, timedelta
 import click
 import yaml
 from google.cloud import bigquery
-from google.cloud.exceptions import NotFound
+from google.cloud.exceptions import Conflict, NotFound
 
 from ..backfill.parse import (
     BACKFILL_FILE,
@@ -452,9 +452,9 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
     # replace partitions in production table that have been backfilled
     for backfill_date in dates:
         if backfill_date in entry_to_complete.excluded_dates:
-            click.echo(f"Skipping excluded date: {backfill_date})
+            click.echo(f"Skipping excluded date: {backfill_date}")
             continue
-            
+
         partition = backfill_date.strftime("%Y%m%d")
         production_table = f"{qualified_table_name}${partition}"
         backfill_table = f"{backfill_staging_qualified_table_name}${partition}"
@@ -502,8 +502,11 @@ def _copy_table(
             destination_table,
             job_config=copy_config,
         ).result()
-    except Exception as e:
-        print(f"Unable to clone table {source_table} with error: {e}")
+    except NotFound:
+        click.echo(f"Source table not found: {source_table}")
+        sys.exit(1)
+    except Conflict:
+        print(f"Backup table already exists: {destination_table}")
         sys.exit(1)
 
     click.echo(

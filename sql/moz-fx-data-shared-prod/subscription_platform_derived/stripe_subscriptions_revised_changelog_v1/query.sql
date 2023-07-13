@@ -92,12 +92,26 @@ WITH original_changelog AS (
     id,
     `timestamp`,
     synced_at,
-    subscription,
+    (
+      SELECT AS STRUCT
+        subscription.* REPLACE (
+          STRUCT(
+            JSON_VALUE(subscription.metadata.appliedPromotionCode) AS appliedPromotionCode,
+            TIMESTAMP_SECONDS(
+              CAST(JSON_VALUE(subscription.metadata.cancelled_for_customer_at) AS INT64)
+            ) AS cancelled_for_customer_at,
+            TIMESTAMP_SECONDS(
+              CAST(JSON_VALUE(subscription.metadata.plan_change_date) AS INT64)
+            ) AS plan_change_date,
+            JSON_VALUE(subscription.metadata.previous_plan_id) AS previous_plan_id
+          ) AS metadata
+        )
+    ) AS subscription,
     ROW_NUMBER() OVER subscription_changes_asc AS subscription_change_number,
     LEAD(`timestamp`) OVER subscription_changes_asc AS next_subscription_change_at,
     LAG(subscription.ended_at) OVER subscription_changes_asc AS previous_subscription_ended_at
   FROM
-    `moz-fx-data-shared-prod`.subscription_platform_derived.stripe_subscriptions_changelog_v1
+    `moz-fx-data-shared-prod`.stripe_external.subscriptions_changelog_v1
   WINDOW
     subscription_changes_asc AS (
       PARTITION BY
@@ -428,4 +442,8 @@ SELECT
 FROM
   changelog_union
 WHERE
-  DATE(`timestamp`) = @date
+  {% if is_init() %}
+    DATE(`timestamp`) < CURRENT_DATE()
+  {% else %}
+    DATE(`timestamp`) = @date
+  {% endif %}

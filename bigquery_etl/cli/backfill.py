@@ -35,6 +35,7 @@ from ..backfill.validate import (
 from ..cli.query import backfill as query_backfill
 from ..cli.query import deploy
 from ..cli.utils import is_authenticated, project_id_option, sql_dir_option
+from ..config import ConfigLoader
 
 
 @click.group(help="Commands for managing backfills.")
@@ -163,7 +164,9 @@ def create(
 )
 @click.argument("qualified_table_name", required=False)
 @sql_dir_option
-@project_id_option("moz-fx-data-shared-prod")
+@project_id_option(
+    ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
+)
 @click.pass_context
 def validate(
     ctx,
@@ -228,7 +231,9 @@ def validate(
 )
 @click.argument("qualified_table_name", required=False)
 @sql_dir_option
-@project_id_option("moz-fx-data-shared-prod")
+@project_id_option(
+    ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
+)
 @click.option(
     "--status",
     type=click.Choice([s.value.lower() for s in BackfillStatus]),
@@ -282,7 +287,9 @@ def info(ctx, qualified_table_name, sql_dir, project_id, status):
 )
 @click.argument("qualified_table_name", required=False)
 @sql_dir_option
-@project_id_option("moz-fx-data-shared-prod")
+@project_id_option(
+    ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
+)
 @click.pass_context
 def scheduled(ctx, qualified_table_name, sql_dir, project_id):
     """Return list of backfill(s) that require processing."""
@@ -321,7 +328,9 @@ def scheduled(ctx, qualified_table_name, sql_dir, project_id):
 )
 @click.argument("qualified_table_name")
 @sql_dir_option
-@project_id_option("moz-fx-data-shared-prod")
+@project_id_option(
+    ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
+)
 @click.option(
     "--dry_run/--no_dry_run",
     "--dry-run/--no-dry-run",

@@ -269,7 +269,7 @@ def main():
         else:
             print(f'no data for {app["app_name"]} today')
 
-    # upload_to_bigquery(data, args.project, args.dataset, args.date)
+    upload_to_bigquery(data, args.project, args.dataset, args.date)
 
 
 if __name__ == "__main__":

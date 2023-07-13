@@ -14195,6 +14195,12 @@ fields:
     - name: search_service_init2_ms
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_deprecated_size_to_content_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_size_to_content_page
+      type: STRING
+      mode: NULLABLE
   - name: info
     type: RECORD
     mode: NULLABLE
@@ -29473,6 +29479,12 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: fingerprinting_protection_canvas_noise_calculate_time_ms
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_size_to_content_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_size_to_content_page
           type: STRING
           mode: NULLABLE
       - name: keyed_histograms

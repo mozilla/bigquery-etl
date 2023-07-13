@@ -442,7 +442,7 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
     # clone production table
     cloned_table_id = f"{table}_backup_{entry_to_complete.entry_date}".replace("-", "_")
     cloned_table_full_name = f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
-    _copy_table(qualified_table_name, cloned_table_full_name, client, True)
+    _copy_table(qualified_table_name, cloned_table_full_name, client, clone=True)
 
     # copy backfill data to production data
     start_date = entry_to_complete.start_date

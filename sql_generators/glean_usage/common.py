@@ -162,15 +162,14 @@ class GleanTable:
         self.per_app_enabled = True
         self.cross_channel_template = "cross_channel.view.sql"
 
-    def override_skip(self):
-        """Files configured not to be overridden during generation."""
+    def skip_existing(self):
+        """Existing files configured not to be overridden during generation."""
         return [
             file
-            for skip in ConfigLoader.get("glean_usage", "override", "skip", fallback=[])
-            for file in glob.glob(
-                skip,
-                recursive=True,
+            for skip_existing in ConfigLoader.get(
+                "generate", "glean_usage", "skip_existing", fallback=[]
             )
+            for file in glob.glob(skip_existing, recursive=True)
         ]
 
     def generate_per_app_id(
@@ -235,6 +234,8 @@ class GleanTable:
         if not (referenced_table_exists(view_sql)):
             logging.info("Skipping view for table which doesn't exist:" f" {table}")
             return
+        
+        skip_existing_artifact = self.skip_existing()
 
         if output_dir:
             # generated files to update
@@ -253,7 +254,7 @@ class GleanTable:
                 destination = (
                     get_table_dir(output_dir, artifact.table_id) / artifact.basename
                 )
-                skip_existing = destination in self.override_skip()
+                skip_existing = destination in skip_existing_artifact
 
                 write_sql(
                     output_dir,
@@ -300,6 +301,8 @@ class GleanTable:
         )
         render_kwargs.update(self.custom_render_kwargs)
 
+        skip_existing_artifacts = self.skip_existing()
+
         Artifact = namedtuple("Artifact", "table_id basename sql")
 
         if self.cross_channel_template:
@@ -319,7 +322,8 @@ class GleanTable:
 
             if output_dir:
                 skip_existing = (
-                    get_table_dir(output_dir, view) / "view.sql" in self.override_skip()
+                    get_table_dir(output_dir, view) / "view.sql"
+                    in skip_existing_artifacts
                 )
                 write_sql(
                     output_dir, view, "view.sql", sql, skip_existing=skip_existing
@@ -352,11 +356,7 @@ class GleanTable:
 
             if output_dir:
                 artifacts = [
-                    Artifact(
-                        table,
-                        "query.sql",
-                        query_sql,
-                    ),
+                    Artifact(table, "query.sql", query_sql),
                     Artifact(table, "metadata.yaml", metadata),
                     Artifact(view, "view.sql", view_sql),
                 ]
@@ -365,7 +365,7 @@ class GleanTable:
                     destination = (
                         get_table_dir(output_dir, artifact.table_id) / artifact.basename
                     )
-                    skip_existing = destination in self.override_skip()
+                    skip_existing = destination in skip_existing_artifacts
 
                     write_sql(
                         output_dir,

@@ -101,6 +101,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_revised_changelog_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/query.sql
   - sql/moz-fx-data-shared-prod/stripe/itemized_payout_reconciliation/view.sql
+  - sql/moz-fx-data-shared-prod/stripe/itemized_tax_transactions/view.sql
   - sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/mozilla_vpn_derived/devices_v1/query.sql
   - sql/moz-fx-data-shared-prod/mozilla_vpn_derived/fxa_attribution_v1/query.sql
@@ -139,6 +140,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_summary/view.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_suggest_v2/query.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_tiles_v2/query.sql
+  - sql/moz-fx-data-shared-prod/contextual_services_derived/suggest_revenue_levers_daily_v1/query.sql
   - sql/moz-fx-data-shared-prod/regrets_reporter_derived/regrets_reporter_summary_v1/*.sql
   - sql/moz-fx-data-shared-prod/mlhackweek_search/**/*.sql
   - sql/moz-fx-data-shared-prod/regrets_reporter_ucs/**/*.sql
@@ -350,11 +352,12 @@ view:
     - sql/moz-fx-data-shared-prod/regrets_reporter_ucs/main_events/view.sql
     - sql/moz-fx-data-shared-prod/mlhackweek_search/action/view.sql
     - sql/moz-fx-data-shared-prod/**/client_deduplication/view.sql
+    - sql/moz-fx-data-shared-prod/stripe/itemized_tax_transactions/view.sql
   publish:
     skip:
-    - sql/activity_stream/tile_id_types/view.sql
-    - sql/pocket/pocket_reach_mau/view.sql
-    - sql/telemetry/buildhub2/view.sql
+    - sql/moz-fx-data-shared-prod/activity_stream/tile_id_types/view.sql
+    - sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql
+    - sql/moz-fx-data-shared-prod/telemetry/buildhub2/view.sql
     # Dataset glam-fenix-dev:glam_etl was not found
     # TODO: this should be removed if views are to be automatically deployed
     - sql/glam-fenix-dev/glam_etl/**/view.sql

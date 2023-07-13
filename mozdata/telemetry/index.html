@@ -15617,47 +15617,6 @@ and to contain only one row per distinct <code>document_id</code> within a given
 <h2 id="event_types"><a href="#event_types">event_types</a></h2>
 <p><code>telemetry.event_types</code></p>
 <table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>category</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>event</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>first_timestamp</td>
-        <td></td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>numeric_index</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>index</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>event_properties</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr>
-</table>
-
-<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -16295,6 +16254,37 @@ and to contain only one row per distinct <code>document_id</code> within a given
 <h2 id="experiment_cumulative_ad_clicks"><a href="#experiment_cumulative_ad_clicks">experiment_cumulative_ad_clicks</a></h2>
 <p><code>telemetry.experiment_cumulative_ad_clicks</code></p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>time</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>experiment</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>branch</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>value</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -16313,6 +16303,37 @@ and to contain only one row per distinct <code>document_id</code> within a given
 <h2 id="experiment_cumulative_search_count"><a href="#experiment_cumulative_search_count">experiment_cumulative_search_count</a></h2>
 <p><code>telemetry.experiment_cumulative_search_count</code></p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>time</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>experiment</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>branch</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>value</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -16330,6 +16351,37 @@ and to contain only one row per distinct <code>document_id</code> within a given
 <hr />
 <h2 id="experiment_cumulative_search_with_ads_count"><a href="#experiment_cumulative_search_with_ads_count">experiment_cumulative_search_with_ads_count</a></h2>
 <p><code>telemetry.experiment_cumulative_search_with_ads_count</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>time</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>experiment</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>branch</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>value</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -26382,52 +26434,6 @@ client-level tables. The underlying table was initially created on 2021-02-19.</
 <hr />
 <h2 id="firefox_nondesktop_exact_mau28_v1"><a href="#firefox_nondesktop_exact_mau28_v1">firefox_nondesktop_exact_mau28_v1</a></h2>
 <p><code>telemetry.firefox_nondesktop_exact_mau28_v1</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>submission_date</td>
-        <td></td>
-        <td>Date</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>mau</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>wau</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>dau</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>tier1_mau</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>tier1_wau</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>tier1_dau</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
 <table>
 <caption>Referenced Tables</caption>
     <tr>

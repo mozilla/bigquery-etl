@@ -2755,6 +2755,16 @@ fields:
       description: 'The number of visits in a User''s history database
 
         '
+    - name: tabs_inactive_tabs_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A quantity that indicates how many INACTIVE tabs a user
+
+        currently has open. This is reported when the user backgrounds
+
+        the app.
+
+        '
   - name: rate
     type: RECORD
     mode: NULLABLE

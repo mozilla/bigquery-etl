@@ -45,11 +45,11 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    adjust_derived__adjust_derived__v1 = gke_command(
-        task_id="adjust_derived__adjust_derived__v1",
+    adjust_derived__adjust_deliverables__v1 = gke_command(
+        task_id="adjust_derived__adjust_deliverables__v1",
         command=[
             "python",
-            "sql/moz-fx-data-shared-prod/adjust_derived/adjust_derived_v1/query.py",
+            "sql/moz-fx-data-shared-prod/adjust_derived/adjust_deliverables_v1/query.py",
         ]
         + [
             "--date",

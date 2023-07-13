@@ -1602,6 +1602,9 @@ fields:
     - name: history_num_visits
       type: INTEGER
       mode: NULLABLE
+    - name: tabs_inactive_tabs_count
+      type: INTEGER
+      mode: NULLABLE
   - name: rate
     type: RECORD
     mode: NULLABLE

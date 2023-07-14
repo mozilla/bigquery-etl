@@ -398,4 +398,4 @@ FROM
 FULL OUTER JOIN
   _previous
 USING
-  (client_id, chanel)
+  (client_id, channel)

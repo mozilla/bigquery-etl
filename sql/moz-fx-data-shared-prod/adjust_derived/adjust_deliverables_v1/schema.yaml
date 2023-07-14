@@ -61,5 +61,5 @@ fields:
   name: activity_type
   type: STRING
 - mode: NULLABLE
-  name: submission_date
+  name: date
   type: DATE

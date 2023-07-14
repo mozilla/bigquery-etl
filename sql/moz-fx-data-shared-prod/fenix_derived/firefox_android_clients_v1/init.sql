@@ -19,7 +19,6 @@ WITH baseline_clients AS (
     `moz-fx-data-shared-prod.fenix.baseline_clients_daily`
   WHERE
     submission_date >= '2020-01-21'
-    AND normalized_channel = 'release'
 ),
 first_seen AS (
   SELECT
@@ -42,21 +41,24 @@ first_seen AS (
     is_new_profile
 ),
 -- Find the most recent activation record per client_id. Data available since '2021-12-01'
+-- TODO: fenix.new_profile_activation only contains data for release channel
 activations AS (
   SELECT
     client_id,
+    normalized_channel AS channel,
     ARRAY_AGG(activated ORDER BY submission_date DESC)[SAFE_OFFSET(0)] > 0 AS activated,
   FROM
     `moz-fx-data-shared-prod.fenix.new_profile_activation`
   WHERE
     submission_date >= '2021-12-01'
   GROUP BY
-    client_id
+    client_id, normalized_channel
 ),
 -- Find earliest data per client from the first_session ping.
 first_session_ping AS (
   SELECT
     client_info.client_id AS client_id,
+    normalized_channel AS channel,
     MIN(sample_id) AS sample_id,
     DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
     MIN(SAFE.PARSE_DATETIME('%F', SUBSTR(client_info.first_run_date, 1, 10))) AS first_run_datetime,
@@ -78,13 +80,14 @@ first_session_ping AS (
     DATE(submission_timestamp) >= '2019-01-01'
     AND ping_info.seq = 0 -- Pings are sent in sequence, this guarantees that the first one is returned.
   GROUP BY
-    client_id
+    client_id, normalized_channel
 ),
 -- Find earliest data per client from the metrics ping.
 metrics_ping AS (
   -- Fenix Release
   SELECT
     client_info.client_id AS client_id,
+    normalized_channel AS channel,
     MIN(sample_id) AS sample_id,
     DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
     ARRAY_AGG(
@@ -129,16 +132,17 @@ metrics_ping AS (
         submission_timestamp DESC
     )[SAFE_OFFSET(0)] AS last_reported_adjust_campaign,
   FROM
-    org_mozilla_firefox.metrics AS org_mozilla_firefox_metrics
+    fenix.metrics AS fenix_metrics
   WHERE
     DATE(submission_timestamp) >= '2019-01-01'
   GROUP BY
-    client_id
+    client_id, normalized_channel
 ),
 -- Find most recent client details from the baseline ping.
 baseline_ping AS (
   SELECT
     client_id,
+    channel,
     MAX(submission_date) AS last_reported_date,
     ARRAY_AGG(country IGNORE NULLS ORDER BY submission_date DESC)[
       SAFE_OFFSET(0)
@@ -155,7 +159,7 @@ baseline_ping AS (
   FROM
     baseline_clients
   GROUP BY
-    client_id
+    client_id, channel
 )
 SELECT
   client_id,
@@ -273,18 +277,18 @@ FROM
 FULL OUTER JOIN
   first_session_ping first_session
 USING
-  (client_id)
+  (client_id, channel)
 FULL OUTER JOIN
   metrics_ping AS metrics
 USING
-  (client_id)
+  (client_id, channel)
 FULL OUTER JOIN
   baseline_ping AS baseline
 USING
-  (client_id)
+  (client_id, channel)
 LEFT JOIN
   activations
 USING
-  (client_id)
+  (client_id, channel)
 WHERE
   client_id IS NOT NULL

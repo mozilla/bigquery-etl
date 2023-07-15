@@ -538,6 +538,9 @@ fields:
     - name: logins_saved
       type: INTEGER
       mode: NULLABLE
+    - name: home_screen_standard_homepage_view_count
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -7529,6 +7532,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: extensions_startup_cache_load_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: play_store_attribution_deferred_deeplink_time
       type: RECORD
       mode: NULLABLE
       fields:

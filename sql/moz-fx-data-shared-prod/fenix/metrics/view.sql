@@ -305,7 +305,8 @@ SELECT
       metrics.counter.settings_sign_into_sync,
       metrics.counter.logins_deleted,
       metrics.counter.logins_modified,
-      metrics.counter.logins_saved
+      metrics.counter.logins_saved,
+      metrics.counter.home_screen_standard_homepage_view_count
     ) AS counter,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -779,7 +780,8 @@ SELECT
       metrics.counter.settings_sign_into_sync,
       metrics.counter.logins_deleted,
       metrics.counter.logins_modified,
-      metrics.counter.logins_saved
+      metrics.counter.logins_saved,
+      metrics.counter.home_screen_standard_homepage_view_count
     ) AS counter,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,

@@ -1210,6 +1210,14 @@ fields:
         deleted).
 
         '
+    - name: home_screen_standard_homepage_view_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times the standard browsing mode home screen was
+
+        displayed to the user. (for tile counts)
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -9819,6 +9827,20 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Time to load and deserialize the extensions startupCache data.
+
+        '
+    - name: play_store_attribution_deferred_deeplink_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The time that it takes to receive deferred deeplink from the Google
+        Play Store.
 
         '
   - name: url2

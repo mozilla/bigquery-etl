@@ -1,7 +1,6 @@
 """Threaded TopologialSorter."""
 
 import multiprocessing
-import queue
 from copy import deepcopy
 from graphlib import TopologicalSorter
 from typing import Dict, Set
@@ -42,7 +41,7 @@ class ParallelTopologicalSorter:
         processes = []
 
         if self.with_follow_up:
-            followup_queue = queue.Queue()
+            followup_queue = multiprocessing.Queue()
         else:
             followup_queue = None
 

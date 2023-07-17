@@ -1,0 +1,37 @@
+fields:
+
+- mode: NULLABLE
+  name: date
+  type: DATE
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: views
+  type: INTEGER
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: downloads
+  type: INTEGER
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: new_profiles
+  type: INTEGER
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: activations
+  type: INTEGER
+  description: |
+    TODO

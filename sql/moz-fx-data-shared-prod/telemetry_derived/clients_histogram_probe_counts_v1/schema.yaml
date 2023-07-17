@@ -65,3 +65,14 @@ fields:
   mode: REPEATED
   name: aggregates
   type: RECORD
+
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: FLOAT
+  mode: REPEATED
+  name: non_norm_aggregates
+  type: RECORD

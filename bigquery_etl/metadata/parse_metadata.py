@@ -232,8 +232,6 @@ class Metadata:
                 description = metadata.get("description", None)
 
                 if "labels" in metadata:
-                    labels = {}
-
                     for key, label in metadata["labels"].items():
                         if isinstance(label, bool):
                             # publish key-value pair with bool value as tag
@@ -247,6 +245,10 @@ class Metadata:
 
                 if "scheduling" in metadata:
                     scheduling = metadata["scheduling"]
+                    if "dag_name" in scheduling and cls.is_valid_label(
+                        scheduling["dag_name"]
+                    ):
+                        labels["dag"] = scheduling["dag_name"]
 
                 if "bigquery" in metadata and metadata["bigquery"]:
                     converter = cattrs.BaseConverter()

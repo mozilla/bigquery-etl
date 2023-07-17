@@ -16,6 +16,6 @@ bigquery:
     expiration_days: null
   clustering:
     fields:
-    - release_channel
+    - normalized_channel
     - sample_id
 references: {}

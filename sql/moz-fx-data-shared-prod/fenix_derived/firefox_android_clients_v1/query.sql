@@ -54,6 +54,16 @@ activations AS (
     client_id
 ),
 -- Find earliest data per client from the first_session ping.
+first_session_ping_min_seq AS (
+  SELECT
+    client_info.client_id AS client_id,
+    MIN(ping_info.seq) AS seq -- Pings are sent in sequence, this guarantees that the first one is returned.
+  FROM
+    `moz-fx-data-shared-prod.fenix.first_session` AS fenix_first_session
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    client_id ),
 first_session_ping AS (
   SELECT
     client_info.client_id AS client_id,
@@ -74,9 +84,12 @@ first_session_ping AS (
     ] AS adjust_creative
   FROM
     fenix.first_session AS fenix_first_session
+  INNER JOIN
+    first_session_ping_min_seq
+  ON
+    client_info.client_id = first_session_ping_min_seq.client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND ping_info.seq = 0 -- Pings are sent in sequence, this guarantees that the first one is returned.
   GROUP BY
     client_id
 ),

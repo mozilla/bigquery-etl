@@ -1434,9 +1434,15 @@ aggregates AS (
     SUM(text_recognition_text_length_count) AS text_recognition_text_length_count_sum,
     SUM(places_searchbar_cumulative_searches) AS places_searchbar_cumulative_searches_sum,
     SUM(places_searchbar_cumulative_filter_count) AS places_searchbar_cumulative_filter_count_sum,
-    SUM(places_library_cumulative_bookmark_searches) AS places_library_cumulative_bookmark_searches_sum,
-    SUM(places_library_cumulative_history_searches) AS places_library_cumulative_history_searches_sum,
-    SUM(places_bookmarks_searchbar_cumulative_searches) AS places_bookmarks_searchbar_cumulative_searches_sum,
+    SUM(
+      places_library_cumulative_bookmark_searches
+    ) AS places_library_cumulative_bookmark_searches_sum,
+    SUM(
+      places_library_cumulative_history_searches
+    ) AS places_library_cumulative_history_searches_sum,
+    SUM(
+      places_bookmarks_searchbar_cumulative_searches
+    ) AS places_bookmarks_searchbar_cumulative_searches_sum,
     LOGICAL_OR(
       scalar_parent_dom_parentprocess_private_window_used
     ) AS dom_parentprocess_private_window_used,

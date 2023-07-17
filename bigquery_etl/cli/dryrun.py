@@ -13,7 +13,8 @@ import click
 from google.cloud import bigquery
 
 from ..cli.utils import is_authenticated
-from ..dryrun import SKIP, DryRun
+from ..config import ConfigLoader
+from ..dryrun import DryRun
 
 
 @click.command(
@@ -55,13 +56,13 @@ from ..dryrun import SKIP, DryRun
 )
 @click.option(
     "--respect-skip/--ignore-skip",
-    help="Respect or ignore query SKIP configuration. Default is --respect-skip.",
+    help="Respect or ignore query skip configuration. Default is --respect-skip.",
     default=True,
 )
 @click.option(
     "--project",
     help="GCP project to perform dry run in when --use_cloud_function=False",
-    default="moz-fx-data-shared-prod",
+    default=ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod"),
 )
 def dryrun(
     paths: List[str],
@@ -89,7 +90,7 @@ def dryrun(
             click.echo(f"Invalid path {path}", err=True)
             sys.exit(1)
     if respect_skip:
-        sql_files -= SKIP
+        sql_files -= DryRun.skipped_files()
 
     if not sql_files:
         print("Skipping dry run because no queries matched")

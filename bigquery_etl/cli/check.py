@@ -3,9 +3,11 @@ import re
 import subprocess
 import sys
 import tempfile
+from pathlib import Path
 from subprocess import CalledProcessError
 
 import click
+import sqlparse
 
 from ..cli.utils import (
     is_authenticated,
@@ -112,6 +114,8 @@ def _run_check(
     if checks_file is None:
         return
 
+    checks_file = Path(checks_file)
+
     query_arguments.append("--use_legacy_sql=false")
     if project_id is not None:
         query_arguments.append(f"--project_id={project_id}")
@@ -124,23 +128,38 @@ def _run_check(
         **parameters,
     }
 
-    with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
-        query_stream.write(
-            render_template(
-                checks_file.name,
-                template_folder=str(checks_file.parent),
-                templates_dir="",
-                format=False,
-                **jinja_params,
-            )
-        )
-        query_stream.seek(0)
+    rendered_result = render_template(
+        checks_file.name,
+        template_folder=str(checks_file.parent),
+        templates_dir="",
+        format=False,
+        **jinja_params,
+    )
 
-        # run the query as shell command so that passed parameters can be used as is
-        try:
-            subprocess.check_output(
-                ["bq", "query"] + query_arguments, stdin=query_stream, encoding="UTF-8"
-            )
-        except CalledProcessError as e:
-            print(_parse_check_output(e.output))
-            sys.exit(1)
+    checks = sqlparse.split(rendered_result)
+    seek_location = 0
+    check_failed = False
+
+    with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
+        for rendered_check in checks:
+            # since the last check will end with ; the last entry will be empty string.
+            if len(rendered_check) == 0:
+                continue
+            rendered_check = rendered_check.strip()
+            query_stream.write(rendered_check)
+            query_stream.seek(seek_location)
+            seek_location += len(rendered_check)
+
+            # run the query as shell command so that passed parameters can be used as is
+            try:
+                subprocess.check_output(
+                    ["bq", "query"] + query_arguments,
+                    stdin=query_stream,
+                    encoding="UTF-8",
+                )
+            except CalledProcessError as e:
+                print(_parse_check_output(e.output))
+                check_failed = True
+
+    if check_failed:
+        sys.exit(1)

@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_download_funnel_attribution
@@ -43,6 +43,17 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+    checks__ga_derived__downloads_with_attribution__v2 = bigquery_dq_check(
+        task_id="checks__ga_derived__downloads_with_attribution__v2",
+        source_table='downloads_with_attribution_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="ga_derived",
+        project_id="moz-fx-data-marketing-prod",
+        owner="gleonard@mozilla.com",
+        email=["gleonard@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["download_date:DATE:{{macros.ds_add(ds, -1)}}"],
+    )
+
     ga_derived__downloads_with_attribution__v2 = bigquery_etl_query(
         task_id="ga_derived__downloads_with_attribution__v2",
         destination_table='downloads_with_attribution_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
@@ -53,6 +64,10 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["download_date:DATE:{{macros.ds_add(ds, -1)}}"],
+    )
+
+    checks__ga_derived__downloads_with_attribution__v2.set_upstream(
+        ga_derived__downloads_with_attribution__v2
     )
 
     wait_for_ga_derived__www_site_empty_check__v1 = ExternalTaskSensor(

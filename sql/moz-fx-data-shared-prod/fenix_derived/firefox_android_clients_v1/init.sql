@@ -221,24 +221,24 @@ SELECT
     DATE(first_session.min_submission_datetime) AS min_first_session_ping_submission_date,
     DATE(first_session.first_run_datetime) AS min_first_session_ping_run_date,
     DATE(metrics.min_submission_datetime) AS min_metrics_ping_submission_date,
-    CASE
-      mozfun.norm.get_earliest_value(
-        [
-          (
-            STRUCT(
-              CAST(first_session.adjust_network AS STRING),
-              first_session.min_submission_datetime
-            )
-          ),
-          (STRUCT(CAST(metrics.adjust_network AS STRING), metrics.min_submission_datetime))
-        ]
-      )
-      WHEN STRUCT(first_session.adjust_network, first_session.min_submission_datetime)
-        THEN 'first_session'
-      WHEN STRUCT(metrics.adjust_network, metrics.min_submission_datetime)
-        THEN 'metrics'
-      ELSE NULL
-    END AS adjust_network__source_ping,
+    mozfun.norm.get_earliest_value(
+      [
+        (
+          STRUCT(
+            CAST(first_session.adjust_network AS STRING),
+            'first_session_ping',
+            DATETIME(first_session.min_submission_datetime)
+          )
+        ),
+        (
+          STRUCT(
+            CAST(metrics.adjust_network AS STRING),
+            'metrics_ping',
+            DATETIME(metrics.min_submission_datetime)
+          )
+        )
+      ]
+    ).earliest_value_source AS adjust_network__source_ping,
     CASE
       WHEN metrics.install_source IS NOT NULL
         THEN 'metrics'
@@ -249,10 +249,17 @@ SELECT
         (
           STRUCT(
             CAST(first_session.adjust_network AS STRING),
-            first_session.min_submission_datetime
+            'first_session_ping',
+            DATETIME(first_session.min_submission_datetime)
           )
         ),
-        (STRUCT(CAST(metrics.adjust_network AS STRING), metrics.min_submission_datetime))
+        (
+          STRUCT(
+            CAST(metrics.adjust_network AS STRING),
+            'metrics_ping',
+            DATETIME(metrics.min_submission_datetime)
+          )
+        )
       ]
     ).earliest_date AS adjust_network__source_ping_datetime,
     CASE

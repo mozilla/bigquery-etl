@@ -12,7 +12,10 @@ WITH legacy_subscriptions AS (
     subscriptions.updated_at,
     mozfun.iap.parse_apple_receipt(subscriptions.provider_receipt_json) AS apple_receipt,
   FROM
-    `moz-fx-data-shared-prod`.mozilla_vpn_external.subscriptions_v1 AS subscriptions
+    -- Use a snapshot of the subscriptions table from 2023-01-17 because the Apple receipts
+    -- were getting erased from the subscriptions migrated to FxA in December 2022 (VPN-3921),
+    -- and the provider-related columns will be removed from the subscriptions table (VPN-3797).
+    `moz-fx-data-shared-prod`.mozilla_vpn_external.subscriptions_20230117 AS subscriptions
   JOIN
     `moz-fx-data-shared-prod`.mozilla_vpn_external.users_v1 AS users
   ON

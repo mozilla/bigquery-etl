@@ -22,3 +22,4 @@ FROM
     group_by_client_id=False
   )
 }}
+

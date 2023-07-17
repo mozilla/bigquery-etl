@@ -1,0 +1,9 @@
+default:
+  test_project: bigquery-etl-integration-test
+
+dry_run:
+  function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun
+  skip:
+  # Access Denied
+  - sql/moz-fx-data-shared-prod/test_derived/some_query_v1/query.sql
+  - sql/moz-fx-data-shared-prod/test_derived/another_query_v1/query.sql

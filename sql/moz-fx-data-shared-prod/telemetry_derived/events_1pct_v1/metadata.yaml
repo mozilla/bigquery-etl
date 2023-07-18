@@ -23,3 +23,7 @@ bigquery:
     fields:
     - event_category
     - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

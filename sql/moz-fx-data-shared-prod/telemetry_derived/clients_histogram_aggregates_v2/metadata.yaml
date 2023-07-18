@@ -4,3 +4,7 @@ description: |-
   Intermediate table that holds the last 3 versions of histogram aggregates from Legacy Telemetry
 owners:
 - efilho@mozilla.com
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

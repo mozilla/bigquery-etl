@@ -1,4 +1,3 @@
-friendly_name: Latest Versions
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

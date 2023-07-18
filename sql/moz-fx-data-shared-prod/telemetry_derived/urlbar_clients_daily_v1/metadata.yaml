@@ -18,3 +18,7 @@ bigquery:
   clustering:
     fields:
     - normalized_channel
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

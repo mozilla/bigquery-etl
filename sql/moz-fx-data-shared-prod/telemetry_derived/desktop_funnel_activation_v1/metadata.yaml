@@ -4,3 +4,7 @@ description: >
 friendly_name: Firefox Desktop Funnel Activation
 owners:
   - ascholtz@mozilla.com
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

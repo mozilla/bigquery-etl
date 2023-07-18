@@ -11,3 +11,7 @@ labels:
   incremental: false
 scheduling:
   dag_name: bqetl_releases
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

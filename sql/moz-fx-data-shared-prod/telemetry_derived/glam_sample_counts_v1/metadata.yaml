@@ -4,3 +4,7 @@ description: |-
   Holds sample counts for all Legacy Telemetry probes supported by Glam
 owners:
 - efilho@mozilla.com
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

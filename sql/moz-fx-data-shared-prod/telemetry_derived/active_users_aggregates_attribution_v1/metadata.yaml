@@ -36,3 +36,7 @@ bigquery:
     - app_name
     - attribution_medium
 references: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

@@ -4,3 +4,7 @@ description: |-
   Holds data to be exported to GLAM in its final format
 owners:
 - efilho@mozilla.com
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

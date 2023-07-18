@@ -28,3 +28,7 @@ bigquery:
     - normalized_channel
     - sample_id
 references: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

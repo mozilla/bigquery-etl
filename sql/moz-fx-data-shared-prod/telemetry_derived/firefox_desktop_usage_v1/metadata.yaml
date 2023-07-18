@@ -35,3 +35,7 @@ bigquery:
     - attributed
     - country
     - country_name
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

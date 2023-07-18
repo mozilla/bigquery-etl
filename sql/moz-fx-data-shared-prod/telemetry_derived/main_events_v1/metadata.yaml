@@ -4,3 +4,7 @@ description: |-
   [DESCRIPTION_MISSING]
 owners:
 - data-platform-infra-wg@mozilla.com
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

@@ -18,3 +18,7 @@ bigquery:
     field: submission_date
     require_partition_filter: false
   clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

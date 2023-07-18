@@ -35,3 +35,7 @@ schema:
   derived_from:
   - table: ['moz-fx-data-shared-prod', 'telemetry_derived', 'clients_daily_v6']
     exclude: [submission_date]
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

@@ -59,3 +59,7 @@ labels:
   review_bugs:
     - 1633681
   incremental_export: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

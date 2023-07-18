@@ -3,19 +3,20 @@ fields:
   mode: NULLABLE
   name: submission_timestamp
   type: TIMESTAMP
-- description: A JSON string containing any payload properties not present in the schema
+- description: A JSON string containing any payload properties not present in the
+    schema
   mode: NULLABLE
   name: additional_properties
   type: STRING
-- description:
+- description: null
   mode: NULLABLE
   name: addon_version
   type: STRING
-- description:
+- description: null
   mode: NULLABLE
   name: bucket_id
   type: STRING
-- description:
+- description: null
   mode: NULLABLE
   name: client_id
   type: STRING
@@ -31,21 +32,22 @@ fields:
   mode: NULLABLE
   name: event_context
   type: STRING
-- description: A UUID representing this user. Note that it is not client_id, nor can it be used to link to a client_id
+- description: A UUID representing this user. Note that it is not client_id, nor can
+    it be used to link to a client_id
   mode: NULLABLE
   name: impression_id
   type: STRING
-- description:
+- description: null
   mode: NULLABLE
   name: locale
   type: STRING
-- description:
+- description: null
   mode: NULLABLE
   name: message_id
   type: STRING
 - fields:
   - fields:
-    - description:
+    - description: null
       mode: NULLABLE
       name: city
       type: STRING
@@ -57,7 +59,8 @@ fields:
       mode: NULLABLE
       name: db_version
       type: STRING
-    - description: First major country subdivision, typically a state, province, or county
+    - description: First major country subdivision, typically a state, province, or
+        county
       mode: NULLABLE
       name: subdivision1
       type: STRING
@@ -115,7 +118,8 @@ fields:
       mode: NULLABLE
       name: name
       type: STRING
-    - description: The name of a specific business entity associated with the client's IP address when available; otherwise the ISP name
+    - description: The name of a specific business entity associated with the client's
+        IP address when available; otherwise the ISP name
       mode: NULLABLE
       name: organization
       type: STRING
@@ -124,15 +128,15 @@ fields:
     name: isp
     type: RECORD
   - fields:
-    - description:
+    - description: null
       mode: NULLABLE
       name: browser
       type: STRING
-    - description:
+    - description: null
       mode: NULLABLE
       name: os
       type: STRING
-    - description:
+    - description: null
       mode: NULLABLE
       name: version
       type: STRING
@@ -159,49 +163,96 @@ fields:
   mode: NULLABLE
   name: normalized_os
   type: STRING
-- description:
+- description: null
   mode: NULLABLE
   name: normalized_os_version
   type: STRING
-- description:
+- description: null
   mode: NULLABLE
   name: release_channel
   type: STRING
-- description:
+- description: null
   mode: NULLABLE
   name: sample_id
   type: INTEGER
-- description:
+- description: null
   mode: NULLABLE
   name: version
   type: STRING
-- description: Added to reduce validation exceptions, see  #1787882
+- description: Added to reduce validation exceptions
   mode: NULLABLE
   name: source
   type: STRING
 - fields:
-  - description:
+  - description: null
     mode: NULLABLE
     name: key
     type: STRING
   - fields:
-    - description:
+    - description: null
       mode: NULLABLE
       name: branch
       type: STRING
     - fields:
-      - description:
+      - description: null
         mode: NULLABLE
         name: enrollment_id
         type: STRING
-      - description:
+      - description: null
         mode: NULLABLE
         name: type
         type: STRING
-    description:
+    description: null
     mode: NULLABLE
     name: extra
     type: RECORD
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: branch
+      type: STRING
+      mode: NULLABLE
+    - name: extra
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: enrollment_id
+        type: STRING
+        mode: NULLABLE
+      - name: type
+        type: STRING
+        mode: NULLABLE
   mode: REPEATED
   name: experiments
   type: RECORD
+- name: messaging_system_addon_version
+  type: STRING
+  mode: NULLABLE
+- name: messaging_system_bucket_id
+  type: STRING
+  mode: NULLABLE
+- name: messaging_system_client_id
+  type: STRING
+  mode: NULLABLE
+- name: messaging_system_event
+  type: STRING
+  mode: NULLABLE
+- name: messaging_system_event_context
+  type: STRING
+  mode: NULLABLE
+- name: messaging_system_impression_id
+  type: STRING
+  mode: NULLABLE
+- name: messaging_system_locale
+  type: STRING
+  mode: NULLABLE
+- name: messaging_system_message_id
+  type: STRING
+  mode: NULLABLE
+- name: app_channel
+  type: STRING
+  mode: NULLABLE
+- name: messaging_system_source
+  type: STRING
+  mode: NULLABLE

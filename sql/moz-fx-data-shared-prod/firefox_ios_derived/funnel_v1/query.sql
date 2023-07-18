@@ -65,11 +65,14 @@ first_28_day_retention_stats AS (
   SELECT
     first_seen_date AS `date`,
     country,
-    COUNTIF(retention_first_28_days.day_27.active_in_week_0) AS users_active_in_week_1,
-    COUNTIF(retention_first_28_days.day_27.active_in_week_1) AS users_active_in_week_2,
-    COUNTIF(retention_first_28_days.day_27.active_in_week_2) AS users_active_in_week_3,
-    COUNTIF(retention_first_28_days.day_27.active_in_week_3) AS users_active_in_week_4,
-  FROM firefox_ios_derived.firefox_ios_first_28_day_retention_v1
+    COUNTIF(retention_first_28_days.day_0.active_on_metric_date) AS users_active_on_day_0,
+    COUNTIF(active_on_day_1) AS users_active_on_day_1,
+    COUNTIF(retention_first_28_days.day_27.active_in_week_0) AS users_active_in_week_0,
+    COUNTIF(retention_first_28_days.day_27.active_in_week_1) AS users_active_in_week_1,
+    COUNTIF(retention_first_28_days.day_27.active_in_week_2) AS users_active_in_week_2,
+    COUNTIF(retention_first_28_days.day_27.active_in_week_3) AS users_active_in_week_3,
+  FROM
+    firefox_ios_derived.firefox_ios_first_28_day_retention_v1
   GROUP BY
     `date`,
     country
@@ -81,10 +84,12 @@ SELECT
   downloads,
   new_profiles,
   activations,
+  users_active_on_day_0,
+  users_active_on_day_1,
+  users_active_in_week_0,
   users_active_in_week_1,
   users_active_in_week_2,
   users_active_in_week_3,
-  users_active_in_week_4,
 FROM
   store_stats
 JOIN
@@ -95,4 +100,3 @@ JOIN
   first_28_day_retention_stats
 USING
   (`date`, country)
-

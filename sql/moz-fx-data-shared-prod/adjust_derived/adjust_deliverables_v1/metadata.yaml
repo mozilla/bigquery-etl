@@ -8,10 +8,10 @@ labels:
   incremental: false
 scheduling:
   dag_name: bqetl_adjust
-  date_partition_parameter: submission_date
+  date_partition_parameter: date
   arguments: ["--date", "{{ ds }}", "--adjust_api_token", "{{ var.value.ADJUST_API_TOKEN}}", "--adjust_app_list", "{{ var.value.ADJUST_APP_TOKEN_LIST}}"]
 bigquery:
   time_partitioning:
     type: day
-    field: submission_date
+    field: date
     require_partition_filter: false

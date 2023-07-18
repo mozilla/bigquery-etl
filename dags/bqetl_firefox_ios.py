@@ -74,9 +74,25 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
-    firefox_ios_derived__funnel_ios__v1 = bigquery_etl_query(
-        task_id="firefox_ios_derived__funnel_ios__v1",
-        destination_table="funnel_ios_v1",
+    firefox_ios_derived__first_28_day_retention__v1 = bigquery_etl_query(
+        task_id="firefox_ios_derived__first_28_day_retention__v1",
+        destination_table='first_28_day_retention_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kignasiak@mozilla.com",
+        email=[
+            "kignasiak@mozilla.com",
+            "kik@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
+    )
+
+    firefox_ios_derived__funnel__v1 = bigquery_etl_query(
+        task_id="firefox_ios_derived__funnel__v1",
+        destination_table="funnel_v1",
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kignasiak@mozilla.com",
@@ -164,6 +180,25 @@ with DAG(
         firefox_ios_derived__new_profile_activation__v2
     )
 
+    firefox_ios_derived__first_28_day_retention__v1.set_upstream(
+        wait_for_baseline_clients_daily
+    )
+    wait_for_clients_last_seen_joined = ExternalTaskSensor(
+        task_id="wait_for_clients_last_seen_joined",
+        external_dag_id="copy_deduplicate",
+        external_task_id="clients_last_seen_joined",
+        execution_delta=datetime.timedelta(seconds=10800),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    firefox_ios_derived__first_28_day_retention__v1.set_upstream(
+        wait_for_clients_last_seen_joined
+    )
+
     wait_for_app_store_external__firefox_app_store_territory_source_type_report__v1 = ExternalTaskSensor(
         task_id="wait_for_app_store_external__firefox_app_store_territory_source_type_report__v1",
         external_dag_id="bqetl_fivetran_copied_tables",
@@ -176,7 +211,7 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    firefox_ios_derived__funnel_ios__v1.set_upstream(
+    firefox_ios_derived__funnel__v1.set_upstream(
         wait_for_app_store_external__firefox_app_store_territory_source_type_report__v1
     )
     wait_for_app_store_external__firefox_downloads_territory_source_type_report__v1 = ExternalTaskSensor(
@@ -191,7 +226,7 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    firefox_ios_derived__funnel_ios__v1.set_upstream(
+    firefox_ios_derived__funnel__v1.set_upstream(
         wait_for_app_store_external__firefox_downloads_territory_source_type_report__v1
     )
     wait_for_firefox_ios_derived__new_profile_activation__v1 = ExternalTaskSensor(
@@ -206,7 +241,7 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    firefox_ios_derived__funnel_ios__v1.set_upstream(
+    firefox_ios_derived__funnel__v1.set_upstream(
         wait_for_firefox_ios_derived__new_profile_activation__v1
     )
 

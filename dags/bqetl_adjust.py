@@ -16,6 +16,7 @@ Built from bigquery-etl repo, [`dags/bqetl_adjust.py`](https://github.com/mozill
 #### Description
 
 Derived tables built on Adjust data downloaded from https://api.adjust.com/kpis/v1/<app_token>
+and https://api.adjust.com/kpis/v1/<app_token>/cohorts
 Using mhirose's API token - no Adjust API token for service accounts, just users.
 
 #### Owner
@@ -50,6 +51,25 @@ with DAG(
         command=[
             "python",
             "sql/moz-fx-data-shared-prod/adjust_derived/adjust_deliverables_v1/query.py",
+        ]
+        + [
+            "--date",
+            "{{ ds }}",
+            "--adjust_api_token",
+            "{{ var.value.ADJUST_API_TOKEN}}",
+            "--adjust_app_list",
+            "{{ var.value.ADJUST_APP_TOKEN_LIST}}",
+        ],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="mhirose@mozilla.com",
+        email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
+    )
+
+    adjust_derived__adjust_cohort__v1 = gke_command(
+        task_id="adjust_derived__adjust_cohort__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/adjust_derived/adjust_cohort_v1/query.py",
         ]
         + [
             "--date",

@@ -143,3 +143,65 @@ fields:
   mode: NULLABLE
   name: metadata
   type: RECORD
+- description: Set to "Other" if this message contained an unrecognized app name
+  mode: NULLABLE
+  name: normalized_app_name
+  type: STRING
+- description: Set to "Other" if this message contained an unrecognized channel name
+  mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+- description: An ISO 3166-1 alpha-2 country code
+  mode: NULLABLE
+  name: normalized_country_code
+  type: STRING
+- description: Set to "Other" if this message contained an unrecognized OS name
+  mode: NULLABLE
+  name: normalized_os
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: normalized_os_version
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: release_channel
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+- description:
+  mode: NULLABLE
+  name: version
+  type: STRING
+- description: Added to reduce validation exceptions, see  #1787882
+  mode: NULLABLE
+  name: source
+  type: STRING
+- fields:
+  - description:
+    mode: NULLABLE
+    name: key
+    type: STRING
+  - fields:
+    - description:
+      mode: NULLABLE
+      name: branch
+      type: STRING
+    - fields:
+      - description:
+        mode: NULLABLE
+        name: enrollment_id
+        type: STRING
+      - description:
+        mode: NULLABLE
+        name: type
+        type: STRING
+    description:
+    mode: NULLABLE
+    name: extra
+    type: RECORD
+  mode: REPEATED
+  name: experiments
+  type: RECORD

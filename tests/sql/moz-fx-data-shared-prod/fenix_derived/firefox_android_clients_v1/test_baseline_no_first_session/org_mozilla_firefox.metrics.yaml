@@ -2,12 +2,14 @@
 - client_info:
     client_id: client-1
   submission_timestamp: '2023-01-01 00:00:00'
+  normalized_channel: release
   metrics:
     string:
       metrics_install_source: com.android.vending
 - client_info:
     client_id: client-2
   submission_timestamp: '2023-01-01 00:00:00'
+  normalized_channel: release
   metrics:
     string:
       metrics_adjust_network: Organic

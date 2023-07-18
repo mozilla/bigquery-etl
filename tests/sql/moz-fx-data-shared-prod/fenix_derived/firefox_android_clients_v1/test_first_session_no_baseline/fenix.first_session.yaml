@@ -6,6 +6,7 @@
   submission_timestamp: '2023-05-02 12:55:49'
   ping_info:
     seq: 0
+  normalized_channel: release
   metrics:
     string:
       first_session_network: 'Organic'
@@ -16,6 +17,7 @@
   submission_timestamp: '2023-05-02 00:00:00'
   ping_info:
     seq: 0
+  normalized_channel: release
   metrics:
     string:
       first_session_network: 'Untrusted Devices'

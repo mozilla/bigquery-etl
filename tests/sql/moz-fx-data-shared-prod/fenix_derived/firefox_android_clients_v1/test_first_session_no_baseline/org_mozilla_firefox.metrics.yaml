@@ -2,6 +2,7 @@
 - client_info:
     client_id: client-3
   submission_timestamp: '2023-05-02 00:00:00'
+  normalized_channel: release
   metrics:
     string:
       metrics_install_source: 'com.android.vending'

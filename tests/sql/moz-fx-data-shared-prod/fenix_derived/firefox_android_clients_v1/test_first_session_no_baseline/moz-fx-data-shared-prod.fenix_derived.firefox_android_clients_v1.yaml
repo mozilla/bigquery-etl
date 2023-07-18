@@ -6,6 +6,7 @@
   first_run_date: 2023-05-01
   last_reported_date: 2023-05-02
   activated: false
+  normalized_channel: release
   metadata:
     reported_first_session_ping: false
     reported_metrics_ping: false

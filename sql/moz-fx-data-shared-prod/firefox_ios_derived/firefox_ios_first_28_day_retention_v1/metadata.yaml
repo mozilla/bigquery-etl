@@ -1,0 +1,31 @@
+friendly_name: Firefox Clients (iOS) - Retention (first 28 days)
+description: |-
+  The table aims to provide information about user's activity
+  and their retention during their first 28 days.
+
+  Assumption is that we should only see each client once in the first_seen table
+  so this table should only contain 1 entry per client.
+owners:
+- kignasiak@mozilla.com
+labels:
+  application: firefox_ios
+  incremental: true
+  schedule: daily
+  owner1: kignasiak
+scheduling:
+  dag_name: bqetl_firefox_ios
+  depends_on_past: false
+  depends_on:
+  - task_id: baseline_clients_daily
+    dag_name: copy_deduplicate
+    execution_delta: 3h
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - sample_id
+references: {}

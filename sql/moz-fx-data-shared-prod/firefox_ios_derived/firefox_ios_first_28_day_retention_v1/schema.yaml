@@ -1,0 +1,112 @@
+fields:
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: 'Unique ID for the client installation.'
+- mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+  description: 'Sample ID to limit query results during an analysis.'
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: 'Date when the app first reported a baseline ping for the client.'
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: retention_first_28_days
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: day_0
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: metric_date
+      type: DATE
+      mode: NULLABLE
+    - name: active_on_metric_date
+      type: BOOLEAN
+      mode: NULLABLE
+  - name: day_6
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: metric_date
+      type: DATE
+      mode: NULLABLE
+    - name: active_on_metric_date
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: active_in_week_0
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: active_in_week_0_after_metric_date
+      type: BOOLEAN
+      mode: NULLABLE
+  - name: day_13
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: metric_date
+      type: DATE
+      mode: NULLABLE
+    - name: active_on_metric_date
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: active_in_week_0
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: active_in_week_0_after_metric_date
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: active_in_week_1
+      type: BOOLEAN
+      mode: NULLABLE
+  - name: day_20
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: metric_date
+      type: DATE
+      mode: NULLABLE
+    - name: active_on_metric_date
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: active_in_week_0
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: active_in_week_0_after_metric_date
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: active_in_week_1
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: active_in_week_2
+      type: BOOLEAN
+      mode: NULLABLE
+  - name: day_27
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: metric_date
+      type: DATE
+      mode: NULLABLE
+    - name: active_on_metric_date
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: active_in_week_0
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: active_in_week_0_after_metric_date
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: active_in_week_1
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: active_in_week_2
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: active_in_week_3
+      type: BOOLEAN
+      mode: NULLABLE

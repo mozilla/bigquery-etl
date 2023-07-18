@@ -110,3 +110,6 @@ fields:
     - name: active_in_week_3
       type: BOOLEAN
       mode: NULLABLE
+- name: active_on_day_1
+  type: BOOLEAN
+  mode: NULLABLE

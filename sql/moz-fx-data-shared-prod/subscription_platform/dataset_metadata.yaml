@@ -2,10 +2,9 @@ friendly_name: Subscription Platform
 description: |-
   Combined subscription information from multiple products
   and payment platforms; see bug 1703340
-dataset_base_acl: view
+# some specific views in this dataset are deprecated, so all non-deprecated
+# views must be explicitly annotated as accessible to workgroup:mozilla-confidential
+dataset_base_acl: view_deprecated
 user_facing: true
 labels: {}
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []

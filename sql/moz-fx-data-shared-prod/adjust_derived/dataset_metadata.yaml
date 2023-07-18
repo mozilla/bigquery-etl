@@ -1,10 +1,7 @@
 friendly_name: Adjust Derived
 description: |-
   Derived tables for Adjust data
-dataset_base_acl: derived
+dataset_base_acl: derived_deprecated
 user_facing: false
 labels: {}
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []

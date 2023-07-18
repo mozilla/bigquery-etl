@@ -238,9 +238,15 @@ fields:
     mode: NULLABLE
     fields:
     - name: session_daemon_session_end
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: raw_session_daemon_session_end
       type: STRING
       mode: NULLABLE
     - name: session_daemon_session_start
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: raw_session_daemon_session_start
       type: STRING
       mode: NULLABLE
   - name: string

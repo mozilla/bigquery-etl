@@ -188,24 +188,6 @@ fields:
     mode: NULLABLE
     name: key
     type: STRING
-  - fields:
-    - description: null
-      mode: NULLABLE
-      name: branch
-      type: STRING
-    - fields:
-      - description: null
-        mode: NULLABLE
-        name: enrollment_id
-        type: STRING
-      - description: null
-        mode: NULLABLE
-        name: type
-        type: STRING
-    description: null
-    mode: NULLABLE
-    name: extra
-    type: RECORD
   - name: value
     type: RECORD
     mode: NULLABLE

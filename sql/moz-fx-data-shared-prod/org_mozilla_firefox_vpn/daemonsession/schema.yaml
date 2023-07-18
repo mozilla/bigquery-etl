@@ -304,6 +304,60 @@ fields:
         Collected only on mobile apps.
 
         '
+  - name: datetime
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: session_daemon_session_end
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: '(Mobile-only) The time the user ends a VPN session from the daemon
+        or network extension
+
+        '
+    - name: raw_session_daemon_session_end
+      type: STRING
+      mode: NULLABLE
+    - name: session_daemon_session_start
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: '(Mobile-only) The time the user starts a VPN session from the
+        daemon or network extension
+
+        '
+    - name: raw_session_daemon_session_start
+      type: STRING
+      mode: NULLABLE
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: session_daemon_session_source
+      type: STRING
+      mode: NULLABLE
+      description: '(Mobile-only) Where the session started from. Should be "app",
+        "system settings",
+
+        or "autostart on boot".
+
+        '
+  - name: uuid
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: session_daemon_session_id
+      type: STRING
+      mode: NULLABLE
+      description: '(Mobile-only) A unique identifier for each session. This is used
+        to connect
+
+        unique VPN sessions across pings, and as a safety check on edge cases of VPN
+
+        activation/deactivation, such as a session being started/ended from mobile
+
+        system settings.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

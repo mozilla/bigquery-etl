@@ -249,6 +249,18 @@ fields:
     - name: credit_card_sync_enabled
       type: BOOLEAN
       mode: NULLABLE
+    - name: preferences_jump_back_in
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: preferences_pocket
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: preferences_recently_saved
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: preferences_recently_visited
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -1057,6 +1069,9 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: adjust_network
+      type: STRING
+      mode: NULLABLE
+    - name: preferences_opening_screen
       type: STRING
       mode: NULLABLE
   - name: memory_distribution

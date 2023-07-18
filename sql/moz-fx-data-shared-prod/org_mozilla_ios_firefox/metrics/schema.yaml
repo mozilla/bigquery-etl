@@ -373,6 +373,36 @@ fields:
         sync settings are enabled
 
         '
+    - name: preferences_jump_back_in
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'An indication of whether the Jump back in section
+
+        is enabled to be displayed.
+
+        '
+    - name: preferences_pocket
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'An indication of whether Pocket is enabled to be displayed.
+
+        '
+    - name: preferences_recently_saved
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'An indication of whether the recently saved section
+
+        is enabled to be displayed.
+
+        '
+    - name: preferences_recently_visited
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'An indication of whether the Recently visited section
+
+        is enabled to be displayed.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -2122,6 +2152,16 @@ fields:
         installed
 
         Firefox-iOS.
+
+        '
+    - name: preferences_opening_screen
+      type: STRING
+      mode: NULLABLE
+      description: 'What opening screen preference the user has selected under
+
+        "Customize Home". "homepage," "last tab," or
+
+        "homepage after 4 hours" default: "homepage after 4 hours".
 
         '
   - name: memory_distribution

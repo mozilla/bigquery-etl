@@ -233,6 +233,30 @@ fields:
     - name: session_connection_health_stable_count
       type: INTEGER
       mode: NULLABLE
+  - name: datetime
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: session_daemon_session_end
+      type: STRING
+      mode: NULLABLE
+    - name: session_daemon_session_start
+      type: STRING
+      mode: NULLABLE
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: session_daemon_session_source
+      type: STRING
+      mode: NULLABLE
+  - name: uuid
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: session_daemon_session_id
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

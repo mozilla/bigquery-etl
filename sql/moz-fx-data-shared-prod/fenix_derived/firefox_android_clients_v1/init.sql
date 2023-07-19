@@ -41,7 +41,6 @@ first_seen AS (
     is_new_profile
 ),
 -- Find the most recent activation record per client_id. Data available since '2021-12-01'
--- TODO: fenix.new_profile_activation only contains data for release channel
 activations AS (
   SELECT
     client_id,

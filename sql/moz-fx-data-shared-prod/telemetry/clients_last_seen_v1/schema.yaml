@@ -71,6 +71,7 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: null
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
@@ -126,18 +127,23 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: null
 - name: aborts_content_sum
   type: INTEGER
   mode: NULLABLE
+  description: null
 - name: aborts_gmplugin_sum
   type: INTEGER
   mode: NULLABLE
+  description: null
 - name: aborts_plugin_sum
   type: INTEGER
   mode: NULLABLE
+  description: null
 - name: active_addons_count_mean
   type: FLOAT
   mode: NULLABLE
+  description: null
 - name: active_addons
   type: RECORD
   mode: REPEATED
@@ -145,51 +151,68 @@ fields:
   - name: addon_id
     type: STRING
     mode: NULLABLE
+    description: null
   - name: blocklisted
     type: BOOLEAN
     mode: NULLABLE
+    description: null
   - name: name
     type: STRING
     mode: NULLABLE
+    description: null
   - name: user_disabled
     type: BOOLEAN
     mode: NULLABLE
+    description: null
   - name: app_disabled
     type: BOOLEAN
     mode: NULLABLE
+    description: null
   - name: version
     type: STRING
     mode: NULLABLE
+    description: null
   - name: scope
     type: INTEGER
     mode: NULLABLE
+    description: null
   - name: type
     type: STRING
     mode: NULLABLE
+    description: null
   - name: foreign_install
     type: BOOLEAN
     mode: NULLABLE
+    description: null
   - name: has_binary_components
     type: BOOLEAN
     mode: NULLABLE
+    description: null
   - name: install_day
     type: INTEGER
     mode: NULLABLE
+    description: null
   - name: update_day
     type: INTEGER
     mode: NULLABLE
+    description: null
   - name: signed_state
     type: INTEGER
     mode: NULLABLE
+    description: null
   - name: is_system
     type: BOOLEAN
     mode: NULLABLE
+    description: null
   - name: is_web_extension
     type: BOOLEAN
     mode: NULLABLE
+    description: null
   - name: multiprocess_compatible
     type: BOOLEAN
     mode: NULLABLE
+    description: null
+  description: null
 - name: active_hours_sum
   type: FLOAT
   mode: NULLABLE

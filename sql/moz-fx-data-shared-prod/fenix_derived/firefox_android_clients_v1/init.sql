@@ -133,7 +133,7 @@ metrics_ping AS (
   FROM
     fenix.metrics AS fenix_metrics
   WHERE
-    DATE(submission_timestamp) >= '2019-01-01'
+    DATE(submission_timestamp) >= '2019-06-21'
   GROUP BY
     client_id, normalized_channel
 ),

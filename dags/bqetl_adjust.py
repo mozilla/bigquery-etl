@@ -16,7 +16,7 @@ Built from bigquery-etl repo, [`dags/bqetl_adjust.py`](https://github.com/mozill
 #### Description
 
 Derived tables built on Adjust data downloaded from https://api.adjust.com/kpis/v1/<app_token>
-and https://api.adjust.com/kpis/v1/<app_token>/cohorts
+and https://api.adjust.com/kpis/v1/<app_token>/cohorts - Job runs two different but similar scripts
 Using mhirose's API token - no Adjust API token for service accounts, just users.
 
 #### Owner

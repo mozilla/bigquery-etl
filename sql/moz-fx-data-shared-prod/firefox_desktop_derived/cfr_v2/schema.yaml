@@ -208,33 +208,3 @@ fields:
   mode: REPEATED
   name: experiments
   type: RECORD
-- name: messaging_system_addon_version
-  type: STRING
-  mode: NULLABLE
-- name: messaging_system_bucket_id
-  type: STRING
-  mode: NULLABLE
-- name: messaging_system_client_id
-  type: STRING
-  mode: NULLABLE
-- name: messaging_system_event
-  type: STRING
-  mode: NULLABLE
-- name: messaging_system_event_context
-  type: STRING
-  mode: NULLABLE
-- name: messaging_system_impression_id
-  type: STRING
-  mode: NULLABLE
-- name: messaging_system_locale
-  type: STRING
-  mode: NULLABLE
-- name: messaging_system_message_id
-  type: STRING
-  mode: NULLABLE
-- name: app_channel
-  type: STRING
-  mode: NULLABLE
-- name: messaging_system_source
-  type: STRING
-  mode: NULLABLE

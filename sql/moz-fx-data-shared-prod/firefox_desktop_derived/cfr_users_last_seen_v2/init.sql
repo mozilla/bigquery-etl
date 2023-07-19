@@ -10,13 +10,11 @@ AS
 SELECT
   CAST(NULL AS INT64) AS days_seen_bits,
   CAST(NULL AS INT64) AS days_seen_whats_new_bits,
--- We make sure to delay * until the end so that as new columns are added
--- to the daily table, we can add those columns in the same order to the end
--- of this schema, which may be necessary for the daily join query between
--- the two tables to validate.
-  *
-FROM
-  cfr_users_daily_v2
-WHERE
--- Output empty table and read no input rows
-  FALSE
+  CAST(NULL AS DATE) AS submission_date,
+  CAST(NULL AS STRING) AS impression_id,
+  CAST(NULL AS STRING) AS client_id,
+  CAST(NULL AS BOOLEAN) AS seen_whats_new,
+  CAST(NULL AS STRING) AS release_channel,
+  CAST(NULL AS STRING) AS locale,
+  CAST(NULL AS STRING) AS country,
+  CAST(NULL AS STRING) AS version

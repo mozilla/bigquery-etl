@@ -1,7 +1,6 @@
 """Threaded TopologialSorter."""
 
 import multiprocessing
-import queue
 from copy import deepcopy
 from graphlib import TopologicalSorter
 from typing import Dict, Set
@@ -42,7 +41,7 @@ class ParallelTopologicalSorter:
         processes = []
 
         if self.with_follow_up:
-            followup_queue = queue.Queue()
+            followup_queue = multiprocessing.Queue()
         else:
             followup_queue = None
 
@@ -75,15 +74,15 @@ class ParallelTopologicalSorter:
             ts.done(task)
             finalized_tasks_queue.task_done()
 
-            # add follow up tasks to be processed
-            if followup_queue:
-                while not followup_queue.empty():
-                    follow_up_item = followup_queue.get()
-                    ts.add(follow_up_item)
-                    self.visited[follow_up_item] = False
-
         task_queue.join()
         finalized_tasks_queue.join()
+
+        # followup items cannot be added to the topological sorter after prepare() is called
+        # processing them here sequentially
+        if followup_queue:
+            while not followup_queue.empty():
+                follow_up_item = followup_queue.get()
+                callback(follow_up_item, followup_queue)
 
         # check that all dependencies have been processed
         for task, _ in self.visited.items():

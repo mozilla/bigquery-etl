@@ -24,21 +24,21 @@ from dateutil.rrule import MONTHLY, rrule
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
+from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_matching
 from ..cli.format import format
 from ..cli.utils import (
-    QUALIFIED_TABLE_NAME_RE,
     is_authenticated,
     is_valid_project,
     no_dryrun_option,
     parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
-    qualified_table_name_matching,
     respect_dryrun_skip_option,
     sql_dir_option,
     temp_dataset_option,
     use_cloud_function_option,
 )
+from ..config import ConfigLoader
 from ..dependency import get_dependency_graph
 from ..dryrun import DryRun
 from ..format_sql.format import skip_format
@@ -68,7 +68,6 @@ from .generate import generate_all
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
 VERSION_RE = re.compile(r"_v[0-9]+")
 DESTINATION_TABLE_RE = re.compile(r"^[a-zA-Z0-9_$]{0,1024}$")
-PUBLIC_PROJECT_ID = "mozilla-public-data"
 
 
 @click.group(help="Commands for managing queries.")
@@ -102,7 +101,9 @@ def query(ctx):
 )
 @click.argument("name")
 @sql_dir_option
-@project_id_option("moz-fx-data-shared-prod")
+@project_id_option(
+    ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
+)
 @click.option(
     "--owner",
     "-o",
@@ -212,7 +213,7 @@ def create(name, sql_dir, project_id, owner, init):
                 f"""
                 -- SQL for initializing the query destination table.
                 CREATE OR REPLACE TABLE
-                  `moz-fx-data-shared-prod.{dataset}.{name}{version}`
+                  `{ConfigLoader.get('default', 'project', fallback="moz-fx-data-shared-prod")}.{dataset}.{name}{version}`
                 AS SELECT * FROM table"""
             )
             + "\n"
@@ -516,7 +517,9 @@ def _backfill_query(
             project_id=project_id,
             dataset_id=dataset,
             destination_table=destination_table,
-            public_project_id=PUBLIC_PROJECT_ID,
+            public_project_id=ConfigLoader.get(
+                "default", "public_project", fallback="mozilla-public-data"
+            ),
             query_arguments=arguments,
         )
 
@@ -775,7 +778,9 @@ def backfill(
 @click.option(
     "--public_project_id",
     "--public-project-id",
-    default=PUBLIC_PROJECT_ID,
+    default=ConfigLoader.get(
+        "default", "public_project", fallback="mozilla-public-data"
+    ),
     help="Project with publicly accessible data",
 )
 @click.option(
@@ -1418,7 +1423,7 @@ def schema():
     "--project-id",
     "--project_id",
     help="GCP project ID",
-    default="moz-fx-data-shared-prod",
+    default=ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod"),
     callback=is_valid_project,
 )
 @click.option(
@@ -1586,7 +1591,7 @@ def _update_query_schema(
         click.echo(f"{query_file} dry runs are skipped. Cannot update schemas.")
         return
 
-    tmp_tables = copy.copy(tmp_tables)
+    tmp_tables = copy.deepcopy(tmp_tables)
     query_file_path = Path(query_file)
     existing_schema_path = query_file_path.parent / SCHEMA_FILE
     project_name, dataset_name, table_name = extract_from_query_path(query_file_path)
@@ -1779,7 +1784,7 @@ def _update_query_schema(
     "--project-id",
     "--project_id",
     help="GCP project ID",
-    default="moz-fx-data-shared-prod",
+    default=ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod"),
     callback=is_valid_project,
 )
 @click.option(
@@ -2090,7 +2095,7 @@ def _validate_schema_from_path(
     "--project-id",
     "--project_id",
     help="GCP project ID",
-    default="moz-fx-data-shared-prod",
+    default=ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod"),
     callback=is_valid_project,
 )
 @use_cloud_function_option

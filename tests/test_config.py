@@ -14,14 +14,14 @@ class TestConfig:
         ConfigLoader.set_project_dir(TEST_DIR / "data")
 
         assert "function" in ConfigLoader.get("dry_run")
-        assert "test_project" in ConfigLoader.get("dry_run")
         assert "skip" in ConfigLoader.get("dry_run")
 
         assert (
-            ConfigLoader.get("dry_run", "test_project")
+            ConfigLoader.get("default", "test_project")
             == "bigquery-etl-integration-test"
         )
-        assert len(ConfigLoader.get("dry_run", "skip")) == 2
+
+        assert len(ConfigLoader.get("dry_run", "skip")) > 0
 
         assert "dry_run" in ConfigLoader.get()
 

@@ -1,7 +1,6 @@
 """Adjust data - download deliverables, clean and upload to BigQuery."""
 import csv
 import json
-import os
 import tempfile
 from argparse import ArgumentParser
 
@@ -19,9 +18,6 @@ Look here to see the apps we are tracking: https://dash.adjust.com/#/.
 It is important to maintain this list in order for the script to work especially in the case of new apps
 being added to track in Adjust
 """
-
-APP_TOKEN_LIST = os.environ.get("ADJUST_APP_TOKEN_LIST")
-API_TOKEN = os.environ.get("ADJUST_API_TOKEN")
 
 CSV_FIELDS = [
     "date",
@@ -182,9 +178,9 @@ def clean_json(query_export):
     return fields_list
 
 
-def upload_to_bigquery(csv_data, project, dataset, adjust_app_name, date):
+def upload_to_bigquery(csv_data, project, dataset, date):
     """Upload the data to bigquery."""
-    print(f"writing json to csv for {adjust_app_name}")
+    print("writing json to csv")
 
     partition = f"{date}".replace("-", "")
 
@@ -230,7 +226,7 @@ def upload_to_bigquery(csv_data, project, dataset, adjust_app_name, date):
             )
 
             # Table names are based on the app name seen in the Adjust dashboard"
-            destination = f"{project}.{dataset}.adjust_deliverables_v1_${partition}"
+            destination = f"{project}.{dataset}.adjust_deliverables_v1${partition}"
 
             job = client.load_table_from_file(f_csv, destination, job_config=job_config)
 
@@ -244,31 +240,35 @@ def main():
     """Input data, call functions, get stuff done."""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--date", required=True)
+    parser.add_argument("--adjust_api_token", required=True)
+    parser.add_argument("--adjust_app_list", required=True)
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
     parser.add_argument("--dataset", default="adjust_derived")
 
     args = parser.parse_args()
 
-    app_list = json.loads(APP_TOKEN_LIST)
+    app_list = json.loads(args.adjust_app_list)
+
+    data = []
 
     # Cycle through the apps to get the relevant kpi data
     for app in app_list:
-        print(f'This is data for {app["app_name"]} - {app["app_token"]}')
+        print(f'This is data for {app["app_name"]}')
         # Ping the Adjust URL and get a response
-        json_file = download_adjust_kpi_data(args.date, API_TOKEN, app["app_token"])
-
-        data = []
+        json_file = download_adjust_kpi_data(
+            args.date, args.adjust_api_token, app["app_token"]
+        )
 
         query_export = check_json(json_file.text)
 
         if query_export is not None:
             # This section writes the tmp json data into a temp CSV file which will then be put into a BigQuery table
-            data = clean_json(query_export)
-            upload_to_bigquery(
-                data, args.project, args.dataset, app["app_name"], args.date
-            )
+            adjust_data = clean_json(query_export)
+            data.extend(adjust_data)
         else:
             print(f'no data for {app["app_name"]} today')
+
+    upload_to_bigquery(data, args.project, args.dataset, args.date)
 
 
 if __name__ == "__main__":

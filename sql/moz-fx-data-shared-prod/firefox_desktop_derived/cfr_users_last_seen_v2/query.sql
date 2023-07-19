@@ -22,7 +22,7 @@ _previous AS (
     COALESCE(impression_id, client_id) AS _join_key,
     * EXCEPT (submission_date)
   FROM
-    `moz-fx-data-shared-prod.tmp.gle_firefox_desktop_derived_cfr_users_last_seen_v2`
+    `moz-fx-data-shared-prod.firefox_desktop_derived.cfr_users_last_seen_v2`
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND udf.shift_28_bits_one_day(days_seen_bits) > 0

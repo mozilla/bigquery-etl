@@ -5,17 +5,23 @@ WITH final_probe_extract AS (
     COALESCE(app_build_id, "*") AS app_build_id,
     process,
     metric,
-    SUBSTR(REPLACE(key, r"\x00", ""), 0, 200) AS key,
+    SUBSTR(REPLACE(KEY, r"\x00", ""), 0, 200) AS KEY,
     client_agg_type,
     metric_type,
     total_users,
-  -- Using MAX instead of COALESCE since this is not in the GROUP BY.
+      -- Using MAX instead of COALESCE since this is not in the GROUP BY.
     MAX(IF(agg_type = "histogram", mozfun.glam.histogram_cast_json(aggregates), NULL)) AS histogram,
     MAX(
+      IF(agg_type = "histogram", mozfun.glam.histogram_cast_json(non_norm_aggregates), NULL)
+    ) AS non_norm_histogram,
+    MAX(
       IF(agg_type = "percentiles", mozfun.glam.histogram_cast_json(aggregates), NULL)
-    ) AS percentiles
+    ) AS percentiles,
+    MAX(
+      IF(agg_type = "percentiles", mozfun.glam.histogram_cast_json(non_norm_aggregates), NULL)
+    ) AS non_norm_percentiles
   FROM
-    `moz-fx-data-shared-prod.telemetry.client_probe_counts`
+    `moz-fx-data-shared-prod.telemetry_derived.client_probe_counts`
   WHERE
     channel = @channel
     AND app_version IS NOT NULL
@@ -27,7 +33,7 @@ WITH final_probe_extract AS (
     os,
     metric,
     metric_type,
-    key,
+    KEY,
     process,
     client_agg_type,
     total_users
@@ -78,7 +84,9 @@ SELECT
     WHEN client_agg_type = ''
       THEN 0
     ELSE total_sample
-  END AS total_sample
+  END AS total_sample,
+  non_norm_histogram,
+  non_norm_percentiles
 FROM
   final_probe_extract cp
 LEFT JOIN
@@ -104,4 +112,6 @@ GROUP BY
   total_users,
   total_sample,
   histogram,
-  percentiles
+  non_norm_histogram,
+  percentiles,
+  non_norm_percentiles

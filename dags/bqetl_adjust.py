@@ -46,11 +46,11 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    adjust_derived__adjust_deliverables__v1 = gke_command(
-        task_id="adjust_derived__adjust_deliverables__v1",
+    adjust_derived__adjust_cohort__v1 = gke_command(
+        task_id="adjust_derived__adjust_cohort__v1",
         command=[
             "python",
-            "sql/moz-fx-data-shared-prod/adjust_derived/adjust_deliverables_v1/query.py",
+            "sql/moz-fx-data-shared-prod/adjust_derived/adjust_cohort_v1/query.py",
         ]
         + [
             "--date",
@@ -65,11 +65,11 @@ with DAG(
         email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
-    adjust_derived__adjust_cohort__v1 = gke_command(
-        task_id="adjust_derived__adjust_cohort__v1",
+    adjust_derived__adjust_deliverables__v1 = gke_command(
+        task_id="adjust_derived__adjust_deliverables__v1",
         command=[
             "python",
-            "sql/moz-fx-data-shared-prod/adjust_derived/adjust_cohort_v1/query.py",
+            "sql/moz-fx-data-shared-prod/adjust_derived/adjust_deliverables_v1/query.py",
         ]
         + [
             "--date",

@@ -1652,6 +1652,20 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: The result of auto-filling a login form.
+    - name: extensions_process_event
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counters for how many times the extension process has crashed
+        or been created.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

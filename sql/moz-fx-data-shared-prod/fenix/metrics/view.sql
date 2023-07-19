@@ -134,7 +134,8 @@ SELECT
       metrics.labeled_counter.metrics_bookmarks_edit,
       metrics.labeled_counter.metrics_bookmarks_open,
       metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries,
-      metrics.labeled_counter.pwmgr_form_autofill_result
+      metrics.labeled_counter.pwmgr_form_autofill_result,
+      metrics.labeled_counter.extensions_process_event
     ) AS labeled_counter,
     metrics.quantity,
     metrics.string,
@@ -425,7 +426,8 @@ SELECT
       metrics.labeled_counter.metrics_bookmarks_edit,
       metrics.labeled_counter.metrics_bookmarks_open,
       metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries,
-      metrics.labeled_counter.pwmgr_form_autofill_result
+      metrics.labeled_counter.pwmgr_form_autofill_result,
+      metrics.labeled_counter.extensions_process_event
     ) AS labeled_counter,
     metrics.quantity,
     STRUCT(
@@ -900,7 +902,8 @@ SELECT
       metrics.labeled_counter.metrics_bookmarks_edit,
       metrics.labeled_counter.metrics_bookmarks_open,
       metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries,
-      metrics.labeled_counter.pwmgr_form_autofill_result
+      metrics.labeled_counter.pwmgr_form_autofill_result,
+      metrics.labeled_counter.extensions_process_event
     ) AS labeled_counter,
     metrics.quantity,
     STRUCT(
@@ -1219,7 +1222,8 @@ SELECT
       metrics.labeled_counter.metrics_bookmarks_edit,
       metrics.labeled_counter.metrics_bookmarks_open,
       metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries,
-      metrics.labeled_counter.pwmgr_form_autofill_result
+      metrics.labeled_counter.pwmgr_form_autofill_result,
+      metrics.labeled_counter.extensions_process_event
     ) AS labeled_counter,
     metrics.quantity,
     metrics.string,

@@ -146,7 +146,8 @@ SELECT
       metrics.labeled_counter.pdfjs_geckoview,
       metrics.labeled_counter.network_cors_authorization_header,
       metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries,
-      metrics.labeled_counter.pwmgr_form_autofill_result
+      metrics.labeled_counter.pwmgr_form_autofill_result,
+      metrics.labeled_counter.extensions_process_event
     ) AS labeled_counter,
     metrics.memory_distribution,
     STRUCT(
@@ -302,7 +303,8 @@ SELECT
       metrics.labeled_counter.pdfjs_geckoview,
       metrics.labeled_counter.network_cors_authorization_header,
       metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries,
-      metrics.labeled_counter.pwmgr_form_autofill_result
+      metrics.labeled_counter.pwmgr_form_autofill_result,
+      metrics.labeled_counter.extensions_process_event
     ) AS labeled_counter,
     metrics.memory_distribution,
     STRUCT(

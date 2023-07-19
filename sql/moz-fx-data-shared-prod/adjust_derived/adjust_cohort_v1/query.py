@@ -27,7 +27,8 @@ being added to track in Adjust
 
 CSV_FIELDS = [
     "date",
-    "period_length" "period",
+    "period_length",
+    "period",
     "app",
     "app_token",
     "network",
@@ -40,6 +41,7 @@ CSV_FIELDS = [
     "retention_rate",
     "time_spent_per_user",
     "time_spent_per_session",
+    "time_spent",
     "sessions_per_user",
     "sessions",
 ]
@@ -86,9 +88,9 @@ def download_adjust_kpi_data(date, api_token, app_token):
     ]
     # getting overview metrics for different kpis / Deliverables
     url = f"https://api.adjust.com/kpis/v1/{app_token}/cohorts"  # overview
-    url_params = f"?start_date={start_date}&end_date={end_date}&kpis={','.join(kpis)}&grouping={','.join(groupings)}"
+    url_params = f"start_date={start_date}&end_date={end_date}&kpis={','.join(kpis)}&grouping={','.join(groupings)}"
     headers = {
-        "Authorization": f"Token token={api_token}",
+        "Authorization": f"Bearer {api_token}",
     }
 
     response = requests.get(url, headers=headers, params=url_params)
@@ -113,7 +115,6 @@ def check_json(adjust_response_text):
 def clean_json(query_export):
     """JSON sometimes has missing keys, need to clean up the data."""
     period_length = query_export["result_parameters"]["period"]
-    print(f"This is period_length {period_length}")
 
     fields_list = []
     for date in query_export["result_set"]["dates"]:
@@ -121,7 +122,7 @@ def clean_json(query_export):
         for period in date["periods"]:
             r_period_length = period_length
             r_period = period.get("period", "no_periods")
-            for app in date["apps"]:
+            for app in period["apps"]:
                 r_app = app.get("name", "no_app_name")
                 r_app_token = app.get("token", "no_app_token")
                 for network in app["networks"]:
@@ -149,8 +150,9 @@ def clean_json(query_export):
                                     "retention_rate": device["kpi_values"][2],
                                     "time_spent_per_user": device["kpi_values"][3],
                                     "time_spent_per_session": device["kpi_values"][4],
-                                    "sessions_per_user": device["kpi_values"][5],
-                                    "sessions": device["kpi_values"][6],
+                                    "time_spent": device["kpi_values"][5],
+                                    "sessions_per_user": device["kpi_values"][6],
+                                    "sessions": device["kpi_values"][7],
                                 }
                                 fields_list.append(field_dict)
 
@@ -193,7 +195,6 @@ def upload_to_bigquery(csv_data, project, dataset, date):
                     bigquery.SchemaField("retention_rate", "FLOAT"),
                     bigquery.SchemaField("time_spent_per_users", "INTEGER"),
                     bigquery.SchemaField("time_spent_per_session", "INTEGER"),
-                    bigquery.SchemaField("sessions", "INTEGER"),
                     bigquery.SchemaField("time_spent", "INTEGER"),
                     bigquery.SchemaField("sessions_per_user", "FLOAT"),
                     bigquery.SchemaField("sessions", "INTEGER"),
@@ -221,6 +222,7 @@ def main():
 
     args = parser.parse_args()
 
+    # app_list = json.loads(args.adjust_app_list)
     app_list = json.loads(args.adjust_app_list)
 
     data = []
@@ -230,7 +232,10 @@ def main():
         print(f'This is data for {app["app_name"]}')
         # Ping the Adjust URL and get a response
         json_file = download_adjust_kpi_data(
-            args.date, args.adjust_api_token, app["app_token"]
+            # args.date, args.adjust_api_token, app["app_token"]
+            args.date,
+            args.adjust_api_token,
+            app["app_token"],
         )
 
         query_export = check_json(json_file.text)

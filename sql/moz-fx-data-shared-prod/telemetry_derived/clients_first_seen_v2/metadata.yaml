@@ -13,8 +13,7 @@ description: |-
   the parameter --no_partition.
 
   To initialize the table:
-  - Deploy the schema if required.
-  - Run bqetl query initialize <path>/clients_first_seen_v2.query.sql
+  - Run bqetl query initialize <path>/clients_first_seen_v2/query.sql
 owners:
 - lvargas@mozilla.com
 labels:

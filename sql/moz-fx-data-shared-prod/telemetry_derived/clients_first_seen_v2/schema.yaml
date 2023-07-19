@@ -10,6 +10,9 @@ fields:
 - description: Date when the server first received either of the 3 pings from this client.
   name: first_seen_date
   type: DATE
+- description: Second date when the server received either of the 3 pings from this client.
+  name: second_seen_date
+  type: DATE
   mode: NULLABLE
 - description: The application architecture reported by the client.
   name: architecture
@@ -186,15 +189,15 @@ fields:
     name: download_source__source_ping
     type: STRING
     mode: NULLABLE
-  - description: Indicates wether the client reported a main ping on the first seen date and up to 7 days after.
+  - description: Indicates wether the client reported a main ping on the first seen date.
     name: reported_main_ping
     type: BOOLEAN
     mode: NULLABLE
-  - description: Indicates wether the client reported a new profile ping on the first seen date and up to 7 days after.
+  - description: Indicates wether the client reported a new profile ping on the first seen date.
     name: reported_new_profile_ping
     type: BOOLEAN
     mode: NULLABLE
-  - description: Indicates wether the client reported a first shutdown ping on the first seen date and up to 7 days after.
+  - description: Indicates wether the client reported a first shutdown ping on the first seen date.
     name: reported_shutdown_ping
     type: BOOLEAN
     mode: NULLABLE

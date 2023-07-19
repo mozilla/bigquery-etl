@@ -77,7 +77,7 @@ class GleanAppPingViews(GleanTable):
         env = Environment(loader=FileSystemLoader(PATH / "templates"))
         view_template = env.get_template("app_ping_view.view.sql")
 
-        skip_existing = self.skip_existing()
+        skip_existing = self.skip_existing(output_dir, project_id)
 
         p = GleanPing(repo)
         # generate views for all available pings

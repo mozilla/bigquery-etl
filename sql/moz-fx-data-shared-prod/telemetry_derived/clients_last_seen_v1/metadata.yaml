@@ -1,20 +1,20 @@
 friendly_name: Clients Last Seen
-description: >
+description: |
   Aggregations that show a rolling 28-day per-client summary on top of
-  `clients_daily_*` tables.
-  It also performs a join with `clients_first_seen_v1` in order to provide
-  fields related to client activation that fall outside the 28-day window.
-  It should normally be accessed through the user-facing view
-  `telemetry.clients_last_seen`.
-  Note that by end of Q1 2021, that view start referencing the downstream table
-  `clients_last_seen_joined_v1` which merges in fields based on the `event`
-  ping.
+  `clients_daily_*` tables. It also performs a join with `clients_first_seen_v1`
+  in order to provide fields related to client activation that fall outside
+  the 28-day window. It should normally be accessed through the user-facing
+  view `telemetry.clients_last_seen`. Note that by end of Q1 2021, that view
+  start referencing the downstream table `clients_last_seen_joined_v1`
+  which merges in fields based on the `event` ping.
   See https://github.com/mozilla/bigquery-etl/issues/1761
 owners:
 - dthorn@mozilla.com
 labels:
   application: firefox
   schedule: daily
+  dag: bqetl_main_summary
+  owner1: dthorn
 scheduling:
   dag_name: bqetl_main_summary
   priority: 85
@@ -32,16 +32,20 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
+    expiration_days: null
   clustering:
     fields:
     - normalized_channel
     - sample_id
 schema:
   derived_from:
-  - table: ['moz-fx-data-shared-prod', 'telemetry_derived', 'clients_daily_v6']
+  - table:
+    - moz-fx-data-shared-prod
+    - telemetry_derived
+    - clients_daily_v6
+    exclude: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  # managed at the dataset-level
-  # - workgroup:mozilla-confidential
   - workgroup:dataops-managed/taar
+references: {}

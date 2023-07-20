@@ -1,0 +1,8 @@
+---
+- client_id: client-2
+  sample_id: 20
+  submission_timestamp: '2022-07-01 00:02:00'
+  environment:
+    settings:
+      attribution:
+        source: source2

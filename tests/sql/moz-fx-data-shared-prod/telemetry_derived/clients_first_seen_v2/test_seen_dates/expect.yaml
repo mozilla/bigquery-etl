@@ -1,0 +1,41 @@
+---
+- client_id: client-1
+  first_seen_date: 2022-06-30
+  second_seen_date: 2022-07-01
+  sample_id: 10
+  normalized_channel: release
+  metadata:
+    first_seen_date__source_ping: new_profile
+    reported_main_ping: false
+    reported_new_profile_ping: true
+    reported_shutdown_ping: false
+- client_id: client-2
+  first_seen_date: 2022-07-01
+  sample_id: 20
+  attribution_campaign: campaign2
+  attribution_source: source2
+  metadata:
+    first_seen_date__source_ping: main
+    attribution_campaign__source_ping: main
+    attribution_source__source_ping: new_profile
+    reported_main_ping: true
+    reported_new_profile_ping: true
+    reported_shutdown_ping: false
+- client_id: client-3
+  first_seen_date: 2022-06-30
+  second_seen_date: 2022-07-01
+  sample_id: 30
+  normalized_channel: beta
+  metadata:
+    first_seen_date__source_ping: new_profile
+    reported_new_profile_ping: true
+    reported_shutdown_ping: true
+- client_id: client-4
+  sample_id: 40
+  first_seen_date: 2022-06-29
+  second_seen_date: 2022-06-30
+  metadata:
+    first_seen_date__source_ping: new_profile
+    reported_new_profile_ping: true
+    reported_main_ping: true
+    reported_shutdown_ping: false

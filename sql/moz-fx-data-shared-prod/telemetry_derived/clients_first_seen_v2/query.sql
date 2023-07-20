@@ -5,7 +5,9 @@ WITH new_profile_ping AS (
     sample_id AS sample_id,
     MIN(submission_timestamp) AS submission_timestamp,
     ANY_VALUE(submission_timestamp HAVING MIN submission_timestamp) AS first_seen_date,
-    ARRAY_AGG(submission_timestamp IGNORE NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(1)] AS second_seen_date,
+    ARRAY_AGG(submission_timestamp IGNORE NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(1)
+    ] AS second_seen_date,
     ANY_VALUE(application.architecture HAVING MIN submission_timestamp) AS architecture,
     ANY_VALUE(application.build_id HAVING MIN submission_timestamp) AS app_build_id,
     ANY_VALUE(normalized_app_name HAVING MIN submission_timestamp) AS app_name,
@@ -121,7 +123,9 @@ shutdown_ping AS (
     sample_id AS sample_id,
     MIN(submission_timestamp) AS submission_timestamp,
     ANY_VALUE(submission_timestamp HAVING MIN submission_timestamp) AS first_seen_date,
-    ARRAY_AGG(submission_timestamp IGNORE NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(1)] AS second_seen_date,
+    ARRAY_AGG(submission_timestamp IGNORE NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(1)
+    ] AS second_seen_date,
     ANY_VALUE(application.architecture HAVING MIN submission_timestamp) AS architecture,
     ANY_VALUE(application.build_id HAVING MIN submission_timestamp) AS app_build_id,
     ANY_VALUE(normalized_app_name HAVING MIN submission_timestamp) AS app_name,
@@ -237,7 +241,9 @@ main_ping AS (
     sample_id AS sample_id,
     MIN(submission_timestamp_min) AS submission_timestamp,
     TIMESTAMP(ANY_VALUE(submission_date HAVING MIN submission_date)) AS first_seen_date,
-    TIMESTAMP(ARRAY_AGG(submission_date IGNORE NULLS ORDER BY submission_date)[SAFE_OFFSET(1)]) AS second_seen_date,
+    TIMESTAMP(
+      ARRAY_AGG(submission_date IGNORE NULLS ORDER BY submission_date)[SAFE_OFFSET(1)]
+    ) AS second_seen_date,
     CAST(NULL AS STRING) AS architecture,
     ANY_VALUE(app_build_id HAVING MIN submission_timestamp_min) AS app_build_id,
     ANY_VALUE(app_name HAVING MIN submission_timestamp_min) AS app_name,
@@ -318,26 +324,44 @@ unioned AS (
   FROM
     main_ping
 ),
-unioned_with_all_dates AS
-(
+unioned_with_all_dates AS (
   SELECT
     client_id,
     ARRAY_CONCAT(
-      ARRAY_AGG(STRUCT(CAST(DATE(unioned.first_seen_date) AS STRING) AS value, ping_source AS value_source, DATETIME(unioned.first_seen_date) AS value_date) IGNORE NULLS),
-      ARRAY_AGG(STRUCT(CAST(DATE(unioned.second_seen_date) AS STRING) AS value, ping_source AS value_source, DATETIME(unioned.second_seen_date) AS value_date) IGNORE NULLS)
-      ) AS seen_dates
-  FROM unioned
-  GROUP BY client_id
+      ARRAY_AGG(
+        STRUCT(
+          CAST(DATE(unioned.first_seen_date) AS STRING) AS value,
+          ping_source AS value_source,
+          DATETIME(unioned.first_seen_date) AS value_date
+        ) IGNORE NULLS
+      ),
+      ARRAY_AGG(
+        STRUCT(
+          CAST(DATE(unioned.second_seen_date) AS STRING) AS value,
+          ping_source AS value_source,
+          DATETIME(unioned.second_seen_date) AS value_date
+        ) IGNORE NULLS
+      )
+    ) AS seen_dates
+  FROM
+    unioned
+  GROUP BY
+    client_id
 ),
-unioned_second_dates AS
-(
+unioned_second_dates AS (
   SELECT
     client_id,
-    DATE(ARRAY_AGG(DISTINCT _date.value IGNORE NULLS ORDER BY _date.value ASC)[SAFE_OFFSET(1)]) AS second_seen_date,
-  FROM unioned_with_all_dates
-  LEFT JOIN UNNEST(seen_dates) AS _date
-  WHERE _date.value_date IS NOT NULL
-  GROUP BY 1
+    DATE(
+      ARRAY_AGG(DISTINCT _date.value IGNORE NULLS ORDER BY _date.value ASC)[SAFE_OFFSET(1)]
+    ) AS second_seen_date,
+  FROM
+    unioned_with_all_dates
+  LEFT JOIN
+    UNNEST(seen_dates) AS _date
+  WHERE
+    _date.value_date IS NOT NULL
+  GROUP BY
+    1
 ),
 _current AS (
   SELECT
@@ -558,16 +582,19 @@ _current AS (
   GROUP BY
     client_id
 ),
-_current_with_second_date AS
-(
+_current_with_second_date AS (
   SELECT
     _current.client_id,
     _current.sample_id,
     _current.first_seen_date,
-    unioned_second_dates.second_seen_date as second_seen_date,
+    unioned_second_dates.second_seen_date AS second_seen_date,
     _current.* EXCEPT (client_id, sample_id, first_seen_date)
-  FROM _current
-  LEFT JOIN unioned_second_dates USING (client_id)
+  FROM
+    _current
+  LEFT JOIN
+    unioned_second_dates
+  USING
+    (client_id)
 ),
 _previous AS (
   SELECT
@@ -576,7 +603,15 @@ _previous AS (
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
 )
 SELECT
-  IF(_previous.client_id IS NOT NULL, _previous, _current).*
+  IF(_previous.client_id IS NULL, _current, _previous).* REPLACE (
+    IF(
+      _previous.second_seen_date IS NULL
+      AND _previous.first_seen_date IS NOT NULL
+      AND _current.client_id IS NOT NULL,
+      @submission_date,
+      _previous.second_seen_date
+    ) AS second_seen_date
+  )
 FROM
   _previous
 FULL JOIN

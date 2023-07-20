@@ -12,6 +12,10 @@
     "name": "first_seen_date"
   },
   {
+    "type": "DATE",
+    "name": "second_seen_date"
+  },
+  {
     "type": "STRING",
     "name": "architecture"
   },

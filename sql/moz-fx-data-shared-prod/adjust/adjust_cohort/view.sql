@@ -2,7 +2,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.adjust.adjust_cohort`
 AS
 SELECT
-    date,
+    cohort_start_month,
     period_length,
     period,
     app,
@@ -10,7 +10,6 @@ SELECT
     network_token,
     country,
     os,
-    device_type,
     cohort_size,
     retained_users,
     retention_rate,
@@ -18,5 +17,8 @@ SELECT
     time_spent_per_session,
     time_spent,
     sessions_per_user,
-    sessions
+    sessions,
+    date
 FROM `moz-fx-data-shared-prod.adjust_derived.adjust_cohort_v1`
+WHERE date=@date
+AND network != "Untrusted Devices"

@@ -26,7 +26,7 @@ being added to track in Adjust
 """
 
 CSV_FIELDS = [
-    "date",
+    "cohort_start_month",
     "period_length",
     "period",
     "app",
@@ -35,7 +35,6 @@ CSV_FIELDS = [
     "network_token",
     "country",
     "os",
-    "device",
     "cohort_size",
     "retained_users",
     "retention_rate",
@@ -44,6 +43,7 @@ CSV_FIELDS = [
     "time_spent",
     "sessions_per_user",
     "sessions",
+    "date",
 ]
 
 
@@ -64,7 +64,7 @@ def write_dict_to_csv(json_data, filename):
 
 def download_adjust_kpi_data(date, api_token, app_token):
     """Download data from Adjust - API token and APP tokens are called here."""
-    start_date = date
+    start_date = "2020-09-01"  # use date mozilla migrated fennec to fenix as start date
     end_date = date
 
     kpis = [
@@ -78,13 +78,12 @@ def download_adjust_kpi_data(date, api_token, app_token):
         "sessions",
     ]
     groupings = [
-        "days",
+        "months",
         "periods",  # from result_parameter
         "apps",
         "networks",
         "countries",
         "os_names",
-        "device_types",
     ]
     # getting overview metrics for different kpis / Deliverables
     url = f"https://api.adjust.com/kpis/v1/{app_token}/cohorts"  # overview
@@ -94,6 +93,9 @@ def download_adjust_kpi_data(date, api_token, app_token):
     }
 
     response = requests.get(url, headers=headers, params=url_params)
+    if (response.status_code == 401) or (response.status_code == 400):
+        print(f"***Error: {response.status_code}***")
+        print(response.text)
 
     return response
 
@@ -112,9 +114,13 @@ def check_json(adjust_response_text):
     return query_export
 
 
-def clean_json(query_export):
-    """JSON sometimes has missing keys, need to clean up the data."""
+def clean_json(query_export, date_script_run):
+    """JSON sometimes has missing keys, need to clean up the data. Cohort_start_date should always be the first of the month. Date or end_date is day script is run.
+
+    https://help.adjust.com/en/article/kpi-glossary#cohort-metrics has descriptions of groupings and metrics.
+    """
     period_length = query_export["result_parameters"]["period"]
+    run_date = date_script_run
 
     fields_list = []
     for date in query_export["result_set"]["dates"]:
@@ -132,29 +138,27 @@ def clean_json(query_export):
                         r_country = country["country"]
                         for os_name in country["os_names"]:
                             r_os_name = os_name["os_name"]
-                            for device in os_name["device_types"]:
-                                r_device = device["device_type"]
-                                field_dict = {
-                                    "date": (r_date),
-                                    "period_length": (r_period_length),
-                                    "period": (r_period),
-                                    "app": (r_app),
-                                    "app_token": (r_app_token),
-                                    "network": (r_network),
-                                    "network_token": (r_network_token),
-                                    "country": (r_country),
-                                    "os": (r_os_name),
-                                    "device": (r_device),
-                                    "cohort_size": device["kpi_values"][0],
-                                    "retained_users": device["kpi_values"][1],
-                                    "retention_rate": device["kpi_values"][2],
-                                    "time_spent_per_user": device["kpi_values"][3],
-                                    "time_spent_per_session": device["kpi_values"][4],
-                                    "time_spent": device["kpi_values"][5],
-                                    "sessions_per_user": device["kpi_values"][6],
-                                    "sessions": device["kpi_values"][7],
-                                }
-                                fields_list.append(field_dict)
+                            field_dict = {
+                                "cohort_start_month": (r_date),
+                                "period_length": (r_period_length),
+                                "period": (r_period),
+                                "app": (r_app),
+                                "app_token": (r_app_token),
+                                "network": (r_network),
+                                "network_token": (r_network_token),
+                                "country": (r_country),
+                                "os": (r_os_name),
+                                "cohort_size": os_name["kpi_values"][0],
+                                "retained_users": os_name["kpi_values"][1],
+                                "retention_rate": os_name["kpi_values"][2],
+                                "time_spent_per_user": os_name["kpi_values"][3],
+                                "time_spent_per_session": os_name["kpi_values"][4],
+                                "time_spent": os_name["kpi_values"][5],
+                                "sessions_per_user": os_name["kpi_values"][6],
+                                "sessions": os_name["kpi_values"][7],
+                                "date": run_date,
+                            }
+                            fields_list.append(field_dict)
 
     return fields_list
 
@@ -180,7 +184,7 @@ def upload_to_bigquery(csv_data, project, dataset, date):
                 ),
                 skip_leading_rows=1,
                 schema=[
-                    bigquery.SchemaField("date", "DATE"),
+                    bigquery.SchemaField("cohort_start_month", "DATE"),
                     bigquery.SchemaField("period_length", "STRING"),
                     bigquery.SchemaField("period", "INTEGER"),
                     bigquery.SchemaField("app", "STRING"),
@@ -189,7 +193,6 @@ def upload_to_bigquery(csv_data, project, dataset, date):
                     bigquery.SchemaField("network_token", "STRING"),
                     bigquery.SchemaField("country", "STRING"),
                     bigquery.SchemaField("os", "STRING"),
-                    bigquery.SchemaField("device_type", "STRING"),
                     bigquery.SchemaField("cohort_size", "INTEGER"),
                     bigquery.SchemaField("retained_users", "INTEGER"),
                     bigquery.SchemaField("retention_rate", "FLOAT"),
@@ -198,6 +201,7 @@ def upload_to_bigquery(csv_data, project, dataset, date):
                     bigquery.SchemaField("time_spent", "INTEGER"),
                     bigquery.SchemaField("sessions_per_user", "FLOAT"),
                     bigquery.SchemaField("sessions", "INTEGER"),
+                    bigquery.SchemaField("date", "DATE"),
                 ],
             )
             # Table names are based on the app name seen in the Adjust dashboard"
@@ -215,15 +219,15 @@ def main():
     """Input data, call functions, get stuff done."""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--date", required=True)
-    parser.add_argument("--adjust_api_token", required=True)
-    parser.add_argument("--adjust_app_list", required=True)
+    # parser.add_argument("--adjust_api_token", required=True)
+    # parser.add_argument("--adjust_app_list", required=True)
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
     parser.add_argument("--dataset", default="adjust_derived")
 
     args = parser.parse_args()
 
+    app_list = json.loads(APP_TOKEN_LIST)
     # app_list = json.loads(args.adjust_app_list)
-    app_list = json.loads(args.adjust_app_list)
 
     data = []
 
@@ -232,9 +236,9 @@ def main():
         print(f'This is data for {app["app_name"]}')
         # Ping the Adjust URL and get a response
         json_file = download_adjust_kpi_data(
-            # args.date, args.adjust_api_token, app["app_token"]
             args.date,
-            args.adjust_api_token,
+            # args.adjust_api_token,
+            API_TOKEN,
             app["app_token"],
         )
 
@@ -242,7 +246,7 @@ def main():
 
         if query_export is not None:
             # This section writes the tmp json data into a temp CSV file which will then be put into a BigQuery table
-            adjust_data = clean_json(query_export)
+            adjust_data = clean_json(query_export, args.date)
             data.extend(adjust_data)
         else:
             print(f'no data for {app["app_name"]} today')

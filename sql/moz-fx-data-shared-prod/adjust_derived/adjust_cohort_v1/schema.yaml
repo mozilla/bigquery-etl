@@ -1,7 +1,7 @@
 fields:
 
 - mode: NULLABLE
-  name: date
+  name: cohort_start_month
   type: DATE
 - mode: NULLABLE
   name: period_length
@@ -57,3 +57,6 @@ fields:
 - mode: NULLABLE
   name: sessions
   type: INTEGER
+- mode: NULLABLE
+  name: date
+  type: DATE

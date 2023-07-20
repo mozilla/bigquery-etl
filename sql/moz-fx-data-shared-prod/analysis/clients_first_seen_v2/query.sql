@@ -1,4 +1,4 @@
--- Query for telemetry_derived.clients_first_seen_v2
+-- Query for analysis.clients_first_seen_v2_with_second_seen_date
 WITH new_profile_ping AS (
   SELECT
     client_id AS client_id,
@@ -109,7 +109,8 @@ WITH new_profile_ping AS (
     `moz-fx-data-shared-prod.telemetry.new_profile`
   WHERE
     {% if is_init() %}
-      DATE(submission_timestamp) >= '2017-06-26'
+      DATE(submission_timestamp) >= '2022-07-01'
+  --       DATE(submission_timestamp) >= '2017-06-26'
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
@@ -227,7 +228,8 @@ shutdown_ping AS (
     `moz-fx-data-shared-prod.telemetry.first_shutdown`
   WHERE
     {% if is_init() %}
-      DATE(submission_timestamp) >= '2018-10-30'
+  --       DATE(submission_timestamp) >= '2018-10-30'
+      DATE(submission_timestamp) >= '2022-07-01'
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
@@ -297,7 +299,8 @@ main_ping AS (
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
     {% if is_init() %}
-      submission_date >= '2016-03-12'
+--         submission_date >= '2016-03-12'
+      submission_date >= '2022-07-01'
     {% else %}
       submission_date = @submission_date
     {% endif %}
@@ -600,7 +603,7 @@ _previous AS (
   SELECT
     *
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
+    `moz-fx-data-shared-prod.analysis.clients_first_seen_v2`
 )
 SELECT
   IF(_previous.client_id IS NULL, _current, _previous).* REPLACE (

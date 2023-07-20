@@ -20,7 +20,3 @@ labels:
 #  referenced_tables: [['moz-fx-data-shared-prod',
 #                       'telemetry_derived',
 #                       'event_types_history_v1']]
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential

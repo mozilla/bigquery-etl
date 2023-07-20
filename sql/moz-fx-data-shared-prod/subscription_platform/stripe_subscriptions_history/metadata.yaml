@@ -1,5 +1,0 @@
-# technically not necessary
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:deprecated

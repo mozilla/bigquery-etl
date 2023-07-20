@@ -3,7 +3,3 @@ description: >
   View for live experiment enrollment events.
 labels:
   incremental: false
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential

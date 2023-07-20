@@ -6,7 +6,3 @@ labels:
   incremental: false
 owners:
 - ascholtz@mozilla.com
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential

@@ -4,7 +4,3 @@ owners:
 - ascholtz@mozilla.com
 scheduling:
   dag_name: bqetl_experiments_daily
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential

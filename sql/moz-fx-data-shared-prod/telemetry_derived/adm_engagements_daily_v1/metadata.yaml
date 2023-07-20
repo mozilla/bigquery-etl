@@ -16,7 +16,3 @@ bigquery:
   time_partitioning:
     type: day
     require_partition_filter: false
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential

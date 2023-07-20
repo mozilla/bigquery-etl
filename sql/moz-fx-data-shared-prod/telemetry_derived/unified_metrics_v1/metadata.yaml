@@ -32,7 +32,3 @@ bigquery:
     - sample_id
     - normalized_app_name
 references: {}
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential

@@ -1,9 +1,11 @@
 CREATE OR REPLACE TABLE
-  mozdata.analysis.clients_yearly_sim_111111
+  fenix_derived.clients_yearly_v1
 PARTITION BY
   (submission_date)
 CLUSTER BY
   (sample_id)
+OPTIONS
+  (require_partition_filter = TRUE)
 AS
 WITH base AS (
   -- There are duplicates now in `baseline_clients_daily` because of the join with `clients_first_seen`,

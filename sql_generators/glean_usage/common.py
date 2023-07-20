@@ -257,7 +257,7 @@ class GleanTable:
                 destination = (
                     get_table_dir(output_dir, artifact.table_id) / artifact.basename
                 )
-                skip_existing = destination in skip_existing_artifact
+                skip_existing = str(destination) in skip_existing_artifact
 
                 write_sql(
                     output_dir,
@@ -325,7 +325,7 @@ class GleanTable:
 
             if output_dir:
                 skip_existing = (
-                    get_table_dir(output_dir, view) / "view.sql"
+                    str(get_table_dir(output_dir, view) / "view.sql")
                     in skip_existing_artifacts
                 )
                 write_sql(

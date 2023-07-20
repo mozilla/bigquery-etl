@@ -3769,12 +3769,13 @@ across all channels of the Glean application "Firefox for Android"
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fenix/bookmarks_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fenix/bookmarks_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/fenix/bookmarks_sync/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="client_deduplication"><a href="#client_deduplication">client_deduplication</a></h2>
-<p><strong>App-specific view for Glean ping "client-deduplication"</strong></p>
+<p><strong>Client Deduplication</strong></p>
 <p><code>fenix.client_deduplication</code></p>
-<p>This a view that UNIONs the stable ping tables
-across all channels of the Glean application "Firefox for Android"
-(org_mozilla_firefox.client_deduplication, org_mozilla_firefox_beta.client_deduplication, org_mozilla_fenix.client_deduplication).</p>
-<p>It is used by Looker.</p>
+<p>A view over all client deduplication pings, from all channels.</p>
+<ul>
+<li>Owners:<p>- <a href="mailto:frank@mozilla.com">frank@mozilla.com</a></p>
+</li>
+</ul>
 <table>
 <caption>Schema</caption>
     <tr>

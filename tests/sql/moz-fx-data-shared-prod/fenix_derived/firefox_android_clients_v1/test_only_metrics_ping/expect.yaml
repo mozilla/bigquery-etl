@@ -20,7 +20,6 @@
 - client_id: client-2
   install_source: 'Test Install Source'
   sample_id: 40
-  channel: release
   metadata:
     reported_first_session_ping: false
     reported_metrics_ping: true
@@ -34,7 +33,6 @@
   activated: true
   adjust_network: 'Test Adjust'
   install_source: com.android.vending
-  channel: release
   metadata:
     reported_first_session_ping: true
     reported_metrics_ping: true

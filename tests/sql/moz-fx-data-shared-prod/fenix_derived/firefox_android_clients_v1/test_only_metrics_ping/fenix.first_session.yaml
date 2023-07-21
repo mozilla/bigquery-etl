@@ -2,7 +2,6 @@
 - client_info:
     client_id: client-3
   submission_timestamp: '2023-01-01 00:00:00'
-  normalized_channel: release
   metrics:
     string:
       first_session_network: 'Test Adjust'

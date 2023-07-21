@@ -5,7 +5,6 @@
   submission_date: 2022-12-30
   activated: true
   install_source: 'com.android.vending'
-  normalized_channel: release
   metadata:
     reported_metrics_ping: true
     min_metrics_ping_submission_date: 2022-12-30

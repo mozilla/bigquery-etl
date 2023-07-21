@@ -1,7 +1,6 @@
 """Adjust data - download deliverables, clean and upload to BigQuery."""
 import csv
 import json
-import os
 import tempfile
 from argparse import ArgumentParser
 
@@ -11,11 +10,6 @@ from google.cloud import bigquery
 API_URI = "api.adjust.com"
 ENDPOINT = "kpis"
 API_VERSION = "v1"
-
-APP_TOKEN_LIST = os.environ.get("ADJUST_APP_TOKEN_LIST")
-
-"""This is Marlene's personal Adjust API Token. We don't have a special service account API Token."""
-API_TOKEN = os.environ.get("ADJUST_API_TOKEN")
 
 """The APP_TOKEN_LIST is a list of dictionaries.
 Keys are the app_name, and app_token in the form:
@@ -219,15 +213,14 @@ def main():
     """Input data, call functions, get stuff done."""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--date", required=True)
-    # parser.add_argument("--adjust_api_token", required=True)
-    # parser.add_argument("--adjust_app_list", required=True)
+    parser.add_argument("--adjust_api_token", required=True)
+    parser.add_argument("--adjust_app_list", required=True)
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
     parser.add_argument("--dataset", default="adjust_derived")
 
     args = parser.parse_args()
 
-    app_list = json.loads(APP_TOKEN_LIST)
-    # app_list = json.loads(args.adjust_app_list)
+    app_list = json.loads(args.adjust_app_list)
 
     data = []
 
@@ -237,8 +230,7 @@ def main():
         # Ping the Adjust URL and get a response
         json_file = download_adjust_kpi_data(
             args.date,
-            # args.adjust_api_token,
-            API_TOKEN,
+            args.adjustpi_token,
             app["app_token"],
         )
 

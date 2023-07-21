@@ -105,6 +105,21 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefox_desktop_derived__onboarding__v2 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__onboarding__v2",
+        destination_table="onboarding_v2",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="gleonard@mozilla.com",
+        email=[
+            "gleonard@mozilla.com",
+            "najiang@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     messaging_system_derived__cfr_exact_mau28_by_dimensions__v1 = bigquery_etl_query(
         task_id="messaging_system_derived__cfr_exact_mau28_by_dimensions__v1",
         destination_table="cfr_exact_mau28_by_dimensions_v1",
@@ -229,6 +244,8 @@ with DAG(
     firefox_desktop_derived__cfr_users_last_seen__v2.set_upstream(
         firefox_desktop_derived__cfr_users_daily__v2
     )
+
+    firefox_desktop_derived__onboarding__v2.set_upstream(wait_for_copy_deduplicate_all)
 
     messaging_system_derived__cfr_exact_mau28_by_dimensions__v1.set_upstream(
         messaging_system_derived__cfr_users_last_seen__v1

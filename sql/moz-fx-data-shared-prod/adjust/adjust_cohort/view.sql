@@ -13,7 +13,7 @@ SELECT
     cohort_size,
     retained_users,
     retention_rate,
-    time_spent_per_users,
+    time_spent_per_user,
     time_spent_per_session,
     time_spent,
     sessions_per_user,

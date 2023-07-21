@@ -1,3 +1,4 @@
+CREATE OR REPLACE VIEW `moz-fx-data-shared-prod`.telemetry_derived.client_probe_counts
 (
 WITH all_counts AS (
   SELECT

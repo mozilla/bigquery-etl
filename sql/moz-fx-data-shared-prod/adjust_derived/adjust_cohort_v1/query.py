@@ -196,7 +196,7 @@ def upload_to_bigquery(csv_data, project, dataset, date):
                     bigquery.SchemaField("cohort_size", "INTEGER"),
                     bigquery.SchemaField("retained_users", "INTEGER"),
                     bigquery.SchemaField("retention_rate", "FLOAT"),
-                    bigquery.SchemaField("time_spent_per_users", "INTEGER"),
+                    bigquery.SchemaField("time_spent_per_user", "INTEGER"),
                     bigquery.SchemaField("time_spent_per_session", "INTEGER"),
                     bigquery.SchemaField("time_spent", "INTEGER"),
                     bigquery.SchemaField("sessions_per_user", "FLOAT"),

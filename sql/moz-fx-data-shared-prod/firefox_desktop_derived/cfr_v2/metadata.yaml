@@ -1,6 +1,6 @@
 friendly_name: Cfr
 description: |-
-  Please provide a description for the query
+  Contains CFR specific data extracted from messaging_system_v1
 owners:
 - gleonard@mozilla.com
 labels:

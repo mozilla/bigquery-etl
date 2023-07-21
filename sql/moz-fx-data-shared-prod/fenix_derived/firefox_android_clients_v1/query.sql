@@ -41,24 +41,21 @@ first_seen AS (
     is_new_profile
 ),
 -- Find the most recent activation record per client_id.
--- TODO: fenix.new_profile_activation only contains data for release channel
 activations AS (
   SELECT
     client_id,
-    normalized_channel AS channel,
     ARRAY_AGG(activated ORDER BY submission_date DESC)[SAFE_OFFSET(0)] > 0 AS activated
   FROM
     fenix.new_profile_activation
   WHERE
     submission_date = @submission_date
   GROUP BY
-    client_id, normalized_channel
+    client_id
 ),
 -- Find earliest data per client from the first_session ping.
 first_session_ping AS (
   SELECT
     client_info.client_id AS client_id,
-    normalized_channel AS channel,
     MIN(sample_id) AS sample_id,
     DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
     MIN(SAFE.PARSE_DATETIME('%F', SUBSTR(client_info.first_run_date, 1, 10))) AS first_run_datetime,
@@ -80,13 +77,12 @@ first_session_ping AS (
     DATE(submission_timestamp) = @submission_date
     AND ping_info.seq = 0 -- Pings are sent in sequence, this guarantees that the first one is returned.
   GROUP BY
-    client_id, normalized_channel
+    client_id
 ),
 -- Find earliest data per client from the metrics ping.
 metrics_ping AS (
   SELECT
     client_info.client_id AS client_id,
-    normalized_channel AS channel,
     MIN(sample_id) AS sample_id,
     DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
     ARRAY_AGG(
@@ -135,13 +131,12 @@ metrics_ping AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
-    client_id, normalized_channel
+    client_id
 ),
 -- Find most recent client details from the baseline ping.
 baseline_ping AS (
   SELECT
     client_id,
-    channel,
     MAX(submission_date) AS last_reported_date,
     ARRAY_AGG(country IGNORE NULLS ORDER BY submission_date DESC)[
       SAFE_OFFSET(0)
@@ -158,7 +153,7 @@ baseline_ping AS (
   FROM
     baseline_clients
   GROUP BY
-    client_id, channel
+    client_id
 ),
 _current AS (
   SELECT
@@ -256,19 +251,19 @@ _current AS (
   FULL OUTER JOIN
     first_session_ping first_session
   USING
-    (client_id, channel)
+    (client_id)
   FULL OUTER JOIN
     metrics_ping AS metrics
   USING
-    (client_id, channel)
+    (client_id)
   FULL OUTER JOIN
     baseline_ping AS baseline
   USING
-    (client_id, channel)
+    (client_id)
   LEFT JOIN
     activations
   USING
-    (client_id, channel)
+    (client_id)
   WHERE
     client_id IS NOT NULL
 ),
@@ -398,4 +393,4 @@ FROM
 FULL OUTER JOIN
   _previous
 USING
-  (client_id, channel)
+  (client_id)

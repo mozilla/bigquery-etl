@@ -77,6 +77,9 @@ def sample_for_replacement_bq(client, date, column_list, seed, lookback):
           -- number the clients randomly within bucket. adding the seed makes the sort order reproducable.
           ROW_NUMBER() OVER (PARTITION BY bucket ORDER BY FARM_FINGERPRINT(CONCAT(client_id, {str(seed)}))) AS rn,
         FROM churned
+        -- do not sample from from churned clients with FSD equal to the current date that is undergoing replacement (i.e. clients that churn the same day they are new)
+        -- these clients will be eligible for replacement, but they won't serve as replacements on the same day.
+        WHERE first_seen_date != DATE("{date}")
       ),
 
       regen AS (
@@ -178,118 +181,153 @@ def update_churn_pool(client, seed, date):
 
 
 # def write_attributed_clients_history(client, seed, start_date):
-#     table_name = (
-#         """mozdata.analysis.regen_sim_replaced_attributable_clients_{}""".format(
-#             str(seed)
-#         )
-#     )
-#     q = f"""
-#     -- this query replaces regenerated (i.e. 'fake new') client_ids with their matches in `attributable_clients`
-#     -- the main purpose here is to get the daily ad click and search data.
+#   table_name = """mozdata.analysis.regen_sim_replaced_attributable_clients_v2_{}""".format(str(seed))
+#   q = f"""
+#   CREATE OR REPLACE TABLE {table_name}
+#   AS
+#   WITH base AS (
+#       SELECT
+#         COALESCE(r.replacement_id, c.client_id) AS client_id,
+#         COALESCE(r.first_seen_date, c.cohort_date) AS first_seen_date,
+#         c.client_id AS original_client_id,
+#         r.label,
+#         c.submission_date,
+#         ad_clicks,
+#         searches,
+#         searches_with_ads,
+#         first_reported_country,
+#         sample_id,
+#         regened_last_date
+#       FROM `mozdata.fenix.attributable_clients_v2` c
+#       LEFT JOIN `mozdata.analysis.regen_sim_client_replacements_{str(seed)}` r
+#       -- we want the history starting on the regen date.
+#       ON (c.client_id = r.client_id) AND (c.submission_date BETWEEN r.regen_date AND r.regened_last_date)
+#       AND c.submission_date >= DATE("{str(start_date)}")
+#   ),
 #
-#     CREATE OR REPLACE TABLE {table_name}
-#     AS
-#         SELECT
-#           COALESCE(r.replacement_id, c.client_id) AS client_id,
-#           COALESCE(r.first_seen_date, c.cohort_date) AS first_seen_date,
-#           c.client_id AS original_client_id,
-#           r.label,
-#           c.submission_date,
-#           ad_clicks,
-#           searches,
-#           searches_with_ads,
-#           country,
-#           sample_id
-#         FROM `mozdata.fenix.attributable_clients` c --switch to v2 when ready
-#         LEFT JOIN `mozdata.analysis.regen_sim_client_replacements_{str(seed)}` r
-#         -- we want the history starting on the regen date.
-#         ON (c.client_id = r.client_id) AND (c.submission_date BETWEEN r.regen_date AND r.regened_last_date)
-#         AND c.submission_date >= DATE("{start_date}")
-#     """
+#   numbered AS (
+#       SELECT
+#           *,
+#           ROW_NUMBER() OVER (PARTITION BY client_id, submission_date ORDER BY regened_last_date DESC) AS rn
+#       FROM base
+#       -- this is to handle the case where the same ID ends a replacement and starts another replacement on the same day, leading to more than one row / client.
+#       -- in that case, we ignore the last day of the earlier replacement.
+#   )
 #
-#     job = client.query(q)
-#     job.result()
+#   SELECT
+#       * EXCEPT(regened_last_date, rn)
+#   FROM numbered
+#   WHERE rn = 1
+#   """
 #
-#     return table_name
-#
-#
-# def write_usage_history(client, seed, start_date):
-#     table_name = """mozdata.analysis.regen_sim_replaced_clients_last_seen_{}""".format(
-#         str(seed)
-#     )
-#     q = f"""
-#     -- this query replaces regenerated (i.e. 'fake new') client_ids with their matches in `clients_last_seen`
-#     -- the main purpose here is to get their usage history for the markov states
-#     -- one complication here is that we need 'stitch' the bit pattern histories of the churned and replaced clients
-#     -- together using bitwise or
-#
-#     CREATE OR REPLACE TABLE {table_name}
-#     AS
-#     WITH
-#       replacement_history AS (
-#         SELECT
-#           r.replacement_id AS client_id,
-#           c.submission_date,
-#           days_seen_bits AS pre_churn_days_seen_bits
-#         FROM `mozdata.analysis.regen_sim_client_replacements_{str(seed)}` r
-#         -- or clients last seen joined??
-#         LEFT JOIN `mozdata.fenix.baseline_clients_last_seen` c
-#         -- we want the history starting on the regen date.
-#         ON (r.replacement_id = c.client_id) AND (c.submission_date BETWEEN r.regen_date AND DATE_ADD(r.regen_date, INTERVAL 27 DAY))
-#         WHERE c.submission_date >= DATE("{start_date}")
-#       ),
-#
-#       -- get the replaced client's history starting on the regen (replacement) date
-#       -- this is their first day - prior days will be 0s. we want to fill those in with any active days from the replacement client
-#       replaced_history AS (
-#         SELECT
-#           r.client_id AS original_client_id,
-#           r.replacement_id,
-#           c.submission_date,
-#           days_seen_bits AS post_churn_days_seen_bits
-#         FROM `mozdata.analysis.regen_sim_client_replacements_{str(seed)}` r
-#         LEFT JOIN `mozdata.fenix.baseline_clients_last_seen` c
-#         ON (r.client_id = c.client_id) AND (c.submission_date BETWEEN r.regen_date AND DATE_ADD(r.regen_date, INTERVAL 27 DAY))
-#         WHERE c.submission_date >= DATE("{start_date}")
-#       ),
-#
-#       -- combine the histories
-#       combined_history AS (
-#         SELECT
-#             d.original_client_id,
-#             d.replacement_id,
-#             r.submission_date,
-#             IF(pre_churn_days_seen_bits IS NOT NULL, (pre_churn_days_seen_bits | post_churn_days_seen_bits), post_churn_days_seen_bits) AS days_seen_bits
-#         FROM replacement_history r
-#         INNER JOIN replaced_history d
-#         ON r.client_id = d.replacement_id AND r.submission_date = d.submission_date
-#       )
-#
-#       -- now we need to get the complete cls history for each match, using the above to "fix" the histories during the transition period
-#
-#         SELECT
-#           -- use the replacement_id if its there,
-#           COALESCE(r.replacement_id, l.client_id) AS client_id,
-#           l.client_id AS original_client_id,
-#           COALESCE(r.first_seen_date, l.first_seen_date) AS first_seen_date,
-#           r.label,
-#           l.submission_date,
-#           -- prefer the fixed history if its there
-#           COALESCE(c.days_seen_bits, l.days_seen_bits) AS days_seen_bits,
-#         -- left join cls to the replacements first to slot in the new id throughout the history
-#         FROM mozdata.fenix.baseline_clients_last_seen l
-#         LEFT JOIN `mozdata.analysis.regen_sim_client_replacements_{str(seed)}` r
-#         ON (l.client_id = r.client_id) AND (l.submission_date BETWEEN r.regen_date AND r.regened_last_date)
-#         -- now join onto the combined histories for the 27 days following the replacement date
-#         LEFT JOIN combined_history c
-#         ON (l.client_id = c.original_client_id) AND (l.submission_date = c.submission_date)
-#         WHERE l.submission_date >= DATE("{start_date}")
-#     """
-#     job = client.query(q)
-#     job.result()
-#     return table_name
-#
+#   job = client.query(q)
+#   job.result()
+#   return(table_name)
 
+
+def write_baseline_clients_daily(client, seed, start_date):
+  table_name = """mozdata.analysis.regen_sim_replaced_baseline_clients_daily_{}""".format(str(seed))
+  q = f"""
+  CREATE OR REPLACE TABLE {table_name}
+  AS
+  WITH base AS (
+      SELECT
+        COALESCE(r.replacement_id, c.client_id) AS client_id,
+        COALESCE(r.first_seen_date, c.first_seen_date) AS first_seen_date,
+        c.client_id AS original_client_id,
+        c.first_seen_date AS original_first_seen_date,
+        c.submission_date,
+        c.country,
+        c.device_model,
+        udf.safe_sample_id(COALESCE(r.replacement_id, c.client_id)) AS sample_id,
+        regened_last_date,
+      FROM `mozdata.fenix.baseline_clients_daily` c
+      LEFT JOIN `mozdata.analysis.regen_sim_client_replacements_{str(seed)}` r
+      -- we want the history starting on the regen date.
+      ON (c.client_id = r.client_id) AND (c.submission_date BETWEEN r.regen_date AND r.regened_last_date)
+      WHERE c.submission_date >= DATE("{str(start_date)}")
+  ),
+
+  numbered AS (
+      SELECT
+          *,
+          ROW_NUMBER() OVER (PARTITION BY client_id, submission_date ORDER BY regened_last_date DESC) AS rn
+      FROM base
+      -- this is to handle the case where the same ID ends a replacement and starts another replacement on the same day, leading to more than one row / client.
+      -- in that case, we ignore the entry from the earlier replacement.
+  )
+
+  SELECT
+      * EXCEPT(regened_last_date, rn)
+  FROM numbered
+  WHERE rn = 1
+  """
+
+def write_usage_history(client, seed, start_date, end_date):
+  table_name = """mozdata.analysis.regen_sim_replaced_clients_last_seen_{}""".format(str(seed))
+  q = f"""
+  DECLARE start_date DATE DEFAULT "{str(start_date)}";
+  DECLARE end_date DATE DEFAULT "{str(end_date)}";
+
+  CREATE TEMP FUNCTION process_bits(bits BYTES) AS (
+    STRUCT(
+      bits,
+
+      -- An INT64 version of the bits, compatible with bits28 functions
+      CAST(CONCAT('0x', TO_HEX(RIGHT(bits, 4))) AS INT64) << 36 >> 36 AS bits28,
+
+      -- An INT64 version of the bits with 64 days of history
+      CAST(CONCAT('0x', TO_HEX(RIGHT(bits, 4))) AS INT64) AS bits64,
+
+      -- A field like days_since_seen from clients_last_seen.
+      udf.bits_to_days_since_seen(bits) AS days_since_active,
+
+      -- Days since first active, analogous to first_seen_date in clients_first_seen
+      udf.bits_to_days_since_first_seen(bits) AS days_since_first_active
+    )
+  );
+
+  CREATE OR REPLACE TABLE {table_name}
+  PARTITION BY submission_date
+  AS
+  WITH
+  alltime AS (
+    SELECT
+      client_id,
+      first_seen_date,
+      -- BEGIN
+      -- Here we produce bit pattern fields based on the daily aggregates from the
+      -- previous step;
+      udf.bits_from_offsets(
+        ARRAY_AGG(
+          DATE_DIFF(end_date, submission_date, DAY)
+        )
+      ) AS days_active_bits,
+      -- END
+    FROM
+      mozdata.analysis.regen_sim_replaced_baseline_clients_daily_{str(seed)}
+    WHERE submission_date BETWEEN start_date AND end_date
+    GROUP BY
+      client_id, first_seen_date
+  )
+  SELECT
+    end_date - i AS submission_date,
+    first_seen_date,
+    client_id,
+    process_bits(days_active_bits >> i) AS days_active
+  FROM
+    alltime
+  -- The cross join parses each input row into one row per day since the client
+  -- was first seen, emulating the format of the existing clients_last_seen table.
+  CROSS JOIN
+    UNNEST(GENERATE_ARRAY(0, DATE_DIFF(end_date, start_date, DAY))) AS i
+  WHERE
+    (days_active_bits >> i) IS NOT NULL
+  """
+
+  job = client.query(q)
+  job.result()
+  return(table_name)
 
 def create_replacements(
     client: bigquery.Client,
@@ -352,8 +390,9 @@ def run_simulation(
         lookback=lookback,
     )
     # TODO:
+    write_baseline_clients_daily(client, seed=seed, start_date=start_date)
     # write_attributed_clients_history(client, seed=seed, start_date=start_date)
-    # write_usage_history(client, seed=seed, start_date=start_date)
+    write_usage_history(client, seed=seed, start_date=start_date, end_date=end_date)
 
 
 @click.command()

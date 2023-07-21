@@ -28,9 +28,6 @@ fields:
   name: os
   type: STRING
 - mode: NULLABLE
-  name: device_type
-  type: STRING
-- mode: NULLABLE
   name: cohort_size
   type: INTEGER
 - mode: NULLABLE
@@ -40,13 +37,10 @@ fields:
   name: retention_rate
   type: FLOAT
 - mode: NULLABLE
-  name: time_spent_per_users
+  name: time_spent_per_user
   type: INTEGER
 - mode: NULLABLE
   name: time_spent_per_session
-  type: INTEGER
-- mode: NULLABLE
-  name: sessions
   type: INTEGER
 - mode: NULLABLE
   name: time_spent

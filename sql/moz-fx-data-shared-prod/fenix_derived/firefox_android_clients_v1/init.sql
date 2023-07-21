@@ -87,10 +87,13 @@ first_session_ping AS (
     ] AS adjust_creative
   FROM
     `moz-fx-data-shared-prod.fenix.first_session` AS fenix_first_session
-  INNER JOIN
+  LEFT JOIN
     first_session_ping_min_seq
   ON
-    client_info.client_id = first_session_ping_min_seq.client_id
+    (
+      client_info.client_id = first_session_ping_min_seq.client_id
+      AND ping_info.seq = first_session_ping_min_seq.seq
+    )
   WHERE
     DATE(submission_timestamp) >= '2019-01-01'
     AND (first_session_ping_min_seq.client_id IS NOT NULL OR ping_info.seq IS NULL)

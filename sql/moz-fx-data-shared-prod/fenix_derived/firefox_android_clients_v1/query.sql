@@ -90,7 +90,10 @@ first_session_ping AS (
   LEFT JOIN
     first_session_ping_min_seq
   ON
-    client_info.client_id = first_session_ping_min_seq.client_id
+    (
+      client_info.client_id = first_session_ping_min_seq.client_id
+      AND ping_info.seq = first_session_ping_min_seq.seq
+    )
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND (first_session_ping_min_seq.client_id IS NOT NULL OR ping_info.seq IS NULL)

@@ -1,7 +1,7 @@
 ---
-friendly_name: Deliverables data from external source Adjust
+friendly_name: Cohort data from external source Adjust
 description: >
-  This table represents data downloaded from Adjust link using https://api.adjust.com/kpis/v1/{app token}.
+  This table represents data downloaded from Adjust using the https://api.adjust.com/kpis/v1/{app token}/cohorts link.
   Please note that the API token used is Marlene Hirose's personal Adjust API token
 owners:
   - mhirose@mozilla.com

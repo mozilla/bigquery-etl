@@ -605,19 +605,17 @@ _previous AS (
 SELECT
   IF(_previous.client_id IS NULL, _current, _previous).* REPLACE (
     {% if is_init() %}
-      COALESCE(
-        _previous.second_seen_date, _current.second_seen_date
-      ) AS second_seen_date
+      COALESCE(_previous.second_seen_date, _current.second_seen_date) AS second_seen_date
     {% else %}
       IF(
-      _previous.first_seen_date IS NOT NULL
-      AND _previous.second_seen_date IS NULL
-      AND _current.client_id IS NOT NULL,
-      @submission_date,
-      _previous.second_seen_date
-    ) AS second_seen_date
+        _previous.first_seen_date IS NOT NULL
+        AND _previous.second_seen_date IS NULL
+        AND _current.client_id IS NOT NULL,
+        @submission_date,
+        _previous.second_seen_date
+      ) AS second_seen_date
     {% endif %}
-    )
+  )
 FROM
   _previous
 FULL JOIN

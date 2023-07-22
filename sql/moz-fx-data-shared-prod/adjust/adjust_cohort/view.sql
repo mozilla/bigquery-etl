@@ -20,5 +20,8 @@ SELECT
     sessions,
     date
 FROM `moz-fx-data-shared-prod.adjust_derived.adjust_cohort_v1`
-WHERE date=@date
-AND network != "Untrusted Devices"
+WHERE (network != "Untrusted Devices")
+  AND
+  date in (
+    SELECT MAX(date) from `moz-fx-data-shared-prod.adjust_derived.adjust_cohort_v1`
+    )

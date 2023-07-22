@@ -230,7 +230,7 @@ def main():
         # Ping the Adjust URL and get a response
         json_file = download_adjust_kpi_data(
             args.date,
-            args.adjustpi_token,
+            args.adjust_api_token,
             app["app_token"],
         )
 

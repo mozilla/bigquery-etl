@@ -125,6 +125,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/init.sql
   - sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/init.sql
   - sql/moz-fx-data-shared-prod/fenix_derived/google_ads_campaign_cost_breakdowns_v1/query.sql
+  - sql/moz-fx-data-shared-prod/search_derived/search_clients_daily_v8/query.sql
   - sql/moz-fx-data-shared-prod/search_terms*/**/*.sql
   - sql/moz-fx-data-bq-performance/release_criteria/dashboard_health_v1/query.sql
   - sql/moz-fx-data-bq-performance/release_criteria/rc_flattened_test_data_v1/query.sql
@@ -215,11 +216,14 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_histogram_aggregates_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v2/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_probe_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_bucket_counts_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_non_norm_histogram_bucket_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/glam_client_probe_counts_extract_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/glam_sample_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/glam_user_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/scalar_percentiles_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/histogram_percentiles_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_scalar_probe_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_etl_sql_run_check_v1/query.sql
   # Dataset sql/glam-fenix-dev:glam_etl was not found
@@ -288,6 +292,8 @@ format:
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_probe_counts_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_bucket_counts_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_non_norm_histogram_bucket_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_scalar_probe_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_daily_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_last_seen_v1/init.sql
@@ -395,3 +401,4 @@ generate:
     - sql/moz-fx-data-shared-prod/mozilla_vpn/deletion_request/**
     - sql/moz-fx-data-shared-prod/mozilla_vpn/events/**
     - sql/moz-fx-data-shared-prod/mozilla_vpn/main/**
+    - sql/moz-fx-data-shared-prod/fenix/client_deduplication/**

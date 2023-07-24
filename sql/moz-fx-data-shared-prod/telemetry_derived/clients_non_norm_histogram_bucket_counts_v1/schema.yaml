@@ -16,6 +16,18 @@ fields:
   type: STRING
 
 - mode: NULLABLE
+  name: first_bucket
+  type: INTEGER
+
+- mode: NULLABLE
+  name: last_bucket
+  type: INTEGER
+
+- mode: NULLABLE
+  name: num_buckets
+  type: INTEGER
+
+- mode: NULLABLE
   name: metric
   type: STRING
 
@@ -32,29 +44,9 @@ fields:
   type: STRING
 
 - mode: NULLABLE
-  name: first_bucket
-  type: INTEGER
-
-- mode: NULLABLE
-  name: last_bucket
-  type: INTEGER
-
-- mode: NULLABLE
-  name: num_buckets
-  type: INTEGER
-
-- mode: NULLABLE
-  name: client_agg_type
-  type: STRING
-
-- mode: NULLABLE
   name: agg_type
   type: STRING
 
-- mode: NULLABLE
-  name: total_users
-  type: INTEGER
-
 - fields:
   - mode: NULLABLE
     name: key
@@ -62,17 +54,6 @@ fields:
   - mode: NULLABLE
     name: value
     type: FLOAT
-  mode: REPEATED
-  name: aggregates
-  type: RECORD
-
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - mode: NULLABLE
-    name: value
-    type: FLOAT
-  mode: REPEATED
-  name: non_norm_aggregates
+  mode: NULLABLE
+  name: record
   type: RECORD

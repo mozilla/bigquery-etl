@@ -76,7 +76,7 @@ first_session_ping_min_seq AS (
       FROM
         `moz-fx-data-shared-prod.fenix.first_session` AS fenix_first_session
       WHERE
-        DATE(submission_timestamp) >= '2023-01-01'
+        DATE(submission_timestamp) = @submission_date
     )
   WHERE
     RANK = 1 -- Pings are sent in sequence, this guarantees that the first one is returned.
@@ -114,7 +114,7 @@ first_session_ping AS (
       AND fenix_first_session.sample_id = first_session_ping_min_seq.sample_id
     )
   WHERE
-    DATE(submission_timestamp) >= '2019-01-01'
+    DATE(submission_timestamp) = @submission_date
     AND (first_session_ping_min_seq.client_id IS NOT NULL OR ping_info.seq IS NULL)
   GROUP BY
     client_id

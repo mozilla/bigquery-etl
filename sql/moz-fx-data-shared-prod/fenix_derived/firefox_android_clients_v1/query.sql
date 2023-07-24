@@ -56,21 +56,39 @@ activations AS (
 -- Find earliest data per client from the first_session ping.
 first_session_ping_min_seq AS (
   SELECT
-    client_info.client_id AS client_id,
-    MIN(
-      ping_info.seq
-    ) AS seq -- Pings are sent in sequence, this guarantees that the first one is returned.
+    client_id,
+    sample_id,
+    seq
   FROM
-    `moz-fx-data-shared-prod.fenix.first_session` AS fenix_first_session
+    (
+      SELECT
+        client_info.client_id AS client_id,
+        sample_id,
+        ping_info.seq AS seq,
+        submission_timestamp,
+        ROW_NUMBER() OVER (
+          PARTITION BY
+            client_info.client_id
+          ORDER BY
+            ping_info.seq,
+            submission_timestamp
+        ) AS RANK
+      FROM
+        `moz-fx-data-shared-prod.fenix.first_session` AS fenix_first_session
+      WHERE
+        DATE(submission_timestamp) >= '2023-01-01'
+    )
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    RANK = 1 -- Pings are sent in sequence, this guarantees that the first one is returned.
   GROUP BY
-    client_id
+    client_id,
+    sample_id,
+    seq
 ),
 first_session_ping AS (
   SELECT
     client_info.client_id AS client_id,
-    MIN(sample_id) AS sample_id,
+    MIN(fenix_first_session.sample_id) AS sample_id,
     DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
     MIN(SAFE.PARSE_DATETIME('%F', SUBSTR(client_info.first_run_date, 1, 10))) AS first_run_datetime,
     ARRAY_AGG(metrics.string.first_session_campaign IGNORE NULLS ORDER BY submission_timestamp ASC)[
@@ -86,16 +104,17 @@ first_session_ping AS (
       SAFE_OFFSET(0)
     ] AS adjust_creative
   FROM
-    fenix.first_session AS fenix_first_session
+    `moz-fx-data-shared-prod.fenix.first_session` AS fenix_first_session
   LEFT JOIN
     first_session_ping_min_seq
   ON
     (
       client_info.client_id = first_session_ping_min_seq.client_id
       AND ping_info.seq = first_session_ping_min_seq.seq
+      AND fenix_first_session.sample_id = first_session_ping_min_seq.sample_id
     )
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) >= '2019-01-01'
     AND (first_session_ping_min_seq.client_id IS NOT NULL OR ping_info.seq IS NULL)
   GROUP BY
     client_id

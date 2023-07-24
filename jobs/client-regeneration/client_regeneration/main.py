@@ -262,6 +262,9 @@ def write_baseline_clients_daily(client, seed, start_date):
   FROM numbered
   WHERE rn = 1
   """
+  job = client.query(q)
+  job.result()
+  return(table_name)
 
 def write_usage_history(client, seed, start_date, end_date):
   table_name = """mozdata.analysis.regen_sim_replaced_clients_last_seen_{}""".format(str(seed))

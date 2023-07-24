@@ -239,59 +239,51 @@ main_ping AS (
   SELECT
     client_id AS client_id,
     sample_id AS sample_id,
-    MIN(submission_timestamp_min) AS submission_timestamp,
+    TIMESTAMP(MIN(submission_date)) AS submission_timestamp,
     TIMESTAMP(ANY_VALUE(submission_date HAVING MIN submission_date)) AS first_seen_date,
     TIMESTAMP(
       ARRAY_AGG(submission_date IGNORE NULLS ORDER BY submission_date)[SAFE_OFFSET(1)]
     ) AS second_seen_date,
     CAST(NULL AS STRING) AS architecture,
-    ANY_VALUE(app_build_id HAVING MIN submission_timestamp_min) AS app_build_id,
-    ANY_VALUE(app_name HAVING MIN submission_timestamp_min) AS app_name,
+    ANY_VALUE(app_build_id HAVING MIN submission_date) AS app_build_id,
+    ANY_VALUE(app_name HAVING MIN submission_date) AS app_name,
     CAST(NULL AS STRING) AS platform_version,
-    ANY_VALUE(vendor HAVING MIN submission_timestamp_min) AS vendor,
-    ANY_VALUE(app_version HAVING MIN submission_timestamp_min) AS app_version,
+    ANY_VALUE(vendor HAVING MIN submission_date) AS vendor,
+    ANY_VALUE(app_version HAVING MIN submission_date) AS app_version,
     CAST(NULL AS STRING) AS xpcom_abi,
     CAST(NULL AS STRING) AS document_id,
-    ANY_VALUE(distribution_id HAVING MIN submission_timestamp_min) AS distribution_id,
+    ANY_VALUE(distribution_id HAVING MIN submission_date) AS distribution_id,
     CAST(NULL AS STRING) AS partner_distribution_version,
     CAST(NULL AS STRING) AS partner_distributor,
     CAST(NULL AS STRING) AS partner_distributor_channel,
     CAST(NULL AS STRING) AS partner_id,
-    ANY_VALUE(attribution.campaign HAVING MIN submission_timestamp_min) AS attribution_campaign,
-    ANY_VALUE(attribution.content HAVING MIN submission_timestamp_min) AS attribution_content,
-    ANY_VALUE(attribution.experiment HAVING MIN submission_timestamp_min) AS attribution_experiment,
-    ANY_VALUE(attribution.medium HAVING MIN submission_timestamp_min) AS attribution_medium,
-    ANY_VALUE(attribution.source HAVING MIN submission_timestamp_min) AS attribution_source,
+    ANY_VALUE(attribution.campaign HAVING MIN submission_date) AS attribution_campaign,
+    ANY_VALUE(attribution.content HAVING MIN submission_date) AS attribution_content,
+    ANY_VALUE(attribution.experiment HAVING MIN submission_date) AS attribution_experiment,
+    ANY_VALUE(attribution.medium HAVING MIN submission_date) AS attribution_medium,
+    ANY_VALUE(attribution.source HAVING MIN submission_date) AS attribution_source,
     ANY_VALUE(
       default_search_engine_data_load_path
       HAVING
-        MIN submission_timestamp_min
+        MIN submission_date
     ) AS engine_data_load_path,
-    ANY_VALUE(
-      default_search_engine_data_name
-      HAVING
-        MIN submission_timestamp_min
-    ) AS engine_data_name,
-    ANY_VALUE(
-      default_search_engine_data_origin
-      HAVING
-        MIN submission_timestamp_min
-    ) AS engine_data_origin,
+    ANY_VALUE(default_search_engine_data_name HAVING MIN submission_date) AS engine_data_name,
+    ANY_VALUE(default_search_engine_data_origin HAVING MIN submission_date) AS engine_data_origin,
     ANY_VALUE(
       default_search_engine_data_submission_url
       HAVING
-        MIN submission_timestamp_min
+        MIN submission_date
     ) AS engine_data_submission_url,
     CAST(NULL AS STRING) AS apple_model_id,
-    ANY_VALUE(city HAVING MIN submission_timestamp_min) AS city,
+    ANY_VALUE(city HAVING MIN submission_date) AS city,
     CAST(NULL AS STRING) AS db_version,
-    ANY_VALUE(geo_subdivision1 HAVING MIN submission_timestamp_min) AS subdivision1,
-    ANY_VALUE(normalized_channel HAVING MIN submission_timestamp_min) AS normalized_channel,
-    ANY_VALUE(country HAVING MIN submission_timestamp_min) AS country,
-    ANY_VALUE(os HAVING MIN submission_timestamp_min) AS normalized_os,
-    ANY_VALUE(normalized_os_version HAVING MIN submission_timestamp_min) AS normalized_os_version,
+    ANY_VALUE(geo_subdivision1 HAVING MIN submission_date) AS subdivision1,
+    ANY_VALUE(normalized_channel HAVING MIN submission_date) AS normalized_channel,
+    ANY_VALUE(country HAVING MIN submission_date) AS country,
+    ANY_VALUE(os HAVING MIN submission_date) AS normalized_os,
+    ANY_VALUE(normalized_os_version HAVING MIN submission_date) AS normalized_os_version,
     CAST(NULL AS STRING) AS startup_profile_selection_reason,
-    ANY_VALUE(attribution.dltoken HAVING MIN submission_timestamp_min) AS download_token,
+    ANY_VALUE(attribution.dltoken HAVING MIN submission_date) AS download_token,
     CAST(NULL AS STRING) AS download_token
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`

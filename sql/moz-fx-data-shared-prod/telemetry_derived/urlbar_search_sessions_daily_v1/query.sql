@@ -19,7 +19,7 @@ SELECT
 FROM 
  `moz-fx-data-shared-prod.firefox_desktop_stable.events_v1`, UNNEST(events)
 WHERE 
- DATE(submission_timestamp) = '2023-07-09' 
+ DATE(submission_timestamp) =  @submission_date
  AND category = 'urlbar'
  AND name IN ('engagement','abadonment')
 ),
@@ -71,7 +71,7 @@ SELECT
 FROM
  `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
 WHERE
- submission_date = '2023-07-09' 
+ submission_date =  @submission_date
 GROUP BY client_id, 
  sharing_enabled,
  sponsored_suggestion_enabled,
@@ -85,7 +85,7 @@ SELECT
 FROM
  `moz-fx-data-shared-prod.firefox_desktop.metrics`
 WHERE
- DATE(submission_timestamp) = '2023-07-09' 
+ DATE(submission_timestamp) = @submission_date
 )
 
 SELECT 

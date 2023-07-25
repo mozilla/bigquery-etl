@@ -77,6 +77,7 @@ def generate(target_project, output_dir, use_cloud_function):
                 template_folder=THIS_PATH / "templates",
                 app_value=browser.value,
                 app_name=browser.name,
+                parameters='["end_date:DATE:{{macros.ds_add(ds, 27)}}", "start_date:DATE:{{macros.ds_add(ds, 27-28*4)}}"]',
                 format=False,
             ),
             skip_existing=False,

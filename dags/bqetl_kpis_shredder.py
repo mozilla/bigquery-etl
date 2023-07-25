@@ -52,7 +52,11 @@ with DAG(
         email=["lvargas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        parameters=["partition_date:DATE:{{macros.ds_add(ds, -1)}}"],
+        parameters=["partition_date:DATE:{{macros.ds_add(ds, -1)}}"]
+        + [
+            "end_date:DATE:{{macros.ds_add(ds, 27)}}",
+            "start_date:DATE:{{macros.ds_add(ds, 27-28*4)}}",
+        ],
     )
 
     firefox_ios_active_users_aggregates_for_deletion_requests = bigquery_etl_query(
@@ -64,7 +68,11 @@ with DAG(
         email=["lvargas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        parameters=["partition_date:DATE:{{macros.ds_add(ds, -1)}}"],
+        parameters=["partition_date:DATE:{{macros.ds_add(ds, -1)}}"]
+        + [
+            "end_date:DATE:{{macros.ds_add(ds, 27)}}",
+            "start_date:DATE:{{macros.ds_add(ds, 27-28*4)}}",
+        ],
     )
 
     focus_ios_active_users_aggregates_for_deletion_requests = bigquery_etl_query(
@@ -76,7 +84,11 @@ with DAG(
         email=["lvargas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        parameters=["partition_date:DATE:{{macros.ds_add(ds, -1)}}"],
+        parameters=["partition_date:DATE:{{macros.ds_add(ds, -1)}}"]
+        + [
+            "end_date:DATE:{{macros.ds_add(ds, 27)}}",
+            "start_date:DATE:{{macros.ds_add(ds, 27-28*4)}}",
+        ],
     )
 
     klar_ios_active_users_aggregates_for_deletion_requests = bigquery_etl_query(
@@ -88,7 +100,11 @@ with DAG(
         email=["lvargas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        parameters=["partition_date:DATE:{{macros.ds_add(ds, -1)}}"],
+        parameters=["partition_date:DATE:{{macros.ds_add(ds, -1)}}"]
+        + [
+            "end_date:DATE:{{macros.ds_add(ds, 27)}}",
+            "start_date:DATE:{{macros.ds_add(ds, 27-28*4)}}",
+        ],
     )
 
     wait_for_clients_last_seen_joined = ExternalTaskSensor(

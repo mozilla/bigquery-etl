@@ -1,0 +1,17 @@
+friendly_name: Daily Ad Group Stats
+description: |-
+  Daily ad group stats for Google Ads UAC ad groups.
+  This is written directly from Fivetran's ETL.
+  https://github.com/fivetran/dbt_google_ads
+owners:
+- frank@mozilla.com
+labels:
+  incremental: false
+scheduling:
+  dag_name: bqetl_fivetran_google_ads
+  depends_on_past: false
+  date_partition_parameter: null
+bigquery:
+  clustering:
+    fields: ["date"]
+references: {}

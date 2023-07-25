@@ -96,6 +96,9 @@ def download_adjust_kpi_data(date, api_token, app_token):
     }
 
     response = requests.get(url, headers=headers, params=url_params)
+    if (response.status_code == 401) or (response.status_code == 400):
+        print(f"***Error: {response.status_code}***")
+        print(response.text)
 
     return response
 
@@ -264,7 +267,7 @@ def main():
         if query_export is not None:
             # This section writes the tmp json data into a temp CSV file which will then be put into a BigQuery table
             adjust_data = clean_json(query_export)
-            data.append(adjust_data)
+            data.extend(adjust_data)
         else:
             print(f'no data for {app["app_name"]} today')
 

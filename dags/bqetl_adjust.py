@@ -45,11 +45,30 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    adjust_derived__adjust_derived__v1 = gke_command(
-        task_id="adjust_derived__adjust_derived__v1",
+    adjust_derived__adjust_cohort__v1 = gke_command(
+        task_id="adjust_derived__adjust_cohort__v1",
         command=[
             "python",
-            "sql/moz-fx-data-shared-prod/adjust_derived/adjust_derived_v1/query.py",
+            "sql/moz-fx-data-shared-prod/adjust_derived/adjust_cohort_v1/query.py",
+        ]
+        + [
+            "--date",
+            "{{ ds }}",
+            "--adjust_api_token",
+            "{{ var.value.ADJUST_API_TOKEN}}",
+            "--adjust_app_list",
+            "{{ var.value.ADJUST_APP_TOKEN_LIST}}",
+        ],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="mhirose@mozilla.com",
+        email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
+    )
+
+    adjust_derived__adjust_deliverables__v1 = gke_command(
+        task_id="adjust_derived__adjust_deliverables__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/adjust_derived/adjust_deliverables_v1/query.py",
         ]
         + [
             "--date",

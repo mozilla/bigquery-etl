@@ -188,21 +188,21 @@ def main():
             "filter_version": True,
             "num_versions_to_keep": 3,
             "total_users": 1,
-            "minimum_client_count": 0,
+            "minimum_client_count": 100,
         },
         "firefox_desktop_glam_beta": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
             "total_users": 1,
-            "minimum_client_count": 0,
+            "minimum_client_count": 1000,
         },
         "firefox_desktop_glam_release": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
             "total_users": 1,
-            "minimum_client_count": 0,
+            "minimum_client_count": 100000,
         },
     }
 

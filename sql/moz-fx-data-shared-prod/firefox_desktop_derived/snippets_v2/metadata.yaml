@@ -1,0 +1,21 @@
+friendly_name: Snippets
+description: |-
+  Contains Snippets specific data extracted from messaging_system_v1
+owners:
+- gleonard@mozilla.com
+labels:
+  incremental: true
+  owner1: gleonard
+scheduling:
+  dag_name: bqetl_messaging_system
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id
+references: {}

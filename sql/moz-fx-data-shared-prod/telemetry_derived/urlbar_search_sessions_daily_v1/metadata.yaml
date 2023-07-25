@@ -1,0 +1,17 @@
+friendly_name: Urlbar Search Sessions Daily
+description: |-
+  Provide detailed engagement information concerning Firefox Suggest and other elements in the address bar (User's journey)
+owners:
+- akommasani@mozilla.com
+- rburwei@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_urlbar
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+

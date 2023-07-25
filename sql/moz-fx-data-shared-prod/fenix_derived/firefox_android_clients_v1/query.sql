@@ -45,11 +45,13 @@ first_seen AS (
 activations AS (
   SELECT
     client_id,
-    ARRAY_AGG(activated ORDER BY submission_date DESC)[SAFE_OFFSET(0)] > 0 AS activated
+    ARRAY_AGG(activation.activated ORDER BY activation.submission_date DESC)[SAFE_OFFSET(0)] > 0 AS activated,
   FROM
-    fenix.new_profile_activation
+    `moz-fx-data-shared-prod.fenix.new_profile_activation` AS activation
+  INNER JOIN `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`  --existing clients in firefox_android_clients_v1
+  USING (client_id)
   WHERE
-    submission_date = @submission_date
+    activation.submission_date = @submission_date
   GROUP BY
     client_id
 ),
@@ -262,7 +264,7 @@ _current AS (
     baseline_ping AS baseline
   USING
     (client_id)
-  LEFT JOIN
+  FULL OUTER JOIN
     activations
   USING
     (client_id)

@@ -19,7 +19,7 @@ fields:
   type: STRING
 - mode: NULLABLE
   name: ad_group_id
-  type: INTEGER
+  type: STRING
 - mode: NULLABLE
   name: ad_group_status
   type: STRING

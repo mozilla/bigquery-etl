@@ -296,51 +296,58 @@ clients_scalar_bucket_counts AS (
     process,
     client_agg_type,
     bucket
+),
+aggregated AS (
+  SELECT
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    metric_type,
+    key,
+    process,
+    -- empty columns to match clients_histogram_probe_counts_v1 schema
+    NULL AS first_bucket,
+    NULL AS last_bucket,
+    NULL AS num_buckets,
+    client_agg_type,
+    agg_type,
+    SUM(user_count) AS total_users,
+    CASE
+      WHEN metric_type = 'scalar'
+        OR metric_type = 'keyed-scalar'
+        THEN mozfun.glam.histogram_fill_buckets(
+            ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, user_count)),
+            ANY_VALUE(buckets)
+          )
+      WHEN metric_type = 'boolean'
+        OR metric_type = 'keyed-scalar-boolean'
+        THEN mozfun.glam.histogram_fill_buckets(
+            ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, user_count)),
+            ['always', 'never', 'sometimes']
+          )
+    END AS aggregates
+  FROM
+    clients_scalar_bucket_counts
+  LEFT JOIN
+    buckets_by_metric
+  USING
+    (metric, key)
+  GROUP BY
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    metric_type,
+    key,
+    process,
+    client_agg_type,
+    agg_type
 )
 SELECT
-  os,
-  app_version,
-  app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  process,
-  -- empty columns to match clients_histogram_probe_counts_v1 schema
-  NULL AS first_bucket,
-  NULL AS last_bucket,
-  NULL AS num_buckets,
-  client_agg_type,
-  agg_type,
-  SUM(user_count) AS total_users,
-  CASE
-    WHEN metric_type = 'scalar'
-      OR metric_type = 'keyed-scalar'
-      THEN mozfun.glam.histogram_fill_buckets(
-          ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, user_count)),
-          ANY_VALUE(buckets)
-        )
-    WHEN metric_type = 'boolean'
-      OR metric_type = 'keyed-scalar-boolean'
-      THEN mozfun.glam.histogram_fill_buckets(
-          ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, user_count)),
-          ['always', 'never', 'sometimes']
-        )
-  END AS aggregates
+  *,
+  aggregates AS non_norm_aggregates
 FROM
-  clients_scalar_bucket_counts
-LEFT JOIN
-  buckets_by_metric
-USING
-  (metric, key)
-GROUP BY
-  os,
-  app_version,
-  app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  process,
-  client_agg_type,
-  agg_type
+  aggregated

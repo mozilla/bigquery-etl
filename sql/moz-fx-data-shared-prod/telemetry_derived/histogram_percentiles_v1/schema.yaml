@@ -54,7 +54,7 @@ fields:
 
 - fields:
   - mode: NULLABLE
-    name: key
+    name: KEY
     type: STRING
   - mode: NULLABLE
     name: value
@@ -65,7 +65,7 @@ fields:
 
 - fields:
   - mode: NULLABLE
-    name: key
+    name: KEY
     type: STRING
   - mode: NULLABLE
     name: value
@@ -73,3 +73,7 @@ fields:
   mode: REPEATED
   name: non_norm_aggregates
   type: RECORD
+
+- name: os
+  type: STRING
+  mode: NULLABLE

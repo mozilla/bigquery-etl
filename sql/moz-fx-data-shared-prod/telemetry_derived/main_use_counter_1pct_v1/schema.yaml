@@ -7379,6 +7379,12 @@ fields:
     - name: use_counter2_xsltprocessor_constructor_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_deprecated_size_to_content_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_size_to_content_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -14625,6 +14631,12 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_xsltprocessor_constructor_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_size_to_content_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_size_to_content_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

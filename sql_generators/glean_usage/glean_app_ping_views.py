@@ -77,7 +77,7 @@ class GleanAppPingViews(GleanTable):
         env = Environment(loader=FileSystemLoader(PATH / "templates"))
         view_template = env.get_template("app_ping_view.view.sql")
 
-        skip_existing = self.skip_existing()
+        skip_existing = self.skip_existing(output_dir, project_id)
 
         p = GleanPing(repo)
         # generate views for all available pings
@@ -164,7 +164,9 @@ class GleanAppPingViews(GleanTable):
                     full_view_id,
                     "view.sql",
                     rendered_view,
-                    skip_existing=get_table_dir(output_dir, full_view_id) / "view.sql"
+                    skip_existing=str(
+                        get_table_dir(output_dir, full_view_id) / "view.sql"
+                    )
                     in skip_existing,
                 )
 
@@ -181,8 +183,9 @@ class GleanAppPingViews(GleanTable):
                         app_name=release_app["canonical_app_name"],
                         app_channels=", ".join(app_channels),
                     ),
-                    skip_existing=get_table_dir(output_dir, full_view_id)
-                    / "metadata.yaml"
+                    skip_existing=str(
+                        get_table_dir(output_dir, full_view_id) / "metadata.yaml"
+                    )
                     in skip_existing,
                 )
 

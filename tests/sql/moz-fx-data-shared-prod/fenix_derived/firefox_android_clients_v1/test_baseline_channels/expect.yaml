@@ -5,6 +5,10 @@
   first_run_date: 2023-05-01
   submission_date: 2023-05-02
   adjust_network: Organic
+  channel: release
+  device_model: model-2
+  last_reported_device_model: model-2
+  last_reported_date: 2023-05-02
   metadata:
     reported_first_session_ping: true
     reported_metrics_ping: false

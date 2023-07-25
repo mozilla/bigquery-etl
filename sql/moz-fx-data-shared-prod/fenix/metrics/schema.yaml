@@ -7561,6 +7561,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: first_session_adjust_attribution_timespan
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: url2
     type: RECORD
     mode: NULLABLE

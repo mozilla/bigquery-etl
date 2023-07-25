@@ -423,6 +423,24 @@ fields:
         the Adjust SDK.
 
         '
+  - name: timespan
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: first_session_adjust_attribution_timespan
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The time that it takes to derive the attribution parameters by
+        the Adjust SDK.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

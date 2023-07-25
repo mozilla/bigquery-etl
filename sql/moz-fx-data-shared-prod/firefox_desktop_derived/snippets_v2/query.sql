@@ -18,7 +18,7 @@ SELECT
   sample_id,
   metadata.user_agent.version AS version,
   ping_info.experiments,
-  metrics.string.messaging_system_source
+  metrics.string.messaging_system_source AS source
 FROM
   `moz-fx-data-shared-prod.firefox_desktop_stable.messaging_system_v1`
 WHERE

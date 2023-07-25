@@ -79,11 +79,18 @@ percentiles AS (
     metric_type,
     key,
     process,
-    client_agg_type)
-
-SELECT *
-REPLACE(mozfun.glam.map_from_array_offsets_precise(
-  [0.1, 1.0, 5.0, 25.0, 50.0, 75.0, 95.0, 99.0, 99.9],
-  aggregates
-) AS aggregates)
-FROM percentiles
+    client_agg_type
+),
+aggregated AS (
+  SELECT *
+  REPLACE(mozfun.glam.map_from_array_offsets_precise(
+    [0.1, 1.0, 5.0, 25.0, 50.0, 75.0, 95.0, 99.0, 99.9],
+    aggregates
+  ) AS aggregates)
+  FROM percentiles
+)
+SELECT
+  *,
+  aggregates AS non_norm_aggregates
+FROM
+  aggregated

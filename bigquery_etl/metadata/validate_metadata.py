@@ -7,6 +7,8 @@ from argparse import ArgumentParser
 
 import click
 
+from bigquery_etl.config import ConfigLoader
+
 from ..util import standard_args
 from ..util.common import project_dirs
 from .parse_metadata import DatasetMetadata, Metadata
@@ -36,8 +38,10 @@ def validate_change_control(
     file_path,
     metadata,
     codeowners_file,
-    project_id="moz-fx-data-shared-prod",
-    sql_dir="sql",
+    project_id=ConfigLoader.get(
+        "default", "project", fallback="moz-fx-data-shared-prod"
+    ),
+    sql_dir=ConfigLoader.get("default", "sql_dir", fallback="sql"),
 ):
     """Verify that a query is correctly setup for change control."""
     path_to_add = file_path.partition(f"{project_id}/")[2]

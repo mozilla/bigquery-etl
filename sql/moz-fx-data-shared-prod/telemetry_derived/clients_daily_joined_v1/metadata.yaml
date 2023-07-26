@@ -13,6 +13,8 @@ owners:
 labels:
   application: firefox
   schedule: daily
+  dag: bqetl_main_summary
+  owner1: frank
 scheduling:
   dag_name: bqetl_main_summary
   start_date: '2021-01-19'

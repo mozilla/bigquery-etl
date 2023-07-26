@@ -18,6 +18,7 @@ scheduling:
   date_partition_parameter: null
   arguments:
   - --append_table
+  - --noreplace
 bigquery:
   time_partitioning:
     type: day

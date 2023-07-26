@@ -22404,6 +22404,21 @@ fields:
         - name: widget_gtk_version
           type: STRING
           mode: NULLABLE
+        - name: extensions_quarantined_domains_listsize
+          type: INTEGER
+          mode: NULLABLE
+        - name: first_startup_delete_tasks_time
+          type: INTEGER
+          mode: NULLABLE
+        - name: first_startup_normandy_init_time
+          type: INTEGER
+          mode: NULLABLE
+        - name: migration_time_to_produce_legacy_migrator_list
+          type: INTEGER
+          mode: NULLABLE
+        - name: migration_time_to_produce_migrator_list
+          type: INTEGER
+          mode: NULLABLE
     - name: socket
       type: RECORD
       mode: NULLABLE

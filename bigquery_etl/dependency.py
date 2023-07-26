@@ -11,6 +11,7 @@ import click
 import sqlglot
 import yaml
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 from bigquery_etl.util.common import render
 
@@ -85,9 +86,17 @@ def extract_table_references_without_views(path: Path) -> Iterator[str]:
         for _ in parts:
             ref_base = ref_base.parent
         view_paths = [ref_base.joinpath(*parts, "view.sql")]
-        if parts[:1] == ("mozdata",):
+        if parts[:1] == (
+            ConfigLoader.get("default", "user_facing_project", fallback="mozdata"),
+        ):
             view_paths.append(
-                ref_base.joinpath("moz-fx-data-shared-prod", *parts[1:], "view.sql"),
+                ref_base.joinpath(
+                    ConfigLoader.get(
+                        "default", "project", fallback="moz-fx-data-shared-prod"
+                    ),
+                    *parts[1:],
+                    "view.sql",
+                ),
             )
         for view_path in view_paths:
             if view_path == path:
@@ -100,7 +109,18 @@ def extract_table_references_without_views(path: Path) -> Iterator[str]:
             while len(parts) < 3:
                 parts = (ref_base.name, *parts)
                 ref_base = ref_base.parent
-            if parts[:-2] in (("moz-fx-data-shared-prod",), ("mozdata",)):
+            if parts[:-2] in (
+                (
+                    ConfigLoader.get(
+                        "default", "project", fallback="moz-fx-data-shared-prod"
+                    ),
+                ),
+                (
+                    ConfigLoader.get(
+                        "default", "user_facing_project", fallback="mozdata"
+                    ),
+                ),
+            ):
                 if stable_views is None:
                     # lazy read stable views
                     stable_views = {
@@ -110,7 +130,12 @@ def extract_table_references_without_views(path: Path) -> Iterator[str]:
                         for schema in get_stable_table_schemas()
                     }
                 if parts[-2:] in stable_views:
-                    parts = ("moz-fx-data-shared-prod", *stable_views[parts[-2:]])
+                    parts = (
+                        ConfigLoader.get(
+                            "default", "project", fallback="moz-fx-data-shared-prod"
+                        ),
+                        *stable_views[parts[-2:]],
+                    )
             yield ".".join(parts)
 
 

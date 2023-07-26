@@ -74,9 +74,10 @@ first_session_ping_min_seq AS (
             submission_timestamp
         ) AS RANK
       FROM
-        `moz-fx-data-shared-prod.fenix.first_session` AS fenix_first_session
+        fenix.first_session AS fenix_first_session
       WHERE
-        DATE(submission_timestamp) >= '2019-01-01'
+        ping_info.seq IS NOT NULL
+        AND DATE(submission_timestamp) = @submission_date
     )
   WHERE
     RANK = 1 -- Pings are sent in sequence, this guarantees that the first one is returned.
@@ -104,7 +105,7 @@ first_session_ping AS (
       SAFE_OFFSET(0)
     ] AS adjust_creative
   FROM
-    `moz-fx-data-shared-prod.fenix.first_session` AS fenix_first_session
+    fenix.first_session AS fenix_first_session
   LEFT JOIN
     first_session_ping_min_seq
   ON

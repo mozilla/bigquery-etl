@@ -1507,9 +1507,9 @@ types-requests==2.31.0.2 \
     --hash=sha256:56d181c85b5925cbc59f4489a57e72a8b2166f18273fd8ba7b6fe0c0b986f12a \
     --hash=sha256:6aa3f7faf0ea52d728bb18c0a0d1522d9bfd8c72d26ff6f61bfc3d06a411cf40
     # via -r requirements.in
-types-ujson==5.8.0.0 \
-    --hash=sha256:2856a8d0883475bec80c1ac772c006ea691215cc55ded21647b5c87c86249cbb \
-    --hash=sha256:481c27a7bc758fc94de330dcd885ba2fbf5879dd3dfd1c7b6b46f5b98d41ca85
+types-ujson==5.8.0.1 \
+    --hash=sha256:1923f373ba5df0eaa4e3fe5c85dbf4c0b475e2cce3f77f5f4b773347ea1a62c9 \
+    --hash=sha256:2b14388248ab4cd1f5efa8c464761112597ccd57c0d84238f73631abe0e20cfd
     # via -r requirements.in
 types-urllib3==1.26.25.4 \
     --hash=sha256:ed6b9e8a8be488796f72306889a06a3fc3cb1aa99af02ab8afb50144d7317e49 \

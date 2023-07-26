@@ -684,6 +684,9 @@ fields:
     - name: errcode
       type: STRING
       mode: NULLABLE
+    - name: doc_url
+      type: STRING
+      mode: NULLABLE
   - name: logger
     type: STRING
     mode: NULLABLE

@@ -14,5 +14,6 @@ bigquery:
     require_partition_filter: true
     expiration_days: null
   clustering:
-    fields: ['release_channel']
+    fields:
+      - release_channel
 references: {}

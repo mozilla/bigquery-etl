@@ -47,8 +47,8 @@ activations AS (
     client_id,
     ARRAY_AGG(activation.activated ORDER BY activation.submission_date DESC)[SAFE_OFFSET(0)] > 0 AS activated,
   FROM
-    `moz-fx-data-shared-prod.fenix.new_profile_activation` AS activation
-  INNER JOIN `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`  --existing clients in firefox_android_clients_v1
+    fenix.new_profile_activation AS activation
+  INNER JOIN `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1` --excluding clients in activations but not in baseline ping due to shredder
   USING (client_id)
   WHERE
     activation.submission_date = @submission_date

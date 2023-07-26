@@ -7,7 +7,6 @@
   last_reported_date: 2023-01-01
   last_reported_country: CA
   sample_id: 54
-  activated: false
   adjust_network: 'Organic'
   last_reported_adjust_network: 'Organic'
   channel: release

@@ -45,11 +45,17 @@ fields:
   - name: default_source_id
     type: STRING
     mode: NULLABLE
-    description: ID of the default payment source for the customer.
+    description: 'ID of the default payment source for the customer.
+
+      This isn''t available for customers that were deleted before the initial Fivetran
+      Stripe sync.'
   - name: discount
     type: RECORD
     mode: NULLABLE
-    description: The current discount active on the customer, if there is one.
+    description: 'The current discount active on the customer, if there is one.
+
+      This isn''t available for customers that were deleted before the initial Fivetran
+      Stripe sync.'
     fields:
     - name: id
       type: STRING
@@ -157,7 +163,10 @@ fields:
     - name: geoip_date
       type: TIMESTAMP
       mode: NULLABLE
-      description: Time at which IP address-based geo-location was done for the customer.
+      description: 'Time at which IP address-based geo-location was done for the customer.
+
+        This isn''t available for customers that were deleted before the initial Fivetran
+        Stripe sync.'
     - name: paypalAgreementId
       type: STRING
       mode: NULLABLE
@@ -165,12 +174,22 @@ fields:
     - name: userid
       type: STRING
       mode: NULLABLE
-      description: The customer's Firefox Account user ID.
+      description: 'The customer''s Firefox Account user ID.
+
+        This isn''t available for customers that were deleted before the initial Fivetran
+        Stripe sync.'
+    - name: userid_sha256
+      type: STRING
+      mode: NULLABLE
+      description: SHA256 hash of the customer's Firefox Account user ID.
   - name: shipping
     type: RECORD
     mode: NULLABLE
-    description: Mailing and shipping address for the customer. Appears on invoices
+    description: 'Mailing and shipping address for the customer. Appears on invoices
       emailed to this customer.
+
+      This isn''t available for customers that were deleted before the initial Fivetran
+      Stripe sync.'
     fields:
     - name: address
       type: RECORD
@@ -184,5 +203,8 @@ fields:
   - name: tax_exempt
     type: STRING
     mode: NULLABLE
-    description: The customer's tax exemption status. One of "none", "exempt", or
+    description: 'The customer''s tax exemption status. One of "none", "exempt", or
       "reverse".
+
+      This isn''t available for customers that were deleted before the initial Fivetran
+      Stripe sync.'

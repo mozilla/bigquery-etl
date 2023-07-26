@@ -37,7 +37,8 @@ WITH original_changelog AS (
               JSON_VALUE(customer.metadata.geoip_date)
             ) AS geoip_date,
             JSON_VALUE(customer.metadata.paypalAgreementId) AS paypalAgreementId,
-            JSON_VALUE(customer.metadata.userid) AS userid
+            JSON_VALUE(customer.metadata.userid) AS userid,
+            TO_HEX(SHA256(JSON_VALUE(customer.metadata.userid))) AS userid_sha256
           ) AS metadata,
           -- Limit address data to just country since the metadata includes FxA user IDs
           -- and this is in a Mozilla-confidential dataset.
@@ -59,6 +60,56 @@ WITH original_changelog AS (
         `timestamp`
     )
 ),
+pre_fivetran_changelog AS (
+  -- Construct changelog records for customers deleted before the initial Fivetran Stripe sync,
+  -- which were archived on 2022-03-25.
+  SELECT
+    CAST(NULL AS STRING) AS id,
+    TIMESTAMP '2022-03-25 00:02:29' AS `timestamp`,
+    STRUCT(
+      id,
+      STRUCT(address.country) AS address,
+      created,
+      CAST(NULL AS STRING) AS default_source_id,
+      CAST(
+        NULL
+        AS
+          STRUCT<
+            id STRING,
+            coupon STRUCT<
+              id STRING,
+              amount_off INTEGER,
+              created TIMESTAMP,
+              currency STRING,
+              duration STRING,
+              duration_in_months INTEGER,
+              metadata JSON,
+              name STRING,
+              percent_off FLOAT64,
+              redeem_by TIMESTAMP
+            >,
+            `end` TIMESTAMP,
+            invoice_id STRING,
+            invoice_item_id STRING,
+            promotion_code_id STRING,
+            start TIMESTAMP,
+            subscription_id STRING
+          >
+      ) AS discount,
+      TRUE AS is_deleted,
+      STRUCT(
+        CAST(NULL AS TIMESTAMP) AS geoip_date,
+        JSON_VALUE(metadata.paypalAgreementId) AS paypalAgreementId,
+        CAST(NULL AS STRING) AS userid,
+        JSON_VALUE(metadata.userid_sha256) AS userid_sha256
+      ) AS metadata,
+      CAST(NULL AS STRUCT<address STRUCT<country STRING>>) AS shipping,
+      CAST(NULL AS STRING) AS tax_exempt
+    ) AS customer,
+    1 AS customer_change_number
+  FROM
+    `moz-fx-data-shared-prod`.stripe_external.pre_fivetran_customers_v2
+),
 customer_subscription_dates AS (
   SELECT
     subscription.customer_id,
@@ -71,6 +122,7 @@ customer_subscription_dates AS (
 ),
 augmented_original_changelog AS (
   SELECT
+    'original' AS type,
     changelog.* REPLACE (
       (
         SELECT AS STRUCT
@@ -90,6 +142,12 @@ augmented_original_changelog AS (
     customer_subscription_dates
   ON
     changelog.customer.id = customer_subscription_dates.customer_id
+  UNION ALL
+  SELECT
+    'pre_fivetran' AS type,
+    *
+  FROM
+    pre_fivetran_changelog
 ),
 adjusted_original_changelog AS (
   SELECT
@@ -102,10 +160,10 @@ adjusted_original_changelog AS (
           AND NOT customer.is_deleted
           AND TIMESTAMP_DIFF(`timestamp`, customer.created, HOUR) < 24
           THEN STRUCT(customer.created AS `timestamp`, 'adjusted_customer_creation' AS type)
-        ELSE STRUCT(`timestamp`, 'original' AS type)
+        ELSE STRUCT(`timestamp`, type)
       END
     ).*,
-    * EXCEPT (id, `timestamp`)
+    * EXCEPT (id, `timestamp`, type)
   FROM
     augmented_original_changelog
 ),
@@ -127,6 +185,7 @@ synthetic_customer_creation_changelog AS (
 -- `stripe_external.customers_changelog_v1` began capturing incremental customer changes on 2023-07-10,
 -- but the underlying Fivetran `customer` table doesn't preserve historical changes, so the initial
 -- changelog records reflected the current state of the customers at the time that ETL first ran.
+-- Also, customers deleted before the initial Fivetran Stripe sync were archived as is on 2022-03-25.
 -- As a result, we have to synthesize records to more accurately reconstruct history.
 questionable_initial_changelog AS (
   SELECT

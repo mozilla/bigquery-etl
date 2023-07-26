@@ -213,7 +213,7 @@ customers AS (
     `moz-fx-data-shared-prod`.stripe_external.customer_v1 AS customers
   FULL JOIN
     -- Include customers that were deleted before the initial Fivetran Stripe import.
-    `moz-fx-data-shared-prod`.stripe_external.pre_fivetran_customer AS pre_fivetran_customers
+    `moz-fx-data-shared-prod`.stripe_external.pre_fivetran_customers_v1 AS pre_fivetran_customers
   USING
     (id)
 ),

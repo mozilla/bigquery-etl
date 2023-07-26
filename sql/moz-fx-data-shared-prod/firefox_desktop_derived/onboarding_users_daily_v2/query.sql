@@ -33,7 +33,6 @@ WITH windowed AS (
         submission_timestamp
     )
 )
---
 SELECT
   * EXCEPT (_n)
 FROM

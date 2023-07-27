@@ -45,7 +45,7 @@ first_seen AS (
 activations AS (
   SELECT
     client_id,
-    ARRAY_AGG(activated ORDER BY submission_date DESC)[SAFE_OFFSET(0)] > 0 AS activated,
+    ARRAY_AGG(activated ORDER BY submission_date DESC)[SAFE_OFFSET(0)] > 0 AS activated
   FROM
     fenix.new_profile_activation
   WHERE

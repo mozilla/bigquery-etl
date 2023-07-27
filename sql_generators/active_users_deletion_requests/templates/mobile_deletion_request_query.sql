@@ -32,8 +32,7 @@ WITH baseline AS (
   ON
     client_info.client_id = client_id
   WHERE
-    joined.submission_date <= @submission_date
-    AND DATE(request.submission_timestamp)
+    joined.submission_date
     BETWEEN @start_date
     AND @end_date
 ),

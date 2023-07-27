@@ -1,8 +1,14 @@
-import pytest
-from click.testing import CliRunner
 from textwrap import dedent
 
-from bigquery_etl.cli.check import _build_jinja_parameters, _parse_check_output, run, render
+import pytest
+from click.testing import CliRunner
+
+from bigquery_etl.cli.check import (
+    _build_jinja_parameters,
+    _parse_check_output,
+    render,
+    run,
+)
 
 
 class TestCheck:
@@ -49,7 +55,6 @@ class TestCheck:
 
         assert result.exit_code == 0
 
-
     def test_check_render(self, runner):
         result = runner.invoke(
             render,
@@ -63,7 +68,7 @@ class TestCheck:
 
         assert result.exit_code == 0
         assert result.output == dedent(
-        """\
+            """\
         ASSERT(
           (
             SELECT

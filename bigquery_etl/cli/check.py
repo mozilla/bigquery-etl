@@ -5,7 +5,7 @@ import sys
 import tempfile
 from pathlib import Path
 from subprocess import CalledProcessError
-from typing import List, Optional
+from typing import List, Optional, Union
 
 import click
 import sqlparse
@@ -66,6 +66,8 @@ def check(ctx):
     """Create the CLI group for the check command."""
     # create temporary directory generated content is written to
     # the directory will be deleted automatically after the command exits
+    print(type(ctx))
+
     ctx.ensure_object(dict)
     ctx.obj["TMP_DIR"] = ctx.with_resource(tempfile.TemporaryDirectory())
 
@@ -88,14 +90,14 @@ s    \b
 @sql_dir_option
 @click.pass_context
 def render(
-    ctx: List[str], name: str, project_id: Optional[str], sql_dir: Optional[str]
+    ctx: click.Context, name: str, project_id: Optional[str], sql_dir: Optional[str]
 ) -> str:
     """Render a check's Jinja template."""
     checks_file, project_id, dataset_id, table = paths_matching_checks_pattern(
         name, sql_dir, project_id=project_id
     )
 
-    _render(
+    return _render(
         checks_file,
         dataset_id,
         table,
@@ -108,7 +110,7 @@ def _render(
     checks_file: Path,
     dataset_id: str,
     table: str,
-    project_id: str = None,
+    project_id: Union[str, None] = None,
     query_arguments: List[str] = list(),
 ):
     if checks_file is None:

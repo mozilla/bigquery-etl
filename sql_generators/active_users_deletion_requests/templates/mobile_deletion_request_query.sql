@@ -48,7 +48,9 @@ search_clients AS (
   FROM
     `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
   WHERE
-    submission_date BETWEEN @start_date AND @end_date
+    submission_date
+    BETWEEN @start_date
+    AND @end_date
     AND app_name = '{{ app_value }}'
 ),
 search_metrics AS (

@@ -157,7 +157,7 @@ adjusted_original_changelog AS (
         -- Backdate the initial timestamp for new active customers if it's within a day of the sync.
         -- Otherwise we'll create a separate synthetic customer creation changelog for them.
         WHEN customer_change_number = 1
-          AND NOT customer.is_deleted
+          AND customer.is_deleted IS NOT TRUE
           AND TIMESTAMP_DIFF(`timestamp`, customer.created, HOUR) < 24
           THEN STRUCT(customer.created AS `timestamp`, 'adjusted_customer_creation' AS type)
         ELSE STRUCT(`timestamp`, type)

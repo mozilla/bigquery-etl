@@ -1,7 +1,8 @@
 import pytest
 from click.testing import CliRunner
+from textwrap import dedent
 
-from bigquery_etl.cli.check import _build_jinja_parameters, _parse_check_output, run
+from bigquery_etl.cli.check import _build_jinja_parameters, _parse_check_output, run, render
 
 
 class TestCheck:
@@ -39,11 +40,41 @@ class TestCheck:
         result = runner.invoke(
             run,
             [
-                "telemetry_derived.clients_daily_v6",
                 "--project_id=moz-fx-data-shared-prod",
                 "--sql-dir=tests/sql",
+                "telemetry_derived.clients_daily_v6",
                 "--dry-run",
             ],
         )
 
         assert result.exit_code == 0
+
+
+    def test_check_render(self, runner):
+        result = runner.invoke(
+            render,
+            [
+                "--project_id=moz-fx-data-shared-prod",
+                "--sql-dir=tests/sql",
+                "telemetry_derived.clients_daily_v6",
+                "--parameter=submission_date:DATE:2023-07-01",
+            ],
+        )
+
+        assert result.exit_code == 0
+        assert result.output == dedent(
+        """\
+        ASSERT(
+          (
+            SELECT
+              COUNT(*)
+            FROM
+              `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
+            WHERE
+              submission_date = "2023-07-01"
+          ) > 0
+        )
+        AS
+          'ETL Data Check Failed: Table moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6 contains 0 rows for date: 2023-07-01.'
+        """
+        )

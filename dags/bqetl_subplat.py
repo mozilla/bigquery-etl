@@ -1448,6 +1448,10 @@ with DAG(
     )
 
     subscription_platform_derived__stripe_subscriptions_history__v2.set_upstream(
+        subscription_platform_derived__stripe_customers_history__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions_history__v2.set_upstream(
         subscription_platform_derived__stripe_subscriptions_revised_changelog__v1
     )
 

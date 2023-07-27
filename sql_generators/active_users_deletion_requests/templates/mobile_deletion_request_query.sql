@@ -34,7 +34,8 @@ WITH baseline AS (
   WHERE
     joined.submission_date <= @submission_date
     AND DATE(request.submission_timestamp)
-    BETWEEN @start_date AND @end_date
+    BETWEEN @start_date
+    AND @end_date
 ),
 search_clients AS (
   SELECT

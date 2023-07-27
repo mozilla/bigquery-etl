@@ -23,7 +23,7 @@ from bigquery_etl.backfill.utils import (
     qualified_table_name_matching,
     validate_metadata_workgroups,
 )
-from bigquery_etl.cli.backfill import create, info, validate
+from bigquery_etl.cli.backfill import create, info, scheduled, validate
 
 DEFAULT_STATUS = BackfillStatus.DRAFTING
 VALID_REASON = "test_reason"
@@ -1767,3 +1767,51 @@ class TestBackfill:
             qualified_table_name_matching(invalid_name)
 
         assert "Qualified table name must be named like" in str(e.value)
+
+    def test_backfill_scheduled(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
+            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+            backfill_file.write_text(
+                BACKFILL_YAML_TEMPLATE
+                + """
+2021-05-03:
+  start_date: 2021-01-03
+  end_date: 2021-05-03
+  reason: test_reason
+  watchers:
+  - test@example.org
+  status: Validated"""
+            )
+
+            result = runner.invoke(
+                scheduled,
+                [
+                    "--json_path=tmp.json",
+                ],
+            )
+
+            assert result.exit_code == 0
+            assert (
+                "There are a total of 1 backfill(s) that require processing."
+                in result.output
+            )
+            assert Path("tmp.json").exists()

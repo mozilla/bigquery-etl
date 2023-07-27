@@ -208,9 +208,12 @@ def get_backfill_entries_to_process_dict(
             )
             sys.exit(1)
 
-        if (len(entries)) > 1:
+        if not entries:
+            click.echo(f"No backfill to process for table: {qualified_table_name} ")
+            sys.exit(1)
+        elif (len(entries)) > 1:
             click.echo(
-                f"There should not be more than one entry with drafting status: for {qualified_table_name} "
+                f"There should not be more than one entry in backfill.yaml file with status: {BackfillStatus.DRAFTING} "
             )
             sys.exit(1)
 

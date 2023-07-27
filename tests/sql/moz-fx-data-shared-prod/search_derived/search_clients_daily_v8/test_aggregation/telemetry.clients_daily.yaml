@@ -21,6 +21,7 @@
   search_counts: []
   ad_clicks: []
   search_with_ads: []
+  active_addons: []
 - <<: *base
   client_id: b
   search_counts:
@@ -49,8 +50,14 @@
   active_addons:
     - addon_id: random@mozilla.com
       version: '0.1'
+      user_disabled: false
+      app_disabled: false
+      blocklisted: false
     - addon_id: followonsearch@mozilla.com
       version: 0.9.6
+      user_disabled: false
+      app_disabled: false
+      blocklisted: false
   search_counts:
     - source: contextmenu
       engine: engine2

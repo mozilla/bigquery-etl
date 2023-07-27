@@ -1591,7 +1591,7 @@ def _update_query_schema(
         click.echo(f"{query_file} dry runs are skipped. Cannot update schemas.")
         return
 
-    tmp_tables = copy.copy(tmp_tables)
+    tmp_tables = copy.deepcopy(tmp_tables)
     query_file_path = Path(query_file)
     existing_schema_path = query_file_path.parent / SCHEMA_FILE
     project_name, dataset_name, table_name = extract_from_query_path(query_file_path)

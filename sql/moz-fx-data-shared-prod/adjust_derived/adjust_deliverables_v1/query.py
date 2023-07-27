@@ -96,6 +96,9 @@ def download_adjust_kpi_data(date, api_token, app_token):
     }
 
     response = requests.get(url, headers=headers, params=url_params)
+    if (response.status_code == 401) or (response.status_code == 400):
+        print(f"***Error: {response.status_code}***")
+        print(response.text)
 
     return response
 
@@ -178,9 +181,9 @@ def clean_json(query_export):
     return fields_list
 
 
-def upload_to_bigquery(csv_data, project, dataset, adjust_app_name, date):
+def upload_to_bigquery(csv_data, project, dataset, date):
     """Upload the data to bigquery."""
-    print(f"writing json to csv for {adjust_app_name}")
+    print("writing json to csv")
 
     partition = f"{date}".replace("-", "")
 
@@ -249,26 +252,26 @@ def main():
 
     app_list = json.loads(args.adjust_app_list)
 
+    data = []
+
     # Cycle through the apps to get the relevant kpi data
     for app in app_list:
-        print(f'This is data for {app["app_name"]} - {app["app_token"]}')
+        print(f'This is data for {app["app_name"]}')
         # Ping the Adjust URL and get a response
         json_file = download_adjust_kpi_data(
             args.date, args.adjust_api_token, app["app_token"]
         )
 
-        data = []
-
         query_export = check_json(json_file.text)
 
         if query_export is not None:
             # This section writes the tmp json data into a temp CSV file which will then be put into a BigQuery table
-            data = clean_json(query_export)
-            upload_to_bigquery(
-                data, args.project, args.dataset, app["app_name"], args.date
-            )
+            adjust_data = clean_json(query_export)
+            data.extend(adjust_data)
         else:
             print(f'no data for {app["app_name"]} today')
+
+    upload_to_bigquery(data, args.project, args.dataset, args.date)
 
 
 if __name__ == "__main__":

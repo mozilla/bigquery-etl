@@ -1,14 +1,5 @@
 {{ header }}
-WITH
-{% if filter_desktop_builds %}
-valid_builds AS (
-  SELECT DISTINCT
-    build.build.id AS build_id
-  FROM
-    `moz-fx-data-shared-prod.telemetry.buildhub2`
-),
-{% endif %}
-extracted AS (
+WITH extracted AS (
   SELECT
     *,
     DATE(submission_timestamp) AS submission_date,
@@ -23,20 +14,9 @@ extracted AS (
     client_info.app_channel AS channel
   FROM
     `moz-fx-data-shared-prod.{{ source_table }}`
-  {% if filter_desktop_builds %}
-  INNER JOIN
-    valid_builds
-  ON
-    client_info.app_build = build_id
-  {% endif %}
   WHERE
     DATE(submission_timestamp) = {{ submission_date }}
     AND client_info.client_id IS NOT NULL
-    {% if filter_desktop_builds %}
-    -- some FOG clients on Windows are sending version "1024.0.0"
-    -- see https://bugzilla.mozilla.org/show_bug.cgi?id=1768187
-    AND client_info.app_display_version != '1024.0.0'
-    {% endif %}
 ),
 unlabeled_metrics AS (
   SELECT

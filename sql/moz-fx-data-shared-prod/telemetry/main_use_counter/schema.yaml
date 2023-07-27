@@ -9990,6 +9990,46 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page used SizeToContent
+    - name: use_counter2_css_property_math_depth_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used the CSS property math-depth
+    - name: use_counter2_css_property_math_depth_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used the CSS property math-depth
+    - name: use_counter2_deprecated_init_mouse_event_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used InitMouseEvent
+    - name: use_counter2_deprecated_init_mouse_event_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used InitMouseEvent
+    - name: use_counter2_deprecated_init_ns_mouse_event_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used InitNSMouseEvent
+    - name: use_counter2_deprecated_init_ns_mouse_event_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used InitNSMouseEvent
+    - name: use_counter2_deprecated_moz_input_source_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used MozInputSource
+    - name: use_counter2_deprecated_moz_input_source_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used MozInputSource
+    - name: use_counter2_deprecated_sync_xml_http_request_deprecated_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used SyncXMLHttpRequestDeprecated
+    - name: use_counter2_deprecated_sync_xml_http_request_deprecated_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used SyncXMLHttpRequestDeprecated
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -19826,6 +19866,46 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page used SizeToContent
+        - name: use_counter2_css_property_math_depth_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used the CSS property math-depth
+        - name: use_counter2_css_property_math_depth_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used the CSS property math-depth
+        - name: use_counter2_deprecated_init_mouse_event_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used InitMouseEvent
+        - name: use_counter2_deprecated_init_mouse_event_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used InitMouseEvent
+        - name: use_counter2_deprecated_init_ns_mouse_event_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used InitNSMouseEvent
+        - name: use_counter2_deprecated_init_ns_mouse_event_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used InitNSMouseEvent
+        - name: use_counter2_deprecated_moz_input_source_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used MozInputSource
+        - name: use_counter2_deprecated_moz_input_source_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used MozInputSource
+        - name: use_counter2_deprecated_sync_xml_http_request_deprecated_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used SyncXMLHttpRequestDeprecated
+        - name: use_counter2_deprecated_sync_xml_http_request_deprecated_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used SyncXMLHttpRequestDeprecated
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

@@ -263,6 +263,9 @@ fields:
     - name: session_session_id
       type: STRING
       mode: NULLABLE
+    - name: session_installation_id
+      type: STRING
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE

@@ -727,7 +727,7 @@ fields:
     - name: search_default_engine
       type: STRING
       mode: NULLABLE
-      description: 'The default search engine identifier if the search engine is
+      description: 'The default search engine name if the search engine is
 
         pre-loaded with Focus.  If it''s a custom search engine,
 

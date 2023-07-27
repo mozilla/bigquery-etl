@@ -326,6 +326,12 @@ fields:
         of options [here](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/crash-ping.html#process-types).
 
         '
+    - name: crash_cause
+      type: STRING
+      mode: NULLABLE
+      description: 'The cause of the crash. May be one of `os_fault` or `java_exception`.
+
+        '
   - name: timespan
     type: RECORD
     mode: NULLABLE

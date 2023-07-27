@@ -371,6 +371,12 @@ fields:
         system settings.
 
         '
+    - name: session_installation_id
+      type: STRING
+      mode: NULLABLE
+      description: 'A unique identifier to connect the app and daemon Glean instances.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

@@ -263,6 +263,9 @@ fields:
     - name: session_daemon_session_id
       type: STRING
       mode: NULLABLE
+    - name: session_installation_id
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

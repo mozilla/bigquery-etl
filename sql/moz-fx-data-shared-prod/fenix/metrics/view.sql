@@ -606,7 +606,8 @@ SELECT
       metrics.timing_distribution.networking_dns_renewal_time_for_ttl,
       metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time,
       metrics.timing_distribution.networking_http_content_onstart_delay,
-      metrics.timing_distribution.networking_http_content_onstop_delay
+      metrics.timing_distribution.networking_http_content_onstop_delay,
+      metrics.timing_distribution.metrics_search_page_load_time
     ) AS timing_distribution,
     metrics.memory_distribution,
     metrics.datetime,
@@ -1082,7 +1083,8 @@ SELECT
       metrics.timing_distribution.networking_dns_renewal_time_for_ttl,
       metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time,
       metrics.timing_distribution.networking_http_content_onstart_delay,
-      metrics.timing_distribution.networking_http_content_onstop_delay
+      metrics.timing_distribution.networking_http_content_onstop_delay,
+      metrics.timing_distribution.metrics_search_page_load_time
     ) AS timing_distribution,
     metrics.memory_distribution,
     metrics.datetime,

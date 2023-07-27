@@ -42,6 +42,7 @@ first_seen AS (
     is_new_profile
 ),
 -- Find the most recent activation record per client_id.
+-- The inner join aims to exclude exclude shredded client_ids that may still exist in `fenix.new_profile_activation`.
 activations AS (
   SELECT
     client_id,

@@ -1,7 +1,7 @@
 import pytest
 from click.testing import CliRunner
 
-from bigquery_etl.cli.check import _build_jinja_parameters, _parse_check_output
+from bigquery_etl.cli.check import _build_jinja_parameters, _parse_check_output, run
 
 
 class TestCheck:
@@ -34,3 +34,16 @@ class TestCheck:
             "project_id": "moz-fx-data-marketing-prod",
         }
         assert _build_jinja_parameters(test) == expected
+
+    def test_check_run(self, runner):
+        result = runner.invoke(
+            run,
+            [
+                "telemetry_derived.clients_daily_v6",
+                "--project_id=moz-fx-data-shared-prod",
+                "--sql-dir=tests/sql",
+                "--dry-run",
+            ],
+        )
+
+        assert result.exit_code == 0

@@ -8,6 +8,7 @@
   last_reported_country: CA
   sample_id: 54
   adjust_network: 'Organic'
+  activated: false
   last_reported_adjust_network: 'Organic'
   channel: release
   metadata:

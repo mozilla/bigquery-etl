@@ -42,17 +42,14 @@ first_seen AS (
     is_new_profile
 ),
 -- Find the most recent activation record per client_id.
--- The inner join aims to exclude exclude shredded client_ids that may still exist in `fenix.new_profile_activation`.
 activations AS (
   SELECT
     client_id,
-    ARRAY_AGG(activation.activated ORDER BY activation.submission_date DESC)[SAFE_OFFSET(0)] > 0 AS activated,
+    ARRAY_AGG(activated ORDER BY submission_date DESC)[SAFE_OFFSET(0)] > 0 AS activated,
   FROM
-    fenix.new_profile_activation AS activation
-  INNER JOIN `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
-  USING (client_id)
+    fenix.new_profile_activation
   WHERE
-    activation.submission_date = @submission_date
+    submission_date = @submission_date
   GROUP BY
     client_id
 ),

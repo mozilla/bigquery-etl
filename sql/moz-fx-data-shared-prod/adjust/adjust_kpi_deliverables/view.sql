@@ -2,7 +2,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.adjust.adjust_kpi_deliverables`
 AS
 SELECT
-    date as submission_date,
+    date,
     app,
     network,
     network_token,

@@ -96,6 +96,9 @@ def download_adjust_kpi_data(date, api_token, app_token):
     }
 
     response = requests.get(url, headers=headers, params=url_params)
+    if (response.status_code == 401) or (response.status_code == 400):
+        print(f"***Error: {response.status_code}***")
+        print(response.text)
 
     return response
 

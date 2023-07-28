@@ -1,5 +1,9 @@
 fields:
 - mode: NULLABLE
+  name: os
+  type: STRING
+
+- mode: NULLABLE
   name: app_version
   type: INTEGER
 
@@ -27,7 +31,6 @@ fields:
   name: process
   type: STRING
 
-
 - mode: NULLABLE
   name: first_bucket
   type: INTEGER
@@ -54,7 +57,7 @@ fields:
 
 - fields:
   - mode: NULLABLE
-    name: KEY
+    name: key
     type: STRING
   - mode: NULLABLE
     name: value
@@ -65,7 +68,7 @@ fields:
 
 - fields:
   - mode: NULLABLE
-    name: KEY
+    name: key
     type: STRING
   - mode: NULLABLE
     name: value
@@ -73,7 +76,3 @@ fields:
   mode: REPEATED
   name: non_norm_aggregates
   type: RECORD
-
-- name: os
-  type: STRING
-  mode: NULLABLE

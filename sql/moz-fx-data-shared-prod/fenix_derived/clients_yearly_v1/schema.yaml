@@ -2,73 +2,75 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+- name: days_seen_bytes
+  type: BYTES
+  mode: NULLABLE
 - name: client_id
   type: STRING
   mode: NULLABLE
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-- name: events
+- name: first_run_date
+  type: DATE
+  mode: NULLABLE
+- name: durations
+  type: INTEGER
+  mode: NULLABLE
+- name: days_seen_session_start_bits
+  type: INTEGER
+  mode: NULLABLE
+- name: days_seen_session_end_bits
+  type: INTEGER
+  mode: NULLABLE
+- name: normalized_channel
   type: STRING
   mode: NULLABLE
-- name: utm_term
+- name: normalized_os
   type: STRING
   mode: NULLABLE
-- name: utm_source
+- name: normalized_os_version
   type: STRING
   mode: NULLABLE
-- name: utm_medium
+- name: android_sdk_version
   type: STRING
   mode: NULLABLE
-- name: utm_campaign
+- name: locale
   type: STRING
   mode: NULLABLE
-- name: ua_version
-  type: STRING
-  mode: NULLABLE
-- name: ua_browser
-  type: STRING
-  mode: NULLABLE
-- name: entrypoint
-  type: STRING
-  mode: NULLABLE
-- name: flow_id
-  type: STRING
-  mode: NULLABLE
-- name: sync_device_count
-  type: STRING
-  mode: NULLABLE
-- name: sync_active_devices_day
-  type: STRING
-  mode: NULLABLE
-- name: sync_active_devices_week
-  type: STRING
-  mode: NULLABLE
-- name: sync_active_devices_month
-  type: STRING
-  mode: NULLABLE
-- name: app_version
-  type: STRING
-  mode: NULLABLE
-- name: os_name
-  type: STRING
-  mode: NULLABLE
-- name: os_version
+- name: city
   type: STRING
   mode: NULLABLE
 - name: country
   type: STRING
   mode: NULLABLE
-- name: language
+- name: app_build
   type: STRING
   mode: NULLABLE
-- name: experiments
-  type: RECORD
-  mode: REPEATED
-  fields:
-  - name: key
-    type: STRING
-    mode: NULLABLE
-  - name: value
-    type: STRING
-    mode: NULLABLE
+- name: app_channel
+  type: STRING
+  mode: NULLABLE
+- name: app_display_version
+  type: STRING
+  mode: NULLABLE
+- name: architecture
+  type: STRING
+  mode: NULLABLE
+- name: device_manufacturer
+  type: STRING
+  mode: NULLABLE
+- name: device_model
+  type: STRING
+  mode: NULLABLE
+- name: telemetry_sdk_build
+  type: STRING
+  mode: NULLABLE
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+- name: is_new_profile
+  type: BOOLEAN
+  mode: NULLABLE
+- name: isp
+  type: STRING
+  mode: NULLABLE

@@ -2,11 +2,7 @@ friendly_name: Activity Stream
 # yamllint disable rule:line-length
 description: |-
   User-facing views related to document namespace activity-stream; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/activity-stream
-dataset_base_acl: view
+dataset_base_acl: view_deprecated
 user_facing: true
 labels: {}
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
-  - workgroup:pocket/prefect
+workgroup_access: []

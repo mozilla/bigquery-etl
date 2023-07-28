@@ -548,13 +548,18 @@ def run_simulation(
     column_list: list,
     end_date: str,
     lookback: int,
-    actions: List[str],
+    run_replacement: bool,
+    run_usage_history: bool,
+    run_clients_daily: bool,
+    run_clients_daily_with_search: bool,
+    run_clients_yearly: bool,
+    run_attributed_clients: bool,
 ):
     # at a high level there are two main steps here 1. go day by day and match regenerated client_ids to replacement
     # client_ids that "look like" they churned in the prior `lookback` days. write the matches to a table 2. using
     # the matches from 2, write alternative client histories where regenerated clients are given their replacement ids.
 
-    if "replacement" in actions:
+    if run_replacement:
         create_replacements(
             client,
             seed=seed,
@@ -564,22 +569,26 @@ def run_simulation(
             lookback=lookback,
         )
 
-    if "usage-history" in actions:
+    if run_usage_history:
         write_usage_history(client, seed=seed, start_date=start_date, end_date=end_date)
 
-    if "clients-daily" in actions:
-        write_baseline_clients_daily(client, seed=seed, start_date=start_date, end_date=end_date)
+    if run_clients_daily:
+        write_baseline_clients_daily(
+            client, seed=seed, start_date=start_date, end_date=end_date
+        )
 
-    if "clients-daily-with-search" in actions:
-        write_baseline_clients_daily_with_searches(client, seed=seed, start_date=start_date, end_date=end_date)
+    if run_clients_daily_with_search:
+        write_baseline_clients_daily_with_searches(
+            client, seed=seed, start_date=start_date, end_date=end_date
+        )
 
-    if "clients-yearly" in actions:
+    if run_clients_yearly:
         init_baseline_clients_yearly(client, seed=seed)
         write_baseline_clients_yearly(
             client, seed=seed, start_date=start_date, end_date=end_date
         )
 
-    # if "attributed-clients" in actions:
+    # if run_attributed_clients:
     # write_attributed_clients_history(client, seed=seed, start_date=start_date)
 
 
@@ -603,23 +612,25 @@ def run_simulation(
     help="How many days to look back for churned clients.",
     default=DEFAULT_LOOKBACK,
 )
-@click.option(
-    "--actions",
-    required=True,
-    type=click.Choice(
-        [
-            "replacement",
-            "usage-history",
-            "clients-daily",
-            "clients-daily-with-search",
-            "clients-yearly",
-            "attributed-clients",
-        ],
-    ),
-    multiple=True,
-)
+@click.option("--run-replacement", type=bool, default=False)
+@click.option("--run-usage-history", type=bool, default=False)
+@click.option("--run-clients-daily", type=bool, default=False)
+@click.option("--run-clients-daily-with-search", type=bool, default=False)
+@click.option("--run-clients-yearly", type=bool, default=False)
+@click.option("--run-attributed-clients", type=bool, default=False)
 # TODO: column list as a parameter?
-def main(seed, start_date, end_date, lookback, actions):
+def main(
+    seed,
+    start_date,
+    end_date,
+    lookback,
+    run_replacement,
+    run_usage_history,
+    run_clients_daily,
+    run_clients_daily_with_search,
+    run_clients_yearly,
+    run_attributed_clients,
+):
     start_date, end_date = str(start_date.date()), str(end_date.date())
 
     client = bigquery.Client(project="mozdata")
@@ -631,7 +642,12 @@ def main(seed, start_date, end_date, lookback, actions):
         column_list=COLUMN_LIST,
         end_date=end_date,
         lookback=lookback,
-        actions=actions,
+        run_replacement=run_replacement,
+        run_usage_history=run_usage_history,
+        run_clients_daily=run_clients_daily,
+        run_clients_daily_with_search=run_clients_daily_with_search,
+        run_clients_yearly=run_clients_yearly,
+        run_attributed_clients=run_attributed_clients,
     )
 
 

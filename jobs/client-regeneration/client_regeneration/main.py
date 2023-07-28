@@ -1,7 +1,9 @@
+from typing import List
+
 import click
 
 from google.cloud import bigquery
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 DEFAULT_LOOKBACK = 7
 
@@ -225,9 +227,13 @@ def update_churn_pool(client, seed, date):
 #   return(table_name)
 
 
-def write_baseline_clients_daily(client, seed, start_date):
-  table_name = """mozdata.analysis.regen_sim_replaced_baseline_clients_daily_{}""".format(str(seed))
-  q = f"""
+def write_baseline_clients_daily(client, seed, start_date, end_date):
+    table_name = (
+        """mozdata.analysis.regen_sim_replaced_baseline_clients_daily_{}""".format(
+            str(seed)
+        )
+    )
+    q = f"""
   CREATE OR REPLACE TABLE {table_name}
   AS
   WITH base AS (
@@ -245,7 +251,7 @@ def write_baseline_clients_daily(client, seed, start_date):
       LEFT JOIN `mozdata.analysis.regen_sim_client_replacements_{str(seed)}` r
       -- we want the history starting on the regen date.
       ON (c.client_id = r.client_id) AND (c.submission_date BETWEEN r.regen_date AND r.regened_last_date)
-      WHERE c.submission_date >= DATE("{str(start_date)}")
+      WHERE c.submission_date BETWEEN DATE("{str(start_date)}") AND DATE("{str(end_date)}")
   ),
 
   numbered AS (
@@ -262,13 +268,175 @@ def write_baseline_clients_daily(client, seed, start_date):
   FROM numbered
   WHERE rn = 1
   """
-  job = client.query(q)
-  job.result()
-  return(table_name)
+    job = client.query(q)
+    job.result()
+    return table_name
+
+
+def write_baseline_clients_daily_with_searches(client, seed, start_date, end_date):
+    table_name = """mozdata.analysis.regen_sim_replaced_baseline_clients_daily_with_searches_{}""".format(
+        str(seed)
+    )
+    q = f"""
+  CREATE OR REPLACE TABLE {table_name}
+  AS
+  WITH
+  base AS (
+      SELECT
+        c.client_id,
+        c.first_seen_date AS first_seen_date,
+        c.submission_date,
+        c.country,
+        c.device_model,
+        COALESCE(a.searches, 0) AS searches,
+        COALESCE(a.searches_with_ads, 0) AS searches_with_ads,
+        COALESCE(a.ad_clicks, 0) AS ad_clicks,
+      FROM `mozdata.fenix.baseline_clients_daily` c
+      LEFT JOIN `mozdata.fenix.attributable_clients_v2` a
+      USING(client_id, submission_date)
+      WHERE c.submission_date BETWEEN DATE("{str(start_date)}") AND DATE("{str(end_date)}")
+  ),
+
+  replaced AS (
+      SELECT
+        COALESCE(r.replacement_id, c.client_id) AS client_id,
+        COALESCE(r.first_seen_date, c.first_seen_date) AS first_seen_date,
+        udf.safe_sample_id(COALESCE(r.replacement_id, c.client_id)) AS sample_id,
+        c.country,
+        c.device_model,
+        c.submission_date,
+        ARRAY_AGG(c.client_id IGNORE NULLS ORDER BY regened_last_date) AS original_client_id,
+        ARRAY_AGG(c.first_seen_date IGNORE NULLS ORDER BY regened_last_date) AS original_first_seen_date,
+        SUM(searches) AS searches,
+        SUM(searches_with_ads) AS searches_with_ads,
+        SUM(ad_clicks) AS ad_clicks,
+      FROM base c
+      LEFT JOIN `mozdata.analysis.regen_sim_client_replacements_{str(seed)}` r
+      -- we want the history starting on the regen date.
+      ON (c.client_id = r.client_id) AND (c.submission_date BETWEEN r.regen_date AND r.regened_last_date)
+      GROUP BY 1,2,3,4,5,6
+  )
+
+  SELECT
+      *
+  FROM replaced
+  """
+
+    job = client.query(q)
+    job.result()
+    return table_name
+
+
+def init_baseline_clients_yearly(client, seed):
+    clients_yearly_name = f"mozdata.analysis.regen_sim_replaced_clients_yearly_{seed}"
+    clients_daily_name = f"mozdata.analysis.regen_sim_replaced_baseline_clients_daily_with_searches_{seed}"
+
+    # client_id STRING,
+    # first_seen_date DATE,
+    # original_client_id STRING,
+    # original_first_seen_date DATE,
+    # submission_date DATE,
+    # country STRING,
+    # device_model STRING,
+    # sample_id INTEGER,
+    # days_seen_bytes BYTES,
+    # searches INTEGER,
+    # searches_with_ads INTEGER,
+    # ad_clicks INTEGER,
+
+    create_yearly_stmt = f"""CREATE OR REPLACE TABLE {clients_yearly_name} 
+PARTITION BY
+  submission_date
+CLUSTER BY
+  sample_id,
+  client_id
+AS
+SELECT
+  *,
+  CAST(NULL AS BYTES) AS days_seen_bytes,
+FROM
+  {clients_daily_name}
+WHERE
+  -- Output empty table and read no input rows
+  FALSE
+    """
+
+    client.query(create_yearly_stmt).result()
+    print(f"{clients_yearly_name} created")
+
+
+def _write_baseline_clients_yearly_partition(
+    client, clients_daily, clients_yearly, submission_date
+):
+    query_stmt = f"""
+WITH _current AS (
+  SELECT
+    * EXCEPT (submission_date),
+    udf.bool_to_365_bits(TRUE) AS days_seen_bytes,
+  FROM
+    `{clients_daily}`
+  WHERE
+    submission_date = '{submission_date}'
+),
+_previous AS (
+  SELECT
+    * EXCEPT (submission_date),
+  FROM
+    `{clients_yearly}`
+  WHERE
+    submission_date = DATE_SUB('{submission_date}', INTERVAL 1 DAY)
+    AND BIT_COUNT(udf.shift_365_bits_one_day(days_seen_bytes)) > 0
+)
+SELECT
+  DATE('{submission_date}') AS submission_date,
+  IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
+    udf.combine_adjacent_days_365_bits(
+      _previous.days_seen_bytes,
+      _current.days_seen_bytes
+    ) AS days_seen_bytes
+  )
+FROM
+  _current
+FULL OUTER JOIN
+  _previous
+USING
+  (sample_id, client_id)
+"""
+    partition = submission_date.strftime("%Y%m%d")
+    destination_table = f"{clients_yearly}${partition}"
+    print(f"Backfilling `{destination_table}` ...")
+
+    query_config = bigquery.QueryJobConfig(
+        destination=destination_table,
+        default_dataset=f"mozdata.analysis",
+        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+    )
+
+    client.query(query_stmt, job_config=query_config).result()
+
+
+def write_baseline_clients_yearly(client, seed, start_date, end_date):
+    clients_daily_name = f"mozdata.analysis.regen_sim_replaced_baseline_clients_daily_with_searches_{seed}"
+    clients_yearly_name = f"mozdata.analysis.regen_sim_replaced_clients_yearly_{seed}"
+
+    dates = [
+        date.fromisoformat(start_date) + timedelta(i)
+        for i in range(
+            (date.fromisoformat(end_date) - date.fromisoformat(start_date)).days + 1
+        )
+    ]
+
+    for submission_date in dates:
+        _write_baseline_clients_yearly_partition(
+            client, clients_daily_name, clients_yearly_name, submission_date
+        )
+
 
 def write_usage_history(client, seed, start_date, end_date):
-  table_name = """mozdata.analysis.regen_sim_replaced_clients_last_seen_{}""".format(str(seed))
-  q = f"""
+    table_name = """mozdata.analysis.regen_sim_replaced_clients_last_seen_{}""".format(
+        str(seed)
+    )
+    q = f"""
   DECLARE start_date DATE DEFAULT "{str(start_date)}";
   DECLARE end_date DATE DEFAULT "{str(end_date)}";
 
@@ -328,9 +496,10 @@ def write_usage_history(client, seed, start_date, end_date):
     (days_active_bits >> i) IS NOT NULL
   """
 
-  job = client.query(q)
-  job.result()
-  return(table_name)
+    job = client.query(q)
+    job.result()
+    return table_name
+
 
 def create_replacements(
     client: bigquery.Client,
@@ -379,23 +548,39 @@ def run_simulation(
     column_list: list,
     end_date: str,
     lookback: int,
+    actions: List[str],
 ):
     # at a high level there are two main steps here 1. go day by day and match regenerated client_ids to replacement
     # client_ids that "look like" they churned in the prior `lookback` days. write the matches to a table 2. using
     # the matches from 2, write alternative client histories where regenerated clients are given their replacement ids.
 
-    create_replacements(
-        client,
-        seed=seed,
-        start_date=start_date,
-        end_date=end_date,
-        column_list=column_list,
-        lookback=lookback,
-    )
-    # TODO:
-    write_baseline_clients_daily(client, seed=seed, start_date=start_date)
+    if "replacement" in actions:
+        create_replacements(
+            client,
+            seed=seed,
+            start_date=start_date,
+            end_date=end_date,
+            column_list=column_list,
+            lookback=lookback,
+        )
+
+    if "usage-history" in actions:
+        write_usage_history(client, seed=seed, start_date=start_date, end_date=end_date)
+
+    if "clients-daily" in actions:
+        write_baseline_clients_daily(client, seed=seed, start_date=start_date, end_date=end_date)
+
+    if "clients-daily-with-search" in actions:
+        write_baseline_clients_daily_with_searches(client, seed=seed, start_date=start_date, end_date=end_date)
+
+    if "clients-yearly" in actions:
+        init_baseline_clients_yearly(client, seed=seed)
+        write_baseline_clients_yearly(
+            client, seed=seed, start_date=start_date, end_date=end_date
+        )
+
+    # if "attributed-clients" in actions:
     # write_attributed_clients_history(client, seed=seed, start_date=start_date)
-    write_usage_history(client, seed=seed, start_date=start_date, end_date=end_date)
 
 
 @click.command()
@@ -418,12 +603,27 @@ def run_simulation(
     help="How many days to look back for churned clients.",
     default=DEFAULT_LOOKBACK,
 )
+@click.option(
+    "--actions",
+    required=True,
+    type=click.Choice(
+        [
+            "replacement",
+            "usage-history",
+            "clients-daily",
+            "clients-daily-with-search",
+            "clients-yearly",
+            "attributed-clients",
+        ],
+    ),
+    multiple=True,
+)
 # TODO: column list as a parameter?
-def main(seed, start_date, end_date, lookback):
+def main(seed, start_date, end_date, lookback, actions):
     start_date, end_date = str(start_date.date()), str(end_date.date())
-    print(seed, start_date, end_date, lookback)
 
     client = bigquery.Client(project="mozdata")
+
     run_simulation(
         client,
         seed=seed,
@@ -431,6 +631,7 @@ def main(seed, start_date, end_date, lookback):
         column_list=COLUMN_LIST,
         end_date=end_date,
         lookback=lookback,
+        actions=actions,
     )
 
 

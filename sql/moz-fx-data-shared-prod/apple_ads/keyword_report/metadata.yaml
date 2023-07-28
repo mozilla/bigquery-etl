@@ -1,0 +1,5 @@
+# NOTE: should be added to the generated branch, this is just an example
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

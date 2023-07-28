@@ -1,3 +1,4 @@
 # NOTE bqetl metadata generation should use this value to either populate leave
 # workgroup_access unset or set it to workgroup_access: []
 deprecated: true
+workgroup_access: []

@@ -32,7 +32,8 @@ WITH baseline AS (
   ON
     client_info.client_id = client_id
   WHERE
-    joined.submission_date
+    joined.submission_date <= @end_date
+    AND DATE(request.submission_timestamp)
     BETWEEN @start_date
     AND @end_date
 ),
@@ -45,9 +46,13 @@ search_clients AS (
     search_count,
     search_with_ads
   FROM
-    `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
+    `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1` search
+     INNER JOIN `{{ app_name }}.deletion_request` AS request
+  ON
+    client_info.client_id = client_id
   WHERE
-    submission_date
+    search.submission_date <= @end_date
+    AND DATE(request.submission_timestamp)
     BETWEEN @start_date
     AND @end_date
     AND app_name = '{{ app_value }}'
@@ -143,7 +148,7 @@ baseline_with_searches AS (
     search.client_id = baseline.client_id
     AND search.submission_date = baseline.submission_date
 ),
-todays_metrics AS (
+today_metrics AS (
   SELECT
     activity_segment AS segment,
     app_version,
@@ -176,9 +181,9 @@ todays_metrics AS (
   FROM
     baseline_with_searches
 ),
-todays_metrics_enriched AS (
+today_metrics_enriched AS (
   SELECT
-    todays_metrics.* EXCEPT (locale),
+    today_metrics.* EXCEPT (locale),
     CASE
       WHEN locale IS NOT NULL
         AND languages.language_name IS NULL
@@ -186,14 +191,14 @@ todays_metrics_enriched AS (
       ELSE languages.language_name
     END AS language_name,
   FROM
-    todays_metrics
+    today_metrics
   LEFT JOIN
     `mozdata.static.csa_gblmkt_languages` AS languages
   ON
-    todays_metrics.locale = languages.code
+    today_metrics.locale = languages.code
 )
 SELECT
-  todays_metrics_enriched.* EXCEPT (
+  today_metrics_enriched.* EXCEPT (
     client_id,
     days_since_seen,
     ad_clicks,
@@ -216,7 +221,7 @@ SELECT
   SUM(active_hours_sum) AS active_hours,
   @partition_date AS partition_date,
 FROM
-  todays_metrics_enriched
+  today_metrics_enriched
 GROUP BY
   app_version,
   attribution_medium,

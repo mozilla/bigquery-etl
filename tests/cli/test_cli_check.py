@@ -1,5 +1,5 @@
-from textwrap import dedent
 from pathlib import Path
+from textwrap import dedent
 
 import pytest
 from click.testing import CliRunner
@@ -37,20 +37,6 @@ class TestCheck:
             "project_id": "moz-fx-data-marketing-prod",
         }
         assert _build_jinja_parameters(test) == expected
-
-    # TODO: Keep getting file not found error, not clear what's causing this
-    # def test_check_run(self, runner):
-    #     result = runner.invoke(
-    #         run,
-    #         [
-    #             "--project_id=moz-fx-data-shared-prod",
-    #             "--sql-dir=tests/sql",
-    #             "telemetry_derived.clients_daily_v6",
-    #             "--dry-run",
-    #         ],
-    #     )
-
-    #     assert result.exit_code == 0
 
     def test_check_render(self):
         checks_file = Path(

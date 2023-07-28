@@ -1,7 +1,4 @@
 fields:
-- mode: NULLABLE
-  name: submission_date
-  type: DATE
 - name: logName
   type: STRING
   mode: NULLABLE
@@ -685,6 +682,9 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: errcode
+      type: STRING
+      mode: NULLABLE
+    - name: doc_url
       type: STRING
       mode: NULLABLE
   - name: logger
@@ -1445,3 +1445,7 @@ fields:
   - name: totalSplits
     type: INTEGER
     mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: DO NOT USE! This column was added accidentally and isn't populated.

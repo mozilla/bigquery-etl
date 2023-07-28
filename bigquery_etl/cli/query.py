@@ -68,6 +68,7 @@ from .generate import generate_all
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
 VERSION_RE = re.compile(r"_v[0-9]+")
 DESTINATION_TABLE_RE = re.compile(r"^[a-zA-Z0-9_$]{0,1024}$")
+DEFAULT_DAG_NAME = "bqetl_default"
 
 
 @click.group(help="Commands for managing queries.")
@@ -117,7 +118,41 @@ def query(ctx):
     default=False,
     is_flag=True,
 )
-def create(name, sql_dir, project_id, owner, init):
+@click.option(
+    "--dag",
+    "-dag",
+    help=(
+        "Name of the DAG the query should be scheduled under. "
+        "To see available DAGs run `bqetl dag info`. "
+        "To create a new DAG run `bqetl dag create`. To skip the "
+        " automated scheduling use option --no_schedule."
+    ),
+)
+@click.option(
+    "--use_default_dag",
+    "-default-dag",
+    help=(
+        "Using this option automatically schedules the query in DAG"
+        " `bqetl_default`. This DAG is classified tier_3, and the lowest"
+        " level of service from Data Engineering."
+    ),
+    default=False,
+    is_flag=True,
+)
+@click.option(
+    "--no_schedule",
+    "-no-schedule",
+    help=(
+        "Using this option creates the query without scheduling information."
+        " Use `bqetl query schedule` to add it manually if required."
+    ),
+    default=False,
+    is_flag=True,
+)
+@click.pass_context
+def create(
+    ctx, name, sql_dir, project_id, owner, init, dag, use_default_dag, no_schedule
+):
     """CLI command for creating a new query."""
     # create directory structure for query
     try:
@@ -141,108 +176,130 @@ def create(name, sql_dir, project_id, owner, init):
     view_path = None
     path = Path(sql_dir)
 
-    if dataset.endswith("_derived"):
-        # create a directory for the corresponding view
-        derived_path = path / project_id / dataset / (name + version)
-        derived_path.mkdir(parents=True)
-
-        view_path = path / project_id / dataset.replace("_derived", "") / name
-        view_path.mkdir(parents=True)
+    if not no_schedule and not dag and not use_default_dag:
+        click.echo(
+            "Please specify the scheduling information or"
+            " skip using --no-schedule. "
+            "Run `bqetl query create --help` for more options.",
+            err=True,
+        )
     else:
-        # check if there is a corresponding derived dataset
-        if (path / project_id / (dataset + "_derived")).exists():
-            derived_path = path / project_id / (dataset + "_derived") / (name + version)
-            derived_path.mkdir(parents=True)
-            view_path = path / project_id / dataset / name
-            view_path.mkdir(parents=True)
-
-            dataset = dataset + "_derived"
-        else:
-            # some dataset that is not specified as _derived
-            # don't automatically create views
+        if dataset.endswith("_derived"):
+            # create a directory for the corresponding view
             derived_path = path / project_id / dataset / (name + version)
             derived_path.mkdir(parents=True)
 
-    click.echo(f"Created query in {derived_path}")
+            view_path = path / project_id / dataset.replace("_derived", "") / name
+            view_path.mkdir(parents=True)
+        else:
+            # check if there is a corresponding derived dataset
+            if (path / project_id / (dataset + "_derived")).exists():
+                derived_path = (
+                    path / project_id / (dataset + "_derived") / (name + version)
+                )
+                derived_path.mkdir(parents=True)
+                view_path = path / project_id / dataset / name
+                view_path.mkdir(parents=True)
 
-    if view_path:
-        click.echo(f"Created corresponding view in {view_path}")
-        view_file = view_path / "view.sql"
-        view_dataset = dataset.replace("_derived", "")
-        view_file.write_text(
+                dataset = dataset + "_derived"
+            else:
+                # some dataset that is not specified as _derived
+                # don't automatically create views
+                derived_path = path / project_id / dataset / (name + version)
+                derived_path.mkdir(parents=True)
+
+        click.echo(f"Created query in {derived_path}")
+
+        if view_path:
+            click.echo(f"Created corresponding view in {view_path}")
+            view_file = view_path / "view.sql"
+            view_dataset = dataset.replace("_derived", "")
+            view_file.write_text(
+                reformat(
+                    f"""CREATE OR REPLACE VIEW
+                      `{project_id}.{view_dataset}.{name}`
+                    AS SELECT * FROM
+                      `{project_id}.{dataset}.{name}{version}`"""
+                )
+                + "\n"
+            )
+
+        # create query.sql file
+        query_file = derived_path / "query.sql"
+        query_file.write_text(
             reformat(
-                f"""CREATE OR REPLACE VIEW
-                  `{project_id}.{view_dataset}.{name}`
-                AS SELECT * FROM
-                  `{project_id}.{dataset}.{name}{version}`"""
+                f"""-- Query for {dataset}.{name}{version}
+                -- For more information on writing queries see:
+                -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
+                SELECT * FROM table WHERE submission_date = @submission_date"""
             )
             + "\n"
         )
 
-    # create query.sql file
-    query_file = derived_path / "query.sql"
-    query_file.write_text(
-        reformat(
-            f"""-- Query for {dataset}.{name}{version}
-            -- For more information on writing queries see:
-            -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-            SELECT * FROM table WHERE submission_date = @submission_date"""
+        # create default metadata.yaml
+        metadata_file = derived_path / "metadata.yaml"
+        metadata = Metadata(
+            friendly_name=string.capwords(name.replace("_", " ")),
+            description="Please provide a description for the query",
+            owners=[owner],
+            labels={"incremental": True},
+            bigquery=BigQueryMetadata(
+                time_partitioning=PartitionMetadata(field="", type=PartitionType.DAY),
+                clustering=ClusteringMetadata(fields=[]),
+            ),
         )
-        + "\n"
-    )
+        metadata.write(metadata_file)
 
-    # create default metadata.yaml
-    metadata_file = derived_path / "metadata.yaml"
-    metadata = Metadata(
-        friendly_name=string.capwords(name.replace("_", " ")),
-        description="Please provide a description for the query",
-        owners=[owner],
-        labels={"incremental": True},
-        bigquery=BigQueryMetadata(
-            time_partitioning=PartitionMetadata(field="", type=PartitionType.DAY),
-            clustering=ClusteringMetadata(fields=[]),
-        ),
-    )
-    metadata.write(metadata_file)
-
-    # optionally create init.sql
-    if init:
-        init_file = derived_path / "init.sql"
-        init_file.write_text(
-            reformat(
-                f"""
-                -- SQL for initializing the query destination table.
-                CREATE OR REPLACE TABLE
-                  `{ConfigLoader.get('default', 'project', fallback="moz-fx-data-shared-prod")}.{dataset}.{name}{version}`
-                AS SELECT * FROM table"""
+        # optionally create init.sql
+        if init:
+            init_file = derived_path / "init.sql"
+            init_file.write_text(
+                reformat(
+                    f"""
+                    -- SQL for initializing the query destination table.
+                    CREATE OR REPLACE TABLE
+                      `{ConfigLoader.get('default', 'project', fallback="moz-fx-data-shared-prod")}.{dataset}.{name}{version}`
+                    AS SELECT * FROM table"""
+                )
+                + "\n"
             )
-            + "\n"
-        )
 
-    dataset_metadata_file = derived_path.parent / "dataset_metadata.yaml"
-    if not dataset_metadata_file.exists():
-        dataset_name = str(dataset_metadata_file.parent.name)
-        dataset_metadata = DatasetMetadata(
-            friendly_name=string.capwords(dataset_name.replace("_", " ")),
-            description="Please provide a description for the dataset",
-            dataset_base_acl="derived",
-            user_facing=False,
-        )
-        dataset_metadata.write(dataset_metadata_file)
-        click.echo(f"Created dataset metadata in {dataset_metadata_file}")
-
-    if view_path:
-        dataset_metadata_file = view_path.parent / "dataset_metadata.yaml"
+        dataset_metadata_file = derived_path.parent / "dataset_metadata.yaml"
         if not dataset_metadata_file.exists():
             dataset_name = str(dataset_metadata_file.parent.name)
             dataset_metadata = DatasetMetadata(
                 friendly_name=string.capwords(dataset_name.replace("_", " ")),
                 description="Please provide a description for the dataset",
-                dataset_base_acl="view",
-                user_facing=True,
+                dataset_base_acl="derived",
+                user_facing=False,
             )
             dataset_metadata.write(dataset_metadata_file)
             click.echo(f"Created dataset metadata in {dataset_metadata_file}")
+
+        if view_path:
+            dataset_metadata_file = view_path.parent / "dataset_metadata.yaml"
+            if not dataset_metadata_file.exists():
+                dataset_name = str(dataset_metadata_file.parent.name)
+                dataset_metadata = DatasetMetadata(
+                    friendly_name=string.capwords(dataset_name.replace("_", " ")),
+                    description="Please provide a description for the dataset",
+                    dataset_base_acl="view",
+                    user_facing=True,
+                )
+                dataset_metadata.write(dataset_metadata_file)
+                click.echo(f"Created dataset metadata in {dataset_metadata_file}")
+
+        if no_schedule:
+            click.echo(
+                "WARNING: This query has been created without"
+                " scheduling information. Use `bqetl query schedule`"
+                " to add it manually or `bqetl query create --help`"
+                " for automated options."
+            )
+        else:
+            ctx.invoke(
+                schedule, name=derived_path, use_default_dag=use_default_dag, dag=dag
+            )
 
 
 @query.command(
@@ -264,6 +321,17 @@ def create(name, sql_dir, project_id, owner, init):
 @click.argument("name")
 @sql_dir_option
 @project_id_option()
+@click.option(
+    "--use_default_dag",
+    "-default",
+    help=(
+        "When selected, the query is scheduled in DAG bqetl_default with"
+        " tier_3, which is the lowest level of service from Data Engineering."
+        " This option will be ignored if also a dag name is specified."
+    ),
+    default=False,
+    is_flag=True,
+)
 @click.option(
     "--dag",
     "-d",
@@ -288,7 +356,9 @@ def create(name, sql_dir, project_id, owner, init):
         "combination of the dataset and table name."
     ),
 )
-def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
+def schedule(
+    name, sql_dir, project_id, use_default_dag, dag, depends_on_past, task_name
+):
     """CLI command for scheduling a query."""
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
 
@@ -309,8 +379,10 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
             click.echo(f"Cannot schedule {query_file}. No metadata.yaml found.")
             continue
 
-        if dag:
+        if dag or use_default_dag:
             # check if DAG already exists
+            if not dag and use_default_dag:
+                dag = DEFAULT_DAG_NAME
             existing_dag = dags.dag_by_name(dag)
             if not existing_dag:
                 click.echo(

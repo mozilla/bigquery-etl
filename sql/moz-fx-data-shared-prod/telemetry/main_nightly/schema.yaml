@@ -14201,6 +14201,36 @@ fields:
     - name: use_counter2_deprecated_size_to_content_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_css_property_math_depth_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_css_property_math_depth_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_init_mouse_event_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_init_mouse_event_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_init_ns_mouse_event_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_init_ns_mouse_event_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_moz_input_source_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_moz_input_source_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_sync_xml_http_request_deprecated_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_sync_xml_http_request_deprecated_page
+      type: STRING
+      mode: NULLABLE
   - name: info
     type: RECORD
     mode: NULLABLE
@@ -29485,6 +29515,36 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_deprecated_size_to_content_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_css_property_math_depth_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_css_property_math_depth_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_init_mouse_event_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_init_mouse_event_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_init_ns_mouse_event_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_init_ns_mouse_event_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_moz_input_source_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_moz_input_source_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_sync_xml_http_request_deprecated_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_sync_xml_http_request_deprecated_page
           type: STRING
           mode: NULLABLE
       - name: keyed_histograms

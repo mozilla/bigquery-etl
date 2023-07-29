@@ -403,6 +403,12 @@ fields:
         is enabled to be displayed.
 
         '
+    - name: top_sites_sponsored_shortcuts
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Tracks if the user has enabled sponsored shortcuts
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

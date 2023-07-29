@@ -10030,6 +10030,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page used SyncXMLHttpRequestDeprecated
+    - name: use_counter2_deprecated_math_ml_deprecated_math_variant_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used MathML_DeprecatedMathVariant
+    - name: use_counter2_deprecated_math_ml_deprecated_math_variant_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used MathML_DeprecatedMathVariant
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -19906,6 +19914,14 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page used SyncXMLHttpRequestDeprecated
+        - name: use_counter2_deprecated_math_ml_deprecated_math_variant_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used MathML_DeprecatedMathVariant
+        - name: use_counter2_deprecated_math_ml_deprecated_math_variant_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used MathML_DeprecatedMathVariant
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

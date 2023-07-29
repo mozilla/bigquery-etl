@@ -261,6 +261,9 @@ fields:
     - name: preferences_recently_visited
       type: BOOLEAN
       mode: NULLABLE
+    - name: top_sites_sponsored_shortcuts
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE

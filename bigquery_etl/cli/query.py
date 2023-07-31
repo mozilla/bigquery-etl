@@ -177,11 +177,10 @@ def create(
     path = Path(sql_dir)
 
     if not no_schedule and not dag and not use_default_dag:
-        click.echo(
+        raise click.ClickException(
             "Please specify the scheduling information or"
             " skip using --no-schedule. "
-            "Run `bqetl query create --help` for more options.",
-            err=True,
+            "Run `bqetl query create --help` for more options."
         )
     else:
         if dataset.endswith("_derived"):

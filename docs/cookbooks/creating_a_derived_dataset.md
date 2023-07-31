@@ -32,13 +32,16 @@ Run:
 In our example:
 
 ```bash
-./bqetl query create org_mozilla_mozregression_derived.mozregression_aggregates
+./bqetl query create org_mozilla_mozregression_derived.mozregression_aggregates --dag bqetl_internal_tooling
 ```
 
-This command does two things:
+This command does three things:
 
 - Generate the template files `metadata.yaml` and `query.sql` representing the query to build the dataset in `sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/mozregression_aggregates_v1`
 - Generate a "view" of the dataset in `sql/moz-fx-data-shared-prod/org_mozilla_mozregression/mozregression_aggregates`.
+- Add the scheduling information in the metadata, required to create a task in Airflow DAG `bqetl_internal_tooling`. Two more options are available for the DAG:
+  `--no-schedule` for queries that run once or that should be scheduled at a later time. The query can be manually scheduled at a later time.
+  `--use_default_dag` for queries that don't belong to a specific DAG, don't require the creation of a new DAG or have a very low business impact, therefore require the lowest service level.
 
 We generate the view to have a stable interface, while allowing the dataset backend to evolve over time. Views are automatically published to the `mozdata` project.
 
@@ -186,7 +189,9 @@ The `--tag impact/tier3` parameter specifies that this DAG is considered "tier 3
 
 ## Scheduling your query
 
-Once again, you access this functionality via the `bqetl` tool:
+The query is automatically scheduled during creation when you define one of the options `--dag`, `--default_dag`.
+
+If the query was created with `no-schedule`, it is possible to manually schedule the query via the `bqetl` tool:
 
 ```bash
 ./bqetl query schedule <dataset>.<table> --dag <dag_name> --task-name <task_name>
@@ -199,7 +204,9 @@ Here is the command for our example. Notice the name of the table as created wit
 
 Note that we are scheduling the generation of the underlying _table_ which is `org_mozilla_mozregression_derived.mozregression_aggregates_v1` rather than the view.
 
-After doing this, you will also want to generate the actual airflow configuration which telemetry-airflow will pick up. Run:
+## Updating the Airflow DAGs
+
+With the query schedule setup, you will want to generate the actual airflow configuration which telemetry-airflow will pick up. Run:
 
 ```bash
 ./bqetl dag generate <dag_name>

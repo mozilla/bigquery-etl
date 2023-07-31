@@ -1,6 +1,7 @@
 import os
 
 import pytest
+import yaml
 
 from bigquery_etl.dryrun import DryRun, Errors
 
@@ -192,3 +193,40 @@ class TestDryRun:
 
         dryrun = DryRun(sqlfile=str(query_file))
         assert dryrun.is_valid()
+
+    def test_validate_for_schema_addition_fails_with_schema_file(self, tmp_query_path):
+        query_file = tmp_query_path / "query.sql"
+        query_file.write_text("SELECT 123 as test_column")
+
+        metadata_file = tmp_query_path / "metadata.yaml"
+        metadata_file.write_text(
+            yaml.dump(
+                {
+                    "friendly_name": "Test Query",
+                    "description": "Test Query description",
+                    "scheduling": {
+                        "dag_name": "bqetl_test",
+                        "arguments": ["--schema_update_option=ALLOW_FIELD_ADDITION"],
+                    },
+                }
+            )
+        )
+
+        schema_file = tmp_query_path / "schema.yaml"
+        schema_file.write_text(
+            yaml.dump(
+                {
+                    "fields": [
+                        {
+                            "mode": "NULLABLE",
+                            "name": "app_version",
+                            "type": "INTEGER",
+                        }
+                    ]
+                }
+            )
+        )
+
+        dryrun = DryRun(sqlfile=str(query_file))
+
+        assert not dryrun.validate_schema()

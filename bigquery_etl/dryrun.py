@@ -382,15 +382,37 @@ class DryRun:
             return True
 
         query_file_path = Path(self.sqlfile)
-        query_schema = Schema.from_json(self.get_schema())
-        if self.errors():
-            # ignore file when there are errors that self.get_schema() did not raise
-            click.echo(f"\t...Ignoring schema validation for {self.sqlfile}")
-            return True
+        query_file_path = Path(self.sqlfile)
         existing_schema_path = query_file_path.parent / SCHEMA_FILE
 
         if not existing_schema_path.is_file():
             click.echo(f"No schema file defined for {query_file_path}", err=True)
+            return True
+
+        try:
+            metadata = Metadata.of_query_file(str(query_file_path))
+            if (
+                metadata.scheduling
+                and "arguments" in metadata.scheduling
+                and (
+                    "--schema_update_option=ALLOW_FIELD_ADDITION"
+                    in metadata.scheduling["arguments"]
+                )
+                and existing_schema_path.exists()
+            ):
+                print(
+                    f"\t...schema.yaml incompatible with argument --schema_update_option=ALLOW_FIELD_ADDITION, "
+                    f"please remove {existing_schema_path} (you can still use it to create the table via `bqetl query "
+                    f"schema deploy`)"
+                )
+                return False
+        except FileNotFoundError:
+            pass
+
+        query_schema = Schema.from_json(self.get_schema())
+        if self.errors():
+            # ignore file when there are errors that self.get_schema() did not raise
+            click.echo(f"\t...Ignoring schema validation for {self.sqlfile}")
             return True
 
         table_name = query_file_path.parent.name

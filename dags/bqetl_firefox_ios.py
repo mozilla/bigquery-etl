@@ -43,6 +43,21 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+    checks__firefox_ios_derived__first_28_day_retention__v1 = bigquery_dq_check(
+        task_id="checks__firefox_ios_derived__first_28_day_retention__v1",
+        source_table="first_28_day_retention_v1",
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kignasiak@mozilla.com",
+        email=[
+            "kignasiak@mozilla.com",
+            "kik@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
     firefox_ios_derived__attributable_clients__v1 = bigquery_etl_query(
         task_id="firefox_ios_derived__attributable_clients__v1",
         destination_table="attributable_clients_v1",
@@ -144,6 +159,14 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    checks__firefox_ios_derived__first_28_day_retention__v1.set_upstream(
+        wait_for_baseline_clients_daily
+    )
+
+    checks__firefox_ios_derived__first_28_day_retention__v1.set_upstream(
+        firefox_ios_derived__first_28_day_retention__v1
     )
 
     firefox_ios_derived__attributable_clients__v1.set_upstream(

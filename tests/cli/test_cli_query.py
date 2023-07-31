@@ -55,7 +55,7 @@ class TestQuery:
     def test_create_query_without_DAG(self, runner):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod")
-            result = runner.invoke(create, ["test.test_query", "--no-schedule"])
+            result = runner.invoke(create, ["test.test_query", "--no_schedule"])
             assert result.exit_code == 0
             assert os.listdir("sql/moz-fx-data-shared-prod") == ["test"]
             assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test")) == [
@@ -72,7 +72,7 @@ class TestQuery:
     def test_create_query_with_default_DAG(self, runner):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod")
-            self.create_test_dag("bqetl_default")
+            self.create_test_dag(dag_name="bqetl_default")
             result = runner.invoke(create, ["test.test_query", "--use_default_dag"])
             assert result.exit_code == 0
             assert os.listdir("sql/moz-fx-data-shared-prod") == ["test"]
@@ -89,7 +89,7 @@ class TestQuery:
 
     def test_create_query_with_DAG_name(self, runner):
         with runner.isolated_filesystem():
-            self.create_test_dag("bqetl_test")
+            self.create_test_dag(dag_name="bqetl_test")
             os.makedirs("sql/moz-fx-data-shared-prod")
             result = runner.invoke(create, ["test.test_query", "--dag=bqetl_test"])
             assert result.exit_code == 0
@@ -208,7 +208,7 @@ class TestQuery:
             ) as f:
                 f.write(yaml.dump(metadata_conf))
 
-            self.create_test_dag("bqetl_test")
+            self.create_test_dag(dag_name="bqetl_test")
 
             result = runner.invoke(
                 schedule, ["telemetry_derived.query_v1", "--dag=bqetl_test"]
@@ -238,7 +238,7 @@ class TestQuery:
             ) as f:
                 f.write(yaml.dump(metadata_conf))
 
-            self.create_test_dag("bqetl_test")
+            self.create_test_dag(dag_name="bqetl_test")
 
             result = runner.invoke(schedule, ["telemetry_derived.query_v1"])
 

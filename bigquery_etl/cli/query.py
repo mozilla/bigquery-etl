@@ -120,7 +120,7 @@ def query(ctx):
 )
 @click.option(
     "--dag",
-    "-dag",
+    "-d",
     help=(
         "Name of the DAG the query should be scheduled under. "
         "To see available DAGs run `bqetl dag info`. "
@@ -141,7 +141,7 @@ def query(ctx):
 )
 @click.option(
     "--no_schedule",
-    "-no-schedule",
+    "--no-schedule",
     help=(
         "Using this option creates the query without scheduling information."
         " Use `bqetl query schedule` to add it manually if required."

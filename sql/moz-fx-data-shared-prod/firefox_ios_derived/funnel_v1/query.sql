@@ -80,23 +80,23 @@ first_28_day_retention_stats AS (
 SELECT
   `date`,
   country,
-  views,
-  downloads,
-  new_profiles,
-  activations,
-  users_active_on_day_0,
-  users_active_on_day_1,
-  users_active_in_week_0,
-  users_active_in_week_1,
-  users_active_in_week_2,
-  users_active_in_week_3,
+  COALESCE(views, 0) AS views,
+  COALESCE(downloads, 0) AS downloads,
+  COALESCE(new_profiles, 0) AS new_profiles,
+  COALESCE(activations, 0) AS activations,
+  COALESCE(users_active_on_day_0, 0) AS users_active_on_day_0,
+  COALESCE(users_active_on_day_1, 0) AS users_active_on_day_1,
+  COALESCE(users_active_in_week_0, 0) AS users_active_in_week_0,
+  COALESCE(users_active_in_week_1, 0) AS users_active_in_week_1,
+  COALESCE(users_active_in_week_2, 0) AS users_active_in_week_2,
+  COALESCE(users_active_in_week_3, 0) AS users_active_in_week_3,
 FROM
   store_stats
-JOIN
+FULL OUTER JOIN
   activations
 USING
   (`date`, country)
-JOIN
+FULL OUTER JOIN
   first_28_day_retention_stats
 USING
   (`date`, country)

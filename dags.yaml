@@ -760,7 +760,7 @@ bqetl_acoustic_contact_export:
     owner: kignasiak@mozilla.com
     start_date: "2021-03-01"
     email: ["telemetry-alerts@mozilla.com", "kignasiak@mozilla.com"]
-    retries: 2
+    retries: 1
     retry_delay: 5m
   tags:
     - impact/tier_3
@@ -775,7 +775,7 @@ bqetl_acoustic_raw_recipient_export:
     owner: kignasiak@mozilla.com
     start_date: "2022-03-01"
     email: ["telemetry-alerts@mozilla.com", "kignasiak@mozilla.com"]
-    retries: 2
+    retries: 1
     retry_delay: 5m
   tags:
     - impact/tier_3

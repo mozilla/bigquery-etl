@@ -21,6 +21,7 @@ owners:
 scheduling:
   dag_name: bqetl_acoustic_contact_export
   date_partition_parameter: submission_date
+  retries: 0
   referenced_tables:
     - [
       'moz-fx-data-bq-fivetran',

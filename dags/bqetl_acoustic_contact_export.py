@@ -78,6 +78,7 @@ with DAG(
         email=["kignasiak@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        retries=0,
     )
 
     acoustic__contact__v1.set_upstream(acoustic__contact_raw__v1)

@@ -34,7 +34,7 @@ default_args = {
     "retry_delay": datetime.timedelta(seconds=300),
     "email_on_failure": True,
     "email_on_retry": True,
-    "retries": 2,
+    "retries": 0,
 }
 
 tags = ["impact/tier_3", "repo/bigquery-etl"]

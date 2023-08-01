@@ -541,6 +541,9 @@ fields:
     - name: home_screen_standard_homepage_view_count
       type: INTEGER
       mode: NULLABLE
+    - name: fog_inits_during_shutdown
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

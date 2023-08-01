@@ -84,7 +84,8 @@ SELECT
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.dotprint_requested,
       metrics.counter.dotprint_android_dialog_requested,
-      metrics.counter.translations_requests_count
+      metrics.counter.translations_requests_count,
+      metrics.counter.fog_inits_during_shutdown
     ) AS counter,
     metrics.datetime,
     STRUCT(
@@ -241,7 +242,8 @@ SELECT
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.dotprint_requested,
       metrics.counter.dotprint_android_dialog_requested,
-      metrics.counter.translations_requests_count
+      metrics.counter.translations_requests_count,
+      metrics.counter.fog_inits_during_shutdown
     ) AS counter,
     metrics.datetime,
     STRUCT(

@@ -346,6 +346,9 @@ fields:
     - name: translations_requests_count
       type: INTEGER
       mode: NULLABLE
+    - name: fog_inits_during_shutdown
+      type: INTEGER
+      mode: NULLABLE
   - name: datetime
     type: RECORD
     mode: NULLABLE

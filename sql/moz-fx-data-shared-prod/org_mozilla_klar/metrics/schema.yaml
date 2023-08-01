@@ -666,6 +666,14 @@ fields:
       description: 'The count of translation requests.
 
         '
+    - name: fog_inits_during_shutdown
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times init had to be called during shutdown.
+
+        Should never have a value for any session long enough to grow idle.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE

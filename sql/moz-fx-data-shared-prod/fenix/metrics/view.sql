@@ -307,7 +307,8 @@ SELECT
       metrics.counter.logins_deleted,
       metrics.counter.logins_modified,
       metrics.counter.logins_saved,
-      metrics.counter.home_screen_standard_homepage_view_count
+      metrics.counter.home_screen_standard_homepage_view_count,
+      metrics.counter.fog_inits_during_shutdown
     ) AS counter,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -784,7 +785,8 @@ SELECT
       metrics.counter.logins_deleted,
       metrics.counter.logins_modified,
       metrics.counter.logins_saved,
-      metrics.counter.home_screen_standard_homepage_view_count
+      metrics.counter.home_screen_standard_homepage_view_count,
+      metrics.counter.fog_inits_during_shutdown
     ) AS counter,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,

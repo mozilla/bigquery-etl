@@ -25,7 +25,11 @@ WITH _current AS (
     firefox_accounts_derived.fxa_users_services_devices_daily_v1
   WHERE
     DATE(`timestamp`) = @submission_date
-),
+    AND event_type IN (
+      'fxa_activity - access_token_checked',
+      'fxa_activity - access_token_created',
+      'fxa_activity - cert_signed'
+    ),
   --
 _previous AS (
   SELECT

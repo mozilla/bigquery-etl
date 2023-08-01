@@ -4,7 +4,7 @@ black==23.7.0
 cattrs==23.1.2
 click==8.1.6
 exceptiongroup==1.1.2 # for backwards compatibility with python < 3.11
-flake8<5 # pytest-flake8 does not support flake8 5+
+flake8<7 # pytest-flake8 does not support flake8 5+
 gcsfs==2023.6.0
 gcloud==0.18.3
 gitpython==3.1.32

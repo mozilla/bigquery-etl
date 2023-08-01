@@ -53,6 +53,7 @@ WITH events_unnested AS (
     SPLIT(mozfun.map.get_key(extra, "results"), ',') AS results,
     mozfun.map.get_key(extra, "selected_result") AS selected_results,
     mozfun.map.get_key(extra, "n_chars") AS number_of_chars_typed,
+    mozfun.map.get_key(extra, "n_results") AS num_total_results,
     metrics,
     metrics.uuid.legacy_telemetry_client_id AS legacy_telemetry_client_id,
   FROM
@@ -79,6 +80,7 @@ events_summary AS (
     END AS engaged_result_type,
     result_type,
     number_of_chars_typed,
+    num_total_results,
     CASE
       WHEN search_session_type = 'annoyance'
         THEN selected_results
@@ -126,7 +128,8 @@ events_summary AS (
     result_type,
     selected_results,
     search_session_type,
-    number_of_chars_typed
+    number_of_chars_typed,
+    num_total_results
 ),
 legacy_profile_info AS (
   SELECT
@@ -178,6 +181,7 @@ SELECT
   annoyance_signal_type,
   result_type AS first_result_type,
   number_of_chars_typed,
+  num_total_results,
   num_search_engine_impressions,
   num_history_impressions,
   num_wikipedia_impressions,

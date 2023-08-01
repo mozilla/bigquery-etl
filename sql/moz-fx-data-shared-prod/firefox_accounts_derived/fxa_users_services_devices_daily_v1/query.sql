@@ -2,7 +2,7 @@ WITH fxa_events AS (
   SELECT
     `timestamp`,
     user_id,
-    IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service) AS service,
+    IF(`service` IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', `service`) AS `service`,
     device_id,
     os_name,
     flow_id,
@@ -30,20 +30,13 @@ WITH fxa_events AS (
     AND fxa_log IN ('content', 'auth', 'oauth')
     -- re-using the filter from users_services_daily_v1 for consistency across the models
     -- at some point in the future we should re-evaluate this list
-    AND event_type NOT IN ( --
-      'fxa_email - bounced',
-      'fxa_email - click',
-      'fxa_email - sent',
-      'fxa_reg - password_blocked',
-      'fxa_reg - password_common',
-      'fxa_reg - password_enrolled',
-      'fxa_reg - password_missing',
-      'fxa_sms - sent',
-      'mktg - email_click',
-      'mktg - email_open',
-      'mktg - email_sent',
-      'sync - repair_success',
-      'sync - repair_triggered'
+    AND event_type IN (
+      'fxa_activity - access_token_checked',
+      'fxa_activity - access_token_created',
+      'fxa_activity - cert_signed',
+      -- registration and login events used when deriving the first_seen table
+      'fxa_reg - complete',
+      'fxa_login - complete'
     )
 ),
 entrypoints AS (
@@ -147,13 +140,13 @@ WHERE
   AND flow_id IS NOT NULL
   -- if either service or device_id is null then the record
   -- is useless for this model
-  AND service IS NOT NULL
+  AND `service` IS NOT NULL
   AND device_id IS NOT NULL
 QUALIFY
   ROW_NUMBER() OVER (
     PARTITION BY
       user_id,
-      service,
+      `service`,
       device_id
     ORDER BY
       `timestamp` ASC

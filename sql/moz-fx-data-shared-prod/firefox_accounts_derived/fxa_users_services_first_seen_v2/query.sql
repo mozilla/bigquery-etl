@@ -1,25 +1,3 @@
--- contains_qualified_fxa_activity_event
--- Expects an array of event_types and service name
--- Iterates and checks if an event_type, service combination
--- should be considered when determining if this is the first
--- time it has been observed.
--- Example usage:
--- contains_qualified_fxa_activity_event(['fxa_activity'], NULL),  # returns TRUE
--- contains_qualified_fxa_activity_event(['fxa_activity'], 'firefox-ios'),  # returns TRUE
--- contains_qualified_fxa_activity_event(['fxa_login - complete'], NULL),  # returns FALSE
--- contains_qualified_fxa_activity_event(['fxa_login - complete'], 'firefox-ios'),  # returns TRUE
-CREATE TEMP FUNCTION contains_qualified_fxa_activity_event(events ANY TYPE, `service` ANY TYPE) AS (
-  EXISTS(
-    SELECT
-      event_type
-    FROM
-      UNNEST(events) AS event_type
-    WHERE
-      event_type IN ('fxa_login - complete', 'fxa_reg - complete')
-      OR (event_type LIKE 'fxa_activity%')
-  )
-);
-
 WITH fxa_users_services_daily_new_entries AS (
   SELECT
     user_id,
@@ -35,17 +13,16 @@ WITH fxa_users_services_daily_new_entries AS (
     user_service_utm_info,
     registered,
   FROM
-    `firefox_accounts_derived.fxa_users_services_daily_v2`
+    firefox_accounts_derived.fxa_users_services_daily_v2
   WHERE
     submission_date = @submission_date
-    AND contains_qualified_fxa_activity_event(service_events, `service`)
 ),
 existing_entries AS (
   SELECT
     user_id,
     `service`,
   FROM
-    `firefox_accounts_derived.fxa_users_services_first_seen_v2`
+    firefox_accounts_derived.fxa_users_services_first_seen_v2
   WHERE
     DATE(submission_date) < @submission_date
 )

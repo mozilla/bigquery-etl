@@ -1,0 +1,12 @@
+friendly_name: Pocket
+# yamllint disable rule:line-length
+description: |-
+  User-facing views related to Pocket
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+  - workgroup:pocket/prefect

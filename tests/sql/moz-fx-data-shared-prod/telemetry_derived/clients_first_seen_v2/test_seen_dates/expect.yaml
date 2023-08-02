@@ -6,7 +6,7 @@
   normalized_channel: release
   metadata:
     first_seen_date__source_ping: new_profile
-    reported_main_ping: false
+    reported_main_ping: true
     reported_new_profile_ping: true
     reported_shutdown_ping: false
 - client_id: client-2
@@ -38,4 +38,4 @@
     first_seen_date__source_ping: new_profile
     reported_new_profile_ping: true
     reported_main_ping: true
-    reported_shutdown_ping: false
+    reported_shutdown_ping: true

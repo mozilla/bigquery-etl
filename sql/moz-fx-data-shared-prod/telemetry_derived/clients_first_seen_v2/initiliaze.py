@@ -127,7 +127,7 @@ PARTITION_QUERY = """
       FROM
         `moz-fx-data-shared-prod.telemetry.new_profile`
       WHERE
-          DATE(submission_timestamp) >= '2017-06-26'
+          DATE(submission_timestamp) >= '2010-01-01'
           AND sample_id = {sample_id}
       GROUP BY
         client_id,
@@ -242,7 +242,7 @@ PARTITION_QUERY = """
       FROM
         `moz-fx-data-shared-prod.telemetry.first_shutdown`
       WHERE
-          DATE(submission_timestamp) >= '2018-10-30'
+          DATE(submission_timestamp) >= '2010-01-01'
           AND sample_id = {sample_id}
       GROUP BY
         client_id,
@@ -309,7 +309,7 @@ PARTITION_QUERY = """
       FROM
         `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
       WHERE
-          submission_date >= '2016-03-12'
+          submission_date >= '2010-01-01'
           AND sample_id = {sample_id}
       GROUP BY
         client_id,
@@ -591,38 +591,19 @@ PARTITION_QUERY = """
         client_id IS NOT NULL
       GROUP BY
         client_id
-    ),
-    _current_with_second_date AS (
-      SELECT
+    )
+    SELECT
         _current.client_id,
         _current.sample_id,
         _current.first_seen_date,
         unioned_second_dates.second_seen_date AS second_seen_date,
         _current.* EXCEPT (client_id, sample_id, first_seen_date)
-      FROM
-        _current
-      LEFT JOIN
-        unioned_second_dates
-      USING
-        (client_id)
-    ),
-    _previous AS (
-      SELECT
-        *
-      FROM
-        `moz-fx-data-shared-prod.analysis.clients_first_seen_v2_full`
-    )
-    SELECT
-      IF(_previous.client_id IS NULL, _current, _previous).* REPLACE (
-        COALESCE(_previous.second_seen_date, _current.second_seen_date) AS second_seen_date
-      )
     FROM
-      _previous
-    FULL JOIN
-      _current_with_second_date _current
+      _current
+    LEFT JOIN
+      unioned_second_dates
     USING
       (client_id)
-    ;
 """
 
 parser = ArgumentParser()

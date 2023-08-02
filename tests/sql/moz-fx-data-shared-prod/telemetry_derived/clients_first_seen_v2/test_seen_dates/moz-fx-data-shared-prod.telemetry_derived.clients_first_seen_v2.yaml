@@ -15,7 +15,7 @@
   metadata:
     first_seen_date__source_ping: new_profile
     reported_new_profile_ping: true
-    reported_shutdown_ping: true
+    reported_shutdown_ping: false
 - client_id: client-4
   sample_id: 40
   first_seen_date: 2022-06-29

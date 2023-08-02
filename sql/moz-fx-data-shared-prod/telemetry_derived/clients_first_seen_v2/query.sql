@@ -605,7 +605,33 @@ SELECT
         AND _current.client_id IS NOT NULL,
         @submission_date,
         _previous.second_seen_date
-      ) AS second_seen_date
+      ) AS second_seen_date,
+      (
+        SELECT AS STRUCT
+          IF(_previous.client_id IS NULL, _current, _previous).metadata.* REPLACE (
+            IF(
+              _previous.client_id IS NULL
+              OR _previous.metadata.reported_main_ping IS FALSE
+              AND _current.metadata.reported_main_ping IS TRUE,
+              _current.metadata.reported_main_ping,
+              _previous.metadata.reported_main_ping
+            ) AS reported_main_ping,
+            IF(
+              _previous.client_id IS NULL
+              OR _previous.metadata.reported_new_profile_ping IS FALSE
+              AND _current.metadata.reported_new_profile_ping IS TRUE,
+              _current.metadata.reported_new_profile_ping,
+              _previous.metadata.reported_new_profile_ping
+            ) AS reported_new_profile_ping,
+            IF(
+              _previous.client_id IS NULL
+              OR _previous.metadata.reported_shutdown_ping IS FALSE
+              AND _current.metadata.reported_shutdown_ping IS TRUE,
+              _current.metadata.reported_shutdown_ping,
+              _previous.metadata.reported_shutdown_ping
+            ) AS reported_shutdown_ping
+          )
+      ) AS metadata
     {% endif %}
   )
 FROM

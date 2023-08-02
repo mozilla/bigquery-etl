@@ -1,14 +1,11 @@
----
-friendly_name: Historical Pings for `activity-stream/impression-stats`
+friendly_name: Historical Pings for `activity-stream/on-save-recs`
 description: |-
   A historical view of pings sent for the
-  `activity-stream/impression-stats`
+  `activity-stream/on-save-recs`
   document type.
-
   This view is guaranteed to contain only complete days
   (per `submission_timestamp`)
   and to contain only one row per distinct `document_id` within a given date.
-
   Clustering fields: `normalized_channel`, `sample_id`
 labels:
   authorized: true

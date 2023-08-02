@@ -1358,6 +1358,10 @@ with DAG(
     stripe_external__subscriptions_changelog__v1.set_upstream(stripe_external__plan__v1)
 
     stripe_external__subscriptions_changelog__v1.set_upstream(
+        stripe_external__product__v1
+    )
+
+    stripe_external__subscriptions_changelog__v1.set_upstream(
         stripe_external__subscription_discount__v1
     )
 
@@ -1461,6 +1465,10 @@ with DAG(
 
     subscription_platform_derived__stripe_subscriptions_revised_changelog__v1.set_upstream(
         stripe_external__plan__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions_revised_changelog__v1.set_upstream(
+        stripe_external__product__v1
     )
 
     subscription_platform_derived__stripe_subscriptions_revised_changelog__v1.set_upstream(

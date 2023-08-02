@@ -53,30 +53,36 @@ activations AS (
   WHERE
     submission_date >= '2022-01-01'
     AND first_seen_date >= '2022-01-01'
+     -- below filter required due to untrusted devices anomaly,
+     -- more information can be found in this bug: https://bugzilla.mozilla.org/show_bug.cgi?id=1846554
     AND NOT (
       app_display_version = '107.2'
       AND submission_date >= '2023-02-01'
-    ) -- incident filter  #TODO: is there an additional ticket or bug we can reference here?
-  GROUP BY
-    `date`,
-    country
-),
-first_28_day_retention_stats AS (
-  SELECT
-    first_seen_date AS `date`,
-    country,
-    COUNTIF(retention_first_28_days.day_0.active_on_metric_date) AS users_active_on_day_0,
-    COUNTIF(active_on_day_1) AS users_active_on_day_1,
-    COUNTIF(retention_first_28_days.day_27.active_in_week_0) AS users_active_in_week_0,
-    COUNTIF(retention_first_28_days.day_27.active_in_week_1) AS users_active_in_week_1,
-    COUNTIF(retention_first_28_days.day_27.active_in_week_2) AS users_active_in_week_2,
-    COUNTIF(retention_first_28_days.day_27.active_in_week_3) AS users_active_in_week_3,
-  FROM
-    firefox_ios_derived.firefox_ios_first_28_day_retention_v1
+    )
   GROUP BY
     `date`,
     country
 )
+--
+-- This is being left out for now, as we still need to discuss
+-- and come to an agreement around retention, how to measure it, etc.
+--
+-- , first_28_day_retention_stats AS (
+--   SELECT
+--     first_seen_date AS `date`,
+--     country,
+--     COUNTIF(retention_first_28_days.day_0.active_on_metric_date) AS users_active_on_day_0,
+--     COUNTIF(active_on_day_1) AS users_active_on_day_1,
+--     COUNTIF(retention_first_28_days.day_27.active_in_week_0) AS users_active_in_week_0,
+--     COUNTIF(retention_first_28_days.day_27.active_in_week_1) AS users_active_in_week_1,
+--     COUNTIF(retention_first_28_days.day_27.active_in_week_2) AS users_active_in_week_2,
+--     COUNTIF(retention_first_28_days.day_27.active_in_week_3) AS users_active_in_week_3,
+--   FROM
+--     firefox_ios_derived.firefox_ios_first_28_day_retention_v1
+--   GROUP BY
+--     `date`,
+--     country
+-- )
 SELECT
   `date`,
   country,
@@ -84,19 +90,19 @@ SELECT
   COALESCE(downloads, 0) AS downloads,
   COALESCE(new_profiles, 0) AS new_profiles,
   COALESCE(activations, 0) AS activations,
-  COALESCE(users_active_on_day_0, 0) AS users_active_on_day_0,
-  COALESCE(users_active_on_day_1, 0) AS users_active_on_day_1,
-  COALESCE(users_active_in_week_0, 0) AS users_active_in_week_0,
-  COALESCE(users_active_in_week_1, 0) AS users_active_in_week_1,
-  COALESCE(users_active_in_week_2, 0) AS users_active_in_week_2,
-  COALESCE(users_active_in_week_3, 0) AS users_active_in_week_3,
+  -- COALESCE(users_active_on_day_0, 0) AS users_active_on_day_0,
+  -- COALESCE(users_active_on_day_1, 0) AS users_active_on_day_1,
+  -- COALESCE(users_active_in_week_0, 0) AS users_active_in_week_0,
+  -- COALESCE(users_active_in_week_1, 0) AS users_active_in_week_1,
+  -- COALESCE(users_active_in_week_2, 0) AS users_active_in_week_2,
+  -- COALESCE(users_active_in_week_3, 0) AS users_active_in_week_3,
 FROM
   store_stats
 FULL OUTER JOIN
   activations
 USING
   (`date`, country)
-FULL OUTER JOIN
-  first_28_day_retention_stats
-USING
-  (`date`, country)
+-- FULL OUTER JOIN
+--   first_28_day_retention_stats
+-- USING
+--   (`date`, country)

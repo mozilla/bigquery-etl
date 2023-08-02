@@ -409,6 +409,14 @@ fields:
       description: 'Tracks if the user has enabled sponsored shortcuts
 
         '
+    - name: bookmarks_has_mobile_bookmarks
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean that indicates if the user has bookmarks
+
+        in the mobile folder.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -1463,6 +1471,8 @@ fields:
         * Awesomebar results
 
         * Bookmarks Panel
+
+        * Top sites
 
         '
     - name: bookmarks_view_list
@@ -2809,6 +2819,14 @@ fields:
         currently has open. This is reported when the user backgrounds
 
         the app.
+
+        '
+    - name: bookmarks_mobile_bookmarks_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A quantity that indicates how many bookmarks a user
+
+        has in the mobile folder.
 
         '
   - name: rate

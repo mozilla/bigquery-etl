@@ -264,6 +264,9 @@ fields:
     - name: top_sites_sponsored_shortcuts
       type: BOOLEAN
       mode: NULLABLE
+    - name: bookmarks_has_mobile_bookmarks
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -1621,6 +1624,9 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: tabs_inactive_tabs_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: bookmarks_mobile_bookmarks_count
       type: INTEGER
       mode: NULLABLE
   - name: rate

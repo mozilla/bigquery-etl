@@ -1,6 +1,6 @@
 friendly_name: Funnel iOS
 description: |
-  Derived dataset for supporting funnel analysis (iOS).
+  Derived dataset for supporting (Apple) app store funnel analysis (iOS).
 owners:
 - kignasiak@mozilla.com
 labels:

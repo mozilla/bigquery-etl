@@ -35,39 +35,3 @@ fields:
   type: INTEGER
   description: |
     Number of users that ended up activating that were first seen on the date.
-
-- mode: NULLABLE
-  name: users_active_on_day_0
-  type: INTEGER
-  description: |
-    Number of users that we saw on the date.
-
-- mode: NULLABLE
-  name: users_active_on_day_1
-  type: INTEGER
-  description: |
-    Number of users that we saw one day after they were first seen.
-
-- mode: NULLABLE
-  name: users_active_in_week_0
-  type: INTEGER
-  description: |
-    Number of users that we saw in the same week (days 0 - 6) since they were first seen.
-
-- mode: NULLABLE
-  name: users_active_in_week_1
-  type: INTEGER
-  description: |
-    Number of users that we saw in the following week (days 7 - 14) after they were first seen.
-
-- mode: NULLABLE
-  name: users_active_in_week_2
-  type: INTEGER
-  description: |
-    Number of users that we saw in the second week (days 14 - 21) since they were first seen.
-
-- mode: NULLABLE
-  name: users_active_in_week_3
-  type: INTEGER
-  description: |
-    Number of users that we saw in the third week (days 21 - 28) since they were first seen.

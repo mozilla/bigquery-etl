@@ -1,0 +1,38 @@
+fields:
+- name: id
+  type: STRING
+  mode: NULLABLE
+  description: Customer ID.
+- name: address
+  type: RECORD
+  mode: NULLABLE
+  description: The customer's address.
+  fields:
+  - name: country
+    type: STRING
+    mode: NULLABLE
+    description: Two-letter country code (ISO 3166-1 alpha-2).
+  - name: postal_code
+    type: STRING
+    mode: NULLABLE
+    description: ZIP or postal code.
+  - name: state
+    type: STRING
+    mode: NULLABLE
+    description: State, county, province, or region.
+- name: created
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time at which the customer was created.
+- name: is_deleted
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the customer is deleted.
+- name: metadata
+  type: JSON
+  mode: NULLABLE
+  description: 'Set of key-value pairs attached to the customer, stored as a JSON
+    object.
+
+    The original `userid` metadata values were not preserved, only the SHA256 hashes
+    of those values, which are stored here under the key `userid_sha256`.'

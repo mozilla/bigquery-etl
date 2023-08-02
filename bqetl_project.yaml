@@ -98,6 +98,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_apple_subscriptions_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_google_subscriptions_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_stripe_subscriptions_history_v1/query.sql
+  - sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_customers_revised_changelog_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_revised_changelog_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/query.sql
   - sql/moz-fx-data-shared-prod/stripe/itemized_payout_reconciliation/view.sql
@@ -220,11 +221,13 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_bucket_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_non_norm_histogram_bucket_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/glam_client_probe_counts_extract_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/client_probe_counts/view.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/glam_sample_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/glam_user_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/scalar_percentiles_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/histogram_percentiles_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_scalar_probe_counts_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry/client_probe_counts/view.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_etl_sql_run_check_v1/query.sql
   # Dataset sql/glam-fenix-dev:glam_etl was not found
   - sql/glam-fenix-dev/glam_etl/**/*.sql
@@ -295,6 +298,7 @@ format:
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_bucket_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_non_norm_histogram_bucket_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_scalar_probe_counts_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry/client_probe_counts/view.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_daily_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_last_seen_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_last_seen_v1/query.sql

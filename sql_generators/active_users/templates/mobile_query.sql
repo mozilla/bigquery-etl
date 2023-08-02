@@ -169,9 +169,48 @@ todays_metrics AS (
   FROM
     baseline_with_searches
 ),
+attribution_data AS (
+  SELECT
+    bws.client_id,
+    att_fenix.adjust_network,
+    att_fenix.install_source,
+    CAST(NULL AS STRING) adjust_ad_group,
+    CAST(NULL AS STRING) adjust_campaign,
+    CAST(NULL AS STRING) adjust_creative
+  FROM
+    baseline_with_searches bws
+  LEFT JOIN
+    fenix.firefox_android_clients AS att_fenix
+  USING
+    (client_id)
+  UNION ALL
+  SELECT
+    bws.client_id,
+    att_ffx_ios.adjust_network,
+    CAST(NULL AS STRING) AS install_source,
+    adjust_ad_group,
+    adjust_campaign,
+    adjust_creative
+  FROM
+    baseline_with_searches bws
+  LEFT JOIN
+    firefox_ios.firefox_ios_clients AS att_ffx_ios
+  USING
+    (client_id)
+),
+today_metrics_attr AS (
+  SELECT
+    *
+  FROM
+    todays_metrics
+  LEFT JOIN
+    attribution_data
+  USING
+    (client_id)
+),
 todays_metrics_enriched AS (
   SELECT
-    todays_metrics.* EXCEPT (locale),
+    today_metrics_attr.* EXCEPT (locale),
     CASE
       WHEN locale IS NOT NULL
         AND languages.language_name IS NULL
@@ -179,11 +218,11 @@ todays_metrics_enriched AS (
       ELSE languages.language_name
     END AS language_name,
   FROM
-    todays_metrics
+    today_metrics_attr
   LEFT JOIN
     `mozdata.static.csa_gblmkt_languages` AS languages
   ON
-    todays_metrics.locale = languages.code
+    today_metrics_attr.locale = languages.code
 )
 SELECT
   todays_metrics_enriched.* EXCEPT (
@@ -227,4 +266,9 @@ GROUP BY
   os_version_major,
   os_version_minor,
   submission_date,
-  segment
+  segment,
+  adjust_network,
+  install_source,
+  adjust_ad_group,
+  adjust_campaign,
+  adjust_creative

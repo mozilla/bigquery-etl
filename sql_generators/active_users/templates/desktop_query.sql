@@ -46,9 +46,25 @@ WITH todays_metrics AS (
   WHERE
     submission_date = @submission_date
 ),
+todays_metrics_attr AS (
+  SELECT
+    todays_metrics.*,
+    attribution_campaign,
+    attribution_content,
+    attribution_experiment,
+    attribution_variation
+  FROM
+    todays_metrics
+  LEFT JOIN
+    `moz-fx-data-shared-prod.telemetry.unified_metrics` AS unified_metrics
+  USING
+    (client_id)
+  WHERE
+    unified_metrics.submission_date = @submission_date
+),
 todays_metrics_enriched AS (
   SELECT
-    todays_metrics.* EXCEPT (locale),
+    todays_metrics_attr.* EXCEPT (locale),
     CASE
       WHEN locale IS NOT NULL
         AND languages.language_name IS NULL
@@ -56,11 +72,11 @@ todays_metrics_enriched AS (
       ELSE languages.language_name
     END AS language_name,
   FROM
-    todays_metrics
+    todays_metrics_attr
   LEFT JOIN
     `mozdata.static.csa_gblmkt_languages` AS languages
   ON
-    todays_metrics.locale = languages.code
+    todays_metrics_attr.locale = languages.code
 )
 SELECT
   todays_metrics_enriched.* EXCEPT (
@@ -107,4 +123,8 @@ GROUP BY
   os_version_major,
   os_version_minor,
   submission_date,
-  segment
+  segment,
+  attribution_campaign,
+  attribution_content,
+  attribution_experiment,
+  attribution_variation

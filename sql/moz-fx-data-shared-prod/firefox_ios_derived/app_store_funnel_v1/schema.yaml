@@ -19,10 +19,22 @@ fields:
     Number of Firefox iOS app views in the Apple Store.
 
 - mode: NULLABLE
-  name: downloads
+  name: total_downloads
   type: INTEGER
   description: |
-    Number of downloads of the Firefox iOS app from the Apple Store.
+    Total number of downloads of the Firefox iOS app from the Apple Store.
+
+- mode: NULLABLE
+  name: first_time_downloads
+  type: INTEGER
+  description: |
+    Number of first time downloads of the Firefox iOS app from the Apple Store.
+
+- mode: NULLABLE
+  name: redownloads
+  type: INTEGER
+  description: |
+    Number of redownloads of the Firefox iOS app from the Apple Store.
 
 - mode: NULLABLE
   name: new_profiles

@@ -1,0 +1,49 @@
+fields:
+
+- mode: NULLABLE
+  name: date
+  type: DATE
+  description: |
+    Date of when the user was first seen.
+
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: |
+    Dimension by which the numeric values are grouped.
+
+- mode: NULLABLE
+  name: views
+  type: INTEGER
+  description: |
+    Number of Firefox iOS app views in the Apple Store.
+
+- mode: NULLABLE
+  name: total_downloads
+  type: INTEGER
+  description: |
+    Total number of downloads of the Firefox iOS app from the Apple Store.
+
+- mode: NULLABLE
+  name: first_time_downloads
+  type: INTEGER
+  description: |
+    Number of first time downloads of the Firefox iOS app from the Apple Store.
+
+- mode: NULLABLE
+  name: redownloads
+  type: INTEGER
+  description: |
+    Number of redownloads of the Firefox iOS app from the Apple Store.
+
+- mode: NULLABLE
+  name: new_profiles
+  type: INTEGER
+  description: |
+    Number of new profiles on the date.
+
+- mode: NULLABLE
+  name: activations
+  type: INTEGER
+  description: |
+    Number of users that ended up activating that were first seen on the date.

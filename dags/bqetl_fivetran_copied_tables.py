@@ -56,6 +56,20 @@ with DAG(
         task_concurrency=1,
     )
 
+    with TaskGroup(
+        "app_store_external__firefox_app_store_territory_source_type_report__v1_external"
+    ) as app_store_external__firefox_app_store_territory_source_type_report__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_firefox_ios__wait_for_app_store_external__firefox_app_store_territory_source_type_report__v1",
+            external_dag_id="bqetl_firefox_ios",
+            external_task_id="wait_for_app_store_external__firefox_app_store_territory_source_type_report__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        app_store_external__firefox_app_store_territory_source_type_report__v1_external.set_upstream(
+            app_store_external__firefox_app_store_territory_source_type_report__v1
+        )
+
     app_store_external__firefox_downloads_territory_source_type_report__v1 = bigquery_etl_query(
         task_id="app_store_external__firefox_downloads_territory_source_type_report__v1",
         destination_table="firefox_downloads_territory_source_type_report_v1",
@@ -67,6 +81,20 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
     )
+
+    with TaskGroup(
+        "app_store_external__firefox_downloads_territory_source_type_report__v1_external"
+    ) as app_store_external__firefox_downloads_territory_source_type_report__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_firefox_ios__wait_for_app_store_external__firefox_downloads_territory_source_type_report__v1",
+            external_dag_id="bqetl_firefox_ios",
+            external_task_id="wait_for_app_store_external__firefox_downloads_territory_source_type_report__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        app_store_external__firefox_downloads_territory_source_type_report__v1_external.set_upstream(
+            app_store_external__firefox_downloads_territory_source_type_report__v1
+        )
 
     app_store_external__firefox_usage_territory_source_type_report__v1 = bigquery_etl_query(
         task_id="app_store_external__firefox_usage_territory_source_type_report__v1",

@@ -127,7 +127,7 @@ with DAG(
 
     firefox_desktop_active_users_aggregates = bigquery_etl_query(
         task_id="firefox_desktop_active_users_aggregates",
-        destination_table='active_users_aggregates_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="active_users_aggregates_v1",
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -136,9 +136,8 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     firefox_ios_active_users_aggregates = bigquery_etl_query(
@@ -320,9 +319,6 @@ with DAG(
 
     firefox_desktop_active_users_aggregates.set_upstream(
         wait_for_telemetry_derived__clients_last_seen__v1
-    )
-    firefox_desktop_active_users_aggregates.set_upstream(
-        wait_for_telemetry_derived__unified_metrics__v1
     )
 
     firefox_ios_active_users_aggregates.set_upstream(wait_for_clients_last_seen_joined)

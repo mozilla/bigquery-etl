@@ -36,6 +36,10 @@ WITH todays_metrics AS (
     attribution.medium AS attribution_medium,
     attribution.medium IS NOT NULL
     OR attribution.source IS NOT NULL AS attributed,
+    attribution.campaign AS attribution_campaign,
+    attribution.content AS attribution_content,
+    attribution.experiment AS attribution_experiment,
+    attribution.variation AS attribution_variation,
     ad_clicks_count_all AS ad_click,
     search_count_organic AS organic_search_count,
     search_count_all AS search_count,
@@ -46,25 +50,9 @@ WITH todays_metrics AS (
   WHERE
     submission_date = @submission_date
 ),
-todays_metrics_attr AS (
-  SELECT
-    todays_metrics.*,
-    attribution_campaign,
-    attribution_content,
-    attribution_experiment,
-    attribution_variation
-  FROM
-    todays_metrics
-  LEFT JOIN
-    `moz-fx-data-shared-prod.telemetry.unified_metrics` AS unified_metrics
-  USING
-    (client_id)
-  WHERE
-    unified_metrics.submission_date = @submission_date
-),
 todays_metrics_enriched AS (
   SELECT
-    todays_metrics_attr.* EXCEPT (locale),
+    todays_metrics.* EXCEPT (locale),
     CASE
       WHEN locale IS NOT NULL
         AND languages.language_name IS NULL
@@ -72,11 +60,11 @@ todays_metrics_enriched AS (
       ELSE languages.language_name
     END AS language_name,
   FROM
-    todays_metrics_attr
+    todays_metrics
   LEFT JOIN
     `mozdata.static.csa_gblmkt_languages` AS languages
   ON
-    todays_metrics_attr.locale = languages.code
+    todays_metrics.locale = languages.code
 )
 SELECT
   todays_metrics_enriched.* EXCEPT (

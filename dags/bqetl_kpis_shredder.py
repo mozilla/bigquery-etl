@@ -121,20 +121,6 @@ with DAG(
     fenix_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_clients_last_seen_joined
     )
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    fenix_active_users_aggregates_for_deletion_requests.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
     wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
         task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
         external_dag_id="bqetl_mobile_search",
@@ -154,9 +140,6 @@ with DAG(
         wait_for_clients_last_seen_joined
     )
     firefox_ios_active_users_aggregates_for_deletion_requests.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-    firefox_ios_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )
 
@@ -164,17 +147,11 @@ with DAG(
         wait_for_clients_last_seen_joined
     )
     focus_ios_active_users_aggregates_for_deletion_requests.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-    focus_ios_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )
 
     klar_ios_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_clients_last_seen_joined
-    )
-    klar_ios_active_users_aggregates_for_deletion_requests.set_upstream(
-        wait_for_copy_deduplicate_all
     )
     klar_ios_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1

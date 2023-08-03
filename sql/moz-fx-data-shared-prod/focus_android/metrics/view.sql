@@ -159,7 +159,9 @@ SELECT
       metrics.string.browser_install_source,
       metrics.string.geckoview_validation_build_id,
       metrics.string.geckoview_validation_version,
-      metrics.string.blocklist_mlbf_source
+      metrics.string.blocklist_mlbf_source,
+      metrics.string.extensions_quarantined_domains_listhash,
+      metrics.string.extensions_quarantined_domains_remotehash
     ) AS string,
     metrics.quantity,
     metrics.custom_distribution,
@@ -317,7 +319,9 @@ SELECT
       metrics.string.browser_install_source,
       metrics.string.geckoview_validation_build_id,
       metrics.string.geckoview_validation_version,
-      metrics.string.blocklist_mlbf_source
+      metrics.string.blocklist_mlbf_source,
+      metrics.string.extensions_quarantined_domains_listhash,
+      metrics.string.extensions_quarantined_domains_remotehash
     ) AS string,
     metrics.quantity,
     metrics.custom_distribution,

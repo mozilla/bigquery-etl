@@ -1139,6 +1139,12 @@ fields:
     - name: blocklist_mlbf_source
       type: STRING
       mode: NULLABLE
+    - name: extensions_quarantined_domains_listhash
+      type: STRING
+      mode: NULLABLE
+    - name: extensions_quarantined_domains_remotehash
+      type: STRING
+      mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE

@@ -1892,6 +1892,22 @@ fields:
         if the blocklist is disabled via preferences or enterprise policies.
 
         '
+    - name: extensions_quarantined_domains_listhash
+      type: STRING
+      mode: NULLABLE
+      description: 'SHA1 cryptographic hash of the quarantined domains string pref.
+
+        '
+    - name: extensions_quarantined_domains_remotehash
+      type: STRING
+      mode: NULLABLE
+      description: 'SHA1 cryptographic hash of the quarantined domains string pref
+        as it was set based on the value got synced from the RemoteSettings collection.
+        AMRemoteSettings will be re-processing the entries on the next application
+        startup and so this metric lifetime can be set to application and expect it
+        to be always set to the value got from the RemoteSettings collection.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

@@ -34449,6 +34449,21 @@ fields:
             opened during the process lifetime.
 
             '
+        - name: extensions_quarantined_domains_listhash
+          type: STRING
+          mode: NULLABLE
+          description: 'SHA1 cryptographic hash of the quarantined domains string
+            pref.
+
+            '
+        - name: extensions_quarantined_domains_remotehash
+          type: STRING
+          mode: NULLABLE
+          description: 'SHA1 cryptographic hash of the quarantined domains string
+            pref as it was set based on the value got synced from the RemoteSettings
+            collection.
+
+            '
     - name: socket
       type: RECORD
       mode: NULLABLE

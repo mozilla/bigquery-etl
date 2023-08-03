@@ -23,12 +23,7 @@ WITH fxa_events AS (
     user_id,
     -- cert_signed is specific to sync, but these events do not have the
     -- 'service' field populated, so we fill in the service name for this special case.
-    IF(
-      service IS NULL
-      AND event_type = 'fxa_activity - cert_signed',
-      'sync',
-      service
-    ) AS service,
+    IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service) AS service,
     os_name,
     os_version,
     app_version,

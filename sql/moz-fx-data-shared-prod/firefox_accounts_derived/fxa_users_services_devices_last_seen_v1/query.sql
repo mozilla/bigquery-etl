@@ -29,8 +29,8 @@ WITH _current AS (
       'fxa_activity - access_token_checked',
       'fxa_activity - access_token_created',
       'fxa_activity - cert_signed'
-    ),
-  --
+    )
+),
 _previous AS (
   SELECT
     * EXCEPT (submission_date)

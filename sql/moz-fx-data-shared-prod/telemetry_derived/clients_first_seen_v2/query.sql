@@ -109,7 +109,10 @@ WITH new_profile_ping AS (
     `moz-fx-data-shared-prod.telemetry.new_profile`
   WHERE
     {% if is_init() %}
-      DATE(submission_timestamp) >= '2017-06-26'
+      DATE(submission_timestamp) >= '2010-01-01'
+      {% if parallel_run() %}
+        AND sample_id = {sample_id}
+      {% endif %}
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
@@ -227,7 +230,10 @@ shutdown_ping AS (
     `moz-fx-data-shared-prod.telemetry.first_shutdown`
   WHERE
     {% if is_init() %}
-      DATE(submission_timestamp) >= '2018-10-30'
+      DATE(submission_timestamp) >= '2010-01-01'
+      {% if parallel_run() %}
+        AND sample_id = {sample_id}
+      {% endif %}
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
@@ -289,7 +295,10 @@ main_ping AS (
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
     {% if is_init() %}
-      submission_date >= '2016-03-12'
+      DATE(submission_timestamp) >= '2010-01-01'
+      {% if parallel_run() %}
+        AND sample_id = {sample_id}
+      {% endif %}
     {% else %}
       submission_date = @submission_date
     {% endif %}

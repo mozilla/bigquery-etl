@@ -198,10 +198,7 @@ todays_metrics AS (
     uri_count,
     active_hours_sum,
     CAST(NULL AS STRING) AS adjust_network,
-    CAST(NULL AS STRING) AS install_source,
-    CAST(NULL AS STRING) AS adjust_ad_group,
-    CAST(NULL AS STRING) AS adjust_campaign,
-    CAST(NULL AS STRING) AS adjust_creative
+    CAST(NULL AS STRING) AS install_source
   FROM
     unioned_with_searches
 ),
@@ -265,7 +262,4 @@ GROUP BY
   submission_date,
   segment,
   adjust_network,
-  install_source,
-  adjust_ad_group,
-  adjust_campaign,
-  adjust_creative
+  install_source

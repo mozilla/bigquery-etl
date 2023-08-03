@@ -105,6 +105,20 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
+    with TaskGroup(
+        "firefox_ios_derived__firefox_ios_clients__v1_external"
+    ) as firefox_ios_derived__firefox_ios_clients__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_firefox_ios_derived__firefox_ios_clients__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_firefox_ios_derived__firefox_ios_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=1800)).isoformat() }}",
+        )
+
+        firefox_ios_derived__firefox_ios_clients__v1_external.set_upstream(
+            firefox_ios_derived__firefox_ios_clients__v1
+        )
+
     firefox_ios_derived__new_profile_activation__v2 = bigquery_etl_query(
         task_id="firefox_ios_derived__new_profile_activation__v2",
         destination_table="new_profile_activation_v2",
@@ -198,21 +212,6 @@ with DAG(
     firefox_ios_derived__attributable_clients__v1.set_upstream(
         wait_for_baseline_clients_daily
     )
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=10800),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    firefox_ios_derived__attributable_clients__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
 
     firefox_ios_derived__attributable_clients__v1.set_upstream(
         firefox_ios_derived__firefox_ios_clients__v1
@@ -220,9 +219,6 @@ with DAG(
 
     firefox_ios_derived__firefox_ios_clients__v1.set_upstream(
         wait_for_baseline_clients_daily
-    )
-    firefox_ios_derived__firefox_ios_clients__v1.set_upstream(
-        wait_for_copy_deduplicate_all
     )
 
     firefox_ios_derived__firefox_ios_clients__v1.set_upstream(

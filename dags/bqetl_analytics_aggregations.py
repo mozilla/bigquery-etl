@@ -127,7 +127,7 @@ with DAG(
 
     firefox_desktop_active_users_aggregates = bigquery_etl_query(
         task_id="firefox_desktop_active_users_aggregates",
-        destination_table="active_users_aggregates_v1",
+        destination_table='active_users_aggregates_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -136,8 +136,9 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     firefox_ios_active_users_aggregates = bigquery_etl_query(
@@ -273,6 +274,22 @@ with DAG(
     )
 
     fenix_active_users_aggregates.set_upstream(wait_for_clients_last_seen_joined)
+    fenix_active_users_aggregates.set_upstream(wait_for_firefox_android_clients)
+    wait_for_firefox_ios_derived__firefox_ios_clients__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_ios_derived__firefox_ios_clients__v1",
+        external_dag_id="bqetl_firefox_ios",
+        external_task_id="firefox_ios_derived__firefox_ios_clients__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=84600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    fenix_active_users_aggregates.set_upstream(
+        wait_for_firefox_ios_derived__firefox_ios_clients__v1
+    )
     wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
         task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
         external_dag_id="bqetl_mobile_search",
@@ -304,8 +321,15 @@ with DAG(
     firefox_desktop_active_users_aggregates.set_upstream(
         wait_for_telemetry_derived__clients_last_seen__v1
     )
+    firefox_desktop_active_users_aggregates.set_upstream(
+        wait_for_telemetry_derived__unified_metrics__v1
+    )
 
     firefox_ios_active_users_aggregates.set_upstream(wait_for_clients_last_seen_joined)
+    firefox_ios_active_users_aggregates.set_upstream(wait_for_firefox_android_clients)
+    firefox_ios_active_users_aggregates.set_upstream(
+        wait_for_firefox_ios_derived__firefox_ios_clients__v1
+    )
     firefox_ios_active_users_aggregates.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )
@@ -333,11 +357,19 @@ with DAG(
     )
 
     focus_ios_active_users_aggregates.set_upstream(wait_for_clients_last_seen_joined)
+    focus_ios_active_users_aggregates.set_upstream(wait_for_firefox_android_clients)
+    focus_ios_active_users_aggregates.set_upstream(
+        wait_for_firefox_ios_derived__firefox_ios_clients__v1
+    )
     focus_ios_active_users_aggregates.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )
 
     klar_ios_active_users_aggregates.set_upstream(wait_for_clients_last_seen_joined)
+    klar_ios_active_users_aggregates.set_upstream(wait_for_firefox_android_clients)
+    klar_ios_active_users_aggregates.set_upstream(
+        wait_for_firefox_ios_derived__firefox_ios_clients__v1
+    )
     klar_ios_active_users_aggregates.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )

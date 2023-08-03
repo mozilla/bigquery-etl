@@ -1,5 +1,20 @@
 --- Query generated via sql_generators.active_users.
-WITH baseline AS (
+WITH attribution_data AS (
+  SELECT
+    client_id,
+    adjust_network,
+    install_source
+  FROM
+    fenix.firefox_android_clients
+  UNION ALL
+  SELECT
+    client_id,
+    adjust_network,
+    CAST(NULL AS STRING) install_source
+  FROM
+    firefox_ios.firefox_ios_clients
+),
+baseline AS (
   SELECT
     submission_date,
     normalized_channel,
@@ -136,6 +151,18 @@ baseline_with_searches AS (
     search.client_id = baseline.client_id
     AND search.submission_date = baseline.submission_date
 ),
+baseline_with_searches_and_attribution AS (
+  SELECT
+    baseline.*,
+    attribution_data.install_source,
+    attribution_data.adjust_network
+  FROM
+    baseline_with_searches baseline
+  LEFT JOIN
+    attribution_data
+  USING
+    (client_id)
+),
 todays_metrics AS (
   SELECT
     activity_segment AS segment,
@@ -166,51 +193,14 @@ todays_metrics AS (
     search_with_ads,
     uri_count,
     active_hours_sum,
+    adjust_network,
+    install_source
   FROM
-    baseline_with_searches
-),
-attribution_data AS (
-  SELECT
-    bws.client_id,
-    att_fenix.adjust_network,
-    att_fenix.install_source,
-    CAST(NULL AS STRING) adjust_ad_group,
-    CAST(NULL AS STRING) adjust_campaign,
-    CAST(NULL AS STRING) adjust_creative
-  FROM
-    baseline_with_searches bws
-  LEFT JOIN
-    fenix.firefox_android_clients AS att_fenix
-  USING
-    (client_id)
-  UNION ALL
-  SELECT
-    bws.client_id,
-    att_ffx_ios.adjust_network,
-    CAST(NULL AS STRING) AS install_source,
-    adjust_ad_group,
-    adjust_campaign,
-    adjust_creative
-  FROM
-    baseline_with_searches bws
-  LEFT JOIN
-    firefox_ios.firefox_ios_clients AS att_ffx_ios
-  USING
-    (client_id)
-),
-today_metrics_attr AS (
-  SELECT
-    *
-  FROM
-    todays_metrics
-  LEFT JOIN
-    attribution_data
-  USING
-    (client_id)
+    baseline_with_searches_and_attribution
 ),
 todays_metrics_enriched AS (
   SELECT
-    today_metrics_attr.* EXCEPT (locale),
+    todays_metrics.* EXCEPT (locale),
     CASE
       WHEN locale IS NOT NULL
         AND languages.language_name IS NULL
@@ -218,11 +208,11 @@ todays_metrics_enriched AS (
       ELSE languages.language_name
     END AS language_name,
   FROM
-    today_metrics_attr
+    todays_metrics
   LEFT JOIN
     `mozdata.static.csa_gblmkt_languages` AS languages
   ON
-    today_metrics_attr.locale = languages.code
+    todays_metrics.locale = languages.code
 )
 SELECT
   todays_metrics_enriched.* EXCEPT (
@@ -268,7 +258,4 @@ GROUP BY
   submission_date,
   segment,
   adjust_network,
-  install_source,
-  adjust_ad_group,
-  adjust_campaign,
-  adjust_creative
+  install_source

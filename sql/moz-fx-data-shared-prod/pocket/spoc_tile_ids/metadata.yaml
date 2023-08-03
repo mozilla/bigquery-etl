@@ -4,6 +4,6 @@ description: |-
 owners:
   - jklukas@mozilla.com
 workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:pocket/prefect
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:pocket/prefect

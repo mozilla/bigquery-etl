@@ -28,8 +28,6 @@ WITH fxa_events AS (
     BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND @submission_date
     AND fxa_log IN ('content', 'auth', 'oauth')
-    -- re-using the filter from users_services_daily_v1 for consistency across the models
-    -- at some point in the future we should re-evaluate this list
     AND event_type IN (
       'fxa_activity - access_token_checked',
       'fxa_activity - access_token_created',

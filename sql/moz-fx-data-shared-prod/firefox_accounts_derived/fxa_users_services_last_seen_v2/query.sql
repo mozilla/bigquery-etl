@@ -1,21 +1,5 @@
 -- TODO: for now this is a copy of v1, we still need to adjust and make sure
--- no other changes are required.
-
-CREATE TEMP FUNCTION contains_fxa_activity_event(events ANY TYPE) AS (
-  EXISTS(
-    SELECT
-      event_type
-    FROM
-      UNNEST(events) AS event_type
-    WHERE
-      event_type IN (
-        'fxa_activity - access_token_checked',
-        'fxa_activity - access_token_created',
-        'fxa_activity - cert_signed'
-      )
-  )
-);
-
+-- no other changes are required. Will be done in a separate change.
 WITH _current AS (
   SELECT
     -- In this raw table, we capture the history of activity over the past

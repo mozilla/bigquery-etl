@@ -1,0 +1,74 @@
+fields:
+
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: |
+    Date field corresponding to the ETL
+    processing date. Also, used for
+    table partitioning.
+
+- mode: NULLABLE
+  name: user_id
+  type: STRING
+  description: |
+    36-char long hash randomly assigned when the account
+    is created.
+
+- mode: NULLABLE
+  name: service
+  type: STRING
+  description: |
+    The service identifier. For Sync it may be empty or sync.
+    For OAuth reliers it is their hex client id.
+    Example: sync
+
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: |
+    2 char string representing the country where the device was located.
+
+- mode: NULLABLE
+  name: language
+  type: STRING
+  description: |
+    Language settings used by the device.
+
+- mode: NULLABLE
+  name: app_version
+  type: STRING
+  description: |
+    Mozilla app version,
+    follows format: major.minor.patch (e.g. 99.3.3).
+
+- mode: NULLABLE
+  name: os_name
+  type: STRING
+  description: |
+    Name of the operating system the device was using.
+    E.g. Android
+
+- mode: NULLABLE
+  name: os_version
+  type: STRING
+  description: |
+    Version of the OS the device was using.
+
+- mode: NULLABLE
+  name: days_seen_bits
+  type: INTEGER
+  description: |
+    No. of days since the user had activity event.
+
+- mode: NULLABLE
+  name: days_seen_in_tier1_country_bits
+  type: INTEGER
+  description: |
+    No. of days since seen_in_tier1_country was last True.
+
+- mode: NULLABLE
+  name: days_registered_bits
+  type: INTEGER
+  description: |
+    No. of days since registration event.

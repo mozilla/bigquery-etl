@@ -28,22 +28,13 @@ WITH fxa_events AS (
     BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND @submission_date
     AND fxa_log IN ('content', 'auth', 'oauth')
-    -- re-using the filter from users_services_daily_v1 for consistency across the models
-    -- at some point in the future we should re-evaluate this list
-    AND event_type NOT IN ( --
-      'fxa_email - bounced',
-      'fxa_email - click',
-      'fxa_email - sent',
-      'fxa_reg - password_blocked',
-      'fxa_reg - password_common',
-      'fxa_reg - password_enrolled',
-      'fxa_reg - password_missing',
-      'fxa_sms - sent',
-      'mktg - email_click',
-      'mktg - email_open',
-      'mktg - email_sent',
-      'sync - repair_success',
-      'sync - repair_triggered'
+    AND event_type IN (
+      'fxa_activity - access_token_checked',
+      'fxa_activity - access_token_created',
+      'fxa_activity - cert_signed',
+      -- registration and login events used when deriving the first_seen table
+      'fxa_reg - complete',
+      'fxa_login - complete'
     )
 ),
 entrypoints AS (

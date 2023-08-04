@@ -23,12 +23,7 @@ WITH fxa_events AS (
     user_id,
     -- cert_signed is specific to sync, but these events do not have the
     -- 'service' field populated, so we fill in the service name for this special case.
-    IF(
-      `service` IS NULL
-      AND event_type = 'fxa_activity - cert_signed',
-      'sync',
-      `service`
-    ) AS `service`,
+    IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service) AS service,
     os_name,
     os_version,
     app_version,
@@ -55,20 +50,13 @@ WITH fxa_events AS (
     BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND @submission_date
     AND fxa_log IN ('content', 'auth', 'oauth')
-    AND event_type NOT IN ( --
-      'fxa_email - bounced',
-      'fxa_email - click',
-      'fxa_email - sent',
-      'fxa_reg - password_blocked',
-      'fxa_reg - password_common',
-      'fxa_reg - password_enrolled',
-      'fxa_reg - password_missing',
-      'fxa_sms - sent',
-      'mktg - email_click',
-      'mktg - email_open',
-      'mktg - email_sent',
-      'sync - repair_success',
-      'sync - repair_triggered'
+    AND event_type IN (
+      'fxa_activity - access_token_checked',
+      'fxa_activity - access_token_created',
+      'fxa_activity - cert_signed',
+      -- registration and login events used when deriving the first_seen table
+      'fxa_reg - complete',
+      'fxa_login - complete'
     )
 ),
 flow_entrypoints AS (
@@ -93,7 +81,7 @@ flow_entrypoints AS (
 user_service_flow_entrypoints AS (
   SELECT
     user_id,
-    `service`,
+    service,
     ARRAY_AGG(flow_entrypoint_info IGNORE NULLS ORDER BY `timestamp` LIMIT 1)[
       SAFE_OFFSET(0)
     ] AS flow_entrypoint_info,
@@ -105,7 +93,7 @@ user_service_flow_entrypoints AS (
     (flow_id)
   GROUP BY
     user_id,
-    `service`
+    service
 ),
 flow_utms AS (
   SELECT
@@ -135,7 +123,7 @@ flow_utms AS (
 user_service_utms AS (
   SELECT
     user_id,
-    `service`,
+    service,
     ARRAY_AGG(utm_info IGNORE NULLS ORDER BY `timestamp` LIMIT 1)[SAFE_OFFSET(0)] AS utm_info,
   FROM
     fxa_events
@@ -145,13 +133,13 @@ user_service_utms AS (
     (flow_id)
   GROUP BY
     user_id,
-    `service`
+    service
 ),
 windowed AS (
   SELECT
     `timestamp`,
     user_id,
-    `service`,
+    service,
     udf.mode_last(ARRAY_AGG(country) OVER w1) AS country,
     udf.mode_last(ARRAY_AGG(`language`) OVER w1) AS `language`,
     udf.mode_last(ARRAY_AGG(app_version) OVER w1) AS app_version,
@@ -167,14 +155,14 @@ windowed AS (
   WHERE
     DATE(`timestamp`) = @submission_date
     AND user_id IS NOT NULL
-    AND `service` IS NOT NULL
+    AND service IS NOT NULL
   QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY user_id, `service`, DATE(`timestamp`) ORDER BY `timestamp`) = 1
+    ROW_NUMBER() OVER (PARTITION BY user_id, service, DATE(`timestamp`) ORDER BY `timestamp`) = 1
   WINDOW
     w1 AS (
       PARTITION BY
         user_id,
-        `service`,
+        service,
         DATE(`timestamp`)
       ORDER BY
         `timestamp`
@@ -186,7 +174,7 @@ windowed AS (
 SELECT
   DATE(@submission_date) AS submission_date,
   windowed.user_id,
-  windowed.`service`,
+  windowed.service,
   windowed.country,
   windowed.`language`,
   windowed.app_version,
@@ -209,11 +197,11 @@ FROM
 LEFT JOIN
   user_service_flow_entrypoints
 USING
-  (user_id, `service`)
+  (user_id, service)
 LEFT JOIN
   user_service_utms
 USING
-  (user_id, `service`)
+  (user_id, service)
 WHERE
   user_id IS NOT NULL
-  AND `service` IS NOT NULL
+  AND service IS NOT NULL

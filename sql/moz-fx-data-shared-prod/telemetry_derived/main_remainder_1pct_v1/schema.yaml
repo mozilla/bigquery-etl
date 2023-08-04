@@ -22419,6 +22419,12 @@ fields:
         - name: migration_time_to_produce_migrator_list
           type: INTEGER
           mode: NULLABLE
+        - name: extensions_quarantined_domains_listhash
+          type: STRING
+          mode: NULLABLE
+        - name: extensions_quarantined_domains_remotehash
+          type: STRING
+          mode: NULLABLE
     - name: socket
       type: RECORD
       mode: NULLABLE

@@ -4,19 +4,16 @@ description: |-
   - Each attribute is retrieved from the ping that reports it
   first: Main, New profile or First Shutdown ping, and only
   updated from pings reported on the first-seen date.
+  The only exceptions are the second_seen_date and the metadata
+  reported pings which are updated after the first_seen_date.
 
   This table should be accessed through the user-facing view
   `telemetry.clients_first_seen`.
 
-  The query for this table overwrites the whole table instead of
-  writing to a single partition, so manual backfills must use
-  the parameter --no_partition.
-
   To initialize the table:
   - Run bqetl query initialize <path>/clients_first_seen_v2/query.sql
-  - Alternatively, use the supporting script initialize.py
-  - `./bqetl query schema deploy telemetry_derived.clients_first_seen_v2`
-  - `python3 sql/moz-fx-data-shared-prod/analysis/clients_first_seen_v2_full/initiliaze.py --dataset=analysis --table=clients_first_seen_v2`
+  - The table must not exist as data is inserted per sample_id.
+  - The initialize command creates it.
 owners:
 - lvargas@mozilla.com
 labels:

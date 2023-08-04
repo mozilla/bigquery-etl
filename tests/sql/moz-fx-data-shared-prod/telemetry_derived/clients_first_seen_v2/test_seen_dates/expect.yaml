@@ -15,7 +15,7 @@
   attribution_campaign: campaign2
   attribution_source: source2
   metadata:
-    first_seen_date__source_ping: main
+    first_seen_date__source_ping: new_profile
     attribution_campaign__source_ping: main
     attribution_source__source_ping: new_profile
     reported_main_ping: true

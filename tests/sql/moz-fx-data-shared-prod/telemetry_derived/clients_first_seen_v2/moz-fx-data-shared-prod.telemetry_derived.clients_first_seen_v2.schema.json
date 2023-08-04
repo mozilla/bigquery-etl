@@ -151,6 +151,10 @@
       },
       {
         "type": "STRING",
+        "name": "second_seen_date__source_ping"
+      },
+      {
+        "type": "STRING",
         "name": "attribution_campaign__source_ping"
       },
       {

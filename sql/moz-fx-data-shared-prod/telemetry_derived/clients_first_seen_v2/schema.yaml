@@ -157,47 +157,51 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
-  - description: Date when the server first received either of the 3 pings for this clients (main, first_shutdown, new_profile).
+  - description: Ping that reported the first seen date (main, first_shutdown or new_profile).
     name: first_seen_date__source_ping
     type: STRING
     mode: NULLABLE
-  - description: Ping that first reported a NOT NULL value for the attribution campaign.
+  - description: Ping that reported the second seen date (main, first_shutdown or new_profile).
+    name: second_seen_date__source_ping
+    type: STRING
+    mode: NULLABLE
+  - description: Ping that first reported the attribution campaign.
     name: attribution_campaign__source_ping
     type: STRING
     mode: NULLABLE
-  - description: Ping that first reported a NOT NULL value for the attribution content.
+  - description: Ping that first reported the attribution content.
     name: attribution_content__source_ping
     type: STRING
     mode: NULLABLE
-  - description: Ping that first reported a NOT NULL value for the attribution experiment.
+  - description: Ping that first reported the attribution experiment.
     name: attribution_experiment__source_ping
     type: STRING
     mode: NULLABLE
-  - description: Ping that first reported a NOT NULL value for the attribution medium.
+  - description: Ping that first reported the attribution medium.
     name: attribution_medium__source_ping
     type: STRING
     mode: NULLABLE
-  - description: Ping that first reported a NOT NULL value for the attribution source.
+  - description: Ping that first reported the attribution source.
     name: attribution_source__source_ping
     type: STRING
     mode: NULLABLE
-  - description: Ping that first reported a NOT NULL value for the download token.
+  - description: Ping that first reported the download token.
     name: download_token__source_ping
     type: STRING
     mode: NULLABLE
-  - description: Ping that first reported a NOT NULL value for the download source.
+  - description: Ping that first reported the download source.
     name: download_source__source_ping
     type: STRING
     mode: NULLABLE
-  - description: Indicates wether the client reported a main ping on the first seen date.
+  - description: Indicates wether the client ever reported a main ping.
     name: reported_main_ping
     type: BOOLEAN
     mode: NULLABLE
-  - description: Indicates wether the client reported a new profile ping on the first seen date.
+  - description: Indicates wether the client ever reported a new profile ping.
     name: reported_new_profile_ping
     type: BOOLEAN
     mode: NULLABLE
-  - description: Indicates wether the client reported a first shutdown ping on the first seen date.
+  - description: Indicates wether the client ever reported a first shutdown ping.
     name: reported_shutdown_ping
     type: BOOLEAN
     mode: NULLABLE

@@ -1,13 +1,14 @@
 -- Query for telemetry_derived.clients_first_seen_v2
+{% if parallel_run() %}
+  INSERT INTO
+    {project_id }.{dataset_id }.{table_name }
+{% endif %}
 WITH new_profile_ping AS (
   SELECT
     client_id AS client_id,
     sample_id AS sample_id,
-    MIN(submission_timestamp) AS submission_timestamp,
     ANY_VALUE(submission_timestamp HAVING MIN submission_timestamp) AS first_seen_date,
-    ARRAY_AGG(submission_timestamp IGNORE NULLS ORDER BY submission_timestamp)[
-      SAFE_OFFSET(1)
-    ] AS second_seen_date,
+    CAST(NULL AS TIMESTAMP) AS second_seen_date,
     ANY_VALUE(application.architecture HAVING MIN submission_timestamp) AS architecture,
     ANY_VALUE(application.build_id HAVING MIN submission_timestamp) AS app_build_id,
     ANY_VALUE(normalized_app_name HAVING MIN submission_timestamp) AS app_name,
@@ -111,7 +112,7 @@ WITH new_profile_ping AS (
     {% if is_init() %}
       DATE(submission_timestamp) >= '2010-01-01'
       {% if parallel_run() %}
-        AND sample_id = {sample_id}
+        AND sample_id = {sample_id }
       {% endif %}
     {% else %}
       DATE(submission_timestamp) = @submission_date
@@ -124,11 +125,8 @@ shutdown_ping AS (
   SELECT
     client_id AS client_id,
     sample_id AS sample_id,
-    MIN(submission_timestamp) AS submission_timestamp,
     ANY_VALUE(submission_timestamp HAVING MIN submission_timestamp) AS first_seen_date,
-    ARRAY_AGG(submission_timestamp IGNORE NULLS ORDER BY submission_timestamp)[
-      SAFE_OFFSET(1)
-    ] AS second_seen_date,
+    CAST(NULL AS TIMESTAMP) AS second_seen_date,
     ANY_VALUE(application.architecture HAVING MIN submission_timestamp) AS architecture,
     ANY_VALUE(application.build_id HAVING MIN submission_timestamp) AS app_build_id,
     ANY_VALUE(normalized_app_name HAVING MIN submission_timestamp) AS app_name,
@@ -232,7 +230,7 @@ shutdown_ping AS (
     {% if is_init() %}
       DATE(submission_timestamp) >= '2010-01-01'
       {% if parallel_run() %}
-        AND sample_id = {sample_id}
+        AND sample_id = {sample_id }
       {% endif %}
     {% else %}
       DATE(submission_timestamp) = @submission_date
@@ -245,8 +243,11 @@ main_ping AS (
   SELECT
     client_id AS client_id,
     sample_id AS sample_id,
-    TIMESTAMP(MIN(submission_date)) AS submission_timestamp,
-    TIMESTAMP(ANY_VALUE(submission_date HAVING MIN submission_date)) AS first_seen_date,
+    IF(
+      ANY_VALUE(submission_date HAVING MIN submission_date) >= '2018-10-30',
+      MIN(submission_timestamp_min),
+      TIMESTAMP(ANY_VALUE(submission_date HAVING MIN submission_date))
+    ) AS first_seen_date,
     TIMESTAMP(
       ARRAY_AGG(submission_date IGNORE NULLS ORDER BY submission_date)[SAFE_OFFSET(1)]
     ) AS second_seen_date,
@@ -295,9 +296,9 @@ main_ping AS (
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
     {% if is_init() %}
-      DATE(submission_timestamp) >= '2010-01-01'
+      submission_date >= '2010-01-01'
       {% if parallel_run() %}
-        AND sample_id = {sample_id}
+        AND sample_id = {sample_id }
       {% endif %}
     {% else %}
       submission_date = @submission_date
@@ -349,140 +350,135 @@ unioned_with_all_dates AS (
   GROUP BY
     client_id
 ),
-unioned_second_dates AS (
+unioned_min_timestamp_per_date AS (
   SELECT
     client_id,
-    DATE(
-      ARRAY_AGG(DISTINCT _date.value IGNORE NULLS ORDER BY _date.value ASC)[SAFE_OFFSET(1)]
-    ) AS second_seen_date,
+    value,
+    MIN(value_date) AS value_date
   FROM
     unioned_with_all_dates
   LEFT JOIN
-    UNNEST(seen_dates) AS _date
+    UNNEST(seen_dates) AS seen_dates
   WHERE
-    _date.value_date IS NOT NULL
+    seen_dates.value IS NOT NULL
   GROUP BY
-    1
+    client_id,
+    value
+),
+unioned_second_dates AS (
+  SELECT
+    client_id,
+    IF(
+      ARRAY_LENGTH(ARRAY_AGG(seen_dates)) > 1,
+      ARRAY_AGG(seen_dates ORDER BY value_date ASC)[SAFE_OFFSET(1)],
+      NULL
+    ) AS second_seen_details
+  FROM
+    unioned_with_all_dates
+  LEFT JOIN
+    UNNEST(seen_dates) AS seen_dates
+  JOIN
+    unioned_min_timestamp_per_date
+  USING
+    (client_id, value_date)
+  GROUP BY
+    client_id
 ),
 _current AS (
   SELECT
     client_id,
     CAST(
       mozfun.norm.get_earliest_value(
-        ARRAY_AGG(STRUCT(CAST(sample_id AS STRING), ping_source, DATETIME(submission_timestamp)))
+        ARRAY_AGG(STRUCT(CAST(sample_id AS STRING), ping_source, DATETIME(first_seen_date)))
       ).earliest_value AS INT
     ) AS sample_id,
     DATE(
       mozfun.norm.get_earliest_value(
         ARRAY_AGG(
-          STRUCT(CAST(submission_timestamp AS STRING), ping_source, DATETIME(submission_timestamp))
+          STRUCT(CAST(DATE(first_seen_date) AS STRING), ping_source, DATETIME(first_seen_date))
         )
       ).earliest_date
     ) AS first_seen_date,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(STRUCT(CAST(architecture AS STRING), ping_source, DATETIME(submission_timestamp)))
+      ARRAY_AGG(STRUCT(CAST(architecture AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS architecture,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(STRUCT(CAST(app_build_id AS STRING), ping_source, DATETIME(submission_timestamp)))
+      ARRAY_AGG(STRUCT(CAST(app_build_id AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS app_build_id,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(STRUCT(CAST(app_name AS STRING), ping_source, DATETIME(submission_timestamp)))
+      ARRAY_AGG(STRUCT(CAST(app_name AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS app_name,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(
-        STRUCT(CAST(platform_version AS STRING), ping_source, DATETIME(submission_timestamp))
-      )
+      ARRAY_AGG(STRUCT(CAST(platform_version AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS platform_version,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(STRUCT(CAST(vendor AS STRING), ping_source, DATETIME(submission_timestamp)))
+      ARRAY_AGG(STRUCT(CAST(vendor AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS vendor,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(STRUCT(CAST(app_version AS STRING), ping_source, DATETIME(submission_timestamp)))
+      ARRAY_AGG(STRUCT(CAST(app_version AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS app_version,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(STRUCT(CAST(xpcom_abi AS STRING), ping_source, DATETIME(submission_timestamp)))
+      ARRAY_AGG(STRUCT(CAST(xpcom_abi AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS xpcom_abi,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(STRUCT(CAST(document_id AS STRING), ping_source, DATETIME(submission_timestamp)))
+      ARRAY_AGG(STRUCT(CAST(document_id AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS document_id,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(
-        STRUCT(CAST(distribution_id AS STRING), ping_source, DATETIME(submission_timestamp))
-      )
+      ARRAY_AGG(STRUCT(CAST(distribution_id AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS distribution_id,
     mozfun.norm.get_earliest_value(
       ARRAY_AGG(
-        STRUCT(
-          CAST(partner_distribution_version AS STRING),
-          ping_source,
-          DATETIME(submission_timestamp)
-        )
+        STRUCT(CAST(partner_distribution_version AS STRING), ping_source, DATETIME(first_seen_date))
       )
     ).earliest_value AS partner_distribution_version,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(
-        STRUCT(CAST(partner_distributor AS STRING), ping_source, DATETIME(submission_timestamp))
-      )
+      ARRAY_AGG(STRUCT(CAST(partner_distributor AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS partner_distributor,
     mozfun.norm.get_earliest_value(
       ARRAY_AGG(
-        STRUCT(
-          CAST(partner_distributor_channel AS STRING),
-          ping_source,
-          DATETIME(submission_timestamp)
-        )
+        STRUCT(CAST(partner_distributor_channel AS STRING), ping_source, DATETIME(first_seen_date))
       )
     ).earliest_value AS partner_distributor_channel,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(STRUCT(CAST(partner_id AS STRING), ping_source, DATETIME(submission_timestamp)))
+      ARRAY_AGG(STRUCT(CAST(partner_id AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS partner_id,
     mozfun.norm.get_earliest_value(
       ARRAY_AGG(
-        STRUCT(CAST(engine_data_load_path AS STRING), ping_source, DATETIME(submission_timestamp))
+        STRUCT(CAST(engine_data_load_path AS STRING), ping_source, DATETIME(first_seen_date))
       )
     ).earliest_value AS engine_data_load_path,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(
-        STRUCT(CAST(engine_data_name AS STRING), ping_source, DATETIME(submission_timestamp))
-      )
+      ARRAY_AGG(STRUCT(CAST(engine_data_name AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS engine_data_name,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(
-        STRUCT(CAST(engine_data_origin AS STRING), ping_source, DATETIME(submission_timestamp))
-      )
+      ARRAY_AGG(STRUCT(CAST(engine_data_origin AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS engine_data_origin,
     mozfun.norm.get_earliest_value(
       ARRAY_AGG(
-        STRUCT(
-          CAST(engine_data_submission_url AS STRING),
-          ping_source,
-          DATETIME(submission_timestamp)
-        )
+        STRUCT(CAST(engine_data_submission_url AS STRING), ping_source, DATETIME(first_seen_date))
       )
     ).earliest_value AS engine_data_submission_url,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(STRUCT(CAST(apple_model_id AS STRING), ping_source, DATETIME(submission_timestamp)))
+      ARRAY_AGG(STRUCT(CAST(apple_model_id AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS apple_model_id,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(STRUCT(CAST(city AS STRING), ping_source, DATETIME(submission_timestamp)))
+      ARRAY_AGG(STRUCT(CAST(city AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS city,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(STRUCT(CAST(subdivision1 AS STRING), ping_source, DATETIME(submission_timestamp)))
+      ARRAY_AGG(STRUCT(CAST(subdivision1 AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS subdivision1,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(
-        STRUCT(CAST(normalized_channel AS STRING), ping_source, DATETIME(submission_timestamp))
-      )
+      ARRAY_AGG(STRUCT(CAST(normalized_channel AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS normalized_channel,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(STRUCT(CAST(country AS STRING), ping_source, DATETIME(submission_timestamp)))
+      ARRAY_AGG(STRUCT(CAST(country AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS country,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(STRUCT(CAST(normalized_os AS STRING), ping_source, DATETIME(submission_timestamp)))
+      ARRAY_AGG(STRUCT(CAST(normalized_os AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS normalized_os,
     mozfun.norm.get_earliest_value(
       ARRAY_AGG(
-        STRUCT(CAST(normalized_os_version AS STRING), ping_source, DATETIME(submission_timestamp))
+        STRUCT(CAST(normalized_os_version AS STRING), ping_source, DATETIME(first_seen_date))
       )
     ).earliest_value AS normalized_os_version,
     mozfun.norm.get_earliest_value(
@@ -490,87 +486,69 @@ _current AS (
         STRUCT(
           CAST(startup_profile_selection_reason AS STRING),
           ping_source,
-          DATETIME(submission_timestamp)
+          DATETIME(first_seen_date)
         )
       )
     ).earliest_value AS startup_profile_selection_reason,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(STRUCT(CAST(download_token AS STRING), ping_source, DATETIME(submission_timestamp)))
+      ARRAY_AGG(STRUCT(CAST(download_token AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS download_token,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(
-        STRUCT(CAST(download_source AS STRING), ping_source, DATETIME(submission_timestamp))
-      )
+      ARRAY_AGG(STRUCT(CAST(download_source AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS download_source,
     mozfun.norm.get_earliest_value(
       ARRAY_AGG(
-        STRUCT(CAST(attribution_campaign AS STRING), ping_source, DATETIME(submission_timestamp))
+        STRUCT(CAST(attribution_campaign AS STRING), ping_source, DATETIME(first_seen_date))
       )
     ).earliest_value AS attribution_campaign,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(
-        STRUCT(CAST(attribution_content AS STRING), ping_source, DATETIME(submission_timestamp))
-      )
+      ARRAY_AGG(STRUCT(CAST(attribution_content AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS attribution_content,
     mozfun.norm.get_earliest_value(
       ARRAY_AGG(
-        STRUCT(CAST(attribution_experiment AS STRING), ping_source, DATETIME(submission_timestamp))
+        STRUCT(CAST(attribution_experiment AS STRING), ping_source, DATETIME(first_seen_date))
       )
     ).earliest_value AS attribution_experiment,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(
-        STRUCT(CAST(attribution_medium AS STRING), ping_source, DATETIME(submission_timestamp))
-      )
+      ARRAY_AGG(STRUCT(CAST(attribution_medium AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS attribution_medium,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(
-        STRUCT(CAST(attribution_source AS STRING), ping_source, DATETIME(submission_timestamp))
-      )
+      ARRAY_AGG(STRUCT(CAST(attribution_source AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS attribution_source,
     STRUCT(
       mozfun.norm.get_earliest_value(
-        ARRAY_AGG(
-          STRUCT(CAST(submission_timestamp AS STRING), ping_source, DATETIME(submission_timestamp))
-        )
+        ARRAY_AGG(STRUCT(CAST(first_seen_date AS STRING), ping_source, DATETIME(first_seen_date)))
       ).earliest_value_source AS first_seen_date__source_ping,
       mozfun.norm.get_earliest_value(
         ARRAY_AGG(
-          STRUCT(CAST(attribution_campaign AS STRING), ping_source, DATETIME(submission_timestamp))
+          STRUCT(CAST(attribution_campaign AS STRING), ping_source, DATETIME(first_seen_date))
         )
       ).earliest_value_source AS attribution_campaign__source_ping,
       mozfun.norm.get_earliest_value(
         ARRAY_AGG(
-          STRUCT(CAST(attribution_content AS STRING), ping_source, DATETIME(submission_timestamp))
+          STRUCT(CAST(attribution_content AS STRING), ping_source, DATETIME(first_seen_date))
         )
       ).earliest_value_source AS attribution_content__source_ping,
       mozfun.norm.get_earliest_value(
         ARRAY_AGG(
-          STRUCT(
-            CAST(attribution_experiment AS STRING),
-            ping_source,
-            DATETIME(submission_timestamp)
-          )
+          STRUCT(CAST(attribution_experiment AS STRING), ping_source, DATETIME(first_seen_date))
         )
       ).earliest_value_source AS attribution_experiment__source_ping,
       mozfun.norm.get_earliest_value(
         ARRAY_AGG(
-          STRUCT(CAST(attribution_medium AS STRING), ping_source, DATETIME(submission_timestamp))
+          STRUCT(CAST(attribution_medium AS STRING), ping_source, DATETIME(first_seen_date))
         )
       ).earliest_value_source AS attribution_medium__source_ping,
       mozfun.norm.get_earliest_value(
         ARRAY_AGG(
-          STRUCT(CAST(attribution_source AS STRING), ping_source, DATETIME(submission_timestamp))
+          STRUCT(CAST(attribution_source AS STRING), ping_source, DATETIME(first_seen_date))
         )
       ).earliest_value_source AS attribution_source__source_ping,
       mozfun.norm.get_earliest_value(
-        ARRAY_AGG(
-          STRUCT(CAST(download_token AS STRING), ping_source, DATETIME(submission_timestamp))
-        )
+        ARRAY_AGG(STRUCT(CAST(download_token AS STRING), ping_source, DATETIME(first_seen_date)))
       ).earliest_value_source AS download_token__source_ping,
       mozfun.norm.get_earliest_value(
-        ARRAY_AGG(
-          STRUCT(CAST(download_source AS STRING), ping_source, DATETIME(submission_timestamp))
-        )
+        ARRAY_AGG(STRUCT(CAST(download_source AS STRING), ping_source, DATETIME(first_seen_date)))
       ).earliest_value_source AS download_source__source_ping,
       'main' IN UNNEST(ARRAY_AGG(ping_source)) AS reported_main_ping,
       'new_profile' IN UNNEST(ARRAY_AGG(ping_source)) AS reported_new_profile_ping,
@@ -588,8 +566,22 @@ _current_with_second_date AS (
     _current.client_id,
     _current.sample_id,
     _current.first_seen_date,
-    unioned_second_dates.second_seen_date AS second_seen_date,
-    _current.* EXCEPT (client_id, sample_id, first_seen_date)
+    DATE(second_seen_details.value) AS second_seen_date,
+    _current.* EXCEPT (client_id, sample_id, first_seen_date, metadata),
+    STRUCT(
+      metadata.first_seen_date__source_ping,
+      second_seen_details.value_source AS second_seen_date__source_ping,
+      metadata.attribution_campaign__source_ping,
+      metadata.attribution_content__source_ping,
+      metadata.attribution_experiment__source_ping,
+      metadata.attribution_medium__source_ping,
+      metadata.attribution_source__source_ping,
+      metadata.download_token__source_ping,
+      metadata.download_source__source_ping,
+      metadata.reported_main_ping,
+      metadata.reported_new_profile_ping,
+      metadata.reported_shutdown_ping
+    ) AS metadata
   FROM
     _current
   LEFT JOIN
@@ -604,10 +596,10 @@ _previous AS (
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
 )
 SELECT
-  IF(_previous.client_id IS NULL, _current, _previous).* REPLACE (
-    {% if is_init() %}
-      COALESCE(_previous.second_seen_date, _current.second_seen_date) AS second_seen_date
-    {% else %}
+  {% if is_init() %}
+    IF(_previous.client_id IS NULL, _current, _previous).*
+  {% else %}
+    IF(_previous.client_id IS NULL, _current, _previous).* REPLACE (
       IF(
         _previous.first_seen_date IS NOT NULL
         AND _previous.second_seen_date IS NULL
@@ -641,8 +633,8 @@ SELECT
             ) AS reported_shutdown_ping
           )
       ) AS metadata
-    {% endif %}
-  )
+    )
+  {% endif %}
 FROM
   _previous
 FULL JOIN

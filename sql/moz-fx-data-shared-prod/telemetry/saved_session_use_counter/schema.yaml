@@ -10038,6 +10038,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page used MathML_DeprecatedMathVariant
+    - name: use_counter2_deprecated_math_ml_deprecated_math_space_value2_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used MathML_DeprecatedMathSpaceValue2
+    - name: use_counter2_deprecated_math_ml_deprecated_math_space_value2_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used MathML_DeprecatedMathSpaceValue2
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -19922,6 +19930,14 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page used MathML_DeprecatedMathVariant
+        - name: use_counter2_deprecated_math_ml_deprecated_math_space_value2_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used MathML_DeprecatedMathSpaceValue2
+        - name: use_counter2_deprecated_math_ml_deprecated_math_space_value2_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used MathML_DeprecatedMathSpaceValue2
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

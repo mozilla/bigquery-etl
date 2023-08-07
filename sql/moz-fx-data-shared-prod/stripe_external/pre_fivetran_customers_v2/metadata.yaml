@@ -1,0 +1,11 @@
+friendly_name: Pre-Fivetran Stripe customers
+description: |-
+  Stripe customers that were deleted before the initial Fivetran Stripe sync, archived at 2022-03-25 00:02:29.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: false
+bigquery:
+  time_partitioning: null
+  clustering: null
+references: {}

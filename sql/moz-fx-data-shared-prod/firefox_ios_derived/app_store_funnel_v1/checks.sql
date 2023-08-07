@@ -1,2 +1,1 @@
-{{ is_unique(["country"], "`date` = @submission_date") }}
-
+{{ is_unique(["date", "country"]) }}

@@ -5,7 +5,8 @@ description: |-
   The table is labeled as "change_controlled", which implies
   that changes require the approval of at least one owner.
 owners:
-- skahmann@mozilla.com
+  - skahmann@mozilla.com
+  - mozilla/revenue_forecasting_data_reviewers
 labels:
   incremental: true
   schedule: daily

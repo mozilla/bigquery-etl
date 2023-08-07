@@ -7,6 +7,7 @@ description: |-
 owners:
   - xluo@mozilla.com
   - cmorales@mozilla.com
+  - mozilla/revenue_forecasting_data_reviewers
 labels:
   incremental: true
   schedule: daily

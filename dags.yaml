@@ -760,7 +760,7 @@ bqetl_acoustic_contact_export:
     owner: kignasiak@mozilla.com
     start_date: "2021-03-01"
     email: ["telemetry-alerts@mozilla.com", "kignasiak@mozilla.com"]
-    retries: 2
+    retries: 1
     retry_delay: 5m
   tags:
     - impact/tier_3
@@ -775,7 +775,7 @@ bqetl_acoustic_raw_recipient_export:
     owner: kignasiak@mozilla.com
     start_date: "2022-03-01"
     email: ["telemetry-alerts@mozilla.com", "kignasiak@mozilla.com"]
-    retries: 2
+    retries: 1
     retry_delay: 5m
   tags:
     - impact/tier_3
@@ -1139,3 +1139,22 @@ bqetl_fivetran_copied_tables:
   schedule_interval: 0 3 * * *
   tags:
     - impact/tier_2
+bqetl_kpis_shredder:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - lvargas@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: lvargas@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-05-16'
+  description: This DAG calculates KPIs for shredder client_ids
+  repo: bigquery-etl
+  schedule_interval: 0 0 */28 * *
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl

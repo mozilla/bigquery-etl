@@ -14237,6 +14237,12 @@ fields:
     - name: use_counter2_deprecated_math_ml_deprecated_math_variant_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_deprecated_math_ml_deprecated_math_space_value2_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_math_ml_deprecated_math_space_value2_page
+      type: STRING
+      mode: NULLABLE
   - name: info
     type: RECORD
     mode: NULLABLE
@@ -29557,6 +29563,12 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_deprecated_math_ml_deprecated_math_variant_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_math_ml_deprecated_math_space_value2_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_math_ml_deprecated_math_space_value2_page
           type: STRING
           mode: NULLABLE
       - name: keyed_histograms

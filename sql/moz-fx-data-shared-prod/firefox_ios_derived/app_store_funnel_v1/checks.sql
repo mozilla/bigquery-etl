@@ -1,1 +1,1 @@
-{{ is_unique(["date", "country"]) }}
+{{ is_unique(["`date`", "country"]) }}

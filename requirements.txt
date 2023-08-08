@@ -720,9 +720,9 @@ mkdocs-awesome-pages-plugin==2.9.1 \
     --hash=sha256:be65e36444f5d991f87a90dae37de64e932562f99e362078724c27124834b90a \
     --hash=sha256:faf5241365f94c1f65ef3cad7ea9d6f0e7a436be7f06013c79c4045db0b2eafc
     # via -r requirements.in
-mkdocs-material==9.1.19 \
-    --hash=sha256:73b94b08c765e92a80645aac58d6a741fc5f587deec2b715489c714827b15a6f \
-    --hash=sha256:fb0a149294b319aedf36983919d8c40c9e566db21ead16258e20ebd2e6c0961c
+mkdocs-material==9.1.20 \
+    --hash=sha256:152db66f667825d5aa3398386fe4d227640ec393c31e7cf109b114a569fc40fc \
+    --hash=sha256:91621b6a6002138c72d50a0beef20ed12cf367d2af27d1f53382562b3a9625c7
     # via -r requirements.in
 mkdocs-material-extensions==1.1.1 \
     --hash=sha256:9c003da71e2cc2493d910237448c672e00cefc800d3d6ae93d2fc69979e3bd93 \

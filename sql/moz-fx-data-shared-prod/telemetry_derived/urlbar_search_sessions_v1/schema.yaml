@@ -3,7 +3,7 @@ fields:
   name: submission_date
   type: DATE
 - mode: NULLABLE
-  name: client_id
+  name: glean_client_id
   type: STRING
 - mode: NULLABLE
   name: event_timestamp
@@ -15,9 +15,6 @@ fields:
   name: normalized_country_code
   type: STRING
 - mode: NULLABLE
-  name: event_category
-  type: STRING
-- mode: NULLABLE
   name: event_name
   type: STRING
 - mode: NULLABLE
@@ -27,28 +24,58 @@ fields:
   name: engaged_result_type
   type: BOOLEAN
 - mode: NULLABLE
-  name: result_type
-  type: BOOLEAN
-- mode: NULLABLE
-  name: number_of_chars_typed
-  type: BOOLEAN
-- mode: NULLABLE
-  name: annoyance_signal
-  type: BOOLEAN
-- mode: NULLABLE
-  name: num_search_engine_suggestions
-  type: INTEGER
-- mode: NULLABLE
-  name: num_history_suggestions
-  type: INTEGER
-- mode: NULLABLE
-  name: num_wikipedia_suggestions
+  name: annoyance_signal_type
   type: STRING
 - mode: NULLABLE
-  name: num_weather_suggestions
+  name: first_result_type
+  type: STRING
+- mode: NULLABLE
+  name: number_of_chars_typed
   type: INTEGER
 - mode: NULLABLE
-  name: num_adm_sponsored_suggestions
+  name: num_total_results
+  type: INTEGER
+- mode: NULLABLE
+  name: num_default_partner_search_suggestions
+  type: INTEGER
+- mode: NULLABLE
+  name: num_search_engine_suggestions_impressions
+  type: INTEGER
+- mode: NULLABLE
+  name: num_trending_suggestions_impressions
+  type: INTEGER
+- mode: NULLABLE
+  name: num_history_impressions
+  type: INTEGER
+- mode: NULLABLE
+  name: num_open_tabs_impressions
+  type: INTEGER
+- mode: NULLABLE
+  name: num_bookmarks_impressions
+  type: INTEGER
+- mode: NULLABLE
+  name: admarketplace_sponsored_impressions
+  type: INTEGER
+- mode: NULLABLE
+  name: num_navigations_impressions
+  type: INTEGER
+- mode: NULLABLE
+  name: num_add_on_impressions
+  type: INTEGER
+- mode: NULLABLE
+  name: num_wikipedia_enhanced_impressions
+  type: INTEGER
+- mode: NULLABLE
+  name: num_wikipedia_dynamic_impressions
+  type: INTEGER
+- mode: NULLABLE
+  name: num_weather_impressions
+  type: INTEGER
+- mode: NULLABLE
+  name: num_quick_actions_impressions
+  type: INTEGER
+- mode: NULLABLE
+  name: num_pocket_collection_impressions
   type: INTEGER
 - mode: NULLABLE
   name: sharing_enabled
@@ -65,3 +92,10 @@ fields:
 - mode: NULLABLE
   name: legacy_telemetry_client_id
   type: STRING
+- mode: NULLABLE
+  name: experiment_id
+  type: STRING
+- mode: NULLABLE
+  name: branch
+  type: STRING
+

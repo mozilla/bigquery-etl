@@ -1,10 +1,12 @@
 import os
 from datetime import date, timedelta
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 import yaml
 from click.testing import CliRunner
+from google.api_core.exceptions import NotFound
 
 from bigquery_etl.backfill.parse import (
     BACKFILL_FILE,
@@ -1768,7 +1770,12 @@ class TestBackfill:
 
         assert "Qualified table name must be named like" in str(e.value)
 
-    def test_backfill_scheduled(self, runner):
+    @patch("google.cloud.bigquery.Client.get_table")
+    def test_backfill_scheduled(self, get_table, runner):
+        get_table.side_effect = NotFound(
+            "moz-fx-data-shared-prod:backfills_staging_derived.test_query_v1_2021_05_04 "
+            "not found"
+        )
         with runner.isolated_filesystem():
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)

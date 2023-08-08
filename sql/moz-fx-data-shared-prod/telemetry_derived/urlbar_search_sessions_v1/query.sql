@@ -55,7 +55,7 @@ WITH events_unnested AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND category = 'urlbar'
-    AND name IN ('engagement', 'abadonment')
+    AND name IN ('engagement', 'abandonment')
 ),
 events_summary AS (
   SELECT

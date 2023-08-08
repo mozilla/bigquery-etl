@@ -1001,6 +1001,18 @@ with DAG(
         )
     )
 
+    subscription_platform_derived__services__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__services__v1",
+        destination_table="services_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     subscription_platform_derived__stripe_customers_history__v1 = bigquery_etl_query(
         task_id="subscription_platform_derived__stripe_customers_history__v1",
         destination_table="stripe_customers_history_v1",
@@ -1437,6 +1449,12 @@ with DAG(
 
     subscription_platform_derived__nonprod_apple_subscriptions__v1.set_upstream(
         mozilla_vpn_derived__guardian_apple_events__v1
+    )
+
+    subscription_platform_derived__services__v1.set_upstream(stripe_external__plan__v1)
+
+    subscription_platform_derived__services__v1.set_upstream(
+        stripe_external__product__v1
     )
 
     subscription_platform_derived__stripe_customers_history__v1.set_upstream(

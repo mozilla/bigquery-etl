@@ -1,0 +1,54 @@
+fields:
+- name: id
+  type: STRING
+  mode: NULLABLE
+  description: Short, unique, human-readable ID for the service.
+- name: name
+  type: STRING
+  mode: NULLABLE
+  description: Proper name for the service.
+- name: tiers
+  type: RECORD
+  mode: REPEATED
+  description: Tiers for the service in order of precedence (i.e. highest tier first).
+  fields:
+  - name: name
+    type: STRING
+    mode: NULLABLE
+    description: Human-readable name for the tier.
+  - name: subplat_capabilities
+    type: STRING
+    mode: REPEATED
+    description: SubPlat capabilities specific to the tier. Used to correlate with
+      products/plans based on Stripe metadata.
+  - name: stripe_plan_ids
+    type: STRING
+    mode: REPEATED
+    description: IDs of Stripe plans with any of the tier's SubPlat capabilities.
+- name: subplat_capabilities
+  type: STRING
+  mode: REPEATED
+  description: All SubPlat capabilities associated with the service. Used to correlate
+    with products/plans based on Stripe metadata.
+- name: subplat_oauth_clients
+  type: RECORD
+  mode: REPEATED
+  description: SubPlat OAuth clients associated with the service. Used to correlate
+    with products/plans based on Stripe metadata, and SubPlat logs.
+  fields:
+  - name: id
+    type: STRING
+    mode: NULLABLE
+    description: OAuth client ID.
+  - name: name
+    type: STRING
+    mode: NULLABLE
+    description: OAuth client name.
+- name: stripe_product_ids
+  type: STRING
+  mode: REPEATED
+  description: IDs of Stripe products with any of the service's SubPlat capabilities.
+- name: stripe_plan_ids
+  type: STRING
+  mode: REPEATED
+  description: IDs of Stripe plans with any of the service's SubPlat capabilities.

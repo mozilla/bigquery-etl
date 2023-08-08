@@ -1955,6 +1955,9 @@ fields:
     - name: extensions_quarantined_domains_listsize
       type: INTEGER
       mode: NULLABLE
+    - name: formautofill_creditcards_autofill_profiles_count
+      type: INTEGER
+      mode: NULLABLE
   - name: string
     type: RECORD
     mode: NULLABLE

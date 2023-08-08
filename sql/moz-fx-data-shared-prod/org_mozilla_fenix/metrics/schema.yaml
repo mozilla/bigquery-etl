@@ -3718,6 +3718,13 @@ fields:
         for the client during this session.
 
         '
+    - name: formautofill_creditcards_autofill_profiles_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count at store time how many credit card autofill profiles the
+        user has.
+
+        '
   - name: timing_distribution
     type: RECORD
     mode: NULLABLE

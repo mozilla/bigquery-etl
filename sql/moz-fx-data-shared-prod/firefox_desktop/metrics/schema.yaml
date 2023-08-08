@@ -283,6 +283,30 @@ fields:
         manually launched by a user.
 
         '
+    - name: shopping_settings_component_opted_out
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Indicates if the user has opted out of using the shopping component.
+
+        Set during shopping component init and updated when changed in browser.
+
+        '
+    - name: shopping_settings_has_onboarded
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Indicates if the user has completed the Shopping product Onboarding
+
+        experience. Set during shopping component init and updated when changed
+
+        in browser.
+
+        '
+    - name: shopping_settings_nimbus_disabled_shopping
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Indicates if Nimbus has disabled the use the shopping component.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -3174,6 +3198,13 @@ fields:
         for the client during this session.
 
         '
+    - name: formautofill_creditcards_autofill_profiles_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count at store time how many credit card autofill profiles the
+        user has.
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE
@@ -3604,6 +3635,12 @@ fields:
     mode: NULLABLE
     fields:
     - name: background_update_reasons_to_not_update
+      type: STRING
+      mode: REPEATED
+    - name: browser_migration_matched_extensions
+      type: STRING
+      mode: REPEATED
+    - name: browser_migration_unmatched_extensions
       type: STRING
       mode: REPEATED
   - name: url

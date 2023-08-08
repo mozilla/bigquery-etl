@@ -93,9 +93,18 @@ fields:
   name: legacy_telemetry_client_id
   type: STRING
 - mode: NULLABLE
-  name: experiment_id
-  type: STRING
-- mode: NULLABLE
-  name: branch
-  type: STRING
-
+  name: experiments
+  type: RECORD
+  fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: branch
+    type: STRING
+  - mode: NULLABLE
+    name: extra_type
+    type: STRING
+  - mode: NULLABLE
+    name: enrollment_id
+    type: STRING

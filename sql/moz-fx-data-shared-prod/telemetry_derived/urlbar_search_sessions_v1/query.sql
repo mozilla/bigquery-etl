@@ -46,15 +46,14 @@ WITH events_unnested AS (
     mozfun.map.get_key(extra, "n_results") AS num_total_results,
     metrics,
     metrics.uuid.legacy_telemetry_client_id AS legacy_telemetry_client_id,
-    e.key AS experiment_id,
-    e.value.branch AS branch,
+    ping_info.experiments
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.events_v1`,
     UNNEST(events)
   CROSS JOIN
     UNNEST(ping_info.experiments) AS e
   WHERE
-    DATE(submission_timestamp) = '2023-07-01'
+    DATE(submission_timestamp) = @submission_date
     AND category = 'urlbar'
     AND name IN ('engagement', 'abadonment')
 ),
@@ -113,8 +112,7 @@ events_summary AS (
     COUNTIF(res IN ('rs_pocket')) AS num_pocket_collection_impressions,
     legacy_telemetry_client_id,
     client_id AS glean_metrics_client_id,
-    experiment_id,
-    branch
+    ARRAY_CONCAT_AGG(experiments) AS experiments
   FROM
     events_unnested,
     UNNEST(results) AS res
@@ -132,9 +130,7 @@ events_summary AS (
     engagement_type,
     search_session_type,
     number_of_chars_typed,
-    num_total_results,
-    experiment_id,
-    branch
+    num_total_results
 ),
 legacy_profile_info AS (
   SELECT
@@ -150,7 +146,7 @@ legacy_profile_info AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
-    submission_date = '2023-07-01'
+    submission_date = @submission_date
   GROUP BY
     client_id,
     sharing_enabled,
@@ -167,7 +163,7 @@ glean_metrics_info AS (
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.metrics`
   WHERE
-    DATE(submission_timestamp) = '2023-07-01'
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     glean_metrics_client_id,
     normalized_search_engine
@@ -206,8 +202,7 @@ SELECT
   suggest_enabled,
   normalized_search_engine,
   legacy_telemetry_client_id,
-  experiment_id,
-  branch
+  experiments
 FROM
   events_summary
 LEFT JOIN

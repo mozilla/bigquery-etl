@@ -71,10 +71,15 @@ events_summary AS (
     event_name,
     search_session_type,
     CASE
-      WHEN search_session_type = 'engaged'
-        THEN engagement_type
+      WHEN search_session_type IN ('engaged', 'annoyance')
+        THEN selected_result
       ELSE NULL
     END AS engaged_result_type,
+    CASE
+      WHEN search_session_type IN ('engaged', 'annoyance')
+        THEN product_selected_result
+      ELSE NULL
+    END AS product_engaged_result_type,
     result_type,
     number_of_chars_typed,
     num_total_results,

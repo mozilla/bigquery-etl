@@ -13,17 +13,17 @@
       
       
       
-        <link rel="prev" href="../event_analysis/">
+        <link rel="prev" href="../configuration/">
       
       
-        <link rel="next" href="../glean/">
+        <link rel="next" href="../incremental/">
       
       <link rel="icon" href="../../favicon.png">
       <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.20">
     
     
       
-        <title>Glam - BigQuery ETL</title>
+        <title>bqetl data checks - BigQuery ETL</title>
       
     
     
@@ -71,7 +71,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#histogram_fill_buckets_dirichlet-udf" class="md-skip">
+        <a href="#bqetl-data-checks" class="md-skip">
           Skip to content
         </a>
       
@@ -104,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Glam
+              bqetl data checks
             
           </span>
         </div>
@@ -213,8 +213,6 @@
         
   
   
-    
-  
 
 
   
@@ -226,7 +224,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../about/" class="md-tabs__link md-tabs__link--active">
+      <a href="../../mozfun/about/" class="md-tabs__link">
         UDFs
       </a>
     </li>
@@ -1815,16 +1813,14 @@
 
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
       
@@ -1833,7 +1829,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           UDFs
@@ -1844,16 +1840,14 @@
               
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" checked>
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
       
       
       
@@ -1862,7 +1856,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="true">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3_1">
           <span class="md-nav__icon md-icon"></span>
           Mozfun
@@ -1875,7 +1869,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../about/" class="md-nav__link">
+      <a href="../../mozfun/about/" class="md-nav__link">
         mozfun
       </a>
     </li>
@@ -1889,7 +1883,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../bits28/" class="md-nav__link">
+      <a href="../../mozfun/bits28/" class="md-nav__link">
         bits28
       </a>
     </li>
@@ -1903,7 +1897,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../bytes/" class="md-nav__link">
+      <a href="../../mozfun/bytes/" class="md-nav__link">
         bytes
       </a>
     </li>
@@ -1917,7 +1911,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../datetime_util/" class="md-nav__link">
+      <a href="../../mozfun/datetime_util/" class="md-nav__link">
         datetime_util.fxa_parse_date
       </a>
     </li>
@@ -1931,7 +1925,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../event_analysis/" class="md-nav__link">
+      <a href="../../mozfun/event_analysis/" class="md-nav__link">
         event_analysis
       </a>
     </li>
@@ -1943,381 +1937,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Glam
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../mozfun/glam/" class="md-nav__link">
         Glam
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_fill_buckets_dirichlet-udf" class="md-nav__link">
-    histogram_fill_buckets_dirichlet (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="histogram_fill_buckets_dirichlet (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_buckets_cast_string_array-udf" class="md-nav__link">
-    histogram_buckets_cast_string_array (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="histogram_buckets_cast_string_array (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#build_seconds_to_hour-udf" class="md-nav__link">
-    build_seconds_to_hour (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="build_seconds_to_hour (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#fenix_build_to_build_hour-udf" class="md-nav__link">
-    fenix_build_to_build_hour (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="fenix_build_to_build_hour (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_3" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_generate_linear_buckets-udf" class="md-nav__link">
-    histogram_generate_linear_buckets (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="histogram_generate_linear_buckets (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_4" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_from_buckets_uniform-udf" class="md-nav__link">
-    histogram_from_buckets_uniform (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="histogram_from_buckets_uniform (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_5" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_cast_json-udf" class="md-nav__link">
-    histogram_cast_json (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="histogram_cast_json (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_6" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_fill_buckets-udf" class="md-nav__link">
-    histogram_fill_buckets (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="histogram_fill_buckets (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_7" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#map_from_array_offsets_precise-udf" class="md-nav__link">
-    map_from_array_offsets_precise (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="map_from_array_offsets_precise (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_8" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_generate_scalar_buckets-udf" class="md-nav__link">
-    histogram_generate_scalar_buckets (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="histogram_generate_scalar_buckets (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_9" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_generate_exponential_buckets-udf" class="md-nav__link">
-    histogram_generate_exponential_buckets (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="histogram_generate_exponential_buckets (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_10" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_generate_functional_buckets-udf" class="md-nav__link">
-    histogram_generate_functional_buckets (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="histogram_generate_functional_buckets (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_11" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_bucket_from_value-udf" class="md-nav__link">
-    histogram_bucket_from_value (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="histogram_bucket_from_value (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_12" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#build_hour_to_datetime-udf" class="md-nav__link">
-    build_hour_to_datetime (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="build_hour_to_datetime (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_13" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#percentile-udf" class="md-nav__link">
-    percentile (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="percentile (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_14" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_normalized_sum-udf" class="md-nav__link">
-    histogram_normalized_sum (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="histogram_normalized_sum (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_15" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#map_from_array_offsets-udf" class="md-nav__link">
-    map_from_array_offsets (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="map_from_array_offsets (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_16" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2329,7 +1953,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../glean/" class="md-nav__link">
+      <a href="../../mozfun/glean/" class="md-nav__link">
         glean
       </a>
     </li>
@@ -2343,7 +1967,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../hist/" class="md-nav__link">
+      <a href="../../mozfun/hist/" class="md-nav__link">
         hist
       </a>
     </li>
@@ -2357,7 +1981,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../iap/" class="md-nav__link">
+      <a href="../../mozfun/iap/" class="md-nav__link">
         iap
       </a>
     </li>
@@ -2371,7 +1995,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../json/" class="md-nav__link">
+      <a href="../../mozfun/json/" class="md-nav__link">
         json
       </a>
     </li>
@@ -2385,7 +2009,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../map/" class="md-nav__link">
+      <a href="../../mozfun/map/" class="md-nav__link">
         map
       </a>
     </li>
@@ -2399,7 +2023,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norm/" class="md-nav__link">
+      <a href="../../mozfun/norm/" class="md-nav__link">
         norm
       </a>
     </li>
@@ -2413,7 +2037,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../stats/" class="md-nav__link">
+      <a href="../../mozfun/stats/" class="md-nav__link">
         stats
       </a>
     </li>
@@ -2427,7 +2051,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../vpn/" class="md-nav__link">
+      <a href="../../mozfun/vpn/" class="md-nav__link">
         vpn
       </a>
     </li>
@@ -2574,7 +2198,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/recommended_practices/" class="md-nav__link">
+      <a href="../recommended_practices/" class="md-nav__link">
         Recommended practices
       </a>
     </li>
@@ -2588,7 +2212,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/incremental/" class="md-nav__link">
+      <a href="../incremental/" class="md-nav__link">
         Incremental queries
       </a>
     </li>
@@ -2602,7 +2226,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/scheduling/" class="md-nav__link">
+      <a href="../scheduling/" class="md-nav__link">
         Scheduling
       </a>
     </li>
@@ -2616,7 +2240,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/public_data/" class="md-nav__link">
+      <a href="../public_data/" class="md-nav__link">
         Public data
       </a>
     </li>
@@ -2630,7 +2254,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/airflow_tags/" class="md-nav__link">
+      <a href="../airflow_tags/" class="md-nav__link">
         Airflow Tags
       </a>
     </li>
@@ -2661,6 +2285,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -2669,336 +2295,51 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#histogram_fill_buckets_dirichlet-udf" class="md-nav__link">
-    histogram_fill_buckets_dirichlet (UDF)
+  <a href="#background" class="md-nav__link">
+    Background
   </a>
-  
-    <nav class="md-nav" aria-label="histogram_fill_buckets_dirichlet (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#histogram_buckets_cast_string_array-udf" class="md-nav__link">
-    histogram_buckets_cast_string_array (UDF)
+  <a href="#bqetl-data-checks-to-the-rescue" class="md-nav__link">
+    bqetl data checks to the rescue
   </a>
-  
-    <nav class="md-nav" aria-label="histogram_buckets_cast_string_array (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#build_seconds_to_hour-udf" class="md-nav__link">
-    build_seconds_to_hour (UDF)
+  <a href="#data-checks-available-with-examples" class="md-nav__link">
+    data checks available with examples
   </a>
   
-    <nav class="md-nav" aria-label="build_seconds_to_hour (UDF)">
+    <nav class="md-nav" aria-label="data checks available with examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
-    Parameters
+  <a href="#in_range-source" class="md-nav__link">
+    in_range (source)
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#fenix_build_to_build_hour-udf" class="md-nav__link">
-    fenix_build_to_build_hour (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="fenix_build_to_build_hour (UDF)">
-      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_3" class="md-nav__link">
-    Parameters
+  <a href="#is_unique-source" class="md-nav__link">
+    is_unique (source)
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_generate_linear_buckets-udf" class="md-nav__link">
-    histogram_generate_linear_buckets (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="histogram_generate_linear_buckets (UDF)">
-      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_4" class="md-nav__link">
-    Parameters
+  <a href="#min_rows-source" class="md-nav__link">
+    min_rows (source)
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_from_buckets_uniform-udf" class="md-nav__link">
-    histogram_from_buckets_uniform (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="histogram_from_buckets_uniform (UDF)">
-      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_5" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_cast_json-udf" class="md-nav__link">
-    histogram_cast_json (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="histogram_cast_json (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_6" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_fill_buckets-udf" class="md-nav__link">
-    histogram_fill_buckets (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="histogram_fill_buckets (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_7" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#map_from_array_offsets_precise-udf" class="md-nav__link">
-    map_from_array_offsets_precise (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="map_from_array_offsets_precise (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_8" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_generate_scalar_buckets-udf" class="md-nav__link">
-    histogram_generate_scalar_buckets (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="histogram_generate_scalar_buckets (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_9" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_generate_exponential_buckets-udf" class="md-nav__link">
-    histogram_generate_exponential_buckets (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="histogram_generate_exponential_buckets (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_10" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_generate_functional_buckets-udf" class="md-nav__link">
-    histogram_generate_functional_buckets (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="histogram_generate_functional_buckets (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_11" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_bucket_from_value-udf" class="md-nav__link">
-    histogram_bucket_from_value (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="histogram_bucket_from_value (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_12" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#build_hour_to_datetime-udf" class="md-nav__link">
-    build_hour_to_datetime (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="build_hour_to_datetime (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_13" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#percentile-udf" class="md-nav__link">
-    percentile (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="percentile (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_14" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#histogram_normalized_sum-udf" class="md-nav__link">
-    histogram_normalized_sum (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="histogram_normalized_sum (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_15" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#map_from_array_offsets-udf" class="md-nav__link">
-    map_from_array_offsets (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="map_from_array_offsets (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_16" class="md-nav__link">
-    Parameters
+  <a href="#not_null-source" class="md-nav__link">
+    not_null (source)
   </a>
   
 </li>
@@ -3023,195 +2364,65 @@
                   
 
 
-  <h1>Glam</h1>
+<h1 id="bqetl-data-checks">bqetl data checks</h1>
+<blockquote>
+<p>Instructions on how to add data checks can be found under the <a href="../../cookbooks/adding_data_checks/">Adding data checks</a> cookbook.</p>
+</blockquote>
+<h2 id="background">Background</h2>
+<p>To create more confidence and trust in our data is crucial to provide some form of data checks. These checks should uncover problems as soon as possible, ideally as part of the data process creating the data. This includes checking that the data produced follows certain assumptions determined by the dataset owner. These assumptions need to be easy to define, but at the same time flexible enough to encode more complex business logic. For example, checks for null columns, for range/size properties, duplicates, table grain etc.</p>
+<h2 id="bqetl-data-checks-to-the-rescue">bqetl data checks to the rescue</h2>
+<p>bqetl data checks aim to provide this ability by providing a simple interface for specifying our "assumptions" about the data the query should produce and checking them against the actual result.</p>
+<p>This easy interface is achieved by providing a number of jinja templates providing "out-of-the-box" logic for performing a number of common checks without having to rewrite the logic. For example, checking if any nulls are present in a specific column. These templates can be found <a href="../../tests/checks/">here</a> and are available as jinja macros inside the <code>checks.sql</code> files. This allows to "configure" the logic by passing some details relevant to our specific dataset. Check templates will get rendered as raw SQL expressions. Take a look at the examples below for practical examples.</p>
+<p>It is also possible to write checks using raw SQL by using assertions. This is, for example, useful when writing checks for custom business logic.</p>
+<h2 id="data-checks-available-with-examples">data checks available with examples</h2>
+<h3 id="in_range-source">in_range (<a href="../../tests/checks/in_range.jinja">source</a>)</h3>
+<p>Usage:</p>
+<div class="highlight"><pre><span></span><code>Arguments:
 
-<h2 id="histogram_fill_buckets_dirichlet-udf">histogram_fill_buckets_dirichlet (UDF)</h2>
-<p>Interpolate missing histogram buckets with empty buckets so it becomes a valid
-estimator for the dirichlet distribution.</p>
-<p>See: <a href="https://docs.google.com/document/d/1ipy1oFIKDvHr3R6Ku0goRjS11R1ZH1z2gygOGkSdqUg">https://docs.google.com/document/d/1ipy1oFIKDvHr3R6Ku0goRjS11R1ZH1z2gygOGkSdqUg</a></p>
-<p>To use this, you must first:
-Aggregate the histograms to the client level, to get a histogram {k1: p1,
-k2:p2, ..., kK: pN} where the p's are proportions(and p1, p2, ... sum to 1)
-and Kis the number of buckets.</p>
-<p>This is then the client's estimated density, and every client has been
-reduced to one row (i.e the client's histograms are reduced to this single
-one and normalized).</p>
-<p>Then add all of these across clients to get {k1: P1, k2:P2, ..., kK: PK}
-where P1 = sum(p1 across N clients) and P2 = sum(p2 across N clients).</p>
-<p>Calculate the total number of buckets K, as well as the total number of
-profiles <code>N reporting</code></p>
-<p>Then our estimate for final density is:
-[{k1: ((P1 + 1/K) / (nreporting+1)), k2: ((P2 + 1/K) /(nreporting+1)), ... }</p>
-<h3 id="parameters">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>input_map ARRAY&lt;STRUCT&lt;key STRING, value FLOAT64&gt;&gt;, buckets ARRAY&lt;STRING&gt;, total_users INT64
+columns: List[str] - A list of columns which we want to check the values of.
+min: Optional[int] - Minimum value we should observe in the specified columns.
+max: Optional[int] - Maximum value we should observe in the specified columns.
+where: Optional[str] - A condition that will be injected into the `WHERE` clause of the check. For example, &quot;submission_date = @submission_date&quot; so that the check is only executed against a specific partition.
 </code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>ARRAY&lt;STRUCT&lt;key STRING, value FLOAT64&gt;&gt;
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="err">{{</span><span class="w"> </span><span class="n">in_range</span><span class="p">([</span><span class="ss">&quot;non_ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;reporting_ratio&quot;</span><span class="p">],</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">none</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
 </code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glam/histogram_fill_buckets_dirichlet">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glam/histogram_fill_buckets_dirichlet/metadata.yaml">Edit</a></p>
-<h2 id="histogram_buckets_cast_string_array-udf">histogram_buckets_cast_string_array (UDF)</h2>
-<p>Cast histogram buckets into a string array.</p>
-<h3 id="parameters_1">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>buckets ARRAY&lt;INT64&gt;
+<h3 id="is_unique-source">is_unique (<a href="../../tests/checks/is_unique.jinja">source</a>)</h3>
+<p>Usage:</p>
+<div class="highlight"><pre><span></span><code>Arguments:
+
+columns: List[str] - A list of columns which should produce a unique record.
+where: Optional[str] - A condition that will be injected into the `WHERE` clause of the check. For example, &quot;submission_date = @submission_date&quot; so that the check is only executed against a specific partition.
 </code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>ARRAY&lt;STRING&gt;
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="err">{{</span><span class="w"> </span><span class="n">is_unique</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;country&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="err">}}</span>
 </code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glam/histogram_buckets_cast_string_array">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glam/histogram_buckets_cast_string_array/metadata.yaml">Edit</a></p>
-<h2 id="build_seconds_to_hour-udf">build_seconds_to_hour (UDF)</h2>
-<p>Returns a custom build id generated from the build seconds of a FOG build.</p>
-<h3 id="parameters_2">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>build_hour STRING
+<h3 id="min_rows-source">min_rows (<a href="../../tests/checks/min_rows.jinja">source</a>)</h3>
+<p>Usage:</p>
+<div class="highlight"><pre><span></span><code>Arguments:
+
+threshold: Optional[int] - What is the minimum number of rows we expect (default: 1)
+where: Optional[str] - A condition that will be injected into the `WHERE` clause of the check. For example, &quot;submission_date = @submission_date&quot; so that the check is only executed against a specific partition.
 </code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>STRING
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="err">{{</span><span class="w"> </span><span class="n">min_rows</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
 </code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glam/build_seconds_to_hour">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glam/build_seconds_to_hour/metadata.yaml">Edit</a></p>
-<h2 id="fenix_build_to_build_hour-udf">fenix_build_to_build_hour (UDF)</h2>
-<p>Returns a custom build id generated from the build hour of a Fenix build.</p>
-<h3 id="parameters_3">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>app_build_id STRING
+<h3 id="not_null-source">not_null (<a href="../../tests/checks/not_null.jinja">source</a>)</h3>
+<p>Usage:</p>
+<div class="highlight"><pre><span></span><code>Arguments:
+
+columns: List[str] - A list of columns which should not contain a null value.
+where: Optional[str] - A condition that will be injected into the `WHERE` clause of the check. For example, &quot;submission_date = @submission_date&quot; so that the check is only executed against a specific partition.
 </code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>STRING
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="err">{{</span><span class="w"> </span><span class="n">not_null</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
 </code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glam/fenix_build_to_build_hour">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glam/fenix_build_to_build_hour/metadata.yaml">Edit</a></p>
-<h2 id="histogram_generate_linear_buckets-udf">histogram_generate_linear_buckets (UDF)</h2>
-<p>Generate linear buckets for a histogram.</p>
-<h3 id="parameters_4">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>min FLOAT64, max FLOAT64, nBuckets FLOAT64
+<p>Please keep in mind the below checks can be combined and specified in the same <code>checks.sql</code> file. For example:</p>
+<div class="highlight"><pre><span></span><code><span class="err">{{</span><span class="w"> </span><span class="n">not_null</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">min_rows</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">is_unique</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;country&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="err">}}</span>
+<span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">in_range</span><span class="p">([</span><span class="ss">&quot;non_ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;reporting_ratio&quot;</span><span class="p">],</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">none</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
 </code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>ARRAY&lt;FLOAT64&gt;DETERMINISTIC
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glam/histogram_generate_linear_buckets">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glam/histogram_generate_linear_buckets/metadata.yaml">Edit</a></p>
-<h2 id="histogram_from_buckets_uniform-udf">histogram_from_buckets_uniform (UDF)</h2>
-<p>Create an empty histogram from an array of buckets.</p>
-<h3 id="parameters_5">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>buckets ARRAY&lt;STRING&gt;
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>ARRAY&lt;STRUCT&lt;key STRING, value FLOAT64&gt;&gt;
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glam/histogram_from_buckets_uniform">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glam/histogram_from_buckets_uniform/metadata.yaml">Edit</a></p>
-<h2 id="histogram_cast_json-udf">histogram_cast_json (UDF)</h2>
-<p>Cast a histogram into a JSON blob.</p>
-<h3 id="parameters_6">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>histogram ARRAY&lt;STRUCT&lt;key STRING, value FLOAT64&gt;&gt;
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>STRING DETERMINISTIC
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glam/histogram_cast_json">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glam/histogram_cast_json/metadata.yaml">Edit</a></p>
-<h2 id="histogram_fill_buckets-udf">histogram_fill_buckets (UDF)</h2>
-<p>Interpolate missing histogram buckets with empty buckets.</p>
-<h3 id="parameters_7">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>input_map ARRAY&lt;STRUCT&lt;key STRING, value FLOAT64&gt;&gt;, buckets ARRAY&lt;STRING&gt;
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>ARRAY&lt;STRUCT&lt;key STRING, value FLOAT64&gt;&gt;
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glam/histogram_fill_buckets">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glam/histogram_fill_buckets/metadata.yaml">Edit</a></p>
-<h2 id="map_from_array_offsets_precise-udf">map_from_array_offsets_precise (UDF)</h2>
-<h3 id="parameters_8">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>required ARRAY&lt;FLOAT64&gt;, `values` ARRAY&lt;FLOAT64&gt;
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>ARRAY&lt;STRUCT&lt;key STRING, value FLOAT64&gt;&gt;
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glam/map_from_array_offsets_precise">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glam/map_from_array_offsets_precise/metadata.yaml">Edit</a></p>
-<h2 id="histogram_generate_scalar_buckets-udf">histogram_generate_scalar_buckets (UDF)</h2>
-<p>Generate scalar buckets for a histogram using a fixed number of buckets.</p>
-<h3 id="parameters_9">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>min_bucket FLOAT64, max_bucket FLOAT64, num_buckets INT64
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>ARRAY&lt;FLOAT64&gt;DETERMINISTIC
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glam/histogram_generate_scalar_buckets">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glam/histogram_generate_scalar_buckets/metadata.yaml">Edit</a></p>
-<h2 id="histogram_generate_exponential_buckets-udf">histogram_generate_exponential_buckets (UDF)</h2>
-<p>Generate exponential buckets for a histogram.</p>
-<h3 id="parameters_10">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>min FLOAT64, max FLOAT64, nBuckets FLOAT64
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>ARRAY&lt;FLOAT64&gt;DETERMINISTIC
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glam/histogram_generate_exponential_buckets">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glam/histogram_generate_exponential_buckets/metadata.yaml">Edit</a></p>
-<h2 id="histogram_generate_functional_buckets-udf">histogram_generate_functional_buckets (UDF)</h2>
-<p>Generate functional buckets for a histogram. This is specific to Glean.</p>
-<p>See: <a href="https://github.com/mozilla/glean/blob/main/glean-core/src/histogram/functional.rs">https://github.com/mozilla/glean/blob/main/glean-core/src/histogram/functional.rs</a></p>
-<p>A functional bucketing algorithm. The bucket index of a given sample is
-determined with the following function:</p>
-<p>i = $$ \lfloor{n log_{\text{base}}{(x)}}\rfloor $$</p>
-<p>In other words, there are n buckets for each power of <code>base</code> magnitude.</p>
-<h3 id="parameters_11">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>log_base INT64, buckets_per_magnitude INT64, range_max INT64
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>ARRAY&lt;FLOAT64&gt;DETERMINISTIC
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glam/histogram_generate_functional_buckets">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glam/histogram_generate_functional_buckets/metadata.yaml">Edit</a></p>
-<h2 id="histogram_bucket_from_value-udf">histogram_bucket_from_value (UDF)</h2>
-<h3 id="parameters_12">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>buckets ARRAY&lt;STRING&gt;, val FLOAT64
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>FLOAT64
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glam/histogram_bucket_from_value">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glam/histogram_bucket_from_value/metadata.yaml">Edit</a></p>
-<h2 id="build_hour_to_datetime-udf">build_hour_to_datetime (UDF)</h2>
-<p>Parses the custom build id used for Fenix builds in GLAM to a datetime.</p>
-<h3 id="parameters_13">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>build_hour STRING
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>DATETIME
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glam/build_hour_to_datetime">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glam/build_hour_to_datetime/metadata.yaml">Edit</a></p>
-<h2 id="percentile-udf">percentile (UDF)</h2>
-<p>Get the value of the approximate CDF at the given percentile.</p>
-<h3 id="parameters_14">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>percentile FLOAT64, histogram ARRAY&lt;STRUCT&lt;key STRING, value FLOAT64&gt;&gt;, type STRING
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>FLOAT64 DETERMINISTIC
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glam/percentile">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glam/percentile/metadata.yaml">Edit</a></p>
-<h2 id="histogram_normalized_sum-udf">histogram_normalized_sum (UDF)</h2>
-<p>Compute the normalized sum of an array of histograms.</p>
-<h3 id="parameters_15">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>arrs ARRAY&lt;STRUCT&lt;key STRING, value INT64&gt;&gt;, weight FLOAT64
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>ARRAY&lt;STRUCT&lt;key STRING, value FLOAT64&gt;&gt;
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glam/histogram_normalized_sum">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glam/histogram_normalized_sum/metadata.yaml">Edit</a></p>
-<h2 id="map_from_array_offsets-udf">map_from_array_offsets (UDF)</h2>
-<h3 id="parameters_16">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>required ARRAY&lt;FLOAT64&gt;, `values` ARRAY&lt;FLOAT64&gt;
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>ARRAY&lt;STRUCT&lt;key STRING, value FLOAT64&gt;&gt;
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glam/map_from_array_offsets">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glam/map_from_array_offsets/metadata.yaml">Edit</a></p>
 
 
 

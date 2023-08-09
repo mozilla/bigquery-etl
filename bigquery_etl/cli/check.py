@@ -66,8 +66,6 @@ def check(ctx):
     """Create the CLI group for the check command."""
     # create temporary directory generated content is written to
     # the directory will be deleted automatically after the command exits
-    print(type(ctx))
-
     ctx.ensure_object(dict)
     ctx.obj["TMP_DIR"] = ctx.with_resource(tempfile.TemporaryDirectory())
 
@@ -97,13 +95,13 @@ def render(
         name, sql_dir, project_id=project_id
     )
 
-    return _render(
+    click.echo(_render(
         checks_file,
         dataset_id,
         table,
         project_id=project_id,
         query_arguments=ctx.args[:],
-    )
+    ))
 
 
 def _render(
@@ -148,7 +146,6 @@ def _render(
 
     rendered_check_query = reformat(rendered_check_query)
 
-    print(rendered_check_query)
     return rendered_check_query
 
 

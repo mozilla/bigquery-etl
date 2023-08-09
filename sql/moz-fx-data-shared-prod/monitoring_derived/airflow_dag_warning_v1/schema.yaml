@@ -1,0 +1,17 @@
+fields:
+- description:
+  mode: NULLABLE
+  name: timestamp
+  type: TIMESTAMP
+- description:
+  mode: NULLABLE
+  name: dag_id
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: warning_type
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: message
+  type: STRING

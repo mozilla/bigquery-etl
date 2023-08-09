@@ -1095,7 +1095,7 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="date",
-        depends_on_past=False,
+        depends_on_past=True,
     )
 
     wait_for_firefox_accounts_derived__fxa_auth_events__v1 = ExternalTaskSensor(

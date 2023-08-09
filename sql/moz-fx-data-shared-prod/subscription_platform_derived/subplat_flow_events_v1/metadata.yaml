@@ -8,6 +8,7 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_subplat
+  depends_on_past: true
   date_partition_parameter: date
 bigquery:
   time_partitioning:

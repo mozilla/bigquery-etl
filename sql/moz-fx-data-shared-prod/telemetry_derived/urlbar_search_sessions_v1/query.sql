@@ -39,8 +39,11 @@ WITH events_unnested AS (
       ELSE NULL
     END AS search_session_type,
     SPLIT(mozfun.map.get_key(extra, "results"), ',')[OFFSET(0)] AS result_type,
+    mozfun.norm.result_type_to_product_name(SPLIT(mozfun.map.get_key(extra, "results"), ',')[OFFSET(0)]) AS product_result_type,
     SPLIT(mozfun.map.get_key(extra, "results"), ',') AS results,
-    mozfun.map.get_key(extra, "selected_result") AS selected_results,
+    ARRAY(SELECT mozfun.norm.result_type_to_product_name(x) FROM UNNEST(SPLIT(mozfun.map.get_key(extra, "results"), ',')) AS x) AS product_results,
+    mozfun.map.get_key(extra, "selected_result") AS selected_result,
+    mozfun.norm.result_type_to_product_name(mozfun.map.get_key(extra, "selected_result")) AS product_selected_result,
     mozfun.map.get_key(extra, "engagement_type") AS engagement_type,
     mozfun.map.get_key(extra, "n_chars") AS number_of_chars_typed,
     mozfun.map.get_key(extra, "n_results") AS num_total_results,

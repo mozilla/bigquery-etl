@@ -10,7 +10,7 @@ scheduling:
   referenced_tables:
     - [
       'moz-fx-data-bq-fivetran',
-      'airflow_metadata_airflow_db',
+      'telemetry_airflow_metadata_public',
       'task_reschedule'
     ]
   depends_on_fivetran:

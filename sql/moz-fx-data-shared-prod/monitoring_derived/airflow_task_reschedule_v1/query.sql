@@ -7,6 +7,6 @@ SELECT
   end_date,
   duration,
 FROM
-  `moz-fx-data-bq-fivetran.airflow_metadata_airflow_db.task_reschedule`
+  `moz-fx-data-bq-fivetran.telemetry_airflow_metadata_public.task_reschedule`
 WHERE
   NOT _fivetran_deleted

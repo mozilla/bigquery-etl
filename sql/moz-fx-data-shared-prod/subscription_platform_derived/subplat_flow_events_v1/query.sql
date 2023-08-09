@@ -1,7 +1,7 @@
 WITH new_flow_events AS (
   SELECT
     `timestamp` AS log_timestamp,
-    event_time,
+    COALESCE(event_time, `timestamp`) AS event_time,
     event_type,
     flow_id,
     user_id AS mozilla_account_id_sha256,

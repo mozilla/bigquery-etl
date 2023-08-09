@@ -81,6 +81,7 @@ events_summary AS (
       ELSE NULL
     END AS product_engaged_result_type,
     result_type,
+    product_result_type,
     number_of_chars_typed,
     num_total_results,
     CASE

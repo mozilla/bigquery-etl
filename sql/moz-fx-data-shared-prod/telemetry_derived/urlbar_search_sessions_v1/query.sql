@@ -89,36 +89,20 @@ events_summary AS (
         THEN engagement_type
       ELSE NULL
     END AS annoyance_signal_type,
-    COUNTIF(
-      res IN ('search_suggest', 'search_history', 'search_suggest_rich')
-    ) AS num_default_partner_search_suggestions,
-    COUNTIF(res IN ('searchengine')) AS num_search_engine_suggestions_impressions,
-    COUNTIF(
-      res IN ('trending_search', 'trending_search_rich')
-    ) AS num_trending_suggestions_impressions,
-    COUNTIF(res IN ('history')) AS num_history_impressions,
-    COUNTIF(res IN ('bookmark', 'keyword')) AS num_bookmarks_impressions,
-    COUNTIF(res IN ('tabs')) AS num_open_tabs_impressions,
-    COUNTIF(
-      res IN ('merino_adm_sponsored', 'rs_adm_sponsored', 'suggest_sponsor')
-    ) AS admarketplace_sponsored_impressions,
-    COUNTIF(res IN ('merino_top_picks')) AS num_navigations_impressions,
-    COUNTIF(res IN ('addon', 'rs_amo')) AS num_add_on_impressions,
-    COUNTIF(
-      res IN ('rs_adm_nonsponsored', 'merino_adm_nonsponsored', 'suggest_non_sponsor')
-    ) AS num_wikipedia_enhanced_impressions,
-    COUNTIF(res IN ('dynamic_wikipedia', 'merino_wikipedia')) AS num_wikipedia_dynamic_impressions,
-    COUNTIF(res IN ('weather')) AS num_weather_impressions,
-    COUNTIF(
-      res IN (
-        'action',
-        'intervention_clear',
-        'intervention_refresh',
-        'intervention_unknown',
-        'intervention_update'
-      )
-    ) AS num_quick_actions_impressions,
-    COUNTIF(res IN ('rs_pocket')) AS num_pocket_collection_impressions,
+    COUNTIF(res = 'default_partner_search_suggestion') AS num_default_partner_search_suggestion_impressions,
+    COUNTIF(res = 'search_engine_suggestion') AS num_search_engine_suggestion_impressions,
+    COUNTIF(res = 'trending_suggestion') AS num_trending_suggestion_impressions,
+    COUNTIF(res = 'history') AS num_history_impressions,
+    COUNTIF(res = 'bookmark')) AS num_bookmark_impressions,
+    COUNTIF(res  = 'open_tabs') AS num_open_tabs_impressions,
+    COUNTIF(res = 'admarketplace_sponsored') AS admarketplace_sponsored_impressions,
+    COUNTIF(res = 'navigational') AS num_navigational_impressions,
+    COUNTIF(res = 'add_on') AS num_add_on_impressions,
+    COUNTIF(res = 'wikipedia_enhanced') AS num_wikipedia_enhanced_impressions,
+    COUNTIF(res = 'wikipedia_dynamic') AS num_wikipedia_dynamic_impressions,
+    COUNTIF(res = 'weather') AS num_weather_impressions,
+    COUNTIF(res = 'quick_action') AS num_quick_actions_impressions,
+    COUNTIF(res = 'pocket_collection') AS num_pocket_collection_impressions,
     legacy_telemetry_client_id,
     client_id AS glean_metrics_client_id,
     ARRAY_CONCAT_AGG(experiments) AS experiments

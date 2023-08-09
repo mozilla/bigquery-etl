@@ -16,16 +16,27 @@ When adding additional checks there should be no need to have to regenerate the 
 
 ## Removing checks.sql
 
-All checks can be removed by deleleting the `checks.sql` file and regenerating the DAG responsible for scheduling the query.
+All checks can be removed by deleting the `checks.sql` file and regenerating the DAG responsible for scheduling the query.
 
 Alternatively, specific checks can be removed by deleting them from the `checks.sql` file.
 
 ## Example checks.sql
 
+Checks can either be written as raw SQL, or by referencing existing Jinja macros defined in [`tests/checks`](https://github.com/mozilla/bigquery-etl/tree/main/tests/checks) which may take different parameters used to generate the SQL check expression.
 Example of what a `checks.sql` may look like:
 
 ```sql
-{{ not_null(["submission_date", "os"], "submission_date = @submission_date") }}
+-- raw SQL checks
+ASSERT (
+  SELECT 
+    COUNTIF(ISNULL(country)) / COUNT(*) 
+    FROM telemetry.table_v1 
+    WHERE submission_date = @submission_date
+  ) > 0.2
+) AS "More than 20% of clients have country set to NULL";
+
+-- macro checks
+  {{ not_null(["submission_date", "os"], "submission_date = @submission_date") }}
  {{ min_rows(1, "submission_date = @submission_date") }}
  {{ is_unique(["submission_date", "os", "country"], "submission_date = @submission_date")}}
  {{ in_range(["non_ssl_loads", "ssl_loads", "reporting_ratio"], 0, none, "submission_date = @submission_date") }}

@@ -4,13 +4,15 @@
 
 ## Background
 
-To create more confidence and trust in our data is crucial to provide some form of data checks. These checks should uncover problems as soon as possible, ideally as part of the data process creating the data. This includes checking that the data produced follows certain "assumptions" determined by the dataset owner. These "assumptions" need to be easy to define, but at the same time flexible enough to encode more complex business logic. For example, checks for null columns, for range/size properties, duplicates, table grain etc.
+To create more confidence and trust in our data is crucial to provide some form of data checks. These checks should uncover problems as soon as possible, ideally as part of the data process creating the data. This includes checking that the data produced follows certain assumptions determined by the dataset owner. These assumptions need to be easy to define, but at the same time flexible enough to encode more complex business logic. For example, checks for null columns, for range/size properties, duplicates, table grain etc.
 
 ## bqetl data checks to the rescue
 
 bqetl data checks aim to provide this ability by providing a simple interface for specifying our "assumptions" about the data the query should produce and checking them against the actual result.
 
-This easy interface is achieved by providing a number of jinja templates providing "out-of-the-box" logic for performing a number of common checks without having to rewrite the logic. For example, checking if any nulls are present in a specific column. These templates can be found [here](../../tests/checks/) and are available as jinja macros inside the `checks.sql` files. This allows to "configure" the logic by passing some details relevant to our specific dataset. Take a look at the examples below for practical examples.
+This easy interface is achieved by providing a number of jinja templates providing "out-of-the-box" logic for performing a number of common checks without having to rewrite the logic. For example, checking if any nulls are present in a specific column. These templates can be found [here](../../tests/checks/) and are available as jinja macros inside the `checks.sql` files. This allows to "configure" the logic by passing some details relevant to our specific dataset. Check templates will get rendered as raw SQL expressions. Take a look at the examples below for practical examples.
+
+It is also possible to write checks using raw SQL by using assertions. This is, for example, useful when writing checks for custom business logic.
 
 ## data checks available with examples
 

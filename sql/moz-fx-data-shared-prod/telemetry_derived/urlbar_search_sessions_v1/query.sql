@@ -82,7 +82,7 @@ events_summary AS (
     END AS product_engaged_result_type,
     result_type,
     product_result_type,
-    number_of_chars_typed,
+    num_chars_typed,
     num_total_results,
     CASE
       WHEN search_session_type = 'annoyance'

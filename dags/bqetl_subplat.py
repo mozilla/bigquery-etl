@@ -1564,6 +1564,14 @@ with DAG(
         stripe_external__subscriptions_changelog__v1
     )
 
+    subscription_platform_derived__subplat_attribution_impressions__v1.set_upstream(
+        subscription_platform_derived__services__v1
+    )
+
+    subscription_platform_derived__subplat_attribution_impressions__v1.set_upstream(
+        subscription_platform_derived__subplat_flow_events__v1
+    )
+
     subscription_platform_derived__subplat_flow_events__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_auth_events__v1
     )

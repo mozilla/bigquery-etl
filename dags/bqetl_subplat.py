@@ -1087,6 +1087,18 @@ with DAG(
         depends_on_past=False,
     )
 
+    subscription_platform_derived__subplat_attribution_impressions__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__subplat_attribution_impressions__v1",
+        destination_table="subplat_attribution_impressions_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["date:DATE:{{ds}}"],
+    )
+
     subscription_platform_derived__subplat_flow_events__v1 = bigquery_etl_query(
         task_id="subscription_platform_derived__subplat_flow_events__v1",
         destination_table="subplat_flow_events_v1",

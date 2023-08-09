@@ -1,0 +1,25 @@
+friendly_name: SubPlat attribution impressions
+description: |-
+  Subscription service attribution impressions from SubPlat logs.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  depends_on_past: true
+  # The whole table is overwritten every time, not a specific date partition.
+  date_partition_parameter: null
+  parameters:
+  - 'date:DATE:{{ds}}'
+bigquery:
+  time_partitioning:
+    type: day
+    field: impression_at
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - flow_id
+references: {}

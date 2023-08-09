@@ -67,6 +67,18 @@ with DAG(
         task_concurrency=1,
     )
 
+    google_ads_derived__daily_ad_group_stats__v1 = bigquery_etl_query(
+        task_id="google_ads_derived__daily_ad_group_stats__v1",
+        destination_table="daily_ad_group_stats_v1",
+        dataset_id="google_ads_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     google_ads_derived__daily_campaign_stats__v1 = bigquery_etl_query(
         task_id="google_ads_derived__daily_campaign_stats__v1",
         destination_table="daily_campaign_stats_v1",

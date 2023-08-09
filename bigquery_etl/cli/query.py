@@ -490,13 +490,19 @@ def _backfill_query(
     backfill_date = backfill_date.strftime("%Y-%m-%d")
     if backfill_date not in exclude:
         if destination_table is None:
-            destination_table = table
+            destination_table = f"{project}.{dataset}.{table}"
 
         if not no_partition:
             destination_table = f"{destination_table}${partition}"
 
+        if not QUALIFIED_TABLE_NAME_RE.match(destination_table):
+            click.echo(
+                "Destination table must be named like:" + " <project>.<dataset>.<table>"
+            )
+            sys.exit(1)
+
         click.echo(
-            f"Run backfill for {project}.{dataset}.{destination_table} "
+            f"Run backfill for {destination_table} "
             f"with @{date_partition_parameter}={backfill_date}"
         )
 
@@ -1591,7 +1597,7 @@ def _update_query_schema(
         click.echo(f"{query_file} dry runs are skipped. Cannot update schemas.")
         return
 
-    tmp_tables = copy.copy(tmp_tables)
+    tmp_tables = copy.deepcopy(tmp_tables)
     query_file_path = Path(query_file)
     existing_schema_path = query_file_path.parent / SCHEMA_FILE
     project_name, dataset_name, table_name = extract_from_query_path(query_file_path)

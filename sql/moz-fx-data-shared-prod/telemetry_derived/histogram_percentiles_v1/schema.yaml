@@ -1,0 +1,79 @@
+fields:
+- mode: NULLABLE
+  name: app_version
+  type: INTEGER
+
+- mode: NULLABLE
+  name: app_build_id
+  type: STRING
+
+- mode: NULLABLE
+  name: channel
+  type: STRING
+
+- mode: NULLABLE
+  name: metric
+  type: STRING
+
+- mode: NULLABLE
+  name: metric_type
+  type: STRING
+
+- mode: NULLABLE
+  name: key
+  type: STRING
+
+- mode: NULLABLE
+  name: process
+  type: STRING
+
+
+- mode: NULLABLE
+  name: first_bucket
+  type: INTEGER
+
+- mode: NULLABLE
+  name: last_bucket
+  type: INTEGER
+
+- mode: NULLABLE
+  name: num_buckets
+  type: INTEGER
+
+- mode: NULLABLE
+  name: client_agg_type
+  type: STRING
+
+- mode: NULLABLE
+  name: agg_type
+  type: STRING
+
+- mode: NULLABLE
+  name: total_users
+  type: INTEGER
+
+- fields:
+  - mode: NULLABLE
+    name: KEY
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: FLOAT
+  mode: REPEATED
+  name: aggregates
+  type: RECORD
+
+- fields:
+  - mode: NULLABLE
+    name: KEY
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: FLOAT
+  mode: REPEATED
+  name: non_norm_aggregates
+  type: RECORD
+
+- name: os
+  type: STRING
+  mode: NULLABLE

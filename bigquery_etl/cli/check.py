@@ -5,9 +5,12 @@ import sys
 import tempfile
 from pathlib import Path
 from subprocess import CalledProcessError
+from typing import List, Optional, Union
 
 import click
 import sqlparse
+
+from bigquery_etl.format_sql.formatter import reformat
 
 from ..cli.utils import (
     is_authenticated,
@@ -36,6 +39,9 @@ def _build_jinja_parameters(query_args):
                 if param_and_value[0].startswith("--"):
                     parameters[param_and_value[0].strip("--")] = param_and_value[1]
         else:
+            if query_arg == "--dry_run":
+                continue
+
             print(f"parameter {query_arg} will not be used to render Jinja template.")
     return parameters
 
@@ -66,6 +72,89 @@ def check(ctx):
 
 @check.command(
     help="""
+    Render ETL checks query. Also, renders query parameters if passed.
+s    \b
+
+    Example:
+     ./bqetl check render ga_derived.downloads_with_attribution_v2 --parameter=download_date:DATE:2023-05-01
+    """,
+    context_settings=dict(
+        ignore_unknown_options=True,
+        allow_extra_args=True,
+    ),
+)
+@click.argument("name")
+@project_id_option()
+@sql_dir_option
+@click.pass_context
+def render(
+    ctx: click.Context, name: str, project_id: Optional[str], sql_dir: Optional[str]
+) -> None:
+    """Render a check's Jinja template."""
+    checks_file, project_id, dataset_id, table = paths_matching_checks_pattern(
+        name, sql_dir, project_id=project_id
+    )
+
+    click.echo(
+        _render(
+            checks_file,
+            dataset_id,
+            table,
+            project_id=project_id,
+            query_arguments=ctx.args[:],
+        )
+    )
+
+    return None
+
+
+def _render(
+    checks_file: Path,
+    dataset_id: str,
+    table: str,
+    project_id: Union[str, None] = None,
+    query_arguments: List[str] = list(),
+):
+    if checks_file is None:
+        return
+
+    checks_file = Path(checks_file)
+
+    query_arguments.append("--use_legacy_sql=false")
+
+    if project_id is not None:
+        query_arguments.append(f"--project_id={project_id}")
+
+    # Convert all the Airflow params to jinja usable dict.
+    parameters = _build_jinja_parameters(query_arguments)
+
+    jinja_params = {
+        **{"dataset_id": dataset_id, "table_name": table},
+        **parameters,
+    }
+
+    rendered_check_query = render_template(
+        checks_file.name,
+        template_folder=str(checks_file.parent),
+        templates_dir="",
+        format=False,
+        **jinja_params,
+    )
+
+    # replace query @params with param values passed via the cli
+    for param, value in parameters.items():
+        if param in rendered_check_query:
+            rendered_check_query = rendered_check_query.replace(
+                f"@{param}", f'"{value}"'
+            )
+
+    rendered_check_query = reformat(rendered_check_query)
+
+    return rendered_check_query
+
+
+@check.command(
+    help="""
     Run ETL checks.
 s    \b
 
@@ -80,8 +169,15 @@ s    \b
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
+@click.option(
+    "--dry_run",
+    "--dry-run",
+    is_flag=True,
+    default=False,
+    help="To dry run the query to make sure it is valid",
+)
 @click.pass_context
-def run(ctx, name, project_id, sql_dir):
+def run(ctx, name, project_id, sql_dir, dry_run):
     """Run a check."""
     if not is_authenticated():
         click.echo(
@@ -100,6 +196,7 @@ def run(ctx, name, project_id, sql_dir):
         dataset_id,
         table,
         ctx.args,
+        dry_run=dry_run,
     )
 
 
@@ -109,6 +206,7 @@ def _run_check(
     dataset_id,
     table,
     query_arguments,
+    dry_run=False,
 ):
     """Run the check."""
     if checks_file is None:
@@ -119,6 +217,9 @@ def _run_check(
     query_arguments.append("--use_legacy_sql=false")
     if project_id is not None:
         query_arguments.append(f"--project_id={project_id}")
+
+    if dry_run is True:
+        query_arguments.append("--dry_run")
 
     # Convert all the Airflow params to jinja usable dict.
     parameters = _build_jinja_parameters(query_arguments)

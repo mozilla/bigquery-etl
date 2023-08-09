@@ -136,7 +136,7 @@ class DryRun:
                     *(
                         param.split(":", 1)[0]
                         for param in self.metadata.scheduling.get("parameters", [])
-                        if re.fullmatch(r"[^:]+:DATE:{{\s*ds\s*}}", param)
+                        if re.fullmatch(r"[^:]+:DATE:{{.*ds.*}}", param)
                     ),
                 )
                 if query_param and query_param != "submission_date"

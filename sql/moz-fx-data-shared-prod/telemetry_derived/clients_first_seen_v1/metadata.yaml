@@ -11,6 +11,8 @@ labels:
   application: firefox
   incremental: true
   schedule: daily
+  dag: bqetl_main_summary
+  owner1: jklukas
 scheduling:
   dag_name: bqetl_main_summary
   start_date: '2020-05-05'
@@ -27,11 +29,17 @@ bigquery:
     type: day
     field: first_seen_date
     require_partition_filter: false
+    expiration_days: null
   clustering:
     fields:
     - normalized_channel
     - sample_id
 schema:
   derived_from:
-  - table: ['moz-fx-data-shared-prod', 'telemetry_derived', 'clients_daily_v6']
-    exclude: [submission_date]
+  - table:
+    - moz-fx-data-shared-prod
+    - telemetry_derived
+    - clients_daily_v6
+    exclude:
+    - submission_date
+references: {}

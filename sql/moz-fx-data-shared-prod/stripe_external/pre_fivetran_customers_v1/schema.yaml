@@ -12,6 +12,9 @@ fields:
   name: address_state
   type: STRING
 - mode: NULLABLE
+  name: created
+  type: TIMESTAMP
+- mode: NULLABLE
   name: is_deleted
   type: BOOLEAN
 - mode: NULLABLE

@@ -3,7 +3,7 @@ fields:
 - mode: NULLABLE
   name: date
   type: DATE
-  description: date of the report
+  description: date of the report and field that the table is partitioned by
 
 - mode: NULLABLE
   name: app

@@ -89,19 +89,23 @@ s    \b
 @click.pass_context
 def render(
     ctx: click.Context, name: str, project_id: Optional[str], sql_dir: Optional[str]
-) -> str:
+) -> None:
     """Render a check's Jinja template."""
     checks_file, project_id, dataset_id, table = paths_matching_checks_pattern(
         name, sql_dir, project_id=project_id
     )
 
-    click.echo(_render(
-        checks_file,
-        dataset_id,
-        table,
-        project_id=project_id,
-        query_arguments=ctx.args[:],
-    ))
+    click.echo(
+        _render(
+            checks_file,
+            dataset_id,
+            table,
+            project_id=project_id,
+            query_arguments=ctx.args[:],
+        )
+    )
+
+    return None
 
 
 def _render(

@@ -14,7 +14,6 @@ THIS_PATH = Path(os.path.dirname(__file__))
 TABLE_NAME = "active_users_aggregates"
 DATASET_FOR_UNIONED_VIEWS = "telemetry"
 DESKTOP_TABLE_VERSION = "v1"
-FOCUS_ANDROID_TABLE_VERSION = "v2"
 MOBILE_TABLE_VERSION = "v2"
 
 
@@ -86,49 +85,31 @@ def generate(target_project, output_dir, use_cloud_function):
                 )
             )
         if browser.name == "firefox_desktop":
-            write_sql(
-                output_dir=output_dir,
-                full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v1",
-                basename="query.sql",
-                sql=query_sql,
-                skip_existing=False,
-            )
-
-            write_sql(
-                output_dir=output_dir,
-                full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v1",
-                basename="metadata.yaml",
-                sql=render(
-                    metadata_template,
-                    template_folder=THIS_PATH / "templates",
-                    app_value=browser.value,
-                    app_name=browser.name,
-                    format=False,
-                ),
-                skip_existing=False,
-            )
+            current_version = DESKTOP_TABLE_VERSION
         else:
-            write_sql(
-                output_dir=output_dir,
-                full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v2",
-                basename="query.sql",
-                sql=query_sql,
-                skip_existing=False,
-            )
+            current_version = MOBILE_TABLE_VERSION
+           
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_{current_version}",
+            basename="query.sql",
+            sql=query_sql,
+            skip_existing=False,
+        )
 
-            write_sql(
-                output_dir=output_dir,
-                full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v2",
-                basename="metadata.yaml",
-                sql=render(
-                    metadata_template,
-                    template_folder=THIS_PATH / "templates",
-                    app_value=browser.value,
-                    app_name=browser.name,
-                    format=False,
-                ),
-                skip_existing=False,
-            )
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_{current_version}",
+            basename="metadata.yaml",
+            sql=render(
+                metadata_template,
+                template_folder=THIS_PATH / "templates",
+                app_value=browser.value,
+                app_name=browser.name,
+                format=False,
+            ),
+            skip_existing=False,
+        )
 
 
         if browser.name == "focus_android":
@@ -140,7 +121,7 @@ def generate(target_project, output_dir, use_cloud_function):
                     focus_android_view_template.render(
                         project_id=target_project,
                         app_name=browser.name,
-                        table_version=FOCUS_ANDROID_TABLE_VERSION,
+                        table_version=MOBILE_TABLE_VERSION,
                     )
                 ),
                 skip_existing=False,

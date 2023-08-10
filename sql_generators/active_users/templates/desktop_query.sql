@@ -36,10 +36,6 @@ WITH todays_metrics AS (
     attribution.medium AS attribution_medium,
     attribution.medium IS NOT NULL
     OR attribution.source IS NOT NULL AS attributed,
-    attribution.campaign AS attribution_campaign,
-    attribution.content AS attribution_content,
-    attribution.experiment AS attribution_experiment,
-    attribution.variation AS attribution_variation,
     ad_clicks_count_all AS ad_click,
     search_count_organic AS organic_search_count,
     search_count_all AS search_count,
@@ -111,8 +107,4 @@ GROUP BY
   os_version_major,
   os_version_minor,
   submission_date,
-  segment,
-  attribution_campaign,
-  attribution_content,
-  attribution_experiment,
-  attribution_variation
+  segment

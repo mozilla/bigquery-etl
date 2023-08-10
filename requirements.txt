@@ -622,9 +622,9 @@ jinja2==3.1.2 \
     #   mkdocs
     #   mkdocs-material
     #   mozilla-metric-config-parser
-jsonschema==4.18.4 \
-    --hash=sha256:971be834317c22daaa9132340a51c01b50910724082c2c1a2ac87eeec153a3fe \
-    --hash=sha256:fb3642735399fa958c0d2aad7057901554596c63349f4f6b283c493cf692a25d
+jsonschema==4.19.0 \
+    --hash=sha256:043dc26a3845ff09d20e4420d6012a9c91c9aa8999fa184e7efcfeccb41e32cb \
+    --hash=sha256:6e1e7569ac13be8139b2dd2c21a55d350066ee3f80df06c608b398cdc6f30e8f
     # via
     #   -r requirements.in
     #   mozilla-schema-generator
@@ -722,9 +722,9 @@ mkdocs-awesome-pages-plugin==2.9.1 \
     --hash=sha256:be65e36444f5d991f87a90dae37de64e932562f99e362078724c27124834b90a \
     --hash=sha256:faf5241365f94c1f65ef3cad7ea9d6f0e7a436be7f06013c79c4045db0b2eafc
     # via -r requirements.in
-mkdocs-material==9.1.20 \
-    --hash=sha256:152db66f667825d5aa3398386fe4d227640ec393c31e7cf109b114a569fc40fc \
-    --hash=sha256:91621b6a6002138c72d50a0beef20ed12cf367d2af27d1f53382562b3a9625c7
+mkdocs-material==9.1.21 \
+    --hash=sha256:58bb2f11ef240632e176d6f0f7d1cff06be1d11c696a5a1b553b808b4280ed47 \
+    --hash=sha256:71940cdfca84ab296b6362889c25395b1621273fb16c93deda257adb7ff44ec8
     # via -r requirements.in
 mkdocs-material-extensions==1.1.1 \
     --hash=sha256:9c003da71e2cc2493d910237448c672e00cefc800d3d6ae93d2fc69979e3bd93 \
@@ -971,9 +971,9 @@ pathspec==0.11.2 \
     #   black
     #   mkdocs
     #   yamllint
-pip-tools==7.1.0 \
-    --hash=sha256:4e60b7d05b046f49ad5bf3c2818df8e78dec5820e9b331cd9898cff5ec19ff2f \
-    --hash=sha256:f6ead499e726c8cfee04b2dea6282a9faf29663c378d9a4aca2ea6b86c8ec715
+pip-tools==7.3.0 \
+    --hash=sha256:8717693288720a8c6ebd07149c93ab0be1fced0b5191df9e9decd3263e20d85e \
+    --hash=sha256:8e9c99127fe024c025b46a0b2d15c7bd47f18f33226cf7330d35493663fc1d1d
     # via -r requirements.in
 platformdirs==2.6.2 \
     --hash=sha256:83c8f6d04389165de7c9b6f0c682439697887bca0aa2f1c87ef1826be3584490 \
@@ -1473,9 +1473,9 @@ snowballstemmer==2.2.0 \
     --hash=sha256:09b16deb8547d3412ad7b590689584cd0fe25ec8db3be37788be3810cbf19cb1 \
     --hash=sha256:c8e1716e83cc398ae16824e5572ae04e0d9fc2c6b985fb0f900f5f0c96ecba1a
     # via pydocstyle
-sqlglot==17.8.0 \
-    --hash=sha256:2b62a9e620fa39d4f237e8c53ada5d822f5f90fe76b581db8fe96c96b2c62ab9 \
-    --hash=sha256:482462f80f7a4b307c2089fde051daf58e4962784caff1a4641f4deebf954aac
+sqlglot==17.10.2 \
+    --hash=sha256:95cf495235a3035f5b0a414d18b7943fbf39e118bd6ee69ad3d1ffbfff2c4820 \
+    --hash=sha256:e7e2c6999c25a7b53b21f017fafd78177cea3cb8b5f8f084c6c0b334012290da
     # via -r requirements.in
 sqlparse==0.4.4 \
     --hash=sha256:5430a4fe2ac7d0f93e66f1efc6e1338a41884b7ddf2a350cedd20ccc4d9d28f3 \

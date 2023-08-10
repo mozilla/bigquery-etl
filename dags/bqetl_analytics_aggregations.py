@@ -127,7 +127,7 @@ with DAG(
 
     firefox_desktop_active_users_aggregates = bigquery_etl_query(
         task_id="firefox_desktop_active_users_aggregates",
-         destination_table="active_users_aggregates_v1",
+        destination_table="active_users_aggregates_v1",
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",

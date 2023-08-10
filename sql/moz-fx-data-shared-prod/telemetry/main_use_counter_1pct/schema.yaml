@@ -7427,6 +7427,12 @@ fields:
     - name: use_counter2_deprecated_math_ml_deprecated_math_space_value2_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_youtubeflashembed_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_youtubeflashembed_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -14721,6 +14727,12 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_deprecated_math_ml_deprecated_math_space_value2_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_youtubeflashembed_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_youtubeflashembed_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

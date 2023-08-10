@@ -9,7 +9,7 @@ SELECT
   concurrency,
   max_active_runs,
 FROM
-  `moz-fx-data-bq-fivetran.airflow_metadata_airflow_db.dag`
+  `moz-fx-data-bq-fivetran.telemetry_airflow_metadata_public.dag`
 WHERE
   NOT _fivetran_deleted
   AND is_active

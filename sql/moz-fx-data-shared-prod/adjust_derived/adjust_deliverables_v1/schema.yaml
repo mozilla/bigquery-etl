@@ -3,69 +3,114 @@ fields:
 - mode: NULLABLE
   name: date
   type: DATE
+  description: date of the report and field that the table is partitioned by
+
 - mode: NULLABLE
   name: app
   type: STRING
+  description: name of the application such as Firefox iOS and Android, pocket
+
 - mode: NULLABLE
   name: app_token
   type: STRING
+  description: unique token for the app
+
 - mode: NULLABLE
   name: network
   type: STRING
+  description: network name ex. Organic, Facebook Installs
+
 - mode: NULLABLE
   name: network_token
   type: STRING
+  description: unique token for the app
+
 - mode: NULLABLE
   name: campaign
   type: STRING
+  description: campaign name ex. firefox, QR, Anonymous IPs
+
 - mode: NULLABLE
   name: campaign_token
   type: STRING
+  description: unique token for the campaign
+
 - mode: NULLABLE
   name: adgroup
   type: STRING
+  description: adgroup name ex. mr2022-control, app-store-banner, Search
+
 - mode: NULLABLE
   name: adgroup_token
   type: STRING
+  description: unique token for adgroup
+
 - mode: NULLABLE
   name: creative
   type: STRING
+  description: creative name ex. Search GoogleSearch, Display
+
 - mode: NULLABLE
   name: creative_token
   type: STRING
+  description: unique token for creative
+
 - mode: NULLABLE
   name: country
   type: STRING
+  description: country name - two letter abbreviation
+
 - mode: NULLABLE
   name: os
   type: STRING
+  description: os name ex. ios, android
+
 - mode: NULLABLE
   name: device
   type: STRING
+  description: device type ex. tablet, phone,
+
 - mode: NULLABLE
   name: clicks
   type: INTEGER
+  description: number of clicks
+
 - mode: NULLABLE
   name: installs
   type: INTEGER
+  description: number of installs
+
 - mode: NULLABLE
   name: limit_ad_tracking_install_rate
   type: FLOAT
+  description: rate of limit ad tracking installs
+
 - mode: NULLABLE
   name: click_conversion_rate
   type: FLOAT
+  description: conversion rate for clicks
+
 - mode: NULLABLE
   name: impression_conversion_rate
   type: FLOAT
+  descrption: conversion rate for impressions
+
 - mode: NULLABLE
   name: sessions
   type: INTEGER
+  description: number of sessions
+
 - mode: NULLABLE
   name: daus
   type: INTEGER
+  description: daily active users
+
 - mode: NULLABLE
   name: waus
   type: INTEGER
+  description: weekly active users
+
 - mode: NULLABLE
   name: maus
   type: INTEGER
+  description: monthly active users

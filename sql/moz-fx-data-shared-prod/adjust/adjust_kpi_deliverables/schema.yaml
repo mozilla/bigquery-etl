@@ -2,9 +2,11 @@ fields:
 - name: date
   type: DATE
   mode: NULLABLE
+  description: date of the report and field that the table is partitioned by
 - name: app
   type: STRING
   mode: NULLABLE
+  description: name of the application such as Firefox iOS and Android, pocket
 - name: network
   type: STRING
   mode: NULLABLE

@@ -2,15 +2,20 @@ fields:
 - name: cohort_start_month
   type: DATE
   mode: NULLABLE
+  description: first day of the month when cohort starts being recorded
 - name: period_length
   type: STRING
   mode: NULLABLE
+  description: length of period - in this table period is set to month
 - name: period
   type: INTEGER
   mode: NULLABLE
+  description: period number - number of period(months) between cohort start month
+    and date data is recorded
 - name: app
   type: STRING
   mode: NULLABLE
+  description: application name ex. Firefox iOS and Android, pocket
 - name: network
   type: STRING
   mode: NULLABLE

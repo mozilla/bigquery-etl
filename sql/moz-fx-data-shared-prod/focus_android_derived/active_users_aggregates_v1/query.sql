@@ -74,7 +74,6 @@ search_clients AS (
     `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
   WHERE
     submission_date = @submission_date
-    AND app_name = 'Focus Android'
 ),
 search_metrics AS (
   SELECT

@@ -1,5 +1,20 @@
 --- Query generated via sql_generators.active_users.
-WITH baseline AS (
+WITH attribution_data AS (
+  SELECT
+    client_id,
+    adjust_network,
+    install_source
+  FROM
+    fenix.firefox_android_clients
+  UNION ALL
+  SELECT
+    client_id,
+    adjust_network,
+    CAST(NULL AS STRING) install_source
+  FROM
+    firefox_ios.firefox_ios_clients
+),
+baseline AS (
   SELECT
     submission_date,
     normalized_channel,
@@ -21,9 +36,9 @@ WITH baseline AS (
     is_default_browser,
     CAST(NULL AS string) AS distribution_id,
     isp,
-    IF(isp = 'BrowserStack', CONCAT('Fenix', ' BrowserStack'), 'Fenix') AS app_name
+    IF(isp = 'BrowserStack', CONCAT('Klar iOS', ' BrowserStack'), 'Klar iOS') AS app_name
   FROM
-    `moz-fx-data-shared-prod.fenix.clients_last_seen_joined`
+    `moz-fx-data-shared-prod.klar_ios.clients_last_seen_joined`
   WHERE
     submission_date = @submission_date
 ),
@@ -131,6 +146,18 @@ baseline_with_searches AS (
     search.client_id = baseline.client_id
     AND search.submission_date = baseline.submission_date
 ),
+baseline_with_searches_and_attribution AS (
+  SELECT
+    baseline.*,
+    attribution_data.install_source,
+    attribution_data.adjust_network
+  FROM
+    baseline_with_searches baseline
+  LEFT JOIN
+    attribution_data
+  USING
+    (client_id)
+),
 todays_metrics AS (
   SELECT
     activity_segment AS segment,
@@ -161,8 +188,10 @@ todays_metrics AS (
     search_with_ads,
     uri_count,
     active_hours_sum,
+    adjust_network,
+    install_source
   FROM
-    baseline_with_searches
+    baseline_with_searches_and_attribution
 ),
 todays_metrics_enriched AS (
   SELECT
@@ -222,4 +251,6 @@ GROUP BY
   os_version_major,
   os_version_minor,
   submission_date,
-  segment
+  segment,
+  adjust_network,
+  install_source

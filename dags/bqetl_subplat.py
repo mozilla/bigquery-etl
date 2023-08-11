@@ -1505,6 +1505,14 @@ with DAG(
     )
 
     subscription_platform_derived__stripe_logical_subscriptions_history__v1.set_upstream(
+        stripe_external__card__v1
+    )
+
+    subscription_platform_derived__stripe_logical_subscriptions_history__v1.set_upstream(
+        stripe_external__charge__v1
+    )
+
+    subscription_platform_derived__stripe_logical_subscriptions_history__v1.set_upstream(
         stripe_external__invoice__v1
     )
 

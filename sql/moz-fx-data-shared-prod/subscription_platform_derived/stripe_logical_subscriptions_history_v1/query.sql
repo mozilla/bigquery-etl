@@ -24,6 +24,45 @@ paypal_subscriptions AS (
     `moz-fx-data-shared-prod.stripe_external.invoice_v1`
   WHERE
     JSON_VALUE(metadata, '$.paypalTransactionId') IS NOT NULL
+),
+subscription_charges AS (
+  SELECT
+    invoices.subscription_id,
+    charges.created,
+    charges.status,
+    cards.country AS card_country
+  FROM
+    `moz-fx-data-shared-prod.stripe_external.charge_v1` AS charges
+  JOIN
+    `moz-fx-data-shared-prod.stripe_external.invoice_v1` AS invoices
+  ON
+    charges.invoice_id = invoices.id
+  LEFT JOIN
+    `moz-fx-data-shared-prod.stripe_external.card_v1` AS cards
+  ON
+    charges.card_id = cards.id
+),
+subscriptions_history_latest_card_countries AS (
+  SELECT
+    history.id AS subscriptions_history_id,
+    ARRAY_AGG(
+      subscription_charges.card_country IGNORE NULLS
+      ORDER BY
+        -- Prefer charges that succeeded.
+        IF(subscription_charges.status = 'succeeded', 1, 2),
+        subscription_charges.created DESC
+      LIMIT
+        1
+    )[SAFE_ORDINAL(1)] AS card_country
+  FROM
+    `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v2` AS history
+  JOIN
+    subscription_charges
+  ON
+    history.subscription.id = subscription_charges.subscription_id
+    AND subscription_charges.created < history.valid_to
+  GROUP BY
+    subscriptions_history_id
 )
 SELECT
   CONCAT(
@@ -56,11 +95,24 @@ SELECT
     history.subscription.customer_id AS provider_customer_id,
     history.customer.metadata.userid AS mozilla_account_id,
     history.customer.metadata.userid_sha256 AS mozilla_account_id_sha256,
-    COALESCE(
-      NULLIF(history.customer.shipping.address.country, ''),
-      NULLIF(history.customer.address.country, '')
-      -- TODO: also use charge billing addresses
-    ) AS country_code,
+    CASE
+      -- Use the same address hierarchy as Stripe Tax after we enabled Stripe Tax (FXA-5457).
+      -- https://stripe.com/docs/tax/customer-locations#address-hierarchy
+      WHEN DATE(history.valid_to) >= '2022-12-01'
+        AND (
+          DATE(history.subscription.ended_at) >= '2022-12-01'
+          OR history.subscription.ended_at IS NULL
+        )
+        THEN COALESCE(
+            NULLIF(history.customer.shipping.address.country, ''),
+            NULLIF(history.customer.address.country, ''),
+            latest_card_countries.card_country
+          )
+      -- SubPlat copies the PayPal billing agreement country to the customer's address.
+      WHEN paypal_subscriptions.subscription_id IS NOT NULL
+        THEN NULLIF(history.customer.address.country, '')
+      ELSE latest_card_countries.card_country
+    END AS country_code,
     plan_services.services,
     subscription_item.plan.product.id AS provider_product_id,
     subscription_item.plan.product.name AS product_name,
@@ -119,6 +171,10 @@ LEFT JOIN
   paypal_subscriptions
 ON
   history.subscription.id = paypal_subscriptions.subscription_id
+LEFT JOIN
+  subscriptions_history_latest_card_countries AS latest_card_countries
+ON
+  history.id = latest_card_countries.subscriptions_history_id
 -- Exclude subscriptions which have never been active.
 QUALIFY
   LOGICAL_OR(subscription.is_active) OVER (PARTITION BY subscription.id)

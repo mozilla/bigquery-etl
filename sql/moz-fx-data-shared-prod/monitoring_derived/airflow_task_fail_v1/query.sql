@@ -1,10 +1,10 @@
 SELECT
   dag_id,
   task_id,
-  duration,
-  execution_date,
+  run_id,
   start_date,
   end_date,
+  duration,
 FROM
   `moz-fx-data-bq-fivetran.telemetry_airflow_metadata_public.task_fail`
 WHERE
@@ -14,10 +14,10 @@ UNION ALL
 SELECT
   dag_id,
   task_id,
-  duration,
-  execution_date,
+  run_id,
   start_date,
   end_date,
+  duration,
 FROM
   `moz-fx-data-bq-fivetran.airflow_metadata_airflow_db.task_fail`
 WHERE

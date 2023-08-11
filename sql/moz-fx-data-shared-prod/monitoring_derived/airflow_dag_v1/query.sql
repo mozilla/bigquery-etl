@@ -1,6 +1,6 @@
 SELECT
   dag_id,
-  root_dag_id,
+  COALESCE(root_dag_id, dag_id) AS root_dag_id,
   IF(is_subdag, SPLIT(dag_id, ".")[OFFSET(1)], NULL) AS subdag_id,
   is_subdag,
   description,

@@ -119,3 +119,6 @@ LEFT JOIN
   paypal_subscriptions
 ON
   history.subscription.id = paypal_subscriptions.subscription_id
+-- Exclude subscriptions which have never been active.
+QUALIFY
+  LOGICAL_OR(subscription.is_active) OVER (PARTITION BY subscription.id)

@@ -223,6 +223,7 @@ questionable_subscription_plans_history AS (
       plans.trial_period_days,
       plans.usage_type
     ) AS plan,
+    ROW_NUMBER() OVER subscription_plan_changes_asc AS subscription_plan_number,
     LAG(plan_changes.plan_id) OVER subscription_plan_changes_asc AS previous_plan_id,
     plan_changes.subscription_plan_start AS valid_from,
     COALESCE(
@@ -265,8 +266,7 @@ synthetic_subscription_start_changelog AS (
     questionable_subscription_plans_history AS plans_history
   ON
     changelog.subscription.id = plans_history.subscription_id
-    AND changelog.subscription.start_date >= plans_history.valid_from
-    AND changelog.subscription.start_date < plans_history.valid_to
+    AND plans_history.subscription_plan_number = 1
 ),
 synthetic_plan_change_changelog AS (
   SELECT
@@ -287,7 +287,8 @@ synthetic_plan_change_changelog AS (
   ON
     plans_history.subscription_id = changelog.subscription.id
   WHERE
-    plans_history.valid_from > changelog.subscription.start_date
+    plans_history.subscription_plan_number > 1
+    AND plans_history.valid_from > changelog.subscription.start_date
 ),
 synthetic_trial_start_changelog AS (
   SELECT

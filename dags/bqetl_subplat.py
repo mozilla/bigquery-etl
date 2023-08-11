@@ -1517,6 +1517,10 @@ with DAG(
     )
 
     subscription_platform_derived__stripe_logical_subscriptions_history__v1.set_upstream(
+        stripe_external__refund__v1
+    )
+
+    subscription_platform_derived__stripe_logical_subscriptions_history__v1.set_upstream(
         subscription_platform_derived__services__v1
     )
 

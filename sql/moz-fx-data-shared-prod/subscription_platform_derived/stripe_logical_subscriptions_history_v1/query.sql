@@ -25,42 +25,45 @@ paypal_subscriptions AS (
   WHERE
     JSON_VALUE(metadata, '$.paypalTransactionId') IS NOT NULL
 ),
-subscription_charges AS (
+subscriptions_history_charge_summaries AS (
   SELECT
-    invoices.subscription_id,
-    charges.created,
-    charges.status,
-    cards.country AS card_country
+    history.id AS subscriptions_history_id,
+    ARRAY_AGG(
+      cards.country IGNORE NULLS
+      ORDER BY
+        -- Prefer charges that succeeded.
+        IF(charges.status = 'succeeded', 1, 2),
+        charges.created DESC
+      LIMIT
+        1
+    )[SAFE_ORDINAL(1)] AS latest_card_country,
+    LOGICAL_OR(
+      charges.fraud_details_user_report = 'fraudulent'
+      OR (
+        charges.fraud_details_stripe_report = 'fraudulent'
+        AND charges.fraud_details_user_report IS DISTINCT FROM 'safe'
+      )
+      OR (refunds.reason = 'fraudulent' AND refunds.status = 'succeeded')
+    ) AS has_fraudulent_charges
   FROM
     `moz-fx-data-shared-prod.stripe_external.charge_v1` AS charges
   JOIN
     `moz-fx-data-shared-prod.stripe_external.invoice_v1` AS invoices
   ON
     charges.invoice_id = invoices.id
+  JOIN
+    `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v2` AS history
+  ON
+    invoices.subscription_id = history.subscription.id
+    AND charges.created < history.valid_to
   LEFT JOIN
     `moz-fx-data-shared-prod.stripe_external.card_v1` AS cards
   ON
     charges.card_id = cards.id
-),
-subscriptions_history_latest_card_countries AS (
-  SELECT
-    history.id AS subscriptions_history_id,
-    ARRAY_AGG(
-      subscription_charges.card_country IGNORE NULLS
-      ORDER BY
-        -- Prefer charges that succeeded.
-        IF(subscription_charges.status = 'succeeded', 1, 2),
-        subscription_charges.created DESC
-      LIMIT
-        1
-    )[SAFE_ORDINAL(1)] AS card_country
-  FROM
-    `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v2` AS history
-  JOIN
-    subscription_charges
+  LEFT JOIN
+    `moz-fx-data-shared-prod.stripe_external.refund_v1` AS refunds
   ON
-    history.subscription.id = subscription_charges.subscription_id
-    AND subscription_charges.created < history.valid_to
+    charges.id = refunds.charge_id
   GROUP BY
     subscriptions_history_id
 )
@@ -106,12 +109,12 @@ SELECT
         THEN COALESCE(
             NULLIF(history.customer.shipping.address.country, ''),
             NULLIF(history.customer.address.country, ''),
-            latest_card_countries.card_country
+            charge_summaries.latest_card_country
           )
       -- SubPlat copies the PayPal billing agreement country to the customer's address.
       WHEN paypal_subscriptions.subscription_id IS NOT NULL
         THEN NULLIF(history.customer.address.country, '')
-      ELSE latest_card_countries.card_country
+      ELSE charge_summaries.latest_card_country
     END AS country_code,
     plan_services.services,
     subscription_item.plan.product.id AS provider_product_id,
@@ -154,10 +157,10 @@ SELECT
       history.subscription.cancel_at_period_end,
       history.subscription.canceled_at,
       NULL
-    ) AS auto_renew_disabled_at
+    ) AS auto_renew_disabled_at,
     -- TODO: promotion_codes
     -- TODO: promotion_discounts_amount
-    -- TODO: has_fraudulent_charges
+    COALESCE(charge_summaries.has_fraudulent_charges, FALSE) AS has_fraudulent_charges
   ) AS subscription
 FROM
   `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v2` AS history
@@ -172,9 +175,9 @@ LEFT JOIN
 ON
   history.subscription.id = paypal_subscriptions.subscription_id
 LEFT JOIN
-  subscriptions_history_latest_card_countries AS latest_card_countries
+  subscriptions_history_charge_summaries AS charge_summaries
 ON
-  history.id = latest_card_countries.subscriptions_history_id
+  history.id = charge_summaries.subscriptions_history_id
 -- Exclude subscriptions which have never been active.
 QUALIFY
   LOGICAL_OR(subscription.is_active) OVER (PARTITION BY subscription.id)

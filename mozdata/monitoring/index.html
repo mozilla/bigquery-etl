@@ -2953,34 +2953,69 @@ including views on <code>payload_bytes</code> tables</p>
         <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
-        <td>owners</td>
-        <td></td>
+        <td>description</td>
+        <td>DAG's description</td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
+        <td>schedule_interval</td>
+        <td>DAG's scheduling settings</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>owners</td>
+        <td>DAG owners (comma separated)</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>is_active</td>
+        <td>Indicates if the DAG is active</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>is_paused</td>
-        <td></td>
+        <td>Indicates if the DAG is currently paused</td>
         <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
         <td>has_task_concurrency_limits</td>
-        <td></td>
+        <td>Indicates if DAG has concurrency limit set</td>
         <td>Boolean</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>concurrency</td>
-        <td></td>
-        <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>max_active_runs</td>
-        <td></td>
+        <td>Max number of active DAG runs allowed</td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
-        <td>is_active</td>
+        <td>max_active_tasks</td>
+        <td>Max number of active task instances in the DAG allowed</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>next_dagrun</td>
         <td></td>
-        <td>Boolean</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>next_dagrun_create_after</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>next_dagrun_data_interval_start</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>next_dagrun_data_interval_end</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>last_parsed_time</td>
+        <td></td>
+        <td>Timestamp</td>
         <td>Yes</td>
     </tr>
 </table>
@@ -3156,47 +3191,6 @@ including views on <code>payload_bytes</code> tables</p>
 <h2 id="airflow_task_fail"><a href="#airflow_task_fail">airflow_task_fail</a></h2>
 <p><code>monitoring.airflow_task_fail</code></p>
 <table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>dag_id</td>
-        <td>Airflow DAG id</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>task_id</td>
-        <td>Airflow task id</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>duration</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>execution_date</td>
-        <td></td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>start_date</td>
-        <td></td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>end_date</td>
-        <td></td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -3233,28 +3227,33 @@ including views on <code>payload_bytes</code> tables</p>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
-        <td>execution_date</td>
-        <td></td>
-        <td>Timestamp</td>
+        <td>run_id</td>
+        <td>Unique identifier of the task run instance</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>try_number</td>
+        <td>Attempt number to execute the task</td>
+        <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>reschedule_date</td>
-        <td></td>
+        <td>Datetime when task has been rescheduled</td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr><tr>
         <td>start_date</td>
-        <td></td>
+        <td>When the DAG run started</td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr><tr>
         <td>end_date</td>
-        <td></td>
+        <td>When the DAG run finished</td>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr><tr>
         <td>duration</td>
-        <td></td>
+        <td>Time elapsed since start until end of task's exeuction (seconds)</td>
         <td>Integer</td>
         <td>Yes</td>
     </tr>

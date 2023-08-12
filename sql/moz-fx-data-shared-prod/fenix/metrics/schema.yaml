@@ -1958,6 +1958,9 @@ fields:
     - name: formautofill_creditcards_autofill_profiles_count
       type: INTEGER
       mode: NULLABLE
+    - name: fog_max_pings_per_minute
+      type: INTEGER
+      mode: NULLABLE
   - name: string
     type: RECORD
     mode: NULLABLE

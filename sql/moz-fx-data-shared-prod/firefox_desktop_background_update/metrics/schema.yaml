@@ -3185,6 +3185,13 @@ fields:
         user has.
 
         '
+    - name: fog_max_pings_per_minute
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Value of the configurable rate limit, in pings per minute, for
+        Glean pings as set at init.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

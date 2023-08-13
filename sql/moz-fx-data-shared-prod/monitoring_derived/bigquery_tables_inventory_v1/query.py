@@ -98,17 +98,17 @@ def create_query(date, source_project, tmp_table_name):
             SELECT *
             FROM
                 (SELECT
-                DATE('{date}') AS submission_date,
-                DATE(creation_time) AS creation_date,
-                table_catalog AS project_id,
-                table_schema AS dataset_id,
-                table_name AS table_id,
-                table_type,
-                owners,
-            FROM `{source_project}.region-us.INFORMATION_SCHEMA.TABLES`
+                    DATE('{date}') AS submission_date,
+                    DATE(creation_time) AS creation_date,
+                    table_catalog AS project_id,
+                    table_schema AS dataset_id,
+                    table_name AS table_id,
+                    table_type,
+                    owners,
+                FROM `{source_project}.region-us.INFORMATION_SCHEMA.TABLES`
                 LEFT JOIN labels_agg
-                USING (table_catalog, table_schema, table_name)
-                WHERE DATE(creation_time) <= DATE('{date}')
+                    USING (table_catalog, table_schema, table_name)
+                    WHERE DATE(creation_time) <= DATE('{date}'))
             LEFT JOIN {tmp_table_name}
             USING (project_id, dataset_id, table_id, creation_date)
         ),
@@ -143,7 +143,6 @@ def main():
 
     for project in args.source_projects:
         create_last_modified_tmp_table(args.date, project, tmp_table_name)
-
         client = bigquery.Client(project)
         query = create_query(args.date, project, tmp_table_name)
         job_config = bigquery.QueryJobConfig(

@@ -330,7 +330,10 @@ SELECT
       metrics.custom_distribution.pdfjs_time_to_view,
       metrics.custom_distribution.timer_thread_timers_fired_per_wakeup,
       metrics.custom_distribution.networking_cookie_access_fixup_diff,
-      metrics.custom_distribution.networking_cookie_creation_fixup_diff
+      metrics.custom_distribution.networking_cookie_creation_fixup_diff,
+      metrics.custom_distribution.networking_http_1_download_throughput,
+      metrics.custom_distribution.networking_http_2_download_throughput,
+      metrics.custom_distribution.networking_http_3_download_throughput
     ) AS custom_distribution,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -810,7 +813,10 @@ SELECT
       metrics.custom_distribution.pdfjs_time_to_view,
       metrics.custom_distribution.timer_thread_timers_fired_per_wakeup,
       metrics.custom_distribution.networking_cookie_access_fixup_diff,
-      metrics.custom_distribution.networking_cookie_creation_fixup_diff
+      metrics.custom_distribution.networking_cookie_creation_fixup_diff,
+      metrics.custom_distribution.networking_http_1_download_throughput,
+      metrics.custom_distribution.networking_http_2_download_throughput,
+      metrics.custom_distribution.networking_http_3_download_throughput
     ) AS custom_distribution,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,

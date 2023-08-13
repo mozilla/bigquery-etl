@@ -2091,6 +2091,78 @@ fields:
         this metric records the number of seconds that timestamp was off from NOW.
 
         '
+    - name: networking_http_1_download_throughput
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The download throughput for http/1.1 requests larger than 10MB.
+        Measured in megabits per second, Mbps.
+
+        '
+    - name: networking_http_2_download_throughput
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The download throughput for http/2 requests larger than 10MB.
+        Measured in megabits per second, Mbps.
+
+        '
+    - name: networking_http_3_download_throughput
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The download throughput for http/3 requests larger than 10MB.
+        Measured in megabits per second, Mbps.
+
+        '
   - name: timespan
     type: RECORD
     mode: NULLABLE

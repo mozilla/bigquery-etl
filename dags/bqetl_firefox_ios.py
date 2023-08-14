@@ -49,11 +49,7 @@ with DAG(
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
-        email=[
-            "kik@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
     )
@@ -64,11 +60,7 @@ with DAG(
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
-        email=[
-            "kik@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -80,11 +72,7 @@ with DAG(
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
-        email=[
-            "kik@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -95,11 +83,7 @@ with DAG(
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
-        email=[
-            "kik@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
@@ -126,7 +110,6 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="vsabino@mozilla.com",
         email=[
-            "kik@mozilla.com",
             "kik@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "vsabino@mozilla.com",

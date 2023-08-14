@@ -246,11 +246,7 @@ with DAG(
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
-        email=[
-            "dthorn@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["dthorn@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -279,11 +275,7 @@ with DAG(
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
-        email=[
-            "dthorn@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["dthorn@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         start_date=datetime.datetime(2019, 4, 23, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=True,
@@ -320,11 +312,7 @@ with DAG(
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
-        email=[
-            "dthorn@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["dthorn@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -335,11 +323,7 @@ with DAG(
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
-        email=[
-            "dthorn@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["dthorn@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -350,11 +334,7 @@ with DAG(
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
-        email=[
-            "dthorn@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["dthorn@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
     )
@@ -365,11 +345,7 @@ with DAG(
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
-        email=[
-            "dthorn@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["dthorn@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
     )
@@ -380,11 +356,7 @@ with DAG(
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
-        email=[
-            "dthorn@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["dthorn@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

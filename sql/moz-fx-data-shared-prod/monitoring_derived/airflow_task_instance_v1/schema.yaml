@@ -53,10 +53,6 @@ fields:
   type: STRING
 - description:
   mode: NULLABLE
-  name: executor_config
-  type: STRING
-- description:
-  mode: NULLABLE
   name: hostname
   type: STRING
 - description:

@@ -39,13 +39,22 @@ WITH events_unnested AS (
       ELSE NULL
     END AS search_session_type,
     SPLIT(mozfun.map.get_key(extra, "results"), ',')[OFFSET(0)] AS result_type,
-    mozfun.norm.result_type_to_product_name(SPLIT(mozfun.map.get_key(extra, "results"), ',')[OFFSET(0)]) AS product_result_type,
+    `mozfun.norm.result_type_to_product_name`(
+      SPLIT(mozfun.map.get_key(extra, "results"), ',')[OFFSET(0)]
+    ) AS product_result_type,
     SPLIT(mozfun.map.get_key(extra, "results"), ',') AS results,
-    ARRAY(SELECT mozfun.norm.result_type_to_product_name(x) FROM UNNEST(SPLIT(mozfun.map.get_key(extra, "results"), ',')) AS x) AS product_results,
+    ARRAY(
+      SELECT
+        `mozfun.norm.result_type_to_product_name`(x)
+      FROM
+        UNNEST(SPLIT(mozfun.map.get_key(extra, "results"), ',')) AS x
+    ) AS product_results,
     mozfun.map.get_key(extra, "selected_result") AS selected_result,
-    mozfun.norm.result_type_to_product_name(mozfun.map.get_key(extra, "selected_result")) AS product_selected_result,
+    `mozfun.norm.result_type_to_product_name`(
+      mozfun.map.get_key(extra, "selected_result")
+    ) AS product_selected_result,
     mozfun.map.get_key(extra, "engagement_type") AS engagement_type,
-    mozfun.map.get_key(extra, "n_chars") AS number_of_chars_typed,
+    mozfun.map.get_key(extra, "n_chars") AS num_chars_typed,
     mozfun.map.get_key(extra, "n_results") AS num_total_results,
     metrics,
     metrics.uuid.legacy_telemetry_client_id AS legacy_telemetry_client_id,
@@ -89,12 +98,14 @@ events_summary AS (
         THEN engagement_type
       ELSE NULL
     END AS annoyance_signal_type,
-    COUNTIF(res = 'default_partner_search_suggestion') AS num_default_partner_search_suggestion_impressions,
+    COUNTIF(
+      res = 'default_partner_search_suggestion'
+    ) AS num_default_partner_search_suggestion_impressions,
     COUNTIF(res = 'search_engine_suggestion') AS num_search_engine_suggestion_impressions,
     COUNTIF(res = 'trending_suggestion') AS num_trending_suggestion_impressions,
     COUNTIF(res = 'history') AS num_history_impressions,
-    COUNTIF(res = 'bookmark')) AS num_bookmark_impressions,
-    COUNTIF(res  = 'open_tabs') AS num_open_tabs_impressions,
+    COUNTIF(res = 'bookmark') AS num_bookmark_impressions,
+    COUNTIF(res = 'open_tabs') AS num_open_tabs_impressions,
     COUNTIF(res = 'admarketplace_sponsored') AS admarketplace_sponsored_impressions,
     COUNTIF(res = 'navigational') AS num_navigational_impressions,
     COUNTIF(res = 'add_on') AS num_add_on_impressions,
@@ -108,7 +119,7 @@ events_summary AS (
     ARRAY_CONCAT_AGG(experiments) AS experiments
   FROM
     events_unnested,
-    UNNEST(results) AS res
+    UNNEST(product_results) AS res
   GROUP BY
     submission_date,
     sample_id,
@@ -124,46 +135,8 @@ events_summary AS (
     product_engaged_result_type,
     engagement_type,
     search_session_type,
-    number_of_chars_typed,
+    num_chars_typed,
     num_total_results
-),
-legacy_profile_info AS (
-  SELECT
-    client_id AS legacy_telemetry_client_id,
-    user_pref_browser_urlbar_quicksuggest_data_collection_enabled AS sharing_enabled,
-    user_pref_browser_urlbar_suggest_quicksuggest_sponsored AS sponsored_suggestion_enabled,
-    IF(user_pref_browser_urlbar_suggest_quicksuggest = 'true', TRUE, FALSE)
-    OR IF(
-      user_pref_browser_urlbar_suggest_quicksuggest_nonsponsored = 'false',
-      FALSE,
-      TRUE
-    ) AS suggest_enabled,
-  FROM
-    `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
-  WHERE
-    submission_date = @submission_date
-  GROUP BY
-    client_id,
-    sharing_enabled,
-    sponsored_suggestion_enabled,
-    suggest_enabled
-),
-glean_metrics_info AS (
-  SELECT
-    MIN(submission_timestamp) AS submission_timestamp,
-    client_info.client_id AS glean_metrics_client_id,
-    udf.normalize_search_engine(
-      metrics.string.search_engine_default_engine_id
-    ) AS normalized_search_engine,
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop.metrics`
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-  GROUP BY
-    glean_metrics_client_id,
-    normalized_search_engine
-  ORDER BY
-    submission_timestamp
 )
 SELECT
   submission_date,
@@ -174,37 +147,26 @@ SELECT
   event_name,
   search_session_type,
   engaged_result_type,
+  product_engaged_result_type,
   annoyance_signal_type,
   result_type AS first_result_type,
-  number_of_chars_typed,
+  product_result_type AS product_first_result_type,
+  num_chars_typed,
   num_total_results,
-  num_default_partner_search_suggestions,
-  num_search_engine_suggestions_impressions,
-  num_trending_suggestions_impressions,
+  num_default_partner_search_suggestion_impressions,
+  num_search_engine_suggestion_impressions,
+  num_trending_suggestion_impressions,
   num_history_impressions,
   num_open_tabs_impressions,
-  num_bookmarks_impressions,
+  num_bookmark_impressions,
   admarketplace_sponsored_impressions,
-  num_navigations_impressions,
+  num_navigational_impressions,
   num_add_on_impressions,
   num_wikipedia_enhanced_impressions,
   num_wikipedia_dynamic_impressions,
   num_weather_impressions,
   num_quick_actions_impressions,
   num_pocket_collection_impressions,
-  sharing_enabled,
-  sponsored_suggestion_enabled,
-  suggest_enabled,
-  normalized_search_engine,
-  legacy_telemetry_client_id,
   experiments
 FROM
   events_summary
-LEFT JOIN
-  legacy_profile_info
-USING
-  (legacy_telemetry_client_id)
-LEFT JOIN
-  glean_metrics_info
-USING
-  (glean_metrics_client_id)

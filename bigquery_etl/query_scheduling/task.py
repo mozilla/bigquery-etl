@@ -1,5 +1,6 @@
 """Represents a scheduled Airflow task."""
 
+import copy
 import logging
 import os
 import re
@@ -417,7 +418,7 @@ class Task:
                 task_config["table_partition_template"] = partition_template
 
         try:
-            return converter.structure(task_config, cls)
+            return copy.deepcopy(converter.structure(task_config, cls))
         except TypeError as e:
             raise TaskParseException(
                 f"Invalid scheduling information format for {query_file}: {e}"
@@ -524,15 +525,23 @@ class Task:
             )
 
         for table in self._get_referenced_tables():
+            # check if upstream task is accompanied by a check
+            # the task running the check will be set as the upstream task instead
+            checks_upstream_task = dag_collection.checks_task_for_table(
+                table[0], table[1], table[2]
+            )
             upstream_task = dag_collection.task_for_table(table[0], table[1], table[2])
 
             if upstream_task is not None:
-                task_ref = upstream_task.to_ref(dag_collection)
-                if upstream_task != self and not _duplicate_dependency(task_ref):
-                    # Get its upstream dependencies so its date_partition_offset gets set.
-                    upstream_task.with_upstream_dependencies(dag_collection)
+                if upstream_task != self:
+                    if checks_upstream_task is not None:
+                        upstream_task = checks_upstream_task
                     task_ref = upstream_task.to_ref(dag_collection)
-                    dependencies.append(task_ref)
+                    if not _duplicate_dependency(task_ref):
+                        # Get its upstream dependencies so its date_partition_offset gets set.
+                        upstream_task.with_upstream_dependencies(dag_collection)
+                        task_ref = upstream_task.to_ref(dag_collection)
+                        dependencies.append(task_ref)
             else:
                 # see if there are some static dependencies
                 for task_ref, patterns in EXTERNAL_TASKS.items():

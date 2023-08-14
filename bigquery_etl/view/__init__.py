@@ -277,9 +277,20 @@ class View:
                 print(f"view {target_view_id} will change: schema does not match")
                 return True
 
-        if self.labels != table.labels:
-            print(f"view {target_view_id} will change: labels do not match")
-            return True
+        # check metadata
+        if self.metadata is not None:
+            if self.metadata.description != table.description:
+                print(f"view {target_view_id} will change: description does not match")
+                return True
+            if self.metadata.friendly_name != table.friendly_name:
+                print(
+                    f"view {target_view_id} will change: friendly_name does not match"
+                )
+                return True
+            if self.labels != table.labels:
+                print(f"view {target_view_id} will change: labels do not match")
+                return True
+
         return False
 
     def publish(self, target_project=None, dry_run=False):

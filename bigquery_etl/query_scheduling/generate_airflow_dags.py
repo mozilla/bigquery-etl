@@ -115,6 +115,7 @@ def get_dags(project_id, dags_config):
                     project_dir
                 )
             )
+
     return dag_collection.with_tasks(tasks)
 
 

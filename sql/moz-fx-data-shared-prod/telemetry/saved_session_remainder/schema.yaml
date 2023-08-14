@@ -13972,6 +13972,42 @@ fields:
         mode: NULLABLE
         description: How many extensions were matched to be imported from another
           browser, keyed by the name of the browser.
+    - name: networking_http_1_download_throughput
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+        description: The download throughput for http/1.1 requests larger than 10MB.
+          Measured in megabits per second, Mbps.
+    - name: networking_http_2_download_throughput
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+        description: The download throughput for http/2 requests larger than 10MB.
+          Measured in megabits per second, Mbps.
+    - name: networking_http_3_download_throughput
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+        description: The download throughput for http/3 requests larger than 10MB.
+          Measured in megabits per second, Mbps.
   - name: late_writes
     type: RECORD
     mode: NULLABLE

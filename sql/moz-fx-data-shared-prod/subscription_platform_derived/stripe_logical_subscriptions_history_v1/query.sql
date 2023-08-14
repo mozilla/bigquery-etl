@@ -1,4 +1,39 @@
-WITH plan_services AS (
+WITH subscriptions_history AS (
+  SELECT
+    id,
+    valid_from,
+    valid_to,
+    subscription,
+    customer,
+    -- This should be kept in agreement with what SubPlat considers an active Stripe subscription.
+    -- https://github.com/mozilla/fxa/blob/56026cd08e60525823c60c4f4116f705e79d6124/packages/fxa-shared/subscriptions/stripe.ts#L19-L24
+    subscription.status IN ('active', 'past_due', 'trialing') AS subscription_is_active
+  FROM
+    `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v2`
+),
+active_subscriptions_history AS (
+  -- Only include a subscription's history once it becomes active.
+  SELECT
+    *,
+    FIRST_VALUE(
+      IF(subscription_is_active, valid_from, NULL) IGNORE NULLS
+    ) OVER subscription_history_to_date_asc AS subscription_first_active_at
+  FROM
+    subscriptions_history
+  QUALIFY
+    LOGICAL_OR(subscription_is_active) OVER subscription_history_to_date_asc
+  WINDOW
+    subscription_history_to_date_asc AS (
+      PARTITION BY
+        subscription.id
+      ORDER BY
+        valid_from
+      ROWS BETWEEN
+        UNBOUNDED PRECEDING
+        AND CURRENT ROW
+    )
+),
+plan_services AS (
   SELECT
     plan_id,
     ARRAY_AGG(
@@ -52,7 +87,7 @@ subscriptions_history_charge_summaries AS (
   ON
     charges.invoice_id = invoices.id
   JOIN
-    `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v2` AS history
+    active_subscriptions_history AS history
   ON
     invoices.subscription_id = history.subscription.id
     AND charges.created < history.valid_to
@@ -74,7 +109,7 @@ SELECT
     '-',
     subscription_item.id,
     '-',
-    FORMAT_TIMESTAMP('%FT%H:%M:%E6S', history.subscription.start_date),
+    FORMAT_TIMESTAMP('%FT%H:%M:%E6S', history.subscription_first_active_at),
     '-',
     FORMAT_TIMESTAMP('%FT%H:%M:%E6S', history.valid_from)
   ) AS id,
@@ -88,7 +123,7 @@ SELECT
       '-',
       subscription_item.id,
       '-',
-      FORMAT_TIMESTAMP('%FT%H:%M:%E6S', history.subscription.start_date)
+      FORMAT_TIMESTAMP('%FT%H:%M:%E6S', history.subscription_first_active_at)
     ) AS id,
     'Stripe' AS provider,
     IF(paypal_subscriptions.subscription_id IS NOT NULL, 'PayPal', 'Stripe') AS payment_provider,
@@ -135,11 +170,9 @@ SELECT
       TRUE,
       FALSE
     ) AS is_trial,
-    -- The `is_active` logic should agree with what SubPlat considers an active Stripe subscription.
-    -- https://github.com/mozilla/fxa/blob/56026cd08e60525823c60c4f4116f705e79d6124/packages/fxa-shared/subscriptions/stripe.ts#L19-L24
-    history.subscription.status IN ('active', 'past_due', 'trialing') AS is_active,
+    history.subscription_is_active AS is_active,
     history.subscription.status AS provider_status,
-    history.subscription.start_date AS started_at,
+    history.subscription_first_active_at AS started_at,
     history.subscription.ended_at,
     -- TODO: ended_reason
     IF(
@@ -163,7 +196,7 @@ SELECT
     COALESCE(charge_summaries.has_fraudulent_charges, FALSE) AS has_fraudulent_charges
   ) AS subscription
 FROM
-  `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v2` AS history
+  active_subscriptions_history AS history
 CROSS JOIN
   UNNEST(history.subscription.items) AS subscription_item
 LEFT JOIN
@@ -178,6 +211,3 @@ LEFT JOIN
   subscriptions_history_charge_summaries AS charge_summaries
 ON
   history.id = charge_summaries.subscriptions_history_id
--- Exclude subscriptions which have never been active.
-QUALIFY
-  LOGICAL_OR(subscription.is_active) OVER (PARTITION BY subscription.id)

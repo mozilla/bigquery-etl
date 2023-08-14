@@ -62,8 +62,6 @@ WITH events_unnested AS (
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.events_v1`,
     UNNEST(events)
-  CROSS JOIN
-    UNNEST(ping_info.experiments) AS e
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND category = 'urlbar'

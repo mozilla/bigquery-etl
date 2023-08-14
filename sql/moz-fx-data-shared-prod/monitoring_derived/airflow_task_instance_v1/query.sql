@@ -1,0 +1,32 @@
+SELECT
+  dag_id,
+  run_id,
+  task_id,
+  state,
+  try_number,
+  start_date,
+  end_date,
+  duration,
+  updated_at job_id,
+  executor_config,
+  external_executor_id,
+  hostname,
+  max_tries,
+  next_kwargs,
+  next_method,
+  operator,
+  pid,
+  pool,
+  pool_slots,
+  priority_weight,
+  queue,
+  queued_by_job_id,
+  queued_dttm,
+  trigger_id,
+  trigger_timeout,
+  unixname,
+  map_index,
+FROM
+  `moz-fx-data-bq-fivetran.telemetry_airflow_metadata_public.task_instance`
+WHERE
+  NOT _fivetran_deleted

@@ -61,6 +61,30 @@ with DAG(
         task_concurrency=1,
     )
 
+    monitoring_derived__airflow_dag_note__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_dag_note__v1",
+        destination_table="airflow_dag_note_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    monitoring_derived__airflow_dag_owner_attributes__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_dag_owner_attributes__v1",
+        destination_table="airflow_dag_owner_attributes_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     monitoring_derived__airflow_dag_run__v1 = bigquery_etl_query(
         task_id="monitoring_derived__airflow_dag_run__v1",
         destination_table="airflow_dag_run_v1",
@@ -76,6 +100,42 @@ with DAG(
     monitoring_derived__airflow_dag_tag__v1 = bigquery_etl_query(
         task_id="monitoring_derived__airflow_dag_tag__v1",
         destination_table="airflow_dag_tag_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    monitoring_derived__airflow_dag_warning__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_dag_warning__v1",
+        destination_table="airflow_dag_warning_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    monitoring_derived__airflow_import_error__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_import_error__v1",
+        destination_table="airflow_import_error_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    monitoring_derived__airflow_job__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_job__v1",
+        destination_table="airflow_job_v1",
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
@@ -109,9 +169,45 @@ with DAG(
         task_concurrency=1,
     )
 
+    monitoring_derived__airflow_task_instance__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_task_instance__v1",
+        destination_table="airflow_task_instance_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    monitoring_derived__airflow_task_instance_note__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_task_instance_note__v1",
+        destination_table="airflow_task_instance_note_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     monitoring_derived__airflow_task_reschedule__v1 = bigquery_etl_query(
         task_id="monitoring_derived__airflow_task_reschedule__v1",
         destination_table="airflow_task_reschedule_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    monitoring_derived__airflow_trigger__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_trigger__v1",
+        destination_table="airflow_trigger_v1",
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
@@ -155,11 +251,31 @@ with DAG(
         fivetran_airflow_metadata_import_sync_wait
     )
 
+    monitoring_derived__airflow_dag_note__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
+    monitoring_derived__airflow_dag_owner_attributes__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
     monitoring_derived__airflow_dag_run__v1.set_upstream(
         fivetran_airflow_metadata_import_sync_wait
     )
 
     monitoring_derived__airflow_dag_tag__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
+    monitoring_derived__airflow_dag_warning__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
+    monitoring_derived__airflow_import_error__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
+    monitoring_derived__airflow_job__v1.set_upstream(
         fivetran_airflow_metadata_import_sync_wait
     )
 
@@ -171,7 +287,19 @@ with DAG(
         fivetran_airflow_metadata_import_sync_wait
     )
 
+    monitoring_derived__airflow_task_instance__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
+    monitoring_derived__airflow_task_instance_note__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
     monitoring_derived__airflow_task_reschedule__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
+    monitoring_derived__airflow_trigger__v1.set_upstream(
         fivetran_airflow_metadata_import_sync_wait
     )
 

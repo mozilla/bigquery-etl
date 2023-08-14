@@ -1,0 +1,13 @@
+friendly_name: Airflow jobs
+description: List of jobs
+labels:
+  incremental: false
+owners:
+  - kik@mozilla.com
+scheduling:
+  dag_name: bqetl_monitoring_airflow
+  date_partition_parameter: null
+  referenced_tables:
+    - ['moz-fx-data-bq-fivetran', 'telemetry_airflow_metadata_public', 'job']
+  depends_on_fivetran:
+    - task_id: fivetran_airflow_metadata_import

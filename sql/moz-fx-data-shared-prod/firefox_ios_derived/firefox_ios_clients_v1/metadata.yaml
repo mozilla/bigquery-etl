@@ -20,7 +20,7 @@ description: |-
   For more details about attribution and campaign structure see:
   https://help.adjust.com/en/article/tracker-urls#campaign-structure-parameters.
 owners:
-- kignasiak@mozilla.com
+- kik@mozilla.com
 labels:
   application: firefox_ios
   incremental: true

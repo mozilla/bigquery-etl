@@ -5,7 +5,7 @@ description: |
   Usage aggregations describing FxA user, service, device_id combination
   activity in the last 28 days.
 owners:
-  - kignasiak@mozilla.com
+  - kik@mozilla.com
 labels:
   application: fxa
   incremental: true

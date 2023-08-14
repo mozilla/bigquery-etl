@@ -10,7 +10,7 @@ description: |
   auth, auth_bounce, content, oauth.
 
 owners:
-  - kignasiak@mozilla.com
+  - kik@mozilla.com
 labels:
   application: fxa
   incremental: true

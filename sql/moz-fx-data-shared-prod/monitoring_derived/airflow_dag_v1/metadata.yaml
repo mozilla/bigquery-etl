@@ -3,7 +3,7 @@ description: List of DAGs
 labels:
   incremental: false
 owners:
-  - kignasiak@mozilla.com
+  - kik@mozilla.com
 scheduling:
   dag_name: bqetl_monitoring_airflow
   date_partition_parameter: null

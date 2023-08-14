@@ -19,7 +19,6 @@ WITH baseline_clients AS (
     `moz-fx-data-shared-prod.fenix.baseline_clients_daily`
   WHERE
     submission_date >= '2020-01-21'
-    AND normalized_channel = 'release'
 ),
 first_seen AS (
   SELECT
@@ -169,9 +168,9 @@ metrics_ping AS (
         submission_timestamp DESC
     )[SAFE_OFFSET(0)] AS last_reported_adjust_campaign,
   FROM
-    org_mozilla_firefox.metrics AS org_mozilla_firefox_metrics
+    fenix.metrics AS fenix_metrics
   WHERE
-    DATE(submission_timestamp) >= '2019-01-01'
+    DATE(submission_timestamp) >= '2019-06-21'
   GROUP BY
     client_id
 ),

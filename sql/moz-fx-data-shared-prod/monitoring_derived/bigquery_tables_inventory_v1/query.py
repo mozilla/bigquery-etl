@@ -113,10 +113,10 @@ def create_query(date, source_project, tmp_table_name):
                     WHERE DATE(creation_time) <= DATE('{date}'))
             LEFT JOIN {tmp_table_name}
             USING (project_id, dataset_id, table_id, creation_date)
-        ),
+        )
         SELECT submission_date,
             creation_date,
-            project-id,
+            project_id,
             dataset_id,
             table_id,
             table_type,
@@ -148,7 +148,12 @@ def main():
         client = bigquery.Client(project)
         query = create_query(args.date, project, tmp_table_name)
         job_config = bigquery.QueryJobConfig(
-            destination=destination_table, write_disposition="WRITE_APPEND"
+            destination=destination_table,
+            write_disposition="WRITE_APPEND",
+            time_partitioning=bigquery.TimePartitioning(
+                type_=bigquery.TimePartitioningType.DAY,
+                field="submission_date",
+            ),
         )
         client.query(query, job_config=job_config).result()
 

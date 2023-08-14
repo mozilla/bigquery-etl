@@ -1,0 +1,21 @@
+fields:
+- name: dag_run_id
+  type: STRING
+  mode: NULLABLE
+  description: null
+- name: content
+  type: STRING
+  mode: NULLABLE
+  description: null
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: null
+- name: updated_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: null
+- name: user_id
+  type: INTEGER
+  mode: NULLABLE
+  description: null

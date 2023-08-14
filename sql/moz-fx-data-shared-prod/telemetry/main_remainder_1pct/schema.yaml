@@ -9621,6 +9621,36 @@ fields:
       - name: value
         type: STRING
         mode: NULLABLE
+    - name: networking_http_1_download_throughput
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+    - name: networking_http_2_download_throughput
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+    - name: networking_http_3_download_throughput
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
   - name: late_writes
     type: RECORD
     mode: NULLABLE

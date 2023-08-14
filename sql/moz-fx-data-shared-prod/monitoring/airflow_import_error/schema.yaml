@@ -1,0 +1,17 @@
+fields:
+- name: timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: null
+- name: id
+  type: INTEGER
+  mode: NULLABLE
+  description: null
+- name: filename
+  type: STRING
+  mode: NULLABLE
+  description: null
+- name: stacktrace
+  type: STRING
+  mode: NULLABLE
+  description: null

@@ -89,10 +89,12 @@ def create_query(date, source_project, tmp_table_name):
         ),
         max_job_creation_date AS (
             SELECT max(creation_date) as last_used_date,
+                reference_project_id AS project_id,
+                reference_dataset_id AS dataset_id,
                 reference_table_id AS table_id
             FROM `moz-fx-data-shared-prod.monitoring_derived.bigquery_usage_v2`
             WHERE creation_date >= "2020-01-01"
-            GROUP BY 2
+            GROUP BY project_id, dataset_id, table_id
         ),
         table_info AS (
             SELECT *
@@ -122,7 +124,7 @@ def create_query(date, source_project, tmp_table_name):
             last_used_date
         FROM table_info
             LEFT JOIN max_job_creation_date
-            USING(table_id)
+            USING(project_id, dataset_id, table_id)
             ORDER BY submission_date, project_id, dataset_id, table_id, table_type
     """
 

@@ -3,11 +3,11 @@ description: List of slot pools configured in Airflow
 labels:
   incremental: false
 owners:
-  - kignasiak@mozilla.com
+  - kik@mozilla.com
 scheduling:
   dag_name: bqetl_monitoring_airflow
   date_partition_parameter: null
   referenced_tables:
-    - ['moz-fx-data-bq-fivetran', 'airflow_metadata_airflow_db', 'slot_pool']
+    - ['moz-fx-data-bq-fivetran', 'telemetry_airflow_metadata_public', 'slot_pool']
   depends_on_fivetran:
     - task_id: fivetran_airflow_metadata_import

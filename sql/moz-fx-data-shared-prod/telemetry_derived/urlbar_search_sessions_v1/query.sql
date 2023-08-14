@@ -67,6 +67,14 @@ WITH events_unnested AS (
     AND category = 'urlbar'
     AND name IN ('engagement', 'abandonment')
 ),
+--remove events where the urlbar dropdown menu remains open (i.e., the urlbar session did not end)
+intermediate_states_removed AS (
+  SELECT *
+  FROM events_unnested
+  WHERE NOT (selected_result = 'tab_to_search' AND engagement_type in ('click', 'enter'))
+  AND NOT (selected_result = 'tip_dismissal_acknowledgement' AND engagement_type in ('click', 'enter'))
+  AND NOT (engagement_type in ('dismiss', 'inaccurate_location', 'not_interested', 'not_relevant', 'show_less_frequently'))
+)
 events_summary AS (
   SELECT
     submission_date,
@@ -116,7 +124,7 @@ events_summary AS (
     client_id AS glean_metrics_client_id,
     ARRAY_CONCAT_AGG(experiments) AS experiments
   FROM
-    events_unnested,
+    intermediate_states_removed,
     UNNEST(product_results) AS res
   GROUP BY
     submission_date,

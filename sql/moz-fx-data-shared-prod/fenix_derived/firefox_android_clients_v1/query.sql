@@ -300,7 +300,7 @@ _current AS (
     baseline_ping AS baseline
   USING
     (client_id)
-  LEFT JOIN
+  FULL OUTER JOIN
     activations
   USING
     (client_id)

@@ -1,0 +1,57 @@
+---
+- client_info:
+    client_id: client-1
+    first_run_date: '2023-05-02+08:00'
+  sample_id: 50
+  submission_timestamp: '2023-05-02 12:55:49'
+  ping_info:
+    seq: 1
+  metrics:
+    string:
+      first_session_network: 'Organic'
+- client_info:
+    client_id: client-1
+    first_run_date: '2023-05-02+08:00'
+  sample_id: 50
+  submission_timestamp: '2023-05-02 12:55:49'
+  ping_info:
+    seq: 2
+  metrics:
+    string:
+      first_session_network: 'Test network'
+- client_info:
+    client_id: client-1
+    first_run_date: '2023-05-02+08:00'
+  sample_id: 50
+  submission_timestamp: '2023-05-02 12:55:49'
+  metrics:
+    string:
+      first_session_network: 'Test network'
+- client_info:
+    client_id: client-2
+    first_run_date: '2023-05-02+08:00'
+  sample_id: 50
+  submission_timestamp: '2023-05-02 00:00:00'
+  ping_info:
+    seq: 0
+  metrics:
+    string:
+      first_session_network: 'Untrusted Devices'
+- client_info:
+    client_id: client-2
+    first_run_date: '2023-05-02+08:00'
+  sample_id: 50
+  submission_timestamp: '2023-05-02 00:00:00'
+  ping_info:
+    seq: 2
+  metrics:
+    string:
+      first_session_network: 'Test network'
+- client_info:
+    client_id: client-3
+    first_run_date: '2023-05-01+08:00'
+  sample_id: 50
+  submission_timestamp: '2023-05-02 00:00:00'
+  metrics:
+    string:
+      first_session_network: 'Untrusted Devices'

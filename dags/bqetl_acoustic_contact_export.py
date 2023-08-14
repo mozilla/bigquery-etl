@@ -21,15 +21,15 @@ DAG to clean up the data loaded from Acoustic.
 
 #### Owner
 
-kignasiak@mozilla.com
+kik@mozilla.com
 """
 
 
 default_args = {
-    "owner": "kignasiak@mozilla.com",
+    "owner": "kik@mozilla.com",
     "start_date": datetime.datetime(2021, 3, 1, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "kignasiak@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "kik@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=300),
     "email_on_failure": True,
@@ -51,8 +51,8 @@ with DAG(
         destination_table="contact_v1",
         dataset_id="acoustic",
         project_id="moz-fx-data-marketing-prod",
-        owner="kignasiak@mozilla.com",
-        email=["kignasiak@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -62,8 +62,8 @@ with DAG(
         destination_table="contact_current_snapshot_v1",
         dataset_id="acoustic",
         project_id="moz-fx-data-marketing-prod",
-        owner="kignasiak@mozilla.com",
-        email=["kignasiak@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -74,8 +74,8 @@ with DAG(
         destination_table="contact_raw_v1",
         dataset_id="acoustic",
         project_id="moz-fx-data-marketing-prod",
-        owner="kignasiak@mozilla.com",
-        email=["kignasiak@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

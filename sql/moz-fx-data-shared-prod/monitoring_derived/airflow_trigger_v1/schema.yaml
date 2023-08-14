@@ -1,0 +1,21 @@
+fields:
+- description:
+  mode: NULLABLE
+  name: id
+  type: INTEGER
+- description:
+  mode: NULLABLE
+  name: trigger_id
+  type: INTEGER
+- description:
+  mode: NULLABLE
+  name: created_at
+  type: TIMESTAMP
+- description:
+  mode: NULLABLE
+  name: kwargs
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: classpath
+  type: STRING

@@ -1,0 +1,7 @@
+fields:
+- name: channel
+  type: STRING
+  mode: NULLABLE
+- name: latest_version
+  type: NUMERIC
+  mode: NULLABLE

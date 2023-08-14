@@ -54,12 +54,16 @@ fields:
 - name: next_dagrun_create_after
   type: TIMESTAMP
   mode: NULLABLE
+  description: null
 - name: next_dagrun_data_interval_start
   type: TIMESTAMP
   mode: NULLABLE
+  description: null
 - name: next_dagrun_data_interval_end
   type: TIMESTAMP
   mode: NULLABLE
+  description: null
 - name: last_parsed_time
   type: TIMESTAMP
   mode: NULLABLE
+  description: The last time the DAG was parsed

@@ -13,6 +13,9 @@ from bigquery_etl.util.common import render, write_sql
 THIS_PATH = Path(os.path.dirname(__file__))
 TABLE_NAME = "active_users_aggregates"
 DATASET_FOR_UNIONED_VIEWS = "telemetry"
+DESKTOP_TABLE_VERSION = "v1"
+MOBILE_TABLE_VERSION = "v2"
+
 
 
 class Browsers(Enum):
@@ -81,10 +84,14 @@ def generate(target_project, output_dir, use_cloud_function):
                     app_name=browser.name,
                 )
             )
-
+        if browser.name == "firefox_desktop":
+            current_version = DESKTOP_TABLE_VERSION
+        else:
+            current_version = MOBILE_TABLE_VERSION
+           
         write_sql(
             output_dir=output_dir,
-            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v1",
+            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_{current_version}",
             basename="query.sql",
             sql=query_sql,
             skip_existing=False,
@@ -92,7 +99,7 @@ def generate(target_project, output_dir, use_cloud_function):
 
         write_sql(
             output_dir=output_dir,
-            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v1",
+            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_{current_version}",
             basename="metadata.yaml",
             sql=render(
                 metadata_template,
@@ -104,6 +111,7 @@ def generate(target_project, output_dir, use_cloud_function):
             skip_existing=False,
         )
 
+
         if browser.name == "focus_android":
             write_sql(
                 output_dir=output_dir,
@@ -113,6 +121,21 @@ def generate(target_project, output_dir, use_cloud_function):
                     focus_android_view_template.render(
                         project_id=target_project,
                         app_name=browser.name,
+                        table_version=MOBILE_TABLE_VERSION,
+                    )
+                ),
+                skip_existing=False,
+            )
+        elif browser.name == "firefox_desktop":
+            write_sql(
+                output_dir=output_dir,
+                full_table_id=f"{target_project}.{browser.name}.{TABLE_NAME}",
+                basename="view.sql",
+                sql=reformat(
+                    view_template.render(
+                        project_id=target_project,
+                        app_name=browser.name,
+                        table_version=DESKTOP_TABLE_VERSION
                     )
                 ),
                 skip_existing=False,
@@ -126,6 +149,7 @@ def generate(target_project, output_dir, use_cloud_function):
                     view_template.render(
                         project_id=target_project,
                         app_name=browser.name,
+                        table_version=MOBILE_TABLE_VERSION,
                     )
                 ),
                 skip_existing=False,

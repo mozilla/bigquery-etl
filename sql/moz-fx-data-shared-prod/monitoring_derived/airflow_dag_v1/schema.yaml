@@ -15,6 +15,14 @@ fields:
   mode: NULLABLE
   name: is_subdag
   type: BOOLEAN
+- description: DAG's description
+  mode: NULLABLE
+  name: description
+  type: STRING
+- description: DAG's scheduling settings
+  mode: NULLABLE
+  name: schedule_interval
+  type: STRING
 - description: DAG owners (comma separated)
   mode: NULLABLE
   name: owners
@@ -31,11 +39,31 @@ fields:
   mode: NULLABLE
   name: has_task_concurrency_limits
   type: BOOLEAN
-- description: Cuncerrency settings for the DAG
-  mode: NULLABLE
-  name: concurrency
-  type: INTEGER
 - description: Max number of active DAG runs allowed
   mode: NULLABLE
   name: max_active_runs
   type: INTEGER
+- description: Max number of active task instances in the DAG allowed
+  mode: NULLABLE
+  name: max_active_tasks
+  type: INTEGER
+- description: null
+  mode: NULLABLE
+  name: next_dagrun
+  type: TIMESTAMP
+- description: null
+  mode: NULLABLE
+  name: next_dagrun_create_after
+  type: TIMESTAMP
+- description: null
+  mode: NULLABLE
+  name: next_dagrun_data_interval_start
+  type: TIMESTAMP
+- description: null
+  mode: NULLABLE
+  name: next_dagrun_data_interval_end
+  type: TIMESTAMP
+- description: The last time the DAG was parsed
+  mode: NULLABLE
+  name: last_parsed_time
+  type: TIMESTAMP

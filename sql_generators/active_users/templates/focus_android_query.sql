@@ -74,7 +74,6 @@ search_clients AS (
     `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
   WHERE
     submission_date = @submission_date
-    AND app_name = '{{ app_value }}'
 ),
 search_metrics AS (
   SELECT
@@ -197,6 +196,8 @@ todays_metrics AS (
     search_with_ads,
     uri_count,
     active_hours_sum,
+    CAST(NULL AS STRING) AS adjust_network,
+    CAST(NULL AS STRING) AS install_source
   FROM
     unioned_with_searches
 ),
@@ -258,4 +259,6 @@ GROUP BY
   os_version_major,
   os_version_minor,
   submission_date,
-  segment
+  segment,
+  adjust_network,
+  install_source

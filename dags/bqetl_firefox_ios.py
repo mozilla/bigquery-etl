@@ -48,12 +48,8 @@ with DAG(
         source_table="app_store_funnel_v1",
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kignasiak@mozilla.com",
-        email=[
-            "kignasiak@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
     )
@@ -63,12 +59,8 @@ with DAG(
         destination_table="app_store_funnel_v1",
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kignasiak@mozilla.com",
-        email=[
-            "kignasiak@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -79,12 +71,8 @@ with DAG(
         destination_table="attributable_clients_v1",
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kignasiak@mozilla.com",
-        email=[
-            "kignasiak@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -94,16 +82,26 @@ with DAG(
         destination_table="firefox_ios_clients_v1",
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kignasiak@mozilla.com",
-        email=[
-            "kignasiak@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
     )
+
+    with TaskGroup(
+        "firefox_ios_derived__firefox_ios_clients__v1_external"
+    ) as firefox_ios_derived__firefox_ios_clients__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_firefox_ios_derived__firefox_ios_clients__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_firefox_ios_derived__firefox_ios_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=1800)).isoformat() }}",
+        )
+
+        firefox_ios_derived__firefox_ios_clients__v1_external.set_upstream(
+            firefox_ios_derived__firefox_ios_clients__v1
+        )
 
     firefox_ios_derived__new_profile_activation__v2 = bigquery_etl_query(
         task_id="firefox_ios_derived__new_profile_activation__v2",
@@ -112,7 +110,6 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="vsabino@mozilla.com",
         email=[
-            "kignasiak@mozilla.com",
             "kik@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "vsabino@mozilla.com",

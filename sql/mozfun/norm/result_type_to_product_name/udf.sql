@@ -8,7 +8,7 @@ RETURNS STRING AS (
     WHEN res IN ('trending_search', 'trending_search_rich') THEN 'trending_suggestion'
     WHEN res IN ('history') THEN 'history'
     WHEN res IN ('bookmark', 'keyword') THEN 'bookmark'
-    WHEN res IN ('tab') THEN 'open_tabs'
+    WHEN res IN ('tab') THEN 'open_tab'
     WHEN res IN ('merino_adm_sponsored', 'rs_adm_sponsored', 'suggest_sponsor') THEN 'admarketplace_sponsored'
     WHEN res IN ('merino_top_picks') THEN 'navigational'
     WHEN res IN ('addon', 'rs_amo') THEN 'add_on'

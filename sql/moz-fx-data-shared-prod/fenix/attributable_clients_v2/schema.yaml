@@ -97,6 +97,3 @@ fields:
   - name: install_source__source_ping_datetime
     type: DATETIME
     mode: NULLABLE
-  - name: reported_baseline_ping
-    type: BOOLEAN
-    mode: NULLABLE

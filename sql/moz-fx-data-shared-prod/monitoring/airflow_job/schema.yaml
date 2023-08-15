@@ -7,6 +7,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: null
+- name: end_date
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: null
 - name: executor_class
   type: STRING
   mode: NULLABLE
@@ -19,23 +23,19 @@ fields:
   type: STRING
   mode: NULLABLE
   description: null
-- name: state
-  type: STRING
-  mode: NULLABLE
-  description: null
-- name: unixname
-  type: STRING
+- name: latest_heartbeat
+  type: TIMESTAMP
   mode: NULLABLE
   description: null
 - name: start_date
   type: TIMESTAMP
   mode: NULLABLE
   description: null
-- name: end_date
-  type: TIMESTAMP
+- name: state
+  type: STRING
   mode: NULLABLE
   description: null
-- name: latest_heartbeat
-  type: TIMESTAMP
+- name: unixname
+  type: STRING
   mode: NULLABLE
   description: null

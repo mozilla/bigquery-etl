@@ -19,10 +19,6 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: null
-- name: max_tries
-  type: INTEGER
-  mode: NULLABLE
-  description: null
 - name: start_date
   type: TIMESTAMP
   mode: NULLABLE
@@ -35,79 +31,61 @@ fields:
   type: FLOAT
   mode: NULLABLE
   description: null
-- name: updated_at
+- name: job_id
   type: TIMESTAMP
   mode: NULLABLE
-  description: null
-- name: job_id
-  type: STRING
-  mode: NULLABLE
-  description: null
 - name: executor_config
   type: BYTES
   mode: NULLABLE
-  description: null
 - name: external_executor_id
   type: STRING
   mode: NULLABLE
-  description: null
 - name: hostname
   type: STRING
+  mode: NULLABLE
+- name: max_tries
+  type: INTEGER
   mode: NULLABLE
   description: null
 - name: next_kwargs
   type: STRING
   mode: NULLABLE
-  description: null
 - name: next_method
   type: STRING
   mode: NULLABLE
-  description: null
 - name: operator
   type: STRING
   mode: NULLABLE
-  description: null
 - name: pid
-  type: STRING
+  type: INTEGER
   mode: NULLABLE
-  description: null
 - name: pool
   type: STRING
   mode: NULLABLE
-  description: null
 - name: pool_slots
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: priority_weight
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: queue
   type: STRING
   mode: NULLABLE
-  description: null
 - name: queued_by_job_id
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: queued_dttm
   type: TIMESTAMP
   mode: NULLABLE
-  description: null
 - name: trigger_id
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: trigger_timeout
   type: DATETIME
   mode: NULLABLE
-  description: null
 - name: unixname
   type: STRING
   mode: NULLABLE
-  description: null
 - name: map_index
   type: INTEGER
   mode: NULLABLE
-  description: null

@@ -145,9 +145,6 @@ fields:
     type: DATETIME
     mode: NULLABLE
     description: Datetime of the ping that reported the first install_source value.
-  - name: reported_baseline_ping
-    type: BOOLEAN
-    mode: NULLABLE
 - name: adjust_network
   type: STRING
   mode: NULLABLE

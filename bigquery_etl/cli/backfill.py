@@ -1,8 +1,9 @@
 """bigquery-etl CLI backfill command."""
-
+import json
 import sys
 import tempfile
 from datetime import date, datetime, timedelta
+from pathlib import Path
 
 import click
 import yaml
@@ -290,8 +291,9 @@ def info(ctx, qualified_table_name, sql_dir, project_id, status):
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
 )
+@click.option("--json_path", type=click.Path())
 @click.pass_context
-def scheduled(ctx, qualified_table_name, sql_dir, project_id):
+def scheduled(ctx, qualified_table_name, sql_dir, project_id, json_path=None):
     """Return list of backfill(s) that require processing."""
     total_backfills_count = 0
 
@@ -310,6 +312,10 @@ def scheduled(ctx, qualified_table_name, sql_dir, project_id):
     click.echo(
         f"\nThere are a total of {total_backfills_count} backfill(s) that require processing."
     )
+
+    if backfills_to_process_dict and json_path is not None:
+        scheduled_backfills_json = json.dumps(list(backfills_to_process_dict.keys()))
+        Path(json_path).write_text(scheduled_backfills_json)
 
 
 @backfill.command(

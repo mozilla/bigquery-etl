@@ -51,6 +51,18 @@ subscription_items AS (
     -- one subscription item, and we enforce that so the ETL can rely on it.
     1 = COUNT(*) OVER (PARTITION BY subscription_id)
 ),
+products AS (
+  SELECT
+    id,
+    created,
+    description,
+    PARSE_JSON(metadata) AS metadata,
+    name,
+    statement_descriptor,
+    updated,
+  FROM
+    `moz-fx-data-shared-prod`.stripe_external.product_v1
+),
 plans AS (
   SELECT
     id,
@@ -232,7 +244,15 @@ SELECT
           plans.interval_count,
           plans.metadata,
           plans.nickname,
-          plans.product_id,
+          STRUCT(
+            plans.product_id AS id,
+            products.created,
+            products.description,
+            products.metadata,
+            products.name,
+            products.statement_descriptor,
+            products.updated
+          ) AS product,
           plans.tiers_mode,
           plans.trial_period_days,
           plans.usage_type
@@ -258,6 +278,10 @@ LEFT JOIN
   plans
 ON
   subscriptions_history.plan_id = plans.id
+LEFT JOIN
+  products
+ON
+  plans.product_id = products.id
 LEFT JOIN
   subscriptions_history_tax_rates
 ON

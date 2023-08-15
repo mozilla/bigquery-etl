@@ -326,10 +326,41 @@ fields:
         type: STRING
         mode: NULLABLE
         description: A brief description of the plan, hidden from customers.
-      - name: product_id
-        type: STRING
+      - name: product
+        type: RECORD
         mode: NULLABLE
-        description: ID of the product whose pricing this plan determines.
+        description: The product whose pricing this plan determines.
+        fields:
+        - name: id
+          type: STRING
+          mode: NULLABLE
+          description: Product ID.
+        - name: created
+          type: TIMESTAMP
+          mode: NULLABLE
+          description: Time at which the product was created.
+        - name: description
+          type: STRING
+          mode: NULLABLE
+          description: The product's description, meant to be displayable to the customer.
+        - name: metadata
+          type: JSON
+          mode: NULLABLE
+          description: Set of key-value pairs attached to the product, stored as a
+            JSON object.
+        - name: name
+          type: STRING
+          mode: NULLABLE
+          description: The product's name, meant to be displayable to the customer.
+        - name: statement_descriptor
+          type: STRING
+          mode: NULLABLE
+          description: Extra information about a product which will appear on your
+            customer's credit card statement.
+        - name: updated
+          type: TIMESTAMP
+          mode: NULLABLE
+          description: Time at which the product was last updated.
       - name: tiers_mode
         type: STRING
         mode: NULLABLE

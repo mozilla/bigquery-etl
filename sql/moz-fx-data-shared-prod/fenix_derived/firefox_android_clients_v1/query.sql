@@ -19,7 +19,6 @@ WITH baseline_clients AS (
     `moz-fx-data-shared-prod.fenix.baseline_clients_daily`
   WHERE
     submission_date = @submission_date
-    AND normalized_channel = 'release'
 ),
 first_seen AS (
   SELECT
@@ -122,7 +121,6 @@ first_session_ping AS (
 ),
 -- Find earliest data per client from the metrics ping.
 metrics_ping AS (
-  -- Fenix Release
   SELECT
     client_info.client_id AS client_id,
     MIN(sample_id) AS sample_id,
@@ -169,7 +167,7 @@ metrics_ping AS (
         submission_timestamp DESC
     )[SAFE_OFFSET(0)] AS last_reported_adjust_campaign,
   FROM
-    org_mozilla_firefox.metrics AS org_mozilla_firefox_metrics
+    fenix.metrics AS fenix_metrics
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -302,7 +300,7 @@ _current AS (
     baseline_ping AS baseline
   USING
     (client_id)
-  LEFT JOIN
+  FULL OUTER JOIN
     activations
   USING
     (client_id)

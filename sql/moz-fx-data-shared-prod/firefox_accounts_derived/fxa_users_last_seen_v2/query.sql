@@ -12,7 +12,7 @@ WITH _current AS (
     CAST(seen_in_tier1_country AS INT64) AS days_seen_in_tier1_country_bits,
     CAST(registered AS INT64) AS days_registered_bits,
   FROM
-    `firefox_accounts_derived.fxa_users_daily_v2`
+    firefox_accounts_derived.fxa_users_daily_v2
   WHERE
     submission_date = @submission_date
 ),
@@ -23,7 +23,7 @@ _previous AS (
     days_seen_in_tier1_country_bits,
     days_registered_bits,
   FROM
-    `firefox_accounts_derived.fxa_users_last_seen_v2`
+    firefox_accounts_derived.fxa_users_last_seen_v2
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.

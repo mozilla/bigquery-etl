@@ -4,7 +4,7 @@ description: |
   Usage aggregations describing when an FxA user
   was seen for the first time using an FxA service.
 owners:
-  - kignasiak@mozilla.com
+  - kik@mozilla.com
 labels:
   application: fxa
   incremental: true

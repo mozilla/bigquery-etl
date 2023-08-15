@@ -210,7 +210,15 @@ questionable_subscription_plans_history AS (
       plans.interval_count,
       PARSE_JSON(plans.metadata) AS metadata,
       plans.nickname,
-      plans.product_id,
+      STRUCT(
+        plans.product_id AS id,
+        products.created,
+        products.description,
+        PARSE_JSON(products.metadata) AS metadata,
+        products.name,
+        products.statement_descriptor,
+        products.updated
+      ) AS product,
       plans.tiers_mode,
       plans.trial_period_days,
       plans.usage_type
@@ -227,6 +235,10 @@ questionable_subscription_plans_history AS (
     `moz-fx-data-shared-prod`.stripe_external.plan_v1 AS plans
   ON
     plan_changes.plan_id = plans.id
+  LEFT JOIN
+    `moz-fx-data-shared-prod`.stripe_external.product_v1 AS products
+  ON
+    plans.product_id = products.id
   WINDOW
     subscription_plan_changes_asc AS (
       PARTITION BY

@@ -236,6 +236,11 @@ _current AS (
           THEN FALSE
         ELSE TRUE
       END AS reported_metrics_ping,
+      CASE
+        WHEN baseline.client_id IS NULL
+          THEN FALSE
+        ELSE TRUE
+      END AS reported_baseline_ping,
       DATE(first_session.min_submission_datetime) AS min_first_session_ping_submission_date,
       DATE(first_session.first_run_datetime) AS min_first_session_ping_run_date,
       DATE(metrics.min_submission_datetime) AS min_metrics_ping_submission_date,
@@ -375,6 +380,8 @@ SELECT
     ) AS reported_first_session_ping,
     COALESCE(_previous.metadata.reported_metrics_ping, FALSE)
     OR COALESCE(_current.metadata.reported_metrics_ping, FALSE) AS reported_metrics_ping,
+    COALESCE(_previous.metadata.reported_baseline_ping, FALSE)
+    OR COALESCE(_current.metadata.reported_baseline_ping, FALSE) AS reported_baseline_ping,
     CASE
       WHEN _previous.metadata.min_first_session_ping_submission_date IS NOT NULL
         AND _current.metadata.min_first_session_ping_submission_date IS NOT NULL

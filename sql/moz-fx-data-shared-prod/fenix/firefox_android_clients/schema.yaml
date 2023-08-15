@@ -116,6 +116,10 @@ fields:
     type: BOOLEAN
     mode: NULLABLE
     description: True if the client ever reported a metrics ping.
+  - name: reported_baseline_ping
+    type: BOOLEAN
+    mode: NULLABLE
+    description: True if the client ever reported a baseline ping.
   - name: min_first_session_ping_submission_date
     type: DATE
     mode: NULLABLE

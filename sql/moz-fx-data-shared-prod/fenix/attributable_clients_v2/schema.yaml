@@ -76,6 +76,9 @@ fields:
   - name: reported_metrics_ping
     type: BOOLEAN
     mode: NULLABLE
+  - name: reported_baseline_ping
+    type: BOOLEAN
+    mode: NULLABLE
   - name: min_first_session_ping_submission_date
     type: DATE
     mode: NULLABLE

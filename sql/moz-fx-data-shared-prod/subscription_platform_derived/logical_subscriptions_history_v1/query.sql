@@ -118,6 +118,7 @@ SELECT
     history.subscription.provider_subscription_id,
     history.subscription.provider_subscription_item_id,
     history.subscription.provider_subscription_created_at,
+    history.valid_from AS provider_subscription_updated_at,
     history.subscription.provider_customer_id,
     history.subscription.mozilla_account_id,
     history.subscription.mozilla_account_id_sha256,

@@ -33,6 +33,9 @@ fields:
   - name: provider_subscription_created_at
     type: TIMESTAMP
     mode: NULLABLE
+  - name: provider_subscription_updated_at
+    type: TIMESTAMP
+    mode: NULLABLE
   - name: provider_customer_id
     type: STRING
     mode: NULLABLE

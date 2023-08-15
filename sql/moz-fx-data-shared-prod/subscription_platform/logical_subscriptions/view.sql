@@ -2,40 +2,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.subscription_platform.logical_subscriptions`
 AS
 SELECT
-  subscription.id,
-  subscription.provider,
-  subscription.payment_provider,
-  subscription.provider_subscription_id,
-  subscription.provider_subscription_item_id,
-  subscription.provider_subscription_created_at,
-  valid_from AS provider_subscription_updated_at,
-  subscription.provider_customer_id,
-  subscription.mozilla_account_id,
-  subscription.mozilla_account_id_sha256,
-  subscription.customer_subscription_number,
-  subscription.country_code,
-  subscription.country_name,
-  subscription.services,
-  subscription.provider_product_id,
-  subscription.product_name,
-  subscription.provider_plan_id,
-  subscription.plan_interval,
-  subscription.plan_interval_count,
-  subscription.plan_currency,
-  subscription.plan_amount,
-  subscription.is_bundle,
-  subscription.is_trial,
-  subscription.is_active,
-  subscription.provider_status,
-  subscription.started_at,
-  subscription.ended_at,
-  subscription.current_period_started_at,
-  subscription.current_period_ends_at,
-  subscription.auto_renew,
-  subscription.auto_renew_disabled_at,
-  subscription.has_fraudulent_charges,
-  subscription.first_touch_attribution,
-  subscription.last_touch_attribution,
+  subscription.*
 FROM
   `moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1`
 WHERE

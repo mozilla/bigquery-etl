@@ -74,7 +74,7 @@ intermediate_states_removed AS (
   WHERE NOT (selected_result = 'tab_to_search' AND engagement_type in ('click', 'enter'))
   AND NOT (selected_result = 'tip_dismissal_acknowledgement' AND engagement_type in ('click', 'enter'))
   AND NOT (engagement_type in ('dismiss', 'inaccurate_location', 'not_interested', 'not_relevant', 'show_less_frequently'))
-)
+),
 events_summary AS (
   SELECT
     submission_date,

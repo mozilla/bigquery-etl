@@ -1,7 +1,7 @@
-friendly_name: Daily active logical subscriptions
+friendly_name: Monthly active logical subscriptions
 description: |-
-  Daily snapshots of logical subscriptions that were active at any point during each day.
-  The latest state of the subscription during the day is saved.
+  Monthly snapshots of logical subscriptions that were active at any point during each month.
+  The latest state of the subscription during the month is saved.
 
   Logical subscriptions are a continuous active period for a particular provider subscription item.
   If a provider subscription has multiple items, each of those items would be considered a separate logical subscription.
@@ -15,8 +15,8 @@ scheduling:
   date_partition_parameter: date
 bigquery:
   time_partitioning:
-    type: day
-    field: date
+    type: month
+    field: month_start_date
     require_partition_filter: false
     expiration_days: null
   clustering: null

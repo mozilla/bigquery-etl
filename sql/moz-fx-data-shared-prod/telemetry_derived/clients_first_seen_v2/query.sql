@@ -1,7 +1,7 @@
 -- Query for telemetry_derived.clients_first_seen_v2
 {% if parallel_run() %}
   INSERT INTO
-    {project_id }.{dataset_id }.{table_name }
+    {project_id}.{dataset_id}.{table_name}
 {% endif %}
 WITH new_profile_ping AS (
   SELECT
@@ -112,7 +112,7 @@ WITH new_profile_ping AS (
     {% if is_init() %}
       DATE(submission_timestamp) >= '2010-01-01'
       {% if parallel_run() %}
-        AND sample_id = {sample_id }
+        AND sample_id = {sample_id}
       {% endif %}
     {% else %}
       DATE(submission_timestamp) = @submission_date
@@ -230,7 +230,7 @@ shutdown_ping AS (
     {% if is_init() %}
       DATE(submission_timestamp) >= '2010-01-01'
       {% if parallel_run() %}
-        AND sample_id = {sample_id }
+        AND sample_id = {sample_id}
       {% endif %}
     {% else %}
       DATE(submission_timestamp) = @submission_date
@@ -298,7 +298,7 @@ main_ping AS (
     {% if is_init() %}
       submission_date >= '2010-01-01'
       {% if parallel_run() %}
-        AND sample_id = {sample_id }
+        AND sample_id = {sample_id}
       {% endif %}
     {% else %}
       submission_date = @submission_date

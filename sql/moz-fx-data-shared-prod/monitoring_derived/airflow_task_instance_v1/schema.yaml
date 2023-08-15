@@ -42,7 +42,7 @@ fields:
 - description:
   mode: NULLABLE
   name: job_id
-  type: STRING
+  type: TIMESTAMP
 - description:
   mode: NULLABLE
   name: executor_config

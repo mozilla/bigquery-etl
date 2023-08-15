@@ -14,7 +14,7 @@ labels:
   incremental: true
 
 owners:
-  - kignasiak@mozilla.com
+  - kik@mozilla.com
 
 scheduling:
   dag_name: bqetl_acoustic_contact_export

@@ -6,7 +6,7 @@ import pytest
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.query_scheduling.dag import DagParseException, InvalidDag
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
-from bigquery_etl.query_scheduling.task import Task
+from bigquery_etl.query_scheduling.task import Task, TaskRef
 
 TEST_DIR = Path(__file__).parent.parent
 
@@ -528,3 +528,146 @@ class TestDagCollection:
         )
 
         assert result == expected
+
+    def test_to_airflow_with_check_upstream_dependencies(self, tmp_path):
+        query_file_path = tmp_path / "test-project" / "test" / "query_v1"
+        os.makedirs(query_file_path)
+
+        query_file = query_file_path / "query.sql"
+        query_file.write_text(
+            "SELECT * FROM `test-project`.test.table1_v1 "
+            "UNION ALL SELECT * FROM `test-project`.test.table2_v1 "
+            "UNION ALL SELECT * FROM `test-project`.test.external_table_v1"
+        )
+
+        metadata = Metadata(
+            "test",
+            "test",
+            ["test@example.org"],
+            {},
+            {
+                "dag_name": "bqetl_test_dag",
+                "default_args": {"owner": "test@example.org"},
+            },
+        )
+
+        task = Task.of_query(query_file, metadata)
+
+        table_task1 = Task.of_query(
+            tmp_path / "test-project" / "test" / "table1_v1" / "query.sql",
+            metadata,
+        )
+        table_task1_ref = TaskRef(
+            dag_name=table_task1.dag_name, task_id=table_task1.task_name
+        )
+
+        os.makedirs(tmp_path / "test-project" / "test" / "table1_v1")
+        query_file = tmp_path / "test-project" / "test" / "table1_v1" / "query.sql"
+        query_file.write_text("SELECT 1")
+
+        checks_task1 = Task.of_dq_check(
+            tmp_path / "test-project" / "test" / "table1_v1" / "checks.sql",
+            metadata,
+        )
+
+        checks_task1.upstream_dependencies.append(table_task1_ref)
+
+        check_file1 = tmp_path / "test-project" / "test" / "table1_v1" / "checks.sql"
+        check_file1.write_text("SELECT TRUE")
+
+        table_task2 = Task.of_query(
+            tmp_path / "test-project" / "test" / "table2_v1" / "query.sql",
+            metadata,
+        )
+
+        os.makedirs(tmp_path / "test-project" / "test" / "table2_v1")
+        query_file = tmp_path / "test-project" / "test" / "table2_v1" / "query.sql"
+        query_file.write_text("SELECT 2")
+
+        metadata = Metadata(
+            "test",
+            "test",
+            ["test@example.org"],
+            {},
+            {
+                "dag_name": "bqetl_external_test_dag",
+                "default_args": {"owner": "test@example.org"},
+            },
+        )
+
+        external_table_task = Task.of_query(
+            tmp_path / "test-project" / "test" / "external_table_v1" / "query.sql",
+            metadata,
+        )
+        external_table_task_ref = TaskRef(
+            dag_name=external_table_task.dag_name, task_id=external_table_task.task_name
+        )
+
+        os.makedirs(tmp_path / "test-project" / "test" / "external_table_v1")
+        query_file = (
+            tmp_path / "test-project" / "test" / "external_table_v1" / "query.sql"
+        )
+        query_file.write_text("SELECT 3")
+
+        checks_task2 = Task.of_dq_check(
+            tmp_path / "test-project" / "test" / "external_table_v1" / "checks.sql",
+            metadata,
+        )
+        checks_task2.upstream_dependencies.append(external_table_task_ref)
+
+        check_file2 = (
+            tmp_path / "test-project" / "test" / "external_table_v1" / "checks.sql"
+        )
+        check_file2.write_text("SELECT TRUE")
+
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": {
+                        "owner": "test@example.org",
+                        "start_date": "2020-05-25",
+                    },
+                },
+                "bqetl_external_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": {
+                        "owner": "test@example.org",
+                        "start_date": "2020-05-25",
+                    },
+                },
+            }
+        ).with_tasks(
+            [
+                task,
+                table_task1,
+                table_task2,
+                external_table_task,
+                checks_task1,
+                checks_task2,
+            ]
+        )
+
+        dags.to_airflow_dags(tmp_path)
+
+        expected_dag_with_upstream_dependencies = (
+            (TEST_DIR / "data" / "dags" / "test_dag_with_check_dependencies")
+            .read_text()
+            .strip()
+        )
+        expected_dag_external_dependency = (
+            (TEST_DIR / "data" / "dags" / "test_dag_external_check_dependency")
+            .read_text()
+            .strip()
+        )
+
+        dag_with_upstream_dependencies = (
+            (tmp_path / "bqetl_test_dag.py").read_text().strip()
+        )
+
+        dag_external_dependency = (
+            (tmp_path / "bqetl_external_test_dag.py").read_text().strip()
+        )
+
+        assert dag_with_upstream_dependencies == expected_dag_with_upstream_dependencies
+        assert dag_external_dependency == expected_dag_external_dependency

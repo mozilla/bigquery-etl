@@ -32,7 +32,7 @@ default_args = {
         "telemetry-alerts@mozilla.com",
         "mdn-infra@mozilla.com",
         "fmerz@mozilla.com",
-        "kignasiak@mozilla.com",
+        "kik@mozilla.com",
     ],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=300),
@@ -61,7 +61,7 @@ with DAG(
         owner="fmerz@mozilla.com",
         email=[
             "fmerz@mozilla.com",
-            "kignasiak@mozilla.com",
+            "kik@mozilla.com",
             "mdn-infra@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],

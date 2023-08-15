@@ -56,7 +56,6 @@ search_clients AS (
     AND DATE(request.submission_timestamp)
     BETWEEN @start_date
     AND @end_date
-    AND app_name = '{{ app_value }}'
 ),
 search_metrics AS (
   SELECT

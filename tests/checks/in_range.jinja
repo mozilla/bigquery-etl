@@ -11,7 +11,7 @@
             {% elif max is not none -%}
             {{ col }} > {{ max }}
             {% endif -%}
-          ) > 0, 
+          ) > 0,
           "{{ col }}",
           NULL
         ){% if not loop.last -%},{% endif -%}

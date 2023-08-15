@@ -3,7 +3,7 @@ description: |
   Measure usage of the regrets reporter addon
   See https://github.com/mozilla/bigquery-etl/issues/2572
 owners:
-- kignasiak@mozilla.com
+- kik@mozilla.com
 labels:
   # has to be full load, otherwise the query logic does not work
   # see Github issue for more info:

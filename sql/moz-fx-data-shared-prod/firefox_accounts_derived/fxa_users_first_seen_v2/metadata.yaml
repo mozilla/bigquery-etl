@@ -6,7 +6,7 @@ description: |-
   Partitioned by submission_date,
   clustered by country, os_name
 owners:
-- kignasiak@mozilla.com
+- kik@mozilla.com
 labels:
   application: firefox_accounts
   incremental: true

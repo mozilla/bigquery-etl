@@ -3,11 +3,16 @@ description: List of tasks rescheduled by Airflow
 labels:
   incremental: false
 owners:
-  - kignasiak@mozilla.com
+  - kik@mozilla.com
 scheduling:
   dag_name: bqetl_monitoring_airflow
   date_partition_parameter: null
   referenced_tables:
+    - [
+      'moz-fx-data-bq-fivetran',
+      'telemetry_airflow_metadata_public',
+      'task_reschedule'
+    ]
     - [
       'moz-fx-data-bq-fivetran',
       'airflow_metadata_airflow_db',

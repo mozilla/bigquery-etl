@@ -4,7 +4,7 @@ description: |
   this table records daily information about
   them and their activity.
 owners:
-- kignasiak@mozilla.com
+- kik@mozilla.com
 labels:
   schedule: daily
 scheduling:

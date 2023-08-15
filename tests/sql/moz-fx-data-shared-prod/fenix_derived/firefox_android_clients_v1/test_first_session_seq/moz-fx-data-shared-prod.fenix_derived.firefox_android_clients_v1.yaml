@@ -9,4 +9,5 @@
   metadata:
     reported_first_session_ping: false
     reported_metrics_ping: false
+    reported_baseline_ping: true
     install_source__source_ping: metrics

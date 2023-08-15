@@ -4,4 +4,4 @@ fields:
   type: STRING
 - mode: NULLABLE
   name: latest_version
-  type: INTEGER
+  type: NUMERIC

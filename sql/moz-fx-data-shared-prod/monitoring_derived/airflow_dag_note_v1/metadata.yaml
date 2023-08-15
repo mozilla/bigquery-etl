@@ -1,0 +1,13 @@
+friendly_name: Airflow DAG run notes
+description: List of DAG run notes
+labels:
+  incremental: false
+owners:
+  - kik@mozilla.com
+scheduling:
+  dag_name: bqetl_monitoring_airflow
+  date_partition_parameter: null
+  referenced_tables:
+    - ['moz-fx-data-bq-fivetran', 'telemetry_airflow_metadata_public', 'dag_run_note']
+  depends_on_fivetran:
+    - task_id: fivetran_airflow_metadata_import

@@ -1,0 +1,8 @@
+friendly_name: Latest Versions
+description: |-
+  Most recent major release versions per channel.
+  Parsed from https://product-details.mozilla.org/1.0/firefox_versions.json.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: false

@@ -52,7 +52,6 @@ dou AS (
   WHERE
     submission_date = @submission_date
     AND DATE_DIFF(submission_date, first_seen_date, DAY) = 6
-    AND normalized_channel = 'release'
 ),
 adjust_client AS (
   SELECT

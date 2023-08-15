@@ -3161,7 +3161,7 @@ including views on <code>payload_bytes</code> tables</p>
 <tr>
         <td>dag_run_id</td>
         <td></td>
-        <td>String</td>
+        <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>content</td>
@@ -3468,6 +3468,11 @@ including views on <code>payload_bytes</code> tables</p>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
+        <td>end_date</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>executor_class</td>
         <td></td>
         <td>String</td>
@@ -3483,6 +3488,16 @@ including views on <code>payload_bytes</code> tables</p>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
+        <td>latest_heartbeat</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>start_date</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>state</td>
         <td></td>
         <td>String</td>
@@ -3491,21 +3506,6 @@ including views on <code>payload_bytes</code> tables</p>
         <td>unixname</td>
         <td></td>
         <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>start_date</td>
-        <td></td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>end_date</td>
-        <td></td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>latest_heartbeat</td>
-        <td></td>
-        <td>Timestamp</td>
         <td>Yes</td>
     </tr>
 </table>
@@ -3629,11 +3629,6 @@ including views on <code>payload_bytes</code> tables</p>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
-        <td>max_tries</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
         <td>start_date</td>
         <td></td>
         <td>Timestamp</td>
@@ -3649,14 +3644,9 @@ including views on <code>payload_bytes</code> tables</p>
         <td>Float</td>
         <td>Yes</td>
     </tr><tr>
-        <td>updated_at</td>
-        <td></td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
         <td>job_id</td>
         <td></td>
-        <td>String</td>
+        <td>Timestamp</td>
         <td>Yes</td>
     </tr><tr>
         <td>executor_config</td>
@@ -3672,6 +3662,11 @@ including views on <code>payload_bytes</code> tables</p>
         <td>hostname</td>
         <td></td>
         <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>max_tries</td>
+        <td></td>
+        <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>next_kwargs</td>
@@ -3691,7 +3686,7 @@ including views on <code>payload_bytes</code> tables</p>
     </tr><tr>
         <td>pid</td>
         <td></td>
-        <td>String</td>
+        <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>pool</td>
@@ -3778,12 +3773,22 @@ including views on <code>payload_bytes</code> tables</p>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
+        <td>map_index</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>run_id</td>
         <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>task_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>content</td>
         <td></td>
         <td>String</td>
         <td>Yes</td>
@@ -3799,16 +3804,6 @@ including views on <code>payload_bytes</code> tables</p>
         <td>Yes</td>
     </tr><tr>
         <td>user_id</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>content</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>map_index</td>
         <td></td>
         <td>Integer</td>
         <td>Yes</td>
@@ -3916,21 +3911,6 @@ including views on <code>payload_bytes</code> tables</p>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
-        <td>trigger_id</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>created_at</td>
-        <td></td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>kwargs</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
         <td>classpath</td>
         <td></td>
         <td>String</td>
@@ -3941,9 +3921,24 @@ including views on <code>payload_bytes</code> tables</p>
         <td>Timestamp</td>
         <td>Yes</td>
     </tr><tr>
+        <td>kwargs</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>triggerer_id</td>
         <td></td>
         <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>trigger_id</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>created_at</td>
+        <td></td>
+        <td>Timestamp</td>
         <td>Yes</td>
     </tr>
 </table>

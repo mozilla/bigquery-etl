@@ -1,9 +1,10 @@
-friendly_name: Urlbar Search Sessions Daily
+friendly_name: Urlbar Events
 description: |-
   Provide detailed engagement information concerning Firefox Suggest and other elements in the address bar (User's journey)
 owners:
 - akommasani@mozilla.com
 - rburwei@mozilla.com
+- dzeber@mozilla.com
 labels:
   incremental: true
   schedule: daily

@@ -67,14 +67,6 @@ WITH events_unnested AS (
     AND category = 'urlbar'
     AND name IN ('engagement', 'abandonment')
 ),
---remove events where the urlbar dropdown menu remains open (i.e., the urlbar session did not end)
-intermediate_states_removed AS (
-  SELECT *
-  FROM events_unnested
-  WHERE NOT (selected_result = 'tab_to_search' AND engagement_type in ('click', 'enter'))
-  AND NOT (selected_result = 'tip_dismissal_acknowledgement' AND engagement_type in ('click', 'enter'))
-  AND NOT (engagement_type in ('dismiss', 'inaccurate_location', 'not_interested', 'not_relevant', 'show_less_frequently'))
-),
 events_summary AS (
   SELECT
     submission_date,
@@ -104,6 +96,10 @@ events_summary AS (
         THEN engagement_type
       ELSE NULL
     END AS annoyance_signal_type,
+    --events where the urlbar dropdown menu remains open (i.e., the urlbar session did not end)
+    COALESCE(NOT (selected_result = 'tab_to_search' AND engagement_type in ('click', 'enter'))
+  AND NOT (selected_result = 'tip_dismissal_acknowledgement' AND engagement_type in ('click', 'enter'))
+  AND NOT (engagement_type in ('dismiss', 'inaccurate_location', 'not_interested', 'not_relevant', 'show_less_frequently')), TRUE) AS is_terminal,
     COUNTIF(
       res = 'default_partner_search_suggestion'
     ) AS num_default_partner_search_suggestion_impressions,
@@ -124,7 +120,7 @@ events_summary AS (
     client_id AS glean_metrics_client_id,
     ARRAY_CONCAT_AGG(experiments) AS experiments
   FROM
-    intermediate_states_removed,
+    events_unnested,
     UNNEST(product_results) AS res
   GROUP BY
     submission_date,
@@ -142,7 +138,8 @@ events_summary AS (
     engagement_type,
     search_session_type,
     num_chars_typed,
-    num_total_results
+    num_total_results,
+    is_terminal
 )
 SELECT
   submission_date,
@@ -159,6 +156,7 @@ SELECT
   product_result_type AS product_first_result_type,
   num_chars_typed,
   num_total_results,
+  is_terminal,
   num_default_partner_search_suggestion_impressions,
   num_search_engine_suggestion_impressions,
   num_trending_suggestion_impressions,

@@ -3,7 +3,6 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Airflow DAG id
-- name: tag_name
+- name: tags
   type: STRING
-  mode: NULLABLE
-  description: Airflow tag name
+  mode: REPEATED

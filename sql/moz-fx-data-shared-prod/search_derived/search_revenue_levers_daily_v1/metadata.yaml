@@ -2,11 +2,16 @@ friendly_name: Search Revenue Levers Daily
 description: |-
   Daily metrics identified as search revenue levers, including eligible DOU,
   DOU_engaged_w_sap, sap, tagged_sap, tagged_follow_on, search_with_ads, and ad_clicks.
+  The table is labeled as "change_controlled", which implies
+  that changes require the approval of at least one owner.
 owners:
   - xluo@mozilla.com
   - cmorales@mozilla.com
+  - mozilla/revenue_forecasting_data_reviewers
 labels:
   incremental: true
+  schedule: daily
+  change_controlled: true
 scheduling:
   dag_name: bqetl_search_dashboard
 bigquery:

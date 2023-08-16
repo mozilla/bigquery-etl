@@ -1,4 +1,7 @@
 fields:
+- name: logger
+  type: STRING
+  mode: NULLABLE
 - name: log_timestamp
   type: TIMESTAMP
   mode: NULLABLE
@@ -18,6 +21,15 @@ fields:
   type: STRING
   mode: NULLABLE
 - name: oauth_client_name
+  type: STRING
+  mode: NULLABLE
+- name: checkout_type
+  type: STRING
+  mode: NULLABLE
+- name: payment_provider
+  type: STRING
+  mode: NULLABLE
+- name: subscription_id
   type: STRING
   mode: NULLABLE
 - name: product_id
@@ -51,6 +63,9 @@ fields:
   type: STRING
   mode: NULLABLE
 - name: promotion_code
+  type: STRING
+  mode: NULLABLE
+- name: country_code_source
   type: STRING
   mode: NULLABLE
 - name: country_code

@@ -1,5 +1,6 @@
 WITH new_flow_events AS (
   SELECT
+    logger,
     `timestamp` AS log_timestamp,
     COALESCE(event_time, `timestamp`) AS event_time,
     event_type,
@@ -7,6 +8,9 @@ WITH new_flow_events AS (
     user_id AS mozilla_account_id_sha256,
     oauth_client_id,
     service AS oauth_client_name,
+    checkout_type,
+    payment_provider,
+    subscription_id,
     product_id,
     plan_id,
     entrypoint,
@@ -18,6 +22,7 @@ WITH new_flow_events AS (
     utm_source,
     utm_term,
     promotion_code,
+    country_code_source,
     country_code,
     country,
     `language`,

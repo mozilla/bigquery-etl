@@ -2033,11 +2033,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#timespan_nanos-udf" class="md-nav__link">
-    timespan_nanos (UDF)
+  <a href="#parse_datetime-udf" class="md-nav__link">
+    parse_datetime (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="timespan_nanos (UDF)">
+    <nav class="md-nav" aria-label="parse_datetime (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2053,11 +2053,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#parse_datetime-udf" class="md-nav__link">
-    parse_datetime (UDF)
+  <a href="#timespan_nanos-udf" class="md-nav__link">
+    timespan_nanos (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="parse_datetime (UDF)">
+    <nav class="md-nav" aria-label="timespan_nanos (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2455,11 +2455,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#timespan_nanos-udf" class="md-nav__link">
-    timespan_nanos (UDF)
+  <a href="#parse_datetime-udf" class="md-nav__link">
+    parse_datetime (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="timespan_nanos (UDF)">
+    <nav class="md-nav" aria-label="parse_datetime (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2475,11 +2475,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#parse_datetime-udf" class="md-nav__link">
-    parse_datetime (UDF)
+  <a href="#timespan_nanos-udf" class="md-nav__link">
+    timespan_nanos (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="parse_datetime (UDF)">
+    <nav class="md-nav" aria-label="timespan_nanos (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2535,21 +2535,10 @@ rounded down to full seconds.</p>
 <div class="highlight"><pre><span></span><code>ARRAY&lt;STRUCT&lt;key STRING, value STRING&gt;&gt;
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glean/legacy_compatible_experiments">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glean/legacy_compatible_experiments/metadata.yaml">Edit</a></p>
-<h2 id="timespan_nanos-udf">timespan_nanos (UDF)</h2>
-<p>Returns the number of nanoseconds represented by a Glean timespan struct.</p>
-<p>See <a href="https://mozilla.github.io/glean/book/user/metrics/timespan.html">https://mozilla.github.io/glean/book/user/metrics/timespan.html</a></p>
-<h3 id="parameters_2">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>timespan STRUCT&lt;time_unit STRING, value INT64&gt;
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>INT64
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glean/timespan_nanos">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glean/timespan_nanos/metadata.yaml">Edit</a></p>
 <h2 id="parse_datetime-udf">parse_datetime (UDF)</h2>
 <p>Parses a Glean datetime metric string value as a BigQuery timestamp.</p>
 <p>See <a href="https://mozilla.github.io/glean/book/reference/metrics/datetime.html">https://mozilla.github.io/glean/book/reference/metrics/datetime.html</a></p>
-<h3 id="parameters_3">Parameters</h3>
+<h3 id="parameters_2">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>datetime_string STRING
 </code></pre></div>
@@ -2557,6 +2546,17 @@ rounded down to full seconds.</p>
 <div class="highlight"><pre><span></span><code>TIMESTAMP
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glean/parse_datetime">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glean/parse_datetime/metadata.yaml">Edit</a></p>
+<h2 id="timespan_nanos-udf">timespan_nanos (UDF)</h2>
+<p>Returns the number of nanoseconds represented by a Glean timespan struct.</p>
+<p>See <a href="https://mozilla.github.io/glean/book/user/metrics/timespan.html">https://mozilla.github.io/glean/book/user/metrics/timespan.html</a></p>
+<h3 id="parameters_3">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>timespan STRUCT&lt;time_unit STRING, value INT64&gt;
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>INT64
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glean/timespan_nanos">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glean/timespan_nanos/metadata.yaml">Edit</a></p>
 
 
 

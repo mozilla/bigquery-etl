@@ -1,0 +1,18 @@
+fields:
+- name: dag_id
+  type: STRING
+  mode: NULLABLE
+  description: Airflow DAG id
+- name: task_id
+  type: STRING
+  mode: NULLABLE
+  description: Airflow task id
+- name: duration
+  type: INTEGER
+  mode: NULLABLE
+- name: start_date
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: end_date
+  type: TIMESTAMP
+  mode: NULLABLE

@@ -1,7 +1,6 @@
 friendly_name: Logical subscriptions history
 description: |-
-  History of changes to logical subscriptions, which are a continuous active period for a particular subscription item.
-  If a provider subscription has multiple items, each of those items would be considered a separate logical subscription.
+  History of changes to logical subscriptions, which are a continuous active period for a particular provider subscription.
 
   To get the historical state at a particular point in time use a condition like the following:
     valid_from <= {timestamp}

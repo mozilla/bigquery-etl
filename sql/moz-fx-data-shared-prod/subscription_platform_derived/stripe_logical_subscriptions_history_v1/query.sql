@@ -107,8 +107,6 @@ SELECT
     'Stripe-',
     history.subscription.id,
     '-',
-    subscription_item.id,
-    '-',
     FORMAT_TIMESTAMP('%FT%H:%M:%E6S', history.subscription_first_active_at),
     '-',
     FORMAT_TIMESTAMP('%FT%H:%M:%E6S', history.valid_from)
@@ -120,8 +118,6 @@ SELECT
     CONCAT(
       'Stripe-',
       history.subscription.id,
-      '-',
-      subscription_item.id,
       '-',
       FORMAT_TIMESTAMP('%FT%H:%M:%E6S', history.subscription_first_active_at)
     ) AS id,

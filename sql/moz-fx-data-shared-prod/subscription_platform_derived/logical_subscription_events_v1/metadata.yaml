@@ -2,8 +2,7 @@ friendly_name: Logical subscriptions events
 description: |-
   Logical subscription events such as "Subscription Start", "Plan Change", "Auto-Renew Change", and "Subscription End".
 
-  Logical subscriptions are a continuous active period for a particular provider subscription item.
-  If a provider subscription has multiple items, each of those items would be considered a separate logical subscription.
+  Logical subscriptions are a continuous active period for a particular provider subscription.
 owners:
 - srose@mozilla.com
 labels:

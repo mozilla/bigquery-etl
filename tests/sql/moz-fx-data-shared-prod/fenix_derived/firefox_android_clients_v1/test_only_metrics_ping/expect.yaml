@@ -5,6 +5,7 @@
   first_run_date: 2023-01-02
   first_reported_country: CA
   last_reported_date: 2023-01-01
+  last_reported_channel: release
   last_reported_country: CA
   sample_id: 54
   activated: false

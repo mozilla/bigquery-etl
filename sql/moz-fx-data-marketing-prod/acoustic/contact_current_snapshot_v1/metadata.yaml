@@ -8,7 +8,7 @@ description: >
   Jira: https://mozilla-hub.atlassian.net/browse/DENG-17
 
 owners:
-  - kignasiak@mozilla.com
+  - kik@mozilla.com
 
 labels:
   incremental: false

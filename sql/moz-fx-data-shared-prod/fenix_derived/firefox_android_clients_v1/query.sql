@@ -19,7 +19,6 @@ WITH baseline_clients AS (
     `moz-fx-data-shared-prod.fenix.baseline_clients_daily`
   WHERE
     submission_date = @submission_date
-    AND normalized_channel = 'release'
 ),
 first_seen AS (
   SELECT
@@ -122,7 +121,6 @@ first_session_ping AS (
 ),
 -- Find earliest data per client from the metrics ping.
 metrics_ping AS (
-  -- Fenix Release
   SELECT
     client_info.client_id AS client_id,
     MIN(sample_id) AS sample_id,
@@ -169,7 +167,7 @@ metrics_ping AS (
         submission_timestamp DESC
     )[SAFE_OFFSET(0)] AS last_reported_adjust_campaign,
   FROM
-    org_mozilla_firefox.metrics AS org_mozilla_firefox_metrics
+    fenix.metrics AS fenix_metrics
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -238,6 +236,11 @@ _current AS (
           THEN FALSE
         ELSE TRUE
       END AS reported_metrics_ping,
+      CASE
+        WHEN baseline.client_id IS NULL
+          THEN FALSE
+        ELSE TRUE
+      END AS reported_baseline_ping,
       DATE(first_session.min_submission_datetime) AS min_first_session_ping_submission_date,
       DATE(first_session.first_run_datetime) AS min_first_session_ping_run_date,
       DATE(metrics.min_submission_datetime) AS min_metrics_ping_submission_date,
@@ -302,7 +305,7 @@ _current AS (
     baseline_ping AS baseline
   USING
     (client_id)
-  LEFT JOIN
+  FULL OUTER JOIN
     activations
   USING
     (client_id)
@@ -377,6 +380,8 @@ SELECT
     ) AS reported_first_session_ping,
     COALESCE(_previous.metadata.reported_metrics_ping, FALSE)
     OR COALESCE(_current.metadata.reported_metrics_ping, FALSE) AS reported_metrics_ping,
+    COALESCE(_previous.metadata.reported_baseline_ping, FALSE)
+    OR COALESCE(_current.metadata.reported_baseline_ping, FALSE) AS reported_baseline_ping,
     CASE
       WHEN _previous.metadata.min_first_session_ping_submission_date IS NOT NULL
         AND _current.metadata.min_first_session_ping_submission_date IS NOT NULL

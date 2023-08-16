@@ -7,14 +7,10 @@ fields:
   mode: NULLABLE
   name: task_id
   type: STRING
-- description: Time elapsed since start until end of task's exeuction (seconds)
-  mode: NULLABLE
-  name: duration
-  type: INTEGER
 - description: null
   mode: NULLABLE
-  name: execution_date
-  type: TIMESTAMP
+  name: run_id
+  type: STRING
 - description: null
   mode: NULLABLE
   name: start_date
@@ -23,3 +19,7 @@ fields:
   mode: NULLABLE
   name: end_date
   type: TIMESTAMP
+- description: Time elapsed since start until end of task's exeuction (seconds)
+  mode: NULLABLE
+  name: duration
+  type: INTEGER

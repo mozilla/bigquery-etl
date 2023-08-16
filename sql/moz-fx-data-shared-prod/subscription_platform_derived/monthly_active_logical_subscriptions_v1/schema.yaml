@@ -112,6 +112,9 @@ fields:
   - name: auto_renew_disabled_at
     type: TIMESTAMP
     mode: NULLABLE
+  - name: has_fraudulent_charges
+    type: BOOLEAN
+    mode: NULLABLE
   - name: first_touch_attribution
     type: RECORD
     mode: NULLABLE

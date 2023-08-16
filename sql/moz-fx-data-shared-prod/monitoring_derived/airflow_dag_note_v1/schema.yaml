@@ -2,7 +2,7 @@ fields:
 - description:
   mode: NULLABLE
   name: dag_run_id
-  type: STRING
+  type: INTEGER
 - description:
   mode: NULLABLE
   name: content

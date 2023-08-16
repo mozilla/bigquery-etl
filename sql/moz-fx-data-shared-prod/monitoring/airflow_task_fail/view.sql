@@ -5,7 +5,6 @@ SELECT
   dag_id,
   task_id,
   duration,
-  execution_date,
   start_date,
   end_date
 FROM

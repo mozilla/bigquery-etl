@@ -91,15 +91,19 @@ fields:
 - name: last_reported_adjust_network
   type: STRING
   mode: NULLABLE
+  description: Last reported client campaign network.
 - name: last_reported_adjust_creative
   type: STRING
   mode: NULLABLE
+  description: Last reported campaign name.
 - name: last_reported_adjust_ad_group
   type: STRING
   mode: NULLABLE
+  description: Last reported campaign ad group.
 - name: last_reported_adjust_campaign
   type: STRING
   mode: NULLABLE
+  description: Last reported campaign name.
 - name: metadata
   type: RECORD
   mode: NULLABLE
@@ -107,33 +111,48 @@ fields:
   - name: reported_first_session_ping
     type: BOOLEAN
     mode: NULLABLE
+    description: True if the client ever reported a first_session ping.
   - name: reported_metrics_ping
     type: BOOLEAN
     mode: NULLABLE
+    description: True if the client ever reported a metrics ping.
   - name: reported_baseline_ping
     type: BOOLEAN
     mode: NULLABLE
+    description: True if the client ever reported a baseline ping.
   - name: min_first_session_ping_submission_date
     type: DATE
     mode: NULLABLE
+    description: Date when the first reported first_sessin ping is received by the
+      server.
   - name: min_first_session_ping_run_date
     type: DATE
     mode: NULLABLE
+    description: Date of first app run as reported in the earliest first_session ping.
   - name: min_metrics_ping_submission_date
     type: DATE
     mode: NULLABLE
+    description: Date when the first reported metrics ping is received by the server.
   - name: adjust_network__source_ping
     type: STRING
     mode: NULLABLE
+    description: Name of the ping that reported the first adjust_network value.
   - name: install_source__source_ping
     type: STRING
     mode: NULLABLE
+    description: Name of the ping that reports the install_source value.
   - name: adjust_network__source_ping_datetime
     type: DATETIME
     mode: NULLABLE
+    description: Datetime of the ping that reported the first adjust_network value.
   - name: install_source__source_ping_datetime
     type: DATETIME
     mode: NULLABLE
+    description: Datetime of the ping that reported the first install_source value.
+- name: last_reported_channel
+  type: STRING
+  mode: NULLABLE
+  description: Last reported client channel.
 - name: adjust_network
   type: STRING
   mode: NULLABLE

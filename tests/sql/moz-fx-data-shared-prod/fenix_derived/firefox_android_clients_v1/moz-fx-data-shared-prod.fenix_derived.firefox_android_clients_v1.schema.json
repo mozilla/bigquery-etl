@@ -143,6 +143,10 @@
   },
   {
     "type": "STRING",
+    "name": "last_reported_channel"
+  },
+  {
+    "type": "STRING",
     "name": "last_reported_adjust_network"
   },
   {

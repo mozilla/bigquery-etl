@@ -44,17 +44,11 @@ WITH new_flow_events AS (
 services_metadata AS (
   SELECT
     ARRAY_AGG(DISTINCT subplat_oauth_client.id IGNORE NULLS) AS subplat_oauth_client_ids,
-    ARRAY_AGG(DISTINCT subplat_oauth_client.name IGNORE NULLS) AS subplat_oauth_client_names,
-    ARRAY_AGG(DISTINCT stripe_product_id IGNORE NULLS) AS stripe_product_ids,
-    ARRAY_AGG(DISTINCT stripe_plan_id IGNORE NULLS) AS stripe_plan_ids
+    ARRAY_AGG(DISTINCT subplat_oauth_client.name IGNORE NULLS) AS subplat_oauth_client_names
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.services_v1`
   LEFT JOIN
     UNNEST(subplat_oauth_clients) AS subplat_oauth_client
-  LEFT JOIN
-    UNNEST(stripe_product_ids) AS stripe_product_id
-  LEFT JOIN
-    UNNEST(stripe_plan_ids) AS stripe_plan_id
 ),
 existing_flow_ids AS (
   {% if is_init() %}
@@ -83,7 +77,8 @@ QUALIFY
     OR new_flow_events.oauth_client_name IN UNNEST(services_metadata.subplat_oauth_client_names)
     -- For a while Bedrock incorrectly passed VPN's OAuth client name as the OAuth client ID.
     OR new_flow_events.oauth_client_id IN UNNEST(services_metadata.subplat_oauth_client_names)
-    OR new_flow_events.product_id IN UNNEST(services_metadata.stripe_product_ids)
-    OR new_flow_events.plan_id IN UNNEST(services_metadata.stripe_plan_ids)
+    OR new_flow_events.subscription_id IS NOT NULL
+    OR new_flow_events.product_id IS NOT NULL
+    OR new_flow_events.plan_id IS NOT NULL
   ) OVER (PARTITION BY new_flow_events.flow_id)
   OR existing_flow_ids.flow_id IS NOT NULL

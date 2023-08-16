@@ -7,6 +7,7 @@
   last_reported_date: 2023-01-01
   device_model: model-1
   last_reported_device_model: model-2
+  last_reported_channel: release
   activated: true
   install_source: com.android.vending
   channel: release

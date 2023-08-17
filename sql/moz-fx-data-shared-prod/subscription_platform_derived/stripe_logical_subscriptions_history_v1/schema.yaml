@@ -67,7 +67,7 @@ fields:
   - name: provider_plan_id
     type: STRING
     mode: NULLABLE
-  - name: plan_interval
+  - name: plan_interval_type
     type: STRING
     mode: NULLABLE
   - name: plan_interval_count

@@ -76,10 +76,19 @@ fields:
   - name: provider_plan_id
     type: STRING
     mode: NULLABLE
+  - name: plan_summary
+    type: STRING
+    mode: NULLABLE
   - name: plan_interval
     type: STRING
     mode: NULLABLE
+  - name: plan_interval_type
+    type: STRING
+    mode: NULLABLE
   - name: plan_interval_count
+    type: INTEGER
+    mode: NULLABLE
+  - name: plan_interval_months
     type: INTEGER
     mode: NULLABLE
   - name: plan_currency

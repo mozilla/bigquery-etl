@@ -151,7 +151,7 @@ SELECT
     subscription_item.plan.product.id AS provider_product_id,
     subscription_item.plan.product.name AS product_name,
     subscription_item.plan.id AS provider_plan_id,
-    subscription_item.plan.`interval` AS plan_interval,
+    subscription_item.plan.`interval` AS plan_interval_type,
     subscription_item.plan.interval_count AS plan_interval_count,
     UPPER(subscription_item.plan.currency) AS plan_currency,
     (CAST(subscription_item.plan.amount AS DECIMAL) / 100) AS plan_amount,

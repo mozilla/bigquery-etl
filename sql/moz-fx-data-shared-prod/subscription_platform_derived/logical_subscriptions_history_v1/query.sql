@@ -141,8 +141,38 @@ SELECT
     history.subscription.provider_product_id,
     history.subscription.product_name,
     history.subscription.provider_plan_id,
-    history.subscription.plan_interval,
+    CONCAT(
+      history.subscription.plan_interval_count,
+      ' ',
+      history.subscription.plan_interval_type,
+      IF(history.subscription.plan_interval_count > 1, 's', ''),
+      IF(
+        history.subscription.plan_amount IS NOT NULL,
+        CONCAT(
+          ' ',
+          history.subscription.plan_currency,
+          ' ',
+          FORMAT('%.2f', history.subscription.plan_amount)
+        ),
+        ''
+      ),
+      IF(history.subscription.is_bundle, ' bundle', '')
+    ) AS plan_summary,
+    CONCAT(
+      history.subscription.plan_interval_count,
+      ' ',
+      history.subscription.plan_interval_type,
+      IF(history.subscription.plan_interval_count > 1, 's', '')
+    ) AS plan_interval,
+    history.subscription.plan_interval_type,
     history.subscription.plan_interval_count,
+    CASE
+      history.subscription.plan_interval_type
+      WHEN 'month'
+        THEN history.subscription.plan_interval_count
+      WHEN 'year'
+        THEN history.subscription.plan_interval_count * 12
+    END AS plan_interval_months,
     history.subscription.plan_currency,
     history.subscription.plan_amount,
     history.subscription.is_bundle,

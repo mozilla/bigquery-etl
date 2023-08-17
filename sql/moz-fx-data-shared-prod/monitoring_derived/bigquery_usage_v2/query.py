@@ -55,7 +55,7 @@ def create_query(date, project):
             error_result.message AS error_message,
             query_info.resource_warning AS resource_warning,
           FROM
-            `moz-fx-data-shared-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION` AS t1
+            `{project}.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION` AS t1
           WHERE
             DATE(creation_time) = '{date}'
             AND (t1.project_id IN UNNEST({DEFAULT_PROJECTS})

@@ -279,6 +279,22 @@ jobs:
             command: docker run app:build pytest
 
 
+  build-job-webcompat-kb:
+    docker:
+      - image: << pipeline.parameters.git-image >>
+    steps:
+      - checkout
+      - compare-branch:
+          pattern: ^jobs/webcompat-kb/
+      - setup_remote_docker:
+          version: << pipeline.parameters.docker-version >>
+      - run:
+          name: Build Docker image
+          command: docker build -t app:build jobs/webcompat-kb/
+      - run:
+          name: Test Code
+          command: docker run app:build pytest --flake8 --black
+
 workflows:
   docker-etl:
     jobs:
@@ -475,3 +491,17 @@ workflows:
             branches:
               only: main
 
+
+  job-webcompat-kb:
+    jobs:
+      - build-job-webcompat-kb
+      - gcp-gcr/build-and-push-image:
+          context: data-eng-airflow-gcr
+          docker-context: jobs/webcompat-kb/
+          path: jobs/webcompat-kb/
+          image: webcompat-kb_docker_etl
+          requires:
+            - build-job-webcompat-kb
+          filters:
+            branches:
+              only: main

@@ -1,0 +1,7 @@
+.ci_job.yaml
+.ci_workflow.yaml
+.DS_Store
+*.pyc
+.pytest_cache/
+__pycache__/
+venv/

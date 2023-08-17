@@ -1,0 +1,13 @@
+job-webcompat-kb:
+  jobs:
+    - build-job-webcompat-kb
+    - gcp-gcr/build-and-push-image:
+        context: data-eng-airflow-gcr
+        docker-context: jobs/webcompat-kb/
+        path: jobs/webcompat-kb/
+        image: webcompat-kb_docker_etl
+        requires:
+          - build-job-webcompat-kb
+        filters:
+          branches:
+            only: main

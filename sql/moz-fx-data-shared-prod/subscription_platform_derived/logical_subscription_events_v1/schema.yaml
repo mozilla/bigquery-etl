@@ -1,4 +1,7 @@
 fields:
+- name: id
+  type: STRING
+  mode: NULLABLE
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE

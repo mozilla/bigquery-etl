@@ -130,33 +130,46 @@ auto_renew_change_events AS (
   WHERE
     subscription.auto_renew != old_subscription.auto_renew
     AND subscription.ended_at IS NULL
+),
+all_events AS (
+  SELECT
+    *
+  FROM
+    subscription_start_events
+  UNION ALL
+  SELECT
+    *
+  FROM
+    subscription_end_events
+  UNION ALL
+  SELECT
+    *
+  FROM
+    mozilla_account_change_events
+  UNION ALL
+  SELECT
+    *
+  FROM
+    plan_change_events
+  UNION ALL
+  SELECT
+    *
+  FROM
+    trial_change_events
+  UNION ALL
+  SELECT
+    *
+  FROM
+    auto_renew_change_events
 )
 SELECT
+  CONCAT(
+    subscription.id,
+    '-',
+    FORMAT_TIMESTAMP('%FT%H:%M:%E6S', `timestamp`),
+    '-',
+    REPLACE(type, ' ', '-')
+  ) AS id,
   *
 FROM
-  subscription_start_events
-UNION ALL
-SELECT
-  *
-FROM
-  subscription_end_events
-UNION ALL
-SELECT
-  *
-FROM
-  mozilla_account_change_events
-UNION ALL
-SELECT
-  *
-FROM
-  plan_change_events
-UNION ALL
-SELECT
-  *
-FROM
-  trial_change_events
-UNION ALL
-SELECT
-  *
-FROM
-  auto_renew_change_events
+  all_events

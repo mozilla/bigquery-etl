@@ -1,4 +1,7 @@
 fields:
+- name: id
+  type: STRING
+  mode: NULLABLE
 - name: month_start_date
   type: DATE
   mode: NULLABLE

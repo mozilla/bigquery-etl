@@ -23,6 +23,7 @@ WITH dates AS (
 ),
 daily_active_subscriptions_history AS (
   SELECT
+    CONCAT(subscriptions_history.subscription.id, '-', FORMAT_DATE('%F', dates.date)) AS id,
     dates.date,
     MIN_BY(
       subscriptions_history,
@@ -47,6 +48,7 @@ daily_active_subscriptions_history AS (
     LOGICAL_OR(subscriptions_history.subscription.is_active)
 )
 SELECT
+  id,
   `date`,
   latest_subscription_history.subscription,
   (

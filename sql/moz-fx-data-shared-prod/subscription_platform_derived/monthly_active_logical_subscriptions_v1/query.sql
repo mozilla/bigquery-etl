@@ -24,6 +24,11 @@ WITH months AS (
 ),
 monthly_active_subscriptions AS (
   SELECT
+    CONCAT(
+      daily_subscriptions.subscription.id,
+      '-',
+      FORMAT_DATE('%Y-%m', months.month_start_date)
+    ) AS id,
     months.month_start_date,
     months.month_end_date,
     MIN_BY(daily_subscriptions, daily_subscriptions.date) AS earliest_daily_subscription,
@@ -40,6 +45,7 @@ monthly_active_subscriptions AS (
     daily_subscriptions.subscription.id
 )
 SELECT
+  id,
   month_start_date,
   month_end_date,
   latest_daily_subscription.subscription,

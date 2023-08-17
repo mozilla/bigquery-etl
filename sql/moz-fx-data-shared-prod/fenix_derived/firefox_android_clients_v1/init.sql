@@ -336,7 +336,7 @@ FULL OUTER JOIN
   baseline_ping AS baseline
 USING
   (client_id)
-FULL OUTER JOIN
+LEFT JOIN
   activations
 USING
   (client_id)

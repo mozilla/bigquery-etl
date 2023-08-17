@@ -48,6 +48,7 @@ SELECT
   id,
   month_start_date,
   month_end_date,
+  latest_daily_subscription.logical_subscriptions_history_id,
   latest_daily_subscription.subscription,
   (
     earliest_daily_subscription.was_active_at_day_start

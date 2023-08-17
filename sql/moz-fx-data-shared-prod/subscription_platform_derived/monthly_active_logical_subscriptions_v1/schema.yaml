@@ -8,6 +8,9 @@ fields:
 - name: month_end_date
   type: DATE
   mode: NULLABLE
+- name: logical_subscriptions_history_id
+  type: STRING
+  mode: NULLABLE
 - name: subscription
   type: RECORD
   mode: NULLABLE

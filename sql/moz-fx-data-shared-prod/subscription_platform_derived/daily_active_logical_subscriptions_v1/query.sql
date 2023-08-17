@@ -50,6 +50,7 @@ daily_active_subscriptions_history AS (
 SELECT
   id,
   `date`,
+  latest_subscription_history.id AS logical_subscriptions_history_id,
   latest_subscription_history.subscription,
   (
     earliest_subscription_history.subscription.is_active

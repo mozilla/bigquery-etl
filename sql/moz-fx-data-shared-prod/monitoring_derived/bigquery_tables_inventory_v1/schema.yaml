@@ -39,3 +39,8 @@ fields:
   name: owners
   type: STRING
   description: The owner of the table listed in metadata yaml file
+
+- mode: NULLABLE
+  name: last_used_date
+  type: DATE
+  description: The date when the tables was last queried

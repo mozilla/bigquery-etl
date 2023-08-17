@@ -12,4 +12,4 @@ SELECT
   `mozfun.norm.browser_version_info`(app_version).is_major_release AS app_version_is_major_release,
   `mozfun.norm.os`(os) AS os_grouped
 FROM
-  `{{ project_id }}.{{ app_name }}_derived.active_users_aggregates_v1`
+  `{{ project_id }}.{{ app_name }}_derived.active_users_aggregates_{{ table_version }}`

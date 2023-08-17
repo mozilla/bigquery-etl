@@ -2,16 +2,18 @@
 # described in https://docs.google.com/document/d/1TTJi4ht7NuzX6BPG_KTr6omaZg70cEpxe9xlpfnHj9k/
 # Active Users
 /sql_generators/active_users/templates/ @mozilla/kpi_table_reviewers
-/sql/moz-fx-data-shared-prod/fenix_derived/active_users_aggregates_v1/ @mozilla/kpi_table_reviewers
+/sql/moz-fx-data-shared-prod/fenix_derived/active_users_aggregates_v2/ @mozilla/kpi_table_reviewers
 /sql/moz-fx-data-shared-prod/firefox_desktop_derived/active_users_aggregates_v1/ @mozilla/kpi_table_reviewers
-/sql/moz-fx-data-shared-prod/firefox_ios_derived/active_users_aggregates_v1/ @mozilla/kpi_table_reviewers
-/sql/moz-fx-data-shared-prod/focus_android_derived/active_users_aggregates_v1/ @mozilla/kpi_table_reviewers
-/sql/moz-fx-data-shared-prod/focus_ios_derived/active_users_aggregates_v1/ @mozilla/kpi_table_reviewers
-/sql/moz-fx-data-shared-prod/klar_ios_derived/active_users_aggregates_v1/ @mozilla/kpi_table_reviewers
+/sql/moz-fx-data-shared-prod/firefox_ios_derived/active_users_aggregates_v2/ @mozilla/kpi_table_reviewers
+/sql/moz-fx-data-shared-prod/focus_android_derived/active_users_aggregates_v2/ @mozilla/kpi_table_reviewers
+/sql/moz-fx-data-shared-prod/focus_ios_derived/active_users_aggregates_v2/ @mozilla/kpi_table_reviewers
+/sql/moz-fx-data-shared-prod/klar_ios_derived/active_users_aggregates_v2/ @mozilla/kpi_table_reviewers
 # Search
 /sql/moz-fx-data-shared-prod/search_terms @whd @jasonthomas
 /sql/moz-fx-data-shared-prod/search_terms_derived @whd @jasonthomas
+/sql/moz-fx-data-shared-prod/search_dervied/search_revenue_levers_daily_v1 @mozilla/revenue_forecasting_data_reviewers
 # Contextual Services
 /sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_suggest_v2 @mozilla/request_payload_reviewers
 /sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_tiles_v2 @mozilla/request_payload_reviewers
 /sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v2 @mozilla/dataops
+/sql/moz-fx-data-shared-prod/contextual_services_derived/suggest_revenue_levers_daily_v1 @mozilla/revenue_forecasting_data_reviewers

@@ -1,8 +1,7 @@
-friendly_name: Dummy Query
+friendly_name: Defult Task for DAG bqetl_default
 description: |-
-  This is a dummy query required to generate the default DAG.
+  Default task to generate the default DAG.
   See https://github.com/mozilla/bigquery-etl/issues/3650.
-  It can be safely removed when the first task is added to this DAG.
 owners:
 - telemetry-alerts@mozilla.com
 scheduling:

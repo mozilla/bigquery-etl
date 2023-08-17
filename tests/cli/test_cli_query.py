@@ -83,6 +83,11 @@ class TestQuery:
             assert "metadata.yaml" in os.listdir(
                 "sql/moz-fx-data-shared-prod/test/test_query_v1"
             )
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml"
+            ) as file:
+                exists = "dag_name: bqetl_default" in file.read()
+                assert exists
 
     def test_create_query_in_named_dag(self, runner):
         with runner.isolated_filesystem():
@@ -101,6 +106,11 @@ class TestQuery:
             assert "metadata.yaml" in os.listdir(
                 "sql/moz-fx-data-shared-prod/test/test_query_v1"
             )
+            with open(
+                "sql/moz-fx-data-shared-prod/test//test_query_v1/metadata.yaml"
+            ) as file:
+                exists = "dag_name: bqetl_test" in file.read()
+                assert exists
 
     def test_create_query_with_version(self, runner):
         with runner.isolated_filesystem():

@@ -274,9 +274,8 @@ def create(ctx, name, sql_dir, project_id, owner, init, dag, no_schedule):
             click.style(
                 "WARNING: This query has been created without "
                 "scheduling information. Use `bqetl query schedule`"
-                " to add it manually or "
-                "`bqetl query create --help` for"
-                " automated options.",
+                " to manually add it to a DAG or "
+                "`bqetl query create --help` for more options.",
                 fg="yellow",
             )
         )

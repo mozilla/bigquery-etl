@@ -43,9 +43,9 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    analysis__dummy_query__v1 = bigquery_etl_query(
-        task_id="analysis__dummy_query__v1",
-        destination_table="dummy_query_v1",
+    analysis__bqetl_default_task__v1 = bigquery_etl_query(
+        task_id="analysis__bqetl_default_task__v1",
+        destination_table="bqetl_default_task_v1",
         dataset_id="analysis",
         project_id="moz-fx-data-shared-prod",
         owner="telemetry-alerts@mozilla.com",

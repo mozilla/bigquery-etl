@@ -348,7 +348,7 @@ def process(ctx, qualified_table_name, sql_dir, project_id, dry_run):
     click.echo("Backfill processing initiated....")
 
     backfills_to_process_dict = get_backfill_entries_to_process_dict(
-        sql_dir, project_id, qualified_table_name
+        sql_dir, project_id, qualified_table_name, dry_run
     )
 
     if backfills_to_process_dict:
@@ -372,6 +372,15 @@ def process(ctx, qualified_table_name, sql_dir, project_id, dry_run):
             project_id=project,
             destination_table=backfill_staging_qualified_table_name,
         )
+
+        # add label if backfill staging table was deployed through dry run
+        if dry_run:
+            client = bigquery.Client(project=project_id)
+            backfill_staging_table = client.get_table(
+                backfill_staging_qualified_table_name
+            )
+            backfill_staging_table.labels = {"dry_run": ""}
+            client.update_table(backfill_staging_table, ["labels"])
 
         # in the long-run we should remove the query backfill command and require a backfill entry for all backfills
         ctx.invoke(

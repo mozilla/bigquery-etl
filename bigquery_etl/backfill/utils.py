@@ -174,7 +174,7 @@ def qualified_table_name_matching(qualified_table_name) -> Tuple[str, str, str]:
 
 
 def get_backfill_entries_to_process_dict(
-    sql_dir, project, qualified_table_name=None
+    sql_dir, project, qualified_table_name=None, dry_run=None
 ) -> Dict[str, Backfill]:
     """Return backfill entries that require processing."""
     try:
@@ -226,13 +226,26 @@ def get_backfill_entries_to_process_dict(
         )
 
         try:
-            client.get_table(backfill_staging_qualified_table_name)
-            click.echo(
-                f"""
-                Backfill staging table already exists for {qualified_table_name}: {backfill_staging_qualified_table_name}.
-                Backfills will not be processed for this table.
-                """
+            client = bigquery.Client(project=project)
+            backfill_staging_table = client.get_table(
+                backfill_staging_qualified_table_name
             )
+
+            # allow processing if dry run label is present in backfill staging table
+            if "dry_run" in backfill_staging_table.labels:
+                backfills_to_process_dict[qualified_table_name] = entry_to_process
+
+                # remove dry run label from backfill staging table
+                if not dry_run:
+                    backfill_staging_table.labels["dry_run"] = None
+                    client.update_table(backfill_staging_table, ["labels"])
+            else:
+                click.echo(
+                    f"""
+                    Backfill staging table already exists for {qualified_table_name}: {backfill_staging_qualified_table_name}.
+                    Backfills will not be processed for this table.
+                    """
+                )
         except NotFound:
             backfills_to_process_dict[qualified_table_name] = entry_to_process
 

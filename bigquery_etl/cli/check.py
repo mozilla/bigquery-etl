@@ -72,27 +72,30 @@ def check(ctx):
 
 @check.command(
     help="""
-    Render ETL checks query. Also, renders query parameters if passed.
-s    \b
+    Renders data check query using parameters provided (OPTIONAL).
+    \b
+    The result is what would be used to run a check to ensure that the specified dataset
+    adheres to the assumptions defined in the corresponding checks.sql file
 
     Example:
-     ./bqetl check render ga_derived.downloads_with_attribution_v2 --parameter=download_date:DATE:2023-05-01
+
+    \t./bqetl check render --project_id=moz-fx-data-marketing-prod ga_derived.downloads_with_attribution_v2 --parameter=download_date:DATE:2023-05-01
     """,
     context_settings=dict(
         ignore_unknown_options=True,
         allow_extra_args=True,
     ),
 )
-@click.argument("name")
+@click.argument("dataset")
 @project_id_option()
 @sql_dir_option
 @click.pass_context
 def render(
-    ctx: click.Context, name: str, project_id: Optional[str], sql_dir: Optional[str]
+    ctx: click.Context, dataset: str, project_id: Optional[str], sql_dir: Optional[str]
 ) -> None:
     """Render a check's Jinja template."""
     checks_file, project_id, dataset_id, table = paths_matching_checks_pattern(
-        name, sql_dir, project_id=project_id
+        dataset, sql_dir, project_id=project_id
     )
 
     click.echo(
@@ -155,18 +158,22 @@ def _render(
 
 @check.command(
     help="""
-    Run ETL checks.
-s    \b
+    Runs data checks defined for the dataset (checks.sql).
 
     Example:
-     ./bqetl check run ga_derived.downloads_with_attribution_v2 --parameter=download_date:DATE:2023-05-01
+
+    \t./bqetl check run ga_derived.downloads_with_attribution_v2 --parameter=download_date:DATE:2023-05-01
+
+    Checks can be validated using the `--dry_run` flag without executing them:
+
+    \t./bqetl check run --dry_run ga_derived.downloads_with_attribution_v2 --parameter=download_date:DATE:2023-05-01
     """,
     context_settings=dict(
         ignore_unknown_options=True,
         allow_extra_args=True,
     ),
 )
-@click.argument("name")
+@click.argument("dataset")
 @project_id_option()
 @sql_dir_option
 @click.option(
@@ -177,7 +184,7 @@ s    \b
     help="To dry run the query to make sure it is valid",
 )
 @click.pass_context
-def run(ctx, name, project_id, sql_dir, dry_run):
+def run(ctx, dataset, project_id, sql_dir, dry_run):
     """Run a check."""
     if not is_authenticated():
         click.echo(
@@ -187,7 +194,7 @@ def run(ctx, name, project_id, sql_dir, dry_run):
         sys.exit(1)
 
     checks_file, project_id, dataset_id, table = paths_matching_checks_pattern(
-        name, sql_dir, project_id=project_id
+        dataset, sql_dir, project_id=project_id
     )
 
     _run_check(

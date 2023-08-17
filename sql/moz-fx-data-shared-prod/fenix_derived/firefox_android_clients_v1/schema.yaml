@@ -96,6 +96,10 @@ fields:
   mode: NULLABLE
   name: last_reported_date
   type: DATE
+- description: Last reported client channel.
+  mode: NULLABLE
+  name: last_reported_channel
+  type: STRING
 - description: Last reported client campaign network.
   mode: NULLABLE
   name: last_reported_adjust_network
@@ -120,6 +124,10 @@ fields:
   - description: True if the client ever reported a metrics ping.
     mode: NULLABLE
     name: reported_metrics_ping
+    type: BOOLEAN
+  - description: True if the client ever reported a baseline ping.
+    mode: NULLABLE
+    name: reported_baseline_ping
     type: BOOLEAN
   - description: Date when the first reported first_sessin ping is received by the
       server.

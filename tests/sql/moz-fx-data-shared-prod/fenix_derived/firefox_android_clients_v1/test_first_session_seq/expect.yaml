@@ -5,6 +5,7 @@
   metadata:
     reported_first_session_ping: true
     reported_metrics_ping: false
+    reported_baseline_ping: false
     min_first_session_ping_submission_date: 2023-05-02
     min_first_session_ping_run_date: 2023-05-02
     adjust_network__source_ping: first_session
@@ -15,12 +16,14 @@
   first_run_date: 2023-05-02
   submission_date: 2023-05-02
   last_reported_date: 2023-05-02
+  last_reported_channel: release
   activated: true
   channel: release
   adjust_network: Untrusted Devices
   metadata:
     reported_first_session_ping: true
     reported_metrics_ping: false
+    reported_baseline_ping: true
     min_first_session_ping_submission_date: 2023-05-02
     min_first_session_ping_run_date: 2023-05-02
     adjust_network__source_ping: first_session
@@ -31,6 +34,7 @@
   submission_date: 2023-05-02
   first_run_date: 2023-05-01
   last_reported_date: 2023-05-02
+  last_reported_channel: release
   adjust_network: Untrusted Devices
   channel: release
   activated: false
@@ -38,6 +42,7 @@
   metadata:
     reported_first_session_ping: true
     reported_metrics_ping: true
+    reported_baseline_ping: true
     install_source__source_ping: metrics
     install_source__source_ping_datetime: '2023-05-02T00:00:00'
     min_metrics_ping_submission_date: 2023-05-02

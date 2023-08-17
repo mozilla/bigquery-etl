@@ -417,8 +417,8 @@ bqetl_monitoring_airflow:
     This DAG schedules queries and scripts for populating datasets
     used for monitoring of Airflow DAGs.
   default_args:
-    owner: kignasiak@mozilla.com
-    email: ["kignasiak@mozilla.com"]
+    owner: kik@mozilla.com
+    email: ["kik@mozilla.com"]
     start_date: "2022-09-01"
     retries: 2
     retry_delay: 30m
@@ -724,11 +724,11 @@ bqetl_regrets_reporter_summary:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - kignasiak@mozilla.com
+      - kik@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: kignasiak@mozilla.com
+    owner: kik@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2021-12-12'
@@ -757,9 +757,9 @@ bqetl_acoustic_contact_export:
     fivetran_acoustic_contact_export
     DAG to clean up the data loaded from Acoustic.
   default_args:
-    owner: kignasiak@mozilla.com
+    owner: kik@mozilla.com
     start_date: "2021-03-01"
-    email: ["telemetry-alerts@mozilla.com", "kignasiak@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "kik@mozilla.com"]
     retries: 1
     retry_delay: 5m
   tags:
@@ -772,9 +772,9 @@ bqetl_acoustic_raw_recipient_export:
     fivetran_acoustic_raw_recipient_export
     DAG to clean up the data loaded from Acoustic.
   default_args:
-    owner: kignasiak@mozilla.com
+    owner: kik@mozilla.com
     start_date: "2022-03-01"
-    email: ["telemetry-alerts@mozilla.com", "kignasiak@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "kik@mozilla.com"]
     retries: 1
     retry_delay: 5m
   tags:
@@ -1005,7 +1005,7 @@ bqetl_mdn_yari:
       - telemetry-alerts@mozilla.com
       - mdn-infra@mozilla.com
       - fmerz@mozilla.com
-      - kignasiak@mozilla.com
+      - kik@mozilla.com
     email_on_failure: true
     email_on_retry: false
     end_date: null

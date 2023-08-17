@@ -24,15 +24,15 @@ used for monitoring of Airflow DAGs.
 
 #### Owner
 
-kignasiak@mozilla.com
+kik@mozilla.com
 """
 
 
 default_args = {
-    "owner": "kignasiak@mozilla.com",
+    "owner": "kik@mozilla.com",
     "start_date": datetime.datetime(2022, 9, 1, 0, 0),
     "end_date": None,
-    "email": ["kignasiak@mozilla.com"],
+    "email": ["kik@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -54,8 +54,32 @@ with DAG(
         destination_table="airflow_dag_v1",
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kignasiak@mozilla.com",
-        email=["kignasiak@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    monitoring_derived__airflow_dag_note__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_dag_note__v1",
+        destination_table="airflow_dag_note_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    monitoring_derived__airflow_dag_owner_attributes__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_dag_owner_attributes__v1",
+        destination_table="airflow_dag_owner_attributes_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -66,8 +90,8 @@ with DAG(
         destination_table="airflow_dag_run_v1",
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kignasiak@mozilla.com",
-        email=["kignasiak@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -78,8 +102,44 @@ with DAG(
         destination_table="airflow_dag_tag_v1",
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kignasiak@mozilla.com",
-        email=["kignasiak@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    monitoring_derived__airflow_dag_warning__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_dag_warning__v1",
+        destination_table="airflow_dag_warning_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    monitoring_derived__airflow_import_error__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_import_error__v1",
+        destination_table="airflow_import_error_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    monitoring_derived__airflow_job__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_job__v1",
+        destination_table="airflow_job_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -90,8 +150,8 @@ with DAG(
         destination_table="airflow_slot_pool_v1",
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kignasiak@mozilla.com",
-        email=["kignasiak@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -102,8 +162,32 @@ with DAG(
         destination_table="airflow_task_fail_v1",
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kignasiak@mozilla.com",
-        email=["kignasiak@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    monitoring_derived__airflow_task_instance__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_task_instance__v1",
+        destination_table="airflow_task_instance_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    monitoring_derived__airflow_task_instance_note__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_task_instance_note__v1",
+        destination_table="airflow_task_instance_note_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -114,8 +198,20 @@ with DAG(
         destination_table="airflow_task_reschedule_v1",
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kignasiak@mozilla.com",
-        email=["kignasiak@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    monitoring_derived__airflow_trigger__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__airflow_trigger__v1",
+        destination_table="airflow_trigger_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -126,8 +222,8 @@ with DAG(
         destination_table="airflow_user_v1",
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="kignasiak@mozilla.com",
-        email=["kignasiak@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -155,11 +251,31 @@ with DAG(
         fivetran_airflow_metadata_import_sync_wait
     )
 
+    monitoring_derived__airflow_dag_note__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
+    monitoring_derived__airflow_dag_owner_attributes__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
     monitoring_derived__airflow_dag_run__v1.set_upstream(
         fivetran_airflow_metadata_import_sync_wait
     )
 
     monitoring_derived__airflow_dag_tag__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
+    monitoring_derived__airflow_dag_warning__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
+    monitoring_derived__airflow_import_error__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
+    monitoring_derived__airflow_job__v1.set_upstream(
         fivetran_airflow_metadata_import_sync_wait
     )
 
@@ -171,7 +287,19 @@ with DAG(
         fivetran_airflow_metadata_import_sync_wait
     )
 
+    monitoring_derived__airflow_task_instance__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
+    monitoring_derived__airflow_task_instance_note__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
     monitoring_derived__airflow_task_reschedule__v1.set_upstream(
+        fivetran_airflow_metadata_import_sync_wait
+    )
+
+    monitoring_derived__airflow_trigger__v1.set_upstream(
         fivetran_airflow_metadata_import_sync_wait
     )
 

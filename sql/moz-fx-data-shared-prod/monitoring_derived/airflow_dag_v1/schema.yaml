@@ -50,7 +50,7 @@ fields:
 - description: null
   mode: NULLABLE
   name: next_dagrun
-  type: INTEGER
+  type: TIMESTAMP
 - description: null
   mode: NULLABLE
   name: next_dagrun_create_after

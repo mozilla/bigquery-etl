@@ -17,7 +17,7 @@ description: |
   Partitioned by submission_date,
   clustered by country, os_name, and user_id
 owners:
-  - kignasiak@mozilla.com
+  - kik@mozilla.com
 labels:
   application: fxa
   incremental: true

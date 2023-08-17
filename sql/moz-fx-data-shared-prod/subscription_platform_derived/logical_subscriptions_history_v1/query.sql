@@ -129,7 +129,7 @@ SELECT
         COALESCE(
           history.subscription.mozilla_account_id_sha256,
           history.subscription.provider_customer_id,
-          history.subscription.id
+          history.subscription.provider_subscription_id
         )
       ORDER BY
         history.subscription.started_at,

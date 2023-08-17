@@ -346,6 +346,12 @@ fields:
       description: 'The referring URL that linked to the page that was viewed.
 
         '
+    - name: page_http_status
+      type: STRING
+      mode: NULLABLE
+      description: 'The HTTP status code of the page.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

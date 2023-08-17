@@ -96,6 +96,10 @@ fields:
   mode: NULLABLE
   name: last_reported_date
   type: DATE
+- description: Last reported client channel.
+  mode: NULLABLE
+  name: last_reported_channel
+  type: STRING
 - description: Last reported client campaign network.
   mode: NULLABLE
   name: last_reported_adjust_network

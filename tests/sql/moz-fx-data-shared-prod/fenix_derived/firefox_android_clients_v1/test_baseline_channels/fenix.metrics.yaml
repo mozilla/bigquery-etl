@@ -5,3 +5,7 @@
   metrics:
     string:
       metrics_install_source: 'com.android.vending'
+- client_info:
+    client_id: client-4
+  submission_timestamp: '2023-05-02 01:00:00'
+  normalized_channel: beta

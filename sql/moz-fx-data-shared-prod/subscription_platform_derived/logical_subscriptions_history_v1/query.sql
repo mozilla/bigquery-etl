@@ -29,10 +29,10 @@ customer_attribution_impressions AS (
   CROSS JOIN
     UNNEST(mozilla_account_ids_sha256) AS mozilla_account_id_sha256
   UNION ALL
-  -- Include historical VPN attributions from before the SubPlat attributions were implemented.
+  -- Include historical VPN attributions from before VPN's SubPlat funnel was implemented on 2021-08-25.
   SELECT
     users.fxa_uid AS mozilla_account_id_sha256,
-    users_attribution.attribution.`timestamp` AS impression_at,
+    users.created_at AS impression_at,
     CAST(NULL AS STRING) AS entrypoint,
     users_attribution.attribution.entrypoint_experiment,
     users_attribution.attribution.entrypoint_variation,
@@ -48,6 +48,17 @@ customer_attribution_impressions AS (
     `moz-fx-data-shared-prod.mozilla_vpn_derived.users_v1` AS users
   ON
     users_attribution.user_id = users.id
+  WHERE
+    DATE(users.created_at) <= '2021-08-25'
+    AND (
+      users_attribution.attribution.entrypoint_experiment IS NOT NULL
+      OR users_attribution.attribution.entrypoint_variation IS NOT NULL
+      OR users_attribution.attribution.utm_campaign IS NOT NULL
+      OR users_attribution.attribution.utm_content IS NOT NULL
+      OR users_attribution.attribution.utm_medium IS NOT NULL
+      OR users_attribution.attribution.utm_source IS NOT NULL
+      OR users_attribution.attribution.utm_term IS NOT NULL
+    )
 ),
 subscription_starts AS (
   SELECT

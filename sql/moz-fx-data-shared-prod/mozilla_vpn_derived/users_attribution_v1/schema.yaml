@@ -6,8 +6,8 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
-  - name: timestamp
-    type: TIMESTAMP
+  - name: referrer
+    type: STRING
     mode: NULLABLE
   - name: entrypoint_experiment
     type: STRING
@@ -28,5 +28,8 @@ fields:
     type: STRING
     mode: NULLABLE
   - name: utm_term
+    type: STRING
+    mode: NULLABLE
+  - name: data_cta_position
     type: STRING
     mode: NULLABLE

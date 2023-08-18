@@ -44,7 +44,9 @@ new_service_flow_events AS (
     {% if is_init() %}
       DATE(events.log_timestamp) < CURRENT_DATE()
     {% else %}
-      DATE(events.log_timestamp) = @date
+      -- Reprocess the previous day's events as well in case a flow spanned multiple days
+      -- but wasn't saved here on the initial day due to not having attribution values yet.
+      (DATE(events.log_timestamp) BETWEEN (@date - 1) AND @date)
     {% endif %}
 ),
 service_flow_events AS (

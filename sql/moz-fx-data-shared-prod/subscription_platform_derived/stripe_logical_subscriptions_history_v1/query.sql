@@ -72,6 +72,7 @@ subscriptions_history_charge_summaries AS (
       LIMIT
         1
     )[SAFE_ORDINAL(1)] AS latest_card_country,
+    LOGICAL_OR(refunds.status = 'succeeded') AS has_refunds,
     LOGICAL_OR(
       charges.fraud_details_user_report = 'fraudulent'
       OR (
@@ -189,6 +190,7 @@ SELECT
     ) AS auto_renew_disabled_at,
     -- TODO: promotion_codes
     -- TODO: promotion_discounts_amount
+    COALESCE(charge_summaries.has_refunds, FALSE) AS has_refunds,
     COALESCE(charge_summaries.has_fraudulent_charges, FALSE) AS has_fraudulent_charges
   ) AS subscription
 FROM

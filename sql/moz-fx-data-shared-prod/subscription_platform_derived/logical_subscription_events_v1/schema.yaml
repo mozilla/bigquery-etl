@@ -130,6 +130,9 @@ fields:
   - name: auto_renew_disabled_at
     type: TIMESTAMP
     mode: NULLABLE
+  - name: has_refunds
+    type: BOOLEAN
+    mode: NULLABLE
   - name: has_fraudulent_charges
     type: BOOLEAN
     mode: NULLABLE
@@ -310,6 +313,9 @@ fields:
     mode: NULLABLE
   - name: auto_renew_disabled_at
     type: TIMESTAMP
+    mode: NULLABLE
+  - name: has_refunds
+    type: BOOLEAN
     mode: NULLABLE
   - name: has_fraudulent_charges
     type: BOOLEAN

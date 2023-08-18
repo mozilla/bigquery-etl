@@ -334,6 +334,9 @@ jobs:
             PATH="venv/bin:$PATH" script/bqetl dependency record \
               --skip-existing \
               "/tmp/workspace/generated-sql/sql/"
+            PATH="venv/bin:$PATH" script/bqetl metadata update \
+              --sql-dir /tmp/workspace/generated-sql/sql/ \
+              /tmp/workspace/generated-sql/sql/
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -450,6 +453,9 @@ jobs:
             PATH="venv/bin:$PATH" script/bqetl dependency record \
               --skip-existing \
               "/tmp/workspace/private-generated-sql/sql/"
+            PATH="venv/bin:$PATH" script/bqetl metadata update \
+              --sql-dir /tmp/workspace/private-generated-sql/sql/ \
+              /tmp/workspace/private-generated-sql/sql/
       - persist_to_workspace:
           root: /tmp/workspace
           paths:

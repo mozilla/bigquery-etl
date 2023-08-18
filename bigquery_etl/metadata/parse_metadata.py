@@ -291,7 +291,6 @@ class Metadata:
                 if "deprecated" in metadata:
                     deprecated = metadata["deprecated"]
 
-
                 return cls(
                     friendly_name,
                     description,

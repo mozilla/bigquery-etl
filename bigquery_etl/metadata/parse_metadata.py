@@ -17,6 +17,9 @@ DATASET_METADATA_FILE = "dataset_metadata.yaml"
 DEFAULT_WORKGROUP_ACCESS = [
     dict(role="roles/bigquery.dataViewer", members=["workgroup:mozilla-confidential"])
 ]
+DEFAULT_TABLE_WORKGROUP_ACCESS = [
+    dict(role="roles/bigquery.dataViewer", members=["workgroup:mozilla-confidential"])
+]
 
 
 class Literal(str):
@@ -149,6 +152,7 @@ class Metadata:
     workgroup_access: Optional[List[WorkgroupAccessMetadata]] = attr.ib(None)
     references: Dict = attr.ib({})
     external_data: Optional[ExternalDataMetadata] = attr.ib(None)
+    deprecated: bool = attr.ib(False)
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -223,6 +227,7 @@ class Metadata:
         workgroup_access = None
         references = {}
         external_data = None
+        deprecated = False
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -283,6 +288,9 @@ class Metadata:
                     external_data = converter.structure(
                         metadata["external_data"], ExternalDataMetadata
                     )
+                if "deprecated" in metadata:
+                    deprecated = metadata["deprecated"]
+
 
                 return cls(
                     friendly_name,
@@ -295,6 +303,7 @@ class Metadata:
                     workgroup_access,
                     references,
                     external_data,
+                    deprecated,
                 )
             except yaml.YAMLError as e:
                 raise e
@@ -406,6 +415,7 @@ class DatasetMetadata:
     user_facing: bool = attr.ib(False)
     labels: Dict = attr.ib({})
     workgroup_access: list = attr.ib(DEFAULT_WORKGROUP_ACCESS)
+    default_table_workgroup_access: Optional[List[Dict[str, Any]]] = attr.ib(None)
 
     @staticmethod
     def is_dataset_metadata_file(file_path):

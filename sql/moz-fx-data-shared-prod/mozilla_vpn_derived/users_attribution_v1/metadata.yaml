@@ -1,0 +1,15 @@
+friendly_name: Mozilla VPN users attribution archive
+description: |-
+  Archive of VPN users' attribution data between 2020-06-25 and 2022-03-23.
+
+  The attribution data was originally stored in the Guardian database's `users` table and synced into `mozilla_vpn_external.users_v1`.
+  It was later copied into the undocumented `mozilla_vpn_external.users_attribution_v1` table with the attribution data as JSON strings.
+  Now it's officially archived here in a fully structured table.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: false
+bigquery:
+  time_partitioning: null
+  clustering: null
+references: {}

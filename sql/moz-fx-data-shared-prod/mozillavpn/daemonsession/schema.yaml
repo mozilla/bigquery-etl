@@ -335,10 +335,12 @@ fields:
     - name: session_daemon_session_source
       type: STRING
       mode: NULLABLE
-      description: '(Mobile-only) Where the session started from. Should be "app",
-        "system settings",
+      description: '(Mobile-only) Where the VPN session started from, to determine
+        how many sessions
 
-        or "autostart on boot".
+        start outside the app. Values should be "app" or "system". "system" covers
+
+        cases like system settings, autostart on boot, tile, etc.
 
         '
   - name: uuid

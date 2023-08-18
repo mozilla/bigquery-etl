@@ -6,6 +6,9 @@ SELECT
   document_id,
   metrics.string.messaging_system_event AS event,
   metrics.text2.messaging_system_event_context AS event_context,
+  metrics.string.messaging_system_event_page AS event_page,
+  metrics.string.messaging_system_event_reason AS event_reason,
+  metrics.string.messaging_system_event_source AS event_source,
   metrics.string.messaging_system_locale AS locale,
   metrics.text2.messaging_system_message_id AS message_id,
   metadata,
@@ -28,7 +31,8 @@ SELECT
     metrics.string.messaging_system_attribution_ua AS ua,
     metrics.string.messaging_system_attribution_variation AS variation,
     metrics.string.messaging_system_attribution_dltoken AS dltoken,
-    metrics.string.messaging_system_attribution_dlsource AS dlsource
+    metrics.string.messaging_system_attribution_dlsource AS dlsource,
+    metrics.string.messaging_system_attribution_msstoresignedin AS msstoresignedin
   ) AS attribution
 FROM
   `moz-fx-data-shared-prod.firefox_desktop_stable.messaging_system_v1`

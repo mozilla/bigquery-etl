@@ -25,6 +25,18 @@ fields:
   name: event_context
   type: STRING
   mode: NULLABLE
+- description: The event_context's page. Almost always "about:welcome".
+  name: event_page
+  type: STRING
+  mode: NULLABLE
+- description: The event_context's reason. Likely something like "welcome-window-closed" or "app-shut-down".
+  name: event_reason
+  type: STRING
+  mode: NULLABLE
+- description: The event_context's source. Likely something like "primary_button".
+  name: event_source
+  type: STRING
+  mode: NULLABLE
 - name: locale
   type: STRING
   mode: NULLABLE
@@ -225,5 +237,10 @@ fields:
   - description: Identifier that indicates where installations of Firefox originate,
       see bug 1827238
     name: dlsource
+    type: STRING
+    mode: NULLABLE
+  - description: Either the string "true" or the string "false" to indicate whether the attributed install came from
+      the Microsoft store and, if so, whether the user was signed in at the time.
+    name: msstoresignedin
     type: STRING
     mode: NULLABLE

@@ -86,6 +86,10 @@
         "name": "reported_metrics_ping"
       },
       {
+        "type": "BOOLEAN",
+        "name": "reported_baseline_ping"
+      },
+      {
         "type": "DATE",
         "name": "min_first_session_ping_submission_date"
       },
@@ -136,6 +140,10 @@
   {
     "type": "DATE",
     "name": "last_reported_date"
+  },
+  {
+    "type": "STRING",
+    "name": "last_reported_channel"
   },
   {
     "type": "STRING",

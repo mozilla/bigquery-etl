@@ -1281,9 +1281,11 @@ def initialize(name, sql_dir, project_id, dry_run):
                 with open(init_file) as init_file_stream:
                     init_sql = init_file_stream.read()
                     dataset = Path(init_file).parent.parent.name
+                    destination_table = query_file.parent.name
                     job_config = bigquery.QueryJobConfig(
                         dry_run=dry_run,
                         default_dataset=f"{project}.{dataset}",
+                        destination=f"{project}.{dataset}.{destination_table}",
                     )
 
                     if "CREATE MATERIALIZED VIEW" in init_sql:

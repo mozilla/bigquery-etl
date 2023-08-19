@@ -25915,6 +25915,32 @@ fields:
             iceConnectionState of "complete" or "connected".
 
             '
+        - name: shopping_component_opted_out
+          type: BOOLEAN
+          mode: NULLABLE
+          description: 'Indicates if the user has opted out of using the shopping
+            component. Set during shopping component init and updated when changed
+            in browser. This scalar is mirroring the Glean metric named shopping.settings.component_opted_out,
+            which is defined in toolkit/components/shopping/metrics.yaml.
+
+            '
+        - name: shopping_has_onboarded
+          type: BOOLEAN
+          mode: NULLABLE
+          description: 'Indicates if the user has completed the Shopping product Onboarding
+            experience. Set during shopping component init and updated when changed
+            in browser. This scalar is mirroring the Glean metric named shopping.settings.has_onboarded,
+            which is defined in toolkit/components/shopping/metrics.yaml.
+
+            '
+        - name: shopping_nimbus_disabled
+          type: BOOLEAN
+          mode: NULLABLE
+          description: 'Indicates if Nimbus has disabled the use of the shopping component.
+            This scalar is mirroring the Glean metric named shopping.settings.nimbus_disabled_shopping,
+            which is defined in toolkit/components/shopping/metrics.yaml.
+
+            '
     - name: dynamic
       type: RECORD
       mode: NULLABLE
@@ -34498,6 +34524,32 @@ fields:
           description: 'SHA1 cryptographic hash of the quarantined domains string
             pref as it was set based on the value got synced from the RemoteSettings
             collection.
+
+            '
+        - name: shopping_component_opted_out
+          type: BOOLEAN
+          mode: NULLABLE
+          description: 'Indicates if the user has opted out of using the shopping
+            component. Set during shopping component init and updated when changed
+            in browser. This scalar is mirroring the Glean metric named shopping.settings.component_opted_out,
+            which is defined in toolkit/components/shopping/metrics.yaml.
+
+            '
+        - name: shopping_has_onboarded
+          type: BOOLEAN
+          mode: NULLABLE
+          description: 'Indicates if the user has completed the Shopping product Onboarding
+            experience. Set during shopping component init and updated when changed
+            in browser. This scalar is mirroring the Glean metric named shopping.settings.has_onboarded,
+            which is defined in toolkit/components/shopping/metrics.yaml.
+
+            '
+        - name: shopping_nimbus_disabled
+          type: BOOLEAN
+          mode: NULLABLE
+          description: 'Indicates if Nimbus has disabled the use of the shopping component.
+            This scalar is mirroring the Glean metric named shopping.settings.nimbus_disabled_shopping,
+            which is defined in toolkit/components/shopping/metrics.yaml.
 
             '
     - name: socket

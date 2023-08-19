@@ -10054,6 +10054,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page in <object> or <embed>
+    - name: use_counter2_css_property_font_synthesis_position_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used the CSS property font-synthesis-position
+    - name: use_counter2_css_property_font_synthesis_position_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used the CSS property font-synthesis-position
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -19954,6 +19962,14 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page in <object> or <embed>
+        - name: use_counter2_css_property_font_synthesis_position_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used the CSS property font-synthesis-position
+        - name: use_counter2_css_property_font_synthesis_position_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used the CSS property font-synthesis-position
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

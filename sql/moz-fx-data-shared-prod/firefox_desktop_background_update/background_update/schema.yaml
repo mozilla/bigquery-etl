@@ -316,6 +316,19 @@ fields:
         to disk, and there was no exception thrown reading it.
 
         '
+    - name: background_update_registered_restart_attempted
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if the background update task successfully registered a restart.
+
+        '
+    - name: background_update_registered_restart_success
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if the background update task successfully restarted after
+        a registered restart.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

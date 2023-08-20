@@ -17420,6 +17420,15 @@ fields:
         - name: webrtc_peerconnection_promise_stats_used
           type: INTEGER
           mode: NULLABLE
+        - name: shopping_component_opted_out
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: shopping_has_onboarded
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: shopping_nimbus_disabled
+          type: BOOLEAN
+          mode: NULLABLE
     - name: dynamic
       type: RECORD
       mode: NULLABLE
@@ -22454,6 +22463,15 @@ fields:
           mode: NULLABLE
         - name: extensions_quarantined_domains_remotehash
           type: STRING
+          mode: NULLABLE
+        - name: shopping_component_opted_out
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: shopping_has_onboarded
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: shopping_nimbus_disabled
+          type: BOOLEAN
           mode: NULLABLE
     - name: socket
       type: RECORD

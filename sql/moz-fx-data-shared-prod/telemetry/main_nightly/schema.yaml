@@ -14249,6 +14249,12 @@ fields:
     - name: use_counter2_youtubeflashembed_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_css_property_font_synthesis_position_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_css_property_font_synthesis_position_page
+      type: STRING
+      mode: NULLABLE
   - name: info
     type: RECORD
     mode: NULLABLE
@@ -29613,6 +29619,12 @@ fields:
         - name: use_counter2_youtubeflashembed_page
           type: STRING
           mode: NULLABLE
+        - name: use_counter2_css_property_font_synthesis_position_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_css_property_font_synthesis_position_page
+          type: STRING
+          mode: NULLABLE
       - name: keyed_histograms
         type: RECORD
         mode: NULLABLE
@@ -31942,6 +31954,15 @@ fields:
           mode: NULLABLE
         - name: formautofill_addresses_submitted_sections_count
           type: INTEGER
+          mode: NULLABLE
+        - name: shopping_component_opted_out
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: shopping_has_onboarded
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: shopping_nimbus_disabled
+          type: BOOLEAN
           mode: NULLABLE
       - name: events
         type: RECORD
@@ -36685,6 +36706,15 @@ fields:
           mode: NULLABLE
         - name: extensions_quarantined_domains_remotehash
           type: STRING
+          mode: NULLABLE
+        - name: shopping_component_opted_out
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: shopping_has_onboarded
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: shopping_nimbus_disabled
+          type: BOOLEAN
           mode: NULLABLE
       - name: events
         type: RECORD

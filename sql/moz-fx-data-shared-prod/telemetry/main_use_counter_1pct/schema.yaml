@@ -7433,6 +7433,12 @@ fields:
     - name: use_counter2_youtubeflashembed_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_css_property_font_synthesis_position_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_css_property_font_synthesis_position_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -14733,6 +14739,12 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_youtubeflashembed_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_css_property_font_synthesis_position_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_css_property_font_synthesis_position_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

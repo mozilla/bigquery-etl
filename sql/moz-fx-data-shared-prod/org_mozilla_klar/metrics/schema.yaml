@@ -2111,8 +2111,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'The download throughput for http/1.1 requests larger than 10MB.
-        Measured in megabits per second, Mbps.
+      description: 'The download throughput for  http/1.0, http/1.1 requests larger
+        than 10MB. Measured in megabits per second, Mbps.
 
         '
     - name: networking_http_2_download_throughput

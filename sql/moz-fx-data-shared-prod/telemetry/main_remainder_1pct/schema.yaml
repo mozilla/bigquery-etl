@@ -6962,6 +6962,15 @@ fields:
     - name: zoomed_view_enabled
       type: STRING
       mode: NULLABLE
+    - name: networking_download_throughput_http_1
+      type: STRING
+      mode: NULLABLE
+    - name: networking_download_throughput_http_2
+      type: STRING
+      mode: NULLABLE
+    - name: networking_download_throughput_http_3
+      type: STRING
+      mode: NULLABLE
   - name: info
     type: RECORD
     mode: NULLABLE

@@ -10629,6 +10629,21 @@ fields:
       mode: NULLABLE
       description: Whether or not a user has the zoomed view (a.k.a. "Magnify small
         areas") enabled.
+    - name: networking_download_throughput_http_1
+      type: STRING
+      mode: NULLABLE
+      description: The download throughput for http/1.0, http/1.1 requests larger
+        than 10MB. Measured in megabits per second, Mbps.
+    - name: networking_download_throughput_http_2
+      type: STRING
+      mode: NULLABLE
+      description: The download throughput for http/2 requests larger than 10MB. Measured
+        in megabits per second, Mbps.
+    - name: networking_download_throughput_http_3
+      type: STRING
+      mode: NULLABLE
+      description: The download throughput for http/3 requests larger than 10MB. Measured
+        in megabits per second, Mbps.
   - name: info
     type: RECORD
     mode: NULLABLE

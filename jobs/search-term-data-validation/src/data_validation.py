@@ -159,6 +159,7 @@ def range_check(
     range_lower_bound: float,
     range_upper_bound: float,
 ):
+    print(f"Performing range check for metric: {metric}")
     """
     Determines if all the values in a test window of days fall inside some percentile of the normal range for a set of comparison values in a comparison window of days.
 
@@ -221,6 +222,7 @@ def range_check(
         all(test_range[metric] > range_upper) or all(test_range[metric] < range_lower)
     )
 
+    print(f"Completed range check for metric: {metric}")
     return (
         latest_finished_at,
         len(comparison_range),
@@ -240,6 +242,8 @@ def mean_check(
     mean_lower_bound: float,
     mean_upper_bound: float,
 ):
+    print(f"Performing mean check for metric: {metric}")
+
     """
     Determines if all the moving averages in a test window of days fall inside some percentile of the moving average for a set of comparison values in a comparison window of days.
 
@@ -314,6 +318,7 @@ def mean_check(
         comparison_range[x_day_moving_average].notna().sum()
     )
 
+    print(f"Completed mean check for metric: {metric}")
     return (
         latest_finished_at,
         num_moving_averages_compared,
@@ -326,6 +331,8 @@ def mean_check(
 
 
 def record_validation_results(val_df, destination_table):
+    print(f"Recording validation results to destination table: {destination_table}")
+
     InputSet = namedtuple(
         "InputSet",
         "name full_lookback_window range_test_window range_lower_bound range_upper_bound mean_test_window mean_lower_bound mean_upper_bound moving_average_window",

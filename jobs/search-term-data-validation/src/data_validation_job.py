@@ -18,7 +18,11 @@ parser.add_argument(
     help="Table to store data validation metric test results",
 )
 args = parser.parse_args()
+print("Args successfully parsed")
+print(f"Data Validation Origin: {args.data_validation_origin}")
+print(f"Data Validation Reporting Destination: {args.data_validation_reporting_destination}")
 
 validation_df = retrieve_data_validation_metrics(args.data_validation_origin)
+print(f"Input Dataframe Shape: {validation_df.shape}")
 
 record_validation_results(validation_df, args.data_validation_reporting_destination)

@@ -14255,6 +14255,15 @@ fields:
     - name: use_counter2_css_property_font_synthesis_position_page
       type: STRING
       mode: NULLABLE
+    - name: networking_download_throughput_http_1
+      type: STRING
+      mode: NULLABLE
+    - name: networking_download_throughput_http_2
+      type: STRING
+      mode: NULLABLE
+    - name: networking_download_throughput_http_3
+      type: STRING
+      mode: NULLABLE
   - name: info
     type: RECORD
     mode: NULLABLE

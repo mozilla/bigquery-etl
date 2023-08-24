@@ -351,6 +351,30 @@ fields:
         pref.
 
         '
+    - name: urlbar_pref_suggest_data_collection
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the user has opted in to data collection for Firefox Suggest,
+        i.e., online suggestions served from Merino. Corresponds to the value of the
+        `browser.urlbar.quicksuggest.dataCollection.enabled` pref.
+
+        '
+    - name: urlbar_pref_suggest_nonsponsored
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether non-sponsored quick suggest results are shown in the urlbar.
+        Corresponds to the value of the `browser.urlbar.suggest.quicksuggest.nonsponsored`
+        pref.
+
+        '
+    - name: urlbar_pref_suggest_sponsored
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether sponsored quick suggest results are shown in the urlbar.
+        Corresponds to the value of the `browser.urlbar.suggest.quicksuggest.sponsored`
+        pref.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

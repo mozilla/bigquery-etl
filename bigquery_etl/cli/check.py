@@ -81,8 +81,7 @@ def check(ctx):
     help="""
     Renders data check query using parameters provided (OPTIONAL).
     \b
-    The result is what would be used to run a check to ensure that the specified dataset
-    adheres to the assumptions defined in the corresponding checks.sql file
+    Returns the raw SQL query of the conditions specified in the corresponding checks.sql file
 
     Example:
 
@@ -165,7 +164,7 @@ def _render(
 
 @check.command(
     help="""
-    Runs data checks defined for the dataset (checks.sql).
+    Runs data checks defined for the query (checks.sql).
 
     Example:
 

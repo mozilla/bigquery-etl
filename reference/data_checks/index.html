@@ -2372,6 +2372,47 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#running-checks-locally-commands" class="md-nav__link">
+    Running checks locally / Commands
+  </a>
+  
+    <nav class="md-nav" aria-label="Running checks locally / Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage_1" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2468,6 +2509,47 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#running-checks-locally-commands" class="md-nav__link">
+    Running checks locally / Commands
+  </a>
+  
+    <nav class="md-nav" aria-label="Running checks locally / Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage_1" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2541,6 +2623,76 @@ where: Optional[str] - A condition that will be injected into the `WHERE` clause
 <span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">min_rows</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
 <span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">is_unique</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;country&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="err">}}</span>
 <span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">in_range</span><span class="p">([</span><span class="ss">&quot;non_ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;reporting_ratio&quot;</span><span class="p">],</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">none</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+</code></pre></div>
+<h2 id="running-checks-locally-commands">Running checks locally / Commands</h2>
+<p>To list all available commands in the bqetl data checks CLI:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>check
+
+Usage:<span class="w"> </span>bqetl<span class="w"> </span>check<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
+
+<span class="w">  </span>Commands<span class="w"> </span><span class="k">for</span><span class="w"> </span>managing<span class="w"> </span>and<span class="w"> </span>running<span class="w"> </span>bqetl<span class="w"> </span>data<span class="w"> </span>checks.
+
+<span class="w">  </span>––––––––––––––––––––––––––––––––––––––––––––––
+
+<span class="w">  </span>IN<span class="w"> </span>ACTIVE<span class="w"> </span>DEVELOPMENT
+
+<span class="w">  </span>The<span class="w"> </span>current<span class="w"> </span>progress<span class="w"> </span>can<span class="w"> </span>be<span class="w"> </span>found<span class="w"> </span>under:
+
+<span class="w">          </span>https://mozilla-hub.atlassian.net/browse/DENG-919
+
+<span class="w">  </span>––––––––––––––––––––––––––––––––––––––––––––––
+
+Options:
+<span class="w">  </span>--help<span class="w">  </span>Show<span class="w"> </span>this<span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span>exit.
+
+Commands:
+<span class="w">  </span>render<span class="w">  </span>Renders<span class="w"> </span>data<span class="w"> </span>check<span class="w"> </span>query<span class="w"> </span>using<span class="w"> </span>parameters<span class="w"> </span>provided<span class="w"> </span><span class="o">(</span>OPTIONAL<span class="o">)</span>.
+<span class="w">  </span>run<span class="w">     </span>Runs<span class="w"> </span>data<span class="w"> </span>checks<span class="w"> </span>defined<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>dataset<span class="w"> </span><span class="o">(</span>checks.sql<span class="o">)</span>.
+</code></pre></div>
+<p>To see see how to use a specific command use:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>check<span class="w"> </span><span class="o">[</span>command<span class="o">]</span><span class="w"> </span>--help
+</code></pre></div>
+<hr />
+<p><code>render</code></p>
+<h3 id="usage">Usage</h3>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>check<span class="w"> </span>render<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>DATASET<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>
+
+Renders<span class="w"> </span>data<span class="w"> </span>check<span class="w"> </span>query<span class="w"> </span>using<span class="w"> </span>parameters<span class="w"> </span>provided<span class="w"> </span><span class="o">(</span>OPTIONAL<span class="o">)</span>.<span class="w"> </span>The<span class="w"> </span>result
+is<span class="w"> </span>what<span class="w"> </span>would<span class="w"> </span>be<span class="w"> </span>used<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>a<span class="w"> </span>check<span class="w"> </span>to<span class="w"> </span>ensure<span class="w"> </span>that<span class="w"> </span>the<span class="w"> </span>specified<span class="w"> </span>dataset
+adheres<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>assumptions<span class="w"> </span>defined<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>corresponding<span class="w"> </span>checks.sql<span class="w"> </span>file
+
+Options:
+<span class="w">  </span>--project-id,<span class="w"> </span>--project_id<span class="w"> </span>TEXT
+<span class="w">                                  </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+<span class="w">  </span>--sql_dir,<span class="w"> </span>--sql-dir<span class="w"> </span>DIRECTORY<span class="w">  </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+<span class="w">  </span>--help<span class="w">                          </span>Show<span class="w"> </span>this<span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span>exit.
+</code></pre></div>
+<h3 id="example">Example</h3>
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>check<span class="w"> </span>render<span class="w"> </span>--project_id<span class="o">=</span>moz-fx-data-marketing-prod<span class="w"> </span>ga_derived.downloads_with_attribution_v2<span class="w"> </span>--parameter<span class="o">=</span>download_date:DATE:2023-05-01
+</code></pre></div>
+<hr />
+<p><code>run</code></p>
+<h3 id="usage_1">Usage</h3>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>check<span class="w"> </span>run<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>DATASET
+
+Runs<span class="w"> </span>data<span class="w"> </span>checks<span class="w"> </span>defined<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>dataset<span class="w"> </span><span class="o">(</span>checks.sql<span class="o">)</span>.
+
+Checks<span class="w"> </span>can<span class="w"> </span>be<span class="w"> </span>validated<span class="w"> </span>using<span class="w"> </span>the<span class="w"> </span><span class="sb">`</span>--dry_run<span class="sb">`</span><span class="w"> </span>flag<span class="w"> </span>without<span class="w"> </span>executing<span class="w"> </span>them:
+
+Options:
+<span class="w">  </span>--project-id,<span class="w"> </span>--project_id<span class="w"> </span>TEXT
+<span class="w">                                  </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+<span class="w">  </span>--sql_dir,<span class="w"> </span>--sql-dir<span class="w"> </span>DIRECTORY<span class="w">  </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+<span class="w">  </span>--dry_run,<span class="w"> </span>--dry-run<span class="w">            </span>To<span class="w"> </span>dry<span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>query<span class="w"> </span>to<span class="w"> </span>make<span class="w"> </span>sure<span class="w"> </span>it<span class="w"> </span>is
+<span class="w">                                  </span>valid
+<span class="w">  </span>--help<span class="w">                          </span>Show<span class="w"> </span>this<span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span>exit.
+</code></pre></div>
+<h3 id="examples">Examples</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># to run checks for a specific dataset</span>
+$<span class="w"> </span>./bqetl<span class="w"> </span>check<span class="w"> </span>run<span class="w"> </span>ga_derived.downloads_with_attribution_v2<span class="w"> </span>--parameter<span class="o">=</span>download_date:DATE:2023-05-01
+
+<span class="c1"># to only dry_run the checks</span>
+$<span class="w"> </span>./bqetl<span class="w"> </span>check<span class="w"> </span>run<span class="w"> </span>--dry_run<span class="w"> </span>ga_derived.downloads_with_attribution_v2<span class="w"> </span>--parameter<span class="o">=</span>download_date:DATE:2023-05-01
 </code></pre></div>
 
 

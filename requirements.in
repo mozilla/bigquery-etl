@@ -33,7 +33,7 @@ pytest-xdist==3.3.1
 pytest==7.4.0
 PyYAML==6.0.1
 smart_open==6.3.0
-sqlglot==17.10.2
+sqlglot==17.15.1
 sqlparse==0.4.4
 stripe==5.5.0
 tomli==2.0.1 # for backwards compatibility with python < 3.11

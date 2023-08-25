@@ -4,8 +4,8 @@
 set -x
 
 REPLACE=${REPLACE:-false}
-PROJECT="mozaggregator2bq"
-DATASET="telemetry"
+PROJECT="moz-fx-data-shared-prod"
+DATASET="dev_telemetry_derived"
 aggregate_type=${1?missing aggregate type, one of build_id and submission_date}
 
 if [[ $aggregate_type == "build_id" ]]; then
@@ -34,4 +34,4 @@ bq load \
     --time_partitioning_type DAY \
     --clustering_fields $clustering \
     "$qualified_table" \
-    "gs://mozaggregator2bq/data/${aggregate_type}/*.parquet"
+    "gs://moz-fx-data-prod-external-data/mozaggregator-backfill/${aggregate_type}/*.parquet"

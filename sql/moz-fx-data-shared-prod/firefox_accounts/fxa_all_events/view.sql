@@ -10,7 +10,7 @@ WITH fxa_auth_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
-    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS event_time,
+    SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
     jsonPayload.fields.user_id,
     jsonPayload.fields.country,
     JSON_VALUE(jsonPayload.fields.event_properties, "$.country_code") AS country_code,
@@ -32,7 +32,7 @@ fxa_auth_bounce_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
-    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS event_time,
+    SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
     jsonPayload.fields.user_id,
     CAST(
       NULL AS STRING
@@ -54,7 +54,7 @@ fxa_content_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
-    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS event_time,
+    SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
     jsonPayload.fields.user_id,
     jsonPayload.fields.country,
     CAST(NULL AS STRING) AS country_code,
@@ -75,7 +75,7 @@ fxa_oauth_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
-    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS event_time,
+    SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
     jsonPayload.fields.user_id,
     CAST(NULL AS STRING) AS country,
     CAST(NULL AS STRING) AS country_code,
@@ -95,7 +95,7 @@ fxa_stdout_events AS (
   SELECT
     `timestamp`,
     receiveTimestamp,
-    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS event_time,
+    SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
     jsonPayload.fields.user_id,
     CAST(NULL AS STRING) AS country,
     jsonPayload.fields.country_code,

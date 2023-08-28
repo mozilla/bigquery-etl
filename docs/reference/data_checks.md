@@ -94,3 +94,97 @@ Please keep in mind the below checks can be combined and specified in the same `
  {{ is_unique(["submission_date", "os", "country"], "submission_date = @submission_date")}}
  {{ in_range(["non_ssl_loads", "ssl_loads", "reporting_ratio"], 0, none, "submission_date = @submission_date") }}
 ```
+
+
+## Running checks locally / Commands
+
+To list all available commands in the bqetl data checks CLI:
+
+```shell
+$ ./bqetl check
+
+Usage: bqetl check [OPTIONS] COMMAND [ARGS]...
+
+  Commands for managing and running bqetl data checks.
+
+  ––––––––––––––––––––––––––––––––––––––––––––––
+
+  IN ACTIVE DEVELOPMENT
+
+  The current progress can be found under:
+
+          https://mozilla-hub.atlassian.net/browse/DENG-919
+
+  ––––––––––––––––––––––––––––––––––––––––––––––
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  render  Renders data check query using parameters provided (OPTIONAL).
+  run     Runs data checks defined for the dataset (checks.sql).
+```
+
+To see see how to use a specific command use:
+
+```shell
+$ ./bqetl check [command] --help
+```
+
+---
+
+`render`
+
+### Usage
+
+```shell
+$ ./bqetl check render [OPTIONS] DATASET [ARGS]
+
+Renders data check query using parameters provided (OPTIONAL). The result
+is what would be used to run a check to ensure that the specified dataset
+adheres to the assumptions defined in the corresponding checks.sql file
+
+Options:
+  --project-id, --project_id TEXT
+                                  GCP project ID
+  --sql_dir, --sql-dir DIRECTORY  Path to directory which contains queries.
+  --help                          Show this message and exit.
+```
+
+### Example
+
+```shell
+./bqetl check render --project_id=moz-fx-data-marketing-prod ga_derived.downloads_with_attribution_v2 --parameter=download_date:DATE:2023-05-01
+```
+
+---
+
+`run`
+
+### Usage
+
+```shell
+$ ./bqetl check run [OPTIONS] DATASET
+
+Runs data checks defined for the dataset (checks.sql).
+
+Checks can be validated using the `--dry_run` flag without executing them:
+
+Options:
+  --project-id, --project_id TEXT
+                                  GCP project ID
+  --sql_dir, --sql-dir DIRECTORY  Path to directory which contains queries.
+  --dry_run, --dry-run            To dry run the query to make sure it is
+                                  valid
+  --help                          Show this message and exit.
+```
+
+### Examples
+
+```shell
+# to run checks for a specific dataset
+$ ./bqetl check run ga_derived.downloads_with_attribution_v2 --parameter=download_date:DATE:2023-05-01
+
+# to only dry_run the checks
+$ ./bqetl check run --dry_run ga_derived.downloads_with_attribution_v2 --parameter=download_date:DATE:2023-05-01
+```

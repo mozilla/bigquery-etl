@@ -6,12 +6,14 @@
   submission_date: 2023-05-02
   adjust_network: Organic
   channel: release
-  device_model: model-2
-  last_reported_device_model: model-2
+  device_model: model-1
+  last_reported_channel: release
+  last_reported_device_model: model-1
   last_reported_date: 2023-05-02
   metadata:
     reported_first_session_ping: true
     reported_metrics_ping: false
+    reported_baseline_ping: true
     min_first_session_ping_submission_date: 2023-05-02
     min_first_session_ping_run_date: 2023-05-02
     adjust_network__source_ping: first_session
@@ -22,12 +24,14 @@
   first_run_date: 2023-05-02
   submission_date: 2023-05-02
   last_reported_date: 2023-05-02
+  last_reported_channel: beta
   activated: true
   channel: beta
   adjust_network: Untrusted Devices
   metadata:
     reported_first_session_ping: true
     reported_metrics_ping: false
+    reported_baseline_ping: true
     min_first_session_ping_submission_date: 2023-05-02
     min_first_session_ping_run_date: 2023-05-02
     adjust_network__source_ping: first_session
@@ -41,9 +45,18 @@
   channel: nightly
   activated: false
   install_source: com.android.vending
+  last_reported_channel: nightly
   metadata:
     reported_first_session_ping: false
     reported_metrics_ping: true
+    reported_baseline_ping: true
     install_source__source_ping: metrics
     install_source__source_ping_datetime: '2023-05-02T00:00:00'
+    min_metrics_ping_submission_date: 2023-05-02
+- client_id: client-4
+  channel: beta
+  metadata:
+    reported_first_session_ping: false
+    reported_metrics_ping: true
+    reported_baseline_ping: false
     min_metrics_ping_submission_date: 2023-05-02

@@ -7,7 +7,7 @@ SELECT
   start_date,
   end_date,
   duration,
-  updated_at job_id,
+  updated_at AS job_id,
   executor_config,
   external_executor_id,
   hostname,

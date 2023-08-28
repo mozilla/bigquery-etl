@@ -19,6 +19,7 @@ WITH baseline_clients AS (
     `moz-fx-data-shared-prod.fenix.baseline_clients_daily`
   WHERE
     submission_date = @submission_date
+    AND client_id IS NOT NULL
 ),
 first_seen AS (
   SELECT
@@ -46,7 +47,7 @@ activations AS (
     client_id,
     ARRAY_AGG(activated ORDER BY submission_date DESC)[SAFE_OFFSET(0)] > 0 AS activated
   FROM
-    fenix.new_profile_activation
+    `moz-fx-data-shared-prod.fenix.new_profile_activation`
   WHERE
     submission_date = @submission_date
   GROUP BY
@@ -91,6 +92,9 @@ first_session_ping AS (
     MIN(fenix_first_session.sample_id) AS sample_id,
     DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
     MIN(SAFE.PARSE_DATETIME('%F', SUBSTR(client_info.first_run_date, 1, 10))) AS first_run_datetime,
+    ARRAY_AGG(normalized_channel IGNORE NULLS ORDER BY submission_timestamp ASC)[
+      SAFE_OFFSET(0)
+    ] AS channel,
     ARRAY_AGG(metrics.string.first_session_campaign IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
     ] AS adjust_campaign,
@@ -125,6 +129,9 @@ metrics_ping AS (
     client_info.client_id AS client_id,
     MIN(sample_id) AS sample_id,
     DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
+    ARRAY_AGG(normalized_channel IGNORE NULLS ORDER BY submission_timestamp ASC)[
+      SAFE_OFFSET(0)
+    ] AS channel,
     ARRAY_AGG(
       metrics.string.metrics_adjust_campaign IGNORE NULLS
       ORDER BY
@@ -178,6 +185,9 @@ baseline_ping AS (
   SELECT
     client_id,
     MAX(submission_date) AS last_reported_date,
+    ARRAY_AGG(channel IGNORE NULLS ORDER BY submission_date DESC)[
+      SAFE_OFFSET(0)
+    ] AS last_reported_channel,
     ARRAY_AGG(country IGNORE NULLS ORDER BY submission_date DESC)[
       SAFE_OFFSET(0)
     ] AS last_reported_country,
@@ -204,7 +214,7 @@ _current AS (
     DATE(first_seen.first_run_datetime) AS first_run_date,
     first_seen.first_reported_country AS first_reported_country,
     first_seen.first_reported_isp AS first_reported_isp,
-    first_seen.channel AS channel,
+    COALESCE(first_seen.channel, first_session.channel, metrics.channel) AS channel,
     first_seen.device_manufacturer AS device_manufacturer,
     first_seen.device_model AS device_model,
     first_seen.os_version AS os_version,
@@ -221,6 +231,7 @@ _current AS (
     metrics.last_reported_adjust_creative AS last_reported_adjust_creative,
     metrics.last_reported_adjust_network AS last_reported_adjust_network,
     baseline.last_reported_date AS last_reported_date,
+    baseline.last_reported_channel AS last_reported_channel,
     baseline.last_reported_country AS last_reported_country,
     baseline.last_reported_device_model AS last_reported_device_model,
     baseline.last_reported_device_manufacturer AS last_reported_device_manufacturer,
@@ -236,6 +247,11 @@ _current AS (
           THEN FALSE
         ELSE TRUE
       END AS reported_metrics_ping,
+      CASE
+        WHEN first_seen.client_id IS NULL
+          THEN FALSE
+        ELSE TRUE
+      END AS reported_baseline_ping,
       DATE(first_session.min_submission_datetime) AS min_first_session_ping_submission_date,
       DATE(first_session.first_run_datetime) AS min_first_session_ping_run_date,
       DATE(metrics.min_submission_datetime) AS min_metrics_ping_submission_date,
@@ -355,6 +371,10 @@ SELECT
   ) AS last_reported_adjust_network,
   COALESCE(_current.last_reported_date, _previous.last_reported_date) AS last_reported_date,
   COALESCE(
+    _current.last_reported_channel,
+    _previous.last_reported_channel
+  ) AS last_reported_channel,
+  COALESCE(
     _current.last_reported_country,
     _previous.last_reported_country
   ) AS last_reported_country,
@@ -375,6 +395,8 @@ SELECT
     ) AS reported_first_session_ping,
     COALESCE(_previous.metadata.reported_metrics_ping, FALSE)
     OR COALESCE(_current.metadata.reported_metrics_ping, FALSE) AS reported_metrics_ping,
+    COALESCE(_previous.metadata.reported_baseline_ping, FALSE)
+    OR COALESCE(_current.metadata.reported_baseline_ping, FALSE) AS reported_baseline_ping,
     CASE
       WHEN _previous.metadata.min_first_session_ping_submission_date IS NOT NULL
         AND _current.metadata.min_first_session_ping_submission_date IS NOT NULL

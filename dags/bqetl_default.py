@@ -24,13 +24,13 @@ telemetry-alerts@mozilla.com
 
 default_args = {
     "owner": "telemetry-alerts@mozilla.com",
-    "start_date": datetime.datetime(2023, 8, 1, 0, 0),
+    "start_date": datetime.datetime(2023, 9, 1, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
-    "email_on_retry": True,
+    "email_on_retry": False,
     "retries": 2,
 }
 
@@ -44,6 +44,7 @@ with DAG(
     tags=tags,
 ) as dag:
     analysis__bqetl_default_task__v1 = bigquery_etl_query(
+        #### WARNING: This task has been scheduled in the default DAG. It can be moved to a more suitable DAG using `bqetl query schedule`.
         task_id="analysis__bqetl_default_task__v1",
         destination_table="bqetl_default_task_v1",
         dataset_id="analysis",

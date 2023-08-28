@@ -122,14 +122,14 @@ def query(ctx):
     "--dag",
     "-d",
     help=(
-        "Name of the DAG the query should be scheduled under."
+        f"Name of the DAG the query should be scheduled under."
         "If there is no DAG name specified, the query is"
-        "scheduled by default in DAG 'bqetl_default'."
+        f"scheduled by default in DAG {DEFAULT_DAG_NAME}."
         "To skip the automated scheduling use --no_schedule."
         "To see available DAGs run `bqetl dag info`."
         "To create a new DAG run `bqetl dag create`."
     ),
-    default="bqetl_default",
+    default=DEFAULT_DAG_NAME,
 )
 @click.option(
     "--no_schedule",
@@ -303,17 +303,6 @@ def create(ctx, name, sql_dir, project_id, owner, init, dag, no_schedule):
 @sql_dir_option
 @project_id_option()
 @click.option(
-    "--use_default_dag",
-    "-default",
-    help=(
-        "When selected, the query is scheduled in DAG bqetl_default with"
-        " tier_3, which is the lowest level of service from Data Engineering."
-        " This option will be ignored if also a dag name is specified."
-    ),
-    default=False,
-    is_flag=True,
-)
-@click.option(
     "--dag",
     "-d",
     help=(
@@ -337,9 +326,7 @@ def create(ctx, name, sql_dir, project_id, owner, init, dag, no_schedule):
         "combination of the dataset and table name."
     ),
 )
-def schedule(
-    name, sql_dir, project_id, use_default_dag, dag, depends_on_past, task_name
-):
+def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
     """CLI command for scheduling a query."""
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
 
@@ -360,10 +347,8 @@ def schedule(
             click.echo(f"Cannot schedule {query_file}. No metadata.yaml found.")
             continue
 
-        if dag or use_default_dag:
+        if dag:
             # check if DAG already exists
-            if not dag and use_default_dag:
-                dag = DEFAULT_DAG_NAME
             existing_dag = dags.dag_by_name(dag)
             if not existing_dag:
                 click.echo(

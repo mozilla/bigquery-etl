@@ -1179,4 +1179,3 @@ bqetl_default:
   tags:
     - impact/tier_3
     - triage/no_triage
-    - repo/bigquery-etl

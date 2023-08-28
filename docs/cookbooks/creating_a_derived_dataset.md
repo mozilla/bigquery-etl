@@ -39,9 +39,9 @@ This command does three things:
 
 - Generate the template files `metadata.yaml` and `query.sql` representing the query to build the dataset in `sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/mozregression_aggregates_v1`
 - Generate a "view" of the dataset in `sql/moz-fx-data-shared-prod/org_mozilla_mozregression/mozregression_aggregates`.
-- Add the scheduling information in the metadata, required to create a task in Airflow DAG `bqetl_internal_tooling`. Two more options are available for the DAG:
-  `--no-schedule` for queries that run once or that should be scheduled at a later time. The query can be manually scheduled at a later time.
-  `--use_default_dag` for queries that don't belong to a specific DAG, don't require the creation of a new DAG or have a very low business impact, therefore require the lowest service level.
+- Add the scheduling information in the metadata, required to create a task in Airflow DAG `bqetl_internal_tooling`.
+  - When the dag name is not given, the query is scheduled by default in DAG `bqetl_default`.
+  - When the option `--no-schedule` is used, queries are not schedule. This option is available for queries that run once or should be scheduled at a later time. The query can be manually scheduled at a later time.
 
 We generate the view to have a stable interface, while allowing the dataset backend to evolve over time. Views are automatically published to the `mozdata` project.
 
@@ -189,7 +189,7 @@ The `--tag impact/tier3` parameter specifies that this DAG is considered "tier 3
 
 ## Scheduling your query
 
-The query is automatically scheduled during creation when you define one of the options `--dag`, `--default_dag`.
+Queries are automatically scheduled during creation in the DAG set using the option `--dag`, or in the default DAG `bqetl_default` when this option is not used.
 
 If the query was created with `no-schedule`, it is possible to manually schedule the query via the `bqetl` tool:
 

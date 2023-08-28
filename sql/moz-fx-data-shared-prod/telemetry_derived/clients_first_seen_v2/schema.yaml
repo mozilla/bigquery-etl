@@ -125,11 +125,11 @@ fields:
   type: STRING
   mode: NULLABLE
 - description: Unique token created at Firefox download time.
-  name: download_token
+  name: attribution_dltoken
   type: STRING
   mode: NULLABLE
 - description: Identifier that indicates where installations of Firefox originated.
-  name: download_source
+  name: attribution_dlsource
   type: STRING
   mode: NULLABLE
 - description: Identifier of the particular campaign that led to the download of the product.
@@ -186,11 +186,11 @@ fields:
     type: STRING
     mode: NULLABLE
   - description: Ping that first reported the download token.
-    name: download_token__source_ping
+    name: attribution_dltoken__source_ping
     type: STRING
     mode: NULLABLE
   - description: Ping that first reported the download source.
-    name: download_source__source_ping
+    name: attribution_dlsource__source_ping
     type: STRING
     mode: NULLABLE
   - description: Indicates wether the client ever reported a main ping.

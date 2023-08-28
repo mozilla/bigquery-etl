@@ -100,12 +100,12 @@ WITH new_profile_ping AS (
       environment.settings.attribution.dltoken
       HAVING
         MIN submission_timestamp
-    ) AS download_token,
+    ) AS attribution_dltoken,
     ANY_VALUE(
       environment.settings.attribution.dlsource
       HAVING
         MIN submission_timestamp
-    ) AS download_source
+    ) AS attribution_dlsource
   FROM
     `moz-fx-data-shared-prod.telemetry.new_profile`
   WHERE
@@ -218,12 +218,12 @@ shutdown_ping AS (
       environment.settings.attribution.dltoken
       HAVING
         MIN submission_timestamp
-    ) AS download_token,
+    ) AS attribution_dltoken,
     ANY_VALUE(
       environment.settings.attribution.dlsource
       HAVING
         MIN submission_timestamp
-    ) AS download_source
+    ) AS attribution_dlsource
   FROM
     `moz-fx-data-shared-prod.telemetry.first_shutdown`
   WHERE
@@ -290,8 +290,8 @@ main_ping AS (
     ANY_VALUE(os HAVING MIN submission_date) AS normalized_os,
     ANY_VALUE(normalized_os_version HAVING MIN submission_date) AS normalized_os_version,
     CAST(NULL AS STRING) AS startup_profile_selection_reason,
-    ANY_VALUE(attribution.dltoken HAVING MIN submission_date) AS download_token,
-    CAST(NULL AS STRING) AS download_token
+    ANY_VALUE(attribution.dltoken HAVING MIN submission_date) AS attribution_dltoken,
+    CAST(NULL AS STRING) AS attribution_dlsource
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
@@ -491,11 +491,11 @@ _current AS (
       )
     ).earliest_value AS startup_profile_selection_reason,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(STRUCT(CAST(download_token AS STRING), ping_source, DATETIME(first_seen_date)))
-    ).earliest_value AS download_token,
+      ARRAY_AGG(STRUCT(CAST(attribution_dltoken AS STRING), ping_source, DATETIME(first_seen_date)))
+    ).earliest_value AS attribution_dltoken,
     mozfun.norm.get_earliest_value(
-      ARRAY_AGG(STRUCT(CAST(download_source AS STRING), ping_source, DATETIME(first_seen_date)))
-    ).earliest_value AS download_source,
+      ARRAY_AGG(STRUCT(CAST(attribution_dlsource AS STRING), ping_source, DATETIME(first_seen_date)))
+    ).earliest_value AS attribution_dlsource,
     mozfun.norm.get_earliest_value(
       ARRAY_AGG(
         STRUCT(CAST(attribution_campaign AS STRING), ping_source, DATETIME(first_seen_date))
@@ -545,11 +545,11 @@ _current AS (
         )
       ).earliest_value_source AS attribution_source__source_ping,
       mozfun.norm.get_earliest_value(
-        ARRAY_AGG(STRUCT(CAST(download_token AS STRING), ping_source, DATETIME(first_seen_date)))
-      ).earliest_value_source AS download_token__source_ping,
+        ARRAY_AGG(STRUCT(CAST(attribution_dltoken AS STRING), ping_source, DATETIME(first_seen_date)))
+      ).earliest_value_source AS attribution_dltoken__source_ping,
       mozfun.norm.get_earliest_value(
-        ARRAY_AGG(STRUCT(CAST(download_source AS STRING), ping_source, DATETIME(first_seen_date)))
-      ).earliest_value_source AS download_source__source_ping,
+        ARRAY_AGG(STRUCT(CAST(attribution_dlsource AS STRING), ping_source, DATETIME(first_seen_date)))
+      ).earliest_value_source AS attribution_dlsource__source_ping,
       'main' IN UNNEST(ARRAY_AGG(ping_source)) AS reported_main_ping,
       'new_profile' IN UNNEST(ARRAY_AGG(ping_source)) AS reported_new_profile_ping,
       'shutdown' IN UNNEST(ARRAY_AGG(ping_source)) AS reported_shutdown_ping
@@ -576,8 +576,8 @@ _current_with_second_date AS (
       metadata.attribution_experiment__source_ping,
       metadata.attribution_medium__source_ping,
       metadata.attribution_source__source_ping,
-      metadata.download_token__source_ping,
-      metadata.download_source__source_ping,
+      metadata.attribution_dltoken__source_ping,
+      metadata.attribution_dlsource__source_ping,
       metadata.reported_main_ping,
       metadata.reported_new_profile_ping,
       metadata.reported_shutdown_ping

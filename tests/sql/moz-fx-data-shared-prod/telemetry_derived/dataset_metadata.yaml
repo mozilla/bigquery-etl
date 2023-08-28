@@ -1,0 +1,13 @@
+friendly_name: User-Defined Functions
+description: |-
+  Persistent user-defined functions
+dataset_base_acl: derived
+user_facing: false
+workgroup_access:
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:mozilla-confidential
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

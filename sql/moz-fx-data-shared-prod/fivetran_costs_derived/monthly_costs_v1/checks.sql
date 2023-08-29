@@ -4,7 +4,8 @@ WITH non_unique AS (
   FROM
     `moz-fx-data-shared-prod.fivetran_costs_derived.monthly_costs_v1`
   GROUP BY
-    destination_id
+    destination_id,
+    measured_month
   HAVING
     total_count > 1
 )
@@ -12,7 +13,7 @@ SELECT
   IF(
     (SELECT COUNT(*) FROM non_unique) > 0,
     ERROR(
-      "Duplicates detected (Expected combined set of values for columns ['destination_id'] to be unique.)"
+      "Duplicates detected (Expected combined set of values for columns ['destination_id', 'measured_month'] to be unique.)"
     ),
     NULL
   );

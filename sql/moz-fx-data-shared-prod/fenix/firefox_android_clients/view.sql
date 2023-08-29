@@ -17,7 +17,8 @@ SELECT
         'Google Organic Search',
         'Untrusted Devices',
         'Product Marketing (Owned media)',
-        'Google Ads ACI'
+        'Google Ads ACI',
+        'Facebook'
       )
       THEN 'Other'
     ELSE adjust_network

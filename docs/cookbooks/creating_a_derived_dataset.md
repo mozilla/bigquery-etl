@@ -191,7 +191,7 @@ The `--tag impact/tier3` parameter specifies that this DAG is considered "tier 3
 
 Queries are automatically scheduled during creation in the DAG set using the option `--dag`, or in the default DAG `bqetl_default` when this option is not used.
 
-If the query was created with `no-schedule`, it is possible to manually schedule the query via the `bqetl` tool:
+If the query was created with `--no-schedule`, it is possible to manually schedule the query via the `bqetl` tool:
 
 ```bash
 ./bqetl query schedule <dataset>.<table> --dag <dag_name> --task-name <task_name>

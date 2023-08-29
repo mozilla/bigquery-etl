@@ -1,5 +1,4 @@
 """bigquery-etl CLI metadata command."""
-import os
 from pathlib import Path
 from typing import Optional
 
@@ -13,9 +12,6 @@ from ..cli.utils import paths_matching_name_pattern, project_id_option, sql_dir_
 @click.group(
     help="""
         Commands for managing bqetl metadata.
-        \b
-
-        UNDER ACTIVE DEVELOPMENT See https://mozilla-hub.atlassian.net/browse/DENG-1381
         """
 )
 @click.pass_context
@@ -26,8 +22,9 @@ def metadata(ctx):
 
 @metadata.command(
     help="""
-    Update table level metadata yaml files.
-   \b
+    Update metadata yaml files.
+    Updates workgroup access metadata based on the dataset_metadata.yaml and
+    deprecation metadata.
 
     Example:
      ./bqetl metadata update ga_derived.downloads_with_attribution_v2
@@ -49,10 +46,12 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
         dataset_metadata_path = (
             Path(table_metadata_file).parent.parent / "dataset_metadata.yaml"
         )
-        if os.path.exists(dataset_metadata_path):
+        if dataset_metadata_path.exists():
             dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
             table_metadata = Metadata.from_file(table_metadata_file)
             if table_metadata.deprecated:
+                # set workgroup:deprecated if table has been tagged as deprecated
+                # this overwrites existing workgroups
                 table_metadata.workgroup_access = [
                     dict(
                         role="roles/bigquery.metadataViewer",
@@ -60,9 +59,11 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
                     )
                 ]
             else:
-                if dataset_metadata.default_table_workgroup_access and (
-                    table_metadata.workgroup_access == []
-                    or table_metadata.workgroup_access is None
+                # if workgroup hasn't been explicitly set for the table, set table workgroup
+                # to the default workgroup that is defined in the dataset_metadata.yaml
+                if (
+                    dataset_metadata.default_table_workgroup_access
+                    and table_metadata.workgroup_access is None
                 ):
                     table_metadata.workgroup_access = (
                         dataset_metadata.default_table_workgroup_access

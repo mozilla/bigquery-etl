@@ -15,7 +15,9 @@ from bigquery_etl.query_scheduling.utils import is_email, is_email_or_github_ide
 METADATA_FILE = "metadata.yaml"
 DATASET_METADATA_FILE = "dataset_metadata.yaml"
 DEFAULT_WORKGROUP_ACCESS = [
-    dict(role="roles/bigquery.dataViewer", members=["workgroup:mozilla-confidential"])
+    dict(
+        role="roles/bigquery.metadataViewer", members=["workgroup:mozilla-confidential"]
+    )
 ]
 DEFAULT_TABLE_WORKGROUP_ACCESS = [
     dict(role="roles/bigquery.dataViewer", members=["workgroup:mozilla-confidential"])
@@ -414,7 +416,9 @@ class DatasetMetadata:
     user_facing: bool = attr.ib(False)
     labels: Dict = attr.ib({})
     workgroup_access: list = attr.ib(DEFAULT_WORKGROUP_ACCESS)
-    default_table_workgroup_access: Optional[List[Dict[str, Any]]] = attr.ib(None)
+    default_table_workgroup_access: Optional[List[Dict[str, Any]]] = attr.ib(
+        DEFAULT_TABLE_WORKGROUP_ACCESS
+    )
 
     @staticmethod
     def is_dataset_metadata_file(file_path):

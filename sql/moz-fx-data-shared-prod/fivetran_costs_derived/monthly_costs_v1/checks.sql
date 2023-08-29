@@ -1,4 +1,4 @@
-{{ is_unique(columns=["destination_id"]) }}
+{{ is_unique(columns=["destination_id", "measured_month"]) }}
 
 {{ not_null(columns=["destination_id", "measured_month"]) }}
 

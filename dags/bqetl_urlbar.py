@@ -49,9 +49,9 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    firefox_desktop_urlbar_events = bigquery_etl_query(
-        task_id="firefox_desktop_urlbar_events",
-        destination_table="urlbar_events_v1",
+    firefox_desktop_urlbar_search_sessions = bigquery_etl_query(
+        task_id="firefox_desktop_urlbar_search_sessions",
+        destination_table="urlbar_search_sessions_v1",
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         owner="akommasani@mozilla.com",
@@ -84,25 +84,6 @@ with DAG(
         depends_on_past=False,
     )
 
-    telemetry_derived__urlbar_events__v1 = bigquery_etl_query(
-        task_id="telemetry_derived__urlbar_events__v1",
-        destination_table="urlbar_events_v1",
-        dataset_id="telemetry_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="akommasani@mozilla.com",
-        email=[
-            "akomar@mozilla.com",
-            "akommasani@mozilla.com",
-            "anicholson@mozilla.com",
-            "dzeber@mozilla.com",
-            "rburwei@mozilla.com",
-            "tbrooks@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -115,7 +96,7 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    firefox_desktop_urlbar_events.set_upstream(wait_for_copy_deduplicate_all)
+    firefox_desktop_urlbar_search_sessions.set_upstream(wait_for_copy_deduplicate_all)
 
     wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
@@ -132,5 +113,3 @@ with DAG(
     telemetry_derived__urlbar_clients_daily__v1.set_upstream(
         wait_for_telemetry_derived__clients_daily_joined__v1
     )
-
-    telemetry_derived__urlbar_events__v1.set_upstream(wait_for_copy_deduplicate_all)

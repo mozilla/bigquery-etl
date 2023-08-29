@@ -1,4 +1,4 @@
-friendly_name: Urlbar Events
+friendly_name: Urlbar Search Sessions
 description: |-
   Each row in this table represents one [urlbar.engagement](https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/metrics/urlbar_engagement)
   or [urlbar.abandonment](https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/metrics/urlbar_abandonment) event. A urlbar session ends
@@ -13,7 +13,7 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_urlbar
-  task_name: {{ app_name }}_urlbar_events
+  task_name: {{ app_name }}_urlbar_search_sessions__v1
 bigquery:
   time_partitioning:
     type: day

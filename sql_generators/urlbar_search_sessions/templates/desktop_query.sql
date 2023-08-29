@@ -37,12 +37,11 @@ WITH events_unnested AS (
         )
         THEN "annoyance"
       ELSE NULL
-    END AS search_session_type,
-    SPLIT(mozfun.map.get_key(extra, "results"), ',')[OFFSET(0)] AS result_type,
+    END AS session_action_type,
+    SPLIT(mozfun.map.get_key(extra, "results"), ',')[OFFSET(0)] AS first_result_type,
     `mozfun.norm.result_type_to_product_name`(
       SPLIT(mozfun.map.get_key(extra, "results"), ',')[OFFSET(0)]
-    ) AS product_result_type,
-    SPLIT(mozfun.map.get_key(extra, "results"), ',') AS results,
+    ) AS product_first_result_type,
     ARRAY(
       SELECT
         `mozfun.norm.result_type_to_product_name`(x)
@@ -56,11 +55,10 @@ WITH events_unnested AS (
     mozfun.map.get_key(extra, "engagement_type") AS engagement_type,
     CAST(mozfun.map.get_key(extra, "n_chars") AS int) AS num_chars_typed,
     CAST(mozfun.map.get_key(extra, "n_results") AS int) AS num_total_results,
-    metrics,
     metrics.uuid.legacy_telemetry_client_id AS legacy_telemetry_client_id,
     ping_info.experiments
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop_stable.events_v1`,
+    `{{ project_id }}.{{ app_name }}_stable.events_v1`,
     UNNEST(events)
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -72,38 +70,40 @@ events_summary AS (
     submission_date,
     sample_id,
     client_id,
+    legacy_telemetry_client_id,
     event_timestamp,
     normalized_channel,
     normalized_country_code,
     event_name,
-    search_session_type,
+    session_action_type,
     CASE
-      WHEN search_session_type IN ('engaged', 'annoyance')
+      WHEN session_action_type IN ('engaged', 'annoyance')
         THEN selected_result
       ELSE NULL
     END AS engaged_result_type,
     CASE
-      WHEN search_session_type IN ('engaged', 'annoyance')
+      WHEN session_action_type IN ('engaged', 'annoyance')
         THEN product_selected_result
       ELSE NULL
     END AS product_engaged_result_type,
-    result_type,
-    product_result_type,
+    first_result_type,
+    product_first_result_type,
     num_chars_typed,
     num_total_results,
     CASE
-      WHEN search_session_type = 'annoyance'
+      WHEN session_action_type = 'annoyance'
         THEN engagement_type
       ELSE NULL
     END AS annoyance_signal_type,
     --events where the urlbar dropdown menu remains open (i.e., the urlbar session did not end)
-    COALESCE(NOT (selected_result = 'tab_to_search' AND engagement_type in ('click', 'enter'))
-  AND NOT (selected_result = 'tip_dismissal_acknowledgement' AND engagement_type in ('click', 'enter'))
-  AND NOT (engagement_type in ('dismiss', 'inaccurate_location', 'not_interested', 'not_relevant', 'show_less_frequently')), TRUE) AS is_terminal,
-    COUNTIF(
-      res = 'default_partner_search_suggestion'
-    ) AS num_default_partner_search_suggestion_impressions,
-    COUNTIF(res = 'search_engine_suggestion') AS num_search_engine_suggestion_impressions,
+    COALESCE(
+      NOT (selected_result = 'tab_to_search' AND engagement_type IN ('click', 'enter', 'go_button'))
+        AND NOT (selected_result = 'tip_dismissal_acknowledgement' AND engagement_type IN ('click', 'enter'))
+        AND NOT (engagement_type IN ('dismiss', 'inaccurate_location', 'not_interested', 'not_relevant', 'show_less_frequently')),
+      TRUE
+    ) AS is_terminal,
+    COUNTIF(res = 'default_partner_search_suggestion') AS num_default_partner_search_suggestion_impressions,
+    COUNTIF(res = 'search_engine') AS num_search_engine_impressions,
     COUNTIF(res = 'trending_suggestion') AS num_trending_suggestion_impressions,
     COUNTIF(res = 'history') AS num_history_impressions,
     COUNTIF(res = 'bookmark') AS num_bookmark_impressions,
@@ -116,9 +116,8 @@ events_summary AS (
     COUNTIF(res = 'weather') AS num_weather_impressions,
     COUNTIF(res = 'quick_action') AS num_quick_action_impressions,
     COUNTIF(res = 'pocket_collection') AS num_pocket_collection_impressions,
-    legacy_telemetry_client_id,
-    client_id AS glean_metrics_client_id,
-    ARRAY_CONCAT_AGG(experiments) AS experiments
+    -- can't group by array-valued column. Instead "aggregate" by taking a single value
+    ANY_VALUE(experiments) AS experiments
   FROM
     events_unnested,
     UNNEST(product_results) AS res
@@ -131,34 +130,36 @@ events_summary AS (
     normalized_channel,
     normalized_country_code,
     event_name,
-    result_type,
-    product_result_type,
+    session_action_type,
     engaged_result_type,
     product_engaged_result_type,
-    engagement_type,
-    search_session_type,
+    first_result_type,
+    product_first_result_type,
     num_chars_typed,
     num_total_results,
+    annoyance_signal_type,
     is_terminal
 )
 SELECT
   submission_date,
   client_id AS glean_client_id,
+  legacy_telemetry_client_id,
+  sample_id,
   event_timestamp,
   normalized_channel,
   normalized_country_code,
   event_name,
-  search_session_type,
+  session_action_type,
   engaged_result_type,
   product_engaged_result_type,
   annoyance_signal_type,
-  result_type AS first_result_type,
-  product_result_type AS product_first_result_type,
+  first_result_type,
+  product_first_result_type,
   num_chars_typed,
   num_total_results,
   is_terminal,
   num_default_partner_search_suggestion_impressions,
-  num_search_engine_suggestion_impressions,
+  num_search_engine_impressions,
   num_trending_suggestion_impressions,
   num_history_impressions,
   num_open_tab_impressions,

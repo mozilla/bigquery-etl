@@ -11,7 +11,7 @@ from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import render, write_sql
 
 THIS_PATH = Path(os.path.dirname(__file__))
-TABLE_NAME = "urlbar_events"
+TABLE_NAME = "urlbar_search_sessions"
 
 
 class Browsers(Enum):

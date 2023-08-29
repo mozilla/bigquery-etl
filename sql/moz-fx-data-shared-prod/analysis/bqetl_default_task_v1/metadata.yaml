@@ -1,7 +1,9 @@
-friendly_name: Defult Task for DAG bqetl_default
+friendly_name: Default Task for DAG bqetl_default
 description: |-
-  Default task to generate the default DAG.
+  Placeholder task to generate the default DAG.
   See https://github.com/mozilla/bigquery-etl/issues/3650.
+  This query returns no rows and is just used to ensure that the bqetl_default DAG
+  has at least one task, otherwise the DAG would be invalid.
 owners:
 - telemetry-alerts@mozilla.com
 scheduling:

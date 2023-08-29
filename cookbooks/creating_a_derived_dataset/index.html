@@ -2235,6 +2235,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#updating-the-airflow-dags" class="md-nav__link">
+    Updating the Airflow DAGs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#get-data-review" class="md-nav__link">
     Get Data Review
   </a>
@@ -2548,6 +2555,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#updating-the-airflow-dags" class="md-nav__link">
+    Updating the Airflow DAGs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#get-data-review" class="md-nav__link">
     Get Data Review
   </a>
@@ -2615,12 +2629,17 @@
 <div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>create<span class="w"> </span>&lt;dataset&gt;.&lt;table_name&gt;
 </code></pre></div>
 In our example:</p>
-<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>create<span class="w"> </span>org_mozilla_mozregression_derived.mozregression_aggregates
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>create<span class="w"> </span>org_mozilla_mozregression_derived.mozregression_aggregates<span class="w"> </span>--dag<span class="w"> </span>bqetl_internal_tooling
 </code></pre></div>
-<p>This command does two things:</p>
+<p>This command does three things:</p>
 <ul>
 <li>Generate the template files <code>metadata.yaml</code> and <code>query.sql</code> representing the query to build the dataset in <code>sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/mozregression_aggregates_v1</code></li>
 <li>Generate a "view" of the dataset in <code>sql/moz-fx-data-shared-prod/org_mozilla_mozregression/mozregression_aggregates</code>.</li>
+<li>Add the scheduling information in the metadata, required to create a task in Airflow DAG <code>bqetl_internal_tooling</code>.<ul>
+<li>When the dag name is not given, the query is scheduled by default in DAG <code>bqetl_default</code>.</li>
+<li>When the option <code>--no-schedule</code> is used, queries are not schedule. This option is available for queries that run once or should be scheduled at a later time. The query can be manually scheduled at a later time.</li>
+</ul>
+</li>
 </ul>
 <p>We generate the view to have a stable interface, while allowing the dataset backend to evolve over time. Views are automatically published to the <code>mozdata</code> project.</p>
 <h2 id="fill-out-the-yaml">Fill out the YAML</h2>
@@ -2725,14 +2744,16 @@ If there are no problems, you should see no output.</p>
 <div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>dag<span class="w"> </span>create<span class="w"> </span>bqetl_internal_tooling<span class="w"> </span>--schedule-interval<span class="w"> </span><span class="s2">&quot;0 4 * * *&quot;</span><span class="w"> </span>--owner<span class="w"> </span>wlachance@mozilla.com<span class="w"> </span>--description<span class="w"> </span><span class="s2">&quot;This DAG schedules queries for populating queries related to Mozilla&#39;s internal developer tooling (e.g. mozregression).&quot;</span><span class="w"> </span>--start-date<span class="w"> </span><span class="m">2020</span>-06-01<span class="w"> </span>--tag<span class="w"> </span>impact/tier_3
 </code></pre></div>
 <h2 id="scheduling-your-query">Scheduling your query</h2>
-<p>Once again, you access this functionality via the <code>bqetl</code> tool:</p>
+<p>Queries are automatically scheduled during creation in the DAG set using the option <code>--dag</code>, or in the default DAG <code>bqetl_default</code> when this option is not used.</p>
+<p>If the query was created with <code>--no-schedule</code>, it is possible to manually schedule the query via the <code>bqetl</code> tool:</p>
 <div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schedule<span class="w"> </span>&lt;dataset&gt;.&lt;table&gt;<span class="w"> </span>--dag<span class="w"> </span>&lt;dag_name&gt;<span class="w"> </span>--task-name<span class="w"> </span>&lt;task_name&gt;
 </code></pre></div>
 <p>Here is the command for our example. Notice the name of the table as created with the suffix _v1.
 <div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schedule<span class="w"> </span>org_mozilla_mozregression_derived.mozregression_aggregates_v1<span class="w"> </span>--dag<span class="w"> </span>bqetl_internal_tooling<span class="w"> </span>--task-name<span class="w"> </span>mozregression_aggregates__v1
 </code></pre></div></p>
 <p>Note that we are scheduling the generation of the underlying <em>table</em> which is <code>org_mozilla_mozregression_derived.mozregression_aggregates_v1</code> rather than the view.</p>
-<p>After doing this, you will also want to generate the actual airflow configuration which telemetry-airflow will pick up. Run:</p>
+<h2 id="updating-the-airflow-dags">Updating the Airflow DAGs</h2>
+<p>With the query schedule setup, you will want to generate the actual airflow configuration which telemetry-airflow will pick up. Run:</p>
 <div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>dag<span class="w"> </span>generate<span class="w"> </span>&lt;dag_name&gt;
 </code></pre></div>
 <p>For this example:

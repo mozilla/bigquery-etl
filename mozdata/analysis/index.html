@@ -70,6 +70,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#bqetl_default_task_v1" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -492,9 +497,38 @@
       
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Analysis
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Analysis
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bqetl_default_task_v1" class="md-nav__link">
+    bqetl_default_task_v1
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -2323,6 +2357,21 @@
   
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bqetl_default_task_v1" class="md-nav__link">
+    bqetl_default_task_v1
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -2340,6 +2389,19 @@
 
 <p>User-generated tables for analysis</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/analysis">Source Directory</a></p>
+<h2 id="bqetl_default_task_v1"><a href="#bqetl_default_task_v1">bqetl_default_task_v1</a></h2>
+<p><strong>Default Task for DAG bqetl_default</strong></p>
+<p><code>analysis.bqetl_default_task_v1</code></p>
+<p>Placeholder task to generate the default DAG.
+See https://github.com/mozilla/bigquery-etl/issues/3650.
+This query returns no rows and is just used to ensure that the bqetl_default DAG
+has at least one task, otherwise the DAG would be invalid.</p>
+<ul>
+<li>Owners:<p>- <a href="mailto:telemetry-alerts@mozilla.com">telemetry-alerts@mozilla.com</a></p>
+</li>
+</ul>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/analysis/bqetl_default_task_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/analysis/bqetl_default_task_v1/metadata.yaml">Metadata File</a> </p>
+<hr />
 
 
 

@@ -66,9 +66,12 @@ def get_qualified_table_name_to_entries_map_by_project(
         project, dataset, table = extract_from_query_path(backfill_file)
         qualified_table_name = f"{project}.{dataset}.{table}"
 
-        backfills_dict[qualified_table_name] = get_entries_from_qualified_table_name(
+        entries = get_entries_from_qualified_table_name(
             sql_dir, qualified_table_name, status
         )
+
+        if entries:
+            backfills_dict[qualified_table_name] = entries
 
     return backfills_dict
 

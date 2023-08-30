@@ -10,11 +10,11 @@
     reported_shutdown_ping: false
 - client_id: client-3
   first_seen_date: 2023-06-01
-  download_token: token3
+  attribution_dltoken: token3
   sample_id: 30
   metadata:
     first_seen_date__source_ping: new_profile
-    download_token__source_ping: new_profile
+    attribution_dltoken__source_ping: new_profile
     reported_main_ping: false
     reported_new_profile_ping: true
     reported_shutdown_ping: true
@@ -23,7 +23,7 @@
   first_seen_date: 2023-05-14
   normalized_channel: nightly
   attribution_campaign: campaign4
-  download_token: token4
+  attribution_dltoken: token4
   metadata:
     first_seen_date__source_ping: shutdown
     attribution_campaign__source_ping: new_profile

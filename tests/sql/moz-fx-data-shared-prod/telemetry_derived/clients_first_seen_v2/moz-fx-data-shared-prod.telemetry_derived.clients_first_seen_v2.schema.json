@@ -117,11 +117,11 @@
   },
   {
     "type": "STRING",
-    "name": "download_token"
+    "name": "attribution_dltoken"
   },
   {
     "type": "STRING",
-    "name": "download_source"
+    "name": "attribution_dlsource"
   },
   {
     "type": "STRING",
@@ -175,11 +175,11 @@
       },
       {
         "type": "STRING",
-        "name": "download_token__source_ping"
+        "name": "attribution_dltoken__source_ping"
       },
       {
         "type": "STRING",
-        "name": "download_source__source_ping"
+        "name": "attribution_dlsource__source_ping"
       },
       {
         "type": "BOOLEAN",

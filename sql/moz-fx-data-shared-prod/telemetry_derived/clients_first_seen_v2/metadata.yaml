@@ -5,15 +5,15 @@ description: |-
   first: Main, New profile or First Shutdown ping, and only
   updated from pings reported on the first-seen date.
   The only exceptions are the second_seen_date and the metadata
-  reported pings which are updated after the first_seen_date.
+  reported pings which are updated daily in the case that data is
+  reported later.
 
   This table should be accessed through the user-facing view
   `telemetry.clients_first_seen`.
 
-  To initialize the table:
-  - Run bqetl query initialize <path>/clients_first_seen_v2/query.sql
-  - The table must not exist as data is inserted per sample_id.
-  - The initialize command creates it.
+  The initialization command creates the table and then inserts data
+  in parallel for each sample_id. Usage:
+  `bqetl query initialize sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2/query.sql`
 owners:
 - lvargas@mozilla.com
 labels:

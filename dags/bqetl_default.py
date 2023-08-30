@@ -15,7 +15,7 @@ Built from bigquery-etl repo, [`dags/bqetl_default.py`](https://github.com/mozil
 
 #### Description
 
-This is a default DAG to schedule tasks with lower business impact or that don't require a new or existing DAG. Queries can be automatically scheduled in this DAG using the option --use_default_dag. See [related documentation in the cookbooks](https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/)
+This is a default DAG to schedule tasks with lower business impact or that don't require a new or existing DAG. Queries are automatically scheduled in this DAG during creation when no dag name is specified using option --dag. See [related documentation in the cookbooks](https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/)
 #### Owner
 
 telemetry-alerts@mozilla.com

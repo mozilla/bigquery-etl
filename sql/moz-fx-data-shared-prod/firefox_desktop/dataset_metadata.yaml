@@ -1,6 +1,6 @@
-friendly_name: firefox-desktop
+friendly_name: Firefox Desktop
 description: |-
-  User-facing views related to document namespace firefox-desktop; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/firefox-desktop
+  Data related to messaging_system.
 dataset_base_acl: view
 user_facing: true
 labels: {}

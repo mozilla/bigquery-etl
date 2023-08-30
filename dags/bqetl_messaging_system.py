@@ -45,66 +45,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    firefox_desktop_derived__cfr__v2 = bigquery_etl_query(
-        task_id="firefox_desktop_derived__cfr__v2",
-        destination_table="cfr_v2",
-        dataset_id="firefox_desktop_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="gleonard@mozilla.com",
-        email=[
-            "gleonard@mozilla.com",
-            "najiang@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    firefox_desktop_derived__cfr_exact_mau28_by_dimensions__v2 = bigquery_etl_query(
-        task_id="firefox_desktop_derived__cfr_exact_mau28_by_dimensions__v2",
-        destination_table="cfr_exact_mau28_by_dimensions_v2",
-        dataset_id="firefox_desktop_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="gleonard@mozilla.com",
-        email=[
-            "gleonard@mozilla.com",
-            "najiang@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    firefox_desktop_derived__cfr_users_daily__v2 = bigquery_etl_query(
-        task_id="firefox_desktop_derived__cfr_users_daily__v2",
-        destination_table="cfr_users_daily_v2",
-        dataset_id="firefox_desktop_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="gleonard@mozilla.com",
-        email=[
-            "gleonard@mozilla.com",
-            "najiang@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    firefox_desktop_derived__cfr_users_last_seen__v2 = bigquery_etl_query(
-        task_id="firefox_desktop_derived__cfr_users_last_seen__v2",
-        destination_table="cfr_users_last_seen_v2",
-        dataset_id="firefox_desktop_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="gleonard@mozilla.com",
-        email=[
-            "gleonard@mozilla.com",
-            "najiang@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     firefox_desktop_derived__onboarding__v2 = bigquery_etl_query(
         task_id="firefox_desktop_derived__onboarding__v2",
         destination_table="onboarding_v2",
@@ -120,103 +60,9 @@ with DAG(
         depends_on_past=False,
     )
 
-    firefox_desktop_derived__onboarding_exact_mau28_by_dimensions__v2 = (
-        bigquery_etl_query(
-            task_id="firefox_desktop_derived__onboarding_exact_mau28_by_dimensions__v2",
-            destination_table="onboarding_exact_mau28_by_dimensions_v2",
-            dataset_id="firefox_desktop_derived",
-            project_id="moz-fx-data-shared-prod",
-            owner="gleonard@mozilla.com",
-            email=[
-                "gleonard@mozilla.com",
-                "najiang@mozilla.com",
-                "telemetry-alerts@mozilla.com",
-            ],
-            date_partition_parameter="submission_date",
-            depends_on_past=False,
-        )
-    )
-
-    firefox_desktop_derived__onboarding_users_daily__v2 = bigquery_etl_query(
-        task_id="firefox_desktop_derived__onboarding_users_daily__v2",
-        destination_table="onboarding_users_daily_v2",
-        dataset_id="firefox_desktop_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="gleonard@mozilla.com",
-        email=[
-            "gleonard@mozilla.com",
-            "najiang@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    firefox_desktop_derived__onboarding_users_last_seen__v2 = bigquery_etl_query(
-        task_id="firefox_desktop_derived__onboarding_users_last_seen__v2",
-        destination_table="onboarding_users_last_seen_v2",
-        dataset_id="firefox_desktop_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="gleonard@mozilla.com",
-        email=[
-            "gleonard@mozilla.com",
-            "najiang@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     firefox_desktop_derived__snippets__v2 = bigquery_etl_query(
         task_id="firefox_desktop_derived__snippets__v2",
         destination_table="snippets_v2",
-        dataset_id="firefox_desktop_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="gleonard@mozilla.com",
-        email=[
-            "gleonard@mozilla.com",
-            "najiang@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    firefox_desktop_derived__snippets_exact_mau28_by_dimensions__v2 = (
-        bigquery_etl_query(
-            task_id="firefox_desktop_derived__snippets_exact_mau28_by_dimensions__v2",
-            destination_table="snippets_exact_mau28_by_dimensions_v2",
-            dataset_id="firefox_desktop_derived",
-            project_id="moz-fx-data-shared-prod",
-            owner="gleonard@mozilla.com",
-            email=[
-                "gleonard@mozilla.com",
-                "najiang@mozilla.com",
-                "telemetry-alerts@mozilla.com",
-            ],
-            date_partition_parameter="submission_date",
-            depends_on_past=False,
-        )
-    )
-
-    firefox_desktop_derived__snippets_users_daily__v2 = bigquery_etl_query(
-        task_id="firefox_desktop_derived__snippets_users_daily__v2",
-        destination_table="snippets_users_daily_v2",
-        dataset_id="firefox_desktop_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="gleonard@mozilla.com",
-        email=[
-            "gleonard@mozilla.com",
-            "najiang@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    firefox_desktop_derived__snippets_users_last_seen__v2 = bigquery_etl_query(
-        task_id="firefox_desktop_derived__snippets_users_last_seen__v2",
-        destination_table="snippets_users_last_seen_v2",
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         owner="gleonard@mozilla.com",
@@ -340,47 +186,9 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    firefox_desktop_derived__cfr__v2.set_upstream(wait_for_copy_deduplicate_all)
-
-    firefox_desktop_derived__cfr_exact_mau28_by_dimensions__v2.set_upstream(
-        firefox_desktop_derived__cfr_users_last_seen__v2
-    )
-
-    firefox_desktop_derived__cfr_users_daily__v2.set_upstream(
-        firefox_desktop_derived__cfr__v2
-    )
-
-    firefox_desktop_derived__cfr_users_last_seen__v2.set_upstream(
-        firefox_desktop_derived__cfr_users_daily__v2
-    )
-
     firefox_desktop_derived__onboarding__v2.set_upstream(wait_for_copy_deduplicate_all)
 
-    firefox_desktop_derived__onboarding_exact_mau28_by_dimensions__v2.set_upstream(
-        firefox_desktop_derived__onboarding_users_last_seen__v2
-    )
-
-    firefox_desktop_derived__onboarding_users_daily__v2.set_upstream(
-        firefox_desktop_derived__onboarding__v2
-    )
-
-    firefox_desktop_derived__onboarding_users_last_seen__v2.set_upstream(
-        firefox_desktop_derived__onboarding_users_daily__v2
-    )
-
     firefox_desktop_derived__snippets__v2.set_upstream(wait_for_copy_deduplicate_all)
-
-    firefox_desktop_derived__snippets_exact_mau28_by_dimensions__v2.set_upstream(
-        firefox_desktop_derived__snippets_users_last_seen__v2
-    )
-
-    firefox_desktop_derived__snippets_users_daily__v2.set_upstream(
-        firefox_desktop_derived__snippets__v2
-    )
-
-    firefox_desktop_derived__snippets_users_last_seen__v2.set_upstream(
-        firefox_desktop_derived__snippets_users_daily__v2
-    )
 
     messaging_system_derived__cfr_exact_mau28_by_dimensions__v1.set_upstream(
         messaging_system_derived__cfr_users_last_seen__v1

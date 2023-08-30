@@ -6,8 +6,6 @@ owners:
 labels:
   incremental: true
   owner1: example
-scheduling:
-  dag_name: bqetl_messaging_system
 bigquery:
   time_partitioning:
     type: day

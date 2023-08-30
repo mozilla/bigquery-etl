@@ -7,8 +7,6 @@ labels:
   incremental: true
   dag: bqetl_messaging_system
   owner1: gleonard
-scheduling:
-  dag_name: bqetl_messaging_system
 bigquery:
   time_partitioning:
     type: day

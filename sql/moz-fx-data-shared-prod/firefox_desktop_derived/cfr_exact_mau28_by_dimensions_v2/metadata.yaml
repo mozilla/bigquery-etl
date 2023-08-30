@@ -5,8 +5,6 @@ owners:
 - gleonard@mozilla.com
 labels:
   incremental: true
-scheduling:
-  dag_name: bqetl_messaging_system
 bigquery:
   time_partitioning:
     type: day

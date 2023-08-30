@@ -3140,6 +3140,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The peak number of CSS pixels that checkerboarded during a checkerboard
         event. The minimum value of the largest histogram bucket is the size of a
         4k display with maximum APZ zooming.
@@ -3165,6 +3167,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'An opaque measurement of the severity of a checkerboard event.
         This doesn''t have units, it''s just useful for comparing two checkerboard
         events to see which one is worse, for some implementation-specific definition
@@ -3191,6 +3195,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time, in percentage of a vsync interval, spent from beginning
         a paint in the content process until that frame is presented in the compositor.
 
@@ -3215,6 +3221,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time, in percentage of a vsync interval, spent from the vsync
         that started a paint in the content process until that frame is presented
         in the compositor.
@@ -3240,6 +3248,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time, in percentage of a vsync interval, spent from beginning
         a paint in the content process until that frame is presented in the compositor,
         for frames that contained an SVG to be drawn by webrender.
@@ -3265,6 +3275,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time, in percentage of a vsync interval, spent from beginning
         a paint in the content process until that frame is presented in the compositor
         by webrender, excluding time spent uploading resources.
@@ -3290,6 +3302,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time, in percentage of a vsync interval, spent from beginning
         a paint in the content process until that frame is presented in the compositor
         by webrender, excluding time spent uploading any content.
@@ -3315,6 +3329,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'When a document is loaded, report the number of [site origins](https://searchfox.org/
         mozilla-central/rev/ 3300072e993ae05d50d5c63d815260367eaf9179/ caps/nsIPrincipal.idl#264)
         of the entire browser if it has been at least 5 minutes since last time we
@@ -3341,6 +3357,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'When a document is unloaded, report the highest number of [site
         origins](https://searchfox.org/ mozilla-central/rev/ 3300072e993ae05d50d5c63d815260367eaf9179/
         caps/nsIPrincipal.idl#264) loaded simultaneously in that document.
@@ -3366,6 +3384,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Percentage of execution time spent during Baseline compilation
         for JS scripts up until the page load event fires.
 
@@ -3390,6 +3410,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Percentage of execution time spent during delazification for JS
         scripts up until the page load event fires.
 
@@ -3414,6 +3436,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Percentage of page load time spent executing Javascript.
 
         '
@@ -3437,6 +3461,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Percentage of execution time spent during XDR encoding for JS
         scripts up until the page load event fires.
 
@@ -3461,6 +3487,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Size of deserialized data, in items
 
         '
@@ -3484,6 +3512,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The distribution of search term tab group sizes. Rather than reporting
 
         individual sizes directly as integers, it is currently desired to
@@ -3527,6 +3557,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Records how many percent of battery was available for each period
         of user activity.
 
@@ -3538,6 +3570,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -3561,6 +3595,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -3585,6 +3621,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -3609,6 +3647,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -3633,6 +3673,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -3657,6 +3699,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -3681,6 +3725,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -3846,6 +3892,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time between page load progress starts (0) and completion (100).
 
         '
@@ -3887,6 +3935,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time taken to load a page. This includes all static contents,
         no dynamic content. Loading of about: pages is not counted. Back back navigation
         (sometimes via BFCache) is included which is a source of bimodality due to
@@ -3931,6 +3981,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time taken to reload a page. This includes all static contents,
         no dynamic content. Loading of about: pages is not counted.
 
@@ -3973,6 +4025,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time taken to initialize GeckoRuntime.
 
         '
@@ -4014,6 +4068,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The duration of a checkerboard event. Checkerboarding is when
         painting has not kept up with asynchronous panning and zooming so the compositor
         has to display a "checkerboard pattern" (or in practice, the background color)
@@ -4058,6 +4114,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The total amount of time that we could reasonably be checkerboarding.
         This is the union of two possibly-intersecting sets of time periods: The first
         set is that in which checkerboarding was actually happening, since by definition
@@ -4106,6 +4164,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time taken to composite a frame. On non-webrender this is
         the time taken in `CompositorBridgeParent::CompositeToTarget()`. On webrender,
         this is the time taken from the start of `WebRenderBridgeParent::CompositeToTarget()`,
@@ -4150,6 +4210,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time spent in the full paint pipeline for content until it''s
         ready for composition. For non-webrender this includes `paint_time`, plus
         rasterization if OMTP is enabled. For webrender, this includes `paint_time`,
@@ -4194,6 +4256,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time spent in the main-thread paint pipeline for content. For
         non-webrender, this includes display list building, layer building, and when
         OMTP is disabled, rasterization. For webrender, this includes display list
@@ -4238,6 +4302,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time taken to build a webrender frame. This involves calculating
         the visibility of primitives, requesting resources, and building the render
         passes which will be used to render the frame.
@@ -4281,6 +4347,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time taken to do a webrender scene swap. This is book-keeping
         that APZ must perform once webrender has built a new scene.
 
@@ -4323,6 +4391,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time taken to build a webrender frame. This involves calculating
         the visibility of primitives, requesting resources, and building the render
         passes which will be used to render the frame.
@@ -4366,6 +4436,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time taken to build a webrender frame. This involves calculating
         the visibility of primitives, requesting resources, and building the render
         passes which will be used to render the frame.
@@ -4409,6 +4481,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time taken to build a webrender scene. This occurs each time
         webrender receives a new display list. This additionally includes blob rasterization
         time.
@@ -4452,6 +4526,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time taken to do a webrender scene swap. This is book-keeping
         that APZ must perform once webrender has built a new scene.
 
@@ -4494,6 +4570,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time to open existing cache entry file.
 
         '
@@ -4535,6 +4613,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'In the HTTP page channel, time from the DNS request being issued
         to the response.
 
@@ -4577,6 +4657,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'In the HTTP page channel, time from connection open to the DNS
         request being issued.
 
@@ -4619,6 +4701,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'In the HTTP page channel, time from connection open to cache read
         start.
 
@@ -4661,6 +4745,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time after navigationStart that all webfont downloads are completed.
 
         '
@@ -4702,6 +4788,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'In the HTTP page channel, time from the TCP SYN packet is received
         to the connection is established and ready for HTTP.
 
@@ -4744,6 +4832,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'In the HTTP page channel, time from after the TCP SYN packet is
         received to the secure connection is established and ready for HTTP.
 
@@ -4786,6 +4876,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time between receiving a keypress event in the event loop and
         compositing its result onto the screen.
 
@@ -4828,6 +4920,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time between tab selection and first composite of the tab content
         onto the screen.
 
@@ -4870,6 +4964,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time between navigationStart and the first non-blank paint
         of a foreground root content document, in milliseconds. This only records
         documents that were in an active docshell throughout the whole time between
@@ -4916,6 +5012,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time to load all of a page''s resources and render.
 
         '
@@ -4957,6 +5055,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time from navigationStart to domComplete as per the W3C Performance
         Timing API.
 
@@ -4999,6 +5099,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time from navigationStart to domContentLoadedEventEnd as per the
         W3C Performance Timing API.
 
@@ -5041,6 +5143,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time from navigationStart to domContentLoadedEventStart as per
         the W3C Performance Timing API.
 
@@ -5083,6 +5187,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time from navigationStart to domInteractive as per the W3C Performance
         Timing API.
 
@@ -5125,6 +5231,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time from navigationStart to loadEventEnd as per the W3C Performance
         Timing API.
 
@@ -5167,6 +5275,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time from navigationStart to loadEventStart as per the W3C Performance
         Timing API.
 
@@ -5209,6 +5319,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time from navigationStart to responseStart as per the W3C Performance
         Timing API.
 
@@ -5251,6 +5363,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time taken to execute a read query on the logins store (such
         as listing all logins, or finding a specific login by id).
 
@@ -5293,6 +5407,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time taken to open the logins store on startup, or after locking
         it due to user inactivity.
 
@@ -5335,6 +5451,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time taken to execute a write query on the logins store (such
         as adding, updating, or deleting a login record).
 
@@ -5377,6 +5495,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time between receiving a scroll event on the event loop and compositing
         its result onto the screen (ms).
 
@@ -5419,6 +5539,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Duration of a bookmarks awesomebar suggestion query.
 
         '
@@ -5460,6 +5582,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Duration of a clipboard awesomebar suggestion query.
 
         '
@@ -5501,6 +5625,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Duration of a history awesomebar suggestion query.
 
         '
@@ -5542,6 +5668,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Duration of a search engine awesomebar suggestion query.
 
         '
@@ -5583,6 +5711,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Duration of a session awesomebar suggestion query.
 
         '
@@ -5624,6 +5754,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Duration of a shortcuts awesomebar suggestion query.
 
         '
@@ -5665,6 +5797,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Duration of a synced tabs awesomebar suggestion query.
 
         '
@@ -5706,6 +5840,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The uptime of content processes in ms
 
         '
@@ -5747,6 +5883,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time spent in the compact phase.
 
         '
@@ -5788,6 +5926,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time spent marking GC roots.
 
         '
@@ -5829,6 +5969,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time spent in the mark phase.
 
         '
@@ -5870,6 +6012,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time taked by a minor (nursery) collection.
 
         '
@@ -5911,6 +6055,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time spent in the preparation phase.
 
         '
@@ -5952,6 +6098,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time spent running a GC slice.
 
         '
@@ -5993,6 +6141,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time spent in the sweep phase.
 
         '
@@ -6034,6 +6184,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The total time taken by a major collection.
 
         '
@@ -6075,6 +6227,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time taken to execute a read query on the places store.
 
         '
@@ -6116,6 +6270,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time taken to execute a scan query on the places store. This
         metric is for queries that we expect to be costly e.g. getBookmarksTree(guid,
         recursive=True).
@@ -6159,6 +6315,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time taken to execute a write query on the places store.
 
         '
@@ -6200,6 +6358,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'How long it took to query the device for the StorageStats that
         contain the
 
@@ -6248,6 +6408,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time from navigationStart to [`loadEventEnd`](https://www.w3.org/TR/
         navigation-timing/#dom-performancetiming-loadend) as per the W3C Performance
         Timing API. This is only submitted on when the document would not preload
@@ -6292,6 +6454,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time from navigationStart to [`loadEventEnd`](https://www.w3.org/TR/
         navigation-timing/#dom-performancetiming-loadend) as per the W3C Performance
         Timing API. This is only submitted on when the document would preload a resource
@@ -6337,6 +6501,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time from navigationStart to [`loadEventStart`](https://www.w3.org/TR/
         navigation-timing/#dom-performancetiming-loadstart) as per the W3C Performance
         Timing API. This is only submitted on when the document would not preload
@@ -6381,6 +6547,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time from navigationStart to [`loadEventStart`](https://www.w3.org/TR/
         navigation-timing/#dom-performancetiming-loadstart) as per the W3C Performance
         Timing API. This is only submitted on when the document would preload a resource
@@ -6426,6 +6594,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time spent caching JS bytecode for scripts executed during a page
         load.
 
@@ -6468,6 +6638,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time in milliseconds from navigationStart to domContentLoaded
         for the foreground http or https root content document.
 
@@ -6510,6 +6682,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time in milliseconds from responseStart to domContentLoaded for
         the foreground http or https root content document.
 
@@ -6552,6 +6726,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time between navigationStart and the first contentful paint
         of a foreground http or https root content document, in milliseconds. The
         contentful paint timestamp is taken during display list building and does
@@ -6596,6 +6772,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time between responseStart and the first contentful paint
         of a foreground http or https root content document, in milliseconds. The
         contentful paint timestamp is taken during display list building and does
@@ -6640,6 +6818,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time in milliseconds from navigationStart to loadEventStart for
         the foreground http or https root content document.
 
@@ -6682,6 +6862,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time in milliseconds from responseStart to loadEventStart for
         the foreground http or https root content document.
 
@@ -6724,6 +6906,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time spent in milliseconds calling all request animation frame
         callbacks for a document before it has reached readystate complete.
 
@@ -6766,6 +6950,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time spent in milliseconds calling all request animation frame
         callbacks for a document after it has reached readystate complete.
 
@@ -6808,6 +6994,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The duration of `FenixApplication.onCreate` in the main process.
         This does
 
@@ -6854,6 +7042,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The duration of `HomeActivity.onCreate`.
 
         '
@@ -6895,6 +7085,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Measures the age of the engine session of a background tab at
         the
 
@@ -6939,6 +7131,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Measures the age of the engine session of a foreground (selected)
         tab
 
@@ -6983,6 +7177,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'A subsection of the duration of `FenixApplication.onCreate` and
         thus the
 
@@ -7033,6 +7229,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'A subsection of the duration of `FenixApplication.onCreate` and
         thus the
 
@@ -7079,6 +7277,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'A subsection of the duration of `FenixApplication.onCreate` and
         thus the
 
@@ -7129,6 +7329,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The duration of `BaseBrowserFragment.onCreateView`.
 
         '
@@ -7170,6 +7372,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The duration of `BaseBrowserFragment.onViewCreated`.
 
         '
@@ -7211,6 +7415,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The duration of `HomeActivity.onStart`. This may encapsulate
 
         `HomeFragment` or `BrowserFragment` creation, depending on the code path,
@@ -7262,6 +7468,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The duration of `HomeFragment.onCreateView`.
 
         '
@@ -7303,6 +7511,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The duration of `HomeFragment.onViewCreated`.
 
         '
@@ -7344,6 +7554,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time between receiving a mouseup which follow by a mouseclick
         on the event loop and compositing its result onto the screen.
 
@@ -7386,6 +7598,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The duration from `*Application`''s initializer to the first Android
         frame
 
@@ -7460,6 +7674,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The duration from `*Application`''s initializer to the first Android
         frame
 
@@ -7522,6 +7738,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The duration from `*Application`''s initializer to the first Android
         frame
 
@@ -7588,6 +7806,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time spent during page load baseline compiling Javascript in ms.
 
         '
@@ -7629,6 +7849,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time spent during page load delazifying Javascript in ms.
 
         '
@@ -7670,6 +7892,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time spent during page load executing Javascript in ms.
 
         '
@@ -7711,6 +7935,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time spent during page load in the GC in ms.
 
         '
@@ -7752,6 +7978,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time spent during page load syntax parsing JS scripts on the main
         thread in ms.
 
@@ -7794,6 +8022,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time spent during page load protecting JIT executable memory.
 
         '
@@ -7835,6 +8065,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time spent during page load XDR encoding Javascript in ms.
 
         '
@@ -7876,6 +8108,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time spent deserializing structured data
 
         '
@@ -7917,6 +8151,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The length of time between asking the child processes for their
 
         IPC buffers and all of them being received by the parent.
@@ -7960,6 +8196,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time to build a Gecko display list.
 
         '
@@ -8001,6 +8239,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time to rasterize glyphs for consumption by WebRender.
 
         '
@@ -8042,6 +8282,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Measures the amount of time between the beginning of a sync and
         the end.
 
@@ -8084,6 +8326,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time to rasterize glyphs for consumption by WebRender.
 
         '
@@ -8125,6 +8369,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'WebRender scene build time.
 
         '
@@ -8166,6 +8412,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'WebRender scene swap time.
 
         '
@@ -8207,6 +8455,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time to rasterize blobs for consumption by WebRender.
 
         '
@@ -8248,6 +8498,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time spent waiting for the GPU to complete previously issued
         drawing commands.
 
@@ -8290,6 +8542,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'WebRender renderer time.
 
         '
@@ -8331,6 +8585,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time taken by WebRender to update the texture cache.
 
         '
@@ -8372,6 +8628,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time elapsed between the construction of a transaction and the
         associated frame build beginning.
 
@@ -8414,6 +8672,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time elapsed between the construction of a frame and the start
         of rendering.
 
@@ -8456,6 +8716,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'WebRender renderer time excluding frames in which shader compilation
         took place.
 
@@ -8498,6 +8760,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: Time taken to execute `run_maintenance()`
     - name: network_open_to_transaction_pending
       type: RECORD
@@ -8537,6 +8801,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time spent from HttpChannelChild::AsyncOpen to adding the
         transaction to the nsHttpConnectionMgr
 
@@ -8551,6 +8817,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -8590,6 +8858,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -8629,6 +8899,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -8668,6 +8940,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -8707,6 +8981,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -8749,6 +9025,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -8794,6 +9072,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -8835,6 +9115,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -8877,6 +9159,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -8919,6 +9203,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -8960,6 +9246,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -9003,6 +9291,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -9045,6 +9335,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -9087,6 +9379,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -9129,6 +9423,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -9171,6 +9467,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -9213,6 +9511,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -9256,6 +9556,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -9298,6 +9600,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -9340,6 +9644,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -9382,6 +9688,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -9424,6 +9732,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -9465,6 +9775,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -9507,6 +9819,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -9549,6 +9863,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -9602,6 +9918,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The size of pings that exceeded the maximum ping size allowed
         for upload.
 
@@ -9626,6 +9944,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The size of the app''s APK and related files as installed: this
         is expected
 
@@ -9660,6 +9980,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The size of all cached data in the app. This is the output of
 
         [StorageStats.getCacheBytes](https://developer.android.com/reference/android/app/usage/StorageStats#getCacheBytes())
@@ -9687,6 +10009,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The size of all data minus `cache_bytes`. This is the output of
 
         [StorageStats.getDataBytes](https://developer.android.com/reference/android/app/usage/StorageStats#getDataBytes())
@@ -9718,6 +10042,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The size of the pending pings directory upon initialization of
         Glean.
 
@@ -9744,6 +10070,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The size of the database file at startup.
 
         '
@@ -9767,6 +10095,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Size of deserialized data, in bytes
 
         '
@@ -9790,6 +10120,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The number and size of the IPC buffers being received over FOG
         IPC.
 
@@ -9814,6 +10146,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Size of the db after executing `run_maintenance()`
 
         '
@@ -9824,6 +10158,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -9847,6 +10183,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE

@@ -452,6 +452,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -475,6 +477,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -499,6 +503,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -546,6 +552,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -588,6 +596,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -630,6 +640,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -673,6 +685,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -714,6 +728,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE

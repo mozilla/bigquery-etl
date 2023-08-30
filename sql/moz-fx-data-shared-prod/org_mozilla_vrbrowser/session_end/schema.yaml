@@ -427,6 +427,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'In Firefox Reality, we allow maximum three windows be placed at
         front, left, and right positions simultaneously. Using this metric to measure
         how long the front side window is active in a session.
@@ -470,6 +472,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'In Firefox Reality, we allow maximum three windows be placed at
         front, left, and right positions simultaneously. Using this metric to measure
         how long the left side window is active in a session.
@@ -513,6 +517,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'In Firefox Reality, we allow maximum three windows be placed at
         front, left, and right positions simultaneously. Using this metric to measure
         how long the right side window is active in a session.
@@ -556,6 +562,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Measuring how long a user uses double private windows in a session.
 
         '
@@ -597,6 +605,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Measuring how long a user uses double windows in a session.
 
         '
@@ -638,6 +648,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Measuring how long a user uses single private window in a session.
 
         '
@@ -679,6 +691,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Measuring how long a user uses single window in a session.
 
         '
@@ -720,6 +734,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Measuring how long a user uses triple private windows in a session.
 
         '
@@ -761,6 +777,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Measuring how long a user uses triple windows in a session.
 
         '

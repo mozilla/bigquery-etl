@@ -27509,7 +27509,7 @@ fields:
             mode: NULLABLE
             description: "Records clicks of adverts on SERP pages where the search\
               \ was started from about:home. The key format is \u2018<provider>:<tagged|organic>\u2019\
-              \n"
+              \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_adclicks_about_newtab
           type: RECORD
           mode: REPEATED
@@ -27522,7 +27522,7 @@ fields:
             mode: NULLABLE
             description: "Records clicks of adverts on SERP pages where the search\
               \ was started from about:newtab. The key format is \u2018<provider>:<tagged|organic>\u2019\
-              \n"
+              \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_adclicks_contextmenu
           type: RECORD
           mode: REPEATED
@@ -27535,7 +27535,7 @@ fields:
             mode: NULLABLE
             description: "Records clicks of adverts on SERP pages where the search\
               \ was started from the context menu. The key format is \u2018<provider>:<tagged|organic>\u2019\
-              \n"
+              \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_adclicks_reload
           type: RECORD
           mode: REPEATED
@@ -27548,7 +27548,7 @@ fields:
             mode: NULLABLE
             description: "Records clicks of adverts on SERP pages where the search\
               \ was loaded by reloading the page. The key format is \u2018<provider>:<tagged|organic>\u2019\
-              \n"
+              \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_adclicks_searchbar
           type: RECORD
           mode: REPEATED
@@ -27561,7 +27561,7 @@ fields:
             mode: NULLABLE
             description: "Records clicks of adverts on SERP pages where the search\
               \ was started from the search bar. The key format is \u2018<provider>:<tagged|organic>\u2019\
-              \n"
+              \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_adclicks_system
           type: RECORD
           mode: REPEATED
@@ -27574,7 +27574,7 @@ fields:
             mode: NULLABLE
             description: "Records clicks of adverts on SERP pages where the search\
               \ was started from the system, e.g. command line. The key format is\
-              \ \u2018<provider>:<tagged|organic>\u2019\n"
+              \ \u2018<provider>:<tagged|organic>\u2019 See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_adclicks_tabhistory
           type: RECORD
           mode: REPEATED
@@ -27587,7 +27587,7 @@ fields:
             mode: NULLABLE
             description: "Records clicks of adverts on SERP pages where the search\
               \ was loaded from the tab history. The key format is \u2018<provider>:<tagged|organic>\u2019\
-              \n"
+              \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_adclicks_unknown
           type: RECORD
           mode: REPEATED
@@ -27600,7 +27600,7 @@ fields:
             mode: NULLABLE
             description: "Records clicks of adverts on SERP pages where the search\
               \ was started from a place not categorized by the other scalars. The\
-              \ key format is \u2018<provider>:<tagged|organic>\u2019\n"
+              \ key format is \u2018<provider>:<tagged|organic>\u2019 See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_adclicks_urlbar
           type: RECORD
           mode: REPEATED
@@ -27613,7 +27613,7 @@ fields:
             mode: NULLABLE
             description: "Records clicks of adverts on SERP pages where the search\
               \ was started from the urlbar. The key format is \u2018<provider>:<tagged|organic>\u2019\
-              \n"
+              \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_adclicks_urlbar_handoff
           type: RECORD
           mode: REPEATED
@@ -27640,7 +27640,8 @@ fields:
             mode: NULLABLE
             description: "Records clicks of adverts on SERP pages where the search\
               \ was started from the urlbar after the search term was shown in the\
-              \ urlbar. The key format is \u2018<provider>:<tagged|organic>\u2019\n"
+              \ urlbar. The key format is \u2018<provider>:<tagged|organic>\u2019\
+              \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_adclicks_urlbar_searchmode
           type: RECORD
           mode: REPEATED
@@ -27653,7 +27654,7 @@ fields:
             mode: NULLABLE
             description: "Records clicks of adverts on SERP pages where the search\
               \ was started from the urlbar in search mode. The key format is \u2018\
-              <provider>:<tagged|organic>\u2019\n"
+              <provider>:<tagged|organic>\u2019 See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_adclicks_webextension
           type: RECORD
           mode: REPEATED
@@ -27666,7 +27667,7 @@ fields:
             mode: NULLABLE
             description: "Records clicks of adverts on SERP pages where the search\
               \ was started from a webextension. The key format is \u2018<provider>:<tagged|organic>\u2019\
-              \n"
+              \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_content_about_home
           type: RECORD
           mode: REPEATED
@@ -27678,7 +27679,8 @@ fields:
             type: INTEGER
             mode: NULLABLE
             description: 'Records counts for in-content searches where the search
-              was most likely started from the about:home. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|none]
+              was most likely started from the about:home. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+              See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
 
               '
         - name: browser_search_content_about_newtab
@@ -27692,7 +27694,8 @@ fields:
             type: INTEGER
             mode: NULLABLE
             description: 'Records counts for in-content searches where the search
-              was most likely started from the about:newtab. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|none]
+              was most likely started from the about:newtab. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+              See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
 
               '
         - name: browser_search_content_contextmenu
@@ -27706,7 +27709,8 @@ fields:
             type: INTEGER
             mode: NULLABLE
             description: 'Records counts for in-content searches where the search
-              was most likely started from the context menu. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|none]
+              was most likely started from the context menu. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+              See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
 
               '
         - name: browser_search_content_reload
@@ -27720,7 +27724,8 @@ fields:
             type: INTEGER
             mode: NULLABLE
             description: 'Records counts for in-content searches where the search
-              was loaded by reloading the page. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|none]
+              was loaded by reloading the page. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+              See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
 
               '
         - name: browser_search_content_searchbar
@@ -27734,7 +27739,8 @@ fields:
             type: INTEGER
             mode: NULLABLE
             description: 'Records counts for in-content searches where the search
-              was most likely started from the search bar. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|none]
+              was most likely started from the search bar. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+              See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
 
               '
         - name: browser_search_content_system
@@ -27749,7 +27755,8 @@ fields:
             mode: NULLABLE
             description: 'Records counts for in-content searches where the search
               was most likely started from the system, e.g. command line. The key
-              format is <provider>:[tagged|tagged-follow-on|organic]:[code|none]
+              format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+              See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
 
               '
         - name: browser_search_content_tabhistory
@@ -27763,7 +27770,8 @@ fields:
             type: INTEGER
             mode: NULLABLE
             description: 'Records counts for in-content searches where the search
-              was loaded from the tab history. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|none]
+              was loaded from the tab history. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+              See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
 
               '
         - name: browser_search_content_unknown
@@ -27778,7 +27786,8 @@ fields:
             mode: NULLABLE
             description: 'Records counts for in-content searches where the search
               was started from a place that could not be determined or not categorized
-              by the other scalars. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|none]
+              by the other scalars. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+              See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
 
               '
         - name: browser_search_content_urlbar
@@ -27792,7 +27801,8 @@ fields:
             type: INTEGER
             mode: NULLABLE
             description: 'Records counts for in-content searches where the search
-              was most likely started from the urlbar. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|none]
+              was most likely started from the urlbar. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+              See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
 
               '
         - name: browser_search_content_urlbar_handoff
@@ -27821,7 +27831,8 @@ fields:
             mode: NULLABLE
             description: 'Records counts for in-content searches where the search
               was most likely started from the urlbar after the search term was shown
-              in the urlbar. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|none]
+              in the urlbar. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+              See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
 
               '
         - name: browser_search_content_urlbar_searchmode
@@ -27836,7 +27847,8 @@ fields:
             mode: NULLABLE
             description: 'Records counts for in-content searches where the search
               was most likely started from the urlbar in search mode. The key format
-              is <provider>:[tagged|tagged-follow-on|organic]:[code|none]
+              is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none] See
+              https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
 
               '
         - name: browser_search_content_webextension
@@ -27850,7 +27862,8 @@ fields:
             type: INTEGER
             mode: NULLABLE
             description: 'Records counts for in-content searches where the search
-              was most likely started from a webextension. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|none]
+              was most likely started from a webextension. The key format is <provider>:[tagged|tagged-follow-on|organic]:[code|other|none]
+              See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content
 
               '
         - name: browser_search_data_transferred
@@ -27891,7 +27904,7 @@ fields:
             mode: NULLABLE
             description: "Records counts of SERP pages with adverts displayed where\
               \ the search was started from about:home. The key format is \u2018<provider>:<tagged|organic>\u2019\
-              \n"
+              \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_withads_about_newtab
           type: RECORD
           mode: REPEATED
@@ -27904,7 +27917,7 @@ fields:
             mode: NULLABLE
             description: "Records counts of SERP pages with adverts displayed where\
               \ the search was started from about:newtab. The key format is \u2018\
-              <provider>:<tagged|organic>\u2019\n"
+              <provider>:<tagged|organic>\u2019 See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_withads_contextmenu
           type: RECORD
           mode: REPEATED
@@ -27917,7 +27930,7 @@ fields:
             mode: NULLABLE
             description: "Records counts of SERP pages with adverts displayed where\
               \ the search was started from the context menu. The key format is \u2018\
-              <provider>:<tagged|organic>\u2019\n"
+              <provider>:<tagged|organic>\u2019 See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_withads_reload
           type: RECORD
           mode: REPEATED
@@ -27930,7 +27943,7 @@ fields:
             mode: NULLABLE
             description: "Records counts of SERP pages with adverts displayed where\
               \ the search was loaded by reloading the page. The key format is \u2018\
-              <provider>:<tagged|organic>\u2019\n"
+              <provider>:<tagged|organic>\u2019 See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_withads_searchbar
           type: RECORD
           mode: REPEATED
@@ -27943,7 +27956,7 @@ fields:
             mode: NULLABLE
             description: "Records counts of SERP pages with adverts displayed where\
               \ the search was started from the search bar. The key format is \u2018\
-              <provider>:<tagged|organic>\u2019\n"
+              <provider>:<tagged|organic>\u2019 See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_withads_system
           type: RECORD
           mode: REPEATED
@@ -27956,7 +27969,7 @@ fields:
             mode: NULLABLE
             description: "Records counts of SERP pages with adverts displayed where\
               \ the search was started from the system, e.g. command line. The key\
-              \ format is \u2018<provider>:<tagged|organic>\u2019\n"
+              \ format is \u2018<provider>:<tagged|organic>\u2019 See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_withads_tabhistory
           type: RECORD
           mode: REPEATED
@@ -27969,7 +27982,7 @@ fields:
             mode: NULLABLE
             description: "Records counts of SERP pages with adverts displayed where\
               \ the search was loaded from the tab history. The key format is \u2018\
-              <provider>:<tagged|organic>\u2019\n"
+              <provider>:<tagged|organic>\u2019 See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_withads_unknown
           type: RECORD
           mode: REPEATED
@@ -27982,7 +27995,7 @@ fields:
             mode: NULLABLE
             description: "Records counts of SERP pages with adverts displayed where\
               \ the search was started from a place not categorized by the other scalars.\
-              \ The key format is \u2018<provider>:<tagged|organic>\u2019\n"
+              \ The key format is \u2018<provider>:<tagged|organic>\u2019 See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_withads_urlbar
           type: RECORD
           mode: REPEATED
@@ -27995,7 +28008,7 @@ fields:
             mode: NULLABLE
             description: "Records counts of SERP pages with adverts displayed where\
               \ the search was started from the urlbar. The key format is \u2018<provider>:<tagged|organic>\u2019\
-              \n"
+              \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_withads_urlbar_handoff
           type: RECORD
           mode: REPEATED
@@ -28023,7 +28036,7 @@ fields:
             description: "Records counts of SERP pages with adverts displayed where\
               \ the search was started from the urlbar after the search term was shown\
               \ in the urlbar. The key format is \u2018<provider>:<tagged|organic>\u2019\
-              \n"
+              \ See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_withads_urlbar_searchmode
           type: RECORD
           mode: REPEATED
@@ -28036,7 +28049,7 @@ fields:
             mode: NULLABLE
             description: "Records counts of SERP pages with adverts displayed where\
               \ the search was started from the urlbar in search mode. The key format\
-              \ is \u2018<provider>:<tagged|organic>\u2019\n"
+              \ is \u2018<provider>:<tagged|organic>\u2019 See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_search_withads_webextension
           type: RECORD
           mode: REPEATED
@@ -28049,7 +28062,7 @@ fields:
             mode: NULLABLE
             description: "Records counts of SERP pages with adverts displayed where\
               \ the search was started from a webextension. The key format is \u2018\
-              <provider>:<tagged|organic>\u2019\n"
+              <provider>:<tagged|organic>\u2019 See https://firefox-source-docs.mozilla.org/browser/search/telemetry.html#browser-search-content\n"
         - name: browser_searchinit_engine_invalid_webextension
           type: RECORD
           mode: REPEATED

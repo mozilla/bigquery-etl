@@ -348,6 +348,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'A distributed size of all files in the submitted stack
 
         '

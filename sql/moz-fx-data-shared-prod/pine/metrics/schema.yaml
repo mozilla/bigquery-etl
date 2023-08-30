@@ -558,6 +558,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Records how many percent of battery was available for each period
         of user activity.
 
@@ -569,6 +571,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -592,6 +596,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -616,6 +622,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -640,6 +648,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -664,6 +674,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -688,6 +700,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -712,6 +726,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -1677,6 +1693,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The number and size of the IPC buffers being received over FOG
         IPC.
 
@@ -1701,6 +1719,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The size of the database file at startup.
 
         '
@@ -1724,6 +1744,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The size of pings that exceeded the maximum ping size allowed
         for upload.
 
@@ -1748,6 +1770,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The size of the pending pings directory upon initialization of
         Glean.
 
@@ -1761,6 +1785,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -1784,6 +1810,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: sum
         type: INTEGER
         mode: NULLABLE
@@ -2096,6 +2124,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The length of time between asking the child processes for their
 
         IPC buffers and all of them being received by the parent.
@@ -2139,6 +2169,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time to build a Gecko display list.
 
         '
@@ -2180,6 +2212,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time to rasterize glyphs for consumption by WebRender.
 
         '
@@ -2221,6 +2255,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time to rasterize glyphs for consumption by WebRender.
 
         '
@@ -2262,6 +2298,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'WebRender scene build time.
 
         '
@@ -2303,6 +2341,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'WebRender scene swap time.
 
         '
@@ -2344,6 +2384,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time to rasterize blobs for consumption by WebRender.
 
         '
@@ -2385,6 +2427,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time spent waiting for the GPU to complete previously issued
         drawing commands.
 
@@ -2427,6 +2471,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'WebRender renderer time.
 
         '
@@ -2468,6 +2514,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time taken by WebRender to update the texture cache.
 
         '
@@ -2509,6 +2557,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time elapsed between the construction of a transaction and the
         associated frame build beginning.
 
@@ -2551,6 +2601,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time elapsed between the construction of a frame and the start
         of rendering.
 
@@ -2593,6 +2645,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'WebRender renderer time excluding frames in which shader compilation
         took place.
 
@@ -2635,6 +2689,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time spent from HttpChannelChild::AsyncOpen to adding the
         transaction to the nsHttpConnectionMgr
 
@@ -2649,6 +2705,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -2691,6 +2749,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -2733,6 +2793,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -2775,6 +2837,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -2816,6 +2880,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -2858,6 +2924,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -2900,6 +2968,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -2942,6 +3012,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -2985,6 +3057,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -3028,6 +3102,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -3069,6 +3145,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -3110,6 +3188,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -3152,6 +3232,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -3194,6 +3276,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -3236,6 +3320,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -3278,6 +3364,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -3319,6 +3407,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE
@@ -3361,6 +3451,8 @@ fields:
       - name: count
         type: INTEGER
         mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       - name: histogram_type
         type: STRING
         mode: NULLABLE

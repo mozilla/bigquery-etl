@@ -1,0 +1,246 @@
+fields:
+- description: Time when the ingestion edge server accepted this message
+  name: submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- description: A JSON string containing any payload properties not present in the
+    schema
+  name: additional_properties
+  type: STRING
+  mode: NULLABLE
+- name: addon_version
+  type: STRING
+  mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- description: The document ID specified in the URI when the client sent this message
+  name: document_id
+  type: STRING
+  mode: NULLABLE
+- name: event
+  type: STRING
+  mode: NULLABLE
+- description: A string that describes the context about this event
+  name: event_context
+  type: STRING
+  mode: NULLABLE
+- description: The event_context's page. Almost always "about:welcome".
+  name: event_page
+  type: STRING
+  mode: NULLABLE
+- description: The event_context's reason. Likely something like "welcome-window-closed" or "app-shut-down".
+  name: event_reason
+  type: STRING
+  mode: NULLABLE
+- description: The event_context's source. Likely something like "primary_button".
+  name: event_source
+  type: STRING
+  mode: NULLABLE
+- name: locale
+  type: STRING
+  mode: NULLABLE
+- name: message_id
+  type: STRING
+  mode: NULLABLE
+- name: metadata
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - description: Results of a geographic lookup based on the client's IP address
+    name: geo
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: city
+      type: STRING
+      mode: NULLABLE
+    - description: An ISO 3166-1 alpha-2 country code
+      name: country
+      type: STRING
+      mode: NULLABLE
+    - description: The specific geo database version used for this lookup
+      name: db_version
+      type: STRING
+      mode: NULLABLE
+    - description: First major country subdivision, typically a state, province, or
+        county
+      name: subdivision1
+      type: STRING
+      mode: NULLABLE
+    - description: Second major country subdivision; not applicable for most countries
+      name: subdivision2
+      type: STRING
+      mode: NULLABLE
+  - name: header
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - description: Date HTTP header
+      mode: NULLABLE
+      name: date
+      type: STRING
+    - description: DNT (Do Not Track) HTTP header
+      mode: NULLABLE
+      name: dnt
+      type: STRING
+    - description: X-Debug-Id HTTP header
+      mode: NULLABLE
+      name: x_debug_id
+      type: STRING
+    - description: X-PingSender-Version HTTP header
+      mode: NULLABLE
+      name: x_pingsender_version
+      type: STRING
+    - description: X-Source-Tags HTTP header
+      mode: NULLABLE
+      name: x_source_tags
+      type: STRING
+    - description: X-Telemetry-Agent HTTP header
+      mode: NULLABLE
+      name: x_telemetry_agent
+      type: STRING
+    - description: X-Foxsec-IP-Reputation header
+      mode: NULLABLE
+      name: x_foxsec_ip_reputation
+      type: STRING
+    - description: X-LB-Tags HTTP header
+      mode: NULLABLE
+      name: x_lb_tags
+      type: STRING
+  - description: Results of ISP lookup based on the client's IP address
+    name: isp
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - description: The specific geo ISP database version used for this lookup
+      mode: NULLABLE
+      name: db_version
+      type: STRING
+    - description: The name of the ISP associated with the client's IP address
+      mode: NULLABLE
+      name: name
+      type: STRING
+    - description: The name of a specific business entity associated with the client's
+        IP address when available; otherwise the ISP name
+      mode: NULLABLE
+      name: organization
+      type: STRING
+  - description: Parsed components of the client's user agent string
+    name: user_agent
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+    - name: os
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+- description: Set to "Other" if this message contained an unrecognized app name
+  mode: NULLABLE
+  name: normalized_app_name
+  type: STRING
+- description: Set to "Other" if this message contained an unrecognized channel name
+  mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+- description: An ISO 3166-1 alpha-2 country code
+  mode: NULLABLE
+  name: normalized_country_code
+  type: STRING
+- description: Set to "Other" if this message contained an unrecognized OS name
+  mode: NULLABLE
+  name: normalized_os
+  type: STRING
+- name: normalized_os_version
+  mode: NULLABLE
+  type: STRING
+- name: release_channel
+  mode: NULLABLE
+  type: STRING
+- name: sample_id
+  mode: NULLABLE
+  type: INTEGER
+- name: version
+  mode: NULLABLE
+  type: STRING
+- description: A mirror of the browser sessionId, as defined in
+    https://github.com/mozilla-services/mozilla-pipeline-schemas/blob/main/schemas/telemetry/main/main.4.schema.json
+  name: browser_session_id
+  type: STRING
+  mode: NULLABLE
+- name: experiments
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: branch
+      type: STRING
+      mode: NULLABLE
+    - name: extra
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: enrollment_id
+        type: STRING
+        mode: NULLABLE
+      - name: type
+        type: STRING
+        mode: NULLABLE
+- name: attribution
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - description: Identifier of the particular campaign that led to the download of
+      the product.
+    name: campaign
+    type: STRING
+    mode: NULLABLE
+  - description: Identifier to indicate the particular link within a campaign.
+    name: content
+    type: STRING
+    mode: NULLABLE
+  - description: Funnel experiment parameters, see bug 1567339
+    name: experiment
+    type: STRING
+    mode: NULLABLE
+  - description: Category of the source, such as 'organic' for a search engine.
+    name: medium
+    type: STRING
+    mode: NULLABLE
+  - description: Referring partner domain, when install happens via a known partner.
+    name: source
+    type: STRING
+    mode: NULLABLE
+  - description: Derived user agent, see bug 1595063
+    name: ua
+    type: STRING
+    mode: NULLABLE
+  - description: Funnel experiment parameters, see bug 1567339
+    name: variation
+    type: STRING
+    mode: NULLABLE
+  - description: Unique token created at Firefox download time, see bug 1757451
+    name: dltoken
+    type: STRING
+    mode: NULLABLE
+  - description: Identifier that indicates where installations of Firefox originate,
+      see bug 1827238
+    name: dlsource
+    type: STRING
+    mode: NULLABLE
+  - description: Either the string "true" or the string "false" to indicate whether the attributed install came from
+      the Microsoft store and, if so, whether the user was signed in at the time.
+    name: msstoresignedin
+    type: STRING
+    mode: NULLABLE

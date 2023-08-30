@@ -19,7 +19,7 @@ SELECT
   normalized_os_version,
   client_info.app_channel AS release_channel,
   sample_id,
-  metadata.user_agent.version AS version,
+  client_info.app_display_version AS version,
   metrics.uuid.messaging_system_browser_session_id AS browser_session_id,
   ping_info.experiments AS experiments,
   STRUCT(

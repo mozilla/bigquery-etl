@@ -23,7 +23,7 @@
     
     
       
-        <title>firefox-desktop - BigQuery ETL</title>
+        <title>Firefox Desktop - BigQuery ETL</title>
       
     
     
@@ -104,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              firefox-desktop
+              Firefox Desktop
             
           </span>
         </div>
@@ -694,12 +694,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          firefox-desktop
+          Firefox Desktop
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        firefox-desktop
+        Firefox Desktop
       </a>
       
         
@@ -842,6 +842,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#onboarding" class="md-nav__link">
+    onboarding
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#pageload" class="md-nav__link">
     pageload
   </a>
@@ -858,6 +865,13 @@
         <li class="md-nav__item">
   <a href="#quick_suggest" class="md-nav__link">
     quick_suggest
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#snippets" class="md-nav__link">
+    snippets
   </a>
   
 </li>
@@ -2637,6 +2651,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#onboarding" class="md-nav__link">
+    onboarding
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#pageload" class="md-nav__link">
     pageload
   </a>
@@ -2653,6 +2674,13 @@
         <li class="md-nav__item">
   <a href="#quick_suggest" class="md-nav__link">
     quick_suggest
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#snippets" class="md-nav__link">
+    snippets
   </a>
   
 </li>
@@ -2679,9 +2707,9 @@
                   
 
 
-  <h1>firefox-desktop</h1>
+  <h1>Firefox Desktop</h1>
 
-<p>User-facing views related to document namespace firefox-desktop; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/firefox-desktop</p>
+<p>Data related to messaging_system.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop">Source Directory</a></p>
 <h2 id="active_users_aggregates"><a href="#active_users_aggregates">active_users_aggregates</a></h2>
 <p><code>firefox_desktop.active_users_aggregates</code></p>
@@ -4602,6 +4630,24 @@ and to contain only one row per distinct <code>document_id</code> within a given
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/newtab">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/newtab/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/newtab/metadata.yaml">Metadata File</a> </p>
 <hr />
+<h2 id="onboarding"><a href="#onboarding">onboarding</a></h2>
+<p><code>firefox_desktop.onboarding</code></p>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_derived>firefox_desktop_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_derived/onboarding_v2>onboarding_v2</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/onboarding">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/onboarding/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/onboarding/metadata.yaml">Metadata File</a> </p>
+<hr />
 <h2 id="pageload"><a href="#pageload">pageload</a></h2>
 <p><strong>Historical Pings for <code>firefox-desktop/pageload</code></strong></p>
 <p><code>firefox_desktop.pageload</code></p>
@@ -4841,6 +4887,24 @@ and to contain only one row per distinct <code>document_id</code> within a given
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/quick_suggest">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/quick_suggest/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/quick_suggest/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="snippets"><a href="#snippets">snippets</a></h2>
+<p><code>firefox_desktop.snippets</code></p>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_derived>firefox_desktop_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_derived/snippets_v2>snippets_v2</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/snippets">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/snippets/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/snippets/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="top_sites"><a href="#top_sites">top_sites</a></h2>
 <p><strong>Historical Pings for <code>firefox-desktop/top-sites</code></strong></p>

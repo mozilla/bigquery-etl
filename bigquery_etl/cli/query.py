@@ -68,6 +68,7 @@ from .generate import generate_all
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
 VERSION_RE = re.compile(r"_v[0-9]+")
 DESTINATION_TABLE_RE = re.compile(r"^[a-zA-Z0-9_$]{0,1024}$")
+DEFAULT_DAG_NAME = "bqetl_default"
 
 
 @click.group(help="Commands for managing queries.")
@@ -117,7 +118,31 @@ def query(ctx):
     default=False,
     is_flag=True,
 )
-def create(name, sql_dir, project_id, owner, init):
+@click.option(
+    "--dag",
+    "-d",
+    help=(
+        f"Name of the DAG the query should be scheduled under."
+        "If there is no DAG name specified, the query is"
+        f"scheduled by default in DAG {DEFAULT_DAG_NAME}."
+        "To skip the automated scheduling use --no_schedule."
+        "To see available DAGs run `bqetl dag info`."
+        "To create a new DAG run `bqetl dag create`."
+    ),
+    default=DEFAULT_DAG_NAME,
+)
+@click.option(
+    "--no_schedule",
+    "--no-schedule",
+    help=(
+        "Using this option creates the query without scheduling information."
+        " Use `bqetl query schedule` to add it manually if required."
+    ),
+    default=False,
+    is_flag=True,
+)
+@click.pass_context
+def create(ctx, name, sql_dir, project_id, owner, init, dag, no_schedule):
     """CLI command for creating a new query."""
     # create directory structure for query
     try:
@@ -243,6 +268,19 @@ def create(name, sql_dir, project_id, owner, init):
             )
             dataset_metadata.write(dataset_metadata_file)
             click.echo(f"Created dataset metadata in {dataset_metadata_file}")
+
+    if no_schedule:
+        click.echo(
+            click.style(
+                "WARNING: This query has been created without "
+                "scheduling information. Use `bqetl query schedule`"
+                " to manually add it to a DAG or "
+                "`bqetl query create --help` for more options.",
+                fg="yellow",
+            )
+        )
+    else:
+        ctx.invoke(schedule, name=derived_path, dag=dag)
 
 
 @query.command(

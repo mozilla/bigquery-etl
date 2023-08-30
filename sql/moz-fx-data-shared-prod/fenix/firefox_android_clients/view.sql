@@ -18,7 +18,7 @@ SELECT
         'Untrusted Devices',
         'Product Marketing (Owned media)',
         'Google Ads ACI',
-        'Facebook'
+        'Facebook Installs'
       )
       THEN 'Other'
     ELSE adjust_network

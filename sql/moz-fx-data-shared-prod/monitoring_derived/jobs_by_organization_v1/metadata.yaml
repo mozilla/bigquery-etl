@@ -1,0 +1,23 @@
+friendly_name: Jobs By Organization
+description: |-
+  Table built from:
+    mozdata.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION,
+    moz-fx-data-shared-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION,
+    moz-fx-data-marketing-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION,
+    moz-fx-data-bq-data-science.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION
+owners:
+- mhirose@mozilla.com
+labels:
+  incremental: true
+  owner1: mhirose
+scheduling:
+  dag_name: bqetl_jobs_by_org_derived
+bigquery:
+  time_partitioning:
+    type: day
+    field: 'creation_time'
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields: ['project_id', 'user_email']
+references: {}

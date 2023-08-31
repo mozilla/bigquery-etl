@@ -221,6 +221,8 @@ class Task:
     destination_table: Optional[str] = attr.ib(default=DEFAULT_DESTINATION_TABLE_STR)
     is_python_script: bool = attr.ib(False)
     is_dq_check: bool = attr.ib(False)
+    # Failure of the checks task will stop the dag from executing further
+    is_dq_check_fail: bool = attr.ib(True)
     task_concurrency: Optional[int] = attr.ib(None)
     retry_delay: Optional[str] = attr.ib(None)
     retries: Optional[int] = attr.ib(None)
@@ -311,14 +313,6 @@ class Task:
                 self.task_name = f"{self.dataset}__{self.table}__{self.version}"[
                     -MAX_TASK_NAME_LENGTH:
                 ]
-                self.validate_task_name(None, self.task_name)
-
-            if check_file_re is not None:
-                self.task_name = (
-                    f"checks__{self.dataset}__{self.table}__{self.version}"[
-                        -MAX_TASK_NAME_LENGTH:
-                    ]
-                )
                 self.validate_task_name(None, self.task_name)
 
             if self.destination_table == DEFAULT_DESTINATION_TABLE_STR:
@@ -467,12 +461,31 @@ class Task:
         return task
 
     @classmethod
-    def of_dq_check(cls, query_file, metadata=None, dag_collection=None):
+    def of_dq_check(cls, query_file, is_check_fail, metadata=None, dag_collection=None):
         """Create a task that schedules DQ check file in Airflow."""
         task = cls.of_query(query_file, metadata, dag_collection)
         task.query_file_path = query_file
         task.is_dq_check = True
+        task.is_dq_check_fail = is_check_fail
         task.depends_on_fivetran = []
+        if task.is_dq_check_fail:
+            task.task_name = (
+                f"checks__fail_{task.dataset}__{task.table}__{task.version}"[
+                    -MAX_TASK_NAME_LENGTH:
+                ]
+            )
+            task.validate_task_name(None, task.task_name)
+            print("in fail")
+            print(task.task_name)
+        else:
+            task.task_name = (
+                f"checks__warn_{task.dataset}__{task.table}__{task.version}"[
+                    -MAX_TASK_NAME_LENGTH:
+                ]
+            )
+            task.validate_task_name(None, task.task_name)
+            print("in warn")
+            print(task.task_name)
         return task
 
     def to_ref(self, dag_collection):

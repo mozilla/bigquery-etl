@@ -1,0 +1,16 @@
+friendly_name: Subscription services
+description: |-
+  Metadata about subscription services and their tiers.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  # The whole table is overwritten every time, not a specific date partition.
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null
+  clustering: null
+references: {}

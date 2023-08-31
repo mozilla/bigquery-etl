@@ -18,6 +18,10 @@
     "name": "sample_id"
   },
   {
+    "type": "STRING",
+    "name": "normalized_channel"
+  },
+  {
     "type": "TIMESTAMP",
     "name": "submission_timestamp"
   },

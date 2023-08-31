@@ -1,0 +1,22 @@
+friendly_name: Monthly active logical subscriptions
+description: |-
+  Monthly snapshots of logical subscriptions that were active at any point during each month.
+  The latest state of the subscription during the month is saved.
+
+  Logical subscriptions are a continuous active period for a particular provider subscription.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  date_partition_parameter: date
+bigquery:
+  time_partitioning:
+    type: month
+    field: month_start_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering: null
+references: {}

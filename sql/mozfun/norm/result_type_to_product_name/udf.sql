@@ -4,7 +4,7 @@ CREATE OR REPLACE FUNCTION norm.result_type_to_product_name(
 RETURNS STRING AS (
     CASE
     WHEN res IN ('search_suggest', 'search_history', 'search_suggest_rich') THEN 'default_partner_search_suggestion'
-    WHEN res IN ('search_engine') THEN 'search_engine_suggestion'
+    WHEN res IN ('search_engine') THEN 'search_engine'
     WHEN res IN ('trending_search', 'trending_search_rich') THEN 'trending_suggestion'
     WHEN res IN ('history') THEN 'history'
     WHEN res IN ('bookmark', 'keyword') THEN 'bookmark'

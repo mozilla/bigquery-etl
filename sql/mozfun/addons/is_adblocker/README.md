@@ -5,7 +5,7 @@ have an adblocker installed.
 ```
 SELECT
     submission_date,
-    COUNT(*) AS dau,
+    COUNT(DISTINCT client_id) AS dau,
 FROM
     mozdata.telemetry.addons
 WHERE

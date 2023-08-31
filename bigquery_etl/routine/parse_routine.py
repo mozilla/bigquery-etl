@@ -191,10 +191,12 @@ class RawRoutine:
         routines = get_routines(project)
         dependencies = []
         for udf in routines:
-            persistent_name = ".".join([f"`{name}`" for name in udf["name"].split(".")])
-            if udf["name"] in "\n".join(definitions) or persistent_name in "\n".join(
-                definitions
-            ):
+            udf_re = re.compile(
+                r"\b"
+                + r"\.".join(f"`?{name}`?" for name in udf["name"].split("."))
+                + r"\("
+            )
+            if udf_re.search("\n".join(definitions)):
                 dependencies.append(udf["name"])
 
         dependencies.extend(re.findall(TEMP_UDF_RE, "\n".join(definitions)))

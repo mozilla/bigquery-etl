@@ -417,8 +417,8 @@ bqetl_monitoring_airflow:
     This DAG schedules queries and scripts for populating datasets
     used for monitoring of Airflow DAGs.
   default_args:
-    owner: kignasiak@mozilla.com
-    email: ["kignasiak@mozilla.com"]
+    owner: kik@mozilla.com
+    email: ["kik@mozilla.com"]
     start_date: "2022-09-01"
     retries: 2
     retry_delay: 30m
@@ -724,11 +724,11 @@ bqetl_regrets_reporter_summary:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - kignasiak@mozilla.com
+      - kik@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: kignasiak@mozilla.com
+    owner: kik@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2021-12-12'
@@ -757,9 +757,9 @@ bqetl_acoustic_contact_export:
     fivetran_acoustic_contact_export
     DAG to clean up the data loaded from Acoustic.
   default_args:
-    owner: kignasiak@mozilla.com
+    owner: kik@mozilla.com
     start_date: "2021-03-01"
-    email: ["telemetry-alerts@mozilla.com", "kignasiak@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "kik@mozilla.com"]
     retries: 1
     retry_delay: 5m
   tags:
@@ -772,9 +772,9 @@ bqetl_acoustic_raw_recipient_export:
     fivetran_acoustic_raw_recipient_export
     DAG to clean up the data loaded from Acoustic.
   default_args:
-    owner: kignasiak@mozilla.com
+    owner: kik@mozilla.com
     start_date: "2022-03-01"
-    email: ["telemetry-alerts@mozilla.com", "kignasiak@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "kik@mozilla.com"]
     retries: 1
     retry_delay: 5m
   tags:
@@ -1005,7 +1005,7 @@ bqetl_mdn_yari:
       - telemetry-alerts@mozilla.com
       - mdn-infra@mozilla.com
       - fmerz@mozilla.com
-      - kignasiak@mozilla.com
+      - kik@mozilla.com
     email_on_failure: true
     email_on_retry: false
     end_date: null
@@ -1158,3 +1158,24 @@ bqetl_kpis_shredder:
   tags:
     - impact/tier_3
     - repo/bigquery-etl
+bqetl_default:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: telemetry-alerts@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-09-01'
+  description: This is a default DAG to schedule tasks with lower business impact
+    or that don't require a new or existing DAG. Queries are automatically scheduled
+    in this DAG during creation when no dag name is specified using option --dag.
+    See [related documentation in the cookbooks](https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/)
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_3
+    - triage/no_triage

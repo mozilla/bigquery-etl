@@ -1,0 +1,26 @@
+friendly_name: Logical subscriptions history
+description: |-
+  History of changes to logical subscriptions, which are a continuous active period for a particular provider subscription.
+
+  To get the historical state at a particular point in time use a condition like the following:
+    valid_from <= {timestamp}
+    AND valid_to > {timestamp}
+owners:
+- srose@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  # The whole table is overwritten every time, not a specific date partition.
+  date_partition_parameter: null
+bigquery:
+  time_partitioning:
+    type: day
+    field: valid_to
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - valid_from
+references: {}

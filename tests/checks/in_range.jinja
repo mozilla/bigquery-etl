@@ -1,4 +1,7 @@
 {% macro in_range(columns, min, max, where) %}
+  {% if columns is string %}
+    {% set columns = [columns] %}
+  {% endif %}
   WITH ranges AS (
     SELECT [
       {% for col in columns %}

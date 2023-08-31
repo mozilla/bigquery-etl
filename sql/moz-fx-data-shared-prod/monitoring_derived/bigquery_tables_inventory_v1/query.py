@@ -72,7 +72,7 @@ def create_query(date, source_project, tmp_table_name):
             SELECT table_catalog, table_schema, table_name,
               ARRAY(
                 SELECT as STRUCT ARR[OFFSET(0)] key, ARR[OFFSET(1)] value
-                FROM UNNEST(REGEXP_EXTRACT_ALL(option_value, r'STRUCT\(("[^"]+", "[^"]+")\)')) kv,
+                FROM UNNEST(REGEXP_EXTRACT_ALL(option_value, r'STRUCT\\(("[^"]+", "[^"]+")\\)')) kv,
                 UNNEST([STRUCT(SPLIT(REPLACE(kv, '"', ''), ', ') as arr)])
               ) options
             FROM `{source_project}.region-us.INFORMATION_SCHEMA.TABLE_OPTIONS`
@@ -86,25 +86,46 @@ def create_query(date, source_project, tmp_table_name):
             FROM labels, UNNEST(options) AS opt_key
             WHERE key LIKE 'owner%'
             GROUP BY table_catalog, table_schema, table_name
+        ),
+        max_job_creation_date AS (
+            SELECT max(creation_date) as last_used_date,
+                reference_project_id AS project_id,
+                reference_dataset_id AS dataset_id,
+                reference_table_id AS table_id
+            FROM `moz-fx-data-shared-prod.monitoring_derived.bigquery_usage_v2`
+            WHERE creation_date >= "2023-01-01"
+            GROUP BY project_id, dataset_id, table_id
+        ),
+        table_info AS (
+            SELECT *
+            FROM
+                (SELECT
+                    DATE('{date}') AS submission_date,
+                    DATE(creation_time) AS creation_date,
+                    table_catalog AS project_id,
+                    table_schema AS dataset_id,
+                    table_name AS table_id,
+                    table_type,
+                    owners,
+                FROM `{source_project}.region-us.INFORMATION_SCHEMA.TABLES`
+                LEFT JOIN labels_agg
+                    USING (table_catalog, table_schema, table_name)
+                    WHERE DATE(creation_time) <= DATE('{date}'))
+            LEFT JOIN {tmp_table_name}
+            USING (project_id, dataset_id, table_id, creation_date)
         )
-        SELECT *
-        FROM
-            (SELECT
-            DATE('{date}') AS submission_date,
-            DATE(creation_time) AS creation_date,
-            table_catalog AS project_id,
-            table_schema AS dataset_id,
-            table_name AS table_id,
+        SELECT submission_date,
+            creation_date,
+            project_id,
+            dataset_id,
+            table_id,
             table_type,
             owners,
-            FROM `{source_project}.region-us.INFORMATION_SCHEMA.TABLES`
-            LEFT JOIN labels_agg
-            USING (table_catalog, table_schema, table_name)
-            WHERE DATE(creation_time) <= DATE('{date}')
-            )
-        LEFT JOIN {tmp_table_name}
-        USING (project_id, dataset_id, table_id, creation_date)
-        ORDER BY submission_date, project_id, dataset_id, table_id, table_type
+            last_used_date
+        FROM table_info
+            LEFT JOIN max_job_creation_date
+            USING(project_id, dataset_id, table_id)
+            ORDER BY submission_date, project_id, dataset_id, table_id, table_type
     """
 
 
@@ -124,11 +145,15 @@ def main():
 
     for project in args.source_projects:
         create_last_modified_tmp_table(args.date, project, tmp_table_name)
-
         client = bigquery.Client(project)
         query = create_query(args.date, project, tmp_table_name)
         job_config = bigquery.QueryJobConfig(
-            destination=destination_table, write_disposition="WRITE_APPEND"
+            destination=destination_table,
+            write_disposition="WRITE_APPEND",
+            time_partitioning=bigquery.TimePartitioning(
+                type_=bigquery.TimePartitioningType.DAY,
+                field="submission_date",
+            ),
         )
         client.query(query, job_config=job_config).result()
 

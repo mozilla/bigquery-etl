@@ -15,13 +15,9 @@ from bigquery_etl.query_scheduling.utils import is_email, is_email_or_github_ide
 METADATA_FILE = "metadata.yaml"
 DATASET_METADATA_FILE = "dataset_metadata.yaml"
 DEFAULT_WORKGROUP_ACCESS = [
-    dict(
-        role="roles/bigquery.metadataViewer", members=["workgroup:mozilla-confidential"]
-    )
-]
-DEFAULT_TABLE_WORKGROUP_ACCESS = [
     dict(role="roles/bigquery.dataViewer", members=["workgroup:mozilla-confidential"])
 ]
+DEFAULT_TABLE_WORKGROUP_ACCESS = DEFAULT_WORKGROUP_ACCESS
 
 
 class Literal(str):
@@ -415,10 +411,13 @@ class DatasetMetadata:
     dataset_base_acl: str = attr.ib()
     user_facing: bool = attr.ib(False)
     labels: Dict = attr.ib({})
+    default_table_workgroup_access: Optional[List[Dict[str, Any]]] = attr.ib(None)
     workgroup_access: list = attr.ib(DEFAULT_WORKGROUP_ACCESS)
-    default_table_workgroup_access: Optional[List[Dict[str, Any]]] = attr.ib(
-        DEFAULT_TABLE_WORKGROUP_ACCESS
-    )
+
+    def __attrs_post_init__(self):
+        """Set default table workgroup access to workgroup access."""
+        if self.default_table_workgroup_access is None:
+            self.default_table_workgroup_access = self.workgroup_access
 
     @staticmethod
     def is_dataset_metadata_file(file_path):
@@ -433,7 +432,6 @@ class DatasetMetadata:
     def write(self, file):
         """Write dataset metadata information to the provided file."""
         metadata_dict = self.__dict__
-
         if metadata_dict["labels"]:
             for label_key, label_value in metadata_dict["labels"].items():
                 # handle tags
@@ -442,6 +440,11 @@ class DatasetMetadata:
 
         if "description" in metadata_dict:
             metadata_dict["description"] = Literal(metadata_dict["description"])
+
+        if "default_table_workgroup_access" in metadata_dict:
+            metadata_dict["default_table_workgroup_access"] = metadata_dict[
+                "default_table_workgroup_access"
+            ]
 
         converter = cattrs.BaseConverter()
         file.write_text(

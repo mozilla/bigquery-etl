@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Optional
 
 import click
+import yaml
 
 from bigquery_etl.metadata.parse_metadata import DatasetMetadata, Metadata
 
@@ -42,35 +43,46 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
     table_metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
+    dataset_metadata_path = None
+    
+    # create and populate the dataset metadata yaml file if it does not exist
+
     for table_metadata_file in table_metadata_files:
         dataset_metadata_path = (
             Path(table_metadata_file).parent.parent / "dataset_metadata.yaml"
         )
-        if dataset_metadata_path.exists():
-            dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
-            table_metadata = Metadata.from_file(table_metadata_file)
-            if table_metadata.deprecated:
-                # set workgroup:deprecated if table has been tagged as deprecated
-                # this overwrites existing workgroups
-                table_metadata.workgroup_access = [
-                    dict(
-                        role="roles/bigquery.metadataViewer",
-                        members=["workgroup:deprecated"],
-                    )
-                ]
-            else:
-                # if workgroup hasn't been explicitly set for the table, set table workgroup
-                # to the default workgroup that is defined in the dataset_metadata.yaml
-                if (
-                    dataset_metadata.default_table_workgroup_access
-                    and table_metadata.workgroup_access is None
-                ):
-                    table_metadata.workgroup_access = (
-                        dataset_metadata.default_table_workgroup_access
-                    )
-            table_metadata.write(table_metadata_file)
+        if not dataset_metadata_path.exists():
+            dataset_metadata = DatasetMetadata()
+            dataset_metadata.write(dataset_metadata_path)
+        dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
+        table_metadata = Metadata.from_file(table_metadata_file)
 
-            click.echo(f"Updated {table_metadata_file}")
+        # set dataset metadata default_table_workgroup_access to table_workgroup_access if not set
+        if not dataset_metadata.default_table_workgroup_access:
+            dataset_metadata.default_table_workgroup_access = (
+                dataset_metadata.workgroup_access
+            )
+        if table_metadata.deprecated:
+            # set workgroup:deprecated if table has been tagged as deprecated
+            # this overwrites existing workgroups
+            table_metadata.workgroup_access = [
+                dict(
+                    role="roles/bigquery.metadataViewer",
+                    members=["workgroup:deprecated"],
+                )
+            ]
         else:
-            click.echo("Dataset metadata yaml does not exist")
+            # if workgroup hasn't been explicitly set for the table, set table workgroup
+            # to the default workgroup that is defined in the dataset_metadata.yaml
+            if (
+                dataset_metadata.default_table_workgroup_access
+                and table_metadata.workgroup_access is None
+            ):
+                print("im insider the if")
+                table_metadata.workgroup_access = (
+                    dataset_metadata.default_table_workgroup_access
+                )
+        dataset_metadata.write(dataset_metadata_path)
+        table_metadata.write(table_metadata_file)
+        click.echo(f"Updated {table_metadata_file}")
     return None

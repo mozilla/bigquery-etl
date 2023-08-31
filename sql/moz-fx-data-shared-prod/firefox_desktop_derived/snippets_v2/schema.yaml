@@ -1,0 +1,194 @@
+fields:
+- description: Time when the ingestion edge server accepted this message
+  name: submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- description: A JSON string containing any payload properties not present in the
+    schema
+  name: additional_properties
+  type: STRING
+  mode: NULLABLE
+- name: addon_version
+  type: STRING
+  mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- description: The document ID specified in the URI when the client sent this message
+  name: document_id
+  type: STRING
+  mode: NULLABLE
+- description: An event identifier
+  name: event
+  type: STRING
+  mode: NULLABLE
+- description: A string that describes the context about this event
+  name: event_context
+  type: STRING
+  mode: NULLABLE
+- name: locale
+  type: STRING
+  mode: NULLABLE
+- name: message_id
+  type: STRING
+  mode: NULLABLE
+- fields:
+  - fields:
+    - description: null
+      mode: NULLABLE
+      name: city
+      type: STRING
+    - description: An ISO 3166-1 alpha-2 country code
+      mode: NULLABLE
+      name: country
+      type: STRING
+    - description: The specific geo database version used for this lookup
+      mode: NULLABLE
+      name: db_version
+      type: STRING
+    - description: First major country subdivision, typically a state, province, or
+        county
+      mode: NULLABLE
+      name: subdivision1
+      type: STRING
+    - description: Second major country subdivision; not applicable for most countries
+      mode: NULLABLE
+      name: subdivision2
+      type: STRING
+    description: Results of a geographic lookup based on the client's IP address
+    mode: NULLABLE
+    name: geo
+    type: RECORD
+  - fields:
+    - description: Date HTTP header
+      mode: NULLABLE
+      name: date
+      type: STRING
+    - description: DNT (Do Not Track) HTTP header
+      mode: NULLABLE
+      name: dnt
+      type: STRING
+    - description: X-Debug-Id HTTP header
+      mode: NULLABLE
+      name: x_debug_id
+      type: STRING
+    - description: X-PingSender-Version HTTP header
+      mode: NULLABLE
+      name: x_pingsender_version
+      type: STRING
+    - description: X-Source-Tags HTTP header
+      mode: NULLABLE
+      name: x_source_tags
+      type: STRING
+    - description: X-Telemetry-Agent HTTP header
+      mode: NULLABLE
+      name: x_telemetry_agent
+      type: STRING
+    - description: X-Foxsec-IP-Reputation header
+      mode: NULLABLE
+      name: x_foxsec_ip_reputation
+      type: STRING
+    - description: X-LB-Tags HTTP header
+      mode: NULLABLE
+      name: x_lb_tags
+      type: STRING
+    description: Headers included in the client's HTTP request
+    mode: NULLABLE
+    name: header
+    type: RECORD
+  - fields:
+    - description: The specific geo ISP database version used for this lookup
+      mode: NULLABLE
+      name: db_version
+      type: STRING
+    - description: The name of the ISP associated with the client's IP address
+      mode: NULLABLE
+      name: name
+      type: STRING
+    - description: The name of a specific business entity associated with the client's
+        IP address when available; otherwise the ISP name
+      mode: NULLABLE
+      name: organization
+      type: STRING
+    description: Results of ISP lookup based on the client's IP address
+    mode: NULLABLE
+    name: isp
+    type: RECORD
+  - fields:
+    - description: null
+      mode: NULLABLE
+      name: browser
+      type: STRING
+    - description: null
+      mode: NULLABLE
+      name: os
+      type: STRING
+    - description: null
+      mode: NULLABLE
+      name: version
+      type: STRING
+    description: Parsed components of the client's user agent string
+    mode: NULLABLE
+    name: user_agent
+    type: RECORD
+  mode: NULLABLE
+  name: metadata
+  type: RECORD
+- description: Set to "Other" if this message contained an unrecognized app name
+  mode: NULLABLE
+  name: normalized_app_name
+  type: STRING
+- description: Set to "Other" if this message contained an unrecognized channel name
+  mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+- description: An ISO 3166-1 alpha-2 country code
+  mode: NULLABLE
+  name: normalized_country_code
+  type: STRING
+- description: Set to "Other" if this message contained an unrecognized OS name
+  mode: NULLABLE
+  name: normalized_os
+  type: STRING
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+- name: release_channel
+  type: STRING
+  mode: NULLABLE
+- description: Hashed version of client_id (if present) useful for partitioning; ranges
+    from 0 to 99
+  name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+- name: version
+  type: STRING
+  mode: NULLABLE
+- name: experiments
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: branch
+      type: STRING
+      mode: NULLABLE
+    - name: extra
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: enrollment_id
+        type: STRING
+        mode: NULLABLE
+      - name: type
+        type: STRING
+        mode: NULLABLE
+- description: A string describing the source of this event
+  name: source
+  type: STRING
+  mode: NULLABLE

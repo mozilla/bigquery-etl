@@ -349,6 +349,9 @@ fields:
     - name: fog_inits_during_shutdown
       type: INTEGER
       mode: NULLABLE
+    - name: bloburl_resolve_stopped
+      type: INTEGER
+      mode: NULLABLE
   - name: datetime
     type: RECORD
     mode: NULLABLE

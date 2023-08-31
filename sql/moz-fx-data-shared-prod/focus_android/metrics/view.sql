@@ -85,7 +85,8 @@ SELECT
       metrics.counter.dotprint_requested,
       metrics.counter.dotprint_android_dialog_requested,
       metrics.counter.translations_requests_count,
-      metrics.counter.fog_inits_during_shutdown
+      metrics.counter.fog_inits_during_shutdown,
+      metrics.counter.bloburl_resolve_stopped
     ) AS counter,
     metrics.datetime,
     STRUCT(
@@ -245,7 +246,8 @@ SELECT
       metrics.counter.dotprint_requested,
       metrics.counter.dotprint_android_dialog_requested,
       metrics.counter.translations_requests_count,
-      metrics.counter.fog_inits_during_shutdown
+      metrics.counter.fog_inits_during_shutdown,
+      metrics.counter.bloburl_resolve_stopped
     ) AS counter,
     metrics.datetime,
     STRUCT(

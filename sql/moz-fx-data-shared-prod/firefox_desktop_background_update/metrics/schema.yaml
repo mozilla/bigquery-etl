@@ -468,6 +468,13 @@ fields:
         Should never have a value for any session long enough to grow idle.
 
         '
+    - name: bloburl_resolve_stopped
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how many times we do not resolve a blob URL because of
+        different partition keys
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE

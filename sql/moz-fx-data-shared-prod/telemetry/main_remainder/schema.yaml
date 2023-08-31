@@ -25956,6 +25956,13 @@ fields:
             which is defined in toolkit/components/shopping/metrics.yaml.
 
             '
+        - name: bloburl_resolve_stopped
+          type: INTEGER
+          mode: NULLABLE
+          description: 'Counts how many times we do not resolve a blob URL because
+            of different partition keys
+
+            '
     - name: dynamic
       type: RECORD
       mode: NULLABLE

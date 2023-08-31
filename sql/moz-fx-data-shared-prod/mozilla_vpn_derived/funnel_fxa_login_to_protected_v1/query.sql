@@ -81,33 +81,39 @@ FROM
   fxa_login
 LEFT JOIN
   completed_login
-  ON first_completed_login
-  BETWEEN first_fxa_login
-  AND TIMESTAMP_ADD(first_fxa_login, INTERVAL 2 DAY)
+  ON (
+    first_completed_login
+    BETWEEN first_fxa_login
+    AND TIMESTAMP_ADD(first_fxa_login, INTERVAL 2 DAY)
+  )
   AND fxa_login.fxa_uid = completed_login.fxa_uid
 LEFT JOIN
   registered_user
-  ON first_registered_user
-  BETWEEN first_fxa_login
-  AND TIMESTAMP_ADD(first_fxa_login, INTERVAL 2 DAY)
+  ON (
+    first_registered_user
+    BETWEEN first_fxa_login
+    AND TIMESTAMP_ADD(first_fxa_login, INTERVAL 2 DAY)
+  )
   AND completed_login.fxa_uid = registered_user.fxa_uid
 LEFT JOIN
   paid_for_subscription
-  ON first_paid_for_subscription
-  BETWEEN first_fxa_login
-  AND TIMESTAMP_ADD(first_fxa_login, INTERVAL 2 DAY)
+  ON (
+    first_paid_for_subscription
+    BETWEEN first_fxa_login
+    AND TIMESTAMP_ADD(first_fxa_login, INTERVAL 2 DAY)
+  )
   AND registered_user.fxa_uid = paid_for_subscription.fxa_uid
 LEFT JOIN
   registered_device
-  ON first_registered_device
-  BETWEEN first_fxa_login
-  AND TIMESTAMP_ADD(first_fxa_login, INTERVAL 2 DAY)
+  ON (
+    first_registered_device
+    BETWEEN first_fxa_login
+    AND TIMESTAMP_ADD(first_fxa_login, INTERVAL 2 DAY)
+  )
   AND paid_for_subscription.fxa_uid = registered_device.fxa_uid
 LEFT JOIN
   protected
-  ON first_protected
-  BETWEEN first_fxa_login
-  AND TIMESTAMP_ADD(first_fxa_login, INTERVAL 2 DAY)
+  ON (first_protected BETWEEN first_fxa_login AND TIMESTAMP_ADD(first_fxa_login, INTERVAL 2 DAY))
   AND registered_device.fxa_uid = protected.fxa_uid
 WHERE
   DATE(first_fxa_login) >= '2020-05-01'

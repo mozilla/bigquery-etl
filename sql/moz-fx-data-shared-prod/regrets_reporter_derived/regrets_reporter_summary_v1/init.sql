@@ -70,9 +70,7 @@ wau_t AS (
     dates_t
   INNER JOIN
     base_t
-    ON date
-    BETWEEN DATE_SUB(dates_t.d, INTERVAL 6 DAY)
-    AND dates_t.d
+    ON (date BETWEEN DATE_SUB(dates_t.d, INTERVAL 6 DAY) AND dates_t.d)
   GROUP BY
     d,
     experiment_arm,

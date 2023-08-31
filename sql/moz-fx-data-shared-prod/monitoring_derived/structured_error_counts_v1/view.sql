@@ -50,8 +50,7 @@ structured_hourly_errors AS (
     ping_counts
   FULL OUTER JOIN
     error_counts
-  USING
-    (hour, document_namespace, document_type, document_version)
+    USING (hour, document_namespace, document_type, document_version)
 ),
 with_ratio AS (
   SELECT

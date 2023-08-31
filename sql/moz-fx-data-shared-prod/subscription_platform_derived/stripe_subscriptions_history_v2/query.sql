@@ -28,8 +28,7 @@ FROM
   subscriptions_history
 LEFT JOIN
   `moz-fx-data-shared-prod`.subscription_platform_derived.stripe_customers_history_v1 AS customers_history
-ON
-  subscriptions_history.subscription.customer_id = customers_history.customer.id
+  ON subscriptions_history.subscription.customer_id = customers_history.customer.id
   AND subscriptions_history.valid_from >= customers_history.valid_from
   AND subscriptions_history.valid_from < customers_history.valid_to
 UNION ALL
@@ -50,7 +49,6 @@ FROM
   subscriptions_history
 JOIN
   `moz-fx-data-shared-prod`.subscription_platform_derived.stripe_customers_history_v1 AS customers_history
-ON
-  subscriptions_history.subscription.customer_id = customers_history.customer.id
+  ON subscriptions_history.subscription.customer_id = customers_history.customer.id
   AND subscriptions_history.valid_from < customers_history.valid_from
   AND subscriptions_history.valid_to > customers_history.valid_from

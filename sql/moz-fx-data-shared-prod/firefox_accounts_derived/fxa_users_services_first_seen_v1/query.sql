@@ -114,8 +114,7 @@ flows AS (
     first_services_g s
   INNER JOIN
     fxa_content_auth_oauth AS f
-  ON
-    s.first_service_flow = f.flow_id
+    ON s.first_service_flow = f.flow_id
   WHERE
     f.entrypoint IS NOT NULL
     AND s.first_service_flow IS NOT NULL
@@ -137,7 +136,6 @@ FROM
   first_services_g s
 LEFT JOIN
   flows f
-USING
-  (first_service_flow)
+  USING (first_service_flow)
 WHERE
   first_service_flow IS NOT NULL

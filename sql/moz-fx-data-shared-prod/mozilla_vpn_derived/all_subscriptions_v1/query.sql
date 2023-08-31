@@ -117,16 +117,13 @@ stripe_subscriptions AS (
     stripe_subscriptions_history
   LEFT JOIN
     standardized_country
-  USING
-    (country)
+    USING (country)
   LEFT JOIN
     users
-  USING
-    (fxa_uid)
+    USING (fxa_uid)
   LEFT JOIN
     attribution
-  USING
-    (fxa_uid)
+    USING (fxa_uid)
   WHERE
     "guardian_vpn_1" IN UNNEST(stripe_subscriptions_history.product_capabilities)
     OR "guardian_vpn_1" IN UNNEST(stripe_subscriptions_history.plan_capabilities)
@@ -185,12 +182,10 @@ apple_iap_subscriptions AS (
     `moz-fx-data-shared-prod`.subscription_platform_derived.apple_subscriptions_v1 AS subplat
   LEFT JOIN
     users
-  USING
-    (fxa_uid)
+    USING (fxa_uid)
   LEFT JOIN
     attribution
-  USING
-    (fxa_uid)
+    USING (fxa_uid)
   WHERE
     subplat.product_id = "org.mozilla.ios.FirefoxVPN"
     AND subplat.fxa_uid IS NOT NULL
@@ -262,16 +257,13 @@ google_iap_subscriptions AS (
     `moz-fx-data-shared-prod`.subscription_platform_derived.google_subscriptions_v1 AS subscriptions
   LEFT JOIN
     standardized_country
-  USING
-    (country)
+    USING (country)
   LEFT JOIN
     users
-  USING
-    (fxa_uid)
+    USING (fxa_uid)
   LEFT JOIN
     attribution
-  USING
-    (fxa_uid)
+    USING (fxa_uid)
   WHERE
     subscriptions.product_id = "org.mozilla.firefox.vpn"
 ),

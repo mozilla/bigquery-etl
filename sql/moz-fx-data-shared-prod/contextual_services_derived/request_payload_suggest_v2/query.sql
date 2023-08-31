@@ -65,6 +65,5 @@ FROM
   quicksuggest qs
 LEFT JOIN
   ping_data pings
-ON
-  qs.context_id = pings.context_id
+  ON qs.context_id = pings.context_id
   AND qs.interaction_type = pings.interaction_type

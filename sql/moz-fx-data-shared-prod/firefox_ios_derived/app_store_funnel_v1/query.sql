@@ -39,12 +39,10 @@ store_stats AS (
     views_data
   JOIN
     downloads_data
-  USING
-    (`date`, country_name)
+    USING (`date`, country_name)
   JOIN
     static.country_codes_v1
-  ON
-    country_name = name
+    ON country_name = name
 ),
 new_profiles_and_activations AS (
   SELECT
@@ -77,5 +75,4 @@ FROM
   store_stats
 FULL OUTER JOIN
   new_profiles_and_activations
-USING
-  (`date`, country)
+  USING (`date`, country)

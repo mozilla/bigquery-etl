@@ -34,8 +34,7 @@ filtered AS (
     `moz-fx-data-shared-prod.telemetry_stable.main_v4`
   INNER JOIN
     valid_build_ids
-  ON
-    (application.build_id = build_id)
+    ON (application.build_id = build_id)
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND normalized_channel IN ("release", "beta", "nightly")

@@ -100,8 +100,7 @@ FROM
   reference
 FULL JOIN
   observed
-USING
-  (document_namespace, document_type, document_version, path)
+  USING (document_namespace, document_type, document_version, path)
 ORDER BY
   document_namespace,
   document_type,

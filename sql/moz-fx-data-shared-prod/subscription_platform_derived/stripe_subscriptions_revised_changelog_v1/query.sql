@@ -182,8 +182,7 @@ questionable_subscription_plan_changes AS (
     questionable_resync_changelog AS changelog
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.invoice_line_item_v1 AS invoice_line_items
-  ON
-    changelog.subscription.id = invoice_line_items.subscription_id
+    ON changelog.subscription.id = invoice_line_items.subscription_id
     AND invoice_line_items.type = 'subscription'
     AND invoice_line_items.period_start < changelog.subscription.metadata.plan_change_date
   WHERE
@@ -234,12 +233,10 @@ questionable_subscription_plans_history AS (
     questionable_subscription_plan_changes AS plan_changes
   LEFT JOIN
     `moz-fx-data-shared-prod`.stripe_external.plan_v1 AS plans
-  ON
-    plan_changes.plan_id = plans.id
+    ON plan_changes.plan_id = plans.id
   LEFT JOIN
     `moz-fx-data-shared-prod`.stripe_external.product_v1 AS products
-  ON
-    plans.product_id = products.id
+    ON plans.product_id = products.id
   WINDOW
     subscription_plan_changes_asc AS (
       PARTITION BY
@@ -264,8 +261,7 @@ synthetic_subscription_start_changelog AS (
     questionable_resync_changelog AS changelog
   LEFT JOIN
     questionable_subscription_plans_history AS plans_history
-  ON
-    changelog.subscription.id = plans_history.subscription_id
+    ON changelog.subscription.id = plans_history.subscription_id
     AND plans_history.subscription_plan_number = 1
 ),
 synthetic_plan_change_changelog AS (
@@ -284,8 +280,7 @@ synthetic_plan_change_changelog AS (
     questionable_subscription_plans_history AS plans_history
   JOIN
     questionable_resync_changelog AS changelog
-  ON
-    plans_history.subscription_id = changelog.subscription.id
+    ON plans_history.subscription_id = changelog.subscription.id
   WHERE
     plans_history.subscription_plan_number > 1
     AND plans_history.valid_from > changelog.subscription.start_date
@@ -306,8 +301,7 @@ synthetic_trial_start_changelog AS (
     questionable_resync_changelog AS changelog
   LEFT JOIN
     questionable_subscription_plans_history AS plans_history
-  ON
-    changelog.subscription.id = plans_history.subscription_id
+    ON changelog.subscription.id = plans_history.subscription_id
     AND changelog.subscription.trial_start >= plans_history.valid_from
     AND changelog.subscription.trial_start < plans_history.valid_to
   WHERE
@@ -329,8 +323,7 @@ synthetic_trial_end_changelog AS (
     questionable_resync_changelog AS changelog
   LEFT JOIN
     questionable_subscription_plans_history AS plans_history
-  ON
-    changelog.subscription.id = plans_history.subscription_id
+    ON changelog.subscription.id = plans_history.subscription_id
     AND changelog.subscription.trial_end >= plans_history.valid_from
     AND changelog.subscription.trial_end < plans_history.valid_to
   WHERE
@@ -361,8 +354,7 @@ synthetic_cancel_at_period_end_changelog AS (
     questionable_resync_changelog AS changelog
   LEFT JOIN
     questionable_subscription_plans_history AS plans_history
-  ON
-    changelog.subscription.id = plans_history.subscription_id
+    ON changelog.subscription.id = plans_history.subscription_id
     AND changelog.subscription.canceled_at >= plans_history.valid_from
     AND changelog.subscription.canceled_at < plans_history.valid_to
   WHERE

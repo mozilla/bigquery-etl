@@ -12,21 +12,18 @@ WITH client_shares AS (
     COUNT(
       CASE
   -- SUGGEST DESKTOP ELIGIBILITY REQUIREMENTS
-      WHEN
-        normalized_app_name = "Firefox Desktop"
-        AND
+        WHEN normalized_app_name = "Firefox Desktop"
+          AND
             -- desktop Suggest experiment start -- 12.5% exposure until 2022-09-21
-        (
-          submission_date >= "2022-06-07"
-          AND browser_version_info.major_version >= 92
-          AND browser_version_info.version NOT IN ('92', '92.', '92.0', '92.0.0')
-          AND country IN UNNEST(["US"])
-          AND locale LIKE "en%"
-        )
-      THEN
-        1
-      ELSE
-        NULL
+          (
+            submission_date >= "2022-06-07"
+            AND browser_version_info.major_version >= 92
+            AND browser_version_info.version NOT IN ('92', '92.', '92.0', '92.0.0')
+            AND country IN UNNEST(["US"])
+            AND locale LIKE "en%"
+          )
+          THEN 1
+        ELSE NULL
       END
     ) AS eligible_clients
   FROM
@@ -116,13 +113,10 @@ desktop_population AS (
     "desktop" AS device,
     COUNT(
       CASE
-      WHEN
-        impression_sponsored_count > 0
-        OR impression_nonsponsored_count > 0
-      THEN
-        client_id
-      ELSE
-        NULL
+        WHEN impression_sponsored_count > 0
+          OR impression_nonsponsored_count > 0
+          THEN client_id
+        ELSE NULL
       END
     ) AS suggest_exposed_clients,
     SUM(impression_sponsored_count + impression_nonsponsored_count) AS total_impressions,
@@ -153,20 +147,16 @@ FROM
   desktop_population
 LEFT JOIN
   client_shares
-USING
-  (country, submission_date)
+  USING (country, submission_date)
 LEFT JOIN
   suggest_clients
-USING
-  (submission_date, country)
+  USING (submission_date, country)
 LEFT JOIN
   urlbar_clients
-USING
-  (submission_date, country)
+  USING (submission_date, country)
 LEFT JOIN
   grand_total
-USING
-  (submission_date)
+  USING (submission_date)
 WHERE
   submission_date = @submission_date
 ORDER BY

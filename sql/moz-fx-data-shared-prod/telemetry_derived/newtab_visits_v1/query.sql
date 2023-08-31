@@ -247,16 +247,13 @@ combined_newtab_activity AS (
     visit_metadata
   LEFT JOIN
     search_summary
-  USING
-    (newtab_visit_id)
+    USING (newtab_visit_id)
   LEFT JOIN
     topsites_summary
-  USING
-    (newtab_visit_id)
+    USING (newtab_visit_id)
   LEFT JOIN
     pocket_summary
-  USING
-    (newtab_visit_id)
+    USING (newtab_visit_id)
   WHERE
    -- Keep only rows with interactions, unless we receive a valid newtab.opened event.
    -- This is meant to drop only interactions that only have a newtab.closed event on the same partition
@@ -284,5 +281,4 @@ FROM
   combined_newtab_activity
 LEFT JOIN
   client_profile_info
-USING
-  (legacy_telemetry_client_id)
+  USING (legacy_telemetry_client_id)

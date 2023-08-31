@@ -111,8 +111,7 @@ first_session_ping AS (
     fenix.first_session AS fenix_first_session
   LEFT JOIN
     first_session_ping_min_seq
-  ON
-    (
+    ON (
       client_info.client_id = first_session_ping_min_seq.client_id
       AND ping_info.seq = first_session_ping_min_seq.seq
       AND fenix_first_session.sample_id = first_session_ping_min_seq.sample_id
@@ -306,20 +305,16 @@ _current AS (
     first_seen
   FULL OUTER JOIN
     first_session_ping first_session
-  USING
-    (client_id)
+    USING (client_id)
   FULL OUTER JOIN
     metrics_ping AS metrics
-  USING
-    (client_id)
+    USING (client_id)
   FULL OUTER JOIN
     baseline_ping AS baseline
-  USING
-    (client_id)
+    USING (client_id)
   FULL OUTER JOIN
     activations
-  USING
-    (client_id)
+    USING (client_id)
   WHERE
     client_id IS NOT NULL
 ),
@@ -454,5 +449,4 @@ FROM
   _current
 FULL OUTER JOIN
   _previous
-USING
-  (client_id)
+  USING (client_id)

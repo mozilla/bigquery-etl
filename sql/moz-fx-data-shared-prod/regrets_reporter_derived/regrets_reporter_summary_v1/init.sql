@@ -70,8 +70,7 @@ wau_t AS (
     dates_t
   INNER JOIN
     base_t
-  ON
-    date
+    ON date
     BETWEEN DATE_SUB(dates_t.d, INTERVAL 6 DAY)
     AND dates_t.d
   GROUP BY
@@ -138,9 +137,7 @@ FROM
   dau_t
 FULL JOIN
   wau_t
-USING
-  (date, experiment_arm, ui_arm, country, browser, activities)
+  USING (date, experiment_arm, ui_arm, country, browser, activities)
 FULL JOIN
   new_user_t
-USING
-  (date, experiment_arm, ui_arm, country, browser, activities)
+  USING (date, experiment_arm, ui_arm, country, browser, activities)

@@ -82,8 +82,7 @@ joined AS (
     events
   INNER JOIN
     mozilla_vpn.event_types event_types
-  USING
-    (category, event)
+    USING (category, event)
 )
 SELECT
   submission_date,

@@ -113,8 +113,7 @@ clients_histogram_aggregates_old AS (
     clients_histogram_aggregates_partition AS hist_aggs
   LEFT JOIN
     latest_versions
-  ON
-    latest_versions.channel = hist_aggs.channel
+    ON latest_versions.channel = hist_aggs.channel
   WHERE
     app_version >= (latest_version - 2)
 ),
@@ -146,8 +145,7 @@ merged AS (
     clients_histogram_aggregates_old AS old_data
   FULL OUTER JOIN
     clients_histogram_aggregates_new AS new_data
-  ON
-    new_data.join_key = old_data.join_key
+    ON new_data.join_key = old_data.join_key
 )
 SELECT
   @submission_date AS submission_date,

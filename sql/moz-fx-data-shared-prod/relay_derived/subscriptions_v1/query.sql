@@ -96,8 +96,7 @@ relay_subscriptions AS (
     stripe_subscriptions_history
   LEFT JOIN
     standardized_country
-  USING
-    (country)
+    USING (country)
   -- LEFT JOIN
   --   users
   -- USING

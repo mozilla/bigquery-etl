@@ -55,8 +55,7 @@ CREATE OR REPLACE FUNCTION udf.add_monthly_searches(
       curr_tbl AS c
     FULL OUTER JOIN
       prev_tbl AS p
-    USING
-      (key)
+      USING (key)
   )
 );
 
@@ -399,5 +398,4 @@ FROM
   results
 INNER JOIN
   expected
-USING
-  (p_type, c_type, date);
+  USING (p_type, c_type, date);

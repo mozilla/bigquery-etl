@@ -57,9 +57,8 @@ WITH
     `{live_table}`
   JOIN
     distinct_document_ids
-  USING
     -- Retain only the first seen documents for each ID, according to timestamp.
-    (document_id, submission_timestamp)
+    USING (document_id, submission_timestamp)
   WHERE
     submission_timestamp >= @start_time
     AND submission_timestamp < @end_time),

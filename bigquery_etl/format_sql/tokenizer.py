@@ -55,7 +55,6 @@ TOP_LEVEL_KEYWORDS = [
     "LEFT JOIN",
     "LEFT OUTER JOIN",
     "LIMIT",
-    "ON",
     "ORDER BY",
     "OUTER JOIN",
     "PARTITION BY",
@@ -76,7 +75,6 @@ TOP_LEVEL_KEYWORDS = [
     "UNION ALL",
     "UNION DISTINCT",
     "UNION",
-    "USING",
     "VALUES",
     "WHERE",
     "WITH(?! OFFSET)",
@@ -84,6 +82,8 @@ TOP_LEVEL_KEYWORDS = [
 ]
 # These words start a new line at the current indent
 NEWLINE_KEYWORDS = [
+    "ON",
+    "USING",
     "WITH OFFSET",
     # UDF
     "CREATE OR REPLACE",

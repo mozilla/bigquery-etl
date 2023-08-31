@@ -20,5 +20,4 @@ FROM
   conversion_counts
 JOIN
   `moz-fx-data-shared-prod`.google_ads_derived.campaign_names_map_v1
-USING
-  (campaign_id)
+  USING (campaign_id)

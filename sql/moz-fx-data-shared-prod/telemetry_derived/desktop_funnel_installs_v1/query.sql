@@ -7,7 +7,7 @@ AS
       return 'Unknown';
     }
 
-    try {    
+    try {
       pt1 = input.split('26ua%3D')[1];
       pt2 = pt1.split('%')[0];
       return pt2;
@@ -31,8 +31,7 @@ FROM
   firefox_installer.install
 LEFT JOIN
   `moz-fx-data-shared-prod`.static.country_codes_v1 country_codes
-ON
-  (country_codes.code = normalized_country_code)
+  ON (country_codes.code = normalized_country_code)
 WHERE
   DATE(submission_timestamp) = @submission_date
 GROUP BY

@@ -52,9 +52,7 @@ FROM
   decoded_counts
 FULL JOIN
   stable_counts
-USING
-  (submission_date, doc_type)
+  USING (submission_date, doc_type)
 FULL JOIN
   live_counts
-USING
-  (submission_date, doc_type)
+  USING (submission_date, doc_type)

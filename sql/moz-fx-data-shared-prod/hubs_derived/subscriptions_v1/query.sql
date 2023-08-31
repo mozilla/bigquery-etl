@@ -87,8 +87,7 @@ hubs_subscriptions AS (
     stripe_subscriptions_history
   LEFT JOIN
     standardized_country
-  USING
-    (country)
+    USING (country)
   WHERE
     "managed-hubs" IN UNNEST(stripe_subscriptions_history.product_capabilities)
     OR "managed-hubs" IN UNNEST(stripe_subscriptions_history.plan_capabilities)

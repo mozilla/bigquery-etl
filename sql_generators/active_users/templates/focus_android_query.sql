@@ -87,8 +87,7 @@ search_metrics AS (
     unioned
   LEFT JOIN
     search_clients s
-  ON
-    unioned.client_id = s.client_id
+    ON unioned.client_id = s.client_id
     AND unioned.submission_date = s.submission_date
   GROUP BY
     client_id,
@@ -162,8 +161,7 @@ unioned_with_searches AS (
     unioned
   LEFT JOIN
     search_metrics search
-  ON
-    search.client_id = unioned.client_id
+    ON search.client_id = unioned.client_id
     AND search.submission_date = unioned.submission_date
 ),
 todays_metrics AS (
@@ -214,8 +212,7 @@ todays_metrics_enriched AS (
     todays_metrics
   LEFT JOIN
     `mozdata.static.csa_gblmkt_languages` AS languages
-  ON
-    todays_metrics.locale = languages.code
+    ON todays_metrics.locale = languages.code
 )
 SELECT
   todays_metrics_enriched.* EXCEPT (

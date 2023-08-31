@@ -11,8 +11,7 @@ CREATE TEMP FUNCTION extract_popup_notification_stats(h STRING) AS (
             UNNEST(GENERATE_ARRAY(0, 31)) AS idx
           LEFT JOIN
             UNNEST(mozfun.hist.extract(h).values) AS extracted
-          ON
-            (extracted.key = idx)
+            ON (extracted.key = idx)
           ORDER BY
             idx
         )

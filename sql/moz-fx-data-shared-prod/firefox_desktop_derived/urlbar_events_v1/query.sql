@@ -58,7 +58,7 @@ WITH events_unnested AS (
     metrics.uuid.legacy_telemetry_client_id AS legacy_telemetry_client_id,
     ping_info.experiments
   FROM
-    `{{ project_id }}.{{ app_name }}_stable.events_v1`,
+    `moz-fx-data-shared-prod.firefox_desktop_stable.events_v1`,
     UNNEST(events)
   WHERE
     DATE(submission_timestamp) = @submission_date

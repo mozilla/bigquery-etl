@@ -49,8 +49,8 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    firefox_desktop_urlbar_events = bigquery_etl_query(
-        task_id="firefox_desktop_urlbar_events",
+    firefox_desktop_urlbar_events__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_urlbar_events__v1",
         destination_table="urlbar_events_v1",
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
@@ -96,7 +96,7 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    firefox_desktop_urlbar_events.set_upstream(wait_for_copy_deduplicate_all)
+    firefox_desktop_urlbar_events__v1.set_upstream(wait_for_copy_deduplicate_all)
 
     wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_daily_joined__v1",

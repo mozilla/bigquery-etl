@@ -153,6 +153,18 @@ with DAG(
         email=["ascholtz@mozilla.com"],
     )
 
+    monitoring_derived__jobs_by_organization__v1 = gke_command(
+        task_id="monitoring_derived__jobs_by_organization__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/monitoring_derived/jobs_by_organization_v1/query.py",
+        ]
+        + [],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="mhirose@mozilla.com",
+        email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
+    )
+
     monitoring_derived__schema_error_counts__v2 = bigquery_etl_query(
         task_id="monitoring_derived__schema_error_counts__v2",
         destination_table="schema_error_counts_v2",

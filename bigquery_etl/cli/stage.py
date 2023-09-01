@@ -139,6 +139,9 @@ def deploy(
         name = artifact_file.parent.name
         test_path = TEST_DIR / project / dataset / name
 
+        if dataset == "INFORMATION_SCHEMA" or "INFORMATION_SCHEMA" in name:
+            continue
+
         if dataset_suffix:
             dataset = f"{dataset}_{dataset_suffix}"
 
@@ -225,9 +228,14 @@ def _view_dependencies(artifact_files, sql_dir):
 
             for dependency in view.table_references:
                 dependency_components = dependency.split(".")
+                if dependency_components[1:2] == ["INFORMATION_SCHEMA"]:
+                    dependency_components.insert(0, view.project)
                 if dependency_components[2:3] == ["INFORMATION_SCHEMA"]:
-                    # INFORMATION_SCHEMA has more components that can be ignored here
-                    dependency_components = dependency_components[:3]
+                    # INFORMATION_SCHEMA has more components that will be treated as the table name
+                    # no deploys for INFORMATION_SCHEMA will happen later on
+                    dependency_components = dependency_components[:2] + [
+                        ".".join(dependency_components[2:])
+                    ]
                 if len(dependency_components) != 3:
                     raise ValueError(
                         f"Invalid table reference {dependency} in view {view.name}. "
@@ -286,7 +294,11 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
         name_pattern = name.replace("*", r"\*")  # match literal *
         original_dataset = artifact_file.parent.parent.name
         deployed_dataset = original_dataset
-        if dataset_suffix:
+        if dataset_suffix and original_dataset not in (
+            "INFORMATION_SCHEMA",
+            "region-eu",
+            "region-us",
+        ):
             deployed_dataset += f"_{dataset_suffix}"
         original_project = artifact_file.parent.parent.parent.name
         deployed_project = project_id

@@ -162,7 +162,7 @@ fields:
 
 - mode: NULLABLE
   name: transferred_bytes
-  type: INTERGER
+  type: INTEGER
   description: Total bytes transferred for cross-cloud queries, such as BigQuery Omni cross-cloud transfer jobs.
 
 - mode: NULLABLE

@@ -284,8 +284,6 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
     for artifact_file in artifact_files:
         name = artifact_file.parent.name
         name_pattern = name.replace("*", r"\*")  # match literal *
-        if "*" in name:
-            name = f"`{name}`"  # put wildcard tables names in quotes
         original_dataset = artifact_file.parent.parent.name
         deployed_dataset = original_dataset
         if dataset_suffix:

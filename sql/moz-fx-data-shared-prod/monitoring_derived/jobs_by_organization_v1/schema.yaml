@@ -13,6 +13,16 @@ fields:
 - mode: NULLABLE
   name: destination_table
   type: RECORD
+  fields:
+  - mode: NULLABLE
+    name: projectId
+    type: STRING
+  - mode: NULLABLE
+    name: datasetId
+    type: STRING
+  - mode: NULLABLE
+    name: tableId
+    type: STRING
   description: Destination table for results, if any.
 
 - mode: NULLABLE
@@ -23,6 +33,19 @@ fields:
 - mode: NULLABLE
   name: error_result
   type: RECORD
+  fields:
+  - mode: NULLABLE
+    name: reason
+    type: STRING
+  - mode: NULLABLE
+    name: location
+    type: STRING
+  - mode: NULLABLE
+    name: debugInfo
+    type: STRING
+  - mode: NULLABLE
+    name: message
+    type: STRING
   description: Details of any errors as ErrorProto objects.
 
 - mode: NULLABLE
@@ -31,19 +54,9 @@ fields:
   description: The ID of the job. For example, bquxjob_1234.
 
 - mode: NULLABLE
-  name: job_stages
-  type: RECORD
-  description: Query stages of the job.
-
-- mode: NULLABLE
   name: job_type
   type: STRING
   description: The type of the job. Can be QUERY, LOAD, EXTRACT, COPY, or NULL.
-
-- mode: NULLABLE
-  name: labels
-  type: RECORD
-  description: Array of labels applied to the job as key-value pairs.
 
 - mode: NULLABLE
   name: parent_job_id
@@ -78,6 +91,16 @@ fields:
 - mode: NULLABLE
   name: referenced_tables
   type: RECORD
+  fields:
+  - mode: NULLABLE
+    name: projectID
+    type: STRING
+  - mode: NULLABLE
+    name: datasetId
+    type: STRING
+  - mode: NULLABLE
+    name: tableId
+    type: STRING
   description: Array of tables referenced by the job. Only populated for query jobs.
 
 - mode: NULLABLE

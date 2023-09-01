@@ -27,7 +27,7 @@ parser.add_argument("--date", required=True)  # expect string with format yyyy-m
 parser.add_argument("--project", default="moz-fx-data-shared-prod")
 parser.add_argument("--destination_project", default="moz-fx-data-shared-prod")
 parser.add_argument("--destination_dataset", default="monitoring_derived")
-parser.add_argument("--destination_table", default="jobs_by_organization")
+parser.add_argument("--destination_table", default="jobs_by_organization_v1")
 
 
 def create_query(date, project):

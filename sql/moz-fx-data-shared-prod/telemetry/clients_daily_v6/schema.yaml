@@ -1773,3 +1773,6 @@ fields:
 - name: total_uri_count_private_mode
   type: INTEGER
   mode: NULLABLE
+- name: has_adblocker_enabled
+  type: BOOLEAN
+  mode: NULLABLE

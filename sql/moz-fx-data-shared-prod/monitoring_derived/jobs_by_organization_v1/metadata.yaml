@@ -8,7 +8,7 @@ labels:
   incremental: true
   owner1: mhirose
 scheduling:
-  dag_name: bqetl_jobs_by_org_derived
+  dag_name: bqetl_monitoring
 bigquery:
   time_partitioning:
     type: day

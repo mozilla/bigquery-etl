@@ -162,7 +162,7 @@ with DAG(
         + [],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="mhirose@mozilla.com",
-        email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=["ascholtz@mozilla.com", "mhirose@mozilla.com"],
     )
 
     monitoring_derived__schema_error_counts__v2 = bigquery_etl_query(

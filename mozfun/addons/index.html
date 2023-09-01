@@ -13,17 +13,17 @@
       
       
       
-        <link rel="prev" href="../introduction/">
+        <link rel="prev" href="../about/">
       
       
-        <link rel="next" href="../accounts_frontend/">
+        <link rel="next" href="../bits28/">
       
       <link rel="icon" href="../../favicon.png">
       <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.21">
     
     
       
-        <title>accounts-backend - BigQuery ETL</title>
+        <title>Addons - BigQuery ETL</title>
       
     
     
@@ -71,7 +71,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#accounts_events" class="md-skip">
+        <a href="#is_adblocker-udf" class="md-skip">
           Skip to content
         </a>
       
@@ -104,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              accounts-backend
+              Addons
             
           </span>
         </div>
@@ -190,8 +190,6 @@
         
   
   
-    
-  
 
 
   
@@ -203,7 +201,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../introduction/" class="md-tabs__link md-tabs__link--active">
+      <a href="../../mozdata/introduction/" class="md-tabs__link">
         Datasets
       </a>
     </li>
@@ -215,6 +213,8 @@
         
   
   
+    
+  
 
 
   
@@ -226,7 +226,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../mozfun/about/" class="md-tabs__link">
+      <a href="../about/" class="md-tabs__link md-tabs__link--active">
         UDFs
       </a>
     </li>
@@ -332,16 +332,14 @@
 
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
       
       
       
@@ -350,7 +348,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           Datasets
@@ -361,16 +359,14 @@
               
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" checked>
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
       
       
       
@@ -379,7 +375,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="true">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2_1">
           <span class="md-nav__icon md-icon"></span>
           Mozdata
@@ -392,7 +388,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../introduction/" class="md-nav__link">
+      <a href="../../mozdata/introduction/" class="md-nav__link">
         Introduction
       </a>
     </li>
@@ -404,90 +400,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          accounts-backend
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../mozdata/accounts_backend/" class="md-nav__link">
         accounts-backend
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#accounts_events" class="md-nav__link">
-    accounts_events
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#baseline" class="md-nav__link">
-    baseline
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deletion_request" class="md-nav__link">
-    deletion_request
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#events" class="md-nav__link">
-    events
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#events_unnested" class="md-nav__link">
-    events_unnested
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#metrics" class="md-nav__link">
-    metrics
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#metrics_clients_daily" class="md-nav__link">
-    metrics_clients_daily
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -499,7 +416,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../accounts_frontend/" class="md-nav__link">
+      <a href="../../mozdata/accounts_frontend/" class="md-nav__link">
         accounts-frontend
       </a>
     </li>
@@ -513,7 +430,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../activity_stream/" class="md-nav__link">
+      <a href="../../mozdata/activity_stream/" class="md-nav__link">
         Activity Stream
       </a>
     </li>
@@ -527,7 +444,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../adjust/" class="md-nav__link">
+      <a href="../../mozdata/adjust/" class="md-nav__link">
         Adjust
       </a>
     </li>
@@ -541,7 +458,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../amo_dev/" class="md-nav__link">
+      <a href="../../mozdata/amo_dev/" class="md-nav__link">
         AMO Stats Dev
       </a>
     </li>
@@ -555,7 +472,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../amo_prod/" class="md-nav__link">
+      <a href="../../mozdata/amo_prod/" class="md-nav__link">
         AMO Stats Prod
       </a>
     </li>
@@ -569,7 +486,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../analysis/" class="md-nav__link">
+      <a href="../../mozdata/analysis/" class="md-nav__link">
         Analysis
       </a>
     </li>
@@ -583,7 +500,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../app_store/" class="md-nav__link">
+      <a href="../../mozdata/app_store/" class="md-nav__link">
         App Store
       </a>
     </li>
@@ -597,7 +514,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../apple_ads/" class="md-nav__link">
+      <a href="../../mozdata/apple_ads/" class="md-nav__link">
         Apple Ads
       </a>
     </li>
@@ -611,7 +528,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../bedrock/" class="md-nav__link">
+      <a href="../../mozdata/bedrock/" class="md-nav__link">
         bedrock
       </a>
     </li>
@@ -625,7 +542,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../bergamot/" class="md-nav__link">
+      <a href="../../mozdata/bergamot/" class="md-nav__link">
         Bergamot
       </a>
     </li>
@@ -639,7 +556,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../blpadi/" class="md-nav__link">
+      <a href="../../mozdata/blpadi/" class="md-nav__link">
         Blocklist ADI
       </a>
     </li>
@@ -653,7 +570,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../burnham/" class="md-nav__link">
+      <a href="../../mozdata/burnham/" class="md-nav__link">
         burnham
       </a>
     </li>
@@ -667,7 +584,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../contextual_services/" class="md-nav__link">
+      <a href="../../mozdata/contextual_services/" class="md-nav__link">
         contextual-services
       </a>
     </li>
@@ -681,7 +598,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../coverage/" class="md-nav__link">
+      <a href="../../mozdata/coverage/" class="md-nav__link">
         coverage
       </a>
     </li>
@@ -695,7 +612,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../default_browser_agent/" class="md-nav__link">
+      <a href="../../mozdata/default_browser_agent/" class="md-nav__link">
         default-browser-agent
       </a>
     </li>
@@ -709,7 +626,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../edge_validator/" class="md-nav__link">
+      <a href="../../mozdata/edge_validator/" class="md-nav__link">
         edge-validator
       </a>
     </li>
@@ -723,7 +640,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../eng_workflow/" class="md-nav__link">
+      <a href="../../mozdata/eng_workflow/" class="md-nav__link">
         eng-workflow
       </a>
     </li>
@@ -737,7 +654,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../fenix/" class="md-nav__link">
+      <a href="../../mozdata/fenix/" class="md-nav__link">
         Fenix
       </a>
     </li>
@@ -751,7 +668,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_accounts/" class="md-nav__link">
+      <a href="../../mozdata/firefox_accounts/" class="md-nav__link">
         Firefox Accounts
       </a>
     </li>
@@ -765,7 +682,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_desktop/" class="md-nav__link">
+      <a href="../../mozdata/firefox_desktop/" class="md-nav__link">
         Firefox Desktop
       </a>
     </li>
@@ -779,7 +696,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_desktop_background_tasks/" class="md-nav__link">
+      <a href="../../mozdata/firefox_desktop_background_tasks/" class="md-nav__link">
         firefox-desktop-background-tasks
       </a>
     </li>
@@ -793,7 +710,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_desktop_background_update/" class="md-nav__link">
+      <a href="../../mozdata/firefox_desktop_background_update/" class="md-nav__link">
         firefox-desktop-background-update
       </a>
     </li>
@@ -807,7 +724,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_echo_show/" class="md-nav__link">
+      <a href="../../mozdata/firefox_echo_show/" class="md-nav__link">
         Firefox Echo Show
       </a>
     </li>
@@ -821,7 +738,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_fire_tv/" class="md-nav__link">
+      <a href="../../mozdata/firefox_fire_tv/" class="md-nav__link">
         Firefox Fire Tv
       </a>
     </li>
@@ -835,7 +752,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_installer/" class="md-nav__link">
+      <a href="../../mozdata/firefox_installer/" class="md-nav__link">
         firefox-installer
       </a>
     </li>
@@ -849,7 +766,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_ios/" class="md-nav__link">
+      <a href="../../mozdata/firefox_ios/" class="md-nav__link">
         Firefox iOS
       </a>
     </li>
@@ -863,7 +780,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_launcher_process/" class="md-nav__link">
+      <a href="../../mozdata/firefox_launcher_process/" class="md-nav__link">
         firefox-launcher-process
       </a>
     </li>
@@ -877,7 +794,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_reality/" class="md-nav__link">
+      <a href="../../mozdata/firefox_reality/" class="md-nav__link">
         Firefox Reality
       </a>
     </li>
@@ -891,7 +808,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_reality_pc/" class="md-nav__link">
+      <a href="../../mozdata/firefox_reality_pc/" class="md-nav__link">
         Firefox Reality Pc
       </a>
     </li>
@@ -905,7 +822,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_translations/" class="md-nav__link">
+      <a href="../../mozdata/firefox_translations/" class="md-nav__link">
         firefox-translations
       </a>
     </li>
@@ -919,7 +836,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../fivetran_costs/" class="md-nav__link">
+      <a href="../../mozdata/fivetran_costs/" class="md-nav__link">
         Fivetran Costs
       </a>
     </li>
@@ -933,7 +850,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../focus_android/" class="md-nav__link">
+      <a href="../../mozdata/focus_android/" class="md-nav__link">
         Focus Android
       </a>
     </li>
@@ -947,7 +864,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../focus_ios/" class="md-nav__link">
+      <a href="../../mozdata/focus_ios/" class="md-nav__link">
         Focus Ios
       </a>
     </li>
@@ -961,7 +878,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../glean_dictionary/" class="md-nav__link">
+      <a href="../../mozdata/glean_dictionary/" class="md-nav__link">
         glean-dictionary
       </a>
     </li>
@@ -975,7 +892,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../google_ads/" class="md-nav__link">
+      <a href="../../mozdata/google_ads/" class="md-nav__link">
         Google_ads
       </a>
     </li>
@@ -989,7 +906,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../hubs/" class="md-nav__link">
+      <a href="../../mozdata/hubs/" class="md-nav__link">
         Hubs
       </a>
     </li>
@@ -1003,7 +920,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../internet_outages/" class="md-nav__link">
+      <a href="../../mozdata/internet_outages/" class="md-nav__link">
         Internet Outages
       </a>
     </li>
@@ -1017,7 +934,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../klar_android/" class="md-nav__link">
+      <a href="../../mozdata/klar_android/" class="md-nav__link">
         Klar Android
       </a>
     </li>
@@ -1031,7 +948,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../klar_ios/" class="md-nav__link">
+      <a href="../../mozdata/klar_ios/" class="md-nav__link">
         Klar Ios
       </a>
     </li>
@@ -1045,7 +962,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../lockwise_android/" class="md-nav__link">
+      <a href="../../mozdata/lockwise_android/" class="md-nav__link">
         Lockwise Android
       </a>
     </li>
@@ -1059,7 +976,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../lockwise_ios/" class="md-nav__link">
+      <a href="../../mozdata/lockwise_ios/" class="md-nav__link">
         Lockwise Ios
       </a>
     </li>
@@ -1073,7 +990,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mach/" class="md-nav__link">
+      <a href="../../mozdata/mach/" class="md-nav__link">
         Mach
       </a>
     </li>
@@ -1087,7 +1004,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mdn_yari/" class="md-nav__link">
+      <a href="../../mozdata/mdn_yari/" class="md-nav__link">
         mdn-yari
       </a>
     </li>
@@ -1101,7 +1018,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../messaging_system/" class="md-nav__link">
+      <a href="../../mozdata/messaging_system/" class="md-nav__link">
         messaging-system
       </a>
     </li>
@@ -1115,7 +1032,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mlhackweek_search/" class="md-nav__link">
+      <a href="../../mozdata/mlhackweek_search/" class="md-nav__link">
         mlhackweek-search
       </a>
     </li>
@@ -1129,7 +1046,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mobile/" class="md-nav__link">
+      <a href="../../mozdata/mobile/" class="md-nav__link">
         mobile
       </a>
     </li>
@@ -1143,7 +1060,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../monitoring/" class="md-nav__link">
+      <a href="../../mozdata/monitoring/" class="md-nav__link">
         Monitoring
       </a>
     </li>
@@ -1157,7 +1074,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozdata/" class="md-nav__link">
+      <a href="../../mozdata/mozdata/" class="md-nav__link">
         mozdata
       </a>
     </li>
@@ -1171,7 +1088,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozilla_lockbox/" class="md-nav__link">
+      <a href="../../mozdata/mozilla_lockbox/" class="md-nav__link">
         mozilla-lockbox
       </a>
     </li>
@@ -1185,7 +1102,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozilla_mach/" class="md-nav__link">
+      <a href="../../mozdata/mozilla_mach/" class="md-nav__link">
         mozilla-mach
       </a>
     </li>
@@ -1199,7 +1116,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozilla_vpn/" class="md-nav__link">
+      <a href="../../mozdata/mozilla_vpn/" class="md-nav__link">
         Mozilla VPN
       </a>
     </li>
@@ -1213,7 +1130,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozillavpn/" class="md-nav__link">
+      <a href="../../mozdata/mozillavpn/" class="md-nav__link">
         mozillavpn
       </a>
     </li>
@@ -1227,7 +1144,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozphab/" class="md-nav__link">
+      <a href="../../mozdata/mozphab/" class="md-nav__link">
         mozphab
       </a>
     </li>
@@ -1241,7 +1158,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozregression/" class="md-nav__link">
+      <a href="../../mozdata/mozregression/" class="md-nav__link">
         Mozregression
       </a>
     </li>
@@ -1255,7 +1172,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozza/" class="md-nav__link">
+      <a href="../../mozdata/mozza/" class="md-nav__link">
         mozza
       </a>
     </li>
@@ -1269,7 +1186,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../operational_monitoring/" class="md-nav__link">
+      <a href="../../mozdata/operational_monitoring/" class="md-nav__link">
         Operational Monitoring
       </a>
     </li>
@@ -1283,7 +1200,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_bergamot/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_bergamot/" class="md-nav__link">
         org-mozilla-bergamot
       </a>
     </li>
@@ -1297,7 +1214,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_connect_firefox/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_connect_firefox/" class="md-nav__link">
         org-mozilla-connect-firefox
       </a>
     </li>
@@ -1311,7 +1228,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_fenix/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_fenix/" class="md-nav__link">
         org-mozilla-fenix
       </a>
     </li>
@@ -1325,7 +1242,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_fenix_nightly/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_fenix_nightly/" class="md-nav__link">
         org-mozilla-fenix-nightly
       </a>
     </li>
@@ -1339,7 +1256,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_fennec_aurora/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_fennec_aurora/" class="md-nav__link">
         org-mozilla-fennec-aurora
       </a>
     </li>
@@ -1353,7 +1270,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_firefox/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_firefox/" class="md-nav__link">
         org-mozilla-firefox
       </a>
     </li>
@@ -1367,7 +1284,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_firefox_beta/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_firefox_beta/" class="md-nav__link">
         Org Mozilla Firefox Beta
       </a>
     </li>
@@ -1381,7 +1298,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_firefox_vpn/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_firefox_vpn/" class="md-nav__link">
         org-mozilla-firefox-vpn
       </a>
     </li>
@@ -1395,7 +1312,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_firefoxreality/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_firefoxreality/" class="md-nav__link">
         org-mozilla-firefoxreality
       </a>
     </li>
@@ -1409,7 +1326,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_focus/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_focus/" class="md-nav__link">
         org-mozilla-focus
       </a>
     </li>
@@ -1423,7 +1340,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_focus_beta/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_focus_beta/" class="md-nav__link">
         org-mozilla-focus-beta
       </a>
     </li>
@@ -1437,7 +1354,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_focus_nightly/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_focus_nightly/" class="md-nav__link">
         org-mozilla-focus-nightly
       </a>
     </li>
@@ -1451,7 +1368,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_ios_fennec/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_fennec/" class="md-nav__link">
         org-mozilla-ios-fennec
       </a>
     </li>
@@ -1465,7 +1382,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_ios_firefox/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_firefox/" class="md-nav__link">
         org-mozilla-ios-firefox
       </a>
     </li>
@@ -1479,7 +1396,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_ios_firefoxbeta/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_firefoxbeta/" class="md-nav__link">
         org-mozilla-ios-firefoxbeta
       </a>
     </li>
@@ -1493,7 +1410,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_ios_firefoxvpn/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_firefoxvpn/" class="md-nav__link">
         org-mozilla-ios-firefoxvpn
       </a>
     </li>
@@ -1507,7 +1424,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_ios_focus/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_focus/" class="md-nav__link">
         org-mozilla-ios-focus
       </a>
     </li>
@@ -1521,7 +1438,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_ios_klar/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_klar/" class="md-nav__link">
         org-mozilla-ios-klar
       </a>
     </li>
@@ -1535,7 +1452,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_ios_lockbox/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_lockbox/" class="md-nav__link">
         org-mozilla-ios-lockbox
       </a>
     </li>
@@ -1549,7 +1466,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_klar/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_klar/" class="md-nav__link">
         org-mozilla-klar
       </a>
     </li>
@@ -1563,7 +1480,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_mozregression/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_mozregression/" class="md-nav__link">
         org-mozilla-mozregression
       </a>
     </li>
@@ -1577,7 +1494,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_reference_browser/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_reference_browser/" class="md-nav__link">
         org-mozilla-reference-browser
       </a>
     </li>
@@ -1591,7 +1508,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_tv_firefox/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_tv_firefox/" class="md-nav__link">
         org-mozilla-tv-firefox
       </a>
     </li>
@@ -1605,7 +1522,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_vrbrowser/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_vrbrowser/" class="md-nav__link">
         org-mozilla-vrbrowser
       </a>
     </li>
@@ -1619,7 +1536,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../pine/" class="md-nav__link">
+      <a href="../../mozdata/pine/" class="md-nav__link">
         pine
       </a>
     </li>
@@ -1633,7 +1550,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../pocket/" class="md-nav__link">
+      <a href="../../mozdata/pocket/" class="md-nav__link">
         pocket
       </a>
     </li>
@@ -1647,7 +1564,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference_browser/" class="md-nav__link">
+      <a href="../../mozdata/reference_browser/" class="md-nav__link">
         Reference Browser
       </a>
     </li>
@@ -1661,7 +1578,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../regrets_reporter/" class="md-nav__link">
+      <a href="../../mozdata/regrets_reporter/" class="md-nav__link">
         regrets-reporter
       </a>
     </li>
@@ -1675,7 +1592,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../regrets_reporter_ucs/" class="md-nav__link">
+      <a href="../../mozdata/regrets_reporter_ucs/" class="md-nav__link">
         regrets-reporter-ucs
       </a>
     </li>
@@ -1689,7 +1606,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../relay/" class="md-nav__link">
+      <a href="../../mozdata/relay/" class="md-nav__link">
         Firefox Relay
       </a>
     </li>
@@ -1703,7 +1620,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../search/" class="md-nav__link">
+      <a href="../../mozdata/search/" class="md-nav__link">
         Search
       </a>
     </li>
@@ -1717,7 +1634,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../search_terms/" class="md-nav__link">
+      <a href="../../mozdata/search_terms/" class="md-nav__link">
         Search Terms
       </a>
     </li>
@@ -1731,7 +1648,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../static/" class="md-nav__link">
+      <a href="../../mozdata/static/" class="md-nav__link">
         Static Data
       </a>
     </li>
@@ -1745,7 +1662,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../stripe/" class="md-nav__link">
+      <a href="../../mozdata/stripe/" class="md-nav__link">
         Stripe
       </a>
     </li>
@@ -1759,7 +1676,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../subscription_platform/" class="md-nav__link">
+      <a href="../../mozdata/subscription_platform/" class="md-nav__link">
         Subscription Platform
       </a>
     </li>
@@ -1773,7 +1690,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../telemetry/" class="md-nav__link">
+      <a href="../../mozdata/telemetry/" class="md-nav__link">
         Telemetry
       </a>
     </li>
@@ -1787,7 +1704,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../treeherder/" class="md-nav__link">
+      <a href="../../mozdata/treeherder/" class="md-nav__link">
         treeherder
       </a>
     </li>
@@ -1801,7 +1718,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../udf/" class="md-nav__link">
+      <a href="../../mozdata/udf/" class="md-nav__link">
         User-Defined Functions
       </a>
     </li>
@@ -1815,7 +1732,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../udf_js/" class="md-nav__link">
+      <a href="../../mozdata/udf_js/" class="md-nav__link">
         User-Defined Functions (Javascript)
       </a>
     </li>
@@ -1829,7 +1746,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../udf_js_lib/" class="md-nav__link">
+      <a href="../../mozdata/udf_js_lib/" class="md-nav__link">
         udf_js_lib
       </a>
     </li>
@@ -1843,7 +1760,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../udf_legacy/" class="md-nav__link">
+      <a href="../../mozdata/udf_legacy/" class="md-nav__link">
         User-Defined Functions (Legacy)
       </a>
     </li>
@@ -1857,7 +1774,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../viu_politica/" class="md-nav__link">
+      <a href="../../mozdata/viu_politica/" class="md-nav__link">
         viu-politica
       </a>
     </li>
@@ -1871,7 +1788,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../webpagetest/" class="md-nav__link">
+      <a href="../../mozdata/webpagetest/" class="md-nav__link">
         webpagetest
       </a>
     </li>
@@ -1898,14 +1815,16 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
       
       
       
@@ -1914,7 +1833,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           UDFs
@@ -1925,14 +1844,16 @@
               
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" checked>
       
       
       
@@ -1941,7 +1862,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_3_1">
           <span class="md-nav__icon md-icon"></span>
           Mozfun
@@ -1954,7 +1875,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/about/" class="md-nav__link">
+      <a href="../about/" class="md-nav__link">
         mozfun
       </a>
     </li>
@@ -1966,11 +1887,61 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../mozfun/addons/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Addons
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Addons
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#is_adblocker-udf" class="md-nav__link">
+    is_adblocker (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="is_adblocker (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1982,7 +1953,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/bits28/" class="md-nav__link">
+      <a href="../bits28/" class="md-nav__link">
         bits28
       </a>
     </li>
@@ -1996,7 +1967,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/bytes/" class="md-nav__link">
+      <a href="../bytes/" class="md-nav__link">
         bytes
       </a>
     </li>
@@ -2010,7 +1981,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/datetime_util/" class="md-nav__link">
+      <a href="../datetime_util/" class="md-nav__link">
         datetime_util.fxa_parse_date
       </a>
     </li>
@@ -2024,7 +1995,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/event_analysis/" class="md-nav__link">
+      <a href="../event_analysis/" class="md-nav__link">
         event_analysis
       </a>
     </li>
@@ -2038,7 +2009,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/glam/" class="md-nav__link">
+      <a href="../glam/" class="md-nav__link">
         Glam
       </a>
     </li>
@@ -2052,7 +2023,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/glean/" class="md-nav__link">
+      <a href="../glean/" class="md-nav__link">
         glean
       </a>
     </li>
@@ -2066,7 +2037,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/hist/" class="md-nav__link">
+      <a href="../hist/" class="md-nav__link">
         hist
       </a>
     </li>
@@ -2080,7 +2051,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/iap/" class="md-nav__link">
+      <a href="../iap/" class="md-nav__link">
         iap
       </a>
     </li>
@@ -2094,7 +2065,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/json/" class="md-nav__link">
+      <a href="../json/" class="md-nav__link">
         json
       </a>
     </li>
@@ -2108,7 +2079,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/map/" class="md-nav__link">
+      <a href="../map/" class="md-nav__link">
         map
       </a>
     </li>
@@ -2122,7 +2093,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/norm/" class="md-nav__link">
+      <a href="../norm/" class="md-nav__link">
         norm
       </a>
     </li>
@@ -2136,7 +2107,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/stats/" class="md-nav__link">
+      <a href="../stats/" class="md-nav__link">
         stats
       </a>
     </li>
@@ -2150,7 +2121,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/vpn/" class="md-nav__link">
+      <a href="../vpn/" class="md-nav__link">
         vpn
       </a>
     </li>
@@ -2420,51 +2391,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#accounts_events" class="md-nav__link">
-    accounts_events
+  <a href="#is_adblocker-udf" class="md-nav__link">
+    is_adblocker (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="is_adblocker (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#baseline" class="md-nav__link">
-    baseline
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deletion_request" class="md-nav__link">
-    deletion_request
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#events" class="md-nav__link">
-    events
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#events_unnested" class="md-nav__link">
-    events_unnested
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#metrics" class="md-nav__link">
-    metrics
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#metrics_clients_daily" class="md-nav__link">
-    metrics_clients_daily
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2483,622 +2425,32 @@
                   
 
 
-  <h1>accounts-backend</h1>
+  <h1>Addons</h1>
 
-<p>User-facing views related to document namespace accounts-backend; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/accounts-backend</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend">Source Directory</a></p>
-<h2 id="accounts_events"><a href="#accounts_events">accounts_events</a></h2>
-<p><strong>Historical Pings for <code>accounts-backend/accounts-events</code></strong></p>
-<p><code>accounts_backend.accounts_events</code></p>
-<p>A historical view of pings sent for the
-<code>accounts-backend/accounts-events</code>
-document type.</p>
-<p>This view is guaranteed to contain only complete days
-(per <code>submission_timestamp</code>)
-and to contain only one row per distinct <code>document_id</code> within a given date.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>client_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>events</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>metadata</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>metrics</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ping_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend_stable>accounts_backend_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend_stable/accounts_events_v1>accounts_events_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/accounts_events">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/accounts_events/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/accounts_events/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="baseline"><a href="#baseline">baseline</a></h2>
-<p><strong>Historical Pings for <code>accounts-backend/baseline</code></strong></p>
-<p><code>accounts_backend.baseline</code></p>
-<p>A historical view of pings sent for the
-<code>accounts-backend/baseline</code>
-document type.</p>
-<p>This view is guaranteed to contain only complete days
-(per <code>submission_timestamp</code>)
-and to contain only one row per distinct <code>document_id</code> within a given date.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>client_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>events</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>metadata</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>metrics</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ping_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend_stable>accounts_backend_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend_stable/baseline_v1>baseline_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/baseline">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/baseline/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/baseline/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="deletion_request"><a href="#deletion_request">deletion_request</a></h2>
-<p><strong>Historical Pings for <code>accounts-backend/deletion-request</code></strong></p>
-<p><code>accounts_backend.deletion_request</code></p>
-<p>A historical view of pings sent for the
-<code>accounts-backend/deletion-request</code>
-document type.</p>
-<p>This view is guaranteed to contain only complete days
-(per <code>submission_timestamp</code>)
-and to contain only one row per distinct <code>document_id</code> within a given date.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>client_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>events</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>metadata</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>metrics</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ping_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend_stable>accounts_backend_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend_stable/deletion_request_v1>deletion_request_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/deletion_request">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/deletion_request/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/deletion_request/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="events"><a href="#events">events</a></h2>
-<p><strong>Historical Pings for <code>accounts-backend/events</code></strong></p>
-<p><code>accounts_backend.events</code></p>
-<p>A historical view of pings sent for the
-<code>accounts-backend/events</code>
-document type.</p>
-<p>This view is guaranteed to contain only complete days
-(per <code>submission_timestamp</code>)
-and to contain only one row per distinct <code>document_id</code> within a given date.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>client_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>events</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>metadata</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>metrics</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ping_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend_stable>accounts_backend_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend_stable/events_v1>events_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/events">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/events/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/events/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="events_unnested"><a href="#events_unnested">events_unnested</a></h2>
-<p><code>accounts_backend.events_unnested</code></p>
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend>accounts_backend</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/events>events</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/events_unnested">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/events_unnested/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/events_unnested/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="metrics"><a href="#metrics">metrics</a></h2>
-<p><strong>Historical Pings for <code>accounts-backend/metrics</code></strong></p>
-<p><code>accounts_backend.metrics</code></p>
-<p>A historical view of pings sent for the
-<code>accounts-backend/metrics</code>
-document type.</p>
-<p>This view is guaranteed to contain only complete days
-(per <code>submission_timestamp</code>)
-and to contain only one row per distinct <code>document_id</code> within a given date.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>client_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>events</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>metadata</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>metrics</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ping_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend_stable>accounts_backend_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend_stable/metrics_v1>metrics_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/metrics">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/metrics/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/metrics/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="metrics_clients_daily"><a href="#metrics_clients_daily">metrics_clients_daily</a></h2>
-<p><code>accounts_backend.metrics_clients_daily</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>submission_date</td>
-        <td></td>
-        <td>Date</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>client_id</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_id</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_channel</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>n_metrics_ping</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>days_sent_metrics_ping_bits</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend_derived>accounts_backend_derived</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend_derived/metrics_clients_daily_v1>metrics_clients_daily_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/metrics_clients_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/metrics_clients_daily/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_backend/metrics_clients_daily/metadata.yaml">Metadata File</a> </p>
-<hr />
+<h2 id="is_adblocker-udf">is_adblocker (UDF)</h2>
+<p>Returns whether a given Addon ID is an adblocker.</p>
+<p>Determine if a given Addon ID is for an adblocker.</p>
+<p>As an example, this query will give the number of users who
+have an adblocker installed.
+<div class="highlight"><pre><span></span><code>SELECT
+    submission_date,
+    COUNT(DISTINCT client_id) AS dau,
+FROM
+    mozdata.telemetry.addons
+WHERE
+    mozfun.addons.is_adblocker(addon_id)
+    AND submission_date &gt;= &quot;2023-01-01&quot;
+GROUP BY
+    submission_date
+</code></pre></div></p>
+<h3 id="parameters">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>addon_id STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>BOOLEAN
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/addons/is_adblocker">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/addons/is_adblocker/metadata.yaml">Edit</a></p>
 
 
 

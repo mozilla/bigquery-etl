@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import Optional
 
 import click
-import yaml
 
 from bigquery_etl.metadata.parse_metadata import DatasetMetadata, Metadata
 
@@ -44,15 +43,15 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
     dataset_metadata_path = None
-    
     # create and populate the dataset metadata yaml file if it does not exist
-
     for table_metadata_file in table_metadata_files:
         dataset_metadata_path = (
             Path(table_metadata_file).parent.parent / "dataset_metadata.yaml"
         )
         if not dataset_metadata_path.exists():
-            dataset_metadata = DatasetMetadata()
+            dataset_metadata = DatasetMetadata(
+                friendly_name="", description="", dataset_base_acl="derived"
+            )
             dataset_metadata.write(dataset_metadata_path)
         dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
         table_metadata = Metadata.from_file(table_metadata_file)

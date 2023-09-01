@@ -101,7 +101,11 @@ def get_dags(project_id, dags_config):
                         if "#fail" in file_contents:
                             is_check_task_fail = True
                             checks_fail_task = copy.deepcopy(
-                                Task.of_dq_check(checks_file, is_check_task_fail,  dag_collection=dag_collection)
+                                Task.of_dq_check(
+                                    checks_file,
+                                    is_check_task_fail,
+                                    dag_collection=dag_collection,
+                                )
                             )
                             tasks.append(checks_fail_task)
                             task_ref = TaskRef(
@@ -113,7 +117,11 @@ def get_dags(project_id, dags_config):
                             print("warn in generate airflow")
                             is_check_task_fail = False
                             checks_warn_task = copy.deepcopy(
-                                Task.of_dq_check(checks_file, is_check_task_fail,  dag_collection=dag_collection)
+                                Task.of_dq_check(
+                                    checks_file,
+                                    is_check_task_fail,
+                                    dag_collection=dag_collection,
+                                )
                             )
 
                             checks_warn_task.task_name = "checks__warn_down"

@@ -301,7 +301,6 @@ class Task:
     def __attrs_post_init__(self):
         """Extract information from the query file name."""
         query_file_re = re.search(QUERY_FILE_RE, self.query_file)
-        check_file_re = re.search(CHECKS_FILE_RE, self.query_file)
         if query_file_re:
             self.project = query_file_re.group(1)
             self.dataset = query_file_re.group(2)

@@ -45,6 +45,7 @@ def _build_jinja_parameters(query_args):
             print(f"parameter {query_arg} will not be used to render Jinja template.")
     return parameters
 
+
 def _render_result_split_by_marker(marker, rendered_result):
     """Filter the rendered sql checks with the set marker."""
     inside_block = False
@@ -52,17 +53,15 @@ def _render_result_split_by_marker(marker, rendered_result):
     rendered_result = sqlparse.split(rendered_result)
     for line in rendered_result:
         line = line.strip()
-        if re.search(f'^#{marker}', line, re.IGNORECASE):
-            print("im in marker")
+        if re.search(f"^#{marker}", line, re.IGNORECASE):
             inside_block = True
-        elif line.startswith('#') and re.search(f'^(?!#{marker})', line, re.IGNORECASE):
-            print("im in !marker")
+        elif line.startswith("#") and re.search(f"^(?!#{marker})", line, re.IGNORECASE):
             inside_block = False
             continue
         if inside_block:
             extracted_result.append(line)
-        print(' '.join(extracted_result))
-    return ' '.join(extracted_result)
+    return " ".join(extracted_result)
+
 
 def _parse_check_output(output: str) -> str:
     output = output.replace("\n", " ")
@@ -200,7 +199,7 @@ def _render(
 @click.argument("dataset")
 @project_id_option()
 @sql_dir_option
-@click.option('--marker', default='fail', help='Marker to filter checks.')
+@click.option("--marker", default="fail", help="Marker to filter checks.")
 @click.option(
     "--dry_run",
     "--dry-run",
@@ -229,7 +228,7 @@ def run(ctx, dataset, project_id, sql_dir, marker, dry_run):
         table,
         ctx.args,
         dry_run=dry_run,
-        marker=marker
+        marker=marker,
     )
 
 
@@ -254,8 +253,7 @@ def _run_check(
 
     if dry_run is True:
         query_arguments.append("--dry_run")
-    
-    
+
     # Convert all the Airflow params to jinja usable dict.
     parameters = _build_jinja_parameters(query_arguments)
 

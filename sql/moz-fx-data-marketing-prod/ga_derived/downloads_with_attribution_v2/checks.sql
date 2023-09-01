@@ -20,7 +20,7 @@ ASSERT(
   ) > 60000
 )
 AS
-  'ETL Data Check Failed: Table {{project_id}}.{{dataset_id}}.{{table_name}} contains less than 60,000 rows for date: {{ download_date }}.'
+  'ETL Data Check Failed: Table {{project_id}}.{{dataset_id}}.{{table_name}} contains less than 60,000 rows for date: {{ download_date }}.';
 
 #warn
 
@@ -33,5 +33,5 @@ ASSERT(
   ) > 20000
 )
 AS
-  'ETL Data Check Failed: Table {{project_id}}.{{dataset_id}}.{{table_name}} contains less than 20,000 rows for date: {{ download_date }}.'
+  'ETL Data Check Failed: Table {{project_id}}.{{dataset_id}}.{{table_name}} contains less than 20,000 rows for date: {{ download_date }}.';
 

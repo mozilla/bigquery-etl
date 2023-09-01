@@ -1,10 +1,7 @@
 friendly_name: Jobs By Organization
 description: |-
   Table built from:
-    mozdata.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION,
-    moz-fx-data-shared-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION,
-    moz-fx-data-marketing-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION,
-    moz-fx-data-bq-data-science.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION
+    region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION,
 owners:
 - mhirose@mozilla.com
 labels:

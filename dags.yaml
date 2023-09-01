@@ -1193,7 +1193,7 @@ bqetl_jobs_by_org_derived:
     retries: 2
     retry_delay: 30m
     start_date: '2023-09-01'
-  description: This DAG schedules queries to populate jobs by organization tables
+  description: JOBS_BY_ORGANIZATION tables for jobs referencing Data Platform projects
     from mozdata, moz-fx-data-shared-prod, moz-fx-data-marketing-prod, moz-fx-data-bq-data-science
   repo: bigquery-etl
   schedule_interval: 0 4 * * *

@@ -79,11 +79,6 @@ fields:
   description: The number of the project.
 
 - mode: NULLABLE
-  name: query
-  type: STRING
-  description: SQL query text. Only the JOBS_BY_PROJECT view has the query column.
-
-- mode: NULLABLE
   name: referenced_tables
   type: RECORD
   fields:

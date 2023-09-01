@@ -1,15 +1,6 @@
 #!/usr/bin/env python3
 
-"""
-
-Put data from the projects below into a table.
-
-  mozdata.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION,
-  moz-fx-data-shared-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION,
-  moz-fx-data-marketing-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION,
-  moz-fx-data-bq-data-science.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION
-into a table so that can be queried
-"""
+"""Put data from region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION into a table."""
 
 from argparse import ArgumentParser
 
@@ -42,7 +33,6 @@ def create_query(date, project):
           job_id,
           job_type,
           parent_job_id,
-          principal_subject,
           priority,
           project_id,
           project_number,
@@ -60,16 +50,23 @@ def create_query(date, project):
           user_email,
           query_info.resource_warning ,
           query_info.query_hashes.normalized_literals,
-          query_info.performance_insights,
           transferred_bytes,
           DATE(creation_time) as creation_date
         FROM
           `{project}.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION`
         WHERE
           DATE(creation_time) = '{date}'
-          AND (t1.project_id IN UNNEST({DEFAULT_PROJECTS})
-            OR referenced_tables.project_id IN UNNEST({DEFAULT_PROJECTS})
-            OR destination_table.project_id IN UNNEST({DEFAULT_PROJECTS}))
+          AND (
+            (
+              project_id IN UNNEST({DEFAULT_PROJECTS}
+              )
+            OR EXISTS
+            (
+              SELECT * FROM UNNEST(referenced_tables) AS ref_tables
+                WHERE ref_tables.project_id IN UNNEST({DEFAULT_PROJECTS})
+                )
+            OR (destination_table.project_id IN UNNEST({DEFAULT_PROJECTS}))
+            )
     """
 
 

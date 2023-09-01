@@ -46,7 +46,6 @@ def create_query(date, project):
           priority,
           project_id,
           project_number,
-          query,
           referenced_tables,
           reservation_id,
           start_time,

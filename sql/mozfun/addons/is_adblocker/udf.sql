@@ -6,7 +6,9 @@ RETURNS BOOLEAN AS (
     '{d10d0bf8-f5b5-c8b4-a8b2-2b9879e08c5d}', -- 'AdBlock_Plus'
     'jid1-NIfFY2CA8fy1tg@jetpack', -- 'Adblock'
     'firefox@ghostery.com', -- 'Ghostery'
-    'adblockultimate@adblockultimate.net' -- 'AdBlock_Ultimate'
+    'adblockultimate@adblockultimate.net', -- 'AdBlock_Ultimate'
+    'jid1-ZAdIEUB7XOzOJw@jetpack', -- 'DuckDuckGo Privacy Essentials'
+    'jid1-MnnxcxisBPnSXQ@jetpack' -- 'Privacy Badger
   )
 );
 

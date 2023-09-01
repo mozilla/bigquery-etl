@@ -31973,6 +31973,9 @@ fields:
         - name: shopping_nimbus_disabled
           type: BOOLEAN
           mode: NULLABLE
+        - name: bloburl_resolve_stopped
+          type: INTEGER
+          mode: NULLABLE
       - name: events
         type: RECORD
         mode: REPEATED

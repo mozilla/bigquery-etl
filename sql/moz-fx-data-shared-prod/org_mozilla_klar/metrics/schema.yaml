@@ -1677,10 +1677,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Counters for how many times the extension process has crashed
-        or been created.
-
-        '
+      description: "Counters for how many times the extension process has crashed\
+        \ or been created.\nThe labels with \"_fg\" / \"_bg\" suffixes are only recorded\
+        \ in Android builds,\nwhile the \"created\" and \"crashed\" labels are recorded\
+        \ on both Desktop and Android\nbuilds. \n"
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

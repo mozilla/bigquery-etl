@@ -32,3 +32,6 @@ SELECT
   END AS install_source,
 FROM
   `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
+WHERE
+  first_reported_isp != 'BrowserStack'
+  AND adjust_network != 'Untrusted Devices'

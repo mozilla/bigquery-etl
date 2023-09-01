@@ -1481,9 +1481,9 @@ sqlparse==0.4.4 \
     --hash=sha256:5430a4fe2ac7d0f93e66f1efc6e1338a41884b7ddf2a350cedd20ccc4d9d28f3 \
     --hash=sha256:d446183e84b8349fa3061f0fe7f06ca94ba65b426946ffebe6e3e8295332420c
     # via -r requirements.in
-stripe==5.5.0 \
-    --hash=sha256:04a9732b37a46228ecf0e496163a3edd93596b0e6200029fbc48911638627e19 \
-    --hash=sha256:b4947da66dbb3de8969004ba6398f9a019c6b1b3ffe6aa88d5b07ac560a52b28
+stripe==6.2.0 \
+    --hash=sha256:c4c72c8b9c84bae08c3f6e40dab647c201eb5bd0a4ae81dbd4ad9068a0771a0c \
+    --hash=sha256:e4decf87227b83616b57038224baba2e7bd210b378c0fe8966707cab1bde0c25
     # via -r requirements.in
 toml==0.10.2 \
     --hash=sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b \
@@ -1529,6 +1529,7 @@ typing-extensions==4.4.0 \
     # via
     #   mypy
     #   pydantic
+    #   stripe
 tzdata==2023.3 \
     --hash=sha256:11ef1e08e54acb0d4f95bdb1be05da659673de4acbd21bf9c69e94cc5e907a3a \
     --hash=sha256:7e65763eef3120314099b6939b5546db7adce1e7d6f2e179e3df563c70511eda

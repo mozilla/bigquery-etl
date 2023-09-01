@@ -72,9 +72,10 @@ def create_query(date, project):
         FROM
           `{project}.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION`
         WHERE
-          (project_id IN UNNEST({DEFAULT_PROJECTS})
-          OR referenced_tables.project_id IN UNNEST({DEFAULT_PROJECTS})
-          OR destination_table.project_id IN UNNEST({DEFAULT_PROJECTS}))
+          DATE(creation_time) = '{date}'
+          AND (t1.project_id IN UNNEST({DEFAULT_PROJECTS})
+            OR referenced_tables.project_id IN UNNEST({DEFAULT_PROJECTS})
+            OR destination_table.project_id IN UNNEST({DEFAULT_PROJECTS}))
     """
 
 

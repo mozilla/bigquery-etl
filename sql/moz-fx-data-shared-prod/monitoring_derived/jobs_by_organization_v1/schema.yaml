@@ -109,11 +109,6 @@ fields:
   description: Name of the primary reservation assigned to this job
 
 - mode: NULLABLE
-  name: session_info
-  type: RECORD
-  description: Details about the session in which this job ran, if any. (Preview)
-
-- mode: NULLABLE
   name: start_time
   type: TIMESTAMP
   description: The start time of this job. This field represents the time when the job transitions from the PENDING state to either RUNNING or DONE.
@@ -131,6 +126,25 @@ fields:
 - mode: NULLABLE
   name: timeline
   type: RECORD
+  fields:
+  - mode: NULLABLE
+    name: elapsedMS
+    type: STRING
+  - mode: NULLABLE
+    name: totalSlotMs
+    type: STRING
+  - mode: NULLABLE
+    name: pendingUnits
+    type: STRING
+  - mode: NULLABLE
+    name: completedUnits
+    type: STRING
+  - mode: NULLABLE
+    name: activeUnits
+    type: STRING
+  - mode: NULLABLE
+    name: estimatedRunnableUnits
+    type: STRING
   description: Query timeline of the job. Contains snapshots of query execution.
 
 - mode: NULLABLE
@@ -174,16 +188,11 @@ fields:
   description: Contains the hashes of the query. normalized_literals is a hexadecimal STRING hash that ignores comments, parameter values, UDFs, and literals.
 
 - mode: NULLABLE
-  name: query_info.performance_insights
-  type: STRING
-  description: Performance insights for the job.
-
-- mode: NULLABLE
   name: transferred_bytes
   type: INTEGER
   description: Total bytes transferred for cross-cloud queries, such as BigQuery Omni cross-cloud transfer jobs.
 
 - mode: NULLABLE
-  name: materialized_view_statistics
-  type: RECORD
-  description: Statistics of materialized views considered in a query job. (Preview)
+  name: creation_date
+  type: DATE
+  description: date of creation time

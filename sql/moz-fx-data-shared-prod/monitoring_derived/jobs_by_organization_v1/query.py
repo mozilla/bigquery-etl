@@ -49,7 +49,6 @@ def create_query(date, project):
           query,
           referenced_tables,
           reservation_id,
-          session_info,
           start_time,
           state,
           statement_type,
@@ -64,7 +63,6 @@ def create_query(date, project):
           query_info.query_hashes.normalized_literals,
           query_info.performance_insights,
           transferred_bytes,
-          materialized_view_statistics,
           DATE(creation_time) as creation_date
         FROM
           `{project}.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION`

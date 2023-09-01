@@ -64,11 +64,6 @@ fields:
   description: ID of the parent job, if any.
 
 - mode: NULLABLE
-  name: principal_subject
-  type: STRING
-  description: (Clustering column) The principal identifier of the user who ran the job.
-
-- mode: NULLABLE
   name: priority
   type: STRING
   description: The priority of this job. Valid values include INTERACTIVE and BATCH.

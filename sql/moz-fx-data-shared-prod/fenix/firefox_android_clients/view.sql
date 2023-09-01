@@ -32,3 +32,5 @@ SELECT
   END AS install_source,
 FROM
   `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
+WHERE
+  metadata.reported_baseline_ping

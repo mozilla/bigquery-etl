@@ -34,7 +34,6 @@ def create_query(date, project):
     """Create query with filter for source projects."""
     return f"""
         SELECT
-          bi_engine_statistics,
           cache_hit,
           creation_time,
           destination_table,

@@ -1,11 +1,6 @@
 fields:
 
 - mode: NULLABLE
-  name: bi_engine_statistics
-  type: RECORD
-  description: If the project is configured to use the BI Engine SQL Interface, then this field contains BiEngineStatistics. Otherwise NULL.
-
-- mode: NULLABLE
   name: cache_hit
   type: BOOLEAN
   description: Whether the query results of this job were from a cache. If you have a multi-query statement job, cache_hit for your parent query is NULL.

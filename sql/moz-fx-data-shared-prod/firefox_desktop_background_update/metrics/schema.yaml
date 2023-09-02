@@ -270,6 +270,19 @@ fields:
       description: 'Tracks the value of the cookiebanners.service.detectOnly pref.
 
         '
+    - name: extensions_use_remote_policy
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Corresponds to the value of `WebExtensionPolicy.useRemoteWebExtensions`.
+
+        '
+    - name: extensions_use_remote_pref
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Corresponds to the value of `extensions.webextensions.remote`
+        pref.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

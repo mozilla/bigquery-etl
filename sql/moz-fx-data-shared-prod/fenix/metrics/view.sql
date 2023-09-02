@@ -239,7 +239,9 @@ SELECT
       metrics.boolean.metrics_notifications_allowed,
       metrics.boolean.cookie_banners_service_detect_only,
       metrics.boolean.pull_to_refresh_in_browser_enabled,
-      metrics.boolean.metrics_ram_more_than_threshold
+      metrics.boolean.metrics_ram_more_than_threshold,
+      metrics.boolean.extensions_use_remote_policy,
+      metrics.boolean.extensions_use_remote_pref
     ) AS boolean,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -723,7 +725,9 @@ SELECT
       metrics.boolean.metrics_notifications_allowed,
       metrics.boolean.cookie_banners_service_detect_only,
       metrics.boolean.pull_to_refresh_in_browser_enabled,
-      metrics.boolean.metrics_ram_more_than_threshold
+      metrics.boolean.metrics_ram_more_than_threshold,
+      metrics.boolean.extensions_use_remote_policy,
+      metrics.boolean.extensions_use_remote_pref
     ) AS boolean,
     STRUCT(
       metrics.counter.events_total_uri_count,

@@ -240,6 +240,12 @@ fields:
     - name: cookie_banners_service_detect_only
       type: BOOLEAN
       mode: NULLABLE
+    - name: extensions_use_remote_policy
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: extensions_use_remote_pref
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE

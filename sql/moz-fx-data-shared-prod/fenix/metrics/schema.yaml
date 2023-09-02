@@ -339,6 +339,12 @@ fields:
     - name: metrics_ram_more_than_threshold
       type: BOOLEAN
       mode: NULLABLE
+    - name: extensions_use_remote_policy
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: extensions_use_remote_pref
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE

@@ -346,6 +346,18 @@ fields:
       description: 'The HTTP status code of the page.
 
         '
+    - name: page_is_baseline
+      type: STRING
+      mode: NULLABLE
+      description: 'The Baseline status of the page:
+
+        null: the page has no baseline status
+
+        "baseline": the page is baseline
+
+        "not_baseline" the page is not baseline
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

@@ -10062,6 +10062,31 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page used the CSS property font-synthesis-position
+    - name: content_documents_destroyed
+      type: STRING
+      mode: NULLABLE
+      description: Number of content documents destroyed; used in conjunction with
+        use counter histograms
+    - name: dedicated_worker_destroyed
+      type: STRING
+      mode: NULLABLE
+      description: Number of dedicated workers destroyed; used in conjunction with
+        use counter histograms
+    - name: service_worker_destroyed
+      type: STRING
+      mode: NULLABLE
+      description: Number of service workers destroyed; used in conjunction with use
+        counter histograms
+    - name: shared_worker_destroyed
+      type: STRING
+      mode: NULLABLE
+      description: Number of shared workers destroyed; used in conjunction with use
+        counter histograms
+    - name: top_level_content_documents_destroyed
+      type: STRING
+      mode: NULLABLE
+      description: Number of top-level content documents destroyed; used in conjunction
+        with use counter histograms
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -19970,6 +19995,31 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page used the CSS property font-synthesis-position
+        - name: content_documents_destroyed
+          type: STRING
+          mode: NULLABLE
+          description: Number of content documents destroyed; used in conjunction
+            with use counter histograms
+        - name: dedicated_worker_destroyed
+          type: STRING
+          mode: NULLABLE
+          description: Number of dedicated workers destroyed; used in conjunction
+            with use counter histograms
+        - name: service_worker_destroyed
+          type: STRING
+          mode: NULLABLE
+          description: Number of service workers destroyed; used in conjunction with
+            use counter histograms
+        - name: shared_worker_destroyed
+          type: STRING
+          mode: NULLABLE
+          description: Number of shared workers destroyed; used in conjunction with
+            use counter histograms
+        - name: top_level_content_documents_destroyed
+          type: STRING
+          mode: NULLABLE
+          description: Number of top-level content documents destroyed; used in conjunction
+            with use counter histograms
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

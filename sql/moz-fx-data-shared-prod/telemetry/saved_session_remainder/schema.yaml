@@ -34587,6 +34587,10 @@ fields:
             which is defined in toolkit/components/shopping/metrics.yaml.
 
             '
+        - name: urlbar_trending_block
+          type: INTEGER
+          mode: NULLABLE
+          description: User has blocked seeing trending results.
     - name: socket
       type: RECORD
       mode: NULLABLE

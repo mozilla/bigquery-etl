@@ -48,7 +48,9 @@ SELECT
       metrics.boolean.metrics_start_reason_process_error,
       metrics.boolean.metrics_search_widget_installed,
       metrics.boolean.notifications_permission_granted,
-      metrics.boolean.cookie_banners_service_detect_only
+      metrics.boolean.cookie_banners_service_detect_only,
+      metrics.boolean.extensions_use_remote_policy,
+      metrics.boolean.extensions_use_remote_pref
     ) AS boolean,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -209,7 +211,9 @@ SELECT
       metrics.boolean.metrics_start_reason_process_error,
       metrics.boolean.metrics_search_widget_installed,
       metrics.boolean.notifications_permission_granted,
-      metrics.boolean.cookie_banners_service_detect_only
+      metrics.boolean.cookie_banners_service_detect_only,
+      metrics.boolean.extensions_use_remote_policy,
+      metrics.boolean.extensions_use_remote_pref
     ) AS boolean,
     STRUCT(
       metrics.counter.glean_error_io,

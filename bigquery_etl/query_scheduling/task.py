@@ -474,8 +474,6 @@ class Task:
                 ]
             )
             task.validate_task_name(None, task.task_name)
-            print("in fail")
-            print(task.task_name)
         else:
             task.task_name = (
                 f"checks__warn_{task.dataset}__{task.table}__{task.version}"[
@@ -483,8 +481,6 @@ class Task:
                 ]
             )
             task.validate_task_name(None, task.task_name)
-            print("in warn")
-            print(task.task_name)
         return task
 
     def to_ref(self, dag_collection):

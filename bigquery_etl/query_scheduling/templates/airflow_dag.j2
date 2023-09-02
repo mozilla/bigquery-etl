@@ -71,9 +71,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             dataset_id='{{ task.dataset }}',
             project_id='{{ task.project }}',
             {%+ endif -%}
-            {%+ if task.is_dq_check_fail -%}
-            is_dq_check_fail = {{ task.is_dq_check_fail }}
-            {%+ endif -%}
+            is_dq_check_fail = {{ task.is_dq_check_fail }},
             owner='{{ task.owner }}',
             {%+ if task.email | length > 0 -%}
             email={{ task.email | sort }},

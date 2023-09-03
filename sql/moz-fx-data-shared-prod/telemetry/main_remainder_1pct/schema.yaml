@@ -22485,6 +22485,9 @@ fields:
         - name: shopping_nimbus_disabled
           type: BOOLEAN
           mode: NULLABLE
+        - name: urlbar_trending_block
+          type: INTEGER
+          mode: NULLABLE
     - name: socket
       type: RECORD
       mode: NULLABLE

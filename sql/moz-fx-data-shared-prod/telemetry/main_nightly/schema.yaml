@@ -36728,6 +36728,9 @@ fields:
         - name: shopping_nimbus_disabled
           type: BOOLEAN
           mode: NULLABLE
+        - name: urlbar_trending_block
+          type: INTEGER
+          mode: NULLABLE
       - name: events
         type: RECORD
         mode: REPEATED

@@ -39,7 +39,7 @@ tags = ["impact/tier_3", "repo/bigquery-etl"]
 with DAG(
     "bqetl_kpis_shredder",
     default_args=default_args,
-    schedule_interval="0 0 */28 * *",
+    schedule_interval="0 2 */28 * *",
     doc_md=docs,
     tags=tags,
 ) as dag:

@@ -45,15 +45,14 @@ with DAG(
 ) as dag:
     fenix_active_users_aggregates_for_deletion_requests = bigquery_etl_query(
         task_id="fenix_active_users_aggregates_for_deletion_requests",
-        destination_table='active_users_aggregates_deletion_request_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="active_users_aggregates_deletion_request_v1",
         dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
         email=["lvargas@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="partition_date",
         depends_on_past=False,
-        parameters=["partition_date:DATE:{{macros.ds_add(ds, -1)}}"]
-        + [
+        parameters=[
             "end_date:DATE:{{macros.ds_add(ds, 27)}}",
             "start_date:DATE:{{macros.ds_add(ds, 27-28*4)}}",
         ],
@@ -61,15 +60,14 @@ with DAG(
 
     firefox_ios_active_users_aggregates_for_deletion_requests = bigquery_etl_query(
         task_id="firefox_ios_active_users_aggregates_for_deletion_requests",
-        destination_table='active_users_aggregates_deletion_request_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="active_users_aggregates_deletion_request_v1",
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
         email=["lvargas@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="partition_date",
         depends_on_past=False,
-        parameters=["partition_date:DATE:{{macros.ds_add(ds, -1)}}"]
-        + [
+        parameters=[
             "end_date:DATE:{{macros.ds_add(ds, 27)}}",
             "start_date:DATE:{{macros.ds_add(ds, 27-28*4)}}",
         ],
@@ -77,15 +75,14 @@ with DAG(
 
     focus_ios_active_users_aggregates_for_deletion_requests = bigquery_etl_query(
         task_id="focus_ios_active_users_aggregates_for_deletion_requests",
-        destination_table='active_users_aggregates_deletion_request_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="active_users_aggregates_deletion_request_v1",
         dataset_id="focus_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
         email=["lvargas@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="partition_date",
         depends_on_past=False,
-        parameters=["partition_date:DATE:{{macros.ds_add(ds, -1)}}"]
-        + [
+        parameters=[
             "end_date:DATE:{{macros.ds_add(ds, 27)}}",
             "start_date:DATE:{{macros.ds_add(ds, 27-28*4)}}",
         ],
@@ -93,15 +90,14 @@ with DAG(
 
     klar_ios_active_users_aggregates_for_deletion_requests = bigquery_etl_query(
         task_id="klar_ios_active_users_aggregates_for_deletion_requests",
-        destination_table='active_users_aggregates_deletion_request_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="active_users_aggregates_deletion_request_v1",
         dataset_id="klar_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
         email=["lvargas@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="partition_date",
         depends_on_past=False,
-        parameters=["partition_date:DATE:{{macros.ds_add(ds, -1)}}"]
-        + [
+        parameters=[
             "end_date:DATE:{{macros.ds_add(ds, 27)}}",
             "start_date:DATE:{{macros.ds_add(ds, 27-28*4)}}",
         ],
@@ -111,6 +107,7 @@ with DAG(
         task_id="wait_for_clients_last_seen_joined",
         external_dag_id="copy_deduplicate",
         external_task_id="clients_last_seen_joined",
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -125,6 +122,7 @@ with DAG(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -139,6 +137,7 @@ with DAG(
         task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
         external_dag_id="bqetl_mobile_search",
         external_task_id="search_derived__mobile_search_clients_daily__v1",
+        execution_delta=datetime.timedelta(0),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,

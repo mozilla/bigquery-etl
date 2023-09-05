@@ -1,0 +1,13 @@
+job-search-term-data-validation-v2:
+  jobs:
+    - build-job-search-term-data-validation-v2
+    - gcp-gcr/build-and-push-image:
+        context: data-eng-airflow-gcr
+        docker-context: jobs/search-term-data-validation-v2/
+        path: jobs/search-term-data-validation-v2/
+        image: search-term-data-validation-v2_docker_etl
+        requires:
+          - build-job-search-term-data-validation-v2
+        filters:
+          branches:
+            only: main

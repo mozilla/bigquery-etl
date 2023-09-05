@@ -14023,6 +14023,19 @@ fields:
         mode: NULLABLE
         description: The download throughput for http/3 requests larger than 10MB.
           Measured in megabits per second, Mbps.
+    - name: trr_relevant_skip_reason_trr_first_type_rec
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+        description: When in TRR-first mode, it lists the reason we may have skipped
+          TRR for HTTPS RR, keyed by the provider. Does not include requests that
+          intentionally skip TRR.
   - name: late_writes
     type: RECORD
     mode: NULLABLE
@@ -25019,6 +25032,18 @@ fields:
             mode: NULLABLE
             description: The amount of time it takes for userScripts from a WebExtension
               to be injected into a window, keyed by addon id.
+        - name: eh_perf_channel_completion_time
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: STRING
+            mode: NULLABLE
+            description: The time between AsyncOpen and OnStopRequest for Early Hints
+              preload request.
       - name: keyed_scalars
         type: RECORD
         mode: NULLABLE
@@ -34974,6 +34999,19 @@ fields:
             mode: NULLABLE
             description: Generic histogram to track uptake of remote content like
               blocklists, settings or updates.
+        - name: trr_relevant_skip_reason_trr_first_type_rec
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: STRING
+            mode: NULLABLE
+            description: When in TRR-first mode, it lists the reason we may have skipped
+              TRR for HTTPS RR, keyed by the provider. Does not include requests that
+              intentionally skip TRR.
       - name: keyed_histograms
         type: RECORD
         mode: NULLABLE
@@ -35324,6 +35362,19 @@ fields:
             mode: NULLABLE
             description: Generic histogram to track uptake of remote content like
               blocklists, settings or updates.
+        - name: trr_relevant_skip_reason_trr_first_type_rec
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: STRING
+            mode: NULLABLE
+            description: When in TRR-first mode, it lists the reason we may have skipped
+              TRR for HTTPS RR, keyed by the provider. Does not include requests that
+              intentionally skip TRR.
       - name: keyed_scalars
         type: RECORD
         mode: NULLABLE

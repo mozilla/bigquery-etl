@@ -3560,6 +3560,97 @@ and payment platforms; see bug 1703340</p>
 <h2 id="stripe_plans"><a href="#stripe_plans">stripe_plans</a></h2>
 <p><code>subscription_platform.stripe_plans</code></p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>id</td>
+        <td>Unique identifier for the plan.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>product_id</td>
+        <td>ID of the product whose pricing this plan determines.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>created</td>
+        <td>Time at which the plan was created.</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>is_deleted</td>
+        <td>Whether the plan is deleted.</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>active</td>
+        <td>Whether the plan can be used for new purchases.</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>aggregate_usage</td>
+        <td>Specifies a usage aggregation strategy for plans of `usage_type` = "metered". Allowed values are "sum" for summing up all usage during a period, "last_during_period" for using the last usage record reported within a period, "last_ever" for using the last usage record ever (across period bounds) or "max" which uses the usage record with the maximum reported usage during a period.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>amount</td>
+        <td>The unit amount in cents to be charged, represented as a whole integer if possible. Only set if `billing_scheme` = "per_unit".</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>billing_scheme</td>
+        <td>Describes how to compute the price per period. Either "per_unit" or "tiered". "per_unit" indicates that the fixed amount (specified in `amount`) will be charged per unit in `quantity` (for plans with `usage_type` = "licensed"), or per unit of total usage (for plans with `usage_type` = "metered"). "tiered" indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>currency</td>
+        <td>Three-letter ISO currency code, in lowercase.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>interval</td>
+        <td>The frequency at which a subscription is billed. One of "day", "week", "month", or "year".</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>interval_count</td>
+        <td>The number of intervals (specified in the `interval` attribute) between subscription billings.</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td>Set of key-value pairs attached to the plan, stored as a JSON object.</td>
+        <td>Json</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>nickname</td>
+        <td>A brief description of the plan, hidden from customers.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>tiers_mode</td>
+        <td>Defines if the tiering price should be "graduated" or "volume". In volume-based tiering, the maximum quantity within a period determines the per unit price. In graduated tiering, pricing can change as the quantity grows.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>trial_period_days</td>
+        <td>Default number of trial days when subscribing a customer to this plan using `trial_from_plan=true`.</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>usage_type</td>
+        <td>Configures how the quantity per period should be determined. Can be either "metered" or "licensed". "licensed" automatically bills the `quantity` set when adding it to a subscription. "metered" aggregates the total usage based on usage records. Defaults to "licensed".</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -3577,6 +3668,62 @@ and payment platforms; see bug 1703340</p>
 <hr />
 <h2 id="stripe_products"><a href="#stripe_products">stripe_products</a></h2>
 <p><code>subscription_platform.stripe_products</code></p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>id</td>
+        <td>Unique identifier for the product.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>created</td>
+        <td>Time at which the product was created.</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>updated</td>
+        <td>Time at which the product was last updated.</td>
+        <td>Timestamp</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>is_deleted</td>
+        <td>Whether the product is deleted.</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>active</td>
+        <td>Whether the product is currently available for purchase.</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>description</td>
+        <td>The product's description, meant to be displayable to the customer.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>metadata</td>
+        <td>Set of key-value pairs attached to the product, stored as a JSON object.</td>
+        <td>Json</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>name</td>
+        <td>The product's name, meant to be displayable to the customer.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>statement_descriptor</td>
+        <td>Extra information about a product which will appear on your customer's credit card statement.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
 <table>
 <caption>Referenced Tables</caption>
     <tr>

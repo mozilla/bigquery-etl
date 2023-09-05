@@ -151,6 +151,9 @@ fields:
   - mode: NULLABLE
     name: dltoken
     type: STRING
+  - mode: NULLABLE
+    name: dlsource
+    type: STRING
   mode: NULLABLE
   name: attribution
   type: RECORD

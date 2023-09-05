@@ -16953,6 +16953,16 @@ fields:
       - name: value
         type: STRING
         mode: NULLABLE
+    - name: trr_relevant_skip_reason_trr_first_type_rec
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -31498,6 +31508,16 @@ fields:
           - name: value
             type: STRING
             mode: NULLABLE
+        - name: eh_perf_channel_completion_time
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: STRING
+            mode: NULLABLE
       - name: keyed_scalars
         type: RECORD
         mode: NULLABLE
@@ -37379,6 +37399,16 @@ fields:
           - name: value
             type: STRING
             mode: NULLABLE
+        - name: trr_relevant_skip_reason_trr_first_type_rec
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: STRING
+            mode: NULLABLE
       - name: keyed_histograms
         type: RECORD
         mode: NULLABLE
@@ -37664,6 +37694,16 @@ fields:
             type: STRING
             mode: NULLABLE
         - name: trr_skip_reason_strict_mode
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: STRING
+            mode: NULLABLE
+        - name: trr_relevant_skip_reason_trr_first_type_rec
           type: RECORD
           mode: REPEATED
           fields:

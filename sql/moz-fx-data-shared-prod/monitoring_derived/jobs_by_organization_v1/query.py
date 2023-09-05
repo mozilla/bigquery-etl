@@ -57,17 +57,18 @@ def create_query(date, project):
         WHERE
           DATE(creation_time) = '{date}'
           AND (
-            (
-              project_id IN UNNEST({DEFAULT_PROJECTS}
-              )
-            OR EXISTS
-            (
-              SELECT * FROM UNNEST(referenced_tables) AS ref_tables
-                WHERE ref_tables.project_id IN UNNEST({DEFAULT_PROJECTS})
-            )
-            OR
-            (
-                destination_table.project_id IN UNNEST({DEFAULT_PROJECTS}))
+                (
+                  project_id IN UNNEST({DEFAULT_PROJECTS})
+                  )
+                OR EXISTS
+                (
+                  SELECT * FROM UNNEST(referenced_tables) AS ref_tables
+                    WHERE ref_tables.project_id IN UNNEST({DEFAULT_PROJECTS})
+                )
+                OR
+                (
+                    destination_table.project_id IN UNNEST({DEFAULT_PROJECTS})
+                )
             )
     """
 

@@ -168,12 +168,12 @@ fields:
   description: (Clustering column) Email address or service account of the user who ran the job.
 
 - mode: NULLABLE
-  name: query_info.resource_warning
+  name: query_info_resource_warning
   type: STRING
   description: The warning message that appears if the resource usage during query processing is above the internal threshold of the system.
 
 - mode: NULLABLE
-  name: query_info.query_hashes.normalized_literals
+  name: query_info_query_hashes_normalized_literals
   type: STRING
   description: Contains the hashes of the query. normalized_literals is a hexadecimal STRING hash that ignores comments, parameter values, UDFs, and literals.
 

@@ -2,7 +2,7 @@ friendly_name: {{ app_value }} Active Users Aggregates for deletion requests
 description: |-
   Prototype.
 
-  KPIs calcuylated for deletion requests.
+  KPIs calculated for deletion requests.
 owners:
   - lvargas@mozilla.com
 labels:

@@ -138,6 +138,9 @@ fields:
   - name: dltoken
     type: STRING
     mode: NULLABLE
+  - name: dlsource
+    type: STRING
+    mode: NULLABLE
 - name: blocklist_enabled
   type: BOOLEAN
   mode: NULLABLE

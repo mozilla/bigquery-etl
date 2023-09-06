@@ -99,8 +99,8 @@ class BaseForecast:
 
     @property
     def _default_end_date(self) -> str:
-        """64 weeks (16 months) ahead of the current UTC date."""
-        return (datetime.utcnow() + timedelta(weeks=64)).date()
+        """78 weeks (18 months) ahead of the current UTC date."""
+        return (datetime.utcnow() + timedelta(weeks=78)).date()
 
     def _set_seed(self) -> None:
         """Set random seed to ensure that fits and predictions are reproducible."""

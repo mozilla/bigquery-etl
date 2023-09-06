@@ -1,0 +1,10 @@
+friendly_name: Firefox Desktop
+description: |-
+  Data related to messaging_system.
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

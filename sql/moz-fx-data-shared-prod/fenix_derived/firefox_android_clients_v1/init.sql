@@ -19,6 +19,7 @@ WITH baseline_clients AS (
     `moz-fx-data-shared-prod.fenix.baseline_clients_daily`
   WHERE
     submission_date >= '2020-01-21'
+    AND client_id IS NOT NULL
 ),
 first_seen AS (
   SELECT
@@ -76,7 +77,7 @@ first_session_ping_min_seq AS (
         fenix.first_session AS fenix_first_session
       WHERE
         ping_info.seq IS NOT NULL
-        AND DATE(submission_timestamp) = @submission_date
+        AND DATE(submission_timestamp) >= '2019-01-01'
     )
   WHERE
     RANK = 1 -- Pings are sent in sequence, this guarantees that the first one is returned.
@@ -91,6 +92,9 @@ first_session_ping AS (
     MIN(fenix_first_session.sample_id) AS sample_id,
     DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
     MIN(SAFE.PARSE_DATETIME('%F', SUBSTR(client_info.first_run_date, 1, 10))) AS first_run_datetime,
+    ARRAY_AGG(normalized_channel IGNORE NULLS ORDER BY submission_timestamp ASC)[
+      SAFE_OFFSET(0)
+    ] AS channel,
     ARRAY_AGG(metrics.string.first_session_campaign IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
     ] AS adjust_campaign,
@@ -121,11 +125,13 @@ first_session_ping AS (
 ),
 -- Find earliest data per client from the metrics ping.
 metrics_ping AS (
-  -- Fenix Release
   SELECT
     client_info.client_id AS client_id,
     MIN(sample_id) AS sample_id,
     DATETIME(MIN(submission_timestamp)) AS min_submission_datetime,
+    ARRAY_AGG(normalized_channel IGNORE NULLS ORDER BY submission_timestamp ASC)[
+      SAFE_OFFSET(0)
+    ] AS channel,
     ARRAY_AGG(
       metrics.string.metrics_adjust_campaign IGNORE NULLS
       ORDER BY
@@ -179,6 +185,9 @@ baseline_ping AS (
   SELECT
     client_id,
     MAX(submission_date) AS last_reported_date,
+    ARRAY_AGG(channel IGNORE NULLS ORDER BY submission_date DESC)[
+      SAFE_OFFSET(0)
+    ] AS last_reported_channel,
     ARRAY_AGG(country IGNORE NULLS ORDER BY submission_date DESC)[
       SAFE_OFFSET(0)
     ] AS last_reported_country,
@@ -204,7 +213,7 @@ SELECT
   DATE(first_seen.first_run_datetime) AS first_run_date,
   first_seen.first_reported_country AS first_reported_country,
   first_seen.first_reported_isp AS first_reported_isp,
-  first_seen.channel AS channel,
+  COALESCE(first_seen.channel, first_session.channel, metrics.channel) AS channel,
   first_seen.device_manufacturer AS device_manufacturer,
   first_seen.device_model AS device_model,
   first_seen.os_version AS os_version,
@@ -233,6 +242,7 @@ SELECT
     first_session.adjust_network
   ) AS last_reported_adjust_network,
   COALESCE(baseline.last_reported_date, first_seen.first_seen_date) AS last_reported_date,
+  COALESCE(baseline.last_reported_channel, first_seen.channel) AS last_reported_channel,
   COALESCE(
     baseline.last_reported_country,
     first_seen.first_reported_country
@@ -257,6 +267,11 @@ SELECT
         THEN FALSE
       ELSE TRUE
     END AS reported_metrics_ping,
+    CASE
+      WHEN first_seen.client_id IS NULL
+        THEN FALSE
+      ELSE TRUE
+    END AS reported_baseline_ping,
     DATE(first_session.min_submission_datetime) AS min_first_session_ping_submission_date,
     DATE(first_session.first_run_datetime) AS min_first_session_ping_run_date,
     DATE(metrics.min_submission_datetime) AS min_metrics_ping_submission_date,

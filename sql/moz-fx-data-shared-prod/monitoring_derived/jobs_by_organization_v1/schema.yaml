@@ -1,0 +1,188 @@
+fields:
+
+- mode: NULLABLE
+  name: cache_hit
+  type: BOOLEAN
+  description: Whether the query results of this job were from a cache. If you have a multi-query statement job, cache_hit for your parent query is NULL.
+
+- mode: NULLABLE
+  name: creation_time
+  type: TIMESTAMP
+  description: (Partitioning column) Creation time of this job. Partitioning is based on the UTC time of this timestamp.
+
+- mode: NULLABLE
+  name: destination_table
+  type: RECORD
+  fields:
+  - mode: NULLABLE
+    name: projectId
+    type: STRING
+  - mode: NULLABLE
+    name: datasetId
+    type: STRING
+  - mode: NULLABLE
+    name: tableId
+    type: STRING
+  description: Destination table for results, if any.
+
+- mode: NULLABLE
+  name: end_time
+  type: TIMESTAMP
+  description: The end time of this job, in milliseconds since the epoch. This field represents the time when the job enters the DONE state
+
+- mode: NULLABLE
+  name: error_result
+  type: RECORD
+  fields:
+  - mode: NULLABLE
+    name: reason
+    type: STRING
+  - mode: NULLABLE
+    name: location
+    type: STRING
+  - mode: NULLABLE
+    name: debugInfo
+    type: STRING
+  - mode: NULLABLE
+    name: message
+    type: STRING
+  description: Details of any errors as ErrorProto objects.
+
+- mode: NULLABLE
+  name: job_id
+  type: STRING
+  description: The ID of the job. For example, bquxjob_1234.
+
+- mode: NULLABLE
+  name: job_type
+  type: STRING
+  description: The type of the job. Can be QUERY, LOAD, EXTRACT, COPY, or NULL.
+
+- mode: NULLABLE
+  name: parent_job_id
+  type: STRING
+  description: ID of the parent job, if any.
+
+- mode: NULLABLE
+  name: priority
+  type: STRING
+  description: The priority of this job. Valid values include INTERACTIVE and BATCH.
+
+- mode: NULLABLE
+  name: project_id
+  type: STRING
+  description: (Clustering column) The ID of the project.
+
+- mode: NULLABLE
+  name: project_number
+  type: INTEGER
+  description: The number of the project.
+
+- mode: NULLABLE
+  name: referenced_tables
+  type: RECORD
+  fields:
+  - mode: NULLABLE
+    name: projectID
+    type: STRING
+  - mode: NULLABLE
+    name: datasetId
+    type: STRING
+  - mode: NULLABLE
+    name: tableId
+    type: STRING
+  description: Array of tables referenced by the job. Only populated for query jobs.
+
+- mode: NULLABLE
+  name: reservation_id
+  type: STRING
+  description: Name of the primary reservation assigned to this job
+
+- mode: NULLABLE
+  name: start_time
+  type: TIMESTAMP
+  description: The start time of this job. This field represents the time when the job transitions from the PENDING state to either RUNNING or DONE.
+
+- mode: NULLABLE
+  name: state
+  type: STRING
+  description: Running state of the job. Valid states include PENDING, RUNNING, and DONE.
+
+- mode: NULLABLE
+  name: statement_type
+  type: STRING
+  description: The type of query statement. For example, DELETE, INSERT, SCRIPT, SELECT, or UPDATE. See QueryStatementType for list of valid values.
+
+- mode: NULLABLE
+  name: timeline
+  type: RECORD
+  fields:
+  - mode: NULLABLE
+    name: elapsedMS
+    type: STRING
+  - mode: NULLABLE
+    name: totalSlotMs
+    type: STRING
+  - mode: NULLABLE
+    name: pendingUnits
+    type: STRING
+  - mode: NULLABLE
+    name: completedUnits
+    type: STRING
+  - mode: NULLABLE
+    name: activeUnits
+    type: STRING
+  - mode: NULLABLE
+    name: estimatedRunnableUnits
+    type: STRING
+  description: Query timeline of the job. Contains snapshots of query execution.
+
+- mode: NULLABLE
+  name: total_bytes_billed
+  type: INTEGER
+  description: If the project is configured to use on-demand pricing, then this field contains the total bytes billed for the job.
+
+- mode: NULLABLE
+  name: total_bytes_processed
+  type: INTEGER
+  description: Total bytes processed by the job.
+
+- mode: NULLABLE
+  name: total_modified_partitions
+  type: INTEGER
+  description: The total number of partitions the job modified. This field is populated for LOAD and QUERY jobs.
+
+- mode: NULLABLE
+  name: total_slot_ms
+  type: INTEGER
+  description: Slot milliseconds for the job over its entire duration in the RUNNING state, including retries.
+
+- mode: NULLABLE
+  name: transaction_id
+  type: STRING
+  description: ID of the transaction in which this job ran, if any. (Preview)
+
+- mode: NULLABLE
+  name: user_email
+  type: STRING
+  description: (Clustering column) Email address or service account of the user who ran the job.
+
+- mode: NULLABLE
+  name: query_info_resource_warning
+  type: STRING
+  description: The warning message that appears if the resource usage during query processing is above the internal threshold of the system.
+
+- mode: NULLABLE
+  name: query_info_query_hashes_normalized_literals
+  type: STRING
+  description: Contains the hashes of the query. normalized_literals is a hexadecimal STRING hash that ignores comments, parameter values, UDFs, and literals.
+
+- mode: NULLABLE
+  name: transferred_bytes
+  type: INTEGER
+  description: Total bytes transferred for cross-cloud queries, such as BigQuery Omni cross-cloud transfer jobs.
+
+- mode: NULLABLE
+  name: creation_date
+  type: DATE
+  description: date of creation time

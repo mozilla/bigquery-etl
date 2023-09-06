@@ -21,10 +21,6 @@ fields:
   type: INTEGER
 - description:
   mode: NULLABLE
-  name: max_tries
-  type: INTEGER
-- description:
-  mode: NULLABLE
   name: start_date
   type: TIMESTAMP
 - description:
@@ -37,12 +33,8 @@ fields:
   type: FLOAT
 - description:
   mode: NULLABLE
-  name: updated_at
-  type: TIMESTAMP
-- description:
-  mode: NULLABLE
   name: job_id
-  type: STRING
+  type: INTEGER
 - description:
   mode: NULLABLE
   name: executor_config
@@ -55,6 +47,10 @@ fields:
   mode: NULLABLE
   name: hostname
   type: STRING
+- description:
+  mode: NULLABLE
+  name: max_tries
+  type: INTEGER
 - description:
   mode: NULLABLE
   name: next_kwargs
@@ -70,7 +66,7 @@ fields:
 - description:
   mode: NULLABLE
   name: pid
-  type: STRING
+  type: INTEGER
 - description:
   mode: NULLABLE
   name: pool

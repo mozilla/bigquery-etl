@@ -208,13 +208,13 @@ questionable_subscription_plans_history AS (
       plans.currency,
       plans.`interval`,
       plans.interval_count,
-      PARSE_JSON(plans.metadata) AS metadata,
+      plans.metadata,
       plans.nickname,
       STRUCT(
         plans.product_id AS id,
         products.created,
         products.description,
-        PARSE_JSON(products.metadata) AS metadata,
+        products.metadata,
         products.name,
         products.statement_descriptor,
         products.updated
@@ -223,6 +223,7 @@ questionable_subscription_plans_history AS (
       plans.trial_period_days,
       plans.usage_type
     ) AS plan,
+    ROW_NUMBER() OVER subscription_plan_changes_asc AS subscription_plan_number,
     LAG(plan_changes.plan_id) OVER subscription_plan_changes_asc AS previous_plan_id,
     plan_changes.subscription_plan_start AS valid_from,
     COALESCE(
@@ -232,11 +233,11 @@ questionable_subscription_plans_history AS (
   FROM
     questionable_subscription_plan_changes AS plan_changes
   LEFT JOIN
-    `moz-fx-data-shared-prod`.stripe_external.plan_v1 AS plans
+    `moz-fx-data-shared-prod`.subscription_platform_derived.stripe_plans_v1 AS plans
   ON
     plan_changes.plan_id = plans.id
   LEFT JOIN
-    `moz-fx-data-shared-prod`.stripe_external.product_v1 AS products
+    `moz-fx-data-shared-prod`.subscription_platform_derived.stripe_products_v1 AS products
   ON
     plans.product_id = products.id
   WINDOW
@@ -265,8 +266,7 @@ synthetic_subscription_start_changelog AS (
     questionable_subscription_plans_history AS plans_history
   ON
     changelog.subscription.id = plans_history.subscription_id
-    AND changelog.subscription.start_date >= plans_history.valid_from
-    AND changelog.subscription.start_date < plans_history.valid_to
+    AND plans_history.subscription_plan_number = 1
 ),
 synthetic_plan_change_changelog AS (
   SELECT
@@ -287,7 +287,8 @@ synthetic_plan_change_changelog AS (
   ON
     plans_history.subscription_id = changelog.subscription.id
   WHERE
-    plans_history.valid_from > changelog.subscription.start_date
+    plans_history.subscription_plan_number > 1
+    AND plans_history.valid_from > changelog.subscription.start_date
 ),
 synthetic_trial_start_changelog AS (
   SELECT

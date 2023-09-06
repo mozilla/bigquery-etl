@@ -1,0 +1,203 @@
+fields:
+- name: id
+  type: STRING
+  mode: NULLABLE
+- name: month_start_date
+  type: DATE
+  mode: NULLABLE
+- name: month_end_date
+  type: DATE
+  mode: NULLABLE
+- name: logical_subscriptions_history_id
+  type: STRING
+  mode: NULLABLE
+- name: subscription
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: id
+    type: STRING
+    mode: NULLABLE
+  - name: provider
+    type: STRING
+    mode: NULLABLE
+  - name: payment_provider
+    type: STRING
+    mode: NULLABLE
+  - name: provider_subscription_id
+    type: STRING
+    mode: NULLABLE
+  - name: provider_subscription_item_id
+    type: STRING
+    mode: NULLABLE
+  - name: provider_subscription_created_at
+    type: TIMESTAMP
+    mode: NULLABLE
+  - name: provider_subscription_updated_at
+    type: TIMESTAMP
+    mode: NULLABLE
+  - name: provider_customer_id
+    type: STRING
+    mode: NULLABLE
+  - name: mozilla_account_id
+    type: STRING
+    mode: NULLABLE
+  - name: mozilla_account_id_sha256
+    type: STRING
+    mode: NULLABLE
+  - name: customer_subscription_number
+    type: INTEGER
+    mode: NULLABLE
+  - name: country_code
+    type: STRING
+    mode: NULLABLE
+  - name: country_name
+    type: STRING
+    mode: NULLABLE
+  - name: services
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: id
+      type: STRING
+      mode: NULLABLE
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: tier
+      type: STRING
+      mode: NULLABLE
+  - name: provider_product_id
+    type: STRING
+    mode: NULLABLE
+  - name: product_name
+    type: STRING
+    mode: NULLABLE
+  - name: provider_plan_id
+    type: STRING
+    mode: NULLABLE
+  - name: plan_summary
+    type: STRING
+    mode: NULLABLE
+  - name: plan_interval
+    type: STRING
+    mode: NULLABLE
+  - name: plan_interval_type
+    type: STRING
+    mode: NULLABLE
+  - name: plan_interval_count
+    type: INTEGER
+    mode: NULLABLE
+  - name: plan_interval_months
+    type: INTEGER
+    mode: NULLABLE
+  - name: plan_currency
+    type: STRING
+    mode: NULLABLE
+  - name: plan_amount
+    type: NUMERIC
+    mode: NULLABLE
+  - name: is_bundle
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: is_trial
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: is_active
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: provider_status
+    type: STRING
+    mode: NULLABLE
+  - name: started_at
+    type: TIMESTAMP
+    mode: NULLABLE
+  - name: ended_at
+    type: TIMESTAMP
+    mode: NULLABLE
+  - name: current_period_started_at
+    type: TIMESTAMP
+    mode: NULLABLE
+  - name: current_period_ends_at
+    type: TIMESTAMP
+    mode: NULLABLE
+  - name: auto_renew
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: auto_renew_disabled_at
+    type: TIMESTAMP
+    mode: NULLABLE
+  - name: has_refunds
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: has_fraudulent_charges
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: first_touch_attribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: impression_at
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: entrypoint
+      type: STRING
+      mode: NULLABLE
+    - name: entrypoint_experiment
+      type: STRING
+      mode: NULLABLE
+    - name: entrypoint_variation
+      type: STRING
+      mode: NULLABLE
+    - name: utm_campaign
+      type: STRING
+      mode: NULLABLE
+    - name: utm_content
+      type: STRING
+      mode: NULLABLE
+    - name: utm_medium
+      type: STRING
+      mode: NULLABLE
+    - name: utm_source
+      type: STRING
+      mode: NULLABLE
+    - name: utm_term
+      type: STRING
+      mode: NULLABLE
+  - name: last_touch_attribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: impression_at
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: entrypoint
+      type: STRING
+      mode: NULLABLE
+    - name: entrypoint_experiment
+      type: STRING
+      mode: NULLABLE
+    - name: entrypoint_variation
+      type: STRING
+      mode: NULLABLE
+    - name: utm_campaign
+      type: STRING
+      mode: NULLABLE
+    - name: utm_content
+      type: STRING
+      mode: NULLABLE
+    - name: utm_medium
+      type: STRING
+      mode: NULLABLE
+    - name: utm_source
+      type: STRING
+      mode: NULLABLE
+    - name: utm_term
+      type: STRING
+      mode: NULLABLE
+- name: was_active_at_month_start
+  type: BOOLEAN
+  mode: NULLABLE
+- name: was_active_at_month_end
+  type: BOOLEAN
+  mode: NULLABLE

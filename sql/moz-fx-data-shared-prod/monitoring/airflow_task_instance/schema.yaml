@@ -32,7 +32,7 @@ fields:
   mode: NULLABLE
   description: null
 - name: job_id
-  type: TIMESTAMP
+  type: INTEGER
   mode: NULLABLE
   description: null
 - name: executor_config

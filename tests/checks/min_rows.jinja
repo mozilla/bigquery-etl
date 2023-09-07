@@ -9,7 +9,7 @@
     {% endif %}
   )
   SELECT IF(
-   (SELECT total_rows FROM min_rows WHERE total_rows < {{ threshold }}) > 0,
+   (SELECT COUNTIF(total_rows < {{ threshold }}) FROM min_rows) > 0,
    ERROR(CONCAT("Less than ", (SELECT total_rows FROM min_rows), " rows found (expected more than {{ threshold }})")),
    NULL
   );

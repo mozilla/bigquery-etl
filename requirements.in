@@ -30,7 +30,7 @@ pytest-isort==3.1.0
 pytest-mypy==0.10.3
 pytest-pydocstyle==2.3.2
 pytest-xdist==3.3.1
-pytest==7.4.0
+pytest==7.4.2
 PyYAML==6.0.1
 smart_open==6.3.0
 sqlglot==18.2.0

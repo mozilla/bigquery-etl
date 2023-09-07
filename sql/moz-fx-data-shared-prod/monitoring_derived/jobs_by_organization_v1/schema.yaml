@@ -78,7 +78,7 @@ fields:
   type: INTEGER
   description: The number of the project.
 
-- mode: NULLABLE
+- mode: REPEATED
   name: referenced_tables
   type: RECORD
   fields:
@@ -113,28 +113,28 @@ fields:
   type: STRING
   description: The type of query statement. For example, DELETE, INSERT, SCRIPT, SELECT, or UPDATE. See QueryStatementType for list of valid values.
 
-- mode: NULLABLE
+- mode: REPEATED
   name: timeline
   type: RECORD
   fields:
   - mode: NULLABLE
     name: elapsed_ms
-    type: STRING
+    type: INTEGER
   - mode: NULLABLE
     name: total_slot_ms
-    type: STRING
+    type: INTEGER
   - mode: NULLABLE
     name: pending_units
-    type: STRING
+    type: INTEGER
   - mode: NULLABLE
     name: completed_units
-    type: STRING
+    type: INTEGER
   - mode: NULLABLE
     name: active_units
-    type: STRING
+    type: INTEGER
   - mode: NULLABLE
     name: estimated_runnable_units
-    type: STRING
+    type: INTEGER
   description: Query timeline of the job. Contains snapshots of query execution.
 
 - mode: NULLABLE
@@ -150,17 +150,11 @@ fields:
 - mode: NULLABLE
   name: total_modified_partitions
   type: INTEGER
-  description: The total number of partitions the job modified. This field is populated for LOAD and QUERY jobs.
 
 - mode: NULLABLE
   name: total_slot_ms
   type: INTEGER
-  description: Slot milliseconds for the job over its entire duration in the RUNNING state, including retries.
-
-- mode: NULLABLE
-  name: transaction_id
-  type: STRING
-  description: ID of the transaction in which this job ran, if any. (Preview)
+  description: The total number of partitions the job modified. This field is populated for LOAD and QUERY jobs.
 
 - mode: NULLABLE
   name: user_email
@@ -185,4 +179,4 @@ fields:
 - mode: NULLABLE
   name: creation_date
   type: DATE
-  description: date of creation time
+  description: Date of the creation_time

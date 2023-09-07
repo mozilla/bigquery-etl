@@ -996,6 +996,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: data_storage_entries
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -2626,6 +2636,16 @@ fields:
         type: BOOLEAN
         mode: NULLABLE
     - name: cookie_banners_private_window_service_mode
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+    - name: data_storage_migration
       type: RECORD
       mode: REPEATED
       fields:

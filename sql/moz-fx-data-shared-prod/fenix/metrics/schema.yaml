@@ -553,6 +553,12 @@ fields:
     - name: bloburl_resolve_stopped
       type: INTEGER
       mode: NULLABLE
+    - name: addons_extensions_process_ui_disable
+      type: INTEGER
+      mode: NULLABLE
+    - name: addons_extensions_process_ui_retry
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -1972,6 +1978,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: extensions_process_event
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: data_storage_entries
       type: RECORD
       mode: REPEATED
       fields:
@@ -7715,6 +7731,16 @@ fields:
         type: BOOLEAN
         mode: NULLABLE
     - name: cookie_banners_private_window_service_mode
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+    - name: data_storage_migration
       type: RECORD
       mode: REPEATED
       fields:

@@ -1302,6 +1302,17 @@ fields:
         \ or been created.\nThe labels with \"_fg\" / \"_bg\" suffixes are only recorded\
         \ in Android builds,\nwhile the \"created\" and \"crashed\" labels are recorded\
         \ on both Desktop and Android\nbuilds. \n"
+    - name: data_storage_entries
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: Counts the number of entries stored in each nsIDataStorage.
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -1783,6 +1794,17 @@ fields:
       description: 'The pref value of the cookie banner service mode for private windows.
 
         '
+    - name: data_storage_migration
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: Indicates whether or not migration was successful for each nsIDataStorage.
   - name: rate
     type: RECORD
     mode: NULLABLE

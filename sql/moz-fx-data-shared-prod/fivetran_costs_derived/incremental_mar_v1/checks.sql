@@ -39,7 +39,7 @@ WITH min_rows AS (
 )
 SELECT
   IF(
-    (SELECT total_rows FROM min_rows WHERE total_rows < 1) > 0,
+    (SELECT COUNTIF(total_rows < 1) FROM min_rows) > 0,
     ERROR(
       CONCAT("Less than ", (SELECT total_rows FROM min_rows), " rows found (expected more than 1)")
     ),

@@ -135,7 +135,8 @@ SELECT
       metrics.labeled_counter.metrics_bookmarks_open,
       metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries,
       metrics.labeled_counter.pwmgr_form_autofill_result,
-      metrics.labeled_counter.extensions_process_event
+      metrics.labeled_counter.extensions_process_event,
+      metrics.labeled_counter.data_storage_entries
     ) AS labeled_counter,
     metrics.quantity,
     metrics.string,
@@ -311,7 +312,9 @@ SELECT
       metrics.counter.logins_saved,
       metrics.counter.home_screen_standard_homepage_view_count,
       metrics.counter.fog_inits_during_shutdown,
-      metrics.counter.bloburl_resolve_stopped
+      metrics.counter.bloburl_resolve_stopped,
+      metrics.counter.addons_extensions_process_ui_disable,
+      metrics.counter.addons_extensions_process_ui_retry
     ) AS counter,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -434,7 +437,8 @@ SELECT
       metrics.labeled_counter.metrics_bookmarks_open,
       metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries,
       metrics.labeled_counter.pwmgr_form_autofill_result,
-      metrics.labeled_counter.extensions_process_event
+      metrics.labeled_counter.extensions_process_event,
+      metrics.labeled_counter.data_storage_entries
     ) AS labeled_counter,
     metrics.quantity,
     STRUCT(
@@ -797,7 +801,9 @@ SELECT
       metrics.counter.logins_saved,
       metrics.counter.home_screen_standard_homepage_view_count,
       metrics.counter.fog_inits_during_shutdown,
-      metrics.counter.bloburl_resolve_stopped
+      metrics.counter.bloburl_resolve_stopped,
+      metrics.counter.addons_extensions_process_ui_disable,
+      metrics.counter.addons_extensions_process_ui_retry
     ) AS counter,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -920,7 +926,8 @@ SELECT
       metrics.labeled_counter.metrics_bookmarks_open,
       metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries,
       metrics.labeled_counter.pwmgr_form_autofill_result,
-      metrics.labeled_counter.extensions_process_event
+      metrics.labeled_counter.extensions_process_event,
+      metrics.labeled_counter.data_storage_entries
     ) AS labeled_counter,
     metrics.quantity,
     STRUCT(
@@ -1243,7 +1250,8 @@ SELECT
       metrics.labeled_counter.metrics_bookmarks_open,
       metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries,
       metrics.labeled_counter.pwmgr_form_autofill_result,
-      metrics.labeled_counter.extensions_process_event
+      metrics.labeled_counter.extensions_process_event,
+      metrics.labeled_counter.data_storage_entries
     ) AS labeled_counter,
     metrics.quantity,
     metrics.string,

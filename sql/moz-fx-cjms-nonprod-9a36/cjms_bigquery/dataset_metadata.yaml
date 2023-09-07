@@ -1,10 +1,11 @@
-friendly_name: Test telemetry data
+friendly_name: cjms non prod derived tables
 description: |-
-  Test Derived data based on pings
+    cjms non prod derived table
 dataset_base_acl: derived
 user_facing: false
+labels: {}
 workgroup_access:
-- role: roles/bigquery.metadataViewer
+- role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
 default_table_workgroup_access:

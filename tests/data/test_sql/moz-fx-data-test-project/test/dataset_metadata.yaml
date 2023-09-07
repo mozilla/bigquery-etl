@@ -5,10 +5,10 @@ dataset_base_acl: view
 user_facing: true
 labels: {}
 default_table_workgroup_access:
-- role: roles/bigquery.metadataViewer
+- role: roles/bigquery.dataViewer
   members:
   - test_default_member
 workgroup_access:
-- role: roles/bigquery.dataViewer
+- role: roles/bigquery.metadataViewer
   members:
   - test_member

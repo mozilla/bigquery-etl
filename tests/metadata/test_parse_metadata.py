@@ -209,5 +209,5 @@ class TestParseMetadata(object):
         ]
         assert (
             metadata.default_table_workgroup_access[0]["role"]
-            == "roles/bigquery.metadataViewer"
+            == "roles/bigquery.dataViewer"
         )

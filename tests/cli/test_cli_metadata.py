@@ -216,11 +216,7 @@ class TestMetadata:
                 "r",
             ) as stream:
                 metadata = yaml.safe_load(stream)
-                print(metadata)
-        assert (
-            metadata["workgroup_access"][0]["role"] == "roles/bigquery.metadataViewer"
-        )
-        assert metadata["workgroup_access"][0]["members"] == ["workgroup:deprecated"]
+        assert metadata["workgroup_access"] == []
         assert metadata["deprecated"]
 
     def test_metadata_update_do_not_update(self, runner):

@@ -1,8 +1,9 @@
-friendly_name: Test telemetry data
+friendly_name: Marketing related tables
 description: |-
-  Test Derived data based on pings
+  Derived tables for marketing
 dataset_base_acl: derived
 user_facing: false
+labels: {}
 workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:

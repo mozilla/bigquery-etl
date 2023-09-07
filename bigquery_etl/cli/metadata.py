@@ -48,11 +48,6 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
         dataset_metadata_path = (
             Path(table_metadata_file).parent.parent / "dataset_metadata.yaml"
         )
-        if not dataset_metadata_path.exists():
-            dataset_metadata = DatasetMetadata(
-                friendly_name="", description="", dataset_base_acl="derived"
-            )
-            dataset_metadata.write(dataset_metadata_path)
         dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
         table_metadata = Metadata.from_file(table_metadata_file)
 
@@ -62,26 +57,14 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
                 dataset_metadata.workgroup_access
             )
         if table_metadata.deprecated:
-            # set workgroup:deprecated if table has been tagged as deprecated
+            # set workgroup: [] if table has been tagged as deprecated
             # this overwrites existing workgroups
-            table_metadata.workgroup_access = [
-                dict(
-                    role="roles/bigquery.metadataViewer",
-                    members=["workgroup:deprecated"],
-                )
-            ]
+            table_metadata.workgroup_access = []
         else:
-            # if workgroup hasn't been explicitly set for the table, set table workgroup
-            # to the default workgroup that is defined in the dataset_metadata.yaml
-            if (
-                dataset_metadata.default_table_workgroup_access
-                and table_metadata.workgroup_access is None
-            ):
-                print("im insider the if")
+            if table_metadata.workgroup_access is None:
                 table_metadata.workgroup_access = (
                     dataset_metadata.default_table_workgroup_access
                 )
-        dataset_metadata.write(dataset_metadata_path)
         table_metadata.write(table_metadata_file)
         click.echo(f"Updated {table_metadata_file}")
     return None

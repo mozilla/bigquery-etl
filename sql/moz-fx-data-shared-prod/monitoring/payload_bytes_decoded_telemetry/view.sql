@@ -17,4 +17,4 @@ SELECT
     ) AS metadata
   )
 FROM
-  `moz-fx-data-shared-prod.payload_bytes_decoded.telemetry_*`
+  `moz-fx-data-shared-prod.payload_bytes_decoded.telemetry*`

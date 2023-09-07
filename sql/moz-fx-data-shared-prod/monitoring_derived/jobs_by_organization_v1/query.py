@@ -63,11 +63,11 @@ def create_query(date, project):
                 OR EXISTS
                 (
                   SELECT * FROM UNNEST(referenced_tables) AS ref_tables
-                    WHERE ref_tables.project_id IN UNNEST({DEFAULT_PROJECTS})
+                    WHERE ref_tables.projectId IN UNNEST({DEFAULT_PROJECTS})
                 )
                 OR
                 (
-                    destination_table.project_id IN UNNEST({DEFAULT_PROJECTS})
+                    destination_table.projectId IN UNNEST({DEFAULT_PROJECTS})
                 )
             )
     """

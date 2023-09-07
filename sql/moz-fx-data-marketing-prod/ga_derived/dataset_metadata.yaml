@@ -1,0 +1,14 @@
+friendly_name: GA tables
+description: |-
+  Derived tables for Google Analytics
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:mozilla-confidential
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

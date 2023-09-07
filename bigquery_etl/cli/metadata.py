@@ -48,6 +48,8 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
         dataset_metadata_path = (
             Path(table_metadata_file).parent.parent / "dataset_metadata.yaml"
         )
+        if not dataset_metadata_path.exists():
+            continue
         dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
         table_metadata = Metadata.from_file(table_metadata_file)
 

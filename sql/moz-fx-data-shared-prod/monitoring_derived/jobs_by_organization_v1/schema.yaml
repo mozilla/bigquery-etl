@@ -83,7 +83,7 @@ fields:
   type: RECORD
   fields:
   - mode: NULLABLE
-    name: projectID
+    name: projectId
     type: STRING
   - mode: NULLABLE
     name: datasetId

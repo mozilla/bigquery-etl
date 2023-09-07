@@ -15,13 +15,13 @@ fields:
   type: RECORD
   fields:
   - mode: NULLABLE
-    name: projectId
+    name: project_id
     type: STRING
   - mode: NULLABLE
-    name: datasetId
+    name: dataset_id
     type: STRING
   - mode: NULLABLE
-    name: tableId
+    name: table_id
     type: STRING
   description: Destination table for results, if any.
 
@@ -41,7 +41,7 @@ fields:
     name: location
     type: STRING
   - mode: NULLABLE
-    name: debugInfo
+    name: debug_info
     type: STRING
   - mode: NULLABLE
     name: message
@@ -78,18 +78,18 @@ fields:
   type: INTEGER
   description: The number of the project.
 
-- mode: NULLABLE
+- mode: REPEATED
   name: referenced_tables
   type: RECORD
   fields:
   - mode: NULLABLE
-    name: projectID
+    name: project_id
     type: STRING
   - mode: NULLABLE
-    name: datasetId
+    name: dataset_id
     type: STRING
   - mode: NULLABLE
-    name: tableId
+    name: table_id
     type: STRING
   description: Array of tables referenced by the job. Only populated for query jobs.
 
@@ -113,28 +113,28 @@ fields:
   type: STRING
   description: The type of query statement. For example, DELETE, INSERT, SCRIPT, SELECT, or UPDATE. See QueryStatementType for list of valid values.
 
-- mode: NULLABLE
+- mode: REPEATED
   name: timeline
   type: RECORD
   fields:
   - mode: NULLABLE
-    name: elapsedMS
-    type: STRING
+    name: elapsed_ms
+    type: INTEGER
   - mode: NULLABLE
-    name: totalSlotMs
-    type: STRING
+    name: total_slot_ms
+    type: INTEGER
   - mode: NULLABLE
-    name: pendingUnits
-    type: STRING
+    name: pending_units
+    type: INTEGER
   - mode: NULLABLE
-    name: completedUnits
-    type: STRING
+    name: completed_units
+    type: INTEGER
   - mode: NULLABLE
-    name: activeUnits
-    type: STRING
+    name: active_units
+    type: INTEGER
   - mode: NULLABLE
-    name: estimatedRunnableUnits
-    type: STRING
+    name: estimated_runnable_units
+    type: INTEGER
   description: Query timeline of the job. Contains snapshots of query execution.
 
 - mode: NULLABLE
@@ -150,17 +150,11 @@ fields:
 - mode: NULLABLE
   name: total_modified_partitions
   type: INTEGER
-  description: The total number of partitions the job modified. This field is populated for LOAD and QUERY jobs.
 
 - mode: NULLABLE
   name: total_slot_ms
   type: INTEGER
-  description: Slot milliseconds for the job over its entire duration in the RUNNING state, including retries.
-
-- mode: NULLABLE
-  name: transaction_id
-  type: STRING
-  description: ID of the transaction in which this job ran, if any. (Preview)
+  description: The total number of partitions the job modified. This field is populated for LOAD and QUERY jobs.
 
 - mode: NULLABLE
   name: user_email
@@ -185,4 +179,4 @@ fields:
 - mode: NULLABLE
   name: creation_date
   type: DATE
-  description: date of creation time
+  description: Date of the creation_time

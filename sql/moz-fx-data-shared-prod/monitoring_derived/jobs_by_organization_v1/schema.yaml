@@ -15,13 +15,13 @@ fields:
   type: RECORD
   fields:
   - mode: NULLABLE
-    name: projectId
+    name: project_id
     type: STRING
   - mode: NULLABLE
-    name: datasetId
+    name: dataset_id
     type: STRING
   - mode: NULLABLE
-    name: tableId
+    name: table_id
     type: STRING
   description: Destination table for results, if any.
 
@@ -41,7 +41,7 @@ fields:
     name: location
     type: STRING
   - mode: NULLABLE
-    name: debugInfo
+    name: debug_info
     type: STRING
   - mode: NULLABLE
     name: message
@@ -83,13 +83,13 @@ fields:
   type: RECORD
   fields:
   - mode: NULLABLE
-    name: projectId
+    name: project_id
     type: STRING
   - mode: NULLABLE
-    name: datasetId
+    name: dataset_id
     type: STRING
   - mode: NULLABLE
-    name: tableId
+    name: table_id
     type: STRING
   description: Array of tables referenced by the job. Only populated for query jobs.
 
@@ -118,22 +118,22 @@ fields:
   type: RECORD
   fields:
   - mode: NULLABLE
-    name: elapsedMS
+    name: elapsed_ms
     type: STRING
   - mode: NULLABLE
-    name: totalSlotMs
+    name: total_slot_ms
     type: STRING
   - mode: NULLABLE
-    name: pendingUnits
+    name: pending_units
     type: STRING
   - mode: NULLABLE
-    name: completedUnits
+    name: completed_units
     type: STRING
   - mode: NULLABLE
-    name: activeUnits
+    name: active_units
     type: STRING
   - mode: NULLABLE
-    name: estimatedRunnableUnits
+    name: estimated_runnable_units
     type: STRING
   description: Query timeline of the job. Contains snapshots of query execution.
 

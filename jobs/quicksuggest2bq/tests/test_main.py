@@ -19,6 +19,7 @@ SAMPLE_SUGGESTION = {
         "sample da",
         "sample dat",
     ],
+    "score": 0.4,
     "full_keywords": [("sample data", 3), ("sample", 3)],
 }
 
@@ -34,6 +35,7 @@ SAMPLE_WIKIPEDIA_SUGGESTION = {
         "wikip",
         "wikipe",
     ],
+    "score": 0.2,
     "full_keywords": [("wikipedia", 3)],
 }
 
@@ -130,6 +132,12 @@ class TestMain:
             suggestions[1].full_keywords[0]["count"]
             == SAMPLE_WIKIPEDIA_SUGGESTION["full_keywords"][0][1]
         )
+
+    def test_suggestion_score(self, mocked_kinto_client):
+        suggestions = list(download_suggestions(mocked_kinto_client))
+        assert len(suggestions) == 2
+        assert suggestions[0].score == SAMPLE_SUGGESTION["score"]
+        assert suggestions[1].score == SAMPLE_WIKIPEDIA_SUGGESTION["score"]
 
     def test_icon_records_not_downloaded(self, mocked_kinto_client_icon_only):
         suggestions = list(download_suggestions(mocked_kinto_client_icon_only))

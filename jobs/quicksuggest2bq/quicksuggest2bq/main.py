@@ -37,12 +37,16 @@ class KintoSuggestion:
     keywords: List[str]
     title: str
     url: str
+    full_keywords: List[FullKeyword]
+
     # `click_url` and `impression_url` are both optional, they're currently only
     # used by suggestions from adMarketplace. Mozilla's in-house Wikipedia suggestions
     # do not provide those fields.
-    full_keywords: Optional[List[FullKeyword]] = None
     click_url: Optional[str] = None
     impression_url: Optional[str] = None
+
+    # `score` is optional in the schema but should be included in every suggestion.
+    score: Optional[float] = None
 
 
 def download_suggestions(client: kinto_http.Client) -> Iterator[KintoSuggestion]:
@@ -135,6 +139,7 @@ def store_suggestions(
             ),
             bigquery.SchemaField("title", "STRING"),
             bigquery.SchemaField("url", "STRING"),
+            bigquery.SchemaField("score", "FLOAT64"),
         ],
         source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
         write_disposition="WRITE_TRUNCATE",

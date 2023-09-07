@@ -97,40 +97,24 @@ def get_dags(project_id, dags_config):
                         checks_file = os.path.join(root, CHECKS_FILE)
                         with open(checks_file, "r") as file:
                             file_contents = file.read()
-                        # check if file contains fail and warn and create checks task accordingly
-                        if "#fail" in file_contents:
+                            # check if file contains fail and warn and create checks task accordingly
                             is_check_task_fail = True
-                            checks_fail_task = copy.deepcopy(
+                            if "#warn" in file_contents:
+                                is_check_task_fail = False
+                            checks_task = copy.deepcopy(
                                 Task.of_dq_check(
                                     checks_file,
                                     is_check_task_fail,
                                     dag_collection=dag_collection,
                                 )
                             )
-                            tasks.append(checks_fail_task)
+                            tasks.append(checks_task)
                             task_ref = TaskRef(
                                 dag_name=task.dag_name,
                                 task_id=task.task_name,
                             )
-                            checks_fail_task.upstream_dependencies.append(task_ref)
-                        if "#warn" in file_contents:
-                            is_check_task_fail = False
-                            checks_warn_task = copy.deepcopy(
-                                Task.of_dq_check(
-                                    checks_file,
-                                    is_check_task_fail,
-                                    dag_collection=dag_collection,
-                                )
-                            )
-                            tasks.append(checks_warn_task)
-                            task_ref = TaskRef(
-                                dag_name=task.dag_name,
-                                task_id=task.task_name,
-                            )
-                            checks_warn_task.upstream_dependencies.append(task_ref)
+                            checks_task.upstream_dependencies.append(task_ref)
                     tasks.append(task)
-            print(tasks)
-
         else:
             logging.error(
                 """

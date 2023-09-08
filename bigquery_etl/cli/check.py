@@ -48,18 +48,13 @@ def _build_jinja_parameters(query_args):
 
 def _render_result_split_by_marker(marker, rendered_result):
     """Filter the rendered sql checks with the set marker."""
-    inside_block = False
     extracted_result = []
     rendered_result = sqlparse.split(rendered_result)
-    for line in rendered_result:
-        line = line.strip()
-        if re.search(f"^#{marker}", line, re.IGNORECASE):
-            inside_block = True
-        elif line.startswith("#") and re.search(f"^(?!#{marker})", line, re.IGNORECASE):
-            inside_block = False
-            continue
-        if inside_block:
-            extracted_result.append(line)
+
+    for sql_statement in rendered_result:
+        sql_statement = sql_statement.strip()
+        if re.search(f"^#{marker}", sql_statement, re.IGNORECASE):
+            extracted_result.append(sql_statement)
     return " ".join(extracted_result)
 
 
@@ -297,3 +292,6 @@ def _run_check(
 
     if check_failed:
         sys.exit(1)
+
+
+# todo: add validate method -- there must always be #fail checks

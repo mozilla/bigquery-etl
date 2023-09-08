@@ -535,7 +535,7 @@ class Task:
         for table in self._get_referenced_tables():
             # check if upstream task is accompanied by a check
             # the task running the check will be set as the upstream task instead
-            checks_upstream_task = dag_collection.checks_task_for_table(
+            checks_upstream_task = dag_collection.fail_checks_task_for_table(
                 table[0], table[1], table[2]
             )
             upstream_task = dag_collection.task_for_table(table[0], table[1], table[2])

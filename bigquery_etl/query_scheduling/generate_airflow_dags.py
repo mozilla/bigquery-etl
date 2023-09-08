@@ -95,25 +95,43 @@ def get_dags(project_id, dags_config):
                 else:
                     if CHECKS_FILE in files:
                         checks_file = os.path.join(root, CHECKS_FILE)
+                        # todo: validate checks file
+
                         with open(checks_file, "r") as file:
                             file_contents = file.read()
                             # check if file contains fail and warn and create checks task accordingly
-                            is_check_task_fail = True
-                            if "#warn" in file_contents:
-                                is_check_task_fail = False
-                            checks_task = copy.deepcopy(
-                                Task.of_dq_check(
-                                    checks_file,
-                                    is_check_task_fail,
-                                    dag_collection=dag_collection,
+                            checks_tasks = []
+
+                            if "#fail" in file_contents:
+                                checks_task = copy.deepcopy(
+                                    Task.of_dq_check(
+                                        checks_file,
+                                        is_check_fail=True,
+                                        dag_collection=dag_collection,
+                                    )
                                 )
-                            )
-                            tasks.append(checks_task)
-                            task_ref = TaskRef(
-                                dag_name=task.dag_name,
-                                task_id=task.task_name,
-                            )
-                            checks_task.upstream_dependencies.append(task_ref)
+                                checks_tasks.append(checks_task)
+
+                            if "#warn" in file_contents:
+                                checks_task = copy.deepcopy(
+                                    Task.of_dq_check(
+                                        checks_file,
+                                        is_check_fail=False,
+                                        dag_collection=dag_collection,
+                                    )
+                                )
+                                checks_tasks.append(checks_task)
+
+                            for checks_task in checks_tasks:
+                                tasks.append(checks_task)
+                                upstream_task_ref = TaskRef(
+                                    dag_name=task.dag_name,
+                                    task_id=task.task_name,
+                                )
+                                checks_task.upstream_dependencies.append(
+                                    upstream_task_ref
+                                )
+
                     tasks.append(task)
         else:
             logging.error(

@@ -447,6 +447,10 @@ jobs:
             PATH="venv/bin:$PATH" script/bqetl generate all \
               --output-dir /tmp/workspace/private-generated-sql/sql/ \
               --target-project moz-fx-data-shared-prod
+            PATH="venv/bin:$PATH" script/bqetl query render \
+              --sql-dir /tmp/workspace/private-generated-sql/sql/ \
+              --output-dir /tmp/workspace/private-generated-sql/sql/ \
+              /tmp/workspace/private-generated-sql/sql/
             PATH="venv/bin:$PATH" script/bqetl dependency record \
               --skip-existing \
               "/tmp/workspace/private-generated-sql/sql/"
@@ -513,6 +517,9 @@ jobs:
             export PATH="venv/bin:$PATH"
             ./script/bqetl generate all \
               --target-project moz-fx-data-shared-prod
+            ./script/bqetl query render \
+              --output-dir sql/ \
+              sql/
             ./script/bqetl dependency record \
               --skip-existing \
               "sql/"

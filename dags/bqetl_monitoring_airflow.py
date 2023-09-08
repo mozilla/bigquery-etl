@@ -45,7 +45,7 @@ tags = ["impact/tier_2", "repo/bigquery-etl"]
 with DAG(
     "bqetl_monitoring_airflow",
     default_args=default_args,
-    schedule_interval="0 2 * * *",
+    schedule_interval="0 10 * * *",
     doc_md=docs,
     tags=tags,
 ) as dag:

@@ -412,7 +412,7 @@ bqetl_monitoring:
     - impact/tier_1
 
 bqetl_monitoring_airflow:
-  schedule_interval: 0 2 * * *
+  schedule_interval: 0 10 * * *
   description: |
     This DAG schedules queries and scripts for populating datasets
     used for monitoring of Airflow DAGs.

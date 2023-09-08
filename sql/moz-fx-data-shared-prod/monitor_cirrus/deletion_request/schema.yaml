@@ -292,66 +292,6 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
-  - name: datetime
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: page_viewed
-      type: TIMESTAMP
-      mode: NULLABLE
-      description: 'The time a page was viewed.
-
-        '
-    - name: raw_page_viewed
-      type: STRING
-      mode: NULLABLE
-  - name: labeled_string
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: page_query_params
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: STRING
-        mode: NULLABLE
-      description: 'Query parameters associated with the URL of
-
-        the page that was viewed.
-
-        '
-  - name: string
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: page_http_status
-      type: STRING
-      mode: NULLABLE
-      description: 'The HTTP status code of the page.
-
-        '
-    - name: page_locale
-      type: STRING
-      mode: NULLABLE
-      description: 'The locale of the page that was viewed.
-
-        '
-    - name: page_path
-      type: STRING
-      mode: NULLABLE
-      description: 'The URL path of the page that was viewed, excluding locale.
-
-        '
-    - name: page_referrer
-      type: STRING
-      mode: NULLABLE
-      description: 'The referring URL that linked to the page that was viewed.
-
-        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
@@ -396,10 +336,10 @@ fields:
         type: RECORD
         mode: NULLABLE
         fields:
-        - name: type
+        - name: enrollment_id
           type: STRING
           mode: NULLABLE
-        - name: enrollment_id
+        - name: type
           type: STRING
           mode: NULLABLE
   - name: ping_type

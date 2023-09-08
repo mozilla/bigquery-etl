@@ -228,6 +228,19 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
+  - name: datetime
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_validation_first_run_hour
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'The hour of the first run of the application.
+
+        '
+    - name: raw_glean_validation_first_run_hour
+      type: STRING
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -292,24 +305,7 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
-  - name: datetime
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: page_viewed
-      type: TIMESTAMP
-      mode: NULLABLE
-      description: 'The time a page was viewed.
-
-        '
-    - name: raw_page_viewed
-      type: STRING
-      mode: NULLABLE
-  - name: labeled_string
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: page_query_params
+    - name: glean_validation_pings_submitted
       type: RECORD
       mode: REPEATED
       fields:
@@ -317,39 +313,45 @@ fields:
         type: STRING
         mode: NULLABLE
       - name: value
-        type: STRING
+        type: INTEGER
         mode: NULLABLE
-      description: 'Query parameters associated with the URL of
-
-        the page that was viewed.
-
-        '
+      description: "A count of the pings submitted, by ping type.\n\nThis metric appears\
+        \ in both the metrics and baseline pings.\n\n- On the metrics ping, the counts\
+        \ include the number of pings sent since\n  the last metrics ping (including\
+        \ the last metrics ping)\n- On the baseline ping, the counts include the number\
+        \ of pings send since\n  the last baseline ping (including the last baseline\
+        \ ping)\n"
   - name: string
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: page_http_status
+    - name: glean_baseline_locale
       type: STRING
       mode: NULLABLE
-      description: 'The HTTP status code of the page.
+      description: 'The locale of the application during initialization (e.g. "es-ES").
+
+        If the locale can''t be determined on the system, the value is
+
+        ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
+
+        to indicate "undetermined".
 
         '
-    - name: page_locale
-      type: STRING
+  - name: timespan
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_baseline_duration
+      type: RECORD
       mode: NULLABLE
-      description: 'The locale of the page that was viewed.
-
-        '
-    - name: page_path
-      type: STRING
-      mode: NULLABLE
-      description: 'The URL path of the page that was viewed, excluding locale.
-
-        '
-    - name: page_referrer
-      type: STRING
-      mode: NULLABLE
-      description: 'The referring URL that linked to the page that was viewed.
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The duration of the last foreground session.
 
         '
 - name: normalized_app_name
@@ -396,10 +398,10 @@ fields:
         type: RECORD
         mode: NULLABLE
         fields:
-        - name: type
+        - name: enrollment_id
           type: STRING
           mode: NULLABLE
-        - name: enrollment_id
+        - name: type
           type: STRING
           mode: NULLABLE
   - name: ping_type

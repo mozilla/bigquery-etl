@@ -1,0 +1,6 @@
+---
+description: >
+  Given an event property index from an `event_types` table, returns a regular expression
+  that can be combined with an event index regular expression to match corresponding events
+  within an `events_daily` table's `events` string.
+friendly_name: Event Analysis Event Property To Match String

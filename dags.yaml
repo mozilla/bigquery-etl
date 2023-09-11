@@ -1154,7 +1154,7 @@ bqetl_kpis_shredder:
     start_date: '2023-05-16'
   description: This DAG calculates KPIs for shredder client_ids
   repo: bigquery-etl
-  schedule_interval: 0 0 */28 * *
+  schedule_interval: 0 1 */28 * *
   tags:
     - impact/tier_3
     - repo/bigquery-etl

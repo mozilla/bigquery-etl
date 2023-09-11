@@ -178,6 +178,7 @@ topsites_summary AS (
         topsite_tile_id,
         topsite_tile_assigned_sov_branch,
         topsite_tile_displayed_sov_branch,
+        topsite_tile_clicks,
         sponsored_topsite_tile_clicks,
         organic_topsite_tile_clicks,
         topsite_tile_impressions,

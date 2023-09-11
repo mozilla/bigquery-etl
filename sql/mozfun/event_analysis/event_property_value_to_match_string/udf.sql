@@ -12,6 +12,34 @@ RETURNS STRING AS (
 );
 
 SELECT
-  assert.equals('\\Qp\\E', event_analysis.event_property_value_to_match_string(1, 'p')),
-  assert.equals('\\Qp\\E[^,]{1}', event_analysis.event_property_value_to_match_string(2, 'p')),
+  assert.equals(r'\Qp\E', event_analysis.event_property_value_to_match_string(1, 'p')),
+  assert.equals(r'\Qp\E[^,]{1}', event_analysis.event_property_value_to_match_string(2, 'p')),
   assert.equals(CAST(NULL AS STRING), event_analysis.event_property_value_to_match_string(1, NULL)),
+  assert.equals(
+    'pe,',
+    REGEXP_EXTRACT(
+      '""pe,',
+      CONCAT(event_analysis.event_property_value_to_match_string(1, 'p'), 'e,')
+    )
+  ),
+  assert.equals(
+    CAST(NULL AS STRING),
+    REGEXP_EXTRACT(
+      '""pe,',
+      CONCAT(event_analysis.event_property_value_to_match_string(2, 'p'), 'e,')
+    )
+  ),
+  assert.equals(
+    CAST(NULL AS STRING),
+    REGEXP_EXTRACT(
+      '"p"e,',
+      CONCAT(event_analysis.event_property_value_to_match_string(1, 'p'), 'e,')
+    )
+  ),
+  assert.equals(
+    'p"e,',
+    REGEXP_EXTRACT(
+      '"p"e,',
+      CONCAT(event_analysis.event_property_value_to_match_string(2, 'p'), 'e,')
+    )
+  ),

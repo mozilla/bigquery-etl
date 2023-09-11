@@ -12,3 +12,19 @@ RETURNS STRING AS (
 SELECT
   assert.equals('[^",]', event_analysis.event_property_to_match_string(1)),
   assert.equals('[^",][^,]{1}', event_analysis.event_property_to_match_string(2)),
+  assert.equals(
+    'pe,',
+    REGEXP_EXTRACT('""pe,', CONCAT(event_analysis.event_property_to_match_string(1), 'e,'))
+  ),
+  assert.equals(
+    CAST(NULL AS STRING),
+    REGEXP_EXTRACT('""pe,', CONCAT(event_analysis.event_property_to_match_string(2), 'e,'))
+  ),
+  assert.equals(
+    CAST(NULL AS STRING),
+    REGEXP_EXTRACT('"p"e,', CONCAT(event_analysis.event_property_to_match_string(1), 'e,'))
+  ),
+  assert.equals(
+    'p"e,',
+    REGEXP_EXTRACT('"p"e,', CONCAT(event_analysis.event_property_to_match_string(2), 'e,'))
+  ),

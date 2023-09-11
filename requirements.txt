@@ -730,9 +730,9 @@ mkdocs-material-extensions==1.1.1 \
     --hash=sha256:9c003da71e2cc2493d910237448c672e00cefc800d3d6ae93d2fc69979e3bd93 \
     --hash=sha256:e41d9f38e4798b6617ad98ca8f7f1157b1e4385ac1459ca1e4ea219b556df945
     # via mkdocs-material
-mozilla-metric-config-parser==2023.6.7 \
-    --hash=sha256:1f7b44ba7e4e86d817ee7dfe2b7420b35f4ee6c69d4a30d0e4bc2c48ab17adf9 \
-    --hash=sha256:5046da41212b3cfecdc70292dd4d0e3fc81916d10020e4869ccca08ee43c7109
+mozilla-metric-config-parser==2023.9.1 \
+    --hash=sha256:47796ea83bb59eabc5d0542b4e27b56ef2f063f86ff4994303578c138c7bfba2 \
+    --hash=sha256:5ca4e5789cb4ae376c96be4fab496671badee58ec5bf1b1b4203e7d1d11e07f9
     # via -r requirements.in
 mozilla-nimbus-schemas==2023.6.6 \
     --hash=sha256:7ef12f52352af9e21d6e3d9bfa629247f4c066d5fd501d1e5221813879d7b39f \

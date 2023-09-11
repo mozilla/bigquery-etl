@@ -4,7 +4,7 @@ description: |
   FxA server events extracted from accounts server stdout logs.
   This new table is the direct result of FxA migration from AWS to GCP
   (see: OPST-296 for more context).
-  Effective x (TODO: add a date here prior to merging) date the events from the following servers will land in this table:
+  Effective 2023-09-07 the events from the following servers will land in this table:
   - auth    (previous table: `fxa_auth_events_v1`)
   - content (previous table: `fxa_content_events_v1`)
 
@@ -18,7 +18,7 @@ labels:
   owner1: kik
 scheduling:
   dag_name: bqetl_fxa_events
-  # start_date: '2023-05-26'  # TODO: confirm from when we start getting data
+  start_date: '2023-09-07'
   arguments:
   - --schema_update_option=ALLOW_FIELD_ADDITION
 bigquery:

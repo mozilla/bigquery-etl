@@ -1,5 +1,5 @@
 SELECT
-  SPLIT(jsonPayload.logger, "-")[OFFSET(1)] fxa_server,  -- example expected input: fxa-auth-server
+  SPLIT(jsonPayload.logger, "-")[OFFSET(1)] AS fxa_server,  -- example expected input: fxa-auth-server
   * REPLACE (
     (
       SELECT AS STRUCT

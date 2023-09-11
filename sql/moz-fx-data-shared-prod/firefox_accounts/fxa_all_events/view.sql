@@ -26,6 +26,7 @@ WITH auth_events AS (
     jsonPayload.fields.device_id,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_auth_events_v1`
+  -- TODO: add a cut off date once AWS to GCP migration is complete.
 ),
   -- This table doesn't include any user events that are considered "active",
   -- but should always be included for a complete raw event log.
@@ -72,6 +73,7 @@ content_events AS (
     jsonPayload.fields.device_id,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_content_events_v1`
+  -- TODO: add a cut off date once AWS to GCP migration is complete.
 ),
 -- oauth events, see the note on top
 oauth_events AS (
@@ -94,6 +96,7 @@ oauth_events AS (
     CAST(NULL AS STRING) AS device_id,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_oauth_events_v1`
+  -- TODO: add a cut off date once AWS to GCP migration is complete.
 ),
 stdout_events AS (
   SELECT
@@ -115,6 +118,7 @@ stdout_events AS (
     jsonPayload.fields.device_id,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_stdout_events_v1`
+  -- TODO: add a cut off date once AWS to GCP migration is complete.
 ),
 -- New fxa event table (prod) includes, content and auth events (TODO: confirm what about auth_bounce)
 server_events AS (
@@ -135,6 +139,10 @@ server_events AS (
     jsonPayload.fields.device_id,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_server_events_v1`
+  WHERE
+    -- this is when traffic switch over started, all prior dates contain test data.
+    -- see: DENG-1035 for more info.
+    DATE(`timestamp`) >= "2023-09-07"
 ),
 unioned AS (
   SELECT

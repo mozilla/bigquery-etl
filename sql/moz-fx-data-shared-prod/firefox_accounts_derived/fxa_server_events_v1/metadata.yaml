@@ -30,4 +30,5 @@ bigquery:
   clustering:
     fields:
     - fxa_server
+    - event_type
 references: {}

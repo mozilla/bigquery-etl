@@ -1,0 +1,21 @@
+friendly_name: Urlbar Events
+description: |-
+  Each row in this table represents one [urlbar.engagement](https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/metrics/urlbar_engagement)
+  or [urlbar.abandonment](https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/metrics/urlbar_abandonment) event. A urlbar session ends
+  when the urlbar dropdown menu closes, however, not all events mark the end of a urlbar session. To identify the events marking the end of a
+  urlbar session, filter on the field is_terminal = true.
+owners:
+- akommasani@mozilla.com
+- rburwei@mozilla.com
+- dzeber@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_urlbar
+  task_name: {{ app_name }}_urlbar_events__v1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true

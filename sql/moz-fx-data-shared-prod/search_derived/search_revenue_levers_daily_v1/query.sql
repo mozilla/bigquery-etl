@@ -7,7 +7,16 @@ desktop_data_google AS (
     IF(country = 'US', 'US', 'RoW') AS country,
     COUNT(DISTINCT client_id) AS dau,
     COUNT(
-      DISTINCT IF(sap > 0 AND normalized_engine = 'Google', client_id, NULL)
+      DISTINCT IF(default_search_engine LIKE '%google%', client_id, NULL)
+    ) AS dau_w_engine_as_default,
+    COUNT(
+      DISTINCT IF(
+        sap > 0
+        AND normalized_engine = 'Google'
+        AND default_search_engine LIKE '%google%',
+        client_id,
+        NULL
+      )
     ) AS dau_engaged_w_sap,
     SUM(IF(normalized_engine = 'Google', sap, 0)) AS sap,
     SUM(IF(normalized_engine = 'Google', tagged_sap, 0)) AS tagged_sap,
@@ -22,6 +31,7 @@ desktop_data_google AS (
     `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
+    -- AND sample_id = 1
     AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN')
   GROUP BY
     submission_date,
@@ -38,7 +48,16 @@ desktop_data_bing AS (
     submission_date,
     COUNT(DISTINCT client_id) AS dau,
     COUNT(
-      DISTINCT IF(sap > 0 AND normalized_engine = 'Bing', client_id, NULL)
+      DISTINCT IF(default_search_engine LIKE '%bing%', client_id, NULL)
+    ) AS dau_w_engine_as_default,
+    COUNT(
+      DISTINCT IF(
+        sap > 0
+        AND normalized_engine = 'Bing'
+        AND default_search_engine LIKE '%bing%',
+        client_id,
+        NULL
+      )
     ) AS dau_engaged_w_sap,
     SUM(IF(normalized_engine = 'Bing', sap, 0)) AS sap,
     SUM(IF(normalized_engine = 'Bing', tagged_sap, 0)) AS tagged_sap,
@@ -53,6 +72,7 @@ desktop_data_bing AS (
     `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
+    -- AND sample_id = 1
     AND (distribution_id IS NULL OR distribution_id NOT LIKE '%acer%')
     AND client_id NOT IN (SELECT client_id FROM `moz-fx-data-shared-prod.search.acer_cohort`)
   GROUP BY
@@ -66,7 +86,28 @@ desktop_data_ddg AS (
     submission_date,
     COUNT(DISTINCT client_id) AS dau,
     COUNT(
-      DISTINCT IF((engine) IN ('ddg', 'duckduckgo') AND sap > 0, client_id, NULL)
+      DISTINCT IF(
+        (
+          default_search_engine LIKE('%ddg%')
+          OR default_search_engine LIKE('%duckduckgo%')
+          AND NOT default_search_engine LIKE('%addon%')
+        ),
+        client_id,
+        NULL
+      )
+    ) AS ddg_dau_w_engine_as_default,
+    COUNT(
+      DISTINCT IF(
+        (engine) IN ('ddg', 'duckduckgo')
+        AND sap > 0
+        AND (
+          default_search_engine LIKE('%ddg%')
+          OR default_search_engine LIKE('%duckduckgo%')
+          AND NOT default_search_engine LIKE('%addon%')
+        ),
+        client_id,
+        NULL
+      )
     ) AS ddg_dau_engaged_w_sap,
     SUM(IF(engine IN ('ddg', 'duckduckgo'), sap, 0)) AS ddg_sap,
     SUM(IF(engine IN ('ddg', 'duckduckgo'), tagged_sap, 0)) AS ddg_tagged_sap,
@@ -81,7 +122,16 @@ desktop_data_ddg AS (
     SUM(IF(engine IN ('ddg', 'duckduckgo') AND is_sap_monetizable, sap, 0)) AS ddg_monetizable_sap,
     -- in-content probes not available for addon so these metrics although being here will be zero
     COUNT(
-      DISTINCT IF(engine = 'ddg-addon' AND sap > 0, client_id, NULL)
+      DISTINCT IF(default_search_engine LIKE('ddg%addon'), client_id, NULL)
+    ) AS ddgaddon_dau_w_engine_as_default,
+    COUNT(
+      DISTINCT IF(
+        engine = 'ddg-addon'
+        AND sap > 0
+        AND default_search_engine LIKE('ddg%addon'),
+        client_id,
+        NULL
+      )
     ) AS ddgaddon_dau_engaged_w_sap,
     SUM(IF(engine IN ('ddg-addon'), sap, 0)) AS ddgaddon_sap,
     SUM(IF(engine IN ('ddg-addon'), tagged_sap, 0)) AS ddgaddon_tagged_sap,
@@ -98,6 +148,7 @@ desktop_data_ddg AS (
     `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
+    -- AND sample_id = 1
   GROUP BY
     submission_date
   ORDER BY
@@ -117,6 +168,7 @@ mobile_dau_data AS (
   WHERE
     submission_date = @submission_date
     AND app_name IN ('Fenix', 'Firefox iOS', 'Focus Android', 'Focus iOS')
+    -- AND sample_id = 1
   GROUP BY
     submission_date
 ),
@@ -128,8 +180,18 @@ mobile_data_google AS (
     submission_date,
     IF(country = 'US', 'US', 'RoW') AS country,
     IF(country = 'US', dau.US_dau_eligible_google, dau.RoW_dau_eligible_google) AS dau,
+    -- COUNT(DISTINCT client_id) AS dau,
     COUNT(
-      DISTINCT IF(sap > 0 AND normalized_engine = 'Google', client_id, NULL)
+      DISTINCT IF(default_search_engine LIKE '%google%', client_id, NULL)
+    ) AS dau_w_engine_as_default,
+    COUNT(
+      DISTINCT IF(
+        sap > 0
+        AND normalized_engine = 'Google'
+        AND default_search_engine LIKE '%google%',
+        client_id,
+        NULL
+      )
     ) AS dau_engaged_w_sap,
     SUM(IF(normalized_engine = 'Google', sap, 0)) AS sap,
     SUM(IF(normalized_engine = 'Google', tagged_sap, 0)) AS tagged_sap,
@@ -151,6 +213,7 @@ mobile_data_google AS (
     submission_date = @submission_date
     AND country NOT IN ('RU', 'UA', 'BY', 'TR', 'KZ', 'CN')
     AND normalized_app_name IN ('Focus', 'Fenix', 'Fennec')
+    -- AND sample_id = 1
   GROUP BY
     submission_date,
     country,
@@ -167,11 +230,35 @@ mobile_data_bing_ddg AS (
   SELECT
     submission_date,
     dau.dau,
+    -- COUNT(DISTINCT client_id) as dau,
     COUNT(
-      DISTINCT IF(sap > 0 AND normalized_engine = 'Bing', client_id, NULL)
+      DISTINCT IF(default_search_engine LIKE '%bing%', client_id, NULL)
+    ) AS bing_dau_w_engine_as_default,
+    COUNT(
+      DISTINCT IF(
+        sap > 0
+        AND normalized_engine = 'Bing'
+        AND default_search_engine LIKE '%bing%',
+        client_id,
+        NULL
+      )
     ) AS bing_dau_engaged_w_sap,
     COUNT(
-      DISTINCT IF(sap > 0 AND normalized_engine = 'DuckDuckGo', client_id, NULL)
+      DISTINCT IF(
+        default_search_engine LIKE('%ddg%')
+        OR default_search_engine LIKE('%duckduckgo%'),
+        client_id,
+        NULL
+      )
+    ) AS ddg_dau_w_engine_as_default,
+    COUNT(
+      DISTINCT IF(
+        (engine) IN ('ddg', 'duckduckgo')
+        AND sap > 0
+        AND (default_search_engine LIKE('%ddg%') OR default_search_engine LIKE('%duckduckgo%')),
+        client_id,
+        NULL
+      )
     ) AS ddg_dau_engaged_w_sap,
     SUM(IF(normalized_engine = 'Bing', sap, 0)) AS bing_sap,
     SUM(IF(normalized_engine = 'Bing', tagged_sap, 0)) AS bing_tagged_sap,
@@ -202,6 +289,7 @@ mobile_data_bing_ddg AS (
   WHERE
     submission_date = @submission_date
     AND normalized_app_name IN ('Focus', 'Fenix', 'Fennec')
+    -- AND sample_id = 1
   GROUP BY
     submission_date,
     dau
@@ -217,6 +305,7 @@ SELECT
   channel,
   country,
   dau,
+  dau_w_engine_as_default,
   dau_engaged_w_sap,
   sap,
   tagged_sap,
@@ -237,6 +326,7 @@ SELECT
   NULL AS channel,
   'global' AS country,
   dau,
+  dau_w_engine_as_default,
   dau_engaged_w_sap,
   sap,
   tagged_sap,
@@ -257,6 +347,7 @@ SELECT
   NULL AS channel,
   'global' AS country,
   dau,
+  ddg_dau_w_engine_as_default AS dau_w_engine_as_default,
   ddg_dau_engaged_w_sap AS dau_engaged_w_sap,
   ddg_sap AS sap,
   ddg_tagged_sap AS tagged_sap,
@@ -277,6 +368,7 @@ SELECT
   NULL AS channel,
   'global' AS country,
   dau,
+  ddgaddon_dau_w_engine_as_default AS dau_w_engine_as_default,
   ddgaddon_dau_engaged_w_sap AS dau_engaged_w_sap,
   ddgaddon_sap AS sap,
   ddgaddon_tagged_sap AS tagged_sap,
@@ -297,6 +389,7 @@ SELECT
   NULL AS channel,
   country,
   dau,
+  dau_w_engine_as_default,
   dau_engaged_w_sap,
   sap,
   tagged_sap,
@@ -317,6 +410,7 @@ SELECT
   NULL AS channel,
   'global' AS country,
   dau,
+  bing_dau_w_engine_as_default,
   bing_dau_engaged_w_sap,
   bing_sap,
   bing_tagged_sap,
@@ -337,6 +431,7 @@ SELECT
   NULL AS channel,
   'global' AS country,
   dau,
+  ddg_dau_w_engine_as_default,
   ddg_dau_engaged_w_sap,
   ddg_sap,
   ddg_tagged_sap,

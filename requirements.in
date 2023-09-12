@@ -7,7 +7,7 @@ exceptiongroup==1.1.3 # for backwards compatibility with python < 3.11
 flake8<5 # pytest-flake8 does not support flake8 5+
 gcsfs==2023.6.0
 gcloud==0.18.3
-gitpython==3.1.35
+gitpython==3.1.36
 google-cloud-bigquery==3.11.4
 google-cloud-storage==2.10.0
 Jinja2==3.1.2

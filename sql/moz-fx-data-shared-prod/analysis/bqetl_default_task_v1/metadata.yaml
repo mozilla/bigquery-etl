@@ -6,6 +6,15 @@ description: |-
   has at least one task, otherwise the DAG would be invalid.
 owners:
 - telemetry-alerts@mozilla.com
+labels:
+  dag: bqetl_default
+  owner1: telemetry-alerts
 scheduling:
   dag_name: bqetl_default
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

@@ -1,3 +1,12 @@
----
-description: A bitmask for 365 bits
 friendly_name: Bitmask 365
+description: |-
+  A bitmask for 365 bits
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

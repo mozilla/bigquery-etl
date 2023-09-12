@@ -1,4 +1,12 @@
----
-description: Return a path derived from an error message in
- `payload_bytes_error`
 friendly_name: Extract Schema Validation Path
+description: |-
+  Return a path derived from an error message in `payload_bytes_error`
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

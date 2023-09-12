@@ -1,3 +1,12 @@
----
-description: Return an array containing only distinct values of the given array
 friendly_name: Dedupe Array
+description: |-
+  Return an array containing only distinct values of the given array
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

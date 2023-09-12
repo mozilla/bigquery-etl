@@ -1,27 +1,41 @@
----
 friendly_name: Structured Distinct Document IDs
-description: >
-  Compares number of document IDs in structured decoded, live,
-  and stable tables.
+description: |
+  Compares number of document IDs in structured decoded, live, and stable tables.
 owners:
-  - ascholtz@mozilla.com
+- ascholtz@mozilla.com
 labels:
   schedule: daily
   incremental: true
+  dag: bqetl_monitoring
+  owner1: ascholtz
+scheduling:
+  dag_name: bqetl_monitoring
+  arguments:
+  - --date
+  - '{{ ds }}'
+  referenced_tables:
+  - - moz-fx-data-shared-prod
+    - monitoring
+    - payload_bytes_decoded_structured
+  - - moz-fx-data-shared-prod
+    - monitoring
+    - payload_bytes_decoded_stub_installer
+  - - moz-fx-data-shared-prod
+    - '*_stable'
+    - '*'
+  - - moz-fx-data-shared-prod
+    - telemetry_stable
+    - main_v4
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
-scheduling:
-  dag_name: bqetl_monitoring
-  arguments: ["--date", "{{ ds }}"]
-  referenced_tables:
-    - ['moz-fx-data-shared-prod',
-       'monitoring',
-       'payload_bytes_decoded_structured']
-    - ['moz-fx-data-shared-prod',
-       'monitoring',
-       'payload_bytes_decoded_stub_installer']
-    - ['moz-fx-data-shared-prod', '*_stable', '*']
-    - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v4']
+    expiration_days: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

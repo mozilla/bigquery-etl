@@ -1,4 +1,12 @@
----
-description: Calculates a variety of metrics based on bit patterns of
-  daily usage for the smoot_usage_* tables.
 friendly_name: Smoot Usage From 28 Bits
+description: |-
+  Calculates a variety of metrics based on bit patterns of daily usage for the smoot_usage_* tables.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

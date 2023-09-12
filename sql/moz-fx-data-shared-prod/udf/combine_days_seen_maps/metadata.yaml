@@ -1,9 +1,12 @@
----
-description: The "clients_last_seen" class of tables represent various
-  types of client activity within a 28-day window as bit patterns.
-  This function takes in two arrays of structs (aka maps) where each
-  entry gives the bit pattern for days in which we saw a ping for a given
-  user in a given key. We combine the bit patterns for the previous day
-  and the current day, returning a single map. See `udf.combine_experiment_days`
-  for a more specific example of this approach.
 friendly_name: Combine Days Seen Maps
+description: |-
+  The "clients_last_seen" class of tables represent various types of client activity within a 28-day window as bit patterns. This function takes in two arrays of structs (aka maps) where each entry gives the bit pattern for days in which we saw a ping for a given user in a given key. We combine the bit patterns for the previous day and the current day, returning a single map. See `udf.combine_experiment_days` for a more specific example of this approach.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

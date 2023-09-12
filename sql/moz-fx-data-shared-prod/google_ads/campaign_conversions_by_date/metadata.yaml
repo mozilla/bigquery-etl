@@ -3,6 +3,12 @@ description: |-
   Number of conversions and installs by campaign & date.
 owners:
 - frank@mozilla.com
-labels: {}
+labels:
+  owner1: frank
 bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

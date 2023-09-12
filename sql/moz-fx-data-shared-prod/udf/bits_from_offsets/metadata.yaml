@@ -1,29 +1,21 @@
----
 friendly_name: Bits From Offsets
-description: >
-  Returns a bit pattern of type BYTES compactly encoding the given array of
-  positive integer offsets.
-
-  This is primarily useful to generate a compact encoding of dates on which
-  a feature was used, with arbitrarily long history. Example aggregation:
-
-  ```sql
-  bits_from_offsets(
+description: |
+  Returns a bit pattern of type BYTES compactly encoding the given array of positive integer offsets.
+  This is primarily useful to generate a compact encoding of dates on which a feature was used, with arbitrarily long history. Example aggregation:
+  ```sql bits_from_offsets(
     ARRAY_AGG(IF(foo, DATE_DIFF(anchor_date, submission_date, DAY), NULL)
               IGNORE NULLS)
-  )
-  ```
-
-  The resulting value can be cast to an INT64 representing the most recent 64
-  days via:
-
-  ```sql
-  CAST(CONCAT('0x', TO_HEX(RIGHT(bits >> i, 4))) AS INT64)
-  ```
-
-  Or representing the most recent 28 days (compatible with bits28 functions)
-  via:
-
-  ```sql
-  CAST(CONCAT('0x', TO_HEX(RIGHT(bits >> i, 4))) AS INT64) << 36 >> 36
-  ```
+  ) ```
+  The resulting value can be cast to an INT64 representing the most recent 64 days via:
+  ```sql CAST(CONCAT('0x', TO_HEX(RIGHT(bits >> i, 4))) AS INT64) ```
+  Or representing the most recent 28 days (compatible with bits28 functions) via:
+  ```sql CAST(CONCAT('0x', TO_HEX(RIGHT(bits >> i, 4))) AS INT64) << 36 >> 36 ```
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

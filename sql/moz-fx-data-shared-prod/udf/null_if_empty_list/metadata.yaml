@@ -1,4 +1,12 @@
----
-description: Return NULL if list is empty, otherwise return list.
-  This cannot be done with NULLIF because NULLIF does not support arrays.
 friendly_name: Null If Empty List
+description: |-
+  Return NULL if list is empty, otherwise return list. This cannot be done with NULLIF because NULLIF does not support arrays.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

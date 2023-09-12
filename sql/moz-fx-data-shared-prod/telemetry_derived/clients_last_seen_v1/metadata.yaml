@@ -49,3 +49,4 @@ workgroup_access:
   members:
   - workgroup:dataops-managed/taar
 references: {}
+deprecated: false

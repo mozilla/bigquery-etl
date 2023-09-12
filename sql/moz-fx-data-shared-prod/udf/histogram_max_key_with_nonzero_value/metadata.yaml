@@ -1,5 +1,12 @@
----
-description: Find the largest numeric bucket that contains a
-  value greater than zero.
-  https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L253-L266
 friendly_name: Histogram Max Key With Nonzero Value
+description: |-
+  Find the largest numeric bucket that contains a value greater than zero. https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L253-L266
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

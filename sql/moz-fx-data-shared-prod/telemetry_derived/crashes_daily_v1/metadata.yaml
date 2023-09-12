@@ -10,6 +10,8 @@ owners:
 - frank@mozilla.com
 labels:
   incremental: true
+  dag: bqetl_main_summary
+  owner1: frank
 scheduling:
   dag_name: bqetl_main_summary
   task_name: crashes_daily_v1
@@ -24,4 +26,9 @@ bigquery:
     fields:
     - channel
     - os
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

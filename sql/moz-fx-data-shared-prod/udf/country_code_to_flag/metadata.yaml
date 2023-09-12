@@ -1,8 +1,12 @@
----
-description: 'For a given two-letter ISO 3166-1 alpha-2 country code,
-returns a string consisting of two Unicode regional indicator symbols,
-which is rendered in supporting fonts (such as in the BigQuery console
-or STMO) as flag emoji.  This is just for fun.
-See:  - https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 -
-https://en.wikipedia.org/wiki/Regional_Indicator_Symbol'
 friendly_name: Country Code To Flag
+description: |-
+  For a given two-letter ISO 3166-1 alpha-2 country code, returns a string consisting of two Unicode regional indicator symbols, which is rendered in supporting fonts (such as in the BigQuery console or STMO) as flag emoji.  This is just for fun. See:  - https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 - https://en.wikipedia.org/wiki/Regional_Indicator_Symbol
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

@@ -1,8 +1,12 @@
----
-description: 'Returns a JSON string which has the `pair` appended to
-  the provided `input` JSON string. NULL is also valid for `input`.
-  Examples:    udf.kv_array_append_to_json_string(''{"foo":"bar"}'',
-  [STRUCT("baz" AS key, "boo" AS value)])    ''{"foo":"bar","baz":"boo"}''
-  udf.kv_array_append_to_json_string(''{}'',
-  [STRUCT("baz" AS key, "boo" AS value)])    ''{"baz": "boo"}'''
 friendly_name: Kv Array Append To Json String
+description: |-
+  Returns a JSON string which has the `pair` appended to the provided `input` JSON string. NULL is also valid for `input`. Examples:    udf.kv_array_append_to_json_string('{"foo":"bar"}', [STRUCT("baz" AS key, "boo" AS value)])    '{"foo":"bar","baz":"boo"}' udf.kv_array_append_to_json_string('{}', [STRUCT("baz" AS key, "boo" AS value)])    '{"baz": "boo"}'
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

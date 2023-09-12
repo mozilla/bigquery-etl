@@ -1,8 +1,12 @@
----
-description: We generally want to believe only the first reasonable
-  profile creation date that we receive from a client. Given bits
-  representing usage from the previous day and the current day, this
-  function shifts the first argument by one day and returns either that
-  value if non-zero and non-null, the current day value if non-zero
-  and non-null, or else 0.
 friendly_name: Coalesce Adjacent Days 28 Bits
+description: |-
+  We generally want to believe only the first reasonable profile creation date that we receive from a client. Given bits representing usage from the previous day and the current day, this function shifts the first argument by one day and returns either that value if non-zero and non-null, the current day value if non-zero and non-null, or else 0.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

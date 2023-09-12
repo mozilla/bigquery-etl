@@ -4,6 +4,10 @@ description: |-
 dataset_base_acl: restricted
 user_facing: false
 labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:platform-infra/internal
 workgroup_access:
 - role: roles/bigquery.dataEditor
   members:

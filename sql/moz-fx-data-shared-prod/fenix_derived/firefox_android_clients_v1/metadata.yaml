@@ -27,6 +27,7 @@ labels:
   incremental: true
   schedule: daily
   owner1: lvargas
+  dag: bqetl_analytics_tables
 scheduling:
   dag_name: bqetl_analytics_tables
   task_name: firefox_android_clients
@@ -54,4 +55,9 @@ bigquery:
     - sample_id
     - first_reported_country
     - device_model
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

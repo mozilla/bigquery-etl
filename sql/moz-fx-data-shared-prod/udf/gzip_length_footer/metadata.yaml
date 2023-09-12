@@ -1,22 +1,12 @@
----
-description: 'Given a gzip compressed byte string, extract the uncompressed
-  size from the footer.  WARNING: THIS FUNCTION IS NOT RELIABLE FOR
-  ARBITRARY GZIP STREAMS. It should, however, be safe to use for checking
-  the decompressed size of payload in payload_bytes_decoded (and NOT
-  payload_bytes_raw) because that payload is produced by the decoder and
-  limited to conditions where the footer is accurate.
-  From https://stackoverflow.com/a/9213826
-  First, the only information about the uncompressed length is four bytes at
-  the end of the gzip file (stored in little-endian order). By necessity,
-  that is the length modulo 232. So if the uncompressed length is 4 GB or
-  more, you won''t know what the length is. You can only be certain that the
-  uncompressed length is less than 4 GB if the compressed length is less than
-  something like 232 / 1032 + 18, or around 4 MB. (1032 is the maximum
-  compression factor of deflate.) Second, and this is worse, a gzip file may
-  actually be a concatenation of multiple gzip streams. Other than decoding,
-  there is no way to find where each gzip stream ends in order to look at the
-  four-byte uncompressed length of that piece. (Which may be wrong anyway due
-  to the first reason.) Third, gzip files will sometimes have junk after the
-  end of the gzip stream (usually zeros). Then the last four bytes are not the
-  length.'
 friendly_name: Gzip Length Footer
+description: |-
+  Given a gzip compressed byte string, extract the uncompressed size from the footer.  WARNING: THIS FUNCTION IS NOT RELIABLE FOR ARBITRARY GZIP STREAMS. It should, however, be safe to use for checking the decompressed size of payload in payload_bytes_decoded (and NOT payload_bytes_raw) because that payload is produced by the decoder and limited to conditions where the footer is accurate. From https://stackoverflow.com/a/9213826 First, the only information about the uncompressed length is four bytes at the end of the gzip file (stored in little-endian order). By necessity, that is the length modulo 232. So if the uncompressed length is 4 GB or more, you won't know what the length is. You can only be certain that the uncompressed length is less than 4 GB if the compressed length is less than something like 232 / 1032 + 18, or around 4 MB. (1032 is the maximum compression factor of deflate.) Second, and this is worse, a gzip file may actually be a concatenation of multiple gzip streams. Other than decoding, there is no way to find where each gzip stream ends in order to look at the four-byte uncompressed length of that piece. (Which may be wrong anyway due to the first reason.) Third, gzip files will sometimes have junk after the end of the gzip stream (usually zeros). Then the last four bytes are not the length.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

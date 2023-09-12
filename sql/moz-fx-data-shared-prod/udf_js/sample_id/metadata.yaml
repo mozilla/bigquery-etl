@@ -1,7 +1,12 @@
----
-description: Stably hash a client_id to an integer between 0 and 99.
-  This function is technically defined in SQL, but it calls a JS UDF
-  implementation of a CRC-32 hash, so we defined it here to make it
-  clear that its performance may be limited by BigQuery's JavaScript
-  UDF environment.
 friendly_name: Sample Id
+description: |-
+  Stably hash a client_id to an integer between 0 and 99. This function is technically defined in SQL, but it calls a JS UDF implementation of a CRC-32 hash, so we defined it here to make it clear that its performance may be limited by BigQuery's JavaScript UDF environment.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

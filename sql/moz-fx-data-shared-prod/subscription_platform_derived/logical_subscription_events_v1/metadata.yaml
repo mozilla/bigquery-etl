@@ -8,6 +8,8 @@ owners:
 labels:
   incremental: true
   schedule: daily
+  dag: bqetl_subplat
+  owner1: srose
 scheduling:
   dag_name: bqetl_subplat
   date_partition_parameter: date
@@ -21,4 +23,9 @@ bigquery:
     fields:
     - type
     - reason
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

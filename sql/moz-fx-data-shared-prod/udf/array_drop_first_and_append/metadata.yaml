@@ -1,4 +1,12 @@
----
-description: Drop the first element of an array, and append the
-  given element.  Result is an array with the same length as the input.
 friendly_name: Array Drop First And Append
+description: |-
+  Drop the first element of an array, and append the given element.  Result is an array with the same length as the input.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

@@ -1,21 +1,21 @@
----
 friendly_name: Stripe itemized tax transactions report
-description: >
+description: |
   Import itemized tax transactions report from the Stripe API.
 owners:
-  - srose@mozilla.com
+- srose@mozilla.com
 labels:
   incremental: true
   schedule: daily
+  dag: bqetl_subplat
+  owner1: srose
 scheduling:
   dag_name: bqetl_subplat
   arguments:
-    - --date={{ ds }}
-    - --api-key={{ var.value.stripe_api_key }}
-    - --report-type=tax.transactions.itemized.1
-    - --table=moz-fx-data-shared-prod.stripe_external.itemized_tax_transactions_v1
-    - --time-partitioning-field=transaction_date_utc
-  # report data isn't generally ready when the dag starts, so retry for a while
+  - --date={{ ds }}
+  - --api-key={{ var.value.stripe_api_key }}
+  - --report-type=tax.transactions.itemized.1
+  - --table=moz-fx-data-shared-prod.stripe_external.itemized_tax_transactions_v1
+  - --time-partitioning-field=transaction_date_utc
   retry_delay: 30m
   retries: 47
   email_on_retry: false
@@ -24,6 +24,17 @@ bigquery:
     type: day
     field: transaction_date_utc
     require_partition_filter: false
+    expiration_days: null
   clustering:
     fields:
-      - transaction_date_utc
+    - transaction_date_utc
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:stripe
+  - workgroup:data-science/stripe
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:platform-infra/internal
+references: {}
+deprecated: false

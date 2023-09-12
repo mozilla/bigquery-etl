@@ -1,7 +1,12 @@
----
-description: Identical to bits28_days_since_seen.  Returns a 0-based index
-  of the rightmost set bit in the passed bit pattern or null if no bits are
-  set (bits = 0).  To determine this position, we take a bitwise AND of the
-  bit pattern and its complement, then we determine the position of the bit
-  via base-2 logarithm; see https://stackoverflow.com/a/42747608/1260237
 friendly_name: Pos Of Trailing Set Bit
+description: |-
+  Identical to bits28_days_since_seen.  Returns a 0-based index of the rightmost set bit in the passed bit pattern or null if no bits are set (bits = 0).  To determine this position, we take a bitwise AND of the bit pattern and its complement, then we determine the position of the bit via base-2 logarithm; see https://stackoverflow.com/a/42747608/1260237
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

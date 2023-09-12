@@ -25,6 +25,8 @@ labels:
   application: firefox_ios
   incremental: true
   schedule: daily
+  dag: bqetl_firefox_ios
+  owner1: kik
 scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: true
@@ -36,9 +38,15 @@ scheduling:
   parameters:
   - submission_date:DATE:{{ds}}
 bigquery:
+  time_partitioning: null
   clustering:
     fields:
     - channel
     - sample_id
     - first_reported_isp
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

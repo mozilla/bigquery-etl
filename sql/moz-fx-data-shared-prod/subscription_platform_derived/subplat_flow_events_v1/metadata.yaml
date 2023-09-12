@@ -6,6 +6,8 @@ owners:
 labels:
   incremental: true
   schedule: daily
+  dag: bqetl_subplat
+  owner1: srose
 scheduling:
   dag_name: bqetl_subplat
   depends_on_past: true
@@ -19,4 +21,9 @@ bigquery:
   clustering:
     fields:
     - flow_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

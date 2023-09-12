@@ -1,15 +1,12 @@
----
-description: "Extract missing columns from additional properties.  More
-  generally, get a list of nodes from a JSON blob. Array elements are
-  indicated as [...].  param input: The JSON blob to explode param
-  indicates_node: An array of strings. If a key's value is an object, and
-  contains one of these values, that key is returned as a node. param
-  known_nodes: An array of strings. If a key is in this array, it is
-  returned as a node.  Notes: - Use indicates_node for things like
-  histograms. For example ['histogram_type'] will ensure that each
-  histogram will be returned as a missing node, rather than the subvalues
-  within the histogram   (e.g. values, sum, etc.) - Use known_nodes if
-  you're aware of a missing section, like
-  ['simpleMeasurements']  See here for an example
-  usage https://sql.telemetry.mozilla.org/queries/64460/source"
 friendly_name: Json Extract Missing Cols
+description: |-
+  Extract missing columns from additional properties.  More generally, get a list of nodes from a JSON blob. Array elements are indicated as [...].  param input: The JSON blob to explode param indicates_node: An array of strings. If a key's value is an object, and contains one of these values, that key is returned as a node. param known_nodes: An array of strings. If a key is in this array, it is returned as a node.  Notes: - Use indicates_node for things like histograms. For example ['histogram_type'] will ensure that each histogram will be returned as a missing node, rather than the subvalues within the histogram   (e.g. values, sum, etc.) - Use known_nodes if you're aware of a missing section, like ['simpleMeasurements']  See here for an example usage https://sql.telemetry.mozilla.org/queries/64460/source
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

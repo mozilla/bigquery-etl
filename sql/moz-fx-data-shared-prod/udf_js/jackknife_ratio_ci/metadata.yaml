@@ -1,16 +1,12 @@
----
-description: "Calculates a confidence interval using a jackknife resampling
-  technique for the weighted mean of an array of ratios for various buckets;
-  see https://en.wikipedia.org/wiki/Jackknife_resampling  Users must specify
-  the number of expected buckets as the first parameter to guard against
-  the case where empty buckets lead to an array with missing elements.
-  Usage generally involves first calculating an aggregate per bucket, then
-  aggregating over buckets, passing ARRAY_AGG(metric) to this function.
-  Example:  WITH bucketed AS (   SELECT     submission_date,
-  SUM(active_days_in_week) AS active_days_in_week,     SUM(wau) AS wau
-  FROM     mytable   GROUP BY     submission_date,     bucket_id
-  ) SELECT   submission_date,   udf_js.jackknife_ratio_ci(20,
-  ARRAY_AGG(STRUCT(CAST(active_days_in_week AS float64),
-  CAST(wau as FLOAT64)))) AS intensity FROM   bucketed GROUP BY
-  submission_date"
 friendly_name: Jackknife Ratio Ci
+description: |-
+  Calculates a confidence interval using a jackknife resampling technique for the weighted mean of an array of ratios for various buckets; see https://en.wikipedia.org/wiki/Jackknife_resampling  Users must specify the number of expected buckets as the first parameter to guard against the case where empty buckets lead to an array with missing elements. Usage generally involves first calculating an aggregate per bucket, then aggregating over buckets, passing ARRAY_AGG(metric) to this function. Example:  WITH bucketed AS (   SELECT     submission_date, SUM(active_days_in_week) AS active_days_in_week,     SUM(wau) AS wau FROM     mytable   GROUP BY     submission_date,     bucket_id ) SELECT   submission_date,   udf_js.jackknife_ratio_ci(20, ARRAY_AGG(STRUCT(CAST(active_days_in_week AS float64), CAST(wau as FLOAT64)))) AS intensity FROM   bucketed GROUP BY submission_date
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

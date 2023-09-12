@@ -5,6 +5,11 @@ description: |-
 dataset_base_acl: view
 user_facing: true
 labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/taar
+  - workgroup:mozilla-confidential
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

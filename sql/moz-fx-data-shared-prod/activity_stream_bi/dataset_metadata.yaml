@@ -5,6 +5,12 @@ description: |-
 dataset_base_acl: stable
 user_facing: false
 labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+  - workgroup:pocket/external
+  - workgroup:pocket/prefect
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

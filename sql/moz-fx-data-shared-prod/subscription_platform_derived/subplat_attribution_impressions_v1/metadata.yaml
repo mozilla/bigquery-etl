@@ -6,13 +6,14 @@ owners:
 labels:
   incremental: true
   schedule: daily
+  dag: bqetl_subplat
+  owner1: srose
 scheduling:
   dag_name: bqetl_subplat
   depends_on_past: true
-  # The whole table is overwritten every time, not a specific date partition.
   date_partition_parameter: null
   parameters:
-  - 'date:DATE:{{ds}}'
+  - date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     type: day
@@ -22,4 +23,9 @@ bigquery:
   clustering:
     fields:
     - flow_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

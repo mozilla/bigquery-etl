@@ -6,6 +6,9 @@ owners:
 - cmorales@mozilla.com
 labels:
   incremental: true
+  dag: bqetl_sponsored_tiles_clients_daily
+  owner1: skahmann
+  owner2: cmorales
 scheduling:
   dag_name: bqetl_sponsored_tiles_clients_daily
   task_name: sponsored_tiles_clients_daily_v1
@@ -19,4 +22,9 @@ bigquery:
     fields:
     - normalized_channel
     - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

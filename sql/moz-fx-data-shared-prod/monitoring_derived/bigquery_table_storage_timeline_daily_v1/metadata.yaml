@@ -1,15 +1,28 @@
 friendly_name: BigQuery Tables Storage Timeline Daily
-description: The daily timeline in table storage changes, partitioned by day.
+description: |-
+  The daily timeline in table storage changes, partitioned by day.
 owners:
 - wichan@mozilla.com
 labels:
   incremental: true
   schedule: daily
+  dag: bqetl_monitoring
+  owner1: wichan
 scheduling:
   dag_name: bqetl_monitoring
-  arguments: ["--date", "{{ ds }}"]
+  arguments:
+  - --date
+  - '{{ ds }}'
 bigquery:
   time_partitioning:
     type: day
     field: change_date
     require_partition_filter: true
+    expiration_days: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

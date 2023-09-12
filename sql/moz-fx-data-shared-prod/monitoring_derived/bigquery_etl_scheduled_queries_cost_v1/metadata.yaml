@@ -1,16 +1,28 @@
----
 friendly_name: Bigquery-etl Scheduled Queries Cost
-description: Cost of scheduled bigquery-etl queries, partitioned by day.
+description: |-
+  Cost of scheduled bigquery-etl queries, partitioned by day.
+owners:
+- ascholtz@mozilla.com
 labels:
   incremental: true
   schedule: daily
-owners:
-  - ascholtz@mozilla.com
+  dag: bqetl_monitoring
+  owner1: ascholtz
 scheduling:
   dag_name: bqetl_monitoring
-  arguments: ["--date", "{{ ds }}"]
+  arguments:
+  - --date
+  - '{{ ds }}'
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
+    expiration_days: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

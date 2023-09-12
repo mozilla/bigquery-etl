@@ -6,12 +6,20 @@ description: |-
 owners:
 - frank@mozilla.com
 labels:
-  incremental: false
+  dag: bqetl_fivetran_google_ads
+  owner1: frank
 scheduling:
   dag_name: bqetl_fivetran_google_ads
   depends_on_past: false
   date_partition_parameter: null
 bigquery:
+  time_partitioning: null
   clustering:
-    fields: ["date"]
+    fields:
+    - date
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

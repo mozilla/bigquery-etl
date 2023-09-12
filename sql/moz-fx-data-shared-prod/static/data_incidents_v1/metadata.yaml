@@ -1,15 +1,20 @@
----
 friendly_name: Notes for data incidents
-description: >
-  This table is connected to a spreadsheet that contains notes about
-  data incidents. The notes are displayed on Looker dashboards.
+description: |
+  This table is connected to a spreadsheet that contains notes about data incidents. The notes are displayed on Looker dashboards.
 owners:
-  - ascholtz@mozilla.com
+- ascholtz@mozilla.com
 labels:
-  incremental: false
+  owner1: ascholtz
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
 external_data:
   format: google_sheets
   source_uris:
-    - https://docs.google.com/spreadsheets/d/16Cyx_KBieRdQkSBKolivqpBaK2H-VceN9LEZcL0snHg
+  - https://docs.google.com/spreadsheets/d/16Cyx_KBieRdQkSBKolivqpBaK2H-VceN9LEZcL0snHg
   options:
     skip_leading_rows: 1
+deprecated: false

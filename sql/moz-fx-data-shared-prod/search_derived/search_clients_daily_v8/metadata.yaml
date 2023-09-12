@@ -8,6 +8,9 @@ owners:
 - cmorales@mozilla.com
 labels:
   schedule: daily
+  dag: bqetl_search
+  owner1: akomar
+  owner2: cmorales
 scheduling:
   dag_name: bqetl_search
   external_downstream_tasks:
@@ -26,4 +29,9 @@ bigquery:
   clustering:
     fields:
     - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

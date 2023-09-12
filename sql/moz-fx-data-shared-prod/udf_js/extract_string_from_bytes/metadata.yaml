@@ -1,3 +1,12 @@
----
-description: Related to https://mozilla-hub.atlassian.net/browse/RS-682. The function extracts string data from `payload` which is in bytes.
 friendly_name: Extract string from bytes
+description: |-
+  Related to https://mozilla-hub.atlassian.net/browse/RS-682. The function extracts string data from `payload` which is in bytes.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

@@ -1,21 +1,21 @@
----
 friendly_name: Stripe itemized payout reconciliation report
-description: >
+description: |
   Import itemized payout reconciliation report from the Stripe API.
 owners:
-  - srose@mozilla.com
+- srose@mozilla.com
 labels:
   incremental: true
   schedule: daily
+  dag: bqetl_subplat
+  owner1: srose
 scheduling:
   dag_name: bqetl_subplat
   arguments:
-    - --date={{ ds }}
-    - --api-key={{ var.value.stripe_api_key }}
-    - --report-type=payout_reconciliation.itemized.5
-    - --table=moz-fx-data-shared-prod.stripe_external.itemized_payout_reconciliation_v5
-    - --time-partitioning-field=automatic_payout_effective_at
-  # report data isn't generally ready when the dag starts, so retry for a while
+  - --date={{ ds }}
+  - --api-key={{ var.value.stripe_api_key }}
+  - --report-type=payout_reconciliation.itemized.5
+  - --table=moz-fx-data-shared-prod.stripe_external.itemized_payout_reconciliation_v5
+  - --time-partitioning-field=automatic_payout_effective_at
   retry_delay: 30m
   retries: 47
   email_on_retry: false
@@ -24,6 +24,17 @@ bigquery:
     type: day
     field: automatic_payout_effective_at
     require_partition_filter: false
+    expiration_days: null
   clustering:
     fields:
-      - automatic_payout_effective_at
+    - automatic_payout_effective_at
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:stripe
+  - workgroup:data-science/stripe
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:platform-infra/internal
+references: {}
+deprecated: false

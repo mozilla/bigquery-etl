@@ -1,9 +1,12 @@
----
-description: Parses and labels the components of a telemetry desktop ping
-  submission uri Per
-  https://docs.telemetry.mozilla.org/concepts/pipeline/http_edge_spec.html#special-handling-for-firefox-desktop-telemetry
-  the format is
-  /submit/telemetry/docId/docType/appName/appVersion/appUpdateChannel/appBuildID
-  e.g.
-  /submit/telemetry/ce39b608-f595-4c69-b6a6-f7a436604648/main/Firefox/61.0a1/nightly/20180328030202
 friendly_name: Parse Desktop Telemetry Uri
+description: |-
+  Parses and labels the components of a telemetry desktop ping submission uri Per https://docs.telemetry.mozilla.org/concepts/pipeline/http_edge_spec.html#special-handling-for-firefox-desktop-telemetry the format is /submit/telemetry/docId/docType/appName/appVersion/appUpdateChannel/appBuildID e.g. /submit/telemetry/ce39b608-f595-4c69-b6a6-f7a436604648/main/Firefox/61.0a1/nightly/20180328030202
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

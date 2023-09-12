@@ -1,8 +1,12 @@
----
-description: Calculate the CRC-32 hash of an input string.  The implementation
-  here could be optimized. In particular, it calculates a lookup table on every
-  invocation which could be cached and reused. In practice, though, this
-  implementation appears to be fast enough that further optimization is not
-  yet warranted.  Based on https://stackoverflow.com/a/18639999/1260237
-  See https://en.wikipedia.org/wiki/Cyclic_redundancy_check
 friendly_name: CRC-32
+description: |-
+  Calculate the CRC-32 hash of an input string.  The implementation here could be optimized. In particular, it calculates a lookup table on every invocation which could be cached and reused. In practice, though, this implementation appears to be fast enough that further optimization is not yet warranted.  Based on https://stackoverflow.com/a/18639999/1260237 See https://en.wikipedia.org/wiki/Cyclic_redundancy_check
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

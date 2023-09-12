@@ -1,5 +1,12 @@
----
-description: Parse scalars from payload.processes.dynamic into map columns
- for each value type.
- https://github.com/mozilla/telemetry-batch-view/blob/ea0733c00df191501b39d2c4e2ece3fe703a0ef3/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L385-L399
 friendly_name: Main Summary Addon Scalars
+description: |-
+  Parse scalars from payload.processes.dynamic into map columns for each value type. https://github.com/mozilla/telemetry-batch-view/blob/ea0733c00df191501b39d2c4e2ece3fe703a0ef3/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L385-L399
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

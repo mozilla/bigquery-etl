@@ -1,15 +1,20 @@
----
 friendly_name: Notes for monitoring schema errors
-description: >
-  This table is connected to a spreadsheet that contains notes about
-  schema errors. The notes are displayed on Looker dashboards.
+description: |
+  This table is connected to a spreadsheet that contains notes about schema errors. The notes are displayed on Looker dashboards.
 owners:
-  - ascholtz@mozilla.com
+- ascholtz@mozilla.com
 labels:
-  incremental: false
+  owner1: ascholtz
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
 external_data:
   format: google_sheets
   source_uris:
-    - https://docs.google.com/spreadsheets/d/1wMKyIyzp8yW7YpNz6hpFe0sHueeeLHdHr3p-1br2TbA]
+  - https://docs.google.com/spreadsheets/d/1wMKyIyzp8yW7YpNz6hpFe0sHueeeLHdHr3p-1br2TbA]
   options:
     skip_leading_rows: 2
+deprecated: false

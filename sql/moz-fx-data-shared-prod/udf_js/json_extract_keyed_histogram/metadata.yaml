@@ -1,9 +1,12 @@
----
-description: Returns an array of parsed structs from a JSON string representing
- a keyed histogram.  This is likely only useful for histograms that weren't
-  properly parsed to fields, so ended up embedded in an additional_properties
-  JSON blob. Normally, keyed histograms will be modeled as a key/value struct
-  where the values are JSON representations of single histograms. There is no
-  pure SQL equivalent to this function, since BigQuery does not provide any
-  functions for listing or iterating over keysn in a JSON map.
 friendly_name: Json Extract Keyed Histogram
+description: |-
+  Returns an array of parsed structs from a JSON string representing a keyed histogram.  This is likely only useful for histograms that weren't properly parsed to fields, so ended up embedded in an additional_properties JSON blob. Normally, keyed histograms will be modeled as a key/value struct where the values are JSON representations of single histograms. There is no pure SQL equivalent to this function, since BigQuery does not provide any functions for listing or iterating over keysn in a JSON map.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

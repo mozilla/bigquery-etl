@@ -1,5 +1,12 @@
----
-description: Unzips a GZIP string.  This implementation relies on the
-  zlib.js library (https://github.com/imaya/zlib.js) and the atob
-  function for decoding base64.
 friendly_name: Gunzip
+description: |-
+  Unzips a GZIP string.  This implementation relies on the zlib.js library (https://github.com/imaya/zlib.js) and the atob function for decoding base64.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

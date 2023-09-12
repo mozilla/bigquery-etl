@@ -1,4 +1,12 @@
----
-description: Given an array of scalar metric data that might have
-  duplicate values for a metric, merge them into one value.
 friendly_name: Merge Scalar User Data
+description: |-
+  Given an array of scalar metric data that might have duplicate values for a metric, merge them into one value.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

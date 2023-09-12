@@ -12,6 +12,8 @@ owners:
 - lvargas@mozilla.com
 labels:
   incremental: true
+  dag: bqetl_analytics_aggregations
+  owner1: lvargas
 scheduling:
   dag_name: bqetl_analytics_aggregations
   task_name: active_users_aggregates_v1
@@ -27,4 +29,9 @@ bigquery:
     - app_name
     - attribution_medium
     - channel
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

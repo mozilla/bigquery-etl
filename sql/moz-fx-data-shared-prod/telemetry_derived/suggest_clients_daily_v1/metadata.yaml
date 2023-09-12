@@ -5,6 +5,8 @@ owners:
 - rburwei@mozilla.com
 labels:
   incremental: true
+  dag: bqetl_main_summary
+  owner1: rburwei
 scheduling:
   dag_name: bqetl_main_summary
 bigquery:
@@ -17,4 +19,9 @@ bigquery:
     fields:
     - normalized_channel
     - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

@@ -4,15 +4,27 @@ description: |-
   For each submission_date, we have rows representing the full history of T-WAU
   up to that point.
 owners:
-  - kik@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
+  dag: bqetl_pocket
+  owner1: kik
+scheduling:
+  dag_name: bqetl_pocket
+  arguments:
+  - --date
+  - '{{ ds }}'
+  referenced_tables: []
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
-scheduling:
-  dag_name: bqetl_pocket
-  arguments: ["--date", "{{ ds }}"]
-  referenced_tables: []
+    expiration_days: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

@@ -1,8 +1,12 @@
----
-description: 'This function returns how much of one metric is contributed
-  by the quantile of another metric. Quantile variable should add an offset
-  to get the requried percentile value.
-  Example: udf.quantile_search_metric_contribution(sap, search_with_ads,
-  sap_percentiles[OFFSET(9)])
-  It returns search_with_ads if sap value in top 10% volumn else null.'
 friendly_name: Quantile Search Metric Contribution
+description: |-
+  This function returns how much of one metric is contributed by the quantile of another metric. Quantile variable should add an offset to get the requried percentile value. Example: udf.quantile_search_metric_contribution(sap, search_with_ads, sap_percentiles[OFFSET(9)]) It returns search_with_ads if sap value in top 10% volumn else null.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

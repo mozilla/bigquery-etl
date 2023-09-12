@@ -1,10 +1,12 @@
----
-description: Takes in a difference between submission date and
-  profile creation date
-  and returns a bit pattern representing the profile creation
-  date IFF the profile
-  date is the same as the submission date or no more than 6 days
-  earlier. Analysis has shown that client-reported profile creation
-  dates are much less reliable outside of this range and cannot be
-  used as reliable indicators of new profile creation.
 friendly_name: Days Since Created Profile As 28 Bits
+description: |-
+  Takes in a difference between submission date and profile creation date and returns a bit pattern representing the profile creation date IFF the profile date is the same as the submission date or no more than 6 days earlier. Analysis has shown that client-reported profile creation dates are much less reliable outside of this range and cannot be used as reliable indicators of new profile creation.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

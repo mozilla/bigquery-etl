@@ -1,12 +1,13 @@
----
 friendly_name: Exchange Rates
-description: >
+description: |
   Import exchange rates from Oanda.
 owners:
-  - srose@mozilla.com
+- srose@mozilla.com
 labels:
   incremental: true
   schedule: daily
+  dag: bqetl_subplat
+  owner1: srose
 scheduling:
   dag_name: bqetl_subplat
   retry_delay: 5m
@@ -15,51 +16,52 @@ scheduling:
   gcp_conn_id: google_cloud_airflow_gke
   gke_project_id: moz-fx-data-airflow-gke-prod
   arguments:
-    [
-      "--start-date",
-      "{{ ds }}",
-      "--end-date",
-      "{{ ds }}",
-      "--table",
-      "moz-fx-data-shared-prod.mozilla_vpn_derived.exchange_rates_v1",
-      "--base-currencies",
-      # Starting 2021-04-25:
-      "EUR",
-      "CHF",
-      # Starting 2021-09-15:
-      "GBP",
-      "CAD",
-      "SGD",
-      "NZD",
-      # Starting 2021-11-05:
-      "MYR",
-      # Starting 2022-02-08:
-      "AED",
-      "BRL",
-      "CLP",
-      "COP",
-      "EGP",
-      "IDR",
-      "MMK",
-      "MXN",
-      "PHP",
-      "QAR",
-      "RUB",
-      "SAR",
-      "SEK",
-      "THB",
-      "TZS",
-      "UAH",
-      # Starting 2023-06-01:
-      "BGN",
-      "CZK",
-      "DKK",
-      "HUF",
-      "PLN",
-      "RON",
-    ]
+  - --start-date
+  - '{{ ds }}'
+  - --end-date
+  - '{{ ds }}'
+  - --table
+  - moz-fx-data-shared-prod.mozilla_vpn_derived.exchange_rates_v1
+  - --base-currencies
+  - EUR
+  - CHF
+  - GBP
+  - CAD
+  - SGD
+  - NZD
+  - MYR
+  - AED
+  - BRL
+  - CLP
+  - COP
+  - EGP
+  - IDR
+  - MMK
+  - MXN
+  - PHP
+  - QAR
+  - RUB
+  - SAR
+  - SEK
+  - THB
+  - TZS
+  - UAH
+  - BGN
+  - CZK
+  - DKK
+  - HUF
+  - PLN
+  - RON
 bigquery:
   time_partitioning:
     type: day
     field: date
     require_partition_filter: false
+    expiration_days: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

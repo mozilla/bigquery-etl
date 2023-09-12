@@ -1,3 +1,12 @@
----
-description: An array of 12 zeroes
 friendly_name: Array Of 12 Zeroes
+description: |-
+  An array of 12 zeroes
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

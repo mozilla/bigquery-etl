@@ -1,17 +1,31 @@
-description: Determines column sizes of specific tables and partitions
-  via dry runs.
 friendly_name: Column Size
+description: |-
+  Determines column sizes of specific tables and partitions via dry runs.
+owners:
+- ascholtz@mozilla.com
 labels:
   incremental: true
-owners:
-  - ascholtz@mozilla.com
+  dag: bqetl_monitoring
+  owner1: ascholtz
 scheduling:
   dag_name: bqetl_monitoring
-  arguments: ["--date", "{{ ds }}"]
+  arguments:
+  - --date
+  - '{{ ds }}'
   referenced_tables:
-    - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v4']
+  - - moz-fx-data-shared-prod
+    - telemetry_stable
+    - main_v4
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
+    expiration_days: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

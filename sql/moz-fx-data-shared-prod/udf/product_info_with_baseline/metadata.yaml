@@ -1,7 +1,12 @@
----
-description: Similar to mozfun.norm.product_info(), but this UDF also
-  handles "baseline" apps that were introduced differentiate for certain apps
-  whether data is sent through Glean or core pings.
-  This UDF has been temporarily introduced as part of
-  https://bugzilla.mozilla.org/show_bug.cgi?id=1775216
 friendly_name: Product Info with Baseline
+description: |-
+  Similar to mozfun.norm.product_info(), but this UDF also handles "baseline" apps that were introduced differentiate for certain apps whether data is sent through Glean or core pings. This UDF has been temporarily introduced as part of https://bugzilla.mozilla.org/show_bug.cgi?id=1775216
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

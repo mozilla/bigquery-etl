@@ -45,3 +45,4 @@ workgroup_access:
   members:
   - workgroup:cloudops-managed/poucave
 references: {}
+deprecated: false

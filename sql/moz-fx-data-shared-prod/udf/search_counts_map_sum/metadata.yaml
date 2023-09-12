@@ -1,3 +1,12 @@
----
-description: Calculate the sums of search counts per source and engine
 friendly_name: Search Counts Map Sum
+description: |-
+  Calculate the sums of search counts per source and engine
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

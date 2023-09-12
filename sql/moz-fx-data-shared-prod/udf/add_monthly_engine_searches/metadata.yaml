@@ -1,12 +1,12 @@
----
-description: 'This function specifically windows searches into calendar-month
-  windows. This means groups are not necessarily directly comparable, since
-  different months have different numbers of days.  On the first of each month,
-  a new month is appended, and the first month is dropped.  If the date is not
-  the first of the month, the new entry is added to the last element in the
-  array.  For example, if we were adding 12 to [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-  11, 12]:  On the first of the month, the result would be [2, 3, 4, 5, 6, 7, 8,
-  9, 10, 11, 12, 12] On any other day of the month, the result would be [1, 2,
-  3, 4, 5, 6, 7, 8, 9, 10, 11, 24]  This happens for every aggregate (searches,
-  ad clicks, etc.)'
 friendly_name: Add Monthly Engine Searches
+description: |-
+  This function specifically windows searches into calendar-month windows. This means groups are not necessarily directly comparable, since different months have different numbers of days.  On the first of each month, a new month is appended, and the first month is dropped.  If the date is not the first of the month, the new entry is added to the last element in the array.  For example, if we were adding 12 to [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]:  On the first of the month, the result would be [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12] On any other day of the month, the result would be [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 24]  This happens for every aggregate (searches, ad clicks, etc.)
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

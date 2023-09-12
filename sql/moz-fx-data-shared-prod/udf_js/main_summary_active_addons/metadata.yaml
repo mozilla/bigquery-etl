@@ -1,10 +1,12 @@
----
-description: 'Add fields from additional_attributes to active_addons
-  in main_v4.  Return an array instead of a "map" for backwards
-  compatibility.  The INT64 columns from BigQuery may be passed as
-  strings, so parseInt before returning them if they will be coerced to
-  BOOL.  The fields from additional_attributes due to union types: integer
-  or boolean for foreignInstall and userDisabled; string or number for
-  version.
-  https://github.com/mozilla/telemetry-batch-view/blob/ea0733c00df191501b39d2c4e2ece3fe703a0ef3/src/main/scala/com/mozilla/telemetry/views/MainSummaryView.scala#L422-L449'
 friendly_name: Main Summary Active Addons
+description: |-
+  Add fields from additional_attributes to active_addons in main_v4.  Return an array instead of a "map" for backwards compatibility.  The INT64 columns from BigQuery may be passed as strings, so parseInt before returning them if they will be coerced to BOOL.  The fields from additional_attributes due to union types: integer or boolean for foreignInstall and userDisabled; string or number for version. https://github.com/mozilla/telemetry-batch-view/blob/ea0733c00df191501b39d2c4e2ece3fe703a0ef3/src/main/scala/com/mozilla/telemetry/views/MainSummaryView.scala#L422-L449
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

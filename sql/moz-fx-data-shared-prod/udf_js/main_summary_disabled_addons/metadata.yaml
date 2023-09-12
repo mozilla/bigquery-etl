@@ -1,7 +1,12 @@
----
-description: Report the ids of the addons which are in the addonDetails
-  but not in the activeAddons.  They are the disabled addons (possibly
-  because they are legacy). We need this as addonDetails may contain both
-  disabled and active addons.
-  https://github.com/mozilla/telemetry-batch-view/blob/ea0733c00df191501b39d2c4e2ece3fe703a0ef3/src/main/scala/com/mozilla/telemetry/views/MainSummaryView.scala#L451-L464
 friendly_name: Main Summary Disabled Addons
+description: |-
+  Report the ids of the addons which are in the addonDetails but not in the activeAddons.  They are the disabled addons (possibly because they are legacy). We need this as addonDetails may contain both disabled and active addons. https://github.com/mozilla/telemetry-batch-view/blob/ea0733c00df191501b39d2c4e2ece3fe703a0ef3/src/main/scala/com/mozilla/telemetry/views/MainSummaryView.scala#L451-L464
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

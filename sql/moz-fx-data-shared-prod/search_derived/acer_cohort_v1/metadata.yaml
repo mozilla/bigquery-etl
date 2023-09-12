@@ -4,6 +4,13 @@ description: |-
   This is a table that was created once, in January 2023, and will not change
   in the future
 owners:
-  - cmorales@mozilla.com
-bigquery:
+- cmorales@mozilla.com
+labels:
+  owner1: cmorales
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

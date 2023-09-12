@@ -1,14 +1,28 @@
 friendly_name: BigQuery Tables Inventory
-description: Inventory of BigQuery tables.
+description: |-
+  Inventory of BigQuery tables.
 owners:
 - wichan@mozilla.com
 labels:
   incremental: true
   schedule: daily
+  dag: bqetl_monitoring
+  owner1: wichan
 scheduling:
   dag_name: bqetl_monitoring
-  arguments: ["--date", "{{ ds }}"]
+  arguments:
+  - --date
+  - '{{ ds }}'
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

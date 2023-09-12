@@ -1,68 +1,55 @@
----
 friendly_name: Italy's mid-pandemic internet outage (May 2020)
-# yamllint disable rule:line-length
-description: |-
-  The released data includes aggregated Firefox Desktop data for Italy
-  from “health” and some fields of the “main” pings that were created
-  between January 1st, 2020 up until March 31st, 2020. The different types
-  of failures are aggregated by day. These counts are then normalized by
-  the total number of active daily users: this gives an indication of how
-  broadly a network problem is affecting a bigger percentage of Firefox
-  Desktop clients.
-
-  The dataset contains the following fields:
-    - `date`: the date the data was recorded by the Firefox client.
-    - `proportion_undefined`: the proportion of users who failed
-    to send telemetry for a reason that was not listed in the other cases.
-    - `proportion_timeout`: the proportion of users that had their
-    connection timeout while uploading telemetry
-    ([after 90s, in Firefox](https://searchfox.org/mozilla-central/rev/fa2df28a49883612bd7af4dacd80cdfedcccd2f6/toolkit/components/telemetry/app/TelemetrySend.jsm#81)).
-    - `proportion_abort`: the proportion of users that had their connection
-    terminated by the client (for example, terminating open connections
-    before shutting down).
-    - `proportion_unreachable`: the proportion of users that failed to upload
-    telemetry because the server was not reachable (e.g. because the host was
-    not reachable, proxy problems or OS waking up after a suspension).
-    - `proportion_terminated`: the proportion of users that had their
-    connection terminated internally by the networking code.
-    - `proportion_channel_open`: the proportion of users for which the upload
-    request was terminated immediately, by the client, because of a Necko
-    internal error.
-    - `avg_dns_success_time`: the average time it takes for a successful DNS
-    resolution, in milliseconds.
-    - `avg_dns_failure_time`: the average time it takes for an unsuccessful DNS
-    resolution, in milliseconds.
-    - `count_dns_failure`: the average count of unsuccessful DNS resolutions
-    reported.
-    - `avg_tls_handshake_time`: the average time after the TCP SYN to ready
-    for HTTP, in milliseconds.
-
-  Caveats with the data:
-  As with any observational data, there are many caveats and interpretation must
-  be done carefully. Below is a list of issues we have considered, but it is
-  not exhaustive.
-    - Firefox users are not representative of the general population in their
-    region.
-    - Users can experience multiple types of failures and so the proportions are
-    not summable. For example, if 2.4% of clients had a timeout and 2.6% of
-    clients had eUnreachable that doesn't necessarily mean that 5.0% of clients
-    had a timeout or a eUnreachable
-    - Geographical data is based on IPGeo databases. These databases are
-    imperfect, so some activity may be attributed to the wrong location.
-    Further, proxy and VPN usage can create geo-attribution errors.
+description: "The released data includes aggregated Firefox Desktop data for Italy\n\
+  from \u201Chealth\u201D and some fields of the \u201Cmain\u201D pings that were\
+  \ created\nbetween January 1st, 2020 up until March 31st, 2020. The different types\n\
+  of failures are aggregated by day. These counts are then normalized by\nthe total\
+  \ number of active daily users: this gives an indication of how\nbroadly a network\
+  \ problem is affecting a bigger percentage of Firefox\nDesktop clients.\n\nThe dataset\
+  \ contains the following fields:\n  - `date`: the date the data was recorded by\
+  \ the Firefox client.\n  - `proportion_undefined`: the proportion of users who failed\n\
+  \  to send telemetry for a reason that was not listed in the other cases.\n  - `proportion_timeout`:\
+  \ the proportion of users that had their\n  connection timeout while uploading telemetry\n\
+  \  ([after 90s, in Firefox](https://searchfox.org/mozilla-central/rev/fa2df28a49883612bd7af4dacd80cdfedcccd2f6/toolkit/components/telemetry/app/TelemetrySend.jsm#81)).\n\
+  \  - `proportion_abort`: the proportion of users that had their connection\n  terminated\
+  \ by the client (for example, terminating open connections\n  before shutting down).\n\
+  \  - `proportion_unreachable`: the proportion of users that failed to upload\n \
+  \ telemetry because the server was not reachable (e.g. because the host was\n  not\
+  \ reachable, proxy problems or OS waking up after a suspension).\n  - `proportion_terminated`:\
+  \ the proportion of users that had their\n  connection terminated internally by\
+  \ the networking code.\n  - `proportion_channel_open`: the proportion of users for\
+  \ which the upload\n  request was terminated immediately, by the client, because\
+  \ of a Necko\n  internal error.\n  - `avg_dns_success_time`: the average time it\
+  \ takes for a successful DNS\n  resolution, in milliseconds.\n  - `avg_dns_failure_time`:\
+  \ the average time it takes for an unsuccessful DNS\n  resolution, in milliseconds.\n\
+  \  - `count_dns_failure`: the average count of unsuccessful DNS resolutions\n  reported.\n\
+  \  - `avg_tls_handshake_time`: the average time after the TCP SYN to ready\n  for\
+  \ HTTP, in milliseconds.\n\nCaveats with the data:\nAs with any observational data,\
+  \ there are many caveats and interpretation must\nbe done carefully. Below is a\
+  \ list of issues we have considered, but it is\nnot exhaustive.\n  - Firefox users\
+  \ are not representative of the general population in their\n  region.\n  - Users\
+  \ can experience multiple types of failures and so the proportions are\n  not summable.\
+  \ For example, if 2.4% of clients had a timeout and 2.6% of\n  clients had eUnreachable\
+  \ that doesn't necessarily mean that 5.0% of clients\n  had a timeout or a eUnreachable\n\
+  \  - Geographical data is based on IPGeo databases. These databases are\n  imperfect,\
+  \ so some activity may be attributed to the wrong location.\n  Further, proxy and\
+  \ VPN usage can create geo-attribution errors."
 owners:
-  - aplacitelli@mozilla.com
+- aplacitelli@mozilla.com
 labels:
   incremental: true
   public_json: true
   public_bigquery: true
   review_bugs:
-    - 1633681
-  incremental_export: false
-
-# Generated by bigquery_etl.dependency
+  - '1633681'
+  owner1: aplacitelli
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references:
   query.sql:
   - telemetry.clients_daily
   - telemetry.health
   - telemetry.main
+deprecated: false

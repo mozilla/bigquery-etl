@@ -1,9 +1,19 @@
-description: Union of legacy metrics and glean metrics
 friendly_name: unified metrics
+description: |-
+  Union of legacy metrics and glean metrics
+owners:
+- kik@mozilla.com
 labels:
   incremental: true
-owners:
-  - kik@mozilla.com
+  dag: bqetl_firefox_ios
+  owner1: kik
 scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: false
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

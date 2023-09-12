@@ -6,15 +6,30 @@ owners:
 labels:
   incremental: true
   schedule: daily
+  dag: bqetl_monitoring
+  owner1: ascholtz
 scheduling:
   dag_name: bqetl_monitoring
   referenced_tables:
-  - ['moz-fx-data-shared-prod', '*_stable', '*']
-  - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v4']
+  - - moz-fx-data-shared-prod
+    - '*_stable'
+    - '*'
+  - - moz-fx-data-shared-prod
+    - telemetry_stable
+    - main_v4
   date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
+  parameters:
+  - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
+    expiration_days: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

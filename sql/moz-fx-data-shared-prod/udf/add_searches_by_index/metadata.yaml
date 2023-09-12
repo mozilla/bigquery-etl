@@ -1,4 +1,12 @@
----
-description: Return sums of each search type grouped by the index.
-  Results are ordered by index.
 friendly_name: Add Searches By Index
+description: |-
+  Return sums of each search type grouped by the index. Results are ordered by index.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

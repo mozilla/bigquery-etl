@@ -5,13 +5,16 @@ description: |-
   The table is labeled as "change_controlled", which implies
   that changes require the approval of at least one owner.
 owners:
-  - skahmann@mozilla.com
-  - akommasani@mozilla.com
-  - mozilla/request_payload_reviewers
+- skahmann@mozilla.com
+- akommasani@mozilla.com
+- mozilla/request_payload_reviewers
 labels:
   incremental: true
   schedule: daily
   change_controlled: true
+  dag: bqetl_ctxsvc_derived
+  owner1: skahmann
+  owner2: akommasani
 scheduling:
   dag_name: bqetl_ctxsvc_derived
 bigquery:
@@ -21,4 +24,9 @@ bigquery:
     require_partition_filter: true
     expiration_days: null
   clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:contextual-services
 references: {}
+deprecated: false

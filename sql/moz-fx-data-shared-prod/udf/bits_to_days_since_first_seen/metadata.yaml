@@ -1,12 +1,12 @@
----
-description: 'Given a BYTES, return the number of days since the
-  client was first seen.  If no bits are set, returns NULL, indicating
-  we don''t know. Otherwise the result is 0-indexed, meaning that for
-  \x01, it will return 0.  Results showed this being between 5-10x faster
-  than the simpler alternative: CREATE OR REPLACE FUNCTION
-  udf.bits_to_days_since_first_seen(b
-  BYTES) AS ((     SELECT MAX(n)     FROM UNNEST(GENERATE_ARRAY(
-  0, 8 * BYTE_LENGTH(b)))
-  AS n     WHERE BIT_COUNT(SUBSTR(b >> n, -1) & b''\x01'') > 0));
-  See also: bits_to_days_since_seen.sql'
 friendly_name: Bits To Days Since First Seen
+description: |-
+  Given a BYTES, return the number of days since the client was first seen.  If no bits are set, returns NULL, indicating we don't know. Otherwise the result is 0-indexed, meaning that for \x01, it will return 0.  Results showed this being between 5-10x faster than the simpler alternative: CREATE OR REPLACE FUNCTION udf.bits_to_days_since_first_seen(b BYTES) AS ((     SELECT MAX(n)     FROM UNNEST(GENERATE_ARRAY( 0, 8 * BYTE_LENGTH(b))) AS n     WHERE BIT_COUNT(SUBSTR(b >> n, -1) & b'\x01') > 0)); See also: bits_to_days_since_seen.sql
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

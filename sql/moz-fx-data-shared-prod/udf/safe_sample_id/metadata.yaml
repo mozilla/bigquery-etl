@@ -1,4 +1,12 @@
----
-description: Stably hash a client_id to an integer between 0 and
-  99, or NULL if client_id isn't 36 bytes
 friendly_name: Safe Sample Id
+description: |-
+  Stably hash a client_id to an integer between 0 and 99, or NULL if client_id isn't 36 bytes
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

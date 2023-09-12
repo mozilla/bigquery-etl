@@ -18,6 +18,7 @@ labels:
   incremental: true
   schedule: daily
   owner1: kik
+  dag: bqetl_fxa_events
 scheduling:
   dag_name: bqetl_fxa_events
   start_date: '2023-05-26'
@@ -32,4 +33,9 @@ bigquery:
   clustering:
     fields:
     - fxa_server
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

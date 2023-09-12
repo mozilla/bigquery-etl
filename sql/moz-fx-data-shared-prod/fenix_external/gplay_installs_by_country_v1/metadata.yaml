@@ -6,8 +6,9 @@ owners:
 - frank@mozilla.com
 labels:
   application: firefox_android
-  incremental: false
   schedule: daily
+  dag: bqetl_fenix_external
+  owner1: frank
 scheduling:
   dag_name: bqetl_fenix_external
   depends_on_past: false
@@ -17,6 +18,14 @@ scheduling:
     dag_name: play_store_export
     execution_delta: 2h
 bigquery:
+  time_partitioning: null
   clustering:
-    fields: [channel, date]
+    fields:
+    - channel
+    - date
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

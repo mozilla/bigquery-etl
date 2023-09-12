@@ -1,3 +1,12 @@
----
-description: Rename struct fields in anonymous event tuples to meaningful names.
 friendly_name: Deanonymize Event
+description: |-
+  Rename struct fields in anonymous event tuples to meaningful names.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

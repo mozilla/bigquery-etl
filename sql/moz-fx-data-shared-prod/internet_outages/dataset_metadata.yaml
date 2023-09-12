@@ -1,5 +1,4 @@
 friendly_name: Internet Outages
-# yamllint disable rule:line-length
 description: |-
   Derived data useful for detecting regional internet outages,
   shared with some trusted external partners.
@@ -8,6 +7,11 @@ description: |-
 dataset_base_acl: view
 user_facing: true
 labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+  - workgroup:internet-outages/external
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

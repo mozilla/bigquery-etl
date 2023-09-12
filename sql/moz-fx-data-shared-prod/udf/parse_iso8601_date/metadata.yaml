@@ -1,5 +1,12 @@
----
-description: 'Take a ISO 8601 date or date and time string and return
-  a DATE.  Return null if parse fails.  Possible formats: 2019-11-04,
-  2019-11-04T21:15:00+00:00, 2019-11-04T21:15:00Z, 20191104T211500Z'
 friendly_name: Parse Iso8601 Date
+description: |-
+  Take a ISO 8601 date or date and time string and return a DATE.  Return null if parse fails.  Possible formats: 2019-11-04, 2019-11-04T21:15:00+00:00, 2019-11-04T21:15:00Z, 20191104T211500Z
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

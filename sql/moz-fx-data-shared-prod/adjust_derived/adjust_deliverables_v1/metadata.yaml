@@ -1,18 +1,31 @@
----
 friendly_name: Deliverables data from external source Adjust
-description: >
-  This table represents data downloaded from Adjust link using https://api.adjust.com/kpis/v1/{app token}.
-  Please note that the API token used is Marlene Hirose's personal Adjust API token
+description: |
+  This table represents data downloaded from Adjust link using https://api.adjust.com/kpis/v1/{app token}. Please note that the API token used is Marlene Hirose's personal Adjust API token
 owners:
-  - mhirose@mozilla.com
+- mhirose@mozilla.com
 labels:
-  incremental: false
+  dag: bqetl_adjust
+  owner1: mhirose
 scheduling:
   dag_name: bqetl_adjust
   date_partition_parameter: date
-  arguments: ["--date", "{{ ds }}", "--adjust_api_token", "{{ var.value.ADJUST_API_TOKEN}}", "--adjust_app_list", "{{ var.value.ADJUST_APP_TOKEN_LIST}}"]
+  arguments:
+  - --date
+  - '{{ ds }}'
+  - --adjust_api_token
+  - '{{ var.value.ADJUST_API_TOKEN}}'
+  - --adjust_app_list
+  - '{{ var.value.ADJUST_APP_TOKEN_LIST}}'
 bigquery:
   time_partitioning:
     type: day
     field: date
     require_partition_filter: false
+    expiration_days: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

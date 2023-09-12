@@ -1,6 +1,12 @@
----
-description: >
-  Return normalized engine name for recognized engines
-  This is a stub implementation for use with tests; real implementation is in
-  private-bigquery-etl
 friendly_name: Normalize Search Engine
+description: |
+  Return normalized engine name for recognized engines This is a stub implementation for use with tests; real implementation is in private-bigquery-etl
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

@@ -12,9 +12,10 @@ owners:
 labels:
   incremental: true
   schedule: daily
+  dag: bqetl_subplat
+  owner1: srose
 scheduling:
   dag_name: bqetl_subplat
-  # The table as a whole is appended to each time, not a specific date partition.
   date_partition_parameter: null
   arguments:
   - --append_table
@@ -26,4 +27,13 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
   clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:stripe
+  - workgroup:data-science/stripe
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:platform-infra/internal
 references: {}
+deprecated: false

@@ -1,7 +1,12 @@
----
-description: Adds together two engine searches structs. Each engine
-  searches struct has a MAP[engine -> search_counts_struct]. We want
-  to add add together the prev and curr's values for a certain
-  engine.  This allows us to be flexible with the number of engines
-  we're using.
 friendly_name: Add Monthly Searches
+description: |-
+  Adds together two engine searches structs. Each engine searches struct has a MAP[engine -> search_counts_struct]. We want to add add together the prev and curr's values for a certain engine.  This allows us to be flexible with the number of engines we're using.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

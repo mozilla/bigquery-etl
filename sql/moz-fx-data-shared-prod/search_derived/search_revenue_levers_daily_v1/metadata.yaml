@@ -5,20 +5,28 @@ description: |-
   The table is labeled as "change_controlled", which implies
   that changes require the approval of at least one owner.
 owners:
-  - xluo@mozilla.com
-  - cmorales@mozilla.com
-  - mozilla/revenue_forecasting_data_reviewers
+- xluo@mozilla.com
+- cmorales@mozilla.com
+- mozilla/revenue_forecasting_data_reviewers
 labels:
   incremental: true
   schedule: daily
   change_controlled: true
+  dag: bqetl_search_dashboard
+  owner1: xluo
+  owner2: cmorales
 scheduling:
   dag_name: bqetl_search_dashboard
 bigquery:
   time_partitioning:
-    field: submission_date
     type: day
+    field: submission_date
     require_partition_filter: true
     expiration_days: null
   clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

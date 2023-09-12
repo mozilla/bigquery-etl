@@ -1,5 +1,12 @@
-description: URL decodes the raw firefox_installer.install.attribution string
-  to a STRUCT.  The fields campaign, content, dlsource, dltoken, experiment,
-  medium, source, ua, variation the string are extracted.  If any value is
-  (not+set) it is converted to (not set) to match the text from GA when the fields are not set.
 friendly_name: Decode Uri Attribution
+description: |-
+  URL decodes the raw firefox_installer.install.attribution string to a STRUCT.  The fields campaign, content, dlsource, dltoken, experiment, medium, source, ua, variation the string are extracted.  If any value is (not+set) it is converted to (not set) to match the text from GA when the fields are not set.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

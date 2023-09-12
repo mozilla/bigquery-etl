@@ -1,4 +1,3 @@
----
 friendly_name: Fenix Build To Datetime
 description: |
   Convert the Fenix client_info.app_build-format string to a DATETIME.
@@ -26,3 +25,12 @@ description: |
 
   After using this you may wish to `DATETIME_TRUNC(result, DAY)` for grouping
   by build date.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

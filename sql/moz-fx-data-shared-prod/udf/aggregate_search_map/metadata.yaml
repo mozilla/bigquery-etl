@@ -1,3 +1,12 @@
----
-description: Aggregates the total counts of the given search counters
 friendly_name: Aggregate Search Map
+description: |-
+  Aggregates the total counts of the given search counters
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

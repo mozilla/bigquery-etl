@@ -1,8 +1,8 @@
 friendly_name: Search Terms
-# yamllint disable rule:line-length
 description: |-
   Views related to search terms data
 dataset_base_acl: view_restricted
 user_facing: true
 labels: {}
+default_table_workgroup_access: []
 workgroup_access: []

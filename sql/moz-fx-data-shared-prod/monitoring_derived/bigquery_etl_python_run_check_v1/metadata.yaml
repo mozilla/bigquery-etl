@@ -6,9 +6,19 @@ description: |-
 owners:
 - ascholtz@mozilla.com
 labels:
-  incremental: false
+  dag: bqetl_status_check
+  owner1: ascholtz
 scheduling:
   dag_name: bqetl_status_check
   date_partition_parameter: null
   depends_on_past: false
-  arguments: ["--task_instance={{ task_instance_key_str }}", "--run_id={{ run_id }}"]
+  arguments:
+  - --task_instance={{ task_instance_key_str }}
+  - --run_id={{ run_id }}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

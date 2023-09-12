@@ -1,5 +1,12 @@
----
-description: Only for use by the LTV Revenue join.  Maps country
-  codes to the codes we have in the revenue dataset. Buckets
-  small Bing countries into "other".
 friendly_name: Map Revenue Country
+description: |-
+  Only for use by the LTV Revenue join.  Maps country codes to the codes we have in the revenue dataset. Buckets small Bing countries into "other".
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

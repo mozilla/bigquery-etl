@@ -1,3 +1,12 @@
----
-description: One represented as a byte array of 365 bits
 friendly_name: One As 365 Bits
+description: |-
+  One represented as a byte array of 365 bits
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

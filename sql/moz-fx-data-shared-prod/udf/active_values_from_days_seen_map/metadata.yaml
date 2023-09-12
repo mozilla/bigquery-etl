@@ -1,6 +1,12 @@
----
-description: Given a map of representing activity for STRING
-  `key`s, this function returns an array of which `key`s were
-  active for the time period in question. start_offset
-  should be at most 0. n_bits should be at most the remaining bits.
 friendly_name: Active Values From Days Seen Map
+description: |-
+  Given a map of representing activity for STRING `key`s, this function returns an array of which `key`s were active for the time period in question. start_offset should be at most 0. n_bits should be at most the remaining bits.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

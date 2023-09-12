@@ -2,15 +2,27 @@ friendly_name: Sponsored Content (Spoc) Tile IDs History
 description: |-
   Historical log of daily exports of Pocket tile metadata for sponsored content.
 owners:
-  - kik@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
+  dag: bqetl_pocket
+  owner1: kik
+scheduling:
+  dag_name: bqetl_pocket
+  arguments:
+  - --date
+  - '{{ ds }}'
+  referenced_tables: []
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
-scheduling:
-  dag_name: bqetl_pocket
-  arguments: ["--date", "{{ ds }}"]
-  referenced_tables: []
+    expiration_days: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

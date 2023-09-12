@@ -1,10 +1,12 @@
----
-description: Returns a bitmask that can be used to return a subset
-  of an integer representing a bit array. The start_ordinal argument
-  is an integer specifying the starting position of the slice, with
-  start_ordinal = 1 indicating the first bit. The length argument
-  is the number of bits to include in the mask.  The arguments were chosen
-  to match the semantics of the SUBSTR function;
-  see
-  https://cloud.google.com/bigquery/docs/reference/standard-sql/functions-and-operators#substr
 friendly_name: Bitmask Range
+description: |-
+  Returns a bitmask that can be used to return a subset of an integer representing a bit array. The start_ordinal argument is an integer specifying the starting position of the slice, with start_ordinal = 1 indicating the first bit. The length argument is the number of bits to include in the mask.  The arguments were chosen to match the semantics of the SUBSTR function; see https://cloud.google.com/bigquery/docs/reference/standard-sql/functions-and-operators#substr
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

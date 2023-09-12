@@ -1,4 +1,12 @@
----
-description: Returns an aggregated map with all the keys and the
-  first corresponding value from the given maps
 friendly_name: Aggregate Map First
+description: |-
+  Returns an aggregated map with all the keys and the first corresponding value from the given maps
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

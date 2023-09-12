@@ -18,9 +18,6 @@ scheduling:
   start_date: '2020-05-05'
   priority: 80
   depends_on_past: true
-  # This query updates the entire existing table every day rather than appending
-  # a new partition, so we need to disable date_partition_parameter and instead
-  # pass submission_date as a generic param.
   date_partition_parameter: null
   parameters:
   - submission_date:DATE:{{ds}}
@@ -42,4 +39,9 @@ schema:
     - clients_daily_v6
     exclude:
     - submission_date
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

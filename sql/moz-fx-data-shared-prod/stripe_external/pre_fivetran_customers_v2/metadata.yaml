@@ -4,8 +4,17 @@ description: |-
 owners:
 - srose@mozilla.com
 labels:
-  incremental: false
+  owner1: srose
 bigquery:
   time_partitioning: null
   clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:stripe
+  - workgroup:data-science/stripe
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:platform-infra/internal
 references: {}
+deprecated: false

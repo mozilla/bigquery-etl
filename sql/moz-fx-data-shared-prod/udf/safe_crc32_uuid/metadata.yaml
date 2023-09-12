@@ -1,6 +1,12 @@
----
-description: Calculate the CRC-32 hash of a 36-byte UUID, or NULL if the value
-  isn't 36 bytes.  This implementation is limited to an exact length because
-  recursion does not work. Based on https://stackoverflow.com/a/18639999/1260237
-  See https://en.wikipedia.org/wiki/Cyclic_redundancy_check
 friendly_name: Safe CRC-32 Uuid
+description: |-
+  Calculate the CRC-32 hash of a 36-byte UUID, or NULL if the value isn't 36 bytes.  This implementation is limited to an exact length because recursion does not work. Based on https://stackoverflow.com/a/18639999/1260237 See https://en.wikipedia.org/wiki/Cyclic_redundancy_check
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

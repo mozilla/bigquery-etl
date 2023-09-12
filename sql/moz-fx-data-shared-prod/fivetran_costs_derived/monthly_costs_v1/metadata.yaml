@@ -3,11 +3,18 @@ description: |-
   Monthly Cost for fivetran connectors. Before September 2022 the costs are given in credits, after in USD. populated from Fivetran Logs
 owners:
 - lschiestl@mozilla.com
-labels: {}
+labels:
+  dag: bqetl_fivetran_costs
+  owner1: lschiestl
 scheduling:
   dag_name: bqetl_fivetran_costs
   date_partition_parameter: null
   depends_on_fivetran:
   - task_id: fivetran_log_prod
 bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

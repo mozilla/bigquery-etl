@@ -13,6 +13,7 @@ owners:
 labels:
   schedule: daily
   owner1: frank
+  dag: bqetl_org_mozilla_firefox_derived
 scheduling:
   dag_name: bqetl_org_mozilla_firefox_derived
   depends_on_past: false
@@ -39,4 +40,9 @@ bigquery:
   clustering:
     fields:
     - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

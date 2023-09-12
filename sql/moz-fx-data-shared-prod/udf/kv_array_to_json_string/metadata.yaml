@@ -1,8 +1,12 @@
----
-description: Returns a JSON string representing the input key-value array.
-  Value type must be able to be represented as a string - this function will
-  cast to a string. At Mozilla, the schema for a map is
-  STRUCT<key_value ARRAY<STRUCT<key ANY TYPE, value ANY TYPE>>>.
-  To use this with that representation, it should be as
-  `udf.kv_array_to_json_string(struct.key_value)`.
 friendly_name: Kv Array To Json String
+description: |-
+  Returns a JSON string representing the input key-value array. Value type must be able to be represented as a string - this function will cast to a string. At Mozilla, the schema for a map is STRUCT<key_value ARRAY<STRUCT<key ANY TYPE, value ANY TYPE>>>. To use this with that representation, it should be as `udf.kv_array_to_json_string(struct.key_value)`.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

@@ -1,6 +1,12 @@
----
-description: Convert geoip lookup fields to a struct, replacing '??'
-  with NULL.  Returns NULL if if required field country would be NULL.
-  Replaces '??' with NULL because '??' is a placeholder that may be
-  used if there was an issue during geoip lookup in hindsight.
 friendly_name: Geo Struct
+description: |-
+  Convert geoip lookup fields to a struct, replacing '??' with NULL.  Returns NULL if if required field country would be NULL. Replaces '??' with NULL because '??' is a placeholder that may be used if there was an issue during geoip lookup in hindsight.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

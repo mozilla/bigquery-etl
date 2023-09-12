@@ -1,6 +1,12 @@
----
-description: Given histogram h, return TRUE if it has a value in the
-  "true" bucket, or FALSE if it has a value in the "false" bucket,
-  or NULL otherwise.
-  https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L309-L317
 friendly_name: Boolean Histogram To Boolean
+description: |-
+  Given histogram h, return TRUE if it has a value in the "true" bucket, or FALSE if it has a value in the "false" bucket, or NULL otherwise. https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L309-L317
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

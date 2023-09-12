@@ -3,14 +3,22 @@ description: |-
   Used for monthly data exports of MDN 'Popularities'
   This aggregates and total page visits counts
   and normalizes them agains the total found during the run.
-
 owners:
 - fmerz@mozilla.com
 labels:
-  incremental: false
-bigquery: {}
+  dag: bqetl_mdn_yari
+  owner1: fmerz
 scheduling:
   dag_name: bqetl_mdn_yari
-  arguments: ["--date", "{{ ds }}"]
+  arguments:
+  - --date
+  - '{{ ds }}'
   date_partition_parameter: null
   referenced_tables: []
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

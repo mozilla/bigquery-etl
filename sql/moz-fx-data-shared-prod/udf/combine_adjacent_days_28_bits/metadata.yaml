@@ -1,7 +1,12 @@
----
-description: Combines two bit patterns. The first pattern represents activity
-  over a 28-day period ending "yesterday". The second pattern represents
-  activity as observed today (usually just 0 or 1). We shift the bits in the
-  first pattern by one to set the new baseline as "today", then perform a
-  bitwise OR of the two patterns.
 friendly_name: Combine Adjacent Days 28 Bits
+description: |-
+  Combines two bit patterns. The first pattern represents activity over a 28-day period ending "yesterday". The second pattern represents activity as observed today (usually just 0 or 1). We shift the bits in the first pattern by one to set the new baseline as "today", then perform a bitwise OR of the two patterns.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

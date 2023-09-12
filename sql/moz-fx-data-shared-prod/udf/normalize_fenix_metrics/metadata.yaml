@@ -1,6 +1,12 @@
----
-description: Accepts a glean metrics struct as input and returns a
-  modified struct that nulls out histograms for older versions of
-  the Glean SDK that reported pathological
-  binning; see https://bugzilla.mozilla.org/show_bug.cgi?id=1592930
 friendly_name: Normalize Fenix Metrics
+description: |-
+  Accepts a glean metrics struct as input and returns a modified struct that nulls out histograms for older versions of the Glean SDK that reported pathological binning; see https://bugzilla.mozilla.org/show_bug.cgi?id=1592930
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

@@ -1,4 +1,12 @@
----
-description: This function returns "dividend mod divisor" where the dividend
-  and the result is encoded in bytes, and divisor is an integer.
 friendly_name: Mod Uint128
+description: |-
+  This function returns "dividend mod divisor" where the dividend and the result is encoded in bytes, and divisor is an integer.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

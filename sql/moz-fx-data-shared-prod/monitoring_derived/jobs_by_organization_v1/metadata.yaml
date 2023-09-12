@@ -7,15 +7,25 @@ owners:
 labels:
   incremental: true
   owner1: mhirose
+  dag: bqetl_monitoring
 scheduling:
   dag_name: bqetl_monitoring
-  arguments: ["--date", "{{ ds }}"]
+  arguments:
+  - --date
+  - '{{ ds }}'
 bigquery:
   time_partitioning:
     type: day
-    field: 'creation_time'
+    field: creation_time
     require_partition_filter: false
     expiration_days: null
   clustering:
-    fields: ['project_id', 'user_email']
+    fields:
+    - project_id
+    - user_email
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

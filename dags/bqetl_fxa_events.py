@@ -214,6 +214,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
         email=["dthorn@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        start_date=datetime.datetime(2023, 9, 7, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],

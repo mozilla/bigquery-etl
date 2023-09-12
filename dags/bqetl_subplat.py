@@ -1224,6 +1224,21 @@ with DAG(
     cjms_bigquery__flows__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_content_events__v1
     )
+    wait_for_firefox_accounts_derived__fxa_server_events__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_accounts_derived__fxa_server_events__v1",
+        external_dag_id="bqetl_fxa_events",
+        external_task_id="firefox_accounts_derived__fxa_server_events__v1",
+        execution_delta=datetime.timedelta(seconds=900),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    cjms_bigquery__flows__v1.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_server_events__v1
+    )
     wait_for_firefox_accounts_derived__fxa_stdout_events__v1 = ExternalTaskSensor(
         task_id="wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
         external_dag_id="bqetl_fxa_events",
@@ -1353,6 +1368,9 @@ with DAG(
         wait_for_firefox_accounts_derived__fxa_content_events__v1
     )
     mozilla_vpn_derived__funnel_product_page_to_subscribed__v1.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_server_events__v1
+    )
+    mozilla_vpn_derived__funnel_product_page_to_subscribed__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_stdout_events__v1
     )
 
@@ -1371,6 +1389,9 @@ with DAG(
         wait_for_firefox_accounts_derived__fxa_content_events__v1
     )
     mozilla_vpn_derived__fxa_attribution__v1.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_server_events__v1
+    )
+    mozilla_vpn_derived__fxa_attribution__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_stdout_events__v1
     )
 
@@ -1383,6 +1404,9 @@ with DAG(
     )
     mozilla_vpn_derived__login_flows__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_content_events__v1
+    )
+    mozilla_vpn_derived__login_flows__v1.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_server_events__v1
     )
     mozilla_vpn_derived__login_flows__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_stdout_events__v1
@@ -1719,6 +1743,9 @@ with DAG(
     )
     subscription_platform_derived__subplat_flow_events__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_content_events__v1
+    )
+    subscription_platform_derived__subplat_flow_events__v1.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_server_events__v1
     )
     subscription_platform_derived__subplat_flow_events__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_stdout_events__v1

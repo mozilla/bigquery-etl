@@ -5,7 +5,7 @@ SELECT
   total_bytes_processed,
   total_bytes_processed / 1024 / 1024 / 1024 / 1024 * 5 AS cost_usd
 FROM
-  `region-us`.INFORMATION_SCHEMA.JOBS_BY_PROJECT
+  `moz-fx-data-experiments.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT`
 WHERE
   DATE(creation_time) = @submission_date
   AND destination_table.dataset_id = "mozanalysis"

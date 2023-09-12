@@ -32,6 +32,8 @@ WITH auth_events AS (
   -- but should always be included for a complete raw event log.
 auth_bounce_events AS (
   SELECT
+    -- TODO: once no longer aliasing to fxa_log in the final part of the query,
+    -- we should change this label to "auth"
     "auth_bounce" AS fxa_server,
     `timestamp`,
     receiveTimestamp,
@@ -100,7 +102,9 @@ oauth_events AS (
 ),
 stdout_events AS (
   SELECT
-    "stdout" AS fxa_server,  -- TODO: should we rename this to "payments"?
+    -- TODO: once no longer aliasing to fxa_log in the final part of the query,
+    -- we should change this label to "payments"
+    "stdout" AS fxa_server,
     `timestamp`,
     receiveTimestamp,
     SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
@@ -177,7 +181,8 @@ unioned AS (
     server_events
 )
 SELECT
-  fxa_server AS fxa_log,  -- TODO: remove this aliasing, this will require changes downstream why broken down into multiple changes / PRs
+  -- TODO: remove this aliasing, however, this will require changes downstream why broken down into multiple changes / PRs
+  fxa_server AS fxa_log,
   `timestamp`,
   receiveTimestamp,
   event_time,

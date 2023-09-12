@@ -412,7 +412,7 @@ bqetl_monitoring:
     - impact/tier_1
 
 bqetl_monitoring_airflow:
-  schedule_interval: 0 2 * * *
+  schedule_interval: 0 10 * * *
   description: |
     This DAG schedules queries and scripts for populating datasets
     used for monitoring of Airflow DAGs.
@@ -1152,7 +1152,13 @@ bqetl_kpis_shredder:
     retries: 2
     retry_delay: 30m
     start_date: '2023-05-16'
-  description: This DAG calculates KPIs for shredder client_ids
+  description: |
+    Currently paused due to a bug causing the DAG upstream dependencies completion
+    not being detected correctly.
+    for more info, see:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1852517
+      - https://github.com/mozilla/bigquery-etl/pull/4239
+    This DAG calculates KPIs for shredder client_ids
   repo: bigquery-etl
   schedule_interval: 0 0 */28 * *
   tags:

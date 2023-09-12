@@ -442,6 +442,11 @@
             "name": "newtab_blocked_sponsors",
             "type": "STRING",
             "mode": "REPEATED"
+          },
+          {
+            "name": "newtab_sov_allocation",
+            "type": "STRING",
+            "mode": "REPEATED"
           }
         ]
       }

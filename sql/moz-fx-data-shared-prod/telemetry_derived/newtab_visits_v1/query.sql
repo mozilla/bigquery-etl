@@ -130,6 +130,8 @@ topsites_events AS (
     SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64) AS topsite_tile_position,
     mozfun.map.get_key(event_details, "advertiser_name") AS topsite_tile_advertiser_name,
     mozfun.map.get_key(event_details, "tile_id") AS topsite_tile_id,
+    JSON_EXTRACT(sov, "$.assigned") AS topsite_tile_assigned_sov_branch,
+    JSON_EXTRACT(sov, "$.chosen") AS topsite_tile_displayed_sov_branch,
     COUNTIF(event_name = 'impression') AS topsite_tile_impressions,
     COUNTIF(event_name = 'click') AS topsite_tile_clicks,
     COUNTIF(
@@ -150,13 +152,21 @@ topsites_events AS (
     ) AS organic_topsite_tile_clicks,
   FROM
     events_unnested
+  LEFT JOIN
+    UNNEST(metrics.string_list.newtab_sov_allocation) sov
+  ON
+    SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64) = SAFE_CAST(
+      JSON_EXTRACT(sov, "$.pos") AS INT64
+    )
   WHERE
     event_category = 'topsites'
   GROUP BY
     newtab_visit_id,
     topsite_tile_position,
     topsite_tile_advertiser_name,
-    topsite_tile_id
+    topsite_tile_id,
+    topsite_tile_assigned_sov_branch,
+    topsite_tile_displayed_sov_branch
 ),
 topsites_summary AS (
   SELECT
@@ -166,6 +176,8 @@ topsites_summary AS (
         topsite_tile_advertiser_name,
         topsite_tile_position,
         topsite_tile_id,
+        topsite_tile_assigned_sov_branch,
+        topsite_tile_displayed_sov_branch,
         topsite_tile_clicks,
         sponsored_topsite_tile_clicks,
         organic_topsite_tile_clicks,

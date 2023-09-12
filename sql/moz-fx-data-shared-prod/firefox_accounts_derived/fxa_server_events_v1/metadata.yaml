@@ -4,9 +4,14 @@ description: |
   FxA server events extracted from accounts server stdout logs.
   This new table is the direct result of FxA migration from AWS to GCP
   (see: OPST-296 for more context).
-  Effective 2023-09-07 the events from the following servers will land in this table:
+  Effective 2023-09-07 rebalancing of traffic began (AWS to GCP) and this table contains partial
+  event data for auth and content fxa servers. Once the migrations is complete all events for the following
+  fxa servers will land in this table:
+
   - auth    (previous table: `fxa_auth_events_v1`)
   - content (previous table: `fxa_content_events_v1`)
+
+  !!! Thereafter, those (previous) tables will no longer contain new event data.
 
   Payment server events will continue landing inside: `fxa_stdout_events_v1`
 owners:
@@ -30,5 +35,4 @@ bigquery:
   clustering:
     fields:
     - fxa_server
-    - event_type
 references: {}

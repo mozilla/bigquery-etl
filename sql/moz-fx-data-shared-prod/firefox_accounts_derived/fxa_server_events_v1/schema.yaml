@@ -2,6 +2,9 @@ fields:
 - name: fxa_server
   type: STRING
   mode: NULLABLE
+- name: logName
+  type: STRING
+  mode: NULLABLE
 - name: resource
   type: RECORD
   mode: NULLABLE
@@ -13,22 +16,22 @@ fields:
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: cluster_name
+    - name: project_id
       type: STRING
       mode: NULLABLE
     - name: pod_name
       type: STRING
       mode: NULLABLE
-    - name: location
+    - name: container_name
       type: STRING
       mode: NULLABLE
-    - name: project_id
+    - name: cluster_name
       type: STRING
       mode: NULLABLE
     - name: namespace_name
       type: STRING
       mode: NULLABLE
-    - name: container_name
+    - name: location
       type: STRING
       mode: NULLABLE
 - name: textPayload
@@ -38,43 +41,43 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
-  - name: x_forwarded_for
+  - name: log_type
     type: STRING
     mode: NULLABLE
   - name: request
     type: STRING
     mode: NULLABLE
-  - name: status
-    type: STRING
-    mode: NULLABLE
   - name: request_time
     type: FLOAT
+    mode: NULLABLE
+  - name: x_forwarded_for
+    type: STRING
     mode: NULLABLE
   - name: bytes_sent
     type: FLOAT
     mode: NULLABLE
-  - name: remote_user
-    type: STRING
-    mode: NULLABLE
-  - name: referrer
-    type: STRING
-    mode: NULLABLE
-  - name: trace
+  - name: user_agent
     type: STRING
     mode: NULLABLE
   - name: x_forwarded_proto
     type: STRING
     mode: NULLABLE
-  - name: user_agent
+  - name: trace
+    type: STRING
+    mode: NULLABLE
+  - name: remote_user
     type: STRING
     mode: NULLABLE
   - name: remote_addr
     type: STRING
     mode: NULLABLE
-  - name: proxy_host
+  - name: referrer
     type: STRING
     mode: NULLABLE
-  - name: envversion
+  - name: status
+    type: STRING
+    mode: NULLABLE
+  - name: logger
     type: STRING
     mode: NULLABLE
   - name: pid
@@ -87,13 +90,7 @@ fields:
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: contentlength
-      type: STRING
-      mode: NULLABLE
     - name: remoteaddresschain
-      type: STRING
-      mode: NULLABLE
-    - name: path
       type: STRING
       mode: NULLABLE
     - name: t
@@ -102,49 +99,61 @@ fields:
     - name: method
       type: STRING
       mode: NULLABLE
+    - name: status
+      type: STRING
+      mode: NULLABLE
     - name: useragent
+      type: STRING
+      mode: NULLABLE
+    - name: contentlength
       type: STRING
       mode: NULLABLE
     - name: clientaddress
       type: STRING
       mode: NULLABLE
-    - name: status
+    - name: path
       type: STRING
       mode: NULLABLE
-    - name: msg
-      type: STRING
-      mode: NULLABLE
-    - name: err
-      type: STRING
-      mode: NULLABLE
-    - name: messageid
-      type: STRING
-      mode: NULLABLE
-    - name: clientid
-      type: STRING
-      mode: NULLABLE
-    - name: message
-      type: STRING
-      mode: NULLABLE
-    - name: statuscode
+    - name: errno
       type: FLOAT
       mode: NULLABLE
-    - name: clientcapabilities
+    - name: code
+      type: FLOAT
+      mode: NULLABLE
+    - name: agent
+      type: STRING
+      mode: NULLABLE
+    - name: client_id
+      type: STRING
+      mode: NULLABLE
+    - name: uid
       type: STRING
       mode: NULLABLE
     - name: referer
       type: STRING
       mode: NULLABLE
+    - name: message
+      type: STRING
+      mode: NULLABLE
     - name: event
       type: STRING
       mode: NULLABLE
-    - name: context
+    - name: time
+      type: FLOAT
+      mode: NULLABLE
+    - name: event_type
+      type: STRING
+      mode: NULLABLE
+    - name: region
+      type: STRING
+      mode: NULLABLE
+    - name: country
       type: STRING
       mode: NULLABLE
     - name: session_id
       type: FLOAT
       mode: NULLABLE
-    - name: os_name
+    - name: language
       type: STRING
       mode: NULLABLE
     - name: app_version
@@ -153,67 +162,148 @@ fields:
     - name: user_properties
       type: STRING
       mode: NULLABLE
-    - name: event_type
-      type: STRING
-      mode: NULLABLE
-    - name: op
-      type: STRING
-      mode: NULLABLE
-    - name: time
-      type: FLOAT
-      mode: NULLABLE
-    - name: os_version
-      type: STRING
-      mode: NULLABLE
     - name: event_properties
-      type: STRING
-      mode: NULLABLE
-    - name: response
-      type: STRING
-      mode: NULLABLE
-    - name: device_model
-      type: STRING
-      mode: NULLABLE
-    - name: port
-      type: FLOAT
-      mode: NULLABLE
-    - name: directory
-      type: STRING
-      mode: NULLABLE
-    - name: changed
-      type: STRING
-      mode: NULLABLE
-    - name: removed
-      type: STRING
-      mode: NULLABLE
-    - name: webhooks
-      type: STRING
-      mode: NULLABLE
-    - name: joierrors
-      type: STRING
-      mode: NULLABLE
-    - name: country
-      type: STRING
-      mode: NULLABLE
-    - name: countrycode
-      type: STRING
-      mode: NULLABLE
-    - name: language
-      type: STRING
-      mode: NULLABLE
-    - name: country_code
-      type: STRING
-      mode: NULLABLE
-    - name: resourceservers
-      type: STRING
-      mode: NULLABLE
-    - name: user_id
       type: STRING
       mode: NULLABLE
     - name: device_id
       type: STRING
       mode: NULLABLE
-  - name: logger
+    - name: op
+      type: STRING
+      mode: NULLABLE
+    - name: os_name
+      type: STRING
+      mode: NULLABLE
+    - name: err
+      type: STRING
+      mode: NULLABLE
+    - name: joierrors
+      type: STRING
+      mode: NULLABLE
+    - name: stack
+      type: STRING
+      mode: NULLABLE
+    - name: reason
+      type: STRING
+      mode: NULLABLE
+    - name: result
+      type: STRING
+      mode: NULLABLE
+    - name: api
+      type: FLOAT
+      mode: NULLABLE
+    - name: os_version
+      type: STRING
+      mode: NULLABLE
+    - name: user_id
+      type: STRING
+      mode: NULLABLE
+    - name: msg
+      type: STRING
+      mode: NULLABLE
+    - name: error
+      type: STRING
+      mode: NULLABLE
+    - name: source
+      type: STRING
+      mode: NULLABLE
+    - name: blocked
+      type: STRING
+      mode: NULLABLE
+    - name: column
+      type: FLOAT
+      mode: NULLABLE
+    - name: line
+      type: FLOAT
+      mode: NULLABLE
+    - name: referrer
+      type: STRING
+      mode: NULLABLE
+    - name: violated
+      type: STRING
+      mode: NULLABLE
+    - name: url
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+    - name: directory
+      type: STRING
+      mode: NULLABLE
+    - name: port
+      type: FLOAT
+      mode: NULLABLE
+    - name: poolstats
+      type: STRING
+      mode: NULLABLE
+    - name: signal
+      type: STRING
+      mode: NULLABLE
+    - name: reqtime
+      type: FLOAT
+      mode: NULLABLE
+    - name: rp
+      type: STRING
+      mode: NULLABLE
+    - name: assertion_verification_time
+      type: FLOAT
+      mode: NULLABLE
+    - name: trustedissuers
+      type: STRING
+      mode: NULLABLE
+    - name: assertion
+      type: STRING
+      mode: NULLABLE
+    - name: host
+      type: STRING
+      mode: NULLABLE
+    - name: header
+      type: STRING
+      mode: NULLABLE
+    - name: usergroupheader
+      type: STRING
+      mode: NULLABLE
+    - name: usergroupheader_notnull
+      type: STRING
+      mode: NULLABLE
+    - name: user
+      type: STRING
+      mode: NULLABLE
+    - name: email
+      type: STRING
+      mode: NULLABLE
+    - name: search_type
+      type: STRING
+      mode: NULLABLE
+    - name: auto_completed
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: payload
+      type: STRING
+      mode: NULLABLE
+    - name: user_agent
+      type: STRING
+      mode: NULLABLE
+    - name: ip_address
+      type: STRING
+      mode: NULLABLE
+    - name: document_version
+      type: STRING
+      mode: NULLABLE
+    - name: document_namespace
+      type: STRING
+      mode: NULLABLE
+    - name: document_type
+      type: STRING
+      mode: NULLABLE
+    - name: document_id
+      type: STRING
+      mode: NULLABLE
+    - name: originaltransactionid
+      type: STRING
+      mode: NULLABLE
+  - name: envversion
     type: STRING
     mode: NULLABLE
   - name: type
@@ -221,9 +311,6 @@ fields:
     mode: NULLABLE
   - name: severity
     type: FLOAT
-    mode: NULLABLE
-  - name: log_type
-    type: STRING
     mode: NULLABLE
 - name: timestamp
   type: TIMESTAMP
@@ -287,43 +374,22 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
-  - name: k8s_pod_app_kubernetes_io_part_of
-    type: STRING
-    mode: NULLABLE
-  - name: k8s_pod_fullname
-    type: STRING
-    mode: NULLABLE
   - name: k8s_pod_app_kubernetes_io_component
     type: STRING
     mode: NULLABLE
-  - name: k8s_pod_app_kubernetes_io_name
-    type: STRING
-    mode: NULLABLE
-  - name: k8s_pod_app_kubernetes_io_version
-    type: STRING
-    mode: NULLABLE
-  - name: k8s_pod_app_kubernetes_io_managed_by
+  - name: k8s_pod_deployment
     type: STRING
     mode: NULLABLE
   - name: compute_googleapis_com_resource_name
     type: STRING
     mode: NULLABLE
-  - name: k8s_pod_jenkins_build_id
-    type: STRING
-    mode: NULLABLE
-  - name: k8s_pod_app_kubernetes_io_instance
+  - name: k8s_pod_env_code
     type: STRING
     mode: NULLABLE
   - name: k8s_pod_pod_template_hash
     type: STRING
     mode: NULLABLE
-  - name: k8s_pod_pod_template_generation
-    type: STRING
-    mode: NULLABLE
-  - name: k8s_pod_controller_revision_hash
-    type: STRING
-    mode: NULLABLE
-  - name: k8s_pod_k8s_app
+  - name: k8s_pod_app_kubernetes_io_name
     type: STRING
     mode: NULLABLE
 - name: operation

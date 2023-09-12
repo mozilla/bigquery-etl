@@ -2886,11 +2886,11 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#acquisition_channel-udf" class="md-nav__link">
-    acquisition_channel (UDF)
+  <a href="#pricing_plan-udf" class="md-nav__link">
+    pricing_plan (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="acquisition_channel (UDF)">
+    <nav class="md-nav" aria-label="pricing_plan (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2906,11 +2906,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pricing_plan-udf" class="md-nav__link">
-    pricing_plan (UDF)
+  <a href="#acquisition_channel-udf" class="md-nav__link">
+    acquisition_channel (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="pricing_plan (UDF)">
+    <nav class="md-nav" aria-label="acquisition_channel (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3318,11 +3318,11 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#acquisition_channel-udf" class="md-nav__link">
-    acquisition_channel (UDF)
+  <a href="#pricing_plan-udf" class="md-nav__link">
+    pricing_plan (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="acquisition_channel (UDF)">
+    <nav class="md-nav" aria-label="pricing_plan (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3338,11 +3338,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pricing_plan-udf" class="md-nav__link">
-    pricing_plan (UDF)
+  <a href="#acquisition_channel-udf" class="md-nav__link">
+    acquisition_channel (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="pricing_plan (UDF)">
+    <nav class="md-nav" aria-label="acquisition_channel (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3414,19 +3414,9 @@
 
 <h1 id="vpn">vpn</h1>
 <p>Functions for processing VPN data.</p>
-<h2 id="acquisition_channel-udf">acquisition_channel (UDF)</h2>
-<p>Assign an acquisition channel based on utm parameters</p>
-<h3 id="parameters">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>utm_campaign STRING, utm_content STRING, utm_medium STRING, utm_source STRING
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>STRING
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/vpn/acquisition_channel">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/vpn/acquisition_channel/metadata.yaml">Edit</a></p>
 <h2 id="pricing_plan-udf">pricing_plan (UDF)</h2>
 <p>Combine the pricing and interval for a subscription plan into a single field</p>
-<h3 id="parameters_1">Parameters</h3>
+<h3 id="parameters">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>provider STRING, amount INTEGER, currency STRING, `interval` STRING, interval_count INTEGER
 </code></pre></div>
@@ -3434,6 +3424,16 @@
 <div class="highlight"><pre><span></span><code>STRING
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/vpn/pricing_plan">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/vpn/pricing_plan/metadata.yaml">Edit</a></p>
+<h2 id="acquisition_channel-udf">acquisition_channel (UDF)</h2>
+<p>Assign an acquisition channel based on utm parameters</p>
+<h3 id="parameters_1">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>utm_campaign STRING, utm_content STRING, utm_medium STRING, utm_source STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/vpn/acquisition_channel">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/vpn/acquisition_channel/metadata.yaml">Edit</a></p>
 <h2 id="channel_group-udf">channel_group (UDF)</h2>
 <p>Assign a channel group based on utm parameters</p>
 <h3 id="parameters_2">Parameters</h3>

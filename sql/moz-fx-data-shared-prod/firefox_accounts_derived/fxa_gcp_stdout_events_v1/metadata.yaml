@@ -1,0 +1,35 @@
+friendly_name: FxA stdout events (prod)
+description: |
+  FxA server events extracted from stdout logs.
+  This new table is the direct result of FxA migration from AWS to GCP
+  (see: OPST-296 for more context).
+  Traffic shifting from AWS to GCP started on 2023-09-07 and finished on 2023-09-12 and this table contains partial
+  event data for these days. Once the migration is complete all events from the fxa content server will land in this table
+  (previous table: `fxa_content_events_v1`).
+
+  See also `fxa_stderr_events_v1`.
+
+  Payment server events will continue landing inside: `fxa_stdout_events_v1`
+owners:
+- kik@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+  owner1: kik
+  dag: bqetl_fxa_events
+scheduling:
+  dag_name: bqetl_fxa_events
+  start_date: '2023-09-07'
+  arguments:
+  - --schema_update_option=ALLOW_FIELD_ADDITION
+bigquery:
+  time_partitioning:
+    type: day
+    field: timestamp
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - fxa_server
+references: {}

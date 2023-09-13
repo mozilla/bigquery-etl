@@ -144,7 +144,7 @@ gcp_stdout_events AS (
     jsonPayload.fields.event_properties,
     jsonPayload.fields.device_id,
   FROM
-    `mozdata.tmp.akomar_fxa_gcp_stdout_events_v1`
+    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_gcp_stdout_events_v1`
   WHERE
     -- this is when traffic switch over started, all prior dates contain test data.
     -- see: DENG-1035 for more info.
@@ -170,7 +170,7 @@ gcp_stderr_events AS (
     jsonPayload.fields.event_properties,
     jsonPayload.fields.device_id,
   FROM
-    `mozdata.tmp.akomar_fxa_gcp_stderr_events_v1`
+    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_gcp_stderr_events_v1`
   WHERE
     -- this is when traffic switch over started, all prior dates contain test data.
     -- see: DENG-1035 for more info.

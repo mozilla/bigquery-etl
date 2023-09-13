@@ -2846,11 +2846,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#get_key_with_null-udf" class="md-nav__link">
-    get_key_with_null (UDF)
+  <a href="#get_key-udf" class="md-nav__link">
+    get_key (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="get_key_with_null (UDF)">
+    <nav class="md-nav" aria-label="get_key (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3305,11 +3305,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#get_key_with_null-udf" class="md-nav__link">
-    get_key_with_null (UDF)
+  <a href="#get_key-udf" class="md-nav__link">
+    get_key (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="get_key_with_null (UDF)">
+    <nav class="md-nav" aria-label="get_key (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3355,20 +3355,16 @@
 <div class="highlight"><pre><span></span><code>entries ANY TYPE
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/map/mode_last">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/map/mode_last/metadata.yaml">Edit</a></p>
-<h2 id="get_key_with_null-udf">get_key_with_null (UDF)</h2>
-<p>Fetch the value associated with a given key from an array of
-key/value structs.</p>
+<h2 id="get_key-udf">get_key (UDF)</h2>
+<p>Fetch the value associated with a given key from an array of key/value
+structs.</p>
 <p>Because map types aren't available in BigQuery, we model maps as arrays
-of structs instead, and this function provides map-like access to such fields.
-This version matches NULL keys as well.</p>
+of structs instead, and this function provides map-like access to such fields.</p>
 <h3 id="parameters_1">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>map ANY TYPE, k ANY TYPE
 </code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>STRING
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/map/get_key_with_null">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/map/get_key_with_null/metadata.yaml">Edit</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/map/get_key">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/map/get_key/metadata.yaml">Edit</a></p>
 <h2 id="extract_keyed_scalar_sum-udf">extract_keyed_scalar_sum (UDF)</h2>
 <p>Sums all values in a keyed scalar.</p>
 <h1 id="extract-keyed-scalar-sum">Extract Keyed Scalar Sum</h1>
@@ -3392,16 +3388,20 @@ type is <code>ARRAY&lt;STRUCT&lt;key STRING, value INT64&gt;&gt;</code></p>
 <div class="highlight"><pre><span></span><code>entries ANY TYPE
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/map/sum">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/map/sum/metadata.yaml">Edit</a></p>
-<h2 id="get_key-udf">get_key (UDF)</h2>
-<p>Fetch the value associated with a given key from an array of key/value
-structs.</p>
+<h2 id="get_key_with_null-udf">get_key_with_null (UDF)</h2>
+<p>Fetch the value associated with a given key from an array of
+key/value structs.</p>
 <p>Because map types aren't available in BigQuery, we model maps as arrays
-of structs instead, and this function provides map-like access to such fields.</p>
+of structs instead, and this function provides map-like access to such fields.
+This version matches NULL keys as well.</p>
 <h3 id="parameters_4">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>map ANY TYPE, k ANY TYPE
 </code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/map/get_key">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/map/get_key/metadata.yaml">Edit</a></p>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/map/get_key_with_null">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/map/get_key_with_null/metadata.yaml">Edit</a></p>
 
 
 

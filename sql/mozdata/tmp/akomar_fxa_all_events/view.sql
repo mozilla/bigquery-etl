@@ -124,7 +124,7 @@ stdout_events AS (
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_stdout_events_v1`
   -- TODO: add a cut off date once AWS to GCP migration is complete.
 ),
--- New fxa event table (prod) includes, content and auth events (TODO: confirm what about auth_bounce)
+-- stdout table that contains events from services migrated to new GCP environment
 gcp_stdout_events AS (
   SELECT
     fxa_server,
@@ -133,7 +133,7 @@ gcp_stdout_events AS (
     SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
     jsonPayload.fields.user_id,
     jsonPayload.fields.country,
-    "UNKNOWN" AS country_code,
+    JSON_VALUE(jsonPayload.fields.event_properties, "$.country_code") AS country_code,
     jsonPayload.fields.language,
     jsonPayload.fields.app_version,
     jsonPayload.fields.os_name,
@@ -150,6 +150,7 @@ gcp_stdout_events AS (
     -- see: DENG-1035 for more info.
     DATE(`timestamp`) >= "2023-09-07"
 ),
+-- stderr table that contains events from services migrated to new GCP environment
 gcp_stderr_events AS (
   SELECT
     fxa_server,
@@ -158,7 +159,7 @@ gcp_stderr_events AS (
     SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
     jsonPayload.fields.user_id,
     jsonPayload.fields.country,
-    "UNKNOWN" AS country_code,
+    JSON_VALUE(jsonPayload.fields.event_properties, "$.country_code") AS country_code,
     jsonPayload.fields.language,
     jsonPayload.fields.app_version,
     jsonPayload.fields.os_name,

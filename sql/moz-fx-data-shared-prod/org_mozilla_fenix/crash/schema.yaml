@@ -332,6 +332,13 @@ fields:
       description: 'The cause of the crash. May be one of `os_fault` or `java_exception`.
 
         '
+    - name: crash_remote_type
+      type: STRING
+      mode: NULLABLE
+      description: 'Type of the child process, can be set to "web", "file" or "extension"
+        but could also be unavailable.
+
+        '
   - name: timespan
     type: RECORD
     mode: NULLABLE

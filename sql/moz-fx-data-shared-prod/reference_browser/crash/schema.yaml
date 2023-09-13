@@ -253,6 +253,9 @@ fields:
     - name: crash_cause
       type: STRING
       mode: NULLABLE
+    - name: crash_remote_type
+      type: STRING
+      mode: NULLABLE
   - name: timespan
     type: RECORD
     mode: NULLABLE

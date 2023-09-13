@@ -292,6 +292,64 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: settings_connect_on_startup_active
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'The status of whether the VPN is activated on device start
+
+        '
+  - name: timing_distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: performance_time_to_main_screen
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time the app took between starting and rendering the main
+        screen.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

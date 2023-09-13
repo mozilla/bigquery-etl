@@ -1,4 +1,8 @@
 -- Query first observations for Firefox Android Clients.
+-- TODO: at the next refactor, should we consider replacing baseline_clients and first_seen CTEs
+-- with using `fenix.baseline_clients_first_seen` view which already gets all clients from
+-- the baseline_clients_daily tables whilst filtering for `is_new_profile`.
+-- This would also match up closer to the corresponding implementation of the firefox_ios_clients table.
 WITH baseline_clients AS (
   SELECT
     client_id,

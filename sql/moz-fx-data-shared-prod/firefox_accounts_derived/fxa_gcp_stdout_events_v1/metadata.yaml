@@ -7,7 +7,7 @@ description: |
   Once the migration is complete all events from the fxa content server will land in this table
   (previous table: `fxa_content_events_v1`).
 
-  See also `fxa_stderr_events_v1`.
+  See also `fxa_gcp_stderr_events_v1`.
 
   Payment server events will continue landing inside: `fxa_stdout_events_v1`
 owners:

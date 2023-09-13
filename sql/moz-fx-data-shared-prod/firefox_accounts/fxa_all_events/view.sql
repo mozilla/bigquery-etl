@@ -6,9 +6,8 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
 AS
-WITH auth_events AS (
+WITH fxa_auth_events AS (
   SELECT
-    "auth" AS fxa_server,
     `timestamp`,
     receiveTimestamp,
     SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
@@ -26,15 +25,11 @@ WITH auth_events AS (
     jsonPayload.fields.device_id,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_auth_events_v1`
-  -- TODO: add a cut off date once AWS to GCP migration is complete.
 ),
   -- This table doesn't include any user events that are considered "active",
   -- but should always be included for a complete raw event log.
-auth_bounce_events AS (
+fxa_auth_bounce_events AS (
   SELECT
-    -- TODO: once no longer aliasing to fxa_log in the final part of the query,
-    -- we should change this label to "auth"
-    "auth_bounce" AS fxa_server,
     `timestamp`,
     receiveTimestamp,
     SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
@@ -55,9 +50,8 @@ auth_bounce_events AS (
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_auth_bounce_events_v1`
 ),
-content_events AS (
+fxa_content_events AS (
   SELECT
-    "content" AS fxa_server,
     `timestamp`,
     receiveTimestamp,
     SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
@@ -75,12 +69,10 @@ content_events AS (
     jsonPayload.fields.device_id,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_content_events_v1`
-  -- TODO: add a cut off date once AWS to GCP migration is complete.
 ),
 -- oauth events, see the note on top
-oauth_events AS (
+fxa_oauth_events AS (
   SELECT
-    "oauth" AS fxa_server,
     `timestamp`,
     receiveTimestamp,
     SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
@@ -98,13 +90,9 @@ oauth_events AS (
     CAST(NULL AS STRING) AS device_id,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_oauth_events_v1`
-  -- TODO: add a cut off date once AWS to GCP migration is complete.
 ),
-stdout_events AS (
+fxa_stdout_events AS (
   SELECT
-    -- TODO: once no longer aliasing to fxa_log in the final part of the query,
-    -- we should change this label to "payments"
-    "stdout" AS fxa_server,
     `timestamp`,
     receiveTimestamp,
     SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
@@ -122,104 +110,45 @@ stdout_events AS (
     jsonPayload.fields.device_id,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_stdout_events_v1`
-  -- TODO: add a cut off date once AWS to GCP migration is complete.
-),
--- stdout table that contains events from services migrated to new GCP environment
-gcp_stdout_events AS (
-  SELECT
-    fxa_server,
-    `timestamp`,
-    receiveTimestamp,
-    SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
-    jsonPayload.fields.user_id,
-    jsonPayload.fields.country,
-    JSON_VALUE(jsonPayload.fields.event_properties, "$.country_code") AS country_code,
-    jsonPayload.fields.language,
-    jsonPayload.fields.app_version,
-    jsonPayload.fields.os_name,
-    jsonPayload.fields.os_version,
-    jsonPayload.fields.event_type,
-    jsonPayload.logger,
-    jsonPayload.fields.user_properties,
-    jsonPayload.fields.event_properties,
-    jsonPayload.fields.device_id,
-  FROM
-    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_gcp_stdout_events_v1`
-  WHERE
-    -- this is when traffic switch over started, all prior dates contain test data.
-    -- see: DENG-1035 for more info.
-    DATE(`timestamp`) >= "2023-09-07"
-),
--- stderr table that contains events from services migrated to new GCP environment
-gcp_stderr_events AS (
-  SELECT
-    fxa_server,
-    `timestamp`,
-    receiveTimestamp,
-    SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
-    jsonPayload.fields.user_id,
-    jsonPayload.fields.country,
-    JSON_VALUE(jsonPayload.fields.event_properties, "$.country_code") AS country_code,
-    jsonPayload.fields.language,
-    jsonPayload.fields.app_version,
-    jsonPayload.fields.os_name,
-    jsonPayload.fields.os_version,
-    jsonPayload.fields.event_type,
-    jsonPayload.logger,
-    jsonPayload.fields.user_properties,
-    jsonPayload.fields.event_properties,
-    jsonPayload.fields.device_id,
-  FROM
-    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_gcp_stderr_events_v1`
-  WHERE
-    -- this is when traffic switch over started, all prior dates contain test data.
-    -- see: DENG-1035 for more info.
-    DATE(`timestamp`) >= "2023-09-07"
 ),
 unioned AS (
   SELECT
-    *
+    *,
+    'auth' AS fxa_log,
   FROM
-    auth_events
+    fxa_auth_events
   UNION ALL
   SELECT
-    *
+    *,
+    'auth_bounce' AS fxa_log,
   FROM
-    auth_bounce_events
+    fxa_auth_bounce_events
   UNION ALL
   SELECT
-    *
+    *,
+    'content' AS fxa_log,
   FROM
-    content_events
+    fxa_content_events
   UNION ALL
   -- oauth events, see the note on top
   SELECT
-    *
+    *,
+    'oauth' AS fxa_log,
   FROM
-    oauth_events
+    fxa_oauth_events
   UNION ALL
   SELECT
-    *
+    *,
+    'stdout' AS fxa_log,
   FROM
-    stdout_events
-  UNION ALL
-  SELECT
-    *
-  FROM
-    gcp_stdout_events
-  UNION ALL
-  SELECT
-    *
-  FROM
-    gcp_stderr_events
+    fxa_stdout_events
 )
 SELECT
-  -- TODO: remove this aliasing, however, this will require changes downstream why broken down into multiple changes / PRs
-  fxa_server AS fxa_log,
   `timestamp`,
   receiveTimestamp,
   event_time,
   logger,
+  fxa_log,
   event_type,
   user_id,
   device_id,

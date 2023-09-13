@@ -40,7 +40,7 @@ WHERE
       -- We filter out events associated with high-volume oauth client IDs that
       -- are redundant with cert_signed events;
       -- see https://github.com/mozilla/bigquery-etl/issues/348
-      JSON_EXTRACT_SCALAR(jsonPayload.fields.event_properties, '$.oauth_client_id') NOT IN (
+      JSON_VALUE(jsonPayload.fields.event_properties, '$.oauth_client_id') NOT IN (
         '3332a18d142636cb', -- fennec sync
         '5882386c6d801776', -- desktop sync
         '1b1a3e44c54fbb58' -- ios sync
@@ -48,7 +48,7 @@ WHERE
       -- We do want to let through some desktop sync events
       -- see https://github.com/mozilla/bigquery-etl/issues/573
       OR (
-        JSON_EXTRACT_SCALAR(jsonPayload.fields.event_properties, '$.oauth_client_id') IN (
+        JSON_VALUE(jsonPayload.fields.event_properties, '$.oauth_client_id') IN (
           '5882386c6d801776',
           '1b1a3e44c54fbb58'
         )
@@ -57,6 +57,6 @@ WHERE
           'fxa_activity - access_token_created'
         )
       )
-      OR JSON_EXTRACT_SCALAR(jsonPayload.fields.event_properties, '$.oauth_client_id') IS NULL
+      OR JSON_VALUE(jsonPayload.fields.event_properties, '$.oauth_client_id') IS NULL
     )
   )

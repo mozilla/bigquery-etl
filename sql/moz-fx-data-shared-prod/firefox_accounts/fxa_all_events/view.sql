@@ -125,13 +125,15 @@ stdout_events AS (
   -- TODO: add a cut off date once AWS to GCP migration is complete.
 ),
 -- New fxa event table (prod) includes, content and auth events (TODO: confirm what about auth_bounce)
-server_events AS (
+gcp_stdout_events AS (
   SELECT
     fxa_server,
     `timestamp`,
     receiveTimestamp,
+    SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
     jsonPayload.fields.user_id,
     jsonPayload.fields.country,
+    "UNKNOWN" AS country_code,
     jsonPayload.fields.language,
     jsonPayload.fields.app_version,
     jsonPayload.fields.os_name,
@@ -142,7 +144,32 @@ server_events AS (
     jsonPayload.fields.event_properties,
     jsonPayload.fields.device_id,
   FROM
-    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_server_events_v1`
+    `mozdata.tmp.akomar_fxa_gcp_stdout_events_v1`
+  WHERE
+    -- this is when traffic switch over started, all prior dates contain test data.
+    -- see: DENG-1035 for more info.
+    DATE(`timestamp`) >= "2023-09-07"
+),
+gcp_stderr_events AS (
+  SELECT
+    fxa_server,
+    `timestamp`,
+    receiveTimestamp,
+    SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
+    jsonPayload.fields.user_id,
+    jsonPayload.fields.country,
+    "UNKNOWN" AS country_code,
+    jsonPayload.fields.language,
+    jsonPayload.fields.app_version,
+    jsonPayload.fields.os_name,
+    jsonPayload.fields.os_version,
+    jsonPayload.fields.event_type,
+    jsonPayload.logger,
+    jsonPayload.fields.user_properties,
+    jsonPayload.fields.event_properties,
+    jsonPayload.fields.device_id,
+  FROM
+    `mozdata.tmp.akomar_fxa_gcp_stderr_events_v1`
   WHERE
     -- this is when traffic switch over started, all prior dates contain test data.
     -- see: DENG-1035 for more info.
@@ -178,7 +205,12 @@ unioned AS (
   SELECT
     *
   FROM
-    server_events
+    gcp_stdout_events
+  UNION ALL
+  SELECT
+    *
+  FROM
+    gcp_stderr_events
 )
 SELECT
   -- TODO: remove this aliasing, however, this will require changes downstream why broken down into multiple changes / PRs

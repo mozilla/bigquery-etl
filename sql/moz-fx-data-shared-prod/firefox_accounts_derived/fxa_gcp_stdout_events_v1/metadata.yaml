@@ -3,8 +3,8 @@ description: |
   FxA server events extracted from stdout logs.
   This new table is the direct result of FxA migration from AWS to GCP
   (see: OPST-296 for more context).
-  Traffic shifting from AWS to GCP started on 2023-09-07 and finished on 2023-09-12 and this table contains partial
-  event data for these days. Once the migration is complete all events from the fxa content server will land in this table
+  Traffic shifting from AWS to GCP started on 2023-09-07 and this table contains partial event data starting from this date.
+  Once the migration is complete all events from the fxa content server will land in this table
   (previous table: `fxa_content_events_v1`).
 
   See also `fxa_stderr_events_v1`.

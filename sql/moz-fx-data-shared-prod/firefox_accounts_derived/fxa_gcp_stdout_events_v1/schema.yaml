@@ -303,6 +303,24 @@ fields:
     - name: originaltransactionid
       type: STRING
       mode: NULLABLE
+    - name: config
+      type: STRING
+      mode: NULLABLE
+    - name: duration
+      type: FLOAT
+      mode: NULLABLE
+    - name: info
+      type: STRING
+      mode: NULLABLE
+    - name: detail
+      type: STRING
+      mode: NULLABLE
+    - name: cause
+      type: STRING
+      mode: NULLABLE
+    - name: success
+      type: FLOAT
+      mode: NULLABLE
   - name: envversion
     type: STRING
     mode: NULLABLE

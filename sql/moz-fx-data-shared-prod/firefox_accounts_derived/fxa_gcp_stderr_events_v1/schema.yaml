@@ -19,16 +19,16 @@ fields:
     - name: project_id
       type: STRING
       mode: NULLABLE
-    - name: pod_name
+    - name: cluster_name
+      type: STRING
+      mode: NULLABLE
+    - name: namespace_name
       type: STRING
       mode: NULLABLE
     - name: container_name
       type: STRING
       mode: NULLABLE
-    - name: cluster_name
-      type: STRING
-      mode: NULLABLE
-    - name: namespace_name
+    - name: pod_name
       type: STRING
       mode: NULLABLE
     - name: location
@@ -41,107 +41,149 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
-  - name: log_type
+  - name: type
     type: STRING
-    mode: NULLABLE
-  - name: request
-    type: STRING
-    mode: NULLABLE
-  - name: request_time
-    type: FLOAT
-    mode: NULLABLE
-  - name: x_forwarded_for
-    type: STRING
-    mode: NULLABLE
-  - name: bytes_sent
-    type: FLOAT
-    mode: NULLABLE
-  - name: user_agent
-    type: STRING
-    mode: NULLABLE
-  - name: x_forwarded_proto
-    type: STRING
-    mode: NULLABLE
-  - name: trace
-    type: STRING
-    mode: NULLABLE
-  - name: remote_user
-    type: STRING
-    mode: NULLABLE
-  - name: remote_addr
-    type: STRING
-    mode: NULLABLE
-  - name: referrer
-    type: STRING
-    mode: NULLABLE
-  - name: status
-    type: STRING
-    mode: NULLABLE
-  - name: logger
-    type: STRING
-    mode: NULLABLE
-  - name: pid
-    type: FLOAT
-    mode: NULLABLE
-  - name: timestamp
-    type: FLOAT
     mode: NULLABLE
   - name: fields
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: remoteaddresschain
-      type: STRING
+    - name: errno
+      type: FLOAT
       mode: NULLABLE
-    - name: t
+    - name: path
       type: STRING
       mode: NULLABLE
     - name: method
       type: STRING
       mode: NULLABLE
+    - name: t
+      type: FLOAT
+      mode: NULLABLE
+    - name: traceid
+      type: STRING
+      mode: NULLABLE
+    - name: remoteaddresschain
+      type: STRING
+      mode: NULLABLE
+    - name: keys
+      type: BOOLEAN
+      mode: NULLABLE
     - name: status
-      type: STRING
-      mode: NULLABLE
-    - name: useragent
-      type: STRING
-      mode: NULLABLE
-    - name: contentlength
-      type: STRING
-      mode: NULLABLE
-    - name: clientaddress
-      type: STRING
-      mode: NULLABLE
-    - name: path
-      type: STRING
-      mode: NULLABLE
-    - name: errno
       type: FLOAT
-      mode: NULLABLE
-    - name: code
-      type: FLOAT
-      mode: NULLABLE
-    - name: agent
-      type: STRING
-      mode: NULLABLE
-    - name: client_id
-      type: STRING
       mode: NULLABLE
     - name: uid
       type: STRING
       mode: NULLABLE
-    - name: referer
+    - name: agent
       type: STRING
       mode: NULLABLE
-    - name: message
+    - name: domain
+      type: STRING
+      mode: NULLABLE
+    - name: template
+      type: STRING
+      mode: NULLABLE
+    - name: processingtimemillis
+      type: FLOAT
+      mode: NULLABLE
+    - name: email
+      type: STRING
+      mode: NULLABLE
+    - name: templatename
+      type: STRING
+      mode: NULLABLE
+    - name: currenttime
+      type: FLOAT
+      mode: NULLABLE
+    - name: flowid
+      type: STRING
+      mode: NULLABLE
+    - name: flowbegintime
+      type: STRING
+      mode: NULLABLE
+    - name: type
+      type: STRING
+      mode: NULLABLE
+    - name: templateversion
+      type: STRING
+      mode: NULLABLE
+    - name: locale
       type: STRING
       mode: NULLABLE
     - name: event
       type: STRING
       mode: NULLABLE
+    - name: flow_id
+      type: STRING
+      mode: NULLABLE
     - name: time
       type: FLOAT
       mode: NULLABLE
+    - name: flow_time
+      type: FLOAT
+      mode: NULLABLE
+    - name: lang
+      type: STRING
+      mode: NULLABLE
+    - name: bouncesubtype
+      type: STRING
+      mode: NULLABLE
+    - name: bouncetype
+      type: STRING
+      mode: NULLABLE
+    - name: action
+      type: STRING
+      mode: NULLABLE
+    - name: bounce
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: diagnosticcode
+      type: STRING
+      mode: NULLABLE
+    - name: user_properties
+      type: STRING
+      mode: NULLABLE
+    - name: app_version
+      type: STRING
+      mode: NULLABLE
+    - name: language
+      type: STRING
+      mode: NULLABLE
+    - name: device_id
+      type: STRING
+      mode: NULLABLE
+    - name: user_id
+      type: STRING
+      mode: NULLABLE
     - name: event_type
+      type: STRING
+      mode: NULLABLE
+    - name: op
+      type: STRING
+      mode: NULLABLE
+    - name: session_id
+      type: STRING
+      mode: NULLABLE
+    - name: event_properties
+      type: STRING
+      mode: NULLABLE
+    - name: err
+      type: STRING
+      mode: NULLABLE
+    - name: bounced
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: missingflowid
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: stack
+      type: STRING
+      mode: NULLABLE
+    - name: os_version
+      type: STRING
+      mode: NULLABLE
+    - name: os_name
       type: STRING
       mode: NULLABLE
     - name: region
@@ -150,166 +192,810 @@ fields:
     - name: country
       type: STRING
       mode: NULLABLE
-    - name: session_id
+    - name: service
+      type: STRING
+      mode: NULLABLE
+    - name: useragent
+      type: STRING
+      mode: NULLABLE
+    - name: granttype
+      type: STRING
+      mode: NULLABLE
+    - name: clientid
+      type: STRING
+      mode: NULLABLE
+    - name: command
+      type: STRING
+      mode: NULLABLE
+    - name: uaos
+      type: STRING
+      mode: NULLABLE
+    - name: redirectto
+      type: STRING
+      mode: NULLABLE
+    - name: complaint
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: complaintfeedbacktype
+      type: STRING
+      mode: NULLABLE
+    - name: complaintuseragent
+      type: STRING
+      mode: NULLABLE
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+    - name: createdat
       type: FLOAT
       mode: NULLABLE
-    - name: language
+    - name: emailverified
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: tokenverified
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: msg
       type: STRING
       mode: NULLABLE
-    - name: app_version
+    - name: dbpath
       type: STRING
       mode: NULLABLE
-    - name: user_properties
-      type: STRING
+    - name: enabled
+      type: BOOLEAN
       mode: NULLABLE
-    - name: event_properties
-      type: STRING
-      mode: NULLABLE
-    - name: device_id
-      type: STRING
-      mode: NULLABLE
-    - name: op
-      type: STRING
-      mode: NULLABLE
-    - name: os_name
-      type: STRING
-      mode: NULLABLE
-    - name: err
-      type: STRING
-      mode: NULLABLE
-    - name: joierrors
-      type: STRING
-      mode: NULLABLE
-    - name: stack
+    - name: poolstats
       type: STRING
       mode: NULLABLE
     - name: reason
       type: STRING
       mode: NULLABLE
-    - name: result
-      type: STRING
-      mode: NULLABLE
-    - name: api
+    - name: port
       type: FLOAT
       mode: NULLABLE
-    - name: os_version
-      type: STRING
-      mode: NULLABLE
-    - name: user_id
-      type: STRING
-      mode: NULLABLE
-    - name: msg
+    - name: host
       type: STRING
       mode: NULLABLE
     - name: error
       type: STRING
       mode: NULLABLE
-    - name: source
+    - name: flowcompletesignal
       type: STRING
       mode: NULLABLE
-    - name: blocked
+    - name: flowtype
       type: STRING
       mode: NULLABLE
-    - name: column
+    - name: sender
+      type: STRING
+      mode: NULLABLE
+    - name: index
       type: FLOAT
       mode: NULLABLE
-    - name: line
+    - name: target
+      type: STRING
+      mode: NULLABLE
+    - name: targetos
+      type: STRING
+      mode: NULLABLE
+    - name: targettype
+      type: STRING
+      mode: NULLABLE
+    - name: senderos
+      type: STRING
+      mode: NULLABLE
+    - name: sendertype
+      type: STRING
+      mode: NULLABLE
+    - name: recency
+      type: STRING
+      mode: NULLABLE
+    - name: events
       type: FLOAT
       mode: NULLABLE
-    - name: referrer
+    - name: deviceid
       type: STRING
       mode: NULLABLE
-    - name: violated
+    - name: tokenverificationid
       type: STRING
       mode: NULLABLE
-    - name: url
+    - name: newsletters
       type: STRING
       mode: NULLABLE
-    - name: version
+    - name: emailcode
       type: STRING
       mode: NULLABLE
-    - name: directory
+    - name: emails
       type: STRING
       mode: NULLABLE
-    - name: port
+    - name: wrapwrapkb
+      type: STRING
+      mode: NULLABLE
+    - name: ecosystemanonid
+      type: STRING
+      mode: NULLABLE
+    - name: ka
+      type: STRING
+      mode: NULLABLE
+    - name: verifiersetat
       type: FLOAT
       mode: NULLABLE
-    - name: poolstats
+    - name: lockedat
       type: STRING
       mode: NULLABLE
-    - name: signal
+    - name: _intboolfields
       type: STRING
       mode: NULLABLE
-    - name: reqtime
+    - name: normalizedemail
+      type: STRING
+      mode: NULLABLE
+    - name: verifierversion
       type: FLOAT
       mode: NULLABLE
-    - name: rp
-      type: STRING
-      mode: NULLABLE
-    - name: assertion_verification_time
+    - name: profilechangedat
       type: FLOAT
       mode: NULLABLE
-    - name: trustedissuers
+    - name: disabledat
       type: STRING
       mode: NULLABLE
-    - name: assertion
+    - name: keyschangedat
+      type: FLOAT
+      mode: NULLABLE
+    - name: _uuidfields
       type: STRING
       mode: NULLABLE
-    - name: host
+    - name: metricsoptoutat
       type: STRING
       mode: NULLABLE
-    - name: header
+    - name: authsalt
       type: STRING
       mode: NULLABLE
-    - name: usergroupheader
+    - name: primaryemail
       type: STRING
       mode: NULLABLE
-    - name: usergroupheader_notnull
+    - name: entrypoint
       type: STRING
       mode: NULLABLE
-    - name: user
-      type: STRING
-      mode: NULLABLE
-    - name: email
-      type: STRING
-      mode: NULLABLE
-    - name: search_type
-      type: STRING
-      mode: NULLABLE
-    - name: auto_completed
+    - name: is_placeholder
       type: BOOLEAN
       mode: NULLABLE
-    - name: payload
+    - name: name
       type: STRING
       mode: NULLABLE
-    - name: user_agent
+    - name: originaltransactionids
       type: STRING
       mode: NULLABLE
-    - name: ip_address
-      type: STRING
-      mode: NULLABLE
-    - name: document_version
-      type: STRING
-      mode: NULLABLE
-    - name: document_namespace
-      type: STRING
-      mode: NULLABLE
-    - name: document_type
-      type: STRING
-      mode: NULLABLE
-    - name: document_id
+    - name: message
       type: STRING
       mode: NULLABLE
     - name: originaltransactionid
       type: STRING
       mode: NULLABLE
+    - name: device_model
+      type: STRING
+      mode: NULLABLE
+    - name: utm_medium
+      type: STRING
+      mode: NULLABLE
+    - name: utm_source
+      type: STRING
+      mode: NULLABLE
+    - name: utm_term
+      type: STRING
+      mode: NULLABLE
+    - name: utm_campaign
+      type: STRING
+      mode: NULLABLE
+    - name: body
+      type: STRING
+      mode: NULLABLE
+    - name: bodysize
+      type: FLOAT
+      mode: NULLABLE
+    - name: numsessions
+      type: FLOAT
+      mode: NULLABLE
+    - name: ipnmessage
+      type: STRING
+      mode: NULLABLE
+    - name: customeruid
+      type: STRING
+      mode: NULLABLE
+    - name: productid
+      type: STRING
+      mode: NULLABLE
+    - name: utm_content
+      type: STRING
+      mode: NULLABLE
+    - name: isprimary
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: id
+      type: FLOAT
+      mode: NULLABLE
+    - name: isverified
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: verifiedat
+      type: STRING
+      mode: NULLABLE
+    - name: accountrecreated
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: clientname
+      type: STRING
+      mode: NULLABLE
+    - name: uabrowserversion
+      type: STRING
+      mode: NULLABLE
+    - name: uabrowser
+      type: STRING
+      mode: NULLABLE
+    - name: planid
+      type: STRING
+      mode: NULLABLE
+    - name: plan_id
+      type: STRING
+      mode: NULLABLE
+    - name: product_id
+      type: STRING
+      mode: NULLABLE
+    - name: token
+      type: STRING
+      mode: NULLABLE
+    - name: hostname
+      type: STRING
+      mode: NULLABLE
+    - name: syscall
+      type: STRING
+      mode: NULLABLE
+    - name: code
+      type: STRING
+      mode: NULLABLE
+    - name: subscriptionid
+      type: STRING
+      mode: NULLABLE
+    - name: entrypoint_variation
+      type: STRING
+      mode: NULLABLE
+    - name: entrypoint_experiment
+      type: STRING
+      mode: NULLABLE
+    - name: to
+      type: STRING
+      mode: NULLABLE
+    - name: payload
+      type: STRING
+      mode: NULLABLE
+    - name: query
+      type: STRING
+      mode: NULLABLE
+    - name: params
+      type: STRING
+      mode: NULLABLE
+    - name: location
+      type: STRING
+      mode: NULLABLE
+    - name: ipaddress
+      type: STRING
+      mode: NULLABLE
+    - name: statuscode
+      type: FLOAT
+      mode: NULLABLE
+    - name: response
+      type: STRING
+      mode: NULLABLE
+    - name: config
+      type: STRING
+      mode: NULLABLE
+    - name: isaxioserror
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: request
+      type: STRING
+      mode: NULLABLE
+    - name: data
+      type: STRING
+      mode: NULLABLE
+    - name: purchasetoken
+      type: STRING
+      mode: NULLABLE
+    - name: purchase
+      type: STRING
+      mode: NULLABLE
+    - name: automatic_tax
+      type: STRING
+      mode: NULLABLE
+    - name: uaosversion
+      type: STRING
+      mode: NULLABLE
+    - name: requestid
+      type: STRING
+      mode: NULLABLE
+    - name: headers
+      type: STRING
+      mode: NULLABLE
+    - name: raw
+      type: STRING
+      mode: NULLABLE
+    - name: rawtype
+      type: STRING
+      mode: NULLABLE
+    - name: param
+      type: STRING
+      mode: NULLABLE
+    - name: countrycode
+      type: STRING
+      mode: NULLABLE
+    - name: postalcode
+      type: STRING
+      mode: NULLABLE
+    - name: priceid
+      type: STRING
+      mode: NULLABLE
+    - name: remaining
+      type: FLOAT
+      mode: NULLABLE
+    - name: unblockcode
+      type: STRING
+      mode: NULLABLE
+    - name: invoiceid
+      type: STRING
+      mode: NULLABLE
+    - name: isserver
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: output
+      type: STRING
+      mode: NULLABLE
+    - name: details
+      type: STRING
+      mode: NULLABLE
+    - name: _original
+      type: STRING
+      mode: NULLABLE
+    - name: isboom
+      type: BOOLEAN
+      mode: NULLABLE
   - name: envversion
     type: STRING
     mode: NULLABLE
-  - name: type
+  - name: severity
+    type: FLOAT
+    mode: NULLABLE
+  - name: timestamp
+    type: FLOAT
+    mode: NULLABLE
+  - name: pid
+    type: FLOAT
+    mode: NULLABLE
+  - name: logger
     type: STRING
     mode: NULLABLE
-  - name: severity
+  - name: regex
+    type: STRING
+    mode: NULLABLE
+  - name: msg
+    type: STRING
+    mode: NULLABLE
+  - name: op
+    type: STRING
+    mode: NULLABLE
+  - name: hostname
+    type: STRING
+    mode: NULLABLE
+  - name: level
+    type: FLOAT
+    mode: NULLABLE
+  - name: name
+    type: STRING
+    mode: NULLABLE
+  - name: v
+    type: FLOAT
+    mode: NULLABLE
+  - name: useragent
+    type: STRING
+    mode: NULLABLE
+  - name: event
+    type: STRING
+    mode: NULLABLE
+  - name: country
+    type: STRING
+    mode: NULLABLE
+  - name: region
+    type: STRING
+    mode: NULLABLE
+  - name: flow_id
+    type: STRING
+    mode: NULLABLE
+  - name: flow_time
+    type: FLOAT
+    mode: NULLABLE
+  - name: context
+    type: STRING
+    mode: NULLABLE
+  - name: locale
+    type: STRING
+    mode: NULLABLE
+  - name: utm_source
+    type: STRING
+    mode: NULLABLE
+  - name: utm_campaign
+    type: STRING
+    mode: NULLABLE
+  - name: utm_medium
+    type: STRING
+    mode: NULLABLE
+  - name: utm_content
+    type: STRING
+    mode: NULLABLE
+  - name: err
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: isoperational
+      type: BOOLEAN
+      mode: NULLABLE
+  - name: loadedin
+    type: FLOAT
+    mode: NULLABLE
+  - name: filename
+    type: STRING
+    mode: NULLABLE
+  - name: filesize
+    type: FLOAT
+    mode: NULLABLE
+  - name: error
+    type: STRING
+    mode: NULLABLE
+  - name: port
+    type: FLOAT
+    mode: NULLABLE
+  - name: host
+    type: STRING
+    mode: NULLABLE
+  - name: config
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: dataflow
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: gcppubsub
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: projectid
+          type: STRING
+          mode: NULLABLE
+        - name: subscriptionname
+          type: STRING
+          mode: NULLABLE
+      - name: reportonly
+        type: BOOLEAN
+        mode: NULLABLE
+      - name: ignoreolderthan
+        type: FLOAT
+        mode: NULLABLE
+      - name: enabled
+        type: BOOLEAN
+        mode: NULLABLE
+    - name: listen
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: host
+        type: STRING
+        mode: NULLABLE
+      - name: port
+        type: FLOAT
+        mode: NULLABLE
+    - name: env
+      type: STRING
+      mode: NULLABLE
+    - name: ipblocklist
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: lists
+        type: STRING
+        mode: REPEATED
+      - name: logonlylists
+        type: STRING
+        mode: REPEATED
+      - name: enable
+        type: BOOLEAN
+        mode: NULLABLE
+      - name: updatepollinterval
+        type: FLOAT
+        mode: NULLABLE
+    - name: log
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: level
+        type: STRING
+        mode: NULLABLE
+    - name: updatepollintervalseconds
+      type: FLOAT
+      mode: NULLABLE
+    - name: limits
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: maxemails
+        type: FLOAT
+        mode: NULLABLE
+      - name: ipratelimitbandurationseconds
+        type: FLOAT
+        mode: NULLABLE
+      - name: suspectinterval
+        type: FLOAT
+        mode: NULLABLE
+      - name: maxverifycodes
+        type: FLOAT
+        mode: NULLABLE
+      - name: maxbadloginsperemail
+        type: FLOAT
+        mode: NULLABLE
+      - name: maxunblockattempts
+        type: FLOAT
+        mode: NULLABLE
+      - name: blockintervalseconds
+        type: FLOAT
+        mode: NULLABLE
+      - name: maxaccountaccess
+        type: FLOAT
+        mode: NULLABLE
+      - name: smsratelimit
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: limitintervalseconds
+          type: FLOAT
+          mode: NULLABLE
+        - name: maxsms
+          type: FLOAT
+          mode: NULLABLE
+      - name: maxbadlogins
+        type: FLOAT
+        mode: NULLABLE
+      - name: maxbadloginsperip
+        type: FLOAT
+        mode: NULLABLE
+      - name: uidratelimit
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bandurationseconds
+          type: FLOAT
+          mode: NULLABLE
+        - name: maxchecks
+          type: FLOAT
+          mode: NULLABLE
+        - name: limitintervalseconds
+          type: FLOAT
+          mode: NULLABLE
+      - name: maxaccountstatuscheck
+        type: FLOAT
+        mode: NULLABLE
+      - name: disableinterval
+        type: FLOAT
+        mode: NULLABLE
+      - name: ratelimitintervalseconds
+        type: FLOAT
+        mode: NULLABLE
+      - name: ipratelimitintervalseconds
+        type: FLOAT
+        mode: NULLABLE
+    - name: memcache
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: address
+        type: STRING
+        mode: NULLABLE
+      - name: recordlifetimeseconds
+        type: FLOAT
+        mode: NULLABLE
+    - name: requestchecks
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: treateveryonewithsuspicion
+        type: BOOLEAN
+        mode: NULLABLE
+      - name: flowidexemptuseragentres
+        type: STRING
+        mode: REPEATED
+      - name: flowidrequiredonlogin
+        type: BOOLEAN
+        mode: NULLABLE
+    - name: allowedips
+      type: STRING
+      mode: REPEATED
+    - name: reputationservice
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: blockbelow
+        type: FLOAT
+        mode: NULLABLE
+      - name: timeout
+        type: FLOAT
+        mode: NULLABLE
+      - name: enable
+        type: BOOLEAN
+        mode: NULLABLE
+      - name: hawkkey
+        type: STRING
+        mode: NULLABLE
+      - name: suspectbelow
+        type: FLOAT
+        mode: NULLABLE
+      - name: enablecheck
+        type: BOOLEAN
+        mode: NULLABLE
+      - name: hawkid
+        type: STRING
+        mode: NULLABLE
+      - name: baseurl
+        type: STRING
+        mode: NULLABLE
+    - name: publicurl
+      type: STRING
+      mode: NULLABLE
+    - name: allowedemaildomains
+      type: STRING
+      mode: REPEATED
+    - name: tracing
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: servicename
+        type: STRING
+        mode: NULLABLE
+      - name: corsurls
+        type: STRING
+        mode: NULLABLE
+      - name: gcp
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: enabled
+          type: BOOLEAN
+          mode: NULLABLE
+      - name: clientname
+        type: STRING
+        mode: NULLABLE
+      - name: samplerate
+        type: FLOAT
+        mode: NULLABLE
+      - name: otel
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: url
+          type: STRING
+          mode: NULLABLE
+        - name: concurrencylimit
+          type: FLOAT
+          mode: NULLABLE
+        - name: enabled
+          type: BOOLEAN
+          mode: NULLABLE
+      - name: filterpii
+        type: BOOLEAN
+        mode: NULLABLE
+      - name: batchprocessor
+        type: BOOLEAN
+        mode: NULLABLE
+      - name: console
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: enabled
+          type: BOOLEAN
+          mode: NULLABLE
+    - name: userdefinedratelimitrules
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: totpcoderules
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: actions
+          type: STRING
+          mode: REPEATED
+        - name: limits
+          type: RECORD
+          mode: NULLABLE
+          fields:
+          - name: max
+            type: FLOAT
+            mode: NULLABLE
+          - name: periodms
+            type: FLOAT
+            mode: NULLABLE
+          - name: ratelimitintervalms
+            type: FLOAT
+            mode: NULLABLE
+      - name: tokencoderules
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: limits
+          type: RECORD
+          mode: NULLABLE
+          fields:
+          - name: ratelimitintervalms
+            type: FLOAT
+            mode: NULLABLE
+          - name: max
+            type: FLOAT
+            mode: NULLABLE
+          - name: periodms
+            type: FLOAT
+            mode: NULLABLE
+        - name: actions
+          type: STRING
+          mode: REPEATED
+    - name: sentry
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: env
+        type: STRING
+        mode: NULLABLE
+      - name: servername
+        type: STRING
+        mode: NULLABLE
+      - name: dsn
+        type: STRING
+        mode: NULLABLE
+      - name: samplerate
+        type: FLOAT
+        mode: NULLABLE
+  - name: ip
+    type: STRING
+    mode: NULLABLE
+  - name: statuscode
+    type: FLOAT
+    mode: NULLABLE
+  - name: rtime
+    type: STRING
+    mode: NULLABLE
+  - name: action
+    type: STRING
+    mode: NULLABLE
+  - name: email
+    type: STRING
+    mode: NULLABLE
+  - name: unblock
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: suspect
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: block
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: entrypoint
+    type: STRING
+    mode: NULLABLE
+  - name: service
+    type: STRING
+    mode: NULLABLE
+  - name: errno
+    type: FLOAT
+    mode: NULLABLE
+  - name: foundin
+    type: FLOAT
+    mode: NULLABLE
+  - name: listhits
+    type: STRING
+    mode: NULLABLE
+  - name: listhitcount
     type: FLOAT
     mode: NULLABLE
 - name: timestamp
@@ -374,13 +1060,13 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
-  - name: k8s_pod_app_kubernetes_io_component
+  - name: compute_googleapis_com_resource_name
     type: STRING
     mode: NULLABLE
   - name: k8s_pod_deployment
     type: STRING
     mode: NULLABLE
-  - name: compute_googleapis_com_resource_name
+  - name: k8s_pod_app_kubernetes_io_component
     type: STRING
     mode: NULLABLE
   - name: k8s_pod_env_code
@@ -390,6 +1076,9 @@ fields:
     type: STRING
     mode: NULLABLE
   - name: k8s_pod_app_kubernetes_io_name
+    type: STRING
+    mode: NULLABLE
+  - name: k8s_pod_app_kubernetes_io_instance
     type: STRING
     mode: NULLABLE
 - name: operation

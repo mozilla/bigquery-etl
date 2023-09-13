@@ -1,4 +1,4 @@
-friendly_name: FxA stdout events (prod)
+friendly_name: FxA GCP stdout events (prod)
 description: |
   FxA server events extracted from stdout logs.
   This new table is the direct result of FxA migration from AWS to GCP

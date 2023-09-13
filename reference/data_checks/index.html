@@ -2955,26 +2955,6 @@
 
               
             
-              
-                
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../cookbooks/adding_data_checks/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Adding Data Checks
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -3198,17 +3178,58 @@
       
         <li class="md-nav__item">
   <a href="#bqetl-data-checks-to-the-rescue" class="md-nav__link">
-    bqetl data checks to the rescue
+    bqetl Data Checks to the Rescue
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#data-checks-available-with-examples" class="md-nav__link">
-    data checks available with examples
+  <a href="#adding-data-checks" class="md-nav__link">
+    Adding Data Checks
   </a>
   
-    <nav class="md-nav" aria-label="data checks available with examples">
+    <nav class="md-nav" aria-label="Adding Data Checks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-checkssql" class="md-nav__link">
+    Create checks.sql
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-checkssql" class="md-nav__link">
+    Update checks.sql
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removing-checkssql" class="md-nav__link">
+    Removing checks.sql
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-checkssql" class="md-nav__link">
+    Example checks.sql
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-checks-available-with-examples" class="md-nav__link">
+    Data Checks Available with Examples
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Checks Available with Examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3336,17 +3357,58 @@
       
         <li class="md-nav__item">
   <a href="#bqetl-data-checks-to-the-rescue" class="md-nav__link">
-    bqetl data checks to the rescue
+    bqetl Data Checks to the Rescue
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#data-checks-available-with-examples" class="md-nav__link">
-    data checks available with examples
+  <a href="#adding-data-checks" class="md-nav__link">
+    Adding Data Checks
   </a>
   
-    <nav class="md-nav" aria-label="data checks available with examples">
+    <nav class="md-nav" aria-label="Adding Data Checks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-checkssql" class="md-nav__link">
+    Create checks.sql
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-checkssql" class="md-nav__link">
+    Update checks.sql
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removing-checkssql" class="md-nav__link">
+    Removing checks.sql
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-checkssql" class="md-nav__link">
+    Example checks.sql
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-checks-available-with-examples" class="md-nav__link">
+    Data Checks Available with Examples
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Checks Available with Examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3438,17 +3500,56 @@
                   
 
 
-<h1 id="bqetl-data-checks">bqetl data checks</h1>
+<h1 id="bqetl-data-checks">bqetl Data Checks</h1>
 <blockquote>
-<p>Instructions on how to add data checks can be found under the <a href="../../cookbooks/adding_data_checks/">Adding data checks</a> cookbook.</p>
+<p>Instructions on how to add data checks can be found under the <a href="../cookbooks/adding_data_checks.md">Adding data checks</a> cookbook.</p>
 </blockquote>
 <h2 id="background">Background</h2>
 <p>To create more confidence and trust in our data is crucial to provide some form of data checks. These checks should uncover problems as soon as possible, ideally as part of the data process creating the data. This includes checking that the data produced follows certain assumptions determined by the dataset owner. These assumptions need to be easy to define, but at the same time flexible enough to encode more complex business logic. For example, checks for null columns, for range/size properties, duplicates, table grain etc.</p>
-<h2 id="bqetl-data-checks-to-the-rescue">bqetl data checks to the rescue</h2>
+<h2 id="bqetl-data-checks-to-the-rescue">bqetl Data Checks to the Rescue</h2>
 <p>bqetl data checks aim to provide this ability by providing a simple interface for specifying our "assumptions" about the data the query should produce and checking them against the actual result.</p>
 <p>This easy interface is achieved by providing a number of jinja templates providing "out-of-the-box" logic for performing a number of common checks without having to rewrite the logic. For example, checking if any nulls are present in a specific column. These templates can be found <a href="../../tests/checks/">here</a> and are available as jinja macros inside the <code>checks.sql</code> files. This allows to "configure" the logic by passing some details relevant to our specific dataset. Check templates will get rendered as raw SQL expressions. Take a look at the examples below for practical examples.</p>
 <p>It is also possible to write checks using raw SQL by using assertions. This is, for example, useful when writing checks for custom business logic.</p>
-<h2 id="data-checks-available-with-examples">data checks available with examples</h2>
+<h2 id="adding-data-checks">Adding Data Checks</h2>
+<h3 id="create-checkssql">Create checks.sql</h3>
+<p>Inside the query directory, which usually contains <code>query.sql</code> or <code>query.py</code>, <code>metadata.yaml</code> and <code>schema.yaml</code>, create a new file called <code>checks.sql</code> (unless already exists).</p>
+<p>Once checks have been added, we need to <code>regenerate the DAG</code> responsible for scheduling the query.</p>
+<h3 id="update-checkssql">Update checks.sql</h3>
+<p>If <code>checks.sql</code> already exists for the query, you can always add additional checks to the file by appending it to the list of already defined checks.</p>
+<p>When adding additional checks there should be no need to have to regenerate the DAG responsible for scheduling the query as all checks are executed using a single Airflow task.</p>
+<h3 id="removing-checkssql">Removing checks.sql</h3>
+<p>All checks can be removed by deleting the <code>checks.sql</code> file and regenerating the DAG responsible for scheduling the query.</p>
+<p>Alternatively, specific checks can be removed by deleting them from the <code>checks.sql</code> file.</p>
+<h3 id="example-checkssql">Example checks.sql</h3>
+<p>Checks can either be written as raw SQL, or by referencing existing Jinja macros defined in <a href="https://github.com/mozilla/bigquery-etl/tree/main/tests/checks"><code>tests/checks</code></a> which may take different parameters used to generate the SQL check expression.</p>
+<p>Each check needs to have a specific marker set. Available markers are:
+* <code>#fail</code>: This marker ensures that if the check fails and assertion is raised, a notification is sent and all downstream dependencies are blocked from running. This marker should be used for checks that indicate a serious data issue. These checks can be seen as circuit-breakers.
+* <code>#warn</code>: This marker ensures that if the check fails task owners will get notified but downstream dependencies are not blocked from running. These type of checks can be used to indicate <em>potential</em> issues that might require more manual investigation.</p>
+<p>Example of what a <code>checks.sql</code> may look like:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">-- raw SQL checks</span>
+<span class="o">#</span><span class="n">fail</span>
+<span class="n">ASSERT</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="k">SELECT</span><span class="w"> </span>
+<span class="w">    </span><span class="n">COUNTIF</span><span class="p">(</span><span class="k">ISNULL</span><span class="p">(</span><span class="n">country</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">telemetry</span><span class="p">.</span><span class="n">table_v1</span><span class="w"> </span>
+<span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">submission_date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">@</span><span class="n">submission_date</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span><span class="mi">2</span>
+<span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="ss">&quot;More than 20% of clients have country set to NULL&quot;</span><span class="p">;</span>
+
+<span class="c1">-- macro checks</span>
+<span class="o">#</span><span class="n">fail</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">not_null</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+
+<span class="o">#</span><span class="n">warn</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">min_rows</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+
+<span class="o">#</span><span class="n">fail</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">is_unique</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;country&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="err">}}</span>
+
+<span class="o">#</span><span class="n">warn</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">in_range</span><span class="p">([</span><span class="ss">&quot;non_ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;reporting_ratio&quot;</span><span class="p">],</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">none</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+</code></pre></div>
+<h2 id="data-checks-available-with-examples">Data Checks Available with Examples</h2>
 <h3 id="in_range-source">in_range (<a href="../../tests/checks/in_range.jinja">source</a>)</h3>
 <p>Usage:</p>
 <div class="highlight"><pre><span></span><code>Arguments:
@@ -3558,14 +3659,15 @@ Options:
 <span class="w">  </span>--sql_dir,<span class="w"> </span>--sql-dir<span class="w"> </span>DIRECTORY<span class="w">  </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
 <span class="w">  </span>--dry_run,<span class="w"> </span>--dry-run<span class="w">            </span>To<span class="w"> </span>dry<span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>query<span class="w"> </span>to<span class="w"> </span>make<span class="w"> </span>sure<span class="w"> </span>it<span class="w"> </span>is
 <span class="w">                                  </span>valid
+<span class="w">  </span>--marker<span class="w"> </span>TEXT<span class="w">                   </span>Marker<span class="w"> </span>to<span class="w"> </span>filter<span class="w"> </span>checks.
 <span class="w">  </span>--help<span class="w">                          </span>Show<span class="w"> </span>this<span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span>exit.
 </code></pre></div>
 <h3 id="examples">Examples</h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># to run checks for a specific dataset</span>
-$<span class="w"> </span>./bqetl<span class="w"> </span>check<span class="w"> </span>run<span class="w"> </span>ga_derived.downloads_with_attribution_v2<span class="w"> </span>--parameter<span class="o">=</span>download_date:DATE:2023-05-01
+$<span class="w"> </span>./bqetl<span class="w"> </span>check<span class="w"> </span>run<span class="w"> </span>ga_derived.downloads_with_attribution_v2<span class="w"> </span>--parameter<span class="o">=</span>download_date:DATE:2023-05-01<span class="w"> </span>--marker<span class="o">=</span>fail<span class="w"> </span>--marker<span class="o">=</span>warn
 
 <span class="c1"># to only dry_run the checks</span>
-$<span class="w"> </span>./bqetl<span class="w"> </span>check<span class="w"> </span>run<span class="w"> </span>--dry_run<span class="w"> </span>ga_derived.downloads_with_attribution_v2<span class="w"> </span>--parameter<span class="o">=</span>download_date:DATE:2023-05-01
+$<span class="w"> </span>./bqetl<span class="w"> </span>check<span class="w"> </span>run<span class="w"> </span>--dry_run<span class="w"> </span>ga_derived.downloads_with_attribution_v2<span class="w"> </span>--parameter<span class="o">=</span>download_date:DATE:2023-05-01<span class="w"> </span>--marker<span class="o">=</span>fail
 </code></pre></div>
 
 

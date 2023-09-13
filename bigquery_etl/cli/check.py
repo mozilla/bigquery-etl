@@ -46,6 +46,18 @@ def _build_jinja_parameters(query_args):
     return parameters
 
 
+def _render_result_split_by_marker(marker, rendered_result):
+    """Filter the rendered sql checks with the set marker."""
+    extracted_result = []
+    rendered_result = sqlparse.split(rendered_result)
+
+    for sql_statement in rendered_result:
+        sql_statement = sql_statement.strip()
+        if re.search(f"^#{marker}", sql_statement, re.IGNORECASE):
+            extracted_result.append(sql_statement)
+    return " ".join(extracted_result)
+
+
 def _parse_check_output(output: str) -> str:
     output = output.replace("\n", " ")
     if "ETL Data Check Failed:" in output:
@@ -182,6 +194,7 @@ def _render(
 @click.argument("dataset")
 @project_id_option()
 @sql_dir_option
+@click.option("--marker", default="fail", help="Marker to filter checks.")
 @click.option(
     "--dry_run",
     "--dry-run",
@@ -190,7 +203,7 @@ def _render(
     help="To dry run the query to make sure it is valid",
 )
 @click.pass_context
-def run(ctx, dataset, project_id, sql_dir, dry_run):
+def run(ctx, dataset, project_id, sql_dir, marker, dry_run):
     """Run a check."""
     if not is_authenticated():
         click.echo(
@@ -210,6 +223,7 @@ def run(ctx, dataset, project_id, sql_dir, dry_run):
         table,
         ctx.args,
         dry_run=dry_run,
+        marker=marker,
     )
 
 
@@ -219,6 +233,7 @@ def _run_check(
     dataset_id,
     table,
     query_arguments,
+    marker,
     dry_run=False,
 ):
     """Run the check."""
@@ -249,8 +264,8 @@ def _run_check(
         format=False,
         **jinja_params,
     )
-
-    checks = sqlparse.split(rendered_result)
+    result_split_by_marker = _render_result_split_by_marker(marker, rendered_result)
+    checks = sqlparse.split(result_split_by_marker)
     seek_location = 0
     check_failed = False
 
@@ -277,3 +292,6 @@ def _run_check(
 
     if check_failed:
         sys.exit(1)
+
+
+# todo: add validate method -- there must always be #fail checks

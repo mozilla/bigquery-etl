@@ -35,4 +35,5 @@ references:
   - mozilla_vpn.event_types
   - mozillavpn.main
   - org_mozilla_firefox_vpn.main
+  - org_mozilla_ios_firefoxvpn.main
 deprecated: false

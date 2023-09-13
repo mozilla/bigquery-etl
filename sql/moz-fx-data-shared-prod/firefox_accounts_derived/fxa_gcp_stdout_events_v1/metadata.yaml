@@ -6,7 +6,7 @@ description: |
   Traffic shifting from AWS to GCP started on 2023-09-07 and finished on 2023-09-12 and this table contains partial
   event data for these days. Once the migration is complete all events from the fxa content server will land in this table
   (previous table: `fxa_content_events_v1`).
-  
+
   See also `fxa_stderr_events_v1`.
 
   Payment server events will continue landing inside: `fxa_stdout_events_v1`

@@ -6,7 +6,7 @@ description: |
   Traffic shifting from AWS to GCP started on 2023-09-07 and finished on 2023-09-12 and this table contains partial
   event data for these days. Once the migration is complete all events from the fxa auth server will land in this table
   (previous table: `fxa_auth_events_v1`).
-  
+
   Note that at the time of writing there is an open ticket (https://mozilla-hub.atlassian.net/browse/FXA-8315)
   to standardize logging across fxa packages. If resolved, auth server events might land in `fxa_stdout_events_v1` instead.
   This should be transparent to users of this data since it should be consumed via `fxa_all_events` view.

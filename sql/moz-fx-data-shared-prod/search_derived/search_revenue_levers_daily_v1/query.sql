@@ -31,7 +31,7 @@ desktop_data_google AS (
     `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
-    -- AND sample_id = 1
+    --AND sample_id = 1
     AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN')
   GROUP BY
     submission_date,
@@ -71,8 +71,8 @@ desktop_data_bing AS (
   FROM
     `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
-    submission_date = @submission_date
-    -- AND sample_id = 1
+      submission_date = @submission_date
+    --AND sample_id = 1
     AND (distribution_id IS NULL OR distribution_id NOT LIKE '%acer%')
     AND client_id NOT IN (SELECT client_id FROM `moz-fx-data-shared-prod.search.acer_cohort`)
   GROUP BY
@@ -147,8 +147,8 @@ desktop_data_ddg AS (
   FROM
     `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
-    submission_date = @submission_date
-    -- AND sample_id = 1
+  submission_date = @submission_date
+  --AND sample_id = 1
   GROUP BY
     submission_date
   ORDER BY
@@ -166,9 +166,9 @@ mobile_dau_data AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.active_users_aggregates_device`
   WHERE
-    submission_date = @submission_date
+     submission_date = @submission_date
     AND app_name IN ('Fenix', 'Firefox iOS', 'Focus Android', 'Focus iOS')
-    -- AND sample_id = 1
+
   GROUP BY
     submission_date
 ),
@@ -213,7 +213,7 @@ mobile_data_google AS (
     submission_date = @submission_date
     AND country NOT IN ('RU', 'UA', 'BY', 'TR', 'KZ', 'CN')
     AND normalized_app_name IN ('Focus', 'Fenix', 'Fennec')
-    -- AND sample_id = 1
+  --AND sample_id = 1
   GROUP BY
     submission_date,
     country,
@@ -305,7 +305,6 @@ SELECT
   channel,
   country,
   dau,
-  dau_w_engine_as_default,
   dau_engaged_w_sap,
   sap,
   tagged_sap,
@@ -315,7 +314,8 @@ SELECT
   organic,
   ad_click_organic,
   search_with_ads_organic,
-  monetizable_sap
+  monetizable_sap,
+  dau_w_engine_as_default,
 FROM
   desktop_data_google
 UNION ALL
@@ -326,7 +326,6 @@ SELECT
   NULL AS channel,
   'global' AS country,
   dau,
-  dau_w_engine_as_default,
   dau_engaged_w_sap,
   sap,
   tagged_sap,
@@ -336,7 +335,8 @@ SELECT
   organic,
   ad_click_organic,
   search_with_ads_organic,
-  monetizable_sap
+  monetizable_sap,
+  dau_w_engine_as_default,
 FROM
   desktop_data_bing
 UNION ALL
@@ -347,7 +347,6 @@ SELECT
   NULL AS channel,
   'global' AS country,
   dau,
-  ddg_dau_w_engine_as_default AS dau_w_engine_as_default,
   ddg_dau_engaged_w_sap AS dau_engaged_w_sap,
   ddg_sap AS sap,
   ddg_tagged_sap AS tagged_sap,
@@ -357,7 +356,8 @@ SELECT
   ddg_organic AS organic,
   ddg_ad_click_organic AS ad_click_organic,
   ddg_search_with_ads_organic AS search_with_ads_organic,
-  ddg_monetizable_sap AS monetizable_sap
+  ddg_monetizable_sap AS monetizable_sap,
+  ddg_dau_w_engine_as_default AS dau_w_engine_as_default
 FROM
   desktop_data_ddg
 UNION ALL
@@ -368,7 +368,6 @@ SELECT
   NULL AS channel,
   'global' AS country,
   dau,
-  ddgaddon_dau_w_engine_as_default AS dau_w_engine_as_default,
   ddgaddon_dau_engaged_w_sap AS dau_engaged_w_sap,
   ddgaddon_sap AS sap,
   ddgaddon_tagged_sap AS tagged_sap,
@@ -378,7 +377,8 @@ SELECT
   ddgaddon_organic AS organic,
   ddgaddon_ad_click_organic AS ad_click_organic,
   ddgaddon_search_with_ads_organic AS search_with_ads_organic,
-  ddgaddon_monetizable_sap AS monetizable_sap
+  ddgaddon_monetizable_sap AS monetizable_sap,
+  ddgaddon_dau_w_engine_as_default AS dau_w_engine_as_default
 FROM
   desktop_data_ddg
 UNION ALL
@@ -389,7 +389,6 @@ SELECT
   NULL AS channel,
   country,
   dau,
-  dau_w_engine_as_default,
   dau_engaged_w_sap,
   sap,
   tagged_sap,
@@ -399,7 +398,8 @@ SELECT
   organic,
   ad_click_organic,
   search_with_ads_organic,
-  monetizable_sap
+  monetizable_sap,
+  dau_w_engine_as_default
 FROM
   mobile_data_google
 UNION ALL
@@ -410,7 +410,6 @@ SELECT
   NULL AS channel,
   'global' AS country,
   dau,
-  bing_dau_w_engine_as_default,
   bing_dau_engaged_w_sap,
   bing_sap,
   bing_tagged_sap,
@@ -420,7 +419,8 @@ SELECT
   bing_organic,
   bing_ad_click_organic,
   bing_search_with_ads_organic,
-  bing_monetizable_sap
+  bing_monetizable_sap,
+  bing_dau_w_engine_as_default
 FROM
   mobile_data_bing_ddg
 UNION ALL
@@ -431,7 +431,6 @@ SELECT
   NULL AS channel,
   'global' AS country,
   dau,
-  ddg_dau_w_engine_as_default,
   ddg_dau_engaged_w_sap,
   ddg_sap,
   ddg_tagged_sap,
@@ -441,6 +440,7 @@ SELECT
   ddg_organic,
   ddg_ad_click_organic,
   ddg_search_with_ads_organic,
-  ddg_monetizable_sap
+  ddg_monetizable_sap,
+  ddg_dau_w_engine_as_default
 FROM
   mobile_data_bing_ddg

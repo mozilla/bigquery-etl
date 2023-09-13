@@ -1,4 +1,4 @@
-# bqetl data checks
+# bqetl Data Checks
 
 > Instructions on how to add data checks can be found under the [Adding data checks](../cookbooks/adding_data_checks.md) cookbook.
 
@@ -6,7 +6,7 @@
 
 To create more confidence and trust in our data is crucial to provide some form of data checks. These checks should uncover problems as soon as possible, ideally as part of the data process creating the data. This includes checking that the data produced follows certain assumptions determined by the dataset owner. These assumptions need to be easy to define, but at the same time flexible enough to encode more complex business logic. For example, checks for null columns, for range/size properties, duplicates, table grain etc.
 
-## bqetl data checks to the rescue
+## bqetl Data Checks to the Rescue
 
 bqetl data checks aim to provide this ability by providing a simple interface for specifying our "assumptions" about the data the query should produce and checking them against the actual result.
 
@@ -14,7 +14,62 @@ This easy interface is achieved by providing a number of jinja templates providi
 
 It is also possible to write checks using raw SQL by using assertions. This is, for example, useful when writing checks for custom business logic.
 
-## data checks available with examples
+## Adding Data Checks
+
+### Create checks.sql
+
+Inside the query directory, which usually contains `query.sql` or `query.py`, `metadata.yaml` and `schema.yaml`, create a new file called `checks.sql` (unless already exists).
+
+Once checks have been added, we need to `regenerate the DAG` responsible for scheduling the query.
+
+### Update checks.sql
+
+If `checks.sql` already exists for the query, you can always add additional checks to the file by appending it to the list of already defined checks.
+
+When adding additional checks there should be no need to have to regenerate the DAG responsible for scheduling the query as all checks are executed using a single Airflow task.
+
+### Removing checks.sql
+
+All checks can be removed by deleting the `checks.sql` file and regenerating the DAG responsible for scheduling the query.
+
+Alternatively, specific checks can be removed by deleting them from the `checks.sql` file.
+
+### Example checks.sql
+
+Checks can either be written as raw SQL, or by referencing existing Jinja macros defined in [`tests/checks`](https://github.com/mozilla/bigquery-etl/tree/main/tests/checks) which may take different parameters used to generate the SQL check expression.
+
+Each check needs to have a specific marker set. Available markers are:
+* `#fail`: This marker ensures that if the check fails and assertion is raised, a notification is sent and all downstream dependencies are blocked from running. This marker should be used for checks that indicate a serious data issue. These checks can be seen as circuit-breakers.
+* `#warn`: This marker ensures that if the check fails task owners will get notified but downstream dependencies are not blocked from running. These type of checks can be used to indicate _potential_ issues that might require more manual investigation.
+
+Example of what a `checks.sql` may look like:
+
+```sql
+-- raw SQL checks
+#fail
+ASSERT (
+  SELECT 
+    COUNTIF(ISNULL(country)) / COUNT(*) 
+    FROM telemetry.table_v1 
+    WHERE submission_date = @submission_date
+  ) > 0.2
+) AS "More than 20% of clients have country set to NULL";
+
+-- macro checks
+#fail
+{{ not_null(["submission_date", "os"], "submission_date = @submission_date") }}
+
+#warn
+{{ min_rows(1, "submission_date = @submission_date") }}
+
+#fail
+{{ is_unique(["submission_date", "os", "country"], "submission_date = @submission_date")}}
+
+#warn
+{{ in_range(["non_ssl_loads", "ssl_loads", "reporting_ratio"], 0, none, "submission_date = @submission_date") }}
+```
+
+## Data Checks Available with Examples
 
 ### in_range ([source](../../tests/checks/in_range.jinja))
 
@@ -176,6 +231,7 @@ Options:
   --sql_dir, --sql-dir DIRECTORY  Path to directory which contains queries.
   --dry_run, --dry-run            To dry run the query to make sure it is
                                   valid
+  --marker TEXT                   Marker to filter checks.
   --help                          Show this message and exit.
 ```
 
@@ -183,8 +239,8 @@ Options:
 
 ```shell
 # to run checks for a specific dataset
-$ ./bqetl check run ga_derived.downloads_with_attribution_v2 --parameter=download_date:DATE:2023-05-01
+$ ./bqetl check run ga_derived.downloads_with_attribution_v2 --parameter=download_date:DATE:2023-05-01 --marker=fail --marker=warn
 
 # to only dry_run the checks
-$ ./bqetl check run --dry_run ga_derived.downloads_with_attribution_v2 --parameter=download_date:DATE:2023-05-01
+$ ./bqetl check run --dry_run ga_derived.downloads_with_attribution_v2 --parameter=download_date:DATE:2023-05-01 --marker=fail
 ```

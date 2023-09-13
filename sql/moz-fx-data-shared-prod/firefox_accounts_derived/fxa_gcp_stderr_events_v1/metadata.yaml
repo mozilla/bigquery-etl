@@ -1,4 +1,4 @@
-friendly_name: FxA stderr events (prod)
+friendly_name: FxA GCP stderr events (prod)
 description: |
   FxA server events extracted from stderr logs.
   This new table is the direct result of FxA migration from AWS to GCP

@@ -1,3 +1,5 @@
+
+#fail
 WITH null_checks AS (
   SELECT
     [
@@ -31,6 +33,7 @@ SELECT
     NULL
   );
 
+#fail
 WITH min_rows AS (
   SELECT
     COUNT(*) AS total_rows

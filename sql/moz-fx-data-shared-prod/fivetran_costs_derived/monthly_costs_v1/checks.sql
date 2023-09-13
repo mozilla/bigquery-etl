@@ -1,3 +1,5 @@
+
+#fail
 WITH non_unique AS (
   SELECT
     COUNT(*) AS total_count
@@ -18,6 +20,7 @@ SELECT
     NULL
   );
 
+#fail
 WITH null_checks AS (
   SELECT
     [
@@ -46,6 +49,7 @@ SELECT
     NULL
   );
 
+#fail
 WITH min_rows AS (
   SELECT
     COUNT(*) AS total_rows

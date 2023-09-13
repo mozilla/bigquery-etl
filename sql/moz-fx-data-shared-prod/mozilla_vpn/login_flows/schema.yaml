@@ -1,0 +1,16 @@
+fields:
+- name: flow_id
+  type: STRING
+  mode: NULLABLE
+- name: flow_started
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: flow_completed
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: fxa_uids
+  type: STRING
+  mode: REPEATED
+- name: viewed_email_first_page
+  type: BOOLEAN
+  mode: NULLABLE

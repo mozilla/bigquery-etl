@@ -3247,8 +3247,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#min_rows-source" class="md-nav__link">
-    min_rows (source)
+  <a href="#min_row_countsource" class="md-nav__link">
+    min_row_count(source)
   </a>
   
 </li>
@@ -3426,8 +3426,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#min_rows-source" class="md-nav__link">
-    min_rows (source)
+  <a href="#min_row_countsource" class="md-nav__link">
+    min_row_count(source)
   </a>
   
 </li>
@@ -3541,7 +3541,7 @@
 <span class="err">{{</span><span class="w"> </span><span class="n">not_null</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
 
 <span class="o">#</span><span class="n">warn</span>
-<span class="err">{{</span><span class="w"> </span><span class="n">min_rows</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">min_row_count</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
 
 <span class="o">#</span><span class="n">fail</span>
 <span class="err">{{</span><span class="w"> </span><span class="n">is_unique</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;country&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="err">}}</span>
@@ -3572,7 +3572,7 @@ where: Optional[str] - A condition that will be injected into the `WHERE` clause
 <p>Example:</p>
 <div class="highlight"><pre><span></span><code><span class="err">{{</span><span class="w"> </span><span class="n">is_unique</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;country&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="err">}}</span>
 </code></pre></div>
-<h3 id="min_rows-source">min_rows (<a href="../../tests/checks/min_rows.jinja">source</a>)</h3>
+<h3 id="min_row_countsource">min_row_count(<a href="../../tests/checks/min_row_count.jinja">source</a>)</h3>
 <p>Usage:</p>
 <div class="highlight"><pre><span></span><code>Arguments:
 
@@ -3580,7 +3580,7 @@ threshold: Optional[int] - What is the minimum number of rows we expect (default
 where: Optional[str] - A condition that will be injected into the `WHERE` clause of the check. For example, &quot;submission_date = @submission_date&quot; so that the check is only executed against a specific partition.
 </code></pre></div>
 <p>Example:</p>
-<div class="highlight"><pre><span></span><code><span class="err">{{</span><span class="w"> </span><span class="n">min_rows</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<div class="highlight"><pre><span></span><code><span class="err">{{</span><span class="w"> </span><span class="n">min_row_count</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
 </code></pre></div>
 <h3 id="not_null-source">not_null (<a href="../../tests/checks/not_null.jinja">source</a>)</h3>
 <p>Usage:</p>
@@ -3594,7 +3594,7 @@ where: Optional[str] - A condition that will be injected into the `WHERE` clause
 </code></pre></div>
 <p>Please keep in mind the below checks can be combined and specified in the same <code>checks.sql</code> file. For example:</p>
 <div class="highlight"><pre><span></span><code><span class="err">{{</span><span class="w"> </span><span class="n">not_null</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
-<span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">min_rows</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">min_row_count</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
 <span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">is_unique</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;country&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="err">}}</span>
 <span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">in_range</span><span class="p">([</span><span class="ss">&quot;non_ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;reporting_ratio&quot;</span><span class="p">],</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">none</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
 </code></pre></div>

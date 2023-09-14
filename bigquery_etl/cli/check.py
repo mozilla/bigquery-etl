@@ -294,4 +294,99 @@ def _run_check(
         sys.exit(1)
 
 
-# todo: add validate method -- there must always be #fail checks
+@check.command(
+    help="""
+    Validates that each check in the checks.sql file has either a #fail or #warn marker
+
+    Example:
+
+    \t./bqetl check validate ga_derived.downloads_with_attribution_v2
+    """,
+    context_settings=dict(
+        ignore_unknown_options=True,
+        allow_extra_args=True,
+    ),
+)
+@click.argument("dataset")
+@project_id_option()
+@sql_dir_option
+@click.pass_context
+def validate(ctx, dataset, project_id, sql_dir):
+    """Validate that each check has a marker assigned."""
+    if not is_authenticated():
+        click.echo(
+            "Authentication to GCP required. Run `gcloud auth login` "
+            "and check that the project is set correctly."
+        )
+        sys.exit(1)
+
+    checks_file, project_id, dataset_id, table = paths_matching_checks_pattern(
+        dataset, sql_dir, project_id=project_id
+    )
+
+    _validate_check(
+        checks_file,
+        project_id,
+        dataset_id,
+        table,
+        ctx.args,
+    )
+
+
+def _validate_check(
+    checks_file,
+    project_id,
+    dataset_id,
+    table,
+    query_arguments,
+):
+    """Run the check."""
+    if checks_file is None:
+        return
+
+    checks_file = Path(checks_file)
+
+    query_arguments.append("--use_legacy_sql=false")
+    if project_id is not None:
+        query_arguments.append(f"--project_id={project_id}")
+
+    # Convert all the Airflow params to jinja usable dict.
+    parameters = _build_jinja_parameters(query_arguments)
+
+    jinja_params = {
+        **{"dataset_id": dataset_id, "table_name": table},
+        **parameters,
+    }
+
+    rendered_result = render_template(
+        checks_file.name,
+        template_folder=str(checks_file.parent),
+        templates_dir="",
+        format=False,
+        **jinja_params,
+    )
+
+    expected_check_types = ["#fail", "#warn"]
+
+    # Create a flag to keep track of whether all checks have markers
+    all_checks_have_markers = True
+
+    # Open the file and read its content
+    with open(checks_file, "r") as checks_file:
+        lines = sqlparse.split(rendered_result)
+
+    # Loop through each line in the file
+    for line in lines:
+        # Check if the line contains any expected check type marker
+        contains_marker = any(check_type in line for check_type in expected_check_types)
+
+        # If no marker is found in the line, set the flag to False
+        if not contains_marker:
+            all_checks_have_markers = False
+            break
+
+    # Check and print the result
+    if all_checks_have_markers:
+        print("All checks have either #fail or #warn markers in the file.")
+    else:
+        print("Not all checks have #fail or #warn markers in the file.")

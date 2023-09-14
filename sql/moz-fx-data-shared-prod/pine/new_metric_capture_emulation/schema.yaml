@@ -35,6 +35,10 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The architecture of the device, (e.g. "arm", "x86").
+  - name: build_date
+    type: STRING
+    mode: NULLABLE
+    description: The date & time the application was built
   - name: client_id
     type: STRING
     mode: NULLABLE
@@ -74,10 +78,6 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The version of the Glean SDK
-  - name: build_date
-    type: STRING
-    mode: NULLABLE
-    description: The date & time the application was built
   - name: windows_build_number
     type: INTEGER
     mode: NULLABLE
@@ -155,6 +155,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -167,14 +175,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -228,6 +228,44 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
+  - name: counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser_engagement_active_ticks
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of five-second intervals (''ticks'') the user was considered
+
+        ''active''.
+
+
+        ''active'' means keyboard or mouse interaction with the application.
+
+        It doesn''t take into account whether or not the window has focus or is in
+
+        the foreground, only if it is receiving these interaction events.
+
+
+        Migrated from Telemetry''s `browser.engagement.active_ticks`.
+
+        '
+    - name: browser_engagement_uri_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of total non-unique http(s) URIs visited, including
+        page
+
+        reloads, after the session has been restored. URIs on minimized or
+
+        background tabs may also be counted. Private browsing uris are included.
+
+
+        Migrated from Telemetry''s
+
+        `browser.engagement.total_uri_count_normal_and_private_mode`.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -292,68 +330,53 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
-    - name: glean_validation_pings_submitted
+  - name: timing_distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: wr_renderer_time
       type: RECORD
-      mode: REPEATED
+      mode: NULLABLE
       fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
+      - name: bucket_count
         type: INTEGER
         mode: NULLABLE
-      description: "A count of the pings submitted, by ping type.\n\nThis metric appears\
-        \ in both the metrics and baseline pings.\n\n- On the metrics ping, the counts\
-        \ include the number of pings sent since\n  the last metrics ping (including\
-        \ the last metrics ping)\n- On the baseline ping, the counts include the number\
-        \ of pings send since\n  the last baseline ping (including the last baseline\
-        \ ping)\n"
-  - name: string
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: glean_baseline_locale
-      type: STRING
-      mode: NULLABLE
-      description: 'The locale of the application during initialization (e.g. "es-ES").
-
-        If the locale can''t be determined on the system, the value is
-
-        ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
-
-        to indicate "undetermined".
-
-        '
-  - name: timespan
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: glean_baseline_duration
-      type: RECORD
-      mode: NULLABLE
-      fields:
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
       - name: time_unit
         type: STRING
         mode: NULLABLE
-      - name: value
+      - name: underflow
         type: INTEGER
         mode: NULLABLE
-      description: 'The duration of the last foreground session.
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      description: 'WebRender renderer time.
 
         '
-  - name: datetime
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: glean_validation_first_run_hour
-      type: TIMESTAMP
-      mode: NULLABLE
-      description: 'The hour of the first run of the application.
-
-        '
-    - name: raw_glean_validation_first_run_hour
-      type: STRING
-      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

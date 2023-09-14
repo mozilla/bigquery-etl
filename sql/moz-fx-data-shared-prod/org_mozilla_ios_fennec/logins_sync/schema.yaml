@@ -228,6 +228,70 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
+  - name: counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: logins_sync_outgoing_batches
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records the number of batches needed to upload all outgoing records.
+        The Sync server has a hard limit on the number of records (and request body
+        bytes) on the number of records that can fit into a single batch, and large
+        syncs may require multiple batches.
+
+        '
+    - name: logins_sync_v2_outgoing_batches
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records the number of batches needed to upload all outgoing records.
+        The Sync server has a hard limit on the number of records (and request body
+        bytes) on the number of records that can fit into a single batch, and large
+        syncs may require multiple batches.
+
+        '
+  - name: datetime
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: logins_sync_finished_at
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'Records when the passwords sync finished. This includes the time
+        to download, apply, and upload all records.
+
+        '
+    - name: raw_logins_sync_finished_at
+      type: STRING
+      mode: NULLABLE
+    - name: logins_sync_started_at
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'Records when the passwords sync started.
+
+        '
+    - name: raw_logins_sync_started_at
+      type: STRING
+      mode: NULLABLE
+    - name: logins_sync_v2_finished_at
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'Records when the passwords sync finished. This includes the time
+        to download, apply, and upload all records.
+
+        '
+    - name: raw_logins_sync_v2_finished_at
+      type: STRING
+      mode: NULLABLE
+    - name: logins_sync_v2_started_at
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'Records when the passwords sync started.
+
+        '
+    - name: raw_logins_sync_v2_started_at
+      type: STRING
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -292,90 +356,146 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
-  - name: quantity
+    - name: logins_sync_incoming
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records incoming passwords record counts. `applied` is the number
+        of incoming passwords entries that were successfully stored or updated in
+        the local database. `failed_to_apply` is the number of entries that were ignored
+        due to errors. `reconciled` is the number of entries with changes both locally
+        and remotely that were merged.
+
+        '
+    - name: logins_sync_outgoing
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records outgoing passwords record counts. `uploaded` is the number
+        of records that were successfully sent to the server. `failed_to_upload` is
+        the number of records that weren''t uploaded, and will be retried on the next
+        sync.
+
+        '
+    - name: logins_sync_v2_incoming
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records incoming passwords record counts. `applied` is the number
+        of incoming passwords entries that were successfully stored or updated in
+        the local database. `failed_to_apply` is the number of entries that were ignored
+        due to errors. `reconciled` is the number of entries with changes both locally
+        and remotely that were merged.
+
+        '
+    - name: logins_sync_v2_outgoing
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records outgoing passwords record counts. `uploaded` is the number
+        of records that were successfully sent to the server. `failed_to_upload` is
+        the number of records that weren''t uploaded, and will be retried on the next
+        sync.
+
+        '
+  - name: labeled_string
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: top_site_contile_tile_id
-      type: INTEGER
-      mode: NULLABLE
-      description: 'A unique identifier provided by the AdM for the sponsored TopSites
-        tile
+    - name: logins_sync_failure_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+      description: 'Records why the passwords sync failed: either due to an authentication
+        error, unexpected exception, or other error. The error strings are truncated
+        and sanitized to omit PII, like usernames and passwords.
 
         '
-    - name: top_sites_contile_tile_id
-      type: INTEGER
-      mode: NULLABLE
-      description: 'A unique identifier provided by the AdM for the sponsored TopSites
-        tile
+    - name: logins_sync_v2_failure_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+      description: 'Records why the passwords sync failed: either due to an authentication
+        error, unexpected exception, or other error. The error strings are truncated
+        and sanitized to omit PII, like usernames and passwords.
 
         '
   - name: string
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: top_site_contile_advertiser
+    - name: logins_sync_uid
       type: STRING
       mode: NULLABLE
-      description: 'Advertiser brand for the sponsored TopSites tile
+      description: 'The user''s hashed Firefox Account ID.
 
         '
-    - name: top_sites_contile_advertiser
+    - name: logins_sync_v2_uid
       type: STRING
       mode: NULLABLE
-      description: 'Advertiser brand for the sponsored TopSites tile
+      description: 'The user''s hashed Firefox Account ID.
 
         '
-  - name: url2
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: top_site_contile_reporting_url
-      type: STRING
-      mode: NULLABLE
-      description: "The AdM reporting endpoint (impression_url for \u201Cimpression\u201D\
-        \ event,\nclick_url for \u201Cclick\u201D event).\n"
-    - name: top_sites_contile_reporting_url
-      type: STRING
-      mode: NULLABLE
-      description: "The AdM reporting endpoint (impression_url for \u201Cimpression\u201D\
-        \ event,\nclick_url for \u201Cclick\u201D event).\n"
   - name: uuid
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: top_site_context_id
+    - name: sync_sync_uuid
       type: STRING
       mode: NULLABLE
-      description: 'A UUID that is unjoinable with other browser metrics. This ID
-        will not be
-
-        shared with AdM, only for internal uses. This ID is shared across all
-
-        contextual services features.
+      description: 'Unique identifier for this sync, used to correlate together individual
+        pings for data types that were synchronized together (history, bookmarks,
+        logins). If a data type is synchronized by itself via the legacy ''sync''
+        API (as opposed to the Sync Manager), then this field will not be set on the
+        corresponding ping.
 
         '
-    - name: top_sites_context_id
+    - name: sync_v2_sync_uuid
       type: STRING
       mode: NULLABLE
-      description: 'A UUID that is unjoinable with other browser metrics. This ID
-        will not be
-
-        shared with AdM, only for internal uses. This ID is shared across all
-
-        contextual services features.
+      description: 'Unique identifier for this sync, used to correlate together individual
+        pings for data types that were synchronized together (history, bookmarks,
+        logins). If a data type is synchronized by itself via the legacy ''sync''
+        API (as opposed to the Sync Manager), then this field will not be set on the
+        corresponding ping.
 
         '
-  - name: url
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: top_site_contile_reporting_url
-      type: STRING
-      mode: NULLABLE
-    - name: top_sites_contile_reporting_url
-      type: STRING
-      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
@@ -420,10 +540,10 @@ fields:
         type: RECORD
         mode: NULLABLE
         fields:
-        - name: type
+        - name: enrollment_id
           type: STRING
           mode: NULLABLE
-        - name: enrollment_id
+        - name: type
           type: STRING
           mode: NULLABLE
   - name: ping_type

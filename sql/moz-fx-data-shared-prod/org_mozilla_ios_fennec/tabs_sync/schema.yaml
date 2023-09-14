@@ -35,6 +35,10 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The architecture of the device, (e.g. "arm", "x86").
+  - name: build_date
+    type: STRING
+    mode: NULLABLE
+    description: The date & time the application was built
   - name: client_id
     type: STRING
     mode: NULLABLE
@@ -54,6 +58,12 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The date of the first run of the application.
+  - name: locale
+    type: STRING
+    mode: NULLABLE
+    description: The locale of the application during initialization (e.g. "es-ES").
+      If the locale can't be determined on the system, the value is ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
+      to indicate "undetermined".
   - name: os
     type: STRING
     mode: NULLABLE
@@ -68,16 +78,6 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The version of the Glean SDK
-  - name: locale
-    type: STRING
-    mode: NULLABLE
-    description: The locale of the application during initialization (e.g. "es-ES").
-      If the locale can't be determined on the system, the value is ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
-      to indicate "undetermined".
-  - name: build_date
-    type: STRING
-    mode: NULLABLE
-    description: The date & time the application was built
   - name: windows_build_number
     type: INTEGER
     mode: NULLABLE
@@ -155,6 +155,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -167,14 +175,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -192,20 +192,6 @@ fields:
         type: STRING
         mode: NULLABLE
     description: Headers included in the client's HTTP request
-  - name: user_agent
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: browser
-      type: STRING
-      mode: NULLABLE
-    - name: os
-      type: STRING
-      mode: NULLABLE
-    - name: version
-      type: STRING
-      mode: NULLABLE
-    description: Parsed components of the client's user agent string
   - name: isp
     type: RECORD
     mode: NULLABLE
@@ -224,43 +210,88 @@ fields:
       description: The name of a specific business entity associated with the client's
         IP address when available; otherwise the ISP name
     description: Results of ISP lookup based on the client's IP address
+  - name: user_agent
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+    - name: os
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+    description: Parsed components of the client's user agent string
 - name: metrics
   type: RECORD
   mode: NULLABLE
   fields:
-  - name: string
+  - name: counter
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: glean_baseline_locale
+    - name: tabs_sync_outgoing_batches
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records the number of batches needed to upload all outgoing records.
+        The Sync server has a hard limit on the number of records (and request body
+        bytes) on the number of records that can fit into a single batch, and large
+        syncs may require multiple batches.
+
+        '
+    - name: tabs_sync_v2_outgoing_batches
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records the number of batches needed to upload all outgoing records.
+        The Sync server has a hard limit on the number of records (and request body
+        bytes) on the number of records that can fit into a single batch, and large
+        syncs may require multiple batches.
+
+        '
+  - name: datetime
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: tabs_sync_finished_at
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'Records when the tabs sync finished. This includes the time to
+        download, apply, and upload all records.
+
+        '
+    - name: raw_tabs_sync_finished_at
       type: STRING
       mode: NULLABLE
-      description: 'The locale of the application during initialization (e.g. "es-ES").
-
-        If the locale can''t be determined on the system, the value is
-
-        ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
-
-        to indicate "undetermined".
-
-        '
-  - name: timespan
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: glean_baseline_duration
-      type: RECORD
+    - name: tabs_sync_started_at
+      type: TIMESTAMP
       mode: NULLABLE
-      fields:
-      - name: time_unit
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: 'The duration of the last foreground session.
+      description: 'Records when the tabs sync started.
 
         '
+    - name: raw_tabs_sync_started_at
+      type: STRING
+      mode: NULLABLE
+    - name: tabs_sync_v2_finished_at
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'Records when the tabs sync finished. This includes the time to
+        download, apply, and upload all records.
+
+        '
+    - name: raw_tabs_sync_v2_finished_at
+      type: STRING
+      mode: NULLABLE
+    - name: tabs_sync_v2_started_at
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'Records when the tabs sync started.
+
+        '
+    - name: raw_tabs_sync_v2_started_at
+      type: STRING
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -280,7 +311,7 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
-    - name: glean_error_invalid_value
+    - name: glean_error_invalid_overflow
       type: RECORD
       mode: REPEATED
       fields:
@@ -290,7 +321,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Counts the number of times a metric was set to an invalid value.
+      description: 'Counts the number of times a metric was set a value that overflowed.
 
         The labels are the `category.name` identifier of the metric.
 
@@ -310,7 +341,7 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
-    - name: glean_error_invalid_overflow
+    - name: glean_error_invalid_value
       type: RECORD
       mode: REPEATED
       fields:
@@ -320,12 +351,12 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Counts the number of times a metric was set a value that overflowed.
+      description: 'Counts the number of times a metric was set to an invalid value.
 
         The labels are the `category.name` identifier of the metric.
 
         '
-    - name: glean_validation_pings_submitted
+    - name: tabs_sync_incoming
       type: RECORD
       mode: REPEATED
       fields:
@@ -335,34 +366,110 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: "A count of the pings submitted, by ping type.\n\nThis metric appears\
-        \ in both the metrics and baseline pings.\n\n- On the metrics ping, the counts\
-        \ include the number of pings sent since\n  the last metrics ping (including\
-        \ the last metrics ping)\n- On the baseline ping, the counts include the number\
-        \ of pings send since\n  the last baseline ping (including the last baseline\
-        \ ping)\n"
-  - name: counter
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: glean_validation_metrics_ping_count
-      type: INTEGER
-      mode: NULLABLE
-      description: The number of metrics pings sent during the lifetime of this baseline
-        ping.
-  - name: datetime
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: glean_validation_first_run_hour
-      type: TIMESTAMP
-      mode: NULLABLE
-      description: 'The hour of the first run of the application.
+      description: 'Records incoming tabs record counts. `applied` is the number of
+        incoming records that were successfully stored or updated in the local database.
+        `failed_to_apply` is the number of records that were ignored due to errors.
+        `reconciled` is the number of merged records.
 
         '
-    - name: raw_glean_validation_first_run_hour
+    - name: tabs_sync_outgoing
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records outgoing tabs record counts. `uploaded` is the number
+        of records that were successfully sent to the server. `failed_to_upload` is
+        the number of records that weren''t uploaded, and will be retried on the next
+        sync.
+
+        '
+    - name: tabs_sync_v2_incoming
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records incoming tabs record counts. `applied` is the number of
+        incoming records that were successfully stored or updated in the local database.
+        `failed_to_apply` is the number of records that were ignored due to errors.
+        `reconciled` is the number of merged records.
+
+        '
+    - name: tabs_sync_v2_outgoing
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records outgoing tabs record counts. `uploaded` is the number
+        of records that were successfully sent to the server. `failed_to_upload` is
+        the number of records that weren''t uploaded, and will be retried on the next
+        sync.
+
+        '
+  - name: labeled_string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: tabs_sync_failure_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+      description: 'Records why the tabs sync failed: either due to an authentication
+        error, unexpected exception, or other error. The error strings are truncated
+        and sanitized to omit PII, like URLs and file system paths.
+
+        '
+    - name: tabs_sync_v2_failure_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+      description: 'Records why the tabs sync failed: either due to an authentication
+        error, unexpected exception, or other error. The error strings are truncated
+        and sanitized to omit PII, like URLs and file system paths.
+
+        '
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: tabs_sync_uid
       type: STRING
       mode: NULLABLE
+      description: 'The user''s hashed Firefox Account ID.
+
+        '
+    - name: tabs_sync_v2_uid
+      type: STRING
+      mode: NULLABLE
+      description: 'The user''s hashed Firefox Account ID.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
@@ -407,22 +514,22 @@ fields:
         type: RECORD
         mode: NULLABLE
         fields:
-        - name: type
-          type: STRING
-          mode: NULLABLE
         - name: enrollment_id
           type: STRING
           mode: NULLABLE
+        - name: type
+          type: STRING
+          mode: NULLABLE
   - name: ping_type
+    type: STRING
+    mode: NULLABLE
+  - name: reason
     type: STRING
     mode: NULLABLE
   - name: seq
     type: INTEGER
     mode: NULLABLE
   - name: start_time
-    type: STRING
-    mode: NULLABLE
-  - name: reason
     type: STRING
     mode: NULLABLE
   - name: parsed_start_time

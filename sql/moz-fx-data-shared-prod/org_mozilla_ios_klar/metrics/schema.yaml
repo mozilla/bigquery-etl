@@ -35,10 +35,6 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The architecture of the device, (e.g. "arm", "x86").
-  - name: build_date
-    type: STRING
-    mode: NULLABLE
-    description: The date & time the application was built
   - name: client_id
     type: STRING
     mode: NULLABLE
@@ -78,6 +74,10 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The version of the Glean SDK
+  - name: build_date
+    type: STRING
+    mode: NULLABLE
+    description: The date & time the application was built
   - name: windows_build_number
     type: INTEGER
     mode: NULLABLE
@@ -155,14 +155,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -175,6 +167,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -237,36 +237,56 @@ fields:
       mode: NULLABLE
       description: Set to true if the tasks that are queued prior to Glean initialization
         time out.
-    - name: glean_core_migration_successful
+    - name: mozilla_products_has_firefox_installed
       type: BOOLEAN
       mode: NULLABLE
-      description: Reports `true` if the client was successfully migrated from the
-        Android-specific implementation of the Glean SDK to the cross-platform one.
-    - name: settings_connect_on_startup_active
-      type: BOOLEAN
-      mode: NULLABLE
-      description: 'The status of whether the VPN is activated on device start
+      description: 'If Firefox is installed on the users''s device.
 
         '
-    - name: settings_using_system_language
+    - name: tracking_protection_has_advertising_blocked
       type: BOOLEAN
       mode: NULLABLE
-      description: 'Status of whether app is being used in language of the operating
-        system
+      description: 'The user has changed the setting for enhanced tracking protection
+
+        at least once.
+
+        '
+    - name: tracking_protection_has_analytics_blocked
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'The user has changed the setting for enhanced tracking protection
+
+        at least once.
+
+        '
+    - name: tracking_protection_has_content_blocked
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'The user has changed the setting for enhanced tracking protection
+
+        at least once.
+
+        '
+    - name: tracking_protection_has_ever_changed_etp
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'The user has changed the setting for enhanced tracking protection
+
+        at least once.
+
+        '
+    - name: tracking_protection_has_social_blocked
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'The user has changed the setting for enhanced tracking protection
+
+        at least once.
 
         '
   - name: counter
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: glean_error_io
-      type: INTEGER
-      mode: NULLABLE
-      description: 'The number of times we encountered an IO error
-
-        when writing a pending ping to disk.
-
-        '
     - name: glean_error_preinit_tasks_overflow
       type: INTEGER
       mode: NULLABLE
@@ -276,19 +296,6 @@ fields:
 
 
         In Version 0 this reported the total number of tasks enqueued.
-
-        '
-    - name: glean_time_invalid_timezone_offset
-      type: INTEGER
-      mode: NULLABLE
-      description: 'Counts the number of times we encountered an invalid timezone
-        offset
-
-        when trying to get the current time.
-
-        A timezone offset is invalid if it is outside [-24h, +24h].
-
-        If invalid a UTC offset is used (+0h).
 
         '
     - name: glean_upload_deleted_pings_after_quota_hit
@@ -319,19 +326,111 @@ fields:
       description: 'On mobile, the number of times the application went to foreground.
 
         '
-    - name: glean_validation_app_forceclosed_count
+    - name: glean_error_io
       type: INTEGER
       mode: NULLABLE
-      description: This metric counts how many times a dirty bit was detected when
-        starting the Glean SDK, on Android. This dirty bit is set to `true` when Android's
-        lifecycle `ON_START` is hit and flipped back to false on `ON_STOP`. When an
-        application is force-closed, it might not get the `ON_STOP` and so the value
-        would stay `true`. The next time Glean starts, it will increment this counter.
-    - name: glean_validation_baseline_ping_count
+      description: 'The number of times we encountered an IO error
+
+        when writing a pending ping to disk.
+
+        '
+    - name: glean_time_invalid_timezone_offset
       type: INTEGER
       mode: NULLABLE
-      description: The number of baseline pings sent during the lifetime of this metrics
-        ping.
+      description: 'Counts the number of times we encountered an invalid timezone
+        offset
+
+        when trying to get the current time.
+
+        A timezone offset is invalid if it is outside [-24h, +24h].
+
+        If invalid a UTC offset is used (+0h).
+
+        '
+    - name: settings_screen_autocomplete_domain_added
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter that indicates how many times a user has added
+
+        a website to the autocomplete list.
+
+        '
+    - name: shortcuts_shortcut_added_counter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter that indicates how many times a user has added
+
+        a website to shortcuts.
+
+        '
+    - name: shortcuts_shortcut_opened_counter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter that indicates how many times a user has opened
+
+        a website from a shortcut in the home screen.
+
+        '
+    - name: tracking_protection_toolbar_shield_clicked
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter that indicates how many times a user has opened
+
+        the tracking protection settings panel from the toolbar.
+
+        '
+    - name: browser_total_uri_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records count of URIs visited by the user in the current session,
+
+        including page reloads.
+
+        It does not include background page requests and URIs from embedded pages
+
+        but may be incremented without user interaction by website scripts
+
+        that programmatically redirect to a new location.
+
+        '
+    - name: settings_screen_set_as_default_browser_pressed
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times setting as default
+
+        browser menu option is tapped.
+
+        '
+    - name: app_opened_as_default_browser
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Recorded when a preference is changed and includes the
+
+        preference that changed as well as the value changed to
+
+        recorded in the extra keys.
+
+        '
+    - name: default_browser_onboarding_dismiss_pressed
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times default browser onboarding is dismissed.
+
+        '
+    - name: default_browser_onboarding_go_to_settings_pressed
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times the Go To Settings button on
+
+        default browser onboarding is clicked.
+
+        '
+    - name: browser_pdf_viewer_used
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times pdf view is opened in browser.
+
+        '
     - name: glean_upload_in_flight_pings_dropped
       type: INTEGER
       mode: NULLABLE
@@ -349,19 +448,6 @@ fields:
         respectively) due to an inconsistency in our internal bookkeeping?
 
         '
-  - name: datetime
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: glean_validation_first_run_hour
-      type: TIMESTAMP
-      mode: NULLABLE
-      description: 'The hour of the first run of the application.
-
-        '
-    - name: raw_glean_validation_first_run_hour
-      type: STRING
-      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -459,6 +545,87 @@ fields:
         \ the last metrics ping)\n- On the baseline ping, the counts include the number\
         \ of pings send since\n  the last baseline ping (including the last baseline\
         \ ping)\n"
+    - name: shortcuts_shortcut_removed_counter
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A counter that indicates how many times a user has removed
+
+        a website from shortcuts.
+
+        It also indicates the screen it was removed from, home or browser.
+
+        '
+    - name: browser_search_ad_clicks
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: "Records clicks of adverts on SERP pages.\nThe key format is \u2018\
+        <provider-name>\u2019.\n"
+    - name: browser_search_with_ads
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: "Records counts of SERP pages with adverts displayed.\nThe key\
+        \ format is \u2018<provider-name>\u2019.\n"
+    - name: browser_search_search_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The labels for this counter are `<search-engine-name>.<source>`.
+
+        If the search engine is bundled with Focus `search-engine-name` will be
+
+        the name of the search engine. If it''s a custom search engine (defined:
+
+        https://github.com/mozilla-mobile/fenix/issues/1607) the value will be
+
+        `custom`.
+
+        `source` will be: `action`, `suggestion`, `widget`, `shortcut`, `topsite`
+
+        (depending on the source from which the search started). Also added the
+
+        `other` option for the source but it should never enter on this case.
+
+        '
+    - name: browser_search_in_content
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records the type of interaction a user has on SERP pages.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -556,10 +723,150 @@ fields:
         documented in the ping''s pings.yaml file.
 
         '
+    - name: preferences_user_theme
+      type: STRING
+      mode: NULLABLE
+      description: 'A string that indicates the theme. Can be one of "Light", "Dark",
+        or "Follow device". Default is "Follow device".
+
+        '
+    - name: search_default_engine
+      type: STRING
+      mode: NULLABLE
+      description: 'The default search engine name if the search engine is
+
+        pre-loaded with Focus.  If it''s a custom search engine,
+
+        then the value will be ''custom''.
+
+        '
+    - name: app_keyboard_type
+      type: STRING
+      mode: NULLABLE
+      description: 'Records the name of the keyboard (custom or default) everytime
+
+        the keyboard appears on the screen.
+
+        '
+  - name: datetime
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_validation_first_run_hour
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'The hour of the first run of the application.
+
+        '
+    - name: raw_glean_validation_first_run_hour
+      type: STRING
+      mode: NULLABLE
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: shortcuts_shortcuts_on_home_number
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of shortcuts the user has on home screen,
+
+        0, 1, 2, 3 or 4 (maximum)
+
+        '
   - name: timing_distribution
     type: RECORD
     mode: NULLABLE
     fields:
+    - name: nimbus_health_apply_pending_experiments_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Measure how long `applyPendingExperiments` takes.
+
+        `applyPendingExperiments` uses disk I/O, and happens at
+
+        startup, as part of the initialization sequence.
+
+        '
+    - name: nimbus_health_fetch_experiments_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Measures how long `fetchExperiments` takes.
+
+        '
     - name: glean_upload_send_failure
       type: RECORD
       mode: NULLABLE
@@ -689,50 +996,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Time waited for the uploader at shutdown.
-
-        '
-    - name: performance_time_to_main_screen
-      type: RECORD
-      mode: NULLABLE
-      fields:
-      - name: bucket_count
-        type: INTEGER
-        mode: NULLABLE
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      - name: histogram_type
-        type: STRING
-        mode: NULLABLE
-      - name: overflow
-        type: INTEGER
-        mode: NULLABLE
-      - name: range
-        type: FLOAT
-        mode: REPEATED
-      - name: sum
-        type: INTEGER
-        mode: NULLABLE
-      - name: time_unit
-        type: STRING
-        mode: NULLABLE
-      - name: underflow
-        type: INTEGER
-        mode: NULLABLE
-      - name: values
-        type: RECORD
-        mode: REPEATED
-        fields:
-        - name: key
-          type: STRING
-          mode: NULLABLE
-        - name: value
-          type: INTEGER
-          mode: NULLABLE
-      description: 'The time the app took between starting and rendering the main
-        screen.
 
         '
     - name: glean_validation_shutdown_dispatcher_wait

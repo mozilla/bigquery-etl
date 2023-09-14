@@ -1,4 +1,5 @@
 SELECT
+  -- example logger expected input: fxa-auth-server
   SPLIT(jsonPayload.logger, "-")[OFFSET(1)] AS fxa_server,
   * REPLACE (
     (
@@ -12,11 +13,15 @@ SELECT
           ) AS fields
         )
     ) AS jsonPayload
-  ),
+  )
 FROM
   `moz-fx-fxa-nonprod.gke_fxa_stage_log.stdout`
 WHERE
-  jsonPayload.type = 'amplitudeEvent'
-  AND jsonPayload.logger IS NOT NULL
-  AND jsonPayload.fields.event_type IS NOT NULL
+  (
+    DATE(_PARTITIONTIME)
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY)
+    AND DATE_ADD(@submission_date, INTERVAL 1 DAY)
+  )
   AND DATE(`timestamp`) = @submission_date
+  AND jsonPayload.type = 'amplitudeEvent'
+  AND jsonPayload.fields.event_type IS NOT NULL

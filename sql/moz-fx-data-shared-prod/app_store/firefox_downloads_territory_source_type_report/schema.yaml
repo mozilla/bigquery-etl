@@ -3,7 +3,7 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: date
-  type: TIMESTAMP
+  type: DATETIME
   mode: NULLABLE
 - name: source_type
   type: STRING
@@ -25,4 +25,7 @@ fields:
   mode: NULLABLE
 - name: total_downloads
   type: INTEGER
+  mode: NULLABLE
+- name: date_pst
+  type: TIMESTAMP
   mode: NULLABLE

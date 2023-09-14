@@ -4664,6 +4664,32 @@ document type.</p>
 and to contain only one row per distinct <code>document_id</code> within a given date.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_klar_stable>org_mozilla_klar_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_klar_stable/metrics_v1>metrics_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_klar/metrics">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_klar/metrics/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_klar/metrics/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="pageload"><a href="#pageload">pageload</a></h2>
+<p><strong>Historical Pings for <code>org-mozilla-klar/pageload</code></strong></p>
+<p><code>org_mozilla_klar.pageload</code></p>
+<p>A historical view of pings sent for the
+<code>org-mozilla-klar/pageload</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<table>
 <caption>Schema</caption>
     <tr>
         <th>Column</th>
@@ -4744,32 +4770,6 @@ and to contain only one row per distinct <code>document_id</code> within a given
     </tr>
 </table>
 
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_klar_stable>org_mozilla_klar_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_klar_stable/metrics_v1>metrics_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_klar/metrics">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_klar/metrics/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_klar/metrics/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="pageload"><a href="#pageload">pageload</a></h2>
-<p><strong>Historical Pings for <code>org-mozilla-klar/pageload</code></strong></p>
-<p><code>org_mozilla_klar.pageload</code></p>
-<p>A historical view of pings sent for the
-<code>org-mozilla-klar/pageload</code>
-document type.</p>
-<p>This view is guaranteed to contain only complete days
-(per <code>submission_timestamp</code>)
-and to contain only one row per distinct <code>document_id</code> within a given date.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <table>
 <caption>Referenced Tables</caption>
     <tr>

@@ -37,11 +37,11 @@ store_stats AS (
     redownloads,
   FROM
     views_data
-  JOIN
+  FULL OUTER JOIN
     downloads_data
   USING
     (`date`, country_name)
-  JOIN
+  LEFT OUTER JOIN
     static.country_codes_v1
   ON
     country_name = name

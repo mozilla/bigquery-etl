@@ -3,7 +3,7 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: date
-  type: DATETIME
+  type: TIMESTAMP
   mode: NULLABLE
 - name: source_type
   type: STRING

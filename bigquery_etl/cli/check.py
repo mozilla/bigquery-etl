@@ -20,6 +20,8 @@ from ..cli.utils import (
 )
 from ..util.common import render as render_template
 
+CHECK_TYPES = ["#fail", "#warn"]
+
 
 def _build_jinja_parameters(query_args):
     """Convert the bqetl parameters to a dictionary for use by the Jinja template."""
@@ -105,7 +107,7 @@ def check(ctx):
     ),
 )
 @click.argument("dataset")
-@project_id_option()
+@project_id_option("moz-fx-data-shared-prod")
 @sql_dir_option
 @click.pass_context
 def render(
@@ -192,7 +194,7 @@ def _render(
     ),
 )
 @click.argument("dataset")
-@project_id_option()
+@project_id_option("moz-fx-data-shared-prod")
 @sql_dir_option
 @click.option("--marker", default="fail", help="Marker to filter checks.")
 @click.option(
@@ -308,18 +310,11 @@ def _run_check(
     ),
 )
 @click.argument("dataset")
-@project_id_option()
+@project_id_option("moz-fx-data-shared-prod")
 @sql_dir_option
 @click.pass_context
 def validate(ctx, dataset, project_id, sql_dir):
     """Validate that each check has a marker assigned."""
-    if not is_authenticated():
-        click.echo(
-            "Authentication to GCP required. Run `gcloud auth login` "
-            "and check that the project is set correctly."
-        )
-        sys.exit(1)
-
     checks_file, project_id, dataset_id, table = paths_matching_checks_pattern(
         dataset, sql_dir, project_id=project_id
     )
@@ -366,8 +361,6 @@ def _validate_check(
         **jinja_params,
     )
 
-    expected_check_types = ["#fail", "#warn"]
-
     # Create a flag to keep track of whether all checks have markers
     all_checks_have_markers = True
 
@@ -378,7 +371,7 @@ def _validate_check(
     # Loop through each line in the file
     for line in lines:
         # Check if the line contains any expected check type marker
-        contains_marker = any(check_type in line for check_type in expected_check_types)
+        contains_marker = any(check_type in line for check_type in CHECK_TYPES)
 
         # If no marker is found in the line, set the flag to False
         if not contains_marker:
@@ -387,6 +380,11 @@ def _validate_check(
 
     # Check and print the result
     if all_checks_have_markers:
-        print("All checks have either #fail or #warn markers in the file.")
+        print(
+            f'"All checks have either #fail or #warn markers in the {checks_file.name} file"'
+        )
     else:
-        print("Not all checks have #fail or #warn markers in the file.")
+        print(
+            f'"Not all checks have #fail or #warn markers in the {checks_file.name} file"'
+        )
+        sys.exit(1)

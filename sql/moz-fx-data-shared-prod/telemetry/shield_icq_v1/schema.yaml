@@ -128,15 +128,6 @@ fields:
           mode: NULLABLE
           description: Whether or not the add-on is a compatible with e10s. Since
             Firefox 61, this is always true. This field is available at startup.
-        - name: foreign_install
-          type: INTEGER
-          mode: NULLABLE
-        - name: user_disabled
-          type: INTEGER
-          mode: NULLABLE
-        - name: version
-          type: STRING
-          mode: NULLABLE
     - name: active_experiment
       type: RECORD
       mode: NULLABLE
@@ -164,11 +155,6 @@ fields:
         - name: version
           type: STRING
           mode: NULLABLE
-        - name: apply_background_updates
-          type: INTEGER
-          mode: NULLABLE
-          description: Cast into an integer via mozilla-schema-generator. See bug
-            1611027.
     - name: active_plugins
       type: RECORD
       mode: REPEATED
@@ -251,9 +237,6 @@ fields:
         type: STRING
         mode: NULLABLE
         description: The version of the theme.
-      - name: foreign_install
-        type: INTEGER
-        mode: NULLABLE
   - name: build
     type: RECORD
     mode: NULLABLE
@@ -578,17 +561,6 @@ fields:
     - name: is_in_optout_sample
       type: BOOLEAN
       mode: NULLABLE
-    - name: user_prefs
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: STRING
-        mode: NULLABLE
-      description: User preferences - limited to an allowlist defined in `toolkit/components/telemetry/app/TelemetryEnvironment.jsm`
     - name: fission_enabled
       type: BOOLEAN
       mode: NULLABLE
@@ -1192,104 +1164,31 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
+  - name: conn_type
+    type: STRING
+    mode: NULLABLE
+  - name: file_size
+    type: FLOAT
+    mode: NULLABLE
+  - name: latency
+    type: FLOAT
+    mode: NULLABLE
   - name: reason
     type: STRING
     mode: NULLABLE
-  - name: processes
-    type: RECORD
+  - name: type
+    type: STRING
     mode: NULLABLE
+  - name: goodput
+    type: RECORD
+    mode: REPEATED
     fields:
-    - name: parent
-      type: RECORD
+    - name: f0_
+      type: FLOAT
       mode: NULLABLE
-      fields:
-      - name: scalars
-        type: RECORD
-        mode: NULLABLE
-        fields:
-        - name: startup_profile_selection_reason
-          type: STRING
-          mode: NULLABLE
-          description: "How the profile was selected during startup. One of the following\
-            \ reasons:\n  unknown:\n    Generally should not happen, set as a default\
-            \ in case no other reason\n    occured.\n  profile-manager:\n    The profile\
-            \ was selected by the profile manager.\n  profile-reset:\n    The profile\
-            \ was selected for reset, normally this would mean a restart.\n  restart:\n\
-            \    The user restarted the application, the same profile as previous\
-            \ will\n    be used.\n  argument-profile:\n    The profile was selected\
-            \ by the --profile command line argument.\n  argument-p:\n    The profile\
-            \ was selected by the -p command line argument.\n  firstrun-claimed-default:\n\
-            \    A first run of a dedicated profiles build chose the old default\n\
-            \    profile to be the default for this install.\n  firstrun-skipped-default:\n\
-            \    A first run of a dedicated profiles build skipped over the old default\n\
-            \    profile and created a new profile.\n  restart-claimed-default:\n\
-            \    A first run of a dedicated profiles build after a restart chose the\n\
-            \    old defaul\u2026"
-        - name: attribution_provenance_ads_exists
-          type: BOOLEAN
-          mode: NULLABLE
-          description: 'Will always be false if attribution.provenance.zone_id.data_exists
-            is false. Will be true if the provenance data indicates that the :Zone.Identifier
-            Alternate Data Stream existed on the installer.
-
-            '
-        - name: attribution_provenance_data_exists
-          type: BOOLEAN
-          mode: NULLABLE
-          description: 'Will be true if the "zoneIdProvenanceData" file is present
-            in the installation directory and we were able to successfully read it.
-
-            '
-        - name: attribution_provenance_file_system
-          type: STRING
-          mode: NULLABLE
-          description: 'The file system that the installer resided on at installation
-            time. Possible values are: "NTFS", "FAT32", "other". In error cases, it
-            can also be "missing", "error" or "readIniError". Only sent if attribution.provenance.zone_id.data_exists
-            is true.
-
-            '
-        - name: attribution_provenance_host_url_exists
-          type: BOOLEAN
-          mode: NULLABLE
-          description: 'Will be true if the zone identifier ADS contained a host URL.
-            Will be false if a host URL is specified, but it isn''t a valid URL. Only
-            sent if attribution.provenance.zone_id.ads_exists is true.
-
-            '
-        - name: attribution_provenance_host_url_is_mozilla
-          type: BOOLEAN
-          mode: NULLABLE
-          description: 'Will be true if the host URL from the zone identifier ADS
-            appeared to be a Mozilla URL. Only sent if attribution.provenance.zone_id.host_url_exists
-            is true.
-
-            '
-        - name: attribution_provenance_referrer_url_exists
-          type: BOOLEAN
-          mode: NULLABLE
-          description: 'Will be true if the zone identifier ADS contained a referrer
-            URL. Will be false if a referrer URL is specified, but it isn''t a valid
-            URL. Only sent if attribution.provenance.zone_id.ads_exists is true.
-
-            '
-        - name: attribution_provenance_referrer_url_is_mozilla
-          type: BOOLEAN
-          mode: NULLABLE
-          description: 'Will be true if the referrer URL from the zone identifier
-            ADS appeared to be a Mozilla URL. Only sent if attribution.provenance.zone_id.referrer_url_exists
-            is true.
-
-            '
-        - name: attribution_provenance_security_zone
-          type: STRING
-          mode: NULLABLE
-          description: 'The zone identifier in the installer''s :Zone.Identifier ADS.
-            Possible values are integers between 0 and 4, inclusive. In error cases,
-            it can also be "unexpected", "missing", "error", or "readIniError". Only
-            sent if attribution.provenance.zone_id.ads_exists is true.
-
-            '
+    - name: f1_
+      type: FLOAT
+      mode: NULLABLE
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

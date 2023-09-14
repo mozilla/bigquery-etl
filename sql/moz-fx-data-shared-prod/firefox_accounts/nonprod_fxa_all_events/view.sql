@@ -115,7 +115,7 @@ unioned AS (
     server_events
 )
 SELECT
-  fxa_server,
+  fxa_server AS fxa_log,
   `timestamp`,
   receiveTimestamp,
   event_time,

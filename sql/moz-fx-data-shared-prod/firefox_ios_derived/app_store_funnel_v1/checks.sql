@@ -18,7 +18,7 @@ SELECT
     NULL
   );
 
-WITH min_rows AS (
+WITH min_row_count AS (
   SELECT
     COUNT(*) AS total_rows
   FROM
@@ -28,9 +28,13 @@ WITH min_rows AS (
 )
 SELECT
   IF(
-    (SELECT COUNTIF(total_rows < 1) FROM min_rows) > 0,
+    (SELECT COUNTIF(total_rows < 1) FROM min_row_count) > 0,
     ERROR(
-      CONCAT("Less than ", (SELECT total_rows FROM min_rows), " rows found (expected more than 1)")
+      CONCAT(
+        "Less than ",
+        (SELECT total_rows FROM min_row_count),
+        " rows found (expected more than 1)"
+      )
     ),
     NULL
   );

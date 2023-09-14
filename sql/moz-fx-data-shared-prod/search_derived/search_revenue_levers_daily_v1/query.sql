@@ -71,7 +71,7 @@ desktop_data_bing AS (
   FROM
     `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
-      submission_date = @submission_date
+    submission_date = @submission_date
     --AND sample_id = 1
     AND (distribution_id IS NULL OR distribution_id NOT LIKE '%acer%')
     AND client_id NOT IN (SELECT client_id FROM `moz-fx-data-shared-prod.search.acer_cohort`)
@@ -147,7 +147,7 @@ desktop_data_ddg AS (
   FROM
     `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
-  submission_date = @submission_date
+    submission_date = @submission_date
   --AND sample_id = 1
   GROUP BY
     submission_date
@@ -166,9 +166,8 @@ mobile_dau_data AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.active_users_aggregates_device`
   WHERE
-     submission_date = @submission_date
+    submission_date = @submission_date
     AND app_name IN ('Fenix', 'Firefox iOS', 'Focus Android', 'Focus iOS')
-
   GROUP BY
     submission_date
 ),
@@ -212,7 +211,10 @@ mobile_data_google AS (
   WHERE
     submission_date = @submission_date
     AND country NOT IN ('RU', 'UA', 'BY', 'TR', 'KZ', 'CN')
-    AND normalized_app_name IN ('Focus', 'Fenix', 'Fennec')
+    AND (
+      app_name IN ('Fenix', 'Firefox Preview', 'Focus Android Glean', 'Focus iOS Glean')
+      OR (app_name = 'Fennec' AND os = 'iOS')
+    )
   --AND sample_id = 1
   GROUP BY
     submission_date,
@@ -288,7 +290,10 @@ mobile_data_bing_ddg AS (
     (submission_date)
   WHERE
     submission_date = @submission_date
-    AND normalized_app_name IN ('Focus', 'Fenix', 'Fennec')
+    AND (
+      app_name IN ('Fenix', 'Firefox Preview', 'Focus Android Glean', 'Focus iOS Glean')
+      OR (app_name = 'Fennec' AND os = 'iOS')
+    )
     -- AND sample_id = 1
   GROUP BY
     submission_date,

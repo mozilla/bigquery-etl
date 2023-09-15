@@ -31,7 +31,6 @@ desktop_data_google AS (
     `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
-    --AND sample_id = 1
     AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN')
   GROUP BY
     submission_date,
@@ -72,7 +71,6 @@ desktop_data_bing AS (
     `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
-    --AND sample_id = 1
     AND (distribution_id IS NULL OR distribution_id NOT LIKE '%acer%')
     AND client_id NOT IN (SELECT client_id FROM `moz-fx-data-shared-prod.search.acer_cohort`)
   GROUP BY
@@ -148,7 +146,6 @@ desktop_data_ddg AS (
     `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
-  --AND sample_id = 1
   GROUP BY
     submission_date
   ORDER BY
@@ -179,7 +176,6 @@ mobile_data_google AS (
     submission_date,
     IF(country = 'US', 'US', 'RoW') AS country,
     IF(country = 'US', dau.US_dau_eligible_google, dau.RoW_dau_eligible_google) AS dau,
-    -- COUNT(DISTINCT client_id) AS dau,
     COUNT(
       DISTINCT IF(default_search_engine LIKE '%google%', client_id, NULL)
     ) AS dau_w_engine_as_default,
@@ -215,7 +211,6 @@ mobile_data_google AS (
       app_name IN ('Fenix', 'Firefox Preview', 'Focus Android Glean', 'Focus iOS Glean')
       OR (app_name = 'Fennec' AND os = 'iOS')
     )
-  --AND sample_id = 1
   GROUP BY
     submission_date,
     country,
@@ -232,7 +227,6 @@ mobile_data_bing_ddg AS (
   SELECT
     submission_date,
     dau.dau,
-    -- COUNT(DISTINCT client_id) as dau,
     COUNT(
       DISTINCT IF(default_search_engine LIKE '%bing%', client_id, NULL)
     ) AS bing_dau_w_engine_as_default,
@@ -294,7 +288,6 @@ mobile_data_bing_ddg AS (
       app_name IN ('Fenix', 'Firefox Preview', 'Focus Android Glean', 'Focus iOS Glean')
       OR (app_name = 'Fennec' AND os = 'iOS')
     )
-    -- AND sample_id = 1
   GROUP BY
     submission_date,
     dau
@@ -320,7 +313,7 @@ SELECT
   ad_click_organic,
   search_with_ads_organic,
   monetizable_sap,
-  dau_w_engine_as_default,
+  dau_w_engine_as_default
 FROM
   desktop_data_google
 UNION ALL
@@ -341,7 +334,7 @@ SELECT
   ad_click_organic,
   search_with_ads_organic,
   monetizable_sap,
-  dau_w_engine_as_default,
+  dau_w_engine_as_default
 FROM
   desktop_data_bing
 UNION ALL
@@ -425,7 +418,7 @@ SELECT
   bing_ad_click_organic,
   bing_search_with_ads_organic,
   bing_monetizable_sap,
-  bing_dau_w_engine_as_default
+  bing_dau_w_engine_as_default AS dau_w_engine_as_default
 FROM
   mobile_data_bing_ddg
 UNION ALL
@@ -446,6 +439,6 @@ SELECT
   ddg_ad_click_organic,
   ddg_search_with_ads_organic,
   ddg_monetizable_sap,
-  ddg_dau_w_engine_as_default
+  ddg_dau_w_engine_as_default AS dau_w_engine_as_default
 FROM
   mobile_data_bing_ddg

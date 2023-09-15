@@ -5,14 +5,16 @@ description: |-
 
   See https://bugzilla.mozilla.org/show_bug.cgi?id=1649074
 owners:
-  - dthorn@mozilla.com
+  - kik@mozilla.com
 labels:
   application: fxa
   incremental: true
   schedule: daily
 scheduling:
-  # descheduled due to source table change. v2 of the query retrieves the data from the new source.
-  # dag_name: bqetl_fxa_events
+  dag_name: bqetl_fxa_events
+  # v2 created as the result of the source table changing post AWS to GCP migration.
+  # The start date represents when the migration started.
+  start_date: "2023-09-07"
   # This query references secret keys that are not available for dry runs,
   # so we must explicitly write out dependencies. In this case, the query
   # depends only on fxa logs produced via Stackdriver integration, so no other

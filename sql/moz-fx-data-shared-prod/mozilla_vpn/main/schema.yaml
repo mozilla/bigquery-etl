@@ -233,6 +233,9 @@ fields:
     - name: settings_connect_on_startup_active
       type: BOOLEAN
       mode: NULLABLE
+    - name: settings_using_system_language
+      type: BOOLEAN
+      mode: NULLABLE
   - name: timing_distribution
     type: RECORD
     mode: NULLABLE

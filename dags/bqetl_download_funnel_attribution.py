@@ -43,11 +43,12 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    checks__ga_derived__downloads_with_attribution__v2 = bigquery_dq_check(
-        task_id="checks__ga_derived__downloads_with_attribution__v2",
+    checks__fail_ga_derived__downloads_with_attribution__v2 = bigquery_dq_check(
+        task_id="checks__fail_ga_derived__downloads_with_attribution__v2",
         source_table='downloads_with_attribution_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="ga_derived",
         project_id="moz-fx-data-marketing-prod",
+        is_dq_check_fail=True,
         owner="gleonard@mozilla.com",
         email=["gleonard@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
@@ -66,7 +67,7 @@ with DAG(
         parameters=["download_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
-    checks__ga_derived__downloads_with_attribution__v2.set_upstream(
+    checks__fail_ga_derived__downloads_with_attribution__v2.set_upstream(
         ga_derived__downloads_with_attribution__v2
     )
 

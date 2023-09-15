@@ -17,6 +17,7 @@ DATASET_METADATA_FILE = "dataset_metadata.yaml"
 DEFAULT_WORKGROUP_ACCESS = [
     dict(role="roles/bigquery.dataViewer", members=["workgroup:mozilla-confidential"])
 ]
+DEFAULT_TABLE_WORKGROUP_ACCESS = DEFAULT_WORKGROUP_ACCESS
 
 
 class Literal(str):
@@ -149,6 +150,7 @@ class Metadata:
     workgroup_access: Optional[List[WorkgroupAccessMetadata]] = attr.ib(None)
     references: Dict = attr.ib({})
     external_data: Optional[ExternalDataMetadata] = attr.ib(None)
+    deprecated: bool = attr.ib(False)
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -223,6 +225,7 @@ class Metadata:
         workgroup_access = None
         references = {}
         external_data = None
+        deprecated = False
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -283,6 +286,8 @@ class Metadata:
                     external_data = converter.structure(
                         metadata["external_data"], ExternalDataMetadata
                     )
+                if "deprecated" in metadata:
+                    deprecated = metadata["deprecated"]
 
                 return cls(
                     friendly_name,
@@ -295,6 +300,7 @@ class Metadata:
                     workgroup_access,
                     references,
                     external_data,
+                    deprecated,
                 )
             except yaml.YAMLError as e:
                 raise e
@@ -405,7 +411,13 @@ class DatasetMetadata:
     dataset_base_acl: str = attr.ib()
     user_facing: bool = attr.ib(False)
     labels: Dict = attr.ib({})
+    default_table_workgroup_access: Optional[List[Dict[str, Any]]] = attr.ib(None)
     workgroup_access: list = attr.ib(DEFAULT_WORKGROUP_ACCESS)
+
+    def __attrs_post_init__(self):
+        """Set default table workgroup access to workgroup access."""
+        if self.default_table_workgroup_access is None:
+            self.default_table_workgroup_access = self.workgroup_access
 
     @staticmethod
     def is_dataset_metadata_file(file_path):
@@ -420,7 +432,6 @@ class DatasetMetadata:
     def write(self, file):
         """Write dataset metadata information to the provided file."""
         metadata_dict = self.__dict__
-
         if metadata_dict["labels"]:
             for label_key, label_value in metadata_dict["labels"].items():
                 # handle tags
@@ -429,6 +440,11 @@ class DatasetMetadata:
 
         if "description" in metadata_dict:
             metadata_dict["description"] = Literal(metadata_dict["description"])
+
+        if "default_table_workgroup_access" in metadata_dict:
+            metadata_dict["default_table_workgroup_access"] = metadata_dict[
+                "default_table_workgroup_access"
+            ]
 
         converter = cattrs.BaseConverter()
         file.write_text(

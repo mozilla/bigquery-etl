@@ -1,11 +1,17 @@
+import distutils
 import os
+import tempfile
+from pathlib import Path
 
 import pytest
 import yaml
 from click.testing import CliRunner
 
+from bigquery_etl.cli.metadata import update
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.metadata.validate_metadata import validate_change_control
+
+TEST_DIR = Path(__file__).parent.parent
 
 
 class TestMetadata:
@@ -175,3 +181,59 @@ class TestMetadata:
             codeowners_conf=codeowners,
             expected_result=False,
         )
+
+    def test_metadata_update_with_no_deprecation(self, runner):
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            name = [
+                str(tmpdirname)
+                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/"
+            ]
+            runner.invoke(update, name, "--sql_dir=" + str(tmpdirname) + "/sql")
+            with open(
+                tmpdirname
+                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/metadata.yaml",
+                "r",
+            ) as stream:
+                metadata = yaml.safe_load(stream)
+        assert metadata["workgroup_access"][0]["role"] == "roles/bigquery.dataViewer"
+        assert metadata["workgroup_access"][0]["members"] == [
+            "workgroup:mozilla-confidential"
+        ]
+        assert not metadata["deprecated"]
+
+    def test_metadata_update_with_deprecation(self, runner):
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            name = [
+                str(tmpdirname)
+                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/"
+            ]
+            runner.invoke(update, name, "--sql_dir=" + str(tmpdirname) + "/sql")
+            with open(
+                tmpdirname
+                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/metadata.yaml",
+                "r",
+            ) as stream:
+                metadata = yaml.safe_load(stream)
+        assert metadata["workgroup_access"] == []
+        assert metadata["deprecated"]
+
+    def test_metadata_update_do_not_update(self, runner):
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            name = [
+                str(tmpdirname)
+                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_scalar_aggregates_v1/"
+            ]
+            runner.invoke(update, name, "--sql_dir=" + str(tmpdirname) + "/sql")
+            with open(
+                tmpdirname
+                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_scalar_aggregates_v1/metadata.yaml",
+                "r",
+            ) as stream:
+                metadata = yaml.safe_load(stream)
+                print(metadata)
+        assert metadata["workgroup_access"][0]["role"] == "roles/bigquery.dataViewer"
+        assert metadata["workgroup_access"][0]["members"] == ["workgroup:revenue/cat4"]
+        assert not metadata["deprecated"]

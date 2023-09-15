@@ -1,7 +1,0 @@
-{"submission_date":"2019-01-01","user_id":"a","seen_in_tier1_country":false,"registered":false,"monitor_only":false}
-{"submission_date":"2019-01-01","user_id":"b","country":"Spain","seen_in_tier1_country":false,"registered":false,"monitor_only":false}
-{"submission_date":"2019-01-01","user_id":"c","country":"France","seen_in_tier1_country":true,"registered":false,"monitor_only":false}
-{"submission_date":"2019-01-01","user_id":"d","country":"","seen_in_tier1_country":false,"registered":false,"monitor_only":false}
-{"submission_date":"2019-01-01","user_id":"e","country":"","seen_in_tier1_country":true,"registered":true,"monitor_only":false}
-{"submission_date":"2019-01-01","user_id":"f","country":"Canada","seen_in_tier1_country":true,"registered":false,"monitor_only":false}
-{"submission_date":"2019-01-01","user_id":"g","country":"Spain","seen_in_tier1_country":false,"registered":false,"monitor_only":true}

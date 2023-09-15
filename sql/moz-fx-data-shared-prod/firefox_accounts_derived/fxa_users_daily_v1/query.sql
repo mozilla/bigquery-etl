@@ -49,7 +49,7 @@ WITH windowed AS (
       NOT (event_type = 'fxa_rp - engage' AND service = 'fx-monitor')
     ) OVER w1 = 0 AS monitor_only
   FROM
-    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
+    firefox_accounts.fxa_all_events
   WHERE
     fxa_log IN ('auth', 'auth_bounce', 'content', 'oauth')
     AND user_id IS NOT NULL

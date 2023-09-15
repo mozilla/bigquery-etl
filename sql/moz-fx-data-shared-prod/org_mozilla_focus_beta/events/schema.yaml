@@ -35,10 +35,6 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The architecture of the device, (e.g. "arm", "x86").
-  - name: build_date
-    type: STRING
-    mode: NULLABLE
-    description: The date & time the application was built
   - name: client_id
     type: STRING
     mode: NULLABLE
@@ -78,6 +74,10 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The version of the Glean SDK
+  - name: build_date
+    type: STRING
+    mode: NULLABLE
+    description: The date & time the application was built
   - name: windows_build_number
     type: INTEGER
     mode: NULLABLE
@@ -159,10 +159,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Foxsec-IP-Reputation header
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -175,6 +171,10 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -292,59 +292,15 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
-    - name: tabs_sync_failure_reason
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: 'Records why the tabs sync failed.
-
-        '
-    - name: tabs_sync_incoming
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: 'Records incoming tabs record counts. `applied` is the number of
-        incoming records that were successfully stored or updated in the local database.
-        `failed_to_apply` is the number of records that were ignored due to errors.
-        `reconciled` is the number of merged records.
-
-        '
-    - name: tabs_sync_outgoing
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: 'Records outgoing tabs record counts. `uploaded` is the number
-        of records that were successfully sent to the server. `failed_to_upload` is
-        the number of records that weren''t uploaded, and will be retried on the next
-        sync.
-
-        '
-  - name: string
+  - name: uuid
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: tabs_sync_uid
+    - name: legacy_ids_client_id
       type: STRING
       mode: NULLABLE
-      description: 'The user''s hashed Firefox Account ID.
+      description: 'Sets the legacy client ID as part of the deletion-reqest and other
+        pings.
 
         '
 - name: normalized_app_name

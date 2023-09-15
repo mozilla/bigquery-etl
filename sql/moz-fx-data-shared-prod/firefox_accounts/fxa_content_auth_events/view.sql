@@ -33,7 +33,7 @@ SELECT
   os_name,
   os_version,
   country,
-  LANGUAGE,
+  `language`,
   user_id,
   `timestamp`,
   receiveTimestamp,

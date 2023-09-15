@@ -11,6 +11,7 @@ labels:
   owner1: kik
 scheduling:
   dag_name: bqetl_fxa_events
+  start_date: "2023-05-26"
   arguments:
   - --schema_update_option=ALLOW_FIELD_ADDITION
 bigquery:

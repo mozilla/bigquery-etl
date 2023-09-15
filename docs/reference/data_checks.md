@@ -60,7 +60,7 @@ ASSERT (
 {{ not_null(["submission_date", "os"], "submission_date = @submission_date") }}
 
 #warn
-{{ min_rows(1, "submission_date = @submission_date") }}
+{{ min_row_count(1, "submission_date = @submission_date") }}
 
 #fail
 {{ is_unique(["submission_date", "os", "country"], "submission_date = @submission_date")}}
@@ -107,7 +107,7 @@ Example:
 {{ is_unique(["submission_date", "os", "country"], "submission_date = @submission_date")}}
 ```
 
-### min_rows ([source](../../tests/checks/min_rows.jinja))
+### min_row_count([source](../../tests/checks/min_row_count.jinja))
 
 Usage:
 
@@ -121,7 +121,7 @@ where: Optional[str] - A condition that will be injected into the `WHERE` clause
 Example:
 
 ```sql
-{{ min_rows(1, "submission_date = @submission_date") }}
+{{ min_row_count(1, "submission_date = @submission_date") }}
 ```
 
 ### not_null ([source](../../tests/checks/not_null.jinja))
@@ -145,7 +145,7 @@ Please keep in mind the below checks can be combined and specified in the same `
 
 ```sql
 {{ not_null(["submission_date", "os"], "submission_date = @submission_date") }}
- {{ min_rows(1, "submission_date = @submission_date") }}
+ {{ min_row_count(1, "submission_date = @submission_date") }}
  {{ is_unique(["submission_date", "os", "country"], "submission_date = @submission_date")}}
  {{ in_range(["non_ssl_loads", "ssl_loads", "reporting_ratio"], 0, none, "submission_date = @submission_date") }}
 ```

@@ -28,6 +28,19 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_accounts.fxa_content_auth_stdout_events`
 AS
 SELECT
+  logger,
+  event_type,
+  app_version,
+  os_name,
+  os_version,
+  country,
+  country_code,
+  `language`,
+  user_id,
+  device_id,
+  `timestamp`,
+  receiveTimestamp,
+  event_time,
   utm_term,
   utm_source,
   utm_medium,

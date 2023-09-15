@@ -5,4 +5,4 @@
 {{ not_null(columns=["destination_id", "measured_month"]) }}
 
 #fail
-{{ min_rows(1) }}
+{{ min_row_count(1) }}

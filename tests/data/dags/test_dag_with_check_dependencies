@@ -40,11 +40,12 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    checks__test__table1__v1 = bigquery_dq_check(
-        task_id="checks__test__table1__v1",
+    checks__fail_test__table1__v1 = bigquery_dq_check(
+        task_id="checks__fail_test__table1__v1",
         source_table="table1_v1",
         dataset_id="test",
         project_id="test-project",
+        is_dq_check_fail=True,
         owner="test@example.org",
         email=["test@example.org"],
         depends_on_past=False,
@@ -84,12 +85,12 @@ with DAG(
         depends_on_past=False,
     )
 
-    checks__test__table1__v1.set_upstream(test__table1__v1)
+    checks__fail_test__table1__v1.set_upstream(test__table1__v1)
 
-    wait_for_checks__test__external_table__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__test__external_table__v1",
+    wait_for_checks__fail_test__external_table__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_test__external_table__v1",
         external_dag_id="bqetl_external_test_dag",
-        external_task_id="checks__test__external_table__v1",
+        external_task_id="checks__fail_test__external_table__v1",
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -97,8 +98,8 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    test__query__v1.set_upstream(wait_for_checks__test__external_table__v1)
+    test__query__v1.set_upstream(wait_for_checks__fail_test__external_table__v1)
 
-    test__query__v1.set_upstream(checks__test__table1__v1)
+    test__query__v1.set_upstream(checks__fail_test__table1__v1)
 
     test__query__v1.set_upstream(test__table2__v1)

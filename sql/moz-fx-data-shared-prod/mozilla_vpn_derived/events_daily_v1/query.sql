@@ -61,6 +61,37 @@ WITH sample AS (
     org_mozilla_firefox_vpn.main e
   CROSS JOIN
     UNNEST(e.events) AS event
+  UNION ALL
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    name AS event,
+    category,
+    extra,
+    sample_id,
+    timestamp,
+    metadata,
+    normalized_channel,
+    normalized_os,
+    normalized_os_version,
+    client_info.client_id AS client_id,
+    client_info.app_build AS app_build,
+    client_info.app_channel AS app_channel,
+    client_info.app_display_version AS app_display_version,
+    client_info.architecture AS architecture,
+    client_info.first_run_date AS first_run_date,
+    metadata.header.x_telemetry_agent AS telemetry_agent,
+    client_info.telemetry_sdk_build AS telemetry_sdk_build,
+    client_info.locale AS locale,
+    (
+      SELECT
+        ARRAY_AGG(STRUCT(key, value.branch AS value))
+      FROM
+        UNNEST(ping_info.experiments)
+    ) AS experiments
+  FROM
+    org_mozilla_ios_firefoxvpn.main e
+  CROSS JOIN
+    UNNEST(e.events) AS event
 ),
 events AS (
   SELECT

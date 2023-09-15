@@ -2,7 +2,11 @@ from pathlib import Path
 
 import pytest
 
-from bigquery_etl.metadata.parse_metadata import Metadata, PartitionType
+from bigquery_etl.metadata.parse_metadata import (
+    DatasetMetadata,
+    Metadata,
+    PartitionType,
+)
 
 TEST_DIR = Path(__file__).parent.parent
 
@@ -179,3 +183,31 @@ class TestParseMetadata(object):
         assert metadata.bigquery.time_partitioning.require_partition_filter
         assert metadata.bigquery.time_partitioning.expiration_days == 2
         assert metadata.bigquery.time_partitioning.expiration_ms == 2 * 86400000
+
+    def test_of_deprecated_metadata(self):
+        metadata = Metadata.of_table(
+            "test",
+            "non_incremental_query",
+            "v1",
+            TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project",
+        )
+
+        assert metadata.deprecated
+
+    def test_of_dataset_metadata(self):
+        metadata = DatasetMetadata.from_file(
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "test"
+            / "dataset_metadata.yaml",
+        )
+
+        assert metadata.default_table_workgroup_access[0]["members"] == [
+            "test_default_member"
+        ]
+        assert (
+            metadata.default_table_workgroup_access[0]["role"]
+            == "roles/bigquery.dataViewer"
+        )

@@ -567,7 +567,8 @@ class TestDagCollection:
 
         checks_task1 = Task.of_dq_check(
             tmp_path / "test-project" / "test" / "table1_v1" / "checks.sql",
-            metadata,
+            is_check_fail=True,
+            metadata=metadata,
         )
 
         checks_task1.upstream_dependencies.append(table_task1_ref)
@@ -611,7 +612,8 @@ class TestDagCollection:
 
         checks_task2 = Task.of_dq_check(
             tmp_path / "test-project" / "test" / "external_table_v1" / "checks.sql",
-            metadata,
+            is_check_fail=True,
+            metadata=metadata,
         )
         checks_task2.upstream_dependencies.append(external_table_task_ref)
 

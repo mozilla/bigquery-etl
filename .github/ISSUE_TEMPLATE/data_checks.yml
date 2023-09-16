@@ -1,0 +1,22 @@
+name: Data Checks Bug
+description: Template for reporting an issue related to bqetl data checks
+title: "[Data Checks Bug]: "
+labels: ["data checks"]
+projects: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for contributing to bqetl data checks!
+  - type: textarea
+    id: description
+    attributes:
+      label: What is the issue?
+      description: Please provide information around about the problem
+      value: "What was observed, any logs or relevant links?"
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: How can we reproduce the bug
+      description: Please let us know how we can reproduce the issue
+      render: text

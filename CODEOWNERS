@@ -17,3 +17,4 @@
 /sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_tiles_v2 @mozilla/request_payload_reviewers
 /sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v2 @mozilla/dataops
 /sql/moz-fx-data-shared-prod/contextual_services_derived/suggest_revenue_levers_daily_v1 @mozilla/revenue_forecasting_data_reviewers
+/sql/moz-fx-data-shared-prod/monitoring_derived/jobs_by_organization_v1 @mozilla/dataops

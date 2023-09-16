@@ -31341,6 +31341,20 @@ fields:
               index.
 
               '
+        - name: networking_doh_heuristic_ever_tripped
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: BOOLEAN
+            mode: NULLABLE
+            description: 'True if this heuristic (key) was ever tripped during the
+              session.
+
+              '
       - name: scalars
         type: RECORD
         mode: NULLABLE
@@ -34616,6 +34630,29 @@ fields:
           type: INTEGER
           mode: NULLABLE
           description: User has blocked seeing trending results.
+        - name: networking_doh_heuristics_attempts
+          type: INTEGER
+          mode: NULLABLE
+          description: 'The number of times we ran DoH heuristics.
+
+            '
+        - name: networking_doh_heuristics_pass_count
+          type: INTEGER
+          mode: NULLABLE
+          description: 'The number of times we passed DoH heuristics.
+
+            '
+        - name: networking_doh_heuristics_result
+          type: INTEGER
+          mode: NULLABLE
+          description: 'The value of this scalar indicates the result of the last
+            heuristic run. 0: "incomplete" 1: "pass" 2: "opt-out" 3: "manually-disabled"
+            4: "manually-enabled" 5: "enterprise-disabled" 6: "enterprise-present"
+            7: "enterprise-enabled" 8: "vpn" 9: "proxy" 10: "nrpt" 11: "parental"
+            12: "modifiedRoots" 13: "thirdPartyRoots" 14: "google" 15: "youtube" 16:
+            "zscaler" 17: "canary" 18: "ignored"
+
+            '
     - name: socket
       type: RECORD
       mode: NULLABLE

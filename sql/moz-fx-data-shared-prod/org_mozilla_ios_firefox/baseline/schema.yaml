@@ -35,10 +35,6 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The architecture of the device, (e.g. "arm", "x86").
-  - name: build_date
-    type: STRING
-    mode: NULLABLE
-    description: The date & time the application was built
   - name: client_id
     type: STRING
     mode: NULLABLE
@@ -78,6 +74,10 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The version of the Glean SDK
+  - name: build_date
+    type: STRING
+    mode: NULLABLE
+    description: The date & time the application was built
   - name: windows_build_number
     type: INTEGER
     mode: NULLABLE
@@ -155,14 +155,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -175,6 +167,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -228,6 +228,21 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
+  - name: counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_validation_metrics_ping_count
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of metrics pings sent during the lifetime of this baseline
+        ping.
+    - name: tabs_normal_and_private_uri_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Record the number of URI''s visited by the user.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -292,25 +307,150 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
-  - name: url2
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: cookie_banner_report_site_domain
-      type: STRING
-      mode: NULLABLE
-      description: 'A user can report a site domain(Ex. for https://edition.cnn.com/
+    - name: glean_validation_pings_submitted
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: "A count of the pings submitted, by ping type.\n\nThis metric appears\
+        \ in both the metrics and baseline pings.\n\n- On the metrics ping, the counts\
+        \ include the number of pings sent since\n  the last metrics ping (including\
+        \ the last metrics ping)\n- On the baseline ping, the counts include the number\
+        \ of pings send since\n  the last baseline ping (including the last baseline\
+        \ ping)\n"
+    - name: browser_search_ad_clicks
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records clicks of adverts on SERP pages.
 
-        site domain will be cnn.com) when the cookie banner reducer is not
-
-        working from the cookie banner details panel.
+        The key format is `<provider-name>`.
 
         '
-  - name: url
+    - name: browser_search_with_ads
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records counts of SERP pages with adverts displayed.
+
+        The key format is `<provider-name>`.
+
+        '
+    - name: search_counts
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The labels for this counter are `{search-engine-name}.{source}`
+
+
+        If the search engine is bundled with Firefox-iOS, then
+
+        `search-engine-name` will be the name of the search engine. If
+
+        it is a custom search engine, the value will be `custom`.
+
+
+        The value of `source` will reflect the source from which the
+
+        search started.  One of:
+
+        * quicksearch
+
+        * suggestion
+
+        * actionbar
+
+        '
+    - name: search_in_content
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records the type of interaction a user has on SERP pages.
+
+        '
+  - name: string
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: cookie_banner_report_site_domain
+    - name: glean_baseline_locale
+      type: STRING
+      mode: NULLABLE
+      description: 'The locale of the application during initialization (e.g. "es-ES").
+
+        If the locale can''t be determined on the system, the value is
+
+        ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
+
+        to indicate "undetermined".
+
+        '
+    - name: search_default_engine
+      type: STRING
+      mode: NULLABLE
+      description: 'The default search engine identifier if the search engine is
+
+        pre-loaded with Firefox-iOS.  If it''s a custom search engine,
+
+        then the value will be ''custom''.
+
+        '
+  - name: timespan
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_baseline_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The duration of the last foreground session.
+
+        '
+  - name: datetime
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_validation_first_run_hour
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'The hour of the first run of the application.
+
+        '
+    - name: raw_glean_validation_first_run_hour
       type: STRING
       mode: NULLABLE
 - name: normalized_app_name
@@ -357,10 +497,10 @@ fields:
         type: RECORD
         mode: NULLABLE
         fields:
-        - name: enrollment_id
+        - name: type
           type: STRING
           mode: NULLABLE
-        - name: type
+        - name: enrollment_id
           type: STRING
           mode: NULLABLE
   - name: ping_type

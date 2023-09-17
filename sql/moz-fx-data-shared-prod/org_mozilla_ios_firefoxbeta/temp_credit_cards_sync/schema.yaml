@@ -35,6 +35,10 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The architecture of the device, (e.g. "arm", "x86").
+  - name: build_date
+    type: STRING
+    mode: NULLABLE
+    description: The date & time the application was built
   - name: client_id
     type: STRING
     mode: NULLABLE
@@ -74,10 +78,6 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The version of the Glean SDK
-  - name: build_date
-    type: STRING
-    mode: NULLABLE
-    description: The date & time the application was built
   - name: windows_build_number
     type: INTEGER
     mode: NULLABLE
@@ -155,6 +155,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -167,14 +175,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -192,20 +192,6 @@ fields:
         type: STRING
         mode: NULLABLE
     description: Headers included in the client's HTTP request
-  - name: user_agent
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: browser
-      type: STRING
-      mode: NULLABLE
-    - name: os
-      type: STRING
-      mode: NULLABLE
-    - name: version
-      type: STRING
-      mode: NULLABLE
-    description: Parsed components of the client's user agent string
   - name: isp
     type: RECORD
     mode: NULLABLE
@@ -224,6 +210,20 @@ fields:
       description: The name of a specific business entity associated with the client's
         IP address when available; otherwise the ISP name
     description: Results of ISP lookup based on the client's IP address
+  - name: user_agent
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+    - name: os
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+    description: Parsed components of the client's user agent string
 - name: metrics
   type: RECORD
   mode: NULLABLE
@@ -232,6 +232,51 @@ fields:
     type: RECORD
     mode: NULLABLE
     fields:
+    - name: credit_cards_sync_failure_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records why the credit card sync failed.
+
+        '
+    - name: credit_cards_sync_incoming
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records incoming credit cards record counts. `applied` is the
+        number of incoming records that were successfully stored or updated in the
+        local database. `failed_to_apply` is the number of records that were ignored
+        due to errors. `reconciled` is the number of merged records.
+
+        '
+    - name: credit_cards_sync_outgoing
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records outgoing credit cards record counts. `uploaded` is the
+        number of records that were successfully sent to the server. `failed_to_upload`
+        is the number of records that weren''t uploaded, and will be retried on the
+        next sync.
+
+        '
     - name: glean_error_invalid_label
       type: RECORD
       mode: REPEATED
@@ -296,26 +341,24 @@ fields:
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: activation_identifier
+    - name: credit_cards_sync_uid
       type: STRING
       mode: NULLABLE
-      description: 'A hashed and salted version of the Google Advertising ID from
-        the device.
-
-        This will never be sent in a ping that also contains the client_id.
+      description: 'The user''s hashed Firefox Account ID.
 
         '
   - name: uuid
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: activation_activation_id
+    - name: sync_sync_uuid
       type: STRING
       mode: NULLABLE
-      description: 'An alternate identifier, not correlated with the client_id, generated
-        once
-
-        and only sent with the activation ping.
+      description: 'Unique identifier for this sync, used to correlate together individual
+        pings for data types that were synchronized together (history, bookmarks,
+        logins, and tabs). If a data type is synchronized by itself via the legacy
+        ''sync'' API (as opposed to the Sync Manager), then this field will not be
+        set on the corresponding ping.
 
         '
 - name: normalized_app_name
@@ -362,10 +405,10 @@ fields:
         type: RECORD
         mode: NULLABLE
         fields:
-        - name: type
+        - name: enrollment_id
           type: STRING
           mode: NULLABLE
-        - name: enrollment_id
+        - name: type
           type: STRING
           mode: NULLABLE
   - name: ping_type

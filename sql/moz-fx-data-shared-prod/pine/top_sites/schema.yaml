@@ -35,6 +35,10 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The architecture of the device, (e.g. "arm", "x86").
+  - name: build_date
+    type: STRING
+    mode: NULLABLE
+    description: The date & time the application was built
   - name: client_id
     type: STRING
     mode: NULLABLE
@@ -74,10 +78,6 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The version of the Glean SDK
-  - name: build_date
-    type: STRING
-    mode: NULLABLE
-    description: The date & time the application was built
   - name: windows_build_number
     type: INTEGER
     mode: NULLABLE
@@ -159,6 +159,10 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Foxsec-IP-Reputation header
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -171,10 +175,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -228,15 +228,6 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
-  - name: boolean
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: fog_validation_profile_disk_is_ssd
-      type: BOOLEAN
-      mode: NULLABLE
-      description: True iff the type of the disk the current Firefox profile is stored
-        on is an SSD. (Windows only).
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -301,24 +292,74 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: top_sites_position
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The position (1-based) of the topsites item being interatcted
+        with.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: fog_validation_os_version
+    - name: top_sites_advertiser
       type: STRING
       mode: NULLABLE
-      description: The version of the OS running Firefox, as detected by Gecko. To
-        be sent only in the "fog-validation" ping.
+      description: 'The name of the advertiser providing the sponsored TopSite.
+
+        '
+    - name: top_sites_ping_type
+      type: STRING
+      mode: NULLABLE
+      description: 'The ping''s type. In other situations might be designated by an
+        event''s name or an interaction field. E.g. "topsites-impression", "topsites-click".
+
+        '
+    - name: top_sites_source
+      type: STRING
+      mode: NULLABLE
+      description: 'The source of the interaction. Always set to "newtab".
+
+        '
+    - name: top_sites_tile_id
+      type: STRING
+      mode: NULLABLE
+      description: 'String-encoded number for the tile''s sponsored tile id.
+
+        '
+  - name: url2
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: top_sites_reporting_url
+      type: STRING
+      mode: NULLABLE
+      description: 'The url to report this interaction to.
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: fog_validation_legacy_telemetry_client_id
+    - name: top_sites_context_id
       type: STRING
       mode: NULLABLE
-      description: The Telemetry client_id. To be sent only in the "fog-validation"
-        ping.
+      description: 'An identifier to identify users for Contextual Services user interaction
+        pings.
+
+        '
+  - name: url
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: top_sites_reporting_url
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
@@ -363,10 +404,10 @@ fields:
         type: RECORD
         mode: NULLABLE
         fields:
-        - name: type
+        - name: enrollment_id
           type: STRING
           mode: NULLABLE
-        - name: enrollment_id
+        - name: type
           type: STRING
           mode: NULLABLE
   - name: ping_type

@@ -35403,6 +35403,16 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
+        - name: networking_doh_heuristic_ever_tripped
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: BOOLEAN
+            mode: NULLABLE
       - name: scalars
         type: RECORD
         mode: NULLABLE
@@ -36749,6 +36759,15 @@ fields:
           type: BOOLEAN
           mode: NULLABLE
         - name: urlbar_trending_block
+          type: INTEGER
+          mode: NULLABLE
+        - name: networking_doh_heuristics_attempts
+          type: INTEGER
+          mode: NULLABLE
+        - name: networking_doh_heuristics_pass_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: networking_doh_heuristics_result
           type: INTEGER
           mode: NULLABLE
       - name: events

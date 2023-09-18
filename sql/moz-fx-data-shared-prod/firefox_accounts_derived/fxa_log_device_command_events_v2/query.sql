@@ -39,4 +39,4 @@ WHERE
   jsonPayload.type LIKE 'device.command.%'
   AND DATE(`timestamp`) = @submission_date
   -- Only include events after AWS tp GCP migration started.
-  AND DATE(`timestamp`) <= "2023-09-07"
+  AND DATE(`timestamp`) >= "2023-09-07"

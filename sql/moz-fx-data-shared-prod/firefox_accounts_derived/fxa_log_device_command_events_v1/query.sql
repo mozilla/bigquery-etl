@@ -40,5 +40,7 @@ WHERE
   jsonPayload.type LIKE 'device.command.%'
   -- Device command metrics were first deployed and stable on 2020-07-08;
   -- there is some data for earlier dates but it's from a failed deployment so we don't count it.
-  AND DATE(`timestamp`) >= "2020-07-08"
   AND DATE(`timestamp`) = @submission_date
+  -- Only including events up until GCP migration.
+  -- The window a bit wider to make sure we don't loose any events in the migration window.
+  AND DATE(`timestamp`) BETWEEN "2020-07-08" AND "2023-09-15"

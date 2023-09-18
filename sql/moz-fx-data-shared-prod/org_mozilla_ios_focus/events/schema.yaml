@@ -192,20 +192,6 @@ fields:
         type: STRING
         mode: NULLABLE
     description: Headers included in the client's HTTP request
-  - name: user_agent
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: browser
-      type: STRING
-      mode: NULLABLE
-    - name: os
-      type: STRING
-      mode: NULLABLE
-    - name: version
-      type: STRING
-      mode: NULLABLE
-    description: Parsed components of the client's user agent string
   - name: isp
     type: RECORD
     mode: NULLABLE
@@ -224,6 +210,20 @@ fields:
       description: The name of a specific business entity associated with the client's
         IP address when available; otherwise the ISP name
     description: Results of ISP lookup based on the client's IP address
+  - name: user_agent
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+    - name: os
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+    description: Parsed components of the client's user agent string
 - name: metrics
   type: RECORD
   mode: NULLABLE

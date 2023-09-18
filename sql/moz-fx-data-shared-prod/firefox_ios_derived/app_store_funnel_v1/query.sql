@@ -46,20 +46,17 @@ store_stats AS (
   ON
     country_name = name
 ),
-new_profiles_and_activations AS (
+_new_profiles AS (
   SELECT
     first_seen_date AS `date`,
-    country,
-    SUM(new_profile) AS new_profiles,
-    SUM(activated) AS activations,
+    first_reported_country AS country,
+    COUNT(*) AS new_profiles,
   FROM
-    firefox_ios.new_profile_activation
+    firefox_ios.firefox_ios_clients
   WHERE
-    submission_date >= '2022-01-01'
+    DATE(submission_timestamp) >= '2022-01-01'
     AND first_seen_date >= '2022-01-01'
-     -- below filter required due to untrusted devices anomaly,
-     -- more information can be found in this bug: https://bugzilla.mozilla.org/show_bug.cgi?id=1846554
-    AND NOT (app_display_version = '107.2' AND submission_date >= '2023-02-01')
+    -- TODO: do we need to filter here for "release" channel only?
   GROUP BY
     `date`,
     country
@@ -72,10 +69,9 @@ SELECT
   COALESCE(first_time_downloads, 0) AS first_time_downloads,
   COALESCE(redownloads, 0) AS redownloads,
   COALESCE(new_profiles, 0) AS new_profiles,
-  COALESCE(activations, 0) AS activations,
 FROM
   store_stats
 FULL OUTER JOIN
-  new_profiles_and_activations
+  _new_profiles
 USING
   (`date`, country)

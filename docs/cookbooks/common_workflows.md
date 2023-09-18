@@ -114,8 +114,9 @@ The following is an example to update a new field in `telemetry_derived.clients_
 1. Open the `clients_daily_v6` `query.sql` file and add new field definitions.
 1. Run `./bqetl format sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/query.sql`
 1. Run `./bqetl query validate telemetry_derived.clients_daily_v6`.
-1. Run `./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream`.
+1. Run `./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream --ignore-dryrun-skip`.
    * [x] `schema.yaml` files of downstream dependencies, like `clients_last_seen_v1` are updated.
+   * If the schema has no changes, we do not run schema updates on any of its downstream dependencies.
 1. Open a PR with these changes.
 1. PR is reviewed and approved.
 1. Merge pull-request.

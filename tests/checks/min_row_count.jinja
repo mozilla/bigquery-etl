@@ -1,0 +1,16 @@
+{% macro min_row_count(threshold, where) %}
+  {% set threshold = threshold|default(1) %}
+
+  WITH min_row_count AS (
+    SELECT COUNT(*) AS total_rows
+    FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+    {% if where %}
+    WHERE {{ where }}
+    {% endif %}
+  )
+  SELECT IF(
+   (SELECT COUNTIF(total_rows < {{ threshold }}) FROM min_row_count) > 0,
+   ERROR(CONCAT("Less than ", (SELECT total_rows FROM min_row_count), " rows found (expected more than {{ threshold }})")),
+   NULL
+  );
+{% endmacro %}

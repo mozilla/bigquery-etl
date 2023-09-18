@@ -90,7 +90,7 @@ class TestUtilCommon:
         file_path = tmp_path / "checks.sql"
         file_path.write_text(
             r"""
-            {{ min_rows(1, "submission_date = @submission_date") }}
+            {{ min_row_count(1, "submission_date = @submission_date") }}
         """
         )
         kwargs = {
@@ -102,7 +102,7 @@ class TestUtilCommon:
             file_path.name, template_folder=file_path.parent, **kwargs
         )
         assert (
-            r"""{{ min_rows(1, "submission_date = @submission_date") }}"""
+            r"""{{ min_row_count(1, "submission_date = @submission_date") }}"""
             not in rendered_sql
         )
         assert "SELECT" in rendered_sql

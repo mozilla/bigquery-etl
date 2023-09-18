@@ -43,11 +43,12 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    checks__telemetry_derived__ssl_ratios__v1 = bigquery_dq_check(
-        task_id="checks__telemetry_derived__ssl_ratios__v1",
+    checks__fail_telemetry_derived__ssl_ratios__v1 = bigquery_dq_check(
+        task_id="checks__fail_telemetry_derived__ssl_ratios__v1",
         source_table="ssl_ratios_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
         owner="chutten@mozilla.com",
         email=["chutten@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
@@ -65,7 +66,7 @@ with DAG(
         depends_on_past=False,
     )
 
-    checks__telemetry_derived__ssl_ratios__v1.set_upstream(
+    checks__fail_telemetry_derived__ssl_ratios__v1.set_upstream(
         telemetry_derived__ssl_ratios__v1
     )
 

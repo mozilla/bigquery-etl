@@ -15,7 +15,13 @@ Built from bigquery-etl repo, [`dags/bqetl_kpis_shredder.py`](https://github.com
 
 #### Description
 
+Currently paused due to a bug causing the DAG upstream dependencies completion
+not being detected correctly.
+for more info, see:
+  - https://bugzilla.mozilla.org/show_bug.cgi?id=1852517
+  - https://github.com/mozilla/bigquery-etl/pull/4239
 This DAG calculates KPIs for shredder client_ids
+
 #### Owner
 
 lvargas@mozilla.com

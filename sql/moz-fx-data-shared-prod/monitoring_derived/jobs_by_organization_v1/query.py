@@ -45,11 +45,10 @@ def create_query(date, project):
           total_bytes_billed,
           total_bytes_processed,
           total_modified_partitions,
-          total_slot_ms ,
-          transaction_id,
+          total_slot_ms,
           user_email,
           query_info.resource_warning as query_info_resource_warning,
-          query_info.query_hashes_normalized_literals as query_info_query_hashes_normalized_literals,
+          query_info.query_hashes.normalized_literals as query_info_query_hashes_normalized_literals,
           transferred_bytes,
           DATE(creation_time) as creation_date
         FROM

@@ -9,6 +9,7 @@ labels:
   incremental: true
   schedule: daily
   owner1: anicholson
+  dag: bqetl_newtab
 scheduling:
   dag_name: bqetl_newtab
 bigquery:
@@ -21,3 +22,4 @@ bigquery:
     fields:
     - channel
     - country_code
+references: {}

@@ -1,7 +1,7 @@
 ---
 friendly_name: Structured Pipeline Family Decoded
 description: |-
-  A view on top of the `payload_bytes_decoded.structured_*` tables that
+  A view on top of the `payload_bytes_decoded.structured*` tables that
   includes all fields except the payload.
 
   This view is useful for overall pipeline monitoring.

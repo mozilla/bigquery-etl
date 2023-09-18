@@ -9,6 +9,7 @@ labels:
   owner1: mhirose
 scheduling:
   dag_name: bqetl_monitoring
+  arguments: ["--date", "{{ ds }}"]
 bigquery:
   time_partitioning:
     type: day

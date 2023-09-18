@@ -307,6 +307,7 @@ main_ping AS (
     client_id,
     sample_id
 ),
+-- This query unions the client's 'data from the 3 pings, resulting in a max. of 3 records per client_id (one per ping).
 unioned AS (
   SELECT
     *,
@@ -326,6 +327,7 @@ unioned AS (
   FROM
     main_ping
 ),
+-- This subquery returns a max. of 6 records per client_id: 3 pings x 2 earliest TIMESTAMPS per ping.
 unioned_with_all_dates AS (
   SELECT
     client_id,
@@ -350,6 +352,7 @@ unioned_with_all_dates AS (
   GROUP BY
     client_id
 ),
+-- This subquery returns a max. of 2 rows per client_id with the first and second earliest TIMESTAMPs and reporting pings.
 unioned_min_timestamp_per_date AS (
   SELECT
     client_id,
@@ -365,6 +368,7 @@ unioned_min_timestamp_per_date AS (
     client_id,
     value
 ),
+-- This subquery returns one row per client_id with the second seen date and reporting ping.
 unioned_second_dates AS (
   SELECT
     client_id,
@@ -384,6 +388,8 @@ unioned_second_dates AS (
   GROUP BY
     client_id
 ),
+-- This query returns one row per client_id with the earliest value reported each attribute.
+-- For some attributes, the reporting ping is also recorded in the metadata.
 _current AS (
   SELECT
     client_id,
@@ -561,6 +567,7 @@ _current AS (
   GROUP BY
     client_id
 ),
+-- This query returns one row per client_id including the core attributes unioned with the second_seen date.
 _current_with_second_date AS (
   SELECT
     _current.client_id,

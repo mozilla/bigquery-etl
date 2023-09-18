@@ -23,7 +23,7 @@ import click
 import yaml
 from dateutil.rrule import MONTHLY, rrule
 from google.cloud import bigquery
-from google.cloud.exceptions import NotFound
+from google.cloud.exceptions import NotFound, PreconditionFailed
 
 from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_matching
 from ..cli.format import format
@@ -1291,11 +1291,7 @@ def _run_query_in_parallel(
     dry_run,
     addl_templates,
 ):
-    if dry_run:
-        print("Do a dry run.")
-        job_config = bigquery.QueryJobConfig(dry_run=True, use_query_cache=False)
-    else:
-        job_config = bigquery.QueryJobConfig(dry_run=False, use_query_cache=False)
+    job_config = bigquery.QueryJobConfig(dry_run=dry_run, use_query_cache=False)
 
     with ThreadPool(parallelism) as pool:
         start = default_timer()
@@ -1357,15 +1353,32 @@ def initialize(name, sql_dir, project_id, dry_run):
         client = bigquery.Client()
 
         # Enable init from query.sql files
-        # First deploys the schema, then runs the init
+        # Create the table by deploying the schema and metadata, then run the init
         # This does not currently verify the accuracy of the schema
         if "is_init()" in sql_content:
             project = query_file.parent.parent.parent.name
             dataset = query_file.parent.parent.name
             destination_table = query_file.parent.name
-            Schema.from_schema_file(query_file.parent / SCHEMA_FILE).deploy(
-                f"{project}.{dataset}.{destination_table}"
-            )
+            full_table_id = f"{project}.{dataset}.{destination_table}"
+            query_file_path = Path(query_file)
+            existing_schema = Schema.from_schema_file(query_file.parent / SCHEMA_FILE)
+
+            with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
+                existing_schema.to_json_file(Path(tmp_schema_file.name))
+                bigquery_schema = client.schema_from_json(tmp_schema_file.name)
+            try:
+                table = client.get_table(full_table_id)
+            except NotFound:
+                table = bigquery.Table(full_table_id)
+            table.schema = bigquery_schema
+            _attach_metadata(query_file_path, table)
+            if not table.created:
+                client.create_table(table)
+                click.echo(f"Destination table {full_table_id} created.")
+            else:
+                raise PreconditionFailed(
+                    f"Table {full_table_id} already exists. The initialization process is terminated."
+                )
             arguments = [
                 "query",
                 "--use_legacy_sql=false",

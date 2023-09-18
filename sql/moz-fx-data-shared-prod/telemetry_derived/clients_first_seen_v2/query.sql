@@ -1,7 +1,7 @@
 -- Query for telemetry_derived.clients_first_seen_v2
-{% if parallel_run() %}
-  INSERT INTO
-    {project_id}.{dataset_id}.{table_name}
+{% if is_init() and parallel_run() %}
+INSERT INTO
+  {project_id}.{dataset_id}.{table_name}
 {% endif %}
 WITH new_profile_ping AS (
   SELECT

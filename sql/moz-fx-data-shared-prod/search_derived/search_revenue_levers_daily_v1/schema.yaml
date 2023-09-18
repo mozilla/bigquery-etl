@@ -47,3 +47,6 @@ fields:
   - mode: NULLABLE
     name: monetizable_sap
     type: INTEGER
+  - mode: NULLABLE
+    name: dau_w_engine_as_default
+    type: INTEGER

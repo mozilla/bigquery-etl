@@ -3616,9 +3616,11 @@ SELECT
 <li>Open the <code>clients_daily_v6</code> <code>query.sql</code> file and add new field definitions.</li>
 <li>Run <code>./bqetl format sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/query.sql</code></li>
 <li>Run <code>./bqetl query validate telemetry_derived.clients_daily_v6</code>.</li>
-<li>Run <code>./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream --ignore-dryrun-skip</code>.<ul class="task-list">
+<li>Authenticate to GCP: <code>gcloud auth login --update-adc</code></li>
+<li>Run <code>./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream --ignore-dryrun-skip --use-cloud-function=false</code>.<ul class="task-list">
 <li class="task-list-item"><input type="checkbox" disabled checked/> <code>schema.yaml</code> files of downstream dependencies, like <code>clients_last_seen_v1</code> are updated.</li>
 <li>If the schema has no changes, we do not run schema updates on any of its downstream dependencies.</li>
+<li><code>--use-cloud-function=false</code> is necessary when updating tables related to <code>clients_daily</code> but optional for other tables. The dry run cloud function times out when fetching the deployed table schema for some of <code>clients_daily</code>s downstream dependencies. Using GCP credentials instead works, however this means users need to have permissions to run queries in <code>moz-fx-data-shared-prod</code>.</li>
 </ul>
 </li>
 <li>Open a PR with these changes.</li>

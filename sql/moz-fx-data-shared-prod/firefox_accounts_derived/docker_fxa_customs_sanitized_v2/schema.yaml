@@ -1,0 +1,4 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE

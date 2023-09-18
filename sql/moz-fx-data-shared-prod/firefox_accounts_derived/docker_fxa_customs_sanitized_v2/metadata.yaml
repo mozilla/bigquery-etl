@@ -1,0 +1,21 @@
+friendly_name: Docker Fxa Customs Sanitized
+description: |-
+  Sanitized version of customs events from GCP based FxA service stderr table.
+  PII is hashed.
+owners:
+- kik@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_fxa_events
+  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+  clustering: null
+references: {}

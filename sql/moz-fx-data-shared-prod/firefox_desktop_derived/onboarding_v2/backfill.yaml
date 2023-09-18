@@ -1,0 +1,8 @@
+2023-09-18:
+  start_date: 2023-05-24
+  end_date: 2023-08-30
+  reason: Backfill for new ETL added https://mozilla-hub.atlassian.net/browse/DENG-1207
+  watchers:
+  - gleonard@mozilla.com
+  - chutten@mozilla.com
+  status: Drafting

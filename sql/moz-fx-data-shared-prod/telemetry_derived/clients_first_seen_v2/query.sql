@@ -327,7 +327,11 @@ unioned AS (
   FROM
     main_ping
 ),
--- This subquery returns a max. of 6 records per client_id: 3 pings x 2 earliest TIMESTAMPS per ping.
+-- The next 3 subqueries are required to calculate the second seen date, addressing different scenarios:
+-- - Calculate using 6 TIMESTAMPS: first and second TIMESTAMPS x 3 pings.
+-- - Extract only the earliest TIMESTAMP per DATE for each ping, for cases when many pings are sent on the same DATE.
+-- - Exclude new_profile ping duplicates (only one is expected), to avoid first and second seen date from this ping.
+-- The next subquery returns a max. of 6 records per client_id: 3 pings x 2 earliest TIMESTAMPS per ping.
 unioned_with_all_dates AS (
   SELECT
     client_id,

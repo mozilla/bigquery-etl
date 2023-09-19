@@ -54,9 +54,8 @@ _new_profiles AS (
   FROM
     firefox_ios.firefox_ios_clients
   WHERE
-    DATE(submission_timestamp) >= '2022-01-01'
-    AND first_seen_date >= '2022-01-01'
-    -- TODO: do we need to filter here for "release" channel only?
+    first_seen_date >= '2022-01-01'
+    AND channel = "release"
   GROUP BY
     `date`,
     country

@@ -35,10 +35,6 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The architecture of the device, (e.g. "arm", "x86").
-  - name: build_date
-    type: STRING
-    mode: NULLABLE
-    description: The date & time the application was built
   - name: client_id
     type: STRING
     mode: NULLABLE
@@ -78,6 +74,10 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The version of the Glean SDK
+  - name: build_date
+    type: STRING
+    mode: NULLABLE
+    description: The date & time the application was built
   - name: windows_build_number
     type: INTEGER
     mode: NULLABLE
@@ -155,14 +155,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -175,6 +167,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -228,62 +228,6 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
-  - name: counter
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: browser_engagement_active_ticks
-      type: INTEGER
-      mode: NULLABLE
-      description: 'The number of five-second intervals (''ticks'') the user was considered
-
-        ''active''.
-
-
-        ''active'' means keyboard or mouse interaction with the application.
-
-        It doesn''t take into account whether or not the window has focus or is in
-
-        the foreground, only if it is receiving these interaction events.
-
-
-        Migrated from Telemetry''s `browser.engagement.active_ticks`.
-
-        '
-    - name: browser_engagement_uri_count
-      type: INTEGER
-      mode: NULLABLE
-      description: 'The number of total non-unique http(s) URIs visited, including
-        page
-
-        reloads, after the session has been restored. URIs on minimized or
-
-        background tabs may also be counted. Private browsing uris are included.
-
-
-        Migrated from Telemetry''s
-
-        `browser.engagement.total_uri_count_normal_and_private_mode`.
-
-        '
-    - name: glean_validation_metrics_ping_count
-      type: INTEGER
-      mode: NULLABLE
-      description: The number of metrics pings sent during the lifetime of this baseline
-        ping.
-  - name: datetime
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: glean_validation_first_run_hour
-      type: TIMESTAMP
-      mode: NULLABLE
-      description: 'The hour of the first run of the application.
-
-        '
-    - name: raw_glean_validation_first_run_hour
-      type: STRING
-      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -364,6 +308,70 @@ fields:
         \ the last metrics ping)\n- On the baseline ping, the counts include the number\
         \ of pings send since\n  the last baseline ping (including the last baseline\
         \ ping)\n"
+    - name: browser_search_ad_clicks
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: "Records clicks of adverts on SERP pages.\nThe key format is \u2018\
+        <provider-name>\u2019.\n"
+    - name: browser_search_in_content
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records the type of interaction a user has on SERP pages.
+
+        '
+    - name: browser_search_search_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The labels for this counter are `<search-engine-name>.<source>`.
+
+        If the search engine is bundled with Focus `search-engine-name` will be
+
+        the name of the search engine. If it''s a custom search engine (defined:
+
+        https://github.com/mozilla-mobile/fenix/issues/1607) the value will be
+
+        `custom`.
+
+        `source` will be: `action`, `suggestion`, `widget`, `shortcut`, `topsite`
+
+        (depending on the source from which the search started). Also added the
+
+        `other` option for the source but it should never enter on this case.
+
+        '
+    - name: browser_search_with_ads
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: "Records counts of SERP pages with adverts displayed.\nThe key\
+        \ format is \u2018<provider-name>\u2019.\n"
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -378,6 +386,16 @@ fields:
         ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
 
         to indicate "undetermined".
+
+        '
+    - name: search_default_engine
+      type: STRING
+      mode: NULLABLE
+      description: 'The default search engine name if the search engine is
+
+        pre-loaded with Focus.  If it''s a custom search engine,
+
+        then the value will be ''custom''.
 
         '
   - name: timespan
@@ -397,28 +415,35 @@ fields:
       description: 'The duration of the last foreground session.
 
         '
-  - name: uuid
+  - name: datetime
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: legacy_telemetry_client_id
+    - name: glean_validation_first_run_hour
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'The hour of the first run of the application.
+
+        '
+    - name: raw_glean_validation_first_run_hour
       type: STRING
       mode: NULLABLE
-      description: 'The client_id according to Telemetry.
+  - name: counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser_total_uri_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records count of URIs visited by the user in the current session,
 
-        Might not always have a value due to being too early for it to have
+        including page reloads.
 
-        loaded.
+        It does not include background page requests and URIs from embedded pages
 
-        Value may be the canary client id `c0ffeec0-ffee-c0ff-eec0-ffeec0ffeec0`
+        but may be incremented without user interaction by website scripts
 
-        in pings near when the data upload pref is disabled (if Telemetry gets
-
-        to go first), or between when a client_id has been removed and when it
-
-        has been regenerated.
-
-        Does not need to be sent in the Glean "deletion-request" ping.
+        that programmatically redirect to a new location.
 
         '
 - name: normalized_app_name

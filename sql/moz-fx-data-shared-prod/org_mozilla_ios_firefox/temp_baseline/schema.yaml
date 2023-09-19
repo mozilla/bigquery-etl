@@ -35,6 +35,10 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The architecture of the device, (e.g. "arm", "x86").
+  - name: build_date
+    type: STRING
+    mode: NULLABLE
+    description: The date & time the application was built
   - name: client_id
     type: STRING
     mode: NULLABLE
@@ -54,6 +58,12 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The date of the first run of the application.
+  - name: locale
+    type: STRING
+    mode: NULLABLE
+    description: The locale of the application during initialization (e.g. "es-ES").
+      If the locale can't be determined on the system, the value is ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
+      to indicate "undetermined".
   - name: os
     type: STRING
     mode: NULLABLE
@@ -68,16 +78,6 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The version of the Glean SDK
-  - name: locale
-    type: STRING
-    mode: NULLABLE
-    description: The locale of the application during initialization (e.g. "es-ES").
-      If the locale can't be determined on the system, the value is ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
-      to indicate "undetermined".
-  - name: build_date
-    type: STRING
-    mode: NULLABLE
-    description: The date & time the application was built
   - name: windows_build_number
     type: INTEGER
     mode: NULLABLE
@@ -155,6 +155,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -167,14 +175,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -192,20 +192,6 @@ fields:
         type: STRING
         mode: NULLABLE
     description: Headers included in the client's HTTP request
-  - name: user_agent
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: browser
-      type: STRING
-      mode: NULLABLE
-    - name: os
-      type: STRING
-      mode: NULLABLE
-    - name: version
-      type: STRING
-      mode: NULLABLE
-    description: Parsed components of the client's user agent string
   - name: isp
     type: RECORD
     mode: NULLABLE
@@ -224,6 +210,20 @@ fields:
       description: The name of a specific business entity associated with the client's
         IP address when available; otherwise the ISP name
     description: Results of ISP lookup based on the client's IP address
+  - name: user_agent
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+    - name: os
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+    description: Parsed components of the client's user agent string
 - name: metrics
   type: RECORD
   mode: NULLABLE
@@ -247,7 +247,7 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
-    - name: glean_error_invalid_value
+    - name: glean_error_invalid_overflow
       type: RECORD
       mode: REPEATED
       fields:
@@ -257,7 +257,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Counts the number of times a metric was set to an invalid value.
+      description: 'Counts the number of times a metric was set a value that overflowed.
 
         The labels are the `category.name` identifier of the metric.
 
@@ -277,7 +277,7 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
-    - name: glean_error_invalid_overflow
+    - name: glean_error_invalid_value
       type: RECORD
       mode: REPEATED
       fields:
@@ -287,21 +287,56 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Counts the number of times a metric was set a value that overflowed.
+      description: 'Counts the number of times a metric was set to an invalid value.
 
         The labels are the `category.name` identifier of the metric.
 
         '
-  - name: string
+  - name: timespan
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: distribution_channel_name
-      type: STRING
+    - name: baseline_validation_baseline_duration
+      type: RECORD
       mode: NULLABLE
-      description: 'The distribution channel name of this application. We use this
-        field to recognize Firefox Reality is distributed to which channels, such
-        as wavevrStore, oculusvr, picovr,etc.
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The duration from startup to the backgrounding event.
+
+        This should be equivalent to `baseline.duration`
+
+        '
+    - name: baseline_validation_startup_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The duration from startup until the app is visible to the user.
+
+        '
+    - name: baseline_validation_visible_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The duration from when the app is visible to the user
+
+        until it is backgrounded.
 
         '
 - name: normalized_app_name
@@ -348,22 +383,22 @@ fields:
         type: RECORD
         mode: NULLABLE
         fields:
-        - name: type
-          type: STRING
-          mode: NULLABLE
         - name: enrollment_id
           type: STRING
           mode: NULLABLE
+        - name: type
+          type: STRING
+          mode: NULLABLE
   - name: ping_type
+    type: STRING
+    mode: NULLABLE
+  - name: reason
     type: STRING
     mode: NULLABLE
   - name: seq
     type: INTEGER
     mode: NULLABLE
   - name: start_time
-    type: STRING
-    mode: NULLABLE
-  - name: reason
     type: STRING
     mode: NULLABLE
   - name: parsed_start_time

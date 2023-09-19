@@ -1,0 +1,66 @@
+friendly_name: Downloads With Attribution
+description: |-
+  A daily joining of Firefox download tokens with Google Analytics attribution data.
+  Due to delays in GA session reporting this table has a total 3 day lag. This is due to a combination of delayed data
+  from GA, end of day processing in ETL and the need to check GA sessions a day later for the download attribution.
+  e.g Data for 2023-04-05 will not be available until 2023-04-08
+
+  1. Each row in this table is a unique dltoken.
+
+  2. A single GA session can have multiple dltokens (a session resulted in multiple downloads).
+
+  3. The two datasets are first joined using the GA client_id and a custom download_session_id (v2 implementatin).
+
+  4. If either the stub_visit_id or stub_download_session_id is NULL, '', '(not set)', or 'something',
+    the join_result_v2 column is:
+    * DOWNLOAD_CLIENT_OR_SESSION_ID_NULL
+    * DOWNLOAD_CLIENT_OR_SESSION_ID_EMPTY
+    * DOWNLOAD_CLIENT_OR_SESSION_ID_VALUE_NOT_SET
+    * DOWNLOAD_CLIENT_OR_SESSION_ID_VALUE_SOMETHING
+    * All GA derived values are null
+    * The join_result_v1 is null
+
+  5. The join_result_v2 column is CLIENT_ID_SESSION_ID_MATCH for a successful join and join_result_v1 is null since the
+      v1 logic was not applied.
+
+  6. Occasionally GA sessions do not include a download_session_id only the client_id but the download data has both
+      theclient_id and the download_session_id.  Because of the missing GA field the join does not match resulting in
+      ~7000 dltoken rows with join_result_v2 = MISSING_GA_CLIENT_OR_SESSION_ID.  When this result is detected, the join
+      is performed again for only those dltokens using the client_id only (V1 implementation).  This may result in a
+      few hundred MISSING_GA_CLIENT occurring along with GA_UNRESOLVABLE due to multiple GA sessions for the selected
+      time range.
+
+  7.  In all cases where v1 logic has been applied, the join_result_v2 is set to MISSING_GA_CLIENT_OR_SESSION_ID
+
+  8.  If the v1 logic is applied, the join_result_v1 column will be CLIENT_ID_ONLY_MATCH for a successful join.
+
+  9. A GA session which does not have a dltoken with a corresponding stub_visit_id/clientId match is excluded from this
+      dataset.
+
+  10. If a dltoken occurs in the raw stub attribution table more than once:
+    * count_dltoken_duplicates will be >= 1.
+    * A value of 0 means there are no duplicates (expected state).
+    * A value of 1 means there was 1 other row with the dltoken value, etc.
+owners:
+- gleonard@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  owner1: gleonard
+scheduling:
+  dag_name: bqetl_download_funnel_attribution
+  task_name: ga_derived__downloads_with_attribution__v2
+  date_partition_parameter: download_date
+  date_partition_offset: -1
+  referenced_tables:
+  - - moz-fx-data-marketing-prod
+    - ga_derived
+    - www_site_empty_check_v1
+bigquery:
+  time_partitioning:
+    type: day
+    field: download_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering: null
+references: {}

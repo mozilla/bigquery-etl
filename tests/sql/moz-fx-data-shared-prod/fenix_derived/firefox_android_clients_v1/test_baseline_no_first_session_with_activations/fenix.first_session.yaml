@@ -1,0 +1,10 @@
+---
+- client_info:
+    client_id: client-3
+  sample_id: 50
+  submission_timestamp: '2023-01-01 00:00:00'
+  metrics:
+    string:
+      first_session_network: Organic
+  ping_info:
+    seq: 0

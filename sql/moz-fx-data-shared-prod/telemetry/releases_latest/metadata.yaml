@@ -1,0 +1,15 @@
+friendly_name: Releases Latest
+description: |-
+  This is built on top of telemetry.releases and aims
+  to provide an entry on each day for on each day
+  for the major release channels ("release", "beta", "esr")
+  along with the latest Firefox version released on
+  that day or earlier for those channels.
+
+  Firefox release information imported from
+  https://product-details.mozilla.org/1.0/firefox.json
+
+  For more context, see
+  https://wiki.mozilla.org/Release_Management/Product_details
+owners:
+- kik@mozilla.com

@@ -12,9 +12,6 @@ python3.10 -m venv venv/
 # install python dependencies with pip-sync (provided by pip-tools)
 ./venv/bin/pip-sync --pip-args=--no-deps requirements.txt
 
-# build java dependencies with maven
-mvn package
-
 # run pytest with all linters and 8 workers in parallel
 ./venv/bin/pytest --black --flake8 --isort --mypy-ignore-missing-imports --pydocstyle -n 8
 

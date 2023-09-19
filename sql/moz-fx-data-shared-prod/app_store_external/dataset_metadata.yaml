@@ -1,0 +1,10 @@
+friendly_name: App Store External
+description: |-
+  App Store data, directly pulled from Fivetran.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

@@ -8,8 +8,6 @@ labels:
 scheduling:
   dag_name: bqetl_cjms_nonprod
   query_project: moz-fx-data-shared-prod
-  depends_on_fivetran:
-    - task_id: fivetran_stripe_nonprod
   # destination is the whole table, not a single partition,
   # so don't use date_partition_parameter
   date_partition_parameter: null

@@ -10,6 +10,7 @@ import click
 from google.cloud import bigquery
 
 from bigquery_etl.cli.utils import project_id_option
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.metadata.parse_metadata import DATASET_METADATA_FILE, DatasetMetadata
 from bigquery_etl.util.common import project_dirs
 
@@ -30,8 +31,12 @@ def publish(project_id):
     """Publish CSV files as BigQuery tables."""
     source_project = project_id
     target_project = project_id
-    if target_project == "mozdata":
-        source_project = "moz-fx-data-shared-prod"
+    if target_project == ConfigLoader.get(
+        "default", "user_facing_project", fallback="mozdata"
+    ):
+        source_project = ConfigLoader.get(
+            "default", "project", fallback="moz-fx-data-shared-prod"
+        )
 
     for project_dir in project_dirs(source_project):
         # Assumes directory structure is project/dataset/table/files.
@@ -40,7 +45,9 @@ def publish(project_id):
         ):
             table_dir = os.path.dirname(data_file_path)
             dataset_dir = os.path.dirname(table_dir)
-            if target_project == "mozdata" and not _is_user_facing_dataset(dataset_dir):
+            if target_project == ConfigLoader.get(
+                "default", "user_facing_project", fallback="mozdata"
+            ) and not _is_user_facing_dataset(dataset_dir):
                 logging.debug(
                     f"Skipping `{data_file_path}` for {target_project} because it isn't"
                     " in a user-facing dataset."

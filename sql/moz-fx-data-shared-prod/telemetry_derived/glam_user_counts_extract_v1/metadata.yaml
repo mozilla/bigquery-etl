@@ -1,0 +1,6 @@
+friendly_name: |-
+  Telemetry Derived - Glam User Counts Extract
+description: |-
+  Final format and deduped total user counts for all Legacy Telemetry probes supported by GLAM
+owners:
+- data-platform-infra-wg@mozilla.com

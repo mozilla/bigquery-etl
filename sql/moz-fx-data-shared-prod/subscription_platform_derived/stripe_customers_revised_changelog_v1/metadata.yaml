@@ -1,0 +1,26 @@
+friendly_name: Stripe customers revised changelog
+description: |-
+  Changes to Stripe customers as recorded by Fivetran, with revisions to improve historical accuracy.
+
+  The underlying changelog is only truly accurate from the most recent full rebuild from scratch (2023-07-10) going forward.
+  As a result, we've had to adjust and synthesize records to more accurately reconstruct history.
+
+  This table's schema closely mirrors Stripe's customers API (https://stripe.com/docs/api/customers/object).
+  Fields which Fivetran doesn't sync and fields we've specifically chosen not to include (e.g. PII) have been omitted.
+  In particular, all address fields except country have been omitted because Firefox Account user IDs are present and this is in a Mozilla-confidential dataset.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  date_partition_parameter: date
+bigquery:
+  time_partitioning:
+    type: day
+    field: timestamp
+    require_partition_filter: false
+    expiration_days: null
+  clustering: null
+references: {}

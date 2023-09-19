@@ -2,7 +2,7 @@
 friendly_name: Addon Names
 description: Addon IDs, names and number of occurences.
 owners:
-  - jklukas@mozilla.com
+  - kik@mozilla.com
 labels:
   application: addons
   schedule: daily

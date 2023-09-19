@@ -151,6 +151,9 @@ fields:
   - mode: NULLABLE
     name: dltoken
     type: STRING
+  - name: dlsource
+    type: STRING
+    mode: NULLABLE
   mode: NULLABLE
   name: attribution
   type: RECORD
@@ -2023,6 +2026,12 @@ fields:
   name: text_recognition_text_length_count_sum
   type: INTEGER
 - mode: NULLABLE
+  name: places_searchbar_cumulative_searches_sum
+  type: INTEGER
+- mode: NULLABLE
+  name: places_searchbar_cumulative_filter_count_sum
+  type: INTEGER
+- mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_taskbar_private
   type: BOOLEAN
 - mode: NULLABLE
@@ -2219,3 +2228,75 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_weather_sum
   type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_sidebar_opened_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_sidebar_search_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_sidebar_link_sum
+  type: RECORD
+- name: places_previousday_visits_mean
+  type: FLOAT
+  mode: NULLABLE
+- name: places_library_cumulative_bookmark_searches_sum
+  type: INTEGER
+  mode: NULLABLE
+- name: places_library_cumulative_history_searches_sum
+  type: INTEGER
+  mode: NULLABLE
+- name: places_bookmarks_searchbar_cumulative_searches_sum
+  type: INTEGER
+  mode: NULLABLE
+- name: scalar_parent_library_link_sum
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: INTEGER
+    mode: NULLABLE
+- name: scalar_parent_library_opened_sum
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: INTEGER
+    mode: NULLABLE
+- name: scalar_parent_library_search_sum
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: INTEGER
+    mode: NULLABLE

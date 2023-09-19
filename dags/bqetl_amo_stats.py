@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_amo_stats
@@ -22,15 +22,15 @@ See the [post on the Add-Ons Blog](https://blog.mozilla.org/addons/2020/06/10/im
 
 #### Owner
 
-jklukas@mozilla.com
+kik@mozilla.com
 """
 
 
 default_args = {
-    "owner": "jklukas@mozilla.com",
+    "owner": "kik@mozilla.com",
     "start_date": datetime.datetime(2020, 6, 1, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "kik@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -52,8 +52,8 @@ with DAG(
         destination_table="amo_stats_dau_v2",
         dataset_id="amo_dev",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -63,8 +63,8 @@ with DAG(
         destination_table="amo_stats_installs_v3",
         dataset_id="amo_dev",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -74,8 +74,8 @@ with DAG(
         destination_table="amo_stats_dau_v2",
         dataset_id="amo_prod",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -85,8 +85,8 @@ with DAG(
         destination_table="amo_stats_installs_v3",
         dataset_id="amo_prod",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -96,8 +96,8 @@ with DAG(
         destination_table="desktop_addons_by_client_v1",
         dataset_id="amo_prod",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -107,8 +107,8 @@ with DAG(
         destination_table="fenix_addons_by_client_v1",
         dataset_id="amo_prod",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

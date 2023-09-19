@@ -113,7 +113,12 @@ WITH base AS (
             payload.histograms.plugins_infobar_allow,
             payload.histograms.text_recognition_interaction_timing,
             payload.histograms.text_recognition_api_performance,
-            payload.histograms.text_recognition_text_length
+            payload.histograms.text_recognition_text_length,
+            payload.histograms.places_searchbar_cumulative_searches,
+            payload.histograms.places_searchbar_cumulative_filter_count,
+            payload.histograms.places_library_cumulative_bookmark_searches,
+            payload.histograms.places_library_cumulative_history_searches,
+            payload.histograms.places_bookmarks_searchbar_cumulative_searches
           ]
         ) AS histogram
     ) AS hist_sums,
@@ -245,7 +250,8 @@ clients_summary AS (
         environment.settings.attribution.content,
         environment.settings.attribution.experiment,
         environment.settings.attribution.variation,
-        environment.settings.attribution.dltoken
+        environment.settings.attribution.dltoken,
+        environment.settings.attribution.dlsource
       ),
       NULL
     ) AS attribution,
@@ -317,6 +323,11 @@ clients_summary AS (
     hist_sums[OFFSET(6)] AS text_recognition_interaction_timing,
     hist_sums[OFFSET(7)] AS text_recognition_api_performance,
     hist_sums[OFFSET(8)] AS text_recognition_text_length,
+    hist_sums[OFFSET(9)] AS places_searchbar_cumulative_searches,
+    hist_sums[OFFSET(10)] AS places_searchbar_cumulative_filter_count,
+    hist_sums[OFFSET(11)] AS places_library_cumulative_bookmark_searches,
+    hist_sums[OFFSET(12)] AS places_library_cumulative_history_searches,
+    hist_sums[OFFSET(13)] AS places_bookmarks_searchbar_cumulative_searches,
     TIMESTAMP_DIFF(
       TIMESTAMP_TRUNC(submission_timestamp, SECOND),
       SAFE.PARSE_TIMESTAMP('%a, %d %b %Y %T %Z', metadata.header.date),
@@ -540,6 +551,13 @@ clients_summary AS (
     payload.processes.parent.keyed_scalars.a11y_theme,
     payload.processes.parent.keyed_scalars.browser_ui_interaction_content_context AS scalar_parent_browser_ui_interaction_content_context,
     payload.processes.parent.scalars.browser_ui_interaction_textrecognition_error AS scalar_parent_browser_ui_interaction_textrecognition_error,
+    payload.processes.parent.keyed_scalars.sidebar_opened AS scalar_parent_sidebar_opened,
+    payload.processes.parent.keyed_scalars.sidebar_search AS scalar_parent_sidebar_search,
+    payload.processes.parent.keyed_scalars.sidebar_link AS scalar_parent_sidebar_link,
+    payload.processes.parent.keyed_scalars.library_link AS scalar_parent_library_link,
+    payload.processes.parent.keyed_scalars.library_opened AS scalar_parent_library_opened,
+    payload.processes.parent.keyed_scalars.library_search AS scalar_parent_library_search,
+    payload.processes.parent.scalars.places_previousday_visits AS places_previousday_visits,
     -- CAUTION: the order of fields here must match the order defined in
     -- count_histograms above and offsets must increment on each line.
     count_histograms[OFFSET(0)].histogram AS histogram_parent_devtools_aboutdebugging_opened_count,
@@ -1230,6 +1248,7 @@ aggregates AS (
     SUM(
       scalar_parent_urlbar_impression_autofill_url
     ) AS scalar_parent_urlbar_impression_autofill_url_sum,
+    AVG(places_previousday_visits) AS places_previousday_visits_mean,
     -- We batch multiple fields into an array here in order to share a single
     -- UDF invocation in the udf_aggregates CTE below which keeps query
     -- complexity down; order of fields here is important, as we pull these out
@@ -1343,7 +1362,13 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_browser_ui_interaction_content_context)),
       STRUCT(ARRAY_CONCAT_AGG(browser_search_content_urlbar_persisted)),
       STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_urlbar_persisted)),
-      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar_persisted))
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar_persisted)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_sidebar_opened)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_sidebar_search)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_sidebar_link)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_library_link)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_library_opened)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_library_search))
     ] AS map_sum_aggregates,
     udf.search_counts_map_sum(ARRAY_CONCAT_AGG(search_counts)) AS search_counts,
     mozfun.stats.mode_last(
@@ -1408,6 +1433,17 @@ aggregates AS (
     SUM(text_recognition_api_performance_count) AS text_recognition_api_performance_count_sum,
     SUM(text_recognition_text_length) AS text_recognition_text_length_sum,
     SUM(text_recognition_text_length_count) AS text_recognition_text_length_count_sum,
+    SUM(places_searchbar_cumulative_searches) AS places_searchbar_cumulative_searches_sum,
+    SUM(places_searchbar_cumulative_filter_count) AS places_searchbar_cumulative_filter_count_sum,
+    SUM(
+      places_library_cumulative_bookmark_searches
+    ) AS places_library_cumulative_bookmark_searches_sum,
+    SUM(
+      places_library_cumulative_history_searches
+    ) AS places_library_cumulative_history_searches_sum,
+    SUM(
+      places_bookmarks_searchbar_cumulative_searches
+    ) AS places_bookmarks_searchbar_cumulative_searches_sum,
     LOGICAL_OR(
       scalar_parent_dom_parentprocess_private_window_used
     ) AS dom_parentprocess_private_window_used,
@@ -1596,5 +1632,11 @@ SELECT
   map_sum_aggregates[OFFSET(106)].map AS search_content_urlbar_persisted_sum,
   map_sum_aggregates[OFFSET(107)].map AS search_withads_urlbar_persisted_sum,
   map_sum_aggregates[OFFSET(108)].map AS search_adclicks_urlbar_persisted_sum,
+  map_sum_aggregates[OFFSET(109)].map AS scalar_parent_sidebar_opened_sum,
+  map_sum_aggregates[OFFSET(110)].map AS scalar_parent_sidebar_search_sum,
+  map_sum_aggregates[OFFSET(111)].map AS scalar_parent_sidebar_link_sum,
+  map_sum_aggregates[OFFSET(112)].map AS scalar_parent_library_link_sum,
+  map_sum_aggregates[OFFSET(113)].map AS scalar_parent_library_opened_sum,
+  map_sum_aggregates[OFFSET(114)].map AS scalar_parent_library_search_sum,
 FROM
   udf_aggregates

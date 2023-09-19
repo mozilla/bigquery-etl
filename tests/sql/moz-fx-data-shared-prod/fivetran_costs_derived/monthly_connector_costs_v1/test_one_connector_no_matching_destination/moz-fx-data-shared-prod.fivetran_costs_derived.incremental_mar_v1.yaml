@@ -1,7 +1,0 @@
----
-- destination_id: dev_destination_id
-  measured_month: 2023-01-01
-  connector_name: connector_1
-  paid_active_rows: 10
-  free_active_rows: 0
-  total_active_rows: 10

@@ -1,5 +1,6 @@
 """Represents a SQL view."""
 
+import glob
 import re
 import string
 import time
@@ -11,6 +12,7 @@ import sqlparse
 from google.api_core.exceptions import BadRequest, NotFound
 from google.cloud import bigquery
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.metadata.parse_metadata import (
     DATASET_METADATA_FILE,
@@ -20,49 +22,7 @@ from bigquery_etl.metadata.parse_metadata import (
 )
 from bigquery_etl.schema import Schema
 from bigquery_etl.util import extract_from_query_path
-
-# skip validation for these views
-SKIP_VALIDATION = {
-    # tests
-    "sql/moz-fx-data-test-project/test/simple_view/view.sql",
-    # Access Denied
-    "sql/moz-fx-data-shared-prod/telemetry/experiment_enrollment_cumulative_population_estimate/view.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/mlhackweek_search/events/view.sql",
-    "sql/moz-fx-data-shared-prod/regrets_reporter_ucs/deletion_request/view.sql",
-    "sql/moz-fx-data-shared-prod/mlhackweek_search/custom/view.sql",
-    "sql/moz-fx-data-shared-prod/regrets_reporter_ucs/regret_details/view.sql",
-    "sql/moz-fx-data-shared-prod/regrets_reporter_ucs/video_data/view.sql",
-    "sql/moz-fx-data-shared-prod/mlhackweek_search/deletion_request/view.sql",
-    "sql/moz-fx-data-shared-prod/mlhackweek_search/baseline/view.sql",
-    "sql/moz-fx-data-shared-prod/telemetry/regrets_reporter_update/view.sql",
-    "sql/moz-fx-data-shared-prod/regrets_reporter_ucs/video_index/view.sql",
-    "sql/moz-fx-data-shared-prod/telemetry/xfocsp_error_report/view.sql",
-    "sql/moz-fx-data-shared-prod/mlhackweek_search/metrics/view.sql",
-    "sql/moz-fx-data-shared-prod/regrets_reporter_ucs/main_events/view.sql",
-    "sql/moz-fx-data-shared-prod/mlhackweek_search/action/view.sql",
-}
-
-# skip publishing these views
-SKIP_PUBLISHING = {
-    # Access Denied
-    "activity_stream/tile_id_types/view.sql",
-    "pocket/pocket_reach_mau/view.sql",
-    "telemetry/buildhub2/view.sql",
-    # Dataset glam-fenix-dev:glam_etl was not found
-    # TODO: this should be removed if views are to be automatically deployed
-    *[str(path) for path in Path("sql/glam-fenix-dev").glob("glam_etl/**/view.sql")],
-    # tests
-    "sql/moz-fx-data-test-project/test/simple_view/view.sql",
-}
-
-# suffixes of datasets with non-user-facing views
-NON_USER_FACING_DATASET_SUFFIXES = (
-    "_derived",
-    "_external",
-    "_bi",
-    "_restricted",
-    "glam_etl",
-)
+from bigquery_etl.util.common import render
 
 # Regex matching CREATE VIEW statement so it can be removed to get the view query
 CREATE_VIEW_PATTERN = re.compile(
@@ -88,7 +48,8 @@ class View:
     @property
     def content(self):
         """Return the view SQL."""
-        return Path(self.path).read_text()
+        path = Path(self.path)
+        return render(path.name, template_folder=path.parent)
 
     @classmethod
     def from_file(cls, path):
@@ -104,7 +65,13 @@ class View:
     @property
     def is_user_facing(self):
         """Return whether the view is user-facing."""
-        return not self.dataset.endswith(NON_USER_FACING_DATASET_SUFFIXES)
+        return not self.dataset.endswith(
+            tuple(
+                ConfigLoader.get(
+                    "default", "non_user_facing_dataset_suffixes", fallback=[]
+                )
+            )
+        )
 
     @cached_property
     def metadata(self):
@@ -161,9 +128,31 @@ class View:
         )
         return cls(path, name, dataset, project)
 
+    def skip_validation(self):
+        """Get views that should be skipped during validation."""
+        return {
+            file
+            for skip in ConfigLoader.get("view", "validation", "skip", fallback=[])
+            for file in glob.glob(
+                skip,
+                recursive=True,
+            )
+        }
+
+    def skip_publish(self):
+        """Get views that should be skipped during publishing."""
+        return {
+            file
+            for skip in ConfigLoader.get("view", "publish", "skip", fallback=[])
+            for file in glob.glob(
+                skip,
+                recursive=True,
+            )
+        }
+
     def is_valid(self):
         """Validate the SQL view definition."""
-        if any(str(self.path).endswith(p) for p in SKIP_VALIDATION):
+        if any(str(self.path).endswith(p) for p in self.skip_validation()):
             print(f"Skipped validation for {self.path}")
             return True
         return self._valid_fully_qualified_references() and self._valid_view_naming()
@@ -174,6 +163,16 @@ class View:
         from bigquery_etl.dependency import extract_table_references
 
         return extract_table_references(self.content)
+
+    @cached_property
+    def udf_references(self):
+        """List of UDF references in this view."""
+        from bigquery_etl.routine.parse_routine import routine_usages_in_text
+
+        # routine_usages_in_text automatically includes mozfun UDFs
+        return routine_usages_in_text(
+            self.content, Path(self.path).parent.parent.parent
+        )
 
     def _valid_fully_qualified_references(self):
         """Check that referenced tables and views are fully qualified."""
@@ -240,10 +239,12 @@ class View:
 
     def has_changes(self, target_project=None):
         """Determine whether there are any changes that would be published."""
-        if any(str(self.path).endswith(p) for p in SKIP_PUBLISHING):
+        if any(str(self.path).endswith(p) for p in self.skip_publish()):
             return False
 
-        if target_project and self.project != "moz-fx-data-shared-prod":
+        if target_project and self.project != ConfigLoader.get(
+            "default", "project", fallback="moz-fx-data-shared-prod"
+        ):
             # view would be skipped because --target-project is set
             return False
 
@@ -276,9 +277,20 @@ class View:
                 print(f"view {target_view_id} will change: schema does not match")
                 return True
 
-        if self.labels != table.labels:
-            print(f"view {target_view_id} will change: labels do not match")
-            return True
+        # check metadata
+        if self.metadata is not None:
+            if self.metadata.description != table.description:
+                print(f"view {target_view_id} will change: description does not match")
+                return True
+            if self.metadata.friendly_name != table.friendly_name:
+                print(
+                    f"view {target_view_id} will change: friendly_name does not match"
+                )
+                return True
+            if self.labels != table.labels:
+                print(f"view {target_view_id} will change: labels do not match")
+                return True
+
         return False
 
     def publish(self, target_project=None, dry_run=False):
@@ -287,14 +299,14 @@ class View:
 
         If `target_project` is set, it will replace the project ID in the view definition.
         """
-        if any(str(self.path).endswith(p) for p in SKIP_PUBLISHING):
+        if any(str(self.path).endswith(p) for p in self.skip_publish()):
             print(f"Skipping {self.path}")
             return True
 
         # avoid checking references since Jenkins might throw an exception:
         # https://github.com/mozilla/bigquery-etl/issues/2246
         if (
-            any(str(self.path).endswith(p) for p in SKIP_VALIDATION)
+            any(str(self.path).endswith(p) for p in self.skip_validation())
             or self._valid_view_naming()
         ):
             client = bigquery.Client()
@@ -302,7 +314,9 @@ class View:
             target_view = self.target_view_identifier(target_project)
 
             if target_project:
-                if self.project != "moz-fx-data-shared-prod":
+                if self.project != ConfigLoader.get(
+                    "default", "project", fallback="moz-fx-data-shared-prod"
+                ):
                     print(f"Skipping {self.path} because --target-project is set")
                     return True
 
@@ -336,6 +350,12 @@ class View:
                     print(f"Could not update field descriptions for {target_view}: {e}")
 
                 table = client.get_table(target_view)
+                if not self.metadata:
+                    print(f"Missing metadata for {self.path}")
+
+                table.description = self.metadata.description
+                table.friendly_name = self.metadata.friendly_name
+
                 if table.labels != self.labels:
                     labels = self.labels.copy()
                     for key in table.labels:
@@ -347,7 +367,11 @@ class View:
                         for key, value in labels.items()
                         if isinstance(value, str)
                     }
-                    client.update_table(table, ["labels"])
+                    client.update_table(
+                        table, ["labels", "description", "friendly_name"]
+                    )
+                else:
+                    client.update_table(table, ["description", "friendly_name"])
 
                 print(f"Published view {target_view}")
         else:

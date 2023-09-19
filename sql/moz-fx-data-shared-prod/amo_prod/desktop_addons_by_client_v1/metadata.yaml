@@ -4,7 +4,7 @@ description: >-
   Clients_daily-like table that records only the dimensions and addon info
   necessary to power daily the amo_stats_dau_v2 query.
 owners:
-  - jklukas@mozilla.com
+  - kik@mozilla.com
 labels:
   application: amo
   incremental: true

@@ -1,9 +1,11 @@
 """Generic utility functions."""
+import glob
 import logging
 import os
 import random
 import re
 import string
+import tempfile
 import warnings
 from pathlib import Path
 from typing import List
@@ -12,7 +14,9 @@ from uuid import uuid4
 from google.cloud import bigquery
 from jinja2 import Environment, FileSystemLoader
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat
+from bigquery_etl.metrics import MetricHub
 
 # Search for all camelCase situations in reverse with arbitrary lookaheads.
 REV_WORD_BOUND_PAT = re.compile(
@@ -24,8 +28,10 @@ REV_WORD_BOUND_PAT = re.compile(
     """,
     re.VERBOSE,
 )
-SQL_DIR = "sql/"
 FILE_PATH = Path(os.path.dirname(__file__))
+DEFAULT_QUERY_TEMPLATE_VARS = {"is_init": lambda: False, "metrics": MetricHub()}
+ROOT = Path(__file__).parent.parent.parent
+CHECKS_MACROS_DIR = ROOT / "tests" / "checks"
 
 
 def snake_case(line: str) -> str:
@@ -40,12 +46,13 @@ def snake_case(line: str) -> str:
 
 def project_dirs(project_id=None) -> List[str]:
     """Return all project directories."""
+    sql_dir = ConfigLoader.get("default", "sql_dir", fallback="sql")
     if project_id is None:
         return [
-            os.path.join(SQL_DIR, project_dir) for project_dir in os.listdir(SQL_DIR)
+            os.path.join(sql_dir, project_dir) for project_dir in os.listdir(sql_dir)
         ]
     else:
-        return [os.path.join(SQL_DIR, project_id)]
+        return [os.path.join(sql_dir, project_id)]
 
 
 def random_str(length: int = 12) -> str:
@@ -53,12 +60,72 @@ def random_str(length: int = 12) -> str:
     return "".join(random.choice(string.ascii_lowercase) for i in range(length))
 
 
-def render(sql_filename, format=True, template_folder="glean_usage", **kwargs) -> str:
+def render(
+    sql_filename,
+    template_folder=".",
+    format=True,
+    imports=[],
+    **kwargs,
+) -> str:
     """Render a given template query using Jinja."""
-    file_loader = FileSystemLoader(f"{template_folder}/templates")
-    env = Environment(loader=file_loader)
-    main_sql = env.get_template(sql_filename)
-    rendered = main_sql.render(**kwargs)
+    path = Path(template_folder) / sql_filename
+    skip = {
+        file
+        for skip in ConfigLoader.get("render", "skip", fallback=[])
+        for file in glob.glob(
+            skip,
+            recursive=True,
+        )
+    }
+    test_project = ConfigLoader.get("default", "test_project")
+    sql_dir = ConfigLoader.get("default", "sql_dir", fallback="sql")
+
+    if test_project in str(path):
+        # check if staged file needs to be skipped
+        skip.update(
+            [
+                p
+                for f in [Path(s) for s in skip]
+                for p in glob.glob(
+                    f"{sql_dir}/{test_project}/{f.parent.parent.name}*/{f.parent.name}/{f.name}",
+                    recursive=True,
+                )
+            ]
+        )
+
+    if any(s in str(path) for s in skip):
+        rendered = path.read_text()
+    else:
+        if sql_filename == "checks.sql":
+            # make macros available by creating a temporary file and pasting macro definition
+            # alongside checks.
+            # it is not possible to use `include` or `import` since the macros live in a different
+            # directory than the checks Jinja template.
+            with tempfile.NamedTemporaryFile(mode="w+") as tmp_checks_file:
+                macro_imports = "\n".join(
+                    [
+                        macro_file.read_text()
+                        for macro_file in CHECKS_MACROS_DIR.glob("*")
+                    ]
+                )
+                checks_template = Path(str(tmp_checks_file.name))
+                checks_template.write_text(
+                    macro_imports
+                    + "\n"
+                    + (Path(template_folder) / sql_filename).read_text()
+                )
+
+                file_loader = FileSystemLoader(f"{str(checks_template.parent)}")
+                env = Environment(loader=file_loader)
+                main_sql = env.get_template(checks_template.name)
+        else:
+            file_loader = FileSystemLoader(f"{template_folder}")
+            env = Environment(loader=file_loader)
+            main_sql = env.get_template(sql_filename)
+
+        template_vars = DEFAULT_QUERY_TEMPLATE_VARS | kwargs
+        rendered = main_sql.render(**template_vars)
+
     if format:
         rendered = reformat(rendered)
     return rendered

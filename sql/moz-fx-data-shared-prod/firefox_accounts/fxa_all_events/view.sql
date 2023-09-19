@@ -6,12 +6,15 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
 AS
-WITH fxa_auth_events AS (
+WITH auth_events AS (
   SELECT
+    "auth" AS fxa_server,
     `timestamp`,
     receiveTimestamp,
+    SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
     jsonPayload.fields.user_id,
     jsonPayload.fields.country,
+    JSON_VALUE(jsonPayload.fields.event_properties, "$.country_code") AS country_code,
     jsonPayload.fields.language,
     jsonPayload.fields.app_version,
     jsonPayload.fields.os_name,
@@ -23,17 +26,23 @@ WITH fxa_auth_events AS (
     jsonPayload.fields.device_id,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_auth_events_v1`
+  -- TODO: add a cut off date once AWS to GCP migration is complete.
 ),
   -- This table doesn't include any user events that are considered "active",
   -- but should always be included for a complete raw event log.
-fxa_auth_bounce_events AS (
+auth_bounce_events AS (
   SELECT
+    -- TODO: once no longer aliasing to fxa_log in the final part of the query,
+    -- we should change this label to "auth"
+    "auth_bounce" AS fxa_server,
     `timestamp`,
     receiveTimestamp,
+    SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
     jsonPayload.fields.user_id,
     CAST(
       NULL AS STRING
     ) AS country,  -- No country field in auth_bounces
+    CAST(NULL AS STRING) AS country_code,
     jsonPayload.fields.language,
     jsonPayload.fields.app_version,
     CAST(NULL AS STRING) AS os_name,
@@ -46,12 +55,15 @@ fxa_auth_bounce_events AS (
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_auth_bounce_events_v1`
 ),
-fxa_content_events AS (
+content_events AS (
   SELECT
+    "content" AS fxa_server,
     `timestamp`,
     receiveTimestamp,
+    SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
     jsonPayload.fields.user_id,
     jsonPayload.fields.country,
+    CAST(NULL AS STRING) AS country_code,
     jsonPayload.fields.language,
     jsonPayload.fields.app_version,
     jsonPayload.fields.os_name,
@@ -63,14 +75,18 @@ fxa_content_events AS (
     jsonPayload.fields.device_id,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_content_events_v1`
+  -- TODO: add a cut off date once AWS to GCP migration is complete.
 ),
 -- oauth events, see the note on top
-fxa_oauth_events AS (
+oauth_events AS (
   SELECT
+    "oauth" AS fxa_server,
     `timestamp`,
     receiveTimestamp,
+    SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
     jsonPayload.fields.user_id,
     CAST(NULL AS STRING) AS country,
+    CAST(NULL AS STRING) AS country_code,
     CAST(NULL AS STRING) AS language,
     jsonPayload.fields.app_version,
     CAST(NULL AS STRING) AS os_name,
@@ -82,13 +98,19 @@ fxa_oauth_events AS (
     CAST(NULL AS STRING) AS device_id,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_oauth_events_v1`
+  -- TODO: add a cut off date once AWS to GCP migration is complete.
 ),
-fxa_stdout_events AS (
+stdout_events AS (
   SELECT
+    -- TODO: once no longer aliasing to fxa_log in the final part of the query,
+    -- we should change this label to "payments"
+    "stdout" AS fxa_server,
     `timestamp`,
     receiveTimestamp,
+    SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
     jsonPayload.fields.user_id,
     CAST(NULL AS STRING) AS country,
+    jsonPayload.fields.country_code,
     jsonPayload.fields.language,
     jsonPayload.fields.app_version,
     jsonPayload.fields.os_name,
@@ -100,47 +122,109 @@ fxa_stdout_events AS (
     jsonPayload.fields.device_id,
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_stdout_events_v1`
+  -- TODO: add a cut off date once AWS to GCP migration is complete.
+),
+-- stdout table that contains events from services migrated to new GCP environment
+gcp_stdout_events AS (
+  SELECT
+    fxa_server,
+    `timestamp`,
+    receiveTimestamp,
+    SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
+    jsonPayload.fields.user_id,
+    jsonPayload.fields.country,
+    JSON_VALUE(jsonPayload.fields.event_properties, "$.country_code") AS country_code,
+    jsonPayload.fields.language,
+    jsonPayload.fields.app_version,
+    jsonPayload.fields.os_name,
+    jsonPayload.fields.os_version,
+    jsonPayload.fields.event_type,
+    jsonPayload.logger,
+    jsonPayload.fields.user_properties,
+    jsonPayload.fields.event_properties,
+    jsonPayload.fields.device_id,
+  FROM
+    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_gcp_stdout_events_v1`
+  WHERE
+    -- this is when traffic switch over started, all prior dates contain test data.
+    -- see: DENG-1035 for more info.
+    DATE(`timestamp`) >= "2023-09-07"
+),
+-- stderr table that contains events from services migrated to new GCP environment
+gcp_stderr_events AS (
+  SELECT
+    fxa_server,
+    `timestamp`,
+    receiveTimestamp,
+    SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
+    jsonPayload.fields.user_id,
+    jsonPayload.fields.country,
+    JSON_VALUE(jsonPayload.fields.event_properties, "$.country_code") AS country_code,
+    jsonPayload.fields.language,
+    jsonPayload.fields.app_version,
+    jsonPayload.fields.os_name,
+    jsonPayload.fields.os_version,
+    jsonPayload.fields.event_type,
+    jsonPayload.logger,
+    jsonPayload.fields.user_properties,
+    jsonPayload.fields.event_properties,
+    jsonPayload.fields.device_id,
+  FROM
+    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_gcp_stderr_events_v1`
+  WHERE
+    -- this is when traffic switch over started, all prior dates contain test data.
+    -- see: DENG-1035 for more info.
+    DATE(`timestamp`) >= "2023-09-07"
 ),
 unioned AS (
   SELECT
-    *,
-    'auth' AS event_category,
+    *
   FROM
-    fxa_auth_events
+    auth_events
   UNION ALL
   SELECT
-    *,
-    'auth_bounce' AS event_category,
+    *
   FROM
-    fxa_auth_bounce_events
+    auth_bounce_events
   UNION ALL
   SELECT
-    *,
-    'content' AS event_category,
+    *
   FROM
-    fxa_content_events
+    content_events
   UNION ALL
   -- oauth events, see the note on top
   SELECT
-    *,
-    'oauth' AS event_category,
+    *
   FROM
-    fxa_oauth_events
+    oauth_events
   UNION ALL
   SELECT
-    *,
-    'stdout' AS event_category,
+    *
   FROM
-    fxa_stdout_events
+    stdout_events
+  UNION ALL
+  SELECT
+    *
+  FROM
+    gcp_stdout_events
+  UNION ALL
+  SELECT
+    *
+  FROM
+    gcp_stderr_events
 )
 SELECT
+  -- TODO: remove this aliasing, however, this will require changes downstream why broken down into multiple changes / PRs
+  fxa_server AS fxa_log,
   `timestamp`,
   receiveTimestamp,
-  event_category,
+  event_time,
+  logger,
   event_type,
   user_id,
   device_id,
   country,
+  country_code,
   `language`,
   app_version,
   os_name,
@@ -174,11 +258,27 @@ SELECT
   JSON_VALUE(event_properties, "$.email_service") AS email_service,
   JSON_VALUE(event_properties, "$.email_template") AS email_template,
   JSON_VALUE(event_properties, "$.email_version") AS email_version,
+  JSON_VALUE(event_properties, "$.subscription_id") AS subscription_id,
   JSON_VALUE(event_properties, "$.plan_id") AS plan_id,
+  JSON_VALUE(event_properties, "$.previous_plan_id") AS previous_plan_id,
+  JSON_VALUE(event_properties, "$.subscribed_plan_ids") AS subscribed_plan_ids,
   JSON_VALUE(event_properties, "$.product_id") AS product_id,
-  JSON_VALUE(event_properties, "$.promotionCode") AS promotion_code,
+  JSON_VALUE(event_properties, "$.previous_product_id") AS previous_product_id,
+  -- `promotionCode` was renamed `promotion_code` in stdout logs.
+  COALESCE(
+    JSON_VALUE(event_properties, "$.promotion_code"),
+    JSON_VALUE(event_properties, "$.promotionCode")
+  ) AS promotion_code,
   JSON_VALUE(event_properties, "$.payment_provider") AS payment_provider,
+  JSON_VALUE(event_properties, "$.provider_event_id") AS provider_event_id,
   JSON_VALUE(event_properties, "$.checkout_type") AS checkout_type,
   JSON_VALUE(event_properties, "$.source_country") AS source_country,
+  -- `source_country` was renamed `country_code_source` in stdout logs.
+  COALESCE(
+    JSON_VALUE(event_properties, "$.country_code_source"),
+    JSON_VALUE(event_properties, "$.source_country")
+  ) AS country_code_source,
+  JSON_VALUE(event_properties, "$.error_id") AS error_id,
+  CAST(JSON_VALUE(event_properties, "$.voluntary_cancellation") AS BOOL) AS voluntary_cancellation,
 FROM
   unioned

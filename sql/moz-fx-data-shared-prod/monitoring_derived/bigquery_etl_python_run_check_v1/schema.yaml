@@ -1,0 +1,13 @@
+fields:
+- description: Run Timestamp
+  mode: NULLABLE
+  name: run_timestamp
+  type: TIMESTAMP
+- description: Airflow task instance
+  mode: NULLABLE
+  name: task_instance
+  type: STRING
+- description: Airflow run ID
+  mode: NULLABLE
+  name: run_id
+  type: STRING

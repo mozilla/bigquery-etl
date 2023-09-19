@@ -1,9 +1,0 @@
----
-- measured_month: 2023-01-01
-  connector_name: connector_1
-  paid_active_rows: 10
-  free_active_rows: 0
-  total_active_rows: 10
-  percentage_of_destination_paid_active_rows: 100.0
-  percentage_of_total_paid_active_rows: 100.0
-  cost_in_usd: 100.0

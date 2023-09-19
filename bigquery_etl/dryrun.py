@@ -17,242 +17,21 @@ import re
 from enum import Enum
 from os.path import basename, dirname, exists
 from pathlib import Path
+from typing import Set
 from urllib.request import Request, urlopen
 
 import click
 from google.cloud import bigquery
 
+from .config import ConfigLoader
 from .metadata.parse_metadata import Metadata
+from .util.common import render
 
 try:
     from functools import cached_property  # type: ignore
 except ImportError:
     # python 3.7 compatibility
     from backports.cached_property import cached_property  # type: ignore
-
-
-SKIP = {
-    # Access Denied
-    "sql/moz-fx-data-shared-prod/account_ecosystem_derived/ecosystem_client_id_lookup_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/account_ecosystem_derived/desktop_clients_daily_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/account_ecosystem_restricted/ecosystem_client_id_deletion_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/account_ecosystem_derived/fxa_logging_users_daily_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/activity_stream/impression_stats_flat/view.sql",
-    "sql/moz-fx-data-shared-prod/activity_stream/tile_id_types/view.sql",
-    "sql/moz-fx-data-shared-prod/monitoring_derived/deletion_request_volume_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/monitoring_derived/schema_error_counts_v1/view.sql",
-    "sql/moz-fx-data-shared-prod/monitoring_derived/schema_error_counts_v2/query.sql",
-    "sql/moz-fx-data-shared-prod/monitoring_derived/suggest_impression_rate_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/monitoring_derived/suggest_impression_rate_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/monitoring/schema_error_counts_v1/view.sql",
-    "sql/moz-fx-data-shared-prod/monitoring_derived/structured_error_counts_v1/view.sql",
-    "sql/moz-fx-data-shared-prod/monitoring/structured_error_counts/view.sql",
-    "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v1/view.sql",
-    "sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v1/view.sql",
-    "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v2/view.sql",
-    "sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v2/view.sql",
-    *glob.glob(
-        "sql/moz-fx-data-shared-prod/monitoring*/suggest*_rate*_live*/*.sql",
-        recursive=True,
-    ),
-    *glob.glob(
-        "sql/moz-fx-data-shared-prod/monitoring*/topsites*_rate*_live*/*.sql",
-        recursive=True,
-    ),
-    "sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql",
-    "sql/moz-fx-data-shared-prod/telemetry/buildhub2/view.sql",
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_bounce_events_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_events_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_delete_events_v1/init.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_delete_events_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_oauth_events_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_auth_events_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_content_events_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_device_command_events_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_first_seen_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_last_seen_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_export_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/init.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_stdout_events_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_auth_events_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_content_events_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_stdout_events_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v1/init.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v1/init.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/fivetran_costs_derived/destinations_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/fivetran_costs_derived/incremental_mar_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/fivetran_costs_derived/monthly_costs_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_update/view.sql",
-    "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_structured/view.sql",
-    "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_stub_installer/view.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_telemetry/view.sql",
-    "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_error_structured/view.sql",
-    "sql/moz-fx-data-shared-prod/monitoring_derived/shredder_progress/view.sql",
-    "sql/moz-fx-data-shared-prod/monitoring/shredder_progress/view.sql",
-    "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_distinct_docids_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized/query.sql",
-    "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized_v1/query.sql",
-    *glob.glob("sql/moz-fx-data-shared-prod/stripe_derived/**/*.sql", recursive=True),
-    *glob.glob("sql/moz-fx-data-shared-prod/stripe_external/**/*.sql", recursive=True),
-    *glob.glob("sql/moz-fx-cjms-*/**/*.sql", recursive=True),
-    "sql/moz-fx-data-shared-prod/subscription_platform/stripe_subscriptions/view.sql",
-    "sql/moz-fx-data-shared-prod/subscription_platform/stripe_subscriptions_history/view.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/subscription_platform/nonprod_stripe_subscriptions/view.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/subscription_platform/nonprod_stripe_subscriptions_history/view.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/subscription_platform/apple_subscriptions/view.sql",
-    "sql/moz-fx-data-shared-prod/subscription_platform/nonprod_apple_subscriptions/view.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/stripe/itemized_payout_reconciliation/view.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscriptions_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscription_ids_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/all_subscriptions_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/channel_group_proportions_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/devices_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/fxa_attribution_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/funnel_product_page_to_subscribed_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/guardian_apple_events_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/login_flows_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/protected_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/site_metrics_empty_check_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/site_metrics_summary_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/subscriptions_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/subscription_events_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/users_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_external/subscriptions_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v3/query.sql",
-    "sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_external/subscriptions_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/protected_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/relay_derived/subscriptions_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/fenix_derived/google_ads_campaign_cost_breakdowns_v1/query.sql",
-    *glob.glob("sql/moz-fx-data-shared-prod/search_terms*/**/*.sql", recursive=True),
-    "sql/moz-fx-data-bq-performance/release_criteria/dashboard_health_v1/query.sql",
-    "sql/moz-fx-data-bq-performance/release_criteria/rc_flattened_test_data_v1/query.sql",
-    "sql/moz-fx-data-bq-performance/release_criteria/release_criteria_summary_v1/query.sql",
-    "sql/moz-fx-data-bq-performance/release_criteria/stale_tests_v1/query.sql",
-    "sql/moz-fx-data-bq-performance/release_criteria/release_criteria_v1/query.sql",
-    *glob.glob(
-        "sql/moz-fx-data-shared-prod/contextual_services/**/*.sql", recursive=True
-    ),
-    *glob.glob(
-        "sql/moz-fx-data-shared-prod/contextual_services_derived/**/*.sql",
-        recursive=True,
-    ),
-    *glob.glob(
-        "sql/moz-fx-data-shared-prod/**/topsites_impression/view.sql", recursive=True
-    ),
-    "sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/contextual_services_derived/adm_forecasting_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_summary/view.sql",
-    *glob.glob(
-        "sql/moz-fx-data-shared-prod/regrets_reporter_derived/regrets_reporter_summary_v1/*.sql",  # noqa E501
-        recursive=True,
-    ),
-    *glob.glob(
-        "sql/moz-fx-data-shared-prod/mlhackweek_search/**/*.sql", recursive=True
-    ),
-    *glob.glob(
-        "sql/moz-fx-data-shared-prod/regrets_reporter_ucs/**/*.sql", recursive=True
-    ),
-    "sql/moz-fx-data-shared-prod/telemetry/xfocsp_error_report/view.sql",
-    "sql/moz-fx-data-shared-prod/telemetry/regrets_reporter_update/view.sql",
-    *glob.glob(
-        "sql/moz-fx-data-marketing-prod/acoustic/**/*.sql",
-        recursive=True,
-    ),
-    *glob.glob(
-        "sql/moz-fx-data-shared-prod/monitoring_derived/airflow_*/*.sql",
-        recursive=True,
-    ),  # noqa E501
-    *glob.glob(
-        "sql/moz-fx-data-shared-prod/google_ads_derived/**/*.sql",
-        recursive=True,
-    ),
-    # Materialized views
-    "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived/experiment_events_live_v1/init.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/experiment_events_live_v1/init.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/org_mozilla_firefox_beta_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/org_mozilla_firefox_beta_derived/experiment_events_live_v1/init.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_cumulative_population_estimate_v1/view.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry/experiment_enrollment_cumulative_population_estimate/view.sql",  # noqa E501
-    # Already exists (and lacks an "OR REPLACE" clause)
-    "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_last_seen_v1/init.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived/clients_last_seen_v1/init.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser_derived/clients_last_seen_v1/init.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_last_seen_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/telemetry/fxa_users_last_seen_raw_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_first_seen_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/telemetry_derived/fxa_users_services_last_seen_v1/init.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/messaging_system_derived/cfr_users_last_seen_v1/init.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/messaging_system_derived/onboarding_users_last_seen_v1/init.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/messaging_system_derived/snippets_users_last_seen_v1/init.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/messaging_system_derived/whats_new_panel_users_last_seen_v1/init.sql",  # noqa E501
-    # Reference table not found
-    "sql/moz-fx-data-shared-prod/monitoring_derived/structured_detailed_error_counts_v1/view.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/monitoring/structured_detailed_error_counts/view.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/migrated_clients_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/incline_executive_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/org_mozilla_firefox/migrated_clients/view.sql",
-    # No matching signature for function IF
-    "sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_last_seen/query.sql",
-    # Duplicate UDF
-    "sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_daily/query.sql",
-    # Syntax error
-    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/init.sql",  # noqa E501
-    # HTTP Error 408: Request Time-out
-    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/latest_versions/query.sql",
-    "sql/moz-fx-data-shared-prod/telemetry_derived/italy_covid19_outage_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/telemetry_derived/main_nightly_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/telemetry_derived/main_1pct_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/telemetry_derived/main_1pct_v1/query.sql",
-    # Query parameter not found
-    "sql/moz-fx-data-shared-prod/telemetry_derived/experiments_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_scalar_aggregates_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_boolean_aggregates_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_histogram_aggregates_content_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_histogram_aggregates_gpu_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_histogram_aggregates_parent_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_histogram_aggregates_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_bucket_counts_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/glam_client_probe_counts_extract_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/scalar_percentiles_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_scalar_probe_counts_v1/query.sql",  # noqa E501
-    # Dataset sql/glam-fenix-dev:glam_etl was not found
-    *glob.glob("sql/glam-fenix-dev/glam_etl/**/*.sql", recursive=True),
-    # Query templates
-    "sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql",  # noqa E501
-    # Temporary table does not exist
-    # TODO: remove this in a follow up PR
-    *glob.glob(
-        "sql/moz-fx-data-shared-prod/*/baseline_clients_first_seen_v1/*.sql",
-        recursive=True,
-    ),
-    # Query too complex
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/event_types_history_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/event_types_history_v1/init.sql",
-    # Tests
-    "sql/moz-fx-data-test-project/test/simple_view/view.sql",
-}
 
 
 class Errors(Enum):
@@ -265,12 +44,6 @@ class Errors(Enum):
 
 class DryRun:
     """Dry run SQL files."""
-
-    # todo: support different dry run endpoints for different projects
-    DRY_RUN_URL = (
-        "https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/"
-        "bigquery-etl-dryrun"
-    )
 
     def __init__(
         self,
@@ -288,19 +61,53 @@ class DryRun:
         self.use_cloud_function = use_cloud_function
         self.client = client if use_cloud_function or client else bigquery.Client()
         self.respect_skip = respect_skip
+        self.dry_run_url = ConfigLoader.get("dry_run", "function")
         try:
             self.metadata = Metadata.of_query_file(self.sqlfile)
         except FileNotFoundError:
             self.metadata = None
 
+    @staticmethod
+    def skipped_files() -> Set[str]:
+        """Return files skipped by dry run."""
+        skip_files = {
+            file
+            for skip in ConfigLoader.get("dry_run", "skip", fallback=[])
+            for file in glob.glob(
+                skip,
+                recursive=True,
+            )
+        }
+
+        # update skip list to include renamed queries in stage.
+        test_project = ConfigLoader.get("default", "test_project", fallback="")
+        file_pattern_re = re.compile(r"sql/([^\/]+)/([^/]+)(/?.*|$)")
+        skip_files.update(
+            [
+                file
+                for skip in ConfigLoader.get("dry_run", "skip", fallback=[])
+                for file in glob.glob(
+                    file_pattern_re.sub(f"sql/{test_project}/\\2*\\3", skip),
+                    recursive=True,
+                )
+            ]
+        )
+
+        return skip_files
+
     def skip(self):
         """Determine if dry run should be skipped."""
-        return self.respect_skip and self.sqlfile in SKIP
+        return self.respect_skip and self.sqlfile in self.skipped_files()
 
     def get_sql(self):
         """Get SQL content."""
         if exists(self.sqlfile):
-            sql = open(self.sqlfile).read()
+            file_path = Path(self.sqlfile)
+            sql = render(
+                file_path.name,
+                format=False,
+                template_folder=file_path.parent.absolute(),
+            )
         else:
             raise ValueError(f"Invalid file path: {self.sqlfile}")
         if self.strip_dml:
@@ -320,34 +127,34 @@ class DryRun:
             sql = self.content
         else:
             sql = self.get_sql()
-            if self.metadata:
-                # use metadata to rewrite date-type query params as submission_date
-                date_params = [
-                    query_param
-                    for query_param in (
-                        self.metadata.scheduling.get("date_partition_parameter"),
-                        *(
-                            param.split(":", 1)[0]
-                            for param in self.metadata.scheduling.get("parameters", [])
-                            if re.fullmatch(r"[^:]+:DATE:{{\s*ds\s*}}", param)
-                        ),
-                    )
-                    if query_param and query_param != "submission_date"
-                ]
-                if date_params:
-                    pattern = re.compile(
-                        "@("
-                        + "|".join(date_params)
-                        # match whole query parameter names
-                        + ")(?![a-zA-Z0-9_])"
-                    )
-                    sql = pattern.sub("@submission_date", sql)
+        if self.metadata:
+            # use metadata to rewrite date-type query params as submission_date
+            date_params = [
+                query_param
+                for query_param in (
+                    self.metadata.scheduling.get("date_partition_parameter"),
+                    *(
+                        param.split(":", 1)[0]
+                        for param in self.metadata.scheduling.get("parameters", [])
+                        if re.fullmatch(r"[^:]+:DATE:{{.*ds.*}}", param)
+                    ),
+                )
+                if query_param and query_param != "submission_date"
+            ]
+            if date_params:
+                pattern = re.compile(
+                    "@("
+                    + "|".join(date_params)
+                    # match whole query parameter names
+                    + ")(?![a-zA-Z0-9_])"
+                )
+                sql = pattern.sub("@submission_date", sql)
         dataset = basename(dirname(dirname(self.sqlfile)))
         try:
             if self.use_cloud_function:
                 r = urlopen(
                     Request(
-                        self.DRY_RUN_URL,
+                        self.dry_run_url,
                         headers={"Content-Type": "application/json"},
                         data=json.dumps(
                             {

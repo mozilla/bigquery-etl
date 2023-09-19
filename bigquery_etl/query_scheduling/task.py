@@ -1,20 +1,24 @@
 """Represents a scheduled Airflow task."""
 
+import copy
 import logging
 import os
 import re
+from enum import Enum
 from fnmatch import fnmatchcase
 from pathlib import Path
 from typing import List, Optional, Tuple
 
 import attr
 import cattrs
+import click
 
 from bigquery_etl.dependency import extract_table_references_without_views
-from bigquery_etl.metadata.parse_metadata import Metadata
+from bigquery_etl.metadata.parse_metadata import Metadata, PartitionType
 from bigquery_etl.query_scheduling.utils import (
     is_date_string,
     is_email,
+    is_email_or_github_identity,
     is_schedule_interval,
     is_timedelta_string,
     is_valid_dag_name,
@@ -24,9 +28,27 @@ from bigquery_etl.query_scheduling.utils import (
 AIRFLOW_TASK_TEMPLATE = "airflow_task.j2"
 QUERY_FILE_RE = re.compile(
     r"^(?:.*/)?([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/"
-    r"([a-zA-Z0-9_]+)_(v[0-9]+)/(?:query\.sql|part1\.sql|script\.sql|query\.py)$"
+    r"([a-zA-Z0-9_]+)_(v[0-9]+)/(?:query\.sql|part1\.sql|script\.sql|query\.py|checks\.sql)$"
+)
+CHECKS_FILE_RE = re.compile(
+    r"^(?:.*/)?([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/"
+    r"([a-zA-Z0-9_]+)_(v[0-9]+)/(?:checks\.sql)$"
 )
 DEFAULT_DESTINATION_TABLE_STR = "use-default-destination-table"
+MAX_TASK_NAME_LENGTH = 250
+
+
+class TriggerRule(Enum):
+    """Options for task trigger rules."""
+
+    ALL_SUCCESS = "all_success"
+    ALL_FAILED = "all_failed"
+    ALL_DONE = "all_done"
+    ONE_FAILED = "one_failed"
+    ONE_SUCCESS = "one_success"
+    NONE_FAILED = "none_failed"
+    NONE_SKIPPED = "none_skipped"
+    DUMMY = "dummy"
 
 
 class TaskParseException(Exception):
@@ -175,6 +197,7 @@ class Task:
     depends_on_past: bool = attr.ib(False)
     start_date: Optional[str] = attr.ib(None)
     date_partition_parameter: Optional[str] = "submission_date"
+    table_partition_template: Optional[str] = None
     # number of days date partition parameter should be offset
     date_partition_offset: Optional[int] = None
     # indicate whether data should be published as JSON
@@ -182,6 +205,8 @@ class Task:
     # manually specified upstream dependencies
     depends_on: List[TaskRef] = attr.ib([])
     depends_on_fivetran: List[FivetranTask] = attr.ib([])
+    # task trigger rule, used to override default of "all_success"
+    trigger_rule: Optional[str] = attr.ib(None)
     # manually specified downstream depdencies
     external_downstream_tasks: List[TaskRef] = attr.ib([])
     # automatically determined upstream and downstream dependencies
@@ -195,6 +220,9 @@ class Task:
     referenced_tables: Optional[List[Tuple[str, str, str]]] = attr.ib(None)
     destination_table: Optional[str] = attr.ib(default=DEFAULT_DESTINATION_TABLE_STR)
     is_python_script: bool = attr.ib(False)
+    is_dq_check: bool = attr.ib(False)
+    # Failure of the checks task will stop the dag from executing further
+    is_dq_check_fail: bool = attr.ib(True)
     task_concurrency: Optional[int] = attr.ib(None)
     retry_delay: Optional[str] = attr.ib(None)
     retries: Optional[int] = attr.ib(None)
@@ -213,14 +241,16 @@ class Task:
     @owner.validator
     def validate_owner(self, attribute, value):
         """Check that owner is a valid email address."""
-        if not is_email(value):
-            raise ValueError(f"Invalid email for task owner: {value}.")
+        if not is_email_or_github_identity(value):
+            raise ValueError(
+                f"Invalid email or github identity for task owner: {value}."
+            )
 
     @email.validator
     def validate_email(self, attribute, value):
         """Check that provided email addresses are valid."""
-        if not all(map(lambda e: is_email(e), value)):
-            raise ValueError(f"Invalid email in DAG email: {value}.")
+        if not all(map(lambda e: is_email_or_github_identity(e), value)):
+            raise ValueError(f"Invalid email or github identity in DAG email: {value}.")
 
     @start_date.validator
     def validate_start_date(self, attribute, value):
@@ -244,11 +274,20 @@ class Task:
     def validate_task_name(self, attribute, value):
         """Validate the task name."""
         if value is not None:
-            if len(value) < 1 or len(value) > 62:
+            if len(value) < 1 or len(value) > MAX_TASK_NAME_LENGTH:
                 raise ValueError(
                     f"Invalid task name {value}. "
-                    + "The task name has to be 1 to 62 characters long."
+                    f"The task name has to be 1 to {MAX_TASK_NAME_LENGTH} characters long."
                 )
+
+    @trigger_rule.validator
+    def validate_trigger_rule(self, attribute, value):
+        """Check that trigger_rule is a valid option."""
+        if value is not None and value not in set(rule.value for rule in TriggerRule):
+            raise ValueError(
+                f"Invalid trigger rule {value}. "
+                "See https://airflow.apache.org/docs/apache-airflow/1.10.3/concepts.html#trigger-rules for list of trigger rules"
+            )
 
     @retry_delay.validator
     def validate_retry_delay(self, attribute, value):
@@ -270,7 +309,9 @@ class Task:
 
             if self.task_name is None:
                 # limiting task name to allow longer dataset names
-                self.task_name = f"{self.dataset}__{self.table}__{self.version}"[-62:]
+                self.task_name = f"{self.dataset}__{self.table}__{self.version}"[
+                    -MAX_TASK_NAME_LENGTH:
+                ]
                 self.validate_task_name(None, self.task_name)
 
             if self.destination_table == DEFAULT_DESTINATION_TABLE_STR:
@@ -325,15 +366,52 @@ class Task:
             if dag is not None:
                 default_email = dag.default_args.email
         email = task_config.get("email", default_email)
-        # owners get added to the email list
+        # Remove non-valid emails from owners e.g. Github identities and add to
+        # Airflow email list.
+        for owner in metadata.owners:
+            if not is_email(owner):
+                metadata.owners.remove(owner)
+                click.echo(
+                    f"{owner} removed from email list in DAG {metadata.scheduling['dag_name']}"
+                )
         task_config["email"] = list(set(email + metadata.owners))
 
         # data processed in task should be published
         if metadata.is_public_json():
             task_config["public_json"] = True
 
+        # Override the table_partition_template if there is no `destination_table`
+        # set in the scheduling section of the metadata. If not then pass a jinja
+        # template that reformats the date string used for table partition decorator.
+        # See doc here for formatting conventions:
+        #  https://cloud.google.com/bigquery/docs/managing-partitioned-table-data#partition_decorators
+        if (
+            metadata.bigquery
+            and metadata.bigquery.time_partitioning
+            and metadata.scheduling.get("destination_table") is None
+        ):
+            match metadata.bigquery.time_partitioning.type:
+                case PartitionType.YEAR:
+                    partition_template = '${{ dag_run.logical_date.strftime("%Y") }}'
+                case PartitionType.MONTH:
+                    partition_template = '${{ dag_run.logical_date.strftime("%Y%m") }}'
+                case PartitionType.DAY:
+                    # skip for the default case of daily partitioning
+                    partition_template = None
+                case PartitionType.HOUR:
+                    partition_template = (
+                        '${{ dag_run.logical_date.strftime("%Y%m%d%H") }}'
+                    )
+                case _:
+                    raise TaskParseException(
+                        f"Invalid partition type: {metadata.bigquery.time_partitioning.type}"
+                    )
+
+            if partition_template:
+                task_config["table_partition_template"] = partition_template
+
         try:
-            return converter.structure(task_config, cls)
+            return copy.deepcopy(converter.structure(task_config, cls))
         except TypeError as e:
             raise TaskParseException(
                 f"Invalid scheduling information format for {query_file}: {e}"
@@ -381,6 +459,30 @@ class Task:
         task.is_python_script = True
         return task
 
+    @classmethod
+    def of_dq_check(cls, query_file, is_check_fail, metadata=None, dag_collection=None):
+        """Create a task that schedules DQ check file in Airflow."""
+        task = cls.of_query(query_file, metadata, dag_collection)
+        task.query_file_path = query_file
+        task.is_dq_check = True
+        task.is_dq_check_fail = is_check_fail
+        task.depends_on_fivetran = []
+        if task.is_dq_check_fail:
+            task.task_name = (
+                f"checks__fail_{task.dataset}__{task.table}__{task.version}"[
+                    -MAX_TASK_NAME_LENGTH:
+                ]
+            )
+            task.validate_task_name(None, task.task_name)
+        else:
+            task.task_name = (
+                f"checks__warn_{task.dataset}__{task.table}__{task.version}"[
+                    -MAX_TASK_NAME_LENGTH:
+                ]
+            )
+            task.validate_task_name(None, task.task_name)
+        return task
+
     def to_ref(self, dag_collection):
         """Return the task as `TaskRef`."""
         return TaskRef(
@@ -393,7 +495,7 @@ class Task:
         )
 
     def _get_referenced_tables(self):
-        """Use zetasql to get tables the query depends on."""
+        """Use sqlglot to get tables the query depends on."""
         logging.info(f"Get dependencies for {self.task_key}")
 
         if self.is_python_script:
@@ -431,15 +533,23 @@ class Task:
             )
 
         for table in self._get_referenced_tables():
+            # check if upstream task is accompanied by a check
+            # the task running the check will be set as the upstream task instead
+            checks_upstream_task = dag_collection.fail_checks_task_for_table(
+                table[0], table[1], table[2]
+            )
             upstream_task = dag_collection.task_for_table(table[0], table[1], table[2])
 
             if upstream_task is not None:
-                task_ref = upstream_task.to_ref(dag_collection)
-                if upstream_task != self and not _duplicate_dependency(task_ref):
-                    # Get its upstream dependencies so its date_partition_offset gets set.
-                    upstream_task.with_upstream_dependencies(dag_collection)
+                if upstream_task != self:
+                    if checks_upstream_task is not None:
+                        upstream_task = checks_upstream_task
                     task_ref = upstream_task.to_ref(dag_collection)
-                    dependencies.append(task_ref)
+                    if not _duplicate_dependency(task_ref):
+                        # Get its upstream dependencies so its date_partition_offset gets set.
+                        upstream_task.with_upstream_dependencies(dag_collection)
+                        task_ref = upstream_task.to_ref(dag_collection)
+                        dependencies.append(task_ref)
             else:
                 # see if there are some static dependencies
                 for task_ref, patterns in EXTERNAL_TASKS.items():
@@ -462,6 +572,9 @@ class Task:
 
             if len(date_partition_offsets) > 0:
                 self.date_partition_offset = min(date_partition_offsets)
+                # unset the table_partition_template property if we have an offset
+                # as that will be overridden in the template via `destination_table`
+                self.table_partition_template = None
                 date_partition_offset_task_keys = [
                     dependency.task_key
                     for dependency in dependencies

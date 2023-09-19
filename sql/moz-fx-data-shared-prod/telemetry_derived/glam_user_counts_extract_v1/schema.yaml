@@ -1,0 +1,20 @@
+fields:
+- mode: NULLABLE
+  name: channel
+  type: INTEGER
+
+- mode: NULLABLE
+  name: app_version
+  type: INTEGER
+
+- mode: NULLABLE
+  name: app_build_id
+  type: STRING
+
+- mode: NULLABLE
+  name: os
+  type: STRING
+
+- mode: NULLABLE
+  name: total_users
+  type: INTEGER

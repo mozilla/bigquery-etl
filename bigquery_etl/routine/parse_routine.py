@@ -14,25 +14,25 @@ import attr
 import sqlparse
 import yaml
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE
+from bigquery_etl.util.common import render
 
-UDF_CHAR = "[a-zA-z0-9_]"
+UDF_CHAR = "[a-zA-Z0-9_]"
 UDF_FILE = "udf.sql"
 PROCEDURE_FILE = "stored_procedure.sql"
 ROUTINE_FILE = (UDF_FILE, PROCEDURE_FILE)
-EXAMPLE_DIR = "examples"
 TEMP_UDF_RE = re.compile(f"(?:udf|assert)_{UDF_CHAR}+")
 PERSISTENT_UDF_PREFIX_RE_STR = (
     r"CREATE\s+(?:OR\s+REPLACE\s+)?(?:FUNCTION|PROCEDURE)(?:\s+IF\s+NOT\s+EXISTS)?"
 )
 PERSISTENT_UDF_PREFIX = re.compile(PERSISTENT_UDF_PREFIX_RE_STR, re.IGNORECASE)
 PERSISTENT_UDF_RE = re.compile(
-    rf"{PERSISTENT_UDF_PREFIX_RE_STR}\s+({UDF_CHAR}*)\.({UDF_CHAR}+)`?", re.IGNORECASE
+    rf"{PERSISTENT_UDF_PREFIX_RE_STR}\s+`?(?:[a-zA-Z0-9_-]*`?\.)?({UDF_CHAR}*)\.({UDF_CHAR}+)`?",
+    re.IGNORECASE,
 )
 UDF_NAME_RE = re.compile(r"^([a-zA-Z0-9_]+\.)?[a-zA-Z][a-zA-Z0-9_]{0,255}$")
 GENERIC_DATASET = "_generic_dataset_"
-SQL_DIR = Path("sql/")
-ASSERT_UDF_DIR = "tests/assert"
 
 raw_routines = {}
 
@@ -55,8 +55,10 @@ def get_routines(project):
     """Return all routines that could be referenced by the project."""
     return (
         get_routines_from_dir(project)
-        + get_routines_from_dir(SQL_DIR / "mozfun")
-        + get_routines_from_dir(ASSERT_UDF_DIR)
+        + get_routines_from_dir(
+            Path(ConfigLoader.get("default", "sql_dir", fallback="sql")) / "mozfun"
+        )
+        + get_routines_from_dir(ConfigLoader.get("routine", "assert_udf_dir"))
     )  # assert UDFs used for testing
 
 
@@ -84,8 +86,8 @@ class RawRoutine:
 
         if value is None or value != persistent_name:
             raise ValueError(
-                f"Expected a function named {persistent_name} or {temp_name} "
-                f"to be defined."
+                f"Expected a function named {persistent_name} "
+                f"or {temp_name} to be defined."
             )
         if not UDF_NAME_RE.match(name):
             raise ValueError(
@@ -128,14 +130,14 @@ class RawRoutine:
             return ""
 
     @classmethod
-    def from_file(cls, path, from_text=None):
+    def from_file(cls, path):
         """Create a RawRoutine instance from text."""
         filepath = Path(path)
-
-        if from_text is None:
-            text = filepath.read_text()
-        else:
-            text = from_text
+        text = render(
+            filepath.name,
+            template_folder=filepath.parent,
+            format=False,
+        )
 
         sql = sqlparse.format(text, strip_comments=True)
         statements = [s for s in sqlparse.split(sql) if s.strip()]
@@ -144,6 +146,7 @@ class RawRoutine:
         dataset = filepath.parent.parent.name
         project = filepath.parent.parent.parent
 
+        persistent_name_re = rf"`?{dataset}`?.`?{name}`?"
         persistent_name = f"{dataset}.{name}"
         temp_name = f"{dataset}_{name}"
         internal_name = None
@@ -158,7 +161,7 @@ class RawRoutine:
             normalized_statement = " ".join(s.lower().split())
             if normalized_statement.startswith("create or replace function"):
                 definitions.append(s)
-                if persistent_name in normalized_statement:
+                if re.search(persistent_name_re, normalized_statement):
                     internal_name = persistent_name
 
             elif normalized_statement.startswith("create temp function"):
@@ -170,7 +173,7 @@ class RawRoutine:
                 is_stored_procedure = True
                 definitions.append(s)
                 tests.append(s)
-                if persistent_name in normalized_statement:
+                if re.search(persistent_name_re, normalized_statement):
                     internal_name = persistent_name
 
             else:
@@ -188,7 +191,12 @@ class RawRoutine:
         routines = get_routines(project)
         dependencies = []
         for udf in routines:
-            if udf["name"] in "\n".join(definitions):
+            udf_re = re.compile(
+                r"\b"
+                + r"\.".join(f"`?{name}`?" for name in udf["name"].split("."))
+                + r"\("
+            )
+            if udf_re.search("\n".join(definitions)):
                 dependencies.append(udf["name"])
 
         dependencies.extend(re.findall(TEMP_UDF_RE, "\n".join(definitions)))
@@ -224,14 +232,17 @@ def read_routine_dir(*project_dirs):
     global raw_routines
 
     if not project_dirs:
-        project_dirs = (SQL_DIR, ASSERT_UDF_DIR)
+        project_dirs = (
+            ConfigLoader.get("default", "sql_dir"),
+            ConfigLoader.get("routine", "assert_udf_dir"),
+        )
 
     if project_dirs not in raw_routines:
         raw_routines[project_dirs] = {
             raw_routine.name: raw_routine
             for project_dir in project_dirs
             for root, dirs, files in os.walk(project_dir)
-            if os.path.basename(root) != EXAMPLE_DIR
+            if os.path.basename(root) != ConfigLoader.get("routine", "example_dir")
             for filename in files
             if filename in ROUTINE_FILE
             for raw_routine in (RawRoutine.from_file(os.path.join(root, filename)),)
@@ -243,7 +254,11 @@ def read_routine_dir(*project_dirs):
 def parse_routines(project_dir):
     """Read routine contents of the project dir into ParsedRoutine instances."""
     # collect udfs to parse
-    raw_routines = read_routine_dir(project_dir, SQL_DIR / "mozfun", ASSERT_UDF_DIR)
+    raw_routines = read_routine_dir(
+        project_dir,
+        Path(ConfigLoader.get("default", "sql_dir", fallback="sql")) / "mozfun",
+        ConfigLoader.get("routine", "assert_udf_dir"),
+    )
 
     # prepend udf definitions to tests
     for raw_routine in raw_routines.values():

@@ -1,0 +1,13 @@
+friendly_name: Non-Production Apple Subscriptions
+description: >
+  Non-production Apple subscriptions.
+owners:
+  - srose@mozilla.com
+labels:
+  schedule: daily
+  incremental: false
+scheduling:
+  dag_name: bqetl_subplat
+  # destination is the whole table, not a single partition,
+  # so don't use date_partition_parameter
+  date_partition_parameter: null

@@ -1,0 +1,59 @@
+[
+  {
+    "type": "STRING",
+    "name": "client_id"
+  },
+  {
+    "type": "INTEGER",
+    "name": "sample_id"
+  },
+  {
+    "type": "DATE",
+    "name": "first_seen_date"
+  },
+  {
+    "type": "DATE",
+    "name": "submission_date",
+    "mode": "REQUIRED"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_channel"
+  },
+  {
+    "type": "STRING",
+    "name": "country"
+  },
+  {
+    "type": "STRING",
+    "name": "isp"
+  },
+  {
+    "type": "DATE",
+    "name": "first_run_date"
+  },
+  {
+    "type": "STRING",
+    "name": "device_manufacturer"
+  },
+  {
+    "type": "STRING",
+    "name": "device_model"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_os_version"
+  },
+  {
+    "type": "STRING",
+    "name": "app_display_version"
+  },
+  {
+    "type": "STRING",
+    "name": "locale"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "is_new_profile"
+  }
+]

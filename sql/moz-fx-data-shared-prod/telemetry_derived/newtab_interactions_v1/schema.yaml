@@ -26,6 +26,9 @@ fields:
       - mode: NULLABLE
         name: type
         type: STRING
+      - mode: NULLABLE
+        name: enrollment_id
+        type: STRING
       mode: NULLABLE
       name: extra
       type: RECORD
@@ -161,3 +164,12 @@ fields:
 - mode: NULLABLE
   name: activity_segment
   type: STRING
+- mode: NULLABLE
+  name: topsites_rows
+  type: INTEGER
+- mode: NULLABLE
+  name: organic_topsite_clicks
+  type: INTEGER
+- mode: NULLABLE
+  name: organic_topsite_impressions
+  type: INTEGER

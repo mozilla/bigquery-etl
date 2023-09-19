@@ -1,0 +1,11 @@
+friendly_name: Daily Connector Costs
+description: |-
+  Daily Costs per Fivetran Connector
+owners:
+- lschiestl@mozilla.com
+labels: {}
+scheduling:
+  dag_name: bqetl_fivetran_costs
+  date_partition_parameter: null
+bigquery: null
+references: {}

@@ -1,5 +1,6 @@
 """Build and use query dependency graphs."""
 
+import re
 import sys
 from itertools import groupby
 from pathlib import Path
@@ -7,67 +8,99 @@ from subprocess import CalledProcessError
 from typing import Dict, Iterator, List, Tuple
 
 import click
+import sqlglot
 import yaml
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
+from bigquery_etl.util.common import render
 
 stable_views = None
 
-try:
-    import jnius_config  # noqa: E402
 
-    if not jnius_config.vm_running:
-        # this has to run before jnius is imported the first time
-        target = Path(__file__).parent.parent / "target"
-        for path in target.glob("*.jar"):
-            jnius_config.add_classpath(path.resolve().as_posix())
-except ImportError:
-    # ignore so this module can be imported safely without java installed
-    pass
+def _raw_table_name(table: sqlglot.exp.Table) -> str:
+    return (
+        table.sql("bigquery", comments=False)
+        # remove alias
+        .split(" AS ", 1)[0]
+        # remove quotes
+        .replace("`", "")
+    )
 
 
 def extract_table_references(sql: str) -> List[str]:
     """Return a list of tables referenced in the given SQL."""
-    # import jnius here so this module can be imported safely without java installed
-    import jnius  # noqa: E402
-
-    try:
-        ZetaSqlHelper = jnius.autoclass("com.mozilla.telemetry.ZetaSqlHelper")
-    except jnius.JavaException:
-        # replace jnius.JavaException because it's not available outside this function
-        raise ImportError(
-            "failed to import java class via jni, please build java dependencies "
-            "with: mvn package"
+    # sqlglot cannot handle scripts with variables and control statements
+    if re.search(r"^\s*DECLARE\b", sql, flags=re.MULTILINE):
+        return []
+    # sqlglot parses UDFs with keyword names incorrectly:
+    # https://github.com/tobymao/sqlglot/issues/1535
+    sql = re.sub(
+        r"\.(range|true|false|null)\(",
+        r".\1_(",
+        sql,
+        flags=re.IGNORECASE,
+    )
+    # sqlglot doesn't suppport OPTIONS on UDFs
+    sql = re.sub(
+        r"""OPTIONS\s*\(("([^"]|\\")*"|'([^']|\\')*'|[^)])*\)""",
+        "",
+        sql,
+        flags=re.MULTILINE | re.IGNORECASE,
+    )
+    # sqlglot doesn't fully support byte strings
+    sql = re.sub(
+        r"""b(["'])""",
+        r"\1",
+        sql,
+        flags=re.IGNORECASE,
+    )
+    query = sqlglot.parse(sql, read="bigquery")
+    creates = set()
+    tables = set()
+    for statement in query:
+        if statement is None:
+            continue
+        creates |= {
+            _raw_table_name(expr.this)
+            for expr in statement.find_all(sqlglot.exp.Create)
+        }
+        tables |= (
+            {_raw_table_name(table) for table in statement.find_all(sqlglot.exp.Table)}
+            # ignore references created in this query
+            - creates
+            # ignore CTEs created in this statement
+            - {cte.alias_or_name for cte in statement.find_all(sqlglot.exp.CTE)}
         )
-    try:
-        result = ZetaSqlHelper.extractTableNamesFromStatement(sql)
-    except jnius.JavaException:
-        # Only use extractTableNamesFromScript when extractTableNamesFromStatement
-        # fails, because for scripts zetasql incorrectly includes CTE references from
-        # subquery expressions
-        try:
-            result = ZetaSqlHelper.extractTableNamesFromScript(sql)
-        except jnius.JavaException as e:
-            # replace jnius.JavaException because it's not available outside this function
-            raise ValueError(*e.args)
-    return [".".join(table.toArray()) for table in result.toArray()]
+    return sorted(tables)
 
 
 def extract_table_references_without_views(path: Path) -> Iterator[str]:
     """Recursively search for non-view tables referenced in the given SQL file."""
     global stable_views
 
-    for table in extract_table_references(path.read_text()):
+    sql = render(path.name, template_folder=path.parent)
+    for table in extract_table_references(sql):
         ref_base = path.parent
         parts = tuple(table.split("."))
         for _ in parts:
             ref_base = ref_base.parent
         view_paths = [ref_base.joinpath(*parts, "view.sql")]
-        if parts[:1] == ("mozdata",):
+        if parts[:1] == (
+            ConfigLoader.get("default", "user_facing_project", fallback="mozdata"),
+        ):
             view_paths.append(
-                ref_base.joinpath("moz-fx-data-shared-prod", *parts[1:], "view.sql"),
+                ref_base.joinpath(
+                    ConfigLoader.get(
+                        "default", "project", fallback="moz-fx-data-shared-prod"
+                    ),
+                    *parts[1:],
+                    "view.sql",
+                ),
             )
         for view_path in view_paths:
+            if view_path == path:
+                continue  # skip self references
             if view_path.is_file():
                 yield from extract_table_references_without_views(view_path)
                 break
@@ -76,7 +109,18 @@ def extract_table_references_without_views(path: Path) -> Iterator[str]:
             while len(parts) < 3:
                 parts = (ref_base.name, *parts)
                 ref_base = ref_base.parent
-            if parts[:-2] in (("moz-fx-data-shared-prod",), ("mozdata",)):
+            if parts[:-2] in (
+                (
+                    ConfigLoader.get(
+                        "default", "project", fallback="moz-fx-data-shared-prod"
+                    ),
+                ),
+                (
+                    ConfigLoader.get(
+                        "default", "user_facing_project", fallback="mozdata"
+                    ),
+                ),
+            ):
                 if stable_views is None:
                     # lazy read stable views
                     stable_views = {
@@ -86,7 +130,12 @@ def extract_table_references_without_views(path: Path) -> Iterator[str]:
                         for schema in get_stable_table_schemas()
                     }
                 if parts[-2:] in stable_views:
-                    parts = ("moz-fx-data-shared-prod", *stable_views[parts[-2:]])
+                    parts = (
+                        ConfigLoader.get(
+                            "default", "project", fallback="moz-fx-data-shared-prod"
+                        ),
+                        *stable_views[parts[-2:]],
+                    )
             yield ".".join(parts)
 
 
@@ -105,7 +154,8 @@ def _get_references(
             if without_views:
                 yield path, list(extract_table_references_without_views(path))
             else:
-                yield path, extract_table_references(path.read_text())
+                sql = render(path.name, template_folder=path.parent)
+                yield path, extract_table_references(sql)
         except CalledProcessError as e:
             raise click.ClickException(f"failed to import jnius: {e}")
         except ImportError as e:
@@ -140,7 +190,7 @@ def dependency():
 
 
 @dependency.command(
-    help="Show table references in sql files. Requires Java.",
+    help="Show table references in sql files.",
 )
 @click.argument(
     "paths",
@@ -165,7 +215,7 @@ def show(paths: Tuple[str, ...], without_views: bool):
 
 @dependency.command(
     help="Record table references in metadata. Fails if metadata already contains "
-    "references section. Requires Java.",
+    "references section.",
 )
 @click.argument(
     "paths",

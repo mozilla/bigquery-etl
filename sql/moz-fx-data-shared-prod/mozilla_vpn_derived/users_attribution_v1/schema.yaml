@@ -1,0 +1,35 @@
+fields:
+- name: user_id
+  type: INTEGER
+  mode: NULLABLE
+- name: attribution
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: referrer
+    type: STRING
+    mode: NULLABLE
+  - name: entrypoint_experiment
+    type: STRING
+    mode: NULLABLE
+  - name: entrypoint_variation
+    type: STRING
+    mode: NULLABLE
+  - name: utm_campaign
+    type: STRING
+    mode: NULLABLE
+  - name: utm_content
+    type: STRING
+    mode: NULLABLE
+  - name: utm_medium
+    type: STRING
+    mode: NULLABLE
+  - name: utm_source
+    type: STRING
+    mode: NULLABLE
+  - name: utm_term
+    type: STRING
+    mode: NULLABLE
+  - name: data_cta_position
+    type: STRING
+    mode: NULLABLE

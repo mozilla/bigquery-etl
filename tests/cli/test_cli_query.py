@@ -19,6 +19,24 @@ class TestQuery:
     def runner(self):
         return CliRunner()
 
+    def create_test_dag(self, dag_name):
+        os.mkdir("dags")
+
+        dag_conf = {
+            f"{dag_name}": {
+                "schedule_interval": "daily",
+                "default_args": {
+                    "owner": "test@example.com",
+                    "start_date": "2020-03-29",
+                    "email": ["test@example.org"],
+                    "retries": 1,
+                },
+            }
+        }
+
+        with open("dags.yaml", "w") as f:
+            f.write(yaml.dump(dag_conf))
+
     def test_create_invalid_path(self, runner):
         with runner.isolated_filesystem():
             with open("foo.txt", "w") as f:
@@ -34,7 +52,7 @@ class TestQuery:
     def test_create_query(self, runner):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod")
-            result = runner.invoke(create, ["test.test_query"])
+            result = runner.invoke(create, ["test.test_query", "--no_schedule"])
             assert result.exit_code == 0
             assert os.listdir("sql/moz-fx-data-shared-prod") == ["test"]
             assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test")) == [
@@ -48,10 +66,56 @@ class TestQuery:
                 "sql/moz-fx-data-shared-prod/test/test_query_v1"
             )
 
+    def test_create_query_in_default_dag(self, runner):
+        with runner.isolated_filesystem():
+            self.create_test_dag("bqetl_default")
+            os.makedirs("sql/moz-fx-data-shared-prod")
+            result = runner.invoke(create, ["test.test_query"])
+            assert result.exit_code == 0
+            assert os.listdir("sql/moz-fx-data-shared-prod") == ["test"]
+            assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test")) == [
+                "dataset_metadata.yaml",
+                "test_query_v1",
+            ]
+            assert "query.sql" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+            assert "metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml"
+            ) as file:
+                exists = "dag_name: bqetl_default" in file.read()
+                assert exists
+
+    def test_create_query_in_named_dag(self, runner):
+        with runner.isolated_filesystem():
+            self.create_test_dag("bqetl_test")
+            os.makedirs("sql/moz-fx-data-shared-prod")
+            result = runner.invoke(create, ["test.test_query", "--dag=bqetl_test"])
+            assert result.exit_code == 0
+            assert os.listdir("sql/moz-fx-data-shared-prod") == ["test"]
+            assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test")) == [
+                "dataset_metadata.yaml",
+                "test_query_v1",
+            ]
+            assert "query.sql" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+            assert "metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+            with open(
+                "sql/moz-fx-data-shared-prod/test//test_query_v1/metadata.yaml"
+            ) as file:
+                exists = "dag_name: bqetl_test" in file.read()
+                assert exists
+
     def test_create_query_with_version(self, runner):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod")
-            result = runner.invoke(create, ["test.test_query_v4"])
+            result = runner.invoke(create, ["test.test_query_v4", "--no_schedule"])
             assert result.exit_code == 0
             assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test")) == [
                 "dataset_metadata.yaml",
@@ -61,7 +125,7 @@ class TestQuery:
     def test_create_derived_query_with_view(self, runner):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod/test_derived")
-            result = runner.invoke(create, ["test_derived.test_query"])
+            result = runner.invoke(create, ["test_derived.test_query", "--no_schedule"])
             assert result.exit_code == 0
             assert "test_derived" in os.listdir("sql/moz-fx-data-shared-prod")
             assert "test" in os.listdir("sql/moz-fx-data-shared-prod")
@@ -82,7 +146,7 @@ class TestQuery:
             os.makedirs("sql/moz-fx-data-shared-prod")
             os.mkdir("sql/moz-fx-data-shared-prod/test_derived")
             os.mkdir("sql/moz-fx-data-shared-prod/test")
-            result = runner.invoke(create, ["test.test_query"])
+            result = runner.invoke(create, ["test.test_query", "--no_schedule"])
             assert result.exit_code == 0
             assert "test_derived" in os.listdir("sql/moz-fx-data-shared-prod")
             assert "test" in os.listdir("sql/moz-fx-data-shared-prod")
@@ -101,7 +165,9 @@ class TestQuery:
     def test_create_query_with_init(self, runner):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod")
-            result = runner.invoke(create, ["test.test_query", "--init"])
+            result = runner.invoke(
+                create, ["test.test_query", "--init", "--no_schedule"]
+            )
             assert result.exit_code == 0
             assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test")) == [
                 "dataset_metadata.yaml",
@@ -129,7 +195,6 @@ class TestQuery:
             result = runner.invoke(schedule, ["test.query_v1", "--dag=foo"])
             assert result.exit_code == 1
 
-    @pytest.mark.java
     def test_schedule_query(self, runner):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
@@ -173,7 +238,6 @@ class TestQuery:
             print(result.output)
             assert result.exit_code == 0
 
-    @pytest.mark.java
     def test_reschedule_query(self, runner):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")

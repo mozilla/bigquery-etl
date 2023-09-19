@@ -1,0 +1,13 @@
+friendly_name: Prod Stripe refund
+description: Production Stripe refund table from Fivetran
+owners:
+  - srose@mozilla.com
+labels:
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  # destination is the whole table, not a single partition,
+  # so don't use date_partition_parameter
+  date_partition_parameter: null
+  depends_on_fivetran:
+    - task_id: fivetran_stripe

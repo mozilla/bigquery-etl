@@ -2,7 +2,7 @@
 friendly_name: Addons
 description: Addon usage by client, partitioned by day
 owners:
-  - jklukas@mozilla.com
+  - kik@mozilla.com
 labels:
   application: addons
   schedule: daily

@@ -1,0 +1,40 @@
+{% macro in_range(columns, min, max, where) %}
+  {% if columns is string %}
+    {% set columns = [columns] %}
+  {% endif %}
+  WITH ranges AS (
+    SELECT [
+      {% for col in columns %}
+        IF(
+          COUNTIF(
+            {% if min is not none and max is not none -%}
+            {{ col }} IS NOT BETWEEN {{ min }} AND {{ max }}
+            {% elif min is not none -%}
+            {{ col }} < {{ min }}
+            {% elif max is not none -%}
+            {{ col }} > {{ max }}
+            {% endif -%}
+          ) > 0,
+          "{{ col }}",
+          NULL
+        ){% if not loop.last -%},{% endif -%}
+      {% endfor %}
+    ] AS checks
+    FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+    {% if where %}
+    WHERE {{ where }}
+    {% endif %}
+  ), range_checks AS (
+    SELECT ARRAY_AGG(u IGNORE NULLS) AS checks FROM ranges, UNNEST(checks) AS u
+  )
+  SELECT IF(
+   (SELECT ARRAY_LENGTH(checks) FROM range_checks) > 0,
+   ERROR(
+     CONCAT(
+       "Columns with values not within defined range [{{ min }}, {{ max }}]: ",
+       (SELECT ARRAY_TO_STRING(checks, ", ") FROM range_checks)
+     )
+   ),
+   NULL
+  );
+{% endmacro %}

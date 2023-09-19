@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_main_summary
@@ -298,6 +298,13 @@ with DAG(
         "telemetry_derived__clients_last_seen__v1_external"
     ) as telemetry_derived__clients_last_seen__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_telemetry_derived__clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_search_dashboard__wait_for_telemetry_derived__clients_last_seen__v1",
             external_dag_id="bqetl_search_dashboard",
             external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
@@ -434,20 +441,6 @@ with DAG(
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
-    with TaskGroup(
-        "telemetry_derived__main_1pct__v1_external"
-    ) as telemetry_derived__main_1pct__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_feature_usage__wait_for_telemetry_derived__main_1pct__v1",
-            external_dag_id="bqetl_feature_usage",
-            external_task_id="wait_for_telemetry_derived__main_1pct__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
-        )
-
-        telemetry_derived__main_1pct__v1_external.set_upstream(
-            telemetry_derived__main_1pct__v1
-        )
-
     telemetry_derived__main_nightly__v1 = bigquery_etl_query(
         task_id="telemetry_derived__main_nightly__v1",
         destination_table="main_nightly_v1",
@@ -464,6 +457,38 @@ with DAG(
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
+
+    telemetry_derived__main_remainder_1pct__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__main_remainder_1pct__v1",
+        destination_table="main_remainder_1pct_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "dthorn@mozilla.com",
+            "jklukas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        start_date=datetime.datetime(2023, 7, 1, 0, 0),
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+    )
+
+    with TaskGroup(
+        "telemetry_derived__main_remainder_1pct__v1_external"
+    ) as telemetry_derived__main_remainder_1pct__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_feature_usage__wait_for_telemetry_derived__main_remainder_1pct__v1",
+            external_dag_id="bqetl_feature_usage",
+            external_task_id="wait_for_telemetry_derived__main_remainder_1pct__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
+        )
+
+        telemetry_derived__main_remainder_1pct__v1_external.set_upstream(
+            telemetry_derived__main_remainder_1pct__v1
+        )
 
     telemetry_derived__main_summary__v4 = bigquery_etl_query(
         task_id="telemetry_derived__main_summary__v4",
@@ -512,6 +537,24 @@ with DAG(
             telemetry_derived__main_summary__v4
         )
 
+    telemetry_derived__main_use_counter_1pct__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__main_use_counter_1pct__v1",
+        destination_table="main_use_counter_1pct_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "dthorn@mozilla.com",
+            "jklukas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        start_date=datetime.datetime(2023, 7, 1, 0, 0),
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+    )
+
     telemetry_derived__suggest_clients_daily__v1 = bigquery_etl_query(
         task_id="telemetry_derived__suggest_clients_daily__v1",
         destination_table="suggest_clients_daily_v1",
@@ -527,6 +570,20 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
+
+    with TaskGroup(
+        "telemetry_derived__suggest_clients_daily__v1_external"
+    ) as telemetry_derived__suggest_clients_daily__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_ctxsvc_derived__wait_for_telemetry_derived__suggest_clients_daily__v1",
+            external_dag_id="bqetl_ctxsvc_derived",
+            external_task_id="wait_for_telemetry_derived__suggest_clients_daily__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        telemetry_derived__suggest_clients_daily__v1_external.set_upstream(
+            telemetry_derived__suggest_clients_daily__v1
+        )
 
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
@@ -648,8 +705,16 @@ with DAG(
         wait_for_copy_deduplicate_main_ping
     )
 
+    telemetry_derived__main_remainder_1pct__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
     telemetry_derived__main_summary__v4.set_upstream(
         wait_for_copy_deduplicate_main_ping
+    )
+
+    telemetry_derived__main_use_counter_1pct__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     telemetry_derived__suggest_clients_daily__v1.set_upstream(wait_for_bq_main_events)

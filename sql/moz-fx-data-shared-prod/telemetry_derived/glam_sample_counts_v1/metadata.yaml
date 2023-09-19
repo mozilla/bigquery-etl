@@ -1,0 +1,6 @@
+friendly_name: |-
+  Telemetry Derived - Glam Sample Counts
+description: |-
+  Holds sample counts for all Legacy Telemetry probes supported by Glam
+owners:
+- efilho@mozilla.com

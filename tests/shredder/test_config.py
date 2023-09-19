@@ -77,12 +77,12 @@ def test_glean_targets():
             for target in [
                 DeleteTarget(
                     table="fenix_stable.metrics_v1",
-                    field="client_info.client_id",
+                    field=("client_info.client_id",),
                     project="moz-fx-data-shared-prod",
                 ),
                 DeleteTarget(
                     table="fenix_derived.clients_daily_v1",
-                    field="client_id",
+                    field=("client_id",),
                     project="moz-fx-data-shared-prod",
                 ),
             ]
@@ -105,12 +105,12 @@ def test_glean_targets():
             for target in [
                 DeleteTarget(
                     table="focus_android_stable.metrics_v1",
-                    field="client_info.client_id",
+                    field=("client_info.client_id",) * 2,
                     project="moz-fx-data-shared-prod",
                 ),
                 DeleteTarget(
                     table="focus_android_derived.clients_daily_v1",
-                    field="client_id",
+                    field=("client_id",) * 2,
                     project="moz-fx-data-shared-prod",
                 ),
             ]

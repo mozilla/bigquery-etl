@@ -1,0 +1,65 @@
+fields:
+
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: |
+    Represents ETL job date.
+    Also, used for table partitioning.
+
+- mode: NULLABLE
+  name: user_id
+  type: STRING
+  description: |
+    A 36 char long hash value representing
+    User ID (registered user).
+    Also, used as a clustering field.
+
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: |
+    The first country value observed
+    in a day for a specific user.
+    For example: Android
+
+- mode: NULLABLE
+  name: language
+  type: STRING
+  description: |
+    The first language value observed
+    in a day for a specific user.
+
+- mode: NULLABLE
+  name: os_name
+  type: STRING
+  description: |
+    The first os_name value observed
+    in a day for a specific user.
+    For example: Android
+
+- mode: NULLABLE
+  name: os_version
+  type: STRING
+  description: |
+    The first os_version value observed
+    in a day for a specific user.
+
+- mode: NULLABLE
+  name: seen_in_tier1_country
+  type: BOOLEAN
+  description: |
+    Set to True if a user sent an event from
+    one of the following countries for
+    a specific submission_date:
+    ('United States','France',
+    'Germany','United Kingdom','Canada')
+    for any of the services they used that day.
+
+- mode: NULLABLE
+  name: registered
+  type: BOOLEAN
+  description: |
+    Set to True if the user submitted
+    the event_type of `fxa_reg - complete`
+    event on the specific submission_date.

@@ -1,0 +1,8 @@
+friendly_name: Gplay Installs By Country
+description: |-
+  A view on Fenix Google Play Install Data by Country
+owners:
+- frank@mozilla.com
+labels: {}
+bigquery: null
+references: {}

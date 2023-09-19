@@ -47,3 +47,4 @@ nav:
       - Scheduling: reference/scheduling.md
       - Public data: reference/public_data.md
       - Airflow Tags: reference/airflow_tags.md
+      - Data Checks: reference/data_checks.md

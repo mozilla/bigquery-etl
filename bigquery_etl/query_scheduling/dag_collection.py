@@ -72,6 +72,22 @@ class DagCollection:
                     project == task.project
                     and dataset == task.dataset
                     and table == f"{task.table}_{task.version}"
+                    and not task.is_dq_check
+                ):
+                    return task
+
+        return None
+
+    def fail_checks_task_for_table(self, project, dataset, table):
+        """Return the task that schedules the checks for the provided table."""
+        for dag in self.dags:
+            for task in dag.tasks:
+                if (
+                    project == task.project
+                    and dataset == task.dataset
+                    and table == f"{task.table}_{task.version}"
+                    and task.is_dq_check
+                    and task.is_dq_check_fail
                 ):
                     return task
 
@@ -91,7 +107,9 @@ class DagCollection:
                 )
             dag.add_tasks(list(group))
 
-        public_json_tasks = [task for task in tasks if task.public_json]
+        public_json_tasks = [
+            task for task in tasks if task.public_json and not task.is_dq_check
+        ]
         if public_json_tasks:
             for dag in self.dags:
                 if dag.__class__ == PublicDataJsonDag:

@@ -1,0 +1,24 @@
+---
+- &conn_1
+  destination: destination_1_name
+  measured_date: 2023-01-01
+  connector: connector_1
+  billing_type: paid
+  active_rows: 60
+  cost_in_usd: 0
+- <<: *conn_1
+  billing_type: free_system
+  active_rows: 40
+- <<: *conn_1
+  measured_date: 2023-01-02
+  active_rows: 940
+- &conn_2
+  <<: *conn_1
+  connector: connector_2
+  active_rows: 1000
+- <<: *conn_2
+  billing_type: free_resync
+  active_rows: 5000
+- <<: *conn_2
+  billing_type: free_connector_trial
+  active_rows: 2000

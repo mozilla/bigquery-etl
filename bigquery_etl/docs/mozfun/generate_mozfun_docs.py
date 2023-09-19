@@ -5,10 +5,11 @@ from pathlib import Path
 
 import yaml
 
+from bigquery_etl.config import ConfigLoader
+from bigquery_etl.util.mozfun_docs_functions import get_mozfun_parameters
+
 DOCS_FILE = "README.md"
 METADATA_FILE = "metadata.yaml"
-SOURCE_URL = "https://github.com/mozilla/bigquery-etl/blob/generated-sql"
-EDIT_URL = "https://github.com/mozilla/bigquery-etl/edit/generated-sql"
 UDF_FILE = "udf.sql"
 PROCEDURE_FILE = "stored_procedure.sql"
 SQL_REF_RE = r"@sql\((.+)\)"
@@ -60,8 +61,10 @@ def generate_mozfun_docs(out_dir, project_dir):
             else:
                 description = None
                 if METADATA_FILE in files:
-                    source_link = f"{SOURCE_URL}/{root}"
-                    edit_link = f"{EDIT_URL}/{root}/{METADATA_FILE}"
+                    source_link = f"{ConfigLoader.get('docs', 'source_url')}/{root}"
+                    edit_link = (
+                        f"{ConfigLoader.get('docs', 'edit_url')}/{root}/{METADATA_FILE}"
+                    )
 
                     with open(os.path.join(root, METADATA_FILE)) as stream:
                         try:
@@ -88,6 +91,29 @@ def generate_mozfun_docs(out_dir, project_dir):
                             dataset_doc_file.write(f"{formated}\n\n")
                         # Inject the contents of the README.md
                         dataset_doc_file.write(docfile_content)
+                        # Inject input and output parameters from sql
+                        if is_udf:
+                            with open(os.path.join(root, UDF_FILE), "r") as udf_file:
+                                input_str, output_str = get_mozfun_parameters(
+                                    udf_file.read()
+                                )
+                        else:
+                            with open(
+                                os.path.join(root, PROCEDURE_FILE), "r"
+                            ) as procedure_file:
+                                input_str, output_str = get_mozfun_parameters(
+                                    procedure_file.read()
+                                )
+
+                        if input_str or output_str:
+                            dataset_doc_file.write("\n### Parameters\n\n")
+                            if input_str:
+                                dataset_doc_file.write("\n**INPUTS**\n\n")
+                                dataset_doc_file.write(f"```\n{input_str}\n```\n\n")
+                            if output_str:
+                                dataset_doc_file.write("\n**OUTPUTS**\n\n")
+                                dataset_doc_file.write(f"```\n{output_str}\n```\n\n")
+
                         # Add links to source and edit
                         sourced = add_source_and_edit(source_link, edit_link)
                         dataset_doc_file.write(f"{sourced}\n\n")

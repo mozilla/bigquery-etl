@@ -1,0 +1,18 @@
+friendly_name: Additional Deletion Requests
+description: |
+  Artificial deletion requests for clients who've turned off data upload, but
+  due to bug 1805184 didn't successfully send a normal deletion request.
+  See https://bugzilla.mozilla.org/show_bug.cgi?id=1805184
+  and https://bugzilla.mozilla.org/show_bug.cgi?id=1810236
+owners:
+- dthorn@mozilla.com
+labels:
+  schedule: daily
+scheduling:
+  dag_name: bqetl_org_mozilla_focus_derived
+  depends_on_past: false
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: false

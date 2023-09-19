@@ -2,7 +2,7 @@ friendly_name: Subscription Platform
 description: |-
   Combined subscription information from multiple products
   and payment platforms; see bug 1703340
-dataset_base_acl: view_restricted
+dataset_base_acl: view
 user_facing: true
 labels: {}
 workgroup_access:

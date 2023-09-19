@@ -1,0 +1,1451 @@
+fields:
+- name: logName
+  type: STRING
+  mode: NULLABLE
+- name: resource
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: type
+    type: STRING
+    mode: NULLABLE
+  - name: labels
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: instance_id
+      type: STRING
+      mode: NULLABLE
+    - name: zone
+      type: STRING
+      mode: NULLABLE
+    - name: project_id
+      type: STRING
+      mode: NULLABLE
+- name: textPayload
+  type: STRING
+  mode: NULLABLE
+- name: jsonPayload
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: timestamp
+    type: FLOAT
+    mode: NULLABLE
+  - name: type
+    type: STRING
+    mode: NULLABLE
+  - name: severity
+    type: FLOAT
+    mode: NULLABLE
+  - name: pid
+    type: FLOAT
+    mode: NULLABLE
+  - name: fields
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: agent
+      type: STRING
+      mode: NULLABLE
+    - name: email
+      type: STRING
+      mode: NULLABLE
+    - name: lang
+      type: STRING
+      mode: NULLABLE
+    - name: t
+      type: FLOAT
+      mode: NULLABLE
+    - name: keys
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: path
+      type: STRING
+      mode: NULLABLE
+    - name: remoteaddresschain
+      type: STRING
+      mode: NULLABLE
+    - name: method
+      type: STRING
+      mode: NULLABLE
+    - name: status
+      type: FLOAT
+      mode: NULLABLE
+    - name: uid
+      type: STRING
+      mode: NULLABLE
+    - name: errno
+      type: FLOAT
+      mode: NULLABLE
+    - name: time
+      type: FLOAT
+      mode: NULLABLE
+    - name: event_type
+      type: STRING
+      mode: NULLABLE
+    - name: app_version
+      type: STRING
+      mode: NULLABLE
+    - name: op
+      type: STRING
+      mode: NULLABLE
+    - name: event_properties
+      type: STRING
+      mode: NULLABLE
+    - name: user_properties
+      type: STRING
+      mode: NULLABLE
+    - name: missingflowid
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: event
+      type: STRING
+      mode: NULLABLE
+    - name: region
+      type: STRING
+      mode: NULLABLE
+    - name: country
+      type: STRING
+      mode: NULLABLE
+    - name: os_version
+      type: STRING
+      mode: NULLABLE
+    - name: language
+      type: STRING
+      mode: NULLABLE
+    - name: os_name
+      type: STRING
+      mode: NULLABLE
+    - name: clientid
+      type: STRING
+      mode: NULLABLE
+    - name: useragent
+      type: STRING
+      mode: NULLABLE
+    - name: granttype
+      type: STRING
+      mode: NULLABLE
+    - name: service
+      type: STRING
+      mode: NULLABLE
+    - name: flowtype
+      type: STRING
+      mode: NULLABLE
+    - name: flow_time
+      type: FLOAT
+      mode: NULLABLE
+    - name: flow_id
+      type: STRING
+      mode: NULLABLE
+    - name: flowbegintime
+      type: FLOAT
+      mode: NULLABLE
+    - name: entrypoint
+      type: STRING
+      mode: NULLABLE
+    - name: flowcompletesignal
+      type: STRING
+      mode: NULLABLE
+    - name: locale
+      type: STRING
+      mode: NULLABLE
+    - name: recency
+      type: STRING
+      mode: NULLABLE
+    - name: events
+      type: FLOAT
+      mode: NULLABLE
+    - name: session_id
+      type: FLOAT
+      mode: NULLABLE
+    - name: sendertype
+      type: STRING
+      mode: NULLABLE
+    - name: command
+      type: STRING
+      mode: NULLABLE
+    - name: sender
+      type: STRING
+      mode: NULLABLE
+    - name: targetos
+      type: STRING
+      mode: NULLABLE
+    - name: targettype
+      type: STRING
+      mode: NULLABLE
+    - name: index
+      type: FLOAT
+      mode: NULLABLE
+    - name: target
+      type: STRING
+      mode: NULLABLE
+    - name: utm_term
+      type: STRING
+      mode: NULLABLE
+    - name: utm_campaign
+      type: STRING
+      mode: NULLABLE
+    - name: utm_source
+      type: STRING
+      mode: NULLABLE
+    - name: utm_medium
+      type: STRING
+      mode: NULLABLE
+    - name: flowid
+      type: STRING
+      mode: NULLABLE
+    - name: uaos
+      type: STRING
+      mode: NULLABLE
+    - name: is_placeholder
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: templateversion
+      type: FLOAT
+      mode: NULLABLE
+    - name: domain
+      type: STRING
+      mode: NULLABLE
+    - name: type
+      type: STRING
+      mode: NULLABLE
+    - name: template
+      type: STRING
+      mode: NULLABLE
+    - name: reason
+      type: STRING
+      mode: NULLABLE
+    - name: utm_content
+      type: STRING
+      mode: NULLABLE
+    - name: newsletters
+      type: STRING
+      mode: NULLABLE
+    - name: err
+      type: STRING
+      mode: NULLABLE
+    - name: senderos
+      type: STRING
+      mode: NULLABLE
+    - name: tokenverificationid
+      type: STRING
+      mode: NULLABLE
+    - name: device_model
+      type: STRING
+      mode: NULLABLE
+    - name: id
+      type: STRING
+      mode: NULLABLE
+    - name: emailcode
+      type: STRING
+      mode: NULLABLE
+    - name: createdat
+      type: FLOAT
+      mode: NULLABLE
+    - name: verifiedat
+      type: STRING
+      mode: NULLABLE
+    - name: _uuidfields
+      type: STRING
+      mode: NULLABLE
+    - name: _intboolfields
+      type: STRING
+      mode: NULLABLE
+    - name: isprimary
+      type: FLOAT
+      mode: NULLABLE
+    - name: normalizedemail
+      type: STRING
+      mode: NULLABLE
+    - name: isverified
+      type: FLOAT
+      mode: NULLABLE
+    - name: body
+      type: STRING
+      mode: NULLABLE
+    - name: statuscode
+      type: FLOAT
+      mode: NULLABLE
+    - name: productid
+      type: STRING
+      mode: NULLABLE
+    - name: planid
+      type: STRING
+      mode: NULLABLE
+    - name: numsessions
+      type: FLOAT
+      mode: NULLABLE
+    - name: error
+      type: STRING
+      mode: NULLABLE
+    - name: ipnmessage
+      type: STRING
+      mode: NULLABLE
+    - name: customeruid
+      type: STRING
+      mode: NULLABLE
+    - name: message
+      type: STRING
+      mode: NULLABLE
+    - name: to
+      type: STRING
+      mode: NULLABLE
+    - name: code
+      type: STRING
+      mode: NULLABLE
+    - name: token
+      type: STRING
+      mode: NULLABLE
+    - name: disabledat
+      type: STRING
+      mode: NULLABLE
+    - name: keyschangedat
+      type: FLOAT
+      mode: NULLABLE
+    - name: lockedat
+      type: STRING
+      mode: NULLABLE
+    - name: emails
+      type: STRING
+      mode: NULLABLE
+    - name: ecosystemanonid
+      type: STRING
+      mode: NULLABLE
+    - name: metricsoptoutat
+      type: STRING
+      mode: NULLABLE
+    - name: authsalt
+      type: STRING
+      mode: NULLABLE
+    - name: profilechangedat
+      type: FLOAT
+      mode: NULLABLE
+    - name: verifiersetat
+      type: FLOAT
+      mode: NULLABLE
+    - name: emailverified
+      type: FLOAT
+      mode: NULLABLE
+    - name: ka
+      type: STRING
+      mode: NULLABLE
+    - name: verifierversion
+      type: FLOAT
+      mode: NULLABLE
+    - name: wrapwrapkb
+      type: STRING
+      mode: NULLABLE
+    - name: primaryemail
+      type: STRING
+      mode: NULLABLE
+    - name: accountrecreated
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: subscriptionid
+      type: STRING
+      mode: NULLABLE
+    - name: payload
+      type: STRING
+      mode: NULLABLE
+    - name: redirectto
+      type: STRING
+      mode: NULLABLE
+    - name: plan_id
+      type: STRING
+      mode: NULLABLE
+    - name: product_id
+      type: STRING
+      mode: NULLABLE
+    - name: msg
+      type: STRING
+      mode: NULLABLE
+    - name: dbpath
+      type: STRING
+      mode: NULLABLE
+    - name: enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: poolstats
+      type: STRING
+      mode: NULLABLE
+    - name: data
+      type: STRING
+      mode: NULLABLE
+    - name: unblockcode
+      type: STRING
+      mode: NULLABLE
+    - name: purchasetoken
+      type: STRING
+      mode: NULLABLE
+    - name: remaining
+      type: FLOAT
+      mode: NULLABLE
+    - name: zip
+      type: STRING
+      mode: NULLABLE
+    - name: query
+      type: STRING
+      mode: NULLABLE
+    - name: params
+      type: STRING
+      mode: NULLABLE
+    - name: entrypoint_variation
+      type: STRING
+      mode: NULLABLE
+    - name: entrypoint_experiment
+      type: STRING
+      mode: NULLABLE
+    - name: invoiceid
+      type: STRING
+      mode: NULLABLE
+    - name: traceid
+      type: STRING
+      mode: NULLABLE
+    - name: automatic_tax
+      type: STRING
+      mode: NULLABLE
+    - name: hostname
+      type: STRING
+      mode: NULLABLE
+    - name: syscall
+      type: STRING
+      mode: NULLABLE
+    - name: priceid
+      type: STRING
+      mode: NULLABLE
+    - name: ipaddress
+      type: STRING
+      mode: NULLABLE
+    - name: originaltransactionid
+      type: STRING
+      mode: NULLABLE
+    - name: purchase
+      type: STRING
+      mode: NULLABLE
+    - name: originaltransactionids
+      type: STRING
+      mode: NULLABLE
+    - name: stack
+      type: STRING
+      mode: NULLABLE
+    - name: host
+      type: STRING
+      mode: NULLABLE
+    - name: port
+      type: FLOAT
+      mode: NULLABLE
+    - name: bodysize
+      type: FLOAT
+      mode: NULLABLE
+    - name: promotioncode
+      type: STRING
+      mode: NULLABLE
+    - name: location
+      type: STRING
+      mode: NULLABLE
+    - name: customerid
+      type: STRING
+      mode: NULLABLE
+    - name: postalcode
+      type: STRING
+      mode: NULLABLE
+    - name: countrycode
+      type: STRING
+      mode: NULLABLE
+    - name: uabrowserversion
+      type: STRING
+      mode: NULLABLE
+    - name: uabrowser
+      type: STRING
+      mode: NULLABLE
+    - name: clientname
+      type: STRING
+      mode: NULLABLE
+    - name: uaosversion
+      type: STRING
+      mode: NULLABLE
+    - name: isboom
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: isserver
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: output
+      type: STRING
+      mode: NULLABLE
+    - name: details
+      type: STRING
+      mode: NULLABLE
+    - name: _original
+      type: STRING
+      mode: NULLABLE
+    - name: param
+      type: STRING
+      mode: NULLABLE
+    - name: rawtype
+      type: STRING
+      mode: NULLABLE
+    - name: raw
+      type: STRING
+      mode: NULLABLE
+    - name: requestid
+      type: STRING
+      mode: NULLABLE
+    - name: headers
+      type: STRING
+      mode: NULLABLE
+    - name: user_id
+      type: STRING
+      mode: NULLABLE
+    - name: device_id
+      type: STRING
+      mode: NULLABLE
+    - name: value
+      type: STRING
+      mode: NULLABLE
+    - name: plan
+      type: STRING
+      mode: NULLABLE
+    - name: context
+      type: STRING
+      mode: NULLABLE
+    - name: deviceid
+      type: STRING
+      mode: NULLABLE
+    - name: result
+      type: STRING
+      mode: NULLABLE
+    - name: eventid
+      type: FLOAT
+      mode: NULLABLE
+    - name: now
+      type: STRING
+      mode: NULLABLE
+    - name: connlimit
+      type: FLOAT
+      mode: NULLABLE
+    - name: grant_type
+      type: STRING
+      mode: NULLABLE
+    - name: emailsender
+      type: STRING
+      mode: NULLABLE
+    - name: emailservice
+      type: STRING
+      mode: NULLABLE
+    - name: phonenumber
+      type: STRING
+      mode: NULLABLE
+    - name: templatename
+      type: STRING
+      mode: NULLABLE
+    - name: acceptlanguage
+      type: STRING
+      mode: NULLABLE
+    - name: messageid
+      type: STRING
+      mode: NULLABLE
+    - name: current
+      type: FLOAT
+      mode: NULLABLE
+    - name: threshold
+      type: FLOAT
+      mode: NULLABLE
+    - name: isbudgetok
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: limit
+      type: FLOAT
+      mode: NULLABLE
+    - name: caller
+      type: STRING
+      mode: NULLABLE
+    - name: key
+      type: STRING
+      mode: NULLABLE
+    - name: nvpdata
+      type: STRING
+      mode: NULLABLE
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: product
+      type: STRING
+      mode: NULLABLE
+    - name: accuracy_confidence
+      type: STRING
+      mode: NULLABLE
+    - name: accuracy
+      type: FLOAT
+      mode: NULLABLE
+    - name: resp
+      type: STRING
+      mode: NULLABLE
+    - name: languages
+      type: STRING
+      mode: NULLABLE
+    - name: stat
+      type: STRING
+      mode: NULLABLE
+    - name: heapused
+      type: FLOAT
+      mode: NULLABLE
+    - name: rss
+      type: FLOAT
+      mode: NULLABLE
+    - name: numpendinghwm
+      type: FLOAT
+      mode: NULLABLE
+    - name: maxpending
+      type: FLOAT
+      mode: NULLABLE
+    - name: numpending
+      type: FLOAT
+      mode: NULLABLE
+    - name: marketingoptin
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: valid
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: mysql
+      type: FLOAT
+      mode: NULLABLE
+    - name: bouncedat
+      type: FLOAT
+      mode: NULLABLE
+    - name: config
+      type: STRING
+      mode: NULLABLE
+    - name: hasid
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: hastoken
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: hasuid
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: warning
+      type: STRING
+      mode: NULLABLE
+    - name: response
+      type: STRING
+      mode: NULLABLE
+    - name: options
+      type: STRING
+      mode: NULLABLE
+    - name: client_id
+      type: STRING
+      mode: NULLABLE
+    - name: scope
+      type: STRING
+      mode: NULLABLE
+    - name: pmt_token
+      type: STRING
+      mode: NULLABLE
+    - name: display_name
+      type: STRING
+      mode: NULLABLE
+    - name: created_at
+      type: STRING
+      mode: NULLABLE
+    - name: expires_at
+      type: STRING
+      mode: NULLABLE
+    - name: user
+      type: STRING
+      mode: NULLABLE
+    - name: val
+      type: STRING
+      mode: NULLABLE
+    - name: assertion
+      type: STRING
+      mode: NULLABLE
+    - name: queuelength
+      type: FLOAT
+      mode: NULLABLE
+    - name: profile_changed_at
+      type: FLOAT
+      mode: NULLABLE
+    - name: client
+      type: STRING
+      mode: NULLABLE
+    - name: sub_id
+      type: STRING
+      mode: NULLABLE
+    - name: resource
+      type: STRING
+      mode: NULLABLE
+    - name: amplitudeevent
+      type: STRING
+      mode: NULLABLE
+    - name: errcode
+      type: STRING
+      mode: NULLABLE
+    - name: doc_url
+      type: STRING
+      mode: NULLABLE
+  - name: logger
+    type: STRING
+    mode: NULLABLE
+  - name: envversion
+    type: STRING
+    mode: NULLABLE
+- name: timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: receiveTimestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: severity
+  type: STRING
+  mode: NULLABLE
+- name: insertId
+  type: STRING
+  mode: NULLABLE
+- name: httpRequest
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: requestMethod
+    type: STRING
+    mode: NULLABLE
+  - name: requestUrl
+    type: STRING
+    mode: NULLABLE
+  - name: requestSize
+    type: INTEGER
+    mode: NULLABLE
+  - name: status
+    type: INTEGER
+    mode: NULLABLE
+  - name: responseSize
+    type: INTEGER
+    mode: NULLABLE
+  - name: userAgent
+    type: STRING
+    mode: NULLABLE
+  - name: remoteIp
+    type: STRING
+    mode: NULLABLE
+  - name: serverIp
+    type: STRING
+    mode: NULLABLE
+  - name: referer
+    type: STRING
+    mode: NULLABLE
+  - name: cacheLookup
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: cacheHit
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: cacheValidatedWithOriginServer
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: cacheFillBytes
+    type: INTEGER
+    mode: NULLABLE
+  - name: protocol
+    type: STRING
+    mode: NULLABLE
+- name: labels
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: compute_googleapis_com_resource_name
+    type: STRING
+    mode: NULLABLE
+  - name: type
+    type: STRING
+    mode: NULLABLE
+  - name: application
+    type: STRING
+    mode: NULLABLE
+  - name: env
+    type: STRING
+    mode: NULLABLE
+  - name: stack
+    type: STRING
+    mode: NULLABLE
+  - name: pro
+    type: STRING
+    mode: NULLABLE
+  - name: auth
+    type: STRING
+    mode: NULLABLE
+  - name: defau
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______lr
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______h_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______vt
+    type: STRING
+    mode: NULLABLE
+  - name: fxa________
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______v
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______7
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______s_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______cb
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______wc
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______ec
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______a_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______z_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______f_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______4q
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______ta
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______4_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______hb
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______5_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______ks
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______ih
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______e
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______5
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______s
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______6_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______ts
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______2
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______un
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______9o
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______4m
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______i_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0__
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______n_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______p
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______x_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p__
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0_i
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______0_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______jg
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______l4
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pl9
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0zs
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______t
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______dp
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______k_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______c_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______i
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______je
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______aw
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pgk
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_t
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______9
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pho
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______4x
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______q
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______b_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0n_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______zy
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______l_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______nu
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______j
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______j5
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______m_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0_0
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_n
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______pk
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______v9
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pz_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______kt
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______f
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_s
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______yq
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______g_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______8
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pb_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0_l
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____py_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______69
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pti
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______id
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______o
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______rz
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____ppf
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______k
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_p
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______z
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______gg
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______u
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______h
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______x
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______tl
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pr_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____puw
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pi_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pdx
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______xz
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_1
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0v_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______c
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______7y
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pbe
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______w
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______p_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______r
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_i
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______mf
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______r_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______d_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0y_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____02b
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pt3
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0q_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______lc
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______e_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_5
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______jn
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______vd
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______b
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______a
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_l
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______pm
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______zb
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______a2
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0_2
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______bb
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______1_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______y
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______yz
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______vh
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_z
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pqi
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_h
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0_r
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______d
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_g
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______xu
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______1
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______4
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_w
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______90
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______n
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____psz
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pzr
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______w9
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______i3
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______fz
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_x
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______rf
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pp_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_7
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______v_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0_y
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______qu
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______g
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_y
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0so
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______ht
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_c
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_v
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_u
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_m
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____02_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____ptb
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0_q
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______3_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______hi
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______zv
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______mo
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______l0
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____phn
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______q_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____01p
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______u_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______2_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______z1
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0py
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_______m
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0_p
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pth
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____psg
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pm_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____phr
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pwa
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0_a
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______ha
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_r
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______o_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______w_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0_v
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_k
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0z_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0w_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______ze
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0t_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______eq
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pk_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______us
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pc_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______yu
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pwj
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____pqu
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p_0
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____p5_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____0s_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa_____px_
+    type: STRING
+    mode: NULLABLE
+  - name: fxa______cj
+    type: STRING
+    mode: NULLABLE
+- name: operation
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: id
+    type: STRING
+    mode: NULLABLE
+  - name: producer
+    type: STRING
+    mode: NULLABLE
+  - name: first
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: last
+    type: BOOLEAN
+    mode: NULLABLE
+- name: trace
+  type: STRING
+  mode: NULLABLE
+- name: spanId
+  type: STRING
+  mode: NULLABLE
+- name: traceSampled
+  type: BOOLEAN
+  mode: NULLABLE
+- name: sourceLocation
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: file
+    type: STRING
+    mode: NULLABLE
+  - name: line
+    type: INTEGER
+    mode: NULLABLE
+  - name: function
+    type: STRING
+    mode: NULLABLE
+- name: split
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: uid
+    type: STRING
+    mode: NULLABLE
+  - name: index
+    type: INTEGER
+    mode: NULLABLE
+  - name: totalSplits
+    type: INTEGER
+    mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: DO NOT USE! This column was added accidentally and isn't populated.

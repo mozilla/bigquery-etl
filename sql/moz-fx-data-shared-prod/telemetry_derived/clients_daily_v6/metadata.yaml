@@ -14,6 +14,9 @@ owners:
 labels:
   application: firefox
   schedule: daily
+  owner: dthorn
+  dag: bqetl_main_summary
+  owner1: dthorn
 scheduling:
   dag_name: bqetl_main_summary
   start_date: '2019-11-05'

@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_core
@@ -18,15 +18,15 @@ Built from bigquery-etl repo, [`dags/bqetl_core.py`](https://github.com/mozilla/
 Tables derived from the legacy telemetry `core` ping sent by various mobile applications.
 #### Owner
 
-jklukas@mozilla.com
+ascholtz@mozilla.com
 """
 
 
 default_args = {
-    "owner": "jklukas@mozilla.com",
+    "owner": "ascholtz@mozilla.com",
     "start_date": datetime.datetime(2019, 7, 25, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "ascholtz@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=300),
     "email_on_failure": True,
@@ -48,8 +48,8 @@ with DAG(
         destination_table="core_clients_daily_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         priority_weight=75,
@@ -60,8 +60,8 @@ with DAG(
         destination_table="core_clients_last_seen_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
         priority_weight=70,
@@ -75,6 +75,13 @@ with DAG(
             external_dag_id="bqetl_nondesktop",
             external_task_id="wait_for_telemetry_derived__core_clients_last_seen__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_telemetry_derived__core_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_telemetry_derived__core_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
         )
 
         ExternalTaskMarker(

@@ -288,7 +288,7 @@ sources:
         type: INT64
   ### Main ###
   - name: main
-    ref: telemetry.main_1pct
+    ref: telemetry.main_remainder_1pct
     group_by: ["submission_date", "client_id"]
     filters:
       - sql: DATE(submission_timestamp) = @submission_date

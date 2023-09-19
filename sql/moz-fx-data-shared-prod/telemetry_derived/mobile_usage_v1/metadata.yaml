@@ -17,7 +17,7 @@ description: |-
 labels:
   schedule: daily
 owners:
-- jklukas@mozilla.com
+- ascholtz@mozilla.com
 scheduling:
   dag_name: bqetl_nondesktop
   # The source table is already small here, so we completely recreate this

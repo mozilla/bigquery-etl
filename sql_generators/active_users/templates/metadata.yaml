@@ -1,0 +1,36 @@
+friendly_name: {{ app_value }} Active Users Aggregates
+description: |-
+  This table contains daily/weekly/montly active users,
+  new profiles, searches and ad_clicks for {{ app_value }},
+  aggregated by submission_date, attribution, channel,
+  country, city, device model, distribution_id, os details
+  and activity segment.
+
+  For Firefox Desktop, qualified daily active users QDAU
+  are calculated. For mobile apps QDAU = DAU.
+
+  The table is labeled as "change_controlled", which implies
+  that changes require the approval of at least one owner.
+
+  Proposal:
+  https://docs.google.com/document/d/1qvWO49Lr_Z_WErh3I3058A3B1YuiuURx19K3aTdmejM/edit?usp=sharing
+owners:
+  - lvargas@mozilla.com
+  - mozilla/kpi_table_reviewers
+labels:
+  incremental: true
+  change_controlled: true
+scheduling:
+  dag_name: bqetl_analytics_aggregations
+  task_name: {{ app_name }}_active_users_aggregates
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - country
+      - app_name
+      - attribution_medium
+      - channel

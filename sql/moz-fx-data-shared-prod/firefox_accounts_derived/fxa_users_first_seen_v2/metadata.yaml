@@ -1,0 +1,31 @@
+friendly_name: FxA Users First Seen
+description: |-
+  Contains the first entry seen inside fxa_users_daily_v2
+  for each user along with some attributes.
+
+  Partitioned by submission_date,
+  clustered by country, os_name
+owners:
+- kik@mozilla.com
+labels:
+  application: firefox_accounts
+  incremental: true
+  schedule: daily
+# TODO: once we agree on the model scheduling needs to be uncommented.
+# scheduling:
+#   dag_name: bqetl_fxa_events
+#   start_date: '2021-07-09'
+#   priority: 80
+#   depends_on_past: true
+#   date_partition_parameter: null
+#   parameters:
+#   - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false
+  clustering:
+    fields:
+    - country
+    - os_name

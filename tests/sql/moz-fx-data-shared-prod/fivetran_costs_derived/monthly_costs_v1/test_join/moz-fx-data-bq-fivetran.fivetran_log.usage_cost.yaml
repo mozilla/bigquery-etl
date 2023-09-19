@@ -1,0 +1,16 @@
+---
+- destination_id: destination_1_id
+  measured_month: 2022-09
+  amount: 14.40
+- destination_id: destination_2_id
+  measured_month: 2022-09
+  amount: 10.43
+- destination_id: destination_1_id
+  measured_month: 2022-10
+  amount: 10.21
+- destination_id: destination_2_id
+  measured_month: 2022-10
+  amount: 24.12
+- destination_id: destination_overlap
+  measured_month: 2022-09
+  amount: 87.23

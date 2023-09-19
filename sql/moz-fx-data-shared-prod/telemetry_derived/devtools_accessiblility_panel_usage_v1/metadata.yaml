@@ -4,7 +4,6 @@ description: >
   A daily number of usages of different accessibility devtools,
   partitioned by day.
 owners:
-  - wlachance@mozilla.com
   - yzenevich@mozilla.com
 labels:
   application: devtools

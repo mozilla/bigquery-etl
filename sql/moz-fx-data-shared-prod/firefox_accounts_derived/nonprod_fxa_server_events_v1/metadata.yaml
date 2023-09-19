@@ -1,0 +1,35 @@
+friendly_name: FxA Server Events (nonprod)
+description: |
+  FxA server events extracted from accounts server stdout logs (auth, content servers)
+
+  This new table is the direct result of FxA migration from AWS to GCP
+  (see: OPST-296 for more context).
+
+  Effective 2023-05-26 the events from the following servers land in this table
+  (existing data will remain in those tables):
+  - auth    (previous table: `nonprod_fxa_auth_events_v1`)
+  - content (previous table: `nonprod_fxa_content_events_v1`)
+
+  Payment server events will continue landing inside: `nonprod_fxa_stdout_events_v1`
+owners:
+- kik@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+  owner1: kik
+scheduling:
+  dag_name: bqetl_fxa_events
+  start_date: '2023-05-26'
+  arguments:
+  - --schema_update_option=ALLOW_FIELD_ADDITION
+bigquery:
+  time_partitioning:
+    type: day
+    field: timestamp
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - fxa_server
+references: {}

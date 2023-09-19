@@ -1,12 +1,13 @@
 """Generates Airflow DAGs for scheduled queries."""
 
+import copy
 import logging
 import os
 from argparse import ArgumentParser
 from pathlib import Path
 
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
-from bigquery_etl.query_scheduling.task import Task, UnscheduledTask
+from bigquery_etl.query_scheduling.task import Task, TaskRef, UnscheduledTask
 from bigquery_etl.util import standard_args
 from bigquery_etl.util.common import project_dirs
 
@@ -16,7 +17,7 @@ QUERY_PART_FILE = "part1.sql"
 SCRIPT_FILE = "script.sql"
 PYTHON_SCRIPT_FILE = "query.py"
 DEFAULT_DAGS_DIR = "dags"
-TELEMETRY_AIRFLOW_GITHUB = "https://github.com/mozilla/telemetry-airflow.git"
+CHECKS_FILE = "checks.sql"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -52,7 +53,6 @@ def get_dags(project_id, dags_config):
     """Return all configured DAGs including associated tasks."""
     tasks = []
     dag_collection = DagCollection.from_file(dags_config)
-
     for project_dir in project_dirs(project_id):
         # parse metadata.yaml to retrieve scheduling information
         if os.path.isdir(project_dir):
@@ -93,8 +93,46 @@ def get_dags(project_id, dags_config):
                     logging.error(f"Error processing task for query {query_file}")
                     raise e
                 else:
-                    tasks.append(task)
+                    if CHECKS_FILE in files:
+                        checks_file = os.path.join(root, CHECKS_FILE)
+                        # todo: validate checks file
 
+                        with open(checks_file, "r") as file:
+                            file_contents = file.read()
+                            # check if file contains fail and warn and create checks task accordingly
+                            checks_tasks = []
+
+                            if "#fail" in file_contents:
+                                checks_task = copy.deepcopy(
+                                    Task.of_dq_check(
+                                        checks_file,
+                                        is_check_fail=True,
+                                        dag_collection=dag_collection,
+                                    )
+                                )
+                                checks_tasks.append(checks_task)
+
+                            if "#warn" in file_contents:
+                                checks_task = copy.deepcopy(
+                                    Task.of_dq_check(
+                                        checks_file,
+                                        is_check_fail=False,
+                                        dag_collection=dag_collection,
+                                    )
+                                )
+                                checks_tasks.append(checks_task)
+
+                            for checks_task in checks_tasks:
+                                tasks.append(checks_task)
+                                upstream_task_ref = TaskRef(
+                                    dag_name=task.dag_name,
+                                    task_id=task.task_name,
+                                )
+                                checks_task.upstream_dependencies.append(
+                                    upstream_task_ref
+                                )
+
+                    tasks.append(task)
         else:
             logging.error(
                 """

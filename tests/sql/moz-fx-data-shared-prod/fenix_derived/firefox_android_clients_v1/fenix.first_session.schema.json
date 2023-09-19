@@ -1,0 +1,66 @@
+[
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "client_id"
+      },
+      {
+        "type": "STRING",
+        "name": "first_run_date"
+      }
+    ],
+    "name": "client_info",
+    "type": "RECORD"
+  },
+  {
+    "type": "INTEGER",
+    "name": "sample_id"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_channel"
+  },
+  {
+    "type": "TIMESTAMP",
+    "name": "submission_timestamp"
+  },
+  {
+    "fields": [
+      {
+        "type": "INTEGER",
+        "name": "seq"
+      }
+    ],
+    "name": "ping_info",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "type": "RECORD",
+        "name": "string",
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "first_session_campaign"
+          },
+          {
+            "type": "STRING",
+            "name": "first_session_network"
+          },
+          {
+            "type": "STRING",
+            "name": "first_session_adgroup"
+          },
+          {
+            "type": "STRING",
+            "name": "first_session_creative"
+          }
+        ]
+      }
+    ],
+    "name": "metrics",
+    "type": "RECORD"
+  }
+]

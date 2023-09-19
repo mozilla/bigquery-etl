@@ -1,6 +1,7 @@
 """Publish UDFs and resources to the public mozfun GCP project."""
 
 import fnmatch
+import glob
 import json
 import os
 import re
@@ -9,20 +10,14 @@ from argparse import ArgumentParser
 from google.cloud import storage  # type: ignore
 from google.cloud import bigquery
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.routine.parse_routine import accumulate_dependencies, read_routine_dir
 from bigquery_etl.util import standard_args
 from bigquery_etl.util.common import project_dirs
 
-DEFAULT_UDF_DEPENDENCY_DIR = "udf_js_lib/"
-DEFAULT_GCS_BUCKET = "moz-fx-data-prod-bigquery-etl"
-DEFAULT_GCS_PATH = ""
-DEFAULT_PROJECT = "sql/moz-fx-data-shared-prod"
-SQL_DIR = "sql/"
-
 OPTIONS_LIB_RE = re.compile(r'library = "gs://[^"]+/([^"]+)"')
 OPTIONS_RE = re.compile(r"OPTIONS(\n|\s)*\(")
 
-SKIP = ["sql/moz-fx-data-shared-prod/udf/main_summary_scalars/udf.sql"]
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -34,26 +29,27 @@ parser.add_argument(
 )
 parser.add_argument(
     "--target",
-    default=DEFAULT_PROJECT,
+    default=ConfigLoader.get("default", "sql_dir", fallback="sql/")
+    + ConfigLoader.get("default", "project"),
     required=False,
     help="Path to project directory.",
 )
 parser.add_argument(
     "--dependency-dir",
     "--dependency_dir",
-    default=DEFAULT_UDF_DEPENDENCY_DIR,
+    default=ConfigLoader.get("routine", "dependency_dir"),
     help="The directory JavaScript dependency files for UDFs are stored.",
 )
 parser.add_argument(
     "--gcs-bucket",
     "--gcs_bucket",
-    default=DEFAULT_GCS_BUCKET,
+    default=ConfigLoader.get("routine", "publish", "gcs_bucket"),
     help="The GCS bucket where dependency files are uploaded to.",
 )
 parser.add_argument(
     "--gcs-path",
     "--gcs_path",
-    default=DEFAULT_GCS_PATH,
+    default=ConfigLoader.get("routine", "publish", "gcs_path"),
     help="The GCS path in the bucket where dependency files are uploaded to.",
 )
 parser.add_argument(
@@ -62,6 +58,12 @@ parser.add_argument(
     help="The published UDFs should be publicly accessible.",
 )
 standard_args.add_log_level(parser)
+parser.add_argument(
+    "pattern",
+    default=None,
+    nargs="?",
+    help="glob pattern matching udfs to publish",
+)
 
 
 def main():
@@ -77,11 +79,26 @@ def main():
         publish(
             args.target,
             args.project_id,
-            os.path.join(SQL_DIR, project, args.dependency_dir),
+            os.path.join(
+                ConfigLoader.get("default", "sql_dir"), project, args.dependency_dir
+            ),
             args.gcs_bucket,
             args.gcs_path,
             args.public,
+            pattern=args.pattern,
         )
+
+
+def skipped_routines():
+    """Get skipped routines from config."""
+    return {
+        file
+        for skip in ConfigLoader.get("routine", "publish", "skip", fallback=[])
+        for file in glob.glob(
+            skip,
+            recursive=True,
+        )
+    }
 
 
 def publish(
@@ -116,7 +133,10 @@ def publish(
         udfs_to_publish.append(raw_routine)
 
         for dep in udfs_to_publish:
-            if dep not in published_routines and raw_routines[dep].filepath not in SKIP:
+            if (
+                dep not in published_routines
+                and raw_routines[dep].filepath not in skipped_routines()
+            ):
                 publish_routine(
                     raw_routines[dep],
                     client,
@@ -167,6 +187,7 @@ def publish_routine(
             # ensure UDF definitions are not replaced twice as would be the case for
             # `mozfun`.stats.mode_last and `mozfun`.stats.mode_last_retain_nulls
             # since one name is a substring of the other
+            definition = definition.replace(f"`{project_id}.{udf}`", udf)
             definition = definition.replace(f"`{project_id}`.{udf}", udf)
             definition = definition.replace(f"{project_id}.{udf}", udf)
             definition = definition.replace(udf, f"`{project_id}`.{udf}")
@@ -177,7 +198,10 @@ def publish_routine(
         )
 
         # add UDF descriptions
-        if raw_routine.filepath not in SKIP and not raw_routine.is_stored_procedure:
+        if (
+            raw_routine.filepath not in skipped_routines()
+            and not raw_routine.is_stored_procedure
+        ):
             # descriptions need to be escaped since quotation marks and other
             # characters, such as \x01, will make the query invalid otherwise
             escaped_description = json.dumps(str(raw_routine.description))

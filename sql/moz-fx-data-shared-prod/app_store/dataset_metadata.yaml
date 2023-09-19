@@ -1,0 +1,10 @@
+friendly_name: App Store
+description: |-
+  Views on the App Store data pulled from Fivetran.
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

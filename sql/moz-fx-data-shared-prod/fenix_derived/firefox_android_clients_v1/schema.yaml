@@ -1,0 +1,163 @@
+fields:
+- description: Unique ID for the client installation.
+  mode: NULLABLE
+  name: client_id
+  type: STRING
+- description: Sample ID to limit query results during an analysis.
+  mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+- description: Date when the app first reported a baseline ping for the client.
+  mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+- description: Date when the server first received a baseline ping for the client.
+  mode: NULLABLE
+  name: submission_date
+  type: DATE
+- description: Date when the browser first ran.
+  mode: NULLABLE
+  name: first_run_date
+  type: DATE
+- description: First reported country for the client installation
+  mode: NULLABLE
+  name: first_reported_country
+  type: STRING
+- description: Name of the first reported isp (Internet Service Provider).
+  mode: NULLABLE
+  name: first_reported_isp
+  type: STRING
+- description: Channel where the browser is released.
+  mode: NULLABLE
+  name: channel
+  type: STRING
+- description: Manufacturer of the device where the client is installed.
+  mode: NULLABLE
+  name: device_manufacturer
+  type: STRING
+- description: Model of the device where the client is installed.
+  mode: NULLABLE
+  name: device_model
+  type: STRING
+- description: Version of the Operating System where the client is originally installed.
+  mode: NULLABLE
+  name: os_version
+  type: STRING
+- description: App display version for this client installation.
+  mode: NULLABLE
+  name: app_version
+  type: STRING
+- description: Client locale.
+  mode: NULLABLE
+  name: locale
+  type: STRING
+- description: Determines if a client is activated based on the activation metric
+    and a 7 day lag.
+  mode: NULLABLE
+  name: activated
+  type: BOOLEAN
+- description: Structure parameter for the campaign name.
+  mode: NULLABLE
+  name: adjust_campaign
+  type: STRING
+- description: Structure parameter for the the ad group of a campaign.
+  mode: NULLABLE
+  name: adjust_ad_group
+  type: STRING
+- description: Structure parameter for the creative content of a campaign.
+  mode: NULLABLE
+  name: adjust_creative
+  type: STRING
+- description: Structure parameter for the network of a campaign.
+  mode: NULLABLE
+  name: adjust_network
+  type: STRING
+- description: The source of a client installation.
+  mode: NULLABLE
+  name: install_source
+  type: STRING
+- description: Last reported client locale.
+  mode: NULLABLE
+  name: last_reported_locale
+  type: STRING
+- description: Last reported client device manufacturer.
+  mode: NULLABLE
+  name: last_reported_device_manufacturer
+  type: STRING
+- description: Last reported client device model.
+  mode: NULLABLE
+  name: last_reported_device_model
+  type: STRING
+- description: Last reported client country.
+  mode: NULLABLE
+  name: last_reported_country
+  type: STRING
+- description: Last date client seen.
+  mode: NULLABLE
+  name: last_reported_date
+  type: DATE
+- description: Last reported client channel.
+  mode: NULLABLE
+  name: last_reported_channel
+  type: STRING
+- description: Last reported client campaign network.
+  mode: NULLABLE
+  name: last_reported_adjust_network
+  type: STRING
+- description: Last reported campaign name.
+  mode: NULLABLE
+  name: last_reported_adjust_creative
+  type: STRING
+- description: Last reported campaign ad group.
+  mode: NULLABLE
+  name: last_reported_adjust_ad_group
+  type: STRING
+- description: Last reported campaign name.
+  mode: NULLABLE
+  name: last_reported_adjust_campaign
+  type: STRING
+- fields:
+  - description: True if the client ever reported a first_session ping.
+    mode: NULLABLE
+    name: reported_first_session_ping
+    type: BOOLEAN
+  - description: True if the client ever reported a metrics ping.
+    mode: NULLABLE
+    name: reported_metrics_ping
+    type: BOOLEAN
+  - description: True if the client ever reported a baseline ping.
+    mode: NULLABLE
+    name: reported_baseline_ping
+    type: BOOLEAN
+  - description: Date when the first reported first_sessin ping is received by the
+      server.
+    mode: NULLABLE
+    name: min_first_session_ping_submission_date
+    type: DATE
+  - description: Date of first app run as reported in the earliest first_session ping.
+    mode: NULLABLE
+    name: min_first_session_ping_run_date
+    type: DATE
+  - description: Date when the first reported metrics ping is received by the server.
+    mode: NULLABLE
+    name: min_metrics_ping_submission_date
+    type: DATE
+  - description: Name of the ping that reported the first adjust_network value.
+    mode: NULLABLE
+    name: adjust_network__source_ping
+    type: STRING
+  - description: Name of the ping that reports the install_source value.
+    mode: NULLABLE
+    name: install_source__source_ping
+    type: STRING
+  - description: Datetime of the ping that reported the first adjust_network value.
+    mode: NULLABLE
+    name: adjust_network__source_ping_datetime
+    type: DATETIME
+  - description: Datetime of the ping that reported the first install_source value.
+    mode: NULLABLE
+    name: install_source__source_ping_datetime
+    type: DATETIME
+  mode: NULLABLE
+  name: metadata
+  type: RECORD

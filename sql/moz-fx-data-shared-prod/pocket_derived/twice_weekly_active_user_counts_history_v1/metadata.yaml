@@ -4,7 +4,7 @@ description: |-
   For each submission_date, we have rows representing the full history of T-WAU
   up to that point.
 owners:
-  - jklukas@mozilla.com
+  - kik@mozilla.com
 labels:
   incremental: true
 bigquery:

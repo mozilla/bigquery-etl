@@ -1,24 +1,3 @@
-WITH fxa_events AS (
-  SELECT
-    `timestamp`,
-    user_id,
-    event_type,
-    service,
-    email_type,
-    oauth_client_id,
-    connect_device_flow,
-    connect_device_os,
-    sync_device_count,
-    email_sender,
-    email_service,
-    email_template,
-    email_version,
-  FROM
-    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
-  WHERE
-    DATE(`timestamp`) = @submission_date
-    AND event_category IN ('content', 'auth', 'oauth')
-)
 SELECT
   DATE(`timestamp`) AS submission_date,
   user_id AS client_id,
@@ -38,6 +17,42 @@ SELECT
     STRUCT('email_version' AS key, email_version AS value)
   ] AS extra,
   CAST([] AS ARRAY<STRUCT<key STRING, value STRING>>) AS experiments,
-  *,
+  logger,
+  event_type,
+  app_version,
+  os_name,
+  os_version,
+  country,
+  `language`,
+  user_id,
+  device_id,
+  `timestamp`,
+  receiveTimestamp,
+  utm_term,
+  utm_source,
+  utm_medium,
+  utm_campaign,
+  utm_content,
+  ua_version,
+  ua_browser,
+  entrypoint,
+  flow_id,
+  service,
+  email_type,
+  email_provider,
+  oauth_client_id,
+  connect_device_flow,
+  connect_device_os,
+  sync_device_count,
+  sync_active_devices_day,
+  sync_active_devices_week,
+  sync_active_devices_month,
+  email_sender,
+  email_service,
+  email_template,
+  email_version,
 FROM
-  fxa_events
+  `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
+WHERE
+  DATE(`timestamp`) = @submission_date
+  AND fxa_log IN ('content', 'auth', 'oauth')

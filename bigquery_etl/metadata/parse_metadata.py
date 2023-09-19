@@ -10,13 +10,14 @@ import cattrs
 import yaml
 from google.cloud import bigquery
 
-from bigquery_etl.query_scheduling.utils import is_email
+from bigquery_etl.query_scheduling.utils import is_email, is_email_or_github_identity
 
 METADATA_FILE = "metadata.yaml"
 DATASET_METADATA_FILE = "dataset_metadata.yaml"
 DEFAULT_WORKGROUP_ACCESS = [
     dict(role="roles/bigquery.dataViewer", members=["workgroup:mozilla-confidential"])
 ]
+DEFAULT_TABLE_WORKGROUP_ACCESS = DEFAULT_WORKGROUP_ACCESS
 
 
 class Literal(str):
@@ -117,7 +118,8 @@ class WorkgroupAccessMetadata:
 class ExternalDataFormat(enum.Enum):
     """Represents the external types fo data that are supported to be integrated."""
 
-    GOOGLE_SHEET = "google_sheet"
+    GOOGLE_SHEETS = "google_sheets"
+    CSV = "csv"
 
 
 @attr.s(auto_attribs=True)
@@ -148,12 +150,13 @@ class Metadata:
     workgroup_access: Optional[List[WorkgroupAccessMetadata]] = attr.ib(None)
     references: Dict = attr.ib({})
     external_data: Optional[ExternalDataMetadata] = attr.ib(None)
+    deprecated: bool = attr.ib(False)
 
     @owners.validator
     def validate_owners(self, attribute, value):
-        """Check that provided email addresses for owners are valid."""
-        if not all(map(lambda e: is_email(e), value)):
-            raise ValueError(f"Invalid email for owners: {value}.")
+        """Check that provided email addresses or github identities for owners are valid."""
+        if not all(map(lambda e: is_email_or_github_identity(e), value)):
+            raise ValueError(f"Invalid email or Github identity for owners: {value}.")
 
     @labels.validator
     def validate_labels(self, attribute, value):
@@ -222,6 +225,7 @@ class Metadata:
         workgroup_access = None
         references = {}
         external_data = None
+        deprecated = False
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -231,8 +235,6 @@ class Metadata:
                 description = metadata.get("description", None)
 
                 if "labels" in metadata:
-                    labels = {}
-
                     for key, label in metadata["labels"].items():
                         if isinstance(label, bool):
                             # publish key-value pair with bool value as tag
@@ -246,6 +248,10 @@ class Metadata:
 
                 if "scheduling" in metadata:
                     scheduling = metadata["scheduling"]
+                    if "dag_name" in scheduling and cls.is_valid_label(
+                        scheduling["dag_name"]
+                    ):
+                        labels["dag"] = scheduling["dag_name"]
 
                 if "bigquery" in metadata and metadata["bigquery"]:
                     converter = cattrs.BaseConverter()
@@ -255,6 +261,12 @@ class Metadata:
 
                 if "owners" in metadata:
                     owners = metadata["owners"]
+                    owner_idx = 1
+                    for owner in filter(is_email, owners):
+                        label = owner.split("@")[0]
+                        if Metadata.is_valid_label(label):
+                            labels[f"owner{owner_idx}"] = label
+                            owner_idx += 1
 
                 if "schema" in metadata:
                     converter = cattrs.BaseConverter()
@@ -274,6 +286,8 @@ class Metadata:
                     external_data = converter.structure(
                         metadata["external_data"], ExternalDataMetadata
                     )
+                if "deprecated" in metadata:
+                    deprecated = metadata["deprecated"]
 
                 return cls(
                     friendly_name,
@@ -286,6 +300,7 @@ class Metadata:
                     workgroup_access,
                     references,
                     external_data,
+                    deprecated,
                 )
             except yaml.YAMLError as e:
                 raise e
@@ -396,7 +411,13 @@ class DatasetMetadata:
     dataset_base_acl: str = attr.ib()
     user_facing: bool = attr.ib(False)
     labels: Dict = attr.ib({})
+    default_table_workgroup_access: Optional[List[Dict[str, Any]]] = attr.ib(None)
     workgroup_access: list = attr.ib(DEFAULT_WORKGROUP_ACCESS)
+
+    def __attrs_post_init__(self):
+        """Set default table workgroup access to workgroup access."""
+        if self.default_table_workgroup_access is None:
+            self.default_table_workgroup_access = self.workgroup_access
 
     @staticmethod
     def is_dataset_metadata_file(file_path):
@@ -411,7 +432,6 @@ class DatasetMetadata:
     def write(self, file):
         """Write dataset metadata information to the provided file."""
         metadata_dict = self.__dict__
-
         if metadata_dict["labels"]:
             for label_key, label_value in metadata_dict["labels"].items():
                 # handle tags
@@ -420,6 +440,11 @@ class DatasetMetadata:
 
         if "description" in metadata_dict:
             metadata_dict["description"] = Literal(metadata_dict["description"])
+
+        if "default_table_workgroup_access" in metadata_dict:
+            metadata_dict["default_table_workgroup_access"] = metadata_dict[
+                "default_table_workgroup_access"
+            ]
 
         converter = cattrs.BaseConverter()
         file.write_text(

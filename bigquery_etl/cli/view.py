@@ -19,10 +19,12 @@ from ..cli.utils import (
     sql_dir_option,
     use_cloud_function_option,
 )
+from ..config import ConfigLoader
+from ..dryrun import DryRun
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..util.bigquery_id import sql_table_id
 from ..util.client_queue import ClientQueue
-from ..view import NON_USER_FACING_DATASET_SUFFIXES, View, broken_views
+from ..view import View, broken_views
 from .dryrun import dryrun
 
 VIEW_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
@@ -49,7 +51,9 @@ def view():
 )
 @click.argument("name")
 @sql_dir_option
-@project_id_option("moz-fx-data-shared-prod")
+@project_id_option(
+    ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
+)
 @click.option(
     "--owner",
     "-o",
@@ -203,6 +207,7 @@ def _view_is_valid(view):
         " when they are removed from --sql-dir."
     ),
 )
+@respect_dryrun_skip_option(default=False)
 def publish(
     name,
     sql_dir,
@@ -215,6 +220,7 @@ def publish(
     skip_authorized,
     force,
     add_managed_label,
+    respect_dryrun_skip,
 ):
     """Publish views."""
     # set log level
@@ -224,6 +230,8 @@ def publish(
         raise click.ClickException(f"argument --log-level: {e}")
 
     views = _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized)
+    if respect_dryrun_skip:
+        views = [view for view in views if view.path not in DryRun.skipped_files()]
     if add_managed_label:
         for view in views:
             view.labels["managed"] = ""
@@ -248,6 +256,7 @@ def publish(
         try:
             result.append(views_by_id[view_id].publish(target_project, dry_run))
         except Exception:
+            print(f"Failed to publish view: {view_id}")
             print_exc()
             result.append(False)
 
@@ -359,7 +368,13 @@ def clean(
             dataset
             for dataset in client.list_datasets(target_project)
             if not user_facing_only
-            or not dataset.dataset_id.endswith(NON_USER_FACING_DATASET_SUFFIXES)
+            or not dataset.dataset_id.endswith(
+                tuple(
+                    ConfigLoader.get(
+                        "default", "non_user_facing_dataset_suffixes", fallback=[]
+                    )
+                )
+            )
         ]
     with ThreadPool(parallelism) as p:
         managed_view_ids = {

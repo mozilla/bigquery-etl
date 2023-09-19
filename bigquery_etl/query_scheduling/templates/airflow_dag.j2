@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 {% set ns = namespace(uses_fivetran=False) -%}
 {% for task in tasks -%}
@@ -56,8 +56,59 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             docker_image='gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest',
             owner='{{ task.owner }}',
             email={{ task.email | sort }},
+    {% elif task.is_dq_check -%}
+       {{ task.task_name }} = bigquery_dq_check(
+            task_id='{{ task.task_name }}',
+            {#+ TODO when Airflow is updated to 2.2+ use ds_nodash instead of ds_format -#}
+            source_table={%+ if task.date_partition_offset -%}'{{ task.destination_table }}${% raw %}{{{% endraw %} macros.ds_format(macros.ds_add(ds, {{ task.date_partition_offset }}), "%Y-%m-%d", "%Y%m%d") {% raw %}}}{% endraw %}'
+                            {%+ elif task.destination_table -%}'{{ task.destination_table }}'
+                            {%+ else -%}None
+                            {%+ endif -%},
+            {%+ if task.query_project -%}
+            dataset_id='{{ task.project }}:{{ task.dataset }}',
+            project_id='{{ task.query_project }}',
+            {%+ else -%}
+            dataset_id='{{ task.dataset }}',
+            project_id='{{ task.project }}',
+            {%+ endif -%}
+            is_dq_check_fail = {{ task.is_dq_check_fail }},
+            owner='{{ task.owner }}',
+            {%+ if task.email | length > 0 -%}
+            email={{ task.email | sort }},
+            {%+ endif -%}
+            {%+ if task.start_date -%}
+            start_date={{ task.start_date | format_date | format_repr }},
+            {%+ endif -%}
+            depends_on_past={{ task.depends_on_past }},
+            {%+ if (
+                task.destination_table
+                and not task.date_partition_parameter
+                and not '$' in task.destination_table
+                and not task.depends_on_past
+                and not task.task_concurrency
+            ) -%}
+            {#+ Avoid having concurrent tasks for ETLs that target the whole table. -#}
+            task_concurrency=1,
+            {%+ endif -%}
+            {%+ if task.arguments | length > 0 -%}
+            arguments={{ task.arguments }},
+            {%+ endif -%}
+            {%+ if task.date_partition_offset and task.date_partition_parameter -%}
+            parameters=["{{ task.date_partition_parameter }}:DATE:{% raw %}{{{% endraw %}macros.ds_add(ds, {{ task.date_partition_offset }}){% raw %}}}{%endraw%}"]{% if task.parameters | length > 0 %} + {{ task.parameters }}{% endif %},
+            {%+ elif task.parameters | length > 0 -%}
+            {%+ if task.date_partition_parameter -%}
+            parameters={{ task.parameters }} + ["{{ task.date_partition_parameter }}:DATE:{% raw %}{{ds}}{% endraw %}"],
+            {%+ else -%}
+            parameters={{ task.parameters }},
+            {%+ endif -%}
+            {%+ elif task.date_partition_parameter -%}
+            parameters=["{{ task.date_partition_parameter }}:DATE:{% raw %}{{ds}}{% endraw %}"],
+            {%+ endif -%}
     {%+ else -%}
         {{ task.task_name }} = bigquery_etl_query(
+            {% if name == "bqetl_default" -%}
+            #### WARNING: This task has been scheduled in the default DAG. It can be moved to a more suitable DAG using `bqetl query schedule`.
+            {% endif %}
             task_id='{{ task.task_name }}',
             {#+ TODO when Airflow is updated to 2.2+ use ds_nodash instead of ds_format -#}
             destination_table={%+ if task.date_partition_offset -%}'{{ task.destination_table }}${% raw %}{{{% endraw %} macros.ds_format(macros.ds_add(ds, {{ task.date_partition_offset }}), "%Y-%m-%d", "%Y%m%d") {% raw %}}}{% endraw %}'
@@ -86,7 +137,13 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             {%+ elif task.date_partition_parameter == None or task.date_partition_parameter is string -%}
             date_partition_parameter={{ task.date_partition_parameter | format_optional_string }},
             {%+ endif -%}
+            {%+ if task.date_partition_parameter and task.table_partition_template -%}
+            table_partition_template='{{ task.table_partition_template }}',
+            {%+ endif -%}
             depends_on_past={{ task.depends_on_past }},
+            {%+ if task.trigger_rule -%}
+            trigger_rule="{{ task.trigger_rule }}",
+            {%+ endif -%}
             {%+ if (
                 task.destination_table
                 and not task.date_partition_parameter

@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_urlbar
@@ -49,6 +49,25 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+    firefox_desktop_urlbar_events__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_urlbar_events__v1",
+        destination_table="urlbar_events_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="akommasani@mozilla.com",
+        email=[
+            "akomar@mozilla.com",
+            "akommasani@mozilla.com",
+            "anicholson@mozilla.com",
+            "dzeber@mozilla.com",
+            "rburwei@mozilla.com",
+            "tbrooks@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__urlbar_clients_daily__v1 = bigquery_etl_query(
         task_id="telemetry_derived__urlbar_clients_daily__v1",
         destination_table="urlbar_clients_daily_v1",
@@ -64,6 +83,20 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
+
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    firefox_desktop_urlbar_events__v1.set_upstream(wait_for_copy_deduplicate_all)
 
     wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_daily_joined__v1",

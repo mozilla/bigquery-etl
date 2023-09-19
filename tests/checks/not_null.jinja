@@ -1,0 +1,23 @@
+{% macro not_null(columns, where) %}
+  {% if columns is string %}
+    {% set columns = [columns] %}
+  {% endif %}
+  WITH null_checks AS (
+    SELECT [
+      {% for col in columns %}
+        IF(COUNTIF({{ col }} IS NULL) > 0, "{{ col }}", NULL){% if not loop.last -%},{% endif -%}
+      {% endfor %}
+    ] AS checks
+    FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+    {% if where %}
+    WHERE {{ where }}
+    {% endif %}
+  ), non_null_checks AS (
+    SELECT ARRAY_AGG(u IGNORE NULLS) AS checks FROM null_checks, UNNEST(checks) AS u
+  )
+  SELECT IF(
+   (SELECT ARRAY_LENGTH(checks) FROM non_null_checks) > 0,
+   ERROR(CONCAT("Columns with NULL values: ", (SELECT ARRAY_TO_STRING(checks, ", ") FROM non_null_checks))),
+   NULL
+  );
+{% endmacro %}

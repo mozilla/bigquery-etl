@@ -1,0 +1,152 @@
+fields:
+- description: Unique token generated for the Firefox download. Value should never
+    be NULL.
+  mode: NULLABLE
+  name: dltoken
+  type: STRING
+- description: Total time of the GA session expressed in seconds.
+  mode: NULLABLE
+  name: time_on_site
+  type: INTEGER
+- description: A description of the advertising or promotional copy.  Value will be
+    null if the Firefox download has no corresponding Google Analytics session.
+  mode: NULLABLE
+  name: ad_content
+  type: STRING
+- description: The name of a marketing campaign.  Value will be null if the Firefox
+    download has no corresponding Google Analytics session.
+  mode: NULLABLE
+  name: campaign
+  type: STRING
+- description: The type of referrals (e.g. referral, organic, email). Value will be
+    null if the Firefox download has no corresponding Google Analytics session.
+  mode: NULLABLE
+  name: medium
+  type: STRING
+- description: The source of referrals (e.g.  bing).  Value will be null if the Firefox
+    download has no corresponding Google Analytics session.
+  mode: NULLABLE
+  name: source
+  type: STRING
+- description: Landing page for the Google Analytics session corresponding to the
+    Firefox download. Value will be null if the Firefox download has no corresponding
+    Google Analytics session.
+  mode: NULLABLE
+  name: landing_page
+  type: STRING
+- description: Full country name.  Value will be null if the Firefox download has
+    no corresponding Google Analytics session.
+  mode: NULLABLE
+  name: country
+  type: STRING
+- description: 2-char country code.  Value will be null if the Firefox download has
+    no corresponding Google Analytics session.
+  mode: NULLABLE
+  name: normalized_country_code
+  type: STRING
+- description: e.g. desktop, tablet, mobile.  Value will be null if the Firefox download
+    has no corresponding Google Analytics session.
+  mode: NULLABLE
+  name: device_category
+  type: STRING
+- description: OS used during download. Value will be null if the Firefox download
+    has no corresponding Google Analytics session.
+  mode: NULLABLE
+  name: os
+  type: STRING
+- description: OS values grouped into (Windows, Android, Mac, Linux, iOS and Other).
+    Value will be null if the Firefox download has no corresponding Google Analytics
+    session.
+  mode: NULLABLE
+  name: normalized_os
+  type: STRING
+- description: Browser used to download Firefox (e.g. Chrome, Edge).  Value will be
+    null if the Firefox download has no corresponding Google Analytics session.
+  mode: NULLABLE
+  name: browser
+  type: STRING
+- description: Browser values grouped into (Firefox, MSIE, Edge, Chrome, Safari, Other,
+    NULL).  Value will be null if the Firefox download has no corresponding Google
+    Analytics session.
+  mode: NULLABLE
+  name: normalized_browser
+  type: STRING
+- description: Complete version label of browser used to download Firefox (note this
+    is NOT the version of Firefox which was downloaded).  Value will be null if the
+    Firefox download has no corresponding Google Analytics session.
+  mode: NULLABLE
+  name: browser_version
+  type: STRING
+- description: Major version of the browser used to download Firefox.  This is numeric
+    to facilitate querying.  \ne.g where browser='Edge' and browser_major_version
+    >= 11.  This is NOT the version of Firefox which was downloaded. Value will be
+    null if the Firefox download has no corresponding Google Analytics session.
+  mode: NULLABLE
+  name: browser_major_version
+  type: INTEGER
+- description: Device language, may be 2 char language code (en) or 4 char locale
+    (en-gb). Value will be null if the Firefox download has no corresponding Google
+    Analytics session.
+  mode: NULLABLE
+  name: language
+  type: STRING
+- description: Total count of pages hit for the Google Analytics session associated
+    with the Firefox download.  Value will be null if the Firefox download has no
+    corresponding Google Analytics session.
+  mode: NULLABLE
+  name: pageviews
+  type: INTEGER
+- description: Total count of unique pages hit for the Google Analytics session associated
+    with the Firefox download.  Value will be null if the Firefox download has no
+    corresponding Google Analytics session.
+  mode: NULLABLE
+  name: unique_pageviews
+  type: INTEGER
+- description: If has_ga_download_event = True then a corresponding Google Analytics
+    'Download Event' has been found.  If has_ga_download_event = False, while there
+    may be a corresponding Google Analytics session for the Firefox download, no ''Download
+    Event'' was captured for that session.
+  mode: NULLABLE
+  name: has_ga_download_event
+  type: BOOLEAN
+- description: This field is intended for diagnostics.The dltoken should be unique
+    however occasionally duplicates may be present in the raw data.  It has been confirmed
+    that duplicate dltokens are true duplicates in that all the other column values
+    for the record are also duplicated.  This table does not contain duplicate dltokens
+    however count_dltoken_duplicates will indicate if duplicate dltokens existed in
+    the raw data. count_dltoken_duplicates = 0 indicates that there was no duplicate
+    dltoken in the raw data.count_dltoken_duplicates = 1 indicates that there was
+    1 other row with the same dltoken.
+  mode: NULLABLE
+  name: count_dltoken_duplicates
+  type: INTEGER
+- description: This column represents if there was at least one other download completed
+    during the same session as this download.
+  mode: NULLABLE
+  name: additional_download_occurred
+  type: BOOLEAN
+- description: Indicates the result of the JOIN between the stub attr data and the GA session associated with the
+    Firefox download using client_id and download_session_id.  Values are limited to
+    1.CLIENT_ID_SESSION_ID_MATCH - Normal state, GA session matches the download. 2. GA_UNRESOLVABLE - More than one GA
+    session matches the Firefox download. 3. DOWNLOAD_SESSION_ID_NULL - The stub_download_session_id
+    is null. 4. DOWNLOAD_CLIENT_OR_SESSION_ID_EMPTY - The stub attr record did not contain either a client or
+    stub_download_session_id. 5. DOWNLOAD_CLIENT_OR_SESSION_ID_VALUE_NOT_SET -  The stub attr record contained GA
+    session identifier or stub_download_session_id with value (not set). 6. DOWNLOAD_CLIENT_OR_SESSION_ID_VALUE_SOMETHING
+    - The raw download record contained GA session identifier or stub_download_session_id with value something.
+    7. MISSING_GA_CLIENT_OR_SESSION_ID - The stub attr record contained a valid GA session identifier and
+    stub_download_session_id however there was no corresponding GA session found.
+  mode: NULLABLE
+  name: join_result_v2
+  type: STRING
+- description: Indicates the result of the JOIN between the stub attr data and the GA session associated
+    with the Firefox download action using only the client_id. Values are limited to 1.CLIENT_ID_ONLY_MATCH -
+    Normal state, unique GA session matches the download. 2. GA_UNRESOLVABLE - Indicates that more than one GA session
+    matches the Firefox download. 3. MISSING_GA_CLIENT - The stub attr record contained a valid GA session identifier
+    however there was no corresponding GA session found.
+  mode: NULLABLE
+  name: join_result_v1
+  type: STRING
+- description: The date of download, sourced from download logs.
+  mode: NULLABLE
+  name: download_date
+  type: DATE

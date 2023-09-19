@@ -1,0 +1,7 @@
+---
+- client_id: client-1
+  activated: 1
+  submission_date: 2023-01-01
+- client_id: client-2
+  activated: 0
+  submission_date: 2023-01-01

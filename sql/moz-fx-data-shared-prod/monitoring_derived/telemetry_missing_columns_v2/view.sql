@@ -5,7 +5,7 @@ WITH placeholder_table_names AS (
   SELECT DISTINCT
     table_name
   FROM
-    `moz-fx-data-shared-prod`.telemetry_stable.INFORMATION_SCHEMA.TABLE_OPTIONS
+    `moz-fx-data-shared-prod.telemetry_stable.INFORMATION_SCHEMA.TABLE_OPTIONS`
   WHERE
     option_value LIKE '%placeholder_schema%'
 ),
@@ -22,7 +22,7 @@ extracted AS (
     -- only observe full days of data
     (
       DATE(submission_timestamp) = DATE_SUB(current_date, INTERVAL 1 day)
-      OR DATE(submission_timestamp) = DATE_SUB(current_date, INTERVAL 1 + 7 day)
+      OR DATE(submission_timestamp) = DATE_SUB(current_date, INTERVAL(1 + 7) day)
     )
     -- https://cloud.google.com/bigquery/docs/querying-wildcard-tables#filtering_selected_tables_using_table_suffix
     -- exclude pings derived from main schema to save on space, 300GB vs 3TB

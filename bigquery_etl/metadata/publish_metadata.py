@@ -7,13 +7,16 @@ from argparse import ArgumentParser
 import yaml
 from google.cloud import bigquery
 
+from ..config import ConfigLoader
 from ..util import standard_args
 from ..util.bigquery_tables import get_tables_matching_patterns
 from ..util.common import project_dirs
 from .parse_metadata import Metadata
 
 METADATA_FILE = "metadata.yaml"
-DEFAULT_PATTERN = "moz-fx-data-shared-prod:*.*"
+DEFAULT_PATTERN = (
+    f"{ConfigLoader.get('default', 'project', fallback='moz-fx-data-shared-prod')}:*.*"
+)
 
 
 parser = ArgumentParser(description=__doc__)
@@ -46,6 +49,9 @@ def publish_metadata(client, dataset, table, metadata):
             for key, value in metadata.labels.items()
             if isinstance(value, str)
         }
+
+        if metadata.deprecated is True:
+            table.labels["deprecated"] = "true"
 
         client.update_table(table, ["friendly_name", "description", "labels"])
     except yaml.YAMLError as e:

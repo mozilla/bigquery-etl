@@ -1,0 +1,74 @@
+fields:
+
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: |
+    Processing date, this indicates which date partiion was used
+    when generating this record.
+
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: |
+    Date when we observed the user for the first time.
+
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: |
+    Unique ID for the client installation.
+
+- mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+  description: |
+    Sample ID to limit query results during an analysis.
+
+- mode: NULLABLE
+  name: adjust_adgroup
+  type: STRING
+  description: |
+    Structure parameter for the the ad group of a campaign.
+
+- mode: NULLABLE
+  name: adjust_campaign
+  type: STRING
+  description: |
+    Structure parameter for the campaign name.
+
+- mode: NULLABLE
+  name: adjust_creative
+  type: STRING
+  description: |
+    Structure parameter for the creative content of a campaign.
+
+- mode: NULLABLE
+  name: adjust_network
+  type: STRING
+  description: |
+    The type of source of a client installation.
+
+- mode: NULLABLE
+  name: searches
+  type: INTEGER
+  description: |
+    The number of search interactions the user had on SERP pages.
+
+- mode: NULLABLE
+  name: searches_with_ads
+  type: INTEGER
+  description: |
+    The number of SERP pages with ads shown to the user.
+
+- mode: NULLABLE
+  name: ad_clicks
+  type: INTEGER
+  description: |
+    The number of times a user clicked on an ad on SERP pages.
+
+- mode: NULLABLE
+  name: is_new_profile
+  type: BOOLEAN
+  description: |
+    Determines if a client is a new profile.

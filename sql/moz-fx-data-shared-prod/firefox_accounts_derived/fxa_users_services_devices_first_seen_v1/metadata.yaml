@@ -24,7 +24,7 @@ description: |
   More information about fxa data can be found here:
   https://docs.telemetry.mozilla.org/datasets/fxa.html
 owners:
-  - kignasiak@mozilla.com
+  - kik@mozilla.com
 labels:
   application: fxa
   incremental: true

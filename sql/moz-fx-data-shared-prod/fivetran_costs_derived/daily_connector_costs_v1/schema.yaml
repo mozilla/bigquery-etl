@@ -1,0 +1,31 @@
+fields:
+- mode: NULLABLE
+  name: destination
+  type: STRING
+  description: |
+    Name of the destination warehouse.
+- mode: NULLABLE
+  name: measured_date
+  type: DATE
+  description: |
+    Date of when the active row measurement was made.
+- mode: NULLABLE
+  name: connector
+  type: STRING
+  description: |
+    The name of the connector being measured.
+- mode: NULLABLE
+  name: billing_type
+  type: STRING
+  description: |
+    Information on how the active rows got billed, paid or free.
+- mode: NULLABLE
+  name: active_rows
+  type: INTEGER
+  description: |
+    The number of new distinct primary keys on the current day synced for the connector.
+- mode: NULLABLE
+  name: cost_in_usd
+  type: BIGNUMERIC
+  description: |
+    Costs in USD for that row. This value is not rounded to the cent but contains fractional cents for later calculations.

@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_activity_stream
@@ -21,15 +21,15 @@ on the newtab page and engagement with Pocket content.
 
 #### Owner
 
-jklukas@mozilla.com
+anicholson@mozilla.com
 """
 
 
 default_args = {
-    "owner": "jklukas@mozilla.com",
+    "owner": "anicholson@mozilla.com",
     "start_date": datetime.datetime(2019, 7, 25, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "anicholson@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=300),
     "email_on_failure": True,
@@ -51,8 +51,8 @@ with DAG(
         destination_table="impression_stats_by_experiment_v1",
         dataset_id="activity_stream_bi",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="anicholson@mozilla.com",
+        email=["anicholson@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -62,8 +62,8 @@ with DAG(
         destination_table="impression_stats_flat_v1",
         dataset_id="activity_stream_bi",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="anicholson@mozilla.com",
+        email=["anicholson@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

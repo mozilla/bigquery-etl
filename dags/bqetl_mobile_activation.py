@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_mobile_activation
@@ -64,6 +64,20 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
+
+    with TaskGroup(
+        "firefox_ios_derived__new_profile_activation__v1_external"
+    ) as firefox_ios_derived__new_profile_activation__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_firefox_ios__wait_for_firefox_ios_derived__new_profile_activation__v1",
+            external_dag_id="bqetl_firefox_ios",
+            external_task_id="wait_for_firefox_ios_derived__new_profile_activation__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=72000)).isoformat() }}",
+        )
+
+        firefox_ios_derived__new_profile_activation__v1_external.set_upstream(
+            firefox_ios_derived__new_profile_activation__v1
+        )
 
     wait_for_baseline_clients_last_seen = ExternalTaskSensor(
         task_id="wait_for_baseline_clients_last_seen",

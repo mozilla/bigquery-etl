@@ -25,6 +25,21 @@
         "mode": "NULLABLE",
         "name": "version",
         "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "user_disabled",
+        "type": "BOOLEAN"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "app_disabled",
+        "type": "BOOLEAN"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "blocklisted",
+        "type": "BOOLEAN"
       }
     ],
     "mode": "REPEATED",

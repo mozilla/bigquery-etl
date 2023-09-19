@@ -10,7 +10,7 @@ from bigquery_etl.query_scheduling import formatters
 from bigquery_etl.query_scheduling.task import Task, TaskRef
 from bigquery_etl.query_scheduling.utils import (
     is_date_string,
-    is_email,
+    is_email_or_github_identity,
     is_schedule_interval,
     is_timedelta_string,
     is_valid_dag_name,
@@ -70,14 +70,16 @@ class DagDefaultArgs:
     @owner.validator
     def validate_owner(self, attribute, value):
         """Check that owner is a valid email address."""
-        if not is_email(value):
-            raise ValueError(f"Invalid email for DAG owner: {value}.")
+        if not is_email_or_github_identity(value):
+            raise ValueError(
+                f"Invalid email or github identity for DAG owner: {value}."
+            )
 
     @email.validator
     def validate_email(self, attribute, value):
         """Check that provided email addresses are valid."""
-        if not all(map(lambda e: is_email(e), value)):
-            raise ValueError(f"Invalid email in DAG email: {value}.")
+        if not all(map(lambda e: is_email_or_github_identity(e), value)):
+            raise ValueError(f"Invalid email or github identity in DAG email: {value}.")
 
     @retry_delay.validator
     def validate_retry_delay(self, attribute, value):

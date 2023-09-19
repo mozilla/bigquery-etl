@@ -1,0 +1,154 @@
+[
+  {
+    "name": "id",
+    "type": "STRING"
+  },
+  {
+    "name": "type",
+    "type": "STRING"
+  },
+  {
+    "name": "currency",
+    "type": "STRING"
+  },
+  {
+    "name": "transaction_date_utc",
+    "type": "TIMESTAMP"
+  },
+  {
+    "name": "tax_date_utc",
+    "type": "TIMESTAMP"
+  },
+  {
+    "name": "refund_id",
+    "type": "STRING"
+  },
+  {
+    "name": "line_item_id",
+    "type": "STRING"
+  },
+  {
+    "name": "subtotal",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "total",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "tax_behavior",
+    "type": "STRING"
+  },
+  {
+    "name": "tax_code",
+    "type": "STRING"
+  },
+  {
+    "name": "jurisdiction_name",
+    "type": "STRING"
+  },
+  {
+    "name": "jurisdiction_level",
+    "type": "STRING"
+  },
+  {
+    "name": "country_code",
+    "type": "STRING"
+  },
+  {
+    "name": "state_code",
+    "type": "STRING"
+  },
+  {
+    "name": "taxability",
+    "type": "STRING"
+  },
+  {
+    "name": "taxability_reason",
+    "type": "STRING"
+  },
+  {
+    "name": "tax_rate",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "quantity",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "payment_intent_id",
+    "type": "STRING"
+  },
+  {
+    "name": "customer_tax_id",
+    "type": "STRING"
+  },
+  {
+    "name": "destination_resolved_address_line1",
+    "type": "STRING"
+  },
+  {
+    "name": "destination_resolved_address_line2",
+    "type": "STRING"
+  },
+  {
+    "name": "destination_resolved_address_city",
+    "type": "STRING"
+  },
+  {
+    "name": "destination_resolved_address_state",
+    "type": "STRING"
+  },
+  {
+    "name": "destination_resolved_address_postal_code",
+    "type": "STRING"
+  },
+  {
+    "name": "destination_resolved_address_country",
+    "type": "STRING"
+  },
+  {
+    "name": "tax_name",
+    "type": "STRING"
+  },
+  {
+    "name": "tax_type",
+    "type": "STRING"
+  },
+  {
+    "name": "taxable_amount",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "non_taxable_amount",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "tax_amount",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "filing_currency",
+    "type": "STRING"
+  },
+  {
+    "name": "filing_exchange_rate",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "filing_total",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "filing_non_taxable_amount",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "filing_taxable_amount",
+    "type": "NUMERIC"
+  },
+  {
+    "name": "filing_tax_amount",
+    "type": "NUMERIC"
+  }
+]

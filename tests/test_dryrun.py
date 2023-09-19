@@ -174,3 +174,21 @@ class TestDryRun:
             ).get_error()
             is None
         )
+
+    def test_dryrun_metrics_query(self, tmp_query_path):
+        query_file = tmp_query_path / "query.sql"
+        query_file.write_text(
+            """
+            SELECT * FROM (
+                {{ metrics.calculate(
+                    metrics=['days_of_use', 'uri_count', 'ad_clicks'],
+                    platform='firefox_desktop',
+                    group_by={'sample_id': 'sample_id'},
+                    where='submission_date = "2023-01-01"'
+                ) }}
+            )
+            """
+        )
+
+        dryrun = DryRun(sqlfile=str(query_file))
+        assert dryrun.is_valid()

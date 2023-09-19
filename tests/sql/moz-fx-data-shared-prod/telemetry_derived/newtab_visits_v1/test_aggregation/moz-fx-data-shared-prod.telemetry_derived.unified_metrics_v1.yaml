@@ -1,0 +1,5 @@
+---
+- client_id: legacy_id_1
+  submission_date: 2021-09-01
+  is_new_profile: true
+  activity_segment: lots_of_activity

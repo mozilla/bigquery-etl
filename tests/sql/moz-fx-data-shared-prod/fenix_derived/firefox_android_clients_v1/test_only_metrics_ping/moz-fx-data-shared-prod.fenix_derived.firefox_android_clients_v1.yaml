@@ -1,0 +1,11 @@
+---
+- client_id: client-3
+  sample_id: 54
+  first_seen_date: 2022-12-30
+  submission_date: 2022-12-30
+  activated: true
+  install_source: 'com.android.vending'
+  metadata:
+    reported_metrics_ping: true
+    min_metrics_ping_submission_date: 2022-12-30
+    install_source__source_ping: metrics

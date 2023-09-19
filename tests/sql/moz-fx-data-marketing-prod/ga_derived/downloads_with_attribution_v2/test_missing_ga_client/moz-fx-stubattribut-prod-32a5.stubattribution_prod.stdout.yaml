@@ -1,0 +1,55 @@
+---
+- jsonPayload:
+    fields:
+      visit_id: client1
+      dltoken: normal
+      session_id: session_1
+      log_type: download_started
+  timestamp: '2023-04-02 01:16:43.101135 UTC'
+- jsonPayload:
+    fields:
+      visit_id: client2
+      dltoken: mismatched_session
+      session_id: session_1
+      log_type: download_started
+  timestamp: '2023-04-02 01:16:43.101135 UTC'
+- jsonPayload:
+    fields:
+      visit_id: client3
+      dltoken: ga_missing_session_id
+      session_id: session_3
+      log_type: download_started
+  timestamp: '2023-04-02 01:16:43.101135 UTC'
+- jsonPayload:
+    fields:
+      visit_id: client4
+      dltoken: ga_missing
+      session_id: session_1
+      log_type: download_started
+  timestamp: '2023-04-02 01:16:43.101135 UTC'
+- jsonPayload:
+    fields:
+      visit_id: client5
+      dltoken: no_dl_session_ga_missing
+      log_type: download_started
+  timestamp: 2023-04-02 01:16:43.101135 UTC
+- jsonPayload:
+    fields:
+      visit_id: client6
+      dltoken: no_dl_session_no_ga_dl_session
+      log_type: download_started
+  timestamp: '2023-04-02 01:16:43.101135 UTC'
+- jsonPayload:
+    fields:
+      visit_id: client7
+      dltoken: multi_ga_session_1_dl_session_missing
+      session_id: session_1
+      log_type: download_started
+  timestamp: '2023-04-02 01:16:43.101135 UTC'
+- jsonPayload:
+    fields:
+      visit_id: client8
+      dltoken: multi_ga_session_2_dl_session_missing
+      session_id: session_1
+      log_type: download_started
+  timestamp: '2023-04-02 01:16:43.101135 UTC'

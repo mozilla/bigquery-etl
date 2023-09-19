@@ -30,6 +30,16 @@ def is_email(s):
     return re.match(r"[^@]+@[^@]+\.[^@]+", s)
 
 
+def is_github_identity(s):
+    """Check if the given string matches the format of a Github identity."""
+    return re.match(r"[@mozilla]+\/[a-zA-Z0-9]+", s)
+
+
+def is_email_or_github_identity(s):
+    """Check if the given string is either an email or a Github identity."""
+    return is_email(s) or is_github_identity(s)
+
+
 DAG_NAME_RE = re.compile("^(private_)?bqetl_.+$")
 
 

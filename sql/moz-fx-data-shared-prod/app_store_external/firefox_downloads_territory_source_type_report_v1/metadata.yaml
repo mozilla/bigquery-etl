@@ -1,0 +1,14 @@
+friendly_name: Firefox Downloads Territory Source Type Report
+description: |-
+  Directly copied from Fivetran.
+owners:
+- frank@mozilla.com
+labels:
+  incremental: false
+bigquery:
+  clustering:
+    fields: ['app_id', 'date', 'territory']
+scheduling:
+  dag_name: bqetl_fivetran_copied_tables
+  date_partition_parameter: null
+  depends_on_past: false

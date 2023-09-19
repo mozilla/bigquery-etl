@@ -2,7 +2,7 @@ friendly_name: Sponsored Content (Spoc) Tile IDs History
 description: |-
   Historical log of daily exports of Pocket tile metadata for sponsored content.
 owners:
-  - jklukas@mozilla.com
+  - kik@mozilla.com
 labels:
   incremental: true
 bigquery:

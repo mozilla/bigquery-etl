@@ -4,6 +4,7 @@ AS
 WITH stage_1 AS (
   SELECT
     event_date AS subscription_start_date,
+    country,
     country_name,
     utm_medium,
     utm_source,
@@ -14,8 +15,11 @@ WITH stage_1 AS (
     entrypoint_variation,
     product_name,
     pricing_plan,
+    plan_interval,
+    plan_interval_count,
     provider,
     TO_JSON_STRING(promotion_codes) AS json_promotion_codes,
+    granular_event_type,
     SUM(`count`) AS new_subscriptions,
   FROM
     `moz-fx-data-shared-prod`.mozilla_vpn.subscription_events
@@ -23,6 +27,7 @@ WITH stage_1 AS (
     event_type = "New"
   GROUP BY
     subscription_start_date,
+    country,
     country_name,
     utm_medium,
     utm_source,
@@ -33,8 +38,11 @@ WITH stage_1 AS (
     entrypoint_variation,
     product_name,
     pricing_plan,
+    plan_interval,
+    plan_interval_count,
     provider,
-    json_promotion_codes
+    json_promotion_codes,
+    granular_event_type
 ),
 stage_2 AS (
   SELECT

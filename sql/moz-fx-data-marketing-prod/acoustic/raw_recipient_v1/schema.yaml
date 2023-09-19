@@ -30,7 +30,7 @@ fields:
 
 - mode: NULLABLE
   name: content_id
-  type: INTEGER
+  type: STRING
   description: The ID of the content associated with the event.
 
 - mode: NULLABLE

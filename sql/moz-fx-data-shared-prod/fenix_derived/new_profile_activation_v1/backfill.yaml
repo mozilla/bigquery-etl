@@ -1,0 +1,8 @@
+2023-08-14:
+  start_date: 2021-12-01
+  end_date: 2023-08-13
+  reason: Changes made to include all channels (DENG-1188)
+  watchers:
+  - wichan@mozilla.com
+  - lvargas@mozilla.com
+  status: Complete

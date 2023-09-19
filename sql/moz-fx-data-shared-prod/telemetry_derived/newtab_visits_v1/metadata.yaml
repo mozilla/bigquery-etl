@@ -1,0 +1,25 @@
+friendly_name: Newtab Visits
+description: |-
+  Visits on the newtab page, one row per visit per-day
+  (identified by the visit id).
+owners:
+- anicholson@mozilla.com
+labels:
+  application: firefox
+  incremental: true
+  schedule: daily
+  owner1: anicholson
+  dag: bqetl_newtab
+scheduling:
+  dag_name: bqetl_newtab
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - channel
+    - country_code
+references: {}

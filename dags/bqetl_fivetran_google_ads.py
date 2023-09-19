@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_fivetran_google_ads
@@ -58,6 +58,30 @@ with DAG(
     google_ads_derived__campaign_names_map__v1 = bigquery_etl_query(
         task_id="google_ads_derived__campaign_names_map__v1",
         destination_table="campaign_names_map_v1",
+        dataset_id="google_ads_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    google_ads_derived__daily_ad_group_stats__v1 = bigquery_etl_query(
+        task_id="google_ads_derived__daily_ad_group_stats__v1",
+        destination_table="daily_ad_group_stats_v1",
+        dataset_id="google_ads_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    google_ads_derived__daily_campaign_stats__v1 = bigquery_etl_query(
+        task_id="google_ads_derived__daily_campaign_stats__v1",
+        destination_table="daily_campaign_stats_v1",
         dataset_id="google_ads_derived",
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",

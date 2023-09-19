@@ -1,0 +1,22 @@
+friendly_name: Firefox iOS New Profile Activation
+description: |-
+  Mobile activation metric used for Marketing campaign performance.
+  Each record inside this table corresponds to a user activation.
+owners:
+- vsabino@mozilla.com
+- kik@mozilla.com
+labels:
+  incremental: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - sample_id
+scheduling:
+  dag_name: bqetl_firefox_ios
+  date_partition_parameter: submission_date
+  depends_on_past: true

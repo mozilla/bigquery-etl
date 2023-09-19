@@ -17,7 +17,7 @@ WITH base AS (
     `moz-fx-data-shared-prod`.firefox_accounts.fxa_all_events
   WHERE
     IF(@date IS NULL, DATE(`timestamp`) < CURRENT_DATE, DATE(`timestamp`) = @date)
-    AND event_category IN ('content', 'auth')
+    AND fxa_log IN ('content', 'auth')
     AND service = "guardian-vpn"
   GROUP BY
     flow_id

@@ -13,7 +13,7 @@ labels:
   incremental: false
   schedule: daily
 # see https://bugzilla.mozilla.org/show_bug.cgi?id=1805722#c10
-#scheduling:
+# Scheduling:
 #  dag_name: bqetl_event_rollup
 #  date_partition_parameter: null
 #  parameters: ["submission_date:DATE:{{ds}}"]

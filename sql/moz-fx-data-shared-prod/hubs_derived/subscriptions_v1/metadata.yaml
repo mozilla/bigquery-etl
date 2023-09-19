@@ -1,0 +1,13 @@
+friendly_name: All Hubs Subscriptions
+description: >
+  Hubs subscriptions.
+owners:
+  - srose@mozilla.com
+labels:
+  application: hubs
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  # destination is the whole table, not a single partition,
+  # so don't use date_partition_parameter
+  date_partition_parameter: null

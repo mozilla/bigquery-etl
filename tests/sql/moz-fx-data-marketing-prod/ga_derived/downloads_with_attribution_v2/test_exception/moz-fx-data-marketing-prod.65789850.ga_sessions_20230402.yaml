@@ -1,0 +1,736 @@
+- clientId: client100
+  visitId: '1'
+  date: '20230402'
+  trafficSource:
+    campaign: "(not set)"
+    source: "(direct)"
+    medium: "(none)"
+    adContent: "(not set)"
+  device:
+    browser: Safari
+    browserVersion: '16.1'
+    operatingSystem: Windows
+    language: en-ca
+    deviceCategory: desktop
+  geoNetwork:
+    country: Canada
+  hits:
+  - page:
+      pagePath: "/en-GB/firefox/session"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Stub Session ID
+      eventLabel: session_1
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: PAGE
+- clientId: client100
+  visitId: '2'
+  date: '20230402'
+  trafficSource:
+    campaign: "(not set)"
+    source: "(direct)"
+    medium: "(none)"
+    adContent: "(not set)"
+  device:
+    browser: Safari
+    browserVersion: '16.1'
+    operatingSystem: Windows
+    language: en-ca
+    deviceCategory: desktop
+  geoNetwork:
+    country: Canada
+  hits:
+  - page:
+      pagePath: "/en-GB/firefox/session"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Stub Session ID
+      eventLabel: session_1
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: PAGE
+- clientId: client101
+  visitId: '1'
+  date: '20230402'
+  trafficSource:
+    campaign: "(not set)"
+    source: "(direct)"
+    medium: "(none)"
+    adContent: "(not set)"
+  device:
+    browser: Internet Explorer
+    browserVersion: '16.1'
+    operatingSystem: Windows
+    language: en-ca
+    deviceCategory: desktop
+  geoNetwork:
+    country: Canada
+  hits:
+  - page:
+      pagePath: "/en-GB/firefox/session"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Stub Session ID
+      eventLabel: session_1
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: PAGE
+- clientId: client103
+  visitId: '1'
+  date: '20230402'
+  trafficSource:
+    campaign: "(not set)"
+    source: "(direct)"
+    medium: "(none)"
+    adContent: "(not set)"
+  device:
+    browser: Safari
+    browserVersion: '16.1'
+    operatingSystem: Windows
+    language: en-ca
+    deviceCategory: desktop
+  geoNetwork:
+    country: Canada
+  hits:
+  - page:
+      pagePath: "/en-GB/firefox/session"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Stub Session ID
+      eventLabel: session_1
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: PAGE
+- clientId: client104
+  visitId: '1'
+  date: '20230402'
+  trafficSource:
+    campaign: "(not set)"
+    source: "(direct)"
+    medium: "(none)"
+    adContent: "(not set)"
+  device:
+    browser: Edge
+    browserVersion: '16.1'
+    operatingSystem: Windows
+    language: en-ca
+    deviceCategory: desktop
+  geoNetwork:
+    country: Canada
+  hits:
+  - page:
+      pagePath: "/en-GB/firefox/session"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Stub Session ID
+      eventLabel: session_1
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: PAGE
+- clientId: client105
+  visitId: '1'
+  date: '20230402'
+  trafficSource:
+    campaign: "(not set)"
+    source: "(direct)"
+    medium: "(none)"
+    adContent: "(not set)"
+  device:
+    browser: Chrome
+    browserVersion: '16.1'
+    operatingSystem: Windows
+    language: en-ca
+    deviceCategory: desktop
+  geoNetwork:
+    country: Canada
+  hits:
+  - page:
+      pagePath: "/en-GB/firefox/session"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Stub Session ID
+      eventLabel: session_1
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: PAGE
+  - page:
+      pagePath: "/en-GB/firefox/download"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: PAGE
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: PAGE
+- clientId: client106
+  visitId: '1'
+  date: '20230402'
+  trafficSource:
+    campaign: "(not set)"
+    source: "(direct)"
+    medium: "(none)"
+    adContent: "(not set)"
+  device:
+    browser: Firefox
+    browserVersion: '16.1'
+    operatingSystem: Windows
+    language: en-ca
+    deviceCategory: desktop
+  geoNetwork:
+    country: Canada
+  hits:
+  - page:
+      pagePath: "/en-GB/firefox/session"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Stub Session ID
+      eventLabel: session_1
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: PAGE
+- clientId: client107
+  visitId: '1'
+  date: '20230402'
+  trafficSource:
+    campaign: "(not set)"
+    source: "(direct)"
+    medium: "(none)"
+    adContent: "(not set)"
+  device:
+    browser: "(not set)"
+    browserVersion: '16.1'
+    operatingSystem: Windows
+    language: en-ca
+    deviceCategory: desktop
+  geoNetwork:
+    country: Canada
+  hits:
+  - page:
+      pagePath: "/en-GB/firefox/session"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Stub Session ID
+      eventLabel: session_4
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: PAGE
+- clientId: client108
+  visitId: '1'
+  date: '20230402'
+  trafficSource:
+    campaign: "(not set)"
+    source: "(direct)"
+    medium: "(none)"
+    adContent: "(not set)"
+  device:
+    browser:
+    browserVersion: '16.1'
+    operatingSystem: Windows
+    language: en-ca
+    deviceCategory: desktop
+  geoNetwork:
+    country: Canada
+  hits:
+  - page:
+      pagePath: "/en-GB/firefox/session"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Stub Session ID
+      eventLabel: session_3
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: PAGE
+- clientId: client109
+  visitId: '1'
+  date: '20230402'
+  trafficSource:
+    campaign: "(not set)"
+    source: "(direct)"
+    medium: "(none)"
+    adContent: "(not set)"
+  device:
+    browser: Fake browser
+    browserVersion: '16.1'
+    operatingSystem: Windows
+    language: en-ca
+    deviceCategory: desktop
+  geoNetwork:
+    country: Canada
+  hits:
+  - page:
+      pagePath: "/en-GB/firefox/session"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Stub Session ID
+      eventLabel: session_2
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: PAGE
+- clientId: client110
+  visitId: '1'
+  date: '20230402'
+  trafficSource:
+    campaign: "(not set)"
+    source: "(direct)"
+    medium: "(none)"
+    adContent: "(not set)"
+  device:
+    browser: Fake browser
+    browserVersion: '16.1'
+    operatingSystem: Windows
+    language: en-ca
+    deviceCategory: desktop
+  geoNetwork:
+    country: Canada
+  hits:
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: PAGE
+- clientId: client111
+  visitId: '1'
+  date: '20230402'
+  trafficSource:
+    campaign: "(not set)"
+    source: "(direct)"
+    medium: "(none)"
+    adContent: "(not set)"
+  device:
+    browser: Internet Explorer
+    browserVersion: '16.1'
+    operatingSystem: Windows
+    language: en-ca
+    deviceCategory: desktop
+  geoNetwork:
+    country: Canada
+  totals:
+    timeOnSite:
+  hits:
+  - page:
+      pagePath: "/en-GB/firefox/session"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Stub Session ID
+      eventLabel: session_b
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: PAGE
+- clientId: client112
+  visitId: '1'
+  date: '20230402'
+  trafficSource:
+    campaign: "(not set)"
+    source: "(direct)"
+    medium: "(none)"
+    adContent: "(not set)"
+  device:
+    browser: Internet Explorer
+    browserVersion: '16.1'
+    operatingSystem: Windows
+    language: en-ca
+    deviceCategory: desktop
+  geoNetwork:
+    country: Canada
+  totals:
+    timeOnSite: 112
+  hits:
+  - page:
+      pagePath: "/en-GB/firefox/session"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Stub Session ID
+      eventLabel: session_a
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: PAGE
+- clientId: client113
+  visitId: '1'
+  date: '20230402'
+  trafficSource:
+    campaign: "(not set)"
+    source: "(direct)"
+    medium: "(none)"
+    adContent: "(not set)"
+  device:
+    browser: Internet Explorer
+    browserVersion: '16.1'
+    operatingSystem: Windows
+    language: en-ca
+    deviceCategory: desktop
+  geoNetwork:
+    country: Canada
+  totals:
+    timeOnSite: 112
+  hits:
+  - page:
+      pagePath: "/en-GB/firefox/session"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Stub Session ID
+      eventLabel: session_c
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: EVENT
+- clientId: client114
+  visitId: '1'
+  date: '20230402'
+  trafficSource:
+    campaign: "(not set)"
+    source: "(direct)"
+    medium: "(none)"
+    adContent: "(not set)"
+  device:
+    browser: Internet Explorer
+    browserVersion: '16.1'
+    operatingSystem: Windows
+    language: en-ca
+    deviceCategory: desktop
+  geoNetwork:
+    country: Canada
+  hits:
+  - page:
+      pagePath: "/en-GB/firefox/session"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Stub Session ID
+      eventLabel: session_1
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: PAGE
+- clientId: client115
+  visitId: '1'
+  date: '20230402'
+  trafficSource:
+    campaign: "(not set)"
+    source: "(direct)"
+    medium: "(none)"
+    adContent: "(not set)"
+  device:
+    browser: Safari
+    browserVersion: '16.1'
+    operatingSystem: Windows
+    language: en-ca
+    deviceCategory: desktop
+  geoNetwork:
+    country: Canada
+  hits:
+  - page:
+      pagePath: "/en-GB/firefox/session"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Stub Session ID
+      eventLabel: session_1
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: PAGE
+- clientId: client115
+  visitId: '2'
+  date: '20230402'
+  trafficSource:
+    campaign: "(not set)"
+    source: "(direct)"
+    medium: "(none)"
+    adContent: "(not set)"
+  device:
+    browser: Safari
+    browserVersion: '16.1'
+    operatingSystem: Windows
+    language: en-ca
+    deviceCategory: desktop
+  geoNetwork:
+    country: Canada
+  hits:
+  - page:
+      pagePath: "/en-GB/firefox/session"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Stub Session ID
+      eventLabel: session_1
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: EVENT
+  - page:
+      pagePath: "/en-GB/firefox/"
+    appInfo:
+      landingScreenName: www.mozilla.org/en-GB/firefox/
+    eventInfo:
+      eventCategory: "/firefox/ Interactions"
+      eventAction: Firefox Download
+      eventLabel: Firefox for Desktop
+    type: PAGE

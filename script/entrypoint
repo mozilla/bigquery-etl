@@ -4,6 +4,7 @@ set -e
 
 # Use credentials from environment
 if [ -n "$GCLOUD_SERVICE_KEY" ]; then
+    echo "DEBUG: SETTING UP CREDS BLOCK HIT"  # TODO: once the issue is solved this can be removed.
     # Google's client libraries will check for GOOGLE_APPLICATION_CREDENTIALS
     # and use a file in that location for credentials if present;
     # See https://cloud.google.com/docs/authentication/production
@@ -12,7 +13,7 @@ if [ -n "$GCLOUD_SERVICE_KEY" ]; then
 fi
 
 if [ -n "$GOOGLE_APPLICATION_CREDENTIALS" ] && which gcloud > /dev/null; then
-    gcloud --quiet auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
+    gcloud --verbosity=debug --quiet auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
     python -W ignore -c 'import google.auth; print("project = ", google.auth.default()[1])' >> ~/.config/gcloud/configurations/config_default
     sed "1i--project_id=$(gcloud config get-value project)" -i ~/.bigqueryrc
 fi

@@ -13,7 +13,7 @@ labels:
   schedule: daily
   incremental: true
 # see https://bugzilla.mozilla.org/show_bug.cgi?id=1805722#c10
-#scheduling:
+# Scheduling:
 #  dag_name: bqetl_event_rollup
 #  referenced_tables: [
 #    [

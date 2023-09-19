@@ -1,0 +1,35 @@
+---
+- &conn_1_day_1
+  measured_date: 2023-01-01
+  measured_month: 2023-01-01
+  destination_id: destination_1_id
+  connector: connector_1
+  billing_type: paid
+  active_rows: 10
+- <<: *conn_1_day_1
+  active_rows: 20
+- <<: *conn_1_day_1
+  active_rows: 30
+- <<: *conn_1_day_1
+  billing_type: free_system
+  active_rows: 40
+- &conn_1_day_2
+  <<: *conn_1_day_1
+  measured_date: 2023-01-02
+  active_rows: 100
+- <<: *conn_1_day_2
+  active_rows: 200
+- <<: *conn_1_day_2
+  active_rows: 640
+- &conn_2_day_1
+  <<: *conn_1_day_1
+  connector: connector_2
+  active_rows: 100
+- <<: *conn_2_day_1
+  active_rows: 900
+- <<: *conn_2_day_1
+  billing_type: free_resync
+  active_rows: 5000
+- <<: *conn_2_day_1
+  billing_type: free_connector_trial
+  active_rows: 2000

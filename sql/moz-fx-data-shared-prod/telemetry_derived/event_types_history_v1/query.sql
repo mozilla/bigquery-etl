@@ -115,7 +115,7 @@ all_event_property_indices AS (
     event,
     event_property.key AS event_property,
     event_property.index AS event_property_index,
-    MAX(COALESCE(VALUES .index, 0)) AS max_event_property_value_index
+    MAX(COALESCE(`values`.index, 0)) AS max_event_property_value_index
   FROM
     event_types
   LEFT JOIN
@@ -152,7 +152,7 @@ new_event_property_value_indices AS (
       SELECT
         event_types.* EXCEPT (event_properties),
         existing_event_property,
-      VALUES
+        `values`
       FROM
         event_types,
         UNNEST(event_properties) AS existing_event_property,
@@ -190,10 +190,8 @@ all_event_property_value_indices AS (
     category,
     event,
     event_property.key AS event_property,
-  VALUES
-    .key AS event_property_value,
-  VALUES
-    .index AS event_property_value_index
+    `values`.key AS event_property_value,
+    `values`.index AS event_property_value_index
   FROM
     event_types,
     UNNEST(event_properties) AS event_property,
@@ -237,7 +235,7 @@ per_event AS (
       IF(
         event_property IS NULL,
         NULL,
-        STRUCT(event_property AS key, VALUES AS value, event_property_index AS index)
+        STRUCT(event_property AS key, `values` AS value, event_property_index AS index)
       ) IGNORE NULLS
       ORDER BY
         event_property_index ASC

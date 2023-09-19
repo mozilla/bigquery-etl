@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_monitoring
@@ -129,6 +129,18 @@ with DAG(
         email=["ascholtz@mozilla.com", "wichan@mozilla.com"],
     )
 
+    monitoring_derived__bigquery_usage__v2 = gke_command(
+        task_id="monitoring_derived__bigquery_usage__v2",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v2/query.py",
+        ]
+        + ["--date", "{{ ds }}"],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="wichan@mozilla.com",
+        email=["ascholtz@mozilla.com", "wichan@mozilla.com"],
+    )
+
     monitoring_derived__column_size__v1 = gke_command(
         task_id="monitoring_derived__column_size__v1",
         command=[
@@ -141,6 +153,18 @@ with DAG(
         email=["ascholtz@mozilla.com"],
     )
 
+    monitoring_derived__jobs_by_organization__v1 = gke_command(
+        task_id="monitoring_derived__jobs_by_organization__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/monitoring_derived/jobs_by_organization_v1/query.py",
+        ]
+        + ["--date", "{{ ds }}"],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="mhirose@mozilla.com",
+        email=["ascholtz@mozilla.com", "mhirose@mozilla.com"],
+    )
+
     monitoring_derived__schema_error_counts__v2 = bigquery_etl_query(
         task_id="monitoring_derived__schema_error_counts__v2",
         destination_table="schema_error_counts_v2",
@@ -150,6 +174,23 @@ with DAG(
         email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    monitoring_derived__shredder_rows_deleted__v1 = gke_command(
+        task_id="monitoring_derived__shredder_rows_deleted__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/monitoring_derived/shredder_rows_deleted_v1/query.py",
+        ]
+        + [
+            "--end_date",
+            "{{ds}}",
+            "--destination_table",
+            "moz-fx-data-shared-prod.monitoring_derived.shredder_rows_deleted_v1${{ds_nodash}}",
+        ],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="dthorn@mozilla.com",
+        email=["ascholtz@mozilla.com", "dthorn@mozilla.com"],
     )
 
     monitoring_derived__stable_and_derived_table_sizes__v1 = gke_command(

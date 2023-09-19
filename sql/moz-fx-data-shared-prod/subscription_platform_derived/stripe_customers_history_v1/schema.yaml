@@ -1,0 +1,210 @@
+fields:
+- name: id
+  type: STRING
+  mode: NULLABLE
+  description: History record ID.
+- name: valid_from
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Start of the time range this history record is considered valid for
+    (inclusive).
+- name: valid_to
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: End of the time range this history record is considered valid for (non-inclusive).
+    Open-ended history records will have this set to the max timestamp value (9999-12-31
+    23:59:59.999999).
+- name: stripe_customers_revised_changelog_id
+  type: STRING
+  mode: NULLABLE
+  description: ID of the `stripe_customers_revised_changelog_v1` record this history
+    record was derived from.
+- name: customer
+  type: RECORD
+  mode: NULLABLE
+  description: Stripe customer record as it ostensibly was during the time range this
+    history record is considered valid for.
+  fields:
+  - name: id
+    type: STRING
+    mode: NULLABLE
+    description: Customer ID.
+  - name: address
+    type: RECORD
+    mode: NULLABLE
+    description: The customer's address.
+    fields:
+    - name: country
+      type: STRING
+      mode: NULLABLE
+      description: Two-letter country code (ISO 3166-1 alpha-2).
+  - name: created
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: Time at which the customer was created.
+  - name: default_source_id
+    type: STRING
+    mode: NULLABLE
+    description: 'ID of the default payment source for the customer.
+
+      This isn''t available for customers that were deleted before the initial Fivetran
+      Stripe sync.'
+  - name: discount
+    type: RECORD
+    mode: NULLABLE
+    description: 'The current discount active on the customer, if there is one.
+
+      This isn''t available for customers that were deleted before the initial Fivetran
+      Stripe sync.'
+    fields:
+    - name: id
+      type: STRING
+      mode: NULLABLE
+      description: Discount ID.
+    - name: coupon
+      type: RECORD
+      mode: NULLABLE
+      description: The coupon applied to create this discount.
+      fields:
+      - name: id
+        type: STRING
+        mode: NULLABLE
+        description: Coupon ID.
+      - name: amount_off
+        type: INTEGER
+        mode: NULLABLE
+        description: Amount (in the `currency` specified) that will be taken off the
+          subtotal of any invoices for this customer.
+      - name: created
+        type: TIMESTAMP
+        mode: NULLABLE
+        description: Time at which the coupon was created.
+      - name: currency
+        type: STRING
+        mode: NULLABLE
+        description: If `amount_off` has been set, the three-letter ISO code for the
+          currency of the amount to take off.
+      - name: duration
+        type: STRING
+        mode: NULLABLE
+        description: 'One of "forever", "once", and "repeating". Describes how long
+          a customer who applies this coupon will get the discount.
+
+          "forever" applies to all charges from a subscription with this coupon applied.
+
+          "once" applies to the first charge from a subscription with this coupon
+          applied.
+
+          "repeating" applies to charges in the first `duration_in_months` months
+          from a subscription with this coupon applied.'
+      - name: duration_in_months
+        type: INTEGER
+        mode: NULLABLE
+        description: If `duration` is "repeating", the number of months the coupon
+          applies. Null if coupon `duration` is "forever" or "once".
+      - name: metadata
+        type: JSON
+        mode: NULLABLE
+        description: Set of key-value pairs attached to the coupon, stored as a JSON
+          object.
+      - name: name
+        type: STRING
+        mode: NULLABLE
+        description: Name of the coupon displayed to customers on invoices or receipts.
+      - name: percent_off
+        type: FLOAT
+        mode: NULLABLE
+        description: Percent that will be taken off the subtotal of any invoices for
+          this customer for the duration of the coupon. For example, a coupon with
+          `percent_off` of 50 will make a $100 invoice $50 instead.
+      - name: redeem_by
+        type: TIMESTAMP
+        mode: NULLABLE
+        description: Time after which the coupon can no longer be redeemed.
+    - name: end
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: If the coupon has a duration of "repeating", the time that this
+        discount will end. If the coupon has a duration of "once" or "forever", this
+        attribute will be null.
+    - name: invoice_id
+      type: STRING
+      mode: NULLABLE
+      description: ID of the invoice that the discount's coupon was applied to, if
+        it was applied directly to a particular invoice.
+    - name: invoice_item_id
+      type: STRING
+      mode: NULLABLE
+      description: ID of the invoice item (or invoice line item for invoice line items
+        of `type` = "subscription") that the discount's coupon was applied to, if
+        it was applied directly to a particular invoice item or invoice line item.
+    - name: promotion_code_id
+      type: STRING
+      mode: NULLABLE
+      description: ID of the promotion code applied to create this discount.
+    - name: start
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: Time at which the coupon was applied.
+    - name: subscription_id
+      type: STRING
+      mode: NULLABLE
+      description: ID of the subscription that this coupon is applied to, if it is
+        applied to a particular subscription.
+  - name: is_deleted
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the customer is deleted.
+  - name: metadata
+    type: RECORD
+    mode: NULLABLE
+    description: Set of key-value pairs attached to the customer.
+    fields:
+    - name: geoip_date
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'Time at which IP address-based geo-location was done for the customer.
+
+        This isn''t available for customers that were deleted before the initial Fivetran
+        Stripe sync.'
+    - name: paypalAgreementId
+      type: STRING
+      mode: NULLABLE
+      description: The customer's PayPal agreement ID (if any).
+    - name: userid
+      type: STRING
+      mode: NULLABLE
+      description: 'The customer''s Firefox Account user ID.
+
+        This isn''t available for customers that were deleted before the initial Fivetran
+        Stripe sync.'
+    - name: userid_sha256
+      type: STRING
+      mode: NULLABLE
+      description: SHA256 hash of the customer's Firefox Account user ID.
+  - name: shipping
+    type: RECORD
+    mode: NULLABLE
+    description: 'Mailing and shipping address for the customer. Appears on invoices
+      emailed to this customer.
+
+      This isn''t available for customers that were deleted before the initial Fivetran
+      Stripe sync.'
+    fields:
+    - name: address
+      type: RECORD
+      mode: NULLABLE
+      description: Customer shipping address.
+      fields:
+      - name: country
+        type: STRING
+        mode: NULLABLE
+        description: Two-letter country code (ISO 3166-1 alpha-2).
+  - name: tax_exempt
+    type: STRING
+    mode: NULLABLE
+    description: 'The customer''s tax exemption status. One of "none", "exempt", or
+      "reverse".
+
+      This isn''t available for customers that were deleted before the initial Fivetran
+      Stripe sync.'

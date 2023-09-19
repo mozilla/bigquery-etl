@@ -1,0 +1,28 @@
+- jsonPayload:
+    fields:
+      visit_id: client100
+      dltoken: session_same_day
+      session_id: session_1
+      log_type: download_started
+  timestamp: '2023-04-02 01:16:43.101135 UTC'
+- jsonPayload:
+    fields:
+      visit_id: client101
+      dltoken: session_1_day_later
+      session_id: session_1
+      log_type: download_started
+  timestamp: '2023-04-02 01:16:43.101135 UTC'
+- jsonPayload:
+    fields:
+      visit_id: client102
+      dltoken: session_1_day_earlier
+      session_id: session_1
+      log_type: download_started
+  timestamp: '2023-04-02 01:16:43.101135 UTC'
+- jsonPayload:
+    fields:
+      visit_id: client103
+      dltoken: session_2_days_earlier
+      session_id: session_1
+      log_type: download_started
+  timestamp: '2023-04-02 01:16:43.101135 UTC'

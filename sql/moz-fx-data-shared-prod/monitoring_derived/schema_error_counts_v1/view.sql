@@ -15,7 +15,7 @@ WITH extracted AS (
     submission_timestamp < TIMESTAMP_TRUNC(current_timestamp, day)
     AND submission_timestamp > TIMESTAMP_SUB(
       TIMESTAMP_TRUNC(current_timestamp, day),
-      INTERVAL 28 * 24 hour
+      INTERVAL(28 * 24) hour
     )
     AND exception_class = 'org.everit.json.schema.ValidationException'
 ),

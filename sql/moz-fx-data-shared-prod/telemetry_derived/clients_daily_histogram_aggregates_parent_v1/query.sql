@@ -18158,6 +18158,13 @@ histograms AS (
         'parent',
         payload.histograms.zoomed_view_enabled,
         (1, 2, 3)
+      ),
+      (
+        'places_searchbar_filter_type',
+        'histogram-categorical',
+        'parent',
+        payload.histograms.places_searchbar_filter_type,
+        (1, 50, 51)
       )
     ] AS histogram_aggregates
   FROM

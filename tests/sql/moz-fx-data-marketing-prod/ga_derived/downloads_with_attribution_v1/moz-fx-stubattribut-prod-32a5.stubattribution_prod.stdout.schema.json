@@ -1,0 +1,41 @@
+[
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "mode": "NULLABLE",
+            "name": "log_type",
+            "type": "STRING"
+          },
+          {
+            "mode": "NULLABLE",
+            "name": "visit_id",
+            "type": "STRING"
+          },
+          {
+            "mode": "NULLABLE",
+            "name": "dltoken",
+            "type": "STRING"
+          }
+        ],
+        "mode": "NULLABLE",
+        "name": "fields",
+        "type": "RECORD"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "timestamp",
+        "type": "FLOAT"
+      }
+    ],
+    "mode": "NULLABLE",
+    "name": "jsonPayload",
+    "type": "RECORD"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "timestamp",
+    "type": "TIMESTAMP"
+  }
+]

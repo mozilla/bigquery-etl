@@ -1,0 +1,59 @@
+---
+- submission_timestamp: 2021-09-01 22:09:03.243074 UTC
+  client_info:
+    client_id: client_id_1
+  metrics:
+    uuid:
+      legacy_telemetry_client_id: legacy_id_1
+  events:
+    - category: newtab
+      name: opened
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: source
+          value: about:newtab
+    - category: newtab.search
+      name: issued
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: telemetry_id
+          value: engine1
+        - key: search_access_point
+          value: urlbar
+    - category: newtab.search.ad
+      name: click
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: telemetry_id
+          value: engine1
+        - key: search_access_point
+          value: urlbar
+        - key: is_follow_on
+          value: false
+        - key: is_tagged
+          value: true
+    - category: topsites
+      name: click
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: advertiser_name
+          value: advertiser_1
+        - key: is_sponsored
+          value: true
+        - key: position
+          value: 1
+        - key: tile_id
+          value: tile_1
+    - category: pocket
+      name: impression
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: position
+          value: 1
+        - key: is_sponsored
+          value: false

@@ -1,0 +1,56 @@
+[
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "client_id"
+      }
+    ],
+    "name": "client_info",
+    "type": "RECORD"
+  },
+  {
+    "type": "INTEGER",
+    "name": "sample_id"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_channel"
+  },
+  {
+    "type": "TIMESTAMP",
+    "name": "submission_timestamp"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "metrics_adjust_campaign"
+          },
+          {
+            "type": "STRING",
+            "name": "metrics_adjust_network"
+          },
+          {
+            "type": "STRING",
+            "name": "metrics_adjust_ad_group"
+          },
+          {
+            "type": "STRING",
+            "name": "metrics_adjust_creative"
+          },
+          {
+            "type": "STRING",
+            "name": "metrics_install_source"
+          }
+        ],
+        "name": "string",
+        "type": "RECORD"
+      }
+    ],
+    "name": "metrics",
+    "type": "RECORD"
+  }
+]

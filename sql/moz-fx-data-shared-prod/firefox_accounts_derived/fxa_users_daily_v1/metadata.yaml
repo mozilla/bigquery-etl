@@ -3,10 +3,10 @@ friendly_name: FxA Users Daily
 description: |
   Usage aggregations per FxA user per day.
   Only the following category of events is used for building this models:
-  event_category IN ('auth', 'auth_bounce', 'content', 'oauth')
+  fxa_log IN ('auth', 'auth_bounce', 'content', 'oauth')
   Partitioned by submission_date and clustered by user_id.
 owners:
-  - kignasiak@mozilla.com
+  - kik@mozilla.com
 labels:
   application: fxa
   incremental: true

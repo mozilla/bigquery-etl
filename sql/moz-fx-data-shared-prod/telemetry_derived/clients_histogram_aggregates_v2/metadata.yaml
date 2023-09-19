@@ -1,0 +1,6 @@
+friendly_name: |-
+  Telemetry Derived - Clients Histogram Aggregates
+description: |-
+  Intermediate table that holds the last 3 versions of histogram aggregates from Legacy Telemetry
+owners:
+- efilho@mozilla.com

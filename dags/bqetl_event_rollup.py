@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_event_rollup
@@ -203,6 +203,36 @@ with DAG(
 
     funnel_events_source__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_content_events__v1
+    )
+    wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1",
+        external_dag_id="bqetl_fxa_events",
+        external_task_id="firefox_accounts_derived__fxa_gcp_stderr_events__v1",
+        execution_delta=datetime.timedelta(seconds=5400),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    funnel_events_source__v1.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1
+    )
+    wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1",
+        external_dag_id="bqetl_fxa_events",
+        external_task_id="firefox_accounts_derived__fxa_gcp_stdout_events__v1",
+        execution_delta=datetime.timedelta(seconds=5400),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    funnel_events_source__v1.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1
     )
     wait_for_firefox_accounts_derived__fxa_stdout_events__v1 = ExternalTaskSensor(
         task_id="wait_for_firefox_accounts_derived__fxa_stdout_events__v1",

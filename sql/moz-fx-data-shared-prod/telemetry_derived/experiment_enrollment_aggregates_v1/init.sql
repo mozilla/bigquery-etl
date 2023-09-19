@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS
     unenroll_failed_count INT64,
     update_failed_count INT64,
     disqualification_count INT64,
-    exposure_count INT64
+    exposure_count INT64,
+    validation_failed_count INT64
   )
 PARTITION BY
   DATE(window_start) CLUSTER BY experiment,

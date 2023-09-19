@@ -1,0 +1,4 @@
+---
+- name: submission_date
+  type: DATE
+  value: 2023-05-02

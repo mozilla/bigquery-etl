@@ -1,13 +1,18 @@
 """PyTest plugin for running sql tests."""
 
+import datetime
 import json
 import os.path
+import re
+from functools import partial
+from multiprocessing.pool import ThreadPool
 
 import pytest
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
 from ..routine import parse_routine
+from ..util.common import render
 from .sql_test import (
     TABLE_EXTENSIONS,
     Table,
@@ -16,8 +21,8 @@ from .sql_test import (
     default_encoding,
     get_query_params,
     load,
-    load_tables,
-    load_views,
+    load_table,
+    load_view,
     print_and_test,
     read,
 )
@@ -67,6 +72,7 @@ class SqlTest(pytest.Item, pytest.File):
         test_name = self.fspath.basename
         query_name = self.fspath.dirpath().basename
         dataset_name = self.fspath.dirpath().dirpath().basename
+        project_name = self.fspath.dirpath().dirpath().dirpath().basename
         project_dir = (
             self.fspath.dirpath().dirpath().dirpath().dirname.replace("tests", "")
         )
@@ -74,25 +80,23 @@ class SqlTest(pytest.Item, pytest.File):
         init_test = False
         script_test = False
 
-        # init tests write to dataset_query_test, instead of their
-        # default name
-        # We assume the init sql contains `CREATE TABLE dataset.table`
+        # init tests write to dataset_query_test, instead of their default name
         path = self.fspath.dirname.replace("tests", "")
         if test_name == "test_init":
             init_test = True
 
-            query = read(f"{path}/init.sql")
+            query = render("init.sql", template_folder=path)
             original, dest_name = (
-                f"{dataset_name}.{query_name}",
+                rf"`?(?<![._])\b({project_name}`?\.`?)?{dataset_name}`?\.`?{query_name}\b(?![._])`?",
                 f"{dataset_name}_{query_name}_{test_name}",
             )
-            query = query.replace(original, dest_name)
+            query = re.sub(original, dest_name, query)
             query_name = dest_name
         elif test_name == "test_script":
             script_test = True
-            query = read(f"{path}/script.sql")
+            query = render("script.sql", template_folder=path)
         else:
-            query = read(f"{path}/query.sql")
+            query = render("query.sql", template_folder=path)
 
         expect = load(self.fspath.strpath, "expect")
 
@@ -122,7 +126,29 @@ class SqlTest(pytest.Item, pytest.File):
                         table_name,
                         table_name.replace(".", "_").replace("-", "_"),
                     )
-                    query = query.replace(original, table_name)
+                    original_pattern = (
+                        r"`?(?<![._])\b"
+                        + r"`?\.`?".join(original.split("."))
+                        + r"\b(?![._])`?"
+                    )
+                    query = re.sub(original_pattern, table_name, query)
+                else:
+                    original = table_name
+
+                # second check for tablename tweaks.
+                # if the tablename ends with a date then need to replace that date with '*' for the
+                # query text substitution to work.
+                # e.g. see moz-fx-data-marketing-prod.65789850.ga_sessions_20230214
+                # A query using that table uses moz-fx-data-marketing-prod.65789850.ga_sessions_*
+                # with the date appended to allow for daily processing.
+                try:
+                    datetime.datetime.strptime(table_name[-8:], "%Y%m%d")
+                except ValueError:
+                    pass
+                else:
+                    generic_table_name = table_name[:-8] + "*"
+                    generic_original = original[:-8] + "*"
+                    query = query.replace(generic_original, generic_table_name)
                 tables[table_name] = Table(table_name, source_format, source_path)
                 print(f"Initialized {table_name}")
             elif extension == "sql":
@@ -150,8 +176,15 @@ class SqlTest(pytest.Item, pytest.File):
 
         bq = bigquery.Client()
         with dataset(bq, dataset_id) as default_dataset:
-            load_tables(bq, default_dataset, tables.values())
-            load_views(bq, default_dataset, views)
+            with ThreadPool(8) as pool:
+                pool.map(
+                    partial(load_table, bq, default_dataset),
+                    tables.values(),
+                    chunksize=1,
+                )
+                pool.starmap(
+                    partial(load_view, bq, default_dataset), views.items(), chunksize=1
+                )
 
             # configure job
             res_table = bigquery.TableReference(default_dataset, query_name)

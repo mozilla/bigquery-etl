@@ -10,14 +10,11 @@ from itertools import groupby
 import smart_open
 from google.cloud import storage  # type: ignore
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.util import standard_args
 from bigquery_etl.util.common import project_dirs
 
-DEFAULT_BUCKET = "mozilla-public-data-http"
-DEFAULT_API_VERSION = "v1"
-DEFAULT_ENDPOINT = "https://public-data.telemetry.mozilla.org/"
-REVIEW_LINK = "https://bugzilla.mozilla.org/show_bug.cgi?id="
 GCS_FILE_PATH_RE = re.compile(
     r"api/(?P<api_version>.+)/tables/(?P<dataset>.+)/(?P<table>.+)/(?P<version>.+)/"
     r"files/(?:(?P<date>.+)/)?(?P<filename>.+\.json(\.gz)?)"
@@ -30,16 +27,22 @@ parser.add_argument(
 parser.add_argument(
     "--target-bucket",
     "--target_bucket",
-    default=DEFAULT_BUCKET,
+    default=ConfigLoader.get(
+        "public_data", "bucket", fallback="mozilla-public-data-http"
+    ),
     help="GCP bucket JSON data is exported to",
 )
 parser.add_argument(
-    "--endpoint", default=DEFAULT_ENDPOINT, help="The URL to access the HTTP endpoint"
+    "--endpoint",
+    default=ConfigLoader.get(
+        "public_data", "endpoint", fallback="https://public-data.telemetry.mozilla.org/"
+    ),
+    help="The URL to access the HTTP endpoint",
 )
 parser.add_argument(
     "--api_version",
     "--api-version",
-    default=DEFAULT_API_VERSION,
+    default=ConfigLoader.get("public_data", "api_version", fallback="v1"),
     help="Endpoint API version",
 )
 standard_args.add_log_level(parser)
@@ -76,7 +79,15 @@ class GcsTableMetadata:
 
         if self.metadata.review_bugs() is not None:
             review_links = list(
-                map(lambda bug: REVIEW_LINK + str(bug), self.metadata.review_bugs())
+                map(
+                    lambda bug: ConfigLoader.get(
+                        "public_data",
+                        "review_link",
+                        fallback="https://bugzilla.mozilla.org/show_bug.cgi?id=",
+                    )
+                    + str(bug),
+                    self.metadata.review_bugs(),
+                )
             )
             metadata_json["review_links"] = review_links
 

@@ -1,0 +1,30 @@
+friendly_name: Stripe customers history
+description: |-
+  History of changes to Stripe customers as recorded by Fivetran, with revisions to improve historical accuracy.
+
+  To get the historical state at a particular point in time use a condition like the following:
+    valid_from <= {timestamp}
+    AND valid_to > {timestamp}
+
+  This table's schema closely mirrors Stripe's customers API (https://stripe.com/docs/api/customers/object).
+  Fields which Fivetran doesn't sync and fields we've specifically chosen not to include (e.g. PII) have been omitted.
+  In particular, all address fields except country have been omitted because Firefox Account user IDs are present and this is in a Mozilla-confidential dataset.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  # The whole table is overwritten every time, not a specific date partition.
+  date_partition_parameter: null
+bigquery:
+  time_partitioning:
+    type: day
+    field: valid_to
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - valid_from
+references: {}

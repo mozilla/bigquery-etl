@@ -27,6 +27,7 @@ AQ:
     - "Antarctica"
 AG:
     - "Antigua and Barbuda"
+    - "Antigua & Barbuda"
 AR:
     - "Argentina"
     - "The Argentine Republic"
@@ -82,8 +83,10 @@ BQ:
     - "Sint Eustatius"
     - "Bonaire, Sint Eustatius, and Saba"
     - "Bonaire, Sint Eustatius and Saba"
+    - "Caribbean Netherlands"
 BA:
     - "Bosnia and Herzegovina"
+    - "Bosnia & Herzegovina"
 BW:
     - "Botswana"
     - "The Republic of Botswana"
@@ -154,11 +157,13 @@ CD:
     - "Congo, the Democratic Republic of the"
     - "Democratic Republic of the Congo"
     - "The Democratic Republic of the Congo"
+    - "Congo - Kinshasa"
 CG:
     - "Congo"
     - "Congo, Republic of the"
     - "Republic of the Congo"
     - "The Republic of the Congo"
+    - "Congo - Brazzaville"
 CK:
     - "Cook Islands"
     - "The Cook Islands"
@@ -490,6 +495,7 @@ MZ:
 MM:
     - "Myanmar"
     - "The Republic of the Union of Myanmar"
+    - "Myanmar (Burma)"
 NA:
     - "Namibia"
     - "The Republic of Namibia"
@@ -589,14 +595,17 @@ BL:
     - "Saint Barthélemy"
     - "Saint BarthÃ©lemy"
     - "The Collectivity of Saint-Barthélemy"
+    - "St. Barthélemy"
 SH:
     - "Saint Helena"
     - "St Helena, Ascension, Tristan da Cunha"
     - "Saint Helena, Ascension and Tristan da Cunha"
+    - "St. Helena"
 KN:
     - "St Kitts and Nevis"
     - "St. Kitts and Nevis"
     - "Saint Kitts and Nevis"
+    - "St. Kitts & Nevis"
 LC:
     - "St. Lucia"
     - "Saint Lucia"
@@ -605,12 +614,15 @@ MF:
     - "Saint Martin (French part)"
     - "Collectivity of Saint Martin Saint Martin (French part)"
     - "The Collectivity of Saint-Martin"
+    - "St. Martin"
 PM:
     - "Saint Pierre and Miquelon"
     - "The Overseas Collectivity of Saint-Pierre and Miquelon"
+    - "St. Pierre & Miquelon"
 VC:
     - "St. Vincent and the Grenadines"
     - "Saint Vincent and the Grenadines"
+    - "St. Vincent & Grenadines"
 WS:
     - "Samoa"
     - "The Independent State of Samoa"
@@ -622,6 +634,7 @@ ST:
     - "Sao Tome and Principe"
     - "SÃ£o TomÃ© and PrÃ­ncipe"
     - "The Democratic Republic of São Tomé and Príncipe"
+    - "São Tomé & Príncipe"
 SA:
     - "Saudi Arabia"
     - "The Kingdom of Saudi Arabia"
@@ -679,6 +692,7 @@ SJ:
     - "Svalbard"
     - "Jan Mayen Jan Mayen"
     - "Svalbard and Jan Mayen"
+    - "Svalbard & Jan Mayen"
 SE:
     - "Sweden"
     - "The Kingdom of Sweden"
@@ -720,18 +734,21 @@ TO:
 TT:
     - "Trinidad and Tobago"
     - "The Republic of Trinidad and Tobago"
+    - "Trinidad & Tobago"
 TN:
     - "Tunisia"
     - "The Republic of Tunisia"
 TR:
     - "Turkey"
     - "The Republic of Turkey"
+    - "Türkiye"
 TM:
     - "Turkmenistan"
 TC:
     - "Turks and Caicos"
     - "Turks and Caicos Islands"
     - "The Turks and Caicos Islands"
+    - "Turks & Caicos Islands"
 TV:
     - "Tuvalu"
 UG:
@@ -750,6 +767,7 @@ UM:
     - "United States Minor Outlying Islands"
     - "The United States Minor Outlying Islands"
     - "Baker Island, Howland Island, Jarvis Island, Johnston Atoll, Kingman Reef, Midway Atoll, Navassa Island, Palmyra Atoll, and Wake Island"
+    - "U.S. Outlying Islands"
 US:
     - "United States"
     - "USA"
@@ -785,6 +803,7 @@ VI:
 WF:
     - "Wallis and Futuna"
     - "The Territory of the Wallis and Futuna Islands"
+    - "Wallis & Futuna"
 EH:
     - "Western Sahara"
     - "The Sahrawi Arab Democratic Republic"
@@ -803,6 +822,7 @@ ZW:
     - "n/a"
     - "UNKNOWN"
     - "None"
+    - "(not set)"
 ROW:
     - "Rest of World"
     - "RoW"

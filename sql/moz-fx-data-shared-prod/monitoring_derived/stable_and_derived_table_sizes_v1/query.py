@@ -48,7 +48,7 @@ def get_partition_size_json(client, date, table):
 
     if len(partition_column_name) > 0 and partition_column_name[0] in ('submission_date', 'submission_timestamp'):
         sql = f"""
-                SELECT * FROM {dataset_id}.{table_id}
+                SELECT * FROM `{dataset_id}.{table_id}`
                 WHERE DATE({partition_column_name[0]}) = '{date}'
             """
         job = client.query(sql, job_config=job_config)

@@ -27,6 +27,8 @@
   scalar_parent_urlbar_searchmode_topsites_urlbar_sum: []
   scalar_parent_urlbar_searchmode_touchbar_sum: []
   scalar_parent_urlbar_searchmode_typed_sum: []
+  is_sap_monetizable: False
+  has_adblocker_addon: False
 - <<: *base
   client_id: b
   engine: engine1
@@ -68,3 +70,4 @@
   engine: engine2
   source: contextmenu
   sap: 2
+  has_adblocker_addon: true

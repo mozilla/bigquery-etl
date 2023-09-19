@@ -49,9 +49,9 @@ WITH windowed AS (
       NOT (event_type = 'fxa_rp - engage' AND service = 'fx-monitor')
     ) OVER w1 = 0 AS monitor_only
   FROM
-    `firefox_accounts.fxa_all_events`
+    firefox_accounts.fxa_all_events
   WHERE
-    event_category IN ('auth', 'auth_bounce', 'content', 'oauth')
+    fxa_log IN ('auth', 'auth_bounce', 'content', 'oauth')
     AND user_id IS NOT NULL
     AND event_type NOT IN ( --
       'fxa_email - bounced',

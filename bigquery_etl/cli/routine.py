@@ -14,7 +14,13 @@ import pytest
 import yaml
 
 from ..cli.format import format
-from ..cli.utils import is_authenticated, is_valid_dir, is_valid_project
+from ..cli.utils import (
+    is_authenticated,
+    is_valid_project,
+    project_id_option,
+    sql_dir_option,
+)
+from ..config import ConfigLoader
 from ..docs import validate as validate_docs
 from ..format_sql.formatter import reformat
 from ..routine import publish_routines
@@ -27,10 +33,6 @@ ROUTINE_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/"
     r"(udf\.sql|stored_procedure\.sql)$"
 )
-DEFAULT_UDF_DEPENDENCY_DIR = "udf_js_lib/"
-DEFAULT_GCS_BUCKET = "moz-fx-data-prod-bigquery-etl"
-DEFAULT_GCS_PATH = ""
-DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
 
 
 def _routines_matching_name_pattern(pattern, sql_path, project_id):
@@ -57,22 +59,6 @@ def _routines_matching_name_pattern(pattern, sql_path, project_id):
     return routine_files
 
 
-sql_dir_option = click.option(
-    "--sql_dir",
-    help="Path to directory which contains queries.",
-    type=click.Path(file_okay=False),
-    default="sql",
-    callback=is_valid_dir,
-)
-
-project_id_option = click.option(
-    "--project-id",
-    "--project_id",
-    help="GCP project ID",
-    callback=lambda *args: is_valid_project(*args) if args[-1] else args[-1],
-)
-
-
 def get_project_id(ctx, project_id=None):
     """Return the project id with the option flag taking priority."""
     if project_id:
@@ -92,7 +78,7 @@ def get_project_id(ctx, project_id=None):
 def routine(ctx):
     """Create the CLI group for the routine command."""
     ctx.ensure_object(dict)
-    ctx.obj["DEFAULT_PROJECT"] = "moz-fx-data-shared-prod"
+    ctx.obj["DEFAULT_PROJECT"] = ConfigLoader.get("default", "project")
 
 
 @click.group(help="Commands for managing public mozfun routines.")
@@ -100,7 +86,7 @@ def routine(ctx):
 def mozfun(ctx):
     """Create the CLI group for the mozfun command."""
     ctx.ensure_object(dict)
-    ctx.obj["DEFAULT_PROJECT"] = "mozfun"
+    ctx.obj["DEFAULT_PROJECT"] = ConfigLoader.get("routine", "project")
 
 
 @routine.command(
@@ -124,7 +110,7 @@ def mozfun(ctx):
 )
 @click.argument("name")
 @sql_dir_option
-@project_id_option
+@project_id_option()
 @click.option("--udf", "-u", is_flag=True, help="Create a new UDF", default=False)
 @click.option(
     "--stored_procedure",
@@ -270,7 +256,7 @@ Examples:
 )
 @click.argument("name", required=False)
 @sql_dir_option
-@project_id_option
+@project_id_option()
 @click.option("--usages", "-u", is_flag=True, help="Show routine usages", default=False)
 @click.pass_context
 def info(ctx, name, sql_dir, project_id, usages):
@@ -352,7 +338,7 @@ Examples:
 )
 @click.argument("name", required=False)
 @sql_dir_option
-@project_id_option
+@project_id_option()
 @click.option(
     "--docs-only",
     "--docs_only",
@@ -410,23 +396,23 @@ Examples:
     """,
 )
 @click.argument("name", required=False)
-@project_id_option
+@project_id_option()
 @click.option(
     "--dependency-dir",
     "--dependency_dir",
-    default=DEFAULT_UDF_DEPENDENCY_DIR,
+    default=ConfigLoader.get("routine", "dependency_dir"),
     help="The directory JavaScript dependency files for UDFs are stored.",
 )
 @click.option(
     "--gcs-bucket",
     "--gcs_bucket",
-    default=DEFAULT_GCS_BUCKET,
+    default=ConfigLoader.get("routine", "publish", "gcs_bucket"),
     help="The GCS bucket where dependency files are uploaded to.",
 )
 @click.option(
     "--gcs-path",
     "--gcs_path",
-    default=DEFAULT_GCS_PATH,
+    default=ConfigLoader.get("routine", "publish", "gcs_path"),
     help="The GCS path in the bucket where dependency files are uploaded to.",
 )
 @click.option(
@@ -484,7 +470,7 @@ by Airflow only."""
 @click.argument("name", required=True)
 @click.argument("new_name", required=True)
 @sql_dir_option
-@project_id_option
+@project_id_option()
 @click.pass_context
 def rename(ctx, name, new_name, sql_dir, project_id):
     """Rename routines based on pattern."""

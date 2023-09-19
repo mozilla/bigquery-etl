@@ -13,17 +13,7 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
 from io import BytesIO, TextIOWrapper
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    Generator,
-    Iterable,
-    List,
-    Optional,
-    Tuple,
-    Union,
-)
+from typing import Any, Callable, Generator, List, Optional, Tuple, Union
 
 import yaml
 from google.api_core.exceptions import BadRequest, NotFound
@@ -108,61 +98,55 @@ def default_encoding(obj):
     return obj
 
 
-def load_tables(
-    bq: bigquery.Client, dataset: bigquery.Dataset, tables: Iterable[Table]
+def load_table(bq: bigquery.Client, dataset: bigquery.Dataset, table: Table):
+    """Load table for a test."""
+    destination = dataset.table(table.name)
+    job_config = bigquery.LoadJobConfig(
+        source_format=table.source_format,
+        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+    )
+
+    if table.schema is None:
+        # autodetect schema if not provided
+        job_config.autodetect = True
+    else:
+        job_config.schema = table.schema
+        # look for time_partitioning_field in provided schema
+        for field in job_config.schema:
+            if field.description == "time_partitioning_field":
+                job_config.time_partitioning = bigquery.TimePartitioning(
+                    field=field.name
+                )
+                break  # stop because there can only be one time partitioning field
+
+    if isinstance(table.source_path, str):
+        with open(table.source_path, "rb") as file_obj:
+            job = bq.load_table_from_file(file_obj, destination, job_config=job_config)
+    else:
+        mem_file = BytesIO()
+        for row in load(*table.source_path):
+            mem_file.write(json.dumps(row, default=default_encoding).encode() + b"\n")
+        mem_file.seek(0)
+        job = bq.load_table_from_file(mem_file, destination, job_config=job_config)
+
+    try:
+        job.result()
+    except BadRequest:
+        # print the first 5 rows for debugging errors
+        for row in job.errors[:5]:
+            print(row)
+        raise
+
+
+def load_view(
+    bq: bigquery.Client, dataset: bigquery.Dataset, view_name: str, view_query: str
 ):
-    """Load tables for a test."""
-    for table in tables:
-        destination = dataset.table(table.name)
-        job_config = bigquery.LoadJobConfig(
-            source_format=table.source_format,
-            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-        )
-
-        if table.schema is None:
-            # autodetect schema if not provided
-            job_config.autodetect = True
-        else:
-            job_config.schema = table.schema
-            # look for time_partitioning_field in provided schema
-            for field in job_config.schema:
-                if field.description == "time_partitioning_field":
-                    job_config.time_partitioning = bigquery.TimePartitioning(
-                        field=field.name
-                    )
-                    break  # stop because there can only be one time partitioning field
-
-        if isinstance(table.source_path, str):
-            with open(table.source_path, "rb") as file_obj:
-                job = bq.load_table_from_file(
-                    file_obj, destination, job_config=job_config
-                )
-        else:
-            mem_file = BytesIO()
-            for row in load(*table.source_path):
-                mem_file.write(
-                    json.dumps(row, default=default_encoding).encode() + b"\n"
-                )
-            mem_file.seek(0)
-            job = bq.load_table_from_file(mem_file, destination, job_config=job_config)
-
-        try:
-            job.result()
-        except BadRequest:
-            # print the first 5 rows for debugging errors
-            for row in job.errors[:5]:
-                print(row)
-            raise
-
-
-def load_views(bq: bigquery.Client, dataset: bigquery.Dataset, views: Dict[str, str]):
-    """Load views for a test."""
-    for table, view_query in views.items():
-        view = bigquery.Table(dataset.table(table))
-        view.view_query = view_query.format(
-            project=dataset.project, dataset=dataset.dataset_id
-        )
-        bq.create_table(view)
+    """Load view for a test."""
+    view = bigquery.Table(dataset.table(view_name))
+    view.view_query = view_query.format(
+        project=dataset.project, dataset=dataset.dataset_id
+    )
+    bq.create_table(view)
 
 
 def read(*paths: str, decoder: Optional[Callable] = None, **kwargs):

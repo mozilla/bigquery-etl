@@ -1,0 +1,13 @@
+---
+- client_id: client-1
+  sample_id: 54
+  first_seen_date: 2023-01-01
+  submission_date: 2023-01-01
+  device_model: model-1
+  last_reported_device_model: model-1
+- client_id: client-2
+  sample_id: 50
+  first_seen_date: 2022-12-25
+  submission_date: 2022-12-25
+  device_model: model-2
+  last_reported_device_model: model-2

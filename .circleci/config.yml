@@ -47,14 +47,14 @@ jobs:
           command: PATH="venv/bin:$PATH" yamllint -c .yamllint.yaml .
       - run:
           name: PyTest with linters
-          # integration and java tests are run in a separate `integration` step;
+          # integration tests are run in a separate `integration` step;
           # SQL and routine tests are split out into a separate `test-sql` test
           # since those tests take the longest to run and running those tests
           # in parallel speeds up CI
           command: |
             PATH="venv/bin:$PATH" script/entrypoint --black --flake8 \
               --isort --mypy-ignore-missing-imports --pydocstyle \
-              -m "not (routine or sql or integration or java)" \
+              -m "not (routine or sql or integration)" \
               -n 8
       - save_cache:
           paths:
@@ -151,6 +151,18 @@ jobs:
             echo $PATHS
             PATH="venv/bin:$PATH" script/bqetl dryrun --validate-schemas $PATHS
           # yamllint enable rule:line-length
+  validate-backfills:
+    docker: *docker
+    steps:
+      - checkout
+      - *restore_venv_cache
+      - *build
+      - *attach_generated_sql
+      - *copy_staged_sql
+      - run:
+          name: Verify that backfill.yaml files are valid
+          command: |
+            PATH="venv/bin:$PATH" script/bqetl backfill validate
   validate-metadata:
     docker: *docker
     steps:
@@ -162,6 +174,7 @@ jobs:
       - run:
           name: Verify that metadata files are valid
           command: |
+            # TODO: Add check here to make sure all queries have metadata.yaml
             PATH="venv/bin:$PATH" script/bqetl query validate \
               --respect-dryrun-skip
   integration:
@@ -179,40 +192,17 @@ jobs:
             fi
       - *restore_venv_cache
       - *build
-      - &restore_mvn_cache
-        restore_cache:
-          keys:
-            # when lock files change, use increasingly general
-            # patterns to restore cache
-            - &mvn_cache_key
-              maven-packages-v1-{{ .Branch }}-{{ checksum "pom.xml" }}
-            - maven-packages-v1-{{ .Branch }}-
-            - maven-packages-v1-main-
-      - &java_deps
-        run:
-          name: Install maven and java and download dependencies
-          command: |
-            apt update
-            apt install -y maven default-jdk-headless
-            mvn package
-            venv/bin/pip-sync --pip-args=--no-deps requirements.txt
       - run:
           name: PyTest Integration Test
           # yamllint disable rule:line-length
           command: |
-            PATH="venv/bin:$PATH" script/entrypoint -m 'integration or java' -n 8
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: *mvn_cache_key
+            PATH="venv/bin:$PATH" script/entrypoint -m 'integration' -n 8
   generate-dags:
     docker: *docker
     steps:
       - checkout
       - *restore_venv_cache
       - *build
-      - *restore_mvn_cache
-      - *java_deps
       - *attach_generated_sql
       - *copy_generated_sql
       - run:
@@ -235,7 +225,7 @@ jobs:
   validate-dags:
     executor:
       name: python/default
-      tag: 3.8.12
+      tag: 3.10.12
     steps:
       - checkout
       - run:
@@ -298,8 +288,6 @@ jobs:
       - checkout
       - *restore_venv_cache
       - *build
-      - *restore_mvn_cache
-      - *java_deps
       - *attach_generated_sql
       - *copy_staged_sql
       - run:
@@ -312,8 +300,6 @@ jobs:
       - *skip_forked_pr
       - *restore_venv_cache
       - *build
-      - *restore_mvn_cache
-      - *java_deps
       - *attach_generated_sql
       - add_ssh_keys:
           fingerprints: "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
@@ -332,8 +318,6 @@ jobs:
       - checkout
       - *restore_venv_cache
       - *build
-      - *restore_mvn_cache
-      - *java_deps
       - run:
           name: Generate SQL content
           command: |
@@ -343,9 +327,16 @@ jobs:
             PATH="venv/bin:$PATH" script/bqetl generate all \
               --output-dir /tmp/workspace/generated-sql/sql/ \
               --target-project moz-fx-data-shared-prod
+            PATH="venv/bin:$PATH" script/bqetl query render \
+              --sql-dir /tmp/workspace/generated-sql/sql/ \
+              --output-dir /tmp/workspace/generated-sql/sql/ \
+              /tmp/workspace/generated-sql/sql/
             PATH="venv/bin:$PATH" script/bqetl dependency record \
               --skip-existing \
               "/tmp/workspace/generated-sql/sql/"
+            PATH="venv/bin:$PATH" script/bqetl metadata update \
+              --sql-dir /tmp/workspace/generated-sql/sql/ \
+              /tmp/workspace/generated-sql/sql/
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -357,8 +348,6 @@ jobs:
       - *skip_forked_pr
       - *restore_venv_cache
       - *build
-      - *restore_mvn_cache
-      - *java_deps
       - *attach_generated_sql
       - *copy_generated_sql
       - add_ssh_keys:
@@ -386,8 +375,8 @@ jobs:
           name: Copy generated SQL to temporary stage directory
           command: |
             mkdir -p /tmp/workspace/staged-generated-sql
-            cp -r sql/ /tmp/workspace/staged-generated-sql
-            cp -r tests/ /tmp/workspace/staged-generated-sql
+            cp -r sql/ /tmp/workspace/staged-generated-sql/sql
+            cp -r tests/ /tmp/workspace/staged-generated-sql/tests
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -442,21 +431,15 @@ jobs:
     executor: ubuntu-machine-executor
     steps:
       - checkout
-      - when:
-          condition: &deploy-condition
-            or:
-              - equal: [main, << pipeline.git.branch >>]
-              - << pipeline.git.tag >>
-          steps:
-            - *attach_generated_sql
-            - *copy_generated_sql
-            - docker/check:
-                docker-password: DOCKER_PASS
-                docker-username: DOCKER_USER
-            - docker/build: &public-image
-                image: ${CIRCLE_PROJECT_USERNAME+$CIRCLE_PROJECT_USERNAME/}${CIRCLE_PROJECT_REPONAME:-bigquery-etl}
-                tag: ${CIRCLE_TAG:-latest}
-            - docker/push: *public-image
+      - *attach_generated_sql
+      - *copy_generated_sql
+      - docker/check:
+          docker-password: DOCKER_PASS
+          docker-username: DOCKER_USER
+      - docker/build: &public-image
+          image: ${CIRCLE_PROJECT_USERNAME+$CIRCLE_PROJECT_USERNAME/}${CIRCLE_PROJECT_REPONAME:-bigquery-etl}
+          tag: ${CIRCLE_TAG:-latest}
+      - docker/push: *public-image
   private-generate-sql:
     docker: *docker
     steps:
@@ -464,8 +447,6 @@ jobs:
       - *skip_forked_pr
       - *restore_venv_cache
       - *build
-      - *restore_mvn_cache
-      - *java_deps
       - add_ssh_keys:
           # deploy key to private-bigquery-etl
           fingerprints: "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
@@ -491,9 +472,16 @@ jobs:
             PATH="venv/bin:$PATH" script/bqetl generate all \
               --output-dir /tmp/workspace/private-generated-sql/sql/ \
               --target-project moz-fx-data-shared-prod
+            PATH="venv/bin:$PATH" script/bqetl query render \
+              --sql-dir /tmp/workspace/private-generated-sql/sql/ \
+              --output-dir /tmp/workspace/private-generated-sql/sql/ \
+              /tmp/workspace/private-generated-sql/sql/
             PATH="venv/bin:$PATH" script/bqetl dependency record \
               --skip-existing \
               "/tmp/workspace/private-generated-sql/sql/"
+            PATH="venv/bin:$PATH" script/bqetl metadata update \
+              --sql-dir /tmp/workspace/private-generated-sql/sql/ \
+              /tmp/workspace/private-generated-sql/sql/
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -526,59 +514,65 @@ jobs:
     executor: ubuntu-machine-executor
     steps:
       - checkout
-      - when:
-          condition: *deploy-condition
-          steps:
-            - *attach_generated_sql
-            - run:
-                name: Move generated-sql into place
-                command: |
-                  rm -rf sql/
-                  cp -r /tmp/workspace/private-generated-sql/sql sql
-            - gcp-gcr/gcr-auth
-            - gcp-gcr/build-image: &private-image
-                image: bigquery-etl
-                tag: ${CIRCLE_TAG:-latest}
-            - gcp-gcr/push-image: *private-image
-  generate-diff:
+      - *attach_generated_sql
+      - run:
+          name: Move generated-sql into place
+          command: |
+            rm -rf sql/
+            cp -r /tmp/workspace/private-generated-sql/sql sql
+      - gcp-gcr/gcr-auth
+      - gcp-gcr/build-image: &private-image
+          image: bigquery-etl
+          tag: ${CIRCLE_TAG:-latest}
+      - gcp-gcr/push-image: *private-image
+  main-generate-sql-and-dags:
     docker: *docker
     steps:
       - checkout
+      - run:
+          name: Switch to main branch
+          command: |
+            git remote add mozilla git@github.com:mozilla/bigquery-etl
+            git fetch mozilla main
+            git checkout mozilla/main
       - attach_workspace:
           at: /tmp/workspace
       - *restore_venv_cache
       - *build
-      - *restore_mvn_cache
-      - *java_deps
       - run:
-          name: Generate SQL content diff
+          name: Generate SQL content
           command: |
-            # compare a branch against the main branch,
-            # or skip if we're already on the main branch
-            if [[ "$CIRCLE_BRANCH" == "main" ]]; then
-              circleci-agent step halt
-            fi
-            git clone --single-branch --branch main \
-              git@github.com:mozilla/bigquery-etl \
-              bigquery-etl-main
-
-            cd bigquery-etl-main
-            pip install --no-deps -r requirements.txt
-            mvn package
+            export PATH="venv/bin:$PATH"
             ./script/bqetl generate all \
               --target-project moz-fx-data-shared-prod
+            ./script/bqetl query render \
+              --output-dir sql/ \
+              sql/
             ./script/bqetl dependency record \
               --skip-existing \
               "sql/"
-
             ./script/bqetl dag generate
 
-            cd ..
+            mkdir -p /tmp/workspace/main-generated-sql
+            cp -r sql/ /tmp/workspace/main-generated-sql/sql
+            cp -r dags/ /tmp/workspace/main-generated-sql/dags
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - main-generated-sql
+  generate-diff:
+    docker: *docker
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Generate diff
+          command: |
             diff -bur --no-dereference \
-              bigquery-etl-main/sql/ /tmp/workspace/generated-sql/sql/ \
+              /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
               > /tmp/workspace/generated-sql/sql.diff || true
             diff -bur --no-dereference \
-              bigquery-etl-main/dags/ /tmp/workspace/generated-sql/dags/ \
+              /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
               >> /tmp/workspace/generated-sql/sql.diff || true
       - persist_to_workspace:
           root: /tmp/workspace
@@ -667,6 +661,9 @@ workflows:
           requires:
             - deploy-changes-to-stage
       - integration
+      - validate-backfills:
+          requires:
+            - deploy-changes-to-stage
       - validate-dags:
           requires:
             - generate-dags
@@ -677,9 +674,14 @@ workflows:
           requires:
             - deploy-changes-to-stage
       - generate-sql
+      - main-generate-sql-and-dags:
+          filters:
+            branches:
+              ignore: main
       - generate-diff:
           requires:
             - generate-dags
+            - main-generate-sql-and-dags
           filters:
             branches:
               ignore: main
@@ -729,6 +731,10 @@ workflows:
             # webhooks used in Ops logic. For details, see:
             # https://bugzilla.mozilla.org/show_bug.cgi?id=1715628#c0
             - deploy-to-private-gcr
+          filters:
+            branches:
+              only:
+                - main
       # The following "private" jobs are basically clones of the public jobs
       # for generate-sql, deploy, and push-generated-sql, except that they pull
       # in some additional content from an internal Mozilla repository for
@@ -752,3 +758,17 @@ workflows:
             # can't run in parallel because CIRCLE_BUILD_NUM is same
             - build
             - generate-sql
+          filters:
+            branches:
+              only:
+                - main
+  nightly:
+    # Run after schema-generator to ensure we are up-to-date
+    triggers:
+      - schedule:
+          cron: "0 5 * * *"
+          filters:
+            branches:
+              only:
+                - main
+    jobs: *build_jobs

@@ -13,8 +13,6 @@ FROM
       id,
       email,
       fxa_uid,
-      fxa_access_token,
-      fxa_refresh_token,
       fxa_profile_json,
       created_at,
       updated_at,

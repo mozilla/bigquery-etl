@@ -4,7 +4,7 @@ description: Representation of tile impression statistics,
  clustered by experiment_id to allow efficient analysis of
  individual experiments
 owners:
-  - jklukas@mozilla.com
+  - anicholson@mozilla.com
 labels:
   application: activity_stream
   schedule: daily

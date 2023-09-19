@@ -1,0 +1,105 @@
+[
+  {
+    "type": "TIMESTAMP",
+    "name": "submission_timestamp",
+    "mode": "REQUIRED"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "fields": [
+              {
+                "type": "STRING",
+                "name": "name",
+                "mode": "NULLABLE"
+              }
+            ],
+            "type": "RECORD",
+            "name": "os",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "system",
+        "mode": "NULLABLE"
+      },
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "name",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "experiments",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "environment",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "country",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "geo",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "metadata",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "name",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "application",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_channel",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "sample_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "http_pageload_is_ssl",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "histograms",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "payload",
+    "mode": "NULLABLE"
+  }
+]

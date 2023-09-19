@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_domain_meta
@@ -26,7 +26,7 @@ default_args = {
     "owner": "wstuckey@mozilla.com",
     "start_date": datetime.datetime(2022, 10, 13, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "wstuckey@mozilla.com"],
+    "email": ["wstuckey@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -34,7 +34,7 @@ default_args = {
     "retries": 2,
 }
 
-tags = ["impact/tier_2", "repo/bigquery-etl"]
+tags = ["impact/tier_3", "repo/bigquery-etl", "triage/no_triage"]
 
 with DAG(
     "bqetl_domain_meta",
@@ -49,8 +49,8 @@ with DAG(
         dataset_id="domain_metadata_derived",
         project_id="moz-fx-data-shared-prod",
         owner="wstuckey@mozilla.com",
-        email=["telemetry-alerts@mozilla.com", "wstuckey@mozilla.com"],
+        email=["wstuckey@mozilla.com"],
         date_partition_parameter="submission_date",
+        table_partition_template='${{ dag_run.logical_date.strftime("%Y%m") }}',
         depends_on_past=False,
-        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )

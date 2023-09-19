@@ -44,6 +44,7 @@
       - `task_id`: name of task query depends on
       - `dag_name`: name of the DAG the external task is part of
       - `execution_delta`: time difference between the `schedule_intervals` of the external DAG and the DAG the query is part of
+    - `trigger_rule`: The rule that determines when the airflow task that runs this query should run. The default is `all_success` ("trigger this task when all directly upstream tasks have succeeded"); other rules can allow a task to run even if not all preceding tasks have succeeded. See [the Airflow docs](https://airflow.apache.org/docs/apache-airflow/1.10.3/concepts.html?highlight=trigger%20rule#trigger-rules) for the list of trigger rule options.
     - `destination_table`: The table to write to. If unspecified, defaults to the query destination; if None, no destination table is used (the query is simply run as-is). Note that if no destination table is specified, you will need to specify the `submission_date` parameter manually
     - `external_downstream_tasks` defines external downstream dependencies for which [`ExternalTaskMarker`s](https://airflow.apache.org/docs/apache-airflow/stable/howto/operator/external_task_sensor.html#externaltaskmarker) will be added to the generated DAG. These task markers ensure that when the task is cleared for triggering a rerun, all downstream tasks are automatically cleared as well.
     ```yaml

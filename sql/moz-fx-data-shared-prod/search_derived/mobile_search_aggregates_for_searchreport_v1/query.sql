@@ -3,18 +3,18 @@ SELECT
   submission_date,
   country,
   CASE
-    WHEN app_name IN ('Fenix', 'Firefox Preview')
-      THEN app_name
-    WHEN app_name = 'Fennec'
+    WHEN normalized_app_name IN ('Fenix', 'Firefox Preview')
+      THEN normalized_app_name
+    WHEN normalized_app_name = 'Fennec'
       AND os = 'Android'
       THEN 'Fennec'
-    WHEN app_name = 'Fennec'
+    WHEN normalized_app_name = 'Fennec'
       AND os = 'iOS'
       THEN 'Firefox iOS'
-    WHEN app_name = 'Focus'
+    WHEN normalized_app_name = 'Focus'
       AND os = 'Android'
       THEN 'Focus Android'
-    WHEN app_name = 'Focus'
+    WHEN normalized_app_name = 'Focus'
       AND os = 'iOS'
       THEN 'Focus iOS'
     ELSE 'Other'
@@ -41,8 +41,7 @@ SELECT
 FROM
   search.mobile_search_clients_engines_sources_daily
 WHERE
-  app_name IN ('Fenix', 'Fennec', 'Firefox Preview', 'Focus')
-  AND app_name IS NOT NULL
+  normalized_app_name IN ('Fenix', 'Fennec', 'Firefox Preview', 'Focus')
   AND submission_date = @submission_date
 GROUP BY
   1,

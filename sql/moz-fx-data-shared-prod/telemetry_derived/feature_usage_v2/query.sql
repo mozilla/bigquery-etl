@@ -313,7 +313,7 @@ main AS (
       )
     ) AS keyboard_shortcut_total,
   FROM
-    telemetry.main_1pct
+    telemetry.main_remainder_1pct
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND sample_id = 0

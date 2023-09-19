@@ -2,7 +2,10 @@ friendly_name: Subscription Platform Derived
 description: |-
   Tables combining subscription information from multiple products
   and payment platforms
-dataset_base_acl: derived_restricted
+dataset_base_acl: derived
 user_facing: false
 labels: {}
-workgroup_access: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

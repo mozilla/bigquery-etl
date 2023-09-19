@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_sponsored_tiles_clients_daily
@@ -49,7 +49,11 @@ with DAG(
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="skahmann@mozilla.com",
-        email=["skahmann@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "cmorales@mozilla.com",
+            "skahmann@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],

@@ -25495,6 +25495,11 @@
                         "mode": "NULLABLE",
                         "name": "zoomed_view_enabled",
                         "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "places_searchbar_filter_type",
+                        "type": "STRING"
                     }
                 ],
                 "mode": "NULLABLE",

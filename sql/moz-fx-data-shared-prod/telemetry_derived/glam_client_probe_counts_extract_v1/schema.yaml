@@ -1,0 +1,48 @@
+fields:
+- mode: NULLABLE
+  name: channel
+  type: INTEGER
+
+- mode: NULLABLE
+  name: app_version
+  type: INTEGER
+
+- mode: NULLABLE
+  name: agg_type
+  type: INTEGER
+
+- mode: NULLABLE
+  name: os
+  type: STRING
+
+- mode: NULLABLE
+  name: app_build_id
+  type: STRING
+
+- mode: NULLABLE
+  name: process
+  type: INTEGER
+
+- mode: NULLABLE
+  name: metric
+  type: STRING
+
+- mode: NULLABLE
+  name: key
+  type: STRING
+
+- mode: NULLABLE
+  name: client_agg_type
+  type: STRING
+
+- mode: NULLABLE
+  name: metric_type
+  type: STRING
+
+- mode: NULLABLE
+  name: total_users
+  type: INTEGER
+
+- mode: NULLABLE
+  name: aggregates
+  type: STRING

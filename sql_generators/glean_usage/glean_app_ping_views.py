@@ -31,6 +31,11 @@ description: |-
   It is used by Looker.
 """
 
+# Fields that exist in the source dataset,
+# but are manually overriden in the constructed SQL.
+# MUST be kept in sync with the query in `app_ping_view.view.sql`
+OVERRIDDEN_FIELDS = {"normalized_channel"}
+
 PATH = Path(os.path.dirname(__file__))
 
 
@@ -71,6 +76,8 @@ class GleanAppPingViews(GleanTable):
 
         env = Environment(loader=FileSystemLoader(PATH / "templates"))
         view_template = env.get_template("app_ping_view.view.sql")
+
+        skip_existing = self.skip_existing(output_dir, project_id)
 
         p = GleanPing(repo)
         # generate views for all available pings
@@ -135,6 +142,8 @@ class GleanAppPingViews(GleanTable):
                         select_expression=select_expression,
                         dataset=channel_dataset,
                         table=view_name,
+                        channel=app.get("app_channel"),
+                        app_name=release_app["app_name"],
                     )
                 )
 
@@ -155,7 +164,10 @@ class GleanAppPingViews(GleanTable):
                     full_view_id,
                     "view.sql",
                     rendered_view,
-                    skip_existing=True,
+                    skip_existing=str(
+                        get_table_dir(output_dir, full_view_id) / "view.sql"
+                    )
+                    in skip_existing,
                 )
 
                 app_channels = [
@@ -171,10 +183,39 @@ class GleanAppPingViews(GleanTable):
                         app_name=release_app["canonical_app_name"],
                         app_channels=", ".join(app_channels),
                     ),
-                    skip_existing=True,
+                    skip_existing=str(
+                        get_table_dir(output_dir, full_view_id) / "metadata.yaml"
+                    )
+                    in skip_existing,
                 )
 
                 schema_dir = get_table_dir(output_dir, full_view_id)
+
+                # remove overridden fields from schema
+                # it's assumed that these fields are added separately, or ignored completely
+                unioned_schema.schema["fields"] = [
+                    field
+                    for field in unioned_schema.schema["fields"]
+                    if field["name"] not in OVERRIDDEN_FIELDS
+                ]
+
+                # normalized_app_id is not part of the underlying table the schemas are derived from,
+                # the field gets added as part of the view definition, so we have to add it manually to the schema
+                unioned_schema.schema["fields"] = [
+                    {
+                        "name": "normalized_app_id",
+                        "mode": "NULLABLE",
+                        "type": "STRING",
+                        "description": "App ID of the channel data was received from",
+                    },
+                    {
+                        "name": "normalized_channel",
+                        "mode": "NULLABLE",
+                        "type": "STRING",
+                        "description": "Normalized channel name",
+                    },
+                ] + unioned_schema.schema["fields"]
+
                 unioned_schema.to_yaml_file(schema_dir / "schema.yaml")
 
     def _generate_select_expression(
@@ -197,8 +238,9 @@ class GleanAppPingViews(GleanTable):
                 # field exists in app schema
 
                 if node == app_schema_nodes[node_name]:
-                    # field (and all nested fields) are identical, so just query it
-                    select_expr.append(f"{'.'.join(path + [node_name])}")
+                    if node_name not in OVERRIDDEN_FIELDS:
+                        # field (and all nested fields) are identical, so just query it
+                        select_expr.append(f"{'.'.join(path + [node_name])}")
                 else:
                     # fields, and/or nested fields are not identical
                     if dtype == "RECORD":

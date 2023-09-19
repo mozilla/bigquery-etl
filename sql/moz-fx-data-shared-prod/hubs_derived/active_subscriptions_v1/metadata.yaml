@@ -1,0 +1,18 @@
+friendly_name: Active Hubs Subscriptions
+description: >
+  Aggregated count of active Hubs subscriptions.
+owners:
+  - srose@mozilla.com
+labels:
+  application: hubs
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  # delay aggregates by 7 days, to ensure data is complete
+  date_partition_offset: -7
+  date_partition_parameter: date
+bigquery:
+  time_partitioning:
+    type: day
+    field: active_date
+    require_partition_filter: false

@@ -1,0 +1,10 @@
+friendly_name: Fenix External
+description: |-
+  External data sourced for Firefox for Android.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

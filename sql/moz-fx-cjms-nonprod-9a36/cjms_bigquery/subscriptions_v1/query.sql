@@ -36,18 +36,18 @@ aic_flows AS (
 attributed_flows AS (
   -- last flow that started before subscription created
   SELECT
-    nonprod_stripe_subscriptions.subscription_id,
-    nonprod_stripe_subscriptions.created AS subscription_created,
+    subscriptions.subscription_id,
+    subscriptions.created AS subscription_created,
     ARRAY_AGG(aic_flows.flow_id ORDER BY aic_flows.flow_started DESC LIMIT 1)[
       SAFE_OFFSET(0)
     ] AS flow_id,
   FROM
     aic_flows
   JOIN
-    `moz-fx-data-shared-prod`.subscription_platform.nonprod_stripe_subscriptions
+    `moz-fx-data-shared-prod`.subscription_platform_derived.nonprod_stripe_subscriptions_v1 AS subscriptions
   ON
-    aic_flows.fxa_uid = nonprod_stripe_subscriptions.fxa_uid
-    AND aic_flows.flow_started < nonprod_stripe_subscriptions.created
+    aic_flows.fxa_uid = subscriptions.fxa_uid
+    AND aic_flows.flow_started < subscriptions.created
   GROUP BY
     subscription_id,
     subscription_created
@@ -71,12 +71,9 @@ initial_invoices AS (
   FROM
     attributed_subs
   JOIN
-    `dev-fivetran`.stripe_nonprod.invoice AS invoices
+    `moz-fx-data-shared-prod`.stripe_external.nonprod_invoice_v1 AS invoices
   USING
     (subscription_id)
-  -- ZetaSQL requires QUALIFY to be used in conjunction with WHERE, GROUP BY, or HAVING.
-  WHERE
-    TRUE
   QUALIFY
     1 = ROW_NUMBER() OVER (PARTITION BY subscription_id ORDER BY invoices.created)
 ),
@@ -89,15 +86,15 @@ initial_discounts AS (
   FROM
     initial_invoices
   JOIN
-    `dev-fivetran`.stripe_nonprod.invoice_discount AS invoice_discounts
+    `moz-fx-data-shared-prod`.stripe_external.nonprod_invoice_discount_v1 AS invoice_discounts
   USING
     (invoice_id)
   JOIN
-    `dev-fivetran`.stripe_nonprod.promotion_code AS promotion_codes
+    `moz-fx-data-shared-prod`.stripe_external.nonprod_promotion_code_v1 AS promotion_codes
   ON
     invoice_discounts.promotion_code = promotion_codes.id
   JOIN
-    `dev-fivetran`.stripe_nonprod.coupon AS coupons
+    `moz-fx-data-shared-prod`.stripe_external.nonprod_coupon_v1 AS coupons
   ON
     promotion_codes.coupon_id = coupons.id
 ),
@@ -129,7 +126,7 @@ percent_discounts AS (
   FROM
     initial_discounts AS discounts
   JOIN
-    `moz-fx-data-shared-prod`.subscription_platform.nonprod_stripe_subscriptions AS subscriptions
+    `moz-fx-data-shared-prod`.subscription_platform_derived.nonprod_stripe_subscriptions_v1 AS subscriptions
   USING
     (subscription_id)
   WHERE
@@ -140,25 +137,25 @@ percent_discounts AS (
 )
 SELECT
   CURRENT_TIMESTAMP AS report_timestamp,
-  nonprod_stripe_subscriptions.created AS subscription_created,
+  subscriptions.created AS subscription_created,
   attributed_subs.subscription_id, -- transaction id
-  nonprod_stripe_subscriptions.fxa_uid,
+  subscriptions.fxa_uid,
   1 AS quantity,
-  nonprod_stripe_subscriptions.plan_id, -- sku
-  nonprod_stripe_subscriptions.plan_currency,
+  subscriptions.plan_id, -- sku
+  subscriptions.plan_currency,
   (
-    nonprod_stripe_subscriptions.plan_amount - COALESCE(amount_discounts.amount_off, 0) - COALESCE(
+    subscriptions.plan_amount - COALESCE(amount_discounts.amount_off, 0) - COALESCE(
       percent_discounts.amount_off,
       0
     )
   ) AS plan_amount,
-  nonprod_stripe_subscriptions.country,
+  subscriptions.country,
   attributed_subs.flow_id,
   promotion_codes.promotion_codes,
 FROM
   attributed_subs
 JOIN
-  `moz-fx-data-shared-prod`.subscription_platform.nonprod_stripe_subscriptions
+  `moz-fx-data-shared-prod`.subscription_platform_derived.nonprod_stripe_subscriptions_v1 AS subscriptions
 USING
   (subscription_id)
 LEFT JOIN

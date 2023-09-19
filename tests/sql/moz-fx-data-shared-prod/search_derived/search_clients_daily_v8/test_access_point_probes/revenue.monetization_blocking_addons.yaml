@@ -1,0 +1,8 @@
+---
+- &base
+  addon_id: random@mozilla.com
+  addon_name: random adblocker
+  blocks_monetization: true
+- <<: *base
+  addon_id: another_addon@mozilla.com
+  addon_name: another one

@@ -9,13 +9,12 @@ from pathlib import Path
 
 import click
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.docs.derived_datasets.generate_derived_dataset_docs import (
     generate_derived_dataset_docs,
 )
 from bigquery_etl.dryrun import DryRun
 
-DEFAULT_PROJECTS_DIRS = ["sql/mozfun/", "sql/moz-fx-data-shared-prod/"]
-DOCS_DIR = "docs/"
 EXAMPLE_DIR = "examples"
 INDEX_MD = "index.md"
 
@@ -31,7 +30,10 @@ project_dirs_option = click.option(
     "--project-dirs",
     help="Directories of projects documentation is generated for.",
     multiple=True,
-    default=DEFAULT_PROJECTS_DIRS,
+    default=[
+        ConfigLoader.get("default", "sql_dir") + "/" + project + "/"
+        for project in ConfigLoader.get("docs", "default_projects")
+    ],
 )
 
 log_level_option = click.option(
@@ -48,7 +50,7 @@ log_level_option = click.option(
 @click.option(
     "--docs_dir",
     "--docs-dir",
-    default=DOCS_DIR,
+    default=ConfigLoader.get("docs", "docs_dir"),
     help="Directory containing static documentation.",
 )
 @click.option(

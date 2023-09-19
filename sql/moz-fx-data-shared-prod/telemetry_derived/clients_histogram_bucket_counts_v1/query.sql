@@ -18,31 +18,13 @@ WITH filtered_data AS (
     os = 'Windows'
     AND channel = 'release' AS sampled
   FROM
-    clients_histogram_aggregates_v1
+    clients_histogram_aggregates_v2
   CROSS JOIN
     UNNEST(histogram_aggregates)
   WHERE
-    submission_date = @submission_date
-    AND first_bucket IS NOT NULL
+    first_bucket IS NOT NULL
     AND sample_id >= @min_sample_id
     AND sample_id <= @max_sample_id
-),
-static_combos AS (
-  SELECT
-    NULL AS os,
-    NULL AS app_build_id
-  UNION ALL
-  SELECT
-    NULL AS os,
-    '*' AS app_build_id
-  UNION ALL
-  SELECT
-    '*' AS os,
-    NULL AS app_build_id
-  UNION ALL
-  SELECT
-    '*' AS os,
-    '*' AS app_build_id
 ),
 build_ids AS (
   SELECT
@@ -54,31 +36,27 @@ build_ids AS (
     1,
     2
   HAVING
-    -- Filter out builds having less than 0.5% of WAU
+    -- Filter out builds having less than 0.5% of WAU, considering sampling
     -- for context see https://github.com/mozilla/glam/issues/1575#issuecomment-946880387
     CASE
       WHEN channel = 'release'
-        THEN COUNT(DISTINCT client_id) > 625000
+        THEN COUNT(DISTINCT client_id) > 625000 / (@max_sample_id - @min_sample_id + 1)
       WHEN channel = 'beta'
-        THEN COUNT(DISTINCT client_id) > 9000
+        THEN COUNT(DISTINCT client_id) > 9000 / (@max_sample_id - @min_sample_id + 1)
       WHEN channel = 'nightly'
-        THEN COUNT(DISTINCT client_id) > 375
-      ELSE COUNT(DISTINCT client_id) > 100
+        THEN COUNT(DISTINCT client_id) > 375 / (@max_sample_id - @min_sample_id + 1)
+      ELSE COUNT(DISTINCT client_id) > 100 / (@max_sample_id - @min_sample_id + 1)
     END
 ),
-all_combos AS (
+data_with_enough_wau AS (
   SELECT
-    * EXCEPT (os, app_build_id),
-    COALESCE(combo.os, table.os) AS os,
-    COALESCE(combo.app_build_id, table.app_build_id) AS app_build_id
+    *
   FROM
     filtered_data table
   INNER JOIN
     build_ids
   USING
     (app_build_id, channel)
-  CROSS JOIN
-    static_combos combo
 ),
 normalized_histograms AS (
   SELECT
@@ -89,10 +67,102 @@ normalized_histograms AS (
       mozfun.glam.histogram_normalized_sum(
         mozfun.map.sum(ARRAY_CONCAT_AGG(aggregates)),
         IF(MAX(sampled), 10.0, 1.0)
-      ) AS aggregates
+      ) AS aggregates,
+      COALESCE(CAST(NULL AS STRING), os) AS os,
+      COALESCE(CAST(NULL AS STRING), app_build_id) AS app_build_id
     )
   FROM
-    all_combos
+    data_with_enough_wau
+  GROUP BY
+    sample_id,
+    client_id,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    first_bucket,
+    last_bucket,
+    num_buckets,
+    metric,
+    metric_type,
+    key,
+    process,
+    agg_type
+  UNION ALL
+  SELECT
+    * EXCEPT (sampled) REPLACE(
+    -- This returns true if at least 1 row has sampled=true.
+    -- ~0.0025% of the population uses more than 1 os for the same set of dimensions
+    -- and in this case we treat them as Windows+Release users when fudging numbers
+      mozfun.glam.histogram_normalized_sum(
+        mozfun.map.sum(ARRAY_CONCAT_AGG(aggregates)),
+        IF(MAX(sampled), 10.0, 1.0)
+      ) AS aggregates,
+      "*" AS os,
+      COALESCE(CAST(NULL AS STRING), app_build_id) AS app_build_id
+    )
+  FROM
+    data_with_enough_wau
+  GROUP BY
+    sample_id,
+    client_id,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    first_bucket,
+    last_bucket,
+    num_buckets,
+    metric,
+    metric_type,
+    key,
+    process,
+    agg_type
+  UNION ALL
+  SELECT
+    * EXCEPT (sampled) REPLACE(
+    -- This returns true if at least 1 row has sampled=true.
+    -- ~0.0025% of the population uses more than 1 os for the same set of dimensions
+    -- and in this case we treat them as Windows+Release users when fudging numbers
+      mozfun.glam.histogram_normalized_sum(
+        mozfun.map.sum(ARRAY_CONCAT_AGG(aggregates)),
+        IF(MAX(sampled), 10.0, 1.0)
+      ) AS aggregates,
+      COALESCE(CAST(NULL AS STRING), os) AS os,
+      "*" AS app_build_id
+    )
+  FROM
+    data_with_enough_wau
+  GROUP BY
+    sample_id,
+    client_id,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    first_bucket,
+    last_bucket,
+    num_buckets,
+    metric,
+    metric_type,
+    key,
+    process,
+    agg_type
+  UNION ALL
+  SELECT
+    * EXCEPT (sampled) REPLACE(
+    -- This returns true if at least 1 row has sampled=true.
+    -- ~0.0025% of the population uses more than 1 os for the same set of dimensions
+    -- and in this case we treat them as Windows+Release users when fudging numbers
+      mozfun.glam.histogram_normalized_sum(
+        mozfun.map.sum(ARRAY_CONCAT_AGG(aggregates)),
+        IF(MAX(sampled), 10.0, 1.0)
+      ) AS aggregates,
+      "*" AS os,
+      "*" AS app_build_id
+    )
+  FROM
+    data_with_enough_wau
   GROUP BY
     sample_id,
     client_id,

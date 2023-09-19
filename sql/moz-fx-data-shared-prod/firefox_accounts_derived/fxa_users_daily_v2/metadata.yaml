@@ -1,0 +1,37 @@
+---
+friendly_name: FxA Users Daily
+description: |
+  Derived from fxa_users_services (user/service level) and aggregated
+  to the user level. If the user had multiple different entries on a single day,
+  then we grab the attributes from the first service observed that day.
+  This includes information about which users were active on a specific day
+  along with some attributes related to that user.
+  See the schema for a list of attributes and their descriptions.
+
+  Partitioned by submission_date,
+  clustered by country, os_name, and user_id
+
+  This lower level model uses the following category of events:
+  event_category IN ('auth', 'auth_bounce', 'content', 'oauth')
+
+  Partitioned by submission_date,
+  clustered by country, os_name, and user_id
+owners:
+  - kik@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+# TODO: once we agree on the model scheduling needs to be uncommented.
+# scheduling:
+#   dag_name: bqetl_fxa_events
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - country
+      - os_name
+      - user_id

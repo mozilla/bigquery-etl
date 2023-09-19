@@ -7,14 +7,8 @@ from io import BytesIO
 from itertools import groupby
 from typing import List
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dryrun import DryRun
-
-MPS_URI = "https://github.com/mozilla-services/mozilla-pipeline-schemas"
-
-SKIP_PREFIXES = (
-    "pioneer",
-    "rally",
-)
 
 
 @dataclass
@@ -62,7 +56,8 @@ def prod_schemas_uri():
     dryrun = DryRun("telemetry_derived/foo/query.sql", content="SELECT 1")
     build_id = dryrun.get_dataset_labels()["schemas_build_id"]
     commit_hash = build_id.split("_")[-1]
-    return f"{MPS_URI}/archive/{commit_hash}.tar.gz"
+    mps_uri = ConfigLoader.get("schema", "mozilla_pipeline_schemas_uri")
+    return f"{mps_uri}/archive/{commit_hash}.tar.gz"
 
 
 def get_stable_table_schemas() -> List[SchemaFile]:
@@ -109,7 +104,7 @@ def get_stable_table_schemas() -> List[SchemaFile]:
                 )
 
     # Exclude doctypes maintained in separate projects.
-    for prefix in SKIP_PREFIXES:
+    for prefix in ConfigLoader.get("schema", "skip_prefixes", fallback=[]):
         schemas = [
             schema
             for schema in schemas

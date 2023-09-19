@@ -187,23 +187,32 @@ def main():
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
-            "total_users": 1,
-            "minimum_client_count": 0,
+            "total_users": 10,
+            "minimum_client_count": 100,
         },
         "firefox_desktop_glam_beta": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
-            "total_users": 1,
-            "minimum_client_count": 0,
+            "total_users": 100,
+            "minimum_client_count": 1000,
         },
         "firefox_desktop_glam_release": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
-            "total_users": 1,
-            "minimum_client_count": 0,
+            "total_users": 100,
+            "minimum_client_count": 100000,
         },
+    }
+
+    channel_prefixes = {
+        "firefox_desktop_glam_nightly": "nightly",
+        "firefox_desktop_glam_beta": "beta",
+        "firefox_desktop_glam_release": "release",
+        "org_mozilla_fenix_glam_nightly": "nightly",
+        "org_mozilla_fenix_glam_beta": "beta",
+        "org_mozilla_fenix_glam_release": "release",
     }
     validate(instance=config, schema=config_schema)
 
@@ -213,11 +222,7 @@ def main():
     [
         table(
             "latest_versions_v1",
-            **dict(
-                source_table=(
-                    f"glam_etl.{args.prefix}__view_clients_daily_scalar_aggregates_v1"
-                )
-            ),
+            **dict(app_id_channel=(f"'{channel_prefixes[args.prefix]}'")),
         ),
         init(
             "clients_scalar_aggregates_v1",

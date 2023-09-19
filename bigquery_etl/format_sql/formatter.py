@@ -15,6 +15,12 @@ from .tokenizer import (
     ExpressionSeparator,
     FieldAccessOperator,
     Identifier,
+    JinjaBlockEnd,
+    JinjaBlockStart,
+    JinjaBlockStatement,
+    JinjaComment,
+    JinjaExpression,
+    JinjaStatement,
     Literal,
     NewlineKeyword,
     OpeningBracket,
@@ -35,6 +41,7 @@ def simple_format(tokens, indent="  "):
     allow_space_before_next_bracket = False
     allow_space_before_next_token = False
     prev_was_block_end = False
+    prev_was_jinja = False
     prev_was_statement_separator = False
     prev_was_unary_operator = False
     next_operator_is_unary = True
@@ -67,6 +74,10 @@ def simple_format(tokens, indent="  "):
             while indent_types and indent_types.pop() is not BlockKeyword:
                 pass
             prev_was_statement_separator = False
+        elif isinstance(token, JinjaBlockEnd):
+            # decrease indent to match last JinjaBlockStart
+            while indent_types and indent_types.pop() is not JinjaBlockStart:
+                pass
         elif isinstance(token, CaseSubclause):
             if token.value.upper() in ("WHEN", "ELSE"):
                 # Have WHEN and ELSE clauses indented one level more than CASE.
@@ -75,7 +86,7 @@ def simple_format(tokens, indent="  "):
         elif isinstance(
             token, (AliasSeparator, ExpressionSeparator, FieldAccessOperator)
         ):
-            if prev_was_block_end:
+            if prev_was_block_end or prev_was_jinja:
                 require_newline_before_next_token = False
 
         # yield whitespace
@@ -85,14 +96,17 @@ def simple_format(tokens, indent="  "):
             # no space before statement separator
             # no space before first token
             pass
-        elif isinstance(token, Comment):
+        elif isinstance(token, (Comment, JinjaComment)):
             # blank line before comments only if they start on their own line
             # and come after a statement separator
             if token.value.startswith("\n") and prev_was_statement_separator:
                 yield Whitespace("\n")
         elif (
             require_newline_before_next_token
-            or isinstance(token, (NewlineKeyword, ClosingBracket, BlockKeyword))
+            or isinstance(
+                token,
+                (NewlineKeyword, ClosingBracket, BlockKeyword, JinjaBlockStatement),
+            )
             or prev_was_statement_separator
         ):
             if prev_was_statement_separator:
@@ -130,12 +144,17 @@ def simple_format(tokens, indent="  "):
                 OpeningBracket,
                 ExpressionSeparator,
                 StatementSeparator,
+                JinjaStatement,
+                JinjaComment,
             ),
         )
         allow_space_before_next_token = not isinstance(token, FieldAccessOperator)
         prev_was_block_end = isinstance(token, BlockEndKeyword)
         prev_was_statement_separator = isinstance(token, StatementSeparator)
         prev_was_unary_operator = next_operator_is_unary and isinstance(token, Operator)
+        prev_was_jinja = isinstance(
+            token, (JinjaExpression, JinjaComment, JinjaStatement)
+        )
         if not isinstance(token, Comment):
             # format next operator as unary if there is no preceding argument
             next_operator_is_unary = not isinstance(
@@ -150,6 +169,9 @@ def simple_format(tokens, indent="  "):
         elif isinstance(token, BlockStartKeyword):
             # increase indent
             indent_types.append(BlockKeyword)
+        elif isinstance(token, JinjaBlockStart):
+            # increase indent
+            indent_types.append(JinjaBlockStart)
         elif isinstance(token, (TopLevelKeyword, OpeningBracket, CaseSubclause)):
             # increase indent
             indent_types.append(type(token))
@@ -175,13 +197,17 @@ class Line:
                 self.indent_level -= 1
         self.inline_tokens = []
         self.inline_length = 0
-        self.can_format = can_format and not isinstance(indent_token, Comment)
+        self.can_format = can_format and not isinstance(
+            indent_token, (Comment, JinjaComment)
+        )
 
     def add(self, token):
         """Add a token to this line."""
         self.inline_length += len(token.value)
         self.inline_tokens.append(token)
-        self.can_format = self.can_format and not isinstance(token, Comment)
+        self.can_format = self.can_format and not isinstance(
+            token, (Comment, JinjaComment)
+        )
 
     @property
     def tokens(self):

@@ -6,7 +6,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command
+from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 
 docs = """
 ### bqetl_ssl_ratios
@@ -43,6 +43,18 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+    checks__fail_telemetry_derived__ssl_ratios__v1 = bigquery_dq_check(
+        task_id="checks__fail_telemetry_derived__ssl_ratios__v1",
+        source_table="ssl_ratios_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="chutten@mozilla.com",
+        email=["chutten@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
     telemetry_derived__ssl_ratios__v1 = bigquery_etl_query(
         task_id="telemetry_derived__ssl_ratios__v1",
         destination_table="ssl_ratios_v1",
@@ -52,6 +64,10 @@ with DAG(
         email=["chutten@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    checks__fail_telemetry_derived__ssl_ratios__v1.set_upstream(
+        telemetry_derived__ssl_ratios__v1
     )
 
     wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(

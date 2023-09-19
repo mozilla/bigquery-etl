@@ -1,4 +1,4 @@
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/mozilla/bigquery-etl/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/mozilla/bigquery-etl/tree/main)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/mozilla/bigquery-etl/tree/main.svg?style=svg&circle-token=1df4cefd991043d7d3f13243ea80f38e7aa18341)](https://dl.circleci.com/status-badge/redirect/gh/mozilla/bigquery-etl/tree/main)
 # BigQuery ETL
 
 This repository contains Mozilla Data Team's:
@@ -21,8 +21,6 @@ For more information, see [https://mozilla.github.io/bigquery-etl/](https://mozi
 - **Pyenv** (optional) Recommended if you want to install different versions of python, see instructions [here](https://github.com/pyenv/pyenv#basic-github-checkout). After the installation of pyenv, make sure that your terminal app is [configured to run the shell as a login shell](https://github.com/pyenv/pyenv/wiki/MacOS-login-shell).
 - **Homebrew** (not required, but useful for Mac) - Follow the instructions [here](https://brew.sh/) to install homebrew on your Mac.
 - **Python 3.10+** - (see [this guide](https://docs.python-guide.org/starting/install3/osx/) for instructions if you're on a mac and haven't installed anything other than the default system Python).
-- **Java JDK 8+** - (required for some functionality, e.g. [AdoptOpenJDK](https://adoptium.net/)) with `$JAVA_HOME` set.
-- **Maven** - (needed for downloading jar dependencies). Available via your package manager in most Linux distributions and from [homebrew](https://brew.sh/) on mac, or you can install yourself by [downloading a binary](https://maven.apache.org/download.cgi) and following maven's [install instructions](https://maven.apache.org/install.html).
 
 ### GCP CLI tools
 
@@ -45,13 +43,6 @@ cd bigquery-etl
 3. Install standard pre-commit hooks
 ```bash
 venv/bin/pre-commit install
-```
-
-4. Build and install java dependencies
-```bash
-mvn package
-# specify `<(echo mozilla-bigquery-etl)` to retain bqetl from `./bqetl bootstrap`
-venv/bin/pip-sync --pip-args=--no-deps requirements.txt <(echo mozilla-bigquery-etl)
 ```
 
 Finally, if you are using Visual Studio Code, you may also wish to use our recommended defaults:

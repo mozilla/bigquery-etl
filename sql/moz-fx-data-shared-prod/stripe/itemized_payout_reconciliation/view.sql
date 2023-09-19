@@ -8,7 +8,7 @@ WITH customers AS (
     NULLIF(UPPER(TRIM(address_postal_code)), "") AS postal_code,
     NULLIF(address_state, "") AS state,
   FROM
-    `moz-fx-data-bq-fivetran`.stripe.customer
+    `moz-fx-data-shared-prod`.stripe_external.customer_v1
 ),
 postal_code_to_state AS (
   SELECT
@@ -32,9 +32,9 @@ charge_states AS (
     NULLIF(UPPER(TRIM(charges.billing_detail_address_postal_code)), "") AS postal_code,
     postal_code_to_state.state,
   FROM
-    `moz-fx-data-bq-fivetran`.stripe.charge AS charges
+    `moz-fx-data-shared-prod`.stripe_external.charge_v1 AS charges
   JOIN
-    `moz-fx-data-bq-fivetran`.stripe.card AS cards
+    `moz-fx-data-shared-prod`.stripe_external.card_v1 AS cards
   ON
     charges.card_id = cards.id
   JOIN

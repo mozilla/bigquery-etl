@@ -1,0 +1,31 @@
+---
+friendly_name: FxA Users Last Seen
+description: |
+  Usage aggregations per FxA user per day over a 28-day window.
+  The fields containing the 28-day user activity info include:
+  days_seen_bits, days_seen_in_tier1_country_bits, days_registered_bits
+
+  These fields are calculated from `fxa_users_daily_v2` table
+  which only looks at the following category of events:
+  auth, auth_bounce, content, oauth.
+
+owners:
+  - kik@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+# scheduling:
+#   dag_name: bqetl_fxa_events
+#   depends_on_past: true
+#   start_date: '2019-04-23'
+#   referenced_tables: []
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+      - user_id

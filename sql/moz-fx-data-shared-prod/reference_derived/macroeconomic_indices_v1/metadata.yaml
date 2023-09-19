@@ -28,7 +28,5 @@ bigquery:
     field: market_date
     expiration_days: null
     require_partition_filter: true
-  clustering:
-    fields: []
 references: {}
 deprecated: false

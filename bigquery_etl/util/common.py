@@ -44,9 +44,10 @@ def snake_case(line: str) -> str:
     return "_".join([w.lower() for w in words if w.strip()])[::-1]
 
 
-def project_dirs(project_id=None) -> List[str]:
+def project_dirs(project_id=None, sql_dir=None) -> List[str]:
     """Return all project directories."""
-    sql_dir = ConfigLoader.get("default", "sql_dir", fallback="sql")
+    if sql_dir is None:
+        sql_dir = ConfigLoader.get("default", "sql_dir", fallback="sql")
     if project_id is None:
         return [
             os.path.join(sql_dir, project_dir) for project_dir in os.listdir(sql_dir)

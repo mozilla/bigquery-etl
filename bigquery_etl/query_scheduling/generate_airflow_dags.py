@@ -49,11 +49,11 @@ parser.add_argument(
 standard_args.add_log_level(parser)
 
 
-def get_dags(project_id, dags_config):
+def get_dags(project_id, dags_config, sql_dir=None):
     """Return all configured DAGs including associated tasks."""
     tasks = []
     dag_collection = DagCollection.from_file(dags_config)
-    for project_dir in project_dirs(project_id):
+    for project_dir in project_dirs(project_id, sql_dir=sql_dir):
         # parse metadata.yaml to retrieve scheduling information
         if os.path.isdir(project_dir):
             for root, dirs, files in os.walk(project_dir):

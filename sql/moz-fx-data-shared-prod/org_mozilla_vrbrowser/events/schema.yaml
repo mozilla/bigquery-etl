@@ -54,12 +54,6 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The date of the first run of the application.
-  - name: locale
-    type: STRING
-    mode: NULLABLE
-    description: The locale of the application during initialization (e.g. "es-ES").
-      If the locale can't be determined on the system, the value is ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
-      to indicate "undetermined".
   - name: os
     type: STRING
     mode: NULLABLE
@@ -74,6 +68,12 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The version of the Glean SDK
+  - name: locale
+    type: STRING
+    mode: NULLABLE
+    description: The locale of the application during initialization (e.g. "es-ES").
+      If the locale can't be determined on the system, the value is ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
+      to indicate "undetermined".
   - name: build_date
     type: STRING
     mode: NULLABLE
@@ -192,6 +192,20 @@ fields:
         type: STRING
         mode: NULLABLE
     description: Headers included in the client's HTTP request
+  - name: user_agent
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+    - name: os
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+    description: Parsed components of the client's user agent string
   - name: isp
     type: RECORD
     mode: NULLABLE
@@ -210,56 +224,10 @@ fields:
       description: The name of a specific business entity associated with the client's
         IP address when available; otherwise the ISP name
     description: Results of ISP lookup based on the client's IP address
-  - name: user_agent
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: browser
-      type: STRING
-      mode: NULLABLE
-    - name: os
-      type: STRING
-      mode: NULLABLE
-    - name: version
-      type: STRING
-      mode: NULLABLE
-    description: Parsed components of the client's user agent string
 - name: metrics
   type: RECORD
   mode: NULLABLE
   fields:
-  - name: boolean
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: mozphab_usage_arcanist
-      type: BOOLEAN
-      mode: NULLABLE
-      description: 'True if MozPhab was forced to use Arcanist
-
-        '
-    - name: mozphab_usage_override_switch
-      type: BOOLEAN
-      mode: NULLABLE
-      description: 'True if a --force switch was used to override validation
-
-        '
-  - name: counter
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: mozphab_submission_commits_count
-      type: INTEGER
-      mode: NULLABLE
-      description: 'A total number of commits in the stack.
-
-        '
-    - name: mozphab_submission_files_count
-      type: INTEGER
-      mode: NULLABLE
-      description: 'A total number of files submitted.
-
-        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -279,7 +247,7 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
-    - name: glean_error_invalid_overflow
+    - name: glean_error_invalid_value
       type: RECORD
       mode: REPEATED
       fields:
@@ -289,7 +257,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Counts the number of times a metric was set a value that overflowed.
+      description: 'Counts the number of times a metric was set to an invalid value.
 
         The labels are the `category.name` identifier of the metric.
 
@@ -309,7 +277,7 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
-    - name: glean_error_invalid_value
+    - name: glean_error_invalid_overflow
       type: RECORD
       mode: REPEATED
       fields:
@@ -319,141 +287,21 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Counts the number of times a metric was set to an invalid value.
+      description: 'Counts the number of times a metric was set a value that overflowed.
 
         The labels are the `category.name` identifier of the metric.
-
-        '
-  - name: memory_distribution
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: mozphab_submission_files_size
-      type: RECORD
-      mode: NULLABLE
-      fields:
-      - name: sum
-        type: INTEGER
-        mode: NULLABLE
-      - name: values
-        type: RECORD
-        mode: REPEATED
-        fields:
-        - name: key
-          type: STRING
-          mode: NULLABLE
-        - name: value
-          type: INTEGER
-          mode: NULLABLE
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      description: 'A distributed size of all files in the submitted stack
 
         '
   - name: string
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: mozphab_environment_distribution_version
+    - name: distribution_channel_name
       type: STRING
       mode: NULLABLE
-      description: 'Version number of the Operating System or distribution name and
-        version for Linux.
-
-        '
-    - name: mozphab_environment_python_version
-      type: STRING
-      mode: NULLABLE
-      description: 'Python version
-
-        '
-    - name: mozphab_environment_vcs_name
-      type: STRING
-      mode: NULLABLE
-      description: 'Name of the underlying version control system
-
-        '
-    - name: mozphab_environment_vcs_version
-      type: STRING
-      mode: NULLABLE
-      description: 'Version of the underlying version control system
-
-        '
-    - name: mozphab_usage_command
-      type: STRING
-      mode: NULLABLE
-      description: 'Command used to run MozPhab, e.g. `submit` or `patch`.
-
-        '
-  - name: timespan
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: mozphab_submission_preparation_time
-      type: RECORD
-      mode: NULLABLE
-      fields:
-      - name: time_unit
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: 'Time spent on preparing the commit stack.
-
-        '
-    - name: mozphab_submission_process_time
-      type: RECORD
-      mode: NULLABLE
-      fields:
-      - name: time_unit
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: 'Time spent on performing the submission. This metric will be null
-        if the users decides to discontinue submission process after the preparation
-        step.
-
-        '
-    - name: mozphab_usage_command_time
-      type: RECORD
-      mode: NULLABLE
-      fields:
-      - name: time_unit
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: 'Time spent on performing the command
-
-        '
-  - name: uuid
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: mozphab_user_id
-      type: STRING
-      mode: NULLABLE
-      description: 'Unique identifier of each MozPhab user. The default `client_id`
-        will change if the user would delete the `telemetry-data` directory. The `user.id`
-        metric is created by hashing the email, which will be the same for all MozPhab
-        installations.
-
-        We store the user identification in a file that is updated every week. We
-        want to change the `user.id` metric when the user changes an email.
-
-        '
-    - name: mozphab_user_installation
-      type: STRING
-      mode: NULLABLE
-      description: 'Unique identifier of each MozPhab installation. A user might install
-        the application on multiple machines/profiles.
+      description: 'The distribution channel name of this application. We use this
+        field to recognize Firefox Reality is distributed to which channels, such
+        as wavevrStore, oculusvr, picovr,etc.
 
         '
 - name: normalized_app_name
@@ -509,13 +357,13 @@ fields:
   - name: ping_type
     type: STRING
     mode: NULLABLE
-  - name: reason
-    type: STRING
-    mode: NULLABLE
   - name: seq
     type: INTEGER
     mode: NULLABLE
   - name: start_time
+    type: STRING
+    mode: NULLABLE
+  - name: reason
     type: STRING
     mode: NULLABLE
   - name: parsed_start_time

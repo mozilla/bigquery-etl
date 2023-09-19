@@ -4,52 +4,10 @@ fields:
   mode: NULLABLE
   description: A JSON string containing any payload properties not present in the
     schema
-- name: addon_version
-  type: STRING
-  mode: NULLABLE
-- name: browser_session_id
-  type: STRING
-  mode: NULLABLE
-  description: A mirror of the browser sessionId, as defined in https://github.com/mozilla-services/mozilla-pipeline-schemas/blob/main/schemas/telemetry/main/main.4.schema.json
-- name: client_id
-  type: STRING
-  mode: NULLABLE
 - name: document_id
   type: STRING
   mode: NULLABLE
   description: The document ID specified in the URI when the client sent this message
-- name: event
-  type: STRING
-  mode: NULLABLE
-  description: An event identifier
-- name: event_context
-  type: STRING
-  mode: NULLABLE
-  description: A string that describes the context about this event
-- name: experiments
-  type: RECORD
-  mode: REPEATED
-  fields:
-  - name: key
-    type: STRING
-    mode: NULLABLE
-  - name: value
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: branch
-      type: STRING
-      mode: NULLABLE
-  description: 'An object to record all active experiments, experiments IDs are stored
-    as keys, and the value object stores the branch information. Example: {"experiment_1":
-    {"branch": "control"}, "experiment_2": {"branch": "treatment"}}. This deprecates
-    the "shield_id" used in activity-stream and messaging-system.'
-- name: locale
-  type: STRING
-  mode: NULLABLE
-- name: message_id
-  type: STRING
-  mode: NULLABLE
 - name: metadata
   type: RECORD
   mode: NULLABLE
@@ -95,10 +53,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -111,6 +65,10 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header
     - name: x_lb_tags
       type: STRING
       mode: NULLABLE
@@ -132,6 +90,37 @@ fields:
         type: STRING
         mode: NULLABLE
     description: Headers included in the client's HTTP request
+  - name: uri
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: app_build_id
+      type: STRING
+      mode: NULLABLE
+    - name: app_name
+      type: STRING
+      mode: NULLABLE
+    - name: app_update_channel
+      type: STRING
+      mode: NULLABLE
+    - name: app_version
+      type: STRING
+      mode: NULLABLE
+    description: Components of the URI to which this ping was sent
+  - name: user_agent
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+    - name: os
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+    description: Parsed components of the client's user agent string
   - name: isp
     type: RECORD
     mode: NULLABLE
@@ -150,20 +139,6 @@ fields:
       description: The name of a specific business entity associated with the client's
         IP address when available; otherwise the ISP name
     description: Results of ISP lookup based on the client's IP address
-  - name: user_agent
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: browser
-      type: STRING
-      mode: NULLABLE
-    - name: os
-      type: STRING
-      mode: NULLABLE
-    - name: version
-      type: STRING
-      mode: NULLABLE
-    description: Parsed components of the client's user agent string
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
@@ -183,9 +158,6 @@ fields:
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
-- name: release_channel
-  type: STRING
-  mode: NULLABLE
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
@@ -195,6 +167,3 @@ fields:
   type: TIMESTAMP
   mode: NULLABLE
   description: Time when the ingestion edge server accepted this message
-- name: version
-  type: STRING
-  mode: NULLABLE

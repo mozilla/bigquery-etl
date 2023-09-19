@@ -1,0 +1,22 @@
+friendly_name: Serp Events
+description: |-
+  TODO
+owners:
+- akommasani@mozilla.com
+- pissac@mozilla.com
+- dzeber@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_serp
+  task_name: {{ app_name }}_serp_events__v1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - normalized_channel
+      - sample_id

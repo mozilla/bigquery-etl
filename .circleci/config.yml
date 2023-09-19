@@ -463,10 +463,18 @@ jobs:
                           git@github.com:mozilla/private-bigquery-etl.git \
                           ~/private-bigquery-etl
             rsync --archive ~/private-bigquery-etl/sql/ sql/
+            rsync --archive ~/private-bigquery-etl/dags.yaml dags.yaml
       - run:
           name: Generate SQL content
           command: |
             mkdir -p /tmp/workspace/private-generated-sql
+
+            mkdir -p /tmp/workspace/private-generated-sql/dags
+            PATH="venv/bin:$PATH" script/bqetl dag generate \
+              --dags-config dags.yaml \
+              --sql-dir ~/private-bigquery-etl/sql/ \
+              --output-dir /tmp/workspace/private-generated-sql/dags/
+
             cp -r sql/ /tmp/workspace/private-generated-sql/sql
             # Don't depend on dry run for PRs
             PATH="venv/bin:$PATH" script/bqetl generate all \

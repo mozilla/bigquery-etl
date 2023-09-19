@@ -205,6 +205,10 @@
               {
                 "type": "STRING",
                 "name": "dlsource"
+              },
+              {
+                "type": "STRING",
+                "name": "ua"
               }
             ],
           "name": "attribution",

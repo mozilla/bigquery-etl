@@ -144,6 +144,10 @@
     "name": "attribution_source"
   },
   {
+    "type": "STRING",
+    "name": "attribution_ua"
+  },
+  {
     "fields": [
       {
         "type": "STRING",
@@ -172,6 +176,10 @@
       {
         "type": "STRING",
         "name": "attribution_source__source_ping"
+      },
+      {
+        "type": "STRING",
+        "name": "attribution_ua__source_ping"
       },
       {
         "type": "STRING",

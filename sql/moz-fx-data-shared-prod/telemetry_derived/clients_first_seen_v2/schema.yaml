@@ -152,6 +152,10 @@ fields:
   name: attribution_source
   type: STRING
   mode: NULLABLE
+- description: Client's user agent, which corresponds to the web browser used to download the Firefox installer.
+  name: attribution_ua
+  type: STRING
+  mode: NULLABLE
 - description:
   name: metadata
   type: RECORD
@@ -183,6 +187,10 @@ fields:
     mode: NULLABLE
   - description: Ping that first reported the attribution source.
     name: attribution_source__source_ping
+    type: STRING
+    mode: NULLABLE
+  - description: Ping that first reported the client's user agent.
+    name: attribution_ua__source_ping
     type: STRING
     mode: NULLABLE
   - description: Ping that first reported the download token.

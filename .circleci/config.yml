@@ -3,7 +3,7 @@ version: 2.1
 
 orbs:
   gcp-gcr: circleci/gcp-gcr@0.13.0
-  docker: circleci/docker@1.5
+  docker: circleci/docker@2.2
   python: circleci/python@2.1.1
 
 parameters:

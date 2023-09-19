@@ -35,6 +35,10 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The architecture of the device, (e.g. "arm", "x86").
+  - name: build_date
+    type: STRING
+    mode: NULLABLE
+    description: The date & time the application was built
   - name: client_id
     type: STRING
     mode: NULLABLE
@@ -74,10 +78,6 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The version of the Glean SDK
-  - name: build_date
-    type: STRING
-    mode: NULLABLE
-    description: The date & time the application was built
   - name: windows_build_number
     type: INTEGER
     mode: NULLABLE
@@ -155,6 +155,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -167,14 +175,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -292,158 +292,92 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
-    - name: glean_validation_pings_submitted
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: "A count of the pings submitted, by ping type.\n\nThis metric appears\
-        \ in both the metrics and baseline pings.\n\n- On the metrics ping, the counts\
-        \ include the number of pings sent since\n  the last metrics ping (including\
-        \ the last metrics ping)\n- On the baseline ping, the counts include the number\
-        \ of pings send since\n  the last baseline ping (including the last baseline\
-        \ ping)\n"
-    - name: browser_search_ad_clicks
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: "Records clicks of adverts on SERP pages.\nThe key format is \u2018\
-        <provider-name>\u2019.\n"
-    - name: browser_search_in_content
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: 'Records the type of interaction a user has on SERP pages.
-
-        '
-    - name: browser_search_search_count
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: 'The labels for this counter are `<search-engine-name>.<source>`.
-
-        If the search engine is bundled with Focus `search-engine-name` will be
-
-        the name of the search engine. If it''s a custom search engine (defined:
-
-        https://github.com/mozilla-mobile/fenix/issues/1607) the value will be
-
-        `custom`.
-
-        `source` will be: `action`, `suggestion`, `widget`, `shortcut`, `topsite`
-
-        (depending on the source from which the search started). Also added the
-
-        `other` option for the source but it should never enter on this case.
-
-        '
-    - name: browser_search_with_ads
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: "Records counts of SERP pages with adverts displayed.\nThe key\
-        \ format is \u2018<provider-name>\u2019.\n"
-  - name: string
+  - name: quantity
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: glean_baseline_locale
-      type: STRING
+    - name: legacy_telemetry_profile_subsession_counter
+      type: INTEGER
       mode: NULLABLE
-      description: 'The locale of the application during initialization (e.g. "es-ES").
+      description: 'The `profileSubsessionCounter` from the Legacy Telemetry "main"
+        ping.
 
-        If the locale can''t be determined on the system, the value is
+        This is a value that monotonically increases once for every "main" ping
 
-        ["und"](https://unicode.org/reports/tr35/#Unknown_or_Invalid_Identifiers),
+        that has been submitted.
 
-        to indicate "undetermined".
+        It is a sequence number by a longer name.
 
         '
-    - name: search_default_engine
-      type: STRING
-      mode: NULLABLE
-      description: 'The default search engine name if the search engine is
-
-        pre-loaded with Focus.  If it''s a custom search engine,
-
-        then the value will be ''custom''.
-
-        '
-  - name: timespan
+  - name: timing_distribution
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: glean_baseline_duration
+    - name: wr_renderer_time
       type: RECORD
       mode: NULLABLE
       fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
       - name: time_unit
         type: STRING
         mode: NULLABLE
-      - name: value
+      - name: underflow
         type: INTEGER
         mode: NULLABLE
-      description: 'The duration of the last foreground session.
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      description: 'WebRender renderer time.
 
         '
-  - name: datetime
+  - name: uuid
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: glean_validation_first_run_hour
-      type: TIMESTAMP
-      mode: NULLABLE
-      description: 'The hour of the first run of the application.
-
-        '
-    - name: raw_glean_validation_first_run_hour
+    - name: legacy_telemetry_client_id
       type: STRING
       mode: NULLABLE
-  - name: counter
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: browser_total_uri_count
-      type: INTEGER
-      mode: NULLABLE
-      description: 'Records count of URIs visited by the user in the current session,
+      description: 'The client_id according to Telemetry.
 
-        including page reloads.
+        Might not always have a value due to being too early for it to have
 
-        It does not include background page requests and URIs from embedded pages
+        loaded.
 
-        but may be incremented without user interaction by website scripts
+        Value may be the canary client id `c0ffeec0-ffee-c0ff-eec0-ffeec0ffeec0`
 
-        that programmatically redirect to a new location.
+        in pings near when the data upload pref is disabled (if Telemetry gets
+
+        to go first), or between when a client_id has been removed and when it
+
+        has been regenerated.
+
+        Does not need to be sent in the Glean "deletion-request" ping.
 
         '
 - name: normalized_app_name

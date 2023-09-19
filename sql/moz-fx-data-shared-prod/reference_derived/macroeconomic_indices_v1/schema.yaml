@@ -1,0 +1,25 @@
+fields:
+- name: symbol
+  type: STRING
+  mode: NULLABLE
+- name: market_date
+  type: DATE
+  mode: NULLABLE
+- name: open
+  type: NUMERIC
+  mode: NULLABLE
+- name: close
+  type: NUMERIC
+  mode: NULLABLE
+- name: adj_close
+  type: NUMERIC
+  mode: NULLABLE
+- name: high
+  type: NUMERIC
+  mode: NULLABLE
+- name: low
+  type: NUMERIC
+  mode: NULLABLE
+- name: volume
+  type: NUMERIC
+  mode: INTEGER

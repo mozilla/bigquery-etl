@@ -405,6 +405,28 @@ jobs:
             git commit -m "Auto-push due to change on main branch [ci skip]" \
               && git push \
               || echo "Skipping push since it looks like there were no changes"
+  sync-dags-repo:
+    executor: docker/machine
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "e4:30:50:41:53:f0:d6:3a:bb:c9:38:54:2d:ca:56:41"
+      - run:
+          name: 🤖 Update DAGs repository
+          command: |
+            ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+            git config --global user.email "dataops@mozilla.com"
+            git config --global user.name "CircleCI Job"
+            git clone --branch main git@github.com:mozilla/telemetry-airflow-dags.git
+            cd ~/project/telemetry-airflow-dags
+            git submodule update --init --recursive --depth 1
+            cd ${CIRCLE_PROJECT_REPONAME}
+            git pull origin generated-sql
+            cd ..
+            git add ${CIRCLE_PROJECT_REPONAME}
+            git commit --allow-empty -m "Automatic commit from ${CIRCLE_PROJECT_REPONAME} commit ${CIRCLE_SHA1:0:9} build ${CIRCLE_BUILD_NUM} [skip ci]"
+            git push origin main
   deploy:
     executor: ubuntu-machine-executor
     steps:
@@ -689,6 +711,14 @@ workflows:
       - push-generated-sql:
           requires:
             - validate-dags
+          filters:
+            branches:
+              only:
+                - main
+      - sync-dags-repo:
+          name: 🔃 Synchronize DAGs repository
+          requires:
+            - push-generated-sql
           filters:
             branches:
               only:

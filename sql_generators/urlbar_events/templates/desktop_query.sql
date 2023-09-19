@@ -120,7 +120,7 @@ events_summary AS (
     COUNTIF(res = 'trending_suggestion') AS num_trending_suggestion_impressions,
     COUNTIF(res = 'history') AS num_history_impressions,
     COUNTIF(res = 'bookmark') AS num_bookmark_impressions,
-    COUNTIF(res = 'open_tabs') AS num_open_tab_impressions,
+    COUNTIF(res = 'open_tab') AS num_open_tab_impressions,
     COUNTIF(res = 'admarketplace_sponsored') AS num_admarketplace_sponsored_impressions,
     COUNTIF(res = 'navigational') AS num_navigational_impressions,
     COUNTIF(res = 'add_on') AS num_add_on_impressions,

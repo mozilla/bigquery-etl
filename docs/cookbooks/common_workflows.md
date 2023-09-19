@@ -114,9 +114,11 @@ The following is an example to update a new field in `telemetry_derived.clients_
 1. Open the `clients_daily_v6` `query.sql` file and add new field definitions.
 1. Run `./bqetl format sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/query.sql`
 1. Run `./bqetl query validate telemetry_derived.clients_daily_v6`.
-1. Run `./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream --ignore-dryrun-skip`.
+1. Authenticate to GCP: `gcloud auth login --update-adc`
+1. Run `./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream --ignore-dryrun-skip --use-cloud-function=false`.
    * [x] `schema.yaml` files of downstream dependencies, like `clients_last_seen_v1` are updated.
    * If the schema has no changes, we do not run schema updates on any of its downstream dependencies.
+   * `--use-cloud-function=false` is necessary when updating tables related to `clients_daily` but optional for other tables. The dry run cloud function times out when fetching the deployed table schema for some of `clients_daily`s downstream dependencies. Using GCP credentials instead works, however this means users need to have permissions to run queries in `moz-fx-data-shared-prod`.
 1. Open a PR with these changes.
 1. PR is reviewed and approved.
 1. Merge pull-request.

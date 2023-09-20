@@ -48,13 +48,13 @@ store_stats AS (
 ),
 _new_profiles AS (
   SELECT
-    first_seen_date AS `date`,
-    first_reported_country AS country,
-    COUNT(*) AS new_profiles,
+    submission_date AS `date`,
+    country,
+    SUM(new_profiles) AS new_profiles,
   FROM
-    firefox_ios.firefox_ios_clients
+    firefox_ios.active_users_aggregates
   WHERE
-    first_seen_date >= '2022-01-01'
+    submission_date >= '2022-01-01'
     AND channel = "release"
   GROUP BY
     `date`,

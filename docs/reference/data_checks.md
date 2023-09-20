@@ -14,11 +14,23 @@ This easy interface is achieved by providing a number of jinja templates providi
 
 It is also possible to write checks using raw SQL by using assertions. This is, for example, useful when writing checks for custom business logic.
 
+### Two categories of checks
+
+Each check needs to be categorised with a marker, currently following markers are available:
+
+- `#fail` indicates that the ETL pipeline should stop if this check fails (circuit-breaker pattern) and a notification is sent out. _This marker should be used for checks that indicate a serious data issue._
+
+- `#warn` indicates that the ETL pipeline should continue even if this check fails. These type of checks can be used to indicate _potential_ issues that might require more manual investigation.
+
+Checks can be marked by including one of the markers on the line preceeding the check definition, see _Example checks.sql_ section for an example.
+
 ## Adding Data Checks
 
 ### Create checks.sql
 
 Inside the query directory, which usually contains `query.sql` or `query.py`, `metadata.yaml` and `schema.yaml`, create a new file called `checks.sql` (unless already exists).
+
+> Please make sure each check you add contains a marker (see: the _Two categories of checks_ section above).
 
 Once checks have been added, we need to `regenerate the DAG` responsible for scheduling the query.
 
@@ -38,19 +50,15 @@ Alternatively, specific checks can be removed by deleting them from the `checks.
 
 Checks can either be written as raw SQL, or by referencing existing Jinja macros defined in [`tests/checks`](https://github.com/mozilla/bigquery-etl/tree/main/tests/checks) which may take different parameters used to generate the SQL check expression.
 
-Each check needs to have a specific marker set. Available markers are:
-* `#fail`: This marker ensures that if the check fails and assertion is raised, a notification is sent and all downstream dependencies are blocked from running. This marker should be used for checks that indicate a serious data issue. These checks can be seen as circuit-breakers.
-* `#warn`: This marker ensures that if the check fails task owners will get notified but downstream dependencies are not blocked from running. These type of checks can be used to indicate _potential_ issues that might require more manual investigation.
-
 Example of what a `checks.sql` may look like:
 
 ```sql
 -- raw SQL checks
 #fail
 ASSERT (
-  SELECT 
-    COUNTIF(ISNULL(country)) / COUNT(*) 
-    FROM telemetry.table_v1 
+  SELECT
+    COUNTIF(ISNULL(country)) / COUNT(*)
+    FROM telemetry.table_v1
     WHERE submission_date = @submission_date
   ) > 0.2
 ) AS "More than 20% of clients have country set to NULL";
@@ -87,6 +95,7 @@ where: Optional[str] - A condition that will be injected into the `WHERE` clause
 Example:
 
 ```sql
+#warn
 {{ in_range(["non_ssl_loads", "ssl_loads", "reporting_ratio"], 0, none, "submission_date = @submission_date") }}
 ```
 
@@ -104,6 +113,7 @@ where: Optional[str] - A condition that will be injected into the `WHERE` clause
 Example:
 
 ```sql
+#warn
 {{ is_unique(["submission_date", "os", "country"], "submission_date = @submission_date")}}
 ```
 
@@ -121,6 +131,7 @@ where: Optional[str] - A condition that will be injected into the `WHERE` clause
 Example:
 
 ```sql
+#fail
 {{ min_row_count(1, "submission_date = @submission_date") }}
 ```
 
@@ -138,15 +149,20 @@ where: Optional[str] - A condition that will be injected into the `WHERE` clause
 Example:
 
 ```sql
+#fail
 {{ not_null(["submission_date", "os"], "submission_date = @submission_date") }}
 ```
 
 Please keep in mind the below checks can be combined and specified in the same `checks.sql` file. For example:
 
 ```sql
+#fail
 {{ not_null(["submission_date", "os"], "submission_date = @submission_date") }}
+ #fail
  {{ min_row_count(1, "submission_date = @submission_date") }}
+ #fail
  {{ is_unique(["submission_date", "os", "country"], "submission_date = @submission_date")}}
+ #warn
  {{ in_range(["non_ssl_loads", "ssl_loads", "reporting_ratio"], 0, none, "submission_date = @submission_date") }}
 ```
 

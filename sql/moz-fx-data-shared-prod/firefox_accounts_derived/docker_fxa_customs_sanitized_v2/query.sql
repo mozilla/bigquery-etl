@@ -10,8 +10,11 @@ SELECT
 FROM
   `moz-fx-fxa-prod.gke_fxa_prod_log.stderr`
 WHERE
-  DATE(_PARTITIONTIME) BETWEEN
-    DATE_SUB(@submission_date, INTERVAL 1 DAY) AND @submission_date
+  (
+    DATE(_PARTITIONTIME)
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY)
+    AND DATE_ADD(@submission_date, INTERVAL 1 DAY)
+  )
   AND DATE(`timestamp`) = @submission_date
   -- v2 consumes events from GCP based fxa service,
   -- the date indicates when the migration to GCP started.

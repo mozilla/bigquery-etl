@@ -1,7 +1,8 @@
 friendly_name: Docker Fxa Customs Sanitized
 description: |-
-  Sanitized version of customs events from GCP based FxA service stderr table.
-  PII is hashed.
+  Sanitized version of customs events from GCP based FxA service stderr table (PII is hashed).
+
+  Previous data (from the AWS deployment) is available in the v1 of this table.
 owners:
 - kik@mozilla.com
 labels:

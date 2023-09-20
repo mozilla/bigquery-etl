@@ -1,0 +1,32 @@
+friendly_name: Macroeconomic Indices
+description: |-
+  Historical stock index and foreign exchange data pulled daily from
+  https://site.financialmodelingprep.com/
+  Specifically, we pull
+  - ^DJI (Dow Jones Industrial Average)
+  - ^GSPC (SNP - SNP Real Time Price. Currency in USD)
+  - ^IXIC (Nasdaq GIDS - Nasdaq GIDS Real Time Price. Currency in USD)
+  - EURUSD=X (Euro to USD exchange rate)
+  - GBPUSD=X (GB pound to USD exchange rate)
+  We have a FinancialModelingPrep account that allows us to use this data for
+  internal use. Contact the Search and Revenue team and/or the owners of this
+  table for more information
+owners: [cmorales@mozilla.com, xluo@mozilla.com]
+labels:
+  schedule: daily
+  incremental: true
+  owner1: cmorales@mozilla.com
+  owner2: xluo@mozilla.com
+scheduling:
+  dag_name: bqetl_reference
+  arguments:
+  - --market-date={{ ds }}
+  - --api-key={{ var.value.fmp_api_key }}
+bigquery:
+  time_partitioning:
+    type: day
+    field: market_date
+    expiration_days: null
+    require_partition_filter: true
+references: {}
+deprecated: false

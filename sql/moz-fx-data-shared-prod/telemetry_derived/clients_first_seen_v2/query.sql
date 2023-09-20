@@ -3,6 +3,9 @@
 INSERT INTO
   {project_id}.{dataset_id}.{table_name}
 {% endif %}
+-- Ping subqueries use ANY_VALUE + HAVING MIN, which returns the earliest NOT NULL value.
+-- It is used because the query runs faster than using GROUPING or ARRAYs.
+-- A unitest is added to guarantee that this behaviour when NULL values are present.
 WITH new_profile_ping AS (
   SELECT
     client_id AS client_id,
@@ -63,6 +66,11 @@ WITH new_profile_ping AS (
       HAVING
         MIN submission_timestamp
     ) AS attribution_source,
+    ANY_VALUE(
+      environment.settings.attribution.ua
+      HAVING
+        MIN submission_timestamp
+    ) AS attribution_ua,
     ANY_VALUE(
       environment.settings.default_search_engine_data.load_path
       HAVING
@@ -182,6 +190,11 @@ shutdown_ping AS (
         MIN submission_timestamp
     ) AS attribution_source,
     ANY_VALUE(
+      environment.settings.attribution.ua
+      HAVING
+        MIN submission_timestamp
+    ) AS attribution_ua,
+    ANY_VALUE(
       environment.settings.default_search_engine_data.load_path
       HAVING
         MIN submission_timestamp
@@ -243,6 +256,9 @@ main_ping AS (
   SELECT
     client_id AS client_id,
     sample_id AS sample_id,
+    -- The submission_timestamp_min is used to compare with the TIMESTAMP of
+    -- the new_profile and first shutdown pings.
+    -- It was implemented on Dec 16, 2019 and has data from 2018-10-30.
     IF(
       ANY_VALUE(submission_date HAVING MIN submission_date) >= '2018-10-30',
       MIN(submission_timestamp_min),
@@ -269,6 +285,7 @@ main_ping AS (
     ANY_VALUE(attribution.experiment HAVING MIN submission_date) AS attribution_experiment,
     ANY_VALUE(attribution.medium HAVING MIN submission_date) AS attribution_medium,
     ANY_VALUE(attribution.source HAVING MIN submission_date) AS attribution_source,
+    CAST(NULL AS STRING) AS attribution_ua,
     ANY_VALUE(
       default_search_engine_data_load_path
       HAVING
@@ -307,7 +324,8 @@ main_ping AS (
     client_id,
     sample_id
 ),
--- This query unions the client's 'data from the 3 pings, resulting in a max. of 3 records per client_id (one per ping).
+-- The next subquery unions the client's 'data from the 3 pings, resulting in
+-- (max.) 3 records per client_id (one per ping).
 unioned AS (
   SELECT
     *,
@@ -327,12 +345,9 @@ unioned AS (
   FROM
     main_ping
 ),
--- The following subqueries are required to calculate the second seen date, the process is:
--- - Calculate using 6 TIMESTAMPS: first and second TIMESTAMPS x 3 pings.
--- - Extract only the earliest TIMESTAMP per DATE for each ping, for cases when many pings are sent on the same DATE.
--- - Exclude new_profile ping duplicates (only one is expected), to avoid first and second seen date from this ping.
-
--- The next subquery returns one row per client_id with an array of the first_seen date from each ping and an array of the second_seen from each ping.
+-- The following 3 subqueries are required to calculate the second seen date.
+-- First, return one row per client_id with an array of first_seen TIMESTAMPS and
+-- an array of second_seen TIMESTAMPS (one date per reported ping).
 unioned_with_all_dates AS (
   SELECT
     client_id,
@@ -357,7 +372,7 @@ unioned_with_all_dates AS (
   GROUP BY
     client_id
 ),
--- This subquery returns a max. of 2 rows per client_id with the first and second earliest TIMESTAMPs and reporting pings.
+-- Next, calculate the earliest TIMESTAMPS in each array of dates.
 unioned_min_timestamp_per_date AS (
   SELECT
     client_id,
@@ -373,7 +388,7 @@ unioned_min_timestamp_per_date AS (
     client_id,
     value
 ),
--- This subquery returns one row per client_id with the second seen date and reporting ping.
+-- Next, return one row per client_id with the second seen date and reporting ping.
 unioned_second_dates AS (
   SELECT
     client_id,
@@ -393,7 +408,7 @@ unioned_second_dates AS (
   GROUP BY
     client_id
 ),
--- This query returns one row per client_id with the earliest value reported each attribute.
+-- The next subquery returns one row per client_id with the earliest value reported each attribute.
 -- For some attributes, the reporting ping is also recorded in the metadata.
 _current AS (
   SELECT
@@ -526,6 +541,9 @@ _current AS (
     mozfun.norm.get_earliest_value(
       ARRAY_AGG(STRUCT(CAST(attribution_source AS STRING), ping_source, DATETIME(first_seen_date)))
     ).earliest_value AS attribution_source,
+    mozfun.norm.get_earliest_value(
+      ARRAY_AGG(STRUCT(CAST(attribution_ua AS STRING), ping_source, DATETIME(first_seen_date)))
+    ).earliest_value AS attribution_ua,
     STRUCT(
       mozfun.norm.get_earliest_value(
         ARRAY_AGG(STRUCT(CAST(first_seen_date AS STRING), ping_source, DATETIME(first_seen_date)))
@@ -555,6 +573,11 @@ _current AS (
           STRUCT(CAST(attribution_source AS STRING), ping_source, DATETIME(first_seen_date))
         )
       ).earliest_value_source AS attribution_source__source_ping,
+      mozfun.norm.get_earliest_value(
+        ARRAY_AGG(
+          STRUCT(CAST(attribution_ua AS STRING), ping_source, DATETIME(first_seen_date))
+        )
+      ).earliest_value_source AS attribution_ua__source_ping,
       mozfun.norm.get_earliest_value(
         ARRAY_AGG(STRUCT(CAST(attribution_dltoken AS STRING), ping_source, DATETIME(first_seen_date)))
       ).earliest_value_source AS attribution_dltoken__source_ping,
@@ -588,6 +611,7 @@ _current_with_second_date AS (
       metadata.attribution_experiment__source_ping,
       metadata.attribution_medium__source_ping,
       metadata.attribution_source__source_ping,
+      metadata.attribution_ua__source_ping,
       metadata.attribution_dltoken__source_ping,
       metadata.attribution_dlsource__source_ping,
       metadata.reported_main_ping,
@@ -611,6 +635,9 @@ SELECT
   {% if is_init() %}
     IF(_previous.client_id IS NULL, _current, _previous).*
   {% else %}
+    -- For the daily update, only the second_seen_date and the reported ping
+    -- status in the metadata are updated when the previous value is NULL.
+    -- Every other attribute remains as recorded on the first_seen_date.
     IF(_previous.client_id IS NULL, _current, _previous).* REPLACE (
       IF(
         _previous.first_seen_date IS NOT NULL

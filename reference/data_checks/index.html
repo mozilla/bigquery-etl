@@ -3201,6 +3201,19 @@
     bqetl Data Checks to the Rescue
   </a>
   
+    <nav class="md-nav" aria-label="bqetl Data Checks to the Rescue">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#two-categories-of-checks" class="md-nav__link">
+    Two categories of checks
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -3380,6 +3393,19 @@
     bqetl Data Checks to the Rescue
   </a>
   
+    <nav class="md-nav" aria-label="bqetl Data Checks to the Rescue">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#two-categories-of-checks" class="md-nav__link">
+    Two categories of checks
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -3530,9 +3556,21 @@
 <p>bqetl data checks aim to provide this ability by providing a simple interface for specifying our "assumptions" about the data the query should produce and checking them against the actual result.</p>
 <p>This easy interface is achieved by providing a number of jinja templates providing "out-of-the-box" logic for performing a number of common checks without having to rewrite the logic. For example, checking if any nulls are present in a specific column. These templates can be found <a href="../../tests/checks/">here</a> and are available as jinja macros inside the <code>checks.sql</code> files. This allows to "configure" the logic by passing some details relevant to our specific dataset. Check templates will get rendered as raw SQL expressions. Take a look at the examples below for practical examples.</p>
 <p>It is also possible to write checks using raw SQL by using assertions. This is, for example, useful when writing checks for custom business logic.</p>
+<h3 id="two-categories-of-checks">Two categories of checks</h3>
+<p>Each check needs to be categorised with a marker, currently following markers are available:</p>
+<ul>
+<li><code>#fail</code> indicates that the ETL pipeline should stop if this check fails (circuit-breaker pattern) and a notification is sent out. <em>This marker should be used for checks that indicate a serious data issue.</em></li>
+</ul>
+<ul>
+<li><code>#warn</code> indicates that the ETL pipeline should continue even if this check fails. These type of checks can be used to indicate <em>potential</em> issues that might require more manual investigation.</li>
+</ul>
+<p>Checks can be marked by including one of the markers on the line preceeding the check definition, see <em>Example checks.sql</em> section for an example.</p>
 <h2 id="adding-data-checks">Adding Data Checks</h2>
 <h3 id="create-checkssql">Create checks.sql</h3>
 <p>Inside the query directory, which usually contains <code>query.sql</code> or <code>query.py</code>, <code>metadata.yaml</code> and <code>schema.yaml</code>, create a new file called <code>checks.sql</code> (unless already exists).</p>
+<blockquote>
+<p>Please make sure each check you add contains a marker (see: the <em>Two categories of checks</em> section above).</p>
+</blockquote>
 <p>Once checks have been added, we need to <code>regenerate the DAG</code> responsible for scheduling the query.</p>
 <h3 id="update-checkssql">Update checks.sql</h3>
 <p>If <code>checks.sql</code> already exists for the query, you can always add additional checks to the file by appending it to the list of already defined checks.</p>
@@ -3542,16 +3580,13 @@
 <p>Alternatively, specific checks can be removed by deleting them from the <code>checks.sql</code> file.</p>
 <h3 id="example-checkssql">Example checks.sql</h3>
 <p>Checks can either be written as raw SQL, or by referencing existing Jinja macros defined in <a href="https://github.com/mozilla/bigquery-etl/tree/main/tests/checks"><code>tests/checks</code></a> which may take different parameters used to generate the SQL check expression.</p>
-<p>Each check needs to have a specific marker set. Available markers are:
-* <code>#fail</code>: This marker ensures that if the check fails and assertion is raised, a notification is sent and all downstream dependencies are blocked from running. This marker should be used for checks that indicate a serious data issue. These checks can be seen as circuit-breakers.
-* <code>#warn</code>: This marker ensures that if the check fails task owners will get notified but downstream dependencies are not blocked from running. These type of checks can be used to indicate <em>potential</em> issues that might require more manual investigation.</p>
 <p>Example of what a <code>checks.sql</code> may look like:</p>
 <div class="highlight"><pre><span></span><code><span class="c1">-- raw SQL checks</span>
 <span class="o">#</span><span class="n">fail</span>
 <span class="n">ASSERT</span><span class="w"> </span><span class="p">(</span>
-<span class="w">  </span><span class="k">SELECT</span><span class="w"> </span>
-<span class="w">    </span><span class="n">COUNTIF</span><span class="p">(</span><span class="k">ISNULL</span><span class="p">(</span><span class="n">country</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span>
-<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">telemetry</span><span class="p">.</span><span class="n">table_v1</span><span class="w"> </span>
+<span class="w">  </span><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">COUNTIF</span><span class="p">(</span><span class="k">ISNULL</span><span class="p">(</span><span class="n">country</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">telemetry</span><span class="p">.</span><span class="n">table_v1</span>
 <span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">submission_date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">@</span><span class="n">submission_date</span>
 <span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span><span class="mi">2</span>
 <span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="ss">&quot;More than 20% of clients have country set to NULL&quot;</span><span class="p">;</span>
@@ -3580,7 +3615,8 @@ max: Optional[int] - Maximum value we should observe in the specified columns.
 where: Optional[str] - A condition that will be injected into the `WHERE` clause of the check. For example, &quot;submission_date = @submission_date&quot; so that the check is only executed against a specific partition.
 </code></pre></div>
 <p>Example:</p>
-<div class="highlight"><pre><span></span><code><span class="err">{{</span><span class="w"> </span><span class="n">in_range</span><span class="p">([</span><span class="ss">&quot;non_ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;reporting_ratio&quot;</span><span class="p">],</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">none</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<div class="highlight"><pre><span></span><code><span class="o">#</span><span class="n">warn</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">in_range</span><span class="p">([</span><span class="ss">&quot;non_ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;reporting_ratio&quot;</span><span class="p">],</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">none</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
 </code></pre></div>
 <h3 id="is_unique-source">is_unique (<a href="../../tests/checks/is_unique.jinja">source</a>)</h3>
 <p>Usage:</p>
@@ -3590,7 +3626,8 @@ columns: List[str] - A list of columns which should produce a unique record.
 where: Optional[str] - A condition that will be injected into the `WHERE` clause of the check. For example, &quot;submission_date = @submission_date&quot; so that the check is only executed against a specific partition.
 </code></pre></div>
 <p>Example:</p>
-<div class="highlight"><pre><span></span><code><span class="err">{{</span><span class="w"> </span><span class="n">is_unique</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;country&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="err">}}</span>
+<div class="highlight"><pre><span></span><code><span class="o">#</span><span class="n">warn</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">is_unique</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;country&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="err">}}</span>
 </code></pre></div>
 <h3 id="min_row_countsource">min_row_count(<a href="../../tests/checks/min_row_count.jinja">source</a>)</h3>
 <p>Usage:</p>
@@ -3600,7 +3637,8 @@ threshold: Optional[int] - What is the minimum number of rows we expect (default
 where: Optional[str] - A condition that will be injected into the `WHERE` clause of the check. For example, &quot;submission_date = @submission_date&quot; so that the check is only executed against a specific partition.
 </code></pre></div>
 <p>Example:</p>
-<div class="highlight"><pre><span></span><code><span class="err">{{</span><span class="w"> </span><span class="n">min_row_count</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<div class="highlight"><pre><span></span><code><span class="o">#</span><span class="n">fail</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">min_row_count</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
 </code></pre></div>
 <h3 id="not_null-source">not_null (<a href="../../tests/checks/not_null.jinja">source</a>)</h3>
 <p>Usage:</p>
@@ -3610,12 +3648,17 @@ columns: List[str] - A list of columns which should not contain a null value.
 where: Optional[str] - A condition that will be injected into the `WHERE` clause of the check. For example, &quot;submission_date = @submission_date&quot; so that the check is only executed against a specific partition.
 </code></pre></div>
 <p>Example:</p>
-<div class="highlight"><pre><span></span><code><span class="err">{{</span><span class="w"> </span><span class="n">not_null</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<div class="highlight"><pre><span></span><code><span class="o">#</span><span class="n">fail</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">not_null</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
 </code></pre></div>
 <p>Please keep in mind the below checks can be combined and specified in the same <code>checks.sql</code> file. For example:</p>
-<div class="highlight"><pre><span></span><code><span class="err">{{</span><span class="w"> </span><span class="n">not_null</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<div class="highlight"><pre><span></span><code><span class="o">#</span><span class="n">fail</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">not_null</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="w"> </span><span class="o">#</span><span class="n">fail</span>
 <span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">min_row_count</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="w"> </span><span class="o">#</span><span class="n">fail</span>
 <span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">is_unique</span><span class="p">([</span><span class="ss">&quot;submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;os&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;country&quot;</span><span class="p">],</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="err">}}</span>
+<span class="w"> </span><span class="o">#</span><span class="n">warn</span>
 <span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">in_range</span><span class="p">([</span><span class="ss">&quot;non_ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;reporting_ratio&quot;</span><span class="p">],</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">none</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
 </code></pre></div>
 <h2 id="running-checks-locally-commands">Running checks locally / Commands</h2>

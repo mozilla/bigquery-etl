@@ -561,6 +561,8 @@ jobs:
             ./script/bqetl dependency record \
               --skip-existing \
               "sql/"
+            ./script/bqetl metadata update \
+              sql/
             ./script/bqetl dag generate
 
             mkdir -p /tmp/workspace/main-generated-sql
@@ -579,10 +581,10 @@ jobs:
           name: Generate diff
           command: |
             diff -bur --no-dereference \
-              /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
+              /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
               > /tmp/workspace/generated-sql/sql.diff || true
             diff -bur --no-dereference \
-              /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
+              /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
               >> /tmp/workspace/generated-sql/sql.diff || true
       - persist_to_workspace:
           root: /tmp/workspace

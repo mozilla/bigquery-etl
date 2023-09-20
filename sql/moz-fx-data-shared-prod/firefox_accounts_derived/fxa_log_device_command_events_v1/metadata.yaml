@@ -2,8 +2,11 @@
 friendly_name: FxA Log Device Command Events
 description: |-
   A subset of FxA auth server logs related to "send tab" activity.
-
   See https://bugzilla.mozilla.org/show_bug.cgi?id=1649074
+
+  This table contains event data from the FxA service when it was still running in AWS.
+  All new events come from GCP deployment of FxA and are available in the v2 of this table.
+  The migration started on 2023-09-07 and was concluded by 2023-09-15.
 owners:
   - dthorn@mozilla.com
 labels:

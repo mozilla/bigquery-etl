@@ -48,6 +48,42 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+    checks__fail_fivetran_costs_derived__daily_connector_costs__v1 = bigquery_dq_check(
+        task_id="checks__fail_fivetran_costs_derived__daily_connector_costs__v1",
+        source_table="daily_connector_costs_v1",
+        dataset_id="fivetran_costs_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="lschiestl@mozilla.com",
+        email=["lschiestl@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    checks__fail_fivetran_costs_derived__incremental_mar__v1 = bigquery_dq_check(
+        task_id="checks__fail_fivetran_costs_derived__incremental_mar__v1",
+        source_table="incremental_mar_v1",
+        dataset_id="fivetran_costs_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="lschiestl@mozilla.com",
+        email=["lschiestl@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    checks__fail_fivetran_costs_derived__monthly_costs__v1 = bigquery_dq_check(
+        task_id="checks__fail_fivetran_costs_derived__monthly_costs__v1",
+        source_table="monthly_costs_v1",
+        dataset_id="fivetran_costs_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="lschiestl@mozilla.com",
+        email=["lschiestl@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     fivetran_costs_derived__daily_connector_costs__v1 = bigquery_etl_query(
         task_id="fivetran_costs_derived__daily_connector_costs__v1",
         destination_table="daily_connector_costs_v1",
@@ -96,16 +132,28 @@ with DAG(
         task_concurrency=1,
     )
 
-    fivetran_costs_derived__daily_connector_costs__v1.set_upstream(
-        fivetran_costs_derived__destinations__v1
+    checks__fail_fivetran_costs_derived__daily_connector_costs__v1.set_upstream(
+        fivetran_costs_derived__daily_connector_costs__v1
     )
 
-    fivetran_costs_derived__daily_connector_costs__v1.set_upstream(
+    checks__fail_fivetran_costs_derived__incremental_mar__v1.set_upstream(
         fivetran_costs_derived__incremental_mar__v1
     )
 
-    fivetran_costs_derived__daily_connector_costs__v1.set_upstream(
+    checks__fail_fivetran_costs_derived__monthly_costs__v1.set_upstream(
         fivetran_costs_derived__monthly_costs__v1
+    )
+
+    fivetran_costs_derived__daily_connector_costs__v1.set_upstream(
+        checks__fail_fivetran_costs_derived__incremental_mar__v1
+    )
+
+    fivetran_costs_derived__daily_connector_costs__v1.set_upstream(
+        checks__fail_fivetran_costs_derived__monthly_costs__v1
+    )
+
+    fivetran_costs_derived__daily_connector_costs__v1.set_upstream(
+        fivetran_costs_derived__destinations__v1
     )
 
     fivetran_log_prod_sync_start = FivetranOperator(

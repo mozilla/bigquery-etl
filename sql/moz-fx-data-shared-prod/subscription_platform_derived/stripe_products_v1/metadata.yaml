@@ -1,0 +1,15 @@
+friendly_name: Stripe products
+description: |-
+  Stripe products.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: false
+scheduling:
+  dag_name: bqetl_subplat
+  # The whole table is overwritten every time, not a specific date partition.
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null
+  clustering: null
+references: {}

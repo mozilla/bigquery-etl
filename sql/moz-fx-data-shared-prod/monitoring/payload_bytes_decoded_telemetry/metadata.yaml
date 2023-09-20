@@ -1,7 +1,7 @@
 ---
 friendly_name: Telemetry Pipeline Family Decoded
 description: |-
-  A view on top of the `payload_bytes_decoded.telemetry_*` tables that
+  A view on top of the `payload_bytes_decoded.telemetry*` tables that
   includes all fields except the payload.
 
   This view is useful for overall pipeline monitoring.

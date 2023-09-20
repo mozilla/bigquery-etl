@@ -71,6 +71,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             dataset_id='{{ task.dataset }}',
             project_id='{{ task.project }}',
             {%+ endif -%}
+            is_dq_check_fail = {{ task.is_dq_check_fail }},
             owner='{{ task.owner }}',
             {%+ if task.email | length > 0 -%}
             email={{ task.email | sort }},
@@ -105,6 +106,9 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             {%+ endif -%}
     {%+ else -%}
         {{ task.task_name }} = bigquery_etl_query(
+            {% if name == "bqetl_default" -%}
+            #### WARNING: This task has been scheduled in the default DAG. It can be moved to a more suitable DAG using `bqetl query schedule`.
+            {% endif %}
             task_id='{{ task.task_name }}',
             {#+ TODO when Airflow is updated to 2.2+ use ds_nodash instead of ds_format -#}
             destination_table={%+ if task.date_partition_offset -%}'{{ task.destination_table }}${% raw %}{{{% endraw %} macros.ds_format(macros.ds_add(ds, {{ task.date_partition_offset }}), "%Y-%m-%d", "%Y%m%d") {% raw %}}}{% endraw %}'

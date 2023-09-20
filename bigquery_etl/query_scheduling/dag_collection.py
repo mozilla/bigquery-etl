@@ -78,7 +78,7 @@ class DagCollection:
 
         return None
 
-    def checks_task_for_table(self, project, dataset, table):
+    def fail_checks_task_for_table(self, project, dataset, table):
         """Return the task that schedules the checks for the provided table."""
         for dag in self.dags:
             for task in dag.tasks:
@@ -87,6 +87,7 @@ class DagCollection:
                     and dataset == task.dataset
                     and table == f"{task.table}_{task.version}"
                     and task.is_dq_check
+                    and task.is_dq_check_fail
                 ):
                     return task
 

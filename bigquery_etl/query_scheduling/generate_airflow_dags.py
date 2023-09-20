@@ -49,11 +49,11 @@ parser.add_argument(
 standard_args.add_log_level(parser)
 
 
-def get_dags(project_id, dags_config):
+def get_dags(project_id, dags_config, sql_dir=None):
     """Return all configured DAGs including associated tasks."""
     tasks = []
     dag_collection = DagCollection.from_file(dags_config)
-    for project_dir in project_dirs(project_id):
+    for project_dir in project_dirs(project_id, sql_dir=sql_dir):
         # parse metadata.yaml to retrieve scheduling information
         if os.path.isdir(project_dir):
             for root, dirs, files in os.walk(project_dir):
@@ -95,17 +95,44 @@ def get_dags(project_id, dags_config):
                 else:
                     if CHECKS_FILE in files:
                         checks_file = os.path.join(root, CHECKS_FILE)
-                        checks_task = copy.deepcopy(
-                            Task.of_dq_check(checks_file, dag_collection=dag_collection)
-                        )
-                        tasks.append(checks_task)
-                        task_ref = TaskRef(
-                            dag_name=task.dag_name,
-                            task_id=task.task_name,
-                        )
-                        checks_task.upstream_dependencies.append(task_ref)
-                    tasks.append(task)
+                        # todo: validate checks file
 
+                        with open(checks_file, "r") as file:
+                            file_contents = file.read()
+                            # check if file contains fail and warn and create checks task accordingly
+                            checks_tasks = []
+
+                            if "#fail" in file_contents:
+                                checks_task = copy.deepcopy(
+                                    Task.of_dq_check(
+                                        checks_file,
+                                        is_check_fail=True,
+                                        dag_collection=dag_collection,
+                                    )
+                                )
+                                checks_tasks.append(checks_task)
+
+                            if "#warn" in file_contents:
+                                checks_task = copy.deepcopy(
+                                    Task.of_dq_check(
+                                        checks_file,
+                                        is_check_fail=False,
+                                        dag_collection=dag_collection,
+                                    )
+                                )
+                                checks_tasks.append(checks_task)
+
+                            for checks_task in checks_tasks:
+                                tasks.append(checks_task)
+                                upstream_task_ref = TaskRef(
+                                    dag_name=task.dag_name,
+                                    task_id=task.task_name,
+                                )
+                                checks_task.upstream_dependencies.append(
+                                    upstream_task_ref
+                                )
+
+                    tasks.append(task)
         else:
             logging.error(
                 """

@@ -250,7 +250,8 @@ clients_summary AS (
         environment.settings.attribution.content,
         environment.settings.attribution.experiment,
         environment.settings.attribution.variation,
-        environment.settings.attribution.dltoken
+        environment.settings.attribution.dltoken,
+        environment.settings.attribution.dlsource
       ),
       NULL
     ) AS attribution,

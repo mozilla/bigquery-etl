@@ -59,6 +59,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/init.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_stdout_events_v1/query.sql
+  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_gcp_stderr_events_v1/query.sql
+  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_gcp_stdout_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_auth_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_content_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_stdout_events_v1/query.sql
@@ -98,9 +100,10 @@ dry_run:
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_apple_subscriptions_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_google_subscriptions_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_stripe_subscriptions_history_v1/query.sql
-  - sql/moz-fx-data-shared-prod/subscription_platform_derived/services_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_customers_revised_changelog_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_logical_subscriptions_history_v1/query.sql
+  - sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_plans_v1/query.sql
+  - sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_products_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_revised_changelog_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/query.sql
   - sql/moz-fx-data-shared-prod/stripe/itemized_payout_reconciliation/view.sql

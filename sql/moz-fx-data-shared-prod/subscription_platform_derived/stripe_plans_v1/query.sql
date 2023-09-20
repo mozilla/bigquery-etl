@@ -1,0 +1,19 @@
+SELECT
+  id,
+  product_id,
+  created,
+  is_deleted,
+  active,
+  aggregate_usage,
+  amount,
+  billing_scheme,
+  currency,
+  `interval`,
+  interval_count,
+  PARSE_JSON(metadata) AS metadata,
+  nickname,
+  tiers_mode,
+  trial_period_days,
+  usage_type,
+FROM
+  `moz-fx-data-shared-prod.stripe_external.plan_v1`

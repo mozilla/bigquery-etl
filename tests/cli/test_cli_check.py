@@ -54,7 +54,8 @@ class TestCheck:
         )
 
         expected = dedent(
-            """\
+            """
+        #fail
         ASSERT(
           (
             SELECT

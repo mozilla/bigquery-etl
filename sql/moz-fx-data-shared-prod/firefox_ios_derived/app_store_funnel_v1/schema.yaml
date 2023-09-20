@@ -41,9 +41,3 @@ fields:
   type: INTEGER
   description: |
     Number of new profiles on the date.
-
-- mode: NULLABLE
-  name: activations
-  type: INTEGER
-  description: |
-    Number of users that ended up activating that were first seen on the date.

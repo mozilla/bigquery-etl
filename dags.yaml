@@ -412,7 +412,7 @@ bqetl_monitoring:
     - impact/tier_1
 
 bqetl_monitoring_airflow:
-  schedule_interval: 0 2 * * *
+  schedule_interval: 0 10 * * *
   description: |
     This DAG schedules queries and scripts for populating datasets
     used for monitoring of Airflow DAGs.
@@ -1152,9 +1152,56 @@ bqetl_kpis_shredder:
     retries: 2
     retry_delay: 30m
     start_date: '2023-05-16'
-  description: This DAG calculates KPIs for shredder client_ids
+  description: |
+    Currently paused due to a bug causing the DAG upstream dependencies completion
+    not being detected correctly.
+    for more info, see:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1852517
+      - https://github.com/mozilla/bigquery-etl/pull/4239
+    This DAG calculates KPIs for shredder client_ids
   repo: bigquery-etl
   schedule_interval: 0 0 */28 * *
   tags:
     - impact/tier_3
+    - repo/bigquery-etl
+bqetl_default:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: telemetry-alerts@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-09-01'
+  description: This is a default DAG to schedule tasks with lower business impact
+    or that don't require a new or existing DAG. Queries are automatically scheduled
+    in this DAG during creation when no dag name is specified using option --dag.
+    See [related documentation in the cookbooks](https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/)
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_3
+    - triage/no_triage
+
+bqetl_reference:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - cmorales@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: cmorales@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-09-18'
+  description: DAG to build reference data
+  repo: bigquery-etl
+  schedule_interval: daily
+  tags:
+    - impact/tier_1
     - repo/bigquery-etl

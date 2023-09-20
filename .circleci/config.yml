@@ -513,6 +513,8 @@ jobs:
             cd private-generated-sql/
             rm -rf sql/
             cp -r /tmp/workspace/private-generated-sql/sql sql
+            rm -rf dags/
+            cp -r /tmp/workspace/private-generated-sql/dags dags
             git add .
             git commit -m "Auto-push due to change on main branch [ci skip]" \
               && git push \

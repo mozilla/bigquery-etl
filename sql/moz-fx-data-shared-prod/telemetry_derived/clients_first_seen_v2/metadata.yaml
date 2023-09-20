@@ -1,13 +1,11 @@
 friendly_name: Clients First Seen
 description: |-
-  Picks out just the first observations per client.
-  - Each attribute is retrieved from the ping that reports it
-  first: Main, New profile or First Shutdown ping, and only
-  updated from pings reported on the first-seen date.
-  The only exceptions are the second_seen_date and the metadata
-  reported pings which are updated daily in the case that data is
-  reported later.
-
+  Picks out just the first observations per client using
+  the main, new_profile and first_shutdown pings.
+  - All attributes are retrieved from the ping that reports the
+  first_seen_date.
+  - Only the second_seen_date and metadata about the pings reported
+  by each client is updated over time.
   This table should be accessed through the user-facing view
   `telemetry.clients_first_seen`.
 

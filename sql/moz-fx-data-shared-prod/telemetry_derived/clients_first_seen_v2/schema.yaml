@@ -22,8 +22,12 @@ fields:
   name: app_build_id
   type: STRING
   mode: NULLABLE
-- description: Name of the installed app/browser.
+- description: The name of the installed app/browser.
   name: app_name
+  type: STRING
+  mode: NULLABLE
+- description: The best locale that the application should be localized to.
+  name: locale
   type: STRING
   mode: NULLABLE
 - description: The appliction platform version reported by the client.
@@ -68,6 +72,30 @@ fields:
   name: partner_id
   type: STRING
   mode: NULLABLE
+- description: Identifier of the particular campaign that led to the download of the product.
+  name: attribution_campaign
+  type: STRING
+  mode: NULLABLE
+- description: Identifier to indicate the particular link within a campaign.
+  name: attribution_content
+  type: STRING
+  mode: NULLABLE
+- description: Funnel experiment parameters.
+  name: attribution_experiment
+  type: STRING
+  mode: NULLABLE
+- description: Category of the source, such as 'organic' for a search engine.
+  name: attribution_medium
+  type: STRING
+  mode: NULLABLE
+- description: Referring partner domain, when install happens via a known partner.
+  name: attribution_source
+  type: STRING
+  mode: NULLABLE
+- description: Client's user agent, which corresponds to the web browser used to download the Firefox installer.
+  name: attribution_ua
+  type: STRING
+  mode: NULLABLE
 - description: The anonymized path of the engine xml file. For details on the components refer to the metadata for telemetry.new_profile.
   name: engine_data_load_path
   type: STRING
@@ -92,6 +120,9 @@ fields:
   mode: NULLABLE
 - description: City retrieved as a result of a geographic lookup based on the client's IP address.
   name: city
+  type: STRING
+- description: The specific geo database version used.
+  name: db_version
   type: STRING
   mode: NULLABLE
 - description: First major country subdivision, typically a state, province, or county.
@@ -132,73 +163,13 @@ fields:
   name: attribution_dlsource
   type: STRING
   mode: NULLABLE
-- description: Identifier of the particular campaign that led to the download of the product.
-  name: attribution_campaign
-  type: STRING
-  mode: NULLABLE
-- description: Identifier to indicate the particular link within a campaign.
-  name: attribution_content
-  type: STRING
-  mode: NULLABLE
-- description: Funnel experiment parameters.
-  name: attribution_experiment
-  type: STRING
-  mode: NULLABLE
-- description: Category of the source, such as 'organic' for a search engine.
-  name: attribution_medium
-  type: STRING
-  mode: NULLABLE
-- description: Referring partner domain, when install happens via a known partner.
-  name: attribution_source
-  type: STRING
-  mode: NULLABLE
-- description: Client's user agent, which corresponds to the web browser used to download the Firefox installer.
-  name: attribution_ua
-  type: STRING
-  mode: NULLABLE
 - description:
   name: metadata
   type: RECORD
   mode: NULLABLE
   fields:
   - description: Ping that reported the first seen date (main, first_shutdown or new_profile).
-    name: first_seen_date__source_ping
-    type: STRING
-    mode: NULLABLE
-  - description: Ping that reported the second seen date (main, first_shutdown or new_profile).
-    name: second_seen_date__source_ping
-    type: STRING
-    mode: NULLABLE
-  - description: Ping that first reported the attribution campaign.
-    name: attribution_campaign__source_ping
-    type: STRING
-    mode: NULLABLE
-  - description: Ping that first reported the attribution content.
-    name: attribution_content__source_ping
-    type: STRING
-    mode: NULLABLE
-  - description: Ping that first reported the attribution experiment.
-    name: attribution_experiment__source_ping
-    type: STRING
-    mode: NULLABLE
-  - description: Ping that first reported the attribution medium.
-    name: attribution_medium__source_ping
-    type: STRING
-    mode: NULLABLE
-  - description: Ping that first reported the attribution source.
-    name: attribution_source__source_ping
-    type: STRING
-    mode: NULLABLE
-  - description: Ping that first reported the client's user agent.
-    name: attribution_ua__source_ping
-    type: STRING
-    mode: NULLABLE
-  - description: Ping that first reported the download token.
-    name: attribution_dltoken__source_ping
-    type: STRING
-    mode: NULLABLE
-  - description: Ping that first reported the download source.
-    name: attribution_dlsource__source_ping
+    name: first_seen_date_source_ping
     type: STRING
     mode: NULLABLE
   - description: Indicates wether the client ever reported a main ping.

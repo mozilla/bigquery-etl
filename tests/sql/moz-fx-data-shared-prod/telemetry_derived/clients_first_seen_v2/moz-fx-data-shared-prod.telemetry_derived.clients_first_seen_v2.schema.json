@@ -29,6 +29,10 @@
   },
   {
     "type": "STRING",
+    "name": "locale"
+  },
+  {
+    "type": "STRING",
     "name": "platform_version"
   },
   {
@@ -69,6 +73,30 @@
   },
   {
     "type": "STRING",
+    "name": "attribution_campaign"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_content"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_experiment"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_medium"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_source"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_ua"
+  },
+  {
+    "type": "STRING",
     "name": "engine_data_load_path"
   },
   {
@@ -90,6 +118,10 @@
   {
     "type": "STRING",
     "name": "city"
+  },
+  {
+    "type": "STRING",
+    "name": "db_version"
   },
   {
     "type": "STRING",
@@ -124,70 +156,10 @@
     "name": "attribution_dlsource"
   },
   {
-    "type": "STRING",
-    "name": "attribution_campaign"
-  },
-  {
-    "type": "STRING",
-    "name": "attribution_content"
-  },
-  {
-    "type": "STRING",
-    "name": "attribution_experiment"
-  },
-  {
-    "type": "STRING",
-    "name": "attribution_medium"
-  },
-  {
-    "type": "STRING",
-    "name": "attribution_source"
-  },
-  {
-    "type": "STRING",
-    "name": "attribution_ua"
-  },
-  {
     "fields": [
       {
         "type": "STRING",
-        "name": "first_seen_date__source_ping"
-      },
-      {
-        "type": "STRING",
-        "name": "second_seen_date__source_ping"
-      },
-      {
-        "type": "STRING",
-        "name": "attribution_campaign__source_ping"
-      },
-      {
-        "type": "STRING",
-        "name": "attribution_content__source_ping"
-      },
-      {
-        "type": "STRING",
-        "name": "attribution_experiment__source_ping"
-      },
-      {
-        "type": "STRING",
-        "name": "attribution_medium__source_ping"
-      },
-      {
-        "type": "STRING",
-        "name": "attribution_source__source_ping"
-      },
-      {
-        "type": "STRING",
-        "name": "attribution_ua__source_ping"
-      },
-      {
-        "type": "STRING",
-        "name": "attribution_dltoken__source_ping"
-      },
-      {
-        "type": "STRING",
-        "name": "attribution_dlsource__source_ping"
+        "name": "first_seen_date_source_ping"
       },
       {
         "type": "BOOLEAN",

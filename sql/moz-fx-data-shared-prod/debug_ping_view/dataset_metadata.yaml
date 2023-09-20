@@ -1,0 +1,14 @@
+friendly_name: debug-ping-view
+description: |-
+  User-facing views related to document namespace debug-ping-view; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/debug-ping-view
+dataset_base_acl: view
+user_facing: true
+labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

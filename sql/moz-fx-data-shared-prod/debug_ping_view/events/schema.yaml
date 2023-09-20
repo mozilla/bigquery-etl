@@ -35,6 +35,10 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The architecture of the device, (e.g. "arm", "x86").
+  - name: build_date
+    type: STRING
+    mode: NULLABLE
+    description: The date & time the application was built
   - name: client_id
     type: STRING
     mode: NULLABLE
@@ -74,10 +78,6 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The version of the Glean SDK
-  - name: build_date
-    type: STRING
-    mode: NULLABLE
-    description: The date & time the application was built
   - name: windows_build_number
     type: INTEGER
     mode: NULLABLE
@@ -159,6 +159,10 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Foxsec-IP-Reputation header
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -171,10 +175,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -292,26 +292,6 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
-  - name: uuid
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: activation_activation_id
-      type: STRING
-      mode: NULLABLE
-      description: 'An alternate identifier, not correlated with the client_id, generated
-        once
-
-        and only sent with the activation ping.
-
-        '
-    - name: legacy_ids_client_id
-      type: STRING
-      mode: NULLABLE
-      description: 'Sets the legacy client ID as part of the deletion-reqest and other
-        pings.
-
-        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
@@ -356,10 +336,10 @@ fields:
         type: RECORD
         mode: NULLABLE
         fields:
-        - name: type
+        - name: enrollment_id
           type: STRING
           mode: NULLABLE
-        - name: enrollment_id
+        - name: type
           type: STRING
           mode: NULLABLE
   - name: ping_type

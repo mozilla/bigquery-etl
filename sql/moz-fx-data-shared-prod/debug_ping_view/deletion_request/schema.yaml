@@ -292,53 +292,6 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
-  - name: timespan
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: baseline_validation_baseline_duration
-      type: RECORD
-      mode: NULLABLE
-      fields:
-      - name: time_unit
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: 'The duration from startup to the backgrounding event.
-
-        This should be equivalent to `baseline.duration`
-
-        '
-    - name: baseline_validation_startup_duration
-      type: RECORD
-      mode: NULLABLE
-      fields:
-      - name: time_unit
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: 'The duration from startup until the app is visible to the user.
-
-        '
-    - name: baseline_validation_visible_duration
-      type: RECORD
-      mode: NULLABLE
-      fields:
-      - name: time_unit
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: 'The duration from when the app is visible to the user
-
-        until it is backgrounded.
-
-        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

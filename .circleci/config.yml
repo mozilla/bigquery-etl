@@ -559,6 +559,8 @@ jobs:
             ./script/bqetl dependency record \
               --skip-existing \
               "sql/"
+            ./script/bqetl metadata update \
+              sql/
             ./script/bqetl dag generate
 
             mkdir -p /tmp/workspace/main-generated-sql

@@ -42,6 +42,3 @@ fields:
   description: 'Number of new profiles on the date.
 
     '
-- name: activations
-  type: INTEGER
-  mode: NULLABLE

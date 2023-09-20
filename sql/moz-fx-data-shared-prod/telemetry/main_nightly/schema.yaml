@@ -16963,6 +16963,16 @@ fields:
       - name: value
         type: STRING
         mode: NULLABLE
+    - name: qm_shutdown_time_v0
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -35412,6 +35422,16 @@ fields:
             mode: NULLABLE
           - name: value
             type: BOOLEAN
+            mode: NULLABLE
+        - name: urlbar_picked_clipboard
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
             mode: NULLABLE
       - name: scalars
         type: RECORD

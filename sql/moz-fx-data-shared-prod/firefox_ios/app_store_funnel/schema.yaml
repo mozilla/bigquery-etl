@@ -45,7 +45,3 @@ fields:
 - name: activations
   type: INTEGER
   mode: NULLABLE
-  description: 'Number of users that ended up activating that were first seen on the
-    date.
-
-    '

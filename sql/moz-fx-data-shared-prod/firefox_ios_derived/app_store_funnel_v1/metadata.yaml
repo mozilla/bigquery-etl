@@ -28,6 +28,6 @@ references:
   query.sql:
   - app_store.firefox_app_store_territory_source_type_report
   - app_store.firefox_downloads_territory_source_type_report
-  - firefox_ios.new_profile_activation
+  - firefox_ios.active_users_aggregates
   - static.country_codes_v1
 deprecated: false

@@ -1,6 +1,6 @@
-friendly_name: Non-Prod FxA Stdout Events
+friendly_name: Non-Prod FxA GCP Stdout Events
 description: |-
-  Staging table containing stderr fxa logs
+  Staging table containing stdout fxa logs
 owners:
 - kik@mozilla.com
 labels:

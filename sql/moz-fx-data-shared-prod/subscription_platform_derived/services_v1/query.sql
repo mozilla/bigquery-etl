@@ -66,17 +66,17 @@ WITH services AS (
 stripe_products AS (
   SELECT
     id,
-    PARSE_JSON(metadata) AS metadata
+    metadata
   FROM
-    `moz-fx-data-shared-prod.stripe_external.product_v1`
+    `moz-fx-data-shared-prod.subscription_platform_derived.stripe_products_v1`
 ),
 stripe_plans AS (
   SELECT
     id,
-    PARSE_JSON(metadata) AS metadata,
-    product_id
+    product_id,
+    metadata
   FROM
-    `moz-fx-data-shared-prod.stripe_external.plan_v1`
+    `moz-fx-data-shared-prod.subscription_platform_derived.stripe_plans_v1`
 ),
 service_stripe_product_ids AS (
   SELECT

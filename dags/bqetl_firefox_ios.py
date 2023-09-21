@@ -43,11 +43,24 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    checks__firefox_ios_derived__app_store_funnel__v1 = bigquery_dq_check(
-        task_id="checks__firefox_ios_derived__app_store_funnel__v1",
+    checks__fail_firefox_ios_derived__app_store_funnel__v1 = bigquery_dq_check(
+        task_id="checks__fail_firefox_ios_derived__app_store_funnel__v1",
         source_table="app_store_funnel_v1",
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    checks__warn_firefox_ios_derived__app_store_funnel__v1 = bigquery_dq_check(
+        task_id="checks__warn_firefox_ios_derived__app_store_funnel__v1",
+        source_table="app_store_funnel_v1",
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
         owner="kik@mozilla.com",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
@@ -130,7 +143,11 @@ with DAG(
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
-    checks__firefox_ios_derived__app_store_funnel__v1.set_upstream(
+    checks__fail_firefox_ios_derived__app_store_funnel__v1.set_upstream(
+        firefox_ios_derived__app_store_funnel__v1
+    )
+
+    checks__warn_firefox_ios_derived__app_store_funnel__v1.set_upstream(
         firefox_ios_derived__app_store_funnel__v1
     )
 
@@ -164,11 +181,11 @@ with DAG(
     firefox_ios_derived__app_store_funnel__v1.set_upstream(
         wait_for_app_store_external__firefox_downloads_territory_source_type_report__v1
     )
-    wait_for_firefox_ios_derived__new_profile_activation__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_ios_derived__new_profile_activation__v1",
-        external_dag_id="bqetl_mobile_activation",
-        external_task_id="firefox_ios_derived__new_profile_activation__v1",
-        execution_delta=datetime.timedelta(seconds=14400),
+    wait_for_firefox_ios_active_users_aggregates = ExternalTaskSensor(
+        task_id="wait_for_firefox_ios_active_users_aggregates",
+        external_dag_id="bqetl_analytics_aggregations",
+        external_task_id="firefox_ios_active_users_aggregates",
+        execution_delta=datetime.timedelta(seconds=1800),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -177,7 +194,7 @@ with DAG(
     )
 
     firefox_ios_derived__app_store_funnel__v1.set_upstream(
-        wait_for_firefox_ios_derived__new_profile_activation__v1
+        wait_for_firefox_ios_active_users_aggregates
     )
 
     wait_for_baseline_clients_daily = ExternalTaskSensor(

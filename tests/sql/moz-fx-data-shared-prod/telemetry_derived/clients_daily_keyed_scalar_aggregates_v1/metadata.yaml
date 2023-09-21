@@ -1,0 +1,9 @@
+friendly_name: Test metadata.yaml
+description: |-
+  Clustering fields: `column1`
+owners:
+  - test@mozilla.com
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:revenue/cat4

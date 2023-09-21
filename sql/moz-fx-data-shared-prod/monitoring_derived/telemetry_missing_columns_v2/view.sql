@@ -5,7 +5,7 @@ WITH placeholder_table_names AS (
   SELECT DISTINCT
     table_name
   FROM
-    `moz-fx-data-shared-prod`.telemetry_stable.INFORMATION_SCHEMA.TABLE_OPTIONS
+    `moz-fx-data-shared-prod.telemetry_stable.INFORMATION_SCHEMA.TABLE_OPTIONS`
   WHERE
     option_value LIKE '%placeholder_schema%'
 ),

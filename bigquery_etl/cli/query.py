@@ -381,10 +381,10 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
             )
 
             # update dags since new task has been added
-            dags = get_dags(None, sql_dir.parent / "dags.yaml")
+            dags = get_dags(None, sql_dir.parent / "dags.yaml", sql_dir=sql_dir)
             dags_to_be_generated.add(dag)
         else:
-            dags = get_dags(None, sql_dir.parent / "dags.yaml")
+            dags = get_dags(None, sql_dir.parent / "dags.yaml", sql_dir=sql_dir)
             if metadata.scheduling == {}:
                 click.echo(f"No scheduling information for: {query_file}", err=True)
                 sys.exit(1)

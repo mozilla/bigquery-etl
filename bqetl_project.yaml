@@ -53,6 +53,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_auth_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_content_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_device_command_events_v1/query.sql
+  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_device_command_events_v2/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_first_seen_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_last_seen_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_export_v1/query.sql

@@ -17,7 +17,7 @@
   },
   {
     "type": "STRING",
-    "name": "app_build_id"
+    "name": "env_build_id"
   },
   {
     "type": "STRING",
@@ -30,6 +30,10 @@
   {
     "type": "STRING",
     "name": "app_name"
+  },
+  {
+    "type": "STRING",
+    "name": "locale"
   },
   {
     "type": "STRING",

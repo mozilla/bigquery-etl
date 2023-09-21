@@ -10,3 +10,9 @@
   submission_timestamp_min: '2023-05-28 00:03:00'
   attribution:
     campaign: campaign2
+- client_id: client-4
+  sample_id: 40
+  submission_date: '2023-06-01'
+  submission_timestamp_min: '2023-06-01 00:04:00'
+  attribution:
+    campaign: campaign44

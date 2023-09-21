@@ -6,3 +6,9 @@
     settings:
       attribution:
         source: source2
+- client_id: client-5
+  sample_id: 50
+  submission_timestamp: '2022-07-01 01:00:00'
+  environment:
+    build:
+      build_id: build5

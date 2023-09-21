@@ -72,6 +72,16 @@
         "fields": [
           {
             "type": "STRING",
+            "name": "build_id"
+          }
+        ],
+        "name": "build",
+        "type": "RECORD"
+      },
+      {
+        "fields": [
+          {
+            "type": "STRING",
             "name": "key"
           },
           {
@@ -125,6 +135,10 @@
       },
       {
         "fields": [
+          {
+            "type": "STRING",
+            "name": "locale"
+          },
           {
             "fields": [
               {

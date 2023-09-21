@@ -6,8 +6,7 @@
   attribution_campaign: campaign4
   attribution_dltoken: token4
   metadata:
-    first_seen_date__source_ping: shutdown
-    attribution_campaign__source_ping: new_profile
+    first_seen_date_source_ping: shutdown
     reported_main_ping: true
     reported_new_profile_ping: true
     reported_shutdown_ping: true

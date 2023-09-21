@@ -1,7 +1,7 @@
 -- Query for telemetry_derived.clients_first_seen_v2
 {% if is_init() and parallel_run() %}
-  INSERT INTO
-    {project_id }.{dataset_id }.{table_name }
+INSERT INTO
+  {project_id}.{dataset_id}.{table_name}
 {% endif %}
 -- Ping subqueries use ANY_VALUE + HAVING MIN, which returns the earliest NOT NULL value.
 -- It is used because the query runs faster than using GROUPING or ARRAYs.
@@ -121,7 +121,7 @@ WITH new_profile_ping AS (
     {% if is_init() %}
       DATE(submission_timestamp) >= '2010-01-01'
       {% if parallel_run() %}
-        AND sample_id = {sample_id }
+        AND sample_id = {sample_id}
       {% endif %}
     {% else %}
       DATE(submission_timestamp) = @submission_date
@@ -245,7 +245,7 @@ shutdown_ping AS (
     {% if is_init() %}
       DATE(submission_timestamp) >= '2010-01-01'
       {% if parallel_run() %}
-        AND sample_id = {sample_id }
+        AND sample_id = {sample_id}
       {% endif %}
     {% else %}
       DATE(submission_timestamp) = @submission_date
@@ -255,6 +255,8 @@ shutdown_ping AS (
     sample_id
 ),
 main_ping AS (
+  -- The columns set as NULL are not available in clients_daily_v6 and need to be
+  -- retrieved in the ETL from telemetry_stable.main_v4:<column>.
   SELECT
     client_id AS client_id,
     sample_id AS sample_id,
@@ -267,26 +269,26 @@ main_ping AS (
       TIMESTAMP(ANY_VALUE(submission_date HAVING MIN submission_date))
     ) AS first_seen_timestamp,
     ARRAY_AGG(DATE(submission_date) ORDER BY submission_date ASC) AS all_dates,
-    CAST(NULL AS STRING) AS architecture,
+    CAST(NULL AS STRING) AS architecture, -- main_v4:environment.build.architecture
     ANY_VALUE(env_build_id HAVING MIN submission_date) AS app_build_id,
     ANY_VALUE(app_name HAVING MIN submission_date) AS app_name,
     ANY_VALUE(locale HAVING MIN submission_date) AS locale,
-    CAST(NULL AS STRING) AS platform_version,
+    CAST(NULL AS STRING) AS platform_version, -- main_v4:environment.build.platform_version
     ANY_VALUE(vendor HAVING MIN submission_date) AS vendor,
     ANY_VALUE(app_version HAVING MIN submission_date) AS app_version,
-    CAST(NULL AS STRING) AS xpcom_abi,
-    CAST(NULL AS STRING) AS document_id,
+    CAST(NULL AS STRING) AS xpcom_abi, -- main_v4:environment.build.xpcom_abi / application.xpcom_abi
+    CAST(NULL AS STRING) AS document_id, -- main_v4:document_id
     ANY_VALUE(distribution_id HAVING MIN submission_date) AS distribution_id,
-    CAST(NULL AS STRING) AS partner_distribution_version,
-    CAST(NULL AS STRING) AS partner_distributor,
-    CAST(NULL AS STRING) AS partner_distributor_channel,
-    CAST(NULL AS STRING) AS partner_id,
+    CAST(NULL AS STRING) AS partner_distribution_version, -- main_v4:environment.partner.distribution_version
+    CAST(NULL AS STRING) AS partner_distributor, -- main_v4:environment.partner.distributor
+    CAST(NULL AS STRING) AS partner_distributor_channel, -- main_v4:environment.partner.distributor_channel
+    CAST(NULL AS STRING) AS partner_id, -- main_v4:environment.partner.distribution_id
     ANY_VALUE(attribution.campaign HAVING MIN submission_date) AS attribution_campaign,
     ANY_VALUE(attribution.content HAVING MIN submission_date) AS attribution_content,
     ANY_VALUE(attribution.experiment HAVING MIN submission_date) AS attribution_experiment,
     ANY_VALUE(attribution.medium HAVING MIN submission_date) AS attribution_medium,
     ANY_VALUE(attribution.source HAVING MIN submission_date) AS attribution_source,
-    CAST(NULL AS STRING) AS attribution_ua,
+    CAST(NULL AS STRING) AS attribution_ua, -- main_v4:environment.settings.attribution.ua
     ANY_VALUE(
       default_search_engine_data_load_path
       HAVING
@@ -299,24 +301,24 @@ main_ping AS (
       HAVING
         MIN submission_date
     ) AS engine_data_submission_url,
-    CAST(NULL AS STRING) AS apple_model_id,
+    CAST(NULL AS STRING) AS apple_model_id, -- main_v4:environment.system.apple_model_id
     ANY_VALUE(city HAVING MIN submission_date) AS city,
-    CAST(NULL AS STRING) AS db_version,
+    CAST(NULL AS STRING) AS db_version, -- main_v4:metadata.geo.db_version
     ANY_VALUE(geo_subdivision1 HAVING MIN submission_date) AS subdivision1,
     ANY_VALUE(normalized_channel HAVING MIN submission_date) AS normalized_channel,
     ANY_VALUE(country HAVING MIN submission_date) AS country,
     ANY_VALUE(os HAVING MIN submission_date) AS normalized_os,
     ANY_VALUE(normalized_os_version HAVING MIN submission_date) AS normalized_os_version,
-    CAST(NULL AS STRING) AS startup_profile_selection_reason,
+    CAST(NULL AS STRING) AS startup_profile_selection_reason, -- main_v4:payload.processes.parent.scalars.startup_profile_selection_reason
     ANY_VALUE(attribution.dltoken HAVING MIN submission_date) AS attribution_dltoken,
-    CAST(NULL AS STRING) AS attribution_dlsource
+    CAST(NULL AS STRING) AS attribution_dlsource -- main_v4:environment.settings.attribution.dlsource
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
     {% if is_init() %}
       submission_date >= '2010-01-01'
       {% if parallel_run() %}
-        AND sample_id = {sample_id }
+        AND sample_id = {sample_id}
       {% endif %}
     {% else %}
       submission_date = @submission_date
@@ -449,14 +451,17 @@ SELECT
   {% if is_init() %}
     IF(_previous.client_id IS NULL, _current, _previous).*
   {% else %}
-    -- For the daily update, only the second_seen_date and the reported ping
-    -- status in the metadata are updated when the previous value is NULL.
+    -- For the daily update:
+    -- The reported ping status in the metadata is always updated is NULL.
+    -- The second_seen_date is updated if NULL and if there is a main ping reported,
+    --  even if it's not the earliest timestamp of that day.
     -- Every other attribute remains as recorded on the first_seen_date.
     IF(_previous.client_id IS NULL, _current, _previous).* REPLACE (
       IF(
         _previous.first_seen_date IS NOT NULL
         AND _previous.second_seen_date IS NULL
-        AND _current.client_id IS NOT NULL,
+        AND _current.client_id IS NOT NULL
+        AND _current.metadata.reported_main_ping,
         @submission_date,
         _previous.second_seen_date
       ) AS second_seen_date,

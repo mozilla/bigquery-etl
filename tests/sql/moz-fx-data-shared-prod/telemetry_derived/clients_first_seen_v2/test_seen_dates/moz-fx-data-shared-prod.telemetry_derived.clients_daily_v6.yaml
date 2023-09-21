@@ -2,6 +2,7 @@
 - client_id: client-1
   sample_id: 10
   normalized_channel: beta
+  locale: abc1
   submission_date: '2022-07-01'
   submission_timestamp_min: '2022-07-01 00:01:00'
 - client_id: client-2

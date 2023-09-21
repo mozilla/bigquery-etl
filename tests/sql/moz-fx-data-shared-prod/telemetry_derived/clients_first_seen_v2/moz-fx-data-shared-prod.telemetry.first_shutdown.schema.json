@@ -72,6 +72,16 @@
         "fields": [
           {
             "type": "STRING",
+            "name": "build_id"
+          }
+        ],
+        "name": "build",
+        "type": "RECORD"
+      },
+      {
+        "fields": [
+          {
+            "type": "STRING",
             "name": "key"
           },
           {
@@ -126,55 +136,8 @@
       {
         "fields": [
           {
-          "fields": [
-            {
-              "type": "STRING",
-              "name": "key"
-            },
-            {
-              "fields": [
-                {
-                  "type": "STRING",
-                  "name": "branch"
-                },
-                {
-                  "type": "STRING",
-                  "name": "enrollment_id"
-                },
-                {
-                  "type": "STRING",
-                  "name": "type"
-                }
-              ],
-              "name": "value",
-              "type": "RECORD"
-              }
-            ],
-            "name": "experiments",
-            "type": "RECORD",
-            "mode": "REPEATED"
-          },
-          {
-            "fields": [
-              {
-                "type": "STRING",
-                "name": "distribution_version"
-              },
-              {
-                "type": "STRING",
-                "name": "distributor"
-              },
-              {
-                "type": "STRING",
-                "name": "distributor_channel"
-              },
-              {
-                "type": "STRING",
-                "name": "partner_id"
-              }
-            ],
-            "name": "partner",
-            "type": "RECORD"
+            "type": "STRING",
+            "name": "locale"
           },
           {
             "fields": [
@@ -215,27 +178,27 @@
           "type": "RECORD"
           },
           {
-                "fields": [
-                  {
-                    "type": "STRING",
-                    "name": "load_path"
-                  },
-                  {
-                    "type": "STRING",
-                    "name": "name"
-                  },
-                  {
-                    "type": "STRING",
-                    "name": "origin"
-                  },
-                  {
-                    "type": "STRING",
-                    "name": "submission_url"
-                  }
-                ],
-              "name": "default_search_engine_data",
-              "type": "RECORD"
+            "fields": [
+              {
+                "type": "STRING",
+                "name": "load_path"
+              },
+              {
+                "type": "STRING",
+                "name": "name"
+              },
+              {
+                "type": "STRING",
+                "name": "origin"
+              },
+              {
+                "type": "STRING",
+                "name": "submission_url"
               }
+            ],
+          "name": "default_search_engine_data",
+          "type": "RECORD"
+          }
         ],
         "name": "settings",
         "type": "RECORD"

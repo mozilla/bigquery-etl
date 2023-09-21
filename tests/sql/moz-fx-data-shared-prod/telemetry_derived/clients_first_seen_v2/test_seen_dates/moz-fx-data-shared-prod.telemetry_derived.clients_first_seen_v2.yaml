@@ -4,7 +4,7 @@
   first_seen_date: 2022-06-30
   normalized_channel: release
   metadata:
-    first_seen_date__source_ping: new_profile
+    first_seen_date_source_ping: new_profile
     reported_main_ping: false
     reported_new_profile_ping: true
     reported_shutdown_ping: false
@@ -13,7 +13,7 @@
   first_seen_date: 2022-06-30
   normalized_channel: beta
   metadata:
-    first_seen_date__source_ping: new_profile
+    first_seen_date_source_ping: new_profile
     reported_new_profile_ping: true
     reported_shutdown_ping: false
 - client_id: client-4
@@ -21,7 +21,15 @@
   first_seen_date: 2022-06-29
   second_seen_date: 2022-06-30
   metadata:
-    first_seen_date__source_ping: new_profile
+    first_seen_date_source_ping: new_profile
     reported_new_profile_ping: true
     reported_main_ping: true
     reported_shutdown_ping: false
+- client_id: client-5
+  sample_id: 50
+  first_seen_date: 2022-06-25
+  metadata:
+    first_seen_date_source_ping: new_profile
+    reported_new_profile_ping: true
+    reported_main_ping: false
+    reported_shutdown_ping: true

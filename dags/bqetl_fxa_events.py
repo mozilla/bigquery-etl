@@ -264,13 +264,14 @@ with DAG(
         depends_on_past=False,
     )
 
-    firefox_accounts_derived__fxa_log_device_command_events__v1 = bigquery_etl_query(
-        task_id="firefox_accounts_derived__fxa_log_device_command_events__v1",
-        destination_table="fxa_log_device_command_events_v1",
+    firefox_accounts_derived__fxa_log_device_command_events__v2 = bigquery_etl_query(
+        task_id="firefox_accounts_derived__fxa_log_device_command_events__v2",
+        destination_table="fxa_log_device_command_events_v2",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["dthorn@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        start_date=datetime.datetime(2023, 9, 7, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

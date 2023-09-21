@@ -24,6 +24,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   checks.sql:
+  - moz-fx-data-shared-prod.firefox_ios.active_users_aggregates
   - moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1
   query.sql:
   - app_store.firefox_app_store_territory_source_type_report

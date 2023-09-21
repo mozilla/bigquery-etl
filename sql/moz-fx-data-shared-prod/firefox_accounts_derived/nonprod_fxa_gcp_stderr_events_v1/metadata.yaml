@@ -1,6 +1,6 @@
-friendly_name: Non-Prod FxA Auth Events
+friendly_name: Non-Prod FxA GCP Stderr Events
 description: |-
-  Selected Amplitude events extracted from Non-Prod FxA auth server logs
+  Staging table containing stderr fxa logs
 owners:
 - kik@mozilla.com
 labels:
@@ -11,21 +11,21 @@ labels:
   owner1: kik
 scheduling:
   dag_name: bqetl_fxa_events
+  start_date: '2023-05-26'
   arguments:
   - --schema_update_option=ALLOW_FIELD_ADDITION
-  referenced_tables: []
 bigquery:
   time_partitioning:
     type: day
     field: timestamp
     require_partition_filter: true
     expiration_days: null
-  clustering: null
+  clustering:
+    fields:
+    - fxa_server
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  query.sql:
-  - moz-fx-fxa-nonprod-375e.fxa_stage_logs.docker_fxa_auth
+references: {}
 deprecated: false

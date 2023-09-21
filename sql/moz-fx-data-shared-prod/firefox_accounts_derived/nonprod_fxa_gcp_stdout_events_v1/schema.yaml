@@ -297,6 +297,27 @@ fields:
     - name: assertion
       type: STRING
       mode: NULLABLE
+    - name: document_type
+      type: STRING
+      mode: NULLABLE
+    - name: ip_address
+      type: STRING
+      mode: NULLABLE
+    - name: user_agent
+      type: STRING
+      mode: NULLABLE
+    - name: document_id
+      type: STRING
+      mode: NULLABLE
+    - name: payload
+      type: STRING
+      mode: NULLABLE
+    - name: document_namespace
+      type: STRING
+      mode: NULLABLE
+    - name: document_version
+      type: STRING
+      mode: NULLABLE
     - name: user_id
       type: STRING
       mode: NULLABLE

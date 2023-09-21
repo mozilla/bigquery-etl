@@ -9947,6 +9947,14 @@ fields:
         Glean pings as set at init.
 
         '
+    - name: metrics_device_total_ram
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total amount of memory this device in bytes, when available
+        will be MemoryInfo.advertisedMem otherwise it will be MemoryInfo.totalMem.
+        This doesn''t represent memory available to the application however.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

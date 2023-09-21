@@ -2046,6 +2046,9 @@ fields:
     - name: fog_max_pings_per_minute
       type: INTEGER
       mode: NULLABLE
+    - name: metrics_device_total_ram
+      type: INTEGER
+      mode: NULLABLE
   - name: string
     type: RECORD
     mode: NULLABLE

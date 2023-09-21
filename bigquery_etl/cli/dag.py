@@ -7,7 +7,7 @@ from pathlib import Path
 import click
 import yaml
 
-from ..cli.utils import is_valid_dir, is_valid_file
+from ..cli.utils import is_valid_dir, is_valid_file, sql_dir_option
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..query_scheduling.dag import Dag
 from ..query_scheduling.dag_collection import DagCollection
@@ -55,6 +55,7 @@ def dag():
 )
 @click.argument("name", required=False)
 @dags_config_option
+@sql_dir_option
 @click.option(
     "--with_tasks",
     "--with-tasks",
@@ -63,10 +64,10 @@ def dag():
     default=False,
     is_flag=True,
 )
-def info(name, dags_config, with_tasks):
+def info(name, dags_config, sql_dir, with_tasks):
     """List available DAG information."""
     if with_tasks:
-        dag_collection = get_dags(None, dags_config)
+        dag_collection = get_dags(None, dags_config, sql_dir=sql_dir)
     else:
         dag_collection = DagCollection.from_file(dags_config)
 
@@ -228,10 +229,11 @@ def create(
 )
 @click.argument("name", required=False)
 @dags_config_option
+@sql_dir_option
 @output_dir_option
-def generate(name, dags_config, output_dir):
+def generate(name, dags_config, sql_dir, output_dir):
     """CLI command for generating Airflow DAGs."""
-    dags = get_dags(None, dags_config)
+    dags = get_dags(None, dags_config, sql_dir)
     if name:
         # only generate specific DAG
         dag = dags.dag_by_name(name)
@@ -261,15 +263,16 @@ def generate(name, dags_config, output_dir):
 )
 @click.argument("name", required=False)
 @dags_config_option
+@sql_dir_option
 @output_dir_option
-def remove(name, dags_config, output_dir):
+def remove(name, dags_config, sql_dir, output_dir):
     """
     CLI command for removing a DAG.
 
     Also removes scheduling information from queries that were referring to the DAG.
     """
     # remove from task schedulings
-    dags = get_dags(None, dags_config)
+    dags = get_dags(None, dags_config, sql_dir=sql_dir)
     dag_tbr = dags.dag_by_name(name)
 
     if not dag_tbr:

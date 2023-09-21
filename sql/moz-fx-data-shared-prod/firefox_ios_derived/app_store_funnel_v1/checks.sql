@@ -29,7 +29,7 @@ WITH min_row_count AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1`
   WHERE
-    `date` = DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+    `date` = DATE_SUB(@submission_date, INTERVAL 1 DAY)
 )
 SELECT
   IF(

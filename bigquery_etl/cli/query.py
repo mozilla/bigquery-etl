@@ -1719,6 +1719,7 @@ def _update_query_schema(
             content=sql_content,
             use_cloud_function=use_cloud_function,
             respect_skip=respect_dryrun_skip,
+            sql_dir=sql_dir,
         )
     except Exception:
         if not existing_schema_path.exists():
@@ -1930,6 +1931,7 @@ def deploy(
                     query_file_path,
                     use_cloud_function=use_cloud_function,
                     respect_skip=respect_dryrun_skip,
+                    sql_dir=sql_dir,
                 )
                 if not existing_schema.equal(query_schema):
                     click.echo(

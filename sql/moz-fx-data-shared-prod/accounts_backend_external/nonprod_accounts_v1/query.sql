@@ -1,0 +1,22 @@
+SELECT
+  *
+FROM
+  EXTERNAL_QUERY(
+    "moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa",
+    """SELECT
+         uid,
+         normalizedEmail,
+         emailVerified,
+         verifierVersion,
+         verifierSetAt,
+         createdAt,
+         locale,
+         lockedAt,
+         profileChangedAt,
+         ecosystemAnonId,
+         disabledAt,
+         metricsOptOutAt
+       FROM
+         accounts
+    """
+  )

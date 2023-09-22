@@ -3,7 +3,7 @@
 -- min_row_count helps us detect if we're seeing delays in the data arriving
 -- could also be an indicator of an upstream issue.
 #fail
-{{ min_row_count(1, "`date` = DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)") }}
+{{ min_row_count(1, "`date` = DATE_SUB(@submission_date, INTERVAL 1 DAY)") }}
 #fail
 WITH _aua_new_profiles AS (
   SELECT

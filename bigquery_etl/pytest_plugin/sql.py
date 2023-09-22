@@ -174,8 +174,7 @@ class SqlTest(pytest.Item, pytest.File):
         if "CIRCLE_BUILD_NUM" in os.environ:
             dataset_id += f"_{os.environ['CIRCLE_BUILD_NUM']}"
 
-        bq = bigquery.Client()
-        with dataset(bq, dataset_id) as default_dataset:
+        with bigquery.Client() as bq, dataset(bq, dataset_id) as default_dataset:
             with ThreadPool(8) as pool:
                 pool.map(
                     partial(load_table, bq, default_dataset),

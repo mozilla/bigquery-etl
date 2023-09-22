@@ -248,48 +248,50 @@ class View:
             # view would be skipped because --target-project is set
             return False
 
-        client = bigquery.Client()
-        target_view_id = self.target_view_identifier(target_project)
-        try:
-            table = client.get_table(target_view_id)
-        except NotFound:
-            print(f"view {target_view_id} will change: does not exist in BigQuery")
-            return True
-
-        expected_view_query = CREATE_VIEW_PATTERN.sub(
-            "", sqlparse.format(self.content, strip_comments=True), count=1
-        ).strip(";" + string.whitespace)
-        actual_view_query = sqlparse.format(
-            table.view_query, strip_comments=True
-        ).strip(";" + string.whitespace)
-        if expected_view_query != actual_view_query:
-            print(f"view {target_view_id} will change: query does not match")
-            return True
-
-        # check schema
-        schema_file = Path(self.path).parent / "schema.yaml"
-        if schema_file.is_file():
-            view_schema = Schema.from_schema_file(schema_file)
-            table_schema = Schema.from_json(
-                {"fields": [f.to_api_repr() for f in table.schema]}
-            )
-            if not view_schema.equal(table_schema):
-                print(f"view {target_view_id} will change: schema does not match")
+        with bigquery.Client() as client:
+            target_view_id = self.target_view_identifier(target_project)
+            try:
+                table = client.get_table(target_view_id)
+            except NotFound:
+                print(f"view {target_view_id} will change: does not exist in BigQuery")
                 return True
 
-        # check metadata
-        if self.metadata is not None:
-            if self.metadata.description != table.description:
-                print(f"view {target_view_id} will change: description does not match")
+            expected_view_query = CREATE_VIEW_PATTERN.sub(
+                "", sqlparse.format(self.content, strip_comments=True), count=1
+            ).strip(";" + string.whitespace)
+            actual_view_query = sqlparse.format(
+                table.view_query, strip_comments=True
+            ).strip(";" + string.whitespace)
+            if expected_view_query != actual_view_query:
+                print(f"view {target_view_id} will change: query does not match")
                 return True
-            if self.metadata.friendly_name != table.friendly_name:
-                print(
-                    f"view {target_view_id} will change: friendly_name does not match"
+
+            # check schema
+            schema_file = Path(self.path).parent / "schema.yaml"
+            if schema_file.is_file():
+                view_schema = Schema.from_schema_file(schema_file)
+                table_schema = Schema.from_json(
+                    {"fields": [f.to_api_repr() for f in table.schema]}
                 )
-                return True
-            if self.labels != table.labels:
-                print(f"view {target_view_id} will change: labels do not match")
-                return True
+                if not view_schema.equal(table_schema):
+                    print(f"view {target_view_id} will change: schema does not match")
+                    return True
+
+            # check metadata
+            if self.metadata is not None:
+                if self.metadata.description != table.description:
+                    print(
+                        f"view {target_view_id} will change: description does not match"
+                    )
+                    return True
+                if self.metadata.friendly_name != table.friendly_name:
+                    print(
+                        f"view {target_view_id} will change: friendly_name does not match"
+                    )
+                    return True
+                if self.labels != table.labels:
+                    print(f"view {target_view_id} will change: labels do not match")
+                    return True
 
         return False
 
@@ -309,7 +311,6 @@ class View:
             any(str(self.path).endswith(p) for p in self.skip_validation())
             or self._valid_view_naming()
         ):
-            client = bigquery.Client()
             sql = self.content
             target_view = self.target_view_identifier(target_project)
 
@@ -323,57 +324,62 @@ class View:
                 # We only change the first occurrence, which is in the target view name.
                 sql = sql.replace(self.project, target_project, 1)
 
-            job_config = bigquery.QueryJobConfig(use_legacy_sql=False, dry_run=dry_run)
-            query_job = client.query(sql, job_config)
+            with bigquery.Client() as client:
+                job_config = bigquery.QueryJobConfig(
+                    use_legacy_sql=False, dry_run=dry_run
+                )
+                query_job = client.query(sql, job_config)
 
-            if dry_run:
-                print(f"Validated definition of {target_view} in {self.path}")
-            else:
-                try:
-                    query_job.result()
-                except BadRequest as e:
-                    if "Invalid snapshot time" in e.message:
-                        # This occasionally happens due to dependent views being
-                        # published concurrently; we wait briefly and give it one
-                        # extra try in this situation.
-                        time.sleep(1)
-                        client.query(sql, job_config).result()
-                    else:
-                        raise
-
-                try:
-                    schema_path = Path(self.path).parent / "schema.yaml"
-                    if schema_path.is_file():
-                        view_schema = Schema.from_schema_file(schema_path)
-                        view_schema.deploy(target_view)
-                except Exception as e:
-                    print(f"Could not update field descriptions for {target_view}: {e}")
-
-                table = client.get_table(target_view)
-                if not self.metadata:
-                    print(f"Missing metadata for {self.path}")
-
-                table.description = self.metadata.description
-                table.friendly_name = self.metadata.friendly_name
-
-                if table.labels != self.labels:
-                    labels = self.labels.copy()
-                    for key in table.labels:
-                        if key not in labels:
-                            # To delete a label its value must be set to None
-                            labels[key] = None
-                    table.labels = {
-                        key: value
-                        for key, value in labels.items()
-                        if isinstance(value, str)
-                    }
-                    client.update_table(
-                        table, ["labels", "description", "friendly_name"]
-                    )
+                if dry_run:
+                    print(f"Validated definition of {target_view} in {self.path}")
                 else:
-                    client.update_table(table, ["description", "friendly_name"])
+                    try:
+                        query_job.result()
+                    except BadRequest as e:
+                        if "Invalid snapshot time" in e.message:
+                            # This occasionally happens due to dependent views being
+                            # published concurrently; we wait briefly and give it one
+                            # extra try in this situation.
+                            time.sleep(1)
+                            client.query(sql, job_config).result()
+                        else:
+                            raise
 
-                print(f"Published view {target_view}")
+                    try:
+                        schema_path = Path(self.path).parent / "schema.yaml"
+                        if schema_path.is_file():
+                            view_schema = Schema.from_schema_file(schema_path)
+                            view_schema.deploy(target_view)
+                    except Exception as e:
+                        print(
+                            f"Could not update field descriptions for {target_view}: {e}"
+                        )
+
+                    table = client.get_table(target_view)
+                    if not self.metadata:
+                        print(f"Missing metadata for {self.path}")
+
+                    table.description = self.metadata.description
+                    table.friendly_name = self.metadata.friendly_name
+
+                    if table.labels != self.labels:
+                        labels = self.labels.copy()
+                        for key in table.labels:
+                            if key not in labels:
+                                # To delete a label its value must be set to None
+                                labels[key] = None
+                        table.labels = {
+                            key: value
+                            for key, value in labels.items()
+                            if isinstance(value, str)
+                        }
+                        client.update_table(
+                            table, ["labels", "description", "friendly_name"]
+                        )
+                    else:
+                        client.update_table(table, ["description", "friendly_name"])
+
+                    print(f"Published view {target_view}")
         else:
             print(f"Error publishing {self.path}. Invalid view definition.")
             return False

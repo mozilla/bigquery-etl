@@ -170,15 +170,14 @@ def main():
 
     # determine how fast shredder is running
     warnings.filterwarnings("ignore", module="google.auth._default")
-    client = bigquery.Client()
-    jobs = list(client.query(JOBS_QUERY).result())
-
-    table_ids = {sql_table_id(target) for target in DELETE_TARGETS}
-    tables = [
-        table
-        for table in client.query(TABLES_QUERY).result()
-        if sql_table_id(table) in table_ids
-    ]
+    with bigquery.Client() as client:
+        jobs = list(client.query(JOBS_QUERY).result())
+        table_ids = {sql_table_id(target) for target in DELETE_TARGETS}
+        tables = [
+            table
+            for table in client.query(TABLES_QUERY).result()
+            if sql_table_id(table) in table_ids
+        ]
     flat_rate_tables = [table for table in tables if table.table_id != "main_v4"]
     on_demand_tables = [table for table in tables if table.table_id == "main_v4"]
 

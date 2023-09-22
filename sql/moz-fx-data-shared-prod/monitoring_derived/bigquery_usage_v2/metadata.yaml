@@ -3,11 +3,13 @@ description: |-
   BigQuery usage, partitioned by day.
 owners:
 - wichan@mozilla.com
+- mhirose@mozilla.com
 labels:
   incremental: true
   schedule: daily
   dag: bqetl_monitoring
   owner1: wichan
+  owner2: mhirose
 scheduling:
   dag_name: bqetl_monitoring
   arguments:

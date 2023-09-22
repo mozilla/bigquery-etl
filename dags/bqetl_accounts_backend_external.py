@@ -15,7 +15,7 @@ Built from bigquery-etl repo, [`dags/bqetl_accounts_backend_external.py`](https:
 
 #### Description
 
-Copies data from a Firefox Accounts (FxA) CloudSQL databases.
+Copies data from Firefox Accounts (FxA) CloudSQL databases.
 
 This DAG is under active development.
 

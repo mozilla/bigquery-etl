@@ -74,7 +74,7 @@ class DryRun:
         """Return files skipped by dry run."""
         default_sql_dir = Path(ConfigLoader.get("default", "sql_dir"))
         sql_dir = Path(sql_dir)
-        file_pattern_re = re.compile(rf"^{str(default_sql_dir)}")
+        file_pattern_re = re.compile(rf"^{re.escape(str(default_sql_dir))}/")
 
         skip_files = {
             file

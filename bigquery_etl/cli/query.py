@@ -16,14 +16,13 @@ from functools import partial
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from timeit import default_timer
 from traceback import print_exc
 
 import click
 import yaml
 from dateutil.rrule import MONTHLY, rrule
 from google.cloud import bigquery
-from google.cloud.exceptions import NotFound, PreconditionFailed
+from google.cloud.exceptions import NotFound
 
 from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_matching
 from ..cli.format import format
@@ -70,7 +69,6 @@ QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)
 VERSION_RE = re.compile(r"_v[0-9]+")
 DESTINATION_TABLE_RE = re.compile(r"^[a-zA-Z0-9_$]{0,1024}$")
 DEFAULT_DAG_NAME = "bqetl_default"
-DEFAULT_PARALLELISM = 10
 
 
 @click.group(help="Commands for managing queries.")
@@ -916,7 +914,7 @@ def _run_query(
                 if not validate_metadata.validate_public_data(metadata, query_file):
                     sys.exit(1)
 
-                # Change the destination table to write results to the public dataset;
+                # change the destination table to write results to the public dataset;
                 # a view to the public table in the internal dataset is created
                 # when CI runs
                 if (
@@ -1245,73 +1243,6 @@ def validate(
         validate_metadata.validate_datasets(dataset_dir)
 
 
-def _run_query_for_sample_id(
-    client,
-    query_file,
-    job_config,
-    project_id,
-    dataset,
-    table,
-    addl_templates,
-    sample_id,
-):
-    """Insert data for one sample_id into dataset.table."""
-    print(f"Insert data into table {dataset}.{table} for sample_id={sample_id}...")
-
-    with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
-        query_stream.write(
-            render_template(
-                query_file.name,
-                template_folder=str(query_file.parent),
-                templates_dir="",
-                format=False,
-                **addl_templates,
-            )
-        )
-        query_stream.seek(0)
-        query_content = query_stream.read()
-        client.query(
-            query_content.format(
-                sample_id=sample_id,
-                project_id=project_id,
-                dataset_id=dataset,
-                table_name=table,
-            ),
-            job_config=job_config,
-        ).result()
-
-
-def _run_query_in_parallel(
-    client,
-    query_file,
-    project_id,
-    dataset_id,
-    table,
-    parallelism,
-    dry_run,
-    addl_templates,
-):
-    job_config = bigquery.QueryJobConfig(dry_run=dry_run, use_query_cache=False)
-
-    with ThreadPool(parallelism) as pool:
-        start = default_timer()
-        # Process all subsets in the query in parallel (eg. all sample_ids).
-        pool.map(
-            partial(
-                _run_query_for_sample_id,
-                client,
-                query_file,
-                job_config,
-                project_id,
-                dataset_id,
-                table,
-                addl_templates,
-            ),
-            list(range(0, 1)),
-        )
-        print(f"Job completed in {default_timer() - start}")
-
-
 @query.command(
     help="""Create and initialize the destination table for the query.
     Only for queries that have an `init.sql` file.
@@ -1350,71 +1281,37 @@ def initialize(name, sql_dir, project_id, dry_run):
 
     for query_file in query_files:
         sql_content = query_file.read_text()
-        client = bigquery.Client()
 
         # Enable init from query.sql files
-        # Create the table by deploying the schema and metadata, then run the init
+        # First deploys the schema, then runs the init
         # This does not currently verify the accuracy of the schema
         if "is_init()" in sql_content:
             project = query_file.parent.parent.parent.name
             dataset = query_file.parent.parent.name
             destination_table = query_file.parent.name
-            full_table_id = f"{project}.{dataset}.{destination_table}"
-            query_file_path = Path(query_file)
-            existing_schema = Schema.from_schema_file(query_file.parent / SCHEMA_FILE)
-
-            with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
-                existing_schema.to_json_file(Path(tmp_schema_file.name))
-                bigquery_schema = client.schema_from_json(tmp_schema_file.name)
-            try:
-                table = client.get_table(full_table_id)
-            except NotFound:
-                table = bigquery.Table(full_table_id)
-            table.schema = bigquery_schema
-            _attach_metadata(query_file_path, table)
-            if not table.created:
-                client.create_table(table)
-                click.echo(f"Destination table {full_table_id} created.")
-            else:
-                raise PreconditionFailed(
-                    f"Table {full_table_id} already exists. The initialization process is terminated."
-                )
+            Schema.from_schema_file(query_file.parent / SCHEMA_FILE).deploy(
+                f"{project}.{dataset}.{destination_table}"
+            )
             arguments = [
                 "query",
                 "--use_legacy_sql=false",
                 "--replace",
                 "--format=none",
             ]
-
-            if "parallel_run" in sql_content:
-                for file in [query_file]:
-                    _run_query_in_parallel(
-                        client,
-                        query_file,
-                        project_id=project,
-                        dataset_id=dataset,
-                        table=destination_table,
-                        parallelism=DEFAULT_PARALLELISM,
-                        dry_run=dry_run,
-                        addl_templates={
-                            "is_init": lambda: True,
-                            "parallel_run": lambda: True,
-                        },
-                    )
-            else:
-                _run_query(
-                    query_files=[query_file],
-                    project_id=project,
-                    public_project_id=None,
-                    destination_table=destination_table,
-                    dataset_id=dataset,
-                    query_arguments=arguments,
-                    addl_templates={
-                        "is_init": lambda: True,
-                    },
-                )
+            _run_query(
+                query_files=[query_file],
+                project_id=project,
+                public_project_id=None,
+                destination_table=destination_table,
+                dataset_id=dataset,
+                query_arguments=arguments,
+                addl_templates={
+                    "is_init": lambda: True,
+                },
+            )
         else:
             init_files = Path(query_file.parent).rglob("init.sql")
+            client = bigquery.Client()
 
             for init_file in init_files:
                 project = init_file.parent.parent.parent.name

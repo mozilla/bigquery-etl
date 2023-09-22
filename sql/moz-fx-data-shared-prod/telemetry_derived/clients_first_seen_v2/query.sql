@@ -304,7 +304,7 @@ _previous AS (
   SELECT
     *
   FROM
-    {project_id}.{dataset_id}.{table_name}
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
 )
 SELECT
   {% if is_init() %}

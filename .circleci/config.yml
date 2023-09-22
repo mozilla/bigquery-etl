@@ -3,7 +3,7 @@ version: 2.1
 
 orbs:
   gcp-gcr: circleci/gcp-gcr@0.13.0
-  docker: circleci/docker@1.5
+  docker: circleci/docker@2.2
   python: circleci/python@2.1.1
 
 parameters:
@@ -513,6 +513,8 @@ jobs:
             cd private-generated-sql/
             rm -rf sql/
             cp -r /tmp/workspace/private-generated-sql/sql sql
+            rm -rf dags/
+            cp -r /tmp/workspace/private-generated-sql/dags dags
             git add .
             git commit -m "Auto-push due to change on main branch [ci skip]" \
               && git push \
@@ -559,6 +561,8 @@ jobs:
             ./script/bqetl dependency record \
               --skip-existing \
               "sql/"
+            ./script/bqetl metadata update \
+              sql/
             ./script/bqetl dag generate
 
             mkdir -p /tmp/workspace/main-generated-sql
@@ -577,10 +581,10 @@ jobs:
           name: Generate diff
           command: |
             diff -bur --no-dereference \
-              /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
+              /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
               > /tmp/workspace/generated-sql/sql.diff || true
             diff -bur --no-dereference \
-              /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
+              /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
               >> /tmp/workspace/generated-sql/sql.diff || true
       - persist_to_workspace:
           root: /tmp/workspace

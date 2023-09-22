@@ -80,7 +80,7 @@ class DryRun:
             file
             for skip in ConfigLoader.get("dry_run", "skip", fallback=[])
             for file in glob.glob(
-                file_pattern_re.sub(f"{str(sql_dir)}", skip),
+                file_pattern_re.sub(f"{str(sql_dir)}/", skip),
                 recursive=True,
             )
         }

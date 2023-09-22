@@ -14048,6 +14048,18 @@ fields:
         mode: NULLABLE
         description: Time (ms) for the QuotaManager to shutdown. Keyed by conditions
           during shutdown, see RecordTimeDeltaHelper::Run in https://searchfox.org/mozilla-central/source/dom/quota/ActorsParent.cpp
+    - name: http_connection_close_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+        description: Reason for HTTP connection closure, keyed by properties like
+          HTTP version and connection state.
   - name: late_writes
     type: RECORD
     mode: NULLABLE
@@ -34679,6 +34691,14 @@ fields:
             "zscaler" 17: "canary" 18: "ignored"
 
             '
+        - name: shopping_product_page_visits
+          type: INTEGER
+          mode: NULLABLE
+          description: 'Counts number of visits to a supported retailer product page
+            while enrolled in either the control or treatment branches of the shopping
+            experiment.
+
+            '
     - name: socket
       type: RECORD
       mode: NULLABLE
@@ -35075,6 +35095,18 @@ fields:
             description: When in TRR-first mode, it lists the reason we may have skipped
               TRR for HTTPS RR, keyed by the provider. Does not include requests that
               intentionally skip TRR.
+        - name: http_connection_close_reason
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: STRING
+            mode: NULLABLE
+            description: Reason for HTTP connection closure, keyed by properties like
+              HTTP version and connection state.
       - name: keyed_histograms
         type: RECORD
         mode: NULLABLE
@@ -35438,6 +35470,18 @@ fields:
             description: When in TRR-first mode, it lists the reason we may have skipped
               TRR for HTTPS RR, keyed by the provider. Does not include requests that
               intentionally skip TRR.
+        - name: http_connection_close_reason
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: STRING
+            mode: NULLABLE
+            description: Reason for HTTP connection closure, keyed by properties like
+              HTTP version and connection state.
       - name: keyed_scalars
         type: RECORD
         mode: NULLABLE

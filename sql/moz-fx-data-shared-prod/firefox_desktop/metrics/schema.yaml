@@ -586,6 +586,16 @@ fields:
         different partition keys
 
         '
+    - name: shopping_product_page_visits
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts number of visits to a supported retailer product page
+
+        while enrolled in either the control or treatment branches
+
+        of the shopping experiment.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

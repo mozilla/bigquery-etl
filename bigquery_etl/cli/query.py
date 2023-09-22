@@ -893,7 +893,9 @@ def _run_query(
     dataset_id,
     query_arguments,
     addl_templates: typing.Optional[dict] = None,
+    iterator=None,
 ):
+    client = bigquery.Client(project_id)
     """Run a query."""
     if dataset_id is not None:
         # dataset ID was parsed by argparse but needs to be passed as parameter
@@ -977,9 +979,21 @@ def _run_query(
                 )
             )
             query_stream.seek(0)
+            query_content = query_stream.read()
 
-            # run the query as shell command so that passed parameters can be used as is
-            subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
+            if iterator and "{iterator}" in query_content:
+                # Format the query template and run the query.
+                init_query = query_content.format(iterator=iterator)
+                job_config = bigquery.QueryJobConfig(
+                    use_legacy_sql=False,
+                    use_query_cache=False,
+                    dry_run=dryrun,
+                    allow_large_results=True,
+                )
+                client.query(init_query, job_config=job_config).result()
+            else:
+                # run the query as shell command so that passed parameters can be used as is.
+                subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
 
 
 @query.command(
@@ -1245,71 +1259,38 @@ def validate(
         validate_metadata.validate_datasets(dataset_dir)
 
 
-def _run_initialization_query_for_sample_id(
-    client,
-    query_file,
-    job_config,
-    project_id,
-    dataset,
-    table,
-    addl_templates,
-    sample_id,
-):
-    """Insert data for o given sample_id into the provided table."""
-    print(f"Insert data into table {dataset}.{table} for sample_id={sample_id}...")
-
-    with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
-        query_stream.write(
-            render_template(
-                query_file.name,
-                template_folder=str(query_file.parent),
-                templates_dir="",
-                format=False,
-                **addl_templates,
-            )
-        )
-        query_stream.seek(0)
-        query_content = query_stream.read()
-        client.query(
-            query_content.format(
-                sample_id=sample_id,
-                project_id=project_id,
-                dataset_id=dataset,
-                table_name=table,
-            ),
-            job_config=job_config,
-        ).result()
-
-
-def _run_initialization_query_in_parallel(
-    client,
+def _initialize_in_parallel(
     query_file,
     project_id,
     dataset_id,
-    table,
+    query_arguments,
     parallelism,
     dry_run,
     addl_templates,
 ):
-    job_config = bigquery.QueryJobConfig(dry_run=dry_run, use_query_cache=False)
+    # job_config = bigquery.QueryJobConfig(dry_run=dry_run, use_query_cache=False)
+    metadata = Metadata.of_query_file(str(query_file))
+    if metadata and "parallel_init" in metadata.labels:
+        iter_column = metadata.labels["parallel_init"]
+        if iter_column == "sample_id":
+            iterator = [f"{iter_column} = {i}" for i in range(0, 100)]
+    else:
+        iterator = [""]
 
-    with ThreadPool(parallelism) as pool:
+    init_job = partial(
+        _run_query,
+        [query_file],
+        project_id,
+        None,
+        None,
+        dataset_id,
+        query_arguments,
+        addl_templates,
+    )
+    with ThreadPool(parallelism) as p:
         start = default_timer()
-        # Process all subsets in the query in parallel (eg. all sample_ids).
-        pool.map(
-            partial(
-                _run_initialization_query_for_sample_id,
-                client,
-                query_file,
-                job_config,
-                project_id,
-                dataset_id,
-                table,
-                addl_templates,
-            ),
-            list(range(0, 100)),
-        )
-        print(f"Job completed in {default_timer() - start}")
+        p.map(init_job, iterator)
+        print(f"Job processed  in {default_timer() - start}")
 
 
 @query.command(
@@ -1355,9 +1336,9 @@ def initialize(ctx, name, sql_dir, project_id, dry_run):
 
         # Enable initialization from query.sql files
         # Create the table by deploying the schema and metadata, then run the init.
-        # This does not currently verify the accuracy of the schema and skips
-        # validating that the schema matches the query (which would fail when the table
-        # is used in the query, and it doesn't exist yet).
+        # This does not currently verify the accuracy of the schema.
+        # It deploys the schema even if it doesn't match the query which is
+        # required when the table is used in the query.
         if "is_init()" in sql_content:
             project = query_file.parent.parent.parent.name
             dataset = query_file.parent.parent.name
@@ -1380,22 +1361,22 @@ def initialize(ctx, name, sql_dir, project_id, dry_run):
                 "--replace",
                 "--format=none",
             ]
+            if dry_run:
+                arguments += ["--dry_run"]
 
             if "parallel_run" in sql_content:
-                for file in [query_file]:
-                    _run_initialization_query_in_parallel(
-                        client,
-                        query_file,
-                        project_id=project,
-                        dataset_id=dataset,
-                        table=destination_table,
-                        parallelism=DEFAULT_PARALLELISM,
-                        dry_run=dry_run,
-                        addl_templates={
-                            "is_init": lambda: True,
-                            "parallel_run": lambda: True,
-                        },
-                    )
+                _initialize_in_parallel(
+                    query_file=query_file,
+                    project_id=project,
+                    dataset_id=dataset,
+                    query_arguments=arguments,
+                    parallelism=DEFAULT_PARALLELISM,
+                    dry_run=dryrun,
+                    addl_templates={
+                        "is_init": lambda: True,
+                        "parallel_run": lambda: True,
+                    },
+                )
             else:
                 _run_query(
                     project_id=project,

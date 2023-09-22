@@ -3,19 +3,17 @@ description: |-
   Sanitized version of docker_fxa_customs from FxA (PII is hashed).
 
   This table contains FxA customs (sanitized) events up until the migration from AWS to GCP was concluded.
-  There is a time window between 2023-09-07 and 2023-09-15 when we were receiving events from both deployments.
-  As the migration as concluded, new data will land and be available via the v2 of this table.
+  There is a time window between 2023-09-07 and [TO BE DEFINED/TODO] when we were receiving events from both deployments.
+  GCP based data is available via the v2 of this table.
 owners:
 - frank@mozilla.com
 labels:
   application: fxa
   incremental: true
   schedule: daily
-# descheduled as this table was populated using data arriving from the AWS deployment,
-# since the migration there is no new data arriving that needs to be copied.
-# scheduling:
-#   dag_name: bqetl_fxa_events
-#   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+scheduling:
+  dag_name: bqetl_fxa_events
+  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
 bigquery:
   time_partitioning:
     type: day

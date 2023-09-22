@@ -76,7 +76,7 @@ SELECT
     labels.k8s_pod_env_code,
     labels.k8s_pod_pod_template_hash,
     labels.k8s_pod_app_kubernetes_io_name,
-    labels.k8s_pod_app_kubernetes_io_instance,
+    labels.k8s_pod_app_kubernetes_io_instance
   ) AS labels,
   operation,
   trace,

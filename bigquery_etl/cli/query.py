@@ -1887,8 +1887,6 @@ def deploy(
             "and check that the project is set correctly."
         )
         sys.exit(1)
-    client = bigquery.Client()
-
     query_files = paths_matching_name_pattern(name, sql_dir, project_id, ["query.*"])
     if not query_files:
         # run SQL generators if no matching query has been found
@@ -1902,6 +1900,8 @@ def deploy(
         )
 
     def _deploy(query_file):
+        client = bigquery.Client()
+
         if respect_dryrun_skip and str(query_file) in DryRun.skipped_files():
             click.echo(f"{query_file} dry runs are skipped. Cannot validate schemas.")
             return

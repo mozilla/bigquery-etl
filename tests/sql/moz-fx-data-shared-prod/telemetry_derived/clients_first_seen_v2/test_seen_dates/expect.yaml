@@ -1,11 +1,13 @@
 # client-1 has a first_seen_date from 2022-06-30 reported by the new_profile ping.
-#  On 2022-07-01 it reports a main ping which results in updating second_seen_date & reported_main_ping.
-#  Other attributes e.g. locale are not updated.
-# client-2 reports new_profile and main on 2022-07-01. The first_seen_date and other attributes are
-#   retrieved from new_profile ping, therefore attribution campaign reported by the main ping is not retrieved.
+#   On 2022-07-01 it reports a main ping which results in updating second_seen_date & reported_main_ping.
+#   Other attributes e.g. locale are not updated.
+# client-2 reports two new_profile pings and one main ping on 2022-07-01.
+#   The first_seen_date and other attributes are retrieved fromfirst new_profile ping,
+#    therefore attribution campaign is NULL as reported by the first new_profile ping
+#    and since the campaign reported by the main ping and the second new_profile ping are ignored.
 # client-5 reports new_profile and first_shutdown on the 25th.
-#  In 2022-07-01 there is another new_profile ping but the second_seen_date remains NULL because it should only
-#  be updated when there is a main ping reported.
+#   On 2022-07-01 there is another new_profile ping but the second_seen_date remains NULL because it should only
+#   be updated when there is a main ping reported.
 ---
 - client_id: client-1
   first_seen_date: 2022-06-30

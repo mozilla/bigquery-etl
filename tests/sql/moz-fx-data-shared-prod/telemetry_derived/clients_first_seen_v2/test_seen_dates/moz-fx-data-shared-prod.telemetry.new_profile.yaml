@@ -6,6 +6,13 @@
     settings:
       attribution:
         source: source2
+- client_id: client-2
+  sample_id: 20
+  submission_timestamp: '2022-07-01 01:02:00'
+  environment:
+    settings:
+      attribution:
+        campaign: campaign2
 - client_id: client-5
   sample_id: 50
   submission_timestamp: '2022-07-01 01:00:00'

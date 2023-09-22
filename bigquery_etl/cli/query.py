@@ -1307,7 +1307,7 @@ def _run_query_in_parallel(
                 table,
                 addl_templates,
             ),
-            list(range(0, 100)),
+            list(range(0, 1)),
         )
         print(f"Job completed in {default_timer() - start}")
 

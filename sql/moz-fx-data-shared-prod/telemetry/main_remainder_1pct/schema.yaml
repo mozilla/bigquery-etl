@@ -9680,6 +9680,16 @@ fields:
       - name: value
         type: STRING
         mode: NULLABLE
+    - name: http_connection_close_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
   - name: late_writes
     type: RECORD
     mode: NULLABLE
@@ -22547,6 +22557,9 @@ fields:
         - name: networking_doh_heuristics_result
           type: INTEGER
           mode: NULLABLE
+        - name: shopping_product_page_visits
+          type: INTEGER
+          mode: NULLABLE
     - name: socket
       type: RECORD
       mode: NULLABLE
@@ -22884,6 +22897,16 @@ fields:
           - name: value
             type: STRING
             mode: NULLABLE
+        - name: http_connection_close_reason
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: STRING
+            mode: NULLABLE
       - name: keyed_histograms
         type: RECORD
         mode: NULLABLE
@@ -23179,6 +23202,16 @@ fields:
             type: STRING
             mode: NULLABLE
         - name: trr_relevant_skip_reason_trr_first_type_rec
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: STRING
+            mode: NULLABLE
+        - name: http_connection_close_reason
           type: RECORD
           mode: REPEATED
           fields:

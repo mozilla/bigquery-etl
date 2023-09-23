@@ -2742,6 +2742,19 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: Counts the number of entries stored in each nsIDataStorage.
+    - name: pdfjs_stamp
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times some PDF editing features are used.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

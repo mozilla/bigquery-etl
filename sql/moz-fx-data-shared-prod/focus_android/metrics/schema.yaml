@@ -1006,6 +1006,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: pdfjs_stamp
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

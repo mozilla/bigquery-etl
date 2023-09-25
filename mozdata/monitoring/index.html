@@ -5653,6 +5653,11 @@ including views on <code>payload_bytes</code> tables</p>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
+        <td>query_id</td>
+        <td>The id of the query</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>reference_project_id</td>
         <td>The ID of the project referenced by the job</td>
         <td>String</td>
@@ -5685,6 +5690,11 @@ including views on <code>payload_bytes</code> tables</p>
     </tr><tr>
         <td>user_email</td>
         <td>Email address or service account of the user who ran the job</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>username</td>
+        <td>The name of the user who ran the job</td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -5728,14 +5738,9 @@ including views on <code>payload_bytes</code> tables</p>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
-        <td>query_id</td>
-        <td>The id of the query</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>username</td>
-        <td>The name of the user who ran the job</td>
-        <td>String</td>
+        <td>submission_date</td>
+        <td>Date Airflow DAG is executed</td>
+        <td>Date</td>
         <td>Yes</td>
     </tr>
 </table>

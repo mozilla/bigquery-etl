@@ -148,6 +148,12 @@ with DAG(
         "telemetry_derived__clients_daily__v6_external"
     ) as telemetry_derived__clients_daily__v6_external:
         ExternalTaskMarker(
+            task_id="bqetl_analytics_tables__wait_for_telemetry_derived__clients_daily__v6",
+            external_dag_id="bqetl_analytics_tables",
+            external_task_id="wait_for_telemetry_derived__clients_daily__v6",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_internet_outages__wait_for_telemetry_derived__clients_daily__v6",
             external_dag_id="bqetl_internet_outages",
             external_task_id="wait_for_telemetry_derived__clients_daily__v6",

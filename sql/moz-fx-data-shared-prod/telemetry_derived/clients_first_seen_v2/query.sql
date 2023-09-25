@@ -1,7 +1,7 @@
 -- Query for telemetry_derived.clients_first_seen_v2
 {% if is_init() and parallel_run() %}
 INSERT INTO
-  {project_id}.{dataset_id}.{table_name}
+  `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
 {% endif %}
 -- Query for telemetry_derived.clients_first_seen_v2
 -- Each ping type subquery retrieves all attributes as reported on the first

@@ -1,7 +1,7 @@
 -- Query for telemetry_derived.clients_first_seen_v2
 {% if is_init() and parallel_run() %}
 INSERT INTO
-  `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
 {% endif %}
 -- Query for telemetry_derived.clients_first_seen_v2
 -- Each ping type subquery retrieves all attributes as reported on the first
@@ -281,13 +281,13 @@ _current AS (
     unioned.* EXCEPT (client_id, sample_id, first_seen_timestamp, all_dates, source_ping),
     STRUCT(
       fsd.first_seen_source_ping AS first_seen_date_source_ping,
-      reported_main_ping,
-      reported_new_profile_ping,
-      reported_shutdown_ping
+      pings.reported_main_ping AS reported_main_ping,
+      pings.reported_new_profile_ping AS reported_new_profile_ping,
+      pings.reported_shutdown_ping AS reported_shutdown_ping
     ) AS metadata
   FROM
     unioned
-  JOIN
+  INNER JOIN
     first_seen_date AS fsd
   USING
     (client_id, first_seen_timestamp)

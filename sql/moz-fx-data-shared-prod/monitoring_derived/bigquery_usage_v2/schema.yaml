@@ -128,4 +128,4 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Date bigquery_usage_v2 table refreshed
+  description: Date Airflow DAG is executed

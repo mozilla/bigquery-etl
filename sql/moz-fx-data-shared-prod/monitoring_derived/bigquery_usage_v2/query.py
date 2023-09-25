@@ -21,7 +21,7 @@ parser.add_argument("--destination_table", default="bigquery_usage_v2")
 
 def create_query(date, project):
     """Create query with filter for source projects."""
-    return """
+    return f"""
         WITH jobs_by_org AS (
       SELECT
         t1.project_id AS source_project,
@@ -72,7 +72,7 @@ def create_query(date, project):
       )
       SELECT
         jo.source_project,
-        jo.creation_date,
+        jo.creation_date as job_creation_date,
         jo.job_id,
         jo.job_type,
         jo.reservation_id,
@@ -95,7 +95,8 @@ def create_query(date, project):
         jo.error_location,
         jo.error_reason,
         jo.error_message,
-        jo.resource_warning
+        jo.resource_warning,
+        DATE('{date}') AS submission_date,
       FROM jobs_by_org jo
       LEFT JOIN jobs_by_project jp
       USING(source_project,

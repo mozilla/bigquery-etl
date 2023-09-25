@@ -3,7 +3,7 @@ friendly_name: Non-Prod FxA Auth Events
 description:
   Selected Amplitude events extracted from Non-Prod FxA auth server logs
 owners:
-  - dthorn@mozilla.com
+  - kik@mozilla.com
 labels:
   application: fxa
   incremental: true

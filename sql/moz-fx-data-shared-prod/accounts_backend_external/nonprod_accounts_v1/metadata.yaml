@@ -1,0 +1,17 @@
+---
+friendly_name: FxA Accounts nonprod
+description: >
+  A mirror of the `accounts` table from the staging FxA CloudSQL database,
+  updated daily to match the current state of the table.
+owners:
+  - akomar@mozilla.com
+labels:
+  application: accounts_backend
+  schedule: daily
+scheduling:
+  dag_name: bqetl_accounts_backend_external
+  # destination is the whole table, not a single partition,
+  # so don't use date_partition_parameter
+  date_partition_parameter: null
+  depends_on_past: true
+  referenced_tables: []

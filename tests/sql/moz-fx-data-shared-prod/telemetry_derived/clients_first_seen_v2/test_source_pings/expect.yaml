@@ -1,0 +1,31 @@
+---
+- client_id: client-1
+  first_seen_date: 2023-06-01
+  city: city1
+  sample_id: 10
+  metadata:
+    first_seen_date_source_ping: main
+    reported_main_ping: true
+    reported_new_profile_ping: false
+    reported_shutdown_ping: false
+- client_id: client-3
+  first_seen_date: 2023-06-01
+  attribution_dltoken: token3
+  sample_id: 30
+  metadata:
+    first_seen_date_source_ping: new_profile
+    reported_main_ping: false
+    reported_new_profile_ping: true
+    reported_shutdown_ping: true
+- client_id: client-4
+  sample_id: 40
+  first_seen_date: 2023-05-14
+  second_seen_date: 2023-06-01
+  normalized_channel: nightly
+  attribution_campaign: campaign4
+  attribution_dltoken: token4
+  metadata:
+    first_seen_date_source_ping: shutdown
+    reported_main_ping: true
+    reported_new_profile_ping: true
+    reported_shutdown_ping: true

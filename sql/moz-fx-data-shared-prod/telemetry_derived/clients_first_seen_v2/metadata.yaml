@@ -1,0 +1,42 @@
+friendly_name: Clients First Seen
+description: |-
+  Picks out just the first observations per client based on
+  the main, new_profile and first_shutdown pings.
+  - All attributes are retrieved from the ping that reports
+  the first_seen_date, using the earliest timestamp and respecting nulls.
+  - Only the second_seen_date and client's reported pings are updated
+  daily when NULL.
+  This table should be accessed through the user-facing view
+  `telemetry.clients_first_seen`.
+
+  The initialization command creates the table and then inserts data
+  in parallel for each sample_id. Usage:
+  `bqetl query initialize sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2/query.sql`
+owners:
+- lvargas@mozilla.com
+labels:
+  application: firefox
+  incremental: true
+  schedule: daily
+  depends_on_past: true
+  owner1: lvargas
+scheduling:
+  dag_name: bqetl_analytics_tables
+  task_name: clients_first_seen_v2
+  depends_on_past: true
+  date_partition_parameter: null
+  parameters:
+  - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id
+    - country
+    - normalized_os
+references: {}

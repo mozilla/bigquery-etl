@@ -30,7 +30,7 @@ downloads_data AS (
 store_stats AS (
   SELECT
     DATE(`date`) AS `date`,
-    code AS country,
+    country_names.code AS country,
     views,
     total_downloads,
     first_time_downloads,
@@ -41,10 +41,10 @@ store_stats AS (
     downloads_data
   USING
     (`date`, country_name)
-  LEFT OUTER JOIN
-    static.country_codes_v1
+  LEFT JOIN
+    static.country_names_v1 AS country_names
   ON
-    country_name = name
+    country_names.name = views_data.country_name
 ),
 _new_profiles AS (
   SELECT

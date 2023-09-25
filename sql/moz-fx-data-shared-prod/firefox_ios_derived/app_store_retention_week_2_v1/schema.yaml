@@ -1,0 +1,22 @@
+fields:
+
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: |
+    Date of when the user was first seen.
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: |
+    36-char long hash randomly assigned when the account is created.
+- mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+  description: |
+    Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99.
+- mode: NULLABLE
+  name: retained_week_2
+  type: BOOLEAN
+  description: |
+    True if the user was seen within the second week since they were first seen.

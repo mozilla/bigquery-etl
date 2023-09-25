@@ -1,0 +1,18 @@
+friendly_name: User Retention - Firefox iOS (Week 4)
+description: |
+  Derived dataset for Firefox iOS retention analysis. Contains metrics that can be calculated
+  4 weeks (28 days) after a user was first seen.
+owners:
+- kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: false
+scheduling:
+  dag_name: bqetl_firefox_ios
+  depends_on_past: false
+  date_partition_parameter: null
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false

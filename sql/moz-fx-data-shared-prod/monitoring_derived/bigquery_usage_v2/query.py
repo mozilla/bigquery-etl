@@ -72,7 +72,7 @@ def create_query(date, project):
       )
       SELECT
         jo.source_project,
-        jo.creation_date as job_creation_date,
+        jo.creation_date,
         jo.job_id,
         jo.job_type,
         jo.reservation_id,

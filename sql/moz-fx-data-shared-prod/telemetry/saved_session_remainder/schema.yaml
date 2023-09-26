@@ -13009,7 +13009,7 @@ fields:
         type: STRING
         mode: NULLABLE
         description: Time (ms) for the QuotaManager to load quota information. Keyed
-          by conditions during quota info loading, see RecordQuotaInfoLoadTimeHelper::Run
+          by conditions during quota info loading, see RecordTimeDeltaHelper::Run
           in https://searchfox.org/mozilla-central/source/dom/quota/ActorsParent.cpp
     - name: refresh_driver_tick_phase_weight
       type: RECORD

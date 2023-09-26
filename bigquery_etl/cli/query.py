@@ -893,7 +893,7 @@ def _run_query(
     dataset_id,
     query_arguments,
     addl_templates: typing.Optional[dict] = None,
-    iterator=None,
+    mapped_values=None,
 ):
     client = bigquery.Client(project_id)
     """Run a query."""
@@ -981,16 +981,18 @@ def _run_query(
             query_stream.seek(0)
             query_content = query_stream.read()
 
-            if iterator and "{iterator}" in query_content:
+            if mapped_values is not None and "{mapped_values}" in query_content:
                 # Format the query template and run the query.
-                init_query = query_content.format(iterator=iterator)
-                job_config = bigquery.QueryJobConfig(
-                    use_legacy_sql=False,
-                    use_query_cache=False,
-                    dry_run=dryrun,
-                    allow_large_results=True,
+                print(f"Running for {mapped_values}...")
+                query = query_content.format(mapped_values=mapped_values)
+                job = client.query(
+                    query=query,
+                    job_config=bigquery.QueryJobConfig(
+                        use_query_cache=False,
+                        use_legacy_sql=False,
+                    ),
                 )
-                client.query(init_query, job_config=job_config).result()
+                job.result()
             else:
                 # run the query as shell command so that passed parameters can be used as is.
                 subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
@@ -1260,37 +1262,33 @@ def validate(
 
 
 def _initialize_in_parallel(
+    project,
+    table,
+    dataset,
     query_file,
-    project_id,
-    dataset_id,
-    query_arguments,
+    arguments,
     parallelism,
-    dry_run,
     addl_templates,
 ):
-    # job_config = bigquery.QueryJobConfig(dry_run=dry_run, use_query_cache=False)
-    metadata = Metadata.of_query_file(str(query_file))
-    if metadata and "parallel_init" in metadata.labels:
-        iter_column = metadata.labels["parallel_init"]
-        if iter_column == "sample_id":
-            iterator = [f"{iter_column} = {i}" for i in range(0, 100)]
-    else:
-        iterator = [""]
+    mapped_values = [f"sample_id = {i}" for i in list(range(0, 100))]
 
-    init_job = partial(
-        _run_query,
-        [query_file],
-        project_id,
-        None,
-        None,
-        dataset_id,
-        query_arguments,
-        addl_templates,
-    )
-    with ThreadPool(parallelism) as p:
+    with ThreadPool(parallelism) as pool:
         start = default_timer()
-        p.map(init_job, iterator)
-        print(f"Job processed  in {default_timer() - start}")
+        # Process all subsets in the query in parallel (eg. all sample_ids).
+        pool.map(
+            partial(
+                _run_query,
+                [query_file],
+                project,
+                None,
+                table,
+                dataset,
+                arguments,
+                addl_templates,
+            ),
+            mapped_values,
+        )
+        print(f"Job completed in {default_timer() - start}")
 
 
 @query.command(
@@ -1336,9 +1334,8 @@ def initialize(ctx, name, sql_dir, project_id, dry_run):
 
         # Enable initialization from query.sql files
         # Create the table by deploying the schema and metadata, then run the init.
-        # This does not currently verify the accuracy of the schema.
-        # It deploys the schema even if it doesn't match the query which is
-        # required when the table is used in the query.
+        # This does not currently verify the accuracy of the schema or that it
+        # matches the query.
         if "is_init()" in sql_content:
             project = query_file.parent.parent.parent.name
             dataset = query_file.parent.parent.name
@@ -1355,6 +1352,7 @@ def initialize(ctx, name, sql_dir, project_id, dry_run):
                     f"Table {full_table_id} already exists. The initialization process is terminated."
                 )
             ctx.invoke(deploy, name=full_table_id, force=True)
+
             arguments = [
                 "query",
                 "--use_legacy_sql=false",
@@ -1366,12 +1364,12 @@ def initialize(ctx, name, sql_dir, project_id, dry_run):
 
             if "parallel_run" in sql_content:
                 _initialize_in_parallel(
+                    project=project,
+                    table=destination_table,
+                    dataset=dataset,
                     query_file=query_file,
-                    project_id=project,
-                    dataset_id=dataset,
-                    query_arguments=arguments,
+                    arguments=arguments,
                     parallelism=DEFAULT_PARALLELISM,
-                    dry_run=dryrun,
                     addl_templates={
                         "is_init": lambda: True,
                         "parallel_run": lambda: True,

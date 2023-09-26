@@ -27,6 +27,7 @@ SELECT
   clients_retention.sample_id,
   mozfun.bits28.active_in_range(days_seen_bits, -6, 7) AS retained_week_4,
   LENGTH(REPLACE(mozfun.bits28.to_string(days_seen_bits), "0", "")) AS days_seen_in_first_28_days,
+  LENGTH(REPLACE(mozfun.bits28.to_string(days_seen_bits), "0", "")) > 1 AS repeat_first_month_user,
   -- TODO: Should we be using the UDF here?
   -- mozfun.bits28.retention(days_seen_bits, @submission_date).day_27.active_in_week_3 AS retention_week_4,
   -- mozfun.bits28.retention(days_seen_bits, @submission_date) AS retention, -- retention week 2 query should return the same result as day_13.active_in_week_1? Maybe a good test to make sure we're aligned with the UDF?

@@ -25,3 +25,9 @@ fields:
   type: INTEGER
   description: |
     Number of days we saw the user within their first 28 days since they were first seen.
+- mode: NULLABLE
+  name: repeat_first_month_user
+  type: BOOLEAN
+  description: |
+    Indicates if the user qualified as a repeat first month user,
+    meaning we saw them more than once within their first 28 days.

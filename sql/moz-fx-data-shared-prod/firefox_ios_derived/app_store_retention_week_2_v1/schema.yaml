@@ -19,4 +19,4 @@ fields:
   name: retained_week_2
   type: BOOLEAN
   description: |
-    True if the user was seen within the second week since they were first seen.
+    True if the user was seen in the second week since they were first seen.

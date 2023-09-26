@@ -6,11 +6,10 @@ owners:
 - kik@mozilla.com
 labels:
   schedule: daily
-  incremental: false
+  incremental: true
 scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: false
-  date_partition_parameter: null
 bigquery:
   time_partitioning:
     type: day
@@ -18,4 +17,4 @@ bigquery:
     require_partition_filter: false
   clustering:
     fields:
-      - sample_id
+    - sample_id

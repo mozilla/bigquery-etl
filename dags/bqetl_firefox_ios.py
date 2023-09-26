@@ -67,7 +67,7 @@ with DAG(
             owner="kik@mozilla.com",
             email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
             depends_on_past=False,
-            task_concurrency=1,
+            parameters=["submission_date:DATE:{{ds}}"],
         )
     )
 
@@ -81,7 +81,7 @@ with DAG(
             owner="kik@mozilla.com",
             email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
             depends_on_past=False,
-            task_concurrency=1,
+            parameters=["submission_date:DATE:{{ds}}"],
         )
     )
 
@@ -132,9 +132,8 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        task_concurrency=1,
     )
 
     firefox_ios_derived__app_store_retention_week_4__v1 = bigquery_etl_query(
@@ -144,9 +143,8 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        task_concurrency=1,
     )
 
     firefox_ios_derived__attributable_clients__v1 = bigquery_etl_query(
@@ -286,7 +284,7 @@ with DAG(
     )
 
     firefox_ios_derived__app_store_retention_week_4__v1.set_upstream(
-        wait_for_baseline_clients_last_seen
+        checks__fail_firefox_ios_derived__app_store_retention_week_2__v1
     )
 
     wait_for_baseline_clients_daily = ExternalTaskSensor(

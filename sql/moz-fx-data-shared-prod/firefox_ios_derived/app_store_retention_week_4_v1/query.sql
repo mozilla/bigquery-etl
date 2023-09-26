@@ -19,21 +19,34 @@ first_seen AS (
     firefox_ios.baseline_clients_first_seen
   -- 28 days need to elapse before calculating the week 4 and day 28 retention metrics
   WHERE
-    submission_date = DATE_SUB(@submission_date, INTERVAL 28 DAY)
+    submission_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+),
+retention_calculation AS (
+  SELECT
+    first_seen.first_seen_date,
+    clients_retention.client_id,
+    clients_retention.sample_id,
+    LENGTH(REPLACE(mozfun.bits28.to_string(days_seen_bits), "0", "")) AS days_seen_in_first_28_days,
+    mozfun.bits28.retention(days_seen_bits, @submission_date) AS retention,
+  FROM
+    clients_retention
+  INNER JOIN
+    first_seen
+  USING
+    (client_id, sample_id)
 )
 SELECT
-  first_seen.first_seen_date,
-  clients_retention.client_id,
-  clients_retention.sample_id,
-  mozfun.bits28.active_in_range(days_seen_bits, -6, 7) AS retained_week_4,
-  LENGTH(REPLACE(mozfun.bits28.to_string(days_seen_bits), "0", "")) AS days_seen_in_first_28_days,
-  LENGTH(REPLACE(mozfun.bits28.to_string(days_seen_bits), "0", "")) > 1 AS repeat_first_month_user,
-  -- TODO: Should we be using the UDF here?
-  -- mozfun.bits28.retention(days_seen_bits, @submission_date).day_27.active_in_week_3 AS retention_week_4,
-  -- mozfun.bits28.retention(days_seen_bits, @submission_date) AS retention, -- retention week 2 query should return the same result as day_13.active_in_week_1? Maybe a good test to make sure we're aligned with the UDF?
+  * EXCEPT (retention) REPLACE(
+    -- metric date should align with first_seen_date, if that is not the case then the query will fail.
+    IF(
+      retention.day_27.metric_date <> first_seen_date,
+      ERROR("Metric date misaligned with first_seen_date"),
+      first_seen_date
+    ) AS first_seen_date
+  ),
+  days_seen_in_first_28_days > 1 AS repeat_first_month_user,
+  -- added for testing.
+  retention.day_27.active_in_week_1 AS retained_week_2,
+  retention.day_27.active_in_week_3 AS retained_week_4,
 FROM
-  clients_retention
-INNER JOIN
-  first_seen
-USING
-  (client_id, sample_id)
+  retention_calculation

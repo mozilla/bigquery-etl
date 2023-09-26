@@ -16,11 +16,6 @@ fields:
   description: |
     Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99.
 - mode: NULLABLE
-  name: retained_week_4
-  type: BOOLEAN
-  description: |
-    True if the user was seen within the forth week since they were first seen.
-- mode: NULLABLE
   name: days_seen_in_first_28_days
   type: INTEGER
   description: |
@@ -31,3 +26,13 @@ fields:
   description: |
     Indicates if the user qualified as a repeat first month user,
     meaning we saw them more than once within their first 28 days.
+- mode: NULLABLE
+  name: retained_week_2
+  type: BOOLEAN
+  description: |
+    True if the user was seen in the second week since they were first seen.
+- mode: NULLABLE
+  name: retained_week_4
+  type: BOOLEAN
+  description: |
+    True if the user was seen in the forth week since they were first seen.

@@ -712,7 +712,7 @@ with DAG(
     )
 
     telemetry_derived__main_remainder_1pct__v1.set_upstream(
-        wait_for_copy_deduplicate_all
+        wait_for_copy_deduplicate_main_ping
     )
 
     telemetry_derived__main_summary__v4.set_upstream(
@@ -720,7 +720,7 @@ with DAG(
     )
 
     telemetry_derived__main_use_counter_1pct__v1.set_upstream(
-        wait_for_copy_deduplicate_all
+        wait_for_copy_deduplicate_main_ping
     )
 
     telemetry_derived__suggest_clients_daily__v1.set_upstream(wait_for_bq_main_events)

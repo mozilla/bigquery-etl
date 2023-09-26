@@ -94,6 +94,7 @@ def create_query(date, source_project, tmp_table_name):
                 reference_table_id AS table_id
             FROM `moz-fx-data-shared-prod.monitoring_derived.bigquery_usage_v2`
             WHERE creation_date >= "2023-01-01"
+            AND submission_date >= "2023_01-01"
             GROUP BY project_id, dataset_id, table_id
         ),
         table_info AS (

@@ -10087,6 +10087,142 @@ fields:
       mode: NULLABLE
       description: Number of top-level content documents destroyed; used in conjunction
         with use counter histograms
+    - name: use_counter2_window_cssmathclamp_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Window.CSSMathClamp
+    - name: use_counter2_window_cssmathclamp_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Window.CSSMathClamp
+    - name: use_counter2_window_csspropertyrule_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Window.CSSPropertyRule
+    - name: use_counter2_window_csspropertyrule_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Window.CSSPropertyRule
+    - name: use_counter2_window_encodedvideochunk_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Window.EncodedVideoChunk
+    - name: use_counter2_window_encodedvideochunk_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Window.EncodedVideoChunk
+    - name: use_counter2_window_pictureinpictureevent_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Window.PictureInPictureEvent
+    - name: use_counter2_window_pictureinpictureevent_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Window.PictureInPictureEvent
+    - name: use_counter2_window_report_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Window.Report
+    - name: use_counter2_window_report_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Window.Report
+    - name: use_counter2_window_reportbody_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Window.ReportBody
+    - name: use_counter2_window_reportbody_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Window.ReportBody
+    - name: use_counter2_window_rtcpeerconnectioniceerrorevent_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Window.RTCPeerConnectionIceErrorEvent
+    - name: use_counter2_window_rtcpeerconnectioniceerrorevent_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Window.RTCPeerConnectionIceErrorEvent
+    - name: use_counter2_window_speechrecognitionalternative_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Window.SpeechRecognitionAlternative
+    - name: use_counter2_window_speechrecognitionalternative_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Window.SpeechRecognitionAlternative
+    - name: use_counter2_window_speechrecognitionresult_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Window.SpeechRecognitionResult
+    - name: use_counter2_window_speechrecognitionresult_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Window.SpeechRecognitionResult
+    - name: use_counter2_window_speechrecognitionresultlist_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Window.SpeechRecognitionResultList
+    - name: use_counter2_window_speechrecognitionresultlist_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Window.SpeechRecognitionResultList
+    - name: use_counter2_window_toggleevent_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Window.ToggleEvent
+    - name: use_counter2_window_toggleevent_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Window.ToggleEvent
+    - name: use_counter2_window_videocolorspace_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Window.VideoColorSpace
+    - name: use_counter2_window_videocolorspace_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Window.VideoColorSpace
+    - name: use_counter2_window_videodecoder_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Window.VideoDecoder
+    - name: use_counter2_window_videodecoder_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Window.VideoDecoder
+    - name: use_counter2_window_videoencoder_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Window.VideoEncoder
+    - name: use_counter2_window_videoencoder_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Window.VideoEncoder
+    - name: use_counter2_window_videoframe_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Window.VideoFrame
+    - name: use_counter2_window_videoframe_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Window.VideoFrame
+    - name: use_counter2_window_wakelock_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Window.WakeLock
+    - name: use_counter2_window_wakelock_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Window.WakeLock
+    - name: use_counter2_window_wakelocksentinel_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Window.WakeLockSentinel
+    - name: use_counter2_window_wakelocksentinel_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Window.WakeLockSentinel
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -20020,6 +20156,142 @@ fields:
           mode: NULLABLE
           description: Number of top-level content documents destroyed; used in conjunction
             with use counter histograms
+        - name: use_counter2_window_cssmathclamp_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Window.CSSMathClamp
+        - name: use_counter2_window_cssmathclamp_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Window.CSSMathClamp
+        - name: use_counter2_window_csspropertyrule_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Window.CSSPropertyRule
+        - name: use_counter2_window_csspropertyrule_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Window.CSSPropertyRule
+        - name: use_counter2_window_encodedvideochunk_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Window.EncodedVideoChunk
+        - name: use_counter2_window_encodedvideochunk_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Window.EncodedVideoChunk
+        - name: use_counter2_window_pictureinpictureevent_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Window.PictureInPictureEvent
+        - name: use_counter2_window_pictureinpictureevent_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Window.PictureInPictureEvent
+        - name: use_counter2_window_report_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Window.Report
+        - name: use_counter2_window_report_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Window.Report
+        - name: use_counter2_window_reportbody_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Window.ReportBody
+        - name: use_counter2_window_reportbody_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Window.ReportBody
+        - name: use_counter2_window_rtcpeerconnectioniceerrorevent_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Window.RTCPeerConnectionIceErrorEvent
+        - name: use_counter2_window_rtcpeerconnectioniceerrorevent_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Window.RTCPeerConnectionIceErrorEvent
+        - name: use_counter2_window_speechrecognitionalternative_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Window.SpeechRecognitionAlternative
+        - name: use_counter2_window_speechrecognitionalternative_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Window.SpeechRecognitionAlternative
+        - name: use_counter2_window_speechrecognitionresult_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Window.SpeechRecognitionResult
+        - name: use_counter2_window_speechrecognitionresult_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Window.SpeechRecognitionResult
+        - name: use_counter2_window_speechrecognitionresultlist_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Window.SpeechRecognitionResultList
+        - name: use_counter2_window_speechrecognitionresultlist_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Window.SpeechRecognitionResultList
+        - name: use_counter2_window_toggleevent_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Window.ToggleEvent
+        - name: use_counter2_window_toggleevent_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Window.ToggleEvent
+        - name: use_counter2_window_videocolorspace_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Window.VideoColorSpace
+        - name: use_counter2_window_videocolorspace_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Window.VideoColorSpace
+        - name: use_counter2_window_videodecoder_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Window.VideoDecoder
+        - name: use_counter2_window_videodecoder_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Window.VideoDecoder
+        - name: use_counter2_window_videoencoder_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Window.VideoEncoder
+        - name: use_counter2_window_videoencoder_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Window.VideoEncoder
+        - name: use_counter2_window_videoframe_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Window.VideoFrame
+        - name: use_counter2_window_videoframe_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Window.VideoFrame
+        - name: use_counter2_window_wakelock_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Window.WakeLock
+        - name: use_counter2_window_wakelock_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Window.WakeLock
+        - name: use_counter2_window_wakelocksentinel_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Window.WakeLockSentinel
+        - name: use_counter2_window_wakelocksentinel_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Window.WakeLockSentinel
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

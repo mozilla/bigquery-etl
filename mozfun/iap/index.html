@@ -2846,35 +2846,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#parse_apple_receipt-udf" class="md-nav__link">
-    parse_apple_receipt (UDF)
+  <a href="#scrub_apple_receipt-udf" class="md-nav__link">
+    scrub_apple_receipt (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="parse_apple_receipt (UDF)">
+    <nav class="md-nav" aria-label="scrub_apple_receipt (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#derive_apple_subscription_interval-udf" class="md-nav__link">
-    derive_apple_subscription_interval (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="derive_apple_subscription_interval (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
     Parameters
   </a>
   
@@ -2891,6 +2871,26 @@
   </a>
   
     <nav class="md-nav" aria-label="parse_android_receipt (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parse_apple_receipt-udf" class="md-nav__link">
+    parse_apple_receipt (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="parse_apple_receipt (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2926,11 +2926,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#scrub_apple_receipt-udf" class="md-nav__link">
-    scrub_apple_receipt (UDF)
+  <a href="#derive_apple_subscription_interval-udf" class="md-nav__link">
+    derive_apple_subscription_interval (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="scrub_apple_receipt (UDF)">
+    <nav class="md-nav" aria-label="derive_apple_subscription_interval (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3378,35 +3378,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#parse_apple_receipt-udf" class="md-nav__link">
-    parse_apple_receipt (UDF)
+  <a href="#scrub_apple_receipt-udf" class="md-nav__link">
+    scrub_apple_receipt (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="parse_apple_receipt (UDF)">
+    <nav class="md-nav" aria-label="scrub_apple_receipt (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#derive_apple_subscription_interval-udf" class="md-nav__link">
-    derive_apple_subscription_interval (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="derive_apple_subscription_interval (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
     Parameters
   </a>
   
@@ -3423,6 +3403,26 @@
   </a>
   
     <nav class="md-nav" aria-label="parse_android_receipt (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parse_apple_receipt-udf" class="md-nav__link">
+    parse_apple_receipt (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="parse_apple_receipt (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3458,11 +3458,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#scrub_apple_receipt-udf" class="md-nav__link">
-    scrub_apple_receipt (UDF)
+  <a href="#derive_apple_subscription_interval-udf" class="md-nav__link">
+    derive_apple_subscription_interval (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="scrub_apple_receipt (UDF)">
+    <nav class="md-nav" aria-label="derive_apple_subscription_interval (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3493,43 +3493,9 @@
 
 
 <h1 id="iap">iap</h1>
-<h2 id="parse_apple_receipt-udf">parse_apple_receipt (UDF)</h2>
-<p>Used to parse provider_receipt_json in mozilla vpn subscriptions where provider is "APPLE". The content is documented at <a href="https://developer.apple.com/documentation/appstorereceipts/responsebody">https://developer.apple.com/documentation/appstorereceipts/responsebody</a></p>
-<h3 id="parameters">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>provider_receipt_json STRING
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>STRUCT&lt;environment STRING, latest_receipt BYTES, latest_receipt_info ARRAY&lt;STRUCT&lt;cancellation_date STRING, cancellation_date_ms INT64, cancellation_date_pst STRING, cancellation_reason STRING, expires_date STRING, expires_date_ms INT64, expires_date_pst STRING, in_app_ownership_type STRING, is_in_intro_offer_period STRING, is_trial_period STRING, original_purchase_date STRING, original_purchase_date_ms INT64, original_purchase_date_pst STRING, original_transaction_id STRING, product_id STRING, promotional_offer_id STRING, purchase_date STRING, purchase_date_ms INT64, purchase_date_pst STRING, quantity INT64, subscription_group_identifier INT64, transaction_id INT64, web_order_line_item_id INT64&gt;&gt;, pending_renewal_info ARRAY&lt;STRUCT&lt;auto_renew_product_id STRING, auto_renew_status INT64, expiration_intent INT64, is_in_billing_retry_period INT64, original_transaction_id STRING, product_id STRING&gt;&gt;, receipt STRUCT&lt;adam_id INT64, app_item_id INT64, application_version STRING, bundle_id STRING, download_id INT64, in_app ARRAY&lt;STRUCT&lt;cancellation_date STRING, cancellation_date_ms INT64, cancellation_date_pst STRING, cancellation_reason STRING, expires_date STRING, expires_date_ms INT64, expires_date_pst STRING, in_app_ownership_type STRING, is_in_intro_offer_period STRING, is_trial_period STRING, original_purchase_date STRING, original_purchase_date_ms INT64, original_purchase_date_pst STRING, original_transaction_id STRING, product_id STRING, promotional_offer_id STRING, purchase_date STRING, purchase_date_ms INT64, purchase_date_pst STRING, quantity INT64, subscription_group_identifier INT64, transaction_id INT64, web_order_line_item_id INT64&gt;&gt;, original_application_version STRING, original_purchase_date STRING, original_purchase_date_ms INT64, original_purchase_date_pst STRING, receipt_creation_date STRING, receipt_creation_date_ms INT64, receipt_creation_date_pst STRING, receipt_type STRING, request_date STRING, request_date_ms INT64, request_date_pst STRING, version_external_identifier INT64&gt;, status INT64&gt;DETERMINISTIC
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/iap/parse_apple_receipt">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/iap/parse_apple_receipt/metadata.yaml">Edit</a></p>
-<h2 id="derive_apple_subscription_interval-udf">derive_apple_subscription_interval (UDF)</h2>
-<p>Take output purchase_date and expires_date from mozfun.iap.parse_apple_receipt and return the subscription interval to use for accounting. Values must be DATETIME in America/Los_Angeles to get correct results because of how timezone and daylight savings impact the time of day and the length of a month.</p>
-<h3 id="parameters_1">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>start DATETIME, `end` DATETIME
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>STRUCT&lt;`interval` STRING, interval_count INT64&gt;
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/iap/derive_apple_subscription_interval">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/iap/derive_apple_subscription_interval/metadata.yaml">Edit</a></p>
-<h2 id="parse_android_receipt-udf">parse_android_receipt (UDF)</h2>
-<p>Used to parse <code>data</code> field from firestore export of fxa dataset iap_google_raw. The content is documented at <a href="https://developer.android.com/google/play/billing/subscriptions">https://developer.android.com/google/play/billing/subscriptions</a> and <a href="https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.subscriptions">https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.subscriptions</a></p>
-<h3 id="parameters_2">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>input STRING
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/iap/parse_android_receipt">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/iap/parse_android_receipt/metadata.yaml">Edit</a></p>
-<h2 id="parse_apple_event-udf">parse_apple_event (UDF)</h2>
-<p>Used to parse <code>data</code> field from firestore export of fxa dataset iap_app_store_purchases_raw. The content is documented at <a href="https://developer.apple.com/documentation/appstoreservernotifications/responsebodyv2decodedpayload">https://developer.apple.com/documentation/appstoreservernotifications/responsebodyv2decodedpayload</a> and <a href="https://github.com/mozilla/fxa/blob/700ed771860da450add97d62f7e6faf2ead0c6ba/packages/fxa-shared/payments/iap/apple-app-store/subscription-purchase.ts#L115-L171">https://github.com/mozilla/fxa/blob/700ed771860da450add97d62f7e6faf2ead0c6ba/packages/fxa-shared/payments/iap/apple-app-store/subscription-purchase.ts#L115-L171</a></p>
-<h3 id="parameters_3">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>input STRING
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/iap/parse_apple_event">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/iap/parse_apple_event/metadata.yaml">Edit</a></p>
 <h2 id="scrub_apple_receipt-udf">scrub_apple_receipt (UDF)</h2>
 <p>Take output from mozfun.iap.parse_apple_receipt and remove fields or reduce their granularity so that the returned value can be exposed to all employees via redash.</p>
-<h3 id="parameters_4">Parameters</h3>
+<h3 id="parameters">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>apple_receipt ANY TYPE
 </code></pre></div>
@@ -3537,6 +3503,40 @@
 <div class="highlight"><pre><span></span><code>STRUCT&lt;environment STRING, active_period STRUCT&lt;start_date DATE, end_date DATE, start_time TIMESTAMP, end_time TIMESTAMP, `interval` STRING, interval_count INT64&gt;, trial_period STRUCT&lt;start_time TIMESTAMP, end_time TIMESTAMP&gt;&gt;
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/iap/scrub_apple_receipt">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/iap/scrub_apple_receipt/metadata.yaml">Edit</a></p>
+<h2 id="parse_android_receipt-udf">parse_android_receipt (UDF)</h2>
+<p>Used to parse <code>data</code> field from firestore export of fxa dataset iap_google_raw. The content is documented at <a href="https://developer.android.com/google/play/billing/subscriptions">https://developer.android.com/google/play/billing/subscriptions</a> and <a href="https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.subscriptions">https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.subscriptions</a></p>
+<h3 id="parameters_1">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>input STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/iap/parse_android_receipt">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/iap/parse_android_receipt/metadata.yaml">Edit</a></p>
+<h2 id="parse_apple_receipt-udf">parse_apple_receipt (UDF)</h2>
+<p>Used to parse provider_receipt_json in mozilla vpn subscriptions where provider is "APPLE". The content is documented at <a href="https://developer.apple.com/documentation/appstorereceipts/responsebody">https://developer.apple.com/documentation/appstorereceipts/responsebody</a></p>
+<h3 id="parameters_2">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>provider_receipt_json STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRUCT&lt;environment STRING, latest_receipt BYTES, latest_receipt_info ARRAY&lt;STRUCT&lt;cancellation_date STRING, cancellation_date_ms INT64, cancellation_date_pst STRING, cancellation_reason STRING, expires_date STRING, expires_date_ms INT64, expires_date_pst STRING, in_app_ownership_type STRING, is_in_intro_offer_period STRING, is_trial_period STRING, original_purchase_date STRING, original_purchase_date_ms INT64, original_purchase_date_pst STRING, original_transaction_id STRING, product_id STRING, promotional_offer_id STRING, purchase_date STRING, purchase_date_ms INT64, purchase_date_pst STRING, quantity INT64, subscription_group_identifier INT64, transaction_id INT64, web_order_line_item_id INT64&gt;&gt;, pending_renewal_info ARRAY&lt;STRUCT&lt;auto_renew_product_id STRING, auto_renew_status INT64, expiration_intent INT64, is_in_billing_retry_period INT64, original_transaction_id STRING, product_id STRING&gt;&gt;, receipt STRUCT&lt;adam_id INT64, app_item_id INT64, application_version STRING, bundle_id STRING, download_id INT64, in_app ARRAY&lt;STRUCT&lt;cancellation_date STRING, cancellation_date_ms INT64, cancellation_date_pst STRING, cancellation_reason STRING, expires_date STRING, expires_date_ms INT64, expires_date_pst STRING, in_app_ownership_type STRING, is_in_intro_offer_period STRING, is_trial_period STRING, original_purchase_date STRING, original_purchase_date_ms INT64, original_purchase_date_pst STRING, original_transaction_id STRING, product_id STRING, promotional_offer_id STRING, purchase_date STRING, purchase_date_ms INT64, purchase_date_pst STRING, quantity INT64, subscription_group_identifier INT64, transaction_id INT64, web_order_line_item_id INT64&gt;&gt;, original_application_version STRING, original_purchase_date STRING, original_purchase_date_ms INT64, original_purchase_date_pst STRING, receipt_creation_date STRING, receipt_creation_date_ms INT64, receipt_creation_date_pst STRING, receipt_type STRING, request_date STRING, request_date_ms INT64, request_date_pst STRING, version_external_identifier INT64&gt;, status INT64&gt;DETERMINISTIC
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/iap/parse_apple_receipt">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/iap/parse_apple_receipt/metadata.yaml">Edit</a></p>
+<h2 id="parse_apple_event-udf">parse_apple_event (UDF)</h2>
+<p>Used to parse <code>data</code> field from firestore export of fxa dataset iap_app_store_purchases_raw. The content is documented at <a href="https://developer.apple.com/documentation/appstoreservernotifications/responsebodyv2decodedpayload">https://developer.apple.com/documentation/appstoreservernotifications/responsebodyv2decodedpayload</a> and <a href="https://github.com/mozilla/fxa/blob/700ed771860da450add97d62f7e6faf2ead0c6ba/packages/fxa-shared/payments/iap/apple-app-store/subscription-purchase.ts#L115-L171">https://github.com/mozilla/fxa/blob/700ed771860da450add97d62f7e6faf2ead0c6ba/packages/fxa-shared/payments/iap/apple-app-store/subscription-purchase.ts#L115-L171</a></p>
+<h3 id="parameters_3">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>input STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/iap/parse_apple_event">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/iap/parse_apple_event/metadata.yaml">Edit</a></p>
+<h2 id="derive_apple_subscription_interval-udf">derive_apple_subscription_interval (UDF)</h2>
+<p>Take output purchase_date and expires_date from mozfun.iap.parse_apple_receipt and return the subscription interval to use for accounting. Values must be DATETIME in America/Los_Angeles to get correct results because of how timezone and daylight savings impact the time of day and the length of a month.</p>
+<h3 id="parameters_4">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>start DATETIME, `end` DATETIME
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRUCT&lt;`interval` STRING, interval_count INT64&gt;
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/iap/derive_apple_subscription_interval">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/iap/derive_apple_subscription_interval/metadata.yaml">Edit</a></p>
 
 
 

@@ -10,6 +10,7 @@ scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: false
   date_partition_parameter: null
+  parameters: ['submission_date:DATE:{{ds}}']
 bigquery:
   time_partitioning:
     type: day

@@ -55,7 +55,7 @@ WITH new_profile_ping AS (
     {% if is_init() %}
       DATE(submission_timestamp) >= '2010-01-01'
       {% if parallel_run() %}
-        AND sample_id = {sample_id}
+        AND {mapped_values}
       {% endif %}
     {% else %}
       DATE(submission_timestamp) = @submission_date
@@ -111,7 +111,7 @@ shutdown_ping AS (
     {% if is_init() %}
       DATE(submission_timestamp) >= '2010-01-01'
       {% if parallel_run() %}
-        AND sample_id = {sample_id}
+        AND {mapped_values}
       {% endif %}
     {% else %}
       DATE(submission_timestamp) = @submission_date
@@ -176,7 +176,7 @@ main_ping AS (
     {% if is_init() %}
       submission_date >= '2010-01-01'
       {% if parallel_run() %}
-        AND sample_id = {sample_id}
+        AND {mapped_values}
       {% endif %}
     {% else %}
       submission_date = @submission_date
@@ -185,22 +185,26 @@ main_ping AS (
     client_id,
     sample_id
 ),
+-- The ping priority is required when different ping types have the exact same timestamp
 unioned AS (
   SELECT
     *,
-    'new_profile' AS source_ping
+    'new_profile' AS source_ping,
+    1 AS source_ping_priority
   FROM
     new_profile_ping
   UNION ALL
   SELECT
     *,
-    'shutdown' AS source_ping
+    'shutdown' AS source_ping,
+    3 AS source_ping_priority
   FROM
     shutdown_ping
   UNION ALL
   SELECT
     *,
-    'main' AS source_ping
+    'main' AS source_ping,
+    2 AS source_ping_priority
   FROM
     main_ping
 ),
@@ -226,13 +230,14 @@ dates_with_reporting_ping AS (
     client_id
 ),
 -- The next CTE returns the first_seen_date and reporting ping.
--- The timestamp is also required to retrieve the first_seen attributes.
+-- The ping type priority is used to prioritize which ping type to select when the timestamp is the same
+-- The timestamp is retrieved to select the first_seen attributes.
 first_seen_date AS (
   SELECT
     client_id,
     DATE(MIN(first_seen_timestamp)) AS first_seen_date,
     MIN(first_seen_timestamp) AS first_seen_timestamp,
-    ANY_VALUE(source_ping HAVING MIN first_seen_timestamp) AS first_seen_source_ping,
+    ARRAY_AGG(source_ping ORDER BY first_seen_timestamp, source_ping_priority)[SAFE_OFFSET(0)] AS first_seen_source_ping
   FROM
     unioned
   GROUP BY
@@ -273,32 +278,71 @@ reported_pings AS (
     client_id
 ),
 _current AS (
+  -- Get first value when the same ping type returns more than one record with the exact same TIMESTAMP
   SELECT
     unioned.client_id AS client_id,
     unioned.sample_id AS sample_id,
-    fsd.first_seen_date AS first_seen_date,
-    ssd.second_seen_date.value AS second_seen_date,
-    unioned.* EXCEPT (client_id, sample_id, first_seen_timestamp, all_dates, source_ping),
+    MIN(fsd.first_seen_date) AS first_seen_date,
+    MIN(ssd.second_seen_date.value) AS second_seen_date,
+    ARRAY_AGG(architecture RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS architecture,
+    ARRAY_AGG(app_build_id RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS app_build_id,
+    ARRAY_AGG(app_name RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS app_name,
+    ARRAY_AGG(locale RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS locale,
+    ARRAY_AGG(platform_version RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS platform_version,
+    ARRAY_AGG(vendor RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS vendor,
+    ARRAY_AGG(app_version RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS app_version,
+    ARRAY_AGG(xpcom_abi RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS xpcom_abi,
+    ARRAY_AGG(document_id RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS document_id,
+    ARRAY_AGG(distribution_id RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS distribution_id,
+    ARRAY_AGG(partner_distribution_version RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS partner_distribution_version,
+    ARRAY_AGG(partner_distributor RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS partner_distributor,
+    ARRAY_AGG(partner_distributor_channel RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS partner_distributor_channel,
+    ARRAY_AGG(partner_id RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS partner_id,
+    ARRAY_AGG(attribution_content RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS attribution_campaign,
+    ARRAY_AGG(attribution_content RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS attribution_content,
+    ARRAY_AGG(attribution_experiment RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS attribution_experiment,
+    ARRAY_AGG(attribution_medium RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS attribution_medium,
+    ARRAY_AGG(attribution_source RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS attribution_source,
+    ARRAY_AGG(attribution_ua RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS attribution_ua,
+    ARRAY_AGG(engine_data_load_path RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS engine_data_load_path,
+    ARRAY_AGG(engine_data_name RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS engine_data_name,
+    ARRAY_AGG(engine_data_origin RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS engine_data_origin,
+    ARRAY_AGG(engine_data_submission_url RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS engine_data_submission_url,
+    ARRAY_AGG(apple_model_id RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS apple_model_id,
+    ARRAY_AGG(city RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS city,
+    ARRAY_AGG(db_version RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS db_version,
+    ARRAY_AGG(subdivision1 RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS subdivision1,
+    ARRAY_AGG(normalized_channel RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS normalized_channel,
+    ARRAY_AGG(country RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS country,
+    ARRAY_AGG(normalized_os RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS normalized_os,
+    ARRAY_AGG(normalized_os_version RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS normalized_os_version,
+    ARRAY_AGG(startup_profile_selection_reason RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS startup_profile_selection_reason,
+    ARRAY_AGG(attribution_dltoken RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS attribution_dltoken,
+    ARRAY_AGG(attribution_dlsource RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS attribution_dlsource,
     STRUCT(
-      fsd.first_seen_source_ping AS first_seen_date_source_ping,
-      pings.reported_main_ping AS reported_main_ping,
-      pings.reported_new_profile_ping AS reported_new_profile_ping,
-      pings.reported_shutdown_ping AS reported_shutdown_ping
+      ARRAY_AGG(fsd.first_seen_source_ping RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS first_seen_date_source_ping,
+      ARRAY_AGG(pings.reported_main_ping RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS reported_main_ping,
+      ARRAY_AGG(pings.reported_new_profile_ping RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS reported_new_profile_ping,
+      ARRAY_AGG(pings.reported_shutdown_ping RESPECT NULLS ORDER BY unioned.first_seen_timestamp)[SAFE_OFFSET(0)] AS reported_shutdown_ping
     ) AS metadata
   FROM
     unioned
   INNER JOIN
     first_seen_date AS fsd
-  USING
-    (client_id, first_seen_timestamp)
+  ON
+    (unioned.client_id = fsd.client_id
+    AND unioned.first_seen_timestamp = fsd.first_seen_timestamp
+    AND unioned.source_ping = fsd.first_seen_source_ping)
   LEFT JOIN
     second_seen_date AS ssd
-  USING
-    (client_id)
+  ON
+    unioned.client_id = ssd.client_id
   LEFT JOIN
     reported_pings AS pings
-  USING
-    (client_id)
+  ON
+    unioned.client_id = pings.client_id
+  GROUP BY
+    client_id, sample_id
 ),
 _previous AS (
   SELECT
@@ -307,14 +351,16 @@ _previous AS (
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
 )
 SELECT
-  {% if is_init() %}
-    IF(_previous.client_id IS NULL, _current, _previous).*
-  {% else %}
-    -- For the daily update:
-    -- The reported ping status in the metadata is updated when it's NULL.
-    -- The second_seen_date is updated when it's NULL and only if there is a
-    -- main ping reported on the submission_date.
-    -- Every other attribute remains as reported on the first_seen_date.
+{% if is_init() %}
+    *
+FROM
+    _current
+{% else %}
+-- For the daily update:
+-- The reported ping status in the metadata is updated when it's NULL.
+-- The second_seen_date is updated when it's NULL and only if there is a
+-- main ping reported on the submission_date.
+-- Every other attribute remains as reported on the first_seen_date.
     IF(_previous.client_id IS NULL, _current, _previous).* REPLACE (
       IF(
         _previous.first_seen_date IS NOT NULL
@@ -351,10 +397,10 @@ SELECT
           )
       ) AS metadata
     )
-  {% endif %}
 FROM
   _previous
 FULL JOIN
   _current
 USING
-  (client_id)
+    (client_id)
+{% endif %}

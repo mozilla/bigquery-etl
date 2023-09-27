@@ -7,7 +7,7 @@ WITH retention_week_2 AS (
   SELECT
     COUNTIF(retained_week_2)
   FROM
-    `{{ project_id }}.{{ dataset_id }}.app_store_retention_week_2_v1`
+    `{{ project_id }}.{{ dataset_id }}.funnel_retention_week_2_v1`
   WHERE
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
 ),

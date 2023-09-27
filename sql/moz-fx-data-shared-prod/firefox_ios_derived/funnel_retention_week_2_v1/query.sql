@@ -17,16 +17,21 @@ first_seen AS (
     first_seen_date,
   FROM
     firefox_ios.baseline_clients_first_seen
-  -- 28 days need to elapse before calculating the week 4 and day 28 retention metrics
   WHERE
-    submission_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    -- Two weeks need to elapse before calculating the week 2 retention
+    submission_date = DATE_SUB(@submission_date, INTERVAL 13 DAY)
+    AND normalized_channel = "release"
+  -- Alternative source table
+  -- FROM
+  --   firefox_ios.firefox_ios_clients
+  -- WHERE
+  --   channel = "release"
 ),
 retention_calculation AS (
   SELECT
     first_seen.first_seen_date,
     clients_retention.client_id,
     clients_retention.sample_id,
-    LENGTH(REPLACE(mozfun.bits28.to_string(days_seen_bits), "0", "")) AS days_seen_in_first_28_days,
     mozfun.bits28.retention(days_seen_bits, @submission_date) AS retention,
   FROM
     clients_retention
@@ -37,16 +42,14 @@ retention_calculation AS (
 )
 SELECT
   * EXCEPT (retention) REPLACE(
-    -- metric date should align with first_seen_date, if that is not the case then the query will fail.
+  -- metric date should align with first_seen_date, if that is not the case then the query will fail.
     IF(
-      retention.day_27.metric_date <> first_seen_date,
+      retention.day_13.metric_date <> first_seen_date,
       ERROR("Metric date misaligned with first_seen_date"),
       first_seen_date
     ) AS first_seen_date
   ),
-  days_seen_in_first_28_days > 1 AS repeat_first_month_user,
-  -- added for testing.
-  retention.day_27.active_in_week_1 AS retained_week_2,
-  retention.day_27.active_in_week_3 AS retained_week_4,
+  -- retention UDF works on 0 index basis, that's why for example week_1 is aliased as week 2 to make it a bit more user friendly.
+  retention.day_13.active_in_week_1 AS retained_week_2,
 FROM
   retention_calculation

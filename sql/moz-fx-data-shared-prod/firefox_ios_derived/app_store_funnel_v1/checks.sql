@@ -5,6 +5,8 @@ WITH non_unique AS (
     COUNT(*) AS total_count
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1`
+  WHERE
+    country IS NOT NULL
   GROUP BY
     `date`,
     country

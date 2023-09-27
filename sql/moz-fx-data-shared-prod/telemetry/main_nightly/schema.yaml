@@ -14264,6 +14264,108 @@ fields:
     - name: networking_download_throughput_http_3
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_window_cssmathclamp_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_cssmathclamp_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_csspropertyrule_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_csspropertyrule_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_encodedvideochunk_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_encodedvideochunk_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_pictureinpictureevent_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_pictureinpictureevent_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_report_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_report_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_reportbody_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_reportbody_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_rtcpeerconnectioniceerrorevent_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_rtcpeerconnectioniceerrorevent_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_speechrecognitionalternative_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_speechrecognitionalternative_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_speechrecognitionresult_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_speechrecognitionresult_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_speechrecognitionresultlist_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_speechrecognitionresultlist_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_toggleevent_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_toggleevent_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_videocolorspace_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_videocolorspace_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_videodecoder_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_videodecoder_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_videoencoder_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_videoencoder_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_videoframe_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_videoframe_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_wakelock_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_wakelock_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_wakelocksentinel_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_window_wakelocksentinel_page
+      type: STRING
+      mode: NULLABLE
   - name: info
     type: RECORD
     mode: NULLABLE
@@ -29662,6 +29764,108 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_css_property_font_synthesis_position_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_cssmathclamp_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_cssmathclamp_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_csspropertyrule_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_csspropertyrule_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_encodedvideochunk_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_encodedvideochunk_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_pictureinpictureevent_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_pictureinpictureevent_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_report_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_report_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_reportbody_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_reportbody_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_rtcpeerconnectioniceerrorevent_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_rtcpeerconnectioniceerrorevent_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_speechrecognitionalternative_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_speechrecognitionalternative_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_speechrecognitionresult_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_speechrecognitionresult_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_speechrecognitionresultlist_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_speechrecognitionresultlist_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_toggleevent_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_toggleevent_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_videocolorspace_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_videocolorspace_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_videodecoder_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_videodecoder_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_videoencoder_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_videoencoder_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_videoframe_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_videoframe_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_wakelock_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_wakelock_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_wakelocksentinel_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_window_wakelocksentinel_page
           type: STRING
           mode: NULLABLE
       - name: keyed_histograms

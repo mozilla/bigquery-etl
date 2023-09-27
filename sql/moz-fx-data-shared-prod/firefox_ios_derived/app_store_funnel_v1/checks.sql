@@ -1,5 +1,5 @@
 #fail
-{{ is_unique(["`date`", "country"]) }}
+{{ is_unique(["`date`", "country"], "country IS NOT NULL") }}
 -- min_row_count helps us detect if we're seeing delays in the data arriving
 -- could also be an indicator of an upstream issue.
 #fail

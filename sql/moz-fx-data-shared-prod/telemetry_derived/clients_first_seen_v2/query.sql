@@ -3,7 +3,6 @@
 INSERT INTO
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
 {% endif %}
--- Query for telemetry_derived.clients_first_seen_v2
 -- Each ping type subquery retrieves all attributes as reported on the first
 -- ping received and respecting NULLS.
 -- Once the first_seen_date is identified after comparing all pings, attributes
@@ -185,22 +184,26 @@ main_ping AS (
     client_id,
     sample_id
 ),
+-- The ping priority is required when different ping types have the exact same timestamp
 unioned AS (
   SELECT
     *,
-    'new_profile' AS source_ping
+    'new_profile' AS source_ping,
+    1 AS source_ping_priority
   FROM
     new_profile_ping
   UNION ALL
   SELECT
     *,
-    'shutdown' AS source_ping
+    'shutdown' AS source_ping,
+    3 AS source_ping_priority
   FROM
     shutdown_ping
   UNION ALL
   SELECT
     *,
-    'main' AS source_ping
+    'main' AS source_ping,
+    2 AS source_ping_priority
   FROM
     main_ping
 ),
@@ -226,13 +229,14 @@ dates_with_reporting_ping AS (
     client_id
 ),
 -- The next CTE returns the first_seen_date and reporting ping.
--- The timestamp is also required to retrieve the first_seen attributes.
+-- The ping type priority is used to prioritize which ping type to select when the timestamp is the same
+-- The timestamp is retrieved to select the first_seen attributes.
 first_seen_date AS (
   SELECT
     client_id,
     DATE(MIN(first_seen_timestamp)) AS first_seen_date,
     MIN(first_seen_timestamp) AS first_seen_timestamp,
-    ANY_VALUE(source_ping HAVING MIN first_seen_timestamp) AS first_seen_source_ping,
+    ARRAY_AGG(source_ping ORDER BY first_seen_timestamp, source_ping_priority)[SAFE_OFFSET(0)] AS first_seen_source_ping
   FROM
     unioned
   GROUP BY
@@ -273,12 +277,13 @@ reported_pings AS (
     client_id
 ),
 _current AS (
+  -- Get first value when the same ping type returns more than one record with the exact same TIMESTAMP
   SELECT
     unioned.client_id AS client_id,
     unioned.sample_id AS sample_id,
     fsd.first_seen_date AS first_seen_date,
     ssd.second_seen_date.value AS second_seen_date,
-    unioned.* EXCEPT (client_id, sample_id, first_seen_timestamp, all_dates, source_ping),
+    unioned.* EXCEPT (client_id, sample_id, first_seen_timestamp, all_dates, source_ping, source_ping_priority),
     STRUCT(
       fsd.first_seen_source_ping AS first_seen_date_source_ping,
       pings.reported_main_ping AS reported_main_ping,
@@ -289,16 +294,18 @@ _current AS (
     unioned
   INNER JOIN
     first_seen_date AS fsd
-  USING
-    (client_id, first_seen_timestamp)
+  ON
+    (unioned.client_id = fsd.client_id
+    AND unioned.first_seen_timestamp = fsd.first_seen_timestamp
+    AND unioned.source_ping = fsd.first_seen_source_ping)
   LEFT JOIN
     second_seen_date AS ssd
-  USING
-    (client_id)
+  ON
+    unioned.client_id = ssd.client_id
   LEFT JOIN
     reported_pings AS pings
-  USING
-    (client_id)
+  ON
+    unioned.client_id = pings.client_id
 ),
 _previous AS (
   SELECT
@@ -307,14 +314,16 @@ _previous AS (
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
 )
 SELECT
-  {% if is_init() %}
-    IF(_previous.client_id IS NULL, _current, _previous).*
-  {% else %}
-    -- For the daily update:
-    -- The reported ping status in the metadata is updated when it's NULL.
-    -- The second_seen_date is updated when it's NULL and only if there is a
-    -- main ping reported on the submission_date.
-    -- Every other attribute remains as reported on the first_seen_date.
+{% if is_init() %}
+    *
+FROM
+    _current
+{% else %}
+-- For the daily update:
+-- The reported ping status in the metadata is updated when it's NULL.
+-- The second_seen_date is updated when it's NULL and only if there is a
+-- main ping reported on the submission_date.
+-- Every other attribute remains as reported on the first_seen_date.
     IF(_previous.client_id IS NULL, _current, _previous).* REPLACE (
       IF(
         _previous.first_seen_date IS NOT NULL
@@ -351,10 +360,10 @@ SELECT
           )
       ) AS metadata
     )
-  {% endif %}
 FROM
   _previous
 FULL JOIN
   _current
 USING
-  (client_id)
+    (client_id)
+{% endif %}

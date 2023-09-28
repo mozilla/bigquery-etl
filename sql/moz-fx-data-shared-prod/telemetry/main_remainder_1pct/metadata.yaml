@@ -5,13 +5,13 @@ description: |-
   intended as a performance optimization for exploratory queries. It contains
   only the most recent six months of data.
 
-  Queries on this table are logically equivalent to queries on top of `main_remainder_v4`
+  Queries on this table are logically equivalent to queries on top of `main_v5`
   with a filter on `sample_id = 0`, but this table has a few advantages.
   First, query estimates will be much more accurate; estimates of bytes scanned
   can't take into account clustering, so we sometimes see valid queries get
   rejected by Redash due to appearing expensive when they really aren't.
   Second, simple queries should complete much more quickly on this table
-  compared to `main_remainder_v4`; for simple queries on a very wide table like this,
+  compared to `main_v5`; for simple queries on a very wide table like this,
   the execution time appears to be dominated by BQ simply scanning metadata
   for all the blocks it might need to touch. Because this table contains
   only 1% of main ping data, it is likely to have many fewer blocks to

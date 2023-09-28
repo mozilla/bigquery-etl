@@ -104,6 +104,19 @@ with DAG(
     )
 
     clients_first_seen_v2.set_upstream(wait_for_copy_deduplicate_all)
+    wait_for_copy_deduplicate_first_shutdown_ping = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_first_shutdown_ping",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_first_shutdown_ping",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    clients_first_seen_v2.set_upstream(wait_for_copy_deduplicate_first_shutdown_ping)
     wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_daily__v6",
         external_dag_id="bqetl_main_summary",

@@ -131,14 +131,18 @@ class FivetranTask:
     task_id: str = attr.ib()
 
 
-# Know tasks in telemetry-airflow, like stable table tasks
+# Known tasks in telemetry-airflow, like stable table tasks
 # https://github.com/mozilla/telemetry-airflow/blob/main/dags/copy_deduplicate.py
 EXTERNAL_TASKS = {
     TaskRef(
         dag_name="copy_deduplicate",
         task_id="copy_deduplicate_main_ping",
         schedule_interval="0 1 * * *",
-    ): ["telemetry_stable.main_v4"],
+    ): [
+        "telemetry_stable.main_v4",
+        "telemetry_stable.main_use_counter_v4",
+        "telemetry_stable.main_remainder_v4",
+    ],
     TaskRef(
         dag_name="copy_deduplicate",
         task_id="bq_main_events",

@@ -53,6 +53,7 @@ with DAG(
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
     )
 
     checks__warn_firefox_ios_derived__app_store_funnel__v1 = bigquery_dq_check(
@@ -65,6 +66,7 @@ with DAG(
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
     )
 
     firefox_ios_derived__app_store_funnel__v1 = bigquery_etl_query(
@@ -77,6 +79,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
     )
 
     firefox_ios_derived__attributable_clients__v1 = bigquery_etl_query(

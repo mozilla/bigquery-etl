@@ -44,7 +44,7 @@ FROM
   -- this filter indicates up until when the source table is expected to contains events
   -- due to AWS to GCP migration, after this date we expect the v2 to contain all the events from GCP.
 WHERE
-  `date` < "2023-09-15"
+  `date` < "2023-09-28"
 UNION ALL
 SELECT
   `date`,

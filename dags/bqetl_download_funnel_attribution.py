@@ -53,6 +53,7 @@ with DAG(
         email=["gleonard@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["download_date:DATE:{{macros.ds_add(ds, -1)}}"],
+        retries=0,
     )
 
     ga_derived__downloads_with_attribution__v2 = bigquery_etl_query(

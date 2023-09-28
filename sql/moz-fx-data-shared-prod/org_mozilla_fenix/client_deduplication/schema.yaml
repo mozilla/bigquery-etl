@@ -300,6 +300,9 @@ fields:
     - name: client_deduplication_hashed_gaid
       type: STRING
       mode: NULLABLE
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

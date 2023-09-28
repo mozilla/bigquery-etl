@@ -338,6 +338,9 @@ fields:
     - name: history_sync_v2_uid
       type: STRING
       mode: NULLABLE
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
   - name: uuid
     type: RECORD
     mode: NULLABLE

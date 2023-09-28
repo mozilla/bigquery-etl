@@ -80,7 +80,8 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value,
       metrics.labeled_counter.wallpapers_new_wallpaper_applied
-    ) AS labeled_counter
+    ) AS labeled_counter,
+    metrics.string
   ) AS metrics,
   normalized_app_name,
   normalized_country_code,
@@ -135,7 +136,8 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value,
       metrics.labeled_counter.wallpapers_new_wallpaper_applied
-    ) AS labeled_counter
+    ) AS labeled_counter,
+    metrics.string
   ) AS metrics,
   normalized_app_name,
   normalized_country_code,

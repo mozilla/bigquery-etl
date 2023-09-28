@@ -326,6 +326,14 @@ fields:
         of options [here](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/crash-ping.html#process-types).
 
         '
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+      description: 'An experimentation identifier derived and provided by the application
+
+        for the purpose of experimenation enrollment.
+
+        '
   - name: timespan
     type: RECORD
     mode: NULLABLE

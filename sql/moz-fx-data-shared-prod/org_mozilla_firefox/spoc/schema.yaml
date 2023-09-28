@@ -308,6 +308,18 @@ fields:
         type of user interaction: story impression or click.
 
         '
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+      description: 'An experimentation identifier derived and provided by the application
+
+        for the purpose of experimenation enrollment.
+
+        '
   - name: text
     type: RECORD
     mode: NULLABLE

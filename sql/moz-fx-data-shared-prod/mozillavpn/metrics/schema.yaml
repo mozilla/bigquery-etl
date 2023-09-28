@@ -538,6 +538,14 @@ fields:
         documented in the ping''s pings.yaml file.
 
         '
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+      description: 'An experimentation identifier derived and provided by the application
+
+        for the purpose of experimenation enrollment.
+
+        '
   - name: timing_distribution
     type: RECORD
     mode: NULLABLE

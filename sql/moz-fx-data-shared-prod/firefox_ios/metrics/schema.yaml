@@ -1080,6 +1080,9 @@ fields:
     - name: preferences_opening_screen
       type: STRING
       mode: NULLABLE
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

@@ -243,6 +243,13 @@ fields:
     - name: firefox_home_page_history_highlights_item_opened
       type: INTEGER
       mode: NULLABLE
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

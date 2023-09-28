@@ -293,3 +293,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE

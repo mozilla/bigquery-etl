@@ -332,6 +332,14 @@ fields:
       description: 'String-encoded number for the tile''s sponsored tile id.
 
         '
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+      description: 'An experimentation identifier derived and provided by the application
+
+        for the purpose of experimenation enrollment.
+
+        '
   - name: url2
     type: RECORD
     mode: NULLABLE

@@ -388,6 +388,14 @@ fields:
       description: 'Command used to run MozPhab, e.g. `submit` or `patch`.
 
         '
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+      description: 'An experimentation identifier derived and provided by the application
+
+        for the purpose of experimenation enrollment.
+
+        '
   - name: timespan
     type: RECORD
     mode: NULLABLE

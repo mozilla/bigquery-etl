@@ -246,6 +246,9 @@ fields:
     - name: top_sites_contile_advertiser
       type: STRING
       mode: NULLABLE
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
   - name: url2
     type: RECORD
     mode: NULLABLE

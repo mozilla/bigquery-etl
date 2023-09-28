@@ -361,6 +361,9 @@ fields:
     - name: ping_reason
       type: STRING
       mode: NULLABLE
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
   - name: datetime
     type: RECORD
     mode: NULLABLE

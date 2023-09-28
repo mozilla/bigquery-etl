@@ -484,7 +484,8 @@ SELECT
       metrics.string.preferences_etp_custom_cookies_selection,
       metrics.string.blocklist_mlbf_source,
       metrics.string.extensions_quarantined_domains_listhash,
-      metrics.string.extensions_quarantined_domains_remotehash
+      metrics.string.extensions_quarantined_domains_remotehash,
+      metrics.string.glean_client_annotation_experimentation_id
     ) AS string,
     metrics.string_list,
     STRUCT(
@@ -974,7 +975,8 @@ SELECT
       metrics.string.preferences_etp_custom_cookies_selection,
       metrics.string.blocklist_mlbf_source,
       metrics.string.extensions_quarantined_domains_listhash,
-      metrics.string.extensions_quarantined_domains_remotehash
+      metrics.string.extensions_quarantined_domains_remotehash,
+      metrics.string.glean_client_annotation_experimentation_id
     ) AS string,
     metrics.string_list,
     STRUCT(

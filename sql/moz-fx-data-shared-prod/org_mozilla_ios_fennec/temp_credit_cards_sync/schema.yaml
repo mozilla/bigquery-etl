@@ -347,6 +347,14 @@ fields:
       description: 'The user''s hashed Firefox Account ID.
 
         '
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+      description: 'An experimentation identifier derived and provided by the application
+
+        for the purpose of experimenation enrollment.
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE

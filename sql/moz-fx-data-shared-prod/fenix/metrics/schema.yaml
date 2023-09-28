@@ -2186,6 +2186,9 @@ fields:
     - name: extensions_quarantined_domains_remotehash
       type: STRING
       mode: NULLABLE
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
   - name: string_list
     type: RECORD
     mode: NULLABLE

@@ -8,4 +8,4 @@ SELECT
     `moz-fx-data-shared-prod`.udf.normalize_main_payload(payload) AS payload
   )
 FROM
-  `moz-fx-data-shared-prod.telemetry_stable.saved_session_v4`
+  `moz-fx-data-shared-prod.telemetry_stable.saved_session_v5`

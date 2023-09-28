@@ -448,6 +448,9 @@ fields:
     - name: migration_fxa_unsupported_state_version
       type: STRING
       mode: NULLABLE
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
   - name: timespan
     type: RECORD
     mode: NULLABLE

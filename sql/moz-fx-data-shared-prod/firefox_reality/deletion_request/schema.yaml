@@ -233,6 +233,13 @@ fields:
     - name: legacy_telemetry_client_id
       type: STRING
       mode: NULLABLE
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

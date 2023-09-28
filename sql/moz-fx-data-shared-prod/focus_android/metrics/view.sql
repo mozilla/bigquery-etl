@@ -166,7 +166,8 @@ SELECT
       metrics.string.geckoview_validation_version,
       metrics.string.blocklist_mlbf_source,
       metrics.string.extensions_quarantined_domains_listhash,
-      metrics.string.extensions_quarantined_domains_remotehash
+      metrics.string.extensions_quarantined_domains_remotehash,
+      metrics.string.glean_client_annotation_experimentation_id
     ) AS string,
     metrics.quantity,
     metrics.custom_distribution,
@@ -331,7 +332,8 @@ SELECT
       metrics.string.geckoview_validation_version,
       metrics.string.blocklist_mlbf_source,
       metrics.string.extensions_quarantined_domains_listhash,
-      metrics.string.extensions_quarantined_domains_remotehash
+      metrics.string.extensions_quarantined_domains_remotehash,
+      metrics.string.glean_client_annotation_experimentation_id
     ) AS string,
     metrics.quantity,
     metrics.custom_distribution,

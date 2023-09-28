@@ -377,6 +377,14 @@ fields:
       description: 'The name of the utm_term that is responsible for this installation.
 
         '
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+      description: 'An experimentation identifier derived and provided by the application
+
+        for the purpose of experimenation enrollment.
+
+        '
   - name: timing_distribution
     type: RECORD
     mode: NULLABLE

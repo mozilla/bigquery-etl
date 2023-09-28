@@ -369,3 +369,15 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+      description: 'An experimentation identifier derived and provided by the application
+
+        for the purpose of experimenation enrollment.
+
+        '

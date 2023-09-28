@@ -2180,6 +2180,14 @@ fields:
         "homepage after 4 hours" default: "homepage after 4 hours".
 
         '
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+      description: 'An experimentation identifier derived and provided by the application
+
+        for the purpose of experimenation enrollment.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

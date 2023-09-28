@@ -233,6 +233,13 @@ fields:
     - name: cookie_banners_report_site_domain
       type: STRING
       mode: NULLABLE
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
   - name: url
     type: RECORD
     mode: NULLABLE

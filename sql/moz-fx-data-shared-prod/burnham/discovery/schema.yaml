@@ -370,6 +370,14 @@ fields:
       description: 'ID of the Airflow task that runs the client
 
         '
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+      description: 'An experimentation identifier derived and provided by the application
+
+        for the purpose of experimenation enrollment.
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE

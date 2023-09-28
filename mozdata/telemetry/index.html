@@ -3112,13 +3112,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#first_shutdown_remainder" class="md-nav__link">
-    first_shutdown_remainder
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#first_shutdown_summary" class="md-nav__link">
     first_shutdown_summary
   </a>
@@ -3240,13 +3233,6 @@
         <li class="md-nav__item">
   <a href="#main_nightly" class="md-nav__link">
     main_nightly
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#main_remainder" class="md-nav__link">
-    main_remainder
   </a>
   
 </li>
@@ -3443,13 +3429,6 @@
         <li class="md-nav__item">
   <a href="#saved_session" class="md-nav__link">
     saved_session
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#saved_session_remainder" class="md-nav__link">
-    saved_session_remainder
   </a>
   
 </li>
@@ -5456,13 +5435,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#first_shutdown_remainder" class="md-nav__link">
-    first_shutdown_remainder
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#first_shutdown_summary" class="md-nav__link">
     first_shutdown_summary
   </a>
@@ -5584,13 +5556,6 @@
         <li class="md-nav__item">
   <a href="#main_nightly" class="md-nav__link">
     main_nightly
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#main_remainder" class="md-nav__link">
-    main_remainder
   </a>
   
 </li>
@@ -5787,13 +5752,6 @@
         <li class="md-nav__item">
   <a href="#saved_session" class="md-nav__link">
     saved_session
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#saved_session_remainder" class="md-nav__link">
-    saved_session_remainder
   </a>
   
 </li>
@@ -27708,138 +27666,11 @@ and to contain only one row per distinct <code>document_id</code> within a given
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry_stable>telemetry_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry_stable/first_shutdown_v4>first_shutdown_v4</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry_stable/first_shutdown_v5>first_shutdown_v5</a></td>
         </tr>
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/first_shutdown">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/first_shutdown/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/first_shutdown/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="first_shutdown_remainder"><a href="#first_shutdown_remainder">first_shutdown_remainder</a></h2>
-<p><strong>Historical Pings for <code>telemetry/first-shutdown-remainder</code></strong></p>
-<p><code>telemetry.first_shutdown_remainder</code></p>
-<p>A historical view of pings sent for the
-<code>telemetry/first-shutdown-remainder</code>
-document type.</p>
-<p>This view is guaranteed to contain only complete days
-(per <code>submission_timestamp</code>)
-and to contain only one row per distinct <code>document_id</code> within a given date.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>application</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>client_id</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>creation_date</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>environment</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>id</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>metadata</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>payload</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>type</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>version</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry_stable>telemetry_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry_stable/first_shutdown_remainder_v4>first_shutdown_remainder_v4</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/first_shutdown_remainder">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/first_shutdown_remainder/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/first_shutdown_remainder/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="first_shutdown_summary"><a href="#first_shutdown_summary">first_shutdown_summary</a></h2>
 <p><code>telemetry.first_shutdown_summary</code></p>
@@ -28954,7 +28785,7 @@ and to contain only one row per distinct <code>document_id</code> within a given
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry_stable>telemetry_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry_stable/main_v4>main_v4</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry_stable/main_v5>main_v5</a></td>
         </tr>
 </table>
 
@@ -29142,133 +28973,6 @@ scan through.</p>
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/main_nightly">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/main_nightly/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/main_nightly/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="main_remainder"><a href="#main_remainder">main_remainder</a></h2>
-<p><strong>Historical Pings for <code>telemetry/main-remainder</code></strong></p>
-<p><code>telemetry.main_remainder</code></p>
-<p>A historical view of pings sent for the
-<code>telemetry/main-remainder</code>
-document type.</p>
-<p>This view is guaranteed to contain only complete days
-(per <code>submission_timestamp</code>)
-and to contain only one row per distinct <code>document_id</code> within a given date.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>application</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>client_id</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>creation_date</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>environment</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>id</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>metadata</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>payload</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>type</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>version</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry_stable>telemetry_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry_stable/main_remainder_v4>main_remainder_v4</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/main_remainder">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/main_remainder/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/main_remainder/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="main_remainder_1pct"><a href="#main_remainder_1pct">main_remainder_1pct</a></h2>
 <p><strong>Main Remainder 1 percent</strong></p>
@@ -35743,138 +35447,11 @@ and to contain only one row per distinct <code>document_id</code> within a given
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry_stable>telemetry_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry_stable/saved_session_v4>saved_session_v4</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry_stable/saved_session_v5>saved_session_v5</a></td>
         </tr>
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/saved_session">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/saved_session/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/saved_session/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="saved_session_remainder"><a href="#saved_session_remainder">saved_session_remainder</a></h2>
-<p><strong>Historical Pings for <code>telemetry/saved-session-remainder</code></strong></p>
-<p><code>telemetry.saved_session_remainder</code></p>
-<p>A historical view of pings sent for the
-<code>telemetry/saved-session-remainder</code>
-document type.</p>
-<p>This view is guaranteed to contain only complete days
-(per <code>submission_timestamp</code>)
-and to contain only one row per distinct <code>document_id</code> within a given date.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>application</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>client_id</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>creation_date</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>environment</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>id</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>metadata</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>payload</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>type</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>version</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry_stable>telemetry_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry_stable/saved_session_remainder_v4>saved_session_remainder_v4</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/saved_session_remainder">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/saved_session_remainder/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/saved_session_remainder/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="saved_session_use_counter"><a href="#saved_session_use_counter">saved_session_use_counter</a></h2>
 <p><strong>Historical Pings for <code>telemetry/saved-session-use-counter</code></strong></p>

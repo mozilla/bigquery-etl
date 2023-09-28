@@ -4,6 +4,8 @@ description: |-
   the main, new_profile and first_shutdown pings.
   - All attributes are retrieved from the ping that reports
   the first_seen_date, using the earliest timestamp and respecting nulls.
+  - In the case of different ping types received in the same timestamp,
+  new_profile ping is prioritized.
   - Only the second_seen_date and client's reported pings are updated
   daily when NULL.
   This table should be accessed through the user-facing view

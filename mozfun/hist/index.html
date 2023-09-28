@@ -3374,18 +3374,6 @@ formed, which gives us some flexibility.</p>
 <div class="highlight"><pre><span></span><code>STRUCT&lt;bucket_count INT64, `sum` INT64, histogram_type INT64, `range` ARRAY&lt;INT64&gt;, `values` ARRAY&lt;STRUCT&lt;key INT64, value FLOAT64&gt;&gt;&gt;
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/hist/normalize">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/hist/normalize/metadata.yaml">Edit</a></p>
-<h2 id="mean-udf">mean (UDF)</h2>
-<p>Given histogram h, return floor(mean) of the measurements in the bucket.
-That is, the histogram sum divided by the number of measurements taken.</p>
-<p><a href="https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307">https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307</a></p>
-<h3 id="parameters_4">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>histogram ANY TYPE
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>STRUCT&lt;sum INT64, VALUES ARRAY&lt;STRUCT&lt;value INT64&gt;&gt;&gt;
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/hist/mean">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/hist/mean/metadata.yaml">Edit</a></p>
 <h2 id="merge-udf">merge (UDF)</h2>
 <p>Merge an array of histograms into a single histogram.</p>
 <ul>
@@ -3393,7 +3381,7 @@ That is, the histogram sum divided by the number of measurements taken.</p>
 <li>The count will be summed</li>
 <li>Other fields will take the mode_last</li>
 </ul>
-<h3 id="parameters_5">Parameters</h3>
+<h3 id="parameters_4">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>histogram_list ANY TYPE
 </code></pre></div>
@@ -3402,7 +3390,7 @@ That is, the histogram sum divided by the number of measurements taken.</p>
 <p>Given histogram h, return the count of all measurements across all buckets.</p>
 <p>Given histogram h, return the count of all measurements across all buckets.</p>
 <p>Extracts the values from the histogram and sums them, returning the total_count.</p>
-<h3 id="parameters_6">Parameters</h3>
+<h3 id="parameters_5">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>histogram STRING
 </code></pre></div>
@@ -3410,6 +3398,18 @@ That is, the histogram sum divided by the number of measurements taken.</p>
 <div class="highlight"><pre><span></span><code>INT64
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/hist/count">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/hist/count/metadata.yaml">Edit</a></p>
+<h2 id="mean-udf">mean (UDF)</h2>
+<p>Given histogram h, return floor(mean) of the measurements in the bucket.
+That is, the histogram sum divided by the number of measurements taken.</p>
+<p><a href="https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307">https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307</a></p>
+<h3 id="parameters_6">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>histogram ANY TYPE
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRUCT&lt;sum INT64, VALUES ARRAY&lt;STRUCT&lt;value INT64&gt;&gt;&gt;
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/hist/mean">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/hist/mean/metadata.yaml">Edit</a></p>
 <h2 id="threshold_count-udf">threshold_count (UDF)</h2>
 <p>Return the number of recorded observations greater than threshold for
 the histogram.  CAUTION: Does not count any buckets that have any values

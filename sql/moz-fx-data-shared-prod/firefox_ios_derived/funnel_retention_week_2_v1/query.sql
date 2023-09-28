@@ -8,6 +8,9 @@ WITH clients_retention AS (
     firefox_ios.baseline_clients_last_seen
   WHERE
     submission_date = @submission_date
+    -- this guard needs to be added if using the clients table
+    -- alternatively it needs to be used inside the first_seen CTE
+    -- AND first_seen_date = DATE_SUB(@submission_date, INTERVAL 13 DAY)
     AND normalized_channel = "release"
 ),
 first_seen AS (
@@ -20,6 +23,7 @@ first_seen AS (
   WHERE
     -- Two weeks need to elapse before calculating the week 2 retention
     submission_date = DATE_SUB(@submission_date, INTERVAL 13 DAY)
+    -- AND first_seen_date = DATE_SUB(@submission_date, INTERVAL 13 DAY)
     AND normalized_channel = "release"
   -- Alternative source table
   -- FROM

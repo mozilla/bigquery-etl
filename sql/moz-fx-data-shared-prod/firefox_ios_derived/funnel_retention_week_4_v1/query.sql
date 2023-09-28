@@ -8,6 +8,7 @@ WITH clients_retention AS (
     firefox_ios.baseline_clients_last_seen
   WHERE
     submission_date = @submission_date
+    -- AND first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
     AND normalized_channel = "release"
 ),
 first_seen AS (

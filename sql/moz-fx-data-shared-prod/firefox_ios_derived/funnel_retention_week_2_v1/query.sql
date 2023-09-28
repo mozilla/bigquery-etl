@@ -25,6 +25,7 @@ first_seen AS (
     submission_date = DATE_SUB(@submission_date, INTERVAL 13 DAY)
     -- AND first_seen_date = DATE_SUB(@submission_date, INTERVAL 13 DAY)
     AND normalized_channel = "release"
+    AND NOT (app_display_version = '107.2' AND submission_date >= '2023-02-01')
   -- Alternative source table
   -- FROM
   --   firefox_ios.firefox_ios_clients

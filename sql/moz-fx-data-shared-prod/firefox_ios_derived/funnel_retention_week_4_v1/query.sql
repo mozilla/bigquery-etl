@@ -22,6 +22,7 @@ first_seen AS (
     -- 28 days need to elapse before calculating the week 4 and day 28 retention metrics
     submission_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
     AND normalized_channel = "release"
+    AND NOT (app_display_version = '107.2' AND submission_date >= '2023-02-01')
 ),
 retention_calculation AS (
   SELECT

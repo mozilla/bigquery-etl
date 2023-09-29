@@ -71,7 +71,7 @@ SELECT
   COUNTIF(activated) AS num_activated,
   COUNTIF(returned_second_day) AS returned_second_day,
   COUNTIF(qualified_second_day) AS qualified_second_day,
-  COUNTIF(returned_week4) AS returned_week4,
+  COUNTIF(retained_week4) AS retained_week4,
   COUNTIF(qualified_week4) AS qualified_week4,
 FROM
   client_conditions

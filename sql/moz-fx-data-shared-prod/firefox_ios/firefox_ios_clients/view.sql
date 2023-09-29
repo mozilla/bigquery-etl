@@ -2,7 +2,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
 AS
 SELECT
-  * REPLACE (
+  * EXCEPT (is_suspicious_device_client) REPLACE (
     CASE
       WHEN adjust_network IS NULL
         THEN 'Unknown'
@@ -17,3 +17,6 @@ SELECT
   ),
 FROM
   `moz-fx-data-shared-prod.firefox_ios_derived.firefox_ios_clients_v1`
+WHERE
+  -- filtering out suspicious devices on iOS, for more info see: bug-1846554
+  NOT is_suspicious_device_client

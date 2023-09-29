@@ -45,9 +45,9 @@ bigquery:
     expiration_days: null
   clustering:
     fields:
-    - channel
     - sample_id
-    - first_reported_isp
+    - channel
+    - first_reported_country
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

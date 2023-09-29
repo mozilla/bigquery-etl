@@ -36,6 +36,11 @@ scheduling:
   parameters:
   - submission_date:DATE:{{ds}}
 bigquery:
+  time_partitioning:
+    field: first_seen_date
+    type: day
+    require_partition_filter: false
+    expiration_days: null
   clustering:
     fields:
     - channel

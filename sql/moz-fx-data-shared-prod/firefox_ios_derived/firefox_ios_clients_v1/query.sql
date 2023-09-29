@@ -17,6 +17,8 @@ WITH first_seen AS (
   WHERE
     submission_date = @submission_date
     AND client_id IS NOT NULL
+    -- filtering out suspicious devices on iOS, for more info see: bug-1846554
+    AND NOT (app_display_version = '107.2' AND submission_date >= '2023-02-01')
 ),
 -- Find the most recent activation record per client_id.
 activations AS (

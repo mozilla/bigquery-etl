@@ -12,9 +12,15 @@ WITH clients_retention AS (
 ),
 clients_first_seen AS (
   SELECT
+    first_seen_date,
     client_id,
     sample_id,
-    first_seen_date,
+    first_reported_country,
+    first_reported_isp,
+    adjust_ad_group,
+    adjust_campaign,
+    adjust_creative,
+    adjust_network,
   FROM
     firefox_ios.firefox_ios_clients
   WHERE
@@ -24,9 +30,7 @@ clients_first_seen AS (
 ),
 retention_calculation AS (
   SELECT
-    clients_first_seen.first_seen_date,
-    clients_first_seen.client_id,
-    clients_first_seen.sample_id,
+    clients_first_seen.*,
     BIT_COUNT(clients_retention.days_seen_bits) AS days_seen_in_first_28_days,
     mozfun.bits28.retention(clients_retention.days_seen_bits, @submission_date) AS retention,
   FROM

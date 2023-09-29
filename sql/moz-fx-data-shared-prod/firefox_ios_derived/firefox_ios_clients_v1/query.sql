@@ -11,14 +11,12 @@ WITH first_seen AS (
     device_manufacturer,
     device_model,
     normalized_os_version AS os_version,
-    app_display_version AS app_version
+    app_display_version AS app_version,
   FROM
     firefox_ios.baseline_clients_first_seen
   WHERE
     submission_date = @submission_date
     AND client_id IS NOT NULL
-    -- filtering out suspicious devices on iOS, for more info see: bug-1846554
-    AND NOT (app_display_version = '107.2' AND submission_date >= '2023-02-01')
 ),
 -- Find the most recent activation record per client_id.
 activations AS (
@@ -143,7 +141,9 @@ _current AS (
           THEN "metrics"
         ELSE NULL
       END AS adjust_info__source_ping
-    ) AS metadata
+    ) AS metadata,
+    -- field to help us identify suspicious devices on iOS, for more info see: bug-1846554
+    (app_version = '107.2' AND submission_date >= '2023-02-01') AS is_suspicious_device_client,
   FROM
     first_seen
   FULL OUTER JOIN
@@ -210,6 +210,7 @@ SELECT
       _current.metadata.adjust_info__source_ping
     ) AS adjust_info__source_ping
   ) AS metadata,
+  COALESCE(_previous.is_suspicious_device_client, _current.is_suspicious_device_client) AS is_suspicious_device_client,
 FROM
   _current
 FULL OUTER JOIN

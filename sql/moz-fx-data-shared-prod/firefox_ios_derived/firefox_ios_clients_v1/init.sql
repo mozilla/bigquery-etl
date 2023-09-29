@@ -25,8 +25,6 @@ WITH first_seen AS (
   WHERE
     submission_date < CURRENT_DATE
     AND client_id IS NOT NULL
-    -- filtering out suspicious devices on iOS, for more info see: bug-1846554
-    AND NOT (app_display_version = '107.2' AND submission_date >= '2023-02-01')
 ),
 -- Find the most recent activation record per client_id.
 activations AS (
@@ -143,7 +141,9 @@ _current AS (
           THEN "metrics"
         ELSE NULL
       END AS adjust_info__source_ping
-    ) AS metadata
+    ) AS metadata,
+    -- field to help us identify suspicious devices on iOS, for more info see: bug-1846554
+    (app_version = '107.2' AND submission_date >= '2023-02-01') AS is_suspicious_device_client,
   FROM
     first_seen
   FULL OUTER JOIN
@@ -171,6 +171,7 @@ SELECT
   adjust_info.*,
   metadata,
   activations.is_activated,
+  is_suspicious_device_client,
 FROM
   _current
 LEFT JOIN

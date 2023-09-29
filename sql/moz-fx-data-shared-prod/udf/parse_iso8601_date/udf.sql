@@ -15,8 +15,8 @@ RETURNS DATE AS (
 
 -- Test
 SELECT
-  assert.equals(DATE '2019-11-04', udf.parse_iso8601_date('2019-11-04')),
-  assert.equals(DATE '2019-11-04', udf.parse_iso8601_date('2019-11-04T21:15:00+00:00')),
-  assert.equals(DATE '2019-11-04', udf.parse_iso8601_date('20191104T211500Z')),
-  assert.equals(DATE '0100-01-01', udf.parse_iso8601_date('100-1-1')),
-  assert.null(udf.parse_iso8601_date('2000/01/01'))
+  mozfun.assert.equals(DATE '2019-11-04', udf.parse_iso8601_date('2019-11-04')),
+  mozfun.assert.equals(DATE '2019-11-04', udf.parse_iso8601_date('2019-11-04T21:15:00+00:00')),
+  mozfun.assert.equals(DATE '2019-11-04', udf.parse_iso8601_date('20191104T211500Z')),
+  mozfun.assert.equals(DATE '0100-01-01', udf.parse_iso8601_date('100-1-1')),
+  mozfun.assert.null(udf.parse_iso8601_date('2000/01/01'))

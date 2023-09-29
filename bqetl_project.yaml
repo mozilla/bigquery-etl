@@ -348,7 +348,6 @@ routine:
     gcs_path: ""
     skip:
     - sql/moz-fx-data-shared-prod/udf/main_summary_scalars/udf.sql
-  assert_udf_dir: tests/assert
   example_dir: examples
   project: mozfun
 

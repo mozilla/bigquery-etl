@@ -53,13 +53,9 @@ def get_routines_from_dir(project_dir):
 
 def get_routines(project):
     """Return all routines that could be referenced by the project."""
-    return (
-        get_routines_from_dir(project)
-        + get_routines_from_dir(
-            Path(ConfigLoader.get("default", "sql_dir", fallback="sql")) / "mozfun"
-        )
-        + get_routines_from_dir(ConfigLoader.get("routine", "assert_udf_dir"))
-    )  # assert UDFs used for testing
+    return get_routines_from_dir(project) + get_routines_from_dir(
+        Path(ConfigLoader.get("default", "sql_dir", fallback="sql")) / "mozfun"
+    )
 
 
 @attr.s(auto_attribs=True)
@@ -232,10 +228,7 @@ def read_routine_dir(*project_dirs):
     global raw_routines
 
     if not project_dirs:
-        project_dirs = (
-            ConfigLoader.get("default", "sql_dir"),
-            ConfigLoader.get("routine", "assert_udf_dir"),
-        )
+        project_dirs = (ConfigLoader.get("default", "sql_dir"),)
 
     if project_dirs not in raw_routines:
         raw_routines[project_dirs] = {
@@ -257,7 +250,6 @@ def parse_routines(project_dir):
     raw_routines = read_routine_dir(
         project_dir,
         Path(ConfigLoader.get("default", "sql_dir", fallback="sql")) / "mozfun",
-        ConfigLoader.get("routine", "assert_udf_dir"),
     )
 
     # prepend udf definitions to tests

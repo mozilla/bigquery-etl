@@ -41,4 +41,7 @@ bigquery:
     - sample_id
     - country
     - normalized_os
+initialization:
+  from_sample_id: 0
+  to_sample_id: 2
 references: {}

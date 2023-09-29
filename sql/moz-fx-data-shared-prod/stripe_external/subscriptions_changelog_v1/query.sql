@@ -1,3 +1,7 @@
+{% if is_init() %}
+INSERT INTO
+ `{project_id}.{dataset_id}.{table_id}`
+{% endif %}
 WITH subscriptions_history AS (
   SELECT
     -- Synthesize a primary key column to make identifying rows and doing joins easier.

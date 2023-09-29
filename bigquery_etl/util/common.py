@@ -31,7 +31,6 @@ REV_WORD_BOUND_PAT = re.compile(
 FILE_PATH = Path(os.path.dirname(__file__))
 DEFAULT_QUERY_TEMPLATE_VARS = {
     "is_init": lambda: False,
-    "parallel_run": lambda: False,
     "metrics": MetricHub(),
 }
 ROOT = Path(__file__).parent.parent.parent

@@ -1,3 +1,7 @@
+{% if is_init() %}
+INSERT INTO
+ `{project_id}.{dataset_id}.{table_id}`
+{% endif %}
 WITH new_flow_events AS (
   SELECT
     logger,

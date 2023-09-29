@@ -894,6 +894,7 @@ def _run_query(
     query_arguments,
     addl_templates: typing.Optional[dict] = None,
     mapped_values=None,
+    parallelized=None,
 ):
     client = bigquery.Client(project_id)
     """Run a query."""
@@ -979,12 +980,18 @@ def _run_query(
                 )
             )
             query_stream.seek(0)
-            query_content = query_stream.read()
 
-            if mapped_values is not None and "{mapped_values}" in query_content:
-                # Format the query template and run the query.
-                print(f"Running for {mapped_values}...")
-                query = query_content.format(mapped_values=mapped_values)
+            if mapped_values is None or parallelized is None:
+                # Run the query as shell command so that passed parameters can be used as is.
+                subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
+            else:
+                query_content = query_stream.read()
+                query = query_content.format(
+                    project_id=project_id,
+                    dataset_id=dataset_id,
+                    table_id=destination_table,
+                    mapped_values=mapped_values,
+                )
                 job = client.query(
                     query=query,
                     job_config=bigquery.QueryJobConfig(
@@ -993,9 +1000,6 @@ def _run_query(
                     ),
                 )
                 job.result()
-            else:
-                # run the query as shell command so that passed parameters can be used as is.
-                subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
 
 
 @query.command(
@@ -1268,10 +1272,10 @@ def _initialize_in_parallel(
     query_file,
     arguments,
     parallelism,
+    mapped_values,
+    parallelized,
     addl_templates,
 ):
-    mapped_values = [f"sample_id = {i}" for i in list(range(0, 100))]
-
     with ThreadPool(parallelism) as pool:
         start = default_timer()
         # Process all subsets in the query in parallel (eg. all sample_ids).
@@ -1285,6 +1289,7 @@ def _initialize_in_parallel(
                 dataset,
                 arguments,
                 addl_templates,
+                parallelized,
             ),
             mapped_values,
         )
@@ -1341,17 +1346,26 @@ def initialize(ctx, name, sql_dir, project_id, dry_run):
             dataset = query_file.parent.parent.name
             destination_table = query_file.parent.name
             full_table_id = f"{project}.{dataset}.{destination_table}"
+            mapped_values = [""]
+            parallelized = "INSERT INTO" in sql_content
 
             try:
-                table = client.get_table(full_table_id)
-            except NotFound:
-                table = bigquery.Table(full_table_id)
-
-            if table.created:
+                client.get_table(full_table_id)
                 raise PreconditionFailed(
                     f"Table {full_table_id} already exists. The initialization process is terminated."
                 )
-            ctx.invoke(deploy, name=full_table_id, force=True)
+            except NotFound:
+                ctx.invoke(deploy, name=full_table_id, force=True)
+
+            query_file_path = Path(query_file)
+            metadata = Metadata.of_query_file(query_file_path)
+            if metadata and metadata.initialization:
+                ini = metadata.initialization.get("from_sample_id", None)
+                end = metadata.initialization.get("to_sample_id", None)
+                if ini is not None and end is not None:
+                    mapped_values = [
+                        f"AND sample_id = {i}" for i in list(range(ini, end))
+                    ]
 
             arguments = [
                 "query",
@@ -1362,30 +1376,19 @@ def initialize(ctx, name, sql_dir, project_id, dry_run):
             if dry_run:
                 arguments += ["--dry_run"]
 
-            if "parallel_run" in sql_content:
-                _initialize_in_parallel(
-                    project=project,
-                    table=destination_table,
-                    dataset=dataset,
-                    query_file=query_file,
-                    arguments=arguments,
-                    parallelism=DEFAULT_PARALLELISM,
-                    addl_templates={
-                        "is_init": lambda: True,
-                        "parallel_run": lambda: True,
-                    },
-                )
-            else:
-                _run_query(
-                    project_id=project,
-                    public_project_id=None,
-                    destination_table=destination_table,
-                    dataset_id=dataset,
-                    query_arguments=arguments,
-                    addl_templates={
-                        "is_init": lambda: True,
-                    },
-                )
+            _initialize_in_parallel(
+                project=project,
+                table=destination_table,
+                dataset=dataset,
+                query_file=query_file,
+                arguments=arguments,
+                parallelism=DEFAULT_PARALLELISM,
+                mapped_values=mapped_values,
+                parallelized=parallelized,
+                addl_templates={
+                    "is_init": lambda: True,
+                },
+            )
         else:
             init_files = Path(query_file.parent).rglob("init.sql")
 

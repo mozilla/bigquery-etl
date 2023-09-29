@@ -1,3 +1,7 @@
+{% if is_init() %}
+INSERT INTO
+ `{project_id}.{dataset_id}.{table_id}`
+{% endif %}
 CREATE TEMP FUNCTION sum_map_values(map ARRAY<STRUCT<key STRING, value INT64>>)
 RETURNS INT64 AS (
   (SELECT SUM(value) FROM UNNEST(map))

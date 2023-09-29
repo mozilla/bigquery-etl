@@ -8,40 +8,30 @@ WITH clients_retention AS (
     firefox_ios.baseline_clients_last_seen
   WHERE
     submission_date = @submission_date
-    -- this guard needs to be added if using the clients table
-    -- alternatively it needs to be used inside the first_seen CTE
-    -- AND first_seen_date = DATE_SUB(@submission_date, INTERVAL 13 DAY)
     AND normalized_channel = "release"
 ),
-first_seen AS (
+clients_first_seen AS (
   SELECT
     client_id,
     sample_id,
     first_seen_date,
   FROM
-    firefox_ios.baseline_clients_first_seen
+    firefox_ios.firefox_ios_clients
   WHERE
     -- Two weeks need to elapse before calculating the week 2 retention
-    submission_date = DATE_SUB(@submission_date, INTERVAL 13 DAY)
-    -- AND first_seen_date = DATE_SUB(@submission_date, INTERVAL 13 DAY)
-    AND normalized_channel = "release"
-    AND NOT (app_display_version = '107.2' AND submission_date >= '2023-02-01')
-  -- Alternative source table
-  -- FROM
-  --   firefox_ios.firefox_ios_clients
-  -- WHERE
-  --   channel = "release"
+    first_seen_date = DATE_SUB(@submission_date, INTERVAL 13 DAY)
+    AND channel = "release"
 ),
 retention_calculation AS (
   SELECT
-    first_seen.first_seen_date,
-    clients_retention.client_id,
-    clients_retention.sample_id,
-    mozfun.bits28.retention(days_seen_bits, @submission_date) AS retention,
+    clients_first_seen.first_seen_date,
+    clients_first_seen.client_id,
+    clients_first_seen.sample_id,
+    mozfun.bits28.retention(clients_retention.days_seen_bits, @submission_date) AS retention,
   FROM
     clients_retention
   INNER JOIN
-    first_seen
+    clients_first_seen
   USING
     (client_id, sample_id)
 )

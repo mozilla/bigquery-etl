@@ -8,33 +8,31 @@ WITH clients_retention AS (
     firefox_ios.baseline_clients_last_seen
   WHERE
     submission_date = @submission_date
-    -- AND first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
     AND normalized_channel = "release"
 ),
-first_seen AS (
+clients_first_seen AS (
   SELECT
     client_id,
     sample_id,
     first_seen_date,
   FROM
-    firefox_ios.baseline_clients_first_seen
+    firefox_ios.firefox_ios_clients
   WHERE
     -- 28 days need to elapse before calculating the week 4 and day 28 retention metrics
-    submission_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
-    AND normalized_channel = "release"
-    AND NOT (app_display_version = '107.2' AND submission_date >= '2023-02-01')
+    first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    AND channel = "release"
 ),
 retention_calculation AS (
   SELECT
-    first_seen.first_seen_date,
-    clients_retention.client_id,
-    clients_retention.sample_id,
-    BIT_COUNT(days_seen_bits) AS days_seen_in_first_28_days,
-    mozfun.bits28.retention(days_seen_bits, @submission_date) AS retention,
+    clients_first_seen.first_seen_date,
+    clients_first_seen.client_id,
+    clients_first_seen.sample_id,
+    BIT_COUNT(clients_retention.days_seen_bits) AS days_seen_in_first_28_days,
+    mozfun.bits28.retention(clients_retention.days_seen_bits, @submission_date) AS retention,
   FROM
     clients_retention
   INNER JOIN
-    first_seen
+    clients_first_seen
   USING
     (client_id, sample_id)
 )

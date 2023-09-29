@@ -54,6 +54,7 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
     )
 
     checks__warn_firefox_ios_derived__app_store_funnel__v1 = bigquery_dq_check(
@@ -67,6 +68,7 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
     )
 
     firefox_ios_derived__app_store_funnel__v1 = bigquery_etl_query(

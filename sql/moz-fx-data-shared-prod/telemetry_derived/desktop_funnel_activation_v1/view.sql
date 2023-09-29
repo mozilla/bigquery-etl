@@ -14,7 +14,7 @@ SELECT
   num_activated,
   returned_second_day,
   qualified_second_day,
-  returned_week4,
+  retained_week4,
   qualified_week4
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.desktop_funnel_activation_day_6_v1`

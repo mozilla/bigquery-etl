@@ -36,7 +36,7 @@ fields:
   name: qualified_second_day
   type: INTEGER
 - mode: NULLABLE
-  name: returned_week4
+  name: retained_week4
   type: INTEGER
 - mode: NULLABLE
   name: qualified_week4

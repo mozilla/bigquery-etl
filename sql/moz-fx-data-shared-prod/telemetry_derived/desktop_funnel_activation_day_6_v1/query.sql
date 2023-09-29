@@ -52,7 +52,7 @@ client_conditions AS (
     -- did the profile qualify as DAU on any day after their first day during their first 28 days?
     COALESCE(BIT_COUNT(mozfun.bits28.from_string('0111111111111111111111111111') & days_visited_1_uri_bits & days_interacted_bits) > 0, FALSE) AS qualified_second_day,
     -- did the profile send a main ping on any day in their 4th week?
-    COALESCE(BIT_COUNT(mozfun.bits28.from_string('0000000000000000000001111111') & days_seen_bits) > 0, FALSE) AS returned_week4,
+    COALESCE(BIT_COUNT(mozfun.bits28.from_string('0000000000000000000001111111') & days_seen_bits) > 0, FALSE) AS retained_week4,
     -- did the profile qualify as DAU on any day in their 4th week?
     COALESCE(BIT_COUNT(mozfun.bits28.from_string('0000000000000000000001111111') & days_visited_1_uri_bits & days_interacted_bits) > 0, FALSE) AS qualified_week4
   FROM
@@ -68,11 +68,11 @@ SELECT
   attribution_source,
   distribution_id,
   attribution_ua,
-  COUNT(activated) AS num_activated,
-  COUNT(returned_second_day) AS returned_second_day,
-  COUNT(qualified_second_day) AS qualified_second_day,
-  COUNT(returned_week4) AS returned_week4,
-  COUNT(qualified_week4) AS qualified_week4,
+  COUNTIF(activated) AS num_activated,
+  COUNTIF(returned_second_day) AS returned_second_day,
+  COUNTIF(qualified_second_day) AS qualified_second_day,
+  COUNTIF(returned_week4) AS returned_week4,
+  COUNTIF(qualified_week4) AS qualified_week4,
 FROM
   client_conditions
 LEFT JOIN

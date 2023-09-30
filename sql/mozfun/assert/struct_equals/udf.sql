@@ -15,7 +15,8 @@ CREATE OR REPLACE FUNCTION assert.struct_equals(expected ANY TYPE, actual ANY TY
 
 SELECT
   assert.struct_equals(STRUCT('a' AS a, 'b' AS b, 3 AS c), STRUCT('a' AS a, 'b' AS b, 3 AS c)),
-  assert.struct_equals(STRUCT('a' AS a, NULL AS b, 3 AS c), STRUCT('a' AS a, NULL AS b, 3 AS c)),
+  assert.struct_equals(STRUCT('a' AS a, NULL AS b, 3 AS c), STRUCT('a' AS a, NULL AS b, 3 AS c));
+
 #xfail
 SELECT
   assert.struct_equals(STRUCT('a' AS a, 'b' AS b, 3 AS c), STRUCT('a' AS a, 'b' AS b, 4 AS c))

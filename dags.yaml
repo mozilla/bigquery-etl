@@ -272,7 +272,6 @@ bqetl_main_summary:
       [
         "telemetry-alerts@mozilla.com",
         "dthorn@mozilla.com",
-        "jklukas@mozilla.com",
       ]
     retries: 2
     retry_delay: 30m

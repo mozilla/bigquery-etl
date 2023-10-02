@@ -1,0 +1,34 @@
+friendly_name: User Retention - Firefox iOS (Week 2)
+description: |
+  Derived dataset for Firefox iOS retention analysis. Contains metrics that can be calculated
+  2 weeks after a user was first seen.
+owners:
+- kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  dag: bqetl_firefox_ios
+  owner1: kik
+scheduling:
+  dag_name: bqetl_firefox_ios
+  depends_on_past: false
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  checks.sql:
+  - moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_2_v1
+  query.sql:
+  - firefox_ios.baseline_clients_last_seen
+  - firefox_ios.firefox_ios_clients
+deprecated: false

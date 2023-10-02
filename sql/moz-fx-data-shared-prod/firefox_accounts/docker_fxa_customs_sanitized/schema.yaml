@@ -59,6 +59,9 @@ fields:
   - name: errno
     type: FLOAT
     mode: NULLABLE
+  - name: foundin
+    type: FLOAT
+    mode: NULLABLE
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE

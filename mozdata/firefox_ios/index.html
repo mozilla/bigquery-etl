@@ -5355,6 +5355,82 @@ across all channels of the Glean application "Firefox for iOS"
 <p><code>firefox_ios.funnel_retention</code></p>
 <p>None</p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>first_seen_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_reported_country</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_reported_isp</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>adjust_ad_group</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>adjust_campaign</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>adjust_creative</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>adjust_network</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>retained_week_2</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>retained_week_4</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>days_seen_in_first_28_days</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>repeat_first_month_user</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>

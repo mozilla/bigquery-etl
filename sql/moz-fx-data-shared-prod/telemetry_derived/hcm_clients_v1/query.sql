@@ -13,8 +13,6 @@ WHERE
   {% else %}
     DATE(submission_timestamp) = @submission_date
   {% endif %}
-  AND payload.processes.parent.keyed_scalars.a11y_theme IS NOT NULL
-  AND ARRAY_LENGTH(payload.processes.parent.keyed_scalars.a11y_theme) > 0
   AND value IS TRUE
   AND key != "always"
 GROUP BY

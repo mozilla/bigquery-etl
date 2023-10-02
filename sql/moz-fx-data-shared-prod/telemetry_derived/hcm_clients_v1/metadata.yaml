@@ -1,6 +1,8 @@
 friendly_name: HCM Clients
 description: |-
-  Firefox HCM Clients by channel and os
+  OS High Color Mode (HCM) Firefox Clients by channel and os. This table counts
+  users who have OS HCM on and who have not forced document colors everywhere
+  (ie. the OS HCM colors should propagate to web content).
 owners:
 - dthorn@mozilla.com
 labels:

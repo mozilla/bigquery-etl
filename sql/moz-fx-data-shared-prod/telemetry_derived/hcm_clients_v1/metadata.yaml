@@ -1,0 +1,20 @@
+friendly_name: HCM Clients
+description: |-
+  Firefox HCM Clients by channel and os
+owners:
+- dthorn@mozilla.com
+labels:
+  incremental: true
+  owner1: dthorn
+scheduling:
+  application: firefox
+  schedule: daily
+  dag_name: bqetl_main_summary
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+  clustering:
+    fields:
+    - channel

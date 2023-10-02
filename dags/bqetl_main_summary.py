@@ -430,6 +430,21 @@ with DAG(
         task_concurrency=1,
     )
 
+    telemetry_derived__hcm_clients__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__hcm_clients__v1",
+        destination_table="hcm_clients_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="dthorn@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "jklukas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__main_1pct__v1 = bigquery_etl_query(
         task_id="telemetry_derived__main_1pct__v1",
         destination_table="main_1pct_v1",
@@ -704,6 +719,8 @@ with DAG(
     telemetry_derived__firefox_desktop_usage__v1.set_upstream(
         firefox_desktop_exact_mau28_by_dimensions_v2
     )
+
+    telemetry_derived__hcm_clients__v1.set_upstream(wait_for_copy_deduplicate_main_ping)
 
     telemetry_derived__main_1pct__v1.set_upstream(wait_for_copy_deduplicate_main_ping)
 

@@ -41,6 +41,7 @@ retention_calculation AS (
     (client_id, sample_id)
 )
 SELECT
+  @submission_date AS submission_date,
   * EXCEPT (retention) REPLACE(
     -- metric date should align with first_seen_date, if that is not the case then the query will fail.
     IF(

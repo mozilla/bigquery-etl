@@ -18,7 +18,13 @@ SELECT
     ) AS labels
   ) AS resource,
   textPayload,
-  STRUCT(jsonPayload.block, jsonPayload.op, jsonPayload.action, jsonPayload.errno) AS jsonPayload,
+  STRUCT(
+    jsonPayload.block,
+    jsonPayload.op,
+    jsonPayload.action,
+    jsonPayload.errno,
+    jsonPayload.foundin
+  ) AS jsonPayload,
   `timestamp`,
   receiveTimestamp,
   severity,
@@ -63,7 +69,13 @@ SELECT
     ) AS labels
   ) AS resource,
   textPayload,
-  STRUCT(jsonPayload.block, jsonPayload.op, jsonPayload.action, jsonPayload.errno) AS jsonPayload,
+  STRUCT(
+    jsonPayload.block,
+    jsonPayload.op,
+    jsonPayload.action,
+    jsonPayload.errno,
+    jsonPayload.foundin
+  ) AS jsonPayload,
   `timestamp`,
   receiveTimestamp,
   severity,

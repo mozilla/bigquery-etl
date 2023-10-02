@@ -7,16 +7,16 @@ SELECT
   sample_id,
   COALESCE(
     retention_week_4.first_reported_country,
-    retained_week_2.first_reported_country
+    retention_week_2.first_reported_country
   ) AS first_reported_country,
   COALESCE(
     retention_week_4.first_reported_isp,
-    retained_week_2.first_reported_isp
+    retention_week_2.first_reported_isp
   ) AS first_reported_isp,
-  COALESCE(retention_week_4.adjust_ad_group, retained_week_2.adjust_ad_group) AS adjust_ad_group,
-  COALESCE(retention_week_4.adjust_campaign, retained_week_2.adjust_campaign) AS adjust_campaign,
-  COALESCE(retention_week_4.adjust_creative, retained_week_2.adjust_creative) AS adjust_creative,
-  COALESCE(retention_week_4.adjust_network, retained_week_2.adjust_network) AS adjust_network,
+  COALESCE(retention_week_4.adjust_ad_group, retention_week_2.adjust_ad_group) AS adjust_ad_group,
+  COALESCE(retention_week_4.adjust_campaign, retention_week_2.adjust_campaign) AS adjust_campaign,
+  COALESCE(retention_week_4.adjust_creative, retention_week_2.adjust_creative) AS adjust_creative,
+  COALESCE(retention_week_4.adjust_network, retention_week_2.adjust_network) AS adjust_network,
   retention_week_2.retained_week_2,
   retention_week_4.retained_week_4,
   retention_week_4.days_seen_in_first_28_days,

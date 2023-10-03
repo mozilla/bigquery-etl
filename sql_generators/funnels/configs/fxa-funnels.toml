@@ -1,0 +1,43 @@
+destination_dataset = "telemetry_derived"
+
+[funnels]
+
+[funnels.registration_funnel]
+
+steps = ["engage", "submit", "view"]
+
+[steps]
+
+[steps.view]
+friendly_name = "View"
+description = "View marketing email"
+data_source = "fxa_oauth_events"
+select_expression = "fxa_content_auth_oauth_events"
+where_expression = "event_type = 'fxa_email_first - view'"
+depends_on_previous_step = false
+aggregation = "count"
+
+[steps.submit]
+friendly_name = "Submit"
+description = "View marketing email"
+data_source = "fxa_oauth_events"
+select_expression = "fxa_content_auth_oauth_events"
+where_expression = "event_type = 'fxa_email_first - submit'"
+depends_on_previous_step = false
+aggregation = "count"
+
+[steps.engage]
+friendly_name = "Engage"
+description = "Click on marketing email"
+data_source = "fxa_oauth_events"
+select_expression = "fxa_content_auth_oauth_events"
+where_expression = "event_type = 'fxa_email_first - engage'"
+depends_on_previous_step = false
+aggregation = "count"
+
+
+[data_sources]
+
+[data_sources.fxa_oauth_events]
+from_expression = "mozdata.firefox_accounts.fxa_content_auth_oauth_events"
+submission_date_column = "DATE(timestamp)"

@@ -5,39 +5,47 @@ import click
 import toml
 import re
 from jinja2 import Environment, FileSystemLoader
+import cattrs
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import write_sql
-from sql_generators.funnels.config import ConfigParser
+from sql_generators.funnels.config import FunnelConfig
 
 
 FILE_PATH = Path(os.path.dirname(__file__))
 TEMPLATES_PATH = FILE_PATH / "templates"
 
+
 def bq_normalize_name(name: str) -> str:
     return re.sub(r"[^a-zA-Z0-9_]", "_", name)
 
+
 def generate_funnels(target_project, path, output_dir):
     output_dir = Path(output_dir) / target_project
+    path = Path(path)
+    converter = cattrs.BaseConverter()
 
     for config_file in path.glob("*.toml"):
-        config = toml.loads(config_file)
+        config = converter.structure(toml.load(config_file), FunnelConfig)
         table_name = bq_normalize_name(config_file.stem)
 
         env = Environment(loader=FileSystemLoader(TEMPLATES_PATH))
         sql_template = env.get_template("funnel.sql")
-        funnel_sql = reformat(sql_template.render(
-            funnels=config["funnels"],
-            steps=config["steps"],
-            data_sources=config["data_sources"]
-        ))
+
+        funnel_sql = reformat(
+            sql_template.render(
+                funnels=config.funnels,
+                steps=config.steps,
+                data_sources=config.data_sources,
+            )
+        )
         write_sql(
             output_dir=output_dir,
-            full_table_id=f"{target_project}.{config['destination_dataset']}.{table_name}",
+            full_table_id=f"{target_project}.{config.destination_dataset}.{table_name}_v{config.version}",
             basename="query.sql",
             sql=funnel_sql,
-            skip_existing=False
+            skip_existing=False,
         )
 
 

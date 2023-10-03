@@ -11,10 +11,10 @@
   FROM 
     {{ data_sources[steps[step_name].data_source].from_expression }}
   {% if not loop.first and steps[step_name].depends_on_previous_step %}
-  INNER JOIN {{ funnel_name }}_{{ loop.previtem[0] }} AS prev
+  INNER JOIN {{ funnel_name }}_{{ loop.previtem }} AS prev
   ON 
-    prev.submission_date = submission_date AND
-    prev.join_key = join_key
+    prev.submission_date = {{ data_sources[steps[step_name].data_source].submission_date_column }}  AND
+    prev.join_key = {{ steps[step_name].join_key }}
   {% endif %}
   WHERE
     {{ data_sources[steps[step_name].data_source].submission_date_column }} = @submission_date
@@ -37,26 +37,43 @@
   GROUP BY
     submission_date, 
     funnel
-){% if not loop.last %},{% endif %}
+),
 {% endfor %}
 {% endfor %}
+merged_funnels AS (
+  SELECT
+    submission_date,
+    funnel,
+    {% for step_name, step in steps.items() %}
+      {% for funnel_name, funnel in funnels.items() %}
+        {% if loop.first %}
+        COALESCE(
+        {% else %},
+        {% endif %}
 
-SELECT
-  submission_date,
-  funnel,
+        {% if step_name in funnel.steps %}
+        {{ funnel_name }}_{{ step_name }}_aggregated.aggregated
+        {% else %}
+        NULL
+        {% endif %}
+
+        {% if loop.last %}
+        ) AS {{ step_name }},
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  FROM
   {% for funnel_name, funnel in funnels.items() %}
+    {% set outer_loop = loop %}
     {% for step_name in funnel.steps %}
-    {{ funnel_name }}_{{ step_name }}_aggregated.aggregated AS {{ step_name }},
+      {% if loop.first and outer_loop.index == 1 %}
+      {{ funnel_name }}_{{ step_name }}_aggregated
+      {% else %}
+      FULL OUTER JOIN {{ funnel_name }}_{{ step_name }}_aggregated
+      USING (submission_date, funnel) 
+      {% endif %}
     {% endfor %}
   {% endfor %}
-FROM
-{% for funnel_name, funnel in funnels.items() %}
-  {% for step_name in funnel.steps %}
-    {% if loop.first %}
-    {{ funnel_name }}_{{ step_name }}_aggregated
-    {% else %}
-    FULL OUTER JOIN {{ funnel_name }}_{{ step_name }}_aggregated
-    USING (submission_date, funnel) 
-    {% endif %}
-  {% endfor %}
-{% endfor %}
+)
+
+SELECT * FROM merged_funnels

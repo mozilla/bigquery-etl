@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Generate and run query that splits a ping table up by probe."""
 import logging
+import re
 from datetime import datetime, timedelta
 from itertools import groupby
 from multiprocessing.pool import ThreadPool
+from pathlib import Path
 
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
@@ -13,15 +15,15 @@ from bigquery_etl.util.common import TempDatasetReference
 from bigquery_etl.format_sql.formatter import reformat
 
 STATIC_PATHS = [
-    ("submission_timestamp",),
-    ("document_id",),
-    ("client_id",),
-    ("normalized_app_name",),
-    ("normalized_channel",),
-    ("normalized_os",),
-    ("normalized_os_version",),
-    ("normalized_country_code",),
-    ("sample_id",),
+#   ("submission_timestamp",),
+#   ("document_id",),
+#   ("client_id",),
+#   ("normalized_app_name",),
+#   ("normalized_channel",),
+#   ("normalized_os",),
+#   ("normalized_os_version",),
+#   ("normalized_country_code",),
+#   ("sample_id",),
 ]
 
 
@@ -113,8 +115,9 @@ def _get_queries(source):
     paths = list(_unnest_paths(source.schema, static_paths=static_paths))
     use_counter_paths = []
     remainder_paths = []
+    pattern = re.compile(".*[.](USE_COUNTER2_[^.]+|((TOP_LEVEL_)?CONTENT_DOCUMENTS|[^.]+_WORKER)_DESTROYED)".lower())
     for path in paths:
-        if path[-1].startswith("use_counter2_"):
+        if pattern.fullmatch(".".join(path)):
             use_counter_paths.append(path)
         else:
             remainder_paths.append(path)
@@ -129,11 +132,12 @@ def _get_queries(source):
             + "".join(f"{expr}," for expr in _select_as_structs(paths))
             + "FROM "
             + f"`{sql_table_id(source)}` "
-            + f"WHERE {partition_filter}"
+            + f"WHERE {partition_filter} "
+            + "AND sample_id = @sample_id"
         )
         for dest, paths in {
-            "main_use_counter_v1": use_counter,
-            "main_remainder_v1": remainder,
+            "main_use_counter_v4": use_counter,
+            "main_v5": remainder,
         }.items()
     }
 
@@ -159,11 +163,16 @@ def main(
     parallelism=2,
     partition_date=utc_today,
     source_table="moz-fx-data-shared-prod.telemetry_stable.main_v4",
-    project="mozdata",
-    dataset="analysis",
+    project="moz-fx-data-shared-prod",
+    dataset="telemetry_stable",
 ):
     client = bigquery.Client()
     source = client.get_table(source_table)
+    for dest, query in _get_queries(source).items():
+        path = (Path("sql") / project / dataset / dest / "query.sql")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(query)
+    return
     queries = _get_queries(source)
     query_parameters = [
         bigquery.ScalarQueryParameter(
@@ -179,7 +188,7 @@ def main(
                     query,
                     bigquery.QueryJobConfig(
                         clustering_fields=source.clustering_fields,
-                        destination=f"{project}.{dataset}.relud_{dest}${partition_date:%Y%m%d}",
+                        destination=f"{project}.{dataset}.{dest}${partition_date:%Y%m%d}",
                         query_parameters=query_parameters,
                         time_partitioning=source.time_partitioning,
                         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,

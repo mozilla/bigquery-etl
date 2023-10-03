@@ -1,0 +1,13 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: channel
+  type: STRING
+  mode: NULLABLE
+- name: os
+  type: STRING
+  mode: NULLABLE
+- name: num_clients
+  type: INTEGER
+  mode: NULLABLE

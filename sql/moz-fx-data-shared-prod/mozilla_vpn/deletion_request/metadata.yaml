@@ -2,7 +2,7 @@ friendly_name: App-specific view for Glean ping "deletion-request"
 description: |-
   This a view that UNIONs the stable ping tables
   across all channels of the Glean application "Mozilla VPN"
-  (mozillavpn.deletion_request, org_mozilla_firefox_vpn.deletion_request, org_mozilla_ios_firefoxvpn.deletion_request).
+  (mozillavpn.deletion_request, org_mozilla_firefox_vpn.deletion_request, org_mozilla_ios_firefoxvpn.deletion_request, org_mozilla_ios_firefoxvpn_network_extension.deletion_request).
 
   It is used by Looker.
 owners: []
@@ -17,4 +17,5 @@ references:
   - moz-fx-data-shared-prod.mozillavpn.deletion_request
   - moz-fx-data-shared-prod.org_mozilla_firefox_vpn.deletion_request
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn.deletion_request
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension.deletion_request
 deprecated: false

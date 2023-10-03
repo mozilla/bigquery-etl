@@ -2,7 +2,7 @@ friendly_name: App-specific view for Glean ping "main"
 description: |-
   This a view that UNIONs the stable ping tables
   across all channels of the Glean application "Mozilla VPN"
-  (mozillavpn.main, org_mozilla_firefox_vpn.main, org_mozilla_ios_firefoxvpn.main).
+  (mozillavpn.main, org_mozilla_firefox_vpn.main, org_mozilla_ios_firefoxvpn.main, org_mozilla_ios_firefoxvpn_network_extension.main).
 
   It is used by Looker.
 owners: []
@@ -17,4 +17,5 @@ references:
   - moz-fx-data-shared-prod.mozillavpn.main
   - moz-fx-data-shared-prod.org_mozilla_firefox_vpn.main
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn.main
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension.main
 deprecated: false

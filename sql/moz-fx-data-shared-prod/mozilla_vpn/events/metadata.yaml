@@ -2,7 +2,7 @@ friendly_name: App-specific view for Glean ping "events"
 description: |-
   This a view that UNIONs the stable ping tables
   across all channels of the Glean application "Mozilla VPN"
-  (mozillavpn.events, org_mozilla_firefox_vpn.events, org_mozilla_ios_firefoxvpn.events).
+  (mozillavpn.events, org_mozilla_firefox_vpn.events, org_mozilla_ios_firefoxvpn.events, org_mozilla_ios_firefoxvpn_network_extension.events).
 
   It is used by Looker.
 owners: []
@@ -17,4 +17,5 @@ references:
   - moz-fx-data-shared-prod.mozillavpn.events
   - moz-fx-data-shared-prod.org_mozilla_firefox_vpn.events
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn.events
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension.events
 deprecated: false

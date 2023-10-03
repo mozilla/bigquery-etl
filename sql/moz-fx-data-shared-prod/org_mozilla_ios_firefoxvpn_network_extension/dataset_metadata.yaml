@@ -1,0 +1,14 @@
+friendly_name: org-mozilla-ios-firefoxvpn-network-extension
+description: |-
+  User-facing views related to document namespace org-mozilla-ios-firefoxvpn-network-extension; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/org-mozilla-ios-firefoxvpn-network-extension
+dataset_base_acl: view
+user_facing: true
+labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

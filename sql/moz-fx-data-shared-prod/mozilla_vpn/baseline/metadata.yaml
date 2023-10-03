@@ -2,7 +2,7 @@ friendly_name: App-specific view for Glean ping "baseline"
 description: |-
   This a view that UNIONs the stable ping tables
   across all channels of the Glean application "Mozilla VPN"
-  (mozillavpn.baseline, org_mozilla_firefox_vpn.baseline, org_mozilla_ios_firefoxvpn.baseline).
+  (mozillavpn.baseline, org_mozilla_firefox_vpn.baseline, org_mozilla_ios_firefoxvpn.baseline, org_mozilla_ios_firefoxvpn_network_extension.baseline).
 
   It is used by Looker.
 owners: []
@@ -17,4 +17,5 @@ references:
   - moz-fx-data-shared-prod.mozillavpn.baseline
   - moz-fx-data-shared-prod.org_mozilla_firefox_vpn.baseline
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn.baseline
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension.baseline
 deprecated: false

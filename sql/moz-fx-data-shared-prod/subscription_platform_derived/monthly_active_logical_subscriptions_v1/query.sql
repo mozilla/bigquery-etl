@@ -1,7 +1,3 @@
-{% if is_init() %}
-INSERT INTO
- `{project_id}.{dataset_id}.{table_id}`
-{% endif %}
 WITH months AS (
   {% if is_init() %}
     SELECT

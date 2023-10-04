@@ -919,7 +919,7 @@ def _run_query(
                 if not validate_metadata.validate_public_data(metadata, query_file):
                     sys.exit(1)
 
-                # Change the destination table to write results to the public dataset;
+                # change the destination table to write results to the public dataset;
                 # a view to the public table in the internal dataset is created
                 # when CI runs
                 if (
@@ -981,15 +981,12 @@ def _run_query(
             )
             query_stream.seek(0)
 
-            if mapped_values is None or parallelized is None:
+            if mapped_values is None or parallelized is False:
                 # Run the query as shell command so that passed parameters can be used as is.
                 subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
             else:
                 query_content = query_stream.read()
                 query = query_content.format(
-                    project_id=project_id,
-                    dataset_id=dataset_id,
-                    table_id=destination_table,
                     mapped_values=mapped_values,
                 )
                 job = client.query(
@@ -1289,7 +1286,7 @@ def _initialize_in_parallel(
                 dataset,
                 arguments,
                 addl_templates,
-                parallelized,
+                parallelized=parallelized,
             ),
             mapped_values,
         )
@@ -1316,12 +1313,16 @@ def _initialize_in_parallel(
 @click.pass_context
 def initialize(ctx, name, sql_dir, project_id, dry_run):
     """Create the destination table for the provided query."""
+    client = bigquery.Client()
+    parallelized = False
+    mapped_values = list(range(0, 1))
+
     if not is_authenticated():
         click.echo("Authentication required for creating tables.", err=True)
         sys.exit(1)
 
     if Path(name).exists():
-        # Allow name to be a path
+        # allow name to be a path
         query_files = [Path(name)]
     else:
         query_files = paths_matching_name_pattern(name, sql_dir, project_id)
@@ -1335,7 +1336,6 @@ def initialize(ctx, name, sql_dir, project_id, dry_run):
 
     for query_file in query_files:
         sql_content = query_file.read_text()
-        client = bigquery.Client()
 
         # Enable initialization from query.sql files
         # Create the table by deploying the schema and metadata, then run the init.
@@ -1346,8 +1346,6 @@ def initialize(ctx, name, sql_dir, project_id, dry_run):
             dataset = query_file.parent.parent.name
             destination_table = query_file.parent.name
             full_table_id = f"{project}.{dataset}.{destination_table}"
-            mapped_values = [""]
-            parallelized = "INSERT INTO" in sql_content
 
             try:
                 client.get_table(full_table_id)
@@ -1362,10 +1360,16 @@ def initialize(ctx, name, sql_dir, project_id, dry_run):
             if metadata and metadata.initialization:
                 ini = metadata.initialization.get("from_sample_id", None)
                 end = metadata.initialization.get("to_sample_id", None)
-                if ini is not None and end is not None:
+                # Running in parallel only when mapped_values are set in the query and metadata.
+                if (
+                    ini is not None
+                    and end is not None
+                    and "mapped_values" in sql_content
+                ):
                     mapped_values = [
                         f"AND sample_id = {i}" for i in list(range(ini, end))
                     ]
+                    parallelized = True
 
             arguments = [
                 "query",

@@ -1,7 +1,3 @@
-{% if is_init() %}
-INSERT INTO
- `{project_id}.{dataset_id}.{table_id}`
-{% endif %}
 CREATE TEMP FUNCTION synthesize_customer(
   customer ANY TYPE,
   effective_at TIMESTAMP,

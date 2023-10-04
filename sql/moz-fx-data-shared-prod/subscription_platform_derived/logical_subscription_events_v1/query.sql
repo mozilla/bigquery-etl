@@ -1,7 +1,3 @@
-{% if is_init() %}
-INSERT INTO
- `{project_id}.{dataset_id}.{table_id}`
-{% endif %}
 WITH subscription_changes AS (
   SELECT
     id AS logical_subscriptions_history_id,

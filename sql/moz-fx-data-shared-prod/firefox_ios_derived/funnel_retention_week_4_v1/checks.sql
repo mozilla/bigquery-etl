@@ -1,7 +1,7 @@
 #fail
 {{ is_unique(["client_id"]) }}
 #fail
-{{ min_row_count(1, "first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)") }}
+{{ min_row_count(1, "submission_date = @submission_date") }}
 #fail
 -- Here we're checking that the retention_week_2 generated inside funnel_retention_week_2_v1
 -- matches that reported by this table (generated 2 weeks later).

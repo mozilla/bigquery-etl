@@ -74,10 +74,10 @@ SELECT
     STRUCT(
       metrics.string.session_dns_type,
       metrics.string.glean_client_annotation_experimentation_id
-    ) AS string,
-    STRUCT(metrics.uuid.session_session_id, metrics.uuid.session_installation_id) AS uuid,
+    ) AS `string`,
+    STRUCT(metrics.uuid.session_session_id, metrics.uuid.session_installation_id) AS `uuid`,
     metrics.counter
-  ) AS metrics,
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

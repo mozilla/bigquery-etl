@@ -55,27 +55,25 @@ SELECT
   normalized_os_version,
   STRUCT(
     ping_info.end_time,
-    (
+    ARRAY(
       SELECT
-        ARRAY_AGG(
+        STRUCT(
+          experiments.key,
           STRUCT(
-            experiments.key,
-            STRUCT(
-              experiments.value.branch,
-              STRUCT(experiments.value.extra.type, experiments.value.extra.enrollment_id) AS extra
-            ) AS value
-          )
+            experiments.value.branch,
+            STRUCT(experiments.value.extra.type, experiments.value.extra.enrollment_id) AS `extra`
+          ) AS `value`
         )
       FROM
-        UNNEST(ping_info.experiments) AS experiments
-    ) AS experiments,
+        UNNEST(ping_info.experiments) AS `experiments`
+    ) AS `experiments`,
     ping_info.ping_type,
     ping_info.reason,
     ping_info.seq,
     ping_info.start_time,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
-  ) AS ping_info,
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp
 FROM
@@ -96,27 +94,25 @@ SELECT
   normalized_os_version,
   STRUCT(
     ping_info.end_time,
-    (
+    ARRAY(
       SELECT
-        ARRAY_AGG(
+        STRUCT(
+          experiments.key,
           STRUCT(
-            experiments.key,
-            STRUCT(
-              experiments.value.branch,
-              STRUCT(experiments.value.extra.type, experiments.value.extra.enrollment_id) AS extra
-            ) AS value
-          )
+            experiments.value.branch,
+            STRUCT(experiments.value.extra.type, experiments.value.extra.enrollment_id) AS `extra`
+          ) AS `value`
         )
       FROM
-        UNNEST(ping_info.experiments) AS experiments
-    ) AS experiments,
+        UNNEST(ping_info.experiments) AS `experiments`
+    ) AS `experiments`,
     ping_info.ping_type,
     ping_info.reason,
     ping_info.seq,
     ping_info.start_time,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
-  ) AS ping_info,
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp
 FROM

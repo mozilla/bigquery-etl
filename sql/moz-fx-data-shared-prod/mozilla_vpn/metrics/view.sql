@@ -15,8 +15,8 @@ SELECT
       metrics.boolean.glean_error_preinit_tasks_timeout,
       metrics.boolean.settings_connect_on_startup_active,
       metrics.boolean.settings_using_system_language,
-      CAST(NULL AS BOOLEAN) AS glean_core_migration_successful
-    ) AS boolean,
+      CAST(NULL AS BOOLEAN) AS `glean_core_migration_successful`
+    ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
       metrics.counter.glean_error_preinit_tasks_overflow,
@@ -26,15 +26,15 @@ SELECT
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.glean_upload_pending_pings,
       metrics.counter.glean_validation_foreground_count,
-      CAST(NULL AS INTEGER) AS glean_validation_app_forceclosed_count,
-      CAST(NULL AS INTEGER) AS glean_validation_baseline_ping_count
-    ) AS counter,
+      CAST(NULL AS INTEGER) AS `glean_validation_app_forceclosed_count`,
+      CAST(NULL AS INTEGER) AS `glean_validation_baseline_ping_count`
+    ) AS `counter`,
     metrics.datetime,
     metrics.labeled_counter,
     metrics.memory_distribution,
     metrics.string,
     metrics.timing_distribution
-  ) AS metrics,
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -59,7 +59,7 @@ SELECT
       metrics.boolean.settings_connect_on_startup_active,
       metrics.boolean.settings_using_system_language,
       metrics.boolean.glean_core_migration_successful
-    ) AS boolean,
+    ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
       metrics.counter.glean_error_preinit_tasks_overflow,
@@ -71,7 +71,7 @@ SELECT
       metrics.counter.glean_validation_foreground_count,
       metrics.counter.glean_validation_app_forceclosed_count,
       metrics.counter.glean_validation_baseline_ping_count
-    ) AS counter,
+    ) AS `counter`,
     metrics.datetime,
     metrics.labeled_counter,
     STRUCT(
@@ -79,18 +79,18 @@ SELECT
         metrics.memory_distribution.glean_database_size.count,
         metrics.memory_distribution.glean_database_size.sum,
         metrics.memory_distribution.glean_database_size.values
-      ) AS glean_database_size,
+      ) AS `glean_database_size`,
       STRUCT(
         metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size.count,
         metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size.sum,
         metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size.values
-      ) AS glean_upload_discarded_exceeding_pings_size,
+      ) AS `glean_upload_discarded_exceeding_pings_size`,
       STRUCT(
         metrics.memory_distribution.glean_upload_pending_pings_directory_size.count,
         metrics.memory_distribution.glean_upload_pending_pings_directory_size.sum,
         metrics.memory_distribution.glean_upload_pending_pings_directory_size.values
-      ) AS glean_upload_pending_pings_directory_size
-    ) AS memory_distribution,
+      ) AS `glean_upload_pending_pings_directory_size`
+    ) AS `memory_distribution`,
     metrics.string,
     STRUCT(
       metrics.timing_distribution.glean_upload_send_failure,
@@ -98,35 +98,33 @@ SELECT
       metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
       metrics.timing_distribution.glean_validation_shutdown_wait,
       metrics.timing_distribution.performance_time_to_main_screen
-    ) AS timing_distribution
-  ) AS metrics,
+    ) AS `timing_distribution`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
   normalized_os_version,
   STRUCT(
     ping_info.end_time,
-    (
+    ARRAY(
       SELECT
-        ARRAY_AGG(
+        STRUCT(
+          experiments.key,
           STRUCT(
-            experiments.key,
-            STRUCT(
-              experiments.value.branch,
-              STRUCT(experiments.value.extra.enrollment_id, experiments.value.extra.type) AS extra
-            ) AS value
-          )
+            experiments.value.branch,
+            STRUCT(experiments.value.extra.enrollment_id, experiments.value.extra.type) AS `extra`
+          ) AS `value`
         )
       FROM
-        UNNEST(ping_info.experiments) AS experiments
-    ) AS experiments,
+        UNNEST(ping_info.experiments) AS `experiments`
+    ) AS `experiments`,
     ping_info.ping_type,
     ping_info.reason,
     ping_info.seq,
     ping_info.start_time,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
-  ) AS ping_info,
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp
 FROM
@@ -145,8 +143,8 @@ SELECT
       metrics.boolean.glean_error_preinit_tasks_timeout,
       metrics.boolean.settings_connect_on_startup_active,
       metrics.boolean.settings_using_system_language,
-      CAST(NULL AS BOOLEAN) AS glean_core_migration_successful
-    ) AS boolean,
+      CAST(NULL AS BOOLEAN) AS `glean_core_migration_successful`
+    ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
       metrics.counter.glean_error_preinit_tasks_overflow,
@@ -156,9 +154,9 @@ SELECT
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.glean_upload_pending_pings,
       metrics.counter.glean_validation_foreground_count,
-      CAST(NULL AS INTEGER) AS glean_validation_app_forceclosed_count,
-      CAST(NULL AS INTEGER) AS glean_validation_baseline_ping_count
-    ) AS counter,
+      CAST(NULL AS INTEGER) AS `glean_validation_app_forceclosed_count`,
+      CAST(NULL AS INTEGER) AS `glean_validation_baseline_ping_count`
+    ) AS `counter`,
     metrics.datetime,
     metrics.labeled_counter,
     metrics.memory_distribution,
@@ -169,8 +167,8 @@ SELECT
       metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
       metrics.timing_distribution.glean_validation_shutdown_wait,
       metrics.timing_distribution.performance_time_to_main_screen
-    ) AS timing_distribution
-  ) AS metrics,
+    ) AS `timing_distribution`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -192,10 +190,10 @@ SELECT
   STRUCT(
     STRUCT(
       metrics.boolean.glean_error_preinit_tasks_timeout,
-      CAST(NULL AS BOOLEAN) AS settings_connect_on_startup_active,
-      CAST(NULL AS BOOLEAN) AS settings_using_system_language,
-      CAST(NULL AS BOOLEAN) AS glean_core_migration_successful
-    ) AS boolean,
+      CAST(NULL AS BOOLEAN) AS `settings_connect_on_startup_active`,
+      CAST(NULL AS BOOLEAN) AS `settings_using_system_language`,
+      CAST(NULL AS BOOLEAN) AS `glean_core_migration_successful`
+    ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
       metrics.counter.glean_error_preinit_tasks_overflow,
@@ -205,18 +203,18 @@ SELECT
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.glean_upload_pending_pings,
       metrics.counter.glean_validation_foreground_count,
-      CAST(NULL AS INTEGER) AS glean_validation_app_forceclosed_count,
-      CAST(NULL AS INTEGER) AS glean_validation_baseline_ping_count
-    ) AS counter,
+      CAST(NULL AS INTEGER) AS `glean_validation_app_forceclosed_count`,
+      CAST(NULL AS INTEGER) AS `glean_validation_baseline_ping_count`
+    ) AS `counter`,
     metrics.datetime,
     metrics.labeled_counter,
     metrics.memory_distribution,
     STRUCT(
       metrics.string.ping_reason,
       metrics.string.glean_client_annotation_experimentation_id
-    ) AS string,
+    ) AS `string`,
     metrics.timing_distribution
-  ) AS metrics,
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

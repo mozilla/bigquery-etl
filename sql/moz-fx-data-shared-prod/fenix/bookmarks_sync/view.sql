@@ -69,7 +69,7 @@ SELECT
     client_info.telemetry_sdk_build,
     client_info.build_date,
     client_info.windows_build_number
-  ) AS client_info,
+  ) AS `client_info`,
   document_id,
   events,
   metadata,
@@ -87,11 +87,11 @@ SELECT
       metrics.labeled_counter.bookmarks_sync_v2_incoming,
       metrics.labeled_counter.bookmarks_sync_v2_outgoing,
       metrics.labeled_counter.bookmarks_sync_v2_remote_tree_problems
-    ) AS labeled_counter,
+    ) AS `labeled_counter`,
     metrics.labeled_string,
     metrics.string,
     metrics.uuid
-  ) AS metrics,
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -105,7 +105,7 @@ SELECT
     ping_info.start_time,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
-  ) AS ping_info,
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp
 FROM
@@ -134,7 +134,7 @@ SELECT
     client_info.telemetry_sdk_build,
     client_info.build_date,
     client_info.windows_build_number
-  ) AS client_info,
+  ) AS `client_info`,
   document_id,
   events,
   metadata,
@@ -152,11 +152,11 @@ SELECT
       metrics.labeled_counter.bookmarks_sync_v2_incoming,
       metrics.labeled_counter.bookmarks_sync_v2_outgoing,
       metrics.labeled_counter.bookmarks_sync_v2_remote_tree_problems
-    ) AS labeled_counter,
+    ) AS `labeled_counter`,
     metrics.labeled_string,
     metrics.string,
     metrics.uuid
-  ) AS metrics,
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -170,7 +170,7 @@ SELECT
     ping_info.start_time,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
-  ) AS ping_info,
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp
 FROM

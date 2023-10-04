@@ -69,7 +69,7 @@ SELECT
     client_info.telemetry_sdk_build,
     client_info.build_date,
     client_info.windows_build_number
-  ) AS client_info,
+  ) AS `client_info`,
   document_id,
   events,
   metadata,
@@ -80,9 +80,9 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value,
       metrics.labeled_counter.wallpapers_new_wallpaper_applied
-    ) AS labeled_counter,
+    ) AS `labeled_counter`,
     metrics.string
-  ) AS metrics,
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -96,7 +96,7 @@ SELECT
     ping_info.start_time,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
-  ) AS ping_info,
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp
 FROM
@@ -125,7 +125,7 @@ SELECT
     client_info.telemetry_sdk_build,
     client_info.build_date,
     client_info.windows_build_number
-  ) AS client_info,
+  ) AS `client_info`,
   document_id,
   events,
   metadata,
@@ -136,9 +136,9 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value,
       metrics.labeled_counter.wallpapers_new_wallpaper_applied
-    ) AS labeled_counter,
+    ) AS `labeled_counter`,
     metrics.string
-  ) AS metrics,
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -152,7 +152,7 @@ SELECT
     ping_info.start_time,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
-  ) AS ping_info,
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp
 FROM

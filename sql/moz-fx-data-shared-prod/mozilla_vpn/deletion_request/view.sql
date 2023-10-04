@@ -41,7 +41,7 @@ SELECT
     client_info.telemetry_sdk_build,
     client_info.build_date,
     client_info.windows_build_number
-  ) AS client_info,
+  ) AS `client_info`,
   document_id,
   events,
   STRUCT(
@@ -58,10 +58,10 @@ SELECT
       metadata.header.parsed_date,
       metadata.header.parsed_x_source_tags,
       metadata.header.parsed_x_lb_tags
-    ) AS header,
+    ) AS `header`,
     metadata.isp,
     metadata.user_agent
-  ) AS metadata,
+  ) AS `metadata`,
   metrics,
   normalized_app_name,
   normalized_country_code,
@@ -93,7 +93,7 @@ SELECT
     client_info.telemetry_sdk_build,
     client_info.build_date,
     client_info.windows_build_number
-  ) AS client_info,
+  ) AS `client_info`,
   document_id,
   events,
   STRUCT(
@@ -110,10 +110,10 @@ SELECT
       metadata.header.parsed_date,
       metadata.header.parsed_x_source_tags,
       metadata.header.parsed_x_lb_tags
-    ) AS header,
+    ) AS `header`,
     metadata.isp,
     metadata.user_agent
-  ) AS metadata,
+  ) AS `metadata`,
   metrics,
   normalized_app_name,
   normalized_country_code,
@@ -121,27 +121,25 @@ SELECT
   normalized_os_version,
   STRUCT(
     ping_info.end_time,
-    (
+    ARRAY(
       SELECT
-        ARRAY_AGG(
+        STRUCT(
+          experiments.key,
           STRUCT(
-            experiments.key,
-            STRUCT(
-              experiments.value.branch,
-              STRUCT(experiments.value.extra.type, experiments.value.extra.enrollment_id) AS extra
-            ) AS value
-          )
+            experiments.value.branch,
+            STRUCT(experiments.value.extra.type, experiments.value.extra.enrollment_id) AS `extra`
+          ) AS `value`
         )
       FROM
-        UNNEST(ping_info.experiments) AS experiments
-    ) AS experiments,
+        UNNEST(ping_info.experiments) AS `experiments`
+    ) AS `experiments`,
     ping_info.ping_type,
     ping_info.reason,
     ping_info.seq,
     ping_info.start_time,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
-  ) AS ping_info,
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp
 FROM
@@ -167,7 +165,7 @@ SELECT
     client_info.telemetry_sdk_build,
     client_info.build_date,
     client_info.windows_build_number
-  ) AS client_info,
+  ) AS `client_info`,
   document_id,
   events,
   STRUCT(
@@ -184,10 +182,10 @@ SELECT
       metadata.header.parsed_date,
       metadata.header.parsed_x_source_tags,
       metadata.header.parsed_x_lb_tags
-    ) AS header,
+    ) AS `header`,
     metadata.isp,
     metadata.user_agent
-  ) AS metadata,
+  ) AS `metadata`,
   metrics,
   normalized_app_name,
   normalized_country_code,
@@ -195,27 +193,25 @@ SELECT
   normalized_os_version,
   STRUCT(
     ping_info.end_time,
-    (
+    ARRAY(
       SELECT
-        ARRAY_AGG(
+        STRUCT(
+          experiments.key,
           STRUCT(
-            experiments.key,
-            STRUCT(
-              experiments.value.branch,
-              STRUCT(experiments.value.extra.type, experiments.value.extra.enrollment_id) AS extra
-            ) AS value
-          )
+            experiments.value.branch,
+            STRUCT(experiments.value.extra.type, experiments.value.extra.enrollment_id) AS `extra`
+          ) AS `value`
         )
       FROM
-        UNNEST(ping_info.experiments) AS experiments
-    ) AS experiments,
+        UNNEST(ping_info.experiments) AS `experiments`
+    ) AS `experiments`,
     ping_info.ping_type,
     ping_info.reason,
     ping_info.seq,
     ping_info.start_time,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
-  ) AS ping_info,
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp
 FROM

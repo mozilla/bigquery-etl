@@ -69,7 +69,7 @@ SELECT
     client_info.telemetry_sdk_build,
     client_info.build_date,
     client_info.windows_build_number
-  ) AS client_info,
+  ) AS `client_info`,
   document_id,
   events,
   metadata,
@@ -85,11 +85,11 @@ SELECT
       metrics.labeled_counter.browser_search_in_content,
       metrics.labeled_counter.browser_search_with_ads,
       metrics.labeled_counter.glean_validation_pings_submitted
-    ) AS labeled_counter,
+    ) AS `labeled_counter`,
     metrics.string,
     metrics.timespan,
     metrics.datetime
-  ) AS metrics,
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -103,7 +103,7 @@ SELECT
     ping_info.start_time,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
-  ) AS ping_info,
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp
 FROM
@@ -132,7 +132,7 @@ SELECT
     client_info.telemetry_sdk_build,
     client_info.build_date,
     client_info.windows_build_number
-  ) AS client_info,
+  ) AS `client_info`,
   document_id,
   events,
   metadata,
@@ -148,11 +148,11 @@ SELECT
       metrics.labeled_counter.browser_search_in_content,
       metrics.labeled_counter.browser_search_with_ads,
       metrics.labeled_counter.glean_validation_pings_submitted
-    ) AS labeled_counter,
+    ) AS `labeled_counter`,
     metrics.string,
     metrics.timespan,
     metrics.datetime
-  ) AS metrics,
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -166,7 +166,7 @@ SELECT
     ping_info.start_time,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
-  ) AS ping_info,
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp
 FROM

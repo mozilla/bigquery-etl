@@ -24,20 +24,20 @@ SELECT
       metadata.header.x_telemetry_agent,
       metadata.header.x_foxsec_ip_reputation,
       metadata.header.x_lb_tags,
-      CAST(NULL AS TIMESTAMP) AS parsed_date,
-      CAST(NULL AS ARRAY<STRING>) AS parsed_x_source_tags,
-      CAST(NULL AS STRUCT<tls_version STRING, tls_cipher_hex STRING>) AS parsed_x_lb_tags
-    ) AS header,
+      CAST(NULL AS TIMESTAMP) AS `parsed_date`,
+      CAST(NULL AS ARRAY<STRING>) AS `parsed_x_source_tags`,
+      CAST(NULL AS STRUCT<`tls_version` STRING, `tls_cipher_hex` STRING>) AS `parsed_x_lb_tags`
+    ) AS `header`,
     metadata.user_agent,
     metadata.isp
-  ) AS metadata,
+  ) AS `metadata`,
   STRUCT(
     metrics.boolean,
     metrics.counter,
     STRUCT(
       metrics.datetime.migration_telemetry_identifiers_fennec_profile_creation_date,
-      CAST(NULL AS STRING) AS raw_migration_telemetry_identifiers_fennec_profile_creation_date
-    ) AS datetime,
+      CAST(NULL AS STRING) AS `raw_migration_telemetry_identifiers_fennec_profile_creation_date`
+    ) AS `datetime`,
     metrics.labeled_counter,
     metrics.labeled_string,
     metrics.string,
@@ -47,7 +47,7 @@ SELECT
     metrics.labeled_rate,
     metrics.url,
     metrics.text
-  ) AS metrics,
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -59,9 +59,9 @@ SELECT
     ping_info.reason,
     ping_info.seq,
     ping_info.start_time,
-    CAST(NULL AS TIMESTAMP) AS parsed_start_time,
-    CAST(NULL AS TIMESTAMP) AS parsed_end_time
-  ) AS ping_info,
+    CAST(NULL AS TIMESTAMP) AS `parsed_start_time`,
+    CAST(NULL AS TIMESTAMP) AS `parsed_end_time`
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp
 FROM
@@ -73,7 +73,7 @@ SELECT
     "org_mozilla_firefox_beta",
     client_info.app_build
   ).channel AS normalized_channel,
-  CAST(NULL AS DATE) AS submission_date,
+  CAST(NULL AS DATE) AS `submission_date`,
   additional_properties,
   client_info,
   document_id,
@@ -83,28 +83,30 @@ SELECT
     metrics.boolean,
     metrics.counter,
     STRUCT(
-      SAFE_CAST(NULL AS STRING) AS migration_telemetry_identifiers_fennec_profile_creation_date,
+      CAST(NULL AS STRING) AS `migration_telemetry_identifiers_fennec_profile_creation_date`,
       metrics.datetime.raw_migration_telemetry_identifiers_fennec_profile_creation_date
-    ) AS datetime,
+    ) AS `datetime`,
     metrics.labeled_counter,
     metrics.labeled_string,
     metrics.string,
     metrics.timespan,
     metrics.uuid,
-    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS jwe,
+    CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `jwe`,
     CAST(
       NULL
       AS
         ARRAY<
           STRUCT<
-            key STRING,
-            value ARRAY<STRUCT<key STRING, value STRUCT<denominator INTEGER, numerator INTEGER>>>
+            `key` STRING,
+            `value` ARRAY<
+              STRUCT<`key` STRING, `value` STRUCT<`denominator` INTEGER, `numerator` INTEGER>>
+            >
           >
         >
-    ) AS labeled_rate,
-    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS url,
-    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS text
-  ) AS metrics,
+    ) AS `labeled_rate`,
+    CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `url`,
+    CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `text`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -121,7 +123,7 @@ SELECT
     "org_mozilla_fenix",
     client_info.app_build
   ).channel AS normalized_channel,
-  CAST(NULL AS DATE) AS submission_date,
+  CAST(NULL AS DATE) AS `submission_date`,
   additional_properties,
   client_info,
   document_id,
@@ -131,28 +133,30 @@ SELECT
     metrics.boolean,
     metrics.counter,
     STRUCT(
-      SAFE_CAST(NULL AS STRING) AS migration_telemetry_identifiers_fennec_profile_creation_date,
+      CAST(NULL AS STRING) AS `migration_telemetry_identifiers_fennec_profile_creation_date`,
       metrics.datetime.raw_migration_telemetry_identifiers_fennec_profile_creation_date
-    ) AS datetime,
+    ) AS `datetime`,
     metrics.labeled_counter,
     metrics.labeled_string,
     metrics.string,
     metrics.timespan,
     metrics.uuid,
-    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS jwe,
+    CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `jwe`,
     CAST(
       NULL
       AS
         ARRAY<
           STRUCT<
-            key STRING,
-            value ARRAY<STRUCT<key STRING, value STRUCT<denominator INTEGER, numerator INTEGER>>>
+            `key` STRING,
+            `value` ARRAY<
+              STRUCT<`key` STRING, `value` STRUCT<`denominator` INTEGER, `numerator` INTEGER>>
+            >
           >
         >
-    ) AS labeled_rate,
-    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS url,
-    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS text
-  ) AS metrics,
+    ) AS `labeled_rate`,
+    CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `url`,
+    CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `text`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -169,7 +173,7 @@ SELECT
     "org_mozilla_fenix_nightly",
     client_info.app_build
   ).channel AS normalized_channel,
-  CAST(NULL AS DATE) AS submission_date,
+  CAST(NULL AS DATE) AS `submission_date`,
   additional_properties,
   client_info,
   document_id,
@@ -179,28 +183,30 @@ SELECT
     metrics.boolean,
     metrics.counter,
     STRUCT(
-      SAFE_CAST(NULL AS STRING) AS migration_telemetry_identifiers_fennec_profile_creation_date,
+      CAST(NULL AS STRING) AS `migration_telemetry_identifiers_fennec_profile_creation_date`,
       metrics.datetime.raw_migration_telemetry_identifiers_fennec_profile_creation_date
-    ) AS datetime,
+    ) AS `datetime`,
     metrics.labeled_counter,
     metrics.labeled_string,
     metrics.string,
     metrics.timespan,
     metrics.uuid,
-    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS jwe,
+    CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `jwe`,
     CAST(
       NULL
       AS
         ARRAY<
           STRUCT<
-            key STRING,
-            value ARRAY<STRUCT<key STRING, value STRUCT<denominator INTEGER, numerator INTEGER>>>
+            `key` STRING,
+            `value` ARRAY<
+              STRUCT<`key` STRING, `value` STRUCT<`denominator` INTEGER, `numerator` INTEGER>>
+            >
           >
         >
-    ) AS labeled_rate,
-    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS url,
-    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS text
-  ) AS metrics,
+    ) AS `labeled_rate`,
+    CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `url`,
+    CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `text`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -217,7 +223,7 @@ SELECT
     "org_mozilla_fennec_aurora",
     client_info.app_build
   ).channel AS normalized_channel,
-  CAST(NULL AS DATE) AS submission_date,
+  CAST(NULL AS DATE) AS `submission_date`,
   additional_properties,
   client_info,
   document_id,
@@ -227,28 +233,30 @@ SELECT
     metrics.boolean,
     metrics.counter,
     STRUCT(
-      SAFE_CAST(NULL AS STRING) AS migration_telemetry_identifiers_fennec_profile_creation_date,
+      CAST(NULL AS STRING) AS `migration_telemetry_identifiers_fennec_profile_creation_date`,
       metrics.datetime.raw_migration_telemetry_identifiers_fennec_profile_creation_date
-    ) AS datetime,
+    ) AS `datetime`,
     metrics.labeled_counter,
     metrics.labeled_string,
     metrics.string,
     metrics.timespan,
     metrics.uuid,
-    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS jwe,
+    CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `jwe`,
     CAST(
       NULL
       AS
         ARRAY<
           STRUCT<
-            key STRING,
-            value ARRAY<STRUCT<key STRING, value STRUCT<denominator INTEGER, numerator INTEGER>>>
+            `key` STRING,
+            `value` ARRAY<
+              STRUCT<`key` STRING, `value` STRUCT<`denominator` INTEGER, `numerator` INTEGER>>
+            >
           >
         >
-    ) AS labeled_rate,
-    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS url,
-    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS text
-  ) AS metrics,
+    ) AS `labeled_rate`,
+    CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `url`,
+    CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `text`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

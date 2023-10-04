@@ -74,9 +74,9 @@ SELECT
     STRUCT(
       metrics.string.session_daemon_session_source,
       metrics.string.glean_client_annotation_experimentation_id
-    ) AS string,
+    ) AS `string`,
     metrics.uuid
-  ) AS metrics,
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

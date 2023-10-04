@@ -69,7 +69,7 @@ SELECT
     client_info.telemetry_sdk_build,
     client_info.build_date,
     client_info.windows_build_number
-  ) AS client_info,
+  ) AS `client_info`,
   document_id,
   events,
   metadata,
@@ -87,7 +87,7 @@ SELECT
     ping_info.start_time,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
-  ) AS ping_info,
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp
 FROM
@@ -116,7 +116,7 @@ SELECT
     client_info.telemetry_sdk_build,
     client_info.build_date,
     client_info.windows_build_number
-  ) AS client_info,
+  ) AS `client_info`,
   document_id,
   events,
   metadata,
@@ -134,7 +134,7 @@ SELECT
     ping_info.start_time,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
-  ) AS ping_info,
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp
 FROM

@@ -51,7 +51,7 @@ SELECT
       metrics.boolean.cookie_banners_service_detect_only,
       metrics.boolean.extensions_use_remote_policy,
       metrics.boolean.extensions_use_remote_pref
-    ) AS boolean,
+    ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
       metrics.counter.glean_error_preinit_tasks_overflow,
@@ -89,7 +89,7 @@ SELECT
       metrics.counter.translations_requests_count,
       metrics.counter.fog_inits_during_shutdown,
       metrics.counter.bloburl_resolve_stopped
-    ) AS counter,
+    ) AS `counter`,
     metrics.datetime,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -154,7 +154,7 @@ SELECT
       metrics.labeled_counter.extensions_process_event,
       metrics.labeled_counter.data_storage_entries,
       metrics.labeled_counter.pdfjs_stamp
-    ) AS labeled_counter,
+    ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(
       metrics.string.browser_default_search_engine,
@@ -168,7 +168,7 @@ SELECT
       metrics.string.extensions_quarantined_domains_listhash,
       metrics.string.extensions_quarantined_domains_remotehash,
       metrics.string.glean_client_annotation_experimentation_id
-    ) AS string,
+    ) AS `string`,
     metrics.quantity,
     metrics.custom_distribution,
     metrics.timespan,
@@ -176,7 +176,7 @@ SELECT
     metrics.labeled_boolean,
     metrics.rate,
     metrics.uuid
-  ) AS metrics,
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -217,7 +217,7 @@ SELECT
       metrics.boolean.cookie_banners_service_detect_only,
       metrics.boolean.extensions_use_remote_policy,
       metrics.boolean.extensions_use_remote_pref
-    ) AS boolean,
+    ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
       metrics.counter.glean_error_preinit_tasks_overflow,
@@ -255,7 +255,7 @@ SELECT
       metrics.counter.translations_requests_count,
       metrics.counter.fog_inits_during_shutdown,
       metrics.counter.bloburl_resolve_stopped
-    ) AS counter,
+    ) AS `counter`,
     metrics.datetime,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -320,7 +320,7 @@ SELECT
       metrics.labeled_counter.extensions_process_event,
       metrics.labeled_counter.data_storage_entries,
       metrics.labeled_counter.pdfjs_stamp
-    ) AS labeled_counter,
+    ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(
       metrics.string.browser_default_search_engine,
@@ -334,7 +334,7 @@ SELECT
       metrics.string.extensions_quarantined_domains_listhash,
       metrics.string.extensions_quarantined_domains_remotehash,
       metrics.string.glean_client_annotation_experimentation_id
-    ) AS string,
+    ) AS `string`,
     metrics.quantity,
     metrics.custom_distribution,
     metrics.timespan,
@@ -342,7 +342,7 @@ SELECT
     metrics.labeled_boolean,
     metrics.rate,
     metrics.uuid
-  ) AS metrics,
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

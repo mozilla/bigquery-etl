@@ -138,7 +138,7 @@ SELECT
       metrics.labeled_counter.extensions_process_event,
       metrics.labeled_counter.data_storage_entries,
       metrics.labeled_counter.pdfjs_stamp
-    ) AS labeled_counter,
+    ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,
     metrics.string_list,
@@ -151,7 +151,7 @@ SELECT
     metrics.rate,
     metrics.uuid,
     metrics.url
-  ) AS metrics,
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -185,7 +185,7 @@ SELECT
     client_info.telemetry_sdk_build,
     client_info.build_date,
     client_info.windows_build_number
-  ) AS client_info,
+  ) AS `client_info`,
   document_id,
   events,
   metadata,
@@ -244,7 +244,7 @@ SELECT
       metrics.boolean.metrics_ram_more_than_threshold,
       metrics.boolean.extensions_use_remote_policy,
       metrics.boolean.extensions_use_remote_pref
-    ) AS boolean,
+    ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
       metrics.counter.glean_error_preinit_tasks_overflow,
@@ -316,7 +316,7 @@ SELECT
       metrics.counter.bloburl_resolve_stopped,
       metrics.counter.addons_extensions_process_ui_disable,
       metrics.counter.addons_extensions_process_ui_retry
-    ) AS counter,
+    ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
       metrics.custom_distribution.gfx_checkerboard_peak_pixel_count,
@@ -341,7 +341,7 @@ SELECT
       metrics.custom_distribution.networking_http_1_download_throughput,
       metrics.custom_distribution.networking_http_2_download_throughput,
       metrics.custom_distribution.networking_http_3_download_throughput
-    ) AS custom_distribution,
+    ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
       metrics.labeled_counter.gfx_content_frame_time_reason,
@@ -441,7 +441,7 @@ SELECT
       metrics.labeled_counter.extensions_process_event,
       metrics.labeled_counter.data_storage_entries,
       metrics.labeled_counter.pdfjs_stamp
-    ) AS labeled_counter,
+    ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -486,7 +486,7 @@ SELECT
       metrics.string.extensions_quarantined_domains_listhash,
       metrics.string.extensions_quarantined_domains_remotehash,
       metrics.string.glean_client_annotation_experimentation_id
-    ) AS string,
+    ) AS `string`,
     metrics.string_list,
     STRUCT(
       metrics.timing_distribution.geckoview_page_load_progress_time,
@@ -624,7 +624,7 @@ SELECT
       metrics.timing_distribution.networking_http_content_onstart_delay,
       metrics.timing_distribution.networking_http_content_onstop_delay,
       metrics.timing_distribution.metrics_search_page_load_time
-    ) AS timing_distribution,
+    ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,
     metrics.timespan,
@@ -633,7 +633,7 @@ SELECT
     metrics.rate,
     metrics.uuid,
     metrics.url
-  ) AS metrics,
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -647,7 +647,7 @@ SELECT
     ping_info.start_time,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
-  ) AS ping_info,
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp
 FROM
@@ -676,7 +676,7 @@ SELECT
     client_info.telemetry_sdk_build,
     client_info.build_date,
     client_info.windows_build_number
-  ) AS client_info,
+  ) AS `client_info`,
   document_id,
   events,
   metadata,
@@ -735,7 +735,7 @@ SELECT
       metrics.boolean.metrics_ram_more_than_threshold,
       metrics.boolean.extensions_use_remote_policy,
       metrics.boolean.extensions_use_remote_pref
-    ) AS boolean,
+    ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
       metrics.counter.glean_error_preinit_tasks_overflow,
@@ -807,7 +807,7 @@ SELECT
       metrics.counter.bloburl_resolve_stopped,
       metrics.counter.addons_extensions_process_ui_disable,
       metrics.counter.addons_extensions_process_ui_retry
-    ) AS counter,
+    ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
       metrics.custom_distribution.gfx_checkerboard_peak_pixel_count,
@@ -832,7 +832,7 @@ SELECT
       metrics.custom_distribution.networking_http_1_download_throughput,
       metrics.custom_distribution.networking_http_2_download_throughput,
       metrics.custom_distribution.networking_http_3_download_throughput
-    ) AS custom_distribution,
+    ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
       metrics.labeled_counter.gfx_content_frame_time_reason,
@@ -932,7 +932,7 @@ SELECT
       metrics.labeled_counter.extensions_process_event,
       metrics.labeled_counter.data_storage_entries,
       metrics.labeled_counter.pdfjs_stamp
-    ) AS labeled_counter,
+    ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -977,7 +977,7 @@ SELECT
       metrics.string.extensions_quarantined_domains_listhash,
       metrics.string.extensions_quarantined_domains_remotehash,
       metrics.string.glean_client_annotation_experimentation_id
-    ) AS string,
+    ) AS `string`,
     metrics.string_list,
     STRUCT(
       metrics.timing_distribution.geckoview_page_load_progress_time,
@@ -1115,7 +1115,7 @@ SELECT
       metrics.timing_distribution.networking_http_content_onstart_delay,
       metrics.timing_distribution.networking_http_content_onstop_delay,
       metrics.timing_distribution.metrics_search_page_load_time
-    ) AS timing_distribution,
+    ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,
     metrics.timespan,
@@ -1124,7 +1124,7 @@ SELECT
     metrics.rate,
     metrics.uuid,
     metrics.url
-  ) AS metrics,
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -1138,7 +1138,7 @@ SELECT
     ping_info.start_time,
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
-  ) AS ping_info,
+  ) AS `ping_info`,
   sample_id,
   submission_timestamp
 FROM
@@ -1258,7 +1258,7 @@ SELECT
       metrics.labeled_counter.extensions_process_event,
       metrics.labeled_counter.data_storage_entries,
       metrics.labeled_counter.pdfjs_stamp
-    ) AS labeled_counter,
+    ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,
     metrics.string_list,
@@ -1271,7 +1271,7 @@ SELECT
     metrics.rate,
     metrics.uuid,
     metrics.url
-  ) AS metrics,
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

@@ -11,6 +11,9 @@ description: |-
   This table should be accessed through the user-facing view
   `telemetry.clients_first_seen`.
 
+  For caveats and how to use this data please refer to
+  https://docs.google.com/document/d/1qMkTUIruTOxTGRj7S60nEsyNjGHYAuVJ51-53NZxnd4/edit#heading=h.3110lg9vb11d
+
   The initialization command creates the table and then inserts data
   in parallel for each sample_id. Usage:
   `bqetl query initialize sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2/query.sql`

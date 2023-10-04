@@ -1,0 +1,20 @@
+friendly_name: User Retention Aggregations - Firefox iOS (Week 4)
+description: |
+  Aggregated dataset for Firefox iOS retention analysis.
+owners:
+- kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_firefox_ios
+  depends_on_past: false
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+  clustering:
+    fields:
+    - first_seen_country
+    - adjust_network

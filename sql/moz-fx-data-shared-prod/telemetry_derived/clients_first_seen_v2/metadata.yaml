@@ -46,5 +46,5 @@ bigquery:
     - normalized_os
 initialization:
   from_sample_id: 0
-  to_sample_id: 2
+  to_sample_id: 100
 references: {}

@@ -270,14 +270,9 @@ class GleanAppPingViews(GleanTable):
                                 """
                             )
                     else:
-                        if node.get("mode", None) == "REPEATED":
-                            select_expr.append(
-                                f"SAFE_CAST(NULL AS ARRAY<{dtype}>) AS `{node_name}`"
-                            )
-                        else:
-                            select_expr.append(
-                                f"SAFE_CAST(NULL AS {dtype}) AS `{node_name}`"
-                            )
+                        select_expr.append(
+                            f"CAST(NULL AS {self._type_info(node)}) AS `{node_name}`"
+                        )
             else:
                 select_expr.append(
                     f"CAST(NULL AS {self._type_info(node)}) AS `{node_name}`"
@@ -297,6 +292,8 @@ class GleanAppPingViews(GleanTable):
                 )
                 + ">"
             )
+        elif dtype == "FLOAT":
+            dtype = "FLOAT64"
         if node.get("mode") == "REPEATED":
             return f"ARRAY<{dtype}>"
         return dtype

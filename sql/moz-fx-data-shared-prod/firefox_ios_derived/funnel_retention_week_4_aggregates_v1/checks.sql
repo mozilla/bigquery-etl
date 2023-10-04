@@ -67,3 +67,10 @@ SELECT IF(
   ),
   NULL
 );
+#fail
+SELECT
+  IF(
+    DATE_DIFF(submission_date, first_seen_date, DAY) <> 27,
+    ERROR("Day difference between submission_date and first_seen_date is not equal to 27 as expected"),
+    NULL
+  );

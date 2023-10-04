@@ -250,12 +250,11 @@ class GleanAppPingViews(GleanTable):
                             # unnest repeated record
                             select_expr.append(
                                 f"""
-                                    (
-                                        SELECT ARRAY_AGG(
+                                    ARRAY(
+                                        SELECT
                                             STRUCT(
                                                 {self._generate_select_expression(node['fields'], app_schema_nodes[node_name]['fields'], [node_name])}
                                             )
-                                        )
                                         FROM UNNEST({'.'.join(path + [node_name])}) AS `{node_name}`
                                     ) AS `{node_name}`
                                 """

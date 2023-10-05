@@ -613,6 +613,9 @@ fields:
     - name: glean_upload_missing_send_ids
       type: INTEGER
       mode: NULLABLE
+    - name: shopping_product_page_visits
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

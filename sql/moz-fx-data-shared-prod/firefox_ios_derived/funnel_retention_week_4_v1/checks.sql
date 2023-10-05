@@ -26,7 +26,7 @@ WITH min_row_count AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_4_v1`
   WHERE
-    first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    submission_date = @submission_date
 )
 SELECT
   IF(
@@ -73,4 +73,14 @@ SELECT
       )
     ),
     NULL
-  )
+  );
+
+#fail
+SELECT
+  IF(
+    DATE_DIFF(submission_date, first_seen_date, DAY) <> 27,
+    ERROR(
+      "Day difference between submission_date and first_seen_date is not equal to 27 as expected"
+    ),
+    NULL
+  );

@@ -46,6 +46,8 @@ store_stats AS (
   ON
     country_names.name = views_data.country_name
 ),
+-- TODO: we may need to consider updating the source for new profiles to be firefox_ios.firefox_ios_clients
+-- instead to avoid the other funnel query using a different source.
 _new_profiles AS (
   SELECT
     submission_date AS `date`,

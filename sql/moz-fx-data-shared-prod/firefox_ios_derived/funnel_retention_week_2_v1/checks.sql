@@ -26,7 +26,7 @@ WITH min_row_count AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_2_v1`
   WHERE
-    first_seen_date = DATE_SUB(@submission_date, INTERVAL 13 DAY)
+    submission_date = @submission_date
 )
 SELECT
   IF(
@@ -37,6 +37,16 @@ SELECT
         (SELECT total_rows FROM min_row_count),
         " rows found (expected more than 1)"
       )
+    ),
+    NULL
+  );
+
+#fail
+SELECT
+  IF(
+    DATE_DIFF(submission_date, first_seen_date, DAY) <> 13,
+    ERROR(
+      "Day difference between submission_date and first_seen_date is not equal to 13 as expected"
     ),
     NULL
   );

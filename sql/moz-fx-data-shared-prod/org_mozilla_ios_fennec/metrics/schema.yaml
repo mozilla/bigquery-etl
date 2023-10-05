@@ -1333,6 +1333,12 @@ fields:
         respectively) due to an inconsistency in our internal bookkeeping?
 
         '
+    - name: shopping_product_page_visits
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A count of the number of eligible product pages the user has visited.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

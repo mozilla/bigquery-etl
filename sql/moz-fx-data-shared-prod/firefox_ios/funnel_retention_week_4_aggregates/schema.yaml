@@ -1,0 +1,68 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: 'Partition field, also corresponds to internal execution date of the
+    job (first_seen_date + 28 days).
+
+    '
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: 'Date of when the user was first seen.
+
+    '
+- name: first_reported_country
+  type: STRING
+  mode: NULLABLE
+  description: 'First reported country for the client installation.
+
+    '
+- name: first_reported_isp
+  type: STRING
+  mode: NULLABLE
+  description: 'Name of the first reported isp (Internet Service Provider).
+
+    '
+- name: adjust_ad_group
+  type: STRING
+  mode: NULLABLE
+  description: 'Structure parameter for the the ad group of a campaign.
+
+    '
+- name: adjust_campaign
+  type: STRING
+  mode: NULLABLE
+  description: 'Structure parameter for the campaign name.
+
+    '
+- name: adjust_creative
+  type: STRING
+  mode: NULLABLE
+  description: 'Structure parameter for the creative content of a campaign.
+
+    '
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
+  description: 'The type of source of a client installation.
+
+    '
+- name: new_profiles
+  type: INTEGER
+  mode: NULLABLE
+  description: 'Count of new_profiles for the given grouping.
+
+    '
+- name: repeat_user
+  type: INTEGER
+  mode: NULLABLE
+  description: 'Count of users categorised as "repeat_first_month_user" for the grouping.
+
+    '
+- name: retained_week_4
+  type: INTEGER
+  mode: NULLABLE
+  description: 'Count of users categorised as "retained_week_4" for the grouping.
+
+    '

@@ -22,7 +22,7 @@ fields:
   name: impressions
   type: INTEGER
   description: |
-    Number of Firefox iOS app impressions in the Apple Store.
+    Number of Firefox iOS app unique impressions in the Apple Store.
 
 - mode: NULLABLE
   name: total_downloads

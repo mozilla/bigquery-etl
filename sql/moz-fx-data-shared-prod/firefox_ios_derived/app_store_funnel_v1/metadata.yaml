@@ -1,36 +1,38 @@
 friendly_name: Funnel iOS
 description: |
   Derived dataset for supporting (Apple) app store funnel analysis (iOS).
+
+  Runs with a 7 day lag due to the data being available only a around few days later to us.
 owners:
 - kik@mozilla.com
 labels:
   schedule: daily
+  incremental: true
   dag: bqetl_firefox_ios
   owner1: kik
 scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: false
-  date_partition_parameter: null
-  parameters:
-  - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     type: day
-    field: date
+    field: submission_date
     require_partition_filter: false
     expiration_days: null
-  clustering: null
+  clustering:
+    fields:
+    - country
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
 references:
   checks.sql:
-  - moz-fx-data-shared-prod.firefox_ios.active_users_aggregates
+  - moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients
   - moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1
   query.sql:
   - app_store.firefox_app_store_territory_source_type_report
   - app_store.firefox_downloads_territory_source_type_report
-  - firefox_ios.active_users_aggregates
+  - firefox_ios.firefox_ios_clients
   - static.country_names_v1
 deprecated: false

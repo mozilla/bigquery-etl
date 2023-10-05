@@ -31,7 +31,7 @@ WITH min_row_count AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1`
   WHERE
-    `date` = DATE_SUB(@submission_date, INTERVAL 1 DAY)
+    submission_date = @submission_date
 )
 SELECT
   IF(
@@ -47,27 +47,27 @@ SELECT
   );
 
 #fail
-WITH _aua_new_profiles AS (
+WITH fx_ios_count AS (
   SELECT
-    SUM(new_profiles) AS new_profiles,
+    COUNT(*)
   FROM
-    `moz-fx-data-shared-prod.firefox_ios.active_users_aggregates`
+    `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
   WHERE
-    submission_date = @submission_date
+    submission_date = DATE_SUB(@submission_date, INTERVAL 7 DAY)
     AND channel = "release"
 ),
-_new_funnel_new_profiles AS (
+new_profiles_count AS (
   SELECT
-    SUM(new_profiles) AS new_funnel_new_profiles,
+    SUM(new_profiles)
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1`
   WHERE
-    `date` = @submission_date
+    submission_date = @submission_date
 )
 SELECT
   IF(
-    (SELECT * FROM _aua_new_profiles) - (SELECT * FROM _new_funnel_new_profiles) <> 0,
-    ERROR("There's a 'new_profiles' mismatch between active_users_aggregates and the funnel table"),
+    (SELECT * FROM fx_ios_count) - (SELECT * FROM new_profiles_count) <> 0,
+    ERROR("There's a 'new_profiles' mismatch between firefox_ios_clients and this funnel table"),
     NULL
   );
 
@@ -80,7 +80,7 @@ WITH base AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1`
   WHERE
-    `date` = @submission_date
+    submission_date = @submission_date
 )
 SELECT
   IF(
@@ -99,7 +99,7 @@ WITH base AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1`
   WHERE
-    `date` = @submission_date
+    submission_date = @submission_date
 )
 SELECT
   IF(
@@ -109,3 +109,13 @@ SELECT
   )
 FROM
   base;
+
+#fail
+SELECT
+  IF(
+    DATE_DIFF(submission_date, `date`, DAY) <> 7,
+    ERROR("Day difference between submission_date and `date` is not equal to 7 as expected"),
+    NULL
+  );
+
+-- TODO: for this query it'd be useful to compare sum variance between each day to improve our confidence the data was complete at the execution time.

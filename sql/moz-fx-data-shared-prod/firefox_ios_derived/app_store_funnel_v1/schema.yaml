@@ -1,6 +1,12 @@
 fields:
 
 - mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: |
+    Partition field, also corresponds to internal execution date of the job. submision_date - 7 days gives us the same date as the date field.
+
+- mode: NULLABLE
   name: date
   type: DATE
   description: |

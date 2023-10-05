@@ -1,8 +1,9 @@
-CREATE TEMP FUNCTION enumerated_array(results ARRAY<STRING>) AS (
+CREATE TEMP FUNCTION enumerated_array(results ARRAY<STRING>, _groups ARRAY<STRING>) AS (
   ARRAY(SELECT STRUCT(
     off + 1 AS position,
     r AS result_type,
-    `mozfun.norm.result_type_to_product_name`(r) as product_result_type
+    `mozfun.norm.result_type_to_product_name`(r) as product_result_type,
+    _groups[SAFE_OFFSET(off)] AS result_group
   ) FROM UNNEST(results) AS r WITH OFFSET off)
 );
 
@@ -83,17 +84,18 @@ SELECT
   COALESCE(metrics.boolean.urlbar_pref_suggest_sponsored, FALSE) AS pref_sponsored_suggestions,
   COALESCE(metrics.boolean.urlbar_pref_suggest_nonsponsored, FALSE) AS pref_fx_suggestions,
   mozfun.map.get_key(extra, "engagement_type") AS engagement_type,
+  mozfun.map.get_key(extra, "interaction") AS interaction,
   CAST(mozfun.map.get_key(extra, "n_chars") AS int) AS num_chars_typed,
   CAST(mozfun.map.get_key(extra, "n_results") AS int) AS num_total_results,
   --If 0, then no result was selected.
   NULLIF(CAST(mozfun.map.get_key(extra, "selected_position") AS int), 0) AS selected_position,
   mozfun.map.get_key(extra, "selected_result") AS selected_result,
-  enumerated_array(SPLIT(mozfun.map.get_key(extra, "results"), ',')) AS results,
+  enumerated_array(SPLIT(mozfun.map.get_key(extra, "results"), ','), SPLIT(mozfun.map.get_key(extra, "groups"), ',')) AS results,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.events_v1`,
     UNNEST(events)
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = "2023-10-01" --@submission_date
     AND category = 'urlbar'
     AND name IN ('engagement', 'abandonment')
 )

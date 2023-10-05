@@ -19,4 +19,3 @@ bigquery:
   clustering:
     fields:
     - country
-    - first_seen_date

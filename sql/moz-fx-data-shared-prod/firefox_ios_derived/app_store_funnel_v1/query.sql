@@ -1,20 +1,20 @@
 -- TODO: should we run this job with 7 day delay to make sure all data landed (a wider window to be on the safe side).
 WITH views_data AS (
   SELECT
-    `date`,
+    DATE(`date`) AS `date`,
     territory AS country_name,
     SUM(impressions_unique_device) AS views,
   FROM
     app_store.firefox_app_store_territory_source_type_report
   WHERE
-    `date` = DATE_SUB(@submission_date, INTERVAL 7 DAY)
+    DATE(`date`) = DATE_SUB(@submission_date, INTERVAL 7 DAY)
   GROUP BY
     `date`,
     country_name
 ),
 downloads_data AS (
   SELECT
-    `date`,
+    DATE(`date`) AS `date`,
     territory AS country_name,
     SUM(total_downloads) AS total_downloads,
     SUM(first_time_downloads) AS first_time_downloads,
@@ -22,7 +22,7 @@ downloads_data AS (
   FROM
     app_store.firefox_downloads_territory_source_type_report
   WHERE
-    `date` = DATE_SUB(@submission_date, INTERVAL 7 DAY)
+    DATE(`date`) = DATE_SUB(@submission_date, INTERVAL 7 DAY)
     AND source_type <> 'Institutional Purchase'
   GROUP BY
     `date`,

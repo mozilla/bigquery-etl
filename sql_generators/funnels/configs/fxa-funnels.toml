@@ -5,6 +5,7 @@ destination_dataset = "telemetry_derived"
 [funnels.registration_funnel]
 
 steps = ["engage", "submit", "view"]
+dimensions = ["os"]
 
 [steps]
 
@@ -41,3 +42,12 @@ aggregation = "count"
 [data_sources.fxa_oauth_events]
 from_expression = "mozdata.firefox_accounts.fxa_content_auth_oauth_events"
 submission_date_column = "DATE(timestamp)"
+client_id_column = "user_id"
+
+[dimensions]
+
+[dimensions.os]
+data_source = "fxa_oauth_events"
+select_expression = "os_name"
+friendly_name = "Operating System"
+description = "Normalized Operating System"

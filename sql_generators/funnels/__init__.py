@@ -38,6 +38,7 @@ def generate_funnels(target_project, path, output_dir):
                 funnels=config.funnels,
                 steps=config.steps,
                 data_sources=config.data_sources,
+                dimensions=config.dimensions,
             )
         )
         write_sql(

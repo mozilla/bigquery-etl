@@ -6,7 +6,13 @@
     {% if steps[step_name].join_key %}
     {{ steps[step_name].join_key }} AS join_key,
     {% endif %}
+    {% if  funnel.dimensions %}
+    {% for dimension_name in funnel.dimensions %}
+    dimension_source_{{ dimension_name }}.{{ dimension_name }} AS {{ dimension_name }},
+    {% endfor %}
+    {% endif %}
     {{ data_sources[steps[step_name].data_source].submission_date_column }} AS submission_date,
+    {{ data_sources[steps[step_name].data_source].client_id_column }} AS client_id,
     {{ steps[step_name].select_expression }} AS column
   FROM 
     {{ data_sources[steps[step_name].data_source].from_expression }}
@@ -16,8 +22,26 @@
     prev.submission_date = {{ data_sources[steps[step_name].data_source].submission_date_column }}  AND
     prev.join_key = {{ steps[step_name].join_key }}
   {% endif %}
+  {% if funnel.dimensions %}
+  {% for dimension_name in funnel.dimensions %}
+  LEFT JOIN (
+    SELECT
+      {{ data_sources[dimensions[dimension_name].data_source].submission_date_column }} AS submission_date,
+      {{ data_sources[dimensions[dimension_name].data_source].client_id_column }} AS client_id,
+      {{ dimensions[dimension_name].select_expression }} AS {{ dimension_name }}
+    FROM
+    {{ data_sources[dimensions[dimension_name].data_source].from_expression }}
+  ) AS dimension_source_{{ dimension_name }}
+  ON dimension_source_{{ dimension_name }}.client_id = client_id
+  {% endfor %}
+  {% endif %}
   WHERE
     {{ data_sources[steps[step_name].data_source].submission_date_column }} = @submission_date
+    {% if funnel.dimensions %}
+    {% for dimension_name in funnel.dimensions %}
+    AND dimension_source_{{ dimension_name }}.submission_date = @submission_date
+    {% endfor %}
+    {% endif %}
     {% if steps[step_name].where_expression %}
     AND {{ steps[step_name].where_expression }}
     {% endif %}
@@ -31,10 +55,20 @@
   SELECT
     submission_date,
     "{{ funnel_name }}" AS funnel,
+    {% if  funnel.dimensions %}
+    {% for dimension_name in funnel.dimensions %}
+    {{ dimension_name }},
+    {% endfor %}
+    {% endif %}
     {{ steps[step_name].aggregation.sql("column") }} AS aggregated
   FROM
     {{ funnel_name }}_{{ step_name }}
   GROUP BY
+    {% if  funnel.dimensions %}
+    {% for dimension_name in funnel.dimensions %}
+    {{ dimension_name }},
+    {% endfor %}
+    {% endif %}
     submission_date, 
     funnel
 ),
@@ -42,6 +76,28 @@
 {% endfor %}
 merged_funnels AS (
   SELECT
+    {% for dimension_name, dimension in dimensions.items() %}
+      {% for funnel_name, funnel in funnels.items() %}
+        {% if loop.first %}
+        COALESCE(
+        {% else %},
+        {% endif %}
+
+        {% if funnel.dimensions %}
+          {% if dimension_name in funnel.dimensions %}
+          {{ funnel_name }}_{{ funnel.steps|first }}_aggregated.{{ dimension_name }}
+          {% else %}
+          NULL
+          {% endif %}
+        {% else %}
+        NULL
+        {% endif %}
+
+        {% if loop.last %}
+        ) AS {{ dimension_name }},
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
     submission_date,
     funnel,
     {% for step_name, step in steps.items() %}

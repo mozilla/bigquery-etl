@@ -491,49 +491,6 @@ with DAG(
             telemetry_derived__main_remainder_1pct__v1
         )
 
-    telemetry_derived__main_summary__v4 = bigquery_etl_query(
-        task_id="telemetry_derived__main_summary__v4",
-        destination_table="main_summary_v4",
-        dataset_id="telemetry_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        start_date=datetime.datetime(2019, 10, 25, 0, 0),
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        multipart=True,
-        sql_file_path="sql/moz-fx-data-shared-prod/telemetry_derived/main_summary_v4",
-        priority_weight=90,
-    )
-
-    with TaskGroup(
-        "telemetry_derived__main_summary__v4_external"
-    ) as telemetry_derived__main_summary__v4_external:
-        ExternalTaskMarker(
-            task_id="jetstream__wait_for_main_summary",
-            external_dag_id="jetstream",
-            external_task_id="wait_for_main_summary",
-            execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="operational_monitoring__wait_for_main_summary",
-            external_dag_id="operational_monitoring",
-            external_task_id="wait_for_main_summary",
-            execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="parquet_export__wait_for_main_summary",
-            external_dag_id="parquet_export",
-            external_task_id="wait_for_main_summary",
-            execution_date="{{ (execution_date + macros.timedelta(seconds=3600)).isoformat() }}",
-        )
-
-        telemetry_derived__main_summary__v4_external.set_upstream(
-            telemetry_derived__main_summary__v4
-        )
-
     telemetry_derived__main_use_counter_1pct__v1 = bigquery_etl_query(
         task_id="telemetry_derived__main_use_counter_1pct__v1",
         destination_table="main_use_counter_1pct_v1",
@@ -703,10 +660,6 @@ with DAG(
     )
 
     telemetry_derived__main_remainder_1pct__v1.set_upstream(
-        wait_for_copy_deduplicate_main_ping
-    )
-
-    telemetry_derived__main_summary__v4.set_upstream(
         wait_for_copy_deduplicate_main_ping
     )
 

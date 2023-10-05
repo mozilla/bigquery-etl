@@ -62,10 +62,6 @@ CREATE TEMP FUNCTION get_is_terminal(selected_result STRING, engagement_type STR
   )
 );
 
-CREATE TEMP FUNCTION create_event_id(client_id STRING, submission_timestamp TIMESTAMP, name STRING, timestamp INTEGER) AS (
-  CONCAT(client_id, "||", CAST(submission_timestamp AS STRING), "||", name, "||", CAST(timestamp AS STRING))
-);
-
 WITH events_unnested AS (
 SELECT
   DATE(submission_timestamp) AS submission_date,
@@ -74,7 +70,7 @@ SELECT
   sample_id,
   name AS event_name,
   timestamp AS event_timestamp,
-  create_event_id(client_info.client_id, submission_timestamp, name, timestamp) AS event_id,
+  GENERATE_UUID() AS event_id,
   ping_info.experiments,
   ping_info.seq,
   normalized_channel,

@@ -7,7 +7,7 @@ fields:
     Partition field, also corresponds to internal execution date of the job. submision_date - 7 days gives us the same date as the date field.
 
 - mode: NULLABLE
-  name: date
+  name: first_seen_date
   type: DATE
   description: |
     Date of when the user was first seen.
@@ -19,10 +19,10 @@ fields:
     Dimension by which the numeric values are grouped.
 
 - mode: NULLABLE
-  name: views
+  name: impressions
   type: INTEGER
   description: |
-    Number of Firefox iOS app views in the Apple Store.
+    Number of Firefox iOS app impressions in the Apple Store.
 
 - mode: NULLABLE
   name: total_downloads

@@ -47,8 +47,6 @@ store_stats AS (
   ON
     country_names.name = views_data.country_name
 ),
--- TODO: we may need to consider updating the source for new profiles to be firefox_ios.firefox_ios_clients
--- instead to avoid the other funnel query using a different source.
 _new_profiles AS (
   SELECT
     first_seen_date AS `date`,
@@ -65,9 +63,9 @@ _new_profiles AS (
 )
 SELECT
   @submission_date AS submission_date,
-  `date`,
+  `date` AS first_seen_date,
   country,
-  COALESCE(views, 0) AS views,
+  COALESCE(views, 0) AS impressions,
   COALESCE(total_downloads, 0) AS total_downloads,
   COALESCE(first_time_downloads, 0) AS first_time_downloads,
   COALESCE(redownloads, 0) AS redownloads,

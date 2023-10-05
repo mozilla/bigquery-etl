@@ -16,5 +16,5 @@ bigquery:
     require_partition_filter: false
   clustering:
     fields:
-    - first_seen_country
+    - first_reported_country
     - adjust_network

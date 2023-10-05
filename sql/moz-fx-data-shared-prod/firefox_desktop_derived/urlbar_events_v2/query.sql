@@ -95,7 +95,7 @@ SELECT
     `moz-fx-data-shared-prod.firefox_desktop_stable.events_v1`,
     UNNEST(events)
   WHERE
-    DATE(submission_timestamp) = "2023-10-01" --@submission_date
+    DATE(submission_timestamp) = @submission_date
     AND category = 'urlbar'
     AND name IN ('engagement', 'abandonment')
 )

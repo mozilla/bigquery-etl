@@ -5435,6 +5435,83 @@ across all channels of the Glean application "Firefox for iOS"
 <p><code>firefox_ios.funnel_retention_week_4_aggregates</code></p>
 <p>None</p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>submission_date</td>
+        <td>Partition field, also corresponds to internal execution date of the job (first_seen_date + 28 days).
+</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_seen_date</td>
+        <td>Date of when the user was first seen.
+</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_reported_country</td>
+        <td>First reported country for the client installation.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_reported_isp</td>
+        <td>Name of the first reported isp (Internet Service Provider).
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>adjust_ad_group</td>
+        <td>Structure parameter for the the ad group of a campaign.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>adjust_campaign</td>
+        <td>Structure parameter for the campaign name.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>adjust_creative</td>
+        <td>Structure parameter for the creative content of a campaign.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>adjust_network</td>
+        <td>The type of source of a client installation.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>new_profiles</td>
+        <td>Count of new_profiles for the given grouping.
+</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>repeat_user</td>
+        <td>Count of users categorised as "repeat_first_month_user" for the grouping.
+</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>retained_week_4</td>
+        <td>Count of users categorised as "retained_week_4" for the grouping.
+</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>

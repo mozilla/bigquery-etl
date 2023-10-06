@@ -15,7 +15,6 @@ description = "View marketing email"
 data_source = "fxa_oauth_events"
 select_expression = "fxa_content_auth_oauth_events"
 where_expression = "event_type = 'fxa_email_first - view'"
-depends_on_previous_step = false
 aggregation = "count"
 
 [steps.submit]
@@ -24,7 +23,6 @@ description = "View marketing email"
 data_source = "fxa_oauth_events"
 select_expression = "fxa_content_auth_oauth_events"
 where_expression = "event_type = 'fxa_email_first - submit'"
-depends_on_previous_step = false
 aggregation = "count"
 
 [steps.engage]
@@ -33,7 +31,6 @@ description = "Click on marketing email"
 data_source = "fxa_oauth_events"
 select_expression = "fxa_content_auth_oauth_events"
 where_expression = "event_type = 'fxa_email_first - engage'"
-depends_on_previous_step = false
 aggregation = "count"
 
 

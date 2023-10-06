@@ -30,6 +30,10 @@ class Aggregation(Enum):
             return f"COUNT(DISTINCT {column})"
         elif self.value == "mean":
             return f"AVG({column})"
+        elif self.value == "sum":
+            return f"SUM({column})"
+        elif "{column}" in self.value:
+            return self.value
         else:
             raise ValueError(f"No SQL implemented for {self.value}")
 
@@ -45,11 +49,10 @@ class Step:
     data_source: str
     aggregation: Aggregation
     select_expression: str
-    depends_on_previous_step: bool = False
     friendly_name: Optional[str] = attr.ib(None)
     description: Optional[str] = attr.ib(None)
     where_expression: Optional[str] = attr.ib(None)
-    join_key: Optional[str] = attr.ib(None)
+    join_previous_step_on: Optional[str] = attr.ib(None)
 
 
 @attr.s(auto_attribs=True)

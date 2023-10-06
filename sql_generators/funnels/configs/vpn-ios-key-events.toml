@@ -1,13 +1,16 @@
+destination_dataset = "mozilla_vpn_derived"
+platform = "mozilla_vpn"
+
 [funnels]
 
-[funnels.funnel1]
+[funnels.subscription_funnel]
 
 friendly_name = "Start Subscription Funnel"
 description = "Funnel from Signup to starting a subscription"
 steps = ["signup", "verify", "start_subscription"]
 dimensions = ["os"]
 
-[funnels.funnel2]
+[funnels.subscription_error_funnel]
 friendly_name = "Subscription Error Funnel"
 description = "Funnel from Signup to running into an error"
 steps = ["signup", "verify", "error_subscription"]
@@ -19,14 +22,13 @@ steps = ["signup", "verify", "error_subscription"]
 friendly_name = "Sign up"
 description = "Sign up for VPN"
 data_source = "events"
-select_expression = "client_info.client_id"
-where_expression = """
+filter_expression = """
     event_name = 'authentication_inapp_step' AND
     `mozfun.map.get_key`(event_extra, 'state') = 'StateVerifyingSessionEmailCode'
 """
-depends_on_previous_step = true
+join_previous_step_on = "client_info.client_id"
+select_expression = "client_info.client_id"
 aggregation = "count distinct"
-join_key = "client_info.client_id"
 
 [steps.verify]
 friendly_name = "Verify"
@@ -37,9 +39,8 @@ where_expression = """
     event_name = 'authentication_inapp_step' AND
     `mozfun.map.get_key`(event_extra, 'state') = 'StateVerifyingSessionEmailCode'
 """
-depends_on_previous_step = true
 aggregation = "count distinct"
-join_key = "client_info.client_id"
+join_previous_step_on = "client_info.client_id"
 
 [steps.start_subscription]
 friendly_name = "Start Subscription"
@@ -47,9 +48,8 @@ description = "Start VPN subscription"
 data_source = "events"
 select_expression = "client_info.client_id"
 where_expression = "event_name = 'iap_subscription_started'"
-depends_on_previous_step = true
 aggregation = "count distinct"
-join_key = "client_info.client_id"
+join_previous_step_on = "client_info.client_id"
 
 [steps.error_subscription]
 friendly_name = "Subscription Error"
@@ -57,9 +57,8 @@ description = "subscription error"
 data_source = "events"
 select_expression = "client_info.client_id"
 where_expression = "event_name = 'error_alert_shown'"
-depends_on_previous_step = true
 aggregation = "count"
-join_key = "client_info.client_id"
+join_previous_step_on = "client_info.client_id"
 
 
 [data_sources]
@@ -71,6 +70,7 @@ from_expression = """
 """
 submission_date_column = "DATE(submission_timestamp)"
 client_id_column = "client_info.client_id"
+
 
 [dimensions]
 

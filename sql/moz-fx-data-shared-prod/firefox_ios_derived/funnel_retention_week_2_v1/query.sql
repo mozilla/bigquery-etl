@@ -27,6 +27,8 @@ clients_first_seen AS (
     -- Two weeks need to elapse before calculating the week 2 retention
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 13 DAY)
     AND channel = "release"
+    -- filtering out suspicious devices on iOS, for more info see: bug-1846554
+    AND NOT is_suspicious_device_client
 ),
 retention_calculation AS (
   SELECT

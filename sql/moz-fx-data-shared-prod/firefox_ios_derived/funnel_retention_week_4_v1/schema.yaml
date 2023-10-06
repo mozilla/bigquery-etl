@@ -10,19 +10,7 @@ fields:
   name: first_seen_date
   type: DATE
   description: |
-    Date of when the user was first seen.
-
-- mode: NULLABLE
-  name: client_id
-  type: STRING
-  description: |
-    36-char long hash randomly assigned when the account is created.
-
-- mode: NULLABLE
-  name: sample_id
-  type: INTEGER
-  description: |
-    Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99.
+    Date of when the client was first seen.
 
 - mode: NULLABLE
   name: first_reported_country
@@ -61,26 +49,19 @@ fields:
     The type of source of a client installation.
 
 - mode: NULLABLE
-  name: days_seen_in_first_28_days
+  name: new_profiles
   type: INTEGER
   description: |
-    Number of days we saw the user within their first 28 days since they were first seen.
+    Count of new_profiles for the given grouping.
 
 - mode: NULLABLE
-  name: repeat_first_month_user
-  type: BOOLEAN
+  name: repeat_user
+  type: INTEGER
   description: |
-    Indicates if the user qualified as a repeat first month user,
-    meaning we saw them more than once within their first 28 days.
-
-- mode: NULLABLE
-  name: retained_week_2
-  type: BOOLEAN
-  description: |
-    True if the user was seen in the second week since they were first seen.
+    Count of clients categorised as "repeat_first_month_user" for the grouping.
 
 - mode: NULLABLE
   name: retained_week_4
-  type: BOOLEAN
+  type: INTEGER
   description: |
-    True if the user was seen in the forth week since they were first seen.
+    Count of clients categorised as "retained_week_4" for the grouping.

@@ -105,6 +105,7 @@ client_id_column = "client_info.client_id"
 destination_dataset = "mozilla_vpn_derived"
 platform = "mozilla_vpn"
 owners = ["example@mozilla.org"]  # optional; users getting notification if funnel run fails
+version = "1"  # optional; default is set to 1
 
 [funnels]
 

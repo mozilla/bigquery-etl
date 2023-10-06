@@ -1,6 +1,8 @@
-import attr
-from typing import Optional, Dict, List
 from enum import Enum
+from typing import Dict, List, Optional
+
+import attr
+
 from bigquery_etl.metrics import MetricHub
 
 
@@ -71,6 +73,7 @@ class FunnelConfig:
     destination_dataset: str = attr.ib("telemetry_derived")
     version: str = attr.ib("1")
     platform: Optional[str] = attr.ib(None)
+    owners: Optional[List[str]] = attr.ib(None)
 
     def __attrs_post_init__(self):
         # check if metric-hub data source was referenced

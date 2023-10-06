@@ -1,17 +1,17 @@
 """Funnel generation."""
 import os
+import re
 from pathlib import Path
+
+import cattrs
 import click
 import toml
-import re
 from jinja2 import Environment, FileSystemLoader
-import cattrs
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import write_sql
 from sql_generators.funnels.config import FunnelConfig
-
 
 FILE_PATH = Path(os.path.dirname(__file__))
 TEMPLATES_PATH = FILE_PATH / "templates"
@@ -48,6 +48,20 @@ def generate_funnels(target_project, path, output_dir):
             sql=funnel_sql,
             skip_existing=False,
         )
+
+        metadata_template = env.get_template("metadata.yaml")
+        rendered_metadata = metadata_template.render(
+            {
+                "funnel_name": table_name.replace("_", " ").title(),
+                "owners": config.owners,
+            }
+        )
+        (
+            output_dir
+            / config.destination_dataset
+            / f"{table_name}_v{config.version}"
+            / "metadata.yaml"
+        ).write_text(rendered_metadata)
 
 
 @click.command("generate")

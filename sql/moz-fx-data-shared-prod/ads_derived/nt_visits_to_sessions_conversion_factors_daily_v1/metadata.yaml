@@ -10,7 +10,7 @@ labels:
   schedule: daily
   change_controlled: true
 scheduling:
-  dag_name: bqetl_search_dashboard
+  dag_name: TBD
 bigquery:
   time_partitioning:
     field: submission_date

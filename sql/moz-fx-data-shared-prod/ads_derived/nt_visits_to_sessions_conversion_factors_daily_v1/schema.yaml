@@ -26,4 +26,4 @@ fields:
   - mode: NULLABLE
     name: conversion_factor
     type: FLOAT
-    description: Daily factor allowing the translation of newtab visits to activity-stream sessions (as_sessions / newtab_visits)
+    description: Daily conversion factor allowing the translation of newtab visits to activity-stream sessions (as_sessions / newtab_visits)

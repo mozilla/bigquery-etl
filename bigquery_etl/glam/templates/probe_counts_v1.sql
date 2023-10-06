@@ -38,10 +38,18 @@ RETURNS ARRAY<INT64> AS (
 SELECT
     {{ attributes }},
     {{ aggregate_attributes }},
+    -- Logic to count clients based on sampled windows release data.
+    -- If you're changing this, then you'll also need to change
+    -- clients_daily_[scalar | histogram]_aggregates
+    os = 'Windows'
+    AND channel = 'release' AS sampled,
     {% if is_scalar %}
         client_agg_type,
         agg_type,
-        SUM(count) AS total_users,
+        IF(sampled,
+          SUM(count) * 10,
+          SUM(count)
+        ) AS total_users,
         mozfun.glam.histogram_fill_buckets_dirichlet(
             mozfun.map.sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
             CASE
@@ -58,7 +66,10 @@ SELECT
     {% else %}
         agg_type AS client_agg_type,
         'histogram' as agg_type,
-        CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
+        IF(sampled,
+          CAST(ROUND(SUM(record.value)) AS INT64) * 10,
+          CAST(ROUND(SUM(record.value)) AS INT64)
+        ) AS total_users,
         mozfun.glam.histogram_fill_buckets_dirichlet(
             mozfun.map.sum(ARRAY_AGG(record)),
             mozfun.glam.histogram_buckets_cast_string_array(

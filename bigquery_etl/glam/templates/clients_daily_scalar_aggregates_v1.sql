@@ -18,6 +18,21 @@ WITH extracted AS (
     DATE(submission_timestamp) = {{ submission_date }}
     AND client_info.client_id IS NOT NULL
 ),
+sampled_data AS (
+  SELECT
+    *
+  FROM
+    extracted
+  WHERE
+    -- If you're changing this, then you'll also need to change probe_counts_v1,
+    -- where sampling is taken into account for counting clients.
+    channel IN ("nightly", "beta")
+    OR (channel = "release" AND os != "Windows")
+    OR (
+        channel = "release" AND
+        os = "Windows" AND
+        sample_id <= 10)
+),
 unlabeled_metrics AS (
   SELECT
     {{ attributes }},
@@ -25,7 +40,7 @@ unlabeled_metrics AS (
         {{ unlabeled_metrics }}
     ] as scalar_aggregates
   FROM
-    extracted
+    sampled_data
   GROUP BY
     {{ attributes }}
 ),
@@ -36,7 +51,7 @@ grouped_labeled_metrics AS (
         {{ labeled_metrics }}
     ] as metrics
   FROM
-    extracted
+    sampled_data
 ),
 flattened_labeled_metrics AS (
   SELECT

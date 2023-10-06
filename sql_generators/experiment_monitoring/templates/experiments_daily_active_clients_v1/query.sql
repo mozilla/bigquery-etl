@@ -13,6 +13,18 @@ WITH
       CROSS JOIN
         UNNEST(experiments) AS e
     )
+  {% elif app_dataset == "monitor_cirrus" %}
+    {{ app_dataset }} AS (
+      SELECT DISTINCT
+        DATE(submission_timestamp) AS submission_date,
+        e.key AS experiment_id,
+        e.value.branch AS branch,
+        client_info.client_id
+      FROM
+        `moz-fx-data-shared-prod.{{ app_dataset }}.enrollment`
+      CROSS JOIN
+        UNNEST(ping_info.experiments) AS e
+    )
   {% else %}
     {{ app_dataset }} AS (
       SELECT DISTINCT
@@ -42,10 +54,10 @@ FROM
         *
       FROM
         {{ app_dataset }}
-      {% if not loop.last %}    
+      {% if not loop.last %}
         UNION ALL
       {% endif %}
-    {% endfor %} 
+    {% endfor %}
   )
 WHERE
   submission_date = @submission_date

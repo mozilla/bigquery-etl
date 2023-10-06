@@ -25,6 +25,21 @@ WITH
         event_category = 'normandy' AND
         submission_date = @submission_date
     ),
+  {% elif app_dataset == "monitor_cirrus" %}
+  {{ app_dataset }} AS (
+    SELECT
+      submission_timestamp AS `timestamp`,
+      event.category AS `type`,
+      mozfun.map.get_key(event.extra, 'experiment') AS experiment,
+      mozfun.map.get_key(event.extra, 'branch') AS branch,
+      event.name AS event_method
+    FROM
+      `moz-fx-data-shared-prod.{{ app_dataset }}.enrollment`,
+      UNNEST(events) AS event
+    WHERE
+      event.category = 'cirrus_events' AND
+      DATE(submission_timestamp) = @submission_date
+  ),
   {% else %}
   {{ app_dataset }} AS (
     SELECT
@@ -48,10 +63,10 @@ all_events AS (
       *
     FROM
       {{ app_dataset }}
-    {% if not loop.last %}    
+    {% if not loop.last %}
       UNION ALL
     {% endif %}
-  {% endfor %} 
+  {% endfor %}
 )
 SELECT
   `type`,

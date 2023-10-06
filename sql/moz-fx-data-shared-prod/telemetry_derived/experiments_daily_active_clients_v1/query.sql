@@ -141,6 +141,17 @@ org_mozilla_ios_focus AS (
     `moz-fx-data-shared-prod.org_mozilla_ios_focus.baseline`
   CROSS JOIN
     UNNEST(ping_info.experiments) AS e
+),
+monitor_cirrus AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    e.key AS experiment_id,
+    e.value.branch AS branch,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.monitor_cirrus.enrollment`
+  CROSS JOIN
+    UNNEST(ping_info.experiments) AS e
 )
 SELECT
   submission_date,
@@ -213,6 +224,11 @@ FROM
       *
     FROM
       org_mozilla_ios_focus
+    UNION ALL
+    SELECT
+      *
+    FROM
+      monitor_cirrus
   )
 WHERE
   submission_date = @submission_date

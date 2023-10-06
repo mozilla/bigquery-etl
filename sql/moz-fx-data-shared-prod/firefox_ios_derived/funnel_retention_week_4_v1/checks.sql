@@ -32,7 +32,7 @@ WITH repeat_user_count AS (
   SELECT SUM(repeat_user) FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}` WHERE submission_date = @submission_date
 ),
 repeat_user_upstream_count AS (
-  SELECT COUNTIF(repeat_first_month_user) FROM `{{ project_id }}.{{ dataset_id }}.funnel_retention_week_4_v1` WHERE submission_date = @submission_date
+  SELECT COUNTIF(repeat_first_month_user) FROM `{{ project_id }}.{{ dataset_id }}.funnel_retention_clients_week_4_v1` WHERE submission_date = @submission_date
 )
 SELECT IF(
   (SELECT * FROM repeat_user_count) <> (SELECT * FROM repeat_user_upstream_count),

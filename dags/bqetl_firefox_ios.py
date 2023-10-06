@@ -379,6 +379,10 @@ with DAG(
         checks__fail_firefox_ios_derived__firefox_ios_clients__v1
     )
 
+    firefox_ios_derived__funnel_retention_week_4__v1.set_upstream(
+        checks__fail_firefox_ios_derived__funnel_retention_clients_week_4__v1
+    )
+
     firefox_ios_derived__new_profile_activation__v2.set_upstream(
         wait_for_baseline_clients_last_seen
     )

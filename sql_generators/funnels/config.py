@@ -3,10 +3,12 @@ from typing import Optional, Dict, List
 from enum import Enum
 from bigquery_etl.metrics import MetricHub
 
+
 @attr.s(auto_attribs=True)
 class Dimension:
     data_source: str
     select_expression: str
+
 
 class Aggregation(Enum):
     MIN = "min"

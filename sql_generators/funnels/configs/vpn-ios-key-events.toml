@@ -5,6 +5,7 @@
 friendly_name = "Start Subscription Funnel"
 description = "Funnel from Signup to starting a subscription"
 steps = ["signup", "verify", "start_subscription"]
+dimensions = ["os"]
 
 [funnels.funnel2]
 friendly_name = "Subscription Error Funnel"
@@ -69,3 +70,13 @@ from_expression = """
     WHERE client_info.app_channel = 'production' AND client_info.os = 'iOS')
 """
 submission_date_column = "DATE(submission_timestamp)"
+client_id_column = "client_info.client_id"
+
+[dimensions]
+
+[dimensions.os]
+data_source = "events"
+select_expression = "normalized_os"
+friendly_name = "Operating System"
+description = "Normalized Operating System"
+client_id_column = "client_info.client_id"

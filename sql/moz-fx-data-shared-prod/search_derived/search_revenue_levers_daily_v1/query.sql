@@ -208,7 +208,7 @@ mobile_data_google AS (
     submission_date = @submission_date
     AND country NOT IN ('RU', 'UA', 'BY', 'TR', 'KZ', 'CN')
     AND (
-      app_name IN ('Fenix', 'Firefox Preview', 'Focus Android Glean', 'Focus iOS Glean')
+      app_name IN ('Fenix', 'Firefox Preview', 'Focus', 'Focus Android Glean', 'Focus iOS Glean')
       OR (app_name = 'Fennec' AND os = 'iOS')
     )
   GROUP BY
@@ -285,7 +285,7 @@ mobile_data_bing_ddg AS (
   WHERE
     submission_date = @submission_date
     AND (
-      app_name IN ('Fenix', 'Firefox Preview', 'Focus Android Glean', 'Focus iOS Glean')
+      app_name IN ('Fenix', 'Firefox Preview', 'Focus', 'Focus Android Glean', 'Focus iOS Glean')
       OR (app_name = 'Fennec' AND os = 'iOS')
     )
   GROUP BY

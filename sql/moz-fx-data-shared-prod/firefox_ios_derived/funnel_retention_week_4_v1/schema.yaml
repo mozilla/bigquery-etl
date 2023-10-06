@@ -10,7 +10,7 @@ fields:
   name: first_seen_date
   type: DATE
   description: |
-    Date of when the user was first seen.
+    Date of when the client was first seen.
 
 - mode: NULLABLE
   name: first_reported_country
@@ -58,10 +58,10 @@ fields:
   name: repeat_user
   type: INTEGER
   description: |
-    Count of users categorised as "repeat_first_month_user" for the grouping.
+    Count of clients categorised as "repeat_first_month_user" for the grouping.
 
 - mode: NULLABLE
   name: retained_week_4
   type: INTEGER
   description: |
-    Count of users categorised as "retained_week_4" for the grouping.
+    Count of clients categorised as "retained_week_4" for the grouping.

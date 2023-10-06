@@ -10,7 +10,7 @@ fields:
   name: first_seen_date
   type: DATE
   description: |
-    Date of when the user was first seen.
+    Date of when the client was first seen.
 
 - mode: NULLABLE
   name: client_id
@@ -64,23 +64,22 @@ fields:
   name: days_seen_in_first_28_days
   type: INTEGER
   description: |
-    Number of days we saw the user within their first 28 days since they were first seen.
+    Number of days we saw the client within their first 28 days.
 
 - mode: NULLABLE
   name: repeat_first_month_user
   type: BOOLEAN
   description: |
-    Indicates if the user qualified as a repeat first month user,
-    meaning we saw them more than once within their first 28 days.
+    Indicates if the client qualified as a repeat first month user (observed more than once within their first 28 days).
 
 - mode: NULLABLE
   name: retained_week_2
   type: BOOLEAN
   description: |
-    True if the user was seen in the second week since they were first seen.
+    True if the client was seen in the second week (days 8 - 14) since they were first seen.
 
 - mode: NULLABLE
   name: retained_week_4
   type: BOOLEAN
   description: |
-    True if the user was seen in the forth week since they were first seen.
+    True if the client was seen in the forth week (days 21 - 28) since they were first seen.

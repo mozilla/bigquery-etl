@@ -2,7 +2,7 @@ fields:
   - mode: NULLABLE
     name: submission_date
     type: DATE
-    description: Info submission date
+    description: Data submission date
   - mode: NULLABLE
     name: country
     type: STRING

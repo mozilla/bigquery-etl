@@ -4,7 +4,7 @@ WITH non_unique AS (
   SELECT
     COUNT(*) AS total_count
   FROM
-    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_2_v1`
+    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_clients_week_2_v1`
   GROUP BY
     client_id
   HAVING
@@ -24,7 +24,7 @@ WITH min_row_count AS (
   SELECT
     COUNT(*) AS total_rows
   FROM
-    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_2_v1`
+    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_clients_week_2_v1`
   WHERE
     submission_date = @submission_date
 )

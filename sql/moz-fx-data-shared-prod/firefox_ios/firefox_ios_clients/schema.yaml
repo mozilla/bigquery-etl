@@ -121,3 +121,10 @@ fields:
   description: 'Additional context around the source of this record.
 
     '
+- name: is_suspicious_device_client
+  type: BOOLEAN
+  mode: NULLABLE
+  description: 'Flag to identify suspicious device users, see bug-1846554 for more
+    info.
+
+    '

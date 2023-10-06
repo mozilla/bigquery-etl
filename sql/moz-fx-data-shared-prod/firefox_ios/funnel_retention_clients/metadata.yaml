@@ -10,6 +10,6 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_2_v1
-  - moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_4_v1
+  - moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_clients_week_2_v1
+  - moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_clients_week_4_v1
 deprecated: false

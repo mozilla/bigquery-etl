@@ -1,7 +1,6 @@
-friendly_name: User Retention - Firefox iOS (Week 4)
+friendly_name: User Retention Aggregations - Firefox iOS (Week 4)
 description: |
-  Derived dataset for Firefox iOS retention analysis. Contains metrics that can be calculated
-  4 weeks (28 days) after a user was first seen.
+  Aggregated dataset for Firefox iOS retention analysis.
 owners:
 - kik@mozilla.com
 labels:
@@ -12,10 +11,6 @@ labels:
 scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: false
-  referenced_tables:
-  - - moz-fx-data-shared-prod
-    - firefox_ios_derived
-    - app_store_retention_week_2_v1
 bigquery:
   time_partitioning:
     type: day
@@ -24,17 +19,16 @@ bigquery:
     expiration_days: null
   clustering:
     fields:
-    - sample_id
-    - first_seen_date
+    - first_reported_country
+    - adjust_network
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
 references:
   checks.sql:
-  - moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_2_v1
+  - moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_clients_week_4_v1
   - moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_4_v1
   query.sql:
-  - firefox_ios.baseline_clients_last_seen
-  - firefox_ios.firefox_ios_clients
+  - firefox_ios_derived.funnel_retention_clients_week_4_v1
 deprecated: false

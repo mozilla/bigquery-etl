@@ -5,8 +5,16 @@ WITH non_unique AS (
     COUNT(*) AS total_count
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_4_v1`
+  WHERE
+    submission_date = @submission_date
   GROUP BY
-    client_id
+    first_seen_date,
+    first_reported_country,
+    first_reported_isp,
+    adjust_ad_group,
+    adjust_campaign,
+    adjust_creative,
+    adjust_network
   HAVING
     total_count > 1
 )
@@ -14,7 +22,38 @@ SELECT
   IF(
     (SELECT COUNT(*) FROM non_unique) > 0,
     ERROR(
-      "Duplicates detected (Expected combined set of values for columns ['client_id'] to be unique.)"
+      "Duplicates detected (Expected combined set of values for columns ['first_seen_date', 'first_reported_country', 'first_reported_isp', 'adjust_ad_group', 'adjust_campaign', 'adjust_creative', 'adjust_network'] to be unique.)"
+    ),
+    NULL
+  );
+
+#fail
+WITH null_checks AS (
+  SELECT
+    [
+      IF(COUNTIF(first_seen_date IS NULL) > 0, "first_seen_date", NULL),
+      IF(COUNTIF(adjust_network IS NULL) > 0, "adjust_network", NULL)
+    ] AS checks
+  FROM
+    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_4_v1`
+  WHERE
+    submission_date = @submission_date
+),
+non_null_checks AS (
+  SELECT
+    ARRAY_AGG(u IGNORE NULLS) AS checks
+  FROM
+    null_checks,
+    UNNEST(checks) AS u
+)
+SELECT
+  IF(
+    (SELECT ARRAY_LENGTH(checks) FROM non_null_checks) > 0,
+    ERROR(
+      CONCAT(
+        "Columns with NULL values: ",
+        (SELECT ARRAY_TO_STRING(checks, ", ") FROM non_null_checks)
+      )
     ),
     NULL
   );
@@ -42,34 +81,96 @@ SELECT
   );
 
 #fail
--- Here we're checking that the retention_week_2 generated inside funnel_retention_week_2_v1
--- matches that reported by this table (generated 2 weeks later).
-WITH retention_week_2 AS (
+WITH new_profile_count AS (
   SELECT
-    COUNTIF(retained_week_2)
-  FROM
-    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_2_v1`
-  WHERE
-    first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
-),
-retention_week_2_week_4_generated AS (
-  SELECT
-    COUNTIF(retained_week_2)
+    SUM(new_profiles)
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_4_v1`
   WHERE
-    first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    submission_date = @submission_date
+),
+new_profile_upstream_count AS (
+  SELECT
+    COUNT(*)
+  FROM
+    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_clients_week_4_v1`
+  WHERE
+    submission_date = @submission_date
 )
 SELECT
   IF(
-    (SELECT * FROM retention_week_2) <> (SELECT * FROM retention_week_2_week_4_generated),
+    (SELECT * FROM new_profile_count) <> (SELECT * FROM new_profile_upstream_count),
     ERROR(
       CONCAT(
-        "Retention reported for week 2 by week_2 (",
-        (SELECT * FROM retention_week_2),
-        ") and week_4 (",
-        (SELECT * FROM retention_week_2_week_4_generated),
-        ") tables does not match."
+        "New profile count mismatch between this (",
+        (SELECT * FROM new_profile_count),
+        ") and upstream (",
+        (SELECT * FROM new_profile_upstream_count),
+        ") tables"
+      )
+    ),
+    NULL
+  );
+
+#fail
+WITH repeat_user_count AS (
+  SELECT
+    SUM(repeat_user)
+  FROM
+    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_4_v1`
+  WHERE
+    submission_date = @submission_date
+),
+repeat_user_upstream_count AS (
+  SELECT
+    COUNTIF(repeat_first_month_user)
+  FROM
+    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_clients_week_4_v1`
+  WHERE
+    submission_date = @submission_date
+)
+SELECT
+  IF(
+    (SELECT * FROM repeat_user_count) <> (SELECT * FROM repeat_user_upstream_count),
+    ERROR(
+      CONCAT(
+        "New profile count mismatch between this (",
+        (SELECT * FROM repeat_user_count),
+        ") and upstream (",
+        (SELECT * FROM repeat_user_upstream_count),
+        ") tables"
+      )
+    ),
+    NULL
+  );
+
+#fail
+WITH retained_week_4_count AS (
+  SELECT
+    SUM(retained_week_4)
+  FROM
+    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_4_v1`
+  WHERE
+    submission_date = @submission_date
+),
+retained_week_4_upstream_count AS (
+  SELECT
+    COUNTIF(retained_week_4)
+  FROM
+    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_clients_week_4_v1`
+  WHERE
+    submission_date = @submission_date
+)
+SELECT
+  IF(
+    (SELECT * FROM retained_week_4_count) <> (SELECT * FROM retained_week_4_upstream_count),
+    ERROR(
+      CONCAT(
+        "New profile count mismatch between this (",
+        (SELECT * FROM retained_week_4_count),
+        ") and upstream (",
+        (SELECT * FROM retained_week_4_upstream_count),
+        ") tables"
       )
     ),
     NULL

@@ -257,7 +257,7 @@ second_seen_date AS (
     first_seen_date fs USING (client_id)
   WHERE
     seen_dates.value_source = 'main'
-    AND value_date > fs.first_seen_date
+    AND seen_dates.value_date > fs.first_seen_date
   GROUP BY
     client_id
 ),

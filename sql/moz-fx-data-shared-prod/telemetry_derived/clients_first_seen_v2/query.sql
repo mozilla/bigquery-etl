@@ -207,28 +207,6 @@ unioned AS (
   FROM
     main_ping
 ),
--- The next CTE unions all reported dates from all pings.
--- It's required to find the first and second seen dates.
-dates_with_reporting_ping AS (
-  SELECT
-    client_id,
-    ARRAY_CONCAT(
-      ARRAY_AGG(
-        STRUCT(
-          all_dates AS value,
-          unioned.source_ping AS value_source,
-          all_dates AS value_date
-        ) IGNORE NULLS
-        ORDER BY all_dates
-      )
-    ) AS seen_dates
-  FROM
-    unioned
-  LEFT JOIN
-    UNNEST(all_dates) AS all_dates
-  GROUP BY
-    client_id
-),
 -- The next CTE returns the first_seen_date and reporting ping.
 -- The ping type priority is used to prioritize which ping type to select when the timestamp is the same
 -- The timestamp is retrieved to select the first_seen attributes.
@@ -244,22 +222,18 @@ first_seen_date AS (
     client_id
 ),
 -- The next CTE returns the second_seen_date calculated as the next date reported by the
---  main ping after first_seen_date. Dates reported by other pings are excluded.
+--  main ping after first_seen_date or NULL. Dates reported by other pings are excluded.
 second_seen_date AS (
-  SELECT
+   SELECT
     client_id,
-    ARRAY_AGG(seen_dates ORDER BY value_date ASC)[SAFE_OFFSET(0)] AS second_seen_date
+    all_dates[SAFE_OFFSET(0)] AS second_seen_date
   FROM
-    dates_with_reporting_ping
+    main_ping
   LEFT JOIN
-    UNNEST(seen_dates) AS seen_dates
-  LEFT JOIN
-    first_seen_date fs USING (client_id)
+    first_seen_date fs
+    USING (client_id)
   WHERE
-    seen_dates.value_source = 'main'
-    AND seen_dates.value_date > fs.first_seen_date
-  GROUP BY
-    client_id
+    main_ping.all_dates[SAFE_OFFSET(0)] > fs.first_seen_date
 ),
 -- The next CTE returns the pings ever reported by each client
 -- Different from other attributes, this data is updated daily when it's NULL,
@@ -281,7 +255,7 @@ _current AS (
     unioned.client_id AS client_id,
     unioned.sample_id AS sample_id,
     fsd.first_seen_date AS first_seen_date,
-    ssd.second_seen_date.value AS second_seen_date,
+    ssd.second_seen_date AS second_seen_date,
     unioned.* EXCEPT (client_id, sample_id, first_seen_timestamp, all_dates, source_ping, source_ping_priority),
     STRUCT(
       fsd.first_seen_source_ping AS first_seen_date_source_ping,

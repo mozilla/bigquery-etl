@@ -224,7 +224,7 @@ first_seen_date AS (
 -- The next CTE returns the second_seen_date calculated as the next date reported by the
 --  main ping after first_seen_date or NULL. Dates reported by other pings are excluded.
 second_seen_date AS (
-   SELECT
+  SELECT
     client_id,
     MIN(seen_dates) AS second_seen_date
   FROM

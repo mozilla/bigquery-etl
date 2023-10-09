@@ -1,40 +1,72 @@
 #fail
-{{ is_unique(["client_id"]) }}
+{{ is_unique([
+  "first_seen_date", "first_reported_country", "first_reported_isp",
+  "adjust_ad_group", "adjust_campaign", "adjust_creative", "adjust_network"
+], "submission_date = @submission_date") }}
+#fail
+{{ not_null(["first_seen_date", "adjust_network"], "submission_date = @submission_date") }}
 #fail
 {{ min_row_count(1, "submission_date = @submission_date") }}
 #fail
--- Here we're checking that the retention_week_2 generated inside funnel_retention_week_2_v1
--- matches that reported by this table (generated 2 weeks later).
-WITH retention_week_2 AS (
-  SELECT
-    COUNTIF(retained_week_2)
-  FROM
-    `{{ project_id }}.{{ dataset_id }}.funnel_retention_week_2_v1`
-  WHERE
-    first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+WITH new_profile_count AS (
+  SELECT SUM(new_profiles) FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}` WHERE submission_date = @submission_date
 ),
-retention_week_2_week_4_generated AS (
-  SELECT
-    COUNTIF(retained_week_2)
-  FROM
-    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
-  WHERE
-    first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+new_profile_upstream_count AS (
+  SELECT COUNT(*) FROM `{{ project_id }}.{{ dataset_id }}.funnel_retention_clients_week_4_v1` WHERE submission_date = @submission_date
 )
-SELECT
-  IF(
-    (SELECT * FROM retention_week_2) <> (SELECT * FROM retention_week_2_week_4_generated),
-    ERROR(
-      CONCAT(
-        "Retention reported for week 2 by week_2 (",
-        (SELECT * FROM retention_week_2),
-        ") and week_4 (",
-        (SELECT * FROM retention_week_2_week_4_generated),
-        ") tables does not match."
-      )
-    ),
-    NULL
-  );
+SELECT IF(
+  (SELECT * FROM new_profile_count) <> (SELECT * FROM new_profile_upstream_count),
+  ERROR(
+    CONCAT(
+      "New profile count mismatch between this (",
+      (SELECT * FROM new_profile_count),
+      ") and upstream (",
+      (SELECT * FROM new_profile_upstream_count),
+      ") tables"
+    )
+  ),
+  NULL
+);
+#fail
+WITH repeat_user_count AS (
+  SELECT SUM(repeat_user) FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}` WHERE submission_date = @submission_date
+),
+repeat_user_upstream_count AS (
+  SELECT COUNTIF(repeat_first_month_user) FROM `{{ project_id }}.{{ dataset_id }}.funnel_retention_clients_week_4_v1` WHERE submission_date = @submission_date
+)
+SELECT IF(
+  (SELECT * FROM repeat_user_count) <> (SELECT * FROM repeat_user_upstream_count),
+  ERROR(
+    CONCAT(
+      "New profile count mismatch between this (",
+      (SELECT * FROM repeat_user_count),
+      ") and upstream (",
+      (SELECT * FROM repeat_user_upstream_count),
+      ") tables"
+    )
+  ),
+  NULL
+);
+#fail
+WITH retained_week_4_count AS (
+  SELECT SUM(retained_week_4) FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}` WHERE submission_date = @submission_date
+),
+retained_week_4_upstream_count AS (
+  SELECT COUNTIF(retained_week_4) FROM `{{ project_id }}.{{ dataset_id }}.funnel_retention_clients_week_4_v1` WHERE submission_date = @submission_date
+)
+SELECT IF(
+  (SELECT * FROM retained_week_4_count) <> (SELECT * FROM retained_week_4_upstream_count),
+  ERROR(
+    CONCAT(
+      "New profile count mismatch between this (",
+      (SELECT * FROM retained_week_4_count),
+      ") and upstream (",
+      (SELECT * FROM retained_week_4_upstream_count),
+      ") tables"
+    )
+  ),
+  NULL
+);
 #fail
 SELECT
   IF(

@@ -8,7 +8,7 @@ WITH non_unique AS (
   WHERE
     country IS NOT NULL
   GROUP BY
-    `date`,
+    submission_date,
     country
   HAVING
     total_count > 1
@@ -17,7 +17,7 @@ SELECT
   IF(
     (SELECT COUNT(*) FROM non_unique) > 0,
     ERROR(
-      "Duplicates detected (Expected combined set of values for columns ['`date`', 'country'] to be unique.)"
+      "Duplicates detected (Expected combined set of values for columns ['submission_date', 'country'] to be unique.)"
     ),
     NULL
   );
@@ -53,7 +53,7 @@ WITH fx_ios_count AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
   WHERE
-    submission_date = DATE_SUB(@submission_date, INTERVAL 7 DAY)
+    first_seen_date = DATE_SUB(@submission_date, INTERVAL 7 DAY)
     AND channel = "release"
 ),
 new_profiles_count AS (
@@ -113,9 +113,13 @@ FROM
 #fail
 SELECT
   IF(
-    DATE_DIFF(submission_date, `date`, DAY) <> 7,
+    DATE_DIFF(submission_date, first_seen_date, DAY) <> 7,
     ERROR("Day difference between submission_date and `date` is not equal to 7 as expected"),
     NULL
-  );
+  )
+FROM
+  `moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1`
+WHERE
+  submission_date = @submission_date;
 
 -- TODO: for this query it'd be useful to compare sum variance between each day to improve our confidence the data was complete at the execution time.

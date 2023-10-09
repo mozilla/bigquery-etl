@@ -1,5 +1,5 @@
 #fail
-{{ is_unique(["`date`", "country"], "country IS NOT NULL") }}
+{{ is_unique(["submission_date", "country"], "country IS NOT NULL") }}
 -- min_row_count helps us detect if we're seeing delays in the data arriving
 -- could also be an indicator of an upstream issue.
 #fail
@@ -11,7 +11,7 @@ WITH fx_ios_count AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
   WHERE
-    submission_date = DATE_SUB(@submission_date, INTERVAL 7 DAY)
+    first_seen_date = DATE_SUB(@submission_date, INTERVAL 7 DAY)
     AND channel = "release"
 ),
 new_profiles_count AS (
@@ -70,8 +70,12 @@ FROM
 #fail
 SELECT
   IF(
-    DATE_DIFF(submission_date, `date`, DAY) <> 7,
+    DATE_DIFF(submission_date, first_seen_date, DAY) <> 7,
     ERROR("Day difference between submission_date and `date` is not equal to 7 as expected"),
     NULL
-  );
+  )
+FROM
+  `moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1`
+WHERE
+  submission_date = @submission_date;
 -- TODO: for this query it'd be useful to compare sum variance between each day to improve our confidence the data was complete at the execution time.

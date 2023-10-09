@@ -230,7 +230,7 @@ second_seen_date AS (
   FROM
     main_ping
   LEFT JOIN
-    UNNEST(all_dates) as seen_dates
+    UNNEST(all_dates) AS seen_dates
   LEFT JOIN
     first_seen_date fs
     USING (client_id)

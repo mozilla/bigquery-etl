@@ -1,0 +1,180 @@
+[
+  {
+    "type": "STRING",
+    "name": "client_id"
+  },
+  {
+    "type": "INTEGER",
+    "name": "sample_id"
+  },
+  {
+    "type": "DATE",
+    "name": "first_seen_date"
+  },
+  {
+    "type": "DATE",
+    "name": "second_seen_date"
+  },
+  {
+    "type": "STRING",
+    "name": "architecture"
+  },
+  {
+    "type": "STRING",
+    "name": "app_build_id"
+  },
+  {
+    "type": "STRING",
+    "name": "app_name"
+  },
+  {
+    "type": "STRING",
+    "name": "locale"
+  },
+  {
+    "type": "STRING",
+    "name": "platform_version"
+  },
+  {
+    "type": "STRING",
+    "name": "vendor"
+  },
+  {
+    "type": "STRING",
+    "name": "app_version"
+  },
+  {
+    "type": "STRING",
+    "name": "xpcom_abi"
+  },
+  {
+    "type": "STRING",
+    "name": "document_id"
+  },
+  {
+    "type": "STRING",
+    "name": "distribution_id"
+  },
+  {
+    "type": "STRING",
+    "name": "partner_distribution_version"
+  },
+  {
+    "type": "STRING",
+    "name": "partner_distributor"
+  },
+  {
+    "type": "STRING",
+    "name": "partner_distributor_channel"
+  },
+  {
+    "type": "STRING",
+    "name": "partner_id"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_campaign"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_content"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_experiment"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_medium"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_source"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_ua"
+  },
+  {
+    "type": "STRING",
+    "name": "engine_data_load_path"
+  },
+  {
+    "type": "STRING",
+    "name": "engine_data_name"
+  },
+  {
+    "type": "STRING",
+    "name": "engine_data_origin"
+  },
+  {
+    "type": "STRING",
+    "name": "engine_data_submission_url"
+  },
+  {
+    "type": "STRING",
+    "name": "apple_model_id"
+  },
+  {
+    "type": "STRING",
+    "name": "city"
+  },
+  {
+    "type": "STRING",
+    "name": "db_version"
+  },
+  {
+    "type": "STRING",
+    "name": "subdivision1"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_channel"
+  },
+  {
+    "type": "STRING",
+    "name": "country"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_os"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_os_version"
+  },
+  {
+    "type": "STRING",
+    "name": "startup_profile_selection_reason"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_dltoken"
+  },
+  {
+    "type": "STRING",
+    "name": "attribution_dlsource"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "first_seen_date_source_ping"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "reported_main_ping"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "reported_new_profile_ping"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "reported_shutdown_ping"
+      }
+    ],
+    "name": "metadata",
+    "type": "RECORD"
+  }
+]

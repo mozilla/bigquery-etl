@@ -1,0 +1,12 @@
+---
+- client_id: client-4
+  sample_id: 40
+  first_seen_date: 2023-05-14
+  normalized_channel: nightly
+  attribution_campaign: campaign4
+  attribution_dltoken: token4
+  metadata:
+    first_seen_date_source_ping: shutdown
+    reported_main_ping: true
+    reported_new_profile_ping: true
+    reported_shutdown_ping: true

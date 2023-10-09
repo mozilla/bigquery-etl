@@ -7,7 +7,7 @@ import json
 import sys
 import time
 from argparse import ArgumentParser
-from typing import Any, Dict, List, Optional, Union
+from typing import List, Optional
 
 import attr
 import cattrs
@@ -38,7 +38,6 @@ class Branch:
 
     slug: str
     ratio: int
-    value: Union[str, Dict[Any, Any]]
 
 
 @attr.s(auto_attribs=True)
@@ -114,8 +113,7 @@ class ExperimentV1:
     def to_experiment(self) -> "Experiment":
         """Convert to Experiment."""
         branches = [
-            Branch(slug=variant.slug, ratio=variant.ratio, value=variant.value)
-            for variant in self.variants
+            Branch(slug=variant.slug, ratio=variant.ratio) for variant in self.variants
         ]
         control_slug = None
 
@@ -175,9 +173,7 @@ class ExperimentV6:
         )
         converter.register_structure_hook(
             Branch,
-            lambda b, _: Branch(
-                slug=b["slug"], ratio=b["ratio"], value=b["feature"]["value"]
-            ),
+            lambda b, _: Branch(slug=b["slug"], ratio=b["ratio"]),
         )
         return converter.structure(d, cls)
 
@@ -282,7 +278,6 @@ def main():
             fields=[
                 bigquery.SchemaField("slug", "STRING"),
                 bigquery.SchemaField("ratio", "INTEGER"),
-                bigquery.SchemaField("value", "JSON"),
             ],
         ),
         bigquery.SchemaField("app_id", "STRING"),

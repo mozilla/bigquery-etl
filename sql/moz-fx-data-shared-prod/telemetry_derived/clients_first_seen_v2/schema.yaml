@@ -1,0 +1,186 @@
+fields:
+- description: Unique ID for the client installation.
+  name: client_id
+  type: STRING
+  mode: NULLABLE
+- description: Sample ID to limit query results during an analysis.
+  name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+- description: Date when the server first received either of the 3 pings from this client.
+  name: first_seen_date
+  type: DATE
+- description: Second date when the server received either of the 3 pings from this client.
+  name: second_seen_date
+  type: DATE
+  mode: NULLABLE
+- description: The application architecture reported by the client.
+  name: architecture
+  type: STRING
+  mode: NULLABLE
+- description: The application build reported by the client.
+  name: app_build_id
+  type: STRING
+  mode: NULLABLE
+- description: The name of the installed app/browser.
+  name: app_name
+  type: STRING
+  mode: NULLABLE
+- description: The best locale that the application should be localized to.
+  name: locale
+  type: STRING
+  mode: NULLABLE
+- description: The appliction platform version reported by the client.
+  name: platform_version
+  type: STRING
+  mode: NULLABLE
+- description: The application vendor.
+  name: vendor
+  type: STRING
+  mode: NULLABLE
+- description: The application version.
+  name: app_version
+  type: STRING
+  mode: NULLABLE
+- description: 'A string tag identifying the binary ABI of the current processor and compiler vtable, as taken from the TARGET_XPCOM_ABI configure variable.
+  It may not be available on all platforms, especially unusual processor or compiler combinations. The result takes the form <processor>-<compilerABI>,
+  eg. x86-msvc, ppc-gcc3. This value should almost always be used in combination with the OS.'
+  name: xpcom_abi
+  type: STRING
+  mode: NULLABLE
+- description: The document ID specified in the URI when the client sent this message.
+  name: document_id
+  type: STRING
+  mode: NULLABLE
+- description: The value of the `distribution.id` preference that identifies the Firefox distribution.
+  name: distribution_id
+  type: STRING
+  mode: NULLABLE
+- description: The value selected for the `distribution.version` preference in the Partner Distribution Configuration File.
+  name: partner_distribution_version
+  type: STRING
+  mode: NULLABLE
+- description: The value of the `app.distributor` preference in the Partner Distribution Configuration File.
+  name: partner_distributor
+  type: STRING
+  mode: NULLABLE
+- description: The value of the `app.distributor.channel` preference in the Partner Distribution Configuration File.
+  name: partner_distributor_channel
+  type: STRING
+  mode: NULLABLE
+- description: The value of the `mozilla.partner.id` preference in the Partner Distribution Configuration File.
+  name: partner_id
+  type: STRING
+  mode: NULLABLE
+- description: Identifier of the particular campaign that led to the download of the product.
+  name: attribution_campaign
+  type: STRING
+  mode: NULLABLE
+- description: Identifier to indicate the particular link within a campaign.
+  name: attribution_content
+  type: STRING
+  mode: NULLABLE
+- description: Funnel experiment parameters.
+  name: attribution_experiment
+  type: STRING
+  mode: NULLABLE
+- description: Category of the source, such as 'organic' for a search engine.
+  name: attribution_medium
+  type: STRING
+  mode: NULLABLE
+- description: Referring partner domain, when install happens via a known partner.
+  name: attribution_source
+  type: STRING
+  mode: NULLABLE
+- description: Client's user agent, which corresponds to the web browser used to download the Firefox installer.
+  name: attribution_ua
+  type: STRING
+  mode: NULLABLE
+- description: The anonymized path of the engine xml file. For details on the components refer to the metadata for telemetry.new_profile.
+  name: engine_data_load_path
+  type: STRING
+  mode: NULLABLE
+- description: The name of the default search engine.
+  name: engine_data_name
+  type: STRING
+  mode: NULLABLE
+- description: 'The origin of the search engine. The value will be default for engines that are built-in or from distribution partners,
+  verified for user-installed engines with valid verification hashes, unverified for non-default engines without verification hash,
+  and invalid for engines with broken verification hashes.'
+  name: engine_data_origin
+  type: STRING
+  mode: NULLABLE
+- description: The HTTP url we would use to search. For privacy, we don’t record this for user-installed engines.
+  name: engine_data_submission_url
+  type: STRING
+  mode: NULLABLE
+- description: The model IDs for Apple desktop devices. Applies to Mac only.
+  name: apple_model_id
+  type: STRING
+  mode: NULLABLE
+- description: City retrieved as a result of a geographic lookup based on the client's IP address.
+  name: city
+  type: STRING
+- description: The specific geo database version used.
+  name: db_version
+  type: STRING
+  mode: NULLABLE
+- description: First major country subdivision, typically a state, province, or county.
+  name: subdivision1
+  type: STRING
+  mode: NULLABLE
+- description: The Firefox channel, set to Other for unrecognized channel names.
+  name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+- description: The ISO 3166-1 alpha-2 country code.
+  name: country
+  type: STRING
+  mode: NULLABLE
+- description: The OS name, set to Other for unrecognized OS names.
+  name: normalized_os
+  type: STRING
+  mode: NULLABLE
+- description: The OS version.
+  name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+- description: 'How the profile was selected during startup. Possible reasons are:
+   unknown: Generally should not happen, set as a default in case no other reason occurred. profile-manager: The profile was selected by the profile manager.
+   profile-reset: The profile was selected for reset, normally this would mean a restart. restart: The user restarted the application,
+   the same profile as previous will be used. argument-profile: The profile was selected by the --profile command line argument.
+   argument-p: The profile was selected by the -p command line argument. firstrun-claimed-default: A first run of a dedicated profiles build chose the old
+   default profile to be the default for this install. firstrun-skipped-default: A first run of a dedicated profiles build skipped over the old default profile
+   and created a new profile. restart-claimed-default: A first run of a dedicated profiles build after a restart chose the old default.'
+  name: startup_profile_selection_reason
+  type: STRING
+  mode: NULLABLE
+- description: Unique token created at Firefox download time.
+  name: attribution_dltoken
+  type: STRING
+  mode: NULLABLE
+- description: Identifier that indicates where installations of Firefox originated.
+  name: attribution_dlsource
+  type: STRING
+  mode: NULLABLE
+- description:
+  name: metadata
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - description: Ping that reported the first seen date (main, first_shutdown or new_profile).
+    name: first_seen_date_source_ping
+    type: STRING
+    mode: NULLABLE
+  - description: Indicates wether the client ever reported a main ping.
+    name: reported_main_ping
+    type: BOOLEAN
+    mode: NULLABLE
+  - description: Indicates wether the client ever reported a new profile ping.
+    name: reported_new_profile_ping
+    type: BOOLEAN
+    mode: NULLABLE
+  - description: Indicates wether the client ever reported a first shutdown ping.
+    name: reported_shutdown_ping
+    type: BOOLEAN
+    mode: NULLABLE

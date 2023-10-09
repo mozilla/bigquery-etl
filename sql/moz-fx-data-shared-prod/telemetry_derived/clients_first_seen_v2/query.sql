@@ -224,16 +224,20 @@ first_seen_date AS (
 -- The next CTE returns the second_seen_date calculated as the next date reported by the
 --  main ping after first_seen_date or NULL. Dates reported by other pings are excluded.
 second_seen_date AS (
-   SELECT
+  SELECT
     client_id,
-    all_dates[SAFE_OFFSET(0)] AS second_seen_date
+    MIN(seen_dates) AS second_seen_date
   FROM
     main_ping
+  LEFT JOIN
+    UNNEST(all_dates) AS seen_dates
   LEFT JOIN
     first_seen_date fs
     USING (client_id)
   WHERE
-    main_ping.all_dates[SAFE_OFFSET(0)] > fs.first_seen_date
+    seen_dates > fs.first_seen_date
+  GROUP BY
+    client_id
 ),
 -- The next CTE returns the pings ever reported by each client
 -- Different from other attributes, this data is updated daily when it's NULL,

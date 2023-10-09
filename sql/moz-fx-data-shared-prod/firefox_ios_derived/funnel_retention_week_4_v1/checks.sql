@@ -5,8 +5,6 @@ WITH non_unique AS (
     COUNT(*) AS total_count
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_4_v1`
-  WHERE
-    submission_date = @submission_date
   GROUP BY
     first_seen_date,
     first_reported_country,
@@ -184,4 +182,8 @@ SELECT
       "Day difference between submission_date and first_seen_date is not equal to 27 as expected"
     ),
     NULL
-  );
+  )
+FROM
+  `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_4_v1`
+WHERE
+  submission_date = @submission_date;

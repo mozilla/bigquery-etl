@@ -226,14 +226,18 @@ first_seen_date AS (
 second_seen_date AS (
    SELECT
     client_id,
-    all_dates[SAFE_OFFSET(0)] AS second_seen_date
+    MIN(seen_dates) AS second_seen_date
   FROM
     main_ping
+  LEFT JOIN
+    UNNEST(all_dates) as seen_dates
   LEFT JOIN
     first_seen_date fs
     USING (client_id)
   WHERE
-    main_ping.all_dates[SAFE_OFFSET(0)] > fs.first_seen_date
+    seen_dates > fs.first_seen_date
+  GROUP BY
+    client_id
 ),
 -- The next CTE returns the pings ever reported by each client
 -- Different from other attributes, this data is updated daily when it's NULL,

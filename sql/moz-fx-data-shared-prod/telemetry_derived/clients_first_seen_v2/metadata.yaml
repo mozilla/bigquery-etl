@@ -10,6 +10,8 @@ description: |-
   daily when NULL.
   This table should be accessed through the user-facing view
   `telemetry.clients_first_seen`.
+  See caveats for analysis and how to use this table:
+  https://docs.google.com/document/d/1qMkTUIruTOxTGRj7S60nEsyNjGHYAuVJ51-53NZxnd4/edit?usp=sharing
 
   For caveats and how to use this data please refer to
   https://docs.google.com/document/d/1qMkTUIruTOxTGRj7S60nEsyNjGHYAuVJ51-53NZxnd4/edit#heading=h.3110lg9vb11d

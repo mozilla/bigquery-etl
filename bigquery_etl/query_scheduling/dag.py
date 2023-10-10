@@ -234,11 +234,10 @@ class Dag:
     def to_airflow_dag(self):
         """Convert the DAG to its Airflow representation and return the python code."""
         if len(self.tasks) == 0:
-            print(
+            raise InvalidDag(
                 f"DAG {self.name} has no tasks - cannot convert it to a valid .py DAG "
                 f"file. Does it appear under `scheduling` in any metadata.yaml files?"
             )
-            return
 
         env = self._jinja_env()
         dag_template = env.get_template(AIRFLOW_DAG_TEMPLATE)

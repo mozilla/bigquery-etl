@@ -63,6 +63,15 @@ def generate_funnels(target_project, path, output_dir):
             / "metadata.yaml"
         ).write_text(rendered_metadata)
 
+        print(
+            (
+                output_dir
+                / config.destination_dataset
+                / f"{table_name}_v{config.version}"
+                / "metadata.yaml"
+            )
+        )
+
 
 @click.command("generate")
 @click.option(

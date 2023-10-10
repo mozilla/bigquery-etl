@@ -14,4 +14,5 @@ references:
   - moz-fx-data-shared-prod.stripe_external.charge_v1
   - moz-fx-data-shared-prod.stripe_external.customer_v1
   - moz-fx-data-shared-prod.stripe_external.itemized_payout_reconciliation_v5
+  - moz-fx-data-shared-prod.subscription_platform.stripe_subscriptions
 deprecated: false

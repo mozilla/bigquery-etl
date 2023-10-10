@@ -3,16 +3,20 @@ description: |-
   Sanitized version of docker_fxa_admin_server from FxA.
   PII is hashed.
 
-  This table contains FxA admin server (sanitized) events up until the migration from AWS to GCP was concluded.
-  There is a time window between 2023-09-07 and 2023-09-27 when we were receiving relevant events from both deployments.
-  GCP based data is available via the v2 of this table.
+  (contains events coming from the GCP deployment of this service)
 owners:
-- frank@mozilla.com
+- kik@mozilla.com
 labels:
   application: fxa
   incremental: true
   schedule: daily
-  owner1: frank
+  dag: bqetl_fxa_events
+  owner1: kik
+scheduling:
+  dag_name: bqetl_fxa_events
+  task_name: docker_fxa_admin_server_v2
+  arguments:
+  - --schema_update_option=ALLOW_FIELD_ADDITION
 bigquery:
   time_partitioning:
     type: day

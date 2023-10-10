@@ -97,23 +97,24 @@ enriched AS (
         ),
         ("customers.country", "customers.state", "customers.postal_code", "address"),
         ("card_country", "charge_states.state", "charge_states.postal_code", "card"),
-    ] -%}
+    ] -%}{# format: off #}
       CASE
         -- American Samoa
-        WHEN `{{country}}` = "US"
+        WHEN {{country}} = "US"
           AND REGEXP_CONTAINS({{postal_code}}, "^96799(-?[0-9]{4})?$")
           THEN STRUCT("AS" AS `{{dst_pre}}_country`, NULL AS `{{dst_pre}}_state`)
         -- Puerto Rico
-        WHEN `{{country}}` = "US"
+        WHEN {{country}} = "US"
           AND REGEXP_CONTAINS({{postal_code}}, "^00[679][0-9]{2}(-?[0-9]{4})?$")
           THEN STRUCT("PR" AS `{{dst_pre}}_country`, NULL AS `{{dst_pre}}_state`)
         -- Virgin Islands
-        WHEN `{{country}}` = "US"
+        WHEN {{country}} = "US"
           AND REGEXP_CONTAINS({{postal_code}}, "^008[0-9]{2}(-?[0-9]{4})?$")
           THEN STRUCT("VI" AS `{{dst_pre}}_country`, NULL AS `{{dst_pre}}_state`)
         ELSE STRUCT({{country}} AS `{{dst_pre}}_country`, {{state}} AS `{{dst_pre}}_state`)
       END.*,
       {{postal_code}} AS `{{dst_pre}}_postal_code`,
+    {# format: on #}
     {% endfor -%}
     subscriptions.* EXCEPT (subscription_id),
   FROM

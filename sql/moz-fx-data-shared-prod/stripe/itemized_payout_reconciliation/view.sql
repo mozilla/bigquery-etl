@@ -90,18 +90,18 @@ enriched AS (
     ),
     CASE
         -- American Samoa
-      WHEN `customers.shipping_address_country` = "US"
+      WHEN customers.shipping_address_country = "US"
         AND REGEXP_CONTAINS(customers.shipping_address_postal_code, "^96799(-?[0-9]{4})?$")
         THEN STRUCT("AS" AS `shipping_address_country`, NULL AS `shipping_address_state`)
         -- Puerto Rico
-      WHEN `customers.shipping_address_country` = "US"
+      WHEN customers.shipping_address_country = "US"
         AND REGEXP_CONTAINS(
           customers.shipping_address_postal_code,
           "^00[679][0-9]{2}(-?[0-9]{4})?$"
         )
         THEN STRUCT("PR" AS `shipping_address_country`, NULL AS `shipping_address_state`)
         -- Virgin Islands
-      WHEN `customers.shipping_address_country` = "US"
+      WHEN customers.shipping_address_country = "US"
         AND REGEXP_CONTAINS(customers.shipping_address_postal_code, "^008[0-9]{2}(-?[0-9]{4})?$")
         THEN STRUCT("VI" AS `shipping_address_country`, NULL AS `shipping_address_state`)
       ELSE STRUCT(
@@ -112,15 +112,15 @@ enriched AS (
     customers.shipping_address_postal_code AS `shipping_address_postal_code`,
     CASE
         -- American Samoa
-      WHEN `customers.country` = "US"
+      WHEN customers.country = "US"
         AND REGEXP_CONTAINS(customers.postal_code, "^96799(-?[0-9]{4})?$")
         THEN STRUCT("AS" AS `address_country`, NULL AS `address_state`)
         -- Puerto Rico
-      WHEN `customers.country` = "US"
+      WHEN customers.country = "US"
         AND REGEXP_CONTAINS(customers.postal_code, "^00[679][0-9]{2}(-?[0-9]{4})?$")
         THEN STRUCT("PR" AS `address_country`, NULL AS `address_state`)
         -- Virgin Islands
-      WHEN `customers.country` = "US"
+      WHEN customers.country = "US"
         AND REGEXP_CONTAINS(customers.postal_code, "^008[0-9]{2}(-?[0-9]{4})?$")
         THEN STRUCT("VI" AS `address_country`, NULL AS `address_state`)
       ELSE STRUCT(customers.country AS `address_country`, customers.state AS `address_state`)
@@ -128,15 +128,15 @@ enriched AS (
     customers.postal_code AS `address_postal_code`,
     CASE
         -- American Samoa
-      WHEN `card_country` = "US"
+      WHEN card_country = "US"
         AND REGEXP_CONTAINS(charge_states.postal_code, "^96799(-?[0-9]{4})?$")
         THEN STRUCT("AS" AS `card_country`, NULL AS `card_state`)
         -- Puerto Rico
-      WHEN `card_country` = "US"
+      WHEN card_country = "US"
         AND REGEXP_CONTAINS(charge_states.postal_code, "^00[679][0-9]{2}(-?[0-9]{4})?$")
         THEN STRUCT("PR" AS `card_country`, NULL AS `card_state`)
         -- Virgin Islands
-      WHEN `card_country` = "US"
+      WHEN card_country = "US"
         AND REGEXP_CONTAINS(charge_states.postal_code, "^008[0-9]{2}(-?[0-9]{4})?$")
         THEN STRUCT("VI" AS `card_country`, NULL AS `card_state`)
       ELSE STRUCT(card_country AS `card_country`, charge_states.state AS `card_state`)

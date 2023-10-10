@@ -16,10 +16,25 @@ fields:
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: zone
+    - name: project_id
       type: STRING
       mode: NULLABLE
-    - name: project_id
+    - name: pod_name
+      type: STRING
+      mode: NULLABLE
+    - name: container_name
+      type: STRING
+      mode: NULLABLE
+    - name: cluster_name
+      type: STRING
+      mode: NULLABLE
+    - name: namespace_name
+      type: STRING
+      mode: NULLABLE
+    - name: location
+      type: STRING
+      mode: NULLABLE
+    - name: zone
       type: STRING
       mode: NULLABLE
     - name: instance_id
@@ -32,76 +47,19 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
-  - name: severity
-    type: FLOAT
-    mode: NULLABLE
   - name: timestamp
     type: FLOAT
-    mode: NULLABLE
-  - name: type
-    type: STRING
-    mode: NULLABLE
-  - name: pid
-    type: FLOAT
-    mode: NULLABLE
-  - name: logger
-    type: STRING
     mode: NULLABLE
   - name: fields
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: usergroupheader
+    - name: event
       type: STRING
       mode: NULLABLE
     - name: search_type
       type: STRING
       mode: NULLABLE
-    - name: event
-      type: STRING
-      mode: NULLABLE
-    - name: auto_completed
-      type: BOOLEAN
-      mode: NULLABLE
-    - name: email
-      type: BYTES
-      mode: NULLABLE
-    - name: user
-      type: BYTES
-      mode: NULLABLE
-    - name: uid
-      type: STRING
-      mode: NULLABLE
-    - name: success
-      type: FLOAT
-      mode: NULLABLE
-    - name: msg
-      type: STRING
-      mode: NULLABLE
-    - name: poolstats
-      type: STRING
-      mode: NULLABLE
-    - name: originaltransactionid
-      type: STRING
-      mode: NULLABLE
-    - name: err
-      type: STRING
-      mode: NULLABLE
-    - name: originaltransactionids
-      type: STRING
-      mode: NULLABLE
-    - name: message
-      type: STRING
-      mode: NULLABLE
-    - name: purchasetoken
-      type: STRING
-      mode: NULLABLE
-    - name: stack
-      type: STRING
-      mode: NULLABLE
-  - name: envversion
-    type: STRING
-    mode: NULLABLE
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE
@@ -164,6 +122,33 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
+  - name: k8s_pod_app_kubernetes_io_component
+    type: STRING
+    mode: NULLABLE
+  - name: k8s_pod_deployment
+    type: STRING
+    mode: NULLABLE
+  - name: compute_googleapis_com_resource_name
+    type: STRING
+    mode: NULLABLE
+  - name: k8s_pod_env_code
+    type: STRING
+    mode: NULLABLE
+  - name: k8s_pod_pod_template_hash
+    type: STRING
+    mode: NULLABLE
+  - name: k8s_pod_app_kubernetes_io_name
+    type: STRING
+    mode: NULLABLE
+  - name: k8s_pod_job_name
+    type: STRING
+    mode: NULLABLE
+  - name: k8s_pod_controller_uid
+    type: STRING
+    mode: NULLABLE
+  - name: k8s_pod_redis
+    type: STRING
+    mode: NULLABLE
   - name: stack
     type: STRING
     mode: NULLABLE
@@ -171,9 +156,6 @@ fields:
     type: STRING
     mode: NULLABLE
   - name: env
-    type: STRING
-    mode: NULLABLE
-  - name: compute_googleapis_com_resource_name
     type: STRING
     mode: NULLABLE
   - name: type

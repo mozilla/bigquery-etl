@@ -317,6 +317,12 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_analytics_tables__wait_for_telemetry_derived__clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_tables",
+            external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_desktop_funnel__wait_for_telemetry_derived__clients_last_seen__v1",
             external_dag_id="bqetl_desktop_funnel",
             external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",

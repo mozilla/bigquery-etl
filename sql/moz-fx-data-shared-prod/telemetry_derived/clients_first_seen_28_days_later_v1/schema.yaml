@@ -26,13 +26,31 @@ fields:
 - name: os_version
   type: NUMERIC
   mode: NULLABLE
-- name: attribution_source
-  type: STRING
-  mode: NULLABLE
 - name: distribution_id
   type: STRING
   mode: NULLABLE
+- name: attribution_source
+  type: STRING
+  mode: NULLABLE
 - name: attribution_ua
+  type: STRING
+  mode: NULLABLE
+- name: attribution_medium
+  type: STRING
+  mode: NULLABLE
+- name: attribution_campaign
+  type: STRING
+  mode: NULLABLE
+- name: attribution_content
+  type: STRING
+  mode: NULLABLE
+- name: attribution_experiment
+  type: STRING
+  mode: NULLABLE
+- name: attribution_dltoken
+  type: STRING
+  mode: NULLABLE
+- name: attribution_dlsource
   type: STRING
   mode: NULLABLE
 - name: activated

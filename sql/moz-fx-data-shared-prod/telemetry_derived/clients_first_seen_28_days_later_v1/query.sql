@@ -7,9 +7,15 @@ WITH clients_first_seen_28_days_ago AS (
     app_build_id AS build_id,
     normalized_os AS os,
     mozfun.norm.truncate_version(normalized_os_version, "minor") AS os_version,
-    attribution_source,
     distribution_id,
+    attribution_source,
     attribution_ua,
+    attribution_medium,
+    attribution_campaign,
+    attribution_content,
+    attribution_experiment,
+    attribution_dltoken,
+    attribution_dlsource,
     -- startup_profile_selection_reason, when startup_profile_selection_reason is available
     first_seen_date,
   FROM
@@ -41,9 +47,15 @@ SELECT
   build_id,
   os,
   os_version,
-  attribution_source,
   distribution_id,
+  attribution_source,
   attribution_ua,
+  attribution_medium,
+  attribution_campaign,
+  attribution_content,
+  attribution_experiment,
+  attribution_dltoken,
+  attribution_dlsource,
   COALESCE(
     BIT_COUNT(mozfun.bits28.from_string('1111111000000000000000000000') & days_seen_bits) >= 5,
     FALSE

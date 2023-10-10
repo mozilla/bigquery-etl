@@ -91,9 +91,11 @@ IF
     LEFT JOIN
       UNNEST(environment.experiments) AS experiment
   {% elif dataset == "monitor_cirrus" %}
+
     `moz-fx-data-shared-prod.{{ dataset }}.enrollment`
     LEFT JOIN
       UNNEST(ping_info.experiments) AS experiment
+      -- We don't expect cirrus events to be search events
   {% else %}
     `moz-fx-data-shared-prod.{{ dataset }}_live.metrics_v1`
     LEFT JOIN

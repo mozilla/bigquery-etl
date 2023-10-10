@@ -17,13 +17,15 @@ WITH
     {{ app_dataset }} AS (
       SELECT DISTINCT
         DATE(submission_timestamp) AS submission_date,
-        e.key AS experiment_id,
-        e.value.branch AS branch,
-        mozfun.map.get_key(enrollment.extra, "user_id") AS user_id
+        mozfun.map.get_key(e.extra, "experiment") AS experiment_id,
+        mozfun.map.get_key(e.extra, "branch") AS branch,
+        mozfun.map.get_key(e.extra, "user_id") AS user_id
       FROM
         `moz-fx-data-shared-prod.{{ app_dataset }}.enrollment` AS enrollment
       CROSS JOIN
-        UNNEST(ping_info.experiments) AS e
+        UNNEST(events) AS e
+
+
     )
   {% else %}
     {{ app_dataset }} AS (

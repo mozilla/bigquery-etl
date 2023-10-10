@@ -27,6 +27,7 @@ IF
     `moz-fx-data-shared-prod.monitor_cirrus.enrollment`
   LEFT JOIN
     UNNEST(ping_info.experiments) AS experiment
+      -- We don't expect cirrus events to be search events
   CROSS JOIN
     -- Max. number of entries is around 10
     UNNEST(GENERATE_ARRAY(0, 50)) AS i

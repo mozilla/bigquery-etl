@@ -12,8 +12,8 @@ SELECT
         CAST(NULL AS STRING) AS cluster_name,
         CAST(NULL AS STRING) AS namespace_name,
         CAST(NULL AS STRING) AS location,
-        CAST(NULL AS STRING) AS zone,
-        CAST(NULL AS STRING) AS instance_id
+        resource.labels.zone,
+        resource.labels.instance_id
       ) AS labels
     ) AS resource,
     STRUCT(

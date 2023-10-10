@@ -140,8 +140,26 @@ EXTERNAL_TASKS = {
         schedule_interval="0 1 * * *",
     ): [
         "telemetry_stable.main_v4",
+        "telemetry_stable.main_v5",
         "telemetry_stable.main_use_counter_v4",
-        "telemetry_stable.main_remainder_v4",
+    ],
+    TaskRef(
+        dag_name="copy_deduplicate",
+        task_id="copy_deduplicate_first_shutdown_ping",
+        schedule_interval="0 1 * * *",
+    ): [
+        "telemetry_stable.first_shutdown_v4",
+        "telemetry_stable.first_shutdown_v5",
+        "telemetry_stable.first_shutdown_use_counter_v4",
+    ],
+    TaskRef(
+        dag_name="copy_deduplicate",
+        task_id="copy_deduplicate_saved_session_ping",
+        schedule_interval="0 1 * * *",
+    ): [
+        "telemetry_stable.saved_session_v4",
+        "telemetry_stable.saved_session_v5",
+        "telemetry_stable.saved_session_use_counter_v4",
     ],
     TaskRef(
         dag_name="copy_deduplicate",
@@ -470,6 +488,7 @@ class Task:
         task.query_file_path = query_file
         task.is_dq_check = True
         task.is_dq_check_fail = is_check_fail
+        task.retries = 0
         task.depends_on_fivetran = []
         if task.is_dq_check_fail:
             task.task_name = (

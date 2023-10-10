@@ -75,7 +75,6 @@ cohorts_in_range AS (
 activity_cohort_match AS (
   SELECT
     cohorts_in_range.client_id AS cohort_client_id,
-    cohorts_in_range.sample_id,
     submission_date_activity.client_id AS active_client_id,
     submission_date_activity.days_seen_bits as active_client_days_seen_bits,
     submission_date_activity.days_visited_1_uri_bits,
@@ -136,6 +135,7 @@ FROM
   activity_cohort_match
 GROUP BY
   cohort_client_id,
+  sample_id,
   cohort_date,
   second_seen_date,
   activity_date,

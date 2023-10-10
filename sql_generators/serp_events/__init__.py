@@ -11,7 +11,7 @@ from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import render, write_sql
 
 THIS_PATH = Path(os.path.dirname(__file__))
-TABLE_NAME = "urlbar_events"
+TABLE_NAME = "serp_events"
 
 
 class Browsers(Enum):
@@ -36,7 +36,7 @@ class Browsers(Enum):
 )
 @use_cloud_function_option
 def generate(target_project, output_dir, use_cloud_function):
-    """Generate per-app queries, views and metadata for urlbar events aggregates.
+    """Generate per-app queries, views and metadata for serp events aggregates.
 
     The parent folders will be created if not existing and existing files will be overwritten.
     """

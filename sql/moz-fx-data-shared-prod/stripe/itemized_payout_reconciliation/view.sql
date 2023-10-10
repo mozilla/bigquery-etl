@@ -110,7 +110,7 @@ enriched AS (
         -- Virgin Islands
         WHEN `{{country}}` = "US"
           AND REGEXP_CONTAINS({{postal_code}}, "^008[0-9]{2}(-?[0-9]{4})?$")
-          THEN STRUCT("VI" AS `{{dst_pre}} country`, NULL AS `{{dst_pre}}_state`)
+          THEN STRUCT("VI" AS `{{dst_pre}}_country`, NULL AS `{{dst_pre}}_state`)
         ELSE STRUCT({{country}} AS `{{dst_pre}}_country`, {{state}} AS `{{dst_pre}}_state`)
       END.*,
       {{postal_code}} AS `{{dst_pre}}_postal_code`,

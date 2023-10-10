@@ -1,0 +1,35 @@
+friendly_name: Serp Events
+description: |-
+  TODO
+owners:
+- akommasani@mozilla.com
+- pissac@mozilla.com
+- dzeber@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_serp
+  owner1: akommasani
+  owner2: pissac
+  owner3: dzeber
+scheduling:
+  dag_name: bqetl_serp
+  task_name: firefox_desktop_serp_events__v1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_stable.events_v1
+deprecated: false

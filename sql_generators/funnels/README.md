@@ -4,6 +4,17 @@ This generator generates queries for funnels that are defined in config files.
 
 > This is currently a work in progress and being tested by data science. Don't use for production funnels just yet, things might change in the future.
 
+## Background
+
+Funnels are used to visualize and understand user behaviours throughout customer journeys. Funnels consist of a sequence of steps that each represent a certain event that happened.
+Each step uses data from specific datasets. In some cases we have IDs (for example `flow_id`s) that can be used to connect events across all of the funnel steps. For example, these IDs can ensure that a client is only considered as part of a step if the client was also seen in earlier steps.
+
+Since we don't always have these identifiers, in some cases steps of a funnel might be "independent". Each step might aggregate values based on specific (potentially different) datasets without making sure, that for example, a client is part of earlier funnel steps as well.
+
+It is also sometimes desired to look at specific segments of a funnel. For example, having funnels that show how clients of a specific operating system behave.
+
+All of this is encoded in this SQL generator.
+
 ## Defining Funnels
 
 Funnels are defined in `.toml` files in [`sql_generators/funnels/configs/`](https://github.com/mozilla/bigquery-etl/tree/main/sql_generators/funnels/configs/). The syntax is similar to [defining metrics in metric-hub](https://docs.telemetry.mozilla.org/concepts/metric_hub.html).

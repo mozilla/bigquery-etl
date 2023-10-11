@@ -55,7 +55,7 @@ with DAG(
             "pissac@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter="submission_date",
+        date_partition_parameter="submission_timestamp",
         depends_on_past=False,
     )
 

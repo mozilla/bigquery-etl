@@ -20,12 +20,13 @@ WITH activity_stream AS (
       'MX',
       'US'
       )
-    AND ((page ) IN ('about:home', 'about:newtab')
-    AND (user_prefs ) >= 258)
+    AND page IN ('about:home', 'about:newtab')
+    AND user_prefs >= 258
     AND `mozfun`.norm.browser_version_info(version).major_version >= 91
     AND DATE(submission_timestamp) = @submission_date
   GROUP BY
-      1, 2
+    submission_date,
+    country
 ),
 newtab_visits AS (
   SELECT
@@ -66,7 +67,9 @@ newtab_visits AS (
           AND nt.metrics.string.newtab_newtab_category = "enabled"
         )
       )
-  GROUP BY 1, 2
+  GROUP BY
+    submission_date,
+    country
 )
 
 SELECT
@@ -80,4 +83,6 @@ SELECT
 FROM newtab_visits n_s
 INNER JOIN activity_stream a_s
   USING (submission_date, country)
-ORDER BY 2, 1
+ORDER BY
+  country,
+  submission_date

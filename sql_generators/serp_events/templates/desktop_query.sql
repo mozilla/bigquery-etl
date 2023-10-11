@@ -11,7 +11,7 @@ WITH raw_serp_events AS (
     -- allow events related to an impression_id to span 2 submission dates
     -- we restrict to event sequences started on a single date below
     AND DATE(submission_timestamp) >= @submission_date
-    AND TIMESTAMP_DIFF(submission_timestamp, timestamp @submission_date, DAY) IN (0, 1)
+    AND DATE_DIFF(DATE(submission_timestamp), @submission_date, DAY) IN (0, 1)
 ),
 serp_event_counts AS (
   SELECT

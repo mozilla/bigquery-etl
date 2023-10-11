@@ -91,8 +91,7 @@ IF
     LEFT JOIN
       UNNEST(environment.experiments) AS experiment
   {% elif "_cirrus" in dataset %}
-
-    `moz-fx-data-shared-prod.{{ dataset }}_stable.enrollment_v1`
+    `moz-fx-data-shared-prod.{{ dataset }}_live.enrollment_v1`
     LEFT JOIN
       UNNEST(ping_info.experiments) AS experiment
       -- We don't expect cirrus events to be search events

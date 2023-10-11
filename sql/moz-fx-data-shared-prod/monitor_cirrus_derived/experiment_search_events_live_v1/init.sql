@@ -24,7 +24,7 @@ IF
     SUM(0) AS search_with_ads_count,
     SUM(0) AS search_count,
   FROM
-    `moz-fx-data-shared-prod.monitor_cirrus.enrollment`
+    `moz-fx-data-shared-prod.monitor_cirrus_stable.enrollment_v1`
   LEFT JOIN
     UNNEST(ping_info.experiments) AS experiment
       -- We don't expect cirrus events to be search events

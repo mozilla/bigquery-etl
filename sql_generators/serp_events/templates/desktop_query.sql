@@ -1,7 +1,6 @@
 WITH raw_serp_events AS (
   SELECT
     *,
-    DATE(submission_timestamp) AS submission_date,
     mozfun.map.get_key(event.extra, 'impression_id') AS impression_id,
     event
   FROM
@@ -9,11 +8,10 @@ WITH raw_serp_events AS (
     UNNEST(events) AS event
   WHERE
     event.category = 'serp'
-    AND DATE(submission_timestamp) >= '2023-09-01'
-    AND TIMESTAMP_DIFF(submission_timestamp, timestamp '2023-09-01', DAY) IN (0, 1)
-  -- output limiting for testing
-    AND sample_id = 3
-    AND normalized_channel = 'release'
+    -- allow events related to an impression_id to span 2 submission dates
+    -- we restrict to event sequences started on a single date below
+    AND DATE(submission_timestamp) >= @submission_date
+    AND DATE_DIFF(DATE(submission_timestamp), @submission_date, DAY) IN (0, 1)
 ),
 serp_event_counts AS (
   SELECT
@@ -50,9 +48,10 @@ impressions AS (
   -- pull top-level fields from the impression event
   SELECT
     impression_id,
-    submission_date,
+    submission_timestamp,
     client_info.client_id AS glean_client_id,
     metrics.uuid.legacy_telemetry_client_id AS legacy_telemetry_client_id,
+    ping_info.seq AS ping_seq,
     event.timestamp AS event_timestamp,
     normalized_channel,
     normalized_country_code,
@@ -60,6 +59,7 @@ impressions AS (
     mozfun.norm.browser_version_info(client_info.app_display_version) AS browser_version_info,
     sample_id,
     ping_info.experiments,
+    -- SERP session characteristics
     CAST(mozfun.map.get_key(event.extra, 'is_shopping_page') AS bool) AS is_shopping_page,
     mozfun.map.get_key(event.extra, 'provider') AS search_engine,
     mozfun.map.get_key(event.extra, 'source') AS sap_source,
@@ -68,7 +68,8 @@ impressions AS (
     serp_events
   WHERE
     event.name = 'impression'
-    AND submission_date = '2023-09-01'
+    -- restrict to sessions that started on the target submission date
+    AND DATE(submission_timestamp) = @submission_date
 ),
 abandonments AS (
   SELECT
@@ -82,144 +83,43 @@ abandonments AS (
 engagement_counts AS (
   SELECT
     impression_id,
-    COUNTIF(action = 'clicked' AND target = 'ad_carousel') AS num_ad_carousel_clicks,
-    COUNTIF(action = 'clicked' AND target = 'ad_link') AS num_ad_link_clicks,
-    COUNTIF(action = 'clicked' AND target = 'ad_sitelink') AS num_ad_sitelink_clicks,
-    COUNTIF(action = 'clicked' AND target = 'ad_sidebar') AS num_ad_sidebar_clicks,
-    COUNTIF(
-      action = 'clicked'
-      AND target = 'refined_search_buttons'
-    ) AS num_refined_search_buttons_clicks,
-    COUNTIF(action = 'clicked' AND target = 'shopping_tab') AS num_shopping_tab_clicks,
-    COUNTIF(action = 'clicked' AND target = 'non_ads_link') AS num_non_ads_link_clicks,
-    COUNTIF(
-      action = 'clicked'
-      AND target = 'incontent_searchbox'
-    ) AS num_incontent_searchbox_clicks,
-    COUNTIF(action = 'expanded' AND target = 'ad_carousel') AS num_ad_carousel_expansions,
-    COUNTIF(
-      action = 'expanded'
-      AND target = 'refined_search_buttons'
-    ) AS num_refined_search_buttons_expansions,
-    COUNTIF(
-      action = 'submitted'
-      AND target = 'incontent_searchbox'
-    ) AS num_incontent_searchbox_submits,
-    COUNT(*) AS num_engagements
+    component,
+    COUNTIF(action = 'clicked') AS num_clicks,
+    COUNTIF(action = 'expanded') AS num_expands,
+    COUNTIF(action = 'submitted') AS num_submits,
   FROM
     (
+    -- 1 row per engagement event
       SELECT
         impression_id,
         mozfun.map.get_key(event.extra, 'action') AS action,
-        mozfun.map.get_key(event.extra, 'target') AS target,
+        mozfun.map.get_key(event.extra, 'target') AS component,
       FROM
         serp_events
       WHERE
         event.name = 'engagement'
     )
   GROUP BY
-    impression_id
+    1,
+    2
+),
+engaged_sessions AS (
+  -- indicator for sessions with overall nonzero engagements
+  SELECT DISTINCT
+    impression_id,
+    TRUE AS is_engaged
+  FROM
+    engagement_counts
+  GROUP BY
+    1
 ),
 ad_impression_counts AS (
   SELECT
     impression_id,
-    SUM(
-      CASE
-        WHEN component = 'ad_carousel'
-          THEN ads_loaded
-        ELSE 0
-      END
-    ) AS num_ad_carousel_ads_loaded,
-    SUM(
-      CASE
-        WHEN component = 'ad_carousel'
-          THEN ads_visible
-        ELSE 0
-      END
-    ) AS num_ad_carousel_ads_visible,
-    SUM(
-      CASE
-        WHEN component = 'ad_carousel'
-          THEN ads_hidden
-        ELSE 0
-      END
-    ) AS num_ad_carousel_ads_hidden,
-    SUM(CASE WHEN component = 'ad_link' THEN ads_loaded ELSE 0 END) AS num_ad_link_ads_loaded,
-    SUM(CASE WHEN component = 'ad_link' THEN ads_visible ELSE 0 END) AS num_ad_link_ads_visible,
-    SUM(CASE WHEN component = 'ad_link' THEN ads_hidden ELSE 0 END) AS num_ad_link_ads_hidden,
-    SUM(CASE WHEN component = 'ad_sidebar' THEN ads_loaded ELSE 0 END) AS num_ad_sidebar_ads_loaded,
-    SUM(
-      CASE
-        WHEN component = 'ad_sidebar'
-          THEN ads_visible
-        ELSE 0
-      END
-    ) AS num_ad_sidebar_ads_visible,
-    SUM(CASE WHEN component = 'ad_sidebar' THEN ads_hidden ELSE 0 END) AS num_ad_sidebar_ads_hidden,
-    SUM(
-      CASE
-        WHEN component = 'ad_sitelink'
-          THEN ads_loaded
-        ELSE 0
-      END
-    ) AS num_ad_sitelink_ads_loaded,
-    SUM(
-      CASE
-        WHEN component = 'ad_sitelink'
-          THEN ads_visible
-        ELSE 0
-      END
-    ) AS num_ad_sitelink_ads_visible,
-    SUM(
-      CASE
-        WHEN component = 'ad_sitelink'
-          THEN ads_hidden
-        ELSE 0
-      END
-    ) AS num_ad_sitelink_ads_hidden,
-    SUM(
-      CASE
-        WHEN component = 'refined_search_buttons'
-          THEN ads_loaded
-        ELSE 0
-      END
-    ) AS num_refined_search_buttons_ads_loaded,
-    SUM(
-      CASE
-        WHEN component = 'refined_search_buttons'
-          THEN ads_visible
-        ELSE 0
-      END
-    ) AS num_refined_search_buttons_ads_visible,
-    SUM(
-      CASE
-        WHEN component = 'refined_search_buttons'
-          THEN ads_hidden
-        ELSE 0
-      END
-    ) AS num_refined_search_buttons_ads_hidden,
-    SUM(
-      CASE
-        WHEN component = 'shopping_tab'
-          THEN ads_loaded
-        ELSE 0
-      END
-    ) AS num_shopping_tab_ads_loaded,
-    SUM(
-      CASE
-        WHEN component = 'shopping_tab'
-          THEN ads_visible
-        ELSE 0
-      END
-    ) AS num_shopping_tab_ads_visible,
-    SUM(
-      CASE
-        WHEN component = 'shopping_tab'
-          THEN ads_hidden
-        ELSE 0
-      END
-    ) AS num_shopping_tab_ads_hidden,
-    SUM(ads_loaded) AS num_ads_loaded
+    component,
+    ads_loaded AS num_ads_loaded_reported,
+    ads_visible AS num_ads_visible_reported,
+    ads_hidden AS num_ads_hidden_reported,
   FROM
     (
       SELECT
@@ -228,104 +128,135 @@ ad_impression_counts AS (
         CAST(mozfun.map.get_key(event.extra, 'ads_loaded') AS int) AS ads_loaded,
         CAST(mozfun.map.get_key(event.extra, 'ads_visible') AS int) AS ads_visible,
         CAST(mozfun.map.get_key(event.extra, 'ads_hidden') AS int) AS ads_hidden,
+      -- there should be at most 1 ad_impression event per component
+      -- if there are multiple, it would be an edge case where events got duplicated
+      -- enforce 1 row per session/component for data cleanliness
+        RANK() OVER (
+          PARTITION BY
+            impression_id,
+            mozfun.map.get_key(event.extra, 'component')
+          ORDER BY
+            event.timestamp
+        ) AS i
       FROM
         serp_events
       WHERE
         event.name = 'ad_impression'
     )
-  GROUP BY
-    impression_id
+  WHERE
+    i = 1
 ),
-serp_summary AS (
+ad_sessions AS (
+  -- indicator for sessions with overall nonzero ad impressions
+  SELECT DISTINCT
+    impression_id,
+    TRUE AS has_ads_loaded
+  FROM
+    ad_impression_counts
+  GROUP BY
+    1
+),
+component_counts AS (
+  -- join engagements and ad impressions into a single table
+  -- 1 row for each session/component that had either an impression or an engagement
   SELECT
     impression_id,
-    submission_date,
-    glean_client_id,
-    legacy_telemetry_client_id,
-    event_timestamp,
-    normalized_channel,
-    normalized_country_code,
-    os,
-    browser_version_info,
-    sample_id,
-    experiments,
-    is_shopping_page,
-    search_engine,
-    sap_source,
-    is_tagged,
-    COALESCE(num_engagements, 0) > 0 AS is_engaged,
-    COALESCE(num_ads_loaded, 0) > 0 AS ads_loaded,
-    -- engagement counts
-    COALESCE(num_ad_carousel_clicks, 0) AS num_ad_carousel_clicks,
-    COALESCE(num_ad_link_clicks, 0) AS num_ad_link_clicks,
-    COALESCE(num_ad_sitelink_clicks, 0) AS num_ad_sitelink_clicks,
-    COALESCE(num_ad_sidebar_clicks, 0) AS num_ad_sidebar_clicks,
-    COALESCE(num_refined_search_buttons_clicks, 0) AS num_refined_search_buttons_clicks,
-    COALESCE(num_shopping_tab_clicks, 0) AS num_shopping_tab_clicks,
-    COALESCE(num_non_ads_link_clicks, 0) AS num_non_ads_link_clicks,
-    COALESCE(num_incontent_searchbox_clicks, 0) AS num_incontent_searchbox_clicks,
-    COALESCE(num_ad_carousel_expansions, 0) AS num_ad_carousel_expansions,
-    COALESCE(num_refined_search_buttons_expansions, 0) AS num_refined_search_buttons_expansions,
-    COALESCE(num_incontent_searchbox_submits, 0) AS num_incontent_searchbox_submits,
-    -- abandonment reason
-    abandon_reason,
-    -- ad impression counts
-    -- for each component, ads_visible + ads_blocked + ads_notshowing = ads_loaded
-    COALESCE(num_ad_carousel_ads_visible, 0) AS num_ad_carousel_ads_visible,
-    COALESCE(num_ad_carousel_ads_hidden, 0) AS num_ad_carousel_ads_blocked,
+    component,
+    COALESCE(num_clicks, 0) AS num_clicks,
+    COALESCE(num_expands, 0) AS num_expands,
+    COALESCE(num_submits, 0) AS num_submits,
+    COALESCE(num_ads_loaded_reported, 0) AS num_ads_loaded_reported,
+    COALESCE(num_ads_visible_reported, 0) AS num_ads_visible_reported,
+    COALESCE(num_ads_hidden_reported, 0) AS num_ads_hidden_reported,
+    -- ad blocker usage is inferred when all ads are hidden
     COALESCE(
-      num_ad_carousel_ads_loaded - num_ad_carousel_ads_visible - num_ad_carousel_ads_hidden,
-      0
-    ) AS num_ad_carousel_ads_notshowing,
-    COALESCE(num_ad_link_ads_visible, 0) AS num_ad_link_ads_visible,
-    COALESCE(num_ad_link_ads_hidden, 0) AS num_ad_link_ads_blocked,
-    COALESCE(
-      num_ad_link_ads_loaded - num_ad_link_ads_visible - num_ad_link_ads_hidden,
-      0
-    ) AS num_ad_link_ads_notshowing,
-    COALESCE(num_ad_sidebar_ads_visible, 0) AS num_ad_sidebar_ads_visible,
-    COALESCE(num_ad_sidebar_ads_hidden, 0) AS num_ad_sidebar_ads_blocked,
-    COALESCE(
-      num_ad_sidebar_ads_loaded - num_ad_sidebar_ads_visible - num_ad_sidebar_ads_hidden,
-      0
-    ) AS num_ad_sidebar_ads_notshowing,
-    COALESCE(num_ad_sitelink_ads_visible, 0) AS num_ad_sitelink_ads_visible,
-    COALESCE(num_ad_sitelink_ads_hidden, 0) AS num_ad_sitelink_ads_blocked,
-    COALESCE(
-      num_ad_sitelink_ads_loaded - num_ad_sitelink_ads_visible - num_ad_sitelink_ads_hidden,
-      0
-    ) AS num_ad_sitelink_ads_notshowing,
-    COALESCE(num_refined_search_buttons_ads_visible, 0) AS num_refined_search_buttons_ads_visible,
-    COALESCE(num_refined_search_buttons_ads_hidden, 0) AS num_refined_search_buttons_ads_blocked,
-    COALESCE(
-      num_refined_search_buttons_ads_loaded - num_refined_search_buttons_ads_visible - num_refined_search_buttons_ads_hidden,
-      0
-    ) AS num_ad_link_ads_notshowing,
-    COALESCE(num_shopping_tab_ads_visible, 0) AS num_shopping_tab_ads_visible,
-    COALESCE(num_shopping_tab_ads_hidden, 0) AS num_shopping_tab_ads_blocked,
-    COALESCE(
-      num_shopping_tab_ads_loaded - num_shopping_tab_ads_visible - num_shopping_tab_ads_hidden,
-      0
-    ) AS num_ad_link_ads_notshowing,
+      num_ads_loaded_reported > 0
+      AND num_ads_hidden_reported = num_ads_loaded_reported,
+      FALSE
+    ) AS ad_blocker_inferred,
   FROM
-    impressions
-  LEFT JOIN
     engagement_counts
-  USING
-    (impression_id)
-  LEFT JOIN
-    abandonments
-  USING
-    (impression_id)
-  LEFT JOIN
+  FULL JOIN
     ad_impression_counts
   USING
-    (impression_id)
+    (impression_id, component)
 )
 SELECT
-  * EXCEPT (experiments)
+  impression_id,
+  submission_timestamp,
+  glean_client_id,
+  legacy_telemetry_client_id,
+  ping_seq,
+  event_timestamp,
+  normalized_channel,
+  normalized_country_code,
+  os,
+  browser_version_info,
+  sample_id,
+  experiments,
+  is_shopping_page,
+  search_engine,
+  sap_source,
+  is_tagged,
+  COALESCE(is_engaged, FALSE) AS is_engaged,
+  COALESCE(has_ads_loaded, FALSE) AS has_ads_loaded,
+  abandon_reason,
+  component,
+  -- indicator for components that can have ad impressions
+  -- engagements are recorded for these and other components
+  component IN (
+    'ad_carousel',
+    'ad_image_row',
+    'ad_link',
+    'ad_sidebar',
+    'ad_sitelink',
+    'refined_search_buttons',
+    'shopping_tab'
+  ) AS is_ad_component,
+  COALESCE(num_clicks, 0) AS num_clicks,
+  COALESCE(num_expands, 0) AS num_expands,
+  COALESCE(num_submits, 0) AS num_submits,
+  COALESCE(num_ads_loaded_reported, 0) AS num_ads_loaded_reported,
+  COALESCE(num_ads_visible_reported, 0) AS num_ads_visible_reported,
+  COALESCE(num_ads_hidden_reported, 0) AS num_ads_hidden_reported,
+  COALESCE(ad_blocker_inferred, FALSE) AS ad_blocker_inferred,
+  COALESCE(
+    CASE
+    -- when an ad blocker is active, this should be 0
+      WHEN ad_blocker_inferred
+        THEN num_ads_visible_reported
+      ELSE
+    -- when no ad blocker is active, count ads reported as 'hidden' as visible
+    -- this is an edge case where the hidden count may not be reliable
+        num_ads_visible_reported + num_ads_hidden_reported
+    END,
+    0
+  ) AS num_ads_showing,
+  -- ads that are not visible but not blocked by an ad blocker are considered 'not showing'
+  COALESCE(
+    num_ads_loaded_reported - num_ads_visible_reported - num_ads_hidden_reported,
+    0
+  ) AS num_ads_notshowing,
 FROM
-  serp_summary
--- order by impression_id
-LIMIT
-  100
+  -- 1 row per impression_id
+  impressions
+LEFT JOIN
+  -- 1 row per impression_id with nonzero engagements
+  engaged_sessions
+USING
+  (impression_id)
+LEFT JOIN
+  -- 1 row per impression_id with nonzero ad impressions
+  ad_sessions
+USING
+  (impression_id)
+LEFT JOIN
+  -- 1 row per impression_id with an abandonment
+  abandonments
+USING
+  (impression_id)
+LEFT JOIN
+  -- expands to 1 row per impression_id per component that had either an engagement or an ad impression
+  component_counts
+USING
+  (impression_id)

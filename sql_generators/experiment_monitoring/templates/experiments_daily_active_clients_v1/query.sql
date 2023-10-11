@@ -19,7 +19,7 @@ WITH
         DATE(submission_timestamp) AS submission_date,
         mozfun.map.get_key(e.extra, "experiment") AS experiment_id,
         mozfun.map.get_key(e.extra, "branch") AS branch,
-        mozfun.map.get_key(e.extra, "user_id") AS user_id
+       mozfun.map.get_key(e.extra, "user_id") AS client_id
       FROM
         `moz-fx-data-shared-prod.{{ app_dataset }}.enrollment` AS enrollment
       CROSS JOIN

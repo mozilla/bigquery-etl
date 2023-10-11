@@ -156,20 +156,6 @@ with DAG(
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
-    with TaskGroup(
-        "firefox_ios_active_users_aggregates_external"
-    ) as firefox_ios_active_users_aggregates_external:
-        ExternalTaskMarker(
-            task_id="bqetl_firefox_ios__wait_for_firefox_ios_active_users_aggregates",
-            external_dag_id="bqetl_firefox_ios",
-            external_task_id="wait_for_firefox_ios_active_users_aggregates",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=84600)).isoformat() }}",
-        )
-
-        firefox_ios_active_users_aggregates_external.set_upstream(
-            firefox_ios_active_users_aggregates
-        )
-
     focus_android_active_users_aggregates = bigquery_etl_query(
         task_id="focus_android_active_users_aggregates",
         destination_table='active_users_aggregates_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',

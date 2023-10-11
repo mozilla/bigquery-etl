@@ -10,7 +10,7 @@ WITH raw_serp_events AS (
     event.category = 'serp'
     -- allow events related to an impression_id to span 2 submission dates
     -- we restrict to event sequences started on a single date below
-    AND DATE(submission_timestamp) >= @submission_date
+    AND DATE(submission_timestamp) >= DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND DATE_DIFF(DATE(submission_timestamp), @submission_date, DAY) IN (0, 1)
 ),
 serp_event_counts AS (

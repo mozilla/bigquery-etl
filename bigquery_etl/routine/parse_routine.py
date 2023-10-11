@@ -312,13 +312,15 @@ def sub_local_routines(
         if routine_id in raw_routines
     ]
 
-    routines_sql = "\n\n".join(
-        definition
-        for routine in routines
-        for definition in routine.definitions
-        if definition not in test
-    )
-    sql = routines_sql + "\n\n" + test
+    sql = test
+    if routines:
+        routines_sql = "\n\n".join(
+            definition
+            for routine in routines
+            for definition in routine.definitions
+            if definition not in sql
+        )
+        sql = routines_sql + "\n\n" + sql
 
     for routine in routines:
         for definition in routine.definitions:

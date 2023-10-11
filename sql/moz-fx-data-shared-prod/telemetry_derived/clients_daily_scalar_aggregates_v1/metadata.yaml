@@ -15,5 +15,5 @@ references:
   - moz-fx-data-shared-prod.telemetry_derived.clients_daily_scalar_aggregates_v1
   query.sql:
   - moz-fx-data-shared-prod.telemetry.buildhub2
-  - moz-fx-data-shared-prod.telemetry_stable.main_v4
+  - moz-fx-data-shared-prod.telemetry_stable.main_v5
 deprecated: false

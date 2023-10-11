@@ -126,11 +126,11 @@ SELECT
     (COALESCE(
     BIT_COUNT(mozfun.bits28.from_string('0000000000000000000001111111') & active_client_days_seen_bits) > 0,
     FALSE
-    )) ) AS num_clients_active_once_in_last_28_days,
+    )) ) AS num_clients_active_once_in_last_7_days,
   COUNTIF((active_client_id IS NOT NULL) AND
     ( COALESCE(
     BIT_COUNT(mozfun.bits28.from_string('0111111111111111111111111111') & active_client_days_seen_bits) > 0,
-    FALSE) )) AS num_clients_active_once_in_last_7_days,
+    FALSE) )) AS num_clients_active_once_in_last_28_days,
 FROM
   activity_cohort_match
 GROUP BY

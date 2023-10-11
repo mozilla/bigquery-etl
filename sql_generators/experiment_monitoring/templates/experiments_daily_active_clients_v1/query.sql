@@ -13,7 +13,7 @@ WITH
       CROSS JOIN
         UNNEST(experiments) AS e
     )
-  {% elif app_dataset == "monitor_cirrus" %}
+  {% elif "_cirrus" in app_dataset %}
     {{ app_dataset }} AS (
       SELECT DISTINCT
         DATE(submission_timestamp) AS submission_date,

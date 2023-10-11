@@ -204,7 +204,7 @@ def _udf_dependencies(artifact_files):
         # all referenced UDFs need to be deployed in the same stage project due to access restrictions
         raw_routine = RawRoutine.from_file(udf_file)
         udfs_to_publish = accumulate_dependencies([], raw_routines, raw_routine.id)
-        udf_dependencies.add(
+        udf_dependencies.update(
             Path(raw_routines[udf_id].filepath)
             for udf_id in udfs_to_publish
             if udf_id in raw_routines

@@ -11,7 +11,7 @@ WITH raw_serp_events AS (
     -- allow events related to an impression_id to span 2 submission dates
     -- we restrict to event sequences started on a single date below
     AND DATE(submission_timestamp) >= DATE_SUB(@submission_date, INTERVAL 1 DAY)
-    AND DATE_DIFF(DATE(submission_timestamp), @submission_date, DAY) IN (0, 1)
+    AND DATE(submission_timestamp) <= @submission_date
 ),
 serp_event_counts AS (
   SELECT
@@ -69,7 +69,7 @@ impressions AS (
   WHERE
     event.name = 'impression'
     -- restrict to sessions that started on the target submission date
-    AND DATE(submission_timestamp) = @submission_date
+    AND DATE(submission_timestamp) = DATE_SUB(@submission_date, INTERVAL 1 DAY)
 ),
 abandonments AS (
   SELECT
@@ -100,8 +100,8 @@ engagement_counts AS (
         event.name = 'engagement'
     )
   GROUP BY
-    1,
-    2
+    impression_id,
+    component
 ),
 engaged_sessions AS (
   -- indicator for sessions with overall nonzero engagements
@@ -111,7 +111,7 @@ engaged_sessions AS (
   FROM
     engagement_counts
   GROUP BY
-    1
+    impression_id
 ),
 ad_impression_counts AS (
   SELECT
@@ -154,7 +154,7 @@ ad_sessions AS (
   FROM
     ad_impression_counts
   GROUP BY
-    1
+    impression_id
 ),
 component_counts AS (
   -- join engagements and ad impressions into a single table

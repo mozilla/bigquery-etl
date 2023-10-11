@@ -2986,26 +2986,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#channel_group-udf" class="md-nav__link">
-    channel_group (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="channel_group (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#pricing_plan-udf" class="md-nav__link">
     pricing_plan (UDF)
   </a>
@@ -3014,7 +2994,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
+  <a href="#parameters_1" class="md-nav__link">
     Parameters
   </a>
   
@@ -3031,6 +3011,26 @@
   </a>
   
     <nav class="md-nav" aria-label="acquisition_channel (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#channel_group-udf" class="md-nav__link">
+    channel_group (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="channel_group (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3398,26 +3398,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#channel_group-udf" class="md-nav__link">
-    channel_group (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="channel_group (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#pricing_plan-udf" class="md-nav__link">
     pricing_plan (UDF)
   </a>
@@ -3426,7 +3406,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
+  <a href="#parameters_1" class="md-nav__link">
     Parameters
   </a>
   
@@ -3443,6 +3423,26 @@
   </a>
   
     <nav class="md-nav" aria-label="acquisition_channel (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#channel_group-udf" class="md-nav__link">
+    channel_group (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="channel_group (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3484,19 +3484,9 @@
 <div class="highlight"><pre><span></span><code>STRUCT&lt;utm_campaign STRING, utm_content STRING, utm_medium STRING, utm_source STRING&gt;
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/vpn/normalize_utm_parameters">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/vpn/normalize_utm_parameters/metadata.yaml">Edit</a></p>
-<h2 id="channel_group-udf">channel_group (UDF)</h2>
-<p>Assign a channel group based on utm parameters</p>
-<h3 id="parameters_1">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>utm_campaign STRING, utm_content STRING, utm_medium STRING, utm_source STRING
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>STRING
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/vpn/channel_group">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/vpn/channel_group/metadata.yaml">Edit</a></p>
 <h2 id="pricing_plan-udf">pricing_plan (UDF)</h2>
 <p>Combine the pricing and interval for a subscription plan into a single field</p>
-<h3 id="parameters_2">Parameters</h3>
+<h3 id="parameters_1">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>provider STRING, amount INTEGER, currency STRING, `interval` STRING, interval_count INTEGER
 </code></pre></div>
@@ -3506,7 +3496,7 @@
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/vpn/pricing_plan">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/vpn/pricing_plan/metadata.yaml">Edit</a></p>
 <h2 id="acquisition_channel-udf">acquisition_channel (UDF)</h2>
 <p>Assign an acquisition channel based on utm parameters</p>
-<h3 id="parameters_3">Parameters</h3>
+<h3 id="parameters_2">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>utm_campaign STRING, utm_content STRING, utm_medium STRING, utm_source STRING
 </code></pre></div>
@@ -3514,6 +3504,16 @@
 <div class="highlight"><pre><span></span><code>STRING
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/vpn/acquisition_channel">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/vpn/acquisition_channel/metadata.yaml">Edit</a></p>
+<h2 id="channel_group-udf">channel_group (UDF)</h2>
+<p>Assign a channel group based on utm parameters</p>
+<h3 id="parameters_3">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>utm_campaign STRING, utm_content STRING, utm_medium STRING, utm_source STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/vpn/channel_group">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/vpn/channel_group/metadata.yaml">Edit</a></p>
 
 
 

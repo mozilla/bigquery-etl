@@ -12,7 +12,7 @@ queries:
     start_date: "2023-10-10"
   experiment_search_events_live_v1:
     per_app: true
-    start_date: "2023-03-13"
+    start_date: "2023-10-10"
 search_metrics:
   telemetry:
     ad_clicks_count: payload.processes.parent.keyed_scalars.browser_search_ad_clicks

@@ -90,7 +90,7 @@ IF
     `moz-fx-data-shared-prod.{{ dataset }}_live.main_v4`
     LEFT JOIN
       UNNEST(environment.experiments) AS experiment
-  {% elif dataset == "monitor_cirrus" %}
+  {% elif "_cirrus" in dataset %}
 
     `moz-fx-data-shared-prod.{{ dataset }}.enrollment`
     LEFT JOIN

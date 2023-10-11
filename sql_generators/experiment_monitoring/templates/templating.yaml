@@ -9,7 +9,7 @@ queries:
     per_app: false
   experiment_events_live_v1:
     per_app: true
-    start_date: "2023-03-13"
+    start_date: "2023-10-10"
   experiment_search_events_live_v1:
     per_app: true
     start_date: "2023-03-13"

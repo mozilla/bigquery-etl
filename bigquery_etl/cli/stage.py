@@ -205,7 +205,9 @@ def _udf_dependencies(artifact_files):
         raw_routine = RawRoutine.from_file(udf_file)
         udfs_to_publish = accumulate_dependencies([], raw_routines, raw_routine.id)
         udf_dependencies.add(
-            raw_routines[udf_id].filepath for udf_id in udfs_to_publish
+            raw_routines[udf_id].filepath
+            for udf_id in udfs_to_publish
+            if udf_id in raw_routines
         )
 
     return udf_dependencies
@@ -274,8 +276,9 @@ def _view_dependencies(artifact_files, sql_dir):
             udf_dependencies = set()
 
             for udf_dependency in view.udf_references:
-                routine = raw_routines[udf_dependency]
-                udf_dependencies.add(Path(routine.filepath))
+                if udf_dependency in raw_routines:
+                    routine = raw_routines[udf_dependency]
+                    udf_dependencies.add(Path(routine.filepath))
 
             # determine UDF dependencies recursively
             view_dependencies.update(_udf_dependencies(udf_dependencies))

@@ -138,6 +138,7 @@ def publish(
         for dep in udfs_to_publish:
             if (
                 dep not in published_routines
+                and dep in raw_routines
                 and raw_routines[dep].filepath not in skipped_routines()
             ):
                 publish_routine(

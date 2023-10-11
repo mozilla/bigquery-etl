@@ -151,7 +151,6 @@ class Metadata:
     references: Dict = attr.ib({})
     external_data: Optional[ExternalDataMetadata] = attr.ib(None)
     deprecated: bool = attr.ib(False)
-    initialization: Optional[Dict] = attr.ib({})
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -227,7 +226,6 @@ class Metadata:
         references = {}
         external_data = None
         deprecated = False
-        initialization = {}
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -291,9 +289,6 @@ class Metadata:
                 if "deprecated" in metadata:
                     deprecated = metadata["deprecated"]
 
-                if "initialization" in metadata:
-                    initialization = metadata["initialization"]
-
                 return cls(
                     friendly_name,
                     description,
@@ -306,7 +301,6 @@ class Metadata:
                     references,
                     external_data,
                     deprecated,
-                    initialization,
                 )
             except yaml.YAMLError as e:
                 raise e

@@ -25,7 +25,7 @@ WITH
         event_category = 'normandy' AND
         submission_date = @submission_date
     ),
-  {% elif app_dataset == "monitor_cirrus" %}
+  {% elif "_cirrus" in app_dataset %}
   {{ app_dataset }} AS (
     SELECT
       submission_timestamp AS `timestamp`,

@@ -1,8 +1,7 @@
-friendly_name: Funnel iOS
+friendly_name: User Retention - Firefox iOS (Week 2)
 description: |
-  Derived dataset for supporting (Apple) app store funnel analysis (iOS).
-
-  Runs with a 7 day lag due to the data being available only a around few days later to us.
+  Derived dataset for Firefox iOS retention analysis. Contains metrics that can be calculated
+  2 weeks after a user was first seen.
 owners:
 - kik@mozilla.com
 labels:
@@ -18,4 +17,5 @@ bigquery:
     require_partition_filter: false
   clustering:
     fields:
-    - country
+    - sample_id
+    - first_seen_date

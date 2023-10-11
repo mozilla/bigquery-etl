@@ -139,7 +139,7 @@ WITH new_profile_ping AS (
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= '2010-01-01'
-      {mapped_values}
+      AND sample_id = @sample_id
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
@@ -279,7 +279,7 @@ shutdown_ping AS (
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= '2010-01-01'
-      {mapped_values}
+      AND sample_id = @sample_id
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
@@ -396,7 +396,7 @@ main_ping AS (
   WHERE
     {% if is_init() %}
       submission_date >= '2010-01-01'
-      {mapped_values}
+      AND sample_id = @sample_id
     {% else %}
       submission_date = @submission_date
     {% endif %}

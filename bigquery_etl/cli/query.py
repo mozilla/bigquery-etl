@@ -16,7 +16,6 @@ from functools import partial
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from timeit import default_timer
 from traceback import print_exc
 
 import click
@@ -894,9 +893,7 @@ def _run_query(
     query_arguments,
     addl_templates: typing.Optional[dict] = None,
     mapped_values=None,
-    parallelized=None,
 ):
-    client = bigquery.Client(project_id)
     """Run a query."""
     if dataset_id is not None:
         # dataset ID was parsed by argparse but needs to be passed as parameter
@@ -959,6 +956,11 @@ def _run_query(
 
             query_arguments.append("--destination_table={}".format(destination_table))
 
+        if mapped_values is not None and mapped_values != "":
+            query_arguments = query_arguments + [
+                f"--parameter=sample_id:INT64:{mapped_values}"
+            ]
+
         if bool(list(filter(lambda x: x.startswith("--parameter"), query_arguments))):
             # need to do this as parameters are not supported with legacy sql
             query_arguments.append("--use_legacy_sql=False")
@@ -981,22 +983,8 @@ def _run_query(
             )
             query_stream.seek(0)
 
-            if mapped_values is None or parallelized is False:
-                # Run the query as shell command so that passed parameters can be used as is.
-                subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
-            else:
-                query_content = query_stream.read()
-                query = query_content.format(
-                    mapped_values=mapped_values,
-                )
-                job = client.query(
-                    query=query,
-                    job_config=bigquery.QueryJobConfig(
-                        use_query_cache=False,
-                        use_legacy_sql=False,
-                    ),
-                )
-                job.result()
+            # run the query as shell command so that passed parameters can be used as is
+            subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
 
 
 @query.command(
@@ -1270,12 +1258,10 @@ def _initialize_in_parallel(
     arguments,
     parallelism,
     mapped_values,
-    parallelized,
     addl_templates,
 ):
     with ThreadPool(parallelism) as pool:
-        start = default_timer()
-        # Process all subsets in the query in parallel (eg. all sample_ids).
+        # Process all sample_ids in parallel.
         pool.map(
             partial(
                 _run_query,
@@ -1286,11 +1272,9 @@ def _initialize_in_parallel(
                 dataset,
                 arguments,
                 addl_templates,
-                parallelized=parallelized,
             ),
             mapped_values,
         )
-        print(f"Job completed in {default_timer() - start}")
 
 
 @query.command(
@@ -1314,8 +1298,7 @@ def _initialize_in_parallel(
 def initialize(ctx, name, sql_dir, project_id, dry_run):
     """Create the destination table for the provided query."""
     client = bigquery.Client()
-    parallelized = False
-    mapped_values = list(range(0, 1))
+    mapped_values = [""]
 
     if not is_authenticated():
         click.echo("Authentication required for creating tables.", err=True)
@@ -1355,21 +1338,10 @@ def initialize(ctx, name, sql_dir, project_id, dry_run):
             except NotFound:
                 ctx.invoke(deploy, name=full_table_id, force=True)
 
-            query_file_path = Path(query_file)
-            metadata = Metadata.of_query_file(query_file_path)
-            if metadata and metadata.initialization:
-                ini = metadata.initialization.get("from_sample_id", None)
-                end = metadata.initialization.get("to_sample_id", None)
-                # Running in parallel only when mapped_values are set in the query and metadata.
-                if (
-                    ini is not None
-                    and end is not None
-                    and "mapped_values" in sql_content
-                ):
-                    mapped_values = [
-                        f"AND sample_id = {i}" for i in list(range(ini, end))
-                    ]
-                    parallelized = True
+            if "@sample_id" in sql_content:
+                mapped_values = list(range(0, 100))
+            if "INSERT INTO" in sql_content:
+                destination_table = None
 
             arguments = [
                 "query",
@@ -1388,7 +1360,6 @@ def initialize(ctx, name, sql_dir, project_id, dry_run):
                 arguments=arguments,
                 parallelism=DEFAULT_PARALLELISM,
                 mapped_values=mapped_values,
-                parallelized=parallelized,
                 addl_templates={
                     "is_init": lambda: True,
                 },

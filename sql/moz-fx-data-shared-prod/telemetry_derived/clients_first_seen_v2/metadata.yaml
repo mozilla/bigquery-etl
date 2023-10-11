@@ -34,6 +34,7 @@ scheduling:
   date_partition_parameter: null
   parameters:
   - submission_date:DATE:{{ds}}
+  - sample_id:INT64:{{sample_id}}
 bigquery:
   time_partitioning:
     type: day
@@ -46,7 +47,4 @@ bigquery:
     - sample_id
     - country
     - normalized_os
-initialization:
-  from_sample_id: 0
-  to_sample_id: 100
 references: {}

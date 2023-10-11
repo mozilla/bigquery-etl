@@ -12,7 +12,7 @@ IF
       submission_timestamp,
       events
     FROM
-       `moz-fx-data-shared-prod.{{ dataset }}.enrollment`
+       `moz-fx-data-shared-prod.{{ dataset }}_stable.enrollment_v1`
   ),
   experiment_events AS (
     SELECT

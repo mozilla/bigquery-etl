@@ -11,7 +11,7 @@ IF
       submission_timestamp,
       events
     FROM
-      `moz-fx-data-shared-prod.monitor_cirrus.enrollment`
+      `moz-fx-data-shared-prod.monitor_cirrus_stable.enrollment_v1`
   ),
   experiment_events AS (
     SELECT

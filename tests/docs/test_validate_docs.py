@@ -17,5 +17,5 @@ class TestValidateDocs:
             / "example1.sql"
         )
 
-        sql = sub_local_routines(file.read_text(), project="", raw_routines={})
+        sql = sub_local_routines(file.read_text(), project_dir="", raw_routines={})
         assert sql == file.read_text()

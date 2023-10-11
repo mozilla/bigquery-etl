@@ -123,6 +123,9 @@ def publish(
 
     published_routines = []
 
+    if pattern and project_id and not pattern.startswith(f"{project_id}."):
+        pattern = f"{project_id}.{pattern}"
+
     for raw_routine in (
         raw_routines if pattern is None else fnmatch.filter(raw_routines, pattern)
     ):

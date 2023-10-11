@@ -5,7 +5,7 @@ IF
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
-  {% if dataset == "monitor_cirrus" %}
+  {% if "_cirrus" in dataset %}
   -- Cirrus apps uses specialized Glean structure per events
   WITH all_events AS (
     SELECT

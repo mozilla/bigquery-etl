@@ -60,7 +60,7 @@ with DAG(
         ],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{ds}}"],
+        parameters=["submission_date:DATE:{{ds}}", "sample_id:INT64:{{sample_id}}"],
     )
 
     firefox_android_clients = bigquery_etl_query(

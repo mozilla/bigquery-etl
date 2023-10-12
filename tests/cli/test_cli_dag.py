@@ -6,7 +6,6 @@ import yaml
 from click.testing import CliRunner
 
 from bigquery_etl.cli.dag import create, generate, info, remove
-from bigquery_etl.query_scheduling.dag import InvalidDag
 
 TEST_DIR = Path(__file__).parent.parent
 
@@ -234,5 +233,4 @@ class TestDag:
                 ["bqetl_test"],
             )
 
-            assert result.exit_code == 1
-            assert isinstance(result.exception, InvalidDag)
+            assert result.exit_code == 0

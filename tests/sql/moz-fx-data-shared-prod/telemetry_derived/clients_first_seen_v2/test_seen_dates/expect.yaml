@@ -1,0 +1,56 @@
+# client-1 has a first_seen_date from 2022-06-30 reported by the new_profile ping.
+#   On 2022-07-01 it reports a main ping which results in updating second_seen_date & reported_main_ping.
+#   Other attributes e.g. locale are not updated.
+# client-2 reports two new_profile pings and one main ping on 2022-07-01.
+#   The first_seen_date and other attributes are retrieved fromfirst new_profile ping,
+#    therefore attribution campaign is NULL as reported by the first new_profile ping
+#    and since the campaign reported by the main ping and the second new_profile ping are ignored.
+# client-5 reports new_profile and first_shutdown on the 25th.
+#   On 2022-07-01 there is another new_profile ping but the second_seen_date remains NULL because it should only
+#   be updated when there is a main ping reported.
+---
+- client_id: client-1
+  first_seen_date: 2022-06-30
+  second_seen_date: 2022-07-01
+  sample_id: 10
+  normalized_channel: release
+  metadata:
+    first_seen_date_source_ping: new_profile
+    reported_main_ping: true
+    reported_new_profile_ping: true
+    reported_shutdown_ping: false
+- client_id: client-2
+  first_seen_date: 2022-07-01
+  sample_id: 20
+  attribution_source: source2
+  metadata:
+    first_seen_date_source_ping: new_profile
+    reported_main_ping: true
+    reported_new_profile_ping: true
+    reported_shutdown_ping: false
+- client_id: client-3
+  first_seen_date: 2022-06-30
+  second_seen_date: 2022-07-01
+  sample_id: 30
+  normalized_channel: beta
+  metadata:
+    first_seen_date_source_ping: new_profile
+    reported_new_profile_ping: true
+    reported_shutdown_ping: true
+- client_id: client-4
+  sample_id: 40
+  first_seen_date: 2022-06-29
+  second_seen_date: 2022-06-30
+  metadata:
+    first_seen_date_source_ping: new_profile
+    reported_new_profile_ping: true
+    reported_main_ping: true
+    reported_shutdown_ping: true
+- client_id: client-5
+  sample_id: 50
+  first_seen_date: 2022-06-25
+  metadata:
+    first_seen_date_source_ping: new_profile
+    reported_new_profile_ping: true
+    reported_main_ping: false
+    reported_shutdown_ping: true

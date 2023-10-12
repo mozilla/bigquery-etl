@@ -138,7 +138,7 @@ with DAG(
         + ["--date", "{{ ds }}"],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="wichan@mozilla.com",
-        email=["ascholtz@mozilla.com", "wichan@mozilla.com"],
+        email=["ascholtz@mozilla.com", "mhirose@mozilla.com", "wichan@mozilla.com"],
     )
 
     monitoring_derived__column_size__v1 = gke_command(

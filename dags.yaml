@@ -110,6 +110,23 @@ bqetl_fxa_events:
   tags:
     - impact/tier_1
 
+bqetl_accounts_backend_external:
+  schedule_interval: 30 1 * * *
+  description: |
+    Copies data from Firefox Accounts (FxA) CloudSQL databases.
+
+    This DAG is under active development.
+  default_args:
+    owner: akomar@mozilla.com
+    start_date: "2023-09-19"
+    email: ["akomar@mozilla.com"]
+    retries: 1
+    retry_delay: 10m
+  tags:
+    - impact/tier_3
+    - triage/no_triage
+    - repo/bigquery-etl
+
 bqetl_subplat:
   schedule_interval: 45 1 * * *
   description: |
@@ -255,7 +272,6 @@ bqetl_main_summary:
       [
         "telemetry-alerts@mozilla.com",
         "dthorn@mozilla.com",
-        "jklukas@mozilla.com",
       ]
     retries: 2
     retry_delay: 30m
@@ -1185,3 +1201,23 @@ bqetl_default:
   tags:
     - impact/tier_3
     - triage/no_triage
+
+bqetl_reference:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - cmorales@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: cmorales@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-09-18'
+  description: DAG to build reference data
+  repo: bigquery-etl
+  schedule_interval: daily
+  tags:
+    - impact/tier_1
+    - repo/bigquery-etl

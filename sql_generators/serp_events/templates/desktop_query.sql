@@ -183,7 +183,7 @@ component_counts AS (
 )
 SELECT
   impression_id,
-  submission_timestamp,
+  DATE(submission_timestamp) AS submission_date,
   glean_client_id,
   legacy_telemetry_client_id,
   ping_seq,

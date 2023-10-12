@@ -267,6 +267,15 @@ fields:
     - name: bookmarks_has_mobile_bookmarks
       type: BOOLEAN
       mode: NULLABLE
+    - name: shopping_settings_component_opted_out
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: shopping_settings_nimbus_disabled_shopping
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: shopping_settings_user_has_onboarded
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE

@@ -417,6 +417,28 @@ fields:
         in the mobile folder.
 
         '
+    - name: shopping_settings_component_opted_out
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Indicates if the user has opted out of using the shopping component.
+
+        Set in BrowserViewController and updated when changed by user.
+
+        '
+    - name: shopping_settings_nimbus_disabled_shopping
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Indicates if Nimbus has disabled the use the shopping component.
+
+        '
+    - name: shopping_settings_user_has_onboarded
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Indicates if the user has completed the Shopping product Onboarding
+
+        experience. Set in BrowserViewController and updated when changed by user.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

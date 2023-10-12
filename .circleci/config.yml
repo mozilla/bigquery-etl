@@ -413,13 +413,12 @@ jobs:
     parameters:
       repo-to-sync:
         type: string
-      ssh_key_fingerprint:
-        type: string
     steps:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - << parameters.ssh_key_fingerprint >>
+            - "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
+            - "e4:30:50:41:53:f0:d6:3a:bb:c9:38:54:2d:ca:56:41"
       - run:
           name: 🤖 Update DAGs repository
           command: |
@@ -732,7 +731,6 @@ workflows:
       - sync-dags-repo:
           name: 🔃 Synchronize bigquery-etl submodule
           repo-to-sync: ${CIRCLE_PROJECT_REPONAME}
-          ssh_key_fingerprint: "e4:30:50:41:53:f0:d6:3a:bb:c9:38:54:2d:ca:56:41"
           requires:
             - push-generated-sql
           filters:
@@ -778,7 +776,6 @@ workflows:
       - sync-dags-repo:
           name: 🔃 Synchronize DAGs repository
           repo-to-sync: private-bigquery-etl
-          ssh_key_fingerprint: "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
           requires:
             - push-private-generated-sql
           filters:

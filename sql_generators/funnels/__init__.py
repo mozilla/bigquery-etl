@@ -96,6 +96,6 @@ def generate_funnels(target_project, path, output_dir):
 )
 @use_cloud_function_option
 def generate(target_project, path, output_dir, use_cloud_function):
-    """Generate the experiment monitoring views."""
+    """Generate the funnel queries."""
     output_dir = Path(output_dir)
     generate_funnels(target_project, path, output_dir)

@@ -203,7 +203,7 @@ client_id_column = "client_info.client_id"
 
 The generated funnel queries do not need to be checked in to `main`. They'll get generated and executed automatically.
 
-To generate the query (for example for debugging) run: `./bqetl generate funnels`. The generated funnel query will be in `sql/moz-fx-data-shared` in the folder specified as the `destination_dataset` (`telemetry_derived` by default).
+To generate the query (for example for debugging) run: `./bqetl generate funnels`. The generated funnel query will be in `sql/moz-fx-data-shared-prod` in the folder specified as the `destination_dataset` (`telemetry_derived` by default).
 
 To run the generated query run: `./bqetl query run <destination_dataset>.<name_of_config_with_underscores> --project_id=moz-fx-data-shared-prod --dataset_id=<destination_dataset> --destination_table=<destination_table>`
 

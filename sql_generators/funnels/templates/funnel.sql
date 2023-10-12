@@ -4,12 +4,12 @@
   {% for step_name in funnel.steps %}
   {{ funnel_name }}_{{ step_name }} AS (
     SELECT
-      {% if steps[step_name].join_key %}
-        {{ steps[step_name].join_key }} AS join_key,
+      {% if steps[step_name].join_previous_step_on %}
+        {{ steps[step_name].join_previous_step_on }} AS join_key,
       {% endif %}
       {% if funnel.dimensions %}
         {% for dimension_name in funnel.dimensions %}
-          {% if not loop.first and steps[step_name].depends_on_previous_step %}
+          {% if not loop.first and steps[step_name].join_previous_step_on %}
             {{ funnel_name }}_{{ loop.previtem }}.{{ dimension_name }} AS {{ dimension_name }},
           {% elif dimensions[dimension_name].data_source == steps[step_name].data_source %}
             {{ dimensions[dimension_name].select_expression }} AS {{ dimension_name }},
@@ -23,16 +23,16 @@
       {{ steps[step_name].select_expression }} AS column
     FROM 
       {{ data_sources[steps[step_name].data_source].from_expression }}
-    {% if not loop.first and steps[step_name].depends_on_previous_step %}
+    {% if not loop.first and steps[step_name].join_previous_step_on %}
       INNER JOIN {{ funnel_name }}_{{ loop.previtem }} AS prev
       ON 
         prev.submission_date = {{ data_sources[steps[step_name].data_source].submission_date_column }}  AND
-        prev.join_key = {{ steps[step_name].join_key }}
+        prev.join_key = {{ steps[step_name].join_previous_step_on }}
     {% endif %}
     {% if funnel.dimensions %}
       {% for dimension_name in funnel.dimensions %}
         {% if dimensions[dimension_name].data_source != steps[step_name].data_source or 
-          (not loop.first and steps[step_name].depends_on_previous_step) %}
+          (not loop.first and steps[step_name].join_previous_step_on) %}
         LEFT JOIN (
           SELECT
             {{ data_sources[dimensions[dimension_name].data_source].submission_date_column }} AS submission_date,
@@ -137,7 +137,7 @@ merged_funnels AS (
         FULL OUTER JOIN {{ funnel_name }}_{{ step_name }}_aggregated
         USING (
           submission_date, 
-          {% if steps[step_name].depends_on_previous_step == False %}
+          {% if steps[step_name].join_previous_step_on == False %}
             {% for dimension_name in dimensions.keys() %}
               {{ dimension_name }},
             {% endfor %}

@@ -6,6 +6,7 @@ FROM
     """SELECT
          uid,
          normalizedEmail,
+         email,
          emailVerified,
          verifierVersion,
          verifierSetAt,
@@ -13,6 +14,7 @@ FROM
          locale,
          lockedAt,
          profileChangedAt,
+         keysChangedAt,
          ecosystemAnonId,
          disabledAt,
          metricsOptOutAt

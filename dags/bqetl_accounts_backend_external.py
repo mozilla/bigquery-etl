@@ -54,5 +54,6 @@ with DAG(
         owner="akomar@mozilla.com",
         email=["akomar@mozilla.com"],
         date_partition_parameter=None,
-        depends_on_past=True,
+        depends_on_past=False,
+        task_concurrency=1,
     )

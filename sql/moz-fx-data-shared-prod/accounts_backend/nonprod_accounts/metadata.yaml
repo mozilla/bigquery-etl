@@ -1,0 +1,11 @@
+---
+friendly_name: FxA Accounts nonprod
+description: |-
+  A view on top of the `accounts_backend_external.nonprod_accounts_v1` table that
+  includes all non-sensitive fields.
+labels:
+  authorized: true
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

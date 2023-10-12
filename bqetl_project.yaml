@@ -70,8 +70,10 @@ dry_run:
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_gcp_stderr_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v1/init.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v1/query.sql
+  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v2/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v1/init.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v1/query.sql
+  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v2/query.sql
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/destinations_v1/query.sql
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/incremental_mar_v1/query.sql
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/monthly_costs_v1/query.sql
@@ -208,6 +210,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/init.sql
   # HTTP Error 408: Request Time-out
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/latest_versions/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/italy_covid19_outage_v1/query.sql

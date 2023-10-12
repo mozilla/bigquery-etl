@@ -1,0 +1,27 @@
+friendly_name: Docker Fxa Customs Sanitized
+description: |-
+  Sanitized version of customs events from GCP based FxA service stderr table (PII is hashed).
+
+  The migration started on 2023-09-07, since then we have been receiving events from the GCP deployment
+  which are available via this table. Previous data (from the AWS deployment) is available in the v1 of this table.
+owners:
+- kik@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+  dag: bqetl_fxa_events
+  owner1: kik
+scheduling:
+  dag_name: bqetl_fxa_events
+  arguments:
+  - --schema_update_option=ALLOW_FIELD_ADDITION
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+  clustering: null
+references: {}
+deprecated: false

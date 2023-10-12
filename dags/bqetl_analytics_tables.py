@@ -47,6 +47,22 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+    clients_first_seen_v2 = bigquery_etl_query(
+        task_id="clients_first_seen_v2",
+        destination_table="clients_first_seen_v2",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="lvargas@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
     firefox_android_clients = bigquery_etl_query(
         task_id="firefox_android_clients",
         destination_table="firefox_android_clients_v1",
@@ -74,6 +90,45 @@ with DAG(
         )
 
         firefox_android_clients_external.set_upstream(firefox_android_clients)
+
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    clients_first_seen_v2.set_upstream(wait_for_copy_deduplicate_all)
+    wait_for_copy_deduplicate_first_shutdown_ping = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_first_shutdown_ping",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_first_shutdown_ping",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    clients_first_seen_v2.set_upstream(wait_for_copy_deduplicate_first_shutdown_ping)
+    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_daily__v6",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_daily__v6",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    clients_first_seen_v2.set_upstream(wait_for_telemetry_derived__clients_daily__v6)
 
     wait_for_baseline_clients_daily = ExternalTaskSensor(
         task_id="wait_for_baseline_clients_daily",

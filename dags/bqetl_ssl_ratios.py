@@ -53,6 +53,7 @@ with DAG(
         email=["chutten@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
     )
 
     telemetry_derived__ssl_ratios__v1 = bigquery_etl_query(

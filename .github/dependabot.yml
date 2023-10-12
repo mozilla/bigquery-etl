@@ -6,5 +6,4 @@ updates:
     schedule:
       interval: daily
     reviewers:
-      - relud
-      - quiiver
+      - mozilla/data-platform-infra-wg

@@ -413,6 +413,8 @@ jobs:
     parameters:
       repo-to-sync:
         type: string
+      target-branch:
+        type: string
     steps:
       - checkout
       - add_ssh_keys:
@@ -429,7 +431,7 @@ jobs:
             cd ~/project/telemetry-airflow-dags
             git submodule update --init --recursive --depth 1
             cd << parameters.repo-to-sync >>
-            git pull origin generated-sql
+            git pull origin << parameters.target-branch >>
             cd ..
             git add << parameters.repo-to-sync >>
             git commit --allow-empty -m "Automatic commit from ${CIRCLE_PROJECT_REPONAME} commit ${CIRCLE_SHA1:0:9} build ${CIRCLE_BUILD_NUM} [skip ci]"
@@ -731,6 +733,7 @@ workflows:
       - sync-dags-repo:
           name: 🔃 Synchronize bigquery-etl submodule
           repo-to-sync: ${CIRCLE_PROJECT_REPONAME}
+          target-branch: generated-sql
           requires:
             - push-generated-sql
           filters:
@@ -776,6 +779,7 @@ workflows:
       - sync-dags-repo:
           name: 🔃 Synchronize private-bigquery-etl submodule
           repo-to-sync: private-bigquery-etl
+          target-branch: private-generated-sql
           requires:
             - push-private-generated-sql
           filters:

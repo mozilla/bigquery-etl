@@ -17,7 +17,6 @@ DESKTOP_TABLE_VERSION = "v1"
 MOBILE_TABLE_VERSION = "v2"
 
 
-
 class Browsers(Enum):
     """Enumeration with browser names and equivalent dataset names."""
 
@@ -88,7 +87,7 @@ def generate(target_project, output_dir, use_cloud_function):
             current_version = DESKTOP_TABLE_VERSION
         else:
             current_version = MOBILE_TABLE_VERSION
-           
+
         write_sql(
             output_dir=output_dir,
             full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_{current_version}",
@@ -110,7 +109,6 @@ def generate(target_project, output_dir, use_cloud_function):
             ),
             skip_existing=False,
         )
-
 
         if browser.name == "focus_android":
             write_sql(
@@ -135,7 +133,7 @@ def generate(target_project, output_dir, use_cloud_function):
                     view_template.render(
                         project_id=target_project,
                         app_name=browser.name,
-                        table_version=DESKTOP_TABLE_VERSION
+                        table_version=DESKTOP_TABLE_VERSION,
                     )
                 ),
                 skip_existing=False,

@@ -19,3 +19,7 @@ bigquery:
     expiration_days: null
   clustering: null
 references: {}
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

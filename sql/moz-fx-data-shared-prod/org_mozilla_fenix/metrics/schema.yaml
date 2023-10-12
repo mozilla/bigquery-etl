@@ -635,6 +635,24 @@ fields:
         pref.
 
         '
+    - name: shopping_settings_component_opted_out
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether or not the user opted out of review quality check feature.
+
+        '
+    - name: shopping_settings_nimbus_disabled_shopping
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether or not Nimbus has disabled the use of the shopping component.
+
+        '
+    - name: shopping_settings_user_has_onboarded
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether or the user has completed the review quality check onboarding.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -3816,6 +3834,110 @@ fields:
           mode: NULLABLE
       description: 'The download throughput for http/3 requests larger than 10MB.
         Measured in megabits per second, Mbps.
+
+        '
+    - name: cookie_banners_click_query_selector_run_count_per_window_frame
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'How often a query selector is run during the lifetime of a sub-frame
+        content window.
+
+        '
+    - name: cookie_banners_click_query_selector_run_count_per_window_top_level
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'How often a query selector is run during the lifetime of a top-level
+        content window.
+
+        '
+    - name: cookie_banners_click_query_selector_run_duration_per_window_frame
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Total time spent (in microseconds) on running querySelector for
+        the lifetime of a sub-frame content window.
+
+        '
+    - name: cookie_banners_click_query_selector_run_duration_per_window_top_level
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Total time spent (in microseconds) on running querySelector for
+        the lifetime of a top-level content window.
 
         '
   - name: quantity

@@ -243,7 +243,10 @@ SELECT
       metrics.boolean.pull_to_refresh_in_browser_enabled,
       metrics.boolean.metrics_ram_more_than_threshold,
       metrics.boolean.extensions_use_remote_policy,
-      metrics.boolean.extensions_use_remote_pref
+      metrics.boolean.extensions_use_remote_pref,
+      metrics.boolean.shopping_settings_component_opted_out,
+      metrics.boolean.shopping_settings_nimbus_disabled_shopping,
+      metrics.boolean.shopping_settings_user_has_onboarded
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -340,7 +343,11 @@ SELECT
       metrics.custom_distribution.networking_cookie_creation_fixup_diff,
       metrics.custom_distribution.networking_http_1_download_throughput,
       metrics.custom_distribution.networking_http_2_download_throughput,
-      metrics.custom_distribution.networking_http_3_download_throughput
+      metrics.custom_distribution.networking_http_3_download_throughput,
+      metrics.custom_distribution.cookie_banners_click_query_selector_run_count_per_window_frame,
+      metrics.custom_distribution.cookie_banners_click_query_selector_run_count_per_window_top_level,
+      metrics.custom_distribution.cookie_banners_click_query_selector_run_duration_per_window_frame,
+      metrics.custom_distribution.cookie_banners_click_query_selector_run_duration_per_window_top_level
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -734,7 +741,10 @@ SELECT
       metrics.boolean.pull_to_refresh_in_browser_enabled,
       metrics.boolean.metrics_ram_more_than_threshold,
       metrics.boolean.extensions_use_remote_policy,
-      metrics.boolean.extensions_use_remote_pref
+      metrics.boolean.extensions_use_remote_pref,
+      metrics.boolean.shopping_settings_component_opted_out,
+      metrics.boolean.shopping_settings_nimbus_disabled_shopping,
+      metrics.boolean.shopping_settings_user_has_onboarded
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -831,7 +841,11 @@ SELECT
       metrics.custom_distribution.networking_cookie_creation_fixup_diff,
       metrics.custom_distribution.networking_http_1_download_throughput,
       metrics.custom_distribution.networking_http_2_download_throughput,
-      metrics.custom_distribution.networking_http_3_download_throughput
+      metrics.custom_distribution.networking_http_3_download_throughput,
+      metrics.custom_distribution.cookie_banners_click_query_selector_run_count_per_window_frame,
+      metrics.custom_distribution.cookie_banners_click_query_selector_run_count_per_window_top_level,
+      metrics.custom_distribution.cookie_banners_click_query_selector_run_duration_per_window_frame,
+      metrics.custom_distribution.cookie_banners_click_query_selector_run_duration_per_window_top_level
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,

@@ -38,15 +38,13 @@ RETURNS ARRAY<INT64> AS (
 SELECT
     {{ attributes }},
     {{ aggregate_attributes }},
-    -- Logic to count clients based on sampled windows release data.
-    -- If you're changing this, then you'll also need to change
-    -- clients_daily_[scalar | histogram]_aggregates
-    os = 'Windows'
-    AND channel = 'release' AS sampled,
     {% if is_scalar %}
         client_agg_type,
         agg_type,
-        IF(sampled,
+        -- Logic to count clients based on sampled windows release data.
+        -- If you're changing this, then you'll also need to change
+        -- clients_daily_[scalar | histogram]_aggregates
+        IF(os = 'Windows' AND channel = 'release',
           SUM(count) * 10,
           SUM(count)
         ) AS total_users,
@@ -66,7 +64,10 @@ SELECT
     {% else %}
         agg_type AS client_agg_type,
         'histogram' as agg_type,
-        IF(sampled,
+        -- Logic to count clients based on sampled windows release data.
+        -- If you're changing this, then you'll also need to change
+        -- clients_daily_[scalar | histogram]_aggregates
+        IF(os = 'Windows' AND channel = 'release',
           CAST(ROUND(SUM(record.value)) AS INT64) * 10,
           CAST(ROUND(SUM(record.value)) AS INT64)
         ) AS total_users,

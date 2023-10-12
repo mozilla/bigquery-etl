@@ -302,7 +302,8 @@ jobs:
       - *build
       - *attach_generated_sql
       - add_ssh_keys:
-          fingerprints: "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
+          fingerprints:
+            - "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
       - run:
           name: Build and deploy docs
           command: |
@@ -351,7 +352,8 @@ jobs:
       - *attach_generated_sql
       - *copy_generated_sql
       - add_ssh_keys:
-          fingerprints: "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
+          fingerprints:
+            - "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
       - run:
           name: Pull in generated-sql branch from remote
           command: |
@@ -386,7 +388,8 @@ jobs:
     steps:
       - *attach_generated_sql
       - add_ssh_keys:
-          fingerprints: "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
+          fingerprints:
+            - "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
       - run:
           name: Push to generated-sql branch
           command: |
@@ -410,10 +413,13 @@ jobs:
     parameters:
       repo-to-sync:
         type: string
+      target-branch:
+        type: string
     steps:
       - checkout
       - add_ssh_keys:
           fingerprints:
+            - "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
             - "e4:30:50:41:53:f0:d6:3a:bb:c9:38:54:2d:ca:56:41"
       - run:
           name: 🤖 Update DAGs repository
@@ -425,7 +431,7 @@ jobs:
             cd ~/project/telemetry-airflow-dags
             git submodule update --init --recursive --depth 1
             cd << parameters.repo-to-sync >>
-            git pull origin generated-sql
+            git pull origin << parameters.target-branch >>
             cd ..
             git add << parameters.repo-to-sync >>
             git commit --allow-empty -m "Automatic commit from ${CIRCLE_PROJECT_REPONAME} commit ${CIRCLE_SHA1:0:9} build ${CIRCLE_BUILD_NUM} [skip ci]"
@@ -452,7 +458,8 @@ jobs:
       - *build
       - add_ssh_keys:
           # deploy key to private-bigquery-etl
-          fingerprints: "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
+          fingerprints:
+            - "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
       - run:
           name: Install rsync
           command: |
@@ -502,7 +509,8 @@ jobs:
     steps:
       - *attach_generated_sql
       - add_ssh_keys:
-          fingerprints: "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
+          fingerprints:
+            - "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
       - run:
           name: Push to private-generated-sql branch
           # yamllint disable rule:line-length
@@ -723,8 +731,9 @@ workflows:
               only:
                 - main
       - sync-dags-repo:
-          name: 🔃 Synchronize DAGs repository
+          name: 🔃 Synchronize bigquery-etl submodule
           repo-to-sync: ${CIRCLE_PROJECT_REPONAME}
+          target-branch: generated-sql
           requires:
             - push-generated-sql
           filters:
@@ -768,8 +777,9 @@ workflows:
               only:
                 - main
       - sync-dags-repo:
-          name: 🔃 Synchronize DAGs repository
+          name: 🔃 Synchronize private-bigquery-etl submodule
           repo-to-sync: private-bigquery-etl
+          target-branch: private-generated-sql
           requires:
             - push-private-generated-sql
           filters:

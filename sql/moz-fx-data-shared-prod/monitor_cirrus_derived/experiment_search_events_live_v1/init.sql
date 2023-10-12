@@ -1,7 +1,7 @@
 -- Generated via ./bqetl generate experiment_monitoring
 CREATE MATERIALIZED VIEW
 IF
-  NOT EXISTS `moz-fx-data-shared-prod.org_mozilla_ios_focus_derived.experiment_search_events_live_v1`
+  NOT EXISTS `moz-fx-data-shared-prod.monitor_cirrus_derived.experiment_search_events_live_v1`
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
@@ -24,9 +24,10 @@ IF
     SUM(0) AS search_with_ads_count,
     SUM(0) AS search_count,
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_focus_live.metrics_v1`
+    `moz-fx-data-shared-prod.monitor_cirrus_live.enrollment_v1`
   LEFT JOIN
     UNNEST(ping_info.experiments) AS experiment
+      -- We don't expect cirrus events to be search events
   CROSS JOIN
     -- Max. number of entries is around 10
     UNNEST(GENERATE_ARRAY(0, 50)) AS i

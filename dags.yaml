@@ -1222,6 +1222,25 @@ bqetl_reference:
     - impact/tier_1
     - repo/bigquery-etl
 
+bqetl_generated_funnels:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - ascholtz@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    owner: ascholtz@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-10-14'
+  description: DAG scheduling funnels defined in sql_generators/funnels
+  repo: bigquery-etl
+  schedule_interval: 0 5 * * *
+  tags:
+    - impact/tier_3
+    - triage/no_triage
+
 bqetl_serp:
   default_args:
     depends_on_past: false

@@ -191,6 +191,20 @@ org_mozilla_ios_focus AS (
     event.category = 'nimbus_events'
     AND DATE(submission_timestamp) = @submission_date
 ),
+monitor_cirrus AS (
+  SELECT
+    submission_timestamp AS `timestamp`,
+    event.category AS `type`,
+    mozfun.map.get_key(event.extra, 'experiment') AS experiment,
+    mozfun.map.get_key(event.extra, 'branch') AS branch,
+    event.name AS event_method
+  FROM
+    `moz-fx-data-shared-prod.monitor_cirrus.enrollment`,
+    UNNEST(events) AS event
+  WHERE
+    event.category = 'cirrus_events'
+    AND DATE(submission_timestamp) = @submission_date
+),
 all_events AS (
   SELECT
     *
@@ -256,6 +270,11 @@ all_events AS (
     *
   FROM
     org_mozilla_ios_focus
+  UNION ALL
+  SELECT
+    *
+  FROM
+    monitor_cirrus
 )
 SELECT
   `type`,

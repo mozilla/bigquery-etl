@@ -10,6 +10,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
+  - moz-fx-data-shared-prod.monitor_cirrus_derived.experiment_events_live_v1
   - moz-fx-data-shared-prod.org_mozilla_fenix_derived.experiment_events_live_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta_derived.experiment_events_live_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_derived.experiment_events_live_v1

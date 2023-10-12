@@ -1,0 +1,18 @@
+friendly_name: Experiment Search Events Live
+description: |-
+  Materialized view of experimentation related search events
+  coming from monitor_cirrus clients.
+owners:
+- ascholtz@mozilla.com
+labels:
+  materialized_view: true
+  owner1: ascholtz
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  init.sql:
+  - moz-fx-data-shared-prod.monitor_cirrus_live.enrollment_v1
+deprecated: false

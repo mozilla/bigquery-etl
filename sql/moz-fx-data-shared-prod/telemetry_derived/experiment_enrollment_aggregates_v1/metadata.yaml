@@ -17,6 +17,7 @@ references:
   init.sql:
   - moz-fx-data-shared-prod.analysis.experiment_enrollment_aggregates
   query.sql:
+  - moz-fx-data-shared-prod.monitor_cirrus.enrollment
   - moz-fx-data-shared-prod.org_mozilla_fenix.events
   - moz-fx-data-shared-prod.org_mozilla_firefox.events
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.events

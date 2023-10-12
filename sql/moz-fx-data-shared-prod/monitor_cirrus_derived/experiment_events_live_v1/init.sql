@@ -1,44 +1,37 @@
 -- Generated via ./bqetl generate experiment_monitoring
 CREATE MATERIALIZED VIEW
 IF
-  NOT EXISTS telemetry_derived.experiment_events_live_v1
+  NOT EXISTS monitor_cirrus_derived.experiment_events_live_v1
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
-  -- Non-Glean apps might use Normandy and Nimbus for experimentation
-  WITH experiment_events AS (
+  -- Cirrus apps uses specialized Glean structure per events
+  WITH all_events AS (
     SELECT
-      submission_timestamp AS timestamp,
-      event.f2_ AS event_method,
-      event.f3_ AS `type`,
-      event.f4_ AS experiment,
-      IF(event_map_value.key = 'branch', event_map_value.value, NULL) AS branch
+      submission_timestamp,
+      events
     FROM
-      `moz-fx-data-shared-prod.telemetry_live.event_v4`
-    CROSS JOIN
-      UNNEST(
-        ARRAY_CONCAT(
-          payload.events.parent,
-          payload.events.content,
-          payload.events.dynamic,
-          payload.events.extension,
-          payload.events.gpu
-        )
-      ) AS event
-    CROSS JOIN
-      UNNEST(event.f5_) AS event_map_value
+      `moz-fx-data-shared-prod.monitor_cirrus_live.enrollment_v1`
+  ),
+  experiment_events AS (
+    SELECT
+      submission_timestamp AS `timestamp`,
+      event.category AS `type`,
+      CAST(event.extra[SAFE_OFFSET(i)].value AS STRING) AS branch,
+      CAST(event.extra[SAFE_OFFSET(j)].value AS STRING) AS experiment,
+      event.name AS event_method
+    FROM
+      all_events,
+      UNNEST(events) AS event,
+      -- Workaround for https://issuetracker.google.com/issues/182829918
+      -- To prevent having the branch name set to the experiment slug,
+      -- the number of generated array indices needs to be different.
+      UNNEST(GENERATE_ARRAY(0, 50)) AS i,
+      UNNEST(GENERATE_ARRAY(0, 51)) AS j
     WHERE
-      event.f1_ = 'normandy'
-      AND (
-        (event_map_value.key = 'branch' AND event.f3_ = 'preference_study')
-        OR (
-          (event.f3_ = 'addon_study' OR event.f3_ = 'preference_rollout')
-          AND event_map_value.key = 'enrollmentId'
-        )
-        OR event.f3_ = 'nimbus_experiment'
-        OR event.f2_ = 'enrollFailed'
-        OR event.f2_ = 'unenrollFailed'
-      )
+      event.category = 'cirrus_events'
+      AND CAST(event.extra[SAFE_OFFSET(i)].key AS STRING) = 'branch'
+      AND CAST(event.extra[SAFE_OFFSET(j)].key AS STRING) = 'experiment'
   )
   SELECT
     DATE(`timestamp`) AS submission_date,

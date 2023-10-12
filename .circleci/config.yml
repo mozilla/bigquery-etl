@@ -774,7 +774,7 @@ workflows:
               only:
                 - main
       - sync-dags-repo:
-          name: 🔃 Synchronize DAGs repository
+          name: 🔃 Synchronize private-bigquery-etl submodule
           repo-to-sync: private-bigquery-etl
           requires:
             - push-private-generated-sql

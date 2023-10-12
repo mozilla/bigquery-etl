@@ -407,6 +407,9 @@ jobs:
               || echo "Skipping push since it looks like there were no changes"
   sync-dags-repo:
     executor: docker/machine
+    parameters:
+      repo-to-sync:
+        type: string
     steps:
       - checkout
       - add_ssh_keys:
@@ -421,10 +424,10 @@ jobs:
             git clone --branch main git@github.com:mozilla/telemetry-airflow-dags.git
             cd ~/project/telemetry-airflow-dags
             git submodule update --init --recursive --depth 1
-            cd ${CIRCLE_PROJECT_REPONAME}
+            cd << parameters.repo-to-sync >>
             git pull origin generated-sql
             cd ..
-            git add ${CIRCLE_PROJECT_REPONAME}
+            git add << parameters.repo-to-sync >>
             git commit --allow-empty -m "Automatic commit from ${CIRCLE_PROJECT_REPONAME} commit ${CIRCLE_SHA1:0:9} build ${CIRCLE_BUILD_NUM} [skip ci]"
             git push origin main
   deploy:
@@ -721,6 +724,7 @@ workflows:
                 - main
       - sync-dags-repo:
           name: 🔃 Synchronize DAGs repository
+          repo-to-sync: ${CIRCLE_PROJECT_REPONAME}
           requires:
             - push-generated-sql
           filters:
@@ -759,6 +763,15 @@ workflows:
       - push-private-generated-sql:
           requires:
             - private-generate-sql
+          filters:
+            branches:
+              only:
+                - main
+      - sync-dags-repo:
+          name: 🔃 Synchronize DAGs repository
+          repo-to-sync: private-bigquery-etl
+          requires:
+            - push-private-generated-sql
           filters:
             branches:
               only:

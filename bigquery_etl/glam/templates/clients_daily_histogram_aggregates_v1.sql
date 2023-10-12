@@ -31,7 +31,7 @@ sampled_data AS (
     OR (
         channel = "release" AND
         os = "Windows" AND
-        sample_id <= 10)
+        sample_id < 10)
 ),
 histograms AS (
   SELECT

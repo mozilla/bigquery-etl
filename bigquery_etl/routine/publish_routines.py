@@ -123,9 +123,6 @@ def publish(
 
     published_routines = []
 
-    if pattern and project_id and not pattern.startswith(f"{project_id}."):
-        pattern = f"{project_id}.{pattern}"
-
     for raw_routine in (
         raw_routines if pattern is None else fnmatch.filter(raw_routines, pattern)
     ):
@@ -138,7 +135,6 @@ def publish(
         for dep in udfs_to_publish:
             if (
                 dep not in published_routines
-                and dep in raw_routines
                 and raw_routines[dep].filepath not in skipped_routines()
             ):
                 publish_routine(

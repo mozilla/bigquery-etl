@@ -2,7 +2,7 @@ friendly_name: Klar iOS Active Users Aggregates for deletion requests
 description: |-
   Prototype.
 
-  KPIs calcuylated for deletion requests.
+  KPIs calculated for deletion requests.
 owners:
 - lvargas@mozilla.com
 labels:
@@ -16,6 +16,16 @@ scheduling:
   parameters:
   - end_date:DATE:{{macros.ds_add(ds, 27)}}
   - start_date:DATE:{{macros.ds_add(ds, 27-28*4)}}
+  depends_on:
+  - task_id: copy_deduplicate_all
+    dag_name: copy_deduplicate
+    execution_delta: 1h
+  - task_id: clients_last_seen_joined
+    dag_name: copy_deduplicate
+    execution_delta: 1h
+  - task_id: search_derived__mobile_search_clients_daily__v1
+    dag_name: bqetl_mobile_search
+    execution_delta: 0h
 bigquery:
   time_partitioning:
     type: day

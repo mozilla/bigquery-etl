@@ -28,7 +28,7 @@ PERSISTENT_UDF_PREFIX_RE_STR = (
 )
 PERSISTENT_UDF_PREFIX = re.compile(PERSISTENT_UDF_PREFIX_RE_STR, re.IGNORECASE)
 PERSISTENT_UDF_RE = re.compile(
-    rf"{PERSISTENT_UDF_PREFIX_RE_STR}\s+`?(?:[a-zA-Z0-9_-]*`?\.)?({UDF_CHAR}*)\.({UDF_CHAR}+)`?",
+    rf"{PERSISTENT_UDF_PREFIX_RE_STR}\s+(?:`?[a-zA-Z0-9_-]+`?\.)?`?({UDF_CHAR}+)`?\.`?({UDF_CHAR}+)`?",
     re.IGNORECASE,
 )
 UDF_NAME_RE = re.compile(r"^([a-zA-Z0-9_]+\.)?[a-zA-Z][a-zA-Z0-9_]{0,255}$")

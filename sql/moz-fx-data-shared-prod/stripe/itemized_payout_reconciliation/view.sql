@@ -93,7 +93,7 @@ taxes AS (
 )
 SELECT
   report.* EXCEPT (card_country),
-  -- This logic preserves legacy behavior for these fields, but these fields are no longer in use
+  -- This logic preserves legacy behavior for card address fields, but they are no longer in use
   -- and have been superceded by tax_{country,state,postal_code} fields. The new fields do not
   -- indicate US territories the same way, and are not compatible with this logic.
   CASE

@@ -1,0 +1,3 @@
+---
+description: Like map_equals but error message contains only the offending entry
+friendly_name: Map Entries Equals

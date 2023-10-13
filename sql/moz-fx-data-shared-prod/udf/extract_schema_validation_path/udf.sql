@@ -20,24 +20,24 @@ RETURNS STRING AS (
 
 -- Tests
 SELECT
-  assert.null(
+  mozfun.assert.null(
     udf.extract_schema_validation_path(
       "com.mozilla.telemetry.decoder.Deduplicate$DuplicateIdException: A message with this documentId has already been successfully processed."
     )
   ),
-  assert.equals(
+  mozfun.assert.equals(
     "#/events/1/timestamp",
     udf.extract_schema_validation_path(
       "org.everit.json.schema.ValidationException: #/events/1/timestamp: -2 is not greater or equal to 0"
     )
   ),
-  assert.equals(
+  mozfun.assert.equals(
     "#/client_info",
     udf.extract_schema_validation_path(
       "org.everit.json.schema.ValidationException: #: required key [client_info] not found"
     )
   ),
-  assert.equals(
+  mozfun.assert.equals(
     "#/application/buildID",
     udf.extract_schema_validation_path(
       "org.everit.json.schema.ValidationException: #/application: extraneous key [buildID] is not permitted"

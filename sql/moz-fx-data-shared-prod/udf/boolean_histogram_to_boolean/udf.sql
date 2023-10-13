@@ -18,9 +18,9 @@ CREATE OR REPLACE FUNCTION udf.boolean_histogram_to_boolean(histogram STRING) AS
 
 -- Tests
 SELECT
-  assert.equals(TRUE, udf.boolean_histogram_to_boolean('{"values":{"0":1,"1":1}}')),
-  assert.null(udf.boolean_histogram_to_boolean('{}')),
-  assert.equals(FALSE, udf.boolean_histogram_to_boolean('{"values":{"0":1}}')),
-  assert.equals(TRUE, udf.boolean_histogram_to_boolean('0,1')),
-  assert.equals(TRUE, udf.boolean_histogram_to_boolean('1,1')),
-  assert.equals(FALSE, udf.boolean_histogram_to_boolean('1,0'))
+  mozfun.assert.equals(TRUE, udf.boolean_histogram_to_boolean('{"values":{"0":1,"1":1}}')),
+  mozfun.assert.null(udf.boolean_histogram_to_boolean('{}')),
+  mozfun.assert.equals(FALSE, udf.boolean_histogram_to_boolean('{"values":{"0":1}}')),
+  mozfun.assert.equals(TRUE, udf.boolean_histogram_to_boolean('0,1')),
+  mozfun.assert.equals(TRUE, udf.boolean_histogram_to_boolean('1,1')),
+  mozfun.assert.equals(FALSE, udf.boolean_histogram_to_boolean('1,0'))

@@ -1,15 +1,12 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.stripe.itemized_payout_reconciliation`
 AS
-WITH customers_without_shipping_state AS (
+WITH customers AS (
   SELECT
     id AS customer_id,
     NULLIF(address_country, "") AS country,
     NULLIF(UPPER(TRIM(address_postal_code)), "") AS postal_code,
     NULLIF(address_state, "") AS state,
-    NULLIF(shipping_address_country, "") AS shipping_address_country,
-    NULLIF(UPPER(TRIM(shipping_address_postal_code)), "") AS shipping_address_postal_code,
-    NULLIF(shipping_address_state, "") AS shipping_address_state,
   FROM
     `moz-fx-data-shared-prod`.stripe_external.customer_v1
 ),
@@ -19,7 +16,7 @@ postal_code_to_state AS (
     postal_code,
     IF(COUNT(DISTINCT state) > 1, NULL, ANY_VALUE(state)) AS state,
   FROM
-    customers_without_shipping_state
+    customers
   WHERE
     country IN ("US", "CA")
     AND postal_code IS NOT NULL
@@ -28,22 +25,6 @@ postal_code_to_state AS (
   GROUP BY
     country,
     postal_code
-),
-customers AS (
-  SELECT
-    customers.* REPLACE (
-      COALESCE(
-        customers.shipping_address_state,
-        postal_code_to_state.state
-      ) AS shipping_address_state
-    )
-  FROM
-    customers_without_shipping_state AS customers
-  LEFT JOIN
-    postal_code_to_state
-  ON
-    customers.shipping_address_country = postal_code_to_state.country
-    AND customers.shipping_address_postal_code = postal_code_to_state.postal_code
 ),
 charge_states AS (
   SELECT
@@ -77,125 +58,72 @@ subscriptions AS (
   FROM
     `moz-fx-data-shared-prod`.subscription_platform.stripe_subscriptions
 ),
-taxes AS (
+taxes_by_address AS (
   SELECT
     id AS invoice_id,
-    STRING_AGG(DISTINCT currency, ", " ORDER BY currency) AS tax_currency,
+    NULLIF(destination_resolved_address_country, "") AS country,
+    NULLIF(destination_resolved_address_state, "") AS state,
+    NULLIF(UPPER(TRIM(destination_resolved_address_postal_code)), "") AS postal_code,
+    currency,
     SUM(tax_amount) AS tax_amount,
+    ROW_NUMBER() OVER (PARTITION BY id) AS row_number,
   FROM
     `moz-fx-data-shared-prod`.stripe.itemized_tax_transactions
   GROUP BY
-    invoice_id
+    invoice_id,
+    country,
+    state,
+    postal_code,
+    currency
 ),
-enriched AS (
+taxes AS (
   SELECT
-    report.* EXCEPT (
-      card_country,
-      shipping_address_city,
-      shipping_address_country,
-      shipping_address_line1,
-      shipping_address_line2,
-      shipping_address_postal_code,
-      shipping_address_state
-    ),
-    CASE
-        -- American Samoa
-      WHEN customers.shipping_address_country = "US"
-        AND REGEXP_CONTAINS(customers.shipping_address_postal_code, "^96799(-?[0-9]{4})?$")
-        THEN STRUCT("AS" AS `shipping_address_country`, NULL AS `shipping_address_state`)
-        -- Puerto Rico
-      WHEN customers.shipping_address_country = "US"
-        AND REGEXP_CONTAINS(
-          customers.shipping_address_postal_code,
-          "^00[679][0-9]{2}(-?[0-9]{4})?$"
-        )
-        THEN STRUCT("PR" AS `shipping_address_country`, NULL AS `shipping_address_state`)
-        -- Virgin Islands
-      WHEN customers.shipping_address_country = "US"
-        AND REGEXP_CONTAINS(customers.shipping_address_postal_code, "^008[0-9]{2}(-?[0-9]{4})?$")
-        THEN STRUCT("VI" AS `shipping_address_country`, NULL AS `shipping_address_state`)
-      ELSE STRUCT(
-          customers.shipping_address_country AS `shipping_address_country`,
-          customers.shipping_address_state AS `shipping_address_state`
-        )
-    END.*,
-    customers.shipping_address_postal_code AS `shipping_address_postal_code`,
-    CASE
-        -- American Samoa
-      WHEN customers.country = "US"
-        AND REGEXP_CONTAINS(customers.postal_code, "^96799(-?[0-9]{4})?$")
-        THEN STRUCT("AS" AS `address_country`, NULL AS `address_state`)
-        -- Puerto Rico
-      WHEN customers.country = "US"
-        AND REGEXP_CONTAINS(customers.postal_code, "^00[679][0-9]{2}(-?[0-9]{4})?$")
-        THEN STRUCT("PR" AS `address_country`, NULL AS `address_state`)
-        -- Virgin Islands
-      WHEN customers.country = "US"
-        AND REGEXP_CONTAINS(customers.postal_code, "^008[0-9]{2}(-?[0-9]{4})?$")
-        THEN STRUCT("VI" AS `address_country`, NULL AS `address_state`)
-      ELSE STRUCT(customers.country AS `address_country`, customers.state AS `address_state`)
-    END.*,
-    customers.postal_code AS `address_postal_code`,
-    CASE
-        -- American Samoa
-      WHEN card_country = "US"
-        AND REGEXP_CONTAINS(charge_states.postal_code, "^96799(-?[0-9]{4})?$")
-        THEN STRUCT("AS" AS `card_country`, NULL AS `card_state`)
-        -- Puerto Rico
-      WHEN card_country = "US"
-        AND REGEXP_CONTAINS(charge_states.postal_code, "^00[679][0-9]{2}(-?[0-9]{4})?$")
-        THEN STRUCT("PR" AS `card_country`, NULL AS `card_state`)
-        -- Virgin Islands
-      WHEN card_country = "US"
-        AND REGEXP_CONTAINS(charge_states.postal_code, "^008[0-9]{2}(-?[0-9]{4})?$")
-        THEN STRUCT("VI" AS `card_country`, NULL AS `card_state`)
-      ELSE STRUCT(card_country AS `card_country`, charge_states.state AS `card_state`)
-    END.*,
-    charge_states.postal_code AS `card_postal_code`,
-    subscriptions.* EXCEPT (subscription_id),
+    invoice_id,
+    -- There should only be one set of distinct values for these fields, but if there are more then
+    -- they will be CSVs with the same length and order for consistency
+    STRING_AGG(country, ", " ORDER BY row_number) AS tax_country,
+    STRING_AGG(state, ", " ORDER BY row_number) AS tax_state,
+    STRING_AGG(postal_code, ", " ORDER BY row_number) AS tax_postal_code,
+    STRING_AGG(currency, ", " ORDER BY row_number) AS tax_currency,
+    SUM(tax_amount) AS tax_amount,
   FROM
-    `moz-fx-data-shared-prod`.stripe_external.itemized_payout_reconciliation_v5 AS report
-  LEFT JOIN
-    charge_states
-  USING
-    (charge_id, card_country)
-  LEFT JOIN
-    customers
-  USING
-    (customer_id)
-  LEFT JOIN
-    subscriptions
-  USING
-    (subscription_id)
+    taxes_by_address
+  GROUP BY
+    invoice_id
 )
 SELECT
-  *,
-  -- Use the same address hierarchy as Stripe Tax after we enabled Stripe Tax (FXA-5457).
-  -- https://stripe.com/docs/tax/customer-locations#address-hierarchy
-  -- (customer shipping address, customer billing address, payment method billing address)
+  report.* EXCEPT (card_country),
+  -- This logic preserves legacy behavior for card address fields, but they are no longer in use
+  -- and have been superceded by tax_{country,state,postal_code} fields. The new fields do not
+  -- indicate US territories the same way, and are not compatible with this logic.
   CASE
-    WHEN shipping_address_country IS NOT NULL
-      THEN STRUCT(
-          shipping_address_country AS tax_country,
-          shipping_address_state AS tax_state,
-          shipping_address_postal_code AS tax_postal_code
-        )
-    WHEN address_country IS NOT NULL
-      THEN STRUCT(
-          address_country AS tax_country,
-          address_state AS tax_state,
-          address_postal_code AS tax_postal_code
-        )
-    WHEN card_country IS NOT NULL
-      THEN STRUCT(
-          card_country AS tax_country,
-          card_state AS tax_state,
-          card_postal_code AS tax_postal_code
-        )
+    -- American Samoa
+    WHEN report.card_country = "US"
+      AND REGEXP_CONTAINS(charge_states.postal_code, "^96799(-?[0-9]{4})?$")
+      THEN STRUCT("AS" AS card_country, NULL AS card_state)
+    -- Puerto Rico
+    WHEN report.card_country = "US"
+      AND REGEXP_CONTAINS(charge_states.postal_code, "^00[679][0-9]{2}(-?[0-9]{4})?$")
+      THEN STRUCT("PR" AS card_country, NULL AS card_state)
+    -- Virgin Islands
+    WHEN report.card_country = "US"
+      AND REGEXP_CONTAINS(charge_states.postal_code, "^008[0-9]{2}(-?[0-9]{4})?$")
+      THEN STRUCT("VI" AS card_country, NULL AS card_state)
+    ELSE STRUCT(report.card_country, charge_states.state AS card_state)
   END.*,
+  charge_states.postal_code AS card_postal_code,
+  subscriptions.* EXCEPT (subscription_id),
   taxes.* EXCEPT (invoice_id),
 FROM
-  enriched
+  `moz-fx-data-shared-prod`.stripe_external.itemized_payout_reconciliation_v5 AS report
+LEFT JOIN
+  charge_states
+USING
+  (charge_id, card_country)
+LEFT JOIN
+  subscriptions
+USING
+  (subscription_id)
 LEFT JOIN
   taxes
 USING

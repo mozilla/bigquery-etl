@@ -45,11 +45,11 @@ extracted AS (
 )
   --
 SELECT
-  assert.equals(10, bucket_count),
-  assert.equals(1, histogram_type),
-  assert.equals(2628, `sum`),
-  assert.array_equals([1, 100], `range`),
-  assert.array_equals(
+  mozfun.assert.equals(10, bucket_count),
+  mozfun.assert.equals(1, histogram_type),
+  mozfun.assert.equals(2628, `sum`),
+  mozfun.assert.array_equals([1, 100], `range`),
+  mozfun.assert.array_equals(
     [
       STRUCT(0 AS key, 12434 AS value),
       STRUCT(1 AS key, 297 AS value),

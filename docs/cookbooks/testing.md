@@ -39,7 +39,7 @@ that defines a UDF that does not define a temporary function is collected as a
 test and executed independently of other tests in the file.
 
 Each test must use the UDF and throw an error to fail. Assert functions defined
-in `tests/assert/` may be used to evaluate outputs. Tests must not use any
+in `sql/mozfun/assert/` may be used to evaluate outputs. Tests must not use any
 query parameters and should not reference any tables. Each test that is
 expected to fail must be preceded by a comment like `#xfail`, similar to a [SQL
 dialect prefix] in the BigQuery Cloud Console.
@@ -56,8 +56,8 @@ CREATE TEMP FUNCTION udf_example(option INT64) AS (
 );
 -- Tests
 SELECT
-  assert_true(udf_example(1)),
-  assert_false(udf_example(0));
+  mozfun.assert.true(udf_example(1)),
+  mozfun.assert.false(udf_example(0));
 #xfail
 SELECT
   udf_example(-1);

@@ -18,20 +18,20 @@ CREATE OR REPLACE FUNCTION udf.coalesce_adjacent_days_365_bits(prev BYTES, curr 
 
 -- Tests
 SELECT
-  assert.equals(
+  mozfun.assert.equals(
     udf.one_as_365_bits() << 1,
     udf.coalesce_adjacent_days_365_bits(udf.one_as_365_bits(), udf.one_as_365_bits() << 10)
   ),
-  assert.equals(
+  mozfun.assert.equals(
     udf.one_as_365_bits() << 10,
     udf.coalesce_adjacent_days_365_bits(udf.one_as_365_bits() << 9, udf.one_as_365_bits())
   ),
-  assert.equals(
+  mozfun.assert.equals(
     udf.one_as_365_bits() << 9,
     udf.coalesce_adjacent_days_365_bits(udf.zero_as_365_bits(), udf.one_as_365_bits() << 9)
   ),
-  assert.equals(
+  mozfun.assert.equals(
     udf.one_as_365_bits() << 9,
     udf.coalesce_adjacent_days_365_bits(NULL, udf.one_as_365_bits() << 9)
   ),
-  assert.equals(udf.zero_as_365_bits(), udf.coalesce_adjacent_days_365_bits(NULL, NULL));
+  mozfun.assert.equals(udf.zero_as_365_bits(), udf.coalesce_adjacent_days_365_bits(NULL, NULL));

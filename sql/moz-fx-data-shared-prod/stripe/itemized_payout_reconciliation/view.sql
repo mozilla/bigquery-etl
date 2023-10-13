@@ -77,6 +77,16 @@ subscriptions AS (
   FROM
     `moz-fx-data-shared-prod`.subscription_platform.stripe_subscriptions
 ),
+taxes AS (
+  SELECT
+    id AS invoice_id,
+    STRING_AGG(DISTINCT currency, ", " ORDER BY currency) AS tax_currency,
+    SUM(tax_amount) AS tax_amount,
+  FROM
+    `moz-fx-data-shared-prod`.stripe.itemized_tax_transactions
+  GROUP BY
+    invoice_id
+),
 enriched AS (
   SELECT
     report.* EXCEPT (
@@ -157,5 +167,10 @@ SELECT
           card_postal_code AS tax_postal_code
         )
   END.*,
+  taxes.* EXCEPT (invoice_id),
 FROM
   enriched
+LEFT JOIN
+  taxes
+USING
+  (invoice_id)

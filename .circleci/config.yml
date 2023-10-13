@@ -446,8 +446,8 @@ jobs:
             git pull origin << parameters.target-branch >>
             cd ..
             git add << parameters.repo-to-sync >>
-            git commit --allow-empty -m "Automatic commit from ${CIRCLE_PROJECT_REPONAME} commit ${CIRCLE_SHA1:0:9} build ${CIRCLE_BUILD_NUM} [skip ci]"
-            git push origin main
+#            git commit --allow-empty -m "Automatic commit from ${CIRCLE_PROJECT_REPONAME} commit ${CIRCLE_SHA1:0:9} build ${CIRCLE_BUILD_NUM} [skip ci]"
+#            git push origin main
   deploy:
     executor: ubuntu-machine-executor
     steps:

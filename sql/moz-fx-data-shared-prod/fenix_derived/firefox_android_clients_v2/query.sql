@@ -197,12 +197,12 @@ SELECT
   ).*,
   STRUCT(
     COALESCE(
-      _previous.metadata.is_reported_first_session_ping
+      _previous.metadata.reported_first_session_ping
       OR _current.metadata.is_reported_first_session_ping,
       FALSE
     ) AS reported_first_session_ping,
     COALESCE(
-      _previous.metadata.is_reported_metrics_ping
+      _previous.metadata.reported_metrics_ping
       OR _current.metadata.is_reported_metrics_ping,
       FALSE
     ) AS reported_metrics_ping,

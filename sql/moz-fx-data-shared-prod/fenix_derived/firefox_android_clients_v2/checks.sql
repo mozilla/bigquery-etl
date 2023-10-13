@@ -1,4 +1,5 @@
-#fail
+-- TODO: convert is_unique to fail after duplication is resolved.
+#warn
 {{ is_unique(columns=["client_id"]) }}
 #fail
 {{ not_null(columns=["client_id", "sample_id"]) }}

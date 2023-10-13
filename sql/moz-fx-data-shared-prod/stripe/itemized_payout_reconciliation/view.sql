@@ -83,7 +83,7 @@ taxes AS (
     STRING_AGG(DISTINCT currency, ", " ORDER BY currency) AS tax_currency,
     SUM(tax_amount) AS tax_amount,
   FROM
-    mozdata.stripe.itemized_tax_transactions
+    `moz-fx-data-shared-prod`.stripe.itemized_tax_transactions
   GROUP BY
     invoice_id
 ),

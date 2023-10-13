@@ -256,24 +256,16 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    fenix_derived__funnel_retention_clients_week_2__v1.set_upstream(
+        wait_for_baseline_clients_last_seen
+    )
+
     fenix_derived__funnel_retention_clients_week_4__v1.set_upstream(
         wait_for_baseline_clients_last_seen
     )
 
-    wait_for_checks__fail_firefox_ios_derived__funnel_retention_clients_week_4__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_firefox_ios_derived__funnel_retention_clients_week_4__v1",
-        external_dag_id="bqetl_firefox_ios",
-        external_task_id="checks__fail_firefox_ios_derived__funnel_retention_clients_week_4__v1",
-        execution_delta=datetime.timedelta(days=-1, seconds=79200),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     fenix_derived__funnel_retention_week_4__v1.set_upstream(
-        wait_for_checks__fail_firefox_ios_derived__funnel_retention_clients_week_4__v1
+        checks__fail_fenix_derived__funnel_retention_clients_week_4__v1
     )
 
     wait_for_baseline_clients_daily = ExternalTaskSensor(

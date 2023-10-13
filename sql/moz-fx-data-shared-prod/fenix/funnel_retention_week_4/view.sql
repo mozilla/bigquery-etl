@@ -3,4 +3,5 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   *
-FROM `moz-fx-data-shared-prod.fenix_derived.funnel_retention_week_4_v1`
+FROM
+  `moz-fx-data-shared-prod.fenix_derived.funnel_retention_week_4_v1`

@@ -11,7 +11,7 @@ SELECT
   COUNTIF(repeat_first_month_user) AS repeat_user,
   COUNTIF(retained_week_4) AS retained_week_4,
 FROM
-  firefox_ios_derived.funnel_retention_clients_week_4_v1
+  fenix_derived.funnel_retention_clients_week_4_v1
 WHERE
   submission_date = @submission_date
 GROUP BY

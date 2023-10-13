@@ -13,7 +13,7 @@ scheduling:
   # Explicitly specifying referenced table here to make sure we only run this query and its checks
   # after the referenced table is materialized. This is because the checks depend on it.
   # referenced_tables:
-  # - ['moz-fx-data-shared-prod', 'firefox_ios_derived', 'app_store_retention_week_2_v1']
+  # - ['moz-fx-data-shared-prod', 'fenix_derived', 'app_store_retention_week_2_v1']
 bigquery:
   time_partitioning:
     type: day

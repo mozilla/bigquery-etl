@@ -1,8 +1,10 @@
 ---
-friendly_name: FxA Accounts nonprod
+friendly_name: Accounts table from FxA database in stage environment
 description: >
   A mirror of the `accounts` table from the staging FxA CloudSQL database,
   updated daily to match the current state of the table.
+
+  See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa
 owners:
   - akomar@mozilla.com
 labels:

@@ -34,7 +34,7 @@ A metric can be forecasted by using a command line argument that passes the rele
 For example, the following command forecasts Desktop DAU numbers:
 
 ```sh
-python ~/kpi-forecasting/kpi_forecasting.py -c ~/kpi-forecasting/configs/dau_desktop.yaml
+python ~/kpi_forecasting/kpi_forecasting.py -c ~/kpi_forecasting/configs/dau_desktop.yaml
 ```
 
 ### Local Python
@@ -72,9 +72,9 @@ Definitions should be documented in the code.
 
 # Development
 
-- `./kpi-forecasting/kpi_forecasting.py` is the main control script.
-- `./kpi-forecasting/configs` contains configuration YAML files.
-- `./kpi-forecasting/models` contains the forecasting models.
+- `./kpi_forecasting/kpi_forecasting.py` is the main control script.
+- `./kpi_forecasting/configs` contains configuration YAML files.
+- `./kpi_forecasting/models` contains the forecasting models.
 
 This repo was designed to make it simple to add new forecasting models in the future. In general, a model needs to inherit
 the `models.base_forecast.BaseForecast` class and to implement the `_fit` and `_predict` methods. Output from the `_fit` method will automatically be validated by `BaseForecast._validate_forecast_df`.

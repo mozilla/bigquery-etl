@@ -1,13 +1,13 @@
 import json
 import numpy as np
 import pandas as pd
-import pandas_extras as pdx
 
 from google.cloud import bigquery
 from google.cloud.bigquery.enums import SqlTypeNames as bq_types
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from metric_hub import MetricHub
+from kpi_forecasting import pandas_extras as pdx
+from kpi_forecasting.metric_hub import MetricHub
 from pandas.api import types as pd_types
 from typing import Dict, List, Tuple
 

@@ -52,7 +52,6 @@ class MetricHub:
             "\n", "\n" + " " * 19
         )
 
-    @property
     def query(self) -> str:
         """Build a string to query the relevant metric values from Big Query."""
 

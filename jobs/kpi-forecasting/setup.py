@@ -5,10 +5,10 @@ from setuptools import setup, find_packages
 readme = open("README.md").read()
 
 setup(
-    name="kpi-forecasting",
-    version="0.1.0",
+    name="kpi_forecasting",
+    version="1.0.0",
     author="Mozilla Corporation",
-    packages=find_packages(include=["kpi-forecasting"]),
+    packages=find_packages(),
     long_description=readme,
     include_package_data=True,
     license="MPL 2.0",

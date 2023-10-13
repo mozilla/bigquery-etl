@@ -4,7 +4,7 @@ import prophet
 
 from datetime import datetime
 from dataclasses import dataclass
-from models.base_forecast import BaseForecast
+from kpi_forecasting.models.base_forecast import BaseForecast
 from typing import Dict
 
 

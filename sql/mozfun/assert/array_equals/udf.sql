@@ -6,13 +6,13 @@ CREATE OR REPLACE FUNCTION assert.array_equals(expected ANY TYPE, actual ANY TYP
           *
         FROM
           UNNEST(expected)
-          WITH OFFSET
+          WITH OFFSET AS offset
         EXCEPT DISTINCT
         SELECT
           *
         FROM
           UNNEST(actual)
-          WITH OFFSET
+          WITH OFFSET AS offset
       )
       UNION ALL
         (
@@ -20,13 +20,13 @@ CREATE OR REPLACE FUNCTION assert.array_equals(expected ANY TYPE, actual ANY TYP
             *
           FROM
             UNNEST(actual)
-            WITH OFFSET
+            WITH OFFSET AS offset
           EXCEPT DISTINCT
           SELECT
             *
           FROM
             UNNEST(expected)
-            WITH OFFSET
+            WITH OFFSET AS offset
         )
     ),
     ERROR(CONCAT('Expected ', TO_JSON_STRING(expected), ' but got ', TO_JSON_STRING(actual))),

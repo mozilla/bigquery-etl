@@ -70,6 +70,6 @@ unzipped AS (
 )
   --
 SELECT
-  assert.equals(expected, result)
+  mozfun.assert.equals(expected, result)
 FROM
   unzipped

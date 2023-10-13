@@ -66,12 +66,12 @@ WITH b AS (
     udf.product_info_with_baseline('Firefox', 'Windows')
 )
 SELECT
-  assert.equals('firefox_desktop', b.app_name),
-  assert.equals('Firefox', b.product),
-  assert.equals('Firefox for Desktop', b.canonical_app_name),
-  assert.equals('Firefox for Desktop', b.canonical_name),
-  assert.true(b.contributes_to_2020_kpi),
-  assert.true(b.contributes_to_2021_kpi),
+  mozfun.assert.equals('firefox_desktop', b.app_name),
+  mozfun.assert.equals('Firefox', b.product),
+  mozfun.assert.equals('Firefox for Desktop', b.canonical_app_name),
+  mozfun.assert.equals('Firefox for Desktop', b.canonical_name),
+  mozfun.assert.true(b.contributes_to_2020_kpi),
+  mozfun.assert.true(b.contributes_to_2021_kpi),
 FROM
   b;
 
@@ -80,10 +80,10 @@ WITH b AS (
     udf.product_info_with_baseline('Focus iOS Baseline', 'iOS')
 )
 SELECT
-  assert.equals('focus_ios', b.app_name),
-  assert.equals('Focus iOS Baseline', b.product),
-  assert.equals('Focus iOS', b.canonical_app_name),
-  assert.true(b.contributes_to_2020_kpi),
-  assert.true(b.contributes_to_2021_kpi),
+  mozfun.assert.equals('focus_ios', b.app_name),
+  mozfun.assert.equals('Focus iOS Baseline', b.product),
+  mozfun.assert.equals('Focus iOS', b.canonical_app_name),
+  mozfun.assert.true(b.contributes_to_2020_kpi),
+  mozfun.assert.true(b.contributes_to_2021_kpi),
 FROM
   b;

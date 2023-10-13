@@ -11,6 +11,12 @@ labels:
 scheduling:
   dag_name: bqetl_serp
   task_name: {{ app_name }}_serp_events__v1
+  date_partition_parameter: null
+  destination_table:
+    >-
+    {{ app_name }}_serp_events_v1${{
+    (execution_date - macros.timedelta(hours=24)).strftime("%Y%m%d")
+    }}
 bigquery:
   time_partitioning:
     type: day

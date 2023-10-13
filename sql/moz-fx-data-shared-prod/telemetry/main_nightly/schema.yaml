@@ -36509,6 +36509,16 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
+        - name: urlbar_picked_recent_search
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
       - name: scalars
         type: RECORD
         mode: NULLABLE

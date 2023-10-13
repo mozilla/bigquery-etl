@@ -1,0 +1,15 @@
+friendly_name: {{ funnel_name }}
+{% if owners %}
+owners: {{ owners }}
+{% endif %}
+labels:
+  incremental: true
+
+scheduling:
+  dag_name: bqetl_generated_funnels
+
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false

@@ -14,7 +14,7 @@ scheduling:
   date_partition_parameter: null
   destination_table:
     >-
-    {{ app_name }}_serp_events_v1${{
+    serp_events_v1${{
     (execution_date - macros.timedelta(hours=24)).strftime("%Y%m%d")
     }}
   query_file_path:

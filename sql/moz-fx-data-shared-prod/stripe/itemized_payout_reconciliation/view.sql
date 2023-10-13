@@ -66,7 +66,7 @@ taxes_by_address AS (
     NULLIF(UPPER(TRIM(destination_resolved_address_postal_code)), "") AS postal_code,
     currency,
     SUM(tax_amount) AS tax_amount,
-    ROW_NUMBER() OVER (PARTITION BY invoice_id) AS row_number,
+    ROW_NUMBER() OVER (PARTITION BY id) AS row_number,
   FROM
     `moz-fx-data-shared-prod`.stripe.itemized_tax_transactions
   GROUP BY

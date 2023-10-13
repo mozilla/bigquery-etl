@@ -5,6 +5,9 @@ fields:
 - name: normalizedEmail
   type: STRING
   mode: NULLABLE
+- name: email
+  type: STRING
+  mode: NULLABLE
 - name: emailVerified
   type: INTEGER
   mode: NULLABLE
@@ -24,6 +27,9 @@ fields:
   type: NUMERIC
   mode: NULLABLE
 - name: profileChangedAt
+  type: NUMERIC
+  mode: NULLABLE
+- name: keysChangedAt
   type: NUMERIC
   mode: NULLABLE
 - name: ecosystemAnonId

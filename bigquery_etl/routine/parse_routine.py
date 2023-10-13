@@ -330,7 +330,7 @@ def sub_local_routines(test, project, raw_routines=None, stored_procedure_test=F
                 if stored_procedure_test:
                     replace_name = f"{GENERIC_DATASET}.{replace_name}"
                 sql = re.sub(
-                    rf"`?(?:`?{routine.project}`?\.)?{dataset}.{name}`?",
+                    rf"(?<![\w\.])(`?{routine.project}`?\.)?`?{dataset}`?\.`?{name}`?(?=\()",
                     replace_name,
                     sql,
                 )

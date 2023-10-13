@@ -1,0 +1,25 @@
+friendly_name: User Retention - Firefox Android (Week 2)
+description: |
+  Derived dataset for Firefox Android retention analysis. Contains metrics that can be calculated
+  2 weeks (13 days) after a user was first seen.
+owners:
+- kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_analytics_tables
+  depends_on_past: false
+  # Explicitly specifying referenced table here to make sure we only run this query and its checks
+  # after the referenced table is materialized. This is because the checks depend on it.
+  referenced_tables:
+  - ['moz-fx-data-shared-prod', 'firefox_ios_derived', 'app_store_retention_week_2_v1']
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+  clustering:
+    fields:
+    - sample_id
+    - first_seen_date

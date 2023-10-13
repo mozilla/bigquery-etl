@@ -3412,7 +3412,7 @@ after the UDF in the SQL file where it is defined. Each statement in a SQL file
 that defines a UDF that does not define a temporary function is collected as a
 test and executed independently of other tests in the file.</p>
 <p>Each test must use the UDF and throw an error to fail. Assert functions defined
-in <code>tests/assert/</code> may be used to evaluate outputs. Tests must not use any
+in <code>sql/mozfun/assert/</code> may be used to evaluate outputs. Tests must not use any
 query parameters and should not reference any tables. Each test that is
 expected to fail must be preceded by a comment like <code>#xfail</code>, similar to a <a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/enabling-standard-sql#sql-prefix">SQL
 dialect prefix</a> in the BigQuery Cloud Console.</p>
@@ -3426,8 +3426,8 @@ dialect prefix</a> in the BigQuery Cloud Console.</p>
 <span class="p">);</span>
 <span class="c1">-- Tests</span>
 <span class="k">SELECT</span>
-<span class="w">  </span><span class="n">assert_true</span><span class="p">(</span><span class="n">udf_example</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span>
-<span class="w">  </span><span class="n">assert_false</span><span class="p">(</span><span class="n">udf_example</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+<span class="w">  </span><span class="n">mozfun</span><span class="p">.</span><span class="n">assert</span><span class="p">.</span><span class="k">true</span><span class="p">(</span><span class="n">udf_example</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">mozfun</span><span class="p">.</span><span class="n">assert</span><span class="p">.</span><span class="k">false</span><span class="p">(</span><span class="n">udf_example</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
 <span class="o">#</span><span class="n">xfail</span>
 <span class="k">SELECT</span>
 <span class="w">  </span><span class="n">udf_example</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>

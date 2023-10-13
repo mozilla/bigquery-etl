@@ -148,7 +148,7 @@ with DAG(
         task_id="wait_for_baseline_clients_daily",
         external_dag_id="copy_deduplicate",
         external_task_id="baseline_clients_daily",
-        execution_delta=datetime.timedelta(seconds=10800),
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,

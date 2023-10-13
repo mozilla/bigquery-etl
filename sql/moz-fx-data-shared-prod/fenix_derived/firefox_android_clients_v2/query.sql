@@ -145,8 +145,6 @@ _current AS (
         ELSE NULL
       END AS adjust_info__source_ping
     ) AS metadata,
-    -- field to help us identify suspicious devices on iOS, for more info see: bug-1846554
-    (app_version = '107.2' AND submission_date >= '2023-02-01') AS is_suspicious_device_client,
   FROM
     first_seen
   FULL OUTER JOIN
@@ -202,12 +200,12 @@ SELECT
       _previous.metadata.is_reported_first_session_ping
       OR _current.metadata.is_reported_first_session_ping,
       FALSE
-    ) AS is_reported_first_session_ping,
+    ) AS reported_first_session_ping,
     COALESCE(
       _previous.metadata.is_reported_metrics_ping
       OR _current.metadata.is_reported_metrics_ping,
       FALSE
-    ) AS is_reported_metrics_ping,
+    ) AS reported_metrics_ping,
     COALESCE(
       _previous.metadata.adjust_info__source_ping,
       _current.metadata.adjust_info__source_ping

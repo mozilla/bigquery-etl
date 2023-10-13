@@ -172,8 +172,8 @@ SELECT
   activations.is_activated,
   _current.adjust_info.*,
   STRUCT(
-    _current.metadata.is_reported_first_session_ping AS is_reported_first_session_ping,
-    _current.metadata.is_reported_metrics_ping AS is_reported_metrics_ping,
+    _current.metadata.is_reported_first_session_ping AS reported_first_session_ping,
+    _current.metadata.is_reported_metrics_ping AS reported_metrics_ping,
     _current.metadata.adjust_info__source_ping AS adjust_info__source_ping
   ) AS metadata,
 FROM

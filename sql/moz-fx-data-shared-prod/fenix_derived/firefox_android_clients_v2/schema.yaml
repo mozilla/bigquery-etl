@@ -104,13 +104,13 @@ fields:
 
   fields:
   - mode: NULLABLE
-    name: is_reported_first_session_ping
+    name: reported_first_session_ping
     type: BOOLEAN
     description: |
       True if the client ever reported a first_session ping.
 
   - mode: NULLABLE
-    name: is_reported_metrics_ping
+    name: reported_metrics_ping
     type: BOOLEAN
     description: |
       True if the client ever reported a metrics ping.

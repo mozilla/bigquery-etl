@@ -21,6 +21,8 @@ AIRFLOW_DAG_TEMPLATE = "airflow_dag.j2"
 PUBLIC_DATA_JSON_DAG_TEMPLATE = "public_data_json_airflow_dag.j2"
 PUBLIC_DATA_JSON_DAG = "bqetl_public_data_json"
 
+CONFIDENTIAL_TAG = "triage/confidential"
+
 
 class DagParseException(Exception):
     """Raised when DAG config is invalid."""
@@ -197,6 +199,12 @@ class Dag:
             tags: set[str] = set(d[name].get("tags", []))
             if not any(tag.startswith("repo/") for tag in tags):
                 tags.add("repo/" + d[name].get("repo", "bigquery-etl"))
+
+            if name.startswith("private_") and CONFIDENTIAL_TAG not in tags:
+                tags.add(
+                    CONFIDENTIAL_TAG,
+                )
+
             d[name]["tags"] = sorted(tags)
 
             if name == PUBLIC_DATA_JSON_DAG:

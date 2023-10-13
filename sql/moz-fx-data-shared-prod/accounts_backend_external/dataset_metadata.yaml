@@ -1,0 +1,11 @@
+friendly_name: Firefox Accounts Backend External
+description: |-
+  Data extracted from the FxA backend services databases.
+  See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa for more information.
+dataset_base_acl: restricted
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:platform-infra/internal

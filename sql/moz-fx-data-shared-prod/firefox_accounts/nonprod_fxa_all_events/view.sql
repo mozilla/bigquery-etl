@@ -69,13 +69,12 @@ stdout_events AS (
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_stdout_events_v1`
 ),
--- New fxa event table (nonprod) includes, content and auth events
-server_events AS (
+gcp_stdout_events AS (
   SELECT
     fxa_server,
     `timestamp`,
     receiveTimestamp,
-    TIMESTAMP_MILLIS(CAST(jsonPayload.fields.time AS INT64)) AS event_time,
+    SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
     jsonPayload.fields.user_id,
     jsonPayload.fields.country,
     JSON_VALUE(jsonPayload.fields.event_properties, "$.country_code") AS country_code,
@@ -89,9 +88,28 @@ server_events AS (
     jsonPayload.fields.event_properties,
     jsonPayload.fields.device_id,
   FROM
-    `moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_server_events_v1`
-  WHERE
-    DATE(`timestamp`) >= "2023-05-26"
+    `moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_gcp_stdout_events_v1`
+),
+gcp_stderr_events AS (
+  SELECT
+    fxa_server,
+    `timestamp`,
+    receiveTimestamp,
+    SAFE.TIMESTAMP_MILLIS(SAFE_CAST(jsonPayload.fields.time AS INT64)) AS event_time,
+    jsonPayload.fields.user_id,
+    jsonPayload.fields.country,
+    JSON_VALUE(jsonPayload.fields.event_properties, "$.country_code") AS country_code,
+    jsonPayload.fields.language,
+    jsonPayload.fields.app_version,
+    jsonPayload.fields.os_name,
+    jsonPayload.fields.os_version,
+    jsonPayload.fields.event_type,
+    jsonPayload.logger,
+    jsonPayload.fields.user_properties,
+    jsonPayload.fields.event_properties,
+    jsonPayload.fields.device_id,
+  FROM
+    `moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_gcp_stderr_events_v1`
 ),
 unioned AS (
   SELECT
@@ -112,7 +130,12 @@ unioned AS (
   SELECT
     *
   FROM
-    server_events
+    gcp_stdout_events
+  UNION ALL
+  SELECT
+    *
+  FROM
+    gcp_stderr_events
 )
 SELECT
   fxa_server AS fxa_log,

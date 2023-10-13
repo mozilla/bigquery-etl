@@ -1,0 +1,27 @@
+friendly_name: Non-Prod FxA GCP Stderr Events
+description: |-
+  Staging table containing stderr fxa logs
+owners:
+- kik@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+  dag: bqetl_fxa_events
+  owner1: kik
+scheduling:
+  dag_name: bqetl_fxa_events
+  start_date: "2023-05-26"
+  arguments:
+  - --schema_update_option=ALLOW_FIELD_ADDITION
+bigquery:
+  time_partitioning:
+    type: day
+    field: timestamp
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - fxa_server
+references: {}
+deprecated: false

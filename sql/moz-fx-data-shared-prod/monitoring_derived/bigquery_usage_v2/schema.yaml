@@ -41,6 +41,11 @@ fields:
   description: The type of query statement
 
 - mode: NULLABLE
+  name: query_id
+  type: STRING
+  description: The id of the query
+
+- mode: NULLABLE
   name: reference_project_id
   type: STRING
   description: The ID of the project referenced by the job
@@ -74,6 +79,11 @@ fields:
   name: user_email
   type: STRING
   description: Email address or service account of the user who ran the job
+
+- mode: NULLABLE
+  name: username
+  type: STRING
+  description: The name of the user who ran the job
 
 - mode: NULLABLE
   name: task_duration
@@ -114,3 +124,8 @@ fields:
   name: resource_warning
   type: STRING
   description: The warning message that appears if the resource usage is above the internal threshold of the system
+
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Date Airflow DAG is executed

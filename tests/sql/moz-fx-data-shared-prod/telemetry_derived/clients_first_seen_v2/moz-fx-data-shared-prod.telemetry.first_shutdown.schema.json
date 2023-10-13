@@ -1,0 +1,272 @@
+[
+  {
+    "type": "STRING",
+    "name": "client_id"
+  },
+  {
+    "type": "INTEGER",
+    "name": "sample_id"
+  },
+  {
+    "type": "TIMESTAMP",
+    "name": "submission_timestamp",
+    "mode": "REQUIRED"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_channel"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_os"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_country_code"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_os_version"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "architecture"
+      },
+      {
+        "type": "STRING",
+        "name": "build_id"
+      },
+      {
+        "type": "STRING",
+        "name": "platform_version"
+      },
+      {
+        "type": "STRING",
+        "name": "vendor"
+      },
+      {
+        "type": "STRING",
+        "name": "xpcom_abi"
+      },
+      {
+        "type": "STRING",
+        "name": "version"
+      }
+    ],
+    "name": "application",
+    "type": "RECORD"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_app_name"
+  },
+  {
+    "type": "STRING",
+    "name": "document_id"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "build_id"
+          }
+        ],
+        "name": "build",
+        "type": "RECORD"
+      },
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key"
+          },
+          {
+            "fields": [
+              {
+                "type": "STRING",
+                "name": "branch"
+              },
+              {
+                "type": "STRING",
+                "name": "enrollment_id"
+              },
+              {
+                "type": "STRING",
+                "name": "type"
+              }
+            ],
+            "name": "value",
+            "type": "RECORD"
+          }
+        ],
+        "name": "experiments",
+        "type": "RECORD",
+        "mode": "REPEATED"
+      },
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "distribution_id"
+          },
+          {
+            "type": "STRING",
+            "name": "distribution_version"
+          },
+          {
+            "type": "STRING",
+            "name": "distributor"
+          },
+          {
+            "type": "STRING",
+            "name": "distributor_channel"
+          },
+          {
+            "type": "STRING",
+            "name": "partner_id"
+          }
+        ],
+        "name": "partner",
+        "type": "RECORD"
+      },
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "locale"
+          },
+          {
+            "fields": [
+              {
+                "type": "STRING",
+                "name": "campaign"
+              },
+              {
+                "type": "STRING",
+                "name": "content"
+              },
+              {
+                "type": "STRING",
+                "name": "experiment"
+              },
+              {
+                "type": "STRING",
+                "name": "medium"
+              },
+              {
+                "type": "STRING",
+                "name": "source"
+              },
+              {
+                "type": "STRING",
+                "name": "dltoken"
+              },
+              {
+                "type": "STRING",
+                "name": "dlsource"
+              },
+              {
+                "type": "STRING",
+                "name": "ua"
+              }
+            ],
+          "name": "attribution",
+          "type": "RECORD"
+          },
+          {
+            "fields": [
+              {
+                "type": "STRING",
+                "name": "load_path"
+              },
+              {
+                "type": "STRING",
+                "name": "name"
+              },
+              {
+                "type": "STRING",
+                "name": "origin"
+              },
+              {
+                "type": "STRING",
+                "name": "submission_url"
+              }
+            ],
+          "name": "default_search_engine_data",
+          "type": "RECORD"
+          }
+        ],
+        "name": "settings",
+        "type": "RECORD"
+      },
+      {
+        "fields": [
+          {
+              "type": "STRING",
+              "name": "apple_model_id"
+          }
+        ],
+        "name": "system",
+        "type": "RECORD"
+      }
+    ],
+  "name": "environment",
+  "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "city"
+          },
+          {
+            "type": "STRING",
+            "name": "db_version"
+          },
+          {
+            "type": "STRING",
+            "name": "subdivision1"
+          }
+        ],
+        "type": "RECORD",
+        "name": "geo"
+      }
+    ],
+    "type": "RECORD",
+    "name": "metadata"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "fields": [
+              {
+                "fields": [
+                  {
+                    "type": "STRING",
+                    "name": "startup_profile_selection_reason"
+                  }
+                ],
+                "type": "RECORD",
+                "name": "scalars"
+              }
+            ],
+            "type": "RECORD",
+            "name": "parent"
+          }
+        ],
+        "type": "RECORD",
+        "name": "processes"
+      }
+    ],
+    "type": "RECORD",
+    "name": "payload"
+  }
+]

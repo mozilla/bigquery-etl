@@ -13,6 +13,20 @@ WITH
       CROSS JOIN
         UNNEST(experiments) AS e
     )
+  {% elif "_cirrus" in app_dataset %}
+    {{ app_dataset }} AS (
+      SELECT DISTINCT
+        DATE(submission_timestamp) AS submission_date,
+        mozfun.map.get_key(e.extra, "experiment") AS experiment_id,
+        mozfun.map.get_key(e.extra, "branch") AS branch,
+       mozfun.map.get_key(e.extra, "user_id") AS client_id
+      FROM
+        `moz-fx-data-shared-prod.{{ app_dataset }}.enrollment` AS enrollment
+      CROSS JOIN
+        UNNEST(events) AS e
+
+
+    )
   {% else %}
     {{ app_dataset }} AS (
       SELECT DISTINCT
@@ -42,10 +56,10 @@ FROM
         *
       FROM
         {{ app_dataset }}
-      {% if not loop.last %}    
+      {% if not loop.last %}
         UNION ALL
       {% endif %}
-    {% endfor %} 
+    {% endfor %}
   )
 WHERE
   submission_date = @submission_date

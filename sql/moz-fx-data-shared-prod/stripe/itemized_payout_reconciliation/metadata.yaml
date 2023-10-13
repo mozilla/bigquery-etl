@@ -10,6 +10,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
+  - moz-fx-data-shared-prod.stripe.itemized_tax_transactions
   - moz-fx-data-shared-prod.stripe_external.card_v1
   - moz-fx-data-shared-prod.stripe_external.charge_v1
   - moz-fx-data-shared-prod.stripe_external.customer_v1

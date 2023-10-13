@@ -122,6 +122,23 @@ with DAG(
         retries=0,
     )
 
+    checks__fail_firefox_ios_derived__new_profile_activation__v2 = bigquery_dq_check(
+        task_id="checks__fail_firefox_ios_derived__new_profile_activation__v2",
+        source_table="new_profile_activation_v2",
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="vsabino@mozilla.com",
+        email=[
+            "kik@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "vsabino@mozilla.com",
+        ],
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     checks__warn_firefox_ios_derived__app_store_funnel__v1 = bigquery_dq_check(
         task_id="checks__warn_firefox_ios_derived__app_store_funnel__v1",
         source_table="app_store_funnel_v1",
@@ -278,6 +295,10 @@ with DAG(
         firefox_ios_derived__funnel_retention_week_4__v1
     )
 
+    checks__fail_firefox_ios_derived__new_profile_activation__v2.set_upstream(
+        firefox_ios_derived__new_profile_activation__v2
+    )
+
     checks__warn_firefox_ios_derived__app_store_funnel__v1.set_upstream(
         firefox_ios_derived__app_store_funnel__v1
     )
@@ -351,12 +372,12 @@ with DAG(
     firefox_ios_derived__firefox_ios_clients__v1.set_upstream(
         wait_for_baseline_clients_daily
     )
-    firefox_ios_derived__firefox_ios_clients__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
 
     firefox_ios_derived__firefox_ios_clients__v1.set_upstream(
-        firefox_ios_derived__new_profile_activation__v2
+        checks__fail_firefox_ios_derived__new_profile_activation__v2
+    )
+    firefox_ios_derived__firefox_ios_clients__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     wait_for_baseline_clients_last_seen = ExternalTaskSensor(

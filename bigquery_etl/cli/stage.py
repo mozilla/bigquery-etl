@@ -206,12 +206,9 @@ def _udf_dependencies(artifact_files):
         udfs_to_publish = accumulate_dependencies([], raw_routines, raw_routine.name)
 
         for dependency in udfs_to_publish:
-            dataset, name = dependency.split(".")
-            file_path = (
-                raw_routine.filepath.parent.parent.parent / dataset / name / UDF_FILE
-            )
-            if file_path not in artifact_files:
-                artifact_files.add(file_path)
+            if dependency in raw_routines:
+                file_path = Path(raw_routines[dependency].filepath)
+                udf_dependencies.add(file_path)
 
     return udf_dependencies
 

@@ -5,8 +5,8 @@ CREATE OR REPLACE FUNCTION udf.bits28_from_string(s STRING) AS (
 
 -- Tests
 SELECT
-  assert.equals(1, udf.bits28_from_string('1')),
-  assert.equals(1, udf.bits28_from_string('01')),
-  assert.equals(1, udf.bits28_from_string('0000000000000000000000000001')),
-  assert.equals(2, udf.bits28_from_string('10')),
-  assert.equals(5, udf.bits28_from_string('101'));
+  mozfun.assert.equals(1, udf.bits28_from_string('1')),
+  mozfun.assert.equals(1, udf.bits28_from_string('01')),
+  mozfun.assert.equals(1, udf.bits28_from_string('0000000000000000000000000001')),
+  mozfun.assert.equals(2, udf.bits28_from_string('10')),
+  mozfun.assert.equals(5, udf.bits28_from_string('101'));

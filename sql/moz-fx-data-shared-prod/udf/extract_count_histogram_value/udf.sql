@@ -22,7 +22,7 @@ extracted AS (
 )
     --
 SELECT
-  assert.equals(1, has_value),
-  assert.null(null_value)
+  mozfun.assert.equals(1, has_value),
+  mozfun.assert.null(null_value)
 FROM
   extracted

@@ -42,7 +42,7 @@ CREATE OR REPLACE FUNCTION udf.aggregate_map_first(maps ANY TYPE) AS (
 
 -- Test
 SELECT
-  assert.array_equals(
+  mozfun.assert.array_equals(
     [STRUCT('A' AS key, '2' AS value), STRUCT('B' AS key, '1' AS value)],
     udf.aggregate_map_first(
       [

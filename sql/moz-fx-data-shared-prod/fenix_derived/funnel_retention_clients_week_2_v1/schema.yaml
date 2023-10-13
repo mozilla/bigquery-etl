@@ -61,25 +61,7 @@ fields:
     The type of source of a client installation.
 
 - mode: NULLABLE
-  name: days_seen_in_first_28_days
-  type: INTEGER
-  description: |
-    Number of days we saw the client within their first 28 days.
-
-- mode: NULLABLE
-  name: repeat_first_month_user
-  type: BOOLEAN
-  description: |
-    Indicates if the client qualified as a repeat first month user (observed more than once within their first 28 days).
-
-- mode: NULLABLE
   name: retained_week_2
   type: BOOLEAN
   description: |
     True if the client was seen in the second week (days 8 - 14) since they were first seen.
-
-- mode: NULLABLE
-  name: retained_week_4
-  type: BOOLEAN
-  description: |
-    True if the client was seen in the forth week (days 21 - 28) since they were first seen.

@@ -423,11 +423,23 @@ jobs:
             - "e4:30:50:41:53:f0:d6:3a:bb:c9:38:54:2d:ca:56:41"
       - run:
           name: 🤖 Update DAGs repository
+          # ~/.ssh/config needs to be manually configured to support cloning a private
+          # repository through submodules and writing to another repository.
           command: |
+            cat <<'EOT' > ~/.ssh/config
+            Host github.com
+              IdentitiesOnly yes
+              IdentityFile /home/circleci/.ssh/id_rsa_9d1eaf52782ce8ec334cdbcd5aff700a
+            Host git-telemetry-airflow-dags
+              HostName github.com
+              User git
+              IdentitiesOnly yes
+              IdentityFile /home/circleci/.ssh/id_rsa_e430504153f0d63abbc938542dca5641
+            EOT
             ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
             git config --global user.email "dataops@mozilla.com"
             git config --global user.name "CircleCI Job"
-            git clone --branch main git@github.com:mozilla/telemetry-airflow-dags.git
+            git clone --branch main git@git-telemetry-airflow-dags:mozilla/telemetry-airflow-dags.git
             cd ~/project/telemetry-airflow-dags
             git submodule update --init --recursive --depth 1
             cd << parameters.repo-to-sync >>

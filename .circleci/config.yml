@@ -426,7 +426,7 @@ jobs:
           # ~/.ssh/config needs to be manually configured to support cloning a private
           # repository through submodules and writing to another repository.
           command: |
-            cat <<'EOT' > ~/.ssh/config
+            cat \<<'EOT' > ~/.ssh/config
             Host github.com
               IdentitiesOnly yes
               IdentityFile /home/circleci/.ssh/id_rsa_9d1eaf52782ce8ec334cdbcd5aff700a

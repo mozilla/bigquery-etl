@@ -15,6 +15,10 @@ labels:
 scheduling:
   dag_name: bqetl_serp
   task_name: firefox_desktop_serp_events__v1
+  date_partition_parameter: null
+  destination_table: serp_events_v1${{ (execution_date - macros.timedelta(hours=24)).strftime("%Y%m%d")
+    }}
+  query_file_path: sql/moz-fx-data-shared-prod/firefox_desktop_derived/serp_events_v1/query.sql
 bigquery:
   time_partitioning:
     type: day

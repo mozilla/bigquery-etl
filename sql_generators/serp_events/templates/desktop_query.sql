@@ -4,7 +4,7 @@ WITH raw_serp_events AS (
     mozfun.map.get_key(event.extra, 'impression_id') AS impression_id,
     event
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop_stable.events_v1`,
+    `{{ project_id }}.{{ app_name }}_stable.events_v1`,
     UNNEST(events) AS event
   WHERE
     event.category = 'serp'

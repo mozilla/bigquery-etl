@@ -45,7 +45,7 @@ with DAG(
 ) as dag:
     firefox_desktop_serp_events__v1 = bigquery_etl_query(
         task_id="firefox_desktop_serp_events__v1",
-        destination_table="serp_events_v1",
+        destination_table='serp_events_v1${{ (execution_date - macros.timedelta(hours=24)).strftime("%Y%m%d") }}',
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         owner="akommasani@mozilla.com",
@@ -55,8 +55,9 @@ with DAG(
             "pissac@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        sql_file_path="sql/moz-fx-data-shared-prod/firefox_desktop_derived/serp_events_v1/query.sql",
     )
 
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
